@@ -181,7 +181,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         };
       }
       // Token in title; source and destination in subtitle; destination token in avatar
-      case 'convert':
       case 'unwrap': {
         const { sourceToken, destinationToken } = activity.data;
         const sourceSymbol = sourceToken?.symbol;
