@@ -47,7 +47,7 @@ describe('getConnectionStateFromError', () => {
   });
 
   describe('device state errors', () => {
-    it('returns awaitingApp state for DeviceStateEthAppClosed', () => {
+    it('returns error state for DeviceStateEthAppClosed', () => {
       const error = new HardwareWalletError('Ethereum app closed', {
         code: ErrorCode.DeviceStateEthAppClosed,
         severity: Severity.Err,
@@ -56,7 +56,7 @@ describe('getConnectionStateFromError', () => {
       });
       const result = getConnectionStateFromError(error);
 
-      expect(result.status).toBe(ConnectionStatus.AwaitingApp);
+      expect(result.status).toBe(ConnectionStatus.ErrorState);
     });
   });
 

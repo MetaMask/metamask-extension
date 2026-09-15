@@ -24,6 +24,7 @@ import {
   checkCameraPermission,
   requestHardwareWalletPermission,
   requestWebHidPermission,
+  requestWebHidDevices,
   requestWebUsbPermission,
   requestCameraPermission,
   getConnectedLedgerDevices,
@@ -796,6 +797,55 @@ describe('webConnectionUtils', () => {
       const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('requestWebHidDevices', () => {
+    it('returns the granted Ledger devices', async () => {
+      const mockDevice = createMockHIDDevice() as HIDDevice;
+      getMockedHid().requestDevice.mockResolvedValue([mockDevice]);
+
+      const devices = await requestWebHidDevices(HardwareWalletType.Ledger);
+
+      expect(devices).toEqual([mockDevice]);
+      expect(getMockedHid().requestDevice).toHaveBeenCalledWith({
+        filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
+      });
+    });
+
+    it('filters out granted devices that do not match the wallet type', async () => {
+      const ledgerDevice = createMockHIDDevice() as HIDDevice;
+      const otherDevice = createMockHIDDevice(0x1234) as HIDDevice;
+      getMockedHid().requestDevice.mockResolvedValue([
+        ledgerDevice,
+        otherDevice,
+      ]);
+
+      const devices = await requestWebHidDevices(HardwareWalletType.Ledger);
+
+      expect(devices).toEqual([ledgerDevice]);
+    });
+
+    it('returns an empty array when the user cancels the picker', async () => {
+      getMockedHid().requestDevice.mockRejectedValue(
+        new Error('User cancelled the requestDevice() chooser.'),
+      );
+
+      await expect(
+        requestWebHidDevices(HardwareWalletType.Ledger),
+      ).resolves.toEqual([]);
+    });
+
+    it('returns an empty array when WebHID is not available', async () => {
+      Object.defineProperty(window.navigator, 'hid', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(
+        requestWebHidDevices(HardwareWalletType.Ledger),
+      ).resolves.toEqual([]);
     });
   });
 

@@ -24,8 +24,6 @@ export function getConnectionStateFromError(
     case ErrorCode.UserCancelled:
     case ErrorCode.ConnectionTimeout:
       return ConnectionState.error(error);
-    case ErrorCode.DeviceStateEthAppClosed:
-      return ConnectionState.awaitingApp();
     default:
       return ConnectionState.error(error);
   }

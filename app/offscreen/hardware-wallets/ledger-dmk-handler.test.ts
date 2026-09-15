@@ -113,6 +113,9 @@ describe('LedgerDmkBridgeHandler', () => {
     installWebHidNavigator();
     installChromeRuntime();
     delete mockChromeRuntime.onMessage;
+    mockHidGetDevices.mockResolvedValue([
+      { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+    ]);
     mockOnSessionStateChangeSubject = new Subject();
     (LedgerDmkBridge as jest.Mock).mockImplementation(() => createMockBridge());
     mockListenToAvailableDevices.mockReturnValue(
@@ -174,6 +177,23 @@ describe('LedgerDmkBridgeHandler', () => {
       await jest.advanceTimersByTimeAsync(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS);
       await expectation;
       await expect(actionPromise).rejects.toBeInstanceOf(HardwareWalletError);
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('fails fast when no permitted Ledger device is granted', async () => {
+      mockHidGetDevices.mockResolvedValue([]);
+
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
+      await expect(actionPromise).rejects.toMatchObject({
+        name: 'HardwareWalletError',
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        message: 'No permitted Ledger device found',
+      });
+      await expect(actionPromise).rejects.toBeInstanceOf(HardwareWalletError);
+
+      expect(mockBridgeStartDiscovering).not.toHaveBeenCalled();
       expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
     });
 
@@ -763,6 +783,9 @@ describe('LedgerDmkBridgeHandler', () => {
       expect(connectListener).toBeDefined();
       expect(disconnectListener).toBeDefined();
 
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
       setTimeout(() => {
         mockOnSessionStateChangeSubject.next({ connected: true });
       }, 0);
