@@ -8741,7 +8741,7 @@
   },
   "rampsChangeProviders": {
     "message": "change providers",
-    "description": "Inline link continuing the sentence in rampsErrorGettingQuotes"
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
     "message": "Choose provider"
