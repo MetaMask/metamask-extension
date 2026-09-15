@@ -17,6 +17,10 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
+import {
+  PersistenceHealthMonitor,
+  PersistenceWriteFailureClass,
+} from './persistence-health-monitor';
 import { runTrackedTask } from './utils/run-tracked-task';
 
 export type StorageKind = 'data' | 'split';
@@ -261,6 +265,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   #dataPersistenceFailing: boolean = false;
 
   /**
+   * Decides when persistence is in degraded mode, from the outcome of each
+   * write this manager makes.
+   */
+  #persistenceHealthMonitor = new PersistenceHealthMonitor();
+
+  /**
    * mostRecentRetrievedState is a property that holds the most recent state
    * successfully retrieved from memory. Due to the nature of async read
    * operations it is beneficial to have a near real-time snapshot of the state
@@ -344,11 +354,20 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   /**
    * Notifies the UI that a set operation has failed (storage.local or IndexedDB).
    * If the callback is not yet registered, tracks the failure for later notification.
+   * Also records the failure with the persistence health monitor.
    *
    * @param errorMessage - The error message from the failed operation
+   * @param failureClass - The `persistence.error` tag of the failed operation
    */
-  #notifySetFailed(errorMessage: string) {
+  #notifySetFailed(
+    errorMessage: string,
+    failureClass: PersistenceWriteFailureClass,
+  ) {
     const errorType = this.#getStorageWriteErrorType(errorMessage);
+    this.#persistenceHealthMonitor.recordWriteFailure({
+      errorType,
+      failureClass,
+    });
 
     if (this.#onSetFailed) {
       this.#onSetFailed(errorType);
@@ -678,6 +697,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             );
           }
 
+          this.#persistenceHealthMonitor.recordWriteSuccess();
           return [true, undefined];
         } catch (err) {
           // A write that failed only because the browser is closing is not a
@@ -695,10 +715,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             );
             return [false, err];
           }
+          // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+          const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
 
             // Custom fingerprint prevents Sentry's deduplication from dropping
             // this event when other persistence errors with the same underlying
@@ -709,7 +729,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             });
           }
           const normalizedError = this.#normalizePersistError(err);
-          this.#notifySetFailed(normalizedError.message);
+          this.#notifySetFailed(normalizedError.message, tag);
           log.error('error setting state in local store:', err);
           return [false, normalizedError];
         } finally {
@@ -836,6 +856,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             );
           }
 
+          // A persist with nothing pending writes no keys, so it says nothing
+          // about whether storage can take a write.
+          if (clone.size > 0) {
+            this.#persistenceHealthMonitor.recordWriteSuccess();
+          }
           return [true, undefined];
         } catch (err) {
           // A write that failed only because the browser is closing is not a
@@ -853,12 +878,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             );
             return [false, err];
           }
+          // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+          const tag = backupFailed ? 'persist-backup-failed' : 'persist-failed';
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
-            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
-            const tag = backupFailed
-              ? 'persist-backup-failed'
-              : 'persist-failed';
 
             // Custom fingerprint prevents Sentry's deduplication from dropping
             // this event when other persistence errors with the same underlying
@@ -869,7 +892,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             });
           }
           const normalizedError = this.#normalizePersistError(err);
-          this.#notifySetFailed(normalizedError.message);
+          this.#notifySetFailed(normalizedError.message, tag);
           log.error('error setting state in local store:', err);
           return [false, normalizedError];
         } finally {
@@ -1104,6 +1127,16 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   get mostRecentRetrievedState() {
     return this.#mostRecentRetrievedState;
+  }
+
+  /**
+   * Whether persistence is in degraded mode: a write failed because the
+   * device is out of disk space, and no write has succeeded since.
+   *
+   * @returns `true` while persistence is degraded.
+   */
+  get isPersistenceDegraded(): boolean {
+    return this.#persistenceHealthMonitor.isDegraded;
   }
 
   cleanUpMostRecentRetrievedState() {

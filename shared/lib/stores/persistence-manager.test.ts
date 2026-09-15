@@ -1152,6 +1152,175 @@ describe('PersistenceManager', () => {
     });
   });
 
+  describe('degraded persistence mode', () => {
+    const noSpaceError = new Error('IO error: FILE_ERROR_NO_SPACE');
+
+    describe('through set', () => {
+      /**
+       * Runs a `set` whose storage.local write fails on the first attempt and
+       * on the retry.
+       *
+       * @param error - The error the storage backend rejects with.
+       * @returns The result of the `set` call.
+       */
+      async function setWithFailingStore(
+        error: Error,
+      ): Promise<[boolean, Error | undefined]> {
+        mockStoreSet.mockRejectedValueOnce(error).mockRejectedValueOnce(error);
+        const setPromise = manager.set({ appState: { broken: true } });
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        return await setPromise;
+      }
+
+      beforeEach(() => {
+        prepareForWriteRetry();
+        manager.storageKind = 'data';
+        manager.setMetadata({ version: 10 });
+      });
+
+      it('is not degraded before any write fails', () => {
+        expect(manager.isPersistenceDegraded).toBe(false);
+      });
+
+      it('enters degraded mode and reports it when store.set fails with FILE_ERROR_NO_SPACE', async () => {
+        const [result, error] = await setWithFailingStore(noSpaceError);
+
+        expect(result).toBe(false);
+        expect(error).toBe(noSpaceError);
+        expect(manager.isPersistenceDegraded).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'Degraded persistence mode entered',
+          {
+            level: 'warning',
+            tags: {
+              'persistence.event': 'degraded-persistence-entered',
+              'persistence.failure_class': 'set-failed',
+              'persistence.storage_write_error_type': 'file-error-no-space',
+            },
+            fingerprint: ['persistence-event', 'degraded-persistence-entered'],
+          },
+        );
+      });
+
+      it('stays degraded without reporting entry again while writes keep failing', async () => {
+        await setWithFailingStore(noSpaceError);
+        await setWithFailingStore(noSpaceError);
+
+        expect(manager.isPersistenceDegraded).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      });
+
+      it('leaves degraded mode and reports it after a later store.set succeeds', async () => {
+        await setWithFailingStore(noSpaceError);
+        mockedCaptureMessage.mockClear();
+
+        mockStoreSet.mockResolvedValueOnce(undefined);
+        const [result] = await manager.set({ appState: { fixed: true } });
+
+        expect(result).toBe(true);
+        expect(manager.isPersistenceDegraded).toBe(false);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'Degraded persistence mode exited',
+          {
+            level: 'info',
+            tags: {
+              'persistence.event': 'degraded-persistence-exit',
+              'persistence.failure_class': 'set-failed',
+              'persistence.storage_write_error_type': 'file-error-no-space',
+            },
+            fingerprint: ['persistence-event', 'degraded-persistence-exit'],
+          },
+        );
+      });
+
+      it('does not enter degraded mode when store.set fails for a reason other than disk space', async () => {
+        const corruptionError = new Error(CORRUPTION_BLOCK_CHECKSUM_MISMATCH);
+
+        const [result] = await setWithFailingStore(corruptionError);
+
+        expect(result).toBe(false);
+        // The failure itself still goes through the existing reporting path.
+        expect(mockedCaptureException).toHaveBeenCalledWith(corruptionError, {
+          tags: { 'persistence.error': 'set-failed' },
+          fingerprint: ['persistence-error', 'set-failed'],
+        });
+        expect(manager.isPersistenceDegraded).toBe(false);
+        expect(mockedCaptureMessage).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('through persist', () => {
+      beforeEach(async () => {
+        await manager.open();
+        jest.useFakeTimers();
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+      });
+
+      it('enters on a backup write that fails with FILE_ERROR_NO_SPACE, and exits only after a later persist writes pending state', async () => {
+        const backupSetSpy = jest
+          .spyOn(IndexedDBStore.prototype, 'set')
+          .mockRejectedValueOnce(noSpaceError)
+          .mockRejectedValueOnce(noSpaceError);
+        // One result per persist below, so an implementation left on this
+        // mock by an earlier test cannot fail the primary write.
+        mockStoreSetKeyValues
+          .mockResolvedValueOnce(undefined)
+          .mockResolvedValueOnce(undefined)
+          .mockResolvedValueOnce(undefined);
+        const degradedTags = {
+          'persistence.failure_class': 'persist-backup-failed',
+          'persistence.storage_write_error_type': 'file-error-no-space',
+        };
+
+        manager.update('KeyringController', { vault: 'encrypted-vault' });
+        const failedPersist = manager.persist();
+        await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+        const [failedResult] = await failedPersist;
+
+        expect(failedResult).toBe(false);
+        expect(manager.isPersistenceDegraded).toBe(true);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'Degraded persistence mode entered',
+          {
+            level: 'warning',
+            tags: {
+              'persistence.event': 'degraded-persistence-entered',
+              ...degradedTags,
+            },
+            fingerprint: ['persistence-event', 'degraded-persistence-entered'],
+          },
+        );
+
+        // The primary write succeeded, so nothing is pending. This persist
+        // writes no keys and must not count as a successful write.
+        const [emptyResult] = await manager.persist();
+
+        expect(emptyResult).toBe(true);
+        expect(manager.isPersistenceDegraded).toBe(true);
+
+        manager.update('FooController', { foo: 'bar' });
+        const [recoveredResult] = await manager.persist();
+
+        expect(recoveredResult).toBe(true);
+        expect(manager.isPersistenceDegraded).toBe(false);
+        expect(mockedCaptureMessage).toHaveBeenCalledWith(
+          'Degraded persistence mode exited',
+          {
+            level: 'info',
+            tags: {
+              'persistence.event': 'degraded-persistence-exit',
+              ...degradedTags,
+            },
+            fingerprint: ['persistence-event', 'degraded-persistence-exit'],
+          },
+        );
+
+        backupSetSpy.mockRestore();
+      });
+    });
+  });
+
   describe('cleanUpMostRecentRetrievedState', () => {
     it('sets mostRecentRetrievedState to null if previously set', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
