@@ -23,8 +23,7 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
-    goToBuy: jest.fn(),
-    opensBuyInPortfolioTab: false,
+    goToBuy: jest.fn().mockResolvedValue('native'),
   })),
 }));
 

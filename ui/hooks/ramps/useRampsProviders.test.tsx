@@ -189,6 +189,82 @@ describe('useRampsProviders', () => {
       `);
   });
 
+  it('locks an auto-selected provider when completed history matches it', () => {
+    mockedUseQuery.mockReturnValue({
+      data: [transakProvider, moonpayProvider],
+      isLoading: false,
+    } as never);
+
+    renderHook(() => useRampsProviders({ enableSideEffects: true }), {
+      wrapper: createRampsTestWrapper(
+        createRampsMockStore({
+          providers: {
+            data: [transakProvider, moonpayProvider],
+            selected: transakProvider,
+            isLoading: false,
+            error: null,
+          },
+          providerAutoSelected: true,
+          orders: [
+            {
+              id: '/providers/transak/orders/order-1',
+              provider: transakProvider,
+              status: RampsOrderStatus.Completed,
+              createdAt: 1,
+              walletAddress: '0xabc123',
+            },
+          ],
+        }),
+      ),
+    });
+
+    expect(jest.mocked(setRampsSelectedProvider).mock.calls)
+      .toMatchInlineSnapshot(`
+      [
+        [
+          "transak",
+          {
+            "autoSelected": false,
+          },
+        ],
+      ]
+    `);
+  });
+
+  it('preserves an explicitly selected provider when history arrives', () => {
+    mockedUseQuery.mockReturnValue({
+      data: [transakProvider, moonpayProvider],
+      isLoading: false,
+    } as never);
+
+    renderHook(() => useRampsProviders({ enableSideEffects: true }), {
+      wrapper: createRampsTestWrapper(
+        createRampsMockStore({
+          providers: {
+            data: [transakProvider, moonpayProvider],
+            selected: transakProvider,
+            isLoading: false,
+            error: null,
+          },
+          providerAutoSelected: false,
+          orders: [
+            {
+              id: '/providers/moonpay/orders/order-1',
+              provider: moonpayProvider,
+              status: RampsOrderStatus.Completed,
+              createdAt: 1,
+              walletAddress: '0xabc123',
+            },
+          ],
+        }),
+      ),
+    });
+
+    expect(
+      jest.mocked(setRampsSelectedProvider).mock.calls,
+    ).toMatchInlineSnapshot(`[]`);
+  });
+
   it('returns a providers state error when the query is unavailable', () => {
     mockedUseQuery.mockReturnValue({
       data: undefined,

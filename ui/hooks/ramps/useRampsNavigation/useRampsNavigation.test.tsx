@@ -22,7 +22,10 @@ import {
   markPortfolioBuyMigrationAttempted,
   PORTFOLIO_ORIGINS,
 } from '../utils/portfolioConnection';
-import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
+import useRampsNavigation, {
+  type RampIntent,
+  type RampsNavigationResult,
+} from './useRampsNavigation';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
@@ -133,8 +136,8 @@ const run = (state: ReturnType<typeof buildState>) => {
 const goToBuy = async (
   result: { current: ReturnType<typeof useRampsNavigation> },
   intent: RampIntent = { chainId: '0x1' },
-): Promise<boolean | undefined> => {
-  let opened: boolean | undefined;
+): Promise<RampsNavigationResult | undefined> => {
+  let opened: RampsNavigationResult | undefined;
   await act(async () => {
     opened = await result.current.goToBuy(intent);
   });
@@ -165,7 +168,8 @@ describe('useRampsNavigation goToBuy', () => {
         },
       }),
     );
-    await goToBuy(result);
+    const destination = await goToBuy(result);
+    expect(destination).toBe('portfolio');
     expect(openTab).toHaveBeenCalled();
     expect(mockGetGeolocation).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
@@ -202,16 +206,85 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result);
-    expect(opened).toBe(true);
-    expect(result.current.opensBuyInPortfolioTab).toBe(false);
+    expect(opened).toBe('portfolio');
     expect(mockHasAttemptedPortfolioBuyMigration).toHaveBeenCalledTimes(1);
     expect(mockMarkPortfolioBuyMigrationAttempted).toHaveBeenCalledTimes(1);
-    expect(
+    expect(openTab.mock.invocationCallOrder[0]).toBeLessThan(
       mockMarkPortfolioBuyMigrationAttempted.mock.invocationCallOrder[0],
-    ).toBeLessThan(openTab.mock.invocationCallOrder[0]);
+    );
     expect(openTab).toHaveBeenCalledTimes(1);
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
+  });
+
+  it('runs the Portfolio migration before native eligibility checks', async () => {
+    const { result, getModalName } = run(
+      buildState({
+        permissionHistory: connectedPortfolioHistory,
+        userRegion: null,
+      }),
+    );
+
+    expect(await goToBuy(result)).toBe('portfolio');
+    expect({
+      geolocationCalls: mockGetGeolocation.mock.calls,
+      markerWrites: mockMarkPortfolioBuyMigrationAttempted.mock.calls,
+      openTabCalls: openTab.mock.calls.length,
+      modalName: getModalName(),
+    }).toMatchInlineSnapshot(`
+      {
+        "geolocationCalls": [],
+        "markerWrites": [
+          [],
+        ],
+        "modalName": null,
+        "openTabCalls": 1,
+      }
+    `);
+  });
+
+  it('does not consume the migration when Portfolio fails to open', async () => {
+    openTab.mockRejectedValueOnce(new Error('failed to open'));
+    const { result } = run(
+      buildState({ permissionHistory: connectedPortfolioHistory }),
+    );
+
+    await expect(goToBuy(result)).rejects.toThrow('failed to open');
+    expect(
+      mockMarkPortfolioBuyMigrationAttempted.mock.calls,
+    ).toMatchInlineSnapshot(`[]`);
+  });
+
+  it('shares an in-flight Portfolio migration between concurrent Buy clicks', async () => {
+    const { result } = run(
+      buildState({ permissionHistory: connectedPortfolioHistory }),
+    );
+    let destinations: RampsNavigationResult[] = [];
+
+    await act(async () => {
+      destinations = await Promise.all([
+        result.current.goToBuy({ chainId: '0x1' }),
+        result.current.goToBuy({ chainId: '0x1' }),
+      ]);
+    });
+
+    expect({
+      destinations,
+      markerReadCount: mockHasAttemptedPortfolioBuyMigration.mock.calls.length,
+      markerWriteCount:
+        mockMarkPortfolioBuyMigrationAttempted.mock.calls.length,
+      openTabCount: openTab.mock.calls.length,
+    }).toMatchInlineSnapshot(`
+      {
+        "destinations": [
+          "portfolio",
+          "portfolio",
+        ],
+        "markerReadCount": 1,
+        "markerWriteCount": 1,
+        "openTabCount": 1,
+      }
+    `);
   });
 
   it('flag on + connected to Portfolio + migration attempted → opens native buy', async () => {
@@ -239,7 +312,7 @@ describe('useRampsNavigation goToBuy', () => {
           ],
         ],
         "openTabCount": 0,
-        "opened": true,
+        "opened": "native",
       }
     `);
   });
@@ -269,7 +342,7 @@ describe('useRampsNavigation goToBuy', () => {
           ],
         ],
         "openTabCount": 0,
-        "opened": true,
+        "opened": "native",
       }
     `);
   });
@@ -277,8 +350,7 @@ describe('useRampsNavigation goToBuy', () => {
   it('flag on + never connected to Portfolio → in-app token selection', async () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
-    expect(opened).toBe(true);
-    expect(result.current.opensBuyInPortfolioTab).toBe(false);
+    expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
@@ -365,7 +437,7 @@ describe('useRampsNavigation goToBuy', () => {
   it('gate passes, no assetId → navigates to token selection', async () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
     expect(openTab).not.toHaveBeenCalled();
     expect(mockHasAttemptedPortfolioBuyMigration).not.toHaveBeenCalled();
@@ -434,7 +506,7 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result, { assetId });
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
@@ -492,7 +564,7 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result, { assetId: 'eip155:1/erc20:0xabc' });
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
     });
@@ -524,7 +596,7 @@ describe('useRampsNavigation goToBuy', () => {
       assetId: 'eip155:1/erc20:0xACA92E438df0B2401fF60dA7E4337B687a2435DA',
     });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       catalogAssetId,
     ]);
@@ -559,7 +631,7 @@ describe('useRampsNavigation goToBuy', () => {
       assetId: 'eip155:59144/erc20:0xabc',
     });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
     });
@@ -586,7 +658,7 @@ describe('useRampsNavigation goToBuy', () => {
 
     const opened = await goToBuy(result, { assetId });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
     });
@@ -650,7 +722,7 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result, { assetId });
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
@@ -685,7 +757,7 @@ describe('useRampsNavigation goToBuy', () => {
       assetId: 'eip155:1/erc20:0xACA92E438df0B2401fF60dA7E4337B687a2435DA',
     });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       catalogAssetId,
     ]);
@@ -709,7 +781,7 @@ describe('useRampsNavigation goToBuy', () => {
 
     const opened = await goToBuy(result, { assetId });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);

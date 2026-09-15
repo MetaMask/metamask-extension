@@ -112,10 +112,7 @@ export function useRampsProviders(options?: {
 
     if (!selectedProvider || shouldReevaluateAutoSelection) {
       const result = determinePreferredProvider(completedOrders, providers);
-      if (
-        result &&
-        (!selectedProvider || result.provider.id !== selectedProvider.id)
-      ) {
+      if (result) {
         setSelectedProvider(result.provider, {
           autoSelected: result.autoSelected,
         });

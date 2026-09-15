@@ -110,7 +110,7 @@ const MusdEducationScreen = () => {
   const { tokens: conversionTokens, defaultPaymentToken } =
     useMusdConversionTokens();
   const { canBuyMusdInRegion } = useCanBuyMusd();
-  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
+  const { goToBuy } = useRampsNavigation();
   const [isLoading, setIsLoading] = useState(false);
 
   const hasEligibleConversionTokens = conversionTokens.length > 0;
@@ -186,7 +186,7 @@ const MusdEducationScreen = () => {
     dispatch(setMusdConversionEducationSeen(true));
 
     if (isDeeplinkNoTokensGoToBuy) {
-      await goToBuy({
+      const destination = await goToBuy({
         // Pre-select mUSD (mainnet) so the in-app flow lands on build-quote
         // instead of the token-selection page; chainId is only used for the
         // flag-off Portfolio fallback.
@@ -198,7 +198,7 @@ const MusdEducationScreen = () => {
       // The Portfolio paths open a new tab, so send the user home; the in-app
       // path navigates itself (build-quote, or a blocking modal on the
       // education screen), so leave routing to goToBuy.
-      if (opensBuyInPortfolioTab) {
+      if (destination === 'portfolio') {
         navigate(DEFAULT_ROUTE);
       }
       return;
@@ -241,7 +241,6 @@ const MusdEducationScreen = () => {
     isDeeplink,
     isGeoBlocked,
     goToBuy,
-    opensBuyInPortfolioTab,
     startConversionFlow,
     defaultPaymentToken,
     createEventBuilder,

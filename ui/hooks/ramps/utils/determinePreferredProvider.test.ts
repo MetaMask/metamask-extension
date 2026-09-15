@@ -42,7 +42,10 @@ describe('determinePreferredProvider', () => {
 
   it('prefers the most recent completed order provider without auto-selecting', () => {
     const result = determinePreferredProvider(
-      [{ providerId: 'moonpay', completedAt: 1000 }],
+      [
+        { providerId: 'transak', completedAt: 500 },
+        { providerId: 'moonpay', completedAt: 1000 },
+      ],
       [moonpayProvider, transakProvider],
     );
 
