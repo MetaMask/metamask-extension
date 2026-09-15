@@ -6,6 +6,7 @@ import type {
   TraceRequest as ControllerTraceRequest,
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
+import type { Json } from '@metamask/utils';
 import { sentryLogger } from './sentry';
 
 /**
@@ -230,6 +231,18 @@ export type EndTraceRequest = {
   data?: Record<string, number | string | boolean>;
 };
 
+/**
+ * Represents a buffered trace that is stored before user consent.
+ * Simplified for JSON serialization - doesn't include callback functions.
+ */
+export type BufferedTrace = {
+  type: 'start' | 'end';
+  request: Record<string, Json>;
+  parentTraceName?: string;
+};
+
+const tracesBeforeMetricsOptIn: BufferedTrace[] = [];
+
 export function trace<ResultType>(
   request: TraceRequest,
   fn: TraceCallback<ResultType>,
@@ -309,6 +322,99 @@ export function endTrace(request: EndTraceRequest): void {
   const endTime = timestamp ?? getPerformanceTimestamp();
 
   logTrace(pendingRequest, startTime, endTime);
+}
+
+/**
+ * Add a trace to the in-memory queue until the user opts into metrics.
+ *
+ * @param traceData - The trace data to queue.
+ */
+export function addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
+  tracesBeforeMetricsOptIn.push(traceData);
+}
+
+/**
+ * Track all queued traces after a user opts into metrics.
+ */
+export function trackTracesAfterMetricsOptIn(): void {
+  tracesBeforeMetricsOptIn.forEach((bufferedTrace) => {
+    if (bufferedTrace.type === 'start') {
+      trace(bufferedTrace.request as TraceRequest);
+    } else if (bufferedTrace.type === 'end') {
+      endTrace(bufferedTrace.request as EndTraceRequest);
+    }
+  });
+}
+
+/**
+ * Clear all traces queued before the user opted into metrics.
+ */
+export function clearTracesAfterMetricsOptIn(): void {
+  tracesBeforeMetricsOptIn.length = 0;
+}
+
+/**
+ * Buffered trace method that checks consent and either buffers or executes immediately.
+ *
+ * @param request - The trace request.
+ * @param isMetricsOptedIn - Whether metrics are opted in.
+ * @param fn - Optional callback function to trace.
+ * @returns The result of the trace callback or undefined if buffered.
+ */
+export function bufferedTrace<TraceResultType>(
+  request: TraceRequest,
+  isMetricsOptedIn: boolean,
+  fn?: TraceCallback<TraceResultType>,
+): TraceResultType | undefined {
+  if (isMetricsOptedIn) {
+    return fn ? trace(request, fn) : (trace(request) as TraceResultType);
+  }
+
+  // Extract parent trace name if parentContext exists
+  let parentTraceName: string | undefined;
+  if (request.parentContext && typeof request.parentContext === 'object') {
+    const parentSpan = request.parentContext as { _name?: string };
+    parentTraceName = parentSpan?._name;
+  }
+
+  addTraceBeforeMetricsOptIn({
+    type: 'start',
+    request: {
+      ...request,
+      parentContext: undefined as unknown as Json, // Remove original parentContext to avoid invalid references
+      // Use Date.now() as performance.timeOrigin is only valid for measuring durations within
+      // the same session; it won't produce valid event times for Sentry if buffered and flushed later
+      startTime: request.startTime ?? Date.now(),
+    },
+    parentTraceName, // Store the parent trace name for later reconnection
+  });
+
+  return undefined;
+}
+
+/**
+ * Buffered end trace method that checks consent and either buffers or executes immediately.
+ *
+ * @param request - The end trace request.
+ * @param isMetricsOptedIn - Whether metrics are opted in.
+ */
+export function bufferedEndTrace(
+  request: EndTraceRequest,
+  isMetricsOptedIn: boolean,
+): void {
+  if (isMetricsOptedIn) {
+    endTrace(request);
+  } else {
+    addTraceBeforeMetricsOptIn({
+      type: 'end',
+      request: {
+        ...request,
+        // Use Date.now() as performance.timeOrigin is only valid for measuring durations within
+        // the same session; it won't produce valid event times for Sentry if buffered and flushed later
+        timestamp: request.timestamp ?? Date.now(),
+      },
+    });
+  }
 }
 
 /**
