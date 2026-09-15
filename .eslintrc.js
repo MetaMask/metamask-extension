@@ -12,11 +12,15 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
+const noDirectStorageLocalWriteRule = require('./development/eslint-rules/no-direct-storage-local-write');
 
 const {
   architecturalZones,
   buildSystemZones,
 } = require('./development/eslint-restricted-paths-zones');
+const {
+  storageLocalWriteAllowlist,
+} = require('./development/eslint-storage-local-write-allowlist');
 const baseConfig = require('./.eslintrc.base');
 const babelConfig = require('./.eslintrc.babel');
 const nodeConfigs = require('./.eslintrc.node');
@@ -863,6 +867,40 @@ module.exports = defineConfig([
     },
     rules: {
       'page-object/member-order': 'error',
+    },
+  },
+  /**
+   * Direct `storage.local` writes
+   *
+   * Controller state reaches `storage.local` through PersistenceManager, and
+   * large non-state data through StorageService. A direct write anywhere else
+   * in application code is an error unless its file is on the allowlist in
+   * `development/eslint-storage-local-write-allowlist.js`, where each entry
+   * names an owner and a reason.
+   */
+  {
+    files: [
+      'app/**/*.{js,ts,tsx}',
+      'shared/**/*.{js,ts,tsx}',
+      'ui/**/*.{js,ts,tsx}',
+    ],
+    ignores: [
+      '**/*.test.{js,ts,tsx}',
+      '**/*.stories.{js,ts,tsx}',
+      '**/__mocks__/**',
+    ],
+    plugins: {
+      persistence: {
+        rules: {
+          'no-direct-storage-local-write': noDirectStorageLocalWriteRule,
+        },
+      },
+    },
+    rules: {
+      'persistence/no-direct-storage-local-write': [
+        'error',
+        { allowlist: storageLocalWriteAllowlist },
+      ],
     },
   },
   /**
