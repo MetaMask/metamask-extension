@@ -90,6 +90,7 @@ describe('MultichainPrivateKeyRow', () => {
     );
     expect(revealButton).toHaveClass('bg-background-section');
     expect(revealButton).toHaveClass('items-start');
+    expect(revealButton.parentElement).toHaveClass('pb-1');
     expect(privateKey).toHaveStyle({ filter: 'blur(8px)' });
     expect(privateKey).not.toHaveTextContent(PRIVATE_KEY);
 
