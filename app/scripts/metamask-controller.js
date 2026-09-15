@@ -161,7 +161,13 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { trace, endTrace, TraceName } from '../../shared/lib/trace';
+import {
+  bufferedEndTrace,
+  bufferedTrace,
+  endTrace,
+  trace,
+  TraceName,
+} from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -3530,13 +3536,11 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsPage: trackPage,
       updateEventFragment,
 
-      // Buffered Trace API that checks consent and handles buffering/immediate execution
-      bufferedTrace: metaMetricsController.bufferedTrace.bind(
-        metaMetricsController,
-      ),
-      bufferedEndTrace: metaMetricsController.bufferedEndTrace.bind(
-        metaMetricsController,
-      ),
+      // These are background-owned buffered trace entry points. UI pages must
+      // call them through submitRequestToBackground; importing the methods
+      // directly in UI would create a separate queue for each page.
+      bufferedTrace,
+      bufferedEndTrace,
 
       // ApprovalController
       rejectAllPendingApprovals: this.controllerMessenger.call.bind(

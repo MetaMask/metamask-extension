@@ -5,7 +5,12 @@ import {
   OAuthErrorMessages,
 } from '../../../../shared/lib/error';
 import { checkForLastError } from '../../../../shared/lib/browser-runtime.utils';
-import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import {
+  bufferedEndTrace,
+  bufferedTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -57,18 +62,12 @@ export class OAuthService {
 
   #platform: ExtensionPlatform;
 
-  #bufferedTrace: OAuthServiceOptions['bufferedTrace'];
-
-  #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
-
   #trackEvent: OAuthServiceOptions['trackEvent'];
 
   constructor({
     messenger,
     webAuthenticator,
     platform,
-    bufferedTrace,
-    bufferedEndTrace,
     trackEvent,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
@@ -76,14 +75,16 @@ export class OAuthService {
     this.#config = loadOAuthConfig();
     this.#webAuthenticator = webAuthenticator;
     this.#platform = platform;
-    this.#bufferedTrace = bufferedTrace;
-    this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
 
     this.#messenger.registerMethodActionHandlers(
       this,
       MESSENGER_EXPOSED_METHODS,
     );
+  }
+
+  #getIsMetricsOptedIn(): boolean {
+    return this.#messenger.call('AnalyticsController:getState').optedIn;
   }
 
   /**
@@ -248,10 +249,13 @@ export class OAuthService {
     let providerLoginSuccess = false;
 
     try {
-      this.#bufferedTrace?.({
-        name: TraceName.OnboardingOAuthProviderLogin,
-        op: TraceOperation.OnboardingSecurityOp,
-      });
+      bufferedTrace(
+        {
+          name: TraceName.OnboardingOAuthProviderLogin,
+          op: TraceOperation.OnboardingSecurityOp,
+        },
+        this.#getIsMetricsOptedIn(),
+      );
       const redirectUrlFromOAuth = await this.#launchAuthFlow(
         authConnection,
         loginHandler,
@@ -280,10 +284,13 @@ export class OAuthService {
 
       throw error;
     } finally {
-      this.#bufferedEndTrace?.({
-        name: TraceName.OnboardingOAuthProviderLogin,
-        data: { success: providerLoginSuccess },
-      });
+      bufferedEndTrace(
+        {
+          name: TraceName.OnboardingOAuthProviderLogin,
+          data: { success: providerLoginSuccess },
+        },
+        this.#getIsMetricsOptedIn(),
+      );
     }
   }
 
@@ -301,10 +308,13 @@ export class OAuthService {
     let getAuthTokensSuccess = false;
 
     try {
-      this.#bufferedTrace?.({
-        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
-        op: TraceOperation.OnboardingSecurityOp,
-      });
+      bufferedTrace(
+        {
+          name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+          op: TraceOperation.OnboardingSecurityOp,
+        },
+        this.#getIsMetricsOptedIn(),
+      );
       const loginResult = await this.#handleOAuthResponse(
         loginHandler,
         redirectUrlFromOAuth,
@@ -328,10 +338,13 @@ export class OAuthService {
 
       throw error;
     } finally {
-      this.#bufferedEndTrace?.({
-        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
-        data: { success: getAuthTokensSuccess },
-      });
+      bufferedEndTrace(
+        {
+          name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+          data: { success: getAuthTokensSuccess },
+        },
+        this.#getIsMetricsOptedIn(),
+      );
     }
   }
 

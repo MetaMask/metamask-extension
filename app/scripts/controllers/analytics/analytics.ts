@@ -30,6 +30,10 @@ import {
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
 } from '../../../../shared/constants/metametrics';
+import {
+  clearTracesAfterMetricsOptIn,
+  trackTracesAfterMetricsOptIn,
+} from '../../../../shared/lib/trace';
 import type { AnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment-tracking';
 import { getPlatform } from '../../lib/util';
@@ -421,8 +425,8 @@ export function identify(
 /**
  * Set whether the user participates in MetaMetrics.
  *
- * Consent is owned by AnalyticsController. Buffered traces and the marketing
- * campaign cookie remain on MetaMetricsController.
+ * Consent is owned by AnalyticsController. The in-memory buffered-trace queue
+ * is flushed or cleared here.
  *
  * @param participateInMetaMetrics - Whether the user wants to participate, or `null` to reset to undecided.
  * @returns The current analytics id.
@@ -437,18 +441,12 @@ export async function setParticipateInMetaMetrics(
 
   if (participateInMetaMetrics === true) {
     await analyticsMessenger.call('AnalyticsController:optIn');
-    analyticsMessenger.call(
-      'MetaMetricsController:trackTracesAfterMetricsOptIn',
-    );
-    analyticsMessenger.call(
-      'MetaMetricsController:clearTracesAfterMetricsOptIn',
-    );
+    trackTracesAfterMetricsOptIn();
+    clearTracesAfterMetricsOptIn();
   } else {
     if (participateInMetaMetrics === false) {
       analyticsMessenger.call('AnalyticsController:optOut');
-      analyticsMessenger.call(
-        'MetaMetricsController:clearTracesAfterMetricsOptIn',
-      );
+      clearTracesAfterMetricsOptIn();
     } else {
       analyticsMessenger.call('AnalyticsController:resetConsentDecision');
     }

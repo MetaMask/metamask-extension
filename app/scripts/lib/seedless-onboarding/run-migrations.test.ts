@@ -6,6 +6,7 @@ import {
 } from './run-migrations';
 
 jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
   captureException: jest.fn(),
 }));
 
