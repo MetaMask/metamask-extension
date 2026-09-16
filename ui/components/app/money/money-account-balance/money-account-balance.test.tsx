@@ -1,4 +1,5 @@
 import React from 'react';
+import BigNumber from 'bignumber.js';
 import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -58,6 +59,7 @@ const MONEY_ADDRESS = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B' as const;
 
 type ArrangeOptions = {
   hasMoneyAccount?: boolean;
+  tokenTotal?: BigNumber;
   totalFiatFormatted?: string;
   lastKnownTotalFiatFormatted?: string;
   isBalanceLoading?: boolean;
@@ -75,6 +77,7 @@ type ArrangeOptions = {
  *
  * @param options - What the hooks should report.
  * @param options.hasMoneyAccount - Whether a Money Account exists.
+ * @param options.tokenTotal - The live balance as a BigNumber, if any.
  * @param options.totalFiatFormatted - The live formatted balance, if any.
  * @param options.lastKnownTotalFiatFormatted - The last-known balance, if any.
  * @param options.isBalanceLoading - Whether the balance fetch is in flight.
@@ -84,6 +87,7 @@ type ArrangeOptions = {
  */
 const arrange = ({
   hasMoneyAccount = true,
+  tokenTotal,
   totalFiatFormatted,
   lastKnownTotalFiatFormatted,
   isBalanceLoading = false,
@@ -106,6 +110,7 @@ const arrange = ({
   } satisfies UseMoneyAccountInfoResult);
 
   mockUseMoneyAccountBalance.mockReturnValue({
+    tokenTotal,
     totalFiatFormatted,
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
@@ -168,9 +173,9 @@ describe('MoneyAccountBalance', () => {
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$2,384.34',
     );
-    expect(getByText(tEn('moneyBalanceTitle'))).toBeInTheDocument();
-    expect(getByText('• mUSD')).toBeInTheDocument();
+    expect(getByText(tEn('money'))).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
   });
 
   it('hides the balance when privacy mode is on', () => {
@@ -235,7 +240,7 @@ describe('MoneyAccountBalance', () => {
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
 
-  it('shows the info copy when the info icon is clicked', async () => {
+  it('shows the info copy when the title is hovered', async () => {
     arrange({ totalFiatFormatted: '$2,384.34' });
 
     const { getByTestId, getByText, queryByText } = render();
@@ -243,8 +248,8 @@ describe('MoneyAccountBalance', () => {
     expect(queryByText(/Your dollar-backed mUSD balance/u)).toBeNull();
 
     await act(async () => {
-      fireEvent.click(
-        getByTestId(`${MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}-button`),
+      fireEvent.mouseEnter(
+        getByTestId(`${MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}-trigger`),
       );
     });
 
@@ -260,10 +265,46 @@ describe('MoneyAccountBalance', () => {
     });
   });
 
+  it('shows Add instead of the figure when the live balance is zero', () => {
+    arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toHaveTextContent(tEn('moneyAdd'));
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+  });
+
+  it('keeps the masked figure rather than Add when privacy mode hides a zero balance', () => {
+    arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
+
+    const { getByTestId, queryByTestId } = render({ privacyMode: true });
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID),
+    ).not.toHaveTextContent('$0.00');
+  });
+
+  it('keeps the last-known label rather than Add when the stale figure is zero', () => {
+    arrange({ lastKnownTotalFiatFormatted: '$0.00' });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$0.00',
+    );
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
+    ).toBeInTheDocument();
+  });
+
   it('initiates a generic deposit when Add is clicked', () => {
     // No intent: consumers derive it from the transaction's actual payment
     // method, exactly as mobile's MoneyBalanceCard does.
-    arrange({ totalFiatFormatted: '$2,384.34' });
+    arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
 
     const { getByTestId } = render();
 
@@ -309,7 +350,11 @@ describe('MoneyAccountBalance', () => {
   });
 
   it('disables the Add button while a deposit is being initiated', () => {
-    arrange({ totalFiatFormatted: '$2,384.34', isDepositLoading: true });
+    arrange({
+      tokenTotal: new BigNumber(0),
+      totalFiatFormatted: '$0.00',
+      isDepositLoading: true,
+    });
 
     const { getByTestId } = render();
 

@@ -52,7 +52,7 @@ import {
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
 import { MoneyMoreMenu } from './components/money-more-menu';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
-import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
+import { MoneyEarnings } from './components/money-earnings';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { MoneyTransferSheet } from './components/money-transfer-sheet';
 
@@ -479,7 +479,7 @@ export function MoneyHomePage() {
             <>
               {isMoneyEarningSectionEnabled ? (
                 <>
-                  <MoneyPositionPlaceholder
+                  <MoneyEarnings
                     monthlyEarnings={monthlyEarnings}
                     lifetimeEarnings={lifetimeEarnings}
                     isMonthlyLoading={isMonthlyEarningsLoading}

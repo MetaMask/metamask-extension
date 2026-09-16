@@ -5403,13 +5403,6 @@
   "money": {
     "message": "머니"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1% APY 수익 적립",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY 정보"
-  },
   "moneyAccountApyTooltip": {
     "message": "표시된 수익률은 현재 시장 상황에 기반한 예상 연간수익률(APY)입니다. APY는 변동되며 보장되지 않습니다."
   },
@@ -5419,9 +5412,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "1년 후 예상 잔액:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1년 후 예상 잔액"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "이 예상치는 연간수익률(APY) $1%가 1년 동안 변함 없이 유지된다는 가정하에 계산되었습니다. APY는 변동되며 보장되지 않습니다.",
@@ -5501,9 +5491,6 @@
   },
   "moneyBalanceLastKnown": {
     "message": "마지막으로 확인된 잔액"
-  },
-  "moneyBalanceTitle": {
-    "message": "머니 잔액"
   },
   "moneyBalanceUnavailable": {
     "message": "잔액을 확인할 수 없음"

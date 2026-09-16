@@ -21,7 +21,7 @@ describe('TooltipText', () => {
     const { getByTestId, queryByTestId } = renderTooltipText();
 
     const trigger = getByTestId('test-tooltip-trigger');
-    expect(trigger).toHaveTextContent('Money');
+    expect(trigger).toHaveTextContent('money');
     expect(trigger).toHaveClass('underline', 'decoration-dotted');
     expect(queryByTestId('test-tooltip')).not.toBeInTheDocument();
   });
@@ -48,19 +48,14 @@ describe('TooltipText', () => {
     expect(queryByTestId('test-tooltip')).not.toBeInTheDocument();
   });
 
-  it('shows the tooltip on keyboard focus and hides it on blur', async () => {
+  it('does not open the tooltip on keyboard focus', async () => {
     const { getByTestId, queryByTestId } = renderTooltipText();
     const trigger = getByTestId('test-tooltip-trigger');
 
-    expect(trigger).toHaveAttribute('tabindex', '0');
+    expect(trigger).not.toHaveAttribute('tabindex');
 
     await act(async () => {
       fireEvent.focus(trigger);
-    });
-    expect(getByTestId('test-tooltip')).toBeInTheDocument();
-
-    await act(async () => {
-      fireEvent.blur(trigger);
     });
     expect(queryByTestId('test-tooltip')).not.toBeInTheDocument();
   });

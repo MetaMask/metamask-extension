@@ -5403,13 +5403,6 @@
   "money": {
     "message": "Tài chính"
   },
-  "moneyAccountApyPitch": {
-    "message": "Sinh lời với APY $1%",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Thông tin APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "Tỷ suất hiển thị là Lợi suất phần trăm hằng năm (APY) ước tính dựa trên điều kiện thị trường hiện tại. APY có thể thay đổi và không được đảm bảo."
   },
@@ -5419,9 +5412,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Số dư dự kiến sau 1 năm:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Số dư dự kiến sau 1 năm"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Dự đoán này giả định rằng Lợi suất phần trăm hằng năm (APY) $1% không thay đổi trong vòng một năm. APY có thể thay đổi và không được đảm bảo.",
@@ -5501,9 +5491,6 @@
   },
   "moneyBalanceLastKnown": {
     "message": "Số dư gần nhất được ghi nhận"
-  },
-  "moneyBalanceTitle": {
-    "message": "Số dư Tài chính"
   },
   "moneyBalanceUnavailable": {
     "message": "Số dư không khả dụng"

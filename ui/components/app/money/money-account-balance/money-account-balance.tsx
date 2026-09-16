@@ -49,6 +49,79 @@ export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
 export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
   'money-account-balance-add-button';
 
+const AddOrBalance = ({
+  balance,
+  isZeroBalance,
+  isLoading,
+  privacyMode,
+  initiateDeposit,
+  isDepositLoading,
+  isLastKnown,
+}: {
+  balance: string | undefined;
+  isZeroBalance: boolean;
+  isLoading: boolean;
+  privacyMode: boolean;
+  initiateDeposit: ReturnType<typeof useMoneyAccountDeposit>['initiateDeposit'];
+  isDepositLoading: boolean;
+  isLastKnown: boolean;
+}) => {
+  const t = useI18nContext();
+
+  if (isZeroBalance && !privacyMode) {
+    return (
+      <Button
+        size={ButtonSize.Md}
+        variant={ButtonVariant.Primary}
+        className="shrink-0 rounded-md"
+        isLoading={isDepositLoading}
+        data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
+        onClick={() => {
+          initiateDeposit();
+        }}
+      >
+        {t('moneyAdd')}
+      </Button>
+    );
+  }
+
+  return (
+    <>
+      {isLoading ? (
+        // 22px matches the bodyMd line-height of the balance text so
+        // the row doesn't shift when the figure arrives.
+        <Skeleton
+          height={22}
+          width={100}
+          data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
+        />
+      ) : (
+        <Box className="relative">
+          <SensitiveText
+            variant={TextVariant.BodyMd}
+            isHidden={privacyMode}
+            fontWeight={FontWeight.Medium}
+            data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
+          >
+            {balance}
+          </SensitiveText>
+
+          {isLastKnown ? (
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+              className="absolute top-4 end-0 whitespace-nowrap"
+              data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
+            >
+              {t('moneyBalanceLastKnown')}
+            </Text>
+          ) : null}
+        </Box>
+      )}
+    </>
+  );
+};
+
 /**
  * The Money Account balance, or nothing.
  *
@@ -106,6 +179,7 @@ export const MoneyAccountBalance = () => {
   const isHomeCardEnabled = useSelector(selectMoneyHomeScreenCardEnabled);
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const {
+    tokenTotal,
     totalFiatFormatted,
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
@@ -128,6 +202,7 @@ export const MoneyAccountBalance = () => {
     isHomeCardEnabled &&
     hasMoneyAccount &&
     (balance !== undefined || isLoading);
+  const isZeroBalance = tokenTotal?.isZero() ?? false;
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -172,8 +247,9 @@ export const MoneyAccountBalance = () => {
           gap={2}
         >
           <TooltipText
-            text="Money"
+            text={t('money')}
             position={PopoverPosition.Auto}
+            data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
@@ -218,6 +294,7 @@ export const MoneyAccountBalance = () => {
       </Box>
       <AddOrBalance
         balance={balance}
+        isZeroBalance={isZeroBalance}
         isLoading={isLoading}
         privacyMode={privacyMode}
         initiateDeposit={handleAddClick}
@@ -225,84 +302,6 @@ export const MoneyAccountBalance = () => {
         isLastKnown={isLastKnown}
       />
     </Box>
-  );
-};
-
-const AddOrBalance = ({
-  balance,
-  isLoading,
-  privacyMode,
-  initiateDeposit,
-  isDepositLoading,
-  isLastKnown,
-}: {
-  balance: string | undefined;
-  isLoading: boolean;
-  privacyMode: boolean;
-  initiateDeposit: any;
-  isDepositLoading: boolean;
-  isLastKnown: boolean;
-}) => {
-  console.log({ balance });
-  // Is this the best way to tell if the balace is zero?
-  const zeroBalance = balance === '$0.00';
-
-  const t = useI18nContext();
-
-  if (zeroBalance) {
-    return (
-      <Button
-        size={ButtonSize.Md}
-        variant={ButtonVariant.Primary}
-        className="shrink-0 rounded-md"
-        isLoading={isDepositLoading}
-        data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={() => {
-          initiateDeposit();
-        }}
-      >
-        {t('moneyAdd')}
-      </Button>
-    );
-  }
-
-  return (
-    <>
-      {isLoading ? (
-        // 32px matches the headingLg line-height of the balance text so
-        // the row doesn't shift when the figure arrives.
-        <Skeleton
-          height={32}
-          width={100}
-          // A skeleton has no baseline of its own, so it is centred rather
-          // than left to baseline-align against the APY beside it.
-          className="self-center"
-          data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
-        />
-      ) : (
-        <Box className="relative">
-          <SensitiveText
-            variant={TextVariant.BodyMd}
-            isHidden={privacyMode}
-            fontWeight={FontWeight.Medium}
-            data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
-          >
-            {balance}
-          </SensitiveText>
-
-          {isLastKnown ? (
-            <Text
-              variant={TextVariant.BodyXs}
-              color={TextColor.TextAlternative}
-              className="absolute top-4 right-0 whitespace-nowrap"
-              data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
-            >
-              {t('moneyBalanceLastKnown')}
-            </Text>
-          ) : null}
-        </Box>
-      )}
-    </>
   );
 };
 

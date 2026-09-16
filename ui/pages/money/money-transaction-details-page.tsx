@@ -17,7 +17,6 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  IconColor,
   IconName,
   SensitiveText,
   SensitiveTextLength,
@@ -33,6 +32,7 @@ import {
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
+import { TooltipText } from '../../components/app/money/tooltip-text';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../shared/lib/money/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
@@ -68,7 +68,6 @@ import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scr
 import { MoneyApiActivityDetails } from './components/money-api-activity-details';
 import { MoneyTransactionDetailsRow } from './components/money-transaction-details-row';
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
-import { TooltipText } from '../../components/app/money/tooltip-text/index.ts';
 
 const STATUS_I18N_KEY = {
   confirmed: 'confirmed',
@@ -258,9 +257,13 @@ export function MoneyTransactionDetailsPage() {
         <Box paddingLeft={4} paddingRight={4} className="flex-1">
           <MoneyTransactionDetailsRow
             label={
-              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
                 {t('status')}
-              </Text>}
+              </Text>
+            }
             testId="money-transaction-details-status"
             value={
               <Box
@@ -284,37 +287,50 @@ export function MoneyTransactionDetailsPage() {
           />
           <MoneyTransactionDetailsRow
             label={
-              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
                 {t('date')}
-              </Text>}
+              </Text>
+            }
             testId="money-transaction-details-date"
             value={formatMoneyActivityDetailsDate(item.time)}
           />
           <MoneyTransactionDetailsRow
-
             label={
-              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
                 {t('paidWith')}
-              </Text>}
+              </Text>
+            }
             testId="money-transaction-details-paid-with"
             value={paidWith}
           />
           <MoneyTransactionDetailsRow
-
             label={
-              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
                 {t('account')}
-              </Text>}
+              </Text>
+            }
             testId="money-transaction-details-account"
             value={accountLabel}
           />
           {transactionHash ? (
             <MoneyTransactionDetailsRow
-
               label={
-              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-                {t('moneyActivityDetailsTransactionId')}
-              </Text>}
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('moneyActivityDetailsTransactionId')}
+                </Text>
+              }
               testId="money-transaction-details-hash"
               value={
                 <Box
@@ -343,15 +359,19 @@ export function MoneyTransactionDetailsPage() {
           <div className="my-3 h-px w-full bg-border-muted" />
 
           <MoneyTransactionDetailsRow
-              label={
-              <TooltipText text={t('transactionFee')} variant={TextVariant.BodyMd} color={TextColor.TextAlternative}
+            label={
+              <TooltipText
+                text={t('transactionFee')}
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
                 position={PopoverPosition.BottomStart}
                 data-testid="money-transaction-details-fee-info"
-                >
+              >
                 <Text variant={TextVariant.BodyMd}>
                   {t('moneyActivityTransactionFeeTooltip')}
                 </Text>
-              </TooltipText>}
+              </TooltipText>
+            }
             testId="money-transaction-details-fee"
             value={
               <SensitiveText
@@ -365,10 +385,14 @@ export function MoneyTransactionDetailsPage() {
             }
           />
           <MoneyTransactionDetailsRow
-              label={
-              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            label={
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
                 {t('total')}
-              </Text>}
+              </Text>
+            }
             testId="money-transaction-details-total"
             value={
               <SensitiveText

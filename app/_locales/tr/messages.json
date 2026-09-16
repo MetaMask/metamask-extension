@@ -5403,13 +5403,6 @@
   "money": {
     "message": "Bakiye"
   },
-  "moneyAccountApyPitch": {
-    "message": "%$1 APY kazanın",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Yıllık Yüzde Getiri (APY) bilgisi"
-  },
   "moneyAccountApyTooltip": {
     "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiridir (APY). APY değişken olup garanti edilmemektedir."
   },
@@ -5419,9 +5412,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Öngörülen 1 yıllık bakiye:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Öngörülen 1 yıllık bakiye"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Projeksiyon, %$1 Yıllık Yüzde Getirinin (APY) bir yıl boyunca değişmeden kaldığı varsayımına dayanmaktadır. APY değişkendir ve garanti edilmez.",
@@ -5501,9 +5491,6 @@
   },
   "moneyBalanceLastKnown": {
     "message": "Bilinen son bakiye"
-  },
-  "moneyBalanceTitle": {
-    "message": "Para bakiyesi"
   },
   "moneyBalanceUnavailable": {
     "message": "Bakiye kullanılamıyor"
