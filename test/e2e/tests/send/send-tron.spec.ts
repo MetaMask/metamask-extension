@@ -45,7 +45,9 @@ describe('Send Tron', function () {
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
         await snapTransactionConfirmation.checkPageIsLoaded();
-        await snapTransactionConfirmation.clickFooterConfirmButton();
+        await snapTransactionConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         const txToast = new TxToastNotification(driver);
         await txToast.checkTxSubmittedToast();

@@ -5212,7 +5212,7 @@
   },
   "lowValueAssets": {
     "message": "Token mit geringem Wert ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum-Hauptnetz"
@@ -7841,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Preisänderung"
   },
-  "perpsSortByRank": {
-    "message": "Rang"
-  },
-  "perpsSortBySection": {
-    "message": "Sortieren nach"
-  },
   "perpsSortByTitle": {
     "message": "Filter"
   },
@@ -8639,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Zuletzt verwendet"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Angebot konnte nicht abgerufen werden."
   },
   "rampsQuoteUnavailable": {
     "message": "Angebot nicht verfügbar."

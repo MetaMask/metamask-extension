@@ -121,6 +121,7 @@ function setupMocks(
     balanceUsd: resolvedPayToken?.balanceUsd ?? '0',
     balanceRaw: resolvedPayToken?.balanceRaw ?? '0',
     isLiveBalance,
+    isBalanceUsdKnown: Number(resolvedPayToken?.balanceUsd ?? '0') > 0,
   });
   useAccountTokensLoadingMock.mockReturnValue(isAccountTokensLoading);
   useTransactionAccountOverrideMock.mockReturnValue(overrides.accountOverride);
@@ -264,6 +265,7 @@ describe('useDepositPrefillAmount', () => {
         balanceUsd: '500',
         balanceRaw: '500000000',
         isLiveBalance: true,
+        isBalanceUsdKnown: true,
       });
       act(() => {
         rerender();
@@ -303,6 +305,7 @@ describe('useDepositPrefillAmount', () => {
         balanceUsd: '20',
         balanceRaw: '20000000',
         isLiveBalance: true,
+        isBalanceUsdKnown: true,
       });
       useAccountTokensLoadingMock.mockReturnValue(false);
       act(() => {
@@ -465,6 +468,7 @@ describe('useDepositPrefillAmount', () => {
         balanceUsd: '0',
         balanceRaw: '0',
         isLiveBalance: true,
+        isBalanceUsdKnown: true,
       });
 
       await act(async () => {
@@ -527,6 +531,7 @@ describe('useDepositPrefillAmount', () => {
         balanceUsd: '800',
         balanceRaw: '800000000',
         isLiveBalance: true,
+        isBalanceUsdKnown: true,
       });
 
       await act(async () => {

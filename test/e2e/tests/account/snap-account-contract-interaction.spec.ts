@@ -82,7 +82,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
 
         // Confirm the transaction in activity list on MetaMask
         await driver.switchToWindowWithTitle(
