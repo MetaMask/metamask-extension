@@ -135,7 +135,7 @@ describe('MetaMetricsProvider', () => {
 
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([true, false])(
-    'passes the current opt-in state through the buffered trace RPCs',
+    'forwards buffered traces to the background without a consent snapshot',
     async (isOptedIn: boolean) => {
       const store = mockStore({
         metamask: {
@@ -181,16 +181,71 @@ describe('MetaMetricsProvider', () => {
         expect(mockedSubmitRequestToBackground).toHaveBeenNthCalledWith(
           1,
           'bufferedTrace',
-          [{ name: TRACE_NAME_MOCK }, isOptedIn, undefined],
+          [{ name: TRACE_NAME_MOCK }],
         );
         expect(mockedSubmitRequestToBackground).toHaveBeenNthCalledWith(
           2,
           'bufferedEndTrace',
-          [{ name: TRACE_NAME_MOCK }, isOptedIn],
+          [{ name: TRACE_NAME_MOCK }],
         );
       });
     },
   );
+
+  it('keeps the buffered trace methods stable when the opt-in state changes', async () => {
+    let optedIn = false;
+    const store = mockStore(() => ({
+      metamask: {
+        analyticsId: '0x123',
+        consentDecisionMade: true,
+        optedIn,
+      },
+    }));
+
+    const runTraceEffect = jest.fn();
+
+    const TestComponent = () => {
+      const { bufferedTrace, bufferedEndTrace } =
+        useContext(MetaMetricsContext);
+
+      useEffect(() => {
+        runTraceEffect();
+      }, [bufferedTrace, bufferedEndTrace]);
+
+      return null;
+    };
+
+    const router = createMemoryRouter(
+      [
+        {
+          path: '*',
+          element: (
+            <MetaMetricsProvider>
+              <TestComponent />
+            </MetaMetricsProvider>
+          ),
+        },
+      ],
+      { initialEntries: ['/'] },
+    );
+
+    render(
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(runTraceEffect).toHaveBeenCalledTimes(1);
+    });
+
+    optedIn = true;
+    act(() => {
+      store.dispatch({ type: 'OPT_IN' });
+    });
+
+    expect(runTraceEffect).toHaveBeenCalledTimes(1);
+  });
 
   it('queues events when participation is enabled but analyticsId is missing', async () => {
     renderProvider({

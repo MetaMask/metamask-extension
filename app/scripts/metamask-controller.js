@@ -2455,6 +2455,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Read the current MetaMetrics consent from AnalyticsController.
+   *
+   * @returns {boolean} Whether the user is currently opted into MetaMetrics.
+   */
+  #getIsMetricsOptedIn() {
+    const { optedIn } = this.controllerMessenger.call(
+      'AnalyticsController:getState',
+    );
+    return optedIn || false;
+  }
+
+  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
@@ -3538,9 +3550,15 @@ export default class MetamaskController extends EventEmitter {
 
       // These are background-owned buffered trace entry points. UI pages must
       // call them through submitRequestToBackground; importing the methods
-      // directly in UI would create a separate queue for each page.
-      bufferedTrace,
-      bufferedEndTrace,
+      // directly in UI would create a separate queue for each page. Consent is
+      // resolved here rather than passed in, because a caller-supplied flag can
+      // be a stale snapshot taken before the queue was flushed or cleared.
+      // The callback variant of `bufferedTrace` is not exposed, because a
+      // callback cannot cross the JSON-RPC boundary.
+      bufferedTrace: (request) =>
+        bufferedTrace(request, this.#getIsMetricsOptedIn()),
+      bufferedEndTrace: (request) =>
+        bufferedEndTrace(request, this.#getIsMetricsOptedIn()),
 
       // ApprovalController
       rejectAllPendingApprovals: this.controllerMessenger.call.bind(
