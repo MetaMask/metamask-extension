@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -18,9 +19,16 @@ import {
   TextButton,
   TextVariant,
 } from '@metamask/design-system-react';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
+import {
+  ONBOARDING_ROUTE,
+  PRIVACY_ROUTE,
+} from '../../../helpers/constants/routes';
+import { getIsBasicFunctionalitySocialLoginUser } from '../../../selectors/onboarding';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getShouldShowBasicFunctionalityMigrationModal } from '../../../selectors/multichain/feature-flags';
-import { hideMigrationModal } from '../../../store/actions';
+import { acknowledgeBasicFunctionalityMigration } from '../../../store/actions';
 import { useAppSelector, useDispatch } from '../../../store/hooks';
 import {
   BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK,
@@ -35,7 +43,20 @@ export function BasicFunctionalityMigrationModal() {
   const dispatch = useDispatch();
   const isOpen = useAppSelector(getShouldShowBasicFunctionalityMigrationModal);
 
-  if (!isOpen) {
+  const isUnlocked = useAppSelector(getIsUnlocked);
+  const completedOnboarding = useAppSelector(getCompletedOnboarding);
+  const isSocialLogin = useAppSelector(getIsBasicFunctionalitySocialLoginUser);
+  const { pathname } = useLocation();
+
+  // Error pages replace the routes tree, so this modal is unmounted there.
+  if (
+    !isOpen ||
+    !isUnlocked ||
+    !completedOnboarding ||
+    pathname === ONBOARDING_ROUTE ||
+    pathname.startsWith(`${ONBOARDING_ROUTE}/`) ||
+    pathname.replace(/\/$/u, '') === PRIVACY_ROUTE
+  ) {
     return null;
   }
 
@@ -73,7 +94,11 @@ export function BasicFunctionalityMigrationModal() {
           gap={4}
         >
           <Text variant={TextVariant.BodyMd}>
-            {t('basicFunctionalityMigrationSocialModalBody1')}
+            {t(
+              isSocialLogin
+                ? 'basicFunctionalityMigrationSocialModalBody1'
+                : 'basicFunctionalityMigrationModalBody',
+            )}
           </Text>
           <Text variant={TextVariant.BodyMd}>
             {t('basicFunctionalityMigrationSocialModalBody2', [
@@ -105,16 +130,21 @@ export function BasicFunctionalityMigrationModal() {
               </TextButton>,
             ])}
           </Text>
+          <TextButton asChild className={linkClassName}>
+            <Link to={PRIVACY_ROUTE}>
+              {t('basicFunctionalityMigrationToastSettingsLink')}
+            </Link>
+          </TextButton>
         </Box>
         <ModalFooter>
           <Button
             className="w-full"
             size={ButtonSize.Lg}
             variant={ButtonVariant.Primary}
-            onClick={() => dispatch(hideMigrationModal())}
+            onClick={() => dispatch(acknowledgeBasicFunctionalityMigration())}
             data-testid="basic-functionality-migration-modal-accept"
           >
-            {t('acceptAndClose')}
+            {t('basicFunctionalityMigrationAcknowledge')}
           </Button>
         </ModalFooter>
       </ModalContent>

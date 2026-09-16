@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { it as jestIt } from '@jest/globals';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   AccountsController,
@@ -732,26 +733,112 @@ describe('preferences controller', () => {
       expect(toggleExternalServices).toHaveBeenCalledWith(true);
     });
 
-    it('repairs a consolidated social-login wallet with Basic Functionality disabled', () => {
+    it('preserves a social-login wallet until its repair is acknowledged', () => {
       const { controller, getSeedlessOnboardingState, toggleExternalServices } =
         setupController({});
       controller.toggleExternalServices(false);
       controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
-      getSeedlessOnboardingState.mockReturnValue({
-        authConnection: 'google',
-      });
+      getSeedlessOnboardingState.mockReturnValue({ authConnection: 'google' });
+      const before = controller.state;
 
       controller.consolidateBasicFunctionality();
 
-      expect(controller.state.useExternalServices).toBe(true);
+      expect(controller.state.useExternalServices).toBe(false);
       for (const preference of BFT_CHILD_PREFERENCES) {
-        expect(controller.state[preference]).toBe(true);
+        expect(controller.state[preference]).toBe(before[preference]);
       }
-      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
       expect(
-        controller.getPreferences().basicFunctionalityMigrationNotification,
-      ).toBe('modal');
+        controller.getPreferences().basicFunctionalityMigrationPending,
+      ).toBe(true);
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+    });
+
+    jestIt.each(BFT_CHILD_PREFERENCES)(
+      'preserves the opt-out for %s until acknowledgment',
+      (preference) => {
+        const { controller, toggleExternalServices } = setupController({
+          state: { [preference]: false },
+        });
+        const before = controller.state;
+
+        controller.consolidateBasicFunctionality();
+        controller.consolidateBasicFunctionality();
+
+        expect(controller.state).toStrictEqual({
+          ...before,
+          preferences: {
+            ...before.preferences,
+            basicFunctionalityMigrationPending: true,
+            basicFunctionalityMigrationNotification: 'modal',
+            basicFunctionalityMigrationNotificationDismissed: false,
+          },
+        });
+        expect(toggleExternalServices).not.toHaveBeenCalled();
+      },
+    );
+
+    it('preserves pending preferences across controller restart and applies acknowledgment once', () => {
+      const { controller } = setupController({
+        state: { useTokenDetection: false },
+      });
+      controller.consolidateBasicFunctionality();
+      const { controller: restarted, toggleExternalServices } = setupController(
+        { state: controller.state },
+      );
+      restarted.consolidateBasicFunctionality();
+      expect(restarted.state.useTokenDetection).toBe(false);
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+      restarted.dismissBasicFunctionalityMigrationNotification();
+      expect(restarted.state.useTokenDetection).toBe(false);
+      expect(
+        restarted.getPreferences().basicFunctionalityMigrationPending,
+      ).toBe(true);
+
+      restarted.acknowledgeBasicFunctionalityMigration();
+      restarted.acknowledgeBasicFunctionalityMigration();
+
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(restarted.state[preference]).toBe(true);
+      }
+      expect(restarted.getPreferences()).toMatchObject({
+        isBasicFunctionalityConsolidatedEnabled: true,
+        basicFunctionalityMigrationPending: false,
+        basicFunctionalityMigrationNotification: null,
+        basicFunctionalityMigrationNotificationDismissed: true,
+      });
+      expect(toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('honors a pending social-login user choosing OFF after restart', () => {
+      const { controller, getSeedlessOnboardingState } = setupController({
+        state: { useTokenDetection: false },
+      });
+      getSeedlessOnboardingState.mockReturnValue({ authConnection: 'google' });
+      controller.consolidateBasicFunctionality();
+
+      controller.toggleBasicFunctionality(false);
+      const {
+        controller: restarted,
+        toggleExternalServices,
+        getSeedlessOnboardingState: getRestartedSeedlessState,
+      } = setupController({ state: controller.state });
+      getRestartedSeedlessState.mockReturnValue({ authConnection: 'google' });
+      restarted.consolidateBasicFunctionality();
+      // A stale modal on another surface must not reverse the OFF decision.
+      restarted.acknowledgeBasicFunctionalityMigration();
+
+      expect(restarted.state.useExternalServices).toBe(false);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(restarted.state[preference]).toBe(false);
+      }
+      expect(restarted.getPreferences()).toMatchObject({
+        isBasicFunctionalityConsolidatedEnabled: true,
+        basicFunctionalityMigrationPending: false,
+        basicFunctionalityMigrationNotification: null,
+        basicFunctionalityMigrationNotificationDismissed: true,
+      });
+      expect(toggleExternalServices).not.toHaveBeenCalled();
     });
 
     it('does not sync external services when already consolidated', () => {

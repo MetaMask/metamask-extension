@@ -39,7 +39,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { getUseExternalServices } from '../../../selectors';
+import { getBasicFunctionalitySettingsValue } from '../../../selectors/multichain/basic-functionality';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
@@ -56,7 +56,9 @@ export function BasicConfigurationModal() {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const isExternalServicesEnabled = useSelector(
+    getBasicFunctionalitySettingsValue,
+  );
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,

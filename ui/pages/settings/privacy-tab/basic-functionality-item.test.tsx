@@ -176,4 +176,24 @@ describe('BasicFunctionalityToggleItem', () => {
     expect(mockOpenBasicFunctionalityModal).not.toHaveBeenCalled();
     expect(mockToggleBasicFunctionality).not.toHaveBeenCalled();
   });
+  it('displays pending consolidated ON and allows a social-login user to turn it off', () => {
+    const store = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useExternalServices: false,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        preferences: {
+          ...mockState.metamask.preferences,
+          basicFunctionalityMigrationPending: true,
+        },
+      },
+    });
+    renderWithProvider(<BasicFunctionalityToggleItem />, store);
+    const toggle = screen.getByTestId('basic-functionality-toggle');
+    expect(toggle).toHaveAttribute('value', 'true');
+    fireEvent.click(toggle);
+    expect(mockOpenBasicFunctionalityModal).toHaveBeenCalled();
+    expect(mockToggleExternalServices).not.toHaveBeenCalled();
+  });
 });

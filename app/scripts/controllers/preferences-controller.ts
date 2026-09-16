@@ -482,6 +482,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setSnapsAddSnapAccountModalDismissed',
   'consolidateBasicFunctionality',
   'dismissBasicFunctionalityMigrationNotification',
+  'acknowledgeBasicFunctionalityMigration',
   'resetState',
   'addReferralApprovedAccount',
   'addReferralPassedAccount',
@@ -626,6 +627,12 @@ export class PreferencesController extends BaseController<
         state[preference] = useBasicFunctionality;
       }
       state.isMultiAccountBalancesEnabled = useBasicFunctionality;
+      if (state.preferences.basicFunctionalityMigrationPending) {
+        state.preferences.basicFunctionalityMigrationPending = false;
+        state.preferences.isBasicFunctionalityConsolidatedEnabled = true;
+        state.preferences.basicFunctionalityMigrationNotification = null;
+        state.preferences.basicFunctionalityMigrationNotificationDismissed = true;
+      }
     });
 
     this.messenger.call(
@@ -644,7 +651,13 @@ export class PreferencesController extends BaseController<
   consolidateBasicFunctionality(): void {
     const hasBftConsolidationMarker =
       this.state.preferences.isBasicFunctionalityConsolidatedEnabled;
-    if (hasBftConsolidationMarker && this.state.useExternalServices) {
+    if (
+      this.state.preferences.basicFunctionalityMigrationPending ||
+      (hasBftConsolidationMarker &&
+        (this.state.useExternalServices ||
+          this.state.preferences
+            .basicFunctionalityMigrationNotificationDismissed))
+    ) {
       return;
     }
 
@@ -671,6 +684,23 @@ export class PreferencesController extends BaseController<
 
     const { landingState, notification } =
       getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
+    // Enabling any previously disabled service requires acknowledgment. Persist
+    // only the pending decision; services must keep honoring the current state.
+    if (
+      landingState &&
+      (!preferenceState.useExternalServices ||
+        BFT_CHILD_PREFERENCES.some(
+          (preference) => !preferenceState[preference],
+        ))
+    ) {
+      this.update((state) => {
+        state.preferences.basicFunctionalityMigrationPending = true;
+        state.preferences.basicFunctionalityMigrationNotification = 'modal';
+        state.preferences.basicFunctionalityMigrationNotificationDismissed = false;
+      });
+      return;
+    }
+
     const hasDismissedNotice =
       this.state.preferences
         .basicFunctionalityMigrationNotificationDismissed === true;
@@ -1125,10 +1155,20 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  /**
-   * Dismisses the one-time Basic Functionality migration modal or toast.
-   */
+  /** Applies the pending ON decision only after explicit acknowledgment. */
+  acknowledgeBasicFunctionalityMigration(): void {
+    if (this.state.preferences.basicFunctionalityMigrationPending) {
+      this.toggleBasicFunctionality(true);
+    } else {
+      this.dismissBasicFunctionalityMigrationNotification();
+    }
+  }
+
+  /** Dismisses an informational notice without accepting a pending change. */
   dismissBasicFunctionalityMigrationNotification(): void {
+    if (this.state.preferences.basicFunctionalityMigrationPending) {
+      return;
+    }
     this.update((state) => {
       state.preferences.basicFunctionalityMigrationNotification = null;
       state.preferences.basicFunctionalityMigrationNotificationDismissed = true;

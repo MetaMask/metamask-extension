@@ -33,7 +33,7 @@ describe('getBasicFunctionalityConsolidationPlan', () => {
     useAddressBarEnsResolution: false,
   };
 
-  it('schedules a toast for mixed settings', () => {
+  it('schedules a modal when consolidation enables a disabled service', () => {
     expect(
       getBasicFunctionalityConsolidationPlan(
         { ...allEnabled, useTokenDetection: false },
@@ -41,7 +41,7 @@ describe('getBasicFunctionalityConsolidationPlan', () => {
       ),
     ).toStrictEqual({
       landingState: true,
-      notification: 'toast',
+      notification: 'modal',
     });
   });
 

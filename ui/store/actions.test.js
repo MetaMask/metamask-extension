@@ -3868,17 +3868,17 @@ describe('Actions', () => {
     });
   });
 
-  describe('#hideMigrationModal', () => {
+  describe('#acknowledgeBasicFunctionalityMigration', () => {
     it('dismisses the Basic Functionality migration notification', async () => {
       const store = mockStore();
 
-      background.dismissBasicFunctionalityMigrationNotification = sinon.stub();
+      background.acknowledgeBasicFunctionalityMigration = sinon.stub();
       setBackgroundConnection(background);
 
-      await store.dispatch(actions.hideMigrationModal());
+      await store.dispatch(actions.acknowledgeBasicFunctionalityMigration());
 
       expect(
-        background.dismissBasicFunctionalityMigrationNotification.callCount,
+        background.acknowledgeBasicFunctionalityMigration.callCount,
       ).toStrictEqual(1);
     });
   });

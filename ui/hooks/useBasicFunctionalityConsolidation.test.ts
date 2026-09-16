@@ -1,3 +1,4 @@
+import { it as jestIt } from '@jest/globals';
 import { waitFor } from '@testing-library/react';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
@@ -88,4 +89,26 @@ describe('useBasicFunctionalityConsolidation', () => {
 
     expect(consolidateBasicFunctionality).not.toHaveBeenCalled();
   });
+  jestIt.each([
+    { basicFunctionalityMigrationPending: true },
+    {
+      isBasicFunctionalityConsolidatedEnabled: true,
+      basicFunctionalityMigrationNotificationDismissed: true,
+    },
+  ])(
+    'does not retry a pending or acknowledged social-login decision: %j',
+    (preferences) => {
+      renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
+        metamask: {
+          completedOnboarding: true,
+          isUnlocked: true,
+          useExternalServices: false,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+          remoteFeatureFlags: { extensionBasicFunctionalityToggle: true },
+          preferences,
+        },
+      });
+      expect(consolidateBasicFunctionality).not.toHaveBeenCalled();
+    },
+  );
 });

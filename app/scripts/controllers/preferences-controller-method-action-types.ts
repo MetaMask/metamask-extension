@@ -385,8 +385,15 @@ export type PreferencesControllerSetSnapsAddSnapAccountModalDismissedAction = {
 };
 
 /**
- * Dismisses the one-time Basic Functionality migration modal or toast.
+ * Acknowledges the Basic Functionality change and applies pending preferences.
  */
+export type PreferencesControllerAcknowledgeBasicFunctionalityMigrationAction =
+  {
+    type: 'PreferencesController:acknowledgeBasicFunctionalityMigration';
+    handler: PreferencesController['acknowledgeBasicFunctionalityMigration'];
+  };
+
+/** Dismisses an informational notice without accepting a pending change. */
 export type PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction =
   {
     type: `PreferencesController:dismissBasicFunctionalityMigrationNotification`;
@@ -468,6 +475,7 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerSetShowDefaultAddressAction
   | PreferencesControllerSetDefaultAddressScopeAction
   | PreferencesControllerSetSnapsAddSnapAccountModalDismissedAction
+  | PreferencesControllerAcknowledgeBasicFunctionalityMigrationAction
   | PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction
   | PreferencesControllerResetStateAction
   | PreferencesControllerAddReferralApprovedAccountAction

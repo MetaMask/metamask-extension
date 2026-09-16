@@ -3,6 +3,7 @@ import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import { getIsBasicFunctionalityToggleEnabled } from '../selectors/multichain/feature-flags';
 import { getIsBasicFunctionalitySocialLoginUser } from '../selectors/onboarding/onboarding';
+import { getIsBasicFunctionalityMigrationPending } from '../selectors/multichain/basic-functionality';
 import { consolidateBasicFunctionality } from '../store/actions';
 import { useAppSelector, useDispatch } from '../store/hooks';
 
@@ -31,11 +32,20 @@ export function useBasicFunctionalityConsolidation(): void {
   const isSocialLoginUser = useAppSelector(
     getIsBasicFunctionalitySocialLoginUser,
   );
+  const isPending = useAppSelector(getIsBasicFunctionalityMigrationPending);
+  const isAcknowledged = useAppSelector((state) =>
+    Boolean(
+      state.metamask.preferences
+        ?.basicFunctionalityMigrationNotificationDismissed,
+    ),
+  );
   const shouldRunConsolidation =
-    (isBftConsolidationRemoteEnabled && !hasBftConsolidationMarker) ||
-    (hasBftConsolidationMarker &&
-      !isBasicFunctionalityEnabled &&
-      isSocialLoginUser);
+    !isPending &&
+    ((isBftConsolidationRemoteEnabled && !hasBftConsolidationMarker) ||
+      (hasBftConsolidationMarker &&
+        !isBasicFunctionalityEnabled &&
+        isSocialLoginUser &&
+        !isAcknowledged));
 
   useEffect(() => {
     if (

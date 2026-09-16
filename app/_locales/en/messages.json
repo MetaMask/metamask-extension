@@ -1999,6 +1999,12 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
+  "basicFunctionalityMigrationAcknowledge": {
+    "message": "Acknowledge"
+  },
+  "basicFunctionalityMigrationModalBody": {
+    "message": "Third-party APIs are now part of Basic Functionality. Based on your previous preferences, this setting is enabled. You can turn it off in Settings > Privacy."
+  },
   "basicFunctionalityMigrationModalTitle": {
     "message": "Your settings have changed"
   },

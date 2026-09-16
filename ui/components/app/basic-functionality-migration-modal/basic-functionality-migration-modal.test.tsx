@@ -1,13 +1,19 @@
+import { it as jestIt } from '@jest/globals';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  PRIVACY_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+} from '../../../helpers/constants/routes';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   en as messages,
   renderWithProvider,
 } from '../../../../test/lib/render-helpers-navigate';
-import { hideMigrationModal } from '../../../store/actions';
+import { acknowledgeBasicFunctionalityMigration } from '../../../store/actions';
 import { BasicFunctionalityMigrationModal } from './basic-functionality-migration-modal';
 import {
   BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK,
@@ -16,7 +22,7 @@ import {
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  hideMigrationModal: jest.fn(() => jest.fn()),
+  acknowledgeBasicFunctionalityMigration: jest.fn(() => jest.fn()),
 }));
 
 const mockStore = configureMockStore([thunk]);
@@ -24,14 +30,23 @@ const mockStore = configureMockStore([thunk]);
 function renderComponent({
   notification = 'modal',
   dismissed = false,
+  pathname = '/',
+  isUnlocked = true,
+  completedOnboarding = true,
 }: {
   notification?: 'modal' | 'toast' | null;
   dismissed?: boolean;
+  pathname?: string;
+  isUnlocked?: boolean;
+  completedOnboarding?: boolean;
 } = {}) {
   const store = mockStore({
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      isUnlocked,
+      completedOnboarding,
+      authConnection: 'google',
       remoteFeatureFlags: {
         ...mockState.metamask.remoteFeatureFlags,
         extensionBasicFunctionalityToggle: true,
@@ -44,7 +59,14 @@ function renderComponent({
     },
   });
 
-  return renderWithProvider(<BasicFunctionalityMigrationModal />, store);
+  return renderWithProvider(
+    <>
+      <Link to="/">Home</Link>
+      <BasicFunctionalityMigrationModal />
+    </>,
+    store,
+    pathname,
+  );
 }
 
 describe('BasicFunctionalityMigrationModal', () => {
@@ -102,12 +124,58 @@ describe('BasicFunctionalityMigrationModal', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('dismisses when Accept and close is clicked', () => {
+  it('acknowledges only when Acknowledge is clicked', () => {
     const { getByTestId } = renderComponent();
 
+    expect(
+      getByTestId('basic-functionality-migration-modal-accept'),
+    ).toHaveTextContent('Acknowledge');
     fireEvent.click(getByTestId('basic-functionality-migration-modal-accept'));
 
-    expect(hideMigrationModal).toHaveBeenCalled();
+    expect(acknowledgeBasicFunctionalityMigration).toHaveBeenCalled();
+  });
+
+  jestIt.each([
+    { pathname: PRIVACY_ROUTE },
+    { pathname: `${PRIVACY_ROUTE}/` },
+    { pathname: ONBOARDING_COMPLETION_ROUTE },
+    { isUnlocked: false },
+    { completedOnboarding: false },
+  ])('does not block an exempt page or wallet state: %j', (options) => {
+    const { queryByTestId } = renderComponent(options);
+    expect(
+      queryByTestId('basic-functionality-migration-modal'),
+    ).not.toBeInTheDocument();
+  });
+
+  jestIt.each([
+    '/settings',
+    '/settings/security',
+    '/confirm-transaction',
+    '/send',
+  ])('shows on the unlocked %s page', (pathname) => {
+    const { getByTestId } = renderComponent({ pathname });
+    expect(
+      getByTestId('basic-functionality-migration-modal'),
+    ).toBeInTheDocument();
+  });
+
+  it('returns after visiting privacy settings without acknowledgment', () => {
+    const { getByRole, queryByTestId, getByTestId } = renderComponent();
+    fireEvent.click(
+      getByRole('link', {
+        name: messages.basicFunctionalityMigrationToastSettingsLink.message,
+      }),
+    );
+    expect(
+      queryByTestId('basic-functionality-migration-modal'),
+    ).not.toBeInTheDocument();
+    expect(acknowledgeBasicFunctionalityMigration).not.toHaveBeenCalled();
+
+    fireEvent.click(getByRole('link', { name: 'Home' }));
+    expect(
+      getByTestId('basic-functionality-migration-modal'),
+    ).toBeInTheDocument();
   });
 
   it('does not dismiss on Escape', () => {
@@ -115,6 +183,6 @@ describe('BasicFunctionalityMigrationModal', () => {
 
     fireEvent.keyDown(document, { key: 'Escape' });
 
-    expect(hideMigrationModal).not.toHaveBeenCalled();
+    expect(acknowledgeBasicFunctionalityMigration).not.toHaveBeenCalled();
   });
 });

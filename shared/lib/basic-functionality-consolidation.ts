@@ -106,7 +106,7 @@ export function getBasicFunctionalityConsolidationPlan(
     (!basicFunctionalityEnabled && areAllChildrenDisabled);
 
   let notification: BasicFunctionalityMigrationNotification = null;
-  if (isSocialLogin) {
+  if (isSocialLogin || (landingState && !isConsistent)) {
     notification = 'modal';
   } else if (!isConsistent) {
     notification = 'toast';

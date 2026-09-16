@@ -1,7 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getUseExternalServices } from '../../../selectors';
+import {
+  getIsBasicFunctionalityMigrationPending,
+  getBasicFunctionalitySettingsValue,
+} from '../../../selectors/multichain/basic-functionality';
 import {
   toggleBasicFunctionality,
   toggleExternalServices,
@@ -23,13 +26,30 @@ export const BasicFunctionalityToggleItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const useExternalServices = useSelector(getUseExternalServices);
+  const useExternalServices = useSelector(getBasicFunctionalitySettingsValue);
   const isSocialLoginUser = useSelector(getIsBasicFunctionalitySocialLoginUser);
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,
   );
+  const isPending = useSelector(getIsBasicFunctionalityMigrationPending);
+  const isAcknowledged = useSelector(
+    (state: {
+      metamask: {
+        preferences?: {
+          basicFunctionalityMigrationNotificationDismissed?: boolean;
+        };
+      };
+    }) =>
+      Boolean(
+        state.metamask.preferences
+          ?.basicFunctionalityMigrationNotificationDismissed,
+      ),
+  );
   const isSocialLoginBasicFunctionalityLocked =
-    isSocialLoginUser && isBasicFunctionalityConsolidationEnabled;
+    isSocialLoginUser &&
+    isBasicFunctionalityConsolidationEnabled &&
+    !isPending &&
+    !isAcknowledged;
 
   const handleToggle = (value: boolean) => {
     if (isSocialLoginBasicFunctionalityLocked) {

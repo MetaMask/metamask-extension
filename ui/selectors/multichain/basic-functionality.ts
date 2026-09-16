@@ -79,6 +79,35 @@ export const getShouldShowBasicFunctionalityMigrationToast = createSelector(
 );
 
 /**
+ * Whether consolidation is waiting for an explicit user decision.
+ * @param state
+ * @param state.metamask
+ * @param state.metamask.preferences
+ * @param state.metamask.preferences.basicFunctionalityMigrationPending
+ */
+export const getIsBasicFunctionalityMigrationPending = (state: {
+  metamask: { preferences?: { basicFunctionalityMigrationPending?: boolean } };
+}): boolean =>
+  Boolean(state.metamask.preferences?.basicFunctionalityMigrationPending);
+
+/**
+ * The consolidated mode displayed in Settings, without changing service permissions.
+ * @param state
+ * @param state.metamask
+ * @param state.metamask.useExternalServices
+ * @param state.metamask.preferences
+ * @param state.metamask.preferences.basicFunctionalityMigrationPending
+ */
+export const getBasicFunctionalitySettingsValue = (state: {
+  metamask: {
+    useExternalServices: boolean;
+    preferences?: { basicFunctionalityMigrationPending?: boolean };
+  };
+}): boolean =>
+  getIsBasicFunctionalityMigrationPending(state) ||
+  state.metamask.useExternalServices;
+
+/**
  * Gets whether the consolidated Basic Functionality experience should be shown.
  *
  * A wallet is marked as consolidated either at onboarding (build flag) or by the
@@ -88,6 +117,7 @@ export const getShouldShowBasicFunctionalityMigrationToast = createSelector(
  * toggle.
  */
 export const getIsBasicFunctionalityConsolidationEnabled = createSelector(
+  getIsBasicFunctionalityMigrationPending,
   getIsBasicFunctionalityToggleEnabled,
   (state) =>
     Boolean(
@@ -95,10 +125,12 @@ export const getIsBasicFunctionalityConsolidationEnabled = createSelector(
     ),
   getIsBasicFunctionalityConsistent,
   (
+    isPending,
     isBasicFunctionalityToggleEnabled,
     isPersistedConsolidatedUser,
     isConsistentLegacyUser,
   ) =>
+    isPending ||
     isPersistedConsolidatedUser ||
     (isBasicFunctionalityToggleEnabled && isConsistentLegacyUser),
 );

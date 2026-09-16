@@ -4713,13 +4713,20 @@ function dismissBasicFunctionalityMigrationNotification(): ThunkAction<
   };
 }
 
-export function hideMigrationModal(): ThunkAction<
+export function acknowledgeBasicFunctionalityMigration(): ThunkAction<
   Promise<void>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
-  return dismissBasicFunctionalityMigrationNotification();
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('acknowledgeBasicFunctionalityMigration');
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[acknowledgeBasicFunctionalityMigration] error', error);
+    }
+  };
 }
 
 export function hideMigrationToast(): ThunkAction<

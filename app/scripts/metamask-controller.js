@@ -2923,6 +2923,11 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.dismissSidePanelMigrationToast.bind(
           preferencesController,
         ),
+      acknowledgeBasicFunctionalityMigration:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'PreferencesController:acknowledgeBasicFunctionalityMigration',
+        ),
       dismissBasicFunctionalityMigrationNotification:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,

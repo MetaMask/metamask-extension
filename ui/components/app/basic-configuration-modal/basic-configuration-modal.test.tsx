@@ -37,11 +37,6 @@ jest.mock('../../../ducks/app/app', () => ({
   onboardingToggleBasicFunctionalityOff: jest.fn(),
 }));
 
-jest.mock('../../../selectors/multichain/feature-flags', () => ({
-  ...jest.requireActual('../../../selectors/multichain/feature-flags'),
-  getIsBasicFunctionalityConsolidationEnabled: () => false,
-}));
-
 const mockDispatch = jest.fn();
 
 jest.mock('react-redux', () => {
@@ -241,5 +236,25 @@ describe('BasicConfigurationModal', () => {
       expect(Actions.toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(Actions.toggleExternalServices).toHaveBeenCalledWith(true);
     });
+  });
+  it('turns pending consolidated ON off even when the effective legacy BFT is off', () => {
+    jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({ pathname: '/settings/privacy' });
+    const store = configureStore({
+      metamask: {
+        useExternalServices: false,
+        preferences: { basicFunctionalityMigrationPending: true },
+      },
+    });
+    const { getByRole, getByTestId } = renderWithProvider(
+      <BasicConfigurationModal />,
+      store,
+    );
+
+    fireEvent.click(getByRole('checkbox'));
+    fireEvent.click(getByTestId('basic-configuration-modal-toggle-button'));
+
+    expect(Actions.toggleBasicFunctionality).toHaveBeenCalledWith(false);
+    expect(Actions.toggleExternalServices).not.toHaveBeenCalled();
   });
 });
