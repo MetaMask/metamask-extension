@@ -91,7 +91,12 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     }
 
     setIsScrollToBottomCompleted(!isScrollable || hasScrolledToBottom);
-  }, [isScrollable, hasScrolledToBottom, isTransactionRedesign]);
+  }, [
+    isScrollable,
+    hasScrolledToBottom,
+    isTransactionRedesign,
+    setIsScrollToBottomCompleted,
+  ]);
 
   return (
     <Box

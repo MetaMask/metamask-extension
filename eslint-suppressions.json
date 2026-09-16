@@ -656,11 +656,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/components/developer/perps-withdraw-button/perps-withdraw-button.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 1

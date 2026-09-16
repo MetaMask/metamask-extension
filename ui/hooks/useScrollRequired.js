@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
-import { usePrevious } from './usePrevious';
 import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
 /**
@@ -20,9 +19,7 @@ export const useScrollRequired = (
 ) => {
   const [scrollElement, setScrollElement] = useState(null);
   const offsetHeight = scrollElement?.offsetHeight;
-  const previousOffsetHeight = usePrevious(offsetHeight);
   const dependencySnapshot = useSyncEqualityCheck(dependencies);
-  const previousDependencySnapshot = usePrevious(dependencySnapshot);
 
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
@@ -69,13 +66,19 @@ export const useScrollRequired = (
     [update],
   );
 
-  if (
-    scrollElement &&
-    (!Object.is(previousOffsetHeight, offsetHeight) ||
-      !Object.is(previousDependencySnapshot, dependencySnapshot))
-  ) {
-    update(scrollElement);
-  }
+  useEffect(() => {
+    if (!scrollElement) {
+      return;
+    }
+    queueMicrotask(() => update(scrollElement));
+  }, [scrollElement, dependencySnapshot, update]);
+
+  useEffect(() => {
+    if (!scrollElement) {
+      return;
+    }
+    queueMicrotask(() => update(scrollElement));
+  }, [offsetHeight, scrollElement, update]);
 
   const scrollToBottom = useCallback(() => {
     setIsScrolledToBottom(true);
