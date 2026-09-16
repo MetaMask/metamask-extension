@@ -7,7 +7,6 @@ import {
   NotificationComponentType,
   type NotificationComponent,
 } from '../types/notifications/notifications';
-import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   createTextItems,
   formatIsoDateString,
@@ -43,24 +42,14 @@ const isERC1155Notification = isOfTypeNodeGuard([
 
 const isSent = (n: ERC1155Notification) =>
   n.type === TRIGGER_TYPES.ERC1155_SENT;
-const title = (n: ERC1155Notification) =>
-  isSent(n)
-    ? t('notificationItemNFTSentTo')
-    : t('notificationItemNFTReceivedFrom');
 
 const getTitle = (n: ERC1155Notification) => {
-  const address = shortenAddress(
-    isSent(n) ? n.payload.data.to : n.payload.data.from,
-  );
-  const items = createTextItems([title(n) ?? '', address], TextVariant.bodySm);
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: ERC1155Notification) => {
-  const items = createTextItems(
-    [n.payload.data.nft?.collection.name ?? ''],
-    TextVariant.bodyMd,
-  );
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
@@ -93,11 +82,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
     title: ({ notification }) => {
       return (
         <NotificationDetailTitle
-          title={`${
-            isSent(notification)
-              ? t('notificationItemSent')
-              : t('notificationItemReceived')
-          } NFT`}
+          title={notification.template?.title ?? ''}
           date={formatIsoDateString(notification.createdAt)}
         />
       );

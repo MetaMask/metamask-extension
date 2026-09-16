@@ -6232,18 +6232,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Auszahlung bereit"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Sie können sich nun Ihre Unstaked $1 auszahlen lassen"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Ihre Anfrage zum Unstake von $1 wurde gesendet"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFT empfangen von"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFT gesendet an"
-  },
   "notificationItemNetwork": {
     "message": "Netzwerk"
   },
@@ -6252,18 +6240,6 @@
   },
   "notificationItemReceived": {
     "message": "Empfangen"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Empfangen von"
-  },
-  "notificationItemSent": {
-    "message": "Gesendet"
-  },
-  "notificationItemSentTo": {
-    "message": "Gesendet an"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake vervollständigt"
   },
   "notificationItemStaked": {
     "message": "Eingesetzt"
@@ -6277,17 +6253,11 @@
   "notificationItemSwapped": {
     "message": "Geswappt"
   },
-  "notificationItemSwappedFor": {
-    "message": "für"
-  },
   "notificationItemTo": {
     "message": "Bis"
   },
   "notificationItemTransactionId": {
     "message": "Transaktions-ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "UnStaking abgeschlossen"
   },
   "notificationItemUnStaked": {
     "message": "Unstaked"

@@ -34,23 +34,12 @@ const isLidoReadyWithDrawnNotification = isOfTypeNodeGuard([
 ]);
 
 const getDescription = (n: LidoReadyWithDrawnNotification) => {
-  const amount = formatAmount(parseFloat(n.payload.data.staked_eth.amount), {
-    shouldEllipse: true,
-  });
-  const description =
-    t(
-      'notificationItemLidoStakeReadyToBeWithdrawnMessage',
-      `${amount} ${n.payload.data.staked_eth.symbol}`,
-    ) ?? '';
-  const items = createTextItems([description], TextVariant.bodyMd);
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
-const getTitle = () => {
-  const items = createTextItems(
-    [t('notificationItemLidoStakeReadyToBeWithdrawn') ?? ''],
-    TextVariant.bodySm,
-  );
+const getTitle = (n: LidoReadyWithDrawnNotification) => {
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
@@ -70,7 +59,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
               position: BadgeWrapperPosition.bottomRight,
             },
           }}
-          title={getTitle()}
+          title={getTitle(notification)}
           description={getDescription(notification)}
           createdAt={new Date(notification.createdAt)}
           onClick={onClick}
@@ -80,7 +69,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
     details: {
       title: ({ notification }) => (
         <NotificationDetailTitle
-          title={t('notificationItemLidoStakeReadyToBeWithdrawn') ?? ''}
+          title={notification.template?.title ?? ''}
           date={formatIsoDateString(notification.createdAt)}
         />
       ),

@@ -6236,18 +6236,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Para çekme işlemi hazır"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Şu anda unstake $1 çekebilirsiniz"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1 unstake etme talebiniz gönderildi"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFT gönderen"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFT alıcısı"
-  },
   "notificationItemNetwork": {
     "message": "Ağ:"
   },
@@ -6256,18 +6244,6 @@
   },
   "notificationItemReceived": {
     "message": "Alınan"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Gönderen"
-  },
-  "notificationItemSent": {
-    "message": "Gönderildi"
-  },
-  "notificationItemSentTo": {
-    "message": "Stake tamamlandı"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake tamamlandı"
   },
   "notificationItemStaked": {
     "message": "Stake Edilen"
@@ -6281,17 +6257,11 @@
   "notificationItemSwapped": {
     "message": "Takas edilen"
   },
-  "notificationItemSwappedFor": {
-    "message": "şunun için"
-  },
   "notificationItemTo": {
     "message": "Alıcı"
   },
   "notificationItemTransactionId": {
     "message": "İşlem Kimliği"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "UnStake tamamlandı"
   },
   "notificationItemUnStaked": {
     "message": "Unstake edildi"

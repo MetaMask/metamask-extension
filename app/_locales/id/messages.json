@@ -6236,18 +6236,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Penarikan siap"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Kini Anda dapat menarik $1 yang belum di-stake"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Permintaan untuk membatalkan stake $1 telah dikirim"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Menerima NFT dari"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Mengirim NFT ke"
-  },
   "notificationItemNetwork": {
     "message": "Jaringan"
   },
@@ -6256,18 +6244,6 @@
   },
   "notificationItemReceived": {
     "message": "Diterima"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Diterima dari"
-  },
-  "notificationItemSent": {
-    "message": "Terkirim"
-  },
-  "notificationItemSentTo": {
-    "message": "Terkirim ke"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake selesai"
   },
   "notificationItemStaked": {
     "message": "Di-stake"
@@ -6281,17 +6257,11 @@
   "notificationItemSwapped": {
     "message": "Ditukar"
   },
-  "notificationItemSwappedFor": {
-    "message": "untuk"
-  },
   "notificationItemTo": {
     "message": "Ke"
   },
   "notificationItemTransactionId": {
     "message": "ID Transaksi"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Pembatalan Stake selesai"
   },
   "notificationItemUnStaked": {
     "message": "Stake dibatalkan"

@@ -40,22 +40,12 @@ const isSwapCompletedNotification = isOfTypeNodeGuard([
 ]);
 
 const getTitle = (n: SwapCompletedNotification) => {
-  const items = createTextItems(
-    [
-      t('notificationItemSwapped') ?? '',
-      n.payload.data.token_in.symbol,
-      t('notificationItemSwappedFor') ?? '',
-    ],
-    TextVariant.bodySm,
-  );
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: SwapCompletedNotification) => {
-  const items = createTextItems(
-    [n.payload.data.token_out.symbol],
-    TextVariant.bodyMd,
-  );
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
@@ -91,9 +81,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
   details: {
     title: ({ notification }) => (
       <NotificationDetailTitle
-        title={`${t('notificationItemSwapped') ?? ''} ${
-          notification.payload.data.token_out.symbol
-        }`}
+        title={notification.template?.title ?? ''}
         date={formatIsoDateString(notification.createdAt)}
       />
     ),

@@ -6232,18 +6232,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Вывод выполнен"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Теперь вы можете вывести свои $1, не используемые в стейкинге"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Ваш запрос на отмену стейкинга $1 отправлен"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Получил(-а) NFT от"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Отправил(-а) NFT в адрес"
-  },
   "notificationItemNetwork": {
     "message": "Сеть"
   },
@@ -6252,18 +6240,6 @@
   },
   "notificationItemReceived": {
     "message": "Получено"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Получено от"
-  },
-  "notificationItemSent": {
-    "message": "Отправлено"
-  },
-  "notificationItemSentTo": {
-    "message": "Отправлено в адрес"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Стейкинг завершен"
   },
   "notificationItemStaked": {
     "message": "В стейкинге"
@@ -6277,17 +6253,11 @@
   "notificationItemSwapped": {
     "message": "Обмен выполнен"
   },
-  "notificationItemSwappedFor": {
-    "message": "на"
-  },
   "notificationItemTo": {
     "message": "Место назначения"
   },
   "notificationItemTransactionId": {
     "message": "ID транзакции"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Отмена стейкинга завершена"
   },
   "notificationItemUnStaked": {
     "message": "Стейкинг отменен"

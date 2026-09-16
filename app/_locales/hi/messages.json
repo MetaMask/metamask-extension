@@ -6232,18 +6232,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "विदड्रॉवल तैयार है"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "अब आप अपना अनस्टेक्ड $1 वापस ले सकते हैं"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1 को अनस्टेक करने का आपका अनुरोध भेज दिया गया है"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "से NFT को प्राप्त किया गया"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "को NFT भेजा गया"
-  },
   "notificationItemNetwork": {
     "message": "नेटवर्क"
   },
@@ -6252,18 +6240,6 @@
   },
   "notificationItemReceived": {
     "message": "प्राप्त किया गया"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "से प्राप्त किया गया"
-  },
-  "notificationItemSent": {
-    "message": "भेजा गया"
-  },
-  "notificationItemSentTo": {
-    "message": "को भेजा गया"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "स्टेक पूरा हुआ"
   },
   "notificationItemStaked": {
     "message": "स्टेक किया गया"
@@ -6277,17 +6253,11 @@
   "notificationItemSwapped": {
     "message": "स्वैप किया गया"
   },
-  "notificationItemSwappedFor": {
-    "message": "के लिए"
-  },
   "notificationItemTo": {
     "message": "प्रति"
   },
   "notificationItemTransactionId": {
     "message": "ट्रांसेक्शन ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "अनस्टेकिंग पूरा हुआ"
   },
   "notificationItemUnStaked": {
     "message": "अनस्टेक किया गया"

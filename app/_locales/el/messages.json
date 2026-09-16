@@ -6232,18 +6232,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Η ανάληψη είναι έτοιμη"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Μπορείτε τώρα να αποσύρετε τα $1 που δεν έχετε ποντάρει"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Το αίτημά σας για ακύρωση του πονταρίσματος των $1 έχει σταλεί"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Λάβατε NFT από"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Στείλατε NFT σε"
-  },
   "notificationItemNetwork": {
     "message": "Δίκτυο"
   },
@@ -6252,18 +6240,6 @@
   },
   "notificationItemReceived": {
     "message": "Ελήφθη"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Λάβατε από"
-  },
-  "notificationItemSent": {
-    "message": "Εστάλη"
-  },
-  "notificationItemSentTo": {
-    "message": "Εστάλη σε"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Ολοκλήρωση του πονταρίσματος (stake)"
   },
   "notificationItemStaked": {
     "message": "Έγινε ποντάρισμα"
@@ -6277,17 +6253,11 @@
   "notificationItemSwapped": {
     "message": "Έγινε ανταλλαγή"
   },
-  "notificationItemSwappedFor": {
-    "message": "για"
-  },
   "notificationItemTo": {
     "message": "Προς"
   },
   "notificationItemTransactionId": {
     "message": "Αναγνωριστικό συναλλαγής"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Ολοκλήρωση ακύρωσης πονταρίσματός"
   },
   "notificationItemUnStaked": {
     "message": "Ακύρωση πονταρίσματος"

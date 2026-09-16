@@ -45,19 +45,6 @@ const isStakeNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED,
 ]);
 
-const TITLE_MAP = {
-  [TRIGGER_TYPES.LIDO_STAKE_COMPLETED]: t('notificationItemStaked'),
-  [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: t(
-    'notificationItemUnStakeCompleted',
-  ),
-  [TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED]: t(
-    'notificationItemStakeCompleted',
-  ),
-  [TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED]: t(
-    'notificationItemUnStakeCompleted',
-  ),
-};
-
 const DIRECTION_MAP = {
   [TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED]: 'staked',
   [TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED]: 'unstaked',
@@ -73,20 +60,12 @@ const STAKING_PROVIDER_MAP = {
 };
 
 const getTitle = (n: StakeNotification) => {
-  const items = createTextItems([TITLE_MAP[n.type] ?? ''], TextVariant.bodySm);
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: StakeNotification) => {
-  const direction = DIRECTION_MAP[n.type];
-  const items = createTextItems(
-    [
-      direction === 'staked'
-        ? n.payload.data.stake_out.symbol
-        : n.payload.data.stake_in.symbol,
-    ],
-    TextVariant.bodyMd,
-  );
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
@@ -128,18 +107,9 @@ export const components: NotificationComponent<StakeNotification> = {
   },
   details: {
     title: ({ notification }) => {
-      const direction = DIRECTION_MAP[notification.type];
-      const title =
-        direction === 'staked'
-          ? `${t('notificationItemStaked')} ${
-              notification.payload.data.stake_in.symbol
-            }`
-          : `${t('notificationItemUnStaked')} ${
-              notification.payload.data.stake_in.symbol
-            }`;
       return (
         <NotificationDetailTitle
-          title={title}
+          title={notification.template?.title ?? ''}
           date={formatIsoDateString(notification.createdAt)}
         />
       );

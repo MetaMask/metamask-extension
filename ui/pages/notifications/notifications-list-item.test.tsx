@@ -12,11 +12,16 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
+import { NotificationComponents } from './notification-components';
 import { NotificationsListItem } from './notifications-list-item';
 
 const mockNavigate = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockMarkNotificationAsRead = jest.fn();
+const apiTemplate = {
+  title: 'Localized API title',
+  body: 'Localized API description',
+};
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -51,11 +56,32 @@ jest.mock('../../hooks/useNotificationTimeouts', () => ({
 describe('NotificationsListItem', () => {
   const notification = {
     ...processNotification(createMockNotificationEthSent()),
+    template: apiTemplate,
     isRead: false,
   } as Extract<INotification, { type: TRIGGER_TYPES.ETH_SENT }>;
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders wallet activity copy from the API template', () => {
+    renderWithProvider(<NotificationsListItem notification={notification} />);
+
+    expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
+    expect(screen.getByText(apiTemplate.body)).toBeInTheDocument();
+  });
+
+  it('renders the notification details title from the API template', () => {
+    const DetailsTitle =
+      NotificationComponents[notification.type].details?.title;
+
+    if (!DetailsTitle) {
+      throw new Error('Expected notification details title');
+    }
+
+    renderWithProvider(<DetailsTitle notification={notification} />);
+
+    expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
   });
 
   it('tracks Notification Clicked when the notification item is clicked', () => {
