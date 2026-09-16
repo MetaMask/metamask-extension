@@ -91,6 +91,7 @@ jobs:
           echo "runtime_hash=${runtime_hash}" >> "${GITHUB_OUTPUT}"
 
       - name: Upload artifact '${{ inputs.build-name }}-${{ steps.get_hash.outputs.runtime_hash }}'
+        if: ${{ steps.get_hash.outputs.runtime_hash != 'b574af00e40dcd7e628a' && steps.get_hash.outputs.runtime_hash != '0c40264eb2c3354bf635' }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ${{ inputs.build-name }}-${{ steps.get_hash.outputs.runtime_hash }}
