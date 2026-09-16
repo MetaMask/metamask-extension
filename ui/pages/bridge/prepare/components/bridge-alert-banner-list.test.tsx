@@ -201,7 +201,6 @@ describe('BridgeAlertBannerList', () => {
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromNativeBalance: '1000000000000000000',
           fromToken: {
             assetId: 'eip155:10/slip44:60',
             address: '0x0000000000000000000000000000000000000000',
@@ -276,7 +275,6 @@ describe('BridgeAlertBannerList', () => {
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromNativeBalance: '1000000000000000000',
           fromToken: {
             assetId: 'eip155:10/slip44:60',
             address: '0x0000000000000000000000000000000000000000',
