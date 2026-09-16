@@ -8388,10 +8388,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@1.0.0-preview-b657139d":
-  version: 1.0.0-preview-b657139d
-  resolution: "@metamask-previews/stellar-wallet-snap@npm:1.0.0-preview-b657139d"
-  checksum: 10/c10d4a81a6514285613c3094aef5139ddf6a813a4769947bb14f1e08fc43e85389c61a6c63ffb8005f31ca34d4c2835e46f6b69db2afe39df4bed0522a55cfe9
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@1.0.0-preview-5f8b336f":
+  version: 1.0.0-preview-5f8b336f
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:1.0.0-preview-5f8b336f"
+  checksum: 10/cb90c553db5d0bfd559757e6cc2dde79db200e6f802efc45c0b6893b321580b1d9d1628274e2871b213b22806c574614744cbb623d8d56d502f60992bd553909
   languageName: node
   linkType: hard
 

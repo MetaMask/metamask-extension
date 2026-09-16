@@ -345,7 +345,7 @@
     "@metamask/profile-sync-controller": "^32.0.0",
     "@metamask/account-tree-controller": "^9.0.0",
     "@metamask/ramps-controller": "^22.0.0",
-    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@1.0.0-preview-b657139d"
+    "@metamask/stellar-wallet-snap": "npm:@metamask-previews/stellar-wallet-snap@1.0.0-preview-5f8b336f"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
