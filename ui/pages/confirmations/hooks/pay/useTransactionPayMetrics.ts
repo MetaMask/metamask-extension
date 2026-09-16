@@ -18,6 +18,7 @@ import {
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
+import { usePaySourceAccountMetrics } from './usePaySourceAccountMetrics';
 
 export function useTransactionPayMetrics() {
   const { currentConfirmation: transactionMeta } =
@@ -28,6 +29,8 @@ export function useTransactionPayMetrics() {
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
   const tokens = useTransactionPayAvailableTokens();
+  const { presented: sourcePresented, selected: sourceSelected } =
+    usePaySourceAccountMetrics(Boolean(payToken));
 
   const hasQuotes = Boolean(quotes?.length);
   if (hasQuotes && !hasLoadedQuote) {
@@ -71,6 +74,8 @@ export function useTransactionPayMetrics() {
       props.mm_pay_chain_presented = presentedPayToken?.chainId ?? null;
       props.mm_pay_payment_token_list_size = availableTokens.length;
       props.mm_pay_quote_loaded = hasQuotes || hasLoadedQuote;
+      props.mm_pay_account_type_source_presented = sourcePresented ?? null;
+      props.mm_pay_account_type_source_selected = sourceSelected;
 
       if (
         hasTransactionType(transactionMeta, [
@@ -115,6 +120,8 @@ export function useTransactionPayMetrics() {
     hasQuotes,
     hasLoadedQuote,
     presentedPayToken,
+    sourcePresented,
+    sourceSelected,
   ]);
 
   useEffect(() => {
