@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../../constants';
 
+const ACCOUNTS_API_URL = 'https://accounts.api.cx.metamask.io';
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 const TOKENS_API_URL = 'https://tokens.api.cx.metamask.io';
 const TOKEN_API_URL = 'https://token.api.cx.metamask.io';
@@ -145,9 +146,7 @@ export async function mockTokenMetadataApis(
   const accountBalancesMocks = await Promise.all(
     ['v5', 'v6'].map((version) =>
       mockServer
-        .forGet(
-          `https://accounts.api.cx.metamask.io/${version}/multiaccount/balances`,
-        )
+        .forGet(`${ACCOUNTS_API_URL}/${version}/multiaccount/balances`)
         .always()
         .thenCallback((request) => {
           const accountIds = (
