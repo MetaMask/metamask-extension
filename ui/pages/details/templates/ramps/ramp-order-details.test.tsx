@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { RampOrderDetails } from './ramp-order-details';
 
@@ -258,9 +258,9 @@ describe('RampOrderDetails', () => {
   it('re-opens the provider order link under the callback watcher when "view on provider" is clicked', async () => {
     const { getByText } = render(<RampOrderDetails item={buildItem()} />);
 
-    getByText('rampsOrderDetailsViewOnProvider:Transak').click();
-
-    await Promise.resolve();
+    await act(async () => {
+      getByText('rampsOrderDetailsViewOnProvider:Transak').click();
+    });
 
     expect(mockWatchProviderOrderTab).toHaveBeenCalledWith({
       url: 'https://transak.example/order-123',
@@ -271,11 +271,13 @@ describe('RampOrderDetails', () => {
     expect(mockOpenTab).not.toHaveBeenCalled();
   });
 
-  it('falls back to a plain tab open when the raw order is unavailable', () => {
+  it('falls back to a plain tab open when the raw order is unavailable', async () => {
     mockGetOrderById.mockReturnValue(undefined);
     const { getByText } = render(<RampOrderDetails item={buildItem()} />);
 
-    getByText('rampsOrderDetailsViewOnProvider:Transak').click();
+    await act(async () => {
+      getByText('rampsOrderDetailsViewOnProvider:Transak').click();
+    });
 
     expect(mockWatchProviderOrderTab).not.toHaveBeenCalled();
     expect(mockOpenTab).toHaveBeenCalledWith({
@@ -287,9 +289,9 @@ describe('RampOrderDetails', () => {
     mockWatchProviderOrderTab.mockRejectedValue(new Error('Failed to open'));
     const { getByText } = render(<RampOrderDetails item={buildItem()} />);
 
-    getByText('rampsOrderDetailsViewOnProvider:Transak').click();
-
-    await Promise.resolve();
+    await act(async () => {
+      getByText('rampsOrderDetailsViewOnProvider:Transak').click();
+    });
 
     expect(mockOpenTab).toHaveBeenCalledWith({
       url: 'https://transak.example/order-123',
@@ -308,16 +310,20 @@ describe('RampOrderDetails', () => {
       name: 'rampsOrderDetailsViewOnProvider:Transak',
     });
 
-    viewOnProvider.click();
-    await waitFor(() => {
-      expect(viewOnProvider).toBeDisabled();
+    await act(async () => {
+      viewOnProvider.click();
     });
-    viewOnProvider.click();
 
+    // While the watcher round-trip is in flight the button is disabled, so
+    // duplicate clicks cannot open multiple watched tabs.
+    expect(viewOnProvider).toBeDisabled();
+    viewOnProvider.click();
     expect(mockWatchProviderOrderTab).toHaveBeenCalledTimes(1);
 
-    resolveWatch?.();
-    await Promise.resolve();
+    await act(async () => {
+      resolveWatch?.();
+    });
+    expect(viewOnProvider).not.toBeDisabled();
   });
 
   it('shows a "buy again" CTA for a buy order', () => {
