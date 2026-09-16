@@ -1,30 +1,18 @@
 import React from 'react';
 import { render, waitFor, act } from '@testing-library/react';
 import AdvancedChartIframe from './advanced-chart-iframe';
-import { useOHLCVChart } from './useOHLCVChart';
 
 // Mock dependencies
-jest.mock('./useOHLCVChart');
 jest.mock('../../../../hooks/useTheme', () => ({
   useTheme: jest.fn(),
 }));
 
-const mockUseOHLCVChart = useOHLCVChart as jest.MockedFunction<
-  typeof useOHLCVChart
->;
 const mockUseTheme = jest.requireMock('../../../../hooks/useTheme')
   .useTheme as jest.Mock;
 
 const CHART_ORIGIN = 'http://localhost:8001';
 
 describe('AdvancedChartIframe', () => {
-  const defaultProps = {
-    assetId: 'ethereum',
-    height: 300,
-    chartType: 1, // Line chart
-    selectedInterval: '15m',
-  };
-
   const mockOHLCVData = [
     {
       time: 1700000000,
@@ -44,6 +32,14 @@ describe('AdvancedChartIframe', () => {
     },
   ];
 
+  const defaultProps = {
+    assetId: 'ethereum',
+    height: 300,
+    chartType: 1, // Line chart
+    selectedInterval: '15m',
+    ohlcvData: mockOHLCVData,
+  };
+
   let postMessageSpy: jest.Mock;
 
   beforeEach(() => {
@@ -51,11 +47,6 @@ describe('AdvancedChartIframe', () => {
     jest.useFakeTimers();
 
     mockUseTheme.mockReturnValue('light');
-    mockUseOHLCVChart.mockReturnValue({
-      ohlcvData: mockOHLCVData,
-      error: null,
-      isLoading: false,
-    });
 
     // Mock iframe contentWindow.postMessage
     postMessageSpy = jest.fn();
@@ -135,58 +126,16 @@ describe('AdvancedChartIframe', () => {
     });
   });
 
-  describe('OHLCV Data Hook Integration', () => {
-    it('calls useOHLCVChart with correct parameters', () => {
-      render(<AdvancedChartIframe {...defaultProps} />);
-
-      expect(mockUseOHLCVChart).toHaveBeenCalledWith({
-        assetId: 'ethereum',
-        interval: '15m',
-      });
-    });
-
-    it('updates OHLCV hook call when assetId changes', () => {
-      const { rerender } = render(<AdvancedChartIframe {...defaultProps} />);
-
-      rerender(<AdvancedChartIframe {...defaultProps} assetId="bitcoin" />);
-
-      expect(mockUseOHLCVChart).toHaveBeenLastCalledWith({
-        assetId: 'bitcoin',
-        interval: '15m',
-      });
-    });
-
-    it('updates OHLCV hook call when interval changes', () => {
-      const { rerender } = render(<AdvancedChartIframe {...defaultProps} />);
-
-      rerender(<AdvancedChartIframe {...defaultProps} selectedInterval="1h" />);
-
-      expect(mockUseOHLCVChart).toHaveBeenLastCalledWith({
-        assetId: 'ethereum',
-        interval: '1h',
-      });
-    });
-
-    it('calls onError when OHLCV hook returns an error', () => {
-      const mockOnError = jest.fn();
-      mockUseOHLCVChart.mockReturnValue({
-        ohlcvData: [],
-        error: 'Failed to fetch OHLCV data',
-        isLoading: false,
-      });
-
-      render(<AdvancedChartIframe {...defaultProps} onError={mockOnError} />);
-
-      expect(mockOnError).toHaveBeenCalledWith('Failed to fetch OHLCV data');
-    });
-
+  describe('OHLCV Data Prop Handling', () => {
     it('does not crash when no OHLCV data is available', () => {
-      mockUseOHLCVChart.mockReturnValue({
-        ohlcvData: [],
-        error: null,
-        isLoading: false,
-      });
+      const { getByTestId } = render(
+        <AdvancedChartIframe {...defaultProps} ohlcvData={[]} />,
+      );
 
+      expect(getByTestId('advanced-chart-iframe')).toBeInTheDocument();
+    });
+
+    it('renders with provided OHLCV data', () => {
       const { getByTestId } = render(<AdvancedChartIframe {...defaultProps} />);
 
       expect(getByTestId('advanced-chart-iframe')).toBeInTheDocument();
@@ -758,13 +707,7 @@ describe('AdvancedChartIframe', () => {
         },
       ];
 
-      mockUseOHLCVChart.mockReturnValue({
-        ohlcvData: newData,
-        error: null,
-        isLoading: false,
-      });
-
-      rerender(<AdvancedChartIframe {...defaultProps} />);
+      rerender(<AdvancedChartIframe {...defaultProps} ohlcvData={newData} />);
 
       await waitFor(() => {
         expect(postMessageSpy).toHaveBeenCalledWith(
@@ -778,13 +721,9 @@ describe('AdvancedChartIframe', () => {
     });
 
     it('does not send empty OHLCV data', () => {
-      mockUseOHLCVChart.mockReturnValue({
-        ohlcvData: [],
-        error: null,
-        isLoading: false,
-      });
-
-      const { container } = render(<AdvancedChartIframe {...defaultProps} />);
+      const { container } = render(
+        <AdvancedChartIframe {...defaultProps} ohlcvData={[]} />,
+      );
 
       const iframe = container.querySelector('iframe');
       act(() => {

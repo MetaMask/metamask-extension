@@ -233,7 +233,7 @@ const AdvancedChartIframe = forwardRef<
     // mobile's pattern — the chart engine needs data BEFORE it can build the
     // widget and emit CHART_READY.
     useEffect(() => {
-      if (iframeLoaded && ohlcvData.length > 0) {
+      if (iframeLoaded && ohlcvData?.length > 0) {
         postToChart({ type: 'SET_OHLCV_DATA', payload: { data: ohlcvData } });
       }
     }, [iframeLoaded, ohlcvData, postToChart]);
