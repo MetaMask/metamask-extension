@@ -21,9 +21,9 @@ on:
     # especially the Monday morning list, which is otherwise usually a fake empty.
     - cron: '0 2-6 * * *'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
+#   cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
   # For a `pull_request` event, the branch is `github.head_ref``.

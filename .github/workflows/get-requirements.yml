@@ -670,14 +670,8 @@ jobs:
           BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
         run: |
           echo "=== Benchmarks skip decision ==="
-          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
-
-          if [[ "$BUILDS_FROM_BASE_BRANCH" == "true" ]]; then
-            echo "-> needs-benchmarks=false (builds from base branch — identical output)"
-          else
-            echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
-            echo "-> needs-benchmarks=true (fresh builds)"
-          fi
+          echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
+          echo "-> needs-benchmarks=true (fresh builds)"
 
       - name: Compute needs-e2e flag
         id: set-needs-e2e
