@@ -79,13 +79,13 @@ describe('ReceiveRow', () => {
   });
 
   it('computes input minus all fees (provider + sourceNetwork + targetNetwork + metaMask)', () => {
-    const { getByTestId } = render({ inputAmountUsd: '10' });
+    const { getByTestId } = render({ inputAmountUsd: '10.009' });
 
-    // 10 - (1.00 + 0.20 + 0.05 + 0.25) = 8.50
+    // 10.009 - (1.00 + 0.20 + 0.05 + 0.25) = 8.509, rounded down.
     expect(getByTestId('receive-value')).toHaveTextContent('$8.50');
   });
 
-  it('uses the target amount for input-based totals', () => {
+  it('rounds the target amount down for input-based totals', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       isInputBased: true,
       fees: {
@@ -94,12 +94,12 @@ describe('ReceiveRow', () => {
         targetNetwork: { usd: '0.05' },
         metaMask: { usd: '0.25' },
       },
-      targetAmount: { fiat: '9', usd: '9' },
+      targetAmount: { fiat: '9.999', usd: '9.999' },
     } as TransactionPayTotals);
 
     const { getByTestId } = render({ inputAmountUsd: '10' });
 
-    expect(getByTestId('receive-value')).toHaveTextContent('$9.00');
+    expect(getByTestId('receive-value')).toHaveTextContent('$9.99');
   });
 
   it('uses withdrawal fee calculation when isInputBased is missing', () => {
@@ -126,7 +126,7 @@ describe('ReceiveRow', () => {
   it('does not subtract sponsored network gas from the receive amount', () => {
     useIsPaidByMetaMaskMock.mockReturnValue(true);
 
-    const { getByTestId } = render({ inputAmountUsd: '0.05' });
+    const { getByTestId } = render({ inputAmountUsd: '0.059' });
 
     expect(getByTestId('receive-value')).toHaveTextContent('$0.05');
   });

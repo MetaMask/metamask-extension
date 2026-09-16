@@ -20,6 +20,8 @@ import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 
+const FIAT_DISPLAY_DECIMALS = 2;
+
 export type ReceiveRowProps = {
   /** The user's input amount in USD / fiat */
   inputAmountUsd: string;
@@ -68,16 +70,14 @@ export function ReceiveRow({
     }
 
     if (totals.isInputBased === true) {
-      return formatFiat(new BigNumber(totals.targetAmount.usd).toNumber());
+      return formatFiat(roundDownFiat(totals.targetAmount.usd));
     }
 
     const inputUsd = new BigNumber(inputAmountUsd || '0');
     // Same-token Money Account withdraws quote estimated network gas that
     // Monad sponsors. Subtracting it would show $0 received on a tiny send.
     if (isPaidByMetaMask) {
-      return formatFiat(
-        (inputUsd.gte(0) ? inputUsd : new BigNumber(0)).toNumber(),
-      );
+      return formatFiat(roundDownFiat(BigNumber.max(inputUsd, 0)));
     }
 
     const providerFee = new BigNumber(totals.fees?.provider?.usd ?? 0);
@@ -95,9 +95,7 @@ export function ReceiveRow({
       .plus(metaMaskFee);
     const youReceive = inputUsd.minus(totalFees);
 
-    return formatFiat(
-      (youReceive.gte(0) ? youReceive : new BigNumber(0)).toNumber(),
-    );
+    return formatFiat(roundDownFiat(BigNumber.max(youReceive, 0)));
   }, [formatFiat, hasQuotes, inputAmountUsd, isPaidByMetaMask, totals]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
@@ -131,4 +129,10 @@ export function ReceiveRow({
       </ConfirmInfoRow>
     </Box>
   );
+}
+
+function roundDownFiat(value: string | BigNumber): number {
+  return new BigNumber(value)
+    .round(FIAT_DISPLAY_DECIMALS, BigNumber.ROUND_DOWN)
+    .toNumber();
 }
