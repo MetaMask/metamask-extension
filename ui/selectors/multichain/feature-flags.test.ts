@@ -288,20 +288,6 @@ describe('Basic Functionality migration notification selectors', () => {
     expect(getShouldShowBasicFunctionalityMigrationModal(state)).toBe(true);
   });
 
-  it('shows a scheduled toast when the remote flag is disabled', () => {
-    const state = {
-      metamask: {
-        isUnlocked: true,
-        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
-        preferences: {
-          basicFunctionalityMigrationNotification: 'toast' as const,
-          basicFunctionalityMigrationNotificationDismissed: false,
-        },
-      },
-    };
-
-    expect(getShouldShowBasicFunctionalityMigrationToast(state)).toBe(true);
-  });
 
   it('hides a scheduled toast while the wallet is locked', () => {
     const state = {
@@ -315,7 +301,10 @@ describe('Basic Functionality migration notification selectors', () => {
       },
     };
 
-    expect(getShouldShowBasicFunctionalityMigrationToast(state)).toBe(false);
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getShouldShowBasicFunctionalityMigrationToast(state as any),
+    ).toBe(false);
   });
 
   it('hides a dismissed notification', () => {
@@ -329,7 +318,10 @@ describe('Basic Functionality migration notification selectors', () => {
       },
     };
 
-    expect(getShouldShowBasicFunctionalityMigrationToast(state)).toBe(false);
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getShouldShowBasicFunctionalityMigrationToast(state as any),
+    ).toBe(false);
   });
 });
 

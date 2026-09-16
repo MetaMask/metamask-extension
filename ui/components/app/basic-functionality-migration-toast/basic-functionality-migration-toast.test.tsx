@@ -51,7 +51,7 @@ const mockHideMigrationToast = jest.fn(() => () => Promise.resolve());
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  hideMigrationToast: (...args: unknown[]) => mockHideMigrationToast(...args),
+  hideMigrationToast: () => mockHideMigrationToast(),
 }));
 
 const mockStore = configureMockStore([thunk]);
