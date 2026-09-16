@@ -26,7 +26,6 @@ import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,
   NODE_MODULES_RE,
-  TYPESCRIPT_FILE_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
@@ -291,10 +290,19 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
+// @swc/core >= 1.16 parses TypeScript generics as JSX when tsx:true, so .ts
+// and .tsx must use separate loaders.
+const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 
 const swcReactRefreshConfig = { ...swcConfig, refresh: true };
+const reactRefreshTsLoader = getSwcLoader(
+  'typescript',
+  false,
+  safeVariables,
+  swcReactRefreshConfig,
+);
 const reactRefreshTsxLoader = getSwcLoader(
   'typescript',
   true,
@@ -436,19 +444,40 @@ const config = {
       ...(isDevelopmentWatchMode
         ? [
             {
-              test: TYPESCRIPT_FILE_RE,
+              // typescript without JSX (UI, react-refresh)
+              test: /\.(?:ts|mts)$/u,
+              include: UI_DIR_RE,
+              use: reactRefreshTsLoader,
+            },
+            {
+              // typescript JSX (UI, react-refresh)
+              test: /\.tsx$/u,
               include: UI_DIR_RE,
               use: reactRefreshTsxLoader,
             },
             {
-              test: TYPESCRIPT_FILE_RE,
+              // typescript without JSX
+              test: /\.(?:ts|mts)$/u,
+              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              use: tsLoader,
+            },
+            {
+              // typescript JSX
+              test: /\.tsx$/u,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
               use: tsxLoader,
             },
           ]
         : [
             {
-              test: TYPESCRIPT_FILE_RE,
+              // typescript without JSX
+              test: /\.(?:ts|mts)$/u,
+              exclude: NODE_MODULES_RE,
+              use: tsLoader,
+            },
+            {
+              // typescript JSX
+              test: /\.tsx$/u,
               exclude: NODE_MODULES_RE,
               use: tsxLoader,
             },
