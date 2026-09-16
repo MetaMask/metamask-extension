@@ -20,10 +20,21 @@ import {
 import { PopoverPosition } from '../../../component-library';
 import { InfoPopover } from '../../musd/info-popover';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
+import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../../../hooks/useTrackOnce';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
+} from '../../../../pages/money/constants/money-events';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
@@ -31,23 +42,25 @@ export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
 export const MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID =
   'money-account-balance-last-known';
 export const MONEY_ACCOUNT_BALANCE_APY_TEST_ID = 'money-account-balance-apy';
+export const MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID =
+  'money-account-balance-apy-skeleton';
 export const MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID =
   'money-account-balance-skeleton';
 export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
 export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
   'money-account-balance-add-button';
 
-// The vault APY isn't wired up to a data source yet, so this is shown as a
-// fixed placeholder until a hook for it exists.
-const PLACEHOLDER_APY = '88%';
-
 /**
  * The Money Account balance, or nothing.
  *
  * ## When it renders nothing
  *
- * Two things make this render nothing, and both do so rather than showing a
+ * Three things make this render nothing, and all do so rather than showing a
  * placeholder.
+ *
+ * **Home card flag off.** `moneyHomeScreenCardEnabled` hides this card on its
+ * own, without touching the rest of the Money surface. It cannot show the card
+ * when the Money Account feature itself is off.
  *
  * **No Money Account.** `useMoneyAccountInfo` reports the feature flag being
  * off, the account not being upgraded, and the availability gate not having
@@ -78,24 +91,67 @@ const PLACEHOLDER_APY = '88%';
  * redux tree here is not rehydrated on restart, so a reopened extension starts
  * with no fallback until the value is mirrored into controller state.
  *
+ * ## APY uses the same vault query as Money Home
+ *
+ * The rate is `apyPercentFormatted` from `useMoneyAccountBalance`, which
+ * already calls `MoneyAccountBalanceService:getVaultApy`. While that query is
+ * in flight and no override or fallback is available, a skeleton occupies the
+ * APY slot. If the query fails with nothing to show, the slot is omitted
+ * rather than inventing a rate.
+ *
  * @returns The balance row, or `null`.
  */
 export const MoneyAccountBalance = () => {
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
+  const isHomeCardEnabled = useSelector(selectMoneyHomeScreenCardEnabled);
   const { hasMoneyAccount } = useMoneyAccountInfo();
-  const { totalFiatFormatted, lastKnownTotalFiatFormatted, isBalanceLoading } =
-    useMoneyAccountBalance();
+  const {
+    totalFiatFormatted,
+    lastKnownTotalFiatFormatted,
+    isBalanceLoading,
+    apyPercentFormatted,
+    vaultApyQuery,
+  } = useMoneyAccountBalance();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
+  const { trackButtonClicked, trackComponentViewed, trackTooltipClicked } =
+    useMoneyAnalytics({
+      screenName: MoneyScreenName.WalletHome,
+      componentName: MoneyComponentName.BalanceCard,
+    });
 
   const balance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
   const isLoading = isBalanceLoading && balance === undefined;
   const isLastKnown = totalFiatFormatted === undefined && !isLoading;
+  const isApyLoading = vaultApyQuery.isLoading && !apyPercentFormatted;
+  const isVisible =
+    isHomeCardEnabled &&
+    hasMoneyAccount &&
+    (balance !== undefined || isLoading);
 
-  if (!hasMoneyAccount || (balance === undefined && !isLoading)) {
+  useTrackOnce(isVisible, trackComponentViewed);
+
+  if (!isVisible) {
     return null;
   }
+
+  const handleAddClick = () => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+    initiateDeposit();
+  };
+
+  const handleInfoOpen = () => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.MoneyBalance,
+      tooltipType: MoneyTooltipType.Info,
+    });
+  };
 
   return (
     <Box
@@ -130,6 +186,7 @@ export const MoneyAccountBalance = () => {
             iconColor={IconColor.IconAlternative}
             ariaLabel={t('moneyBalanceTitle')}
             data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
+            onOpen={handleInfoOpen}
             wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
             position={PopoverPosition.Auto}
             popoverStyle={{
@@ -139,10 +196,10 @@ export const MoneyAccountBalance = () => {
             }}
           >
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-              <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
                 {t('moneyBalanceInfoBody')}
               </Text>
-              <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
                 {t('moneyBalanceInfoWithdrawals')}
               </Text>
             </Box>
@@ -150,7 +207,7 @@ export const MoneyAccountBalance = () => {
         </Box>
         <Box
           flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
+          alignItems={BoxAlignItems.Baseline}
           gap={2}
         >
           {isLoading ? (
@@ -159,6 +216,9 @@ export const MoneyAccountBalance = () => {
             <Skeleton
               height={32}
               width={100}
+              // A skeleton has no baseline of its own, so it is centred rather
+              // than left to baseline-align against the APY beside it.
+              className="self-center"
               data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
             />
           ) : (
@@ -173,18 +233,25 @@ export const MoneyAccountBalance = () => {
               {balance}
             </SensitiveText>
           )}
-          {/*
-            The vault APY isn't wired up to a data source yet, so this is
-            always shown alongside a live or last-known balance rather than
-            being gated on its own loading state.
-          */}
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.SuccessDefault}
-            data-testid={MONEY_ACCOUNT_BALANCE_APY_TEST_ID}
-          >
-            {t('moneyApy', [PLACEHOLDER_APY])}
-          </Text>
+          {isApyLoading ? (
+            // 22px matches the bodyMd line-height of the APY text so the
+            // row doesn't shift when the figure arrives.
+            <Skeleton
+              height={22}
+              width={72}
+              data-testid={MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID}
+            />
+          ) : (
+            apyPercentFormatted && (
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.SuccessDefault}
+                data-testid={MONEY_ACCOUNT_BALANCE_APY_TEST_ID}
+              >
+                {t('moneyApy', [apyPercentFormatted])}
+              </Text>
+            )
+          )}
         </Box>
         {isLastKnown ? (
           <Text
@@ -202,11 +269,7 @@ export const MoneyAccountBalance = () => {
         className="shrink-0 "
         isLoading={isDepositLoading}
         data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={() =>
-          initiateDeposit().catch((error) =>
-            console.error('Failed to initiate money account deposit', error),
-          )
-        }
+        onClick={handleAddClick}
       >
         {t('moneyAdd')}
       </Button>

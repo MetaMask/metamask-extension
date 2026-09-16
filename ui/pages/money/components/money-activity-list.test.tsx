@@ -3,31 +3,29 @@ import { fireEvent, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { onchainItem } from '../types/money-activity';
+import { onchainItem, accountsApiItem } from '../types/money-activity';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import { MoneyActivityList, MAX_PREVIEW_ITEMS } from './money-activity-list';
+
+jest.mock('react-redux', () => ({
+  useSelector: (selector: (state?: unknown) => unknown) => selector({}),
+}));
 
 const previewItems = MOCK_MONEY_TRANSACTIONS.slice(0, MAX_PREVIEW_ITEMS).map(
   onchainItem,
 );
 
 describe('MoneyActivityList', () => {
-  it('renders the empty copy when there are no items', () => {
-    renderWithLocalization(<MoneyActivityList items={[]} />);
+  it('renders nothing when there are no items', () => {
+    const { container } = renderWithLocalization(
+      <MoneyActivityList items={[]} />,
+    );
 
-    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
-      screen.getByText(messages.moneyActivity.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.moneyActivityPlaceholderDescription.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId('money-activity-view-all'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId(/money-activity-row-/u),
+      screen.queryByText(messages.moneyActivity.message),
     ).not.toBeInTheDocument();
   });
 
@@ -39,9 +37,6 @@ describe('MoneyActivityList', () => {
     expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
       MAX_PREVIEW_ITEMS,
     );
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
   });
 
   it('shows an enabled View all button when there are more than five items', () => {
@@ -66,6 +61,42 @@ describe('MoneyActivityList', () => {
     expect(
       screen.queryByTestId('money-activity-view-all'),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows View all when more API pages exist even with five preview rows', () => {
+    renderWithLocalization(<MoneyActivityList items={previewItems} hasMore />);
+
+    expect(screen.getByTestId('money-activity-view-all')).toBeInTheDocument();
+  });
+
+  it('shows a settling skeleton while the preview is filling', () => {
+    renderWithLocalization(<MoneyActivityList items={[]} isSettling />);
+
+    expect(screen.getByTestId('money-activity-settling')).toBeInTheDocument();
+  });
+
+  it('does not make Accounts API rows clickable', () => {
+    const onItemClick = jest.fn();
+    const apiItem = accountsApiItem({
+      kind: 'card',
+      hash: '0xabc',
+      time: 1,
+      chainId: '0x8f',
+      token: {
+        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        symbol: 'mUSD',
+        decimals: 6,
+      },
+      amount: '1000000',
+      paidTo: '0xdef',
+    });
+
+    renderWithLocalization(
+      <MoneyActivityList items={[apiItem]} onItemClick={onItemClick} />,
+    );
+
+    const row = screen.getByTestId(`money-activity-row-${apiItem.id}`);
+    expect(row.tagName).toBe('DIV');
   });
 
   it('masks amounts in privacy mode', () => {
@@ -113,5 +144,16 @@ describe('MoneyActivityList', () => {
       screen.getByText(messages.moneyActivityDepositFailed.message),
     ).toBeInTheDocument();
     expect(document.querySelector('.animate-spin')).toBeInTheDocument();
+  });
+
+  it('invokes onItemClick when a preview row is clicked', () => {
+    const onItemClick = jest.fn();
+    const items = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+    renderWithLocalization(
+      <MoneyActivityList items={items} onItemClick={onItemClick} />,
+    );
+
+    fireEvent.click(screen.getByTestId(`money-activity-row-${items[0].id}`));
+    expect(onItemClick).toHaveBeenCalledWith(items[0]);
   });
 });
