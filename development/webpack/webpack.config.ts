@@ -323,7 +323,7 @@ const reactRefreshJsxLoader = getSwcLoader(
 // (and similar) only see `process/browser`'s empty `env`, so `IN_TEST` was
 // always falsy there and custom networks kept the 20s block-tracker interval
 // instead of the 1s test interval. Inline only `IN_TEST` for npm/CJS loaders.
-const npmEnvs =
+const npmEnvs: Record<string, string> =
   safeVariables.IN_TEST === undefined ? {} : { IN_TEST: safeVariables.IN_TEST };
 const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
 const cjsLoader = getSwcLoader(
