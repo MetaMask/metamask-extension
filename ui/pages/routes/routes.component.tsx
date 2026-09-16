@@ -160,6 +160,7 @@ import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-mes
 import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
 import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
+import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -606,16 +607,21 @@ export const routeConfig = [
             element: <DeFiPage />,
           },
           {
-            path: RAMPS_BUILD_QUOTE_ROUTE,
-            element: <RampsBuildQuote />,
-          },
-          {
-            path: RAMPS_TOKEN_SELECTION_ROUTE,
-            element: <RampsTokenSelection />,
-          },
-          {
-            path: RAMPS_PAYMENT_METHOD_ROUTE,
-            element: <RampsPaymentMethod />,
+            element: <RampsFlowLayout />,
+            children: [
+              {
+                path: RAMPS_BUILD_QUOTE_ROUTE,
+                element: <RampsBuildQuote />,
+              },
+              {
+                path: RAMPS_TOKEN_SELECTION_ROUTE,
+                element: <RampsTokenSelection />,
+              },
+              {
+                path: RAMPS_PAYMENT_METHOD_ROUTE,
+                element: <RampsPaymentMethod />,
+              },
+            ],
           },
           {
             path: RAMPS_COMPLETE_BUY_ROUTE,

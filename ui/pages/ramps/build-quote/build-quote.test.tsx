@@ -20,6 +20,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
   useLocation: () => ({
     pathname: '/ramps/build-quote',
+    search: '',
     state: mockLocationState,
   }),
 }));
