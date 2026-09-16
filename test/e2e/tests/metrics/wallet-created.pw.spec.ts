@@ -16,11 +16,10 @@ import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboardi
 import { Driver } from '../../webdriver/driver';
 
 /**
- * Mocks the segment API multiple times for specific payloads that we expect to
- * see when these tests are run. In this case, we are looking for
- * 'Permissions Requested' and 'Permissions Received'. Do not use the constants
- * from the metrics constants files, because if these change we want a strong
- * indicator to our data team that the shape of data will change.
+ * Mocks the Segment API for wallet-creation onboarding events.
+ * Do not use the constants from the metrics constants files, because if these
+ * change we want a strong indicator to our data team that the shape of data
+ * will change.
  *
  * @param mockServer - The mock server instance.
  * @returns

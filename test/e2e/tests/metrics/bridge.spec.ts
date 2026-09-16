@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
-import { test as pwTest } from '@playwright/test';
-import { E2E_DRIVER } from '../../constants';
+import { Suite } from 'mocha';
 import {
   assertInAnyOrder,
   getEventPayloads,
@@ -26,17 +25,14 @@ const quote = {
   toChain: 'Linea',
 };
 
-pwTest.describe('Bridge tests', () => {
-  pwTest.describe.configure({ timeout: 160_000 });
-  pwTest('Execute multiple bridge transactions', async () => {
+describe('Bridge tests', function (this: Suite) {
+  this.timeout(160000);
+  it('Execute multiple bridge transactions', async function () {
     await withFixtures(
-      {
-        ...getBridgeFixtures({
-          title: pwTest.info().titlePath.join(' '),
-          featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
-        }),
-        driverType: E2E_DRIVER.PLAYWRIGHT,
-      },
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
+      }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, {
           expectedBalance: '225,730.11',

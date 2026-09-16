@@ -14,11 +14,10 @@ import { Driver } from '../../webdriver/driver';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 
 /**
- * mocks the segment api multiple times for specific payloads that we expect to
- * see when these tests are run. In this case we are looking for
- * 'Permissions Requested' and 'Permissions Received'. Do not use the constants
- * from the metrics constants files, because if these change we want a strong
- * indicator to our data team that the shape of data will change.
+ * Mocks the Segment and MetaMetrics regulation APIs for delete-data events.
+ * Do not use the constants from the metrics constants files, because if these
+ * change we want a strong indicator to our data team that the shape of data
+ * will change.
  *
  * @param mockServer
  * @returns
