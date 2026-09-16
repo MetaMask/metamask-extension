@@ -26,7 +26,7 @@ jobs:
         # and must stay in sync with benchmark-command (startupPowerUserHome uses extra flags).
         #
         # Startup + interaction + user journeys: chrome/firefox × webpack × preset (test build: build-test-webpack / build-test-mv2-webpack).
-        browser: [chrome, firefox]
+        browser: [chrome]
         buildType: [webpack]
         pageType:
           - startupStandardHome
@@ -37,7 +37,7 @@ jobs:
           - userJourneyAssets
           - userJourneyTransactions
           - userJourneyAccountManagement
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-metamask-ci-linux-small
     timeout-minutes: 30
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -135,7 +135,7 @@ jobs:
     name: chrome-webpack-pageLoadBenchmark
     # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-metamask-ci-linux-small
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:

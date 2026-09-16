@@ -1,0 +1,40 @@
+self-hosted-runner:
+  # Labels of self-hosted runner in array of strings.
+  labels:
+    - "gha-mmsdk-scale-set-ubuntu-22.04-amd64-xl"
+    - "gha-mmsdk-scale-set-ubuntu-22.04-amd64-xxl"
+    - "gha-mmsdk-scale-set-ubuntu-22.04-amd64-l-kvm"
+    - "gha-mmsdk-scale-set-ubuntu-22.04-amd64-large"
+    - "gha-mm-scale-set-ubuntu-22.04-amd64-large"
+    - "gha-mm-scale-set-ubuntu-22.04-amd64-small"
+    - "gha-mm-scale-set-ubuntu-22.04-amd64-med"
+    - "macos-15"
+    - "ghcr.io/cirruslabs/macos-runner:tahoe"
+    - "ghcr.io/cirruslabs/macos-runner:tahoe-xl"
+    - "ghcr.io/cirruslabs/ubuntu-runner-amd64:24.04-md"
+    - "ghcr.io/cirruslabs/ubuntu-runner-amd64:24.04-lg"
+    - "ghcr.io/cirruslabs/ubuntu-runner-amd64:24.04-xl"
+    - "low-priority"
+    # Namespace runner profile labels (INFRA-3592). Format: namespace-profile-<profile-name>.
+    - "namespace-profile-metamask-ci-linux"
+    - "namespace-profile-metamask-android-build"
+    - "namespace-profile-metamask-ios-build"
+    - "namespace-profile-metamask-ios-e2e"
+    # MCWP-813
+    - "namespace-profile-metamask-ci-linux-small"
+    - "namespace-profile-metamask-ci-linux-large"
+    - "namespace-profile-metamask-android-e2e"
+
+# Configuration variables in array of strings defined in your repository or
+# organization. `null` means disabling configuration variables check.
+# Empty array means no configuration variable is allowed.
+config-variables: null
+
+# Configuration for file paths. The keys are glob patterns to match to file
+# paths relative to the repository root. The values are the configurations for
+# the file paths. Note that the path separator is always '/'.
+# The following configurations are available.
+#
+# "ignore" is an array of regular expression patterns. Matched error messages
+# are ignored. This is similar to the "-ignore" command line option.
+paths:
