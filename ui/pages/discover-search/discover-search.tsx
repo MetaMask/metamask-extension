@@ -261,7 +261,7 @@ export const DiscoverSearchPage = () => {
   const handleBack = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
-      runCloseTransition(() => navigate(DEFAULT_ROUTE));
+      runCloseTransition(() => navigate(-1));
     },
     [navigate, runCloseTransition],
   );
