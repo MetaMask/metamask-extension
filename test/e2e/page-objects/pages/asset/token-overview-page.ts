@@ -27,9 +27,9 @@ class TokenOverviewPage {
 
   private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
-  private readonly sendButton = '[data-testid="coin-overview-send"]';
+  private readonly sendButton = '[data-testid$="-overview-send"]';
 
-  private readonly swapButton = '[data-testid="coin-overview-swap"]';
+  private readonly swapButton = '[data-testid$="-overview-swap"]';
 
   private readonly viewAssetInExplorerButton = {
     text: 'View Asset in explorer',
