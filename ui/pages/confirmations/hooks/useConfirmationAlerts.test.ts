@@ -1,4 +1,7 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import {
@@ -75,6 +78,33 @@ async function renderAlertsHook(state: Record<string, unknown>) {
   return renderResult;
 }
 
+async function expectNoUniversalGasLimitAlert({
+  gas,
+  gasEstimate,
+}: {
+  gas: string;
+  gasEstimate?: string;
+}) {
+  const baseConfirmation =
+    genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+  const confirmation = {
+    ...baseConfirmation,
+    defaultGasEstimates: gasEstimate
+      ? { ...baseConfirmation.defaultGasEstimates, gas: gasEstimate }
+      : undefined,
+    gasLimitNoBuffer: gasEstimate,
+    txParams: { ...baseConfirmation.txParams, gas },
+  } as TransactionMeta;
+
+  const { result } = await renderAlertsHook(
+    getMockConfirmStateForTransaction(confirmation),
+  );
+
+  expect(result.current).not.toContainEqual(
+    expect.objectContaining({ key: 'gasTooLow' }),
+  );
+}
+
 describe('useConfirmationAlerts', () => {
   beforeEach(() => {
     useNoPayTokenQuotesAlertMock.mockReturnValue([]);
@@ -93,6 +123,31 @@ describe('useConfirmationAlerts', () => {
   it('returns empty array if no alerts', async () => {
     const { result } = await renderAlertsHook(mockState);
     expect(result.current).toEqual([]);
+  });
+
+  it('does not add a universal alert for a legacy-node gas limit', async () => {
+    await expectNoUniversalGasLimitAlert({
+      gas: '0x5208',
+      gasEstimate: '0x5208',
+    });
+  });
+
+  it('does not add a universal alert for an upgraded-node gas limit', async () => {
+    await expectNoUniversalGasLimitAlert({
+      gas: '0x2ee0',
+      gasEstimate: '0x2ee0',
+    });
+  });
+
+  it('does not add a universal alert without a gas estimate', async () => {
+    await expectNoUniversalGasLimitAlert({ gas: '0x2ee0' });
+  });
+
+  it('does not add a universal alert from a stale higher gas estimate', async () => {
+    await expectNoUniversalGasLimitAlert({
+      gas: '0x2ee0',
+      gasEstimate: '0x5208',
+    });
   });
 
   it('strips row field associations for MM Pay transactions', async () => {

@@ -11,7 +11,6 @@ import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTime
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasSponsorshipWarningAlerts } from './alerts/transactions/useGasSponsorshipWarningAlerts';
-import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useAddressPoisoningAlert } from './alerts/transactions/useAddressPoisoningAlert';
 import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
@@ -60,7 +59,6 @@ function useTransactionAlerts(): Alert[] {
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasSponsorshipWarningAlerts = useGasSponsorshipWarningAlerts();
-  const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
   const insufficientPayTokenBalanceAlerts =
     useInsufficientPayTokenBalanceAlert();
@@ -91,7 +89,6 @@ function useTransactionAlerts(): Alert[] {
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
       ...gasSponsorshipWarningAlerts,
-      ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
       ...insufficientPayTokenBalanceAlerts,
       ...insufficientMoneyAccountBalanceAlerts,
@@ -118,7 +115,6 @@ function useTransactionAlerts(): Alert[] {
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
       gasSponsorshipWarningAlerts,
-      gasTooLowAlerts,
       insufficientBalanceAlerts,
       insufficientPayTokenBalanceAlerts,
       insufficientMoneyAccountBalanceAlerts,

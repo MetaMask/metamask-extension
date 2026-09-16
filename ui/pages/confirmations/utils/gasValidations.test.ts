@@ -13,7 +13,7 @@ const mockT = ((key: string, args?: string | string[]) => {
     gasPrice: 'Gas price',
     onlyNumbersAllowed: 'Only numbers are allowed',
     onlyIntegersAllowed: 'Only whole numbers are allowed',
-    gasLimitTooLow: 'Gas limit must be at least 21000',
+    gasLimitTooHigh: 'Gas limit exceeds the maximum supported value',
     priorityFeeTooHigh: 'Priority fee must be less than max base fee',
     maxBaseFeeMustBeGreaterThanPriorityFee:
       'Max base fee must be greater than priority fee',
@@ -54,21 +54,36 @@ describe('gas-validations', () => {
       expect(validateGas('-1', mockT)).toBe('Only numbers are allowed');
     });
 
-    it('return error message when gas is less than 21000', () => {
-      expect(validateGas('20000', mockT)).toBe(
-        'Gas limit must be at least 21000',
-      );
-    });
-
     it('return error message when gas is not an integer', () => {
       expect(validateGas('21000.5', mockT)).toBe(
         'Only whole numbers are allowed',
       );
     });
 
-    it('return undefined when gas is valid', () => {
+    it('return undefined for an upgraded node gas estimate', () => {
+      expect(validateGas('12000', mockT)).toBeUndefined();
+    });
+
+    it('return undefined for a legacy node gas estimate', () => {
       expect(validateGas('21000', mockT)).toBeUndefined();
-      expect(validateGas('30000', mockT)).toBeUndefined();
+    });
+
+    it('return undefined for the maximum representable value', () => {
+      expect(
+        validateGas(
+          '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+          mockT,
+        ),
+      ).toBeUndefined();
+    });
+
+    it('return error message when gas exceeds the representable range', () => {
+      expect(
+        validateGas(
+          '115792089237316195423570985008687907853269984665640564039457584007913129639936',
+          mockT,
+        ),
+      ).toBe('Gas limit exceeds the maximum supported value');
     });
   });
 

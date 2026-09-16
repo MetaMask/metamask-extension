@@ -2,6 +2,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type TranslateFunction = ReturnType<typeof useI18nContext>;
 
+const MAX_GAS_LIMIT = BigInt(
+  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+);
+
 function normalizeGasInput(value: string) {
   return value.replace(',', '.');
 }
@@ -16,7 +20,7 @@ export const validateGas = (
     validateValueIsNumber(value, t) ||
     validateValueIsInteger(value, t) ||
     validateValueIsPositive(value, field, t) ||
-    validateGasLimitValueIsGreaterThanMinimum(value, t) ||
+    validateGasLimitIsRepresentable(value, t) ||
     undefined
   );
 };
@@ -144,15 +148,14 @@ function validateValueIsPositive(
   return t('negativeValuesNotAllowed');
 }
 
-function validateGasLimitValueIsGreaterThanMinimum(
+function validateGasLimitIsRepresentable(
   value: string,
   t: TranslateFunction,
 ): string | false {
-  const normalizedValue = normalizeGasInput(value);
-  if (parseFloat(normalizedValue) >= 21000) {
+  if (BigInt(value) <= MAX_GAS_LIMIT) {
     return false;
   }
-  return t('gasLimitTooLow');
+  return t('gasLimitTooHigh');
 }
 
 function validateValueIsInteger(
