@@ -1,5 +1,6 @@
 import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import type { Messenger } from '@metamask/messenger';
+import type { Json } from '@metamask/utils';
 import {
   endTrace,
   trace,
@@ -17,9 +18,10 @@ const MESSENGER_EXPOSED_METHODS = [
   'clearTracesAfterMetricsOptIn',
 ] as const;
 
-type BufferedTrace =
-  | { type: 'start'; request: TraceRequest }
-  | { type: 'end'; request: EndTraceRequest };
+type BufferedTrace = {
+  type: 'start' | 'end';
+  request: Record<string, Json>;
+};
 
 export type SentryTracingServiceMessenger = Messenger<
   typeof SERVICE_NAME,
@@ -58,10 +60,12 @@ export class SentryTracingService {
       return;
     }
 
+    const { parentContext: _parentContext, ...requestWithoutParent } = request;
+
     this.#tracesBeforeMetricsOptIn.push({
       type: 'start',
       request: {
-        ...request,
+        ...requestWithoutParent,
         startTime: request.startTime ?? Date.now(),
       },
     });
@@ -94,9 +98,9 @@ export class SentryTracingService {
   trackTracesAfterMetricsOptIn(): void {
     this.#tracesBeforeMetricsOptIn.forEach((bufferedTrace) => {
       if (bufferedTrace.type === 'start') {
-        trace(bufferedTrace.request);
+        trace(bufferedTrace.request as TraceRequest);
       } else {
-        endTrace(bufferedTrace.request);
+        endTrace(bufferedTrace.request as EndTraceRequest);
       }
     });
   }
