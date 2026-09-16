@@ -376,6 +376,56 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('preload failure with mounted streams', () => {
+    it.each(['failure', 'timeout'])(
+      'keeps the mounted market fallback connected after preload %s',
+      async (outcome) => {
+        let rejectPreload!: (error: Error) => void;
+        const preload = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        let finishMarkets!: (markets: PerpsMarketData[]) => void;
+        const fallback = new Promise<PerpsMarketData[]>((resolve) => {
+          finishMarkets = resolve;
+        });
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsStartPreload') {
+            return preload;
+          }
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return fallback;
+          }
+          return Promise.resolve();
+        });
+        manager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+        });
+        await flushPromises();
+        const onMarkets = jest.fn();
+        const unsubscribe = manager.markets.subscribe(onMarkets);
+        if (outcome === 'failure') {
+          rejectPreload(new Error('preload market fetch failed'));
+          await flushPromises();
+        }
+        jest.advanceTimersByTime(outcome === 'timeout' ? 30_000 : 3000);
+        await flushPromises();
+        expect(manager.isInitialized()).toBe(false);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: false }],
+        );
+        const markets = [{ symbol: 'BTC' }] as PerpsMarketData[];
+        finishMarkets(markets);
+        await flushPromises();
+        expect(onMarkets).toHaveBeenLastCalledWith(markets);
+        expect(manager.markets.getCachedData()).toEqual(markets);
+        unsubscribe();
+      },
+    );
+  });
+
   describe('constructor', () => {
     it('initializes all data channels with empty defaults', () => {
       expect(manager.positions.getCachedData()).toEqual([]);

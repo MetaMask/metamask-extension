@@ -236,7 +236,7 @@ export class PerpsStreamBridge {
   #wasDeviceOffline = false;
 
   /**
-   * Invalidate every UI's subscription ownership before global provider teardown.
+   * Stop every UI's streams while retaining mounted subscriptions for recovery.
    *
    * @param controller - Shared background controller whose provider is stopping.
    */
@@ -248,7 +248,7 @@ export class PerpsStreamBridge {
       session.needsTeardown = true;
     }
     for (const bridge of controllerBridges.get(controller) ?? []) {
-      bridge.destroy();
+      bridge.#detachForReinitialization(false);
     }
   }
 
@@ -608,7 +608,11 @@ export class PerpsStreamBridge {
     this.#wasDeviceOffline = false;
   }
 
-  #detachForAccountSwitch(): void {
+  /**
+   * Park mounted streams until the account is initialized again.
+   * @param preservePreload - Keep preload ownership during an account switch.
+   */
+  #detachForReinitialization(preservePreload: boolean): void {
     const subscriptions = { ...this.#dynamicSubscriptions };
     for (const key of this.#pendingCandleTeardowns.keys()) {
       delete subscriptions[key];
@@ -616,7 +620,7 @@ export class PerpsStreamBridge {
     const viewActive = this.#viewActive || this.#accountViewActive;
     const preloadId = this.#preloadId;
     this.destroy();
-    this.#preloadId = preloadId;
+    this.#preloadId = preservePreload ? preloadId : null;
     this.#dynamicSubscriptions = subscriptions;
     this.#accountViewActive = viewActive;
   }
@@ -654,7 +658,7 @@ export class PerpsStreamBridge {
         session.cleanup = undefined;
         for (const bridge of controllerBridges.get(this.#controller) ?? []) {
           if (!bridge.#hasSessionOwner()) {
-            bridge.destroy();
+            bridge.#detachForReinitialization(false);
           }
         }
         const hasOwner = [
@@ -702,7 +706,7 @@ export class PerpsStreamBridge {
           ) {
             for (const bridge of controllerBridges.get(this.#controller) ??
               []) {
-              bridge.#detachForAccountSwitch();
+              bridge.#detachForReinitialization(true);
             }
             PerpsStreamBridge.#releaseFills(session);
             await this.#perpsDisconnect();
@@ -722,7 +726,10 @@ export class PerpsStreamBridge {
           for (const [key, subscribe] of Object.entries(
             this.#dynamicSubscriptions,
           )) {
-            if (!this.#dynamicUnsubs[key]) {
+            if (
+              !this.#dynamicUnsubs[key] &&
+              !this.#pendingCandleTeardowns.has(key)
+            ) {
               this.#dynamicUnsubs[key] = subscribe();
             }
           }

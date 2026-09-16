@@ -5,6 +5,7 @@ import type {
   TimeDuration,
 } from '../../../components/app/perps/constants/chartConfig';
 import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLiveCandles hook
@@ -83,6 +84,7 @@ export function usePerpsLiveCandles(
   options: UsePerpsLiveCandlesOptions,
 ): UsePerpsLiveCandlesReturn {
   const { symbol, interval, duration, throttleMs = 1000, onError } = options;
+  const { streamManager } = usePerpsStreamManager();
 
   const [candleData, setCandleData] = useState<CandleData | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -108,11 +110,9 @@ export function usePerpsLiveCandles(
   }
 
   useEffect(() => {
-    if (!symbol || !interval) {
+    if (!symbol || !interval || !streamManager) {
       return undefined;
     }
-
-    const streamManager = getPerpsStreamManager();
 
     const unsubscribe = streamManager.candles.subscribe({
       symbol,
@@ -148,7 +148,7 @@ export function usePerpsLiveCandles(
     return () => {
       unsubscribe();
     };
-  }, [symbol, interval, duration, throttleMs, onError]);
+  }, [streamManager, symbol, interval, duration, throttleMs, onError]);
 
   // Fetch more historical candles (scroll-left load-more)
   const fetchMoreHistory = useCallback(() => {
@@ -158,8 +158,8 @@ export function usePerpsLiveCandles(
 
     setIsLoadingMore(true);
 
-    const streamManager = getPerpsStreamManager();
-    streamManager.candles
+    const manager = getPerpsStreamManager();
+    manager.candles
       .fetchHistoricalCandles(symbol, interval, duration)
       .catch((err: unknown) => {
         console.error('[usePerpsLiveCandles] fetchMoreHistory failed:', err);

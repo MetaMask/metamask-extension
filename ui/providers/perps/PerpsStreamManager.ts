@@ -848,9 +848,12 @@ class PerpsStreamManager {
       this.preloadId === id && generation === this.initializationGeneration;
     const invalidateReadiness = () => {
       if (isCurrent()) {
-        // The background may disconnect even after account initialization succeeds.
-        // Retire pending init too, so late completion cannot restore readiness.
-        this.reset(true);
+        // Retire readiness without cancelling mounted streams or REST fallbacks.
+        // Late initialization must not restore readiness after preload is released.
+        this.initializationGeneration += 1;
+        this.pendingInit = null;
+        this.initializedAddress = null;
+        this.cleanupPrewarm();
       }
     };
     let cancelled = false;
