@@ -5212,7 +5212,7 @@
   },
   "lowValueAssets": {
     "message": "कम वैल्यू वाले टोकन ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -7838,12 +7838,6 @@
   "perpsSortByPriceChange": {
     "message": "प्राइस में बदलाव"
   },
-  "perpsSortByRank": {
-    "message": "रैंक"
-  },
-  "perpsSortBySection": {
-    "message": "इसके अनुसार क्रमबद्ध करें"
-  },
   "perpsSortByTitle": {
     "message": "फिल्टर"
   },
@@ -8636,9 +8630,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "पिछली बार इस्तेमाल किया गया"
-  },
-  "rampsQuoteFetchError": {
-    "message": "कोटेशन प्राप्त नहीं हो पाया।"
   },
   "rampsQuoteUnavailable": {
     "message": "कोटेशन उपलब्ध नहीं है।"

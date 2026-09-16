@@ -13,6 +13,14 @@ import {
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from './constants/money-events';
 import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
 import { onchainItem } from './types/money-activity';
 import { MoneyActivityPage } from './money-activity-page';
@@ -58,6 +66,12 @@ jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
   useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
 }));
 
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+
 const mockItems = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
 const mockBuckets = buildMoneyActivityBuckets(mockItems);
 
@@ -80,6 +94,7 @@ function makePendingDeposit(): ReturnType<typeof onchainItem> {
 describe('MoneyActivityPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockGetPrivacyMode.mockReturnValue(false);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
@@ -210,6 +225,37 @@ describe('MoneyActivityPage', () => {
     expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
       mockBuckets[MoneyActivityFilter.Transfers].length,
     );
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.Filter,
+      labelKey: 'moneyActivityFilterSends',
+      componentName: MoneyComponentName.ActivityFilterTransfers,
+    });
+  });
+
+  it('tracks the screen as viewed once availability has resolved', () => {
+    mockUseMoneyAccountAvailability.mockReturnValue({
+      availability: { isAvailable: false },
+      isLoading: true,
+    });
+
+    const { rerender } = renderWithLocalization(<MoneyActivityPage />);
+    expect(mockMoneyAnalytics.trackScreenViewed).not.toHaveBeenCalled();
+
+    mockUseMoneyAccountAvailability.mockReturnValue({
+      availability: {
+        isAvailable: true,
+        address: '0x0000000000000000000000000000000000000001',
+      },
+      isLoading: false,
+    });
+    rerender(<MoneyActivityPage />);
+    rerender(<MoneyActivityPage />);
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyActivity,
+    });
+    expect(mockMoneyAnalytics.trackScreenViewed).toHaveBeenCalledTimes(1);
   });
 
   it('shows empty copy when the active filter has no items', () => {
