@@ -88,7 +88,10 @@ class OnboardingPasswordPage {
   ): Promise<void> {
     console.log('Create password for wallet');
     await this.fillWalletPassword(password, password);
-    await this.driver.clickElementAndWaitToDisappear(this.createPasswordButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.createPasswordButton,
+      15000,
+    );
   }
 
   /**
