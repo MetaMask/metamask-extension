@@ -5399,13 +5399,6 @@
   "money": {
     "message": "Финансы"
   },
-  "moneyAccountApyPitch": {
-    "message": "Зарабатывайте $1% годовых (APY)",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Информация о годовом процентном доходе (APY)"
-  },
   "moneyAccountApyTooltip": {
     "message": "Указанная ставка является предполагаемой годовой процентной доходностью (APY), основанной на текущих рыночных условиях. APY может меняться и не гарантируется."
   },
@@ -5415,9 +5408,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Прогнозируемый баланс через 1 лет:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Прогнозируемый баланс через 1 лет"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Прогноз предполагает, что годовая процентная доходность (APY) в размере $1% останется неизменной в течение одного года. APY может меняться и не гарантируется.",
@@ -5497,9 +5487,6 @@
   },
   "moneyBalanceLastKnown": {
     "message": "Последний известный баланс"
-  },
-  "moneyBalanceTitle": {
-    "message": "Баланс Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Баланс недоступен"

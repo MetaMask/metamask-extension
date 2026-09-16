@@ -8,24 +8,29 @@ import React, {
 import classnames from 'clsx';
 import { Text, type TextProps } from '@metamask/design-system-react';
 import { Popover, PopoverPosition } from '../../../component-library';
-import { INFO_POPOVER_STYLE } from '../../musd/info-popover';
+
+const TOOLTIP_POPOVER_STYLE = {
+  zIndex: 1050,
+  paddingTop: '6px',
+  paddingBottom: '6px',
+  paddingLeft: '16px',
+  paddingRight: '16px',
+  maxWidth: 250,
+} as const;
 
 export type TooltipTextProps = Omit<TextProps, 'children' | 'asChild'> & {
   /** The visible text that is underlined and acts as the tooltip trigger. */
   text: string;
-  /** The tooltip body, shown while the text is hovered or focused. */
+  /** The tooltip body, shown while the text is hovered. */
   children: ReactNode;
   position?: PopoverPosition;
   /** Called each time the tooltip opens. */
   onOpen?: () => void;
-  /** Merged over the shared info popover panel styles (e.g. maxWidth, padding). */
+  /** Merged over the default popover panel styles (e.g. maxWidth, padding). */
   popoverStyle?: CSSProperties;
   'data-testid'?: string;
 };
 
-/**
- * Underlined text that reveals a tooltip on hover or keyboard focus.
- */
 export function TooltipText({
   children,
   text,
@@ -63,12 +68,9 @@ export function TooltipText({
       >
         <span
           ref={setReferenceElement}
-          tabIndex={0}
           aria-describedby={isOpen ? popoverId : undefined}
           onMouseEnter={handleOpen}
           onMouseLeave={handleClose}
-          onFocus={handleOpen}
-          onBlur={handleClose}
           data-testid={dataTestId ? `${dataTestId}-trigger` : undefined}
         >
           {text}
@@ -82,7 +84,7 @@ export function TooltipText({
         hasArrow
         onPressEscKey={handleClose}
         isPortal
-        style={{ ...INFO_POPOVER_STYLE, ...popoverStyle }}
+        style={{ ...TOOLTIP_POPOVER_STYLE, ...popoverStyle }}
         data-testid={dataTestId}
       >
         {children}

@@ -104,16 +104,17 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
+        gap={1}
         data-testid="balance-projection"
       >
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('moneyAccountProjectedBalance')}
         </Text>
-        &nbsp;
         <TooltipText
           text={moneyFormatUsd(projected)}
           variant={TextVariant.BodyMd}
           color={TextColor.SuccessDefault}
+          data-testid="balance-projection-info"
           onOpen={() =>
             trackTooltipClicked({
               tooltipName: MoneyTooltipName.EarnOnYourCrypto,
@@ -136,23 +137,24 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
       data-testid="balance-projection-apy-pitch"
     >
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {t('moneyAccountApyPitchEarn')}
+        {t('moneyAccountApyPitchEarn', [
+          <TooltipText
+            key="apy"
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            data-testid="balance-projection-apy-pitch-info"
+            text={t('moneyAccountApyPitchApy', [String(apyPercent)])}
+            onOpen={() =>
+              trackTooltipClicked({
+                tooltipName: MoneyTooltipName.Apy,
+                tooltipType: MoneyTooltipType.Info,
+              })
+            }
+          >
+            {t('moneyAccountApyTooltip')}
+          </TooltipText>,
+        ])}
       </Text>
-      &nbsp;
-      <TooltipText
-        variant={TextVariant.BodyMd}
-        color={TextColor.TextAlternative}
-        data-testid="balance-projection-apy-pitch-info"
-        text={t('moneyAccountApyPitchApy', [String(apyPercent)])}
-        onOpen={() =>
-          trackTooltipClicked({
-            tooltipName: MoneyTooltipName.Apy,
-            tooltipType: MoneyTooltipType.Info,
-          })
-        }
-      >
-        {t('moneyAccountApyTooltip')}
-      </TooltipText>
     </Box>
   );
 };

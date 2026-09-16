@@ -13,7 +13,6 @@ export type MoneyTransactionDetailsRowProps = {
   label: ReactNode;
   value: ReactNode;
   testId: string;
-  labelEnd?: ReactNode;
 };
 
 /**
@@ -23,7 +22,6 @@ export type MoneyTransactionDetailsRowProps = {
  * @param options0.label - Left-side field name.
  * @param options0.value - Right-side field value.
  * @param options0.testId - Test id for the row.
- * @param options0.labelEnd - Optional control rendered after the label.
  * @returns The details row, or null when value is empty.
  */
 export function MoneyTransactionDetailsRow({

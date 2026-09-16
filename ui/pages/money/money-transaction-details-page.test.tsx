@@ -301,12 +301,12 @@ describe('MoneyTransactionDetailsPage', () => {
     ).toHaveTextContent('<$0.01');
   });
 
-  it('opens the transaction fee information popover', async () => {
+  it('shows the transaction fee tooltip when the label is hovered', async () => {
     renderWithLocalization(<MoneyTransactionDetailsPage />);
 
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('money-transaction-details-fee-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-transaction-details-fee-info-trigger'),
       );
     });
 

@@ -5399,13 +5399,6 @@
   "money": {
     "message": "Οικονομικά"
   },
-  "moneyAccountApyPitch": {
-    "message": "Κερδίστε $1% APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Πληροφορίες για την Ετήσια Ποσοστιαία Απόδοση (APY)"
-  },
   "moneyAccountApyTooltip": {
     "message": "Το επιτόκιο που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Ποσοστιαία Απόδοση (APY) με βάση τις τρέχουσες συνθήκες της αγοράς. Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
   },
@@ -5415,9 +5408,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Προβλεπόμενο υπόλοιπο 1ετίας:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Προβλεπόμενο υπόλοιπο 1ετίας"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Η εκτίμηση υποθέτει ότι το $1% Ετήσιο Ποσοστό Απόδοσης (APY) παραμένει αμετάβλητο για ένα έτος. Το APY είναι μεταβλητό και δεν είναι εγγυημένο.",
@@ -5497,9 +5487,6 @@
   },
   "moneyBalanceLastKnown": {
     "message": "Υπόλοιπο κατά την τελευταία ενημέρωση"
-  },
-  "moneyBalanceTitle": {
-    "message": "Υπόλοιπο χρημάτων"
   },
   "moneyBalanceUnavailable": {
     "message": "Το υπόλοιπο δεν είναι διαθέσιμο"
