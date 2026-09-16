@@ -318,8 +318,21 @@ const reactRefreshJsxLoader = getSwcLoader(
   swcReactRefreshConfig,
 );
 
-const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
-const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+// npm packages keep runtime `process.env.*` unless SWC inlines them. First-party
+// code gets the full `safeVariables` map, but `@metamask/network-controller`
+// (and similar) only see `process/browser`'s empty `env`, so `IN_TEST` was
+// always falsy there and custom networks kept the 20s block-tracker interval
+// instead of the 1s test interval. Inline only `IN_TEST` for npm/CJS loaders.
+const npmEnvs =
+  safeVariables.IN_TEST === undefined ? {} : { IN_TEST: safeVariables.IN_TEST };
+const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
+const cjsLoader = getSwcLoader(
+  'ecmascript',
+  false,
+  npmEnvs,
+  swcConfig,
+  'commonjs',
+);
 
 const isChunkableInitial = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
