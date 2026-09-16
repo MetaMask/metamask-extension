@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import {
@@ -20,6 +20,7 @@ import {
 import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
@@ -58,6 +59,7 @@ import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards
 import { MoneyMoreMenu } from './components/money-more-menu';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyEarnings } from './components/money-earnings';
+import { MoneySectionDivider } from './components/money-section-divider';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { MoneyTransferSheet } from './components/money-transfer-sheet';
 
@@ -120,10 +122,6 @@ const MoneyActionCard = ({
       </Text>
     </button>
   );
-};
-
-const MoneySectionDivider = () => {
-  return <div className="my-5 h-px w-full bg-border-muted" />;
 };
 
 export function MoneyHomePage() {
@@ -507,7 +505,11 @@ export function MoneyHomePage() {
           ) : (
             <>
               <section className="px-4 py-3">
-                <div className="flex items-center gap-1">
+                <Link
+                  to={MONEY_HOW_IT_WORKS_ROUTE}
+                  className="flex items-center gap-1 text-left no-underline text-inherit"
+                  data-testid="money-how-it-works-header"
+                >
                   <Text
                     variant={TextVariant.HeadingMd}
                     fontWeight={FontWeight.Bold}
@@ -519,7 +521,7 @@ export function MoneyHomePage() {
                     size={IconSize.Md}
                     color={IconColor.IconAlternative}
                   />
-                </div>
+                </Link>
                 <Text
                   variant={TextVariant.BodyMd}
                   color={TextColor.TextAlternative}
