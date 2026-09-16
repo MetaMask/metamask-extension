@@ -634,7 +634,10 @@ export class PerpsStreamBridge {
     return Boolean(
       this.#isConnectionAlive() &&
       this.#isPreloadAllowed() &&
-      (this.#walletInitialized || this.#viewActive || this.#preloadId),
+      (this.#walletInitialized ||
+        this.#viewActive ||
+        this.#accountViewActive ||
+        this.#preloadId),
     );
   }
 
@@ -744,6 +747,7 @@ export class PerpsStreamBridge {
     if (!this.#isPreloadAllowed()) {
       throw new Error('Perps connection is unavailable');
     }
+    const address = this.#getSelectedAddress().toLowerCase();
     const generation = this.#destroyGeneration;
     const preloadId = this.#preloadId;
     const session = this.#getAccountSession();
@@ -759,6 +763,16 @@ export class PerpsStreamBridge {
           !this.#isPreloadAllowed()
         ) {
           return;
+        }
+        if (address !== this.#getSelectedAddress().toLowerCase()) {
+          throw new Error('Perps account changed');
+        }
+        // Only initForAccount may recover a retired provider or switch accounts.
+        if (
+          session.needsTeardown ||
+          (session.address && session.address !== address)
+        ) {
+          throw new Error('Perps account initialization required');
         }
         await this.#perpsInit();
         if (

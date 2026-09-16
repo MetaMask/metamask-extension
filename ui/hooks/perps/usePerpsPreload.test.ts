@@ -39,14 +39,17 @@ jest.mock('../../helpers/perps/entry-trace', () => ({
   observePerpsLifecycle: () => jest.fn(),
   PERPS_LIFECYCLE_TAG: 'lifecycle_context',
 }));
-const mockManager = {
+const { PerpsStreamManager: ActualManager } = jest.requireActual<
+  typeof import('../../providers/perps/PerpsStreamManager')
+>('../../providers/perps/PerpsStreamManager');
+const mockManager = Object.assign(new ActualManager(), {
   initForAddress: jest.fn(),
   reset: jest.fn(),
   setUseTerminalApi: jest.fn(),
   prewarm: jest.fn(),
   cleanupPrewarm: jest.fn(),
   clearAllCaches: jest.fn(),
-};
+});
 let mockCurrentManager: typeof mockManager | PerpsStreamManager = mockManager;
 jest.mock('../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => mockCurrentManager,
@@ -105,36 +108,6 @@ describe('usePerpsPreload', () => {
 
   afterEach(() => {
     jest.useRealTimers();
-  });
-
-  it('registers ownership before initializing and cancels before delayed registration completes', async () => {
-    const registration = deferred();
-    jest
-      .mocked(submitRequestToBackground)
-      .mockImplementation((method) =>
-        method === 'perpsRegisterPreload'
-          ? registration.promise
-          : Promise.resolve(undefined),
-      );
-    const { unmount } = renderHook(() => usePerpsPreload(true));
-    expect(submitRequestToBackground).toHaveBeenCalledWith(
-      'perpsRegisterPreload',
-      [expect.any(String)],
-    );
-    expect(mockManager.initForAddress).not.toHaveBeenCalled();
-    unmount();
-    await act(async () => {
-      registration.resolve();
-    });
-    expect(mockManager.initForAddress).not.toHaveBeenCalled();
-    expect(submitRequestToBackground).not.toHaveBeenCalledWith(
-      'perpsStartPreload',
-      expect.anything(),
-    );
-    expect(submitRequestToBackground).toHaveBeenCalledWith('perpsStopPreload', [
-      expect.any(String),
-      false,
-    ]);
   });
 
   it('uses the explicitly selected EVM account when another EVM account has newer metadata', async () => {
@@ -212,121 +185,6 @@ describe('usePerpsPreload', () => {
       expect(mockManager.initForAddress).toHaveBeenCalledWith('0xready');
     },
   );
-
-  it('ends the connection span only after the background subscriptions are ready', async () => {
-    const ready = deferred();
-    jest
-      .mocked(submitRequestToBackground)
-      .mockImplementation((method) =>
-        method === 'perpsStartPreload'
-          ? ready.promise
-          : Promise.resolve(undefined),
-      );
-    let unmount!: () => void;
-    await act(async () => {
-      ({ unmount } = renderHook(() => usePerpsPreload(true)));
-    });
-    expect(endTrace).not.toHaveBeenCalled();
-    expect(mockManager.prewarm).toHaveBeenCalledTimes(1);
-
-    await act(async () => {
-      ready.resolve();
-    });
-
-    expect(endTrace).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: TraceName.PerpsConnectionEstablishment,
-        data: { success: true, reason: 'subscriptions_ready' },
-      }),
-    );
-    const { id } = jest.mocked(trace).mock.calls[0][0];
-    unmount();
-    expect(submitRequestToBackground).toHaveBeenCalledWith('perpsStopPreload', [
-      id,
-      true,
-    ]);
-    expect(endTrace).toHaveBeenCalledTimes(1);
-    expect(mockManager.clearAllCaches).toHaveBeenCalled();
-    expect(jest.getTimerCount()).toBe(0);
-  });
-
-  it('does not start subscriptions after unmount during initialization', async () => {
-    const init = deferred();
-    mockManager.initForAddress.mockReturnValue(init.promise);
-    let unmount!: () => void;
-    await act(async () => {
-      ({ unmount } = renderHook(() => usePerpsPreload(true)));
-    });
-    expect(mockManager.initForAddress).toHaveBeenCalledTimes(1);
-
-    unmount();
-    await act(async () => {
-      init.resolve();
-    });
-
-    expect(mockManager.prewarm).not.toHaveBeenCalled();
-    expect(submitRequestToBackground).not.toHaveBeenCalledWith(
-      'perpsStartPreload',
-      expect.anything(),
-    );
-    expect(endTrace).toHaveBeenCalledTimes(1);
-    expect(endTrace).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { success: false, reason: 'released' } }),
-    );
-  });
-
-  it('records a timeout once and ignores late connection completion', async () => {
-    const ready = deferred();
-    jest
-      .mocked(submitRequestToBackground)
-      .mockImplementation((method) =>
-        method === 'perpsStartPreload'
-          ? ready.promise
-          : Promise.resolve(undefined),
-      );
-    await act(async () => {
-      renderHook(() => usePerpsPreload(true));
-    });
-
-    await act(async () => {
-      jest.advanceTimersByTime(30_000);
-      ready.resolve();
-    });
-
-    expect(endTrace).toHaveBeenCalledTimes(1);
-    expect(endTrace).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { success: false, reason: 'timeout' } }),
-    );
-    expect(mockManager.cleanupPrewarm).toHaveBeenCalled();
-    expect(submitRequestToBackground).toHaveBeenCalledWith('perpsStopPreload', [
-      expect.any(String),
-      false,
-    ]);
-  });
-
-  it('records initialization failure without claiming readiness', async () => {
-    mockManager.initForAddress.mockRejectedValue(new Error('offline'));
-    const debug = jest
-      .spyOn(console, 'debug')
-      .mockImplementation(() => undefined);
-
-    await act(async () => {
-      renderHook(() => usePerpsPreload(true));
-    });
-
-    expect(endTrace).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: { success: false, reason: 'connection_failed' },
-      }),
-    );
-    expect(mockManager.prewarm).not.toHaveBeenCalled();
-    expect(jest.getTimerCount()).toBe(0);
-    expect(submitRequestToBackground).toHaveBeenCalledWith('perpsStopPreload', [
-      expect.any(String),
-      false,
-    ]);
-    debug.mockRestore();
-  });
 
   it.each(['account', 'provider', 'network', 'terminal'] as const)(
     'releases the old owner when %s changes',
