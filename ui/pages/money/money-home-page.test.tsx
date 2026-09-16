@@ -185,6 +185,11 @@ describe('MoneyHomePage', () => {
       initiateDeposit: mockInitiateDeposit,
       isLoading: false,
     });
+    mockInitiateWithdrawal.mockResolvedValue(undefined);
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: false,
+    });
   });
 
   it('renders the full empty-state composition with a live zero balance', () => {
@@ -292,12 +297,8 @@ describe('MoneyHomePage', () => {
     });
   });
 
-  it('opens the money transfer sheet from Send', () => {
+  it('initiates a withdrawal from Send without opening the transfer sheet', () => {
     renderWithLocalization(<MoneyHomePage />);
-
-    expect(
-      screen.queryByTestId('money-transfer-sheet'),
-    ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('money-send-button'));
 
@@ -306,12 +307,26 @@ describe('MoneyHomePage', () => {
       buttonIntent: MoneyButtonIntent.TransferMoney,
       componentName: MoneyComponentName.ActionButtonRow,
       labelKey: 'moneySend',
-      redirectTarget: MoneyBottomSheetName.TransferMoneySheet,
+      redirectTarget: MoneyScreenName.MoneyTransfer,
       buttonPosition: 2,
       buttonRowButtonCount: 2,
     });
 
-    expect(screen.getByTestId('money-transfer-sheet')).toBeInTheDocument();
+    expect(mockInitiateWithdrawal).toHaveBeenCalledTimes(1);
+    expect(
+      screen.queryByTestId('money-transfer-sheet'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('disables Send while a withdrawal is being set up', () => {
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-send-button')).toBeDisabled();
   });
 
   it('initiates a deposit from the Add action card', () => {
