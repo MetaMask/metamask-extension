@@ -246,10 +246,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: toBridgeToken(
-          mockBridgeQuotesNativeErc20[0].quote.src.asset,
-        ),
-        fromNativeBalance: '1000000000000000000',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -320,10 +317,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: toBridgeToken(
-          mockBridgeQuotesNativeErc20[0].quote.src.asset,
-        ),
-        fromNativeBalance: '1000000000000000000',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -373,10 +367,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: toBridgeToken(
-          mockBridgeQuotesNativeErc20[0].quote.src.asset,
-        ),
-        fromNativeBalance: '1000000000000000000',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -466,10 +457,7 @@ describe('BridgeCTAButton', () => {
         },
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromToken: toBridgeToken(
-            mockBridgeQuotesNativeErc20[0].quote.src.asset,
-          ),
-          fromNativeBalance: '1000000000000000000',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
@@ -536,10 +524,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: toBridgeToken(
-          mockBridgeQuotesNativeErc20[0].quote.src.asset,
-        ),
-        fromNativeBalance: '1000000000000000000',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -630,10 +615,7 @@ describe('BridgeCTAButton', () => {
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromToken: toBridgeToken(
-            mockBridgeQuotesNativeErc20[0].quote.src.asset,
-          ),
-          fromNativeBalance: '1000000000000000000',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
@@ -705,10 +687,7 @@ describe('BridgeCTAButton', () => {
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromToken: toBridgeToken(
-            mockBridgeQuotesNativeErc20[0].quote.src.asset,
-          ),
-          fromNativeBalance: '1000000000000000000',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
@@ -796,10 +775,7 @@ describe('BridgeCTAButton', () => {
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromToken: toBridgeToken(
-            mockBridgeQuotesNativeErc20[0].quote.src.asset,
-          ),
-          fromNativeBalance: '1000000000000000000',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
@@ -835,10 +811,7 @@ describe('BridgeCTAButton', () => {
     const mockStore = createBridgeMockStore({
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: toBridgeToken(
-          mockBridgeQuotesNativeErc20[0].quote.src.asset,
-        ),
-        fromNativeBalance: '1000000000000000000',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -899,10 +872,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: toBridgeToken(
-          mockBridgeQuotesNativeErc20[0].quote.src.asset,
-        ),
-        fromNativeBalance: '1000000000000000000',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -969,10 +939,7 @@ describe('BridgeCTAButton', () => {
         },
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromToken: toBridgeToken(
-            mockBridgeQuotesNativeErc20[0].quote.src.asset,
-          ),
-          fromNativeBalance: '1000000000000000000',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
