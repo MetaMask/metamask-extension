@@ -276,6 +276,34 @@ describe('MoneyAccountBalance', () => {
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
   });
 
+  it('shows Add instead of $0.00 when the live balance is sub-cent dust', () => {
+    arrange({
+      tokenTotal: new BigNumber('0.004'),
+      totalFiatFormatted: '$0.00',
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toHaveTextContent(tEn('moneyAdd'));
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+  });
+
+  it('shows the figure rather than Add once the live balance reaches one cent', () => {
+    arrange({
+      tokenTotal: new BigNumber('0.01'),
+      totalFiatFormatted: '$0.01',
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$0.01',
+    );
+  });
+
   it('keeps the masked figure rather than Add when privacy mode hides a zero balance', () => {
     arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
 

@@ -35,7 +35,10 @@ import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-item
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { useTrackOnce } from '../../hooks/useTrackOnce';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import {
+  isMoneyBalanceFunded,
+  moneyFormatUsd,
+} from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { reportMoneyError } from '../../helpers/money/report-money-error';
@@ -58,7 +61,6 @@ import { MoneyEarnings } from './components/money-earnings';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { MoneyTransferSheet } from './components/money-transfer-sheet';
 
-const MONEY_FUNDED_BALANCE_THRESHOLD = 0.01;
 const ACTION_BUTTON_ROW_BUTTON_COUNT = 2;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 const FORMATTED_ZERO = moneyFormatUsd(new BigNumber(0));
@@ -146,8 +148,7 @@ export function MoneyHomePage() {
   const isMoneyEarningSectionEnabled = useSelector(
     selectMoneyEarningSectionEnabled,
   );
-  const isFunded =
-    tokenTotal?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
+  const isFunded = isMoneyBalanceFunded(tokenTotal);
   const { last30DaysQuery, sinceInceptionQuery } = useMoneyAccountInterest({
     enabled:
       availability.isAvailable && isMoneyEarningSectionEnabled && isFunded,

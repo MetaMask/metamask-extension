@@ -19,6 +19,7 @@ import {
 import { PopoverPosition } from '../../../component-library';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
+import { isMoneyBalanceFunded } from '../../../../helpers/money/format';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
@@ -50,16 +51,16 @@ export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
   'money-account-balance-add-button';
 
 const AddOrBalance = ({
-  balance,
-  isZeroBalance,
+  fiatBalance,
+  showAddButton,
   isLoading,
   privacyMode,
   onAddClick,
   isDepositLoading,
   isLastKnown,
 }: {
-  balance: string | undefined;
-  isZeroBalance: boolean;
+  fiatBalance: string | undefined;
+  showAddButton: boolean;
   isLoading: boolean;
   privacyMode: boolean;
   onAddClick: () => void;
@@ -68,7 +69,7 @@ const AddOrBalance = ({
 }) => {
   const t = useI18nContext();
 
-  if (isZeroBalance && !privacyMode) {
+  if (showAddButton) {
     return (
       <Button
         size={ButtonSize.Md}
@@ -101,7 +102,7 @@ const AddOrBalance = ({
             fontWeight={FontWeight.Medium}
             data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
           >
-            {balance}
+            {fiatBalance}
           </SensitiveText>
 
           {isLastKnown ? (
@@ -192,15 +193,17 @@ export const MoneyAccountBalance = () => {
       componentName: MoneyComponentName.BalanceCard,
     });
 
-  const balance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
-  const isLoading = isBalanceLoading && balance === undefined;
+  const fiatBalance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
+  const isLoading = isBalanceLoading && fiatBalance === undefined;
   const isLastKnown = totalFiatFormatted === undefined && !isLoading;
   const isApyLoading = vaultApyQuery.isLoading && !apyPercentFormatted;
   const isVisible =
     isHomeCardEnabled &&
     hasMoneyAccount &&
-    (balance !== undefined || isLoading);
-  const isZeroBalance = tokenTotal?.isZero() ?? false;
+    (fiatBalance !== undefined || isLoading);
+  const hasLiveUnfundedBalance =
+    tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
+  const showAddButton = hasLiveUnfundedBalance && !privacyMode;
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -291,8 +294,8 @@ export const MoneyAccountBalance = () => {
         </Box>
       </Box>
       <AddOrBalance
-        balance={balance}
-        isZeroBalance={isZeroBalance}
+        fiatBalance={fiatBalance}
+        showAddButton={showAddButton}
         isLoading={isLoading}
         privacyMode={privacyMode}
         onAddClick={handleAddClick}

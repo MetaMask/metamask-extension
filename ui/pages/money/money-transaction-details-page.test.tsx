@@ -361,8 +361,8 @@ describe('MoneyTransactionDetailsPage', () => {
     ).not.toBeInTheDocument();
 
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('money-transaction-details-fee-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-transaction-details-fee-info-trigger'),
       );
     });
 
@@ -387,8 +387,8 @@ describe('MoneyTransactionDetailsPage', () => {
     ).toHaveTextContent('$0.34');
 
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('money-transaction-details-fee-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-transaction-details-fee-info-trigger'),
       );
     });
 
@@ -407,8 +407,8 @@ describe('MoneyTransactionDetailsPage', () => {
     ).not.toBeInTheDocument();
 
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('money-transaction-details-fee-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-transaction-details-fee-info-trigger'),
       );
     });
 
