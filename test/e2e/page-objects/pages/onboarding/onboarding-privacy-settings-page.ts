@@ -85,8 +85,6 @@ class OnboardingPrivacySettingsPage {
 
   private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
 
-  private readonly securitySettings = '[data-testid="category-item-Security"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -132,11 +130,13 @@ class OnboardingPrivacySettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
+      // The Security category is deliberately omitted: when Basic Functionality
+      // consolidation is enabled it is only rendered for the social login flow,
+      // so it cannot identify this page.
       await this.driver.waitForMultipleSelectors([
         this.page,
         this.generalSettings,
         this.assetsSettings,
-        this.securitySettings,
       ]);
     } catch (e) {
       console.log(
