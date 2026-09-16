@@ -296,6 +296,25 @@ describe('RampOrderDetails', () => {
     });
   });
 
+  it('prevents duplicate provider tabs while the watcher is opening one', async () => {
+    let resolveWatch: (() => void) | undefined;
+    mockWatchProviderOrderTab.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveWatch = resolve;
+      }),
+    );
+    const { getByText } = render(<RampOrderDetails item={buildItem()} />);
+    const viewOnProvider = getByText('rampsOrderDetailsViewOnProvider:Transak');
+
+    viewOnProvider.click();
+    viewOnProvider.click();
+
+    expect(mockWatchProviderOrderTab).toHaveBeenCalledTimes(1);
+
+    resolveWatch?.();
+    await Promise.resolve();
+  });
+
   it('shows a "buy again" CTA for a buy order', () => {
     const { getByText } = render(<RampOrderDetails item={buildItem()} />);
 

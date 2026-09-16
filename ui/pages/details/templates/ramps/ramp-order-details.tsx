@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Button,
   ButtonSize,
@@ -18,6 +18,7 @@ import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRa
 import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
 import { useRampsScreenViewed } from '../../../../hooks/ramps/useRampsScreenViewed';
 import { hasPositiveNumericAmount } from '../../../../hooks/ramps/utils/hasPositiveNumericAmount';
+import { useBoolean } from '../../../../hooks/useBoolean';
 import { watchRampsProviderOrderTab } from '../../../../store/controller-actions/ramps-controller';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
 import { Footer, Row, Section } from '../../components/shared';
@@ -44,6 +45,11 @@ export function RampOrderDetails({
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const { goToBuy } = useRampsNavigation();
   const { getOrderById } = useRampsOrders();
+  const {
+    value: isOpeningProviderOrder,
+    setTrue: setOpeningProviderOrder,
+    setFalse: setProviderOrderOpened,
+  } = useBoolean();
 
   // Reached from the activity list rather than the buy flow, so no region is
   // ever fetched here — fire on mount instead of waiting for one.
@@ -70,17 +76,19 @@ export function RampOrderDetails({
     ? t('rampsOrderDetailsProviderFee', [provider.name])
     : t('rampsOrderDetailsFees');
 
-  const handleViewOnProvider = async () => {
-    if (!provider?.orderLink) {
+  const handleViewOnProvider = useCallback(async () => {
+    if (!provider?.orderLink || isOpeningProviderOrder) {
       return;
     }
+
+    setOpeningProviderOrder();
 
     // Re-open the provider order page under the background callback watcher so
     // the provider's "Return to MetaMask" redirect lands back in the extension
     // instead of on the blank callback page. Without the raw order (provider
     // and wallet) the callback cannot be resolved, so just open the link.
-    if (rawOrder?.provider?.id && rawOrder.walletAddress) {
-      try {
+    try {
+      if (rawOrder?.provider?.id && rawOrder.walletAddress) {
         await watchRampsProviderOrderTab({
           url: provider.orderLink,
           providerCode: rawOrder.provider.id,
@@ -88,13 +96,23 @@ export function RampOrderDetails({
           orderCode: orderId,
         });
         return;
-      } catch {
-        // Fall back to a plain tab open below.
       }
+    } catch {
+      // Fall back to a plain tab open below.
+    } finally {
+      setProviderOrderOpened();
     }
 
     global.platform.openTab({ url: provider.orderLink });
-  };
+  }, [
+    isOpeningProviderOrder,
+    orderId,
+    rawOrder?.provider?.id,
+    rawOrder?.walletAddress,
+    setOpeningProviderOrder,
+    setProviderOrderOpened,
+    provider,
+  ]);
 
   const handleBuyAgain = () => {
     goToBuy(
@@ -165,6 +183,8 @@ export function RampOrderDetails({
             size={ButtonSize.Lg}
             variant={ButtonVariant.Secondary}
             onClick={handleViewOnProvider}
+            isDisabled={isOpeningProviderOrder}
+            isLoading={isOpeningProviderOrder}
           >
             {t('rampsOrderDetailsViewOnProvider', [provider.name ?? ''])}
           </Button>
