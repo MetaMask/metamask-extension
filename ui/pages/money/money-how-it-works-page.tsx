@@ -108,10 +108,6 @@ export function MoneyHowItWorksPage() {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
-  const openCardFees = useCallback(() => {
-    global.platform.openTab({ url: MONEY_CARD_FEES_URL });
-  }, []);
-
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
     body = (
@@ -187,15 +183,23 @@ export function MoneyHowItWorksPage() {
           const answerText = item.usesApy
             ? t(item.answerKey, [apyDisplay])
             : t(item.answerKey);
-          const answer = item.link ? (
+          const { link } = item;
+          const answer = link ? (
             <>
               {answerText}
-              <TextButton
-                size={TextButtonSize.BodyMd}
-                onClick={openCardFees}
-                data-testid={item.link.testId}
-              >
-                {t(item.link.labelKey)}
+              <TextButton size={TextButtonSize.BodyMd} asChild>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    global.platform.openTab({ url: link.url });
+                  }}
+                  data-testid={link.testId}
+                >
+                  {t(link.labelKey)}
+                </a>
               </TextButton>
             </>
           ) : (
