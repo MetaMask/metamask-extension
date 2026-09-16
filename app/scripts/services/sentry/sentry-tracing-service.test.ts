@@ -21,7 +21,12 @@ const ID_MOCK = 'testId';
 
 describe('SentryTracingService', () => {
   const startSpanManualMock = jest.mocked(startSpanManual);
-  const withIsolationScopeMock = jest.mocked(withIsolationScope);
+  // `withIsolationScope` is overloaded, so narrow the mock to the
+  // single-callback overload that `trace` calls.
+  const withIsolationScopeMock =
+    withIsolationScope as unknown as jest.MockedFunction<
+      (callback: (scope: Sentry.Scope) => unknown) => unknown
+    >;
   const registerMethodActionHandlers = jest.fn();
   let optedIn: boolean;
   let service: SentryTracingService;
@@ -33,7 +38,7 @@ describe('SentryTracingService', () => {
     globalThis.sentry = {
       startSpan: jest.fn(),
       startSpanManual: startSpanManualMock,
-      withIsolationScope: withIsolationScopeMock,
+      withIsolationScope,
       setMeasurement: jest.fn(),
       getActiveSpan: jest.fn(),
       continueTrace: jest.fn(),
@@ -42,13 +47,13 @@ describe('SentryTracingService', () => {
     startSpanManualMock.mockImplementation((_, fn) =>
       fn({} as Sentry.Span, () => undefined),
     );
-    withIsolationScopeMock.mockImplementation((fn) =>
-      fn({ setTag: jest.fn() } as never),
+    withIsolationScopeMock.mockImplementation((callback) =>
+      callback({ setTag: jest.fn() } as unknown as Sentry.Scope),
     );
 
     service = new SentryTracingService({
       messenger: {
-        call: () => ({ optedIn }) as never,
+        call: () => ({ optedIn }),
         registerMethodActionHandlers,
       } as unknown as SentryTracingServiceMessenger,
     });
