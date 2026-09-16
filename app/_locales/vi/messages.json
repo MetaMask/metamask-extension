@@ -5216,7 +5216,7 @@
   },
   "lowValueAssets": {
     "message": "Token giá trị thấp ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -5465,9 +5465,6 @@
   },
   "moneyActivityPending": {
     "message": "Chờ xử lý"
-  },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Hoạt động Money của bạn sẽ xuất hiện tại đây."
   },
   "moneyActivityReceived": {
     "message": "Đã nhận"
@@ -7854,12 +7851,6 @@
   "perpsSortByPriceChange": {
     "message": "Biến động giá"
   },
-  "perpsSortByRank": {
-    "message": "Xếp hạng"
-  },
-  "perpsSortBySection": {
-    "message": "Sắp xếp theo"
-  },
   "perpsSortByTitle": {
     "message": "Bộ lọc"
   },
@@ -8656,9 +8647,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Sử dụng lần cuối"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Tìm nạp báo giá không thành công."
   },
   "rampsQuoteUnavailable": {
     "message": "Không có báo giá."

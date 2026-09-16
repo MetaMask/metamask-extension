@@ -5216,7 +5216,7 @@
   },
   "lowValueAssets": {
     "message": "저가치 토큰($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "이더리움 메인넷"
@@ -5465,9 +5465,6 @@
   },
   "moneyActivityPending": {
     "message": "보류 중"
-  },
-  "moneyActivityPlaceholderDescription": {
-    "message": "머니 활동 내역이 여기에 표시됩니다."
   },
   "moneyActivityReceived": {
     "message": "받음"
@@ -7848,12 +7845,6 @@
   "perpsSortByPriceChange": {
     "message": "가격 변동"
   },
-  "perpsSortByRank": {
-    "message": "순위"
-  },
-  "perpsSortBySection": {
-    "message": "정렬 기준"
-  },
   "perpsSortByTitle": {
     "message": "필터"
   },
@@ -8650,9 +8641,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "마지막 사용"
-  },
-  "rampsQuoteFetchError": {
-    "message": "견적을 불러오지 못했습니다."
   },
   "rampsQuoteUnavailable": {
     "message": "견적을 확인할 수 없습니다."

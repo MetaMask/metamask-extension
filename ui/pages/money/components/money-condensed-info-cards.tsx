@@ -50,11 +50,11 @@ export function MoneyCondensedInfoCards() {
                 ? () => global.platform.openTab({ url: href })
                 : undefined
             }
-            className="flex min-h-[110px] w-full cursor-pointer items-center gap-4 rounded-xl bg-background-muted p-4 text-left disabled:cursor-default disabled:opacity-100"
+            className="flex min-h-[110px] w-full cursor-pointer items-center gap-4 rounded-xl bg-background-section p-4 text-left disabled:cursor-default disabled:opacity-100"
             data-testid={`money-condensed-info-card-${key}`}
           >
             <span
-              className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-xl bg-background-subsection"
+              className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-xl bg-background-muted"
               data-testid={`money-condensed-info-card-${key}-image`}
             >
               <img
