@@ -104,10 +104,13 @@ export async function confirmTronSendAndAssertActivity({
   });
 
   if (usingDialog) {
-    await snapConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
+    await snapConfirmation.clickFooterButton({
+      button: 'confirm',
+      waitUntil: 'windowClose',
+    });
     await driver.switchToWindow(extensionHandle);
   } else {
-    await snapConfirmation.clickFooterConfirmButton();
+    await snapConfirmation.clickFooterButton({ button: 'confirm' });
   }
 
   const txToast = new TxToastNotification(driver);

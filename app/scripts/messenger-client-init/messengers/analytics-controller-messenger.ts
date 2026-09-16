@@ -5,6 +5,9 @@ import {
 } from '@metamask/messenger';
 import type {
   AnalyticsControllerMessenger,
+  AnalyticsControllerCreateEventFragmentAction,
+  AnalyticsControllerFinalizeEventFragmentAction,
+  AnalyticsControllerGetEventFragmentByIdAction,
   AnalyticsControllerGetStateAction,
   AnalyticsControllerIdentifyAction,
   AnalyticsControllerOptInAction,
@@ -12,6 +15,8 @@ import type {
   AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
+  AnalyticsControllerUpdateEventFragmentAction,
+  AnalyticsControllerUpsertEventFragmentAction,
 } from '@metamask/analytics-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
 import type {
@@ -24,7 +29,6 @@ import type {
   MetaMetricsControllerClearTracesAfterMetricsOptInAction,
   MetaMetricsControllerSetMarketingCampaignCookieIdAction,
   MetaMetricsControllerTrackTracesAfterMetricsOptInAction,
-  MetaMetricsControllerUpdateExtensionUninstallUrlAction,
 } from '../../controllers/metametrics-controller-method-action-types';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import type { RootMessenger } from '../../lib/messenger';
@@ -39,14 +43,18 @@ type InitActions =
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
-  | MetaMetricsControllerUpdateExtensionUninstallUrlAction
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerTrackEventAction
   | AnalyticsControllerIdentifyAction
   | AnalyticsControllerTrackViewAction
   | AnalyticsControllerOptInAction
   | AnalyticsControllerOptOutAction
-  | AnalyticsControllerResetConsentDecisionAction;
+  | AnalyticsControllerResetConsentDecisionAction
+  | AnalyticsControllerCreateEventFragmentAction
+  | AnalyticsControllerUpsertEventFragmentAction
+  | AnalyticsControllerUpdateEventFragmentAction
+  | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerFinalizeEventFragmentAction;
 
 type InitEvents = never;
 
@@ -111,7 +119,6 @@ export function getAnalyticsControllerInitMessenger(
       'MetaMetricsController:trackTracesAfterMetricsOptIn',
       'MetaMetricsController:clearTracesAfterMetricsOptIn',
       'MetaMetricsController:setMarketingCampaignCookieId',
-      'MetaMetricsController:updateExtensionUninstallUrl',
       'AnalyticsController:getState',
       'AnalyticsController:trackEvent',
       'AnalyticsController:identify',
@@ -119,6 +126,11 @@ export function getAnalyticsControllerInitMessenger(
       'AnalyticsController:optIn',
       'AnalyticsController:optOut',
       'AnalyticsController:resetConsentDecision',
+      'AnalyticsController:createEventFragment',
+      'AnalyticsController:upsertEventFragment',
+      'AnalyticsController:updateEventFragment',
+      'AnalyticsController:getEventFragmentById',
+      'AnalyticsController:finalizeEventFragment',
     ],
     events: [],
   });

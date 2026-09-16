@@ -77,7 +77,10 @@ jest.mock('../../components/app/compliance', () => ({
   }),
 }));
 
-const mockUsePerpsMarketInfo = jest.fn(() => undefined);
+const mockUsePerpsMarketInfo = jest.fn(() => ({
+  market: undefined,
+  isLoading: false,
+}));
 
 jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
   usePerpsAttribution: () => ({
@@ -343,6 +346,8 @@ jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
         mockReact.createElement('div', {
           'data-testid': 'perps-candlestick-chart',
           'data-price-lines': JSON.stringify(props.priceLines ?? []),
+          'data-visible-candle-count': props.initialVisibleCandleCount,
+          onClick: () => props.onVisibleCandleCountChange?.(75),
         }),
     ),
   };
@@ -480,7 +485,10 @@ describe('PerpsOrderEntryPage', () => {
       orders: [],
       isInitialLoading: false,
     });
-    mockUsePerpsMarketInfo.mockReturnValue(undefined);
+    mockUsePerpsMarketInfo.mockReturnValue({
+      market: undefined,
+      isLoading: false,
+    });
     mockLiveAccount.mockReturnValue({
       account: mockAccountState,
       isInitialLoading: false,
@@ -615,6 +623,374 @@ describe('PerpsOrderEntryPage', () => {
       expect(body.className).not.toContain('flex-row-reverse');
       Array.from(body.children).forEach((child) =>
         expect((child as HTMLElement).style.order).toBe(''),
+      );
+    });
+  });
+
+  describe('persisted order state', () => {
+    it('restores a compatible unexpired draft for the same market', () => {
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).selectedOrderType = 'market';
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            leverage: 3,
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'limit',
+              limitPrice: '3000',
+              takeProfitPrice: '3500',
+              stopLossPrice: '2500',
+              direction: 'long',
+              timestamp: Date.now(),
+            },
+          },
+        },
+        testnet: {},
+      };
+
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      expect(
+        screen.getByTestId('amount-input-field').querySelector('input'),
+      ).toHaveValue('25');
+      expect(screen.getByTestId('order-type-limit')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(
+        screen.getByTestId('limit-price-input').querySelector('input'),
+      ).toHaveValue('3000');
+      expect(
+        screen.getByTestId('tp-price-input').querySelector('input'),
+      ).toHaveValue('3500');
+      expect(
+        screen.getByTestId('sl-price-input').querySelector('input'),
+      ).toHaveValue('2500');
+    });
+
+    it('does not restore an expired same-market draft', () => {
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            leverage: 3,
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'limit',
+              limitPrice: '3000',
+              direction: 'long',
+              timestamp: Date.now() - 30_001,
+            },
+          },
+        },
+        testnet: {},
+      };
+
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      expect(screen.getByTestId('order-type-market')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('amount-input-field').querySelector('input'),
+      ).not.toHaveValue('25');
+    });
+
+    it('does not reset the live form when the restored draft expires', () => {
+      const initialTime = 1_000_000;
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(initialTime);
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'limit',
+              limitPrice: '3000',
+              direction: 'long',
+              timestamp: initialTime,
+            },
+          },
+        },
+        testnet: {},
+      };
+      const store = mockStore(state);
+
+      try {
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+        enterAmount('30');
+
+        dateNowSpy.mockReturnValue(initialTime + 30_001);
+        act(() => {
+          store.dispatch({ type: 'test/draft-expired' });
+        });
+
+        expect(
+          screen.getByTestId('amount-input-field').querySelector('input'),
+        ).toHaveValue('30');
+        expect(
+          screen.getByTestId('limit-price-input').querySelector('input'),
+        ).toHaveValue('3000');
+      } finally {
+        dateNowSpy.mockRestore();
+      }
+    });
+
+    // Controller state reaches the UI after the first render, so the order type
+    // toggle has to pick up a draft that arrives late.
+    const createLateHydratingStore = () => {
+      const base = createMockState();
+      // Built once per mutation, not per getState, so selectors reading the
+      // slice by reference stay stable between dispatches.
+      const buildState = (pendingConfig?: Record<string, unknown>) => ({
+        ...base,
+        metamask: {
+          ...base.metamask,
+          selectedOrderType: 'market',
+          tradeConfigurations: {
+            mainnet: { ETH: pendingConfig ? { pendingConfig } : {} },
+            testnet: {},
+          },
+        },
+      });
+      let state = buildState();
+      const store = mockStore(() => state);
+      const hydrate = (orderType: 'market' | 'limit') => {
+        state = buildState({
+          amount: '25',
+          leverage: 5,
+          orderType,
+          limitPrice: '3000',
+          direction: 'long',
+          timestamp: Date.now(),
+        });
+        act(() => {
+          store.dispatch({ type: 'test/perps-state-hydrated' });
+        });
+      };
+      return { store, hydrate };
+    };
+
+    it('adopts a limit draft that hydrates after the first render', () => {
+      const { store, hydrate } = createLateHydratingStore();
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('order-type-market')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+
+      hydrate('limit');
+
+      expect(screen.getByTestId('order-type-limit')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(
+        screen.getByTestId('limit-price-input').querySelector('input'),
+      ).toHaveValue('3000');
+    });
+
+    it('keeps the order type the trader picked when a draft hydrates later', () => {
+      const { store, hydrate } = createLateHydratingStore();
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+      hydrate('market');
+
+      expect(screen.getByTestId('order-type-limit')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+    });
+
+    it('prefers an explicit route order type over the restored draft', () => {
+      mockSearchParams.set('orderType', 'market');
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'limit',
+              limitPrice: '3000',
+              direction: 'long',
+              timestamp: Date.now(),
+            },
+          },
+        },
+        testnet: {},
+      };
+
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      expect(screen.getByTestId('order-type-market')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+    });
+
+    it('saves the latest draft only when leaving the route', () => {
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+      enterAmount('25');
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsSavePendingTradeConfiguration',
+        expect.anything(),
+      );
+
+      unmount();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSavePendingTradeConfiguration',
+        [
+          'ETH',
+          expect.objectContaining({
+            amount: '25',
+            direction: 'long',
+            orderType: 'market',
+          }),
+        ],
+      );
+    });
+
+    it('omits disabled Auto-close prices from the saved draft', () => {
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+      fireEvent.change(
+        screen
+          .getByTestId('tp-price-input')
+          .querySelector('input') as HTMLInputElement,
+        { target: { value: '3500' } },
+      );
+      fireEvent.change(
+        screen
+          .getByTestId('sl-price-input')
+          .querySelector('input') as HTMLInputElement,
+        { target: { value: '2500' } },
+      );
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+
+      unmount();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSavePendingTradeConfiguration',
+        [
+          'ETH',
+          expect.objectContaining({
+            takeProfitPrice: undefined,
+            stopLossPrice: undefined,
+          }),
+        ],
+      );
+    });
+
+    it('does not re-enable Auto-close from a draft without exit prices', () => {
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'market',
+              takeProfitPrice: undefined,
+              stopLossPrice: undefined,
+              direction: 'long',
+              timestamp: Date.now(),
+            },
+          },
+        },
+        testnet: {},
+      };
+
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('sl-price-input')).not.toBeInTheDocument();
+    });
+
+    it('clears the draft on direction change and persists durable choices', () => {
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+      const leverageInput = screen
+        .getByTestId('leverage-input')
+        .querySelector('input') as HTMLInputElement;
+      fireEvent.change(leverageInput, { target: { value: '5' } });
+      fireEvent.blur(leverageInput);
+      fireEvent.click(screen.getByTestId('direction-tab-short'));
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetSelectedOrderType',
+        ['limit'],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSaveTradeConfiguration',
+        ['ETH', 5],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsClearPendingTradeConfiguration',
+        ['ETH'],
+      );
+    });
+
+    it('clears the draft and suppresses unmount re-save after execution', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) =>
+        Promise.resolve(
+          method === 'perpsPlaceOrder' ? { success: true } : undefined,
+        ),
+      );
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+      enterAmount('100');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsClearPendingTradeConfiguration',
+        ['ETH'],
+      );
+      mockSubmitRequestToBackground.mockClear();
+      unmount();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsSavePendingTradeConfiguration',
+        expect.anything(),
+      );
+    });
+
+    it('restores and updates the visible candle count', () => {
+      const state = createExpandedChartState();
+      (state.metamask as Record<string, unknown>).visibleCandleCount = 60;
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      const chart = screen.getByTestId('perps-candlestick-chart');
+      expect(chart).toHaveAttribute('data-visible-candle-count', '60');
+      fireEvent.click(chart);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetVisibleCandleCount',
+        [75],
       );
     });
   });
@@ -2786,6 +3162,16 @@ describe('PerpsOrderEntryPage', () => {
           [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
           [PERPS_EVENT_PROPERTY.ORDER_SIZE]: 100,
         }),
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSavePendingTradeConfiguration',
+        [
+          'ETH',
+          expect.objectContaining({
+            amount: '100',
+            direction: 'long',
+          }),
+        ],
       );
     });
 

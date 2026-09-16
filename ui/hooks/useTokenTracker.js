@@ -82,12 +82,19 @@ export function useTokenTracker({
 
   const userAddress = address ?? selectedAddress;
 
-  const [loading, setLoading] = useState(() => tokens?.length >= 0);
+  const [loading, setLoading] = useState(true);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
   const [error, setError] = useState(null);
   const tokenTracker = useRef(null);
   const memoizedTokens = useEqualityCheck(tokens);
 
+  const tokenListFingerprint = useMemo(
+    () =>
+      memoizedTokens
+        .map((token) => `${token.address ?? ''}:${token.chainId ?? ''}`)
+        .join('|'),
+    [memoizedTokens],
+  );
   const updateBalances = useCallback(
     (tokenWithBalances) => {
       const matchingTokens = hideZeroBalanceTokens
@@ -155,18 +162,21 @@ export function useTokenTracker({
     return teardownTracker;
   }, [teardownTracker]);
 
-  const trackerKey = `${userAddress ?? ''}|${chainId ?? ''}|${rpcUrl ?? ''}`;
-  const [prevTrackerKey, setPrevTrackerKey] = useState(trackerKey);
-
-  if (trackerKey !== prevTrackerKey) {
-    setPrevTrackerKey(trackerKey);
-    setLoading(true);
-  }
-
-  // Effect to initialize tracker when values change
+  // Initialize or tear down the tracker when tracker inputs change.
   useEffect(() => {
+    queueMicrotask(() => setLoading(true));
+
     if (!userAddress || chainId === undefined || !provider) {
+      // If we do not have enough information to build a TokenTracker, we exit early
+      // When the values above change, the effect will be restarted. We also teardown
+      // tracker because inevitably this effect will run again momentarily.
       teardownTracker();
+      return;
+    }
+
+    if (memoizedTokens.length === 0) {
+      teardownTracker();
+      queueMicrotask(() => updateBalances([]));
       return;
     }
 
@@ -176,7 +186,8 @@ export function useTokenTracker({
     teardownTracker,
     chainId,
     rpcUrl,
-    memoizedTokens,
+    tokenListFingerprint,
+    updateBalances,
     buildTracker,
     provider,
   ]);

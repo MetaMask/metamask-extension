@@ -6,6 +6,10 @@ import {
   selectDefaultPaySelectedSection,
   selectEnableMoneyAccountTransactions,
 } from '../../selectors/feature-flags';
+import {
+  selectTransactionPaymentTokenByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { getConfirmationTransactionType } from '../../utils/confirm';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 
@@ -41,11 +45,22 @@ const PREDICT_FLAG_TYPES: TransactionType[] = [
  * Only applies to perps / predict transaction types so the flag cannot
  * default Money Account for unrelated flows.
  *
+ * Also defers to an already-selected pay token: when a token has been picked
+ * for this transaction (e.g. pre-selected by the Hyperliquid deposit prompt
+ * before navigation), the flag no longer defaults to Money Account so the
+ * explicit choice is not overridden on the Perps deposit screen.
+ *
  * @returns Whether Money Account is the flag-configured default pay method.
  */
 export function useIsMoneyAccountFlagDefault(): boolean {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const moneyAccount = useSelector(selectPrimaryMoneyAccount);
+  const payToken = useSelector((state: TransactionPayState) =>
+    selectTransactionPaymentTokenByTransactionId(
+      state,
+      transactionMeta?.id ?? '',
+    ),
+  );
   const defaultPaySelectedSection = useSelector(
     selectDefaultPaySelectedSection,
   );
@@ -68,6 +83,7 @@ export function useIsMoneyAccountFlagDefault(): boolean {
   );
 
   return (
+    !payToken &&
     sectionForType === 'money-account' &&
     Boolean(moneyAccount) &&
     isPerpsOrPredict &&

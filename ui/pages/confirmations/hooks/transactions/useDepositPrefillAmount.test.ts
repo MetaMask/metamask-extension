@@ -15,6 +15,7 @@ import {
 import { isRouteToken } from '../../utils/relay-fixed-spread';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
+import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 import { useDepositPrefillAmount } from './useDepositPrefillAmount';
@@ -31,6 +32,7 @@ jest.mock('../../utils/relay-fixed-spread', () => ({
 
 jest.mock('../pay/usePayTokenAccountBalance');
 jest.mock('../pay/useTransactionPayToken');
+jest.mock('../send/useAccountTokensLoading');
 jest.mock('./useTransactionMetadataRequest');
 jest.mock('./useTransactionAccountOverride');
 
@@ -44,6 +46,7 @@ const useTransactionMetadataRequestMock = jest.mocked(
   useTransactionMetadataRequest,
 );
 const usePayTokenAccountBalanceMock = jest.mocked(usePayTokenAccountBalance);
+const useAccountTokensLoadingMock = jest.mocked(useAccountTokensLoading);
 const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 const useTransactionAccountOverrideMock = jest.mocked(
   useTransactionAccountOverride,
@@ -89,6 +92,8 @@ function setupMocks(
     transactionMeta?: TransactionMeta;
     accountOverride?: Hex;
     stablecoin?: boolean;
+    isLiveBalance?: boolean;
+    isAccountTokensLoading?: boolean;
   } = {},
 ) {
   const {
@@ -97,6 +102,8 @@ function setupMocks(
     depositLimits = {},
     transactionMeta = makeTransactionMeta(),
     stablecoin = true,
+    isLiveBalance = true,
+    isAccountTokensLoading = false,
   } = overrides;
 
   const resolvedPayToken =
@@ -113,7 +120,10 @@ function setupMocks(
   usePayTokenAccountBalanceMock.mockReturnValue({
     balanceUsd: resolvedPayToken?.balanceUsd ?? '0',
     balanceRaw: resolvedPayToken?.balanceRaw ?? '0',
+    isLiveBalance,
+    isBalanceUsdKnown: Number(resolvedPayToken?.balanceUsd ?? '0') > 0,
   });
+  useAccountTokensLoadingMock.mockReturnValue(isAccountTokensLoading);
   useTransactionAccountOverrideMock.mockReturnValue(overrides.accountOverride);
   marketDataMock = {
     [CHAIN_ID_MOCK]: {
@@ -254,6 +264,8 @@ describe('useDepositPrefillAmount', () => {
       usePayTokenAccountBalanceMock.mockReturnValue({
         balanceUsd: '500',
         balanceRaw: '500000000',
+        isLiveBalance: true,
+        isBalanceUsdKnown: true,
       });
       act(() => {
         rerender();
@@ -261,6 +273,64 @@ describe('useDepositPrefillAmount', () => {
 
       expect(result.current.hasPrefilled).toBe(true);
       expect(result.current.isLoading).toBe(false);
+    });
+
+    it('does not treat a controller-snapshot balance as an uncapped max prefill', () => {
+      setupMocks({
+        stablecoin: true,
+        payToken: makePayToken({ balanceUsd: '500' }),
+        isLiveBalance: false,
+      });
+
+      const { result } = runHook();
+
+      expect(result.current.prefillAmount).toBe('500');
+      expect(result.current.isUncappedMaxPrefill).toBe(false);
+    });
+
+    it('waits for the funding account tokens before committing a snapshot balance', () => {
+      setupMocks({
+        stablecoin: true,
+        payToken: makePayToken({ balanceUsd: '500' }),
+        isLiveBalance: false,
+        isAccountTokensLoading: true,
+      });
+
+      const { result, rerender } = runHook();
+
+      expect(result.current.hasPrefilled).toBe(false);
+      expect(result.current.isLoading).toBe(true);
+
+      usePayTokenAccountBalanceMock.mockReturnValue({
+        balanceUsd: '20',
+        balanceRaw: '20000000',
+        isLiveBalance: true,
+        isBalanceUsdKnown: true,
+      });
+      useAccountTokensLoadingMock.mockReturnValue(false);
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.hasPrefilled).toBe(true);
+      expect(result.current.prefillAmount).toBe('20');
+      expect(result.current.isUncappedMaxPrefill).toBe(true);
+    });
+
+    it('commits the snapshot balance once the funding account tokens have loaded', () => {
+      setupMocks({
+        stablecoin: true,
+        payToken: makePayToken({ balanceUsd: '500' }),
+        isLiveBalance: false,
+        isAccountTokensLoading: false,
+      });
+
+      const { result } = runHook();
+
+      expect(result.current.hasPrefilled).toBe(true);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.prefillAmount).toBe('500');
+      expect(result.current.isUncappedMaxPrefill).toBe(false);
     });
 
     it('does not commit a positive prefill until pay-token market data is available', () => {
@@ -397,6 +467,8 @@ describe('useDepositPrefillAmount', () => {
       usePayTokenAccountBalanceMock.mockReturnValue({
         balanceUsd: '0',
         balanceRaw: '0',
+        isLiveBalance: true,
+        isBalanceUsdKnown: true,
       });
 
       await act(async () => {
@@ -458,6 +530,8 @@ describe('useDepositPrefillAmount', () => {
       usePayTokenAccountBalanceMock.mockReturnValue({
         balanceUsd: '800',
         balanceRaw: '800000000',
+        isLiveBalance: true,
+        isBalanceUsdKnown: true,
       });
 
       await act(async () => {
@@ -470,12 +544,20 @@ describe('useDepositPrefillAmount', () => {
   });
 
   describe('isLoading', () => {
-    it('false when enabled but no pay token is selected', () => {
+    it('true while no pay token has been auto-selected yet', () => {
       setupMocks({ payToken: null });
 
       const { result } = runHook();
 
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.isLoading).toBe(true);
+    });
+
+    it('true while the funding account tokens are still loading', () => {
+      setupMocks({ payToken: null, isAccountTokensLoading: true });
+
+      const { result } = runHook();
+
+      expect(result.current.isLoading).toBe(true);
     });
 
     it('false when the selected pay token has a zero balance', () => {

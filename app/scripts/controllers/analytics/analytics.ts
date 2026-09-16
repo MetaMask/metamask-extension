@@ -3,10 +3,12 @@ import type {
   AnalyticsEventProperties,
   AnalyticsTrackingEvent,
   AnalyticsUserTraits,
+  ReadonlyAnalyticsEventFragment,
 } from '@metamask/analytics-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import type { Json } from '@metamask/utils';
 import { omitBy } from 'lodash';
+import type { Browser } from 'webextension-polyfill';
 import type {
   AnalyticsEvent,
   AnalyticsEventBuildOptions,
@@ -22,6 +24,8 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventName,
   type MetaMetricsContext,
+  type MetaMetricsEventFragmentOptions,
+  type MetaMetricsEventFragmentPayload,
   type MetaMetricsPagePayload,
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
@@ -30,6 +34,8 @@ import type { AnalyticsControllerInitMessenger } from '../../messenger-client-in
 import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment-tracking';
 import { getPlatform } from '../../lib/util';
 import { ANONYMOUS_EVENT_PROPERTY } from './platform-adapter';
+
+const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
 type SegmentTrackPayload = Omit<
   SegmentEventPayload,
@@ -47,9 +53,11 @@ type SegmentPagePayload = {
 
 type ConfigureAnalyticsOptions = {
   messenger: AnalyticsControllerInitMessenger;
+  extension?: Browser;
 };
 
 let messenger: AnalyticsControllerInitMessenger | undefined;
+let extension: Browser | undefined;
 let cachedProfileIdentity:
   | {
       profileId?: string;
@@ -69,11 +77,49 @@ function getMessenger(): AnalyticsControllerInitMessenger {
  *
  * @param options - Configuration options.
  * @param options.messenger - Messenger with analytics state and delivery access.
+ * @param options.extension - webextension-polyfill, used to set the uninstall URL.
  */
 export function configureAnalytics({
   messenger: configuredMessenger,
+  extension: configuredExtension,
 }: ConfigureAnalyticsOptions): void {
   messenger = configuredMessenger;
+  extension = configuredExtension;
+}
+
+/**
+ * Sets an uninstall URL ("Sorry to see you go!" page), which is opened if a
+ * user uninstalls the extension. Call only after a MetaMetrics consent decision.
+ *
+ * @param participateInMetaMetrics - Whether the user opted into metrics.
+ * @param analyticsId - The current analytics id.
+ */
+function updateExtensionUninstallUrl(
+  participateInMetaMetrics: boolean,
+  analyticsId: string,
+): void {
+  const version = process.env.METAMASK_VERSION as string;
+  const environment = process.env.METAMASK_ENVIRONMENT as string;
+  const appVersion =
+    environment === 'production' ? version : `${version}-${environment}`;
+  const query: {
+    mmi?: string;
+    env?: string;
+    av: string;
+  } = {
+    av: appVersion,
+  };
+  if (participateInMetaMetrics) {
+    query.mmi = Buffer.from(analyticsId).toString('base64');
+    query.env = environment;
+  }
+  const queryString = new URLSearchParams(query);
+
+  if (extension?.runtime) {
+    extension.runtime.setUninstallURL(
+      `${EXTENSION_UNINSTALL_URL}?${queryString}`,
+    );
+  }
 }
 
 /**
@@ -375,8 +421,8 @@ export function identify(
 /**
  * Set whether the user participates in MetaMetrics.
  *
- * Consent is owned by AnalyticsController. Buffered traces, the marketing
- * campaign cookie, and the extension uninstall URL remain on MetaMetricsController.
+ * Consent is owned by AnalyticsController. Buffered traces and the marketing
+ * campaign cookie remain on MetaMetricsController.
  *
  * @param participateInMetaMetrics - Whether the user wants to participate, or `null` to reset to undecided.
  * @returns The current analytics id.
@@ -423,11 +469,7 @@ export async function setParticipateInMetaMetrics(
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
     participateInMetaMetrics !== null
   ) {
-    analyticsMessenger.call(
-      'MetaMetricsController:updateExtensionUninstallUrl',
-      participateInMetaMetrics === true,
-      analyticsId,
-    );
+    updateExtensionUninstallUrl(participateInMetaMetrics === true, analyticsId);
   }
 
   return analyticsId;
@@ -446,6 +488,122 @@ export function trackPage(payload: MetaMetricsPagePayload): void {
       pagePayload.properties,
       pagePayload.context,
     );
+  } catch (error) {
+    sentryCaptureException(error);
+  }
+}
+
+/**
+ * Open an event fragment, a bag of properties that later events in the same
+ * user journey are emitted with.
+ *
+ * @param options - Fragment settings and the properties to open it with.
+ */
+export function createEventFragment(
+  options: MetaMetricsEventFragmentOptions,
+): void {
+  try {
+    const {
+      category,
+      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+      properties = {},
+    } = options;
+
+    getMessenger().call('AnalyticsController:createEventFragment', {
+      id: options.id,
+      initialEvent: options.initialEvent,
+      successEvent: options.successEvent,
+      failureEvent: options.failureEvent,
+      persist: options.persist,
+      // Flatten extension-only fields into the generic properties bag the
+      // AnalyticsController stores, matching what `trackEvent` sends.
+      properties: omitBy(
+        {
+          ...properties,
+          category,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: environmentType,
+        },
+        (propertyValue) => propertyValue === undefined,
+      ) as AnalyticsEventProperties,
+      sensitiveProperties: options.sensitiveProperties,
+      context: buildContext(options.referrer, options.page) as AnalyticsContext,
+    });
+  } catch (error) {
+    sentryCaptureException(error);
+  }
+}
+
+/**
+ * Merge properties into an open event fragment.
+ *
+ * @param id - The id of the fragment to update.
+ * @param payload - The properties to merge in.
+ */
+export function updateEventFragment(
+  id: string,
+  payload: MetaMetricsEventFragmentPayload,
+): void {
+  try {
+    getMessenger().call('AnalyticsController:updateEventFragment', id, payload);
+  } catch (error) {
+    sentryCaptureException(error);
+  }
+}
+
+/**
+ * Merge properties into an event fragment, opening it when it does not exist
+ * yet. Used by journeys where any of several steps may run first.
+ *
+ * @param id - The id of the fragment to write to.
+ * @param payload - The properties to merge in.
+ */
+export function upsertEventFragment(
+  id: string,
+  payload: MetaMetricsEventFragmentPayload,
+): void {
+  try {
+    getMessenger().call('AnalyticsController:upsertEventFragment', id, payload);
+  } catch (error) {
+    sentryCaptureException(error);
+  }
+}
+
+/**
+ * Read an open event fragment.
+ *
+ * @param id - The id of the fragment to read.
+ * @returns A read-only copy of the fragment, or `undefined` when no fragment
+ * has that id. Mutating the returned object does not change controller state.
+ */
+export function getEventFragmentById(
+  id: string,
+): ReadonlyAnalyticsEventFragment | undefined {
+  try {
+    return getMessenger().call('AnalyticsController:getEventFragmentById', id);
+  } catch (error) {
+    sentryCaptureException(error);
+    return undefined;
+  }
+}
+
+/**
+ * Close an event fragment, emitting its success or failure event and
+ * discarding it.
+ *
+ * @param id - The id of the fragment to close.
+ * @param options - Finalize options.
+ * @param options.abandoned - Emit the failure event instead of the success one.
+ */
+export function finalizeEventFragment(
+  id: string,
+  { abandoned = false }: { abandoned?: boolean } = {},
+): void {
+  try {
+    getMessenger().call('AnalyticsController:finalizeEventFragment', id, {
+      abandoned,
+    });
   } catch (error) {
     sentryCaptureException(error);
   }
