@@ -46,6 +46,7 @@ import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
 import {
   cancelPendingDeepLinkUnlockTrace,
   startPendingDeepLinkUnlockTrace,
+  type PendingUnlockTrace,
 } from '../../../hooks/useDeepLinkNavigationTrace';
 
 export type UnlockPasskeySectionProps = {
@@ -118,7 +119,7 @@ export const UnlockPasskeySection = ({
         authenticator_id: passkeyAuthenticatorId,
         /* eslint-enable @typescript-eslint/naming-convention */
       };
-      let deepLinkTraceId: Promise<string | null> | null = null;
+      let deepLinkTraceId: Promise<PendingUnlockTrace | null> | null = null;
       try {
         trackEvent(
           createEventBuilder(MetaMetricsEventName.PasskeyUnlockInteracted)
@@ -152,7 +153,10 @@ export const UnlockPasskeySection = ({
         );
         passkeyFailedAttemptCount.current = 0;
       } catch (err) {
-        if (deepLinkTraceId !== null) {
+        // A ceremony the user dismissed, including choosing "Use password", is
+        // not an unlock failure, so it must not close the Navigated span that
+        // the follow-up submission continues.
+        if (deepLinkTraceId !== null && !isPasskeyCeremonySilentError(err)) {
           cancelPendingDeepLinkUnlockTrace(
             await deepLinkTraceId,
             'unlock_failed',

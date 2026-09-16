@@ -156,7 +156,9 @@ describe('useDeepLinkNavigationTrace', () => {
   });
 
   it('starts at unlock submit and preserves the record after failure', async () => {
-    await expect(startPendingDeepLinkUnlockTrace()).resolves.toBe(RECORD.id);
+    const attempt = await startPendingDeepLinkUnlockTrace();
+
+    expect(attempt).toStrictEqual({ id: RECORD.id });
 
     expect(getPerformanceTimestamp).toHaveBeenCalledTimes(1);
     expect(trace).toHaveBeenCalledWith({
@@ -175,7 +177,7 @@ describe('useDeepLinkNavigationTrace', () => {
       },
     });
 
-    cancelPendingDeepLinkUnlockTrace(RECORD.id, 'unlock_failed');
+    cancelPendingDeepLinkUnlockTrace(attempt, 'unlock_failed');
 
     expect(endTrace).toHaveBeenCalledWith({
       name: TraceName.DeeplinkNavigated,
@@ -186,6 +188,30 @@ describe('useDeepLinkNavigationTrace', () => {
       },
     });
     expect(removePendingDeepLinkNavigation).not.toHaveBeenCalled();
+  });
+
+  it('only lets the newest unlock submission cancel the shared trace', async () => {
+    const firstAttempt = await startPendingDeepLinkUnlockTrace();
+    const secondAttempt = await startPendingDeepLinkUnlockTrace();
+
+    // Both submissions describe the same activation, so they share one span.
+    expect(trace).toHaveBeenCalledTimes(1);
+    expect(secondAttempt).not.toBe(firstAttempt);
+
+    cancelPendingDeepLinkUnlockTrace(firstAttempt, 'unlock_failed');
+
+    expect(endTrace).not.toHaveBeenCalled();
+
+    cancelPendingDeepLinkUnlockTrace(secondAttempt, 'unlock_failed');
+
+    expect(endTrace).toHaveBeenCalledWith({
+      name: TraceName.DeeplinkNavigated,
+      id: RECORD.id,
+      data: {
+        success: false,
+        reason: 'unlock_failed',
+      },
+    });
   });
 
   it('supersedes a stale active trace when a second deeplink reuses the tab', async () => {
