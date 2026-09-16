@@ -1642,6 +1642,26 @@ async function setupMocking(
       },
     }));
 
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .flatMap((value) => value.split(','))
+        .filter(Boolean);
+      return {
+        statusCode: 200,
+        json: Object.fromEntries(
+          assetIds.map((assetId) => [
+            assetId,
+            { price: 0, marketCap: 0, pricePercentChange1d: 0 },
+          ]),
+        ),
+      };
+    });
+
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
   await server
