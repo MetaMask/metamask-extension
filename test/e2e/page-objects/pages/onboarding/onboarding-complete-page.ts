@@ -131,7 +131,7 @@ class OnboardingCompletePage {
           1000,
         );
       },
-      { timeout: 30000, interval: 500, stableFor: 2000 },
+      { timeout: 10000, interval: 500, stableFor: 2000 },
     );
   }
 }
