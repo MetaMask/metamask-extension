@@ -435,11 +435,6 @@
       "count": 3
     }
   },
-  "ui/hooks/perps/stream/usePerpsLivePrices.ts": {
-    "react-hooks/purity": {
-      "count": 1
-    }
-  },
   "ui/hooks/perps/usePerpsAbandonOrderTracking.ts": {
     "react-hooks/refs": {
       "count": 2

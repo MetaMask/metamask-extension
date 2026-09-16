@@ -434,6 +434,98 @@ describe('PerpsStreamBridge', () => {
       bridge.dispose();
     });
 
+    it('preserves a parked view after failed switching and requires account recovery before stream activation', async () => {
+      let address = '0xaaa';
+      const first = createBridge({ getSelectedAddress: () => address });
+      const other = createBridge({
+        controller: first.controller,
+        controllerApi: first.controllerApi,
+        getSelectedAddress: () => address,
+      });
+      const api = first.bridge.bridgeApi() as unknown as {
+        perpsInitForAccount: (address: string) => Promise<unknown>;
+        perpsViewActive: (active: boolean) => void;
+        perpsActivatePriceStream: (params: {
+          symbols: string[];
+        }) => Promise<void>;
+      };
+      const preload = other.bridge.bridgeApi() as unknown as {
+        perpsRegisterPreload: (id: string) => void;
+        perpsStopPreload: (id: string) => Promise<void>;
+      };
+      await api.perpsInitForAccount(address);
+      api.perpsViewActive(true);
+      preload.perpsRegisterPreload('other');
+      address = '0xbbb';
+      first.controllerApi.perpsInit.mockRejectedValueOnce(
+        new Error('switch failed'),
+      );
+      await expect(api.perpsInitForAccount(address)).rejects.toThrow(
+        'switch failed',
+      );
+      await preload.perpsStopPreload('other');
+      expect(first.controllerApi.perpsDisconnect).toHaveBeenCalledTimes(1);
+      const calls = first.controllerApi.perpsInit.mock.calls.length;
+      await expect(
+        api.perpsActivatePriceStream({ symbols: ['BTC'] }),
+      ).rejects.toThrow('Perps account initialization required');
+      expect(first.controllerApi.perpsInit).toHaveBeenCalledTimes(calls);
+      await api.perpsInitForAccount(address);
+      expect(first.controllerApi.perpsDisconnect).toHaveBeenCalledTimes(2);
+      expect(first.bridge.isActive).toBe(true);
+      await api.perpsActivatePriceStream({ symbols: ['BTC'] });
+      expect(first.bridge.canEmit('prices')).toBe(true);
+      first.bridge.dispose();
+      other.bridge.dispose();
+    });
+
+    it('rejects a queued stream activation after the selected account changes', async () => {
+      let address = '0xaaa';
+      const first = createBridge({ getSelectedAddress: () => address });
+      const second = createBridge({
+        controller: first.controller,
+        controllerApi: first.controllerApi,
+        getSelectedAddress: () => address,
+      });
+      const init = first.bridge.bridgeApi().perpsInitForAccount as (
+        address: string,
+      ) => Promise<unknown>;
+      const activate = second.bridge.bridgeApi()
+        .perpsActivatePriceStream as (params: {
+        symbols: string[];
+      }) => Promise<void>;
+      let finish!: () => void;
+      let started!: () => void;
+      const ready = new Promise<void>((resolve) => {
+        started = resolve;
+      });
+      first.controllerApi.perpsInit.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finish = resolve;
+            started();
+          }),
+      );
+      const initialization = init(address);
+      const initRejected = expect(initialization).rejects.toThrow(
+        'Perps account changed',
+      );
+      await ready;
+      const activation = activate({ symbols: ['BTC'] });
+      const rejected = expect(activation).rejects.toThrow(
+        'Perps account changed',
+      );
+      address = '0xbbb';
+      finish();
+      await Promise.all([initRejected, rejected]);
+      expect(first.controllerApi.perpsInit).toHaveBeenCalledTimes(1);
+      expect(first.controller.subscribeToPrices).not.toHaveBeenCalled();
+      await init(address);
+      expect(first.controllerApi.perpsDisconnect).toHaveBeenCalledTimes(1);
+      first.bridge.dispose();
+      second.bridge.dispose();
+    });
+
     it('retries shared teardown when the new account initialization fails', async () => {
       let address = '0xaaa';
       const first = createBridge({ getSelectedAddress: () => address });

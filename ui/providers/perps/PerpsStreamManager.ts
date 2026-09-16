@@ -36,6 +36,17 @@ import type {
   CandleData,
   CandlePeriod,
 } from '@metamask/perps-controller';
+import {
+  trace,
+  endTrace,
+  TraceName,
+  TraceOperation,
+  getPerformanceTimestamp,
+} from '../../../shared/lib/trace';
+import {
+  getPerpsLifecycleContext,
+  PERPS_LIFECYCLE_TAG,
+} from '../../helpers/perps/entry-trace';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { clearAllCoalescedRequests } from '../../hooks/perps/coalesceBackgroundRequest';
 import {
@@ -60,6 +71,9 @@ const EMPTY_ORDERS: Order[] = [];
 const EMPTY_FILLS: OrderFill[] = [];
 const EMPTY_MARKETS: PerpsMarketData[] = [];
 const EMPTY_PRICES: PriceUpdate[] = [];
+const CONNECTION_TIMEOUT_MS = 30_000;
+const START_BOUNDARY_TAG = 'start_boundary';
+const COMPLETION_BOUNDARY_TAG = 'completion_boundary';
 
 /**
  * Placeholder noop function for channel initialization.
@@ -802,6 +816,124 @@ class PerpsStreamManager {
    */
   getCurrentAddress(): string | null {
     return this.initializedAddress;
+  }
+
+  /**
+   * Own a wallet preload until it is ready, released, or times out.
+   * @param options - Account, market backend and requested transition.
+   * @param options.address
+   * @param options.useTerminalApi
+   * @param options.accountChanged
+   * @returns A handle that releases this preload.
+   */
+  startPreload({
+    address,
+    useTerminalApi,
+    accountChanged,
+  }: {
+    address: string;
+    useTerminalApi: boolean;
+    accountChanged: boolean;
+  }): { stop: () => void } {
+    const name = accountChanged
+      ? TraceName.PerpsAccountSwitchReconnection
+      : TraceName.PerpsConnectionEstablishment;
+    this.setUseTerminalApi(useTerminalApi);
+    const id = crypto.randomUUID();
+    let cancelled = false;
+    let ended = false;
+    let preloadReady = false;
+    const release = (preserveConnection = false) => {
+      submitRequestToBackground('perpsStopPreload', [
+        id,
+        preserveConnection,
+      ]).catch((error: unknown) => {
+        console.debug('[PerpsStreamManager] Release failed', error);
+      });
+    };
+    const startTime = getPerformanceTimestamp();
+    const traceReady = getPerpsLifecycleContext()
+      .then((context) =>
+        trace({
+          startTime,
+          name,
+          id,
+          op: TraceOperation.PerpsOperation,
+          tags: {
+            feature: 'perps',
+            [PERPS_LIFECYCLE_TAG]: context,
+            source: 'wallet_root',
+            [START_BOUNDARY_TAG]: 'wallet_root_effect',
+            [COMPLETION_BOUNDARY_TAG]: 'preload_ready',
+            ...(accountChanged ? { trigger: 'requested_account_change' } : {}),
+          },
+        }),
+      )
+      .catch((error: unknown) => {
+        console.debug('[PerpsStreamManager] Trace start failed', error);
+      });
+    const finish = (success: boolean, reason: string) => {
+      if (ended) {
+        return;
+      }
+      ended = true;
+      const timestamp = getPerformanceTimestamp();
+      traceReady
+        .then(() =>
+          endTrace({
+            timestamp,
+            name,
+            id,
+            data: { success, reason },
+          }),
+        )
+        .catch((error: unknown) => {
+          console.debug('[PerpsStreamManager] Trace end failed', error);
+        });
+    };
+    const timeout = setTimeout(() => {
+      cancelled = true;
+      finish(false, 'timeout');
+      release();
+      this.cleanupPrewarm();
+    }, CONNECTION_TIMEOUT_MS);
+    submitRequestToBackground('perpsRegisterPreload', [id])
+      .then(async () => {
+        if (!cancelled) {
+          await this.initForAddress(address);
+        }
+      })
+      .then(async () => {
+        if (cancelled) {
+          return;
+        }
+        this.prewarm();
+        await submitRequestToBackground('perpsStartPreload', [id]);
+        if (!cancelled) {
+          preloadReady = true;
+          finish(true, 'subscriptions_ready');
+        }
+      })
+      .catch((error: unknown) => {
+        finish(false, 'connection_failed');
+        if (!cancelled) {
+          release();
+          this.cleanupPrewarm();
+          console.debug('[PerpsStreamManager] Preload failed', error);
+        }
+      })
+      .finally(() => clearTimeout(timeout));
+
+    return {
+      stop: () => {
+        cancelled = true;
+        clearTimeout(timeout);
+        finish(false, 'released');
+        // Successful preload leaves provider teardown to the last-UI grace period.
+        release(preloadReady);
+        this.cleanupPrewarm();
+      },
+    };
   }
 
   /**
