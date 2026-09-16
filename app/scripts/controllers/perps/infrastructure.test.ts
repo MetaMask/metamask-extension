@@ -41,7 +41,6 @@ jest.mock('@metamask/perps-controller', () => {
 
 const mockCaptureException = jest.fn();
 jest.mock('../../../../shared/lib/sentry', () => ({
-  ...jest.requireActual('../../../../shared/lib/sentry'),
   captureException: (...args: unknown[]) => mockCaptureException(...args),
 }));
 
