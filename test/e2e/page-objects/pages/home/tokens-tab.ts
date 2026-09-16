@@ -263,7 +263,7 @@ class TokensTab extends HomePage {
     );
     await this.driver.waitForSelector({
       css: this.lowValueAssetsToggle,
-      text: `Low value tokens (${expectedCount})`,
+      text: `Low balance tokens (${expectedCount})`,
     });
   }
 
