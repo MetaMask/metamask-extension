@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, within } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -937,6 +937,30 @@ describe('MoneyHomePage', () => {
       within(screen.getByTestId('money-how-it-works-description')).getByText(
         '5% APY',
       ),
+    ).toBeInTheDocument();
+  });
+
+  it('shows the APY tooltip when the APY is hovered', async () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    const trigger = screen.getByTestId('money-home-apy-trigger');
+    expect(trigger).toHaveTextContent('4.2% APY');
+    expect(trigger).toHaveClass('text-success-default');
+
+    await act(async () => {
+      fireEvent.mouseEnter(trigger);
+    });
+
+    expect(
+      screen.getByText(
+        messages.moneyHomeApyTooltipEarning.message.replace('$1', '4.2%'),
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyHomeApyTooltip.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyHomeApyTooltipPoweredBy.message),
     ).toBeInTheDocument();
   });
 
