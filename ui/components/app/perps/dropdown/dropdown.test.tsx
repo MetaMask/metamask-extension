@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../../../store/store';
-import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
 import { Dropdown, type DropdownOption } from './dropdown';
 
 const mockStore = configureStore({
@@ -154,6 +154,33 @@ describe('Dropdown', () => {
       );
       expect(nonSelectedOption).toHaveAttribute('aria-selected', 'false');
       expect(nonSelectedOption.querySelector('svg')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('keyboard', () => {
+    it('focuses the first option when opened with no selection', () => {
+      renderWithProvider(
+        <Dropdown {...defaultProps} selectedId={null} triggerLabel="More" />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('test-dropdown-button'));
+
+      expect(screen.getByTestId('test-dropdown-option-option1')).toHaveFocus();
+    });
+
+    it('moves to the next option with ArrowDown after opening with no selection', () => {
+      renderWithProvider(
+        <Dropdown {...defaultProps} selectedId={null} triggerLabel="More" />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('test-dropdown-button'));
+      fireEvent.keyDown(screen.getByTestId('test-dropdown-option-option1'), {
+        key: 'ArrowDown',
+      });
+
+      expect(screen.getByTestId('test-dropdown-option-option2')).toHaveFocus();
     });
   });
 

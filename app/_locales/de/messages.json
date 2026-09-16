@@ -7841,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Preisänderung"
   },
-  "perpsSortByRank": {
-    "message": "Rang"
-  },
-  "perpsSortBySection": {
-    "message": "Sortieren nach"
-  },
   "perpsSortByTitle": {
     "message": "Filter"
   },
@@ -8639,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Zuletzt verwendet"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Angebot konnte nicht abgerufen werden."
   },
   "rampsQuoteUnavailable": {
     "message": "Angebot nicht verfügbar."

@@ -7841,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Αλλαγή τιμής"
   },
-  "perpsSortByRank": {
-    "message": "Κατάταξη"
-  },
-  "perpsSortBySection": {
-    "message": "Ταξινόμηση κατά"
-  },
   "perpsSortByTitle": {
     "message": "Φιλτράρισμα"
   },
@@ -8639,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Τελευταία χρήση"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Αποτυχία λήψης προσφοράς."
   },
   "rampsQuoteUnavailable": {
     "message": "Δεν υπάρχει διαθέσιμη προσφορά."

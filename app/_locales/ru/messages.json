@@ -7841,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Изменение цены"
   },
-  "perpsSortByRank": {
-    "message": "Рейтинг"
-  },
-  "perpsSortBySection": {
-    "message": "Сортировать по"
-  },
   "perpsSortByTitle": {
     "message": "Фильтр"
   },
@@ -8639,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Использовалось последним"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Не удалось получить котировку."
   },
   "rampsQuoteUnavailable": {
     "message": "Котировка недоступна."

@@ -119,7 +119,10 @@ describe('Request-queue UI changes', function () {
           originText: DAPP_URL,
         });
         const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         // Go to the second dapp, ensure it uses Ethereum
         await selectDappClickSend(driver, DAPP_ONE_URL);
@@ -128,7 +131,10 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
       },
     );
   });
@@ -207,7 +213,7 @@ describe('Request-queue UI changes', function () {
         });
 
         // Confirm transaction, wait for first confirmation window to close, second to display
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
         await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // Switch to the new Notification window, ensure second transaction showing
@@ -219,7 +225,7 @@ describe('Request-queue UI changes', function () {
 
         // Reject this transaction, wait for second confirmation window to close, third to display
         const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterCancelButton();
+        await confirmation.clickFooterButton({ button: 'cancel' });
 
         if (!IS_FIREFOX) {
           // Switch to the new Notification window, ensure third transaction showing
@@ -230,7 +236,9 @@ describe('Request-queue UI changes', function () {
           });
 
           // Confirm transaction
-          await transactionConfirmation.clickFooterConfirmButton();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
         }
 
         // With first and last confirmations confirmed, and second rejected,

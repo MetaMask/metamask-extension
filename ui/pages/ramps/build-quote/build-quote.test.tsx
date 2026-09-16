@@ -256,6 +256,33 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
+  it('shows a quote error with a change-provider action when no provider returns a quote', () => {
+    useRampsQuotes.mockReturnValue({
+      data: { success: [], error: [] },
+      loading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsQuoteFetchError.message,
+    );
+    expect(
+      screen.getByTestId('ramps-build-quote-change-provider'),
+    ).toHaveTextContent(messages.rampsChangeProviders.message);
+
+    fireEvent.click(screen.getByTestId('ramps-build-quote-change-provider'));
+
+    expect(
+      screen.getByTestId('ramps-provider-selection-empty'),
+    ).toBeInTheDocument();
+  });
+
   it('disables continue while amount debounce has not settled', () => {
     jest.useFakeTimers();
 
@@ -400,6 +427,9 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
       messages.rampsBuyWidgetError.message,
     );
+    expect(
+      screen.getByTestId('ramps-build-quote-change-provider'),
+    ).toHaveTextContent(messages.rampsChangeProvider.message);
   });
 
   it('matches snapshot with provider quote error', () => {
