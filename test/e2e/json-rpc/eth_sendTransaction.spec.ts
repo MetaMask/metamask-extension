@@ -52,7 +52,10 @@ describe('eth_sendTransaction', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const actualHash = await driver.executeScript(
@@ -103,7 +106,10 @@ describe('eth_sendTransaction', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const result = await driver
@@ -167,7 +173,10 @@ describe('eth_sendTransaction', function () {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkSiteSuggestedGas('~15 sec');
         await confirmation.checkNoInLineAlertIsDisplayed();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const actualHash = await driver.executeScript(

@@ -155,6 +155,7 @@
     "accountIdByAddress": {
       "*": "string"
     },
+    "accountSourceBackfillEnqueued": "boolean",
     "accountsAssets": {
       "*": "array"
     },
@@ -288,6 +289,7 @@
         "lastUpdated": "number"
       }
     },
+    "autoramps": [],
     "balances": {
       "*": {
         "*": {
@@ -512,6 +514,7 @@
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
     "firstTimeInfo": {},
+    "installAttribution": "null",
     "forgottenPassword": "boolean",
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
@@ -676,6 +679,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
+    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -707,6 +711,7 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
+    "lastPerpsDepositEntryPoint": "null",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
@@ -845,6 +850,7 @@
       }
     },
     "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
     "networkConnectionBannerNetwork": "null",
@@ -922,6 +928,8 @@
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
+      "basicFunctionalityMigrationNotification": "null",
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
@@ -1006,6 +1014,7 @@
       "variational": {}
     },
     "region": "string",
+    "reportedAccounts": "array",
     "requests": {
       "*": {
         "status": "string",
@@ -1244,10 +1253,6 @@
       "mainnet": {}
     },
     "tracesBeforeMetricsOptIn": [],
-    "traits": {
-      "install_date_ext": "string",
-      "storage_kind": "string"
-    },
     "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},
@@ -1265,6 +1270,7 @@
     "unapprovedTypedMessagesCount": "number",
     "unconnectedAccountAlertShownOrigins": {},
     "updateModalLastDismissedAt": "null",
+    "upgradedAccounts": {},
     "urlScanCache": {},
     "use4ByteResolution": "boolean",
     "useAddressBarEnsResolution": "boolean",
