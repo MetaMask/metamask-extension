@@ -12,7 +12,6 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
-const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
@@ -106,8 +105,8 @@ const {
 } = require('./tests/phishing-controller/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
 const {
-  mockAuthenticatedUserStorageNotificationPreferences,
-} = require('./helpers/authenticated-user-storage/mocks');
+  MockttpNotificationTriggerServer,
+} = require('./helpers/notifications/mock-notification-trigger-server');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -537,6 +536,19 @@ function getWellKnownTokenAssetMetadata(assetIds) {
     });
   }
 
+  // Monad native is slip44:268435779 (not ETH slip44:60).
+  if (
+    assetIds.includes('eip155:143/slip44:268435779') ||
+    assetIds.includes('eip155:143/slip44:60')
+  ) {
+    results.push({
+      assetId: 'eip155:143/slip44:268435779',
+      name: 'Monad',
+      symbol: 'MON',
+      decimals: 18,
+    });
+  }
+
   for (const token of WELL_KNOWN_MAINNET_ERC20_ASSETS) {
     if (includesAssetId(token.assetId)) {
       results.push({
@@ -610,8 +622,14 @@ function buildUnifiedEvmAccountsApiBalances(
       nativeBalance = defaultNativeOverride;
     }
 
-    // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
-    const slip44 = chainRef === '1337' ? '1' : '60';
+    // Native CAIP-19 slip44 must match AssetsController / nativeAssetIdentifiers.
+    // Localhost (1337) uses slip44:1; Monad (143) uses slip44:268435779; others use 60 (ETH).
+    let slip44 = '60';
+    if (chainRef === '1337') {
+      slip44 = '1';
+    } else if (chainRef === '143') {
+      slip44 = '268435779';
+    }
     balances.push({
       accountId: id,
       assetId: `eip155:${chainRef}/slip44:${slip44}`,
@@ -724,11 +742,25 @@ async function setupMocking(
       client: 'extension',
       distribution: 'main',
     })
+    .asPriority(RulePriority.FALLBACK)
     .thenCallback(() => {
+      // E2E has no canonical profile id, so threshold flags stay unresolved
+      // arrays and BackendWebSocketService treats them as off. Pin a boolean
+      // here (not in production code). Tests can still override this mock.
+      const flags = getProductionRemoteFlagApiResponse().map((entry) => {
+        if (
+          entry &&
+          typeof entry === 'object' &&
+          'backendWebSocketConnection' in entry
+        ) {
+          return { backendWebSocketConnection: true };
+        }
+        return entry;
+      });
       return {
         ok: true,
         statusCode: 200,
-        json: getProductionRemoteFlagApiResponse(),
+        json: flags,
       };
     });
 
@@ -795,6 +827,36 @@ async function setupMocking(
           ],
           created_at: '2025-07-16T10:03:57Z',
           profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
+        },
+      };
+    });
+
+  // Chomp API service
+  await server
+    .forGet('https://chomp.api.cx.metamask.io/v1/chomp')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          auth: { message: '' },
+          chains: {
+            '0x8f': {
+              autoDepositDelegate: '0x0000000000000000000000000000000000000001',
+              protocol: {
+                vedaProtocol: {
+                  supportedTokens: [
+                    {
+                      tokenAddress:
+                        '0x00000000000000000000000000000000000000aa',
+                      tokenDecimals: 6,
+                    },
+                  ],
+                  adapterAddress: '0x0000000000000000000000000000000000000002',
+                  intentTypes: ['cash-deposit', 'cash-withdrawal'],
+                },
+              },
+            },
+          },
         },
       };
     });
@@ -994,8 +1056,9 @@ async function setupMocking(
       };
     });
 
-  // This endpoint returns metadata for "transaction simulation" supported networks.
-  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+  // STX v26 always routes to per-network tx-sentinel hosts. Default mocks cover
+  // all sentinel subdomains so startup/liveness/polling does not hang in E2E.
+  const txSentinelNetworksRegistry = {
     1: {
       name: 'Mainnet',
       group: 'ethereum',
@@ -1007,18 +1070,13 @@ async function setupMocking(
       smartTransactions: true,
       hidden: false,
     },
-  });
-  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
-    name: 'Mainnet',
-    group: 'ethereum',
-    chainID: 1,
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    network: 'ethereum-mainnet',
-    explorer: 'https://etherscan.io',
-    confirmations: true,
-    smartTransactions: true,
-    hidden: false,
-  });
+  };
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
+    .thenJson(200, txSentinelNetworksRegistry);
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
+    .thenJson(200, txSentinelNetworksRegistry[1]);
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
@@ -1564,6 +1622,26 @@ async function setupMocking(
       },
     }));
 
+  // Monad native — slip44:268435779 (not ETH slip44:60).
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:143/slip44:268435779',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:143/slip44:268435779': {
+          id: 'monad',
+          price: ethConversionInUsd,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
   await server
@@ -1771,8 +1849,8 @@ async function setupMocking(
   // Identity APIs
   await mockIdentityServices(server);
 
-  // Authenticated User Storage APIs
-  mockAuthenticatedUserStorageNotificationPreferences(server);
+  // Trigger API and Authenticated User Storage notification preferences
+  new MockttpNotificationTriggerServer().setupServer(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {

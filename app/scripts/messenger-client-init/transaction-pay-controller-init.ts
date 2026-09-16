@@ -7,9 +7,18 @@ import {
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import {
+  getMoneyAccountFlow,
+  MoneyAccountFlow,
+} from '../../../shared/lib/money/money-account-flow';
+import {
   type DelegationMessenger,
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
+import { getBalance } from '../lib/money/pay/get-balance-callback';
+import {
+  clearMaxSourceBalance,
+  setMaxSourceBalance,
+} from '../lib/money/pay/max-source-balance';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
 import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
@@ -56,6 +65,7 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         initMessenger as MoneyPayMessenger,
         amountDataRequest,
       ),
+    getBalance,
     getDelegationTransaction: getDelegationTransactionCallback,
     getPaymentOverrideData: (paymentOverrideRequest) =>
       getPaymentOverrideData(
@@ -105,18 +115,40 @@ function getApi(
     setTransactionPayIsMaxAmount: (
       transactionId: string,
       isMaxAmount: boolean,
-      options: { isMoneyAccountDeposit?: boolean } = {},
+      options: {
+        isMoneyAccountDeposit?: boolean;
+        sourceAccountAddress?: string;
+        sourceBalanceRaw?: string;
+        sourceChainId?: string;
+        sourceTokenAddress?: string;
+      } = {},
     ) => {
-      messengerClient.setTransactionConfig(transactionId, (config) => {
-        // Money-account deposits never use isMaxAmount. Max / uncapped prefill
-        // submit the exact pay-token balanceRaw as requiredAssets instead;
-        // EXACT_INPUT Max mode is for other Pay flows.
-        if (options.isMoneyAccountDeposit) {
-          config.isMaxAmount = false;
-          config.atomic = isMaxAmount ? false : undefined;
-          return;
+      // Deposit Max quotes the funding-account balance, which the controller's
+      // own pay-token snapshot does not hold reliably. Record what the UI
+      // resolved so the getBalance callback can supply it (see
+      // max-source-balance).
+      if (options.isMoneyAccountDeposit) {
+        if (isMaxAmount && options.sourceBalanceRaw) {
+          setMaxSourceBalance(
+            {
+              transactionId,
+              accountAddress: options.sourceAccountAddress,
+              chainId: options.sourceChainId,
+              tokenAddress: options.sourceTokenAddress,
+            },
+            options.sourceBalanceRaw,
+          );
+        } else {
+          clearMaxSourceBalance(transactionId);
         }
+      }
+
+      messengerClient.setTransactionConfig(transactionId, (config) => {
         config.isMaxAmount = isMaxAmount;
+
+        if (options.isMoneyAccountDeposit) {
+          config.atomic = isMaxAmount ? false : undefined;
+        }
       });
     },
     setTransactionPayPostQuote: (
@@ -138,7 +170,7 @@ function getApi(
         config.accountOverride = accountOverride;
       });
     },
-    updateMoneyAccountDepositAmount: (
+    updateMoneyAccountDepositAmount: async (
       transactionId: string,
       amountHuman: string,
     ) => {
@@ -162,14 +194,14 @@ function getApi(
         }
       }
 
-      // Re-assert non-atomic + quote-required on every amount update so
-      // confirmations created before seedDepositPayConfig gained `atomic:
-      // false` still quote without waiting on vault calldata.
-      // Never enable isMaxAmount for deposits — Max/prefill submit exact raw.
+      // Re-assert quote-required on every amount update so confirmations
+      // created before seedDepositPayConfig still quote. Leave atomic and
+      // isMaxAmount alone — Max / uncapped 100% prefill set those separately.
+      // Forcing `atomic: false` here made Relay quote EXACT_INPUT for every
+      // typed amount (no embedded vault txs). Non-max deposits must stay
+      // atomic so Relay uses EXACT_OUTPUT, matching mobile.
       messengerClient.setTransactionConfig(transactionId, (config) => {
-        config.atomic = false;
         config.isQuoteRequired = true;
-        config.isMaxAmount = false;
       });
       return updateMoneyAccountDepositAmount(
         moneyPayMessenger,
@@ -208,7 +240,13 @@ function getApi(
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.paymentOverride = paymentOverride;
         if (paymentOverride === undefined) {
-          config.atomic = undefined;
+          const transaction = moneyPayMessenger
+            .call('TransactionController:getState')
+            .transactions.find(({ id }) => id === transactionId);
+          const keepNonAtomic =
+            config.isMaxAmount &&
+            getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
+          config.atomic = keepNonAtomic ? false : undefined;
           config.refundTo = undefined;
           return;
         }
@@ -246,20 +284,21 @@ function seedAccountOverride(
 }
 
 /**
- * Seeds deposit Pay config: funding account, `isQuoteRequired`, and
- * non-atomic Relay.
+ * Seeds deposit Pay config: funding account and `isQuoteRequired`.
  *
  * Paying with same-chain mUSD is otherwise a Pay no-op (Strategy.None). The
  * publish hook then skips, so Add funds never moves mUSD from the selected
  * EOA onto the money account or embeds the vault calls. Forcing a quote
  * makes Relay own submit.
  *
- * Deposits always run non-atomic (`atomic: false`): Relay bridges funds to
- * the money account first, then the vault deposit runs after settlement.
- * Atomic embeds need parent EIP-7702 calldata at quote time, but amount
- * commits write `requiredAssets` before vault encode finishes — Relay then
- * skips embedding and often returns no quotes. Max deposits already used
- * this path; percentage / typed amounts need it too.
+ * Leave `atomic` unset. Relay embeds the vault calls for EXACT_OUTPUT only
+ * on the atomic path. `atomic: false` is Max-only (exact source spend /
+ * EXACT_INPUT), matching mobile `setIsMax`.
+ *
+ * Amount commits still write `requiredAssets` before the vault encode
+ * finishes, and Pay requotes on that write, so the first quote for each
+ * amount goes out against the placeholder batch and is superseded by the
+ * requote carrying the encoded calldata.
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Created transaction id.
@@ -273,7 +312,6 @@ function seedDepositPayConfig(
   messengerClient.setTransactionConfig(transactionId, (config) => {
     config.accountOverride = accountOverride;
     config.isQuoteRequired = true;
-    config.atomic = false;
   });
 }
 

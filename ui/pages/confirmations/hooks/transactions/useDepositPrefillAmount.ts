@@ -21,7 +21,9 @@ import { getDepositLimitForTransaction } from '../../utils/pay-deposit-limit';
 import { isRouteToken } from '../../utils/relay-fixed-spread';
 import { getMarketData } from '../../../../selectors';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
+import { useTransactionPayAvailableTokens } from '../pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
+import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
@@ -60,6 +62,24 @@ function getPrefilledAmountConfig(
   return defaultConfig;
 }
 
+/**
+ * The lifecycle of a money-account deposit prefill.
+ *
+ * A single status is returned instead of independent `enabled` / `isLoading` /
+ * `hasPrefilled` booleans so consumers never have to reconcile combinations
+ * that cannot both be true.
+ */
+export enum DepositPrefillStatus {
+  /** Prefill is turned off by the feature flag. */
+  Disabled = 'disabled',
+  /** Prefill is on and still resolving the amount to commit. */
+  Loading = 'loading',
+  /** Prefill committed an amount for the current token / account. */
+  Prefilled = 'prefilled',
+  /** Prefill is on but nothing can produce an amount, so it settles at $0. */
+  Skipped = 'skipped',
+}
+
 export type DepositPrefillResult = {
   prefillAmount: string | undefined;
   /**
@@ -70,9 +90,7 @@ export type DepositPrefillResult = {
    * fiat roundtrip (never `isMaxAmount`).
    */
   isUncappedMaxPrefill: boolean;
-  enabled: boolean;
-  isLoading: boolean;
-  hasPrefilled: boolean;
+  status: DepositPrefillStatus;
 };
 
 /**
@@ -82,10 +100,13 @@ export type DepositPrefillResult = {
  * - 100% of balance for relay fixed-spread route tokens, otherwise 50%
  * - Capped by `confirmations_pay_extended.depositLimit` when configured
  * - Re-commits when the confirmation, pay token, or funding account changes
+ * - Settles as `DepositPrefillStatus.Skipped` when no funded token can produce
+ * an amount, so consumers show $0 rather than an indefinite skeleton
  */
 export function useDepositPrefillAmount(): DepositPrefillResult {
   const transactionMeta = useTransactionMetadataRequest();
   const { payToken } = useTransactionPayToken();
+  const availableTokens = useTransactionPayAvailableTokens();
   const accountOverride = useTransactionAccountOverride();
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const marketData = useSelector(getMarketData);
@@ -103,8 +124,12 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   );
 
   const enabled = Boolean(prefilledAmountConfig.enabled);
-  const { balanceUsd: liveBalanceUsd, balanceRaw: liveBalanceRaw } =
-    usePayTokenAccountBalance();
+  const {
+    balanceUsd: liveBalanceUsd,
+    balanceRaw: liveBalanceRaw,
+    isLiveBalance,
+  } = usePayTokenAccountBalance();
+  const isAccountTokensLoading = useAccountTokensLoading();
 
   // Live funding-account USD, not the pay-controller snapshot. A $0 snapshot
   // (common on deposits: tx `from` is the money account) left prefill
@@ -160,20 +185,39 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
       prefillAmount: formatFiatAmount(
         isCapped ? new BigNumber(String(depositLimit)) : raw,
       ),
-      // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP).
-      isUncappedMaxPrefill: percentage === 100 && !isCapped,
+      // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP), so it
+      // is only a Max deposit when the raw balance is the funding account's
+      // own. The snapshot fallback can belong to a previously selected account;
+      // committing it as Max would submit that account's balance and suppress
+      // the insufficient-funds alert.
+      isUncappedMaxPrefill: percentage === 100 && !isCapped && isLiveBalance,
     };
-  }, [balanceUsd, depositLimit, enabled, payToken, relayFixedSpread]);
+  }, [
+    balanceUsd,
+    depositLimit,
+    enabled,
+    isLiveBalance,
+    payToken,
+    relayFixedSpread,
+  ]);
 
   // Uncapped 100% prefill must wait for live balanceRaw — otherwise consumers
   // fall back to the fiat path and can request slightly more than available.
   // Non-zero prefills also wait for the pay-token fiat rate so the amount
   // commit can produce source amounts / quotes on the first pass.
-  const hasLiveBalanceRaw = new BigNumber(liveBalanceRaw || '0').gt(0);
+  const hasLiveBalanceRaw =
+    isLiveBalance && new BigNumber(liveBalanceRaw || '0').gt(0);
   const needsQuote =
     prefillAmount !== undefined && new BigNumber(prefillAmount).gt(0);
+  // While the funding account's tokens are still being fetched, the only
+  // balance available is the controller snapshot, which may describe the
+  // account used before the switch. Hold the prefill (skeleton stays up)
+  // rather than committing that amount, since the commit is one-shot per
+  // token / account key and would not re-apply once the real balance lands.
+  const isAwaitingLiveBalance = !isLiveBalance && isAccountTokensLoading;
   const readyToCommit =
     prefillAmount !== undefined &&
+    !isAwaitingLiveBalance &&
     (!isUncappedMaxPrefill || hasLiveBalanceRaw) &&
     (!needsQuote || hasPayTokenMarketPrice);
 
@@ -193,15 +237,43 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   }, [committedKey, enabled, readyToCommit, tokenKey]);
 
   const hasPrefilled = committedKey === tokenKey;
-  // No pay token means auto-select found nothing to prefill — do not keep
-  // the amount skeleton up forever waiting for a token that will not come.
-  const isLoading = enabled && Boolean(payToken) && !hasPrefilled;
+
+  // Without a pay token there is no balance to derive an amount from, so
+  // `prefillAmount` stays undefined and the commit above never runs. When the
+  // account also holds no funded token, one can never be auto-selected —
+  // money-account deposits reject zero-balance tokens — so the lifecycle would
+  // otherwise stay Loading forever and `CustomAmountInfo` would keep the amount
+  // skeleton up instead of showing $0 with a usable keypad.
+  //
+  // A pay token with a $0 balance is not skipped: it commits the `0.0` prefill
+  // normally, which settles the lifecycle as Prefilled. Treating it as skipped
+  // here would also fire during the gap before its balance resolves, flashing
+  // $0 in place of the skeleton.
+  //
+  // Held while the account's tokens are still being fetched — an in-flight
+  // list is not yet evidence that the account is empty.
+  const hasFundedToken = availableTokens.some(
+    (token) => !token.disabled && (token.fiat?.balance ?? 0) > 0,
+  );
+  const isSkipped =
+    enabled && !payToken && !hasFundedToken && !isAccountTokensLoading;
+
+  let status = DepositPrefillStatus.Loading;
+  if (!enabled) {
+    status = DepositPrefillStatus.Disabled;
+  } else if (hasPrefilled) {
+    // Keep loading until this token's amount is committed. The pay token, the
+    // funding account's tokens and their fiat rates all arrive asynchronously,
+    // and reporting "not loading" in any of those gaps paints $0 in the field
+    // before the prefilled amount lands.
+    status = DepositPrefillStatus.Prefilled;
+  } else if (isSkipped) {
+    status = DepositPrefillStatus.Skipped;
+  }
 
   return {
     prefillAmount,
     isUncappedMaxPrefill,
-    isLoading,
-    hasPrefilled,
-    enabled,
+    status,
   };
 }

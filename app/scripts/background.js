@@ -40,7 +40,6 @@ import {
   REJECT_NOTIFICATION_CLOSE_SIG,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import {
   getActiveTabDomainAllowlist,
@@ -683,10 +682,6 @@ async function initialize(backup) {
   );
 
   setupLedgerModeOffscreenBridge(controller, offscreenPromise);
-
-  controller.metaMetricsController.updateTraits({
-    [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
-  });
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);

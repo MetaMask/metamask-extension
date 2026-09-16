@@ -23,11 +23,9 @@ const MoneyAccountWithdrawButtonContent = () => {
   return (
     <DeveloperButton
       title="Money Account Withdraw"
-      onPress={() =>
-        initiateWithdrawal().catch((error) =>
-          console.error('Failed to initiate money account withdrawal', error),
-        )
-      }
+      onPress={() => {
+        initiateWithdrawal();
+      }}
       disabled={isLoading}
     />
   );

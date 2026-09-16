@@ -2687,7 +2687,7 @@ describe('LegacyBackgroundApiService', () => {
      */
     function registerResetWalletHandlers(rootMessenger: RootMessenger): void {
       rootMessenger.registerActionHandler(
-        'AuthenticationController:performSignOut',
+        'AuthenticationController:clearState',
         jest.fn(),
       );
       rootMessenger.registerActionHandler(
@@ -2743,6 +2743,9 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:clearState',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
           'AuthenticationController:performSignOut',
         );
         expect(callSpy).toHaveBeenCalledWith(
@@ -2800,6 +2803,12 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).not.toHaveBeenCalledWith(
           'AppStateController:setIsWalletResetInProgress',
           true,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:clearState',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AuthenticationController:performSignOut',
         );
         // Non-onboarding cleanup still runs.
         expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
@@ -6380,6 +6389,7 @@ describe('LegacyBackgroundApiService', () => {
         const clearPermissionState = jest.fn();
         const clearSnapState = jest.fn().mockResolvedValue(undefined);
         const clearAccountTreeState = jest.fn();
+        const clearAccountsState = jest.fn();
         const updateHiddenAccountsList = jest.fn();
         const clearUnapprovedTransactions = jest.fn();
         const createWallet = jest.fn().mockResolvedValue(undefined);
@@ -6407,6 +6417,10 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountTreeController:clearState',
           clearAccountTreeState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:clearState',
+          clearAccountsState,
         );
         rootMessenger.registerActionHandler(
           'AccountOrderController:updateHiddenAccountsList',
@@ -6442,6 +6456,7 @@ describe('LegacyBackgroundApiService', () => {
         expect(clearPermissionState).toHaveBeenCalled();
         expect(clearSnapState).toHaveBeenCalled();
         expect(clearAccountTreeState).toHaveBeenCalled();
+        expect(clearAccountsState).toHaveBeenCalled();
         expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
         expect(clearUnapprovedTransactions).toHaveBeenCalled();
         expect(createWallet).toHaveBeenCalledWith({
@@ -8642,6 +8657,7 @@ function getMessenger(
       'SeedlessOnboardingController:submitPassword',
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
+      'AccountsController:clearState',
       'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
@@ -8660,6 +8676,7 @@ function getMessenger(
       'SubscriptionController:stopAllPolling',
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
+      'AuthenticationController:clearState',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'AppStateController:setTrezorModel',
       'KeyringController:withKeyringV2Unsafe',
