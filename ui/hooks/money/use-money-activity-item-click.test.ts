@@ -73,7 +73,7 @@ describe('useMoneyActivityItemClick', () => {
     );
   });
 
-  it('does not track or navigate for Accounts API rows', () => {
+  it('navigates to the details route for Accounts API rows without tracking', () => {
     mockSelectMoneyActivityDetailsEnabled.mockReturnValue(true);
     const apiItem = accountsApiItem({
       kind: 'card',
@@ -93,6 +93,8 @@ describe('useMoneyActivityItemClick', () => {
     result.current?.(apiItem);
 
     expect(mockTrackActivitySurfaceClicked).not.toHaveBeenCalled();
-    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(
+      getMoneyTransactionDetailsRoute(apiItem.id),
+    );
   });
 });

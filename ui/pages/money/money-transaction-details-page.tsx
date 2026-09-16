@@ -1,4 +1,10 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -11,8 +17,10 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Icon,
   IconColor,
   IconName,
+  IconSize,
   SensitiveText,
   SensitiveTextLength,
   Skeleton,
@@ -43,7 +51,7 @@ import {
   type TransactionState,
 } from '../../selectors/transactionController';
 import { TokenIcon } from '../../components/app/token-icon';
-import { onchainItem } from './types/money-activity';
+import { isAccountsApiActivityId, onchainItem } from './types/money-activity';
 import {
   getMoneyActivityDisplayInfo,
   type MoneyActivityTranslate,
@@ -60,6 +68,7 @@ import {
 import { getMoneyActivityStatus } from './utils/classify-money-activity';
 import { isVisibleMoneyActivityTransaction } from './utils/money-account-transactions';
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
+import { MoneyApiActivityDetails } from './components/money-api-activity-details';
 import { MoneyTransactionDetailsRow } from './components/money-transaction-details-row';
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
 
@@ -84,7 +93,8 @@ export function MoneyTransactionDetailsPage() {
   const detailsEnabled = useSelector(selectMoneyActivityDetailsEnabled);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const { items } = useMoneyActivityItems();
+  const { items, isSettling, hasMore, loadMore, isLoadingMore } =
+    useMoneyActivityItems();
   const controllerTx = useSelector((state: TransactionState) =>
     selectTransactionById(state, transactionId),
   );
@@ -97,14 +107,13 @@ export function MoneyTransactionDetailsPage() {
   }, [transactionId]);
 
   const item = useMemo(() => {
-    const listItem = items.find(
-      (candidate) =>
-        candidate.kind === 'onchain' && candidate.id === transactionId,
-    );
+    const listItem = items.find((candidate) => candidate.id === transactionId);
     if (listItem) {
       return listItem;
     }
-    if (!controllerTx) {
+    // Accounts API ids never exist on TransactionController; skip the
+    // on-chain fallback so a missing API row can keep paging instead.
+    if (!controllerTx || isAccountsApiActivityId(transactionId)) {
       return undefined;
     }
     const moneyAddress = availability.isAvailable
@@ -114,11 +123,25 @@ export function MoneyTransactionDetailsPage() {
       ? onchainItem(controllerTx)
       : undefined;
   }, [availability, controllerTx, items, transactionId]);
+
+  const isLookingUpApiItem =
+    isAccountsApiActivityId(transactionId) && item === undefined;
+
+  useEffect(() => {
+    if (isLookingUpApiItem && hasMore && !isLoadingMore && !isSettling) {
+      loadMore();
+    }
+  }, [hasMore, isLoadingMore, isLookingUpApiItem, isSettling, loadMore]);
+
+  const isResolvingItem =
+    item === undefined &&
+    (isSettling || isLoadingMore || (isLookingUpApiItem && hasMore));
+
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
-  const { feeUsd, totalUsd } = useMoneyTransactionFee(
-    item?.kind === 'onchain' ? item.tx : undefined,
-  );
+  const onchainTx = item?.kind === 'onchain' ? item.tx : undefined;
+  const { feeUsd, totalUsd, isNetworkFeePaidByMetaMask } =
+    useMoneyTransactionFee(onchainTx);
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
@@ -139,9 +162,24 @@ export function MoneyTransactionDetailsPage() {
     totalUsd === undefined
       ? '-'
       : formatCurrencyWithMinThreshold(totalUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
+  const isFullySponsoredFee =
+    isNetworkFeePaidByMetaMask && feeUsd !== undefined && feeUsd === 0;
+  // `networkFeeFiat` is Pay source-network gas. Cross-chain deposits keep that
+  // user-paid; only claim sponsorship in the tooltip when it is absent/zero.
+  const recordedSourceNetworkFee = onchainTx?.metamaskPay?.networkFeeFiat;
+  const hasUserPaidSourceNetworkFee = Boolean(
+    recordedSourceNetworkFee !== undefined &&
+    recordedSourceNetworkFee.trim() !== '' &&
+    Number(recordedSourceNetworkFee) > 0,
+  );
+  const showSponsoredNetworkFeeInTooltip =
+    isNetworkFeePaidByMetaMask &&
+    !hasUserPaidSourceNetworkFee &&
+    feeUsd !== undefined &&
+    feeUsd > 0;
 
   let body: React.ReactNode;
-  if (isAvailabilityLoading) {
+  if (isAvailabilityLoading || isResolvingItem) {
     body = (
       <div
         className="flex min-h-full flex-col gap-4 p-4"
@@ -154,8 +192,16 @@ export function MoneyTransactionDetailsPage() {
     );
   } else if (!availability.isAvailable) {
     body = <Navigate to={DEFAULT_ROUTE} replace />;
-  } else if (!detailsEnabled || !item || item.kind !== 'onchain') {
+  } else if (!detailsEnabled || !item) {
     body = <Navigate to={MONEY_ACTIVITY_ROUTE} replace />;
+  } else if (item.kind === 'accountsApi') {
+    body = (
+      <MoneyApiActivityDetails
+        activity={item.tx}
+        privacyMode={privacyMode}
+        onBack={handleBack}
+      />
+    );
   } else {
     const { tx } = item;
     const display = getMoneyActivityDisplayInfo(tx, t);
@@ -307,19 +353,46 @@ export function MoneyTransactionDetailsPage() {
               >
                 <Text variant={TextVariant.BodyMd}>
                   {t('moneyActivityTransactionFeeTooltip')}
+                  {showSponsoredNetworkFeeInTooltip ? (
+                    <>
+                      <br />
+                      {`${t('networkFee')}: ${t('paidByMetaMask')}`}
+                    </>
+                  ) : null}
                 </Text>
               </InfoPopover>
             }
             testId="money-transaction-details-fee"
             value={
-              <SensitiveText
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                isHidden={privacyMode}
-                length={SensitiveTextLength.Short}
-              >
-                {formattedFee}
-              </SensitiveText>
+              isFullySponsoredFee ? (
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                  data-testid="money-transaction-details-fee-sponsored"
+                >
+                  <Icon
+                    name={IconName.Check}
+                    size={IconSize.Sm}
+                    color={IconColor.SuccessDefault}
+                  />
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.SuccessDefault}
+                  >
+                    {t('paidByMetaMask')}
+                  </Text>
+                </Box>
+              ) : (
+                <SensitiveText
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
+                >
+                  {formattedFee}
+                </SensitiveText>
+              )
             }
           />
           <MoneyTransactionDetailsRow
