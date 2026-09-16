@@ -490,14 +490,28 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('money-send-button')).toBeEnabled();
     expect(screen.getByTestId('money-add-button')).toBeEnabled();
+    expect(
+      screen.getByRole('link', { name: messages.moneyMeetMusd.message }),
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.io/price/metamask-usd?utm_source=extension',
+    );
+    expect(
+      screen.getByRole('link', {
+        name: messages.moneyExploreBenefits.message,
+      }),
+    ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
+    expect(
+      screen.queryByRole('link', {
+        name: messages.moneyHowYourMoneyGrows.message,
+      }),
+    ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
       if (
         [
           messages.moneyAdd.message,
           messages.moneySend.message,
           messages.moneyMoreOptions.message,
-          messages.moneyMeetMusd.message,
-          messages.moneyExploreBenefits.message,
         ].includes(
           button.textContent || (button.getAttribute('aria-label') ?? ''),
         )
