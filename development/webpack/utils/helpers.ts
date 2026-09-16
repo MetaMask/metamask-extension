@@ -65,6 +65,12 @@ export const UI_COMPONENT_RE = new RegExp(
 
 export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
 
+/** TypeScript without JSX (`.ts` / `.mts`). */
+export const TYPESCRIPT_NON_TSX_FILE_RE = /\.(?:ts|mts)$/u;
+
+/** TypeScript with JSX (`.tsx` only). */
+export const TYPESCRIPT_TSX_FILE_RE = /\.tsx$/u;
+
 export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
 
 /**
