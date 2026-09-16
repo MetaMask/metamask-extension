@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "Saat memilih biaya rendah, perkirakan transaksi lebih lambat dan waktu tunggu lebih lama. Untuk transaksi lebih cepat, pilih opsi biaya Pasar atau Agresif."
   },
-  "alertMessageGasTooLow": {
-    "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 21000 atau lebih tinggi."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Anda tidak memiliki cukup $1 di akun untuk membayar biaya jaringan."
   },
@@ -1580,9 +1577,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Kecepatan lambat"
-  },
-  "alertReasonGasTooLow": {
-    "message": "Batas gas rendah"
   },
   "alertReasonInsufficientBalance": {
     "message": "Dana tidak cukup"
@@ -4176,9 +4170,6 @@
   },
   "gasLimit": {
     "message": "Batas gas"
-  },
-  "gasLimitTooLow": {
-    "message": "Batas gas minimum adalah 21000"
   },
   "gasPrice": {
     "message": "Harga gas"

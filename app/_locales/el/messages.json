@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "Όταν επιλέγετε χαμηλά τέλη, να αναμένετε πιο αργές συναλλαγές και μεγαλύτερους χρόνους αναμονής. Για ταχύτερες συναλλαγές, επιλέξτε τις επιλογές χρέωσης Market (Αγοράς) ή Aggressive (Υψηλότερη αγοραστική τιμή)."
   },
-  "alertMessageGasTooLow": {
-    "message": "Για να συνεχίσετε με αυτή τη συναλλαγή, θα πρέπει να αυξήσετε το όριο των τελών συναλλαγών σε 21000 ή περισσότερο."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη δικτύου."
   },
@@ -1580,9 +1577,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Αργή ταχύτητα"
-  },
-  "alertReasonGasTooLow": {
-    "message": "Χαμηλό όριο τελών συναλλαγών"
   },
   "alertReasonInsufficientBalance": {
     "message": "Ανεπαρκές ποσό"
@@ -4176,9 +4170,6 @@
   },
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
-  },
-  "gasLimitTooLow": {
-    "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον 21000"
   },
   "gasPrice": {
     "message": "Τέλη συναλλαγών"

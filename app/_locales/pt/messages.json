@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "Ao escolher uma taxa baixa, a expectativa é de transações mais lentas e tempos de espera maiores. Para transações mais rápidas, escolha as opções de taxa Mercado ou Agressiva."
   },
-  "alertMessageGasTooLow": {
-    "message": "Para continuar com essa transação, você precisará aumentar o limite de gás para 21000 ou mais."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Você não tem $1 suficiente em sua conta para pagar as taxas de rede."
   },
@@ -1580,9 +1577,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Velocidade lenta"
-  },
-  "alertReasonGasTooLow": {
-    "message": "Baixo limite de gás"
   },
   "alertReasonInsufficientBalance": {
     "message": "Fundos insuficientes"
@@ -4176,9 +4170,6 @@
   },
   "gasLimit": {
     "message": "Limite de gás"
-  },
-  "gasLimitTooLow": {
-    "message": "O limite de gás deve ser de pelo menos 21000"
   },
   "gasPrice": {
     "message": "Preço do gás (GWEI)"

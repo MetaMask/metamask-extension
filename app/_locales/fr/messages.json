@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "Si vous choisissez des frais peu élevés, attendez-vous à des transactions plus lentes et à des temps d’attente plus longs. Pour des transactions plus rapides, choisissez les options « Ordre au marché » ou « Agressif »."
   },
-  "alertMessageGasTooLow": {
-    "message": "Pour effectuer cette transaction, vous devez augmenter la limite de gaz à 21 000 ou plus."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de réseau."
   },
@@ -1580,9 +1577,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Vitesse lente"
-  },
-  "alertReasonGasTooLow": {
-    "message": "Limite de gaz trop basse"
   },
   "alertReasonInsufficientBalance": {
     "message": "Fonds insuffisants"
@@ -4176,9 +4170,6 @@
   },
   "gasLimit": {
     "message": "Limite de gaz"
-  },
-  "gasLimitTooLow": {
-    "message": "La limite de carburant doit être d’au moins 21000"
   },
   "gasPrice": {
     "message": "Prix du gaz (GWEI)"

@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "При выборе низкой комиссии транзакций будут медленнее, а время ожидания — дольше. Для более быстрых транзакций выберите вариант комиссии «Рыночная» или «Агрессивная»."
   },
-  "alertMessageGasTooLow": {
-    "message": "Чтобы продолжить эту транзакцию, вам необходимо увеличить лимит газа до 21 000 или выше."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "У вас на счету недостаточно $1 для оплаты комиссий сети."
   },
@@ -1580,9 +1577,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Низкая скорость"
-  },
-  "alertReasonGasTooLow": {
-    "message": "Низкий лимит газа"
   },
   "alertReasonInsufficientBalance": {
     "message": "Недостаточно средств"
@@ -4176,9 +4170,6 @@
   },
   "gasLimit": {
     "message": "Лимит газа"
-  },
-  "gasLimitTooLow": {
-    "message": "Лимит газа должен быть не менее 21 000"
   },
   "gasPrice": {
     "message": "Цена газа (Гвей)"

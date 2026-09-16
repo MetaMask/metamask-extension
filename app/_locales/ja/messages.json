@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "低い手数料を選択すると、トランザクションに時間がかかり、待機時間が長くなります。より素早くトランザクションを行うには、市場に合った、または積極的な手数料のオプションを選択してください。"
   },
-  "alertMessageGasTooLow": {
-    "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
   },
@@ -1580,9 +1577,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "低速"
-  },
-  "alertReasonGasTooLow": {
-    "message": "低ガスリミット"
   },
   "alertReasonInsufficientBalance": {
     "message": "資金不足"
@@ -4176,9 +4170,6 @@
   },
   "gasLimit": {
     "message": "ガスリミット"
-  },
-  "gasLimitTooLow": {
-    "message": "ガスリミットは21000以上にする必要があります"
   },
   "gasPrice": {
     "message": "ガス価格 (gwei)"

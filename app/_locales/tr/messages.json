@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "Düşük bir ücret seçerken işlemlerin daha yavaş olmasını ve bekleme sürelerinin daha uzun olmasını bekleyebilirsiniz. Daha hızlı işlemler için Piyasa veya Agresif ücret seçeneklerini seçin."
   },
-  "alertMessageGasTooLow": {
-    "message": "Bu işlemle devam etmek için gaz limitini 21000 veya üzeri olacak şekilde artırmanız gerekecek."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Hesabınızda ağ ücretlerini ödemek için yeterli $1 yok."
   },
@@ -1580,9 +1577,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Hız yavaş"
-  },
-  "alertReasonGasTooLow": {
-    "message": "Gaz limiti düşük"
   },
   "alertReasonInsufficientBalance": {
     "message": "Yetersiz bakiye"
@@ -4176,9 +4170,6 @@
   },
   "gasLimit": {
     "message": "Gaz limiti"
-  },
-  "gasLimitTooLow": {
-    "message": "Gaz limiti en az 21000 olmalıdır"
   },
   "gasPrice": {
     "message": "Gaz fiyatı"
