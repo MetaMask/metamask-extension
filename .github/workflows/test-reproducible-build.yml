@@ -26,6 +26,7 @@ permissions:
 jobs:
   build-dist-mv2-webpack:
     strategy:
+      fail-fast: false
       matrix:
         iteration:
           [
@@ -130,14 +131,22 @@ jobs:
             99,
             100,
           ]
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-dist-mv2-webpack-${{ matrix.iteration }}
-      build-command: yarn webpack:lavamoat:build:mv2 --zip --env production
-    secrets: inherit
+    runs-on: ubuntu-latest
+    env:
+      FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
+        with:
+          is-high-risk-environment: true
+          skip-allow-scripts: true
+      - name: Build main
+        shell: bash
+        run: bash "${GITHUB_WORKSPACE}/.github/scripts/package-firefox-reviewer-artifacts.sh" main
 
   build-flask-mv2-webpack:
     strategy:
+      fail-fast: false
       matrix:
         iteration:
           [
@@ -242,8 +251,16 @@ jobs:
             99,
             100,
           ]
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-mv2-webpack-${{ matrix.iteration }}
-      build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip --env production
-    secrets: inherit
+    runs-on: ubuntu-latest
+    env:
+      FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
+        with:
+          is-high-risk-environment: true
+          skip-allow-scripts: true
+      - name: Build flask
+        shell: bash
+        run: bash "${GITHUB_WORKSPACE}/.github/scripts/package-firefox-reviewer-artifacts.sh" flask
+

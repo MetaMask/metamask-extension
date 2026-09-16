@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
-# Package and/or upload AMO reviewer source + approval notes to private S3 (INFRA-3683).
+# Clone firefox-bundle-script and run prepare_release.sh for production
+# or Flask to create submission packages.
 #
 # Usage:
-#   publish-firefox-reviewer-artifacts.sh package
-#   publish-firefox-reviewer-artifacts.sh upload
-#
-# package — clone firefox-bundle-script and run prepare_release.sh for production
-#           and Flask to create submission packages.
-# upload  — s3 cp artifacts (requires AMO_REVIEWER_BUCKET + active AWS creds from OIDC).
+#   package-firefox-reviewer-artifacts.sh main
+#   package-firefox-reviewer-artifacts.sh flask
 #
 # Environment:
-#   RELEASE_TAG                  — e.g. v13.37.0 (required)
 #   FIREFOX_BUNDLE_SCRIPT_TOKEN  — clone private repo + fetch bundle.sh tags
-#   AMO_REVIEWER_PACKAGE_ROOT    — output root (default: $RUNNER_TEMP/amo-reviewer-artifacts)
-#   AMO_REVIEWER_BUCKET          — required for upload
-#   AWS_DEFAULT_REGION             — default us-east-2
 
 set -euo pipefail
 
@@ -23,26 +16,15 @@ set -euo pipefail
 # INFRA-3753: includes FIREFOX_BUNDLE_SH_GIT_REF / per-version tag support.
 FIREFOX_BUNDLE_SCRIPT_REF="1cb37c0817b319d9846dbca827d533e0ae769984"
 
-MODE="${1:-}"
-if [[ "${MODE}" != "package" && "${MODE}" != "upload" ]]; then
-  echo "::error::Usage: $0 package|upload"
+VARIANT="${1:-}"
+if [[ "${VARIANT}" != "main" && "${VARIANT}" != "flask" ]]; then
+  echo "::error::Usage: $0 [main|flask]"
   exit 1
 fi
 
-if [[ -z "${RELEASE_TAG:-}" ]]; then
-  echo "::error::RELEASE_TAG is required"
-  exit 1
-fi
+raw_version="13.47.1"
 
-raw_version="${RELEASE_TAG#v}"
-if [[ -z "${raw_version}" || "${raw_version}" == "${RELEASE_TAG}" ]]; then
-  echo "::error::RELEASE_TAG must look like vX.Y.Z (got '${RELEASE_TAG}')"
-  exit 1
-fi
-
-AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-us-east-2}"
-PACKAGE_ROOT="${AMO_REVIEWER_PACKAGE_ROOT:-${RUNNER_TEMP:-/tmp}/amo-reviewer-artifacts}"
-PACKAGE_DIR="${PACKAGE_ROOT}/${raw_version}"
+PACKAGE_DIR="/tmp/amo-reviewer-artifacts/${raw_version}"
 S3_PREFIX="reviewer-source/${raw_version}"
 FIREFOX_BUNDLE_SH_GIT_REF="v${raw_version}"
 
@@ -59,23 +41,6 @@ ensure_mtree() {
     echo "::error::mtree still unavailable after installing mtree-netbsd"
     exit 1
   }
-}
-
-resolve_last_listed_version() {
-  # Best-effort for reviewer notes at release time (previous semver tag).
-  # Authoritative last-listed version at submit time comes from the Lambda
-  # (fetchLastListedVersion against the live AMO listing).
-  local previous
-  previous="$(git -C "${GITHUB_WORKSPACE:-.}" tag -l 'v*' --sort=-v:refname 2>/dev/null \
-    | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
-    | grep -v "^v${raw_version}$" \
-    | head -1 \
-    | sed 's/^v//' || true)"
-  if [[ -z "${previous}" ]]; then
-    echo "${raw_version}"
-  else
-    echo "${previous}"
-  fi
 }
 
 clone_firefox_bundle_script() {
@@ -144,6 +109,8 @@ package_release_variant() {
 }
 
 run_package() {
+  local variant="$1"
+
   if [[ -z "${FIREFOX_BUNDLE_SCRIPT_TOKEN:-}" ]]; then
     echo "::error::FIREFOX_BUNDLE_SCRIPT_TOKEN is required for packaging"
     exit 1
@@ -166,45 +133,10 @@ run_package() {
   echo "Cloning firefox-bundle-script at ref ${script_ref}..."
   clone_firefox_bundle_script "${script_ref}" "${clone_dir}"
 
-  last_listed="$(resolve_last_listed_version)"
+  last_listed="13.47.0"
   echo "Using last listed version: ${last_listed}"
 
-  package_release_variant main "${clone_dir}" "${last_listed}"
-  package_release_variant flask "${clone_dir}" "${last_listed}"
+  package_release_variant "${variant}" "${clone_dir}" "${last_listed}"
 }
 
-run_upload() {
-  if [[ -z "${AMO_REVIEWER_BUCKET:-}" ]]; then
-    echo "::error::AMO_REVIEWER_BUCKET is required for upload"
-    exit 1
-  fi
-
-  local required=(
-    "${PACKAGE_DIR}/metamask-firefox-${raw_version}-source.zip"
-    "${PACKAGE_DIR}/metamask-firefox-${raw_version}-amo-approval-notes.txt"
-    "${PACKAGE_DIR}/metamask-firefox-${raw_version}-flask.0-source.zip"
-    "${PACKAGE_DIR}/metamask-firefox-${raw_version}-flask.0-amo-approval-notes.txt"
-  )
-
-  local artifact
-  for artifact in "${required[@]}"; do
-    if [[ ! -f "${artifact}" ]]; then
-      echo "::error::Package file not found: ${artifact}. Run package step first."
-      exit 1
-    fi
-  done
-
-  for artifact in "${required[@]}"; do
-    local key
-    key="${S3_PREFIX}/$(basename "${artifact}")"
-    echo "Uploading to s3://${AMO_REVIEWER_BUCKET}/${key}"
-    aws s3 cp "${artifact}" "s3://${AMO_REVIEWER_BUCKET}/${key}" --region "${AWS_DEFAULT_REGION}"
-  done
-
-  echo "Reviewer artifacts uploaded to s3://${AMO_REVIEWER_BUCKET}/${S3_PREFIX}/"
-}
-
-case "${MODE}" in
-  package) run_package ;;
-  upload) run_upload ;;
-esac
+run_package "${VARIANT}"
