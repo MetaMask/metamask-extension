@@ -5841,6 +5841,12 @@
   "moneyMeetMusd": {
     "message": "Meet mUSD"
   },
+  "moneyMonthlyTooltipText": {
+    "message": "The total you've earned on your Money account balance in the last 30 days."
+  },
+  "moneyLifetimeTooltipText": {
+    "message": "The total you've earned on your Money account balance over time."
+  },
   "moneyMoreInformation": {
     "message": "More information"
   },
