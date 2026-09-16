@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -23,49 +24,53 @@ import {
 } from '@metamask/design-system-react';
 import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { getPrivacyMode } from '../../selectors/selectors';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from './constants/money-events';
 import { MoneyActivityRow } from './components/money-activity-row';
+import { MoneyActivityRetryButton } from './components/money-activity-retry-button';
+import { MoneyActivitySettlingSkeletons } from './components/money-activity-settling-skeletons';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { groupMoneyActivityItems } from './utils/group-money-activity';
+import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
+
+const ACTIVITY_FILL_COUNT = 15;
 
 const FILTERS: {
   id: MoneyActivityFilter;
   labelKey: string;
   testId: string;
+  componentName: MoneyComponentName;
 }[] = [
   {
     id: MoneyActivityFilter.All,
     labelKey: 'moneyActivityFilterAll',
     testId: 'money-activity-filter-all',
+    componentName: MoneyComponentName.ActivityFilterAll,
   },
   {
     id: MoneyActivityFilter.Deposits,
     labelKey: 'moneyActivityFilterDeposits',
     testId: 'money-activity-filter-deposits',
+    componentName: MoneyComponentName.ActivityFilterDeposits,
   },
   {
     id: MoneyActivityFilter.Transfers,
     labelKey: 'moneyActivityFilterSends',
     testId: 'money-activity-filter-sends',
+    componentName: MoneyComponentName.ActivityFilterTransfers,
   },
 ];
-
-/**
- * Money Home and Activity share RootLayout's overflow container, so home
- * scroll would otherwise carry over when opening View all.
- *
- * @param element - A node on the Activity page.
- */
-function resetOverflowAncestorScroll(element: HTMLElement | null): void {
-  let node = element;
-  while (node) {
-    node.scrollTop = 0;
-    node = node.parentElement;
-  }
-}
 
 export function MoneyActivityPage() {
   const t = useI18nContext();
@@ -73,14 +78,56 @@ export function MoneyActivityPage() {
   const privacyMode = useSelector(getPrivacyMode);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const { buckets } = useMoneyActivityItems();
-  const handleItemClick = useMoneyActivityItemClick();
   const [filter, setFilter] = useState(MoneyActivityFilter.All);
+  const {
+    buckets,
+    hasMore,
+    loadMore,
+    isLoadingMore,
+    isSettling,
+    error,
+    refetch,
+  } = useMoneyActivityItems({
+    fill: { bucket: filter, count: ACTIVITY_FILL_COUNT },
+  });
+  const handleItemClick = useMoneyActivityItemClick({
+    screenName: MoneyScreenName.MoneyActivity,
+  });
+  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyActivity,
+  });
   const pageRef = useRef<HTMLDivElement>(null);
+  const [sentinelRef, isSentinelIntersecting] = useIntersectionObserver({
+    rootMargin: '400px 0px',
+  });
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);
   }, []);
+
+  useEffect(() => {
+    if (isSentinelIntersecting && hasMore) {
+      loadMore();
+    }
+  }, [isSentinelIntersecting, hasMore, loadMore]);
+
+  useTrackOnce(
+    !isAvailabilityLoading && availability.isAvailable,
+    trackScreenViewed,
+  );
+
+  const handleFilterClick = useCallback(
+    (chip: (typeof FILTERS)[number]) => {
+      trackButtonClicked({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.Filter,
+        labelKey: chip.labelKey,
+        componentName: chip.componentName,
+      });
+      setFilter(chip.id);
+    },
+    [trackButtonClicked],
+  );
 
   const filteredItems = buckets[filter];
   const sections = useMemo(
@@ -91,6 +138,10 @@ export function MoneyActivityPage() {
   const handleBack = useCallback(() => {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
+
+  const scrollSentinel = hasMore ? (
+    <div ref={sentinelRef} data-testid="money-activity-scroll-sentinel" />
+  ) : null;
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -105,6 +156,106 @@ export function MoneyActivityPage() {
       </div>
     );
   } else if (availability.isAvailable) {
+    let listBody: React.ReactNode;
+    if (isSettling) {
+      listBody = (
+        <MoneyActivitySettlingSkeletons className="flex flex-col gap-3 px-4 py-4">
+          {scrollSentinel}
+        </MoneyActivitySettlingSkeletons>
+      );
+    } else if (filteredItems.length === 0) {
+      listBody = (
+        <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            data-testid="money-activity-empty"
+          >
+            {t(error ? 'moneyActivityLoadError' : 'moneyActivityEmpty')}
+          </Text>
+          {error ? (
+            <MoneyActivityRetryButton
+              className="mt-4"
+              onClick={() => {
+                refetch();
+              }}
+            />
+          ) : null}
+          {scrollSentinel}
+        </Box>
+      );
+    } else {
+      listBody = (
+        <>
+          {sections.map((section) => (
+            <section key={section.isPending ? 'pending' : section.title}>
+              <Box
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={2}
+                paddingBottom={1}
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextAlternative}
+                  data-testid={
+                    section.isPending
+                      ? 'money-activity-pending-header'
+                      : 'money-activity-date-header'
+                  }
+                >
+                  {section.title}
+                </Text>
+              </Box>
+              {section.data.map((item) => (
+                <MoneyActivityRow
+                  key={item.id}
+                  item={item}
+                  privacyMode={privacyMode}
+                  onItemClick={handleItemClick}
+                />
+              ))}
+            </section>
+          ))}
+          {isLoadingMore ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+              data-testid="money-activity-loading-more"
+            >
+              <Skeleton className="h-12 w-full" />
+            </Box>
+          ) : null}
+          {error ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+              data-testid="money-activity-load-error"
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('moneyActivityLoadError')}
+              </Text>
+              <MoneyActivityRetryButton
+                className="mt-3"
+                onClick={() => {
+                  refetch();
+                }}
+              />
+            </Box>
+          ) : null}
+          {scrollSentinel}
+        </>
+      );
+    }
+
     body = (
       <main
         className="min-h-full bg-background-default pb-5"
@@ -147,7 +298,7 @@ export function MoneyActivityPage() {
                 }
                 size={ButtonSize.Md}
                 aria-pressed={isActive}
-                onClick={() => setFilter(chip.id)}
+                onClick={() => handleFilterClick(chip)}
                 data-testid={chip.testId}
               >
                 {t(chip.labelKey)}
@@ -156,51 +307,7 @@ export function MoneyActivityPage() {
           })}
         </Box>
 
-        {filteredItems.length === 0 ? (
-          <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              data-testid="money-activity-empty"
-            >
-              {t('moneyActivityEmpty')}
-            </Text>
-          </Box>
-        ) : (
-          sections.map((section) => (
-            <section key={section.isPending ? 'pending' : section.title}>
-              <Box
-                paddingLeft={4}
-                paddingRight={4}
-                paddingTop={2}
-                paddingBottom={1}
-              >
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                  data-testid={
-                    section.isPending
-                      ? 'money-activity-pending-header'
-                      : 'money-activity-date-header'
-                  }
-                >
-                  {section.title}
-                </Text>
-              </Box>
-              {section.data.map((item) => (
-                <MoneyActivityRow
-                  key={item.id}
-                  item={item}
-                  privacyMode={privacyMode}
-                  onClick={
-                    handleItemClick ? () => handleItemClick(item) : undefined
-                  }
-                />
-              ))}
-            </section>
-          ))
-        )}
+        {listBody}
       </main>
     );
   } else {

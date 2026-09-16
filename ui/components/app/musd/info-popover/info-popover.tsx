@@ -14,12 +14,12 @@ import {
 import { Popover, PopoverPosition } from '../../../component-library';
 
 /**
- * Default panel styles — matches confirmations InfoPopoverTooltip for visual parity.
+ * Default panel styles — matches confirmations InfoPopoverTooltip for visual
+ * parity. The Popover supplies its theme-aware elevated background.
  * Z-index above extension chrome (see ui/css/design-system/_z-index.scss).
  */
 const POPOVER_STYLE = {
   zIndex: 1050,
-  backgroundColor: 'var(--color-text-default)',
   paddingTop: '6px',
   paddingBottom: '6px',
   paddingLeft: '16px',
@@ -42,6 +42,8 @@ export type InfoPopoverProps = {
    * inline next to heading text).
    */
   wrapperStyle?: CSSProperties;
+  /** Called each time the popover is opened. */
+  onOpen?: () => void;
   'data-testid'?: string;
 };
 
@@ -57,6 +59,7 @@ export type InfoPopoverProps = {
  * @param options0.ariaLabel
  * @param options0.popoverStyle
  * @param options0.wrapperStyle
+ * @param options0.onOpen
  * @param options0.'data-testid'
  */
 export function InfoPopover({
@@ -68,6 +71,7 @@ export function InfoPopover({
   ariaLabel,
   popoverStyle,
   wrapperStyle,
+  onOpen,
   'data-testid': dataTestId,
 }: Readonly<InfoPopoverProps>) {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,8 +80,11 @@ export function InfoPopover({
   );
 
   const handleToggle = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
+    if (!isOpen) {
+      onOpen?.();
+    }
+    setIsOpen(!isOpen);
+  }, [isOpen, onOpen]);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);

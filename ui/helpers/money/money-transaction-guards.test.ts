@@ -5,6 +5,7 @@ import {
 import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
+  getMoneyPayChainIds,
   isMoneyAccountTx,
   isMoneyDepositTx,
   isMoneyWithdrawTx,
@@ -72,6 +73,41 @@ describe('isMoneyDepositTx / isMoneyWithdrawTx / isMoneyAccountTx', () => {
   it('rejects unrelated transactions', () => {
     const tx = makeTx({ type: TransactionType.contractInteraction });
     expect(isMoneyAccountTx(tx)).toBe(false);
+  });
+});
+
+describe('getMoneyPayChainIds', () => {
+  it('treats the pay chain as the source before a quote', () => {
+    const tx = makeTx({
+      chainId: CHAIN_IDS.MONAD,
+      metamaskPay: { chainId: CHAIN_IDS.ARBITRUM },
+    });
+
+    expect(getMoneyPayChainIds(tx)).toStrictEqual({
+      sourceChainId: CHAIN_IDS.ARBITRUM,
+      destinationChainId: CHAIN_IDS.MONAD,
+    });
+  });
+
+  it('treats the pay chain as the destination after a quote', () => {
+    const tx = makeTx({
+      chainId: CHAIN_IDS.MONAD,
+      metamaskPay: { chainId: CHAIN_IDS.ARBITRUM, isPostQuote: true },
+    });
+
+    expect(getMoneyPayChainIds(tx)).toStrictEqual({
+      sourceChainId: CHAIN_IDS.MONAD,
+      destinationChainId: CHAIN_IDS.ARBITRUM,
+    });
+  });
+
+  it('uses the local chain for both when there is no pay metadata', () => {
+    const tx = makeTx({ chainId: CHAIN_IDS.MONAD });
+
+    expect(getMoneyPayChainIds(tx)).toStrictEqual({
+      sourceChainId: CHAIN_IDS.MONAD,
+      destinationChainId: CHAIN_IDS.MONAD,
+    });
   });
 });
 

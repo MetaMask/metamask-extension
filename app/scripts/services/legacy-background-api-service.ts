@@ -74,6 +74,7 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
+  AccountsControllerClearStateAction,
   AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -254,6 +255,7 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerClearStateAction,
   AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
@@ -349,6 +351,8 @@ import {
   PreferencesControllerAddReferralApprovedAccountAction,
   PreferencesControllerAddReferralDeclinedAccountAction,
   PreferencesControllerAddReferralPassedAccountAction,
+  PreferencesControllerConsolidateBasicFunctionalityAction,
+  PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction,
   PreferencesControllerRemoveReferralDeclinedAccountAction,
   PreferencesControllerResetStateAction,
   PreferencesControllerSetAccountsReferralApprovedAction,
@@ -601,6 +605,7 @@ type AllowedActions =
   | AccountTreeControllerReinitAction
   | AccountTreeControllerSyncWithUserStorageAction
   | AccountTreeControllerSyncWithUserStorageAtLeastOnceAction
+  | AccountsControllerClearStateAction
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
@@ -629,6 +634,7 @@ type AllowedActions =
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerClearStateAction
   | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
@@ -704,6 +710,8 @@ type AllowedActions =
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
   | PreferencesControllerAddReferralPassedAccountAction
+  | PreferencesControllerConsolidateBasicFunctionalityAction
+  | PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction
   | PreferencesControllerGetStateAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
   | PreferencesControllerResetStateAction
@@ -1531,8 +1539,8 @@ export class LegacyBackgroundApiService {
    * reset progress flag is set.
    */
   async resetWallet(restoreOnly = false): Promise<void> {
-    // sign out from Authentication service and clear the Session Data
-    this.#messenger.call('AuthenticationController:performSignOut');
+    // Sign out and re-arm profile/social pairing for the next wallet.
+    this.#messenger.call('AuthenticationController:clearState');
 
     // clear SeedlessOnboardingController state
     this.#messenger.call('SeedlessOnboardingController:clearState');
@@ -4065,6 +4073,9 @@ export class LegacyBackgroundApiService {
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
 
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
+
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
       // of accounts, we should add a new flag to the account struct
@@ -4483,6 +4494,9 @@ export class LegacyBackgroundApiService {
 
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
+
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state

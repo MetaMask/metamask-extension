@@ -47,6 +47,10 @@ const PRIORITY_CHAIN_IDS = new Map<CaipChainId, number>([
 
 const MAX_NETWORK_AVATARS = 4;
 
+// Caps the popover content. The address rows scroll once this is reached, so
+// the "View all" button and the default address section always stay visible.
+const POPOVER_CONTENT_MAX_HEIGHT = 300;
+
 export type MultichainAddressRowsListProps = {
   /**
    * The account group ID.
@@ -87,7 +91,7 @@ export type MultichainAddressRowsListProps = {
 };
 
 const Divider = () => (
-  <div className="my-3 mx-4 border-t border-border-muted" />
+  <div className="my-3 mx-4 shrink-0 border-t border-border-muted" />
 );
 
 const ViewAllButton = ({
@@ -104,18 +108,19 @@ const ViewAllButton = ({
       size={ButtonSize.Sm}
       variant={ButtonVariant.Secondary}
       onClick={handleViewAllClick}
-      className="mt-2 ml-3 mr-3"
+      className="mt-2 ml-3 mr-3 shrink-0"
       data-testid="multichain-address-rows-view-all-button"
     >
       {text}
     </Button>
   ) : (
     <>
-      <div className="my-1 -mx-1 border-t border-border-muted" />
+      <div className="my-1 -mx-1 shrink-0 border-t border-border-muted" />
       <Button
         size={ButtonSize.Sm}
         variant={ButtonVariant.Tertiary}
         onClick={handleViewAllClick}
+        className="shrink-0"
         data-testid="multichain-address-rows-view-all-button"
       >
         {text}
@@ -182,7 +187,7 @@ export const MultichainTriggeredAddressRowsList = ({
 
     const rect = referenceElement.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
-    const popoverEstimatedHeight = 275; // Based on the maxHeight set on the popover
+    const popoverEstimatedHeight = POPOVER_CONTENT_MAX_HEIGHT; // Based on the maxHeight set on the popover content
     const spaceBelow = viewportHeight - rect.bottom;
 
     // If there's not enough space below, use TopStart
@@ -402,12 +407,12 @@ export const MultichainTriggeredAddressRowsList = ({
         paddingTop={1}
         style={{
           zIndex: 99999,
-          maxHeight: '275px',
           minWidth: '340px',
         }}
       >
         <Box
           flexDirection={BoxFlexDirection.Column}
+          style={{ maxHeight: `${POPOVER_CONTENT_MAX_HEIGHT}px` }}
           data-testid="multichain-address-rows-list"
         >
           {showAccountHeaderAndBalance && (
@@ -415,6 +420,7 @@ export const MultichainTriggeredAddressRowsList = ({
               marginBottom={2}
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
+              className="shrink-0"
             >
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {accountGroup?.metadata.name}
@@ -428,7 +434,9 @@ export const MultichainTriggeredAddressRowsList = ({
               </Text>
             </Box>
           )}
-          <Box>{renderedRows}</Box>
+          {/* Only the address rows scroll, so the footer below them keeps its
+              spacing instead of being cut off by the max height. */}
+          <Box className="overflow-y-auto">{renderedRows}</Box>
           {showViewAllButton && (
             <ViewAllButton
               handleViewAllClick={handleViewAllClick}

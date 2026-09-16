@@ -52,11 +52,17 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signTxConfirmation = new SnapTransactionConfirmation(driver);
           let dialogHandle = await driver.getCurrentWindowHandle();
-          await signTxConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
+          await signTxConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           await driver.waitForWindowToClose(dialogHandle);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await signTxConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
+          await signTxConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
           await testDapp.switchTo();
 
           const signedTransactions = await sendWSolTest.getSignedTransactions();
@@ -70,11 +76,17 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           dialogHandle = await driver.getCurrentWindowHandle();
           const txConfirmation = new SnapTransactionConfirmation(driver);
-          await txConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
+          await txConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           await driver.waitForWindowToClose(dialogHandle);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await txConfirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
+          await txConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
           await testDapp.switchTo();
 
           const transactionHashes = await sendWSolTest.getTransactionHashs();

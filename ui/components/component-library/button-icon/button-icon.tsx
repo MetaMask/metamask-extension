@@ -66,7 +66,7 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
         display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        borderRadius={BorderRadius.LG}
+        borderRadius={BorderRadius.pill}
         backgroundColor={BackgroundColor.transparent}
         {...(href ? { href } : {})}
         ref={ref}
