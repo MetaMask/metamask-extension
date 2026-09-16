@@ -10,7 +10,6 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  IconColor,
   SensitiveText,
   Skeleton,
   Text,
@@ -18,7 +17,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { PopoverPosition } from '../../../component-library';
-import { InfoPopover } from '../../musd/info-popover';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -35,6 +33,7 @@ import {
   MoneyTooltipName,
   MoneyTooltipType,
 } from '../../../../pages/money/constants/money-events';
+import { TooltipText } from '../tooltip-text';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
@@ -170,25 +169,15 @@ export const MoneyAccountBalance = () => {
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
-          gap={1}
+          gap={2}
         >
-          <Text
-            variant={TextVariant.BodySm}
+          <TooltipText
+            text="Money"
+            position={PopoverPosition.Auto}
+            variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
-          >
-            {t('moneyBalanceTitle')}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            • {t('moneyMusd')}
-          </Text>
-          <InfoPopover
-            iconColor={IconColor.IconAlternative}
-            ariaLabel={t('moneyBalanceTitle')}
-            data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
             onOpen={handleInfoOpen}
-            wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
-            position={PopoverPosition.Auto}
             popoverStyle={{
               maxWidth: 315,
               paddingTop: '12px',
@@ -203,36 +192,8 @@ export const MoneyAccountBalance = () => {
                 {t('moneyBalanceInfoWithdrawals')}
               </Text>
             </Box>
-          </InfoPopover>
-        </Box>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Baseline}
-          gap={2}
-        >
-          {isLoading ? (
-            // 32px matches the headingLg line-height of the balance text so
-            // the row doesn't shift when the figure arrives.
-            <Skeleton
-              height={32}
-              width={100}
-              // A skeleton has no baseline of its own, so it is centred rather
-              // than left to baseline-align against the APY beside it.
-              className="self-center"
-              data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
-            />
-          ) : (
-            // Honours the privacy-mode setting, as every other balance on the
-            // account overview does. Without it, turning balances off would
-            // leave the Money row as the one figure still on screen.
-            <SensitiveText
-              variant={TextVariant.HeadingLg}
-              isHidden={privacyMode}
-              data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
-            >
-              {balance}
-            </SensitiveText>
-          )}
+          </TooltipText>
+
           {isApyLoading ? (
             // 22px matches the bodyMd line-height of the APY text so the
             // row doesn't shift when the figure arrives.
@@ -245,6 +206,7 @@ export const MoneyAccountBalance = () => {
             apyPercentFormatted && (
               <Text
                 variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
                 color={TextColor.SuccessDefault}
                 data-testid={MONEY_ACCOUNT_BALANCE_APY_TEST_ID}
               >
@@ -253,27 +215,94 @@ export const MoneyAccountBalance = () => {
             )
           )}
         </Box>
-        {isLastKnown ? (
-          <Text
-            variant={TextVariant.BodyXs}
-            color={TextColor.TextAlternative}
-            data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
-          >
-            {t('moneyBalanceLastKnown')}
-          </Text>
-        ) : null}
       </Box>
+      <AddOrBalance
+        balance={balance}
+        isLoading={isLoading}
+        privacyMode={privacyMode}
+        initiateDeposit={handleAddClick}
+        isDepositLoading={isDepositLoading}
+        isLastKnown={isLastKnown}
+      />
+    </Box>
+  );
+};
+
+const AddOrBalance = ({
+  balance,
+  isLoading,
+  privacyMode,
+  initiateDeposit,
+  isDepositLoading,
+  isLastKnown,
+}: {
+  balance: string | undefined;
+  isLoading: boolean;
+  privacyMode: boolean;
+  initiateDeposit: any;
+  isDepositLoading: boolean;
+  isLastKnown: boolean;
+}) => {
+  console.log({ balance });
+  // Is this the best way to tell if the balace is zero?
+  const zeroBalance = balance === '$0.00';
+
+  const t = useI18nContext();
+
+  if (zeroBalance) {
+    return (
       <Button
         size={ButtonSize.Md}
         variant={ButtonVariant.Primary}
-        className="shrink-0 "
+        className="shrink-0 rounded-md"
         isLoading={isDepositLoading}
         data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={handleAddClick}
+        onClick={() => {
+          initiateDeposit();
+        }}
       >
         {t('moneyAdd')}
       </Button>
-    </Box>
+    );
+  }
+
+  return (
+    <>
+      {isLoading ? (
+        // 32px matches the headingLg line-height of the balance text so
+        // the row doesn't shift when the figure arrives.
+        <Skeleton
+          height={32}
+          width={100}
+          // A skeleton has no baseline of its own, so it is centred rather
+          // than left to baseline-align against the APY beside it.
+          className="self-center"
+          data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
+        />
+      ) : (
+        <Box className="relative">
+          <SensitiveText
+            variant={TextVariant.BodyMd}
+            isHidden={privacyMode}
+            fontWeight={FontWeight.Medium}
+            data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
+          >
+            {balance}
+          </SensitiveText>
+
+          {isLastKnown ? (
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+              className="absolute top-4 right-0 whitespace-nowrap"
+              data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
+            >
+              {t('moneyBalanceLastKnown')}
+            </Text>
+          ) : null}
+        </Box>
+      )}
+    </>
   );
 };
 
