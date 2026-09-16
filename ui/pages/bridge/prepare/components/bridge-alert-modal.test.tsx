@@ -10,6 +10,7 @@ import { DummyQuotesNoApproval } from '../../../../../test/data/bridge/dummy-quo
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
+import { toBridgeToken } from '../../../../ducks/bridge/utils';
 import * as useSubmitBridgeTransactionModule from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import { BridgeAlert } from '../types';
@@ -64,7 +65,9 @@ const renderModal = (
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
+        fromToken: toBridgeToken(fromToken),
         toToken,
+        fromNativeBalance: '1000000000000000000',
       },
       ...overrides,
     }),
