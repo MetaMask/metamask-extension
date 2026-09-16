@@ -80,7 +80,9 @@ import {
   PERPS_HOME_PAGE_ROUTE,
   MONEY_HOME_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
+  MONEY_EARN_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -160,6 +162,7 @@ import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-mes
 import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
 import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
+import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -282,9 +285,13 @@ const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
 const MoneyActivityPage = mmLazy(
   () => import('../money/money-activity-page.tsx'),
 );
+const MoneyHowItWorksPage = mmLazy(
+  () => import('../money/money-how-it-works-page.tsx'),
+);
 const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
 );
+const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -606,16 +613,21 @@ export const routeConfig = [
             element: <DeFiPage />,
           },
           {
-            path: RAMPS_BUILD_QUOTE_ROUTE,
-            element: <RampsBuildQuote />,
-          },
-          {
-            path: RAMPS_TOKEN_SELECTION_ROUTE,
-            element: <RampsTokenSelection />,
-          },
-          {
-            path: RAMPS_PAYMENT_METHOD_ROUTE,
-            element: <RampsPaymentMethod />,
+            element: <RampsFlowLayout />,
+            children: [
+              {
+                path: RAMPS_BUILD_QUOTE_ROUTE,
+                element: <RampsBuildQuote />,
+              },
+              {
+                path: RAMPS_TOKEN_SELECTION_ROUTE,
+                element: <RampsTokenSelection />,
+              },
+              {
+                path: RAMPS_PAYMENT_METHOD_ROUTE,
+                element: <RampsPaymentMethod />,
+              },
+            ],
           },
           {
             path: RAMPS_COMPLETE_BUY_ROUTE,
@@ -681,9 +693,19 @@ export const routeConfig = [
             element: <MoneyActivityPage />,
           }),
           createRouteWithMessenger({
+            path: MONEY_HOW_IT_WORKS_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyHowItWorksPage />,
+          }),
+          createRouteWithMessenger({
             path: MONEY_TRANSACTION_DETAILS_ROUTE,
             capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
             element: <MoneyTransactionDetailsPage />,
+          }),
+          createRouteWithMessenger({
+            path: MONEY_EARN_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyEarnPage />,
           }),
         ],
       },

@@ -8,6 +8,7 @@ export enum MoneyScreenName {
   MoneyTransfer = 'money_transfer',
   MoneyActivity = 'money_activity',
   MoneyActivityDetails = 'money_activity_details',
+  MoneyEarnOnCrypto = 'money_earn_on_crypto',
 }
 
 export enum MoneyBottomSheetName {
@@ -29,7 +30,9 @@ export enum MoneyComponentName {
   WhatYouGetSection = 'money_what_you_get_section',
   BalanceCard = 'money_balance_card',
   BalanceProjection = 'money_balance_projection',
+  PotentialEarningsSection = 'money_potential_earnings_section',
   PotentialEarningsSectionTokenRow = 'money_potential_earnings_section_token_row',
+  PotentialEarningsSectionFooter = 'money_potential_earnings_section_footer',
   HomeTab = 'money_home_tab',
   ActionButtonRow = 'money_action_button_row',
   More = 'money_more',

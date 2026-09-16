@@ -5,17 +5,6 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
 import { MoneyPotentialEarnings } from './money-potential-earnings';
 
-jest.mock('../../../hooks/useFormatters', () => ({
-  useFormatters: () => ({
-    formatCurrencyWithMinThreshold: (value: number) =>
-      new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-      }).format(value),
-  }),
-}));
-
 const createToken = (
   index: number,
   overrides: Partial<MoneyDepositToken> = {},
@@ -31,26 +20,45 @@ const createToken = (
 });
 
 describe('MoneyPotentialEarnings', () => {
-  it('renders the section without token rows when there are no eligible tokens', () => {
-    renderWithLocalization(
+  it('renders nothing when there are no eligible tokens', () => {
+    const { container } = renderWithLocalization(
       <MoneyPotentialEarnings
         tokens={[]}
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
       />,
     );
 
-    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
     expect(
-      screen.getByText(messages.moneyEarnOnCrypto.message),
-    ).toBeInTheDocument();
+      screen.queryByTestId('money-potential-earnings'),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByText(messages.moneyEarnOnCryptoDescription.message),
-    ).toBeInTheDocument();
+      screen.queryByText(messages.moneyEarnOnCrypto.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders nothing when all tokens have zero fiat balance', () => {
+    const { container } = renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[
+          createToken(1, { moneyFiatAmountUsd: 0 }),
+          createToken(2, { moneyFiatAmountUsd: 0 }),
+        ]}
+        apyDecimal={0.04}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
     expect(
-      screen.queryByTestId('money-potential-earnings-token-row'),
+      screen.queryByTestId('money-potential-earnings'),
     ).not.toBeInTheDocument();
   });
 
@@ -62,6 +70,7 @@ describe('MoneyPotentialEarnings', () => {
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
       />,
     );
 
@@ -87,6 +96,7 @@ describe('MoneyPotentialEarnings', () => {
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
       />,
     );
 
@@ -99,6 +109,8 @@ describe('MoneyPotentialEarnings', () => {
   });
 
   it('renders at most five token rows and View all for additional tokens', () => {
+    const onViewAll = jest.fn();
+
     renderWithLocalization(
       <MoneyPotentialEarnings
         tokens={Array.from({ length: 6 }, (_, index) => createToken(index + 1))}
@@ -106,6 +118,7 @@ describe('MoneyPotentialEarnings', () => {
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
+        onViewAll={onViewAll}
       />,
     );
 
@@ -113,9 +126,12 @@ describe('MoneyPotentialEarnings', () => {
       screen.getAllByTestId('money-potential-earnings-token-row'),
     ).toHaveLength(5);
     expect(screen.queryByText('Token 6')).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: messages.viewAll.message }),
-    ).toBeDisabled();
+    const viewAllButton = screen.getByTestId(
+      'money-potential-earnings-view-all',
+    );
+    expect(viewAllButton).toBeEnabled();
+    fireEvent.click(viewAllButton);
+    expect(onViewAll).toHaveBeenCalledTimes(1);
   });
 
   it('hides View all when all tokens are visible', () => {
@@ -126,6 +142,7 @@ describe('MoneyPotentialEarnings', () => {
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
       />,
     );
 
@@ -142,6 +159,7 @@ describe('MoneyPotentialEarnings', () => {
         isNoFeeToken={({ symbol }) => symbol === 'TOK1'}
         privacyMode={false}
         onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
       />,
     );
 
@@ -158,6 +176,7 @@ describe('MoneyPotentialEarnings', () => {
         isNoFeeToken={() => false}
         privacyMode
         onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
       />,
     );
 
@@ -180,6 +199,7 @@ describe('MoneyPotentialEarnings', () => {
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={onAddToken}
+        onViewAll={jest.fn()}
       />,
     );
 
@@ -198,6 +218,7 @@ describe('MoneyPotentialEarnings', () => {
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
         isAddDisabled
       />,
     );
