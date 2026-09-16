@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
+import { ModalHeader } from '@metamask/design-system-react';
 import { hideModal } from '../../../store/actions';
-import { ModalHeader, ModalBody, Box } from '../../component-library';
+import { ModalBody, Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useDispatch } from '../../../store/hooks';
@@ -37,7 +38,10 @@ export const NetworkTabs = ({
       {showHeader ? (
         <ModalHeader
           onClose={handleClose}
-          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+          closeButtonProps={{
+            ariaLabel: t('close'),
+            'data-testid': 'modal-header-close-button',
+          }}
         >
           {t('bridgeSelectNetwork')}
         </ModalHeader>
