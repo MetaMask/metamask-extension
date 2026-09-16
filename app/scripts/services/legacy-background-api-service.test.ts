@@ -6223,7 +6223,10 @@ describe('LegacyBackgroundApiService', () => {
           true,
         );
 
-        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(true);
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(
+          true,
+          undefined,
+        );
         expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).toHaveBeenCalledTimes(1);
@@ -6282,7 +6285,10 @@ describe('LegacyBackgroundApiService', () => {
           false,
         );
 
-        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(false);
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(
+          false,
+          undefined,
+        );
         expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
