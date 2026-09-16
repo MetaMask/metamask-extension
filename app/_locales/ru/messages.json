@@ -5601,7 +5601,8 @@
     "message": "Автоматически получайте доход на ваш баланс Money"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Автоматически зарабатывайте до ~$1 годовых"
+    "message": "Автоматически зарабатывайте до $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Получите полную ликвидность без блокировок, чтобы вы могли торговать или выводить средства в любое время"

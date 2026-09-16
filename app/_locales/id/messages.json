@@ -5609,7 +5609,8 @@
     "message": "Persentase hasil otomatis pada saldo Money Anda"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Hasil otomatis hingga ~ $1 APY"
+    "message": "Hasil otomatis hingga $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"

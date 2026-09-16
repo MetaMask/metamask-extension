@@ -21,8 +21,10 @@ import {
   MoneyComponentName,
   MoneyScreenName,
 } from './constants/money-events';
-import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
-import { onchainItem } from './types/money-activity';
+import MOCK_MONEY_TRANSACTIONS, {
+  MOCK_ACCOUNTS_API_ACTIVITY,
+} from './constants/mock-activity-data';
+import { accountsApiItem, onchainItem } from './types/money-activity';
 import { MoneyActivityPage } from './money-activity-page';
 import {
   buildMoneyActivityBuckets,
@@ -72,7 +74,10 @@ jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
 }));
 const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
 
-const mockItems = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+const mockItems = [
+  ...MOCK_MONEY_TRANSACTIONS.map(onchainItem),
+  ...MOCK_ACCOUNTS_API_ACTIVITY.map(accountsApiItem),
+];
 const mockBuckets = buildMoneyActivityBuckets(mockItems);
 
 function makePendingDeposit(): ReturnType<typeof onchainItem> {
@@ -159,6 +164,9 @@ describe('MoneyActivityPage', () => {
       screen.getByTestId('money-activity-filter-sends'),
     ).toBeInTheDocument();
     expect(
+      screen.getByTestId('money-activity-filter-card'),
+    ).toBeInTheDocument();
+    expect(
       screen.queryByTestId('money-activity-pending-header'),
     ).not.toBeInTheDocument();
     expect(
@@ -171,9 +179,9 @@ describe('MoneyActivityPage', () => {
         ),
       ),
     ).toBeInTheDocument();
-    expect(screen.getAllByTestId(/money-activity-row-money-tx-/u).length).toBe(
-      MOCK_MONEY_TRANSACTIONS.length,
-    );
+    expect(
+      screen.getAllByTestId(/^money-activity-row-(?!primary-|fiat-)/u).length,
+    ).toBe(mockItems.length);
   });
 
   it('resets the overflow ancestor scroll so View all starts at the top', () => {
@@ -233,6 +241,33 @@ describe('MoneyActivityPage', () => {
     });
   });
 
+  it('filters to Card when the Card chip is selected', () => {
+    renderWithLocalization(<MoneyActivityPage />);
+
+    fireEvent.click(screen.getByTestId('money-activity-filter-card'));
+
+    expect(screen.getByTestId('money-activity-filter-card')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByTestId('money-activity-filter-all')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(
+      screen.queryByText(messages.moneyActivityDeposited.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getAllByTestId(/money-activity-row-(?:card|cashback|refund):/u),
+    ).toHaveLength(mockBuckets[MoneyActivityFilter.Card].length);
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.Filter,
+      labelKey: 'moneyActivityFilterCard',
+      componentName: MoneyComponentName.ActivityFilterCard,
+    });
+  });
+
   it('tracks the screen as viewed once availability has resolved', () => {
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: { isAvailable: false },
@@ -277,6 +312,35 @@ describe('MoneyActivityPage', () => {
     );
     expect(
       screen.queryByTestId(/money-activity-row-/u),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows a blank list when Card has no activity', () => {
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: mockItems.filter((item) => item.kind === 'onchain'),
+      buckets: {
+        ...buildMoneyActivityBuckets(
+          mockItems.filter((item) => item.kind === 'onchain'),
+        ),
+        [MoneyActivityFilter.Card]: [],
+      },
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyActivityPage />);
+    fireEvent.click(screen.getByTestId('money-activity-filter-card'));
+
+    expect(screen.getByTestId('money-activity-card-empty')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-activity-empty'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(/^money-activity-row-(?!primary-|fiat-)/u),
     ).not.toBeInTheDocument();
   });
 

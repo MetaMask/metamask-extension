@@ -5608,7 +5608,8 @@
     "message": "Receba rendimentos automaticamente sobre o saldo em sua conta Money"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Receba até ~$1 de APY automaticamente"
+    "message": "Receba até $1 automaticamente",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Obtenha liquidez total sem períodos de bloqueio, permitindo que você possa negociar ou sacar quando quiser"

@@ -5608,7 +5608,8 @@
     "message": "Κερδίστε αυτόματα απόδοση στο υπόλοιπό σας στον Money account"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Κερδίστε αυτόματα έως και ~$1 APY"
+    "message": "Κερδίστε αυτόματα έως και $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Πλήρης ρευστότητα χωρίς δεσμεύσεις, ώστε να μπορείτε να κάνετε συναλλαγές ή ανάληψη οποιαδήποτε στιγμή"

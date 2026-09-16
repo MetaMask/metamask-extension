@@ -5605,7 +5605,8 @@
     "message": "머니 잔액에 대한 수익을 자동으로 적립하세요."
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "최대 $1 APY로 자동 수익을 적립하세요"
+    "message": "최대 $1로 자동 수익을 적립하세요",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "락업 없이 완전한 유동성을 제공하므로 언제든지 거래하거나 출금할 수 있습니다"

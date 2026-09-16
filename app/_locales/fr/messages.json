@@ -5608,7 +5608,8 @@
     "message": "Gagnez automatiquement des intérêts sur le solde de votre compte « Money »"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Gagnez automatiquement jusqu'à environ $1 de rendement annuel"
+    "message": "Gagnez automatiquement jusqu'à $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Profitez d’une liquidité totale sans période de blocage, vous pourrez ainsi trader ou retirer des fonds à tout moment"

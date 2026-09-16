@@ -5612,7 +5612,8 @@
     "message": "Para bakiyeniz üzerinden otomatik getiri elde edin"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "$1 APY'ye varan otomatik kazanç elde edin"
+    "message": "$1'ye varan otomatik kazanç elde edin",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Kilitleme olmadan tam likidite alarak dilediğiniz zaman işlem yapabilir veya para çekebilirsiniz"

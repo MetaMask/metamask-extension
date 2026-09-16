@@ -5601,7 +5601,8 @@
     "message": "Awtomatikong kumita ng yield sa balanse mo sa Money"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Awtomatikong kumita ng hanggang ~$1 APY"
+    "message": "Awtomatikong kumita ng hanggang $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Makakuha ng ganap na liquidity nang walang lockup, kaya maaari kang mag-trade o mag-withdraw anumang oras"

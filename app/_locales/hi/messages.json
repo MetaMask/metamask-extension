@@ -5608,7 +5608,8 @@
     "message": "आपके मनी बैलेंस पर ऑटो-अर्न यील्ड"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "~$1 APY तक ऑटो-अर्न"
+    "message": "$1 तक ऑटो-अर्न",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "बिना किसी लॉकअप के पूरी लिक्विडिटी पाएं, इसलिए आप कभी भी ट्रेड कर सकते हैं या निकाल सकते हैं"

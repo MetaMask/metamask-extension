@@ -70,6 +70,12 @@ const FILTERS: {
     testId: 'money-activity-filter-sends',
     componentName: MoneyComponentName.ActivityFilterTransfers,
   },
+  {
+    id: MoneyActivityFilter.Card,
+    labelKey: 'moneyActivityFilterCard',
+    testId: 'money-activity-filter-card',
+    componentName: MoneyComponentName.ActivityFilterCard,
+  },
 ];
 
 export function MoneyActivityPage() {
@@ -164,26 +170,34 @@ export function MoneyActivityPage() {
         </MoneyActivitySettlingSkeletons>
       );
     } else if (filteredItems.length === 0) {
-      listBody = (
-        <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-            data-testid="money-activity-empty"
-          >
-            {t(error ? 'moneyActivityLoadError' : 'moneyActivityEmpty')}
-          </Text>
-          {error ? (
-            <MoneyActivityRetryButton
-              className="mt-4"
-              onClick={() => {
-                refetch();
-              }}
-            />
-          ) : null}
-          {scrollSentinel}
-        </Box>
-      );
+      // Card with no rows stays blank (no "No activity yet"); still surface
+      // load errors so retry remains available.
+      if (filter === MoneyActivityFilter.Card && !error) {
+        listBody = (
+          <div data-testid="money-activity-card-empty">{scrollSentinel}</div>
+        );
+      } else {
+        listBody = (
+          <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              data-testid="money-activity-empty"
+            >
+              {t(error ? 'moneyActivityLoadError' : 'moneyActivityEmpty')}
+            </Text>
+            {error ? (
+              <MoneyActivityRetryButton
+                className="mt-4"
+                onClick={() => {
+                  refetch();
+                }}
+              />
+            ) : null}
+            {scrollSentinel}
+          </Box>
+        );
+      }
     } else {
       listBody = (
         <>

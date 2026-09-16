@@ -5601,7 +5601,8 @@
     "message": "为您的 Money 余额自动赚取收益"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "自动赚取最高约 $1 年化收益率"
+    "message": "自动赚取最高 $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "享受完全流动性，无锁仓期限制，可随时交易或提现"
