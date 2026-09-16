@@ -37,7 +37,7 @@ jobs:
           - userJourneyAssets
           - userJourneyTransactions
           - userJourneyAccountManagement
-    runs-on: namespace-profile-metamask-ci-linux-small
+    runs-on: namespace-profile-metamask-ci-linux
     timeout-minutes: 30
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -135,7 +135,7 @@ jobs:
     name: chrome-webpack-pageLoadBenchmark
     # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
-    runs-on: namespace-profile-metamask-ci-linux-small
+    runs-on: namespace-profile-metamask-ci-linux
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
