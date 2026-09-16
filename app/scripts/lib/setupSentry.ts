@@ -6,7 +6,7 @@ import type {
   Event as SentryEvent,
   TransactionEvent,
 } from '@sentry/types';
-import { debug as sentryDebugLogger } from '@sentry/core';
+import { debug as sentrySdkLogger } from '@sentry/core';
 import { cloneDeep, escapeRegExp } from 'lodash';
 import browser from 'webextension-polyfill';
 import { BROWSER_SHUTTING_DOWN_ERROR } from '../../../shared/constants/errors';
@@ -830,12 +830,11 @@ function integrateLogging(): void {
     return;
   }
 
-  // Sentry exposes a mutable debug-logger singleton. In debug mode we
-  // intentionally override its methods so SDK-internal logs flow through our
-  // module logger. (`logger` from @sentry/core is the structured logs API and
-  // does not expose these methods.)
+  // `debug` is the SDK-internal logger and is a mutable singleton. Do not use
+  // the `logger` export: that is the user-facing Logs API, whose members are
+  // getter-only module bindings and throw on assignment.
   for (const loggerType of ['log', 'error'] as const) {
-    sentryDebugLogger[loggerType] = (...args: unknown[]) => {
+    sentrySdkLogger[loggerType] = (...args: unknown[]) => {
       const [firstArg, ...rest] = args;
       const message =
         typeof firstArg === 'string'

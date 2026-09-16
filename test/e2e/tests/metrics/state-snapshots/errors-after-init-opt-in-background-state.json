@@ -37,6 +37,7 @@
     "currentAppVersion": "string",
     "currentMigrationVersion": "number",
     "firstTimeInfo": "object",
+    "installAttribution": null,
     "previousAppVersion": "",
     "previousMigrationVersion": 0
   },
@@ -53,6 +54,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isWalletResetInProgress": "boolean",
+    "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
@@ -97,7 +99,8 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean"
+    "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
@@ -170,10 +173,8 @@
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "dataCollectionForMarketing": "boolean",
-    "fragments": "object",
     "marketingCampaignCookieId": null,
-    "tracesBeforeMetricsOptIn": "object",
-    "traits": "object"
+    "tracesBeforeMetricsOptIn": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -181,6 +182,9 @@
   },
   "MoneyAccountController": {
     "moneyAccounts": "object"
+  },
+  "MoneyAccountUpgradeController": {
+    "upgradedAccounts": "object"
   },
   "MultichainAssetsController": {
     "accountsAssets": "object",
@@ -279,6 +283,8 @@
     "openSeaEnabled": true,
     "overrideContentSecurityPolicyHeader": true,
     "preferences": {
+      "basicFunctionalityMigrationNotification": null,
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
@@ -321,9 +327,17 @@
     "useTransactionSimulations": true,
     "watchEthereumAccountEnabled": "boolean"
   },
-  "ProfileMetricsController": "object",
+  "ProfileMetricsController": {
+    "accountSourceBackfillEnqueued": true,
+    "initialDelayEndTimestamp": "number",
+    "initialEnqueueCompleted": "boolean",
+    "proofBackfillEnqueued": "boolean",
+    "reportedAccounts": "object",
+    "syncQueue": "object"
+  },
   "QrSyncController": "object",
   "RampsController": {
+    "autoramps": "object",
     "countries": "object",
     "nativeProviders": "object",
     "orders": "object",
@@ -342,7 +356,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": "valueA"
+      "feature3": "valueC"
     },
     "thresholdCache": "object"
   },
@@ -405,6 +419,7 @@
   },
   "TransactionPayController": { "transactionData": "object" },
   "TxController": {
+    "batchTransactionCounts": "object",
     "lastFetchedBlockNumbers": "object",
     "methodData": "object",
     "submitHistory": "object",
@@ -417,6 +432,7 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean",
+    "isRampsSyncingEnabled": true
   }
 }
