@@ -54,7 +54,9 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
 
         // There is apparently an issue with Anvil network that prevents correct estimation of gas limit for upgrade.
         await upgradeAndBatchTxConfirmation.editGasLimitLondon('50000');
-        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -72,7 +74,9 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
         await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           "You're switching back to a standard account (EOA).",
         );
-        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

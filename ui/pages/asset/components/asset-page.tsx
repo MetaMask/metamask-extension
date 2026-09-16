@@ -53,10 +53,7 @@ import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
-import {
-  TokenFiatDisplayInfo,
-  type TokenWithFiatAmount,
-} from '../../../components/app/assets/types';
+import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
@@ -508,7 +505,6 @@ const AssetPage = ({
           address={address}
           currentPrice={currentPrice}
           currency={currency}
-          asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
         />
         <MaybePerpsViewStreamBoundary
           enabled={Boolean(isPerpsMarketLoading || perpsMarket)}

@@ -392,6 +392,16 @@ export type AppStateControllerSetLastInteractedConfirmationInfoAction = {
 };
 
 /**
+ * Sets the entry point that initiated the last Perps deposit flow.
+ *
+ * @param entryPoint - The entry point identifier, or undefined to clear.
+ */
+export type AppStateControllerSetLastPerpsDepositEntryPointAction = {
+  type: `AppStateController:setLastPerpsDepositEntryPoint`;
+  handler: AppStateController['setLastPerpsDepositEntryPoint'];
+};
+
+/**
  * A getter to retrieve currentPopupId saved in the appState
  */
 export type AppStateControllerGetCurrentPopupIdAction = {
@@ -614,6 +624,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetCurrentPopupIdAction
   | AppStateControllerGetLastInteractedConfirmationInfoAction
   | AppStateControllerSetLastInteractedConfirmationInfoAction
+  | AppStateControllerSetLastPerpsDepositEntryPointAction
   | AppStateControllerGetCurrentPopupIdAction
   | AppStateControllerGetThrottledOriginStateAction
   | AppStateControllerUpdateThrottledOriginStateAction

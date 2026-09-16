@@ -39,7 +39,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
         await txConfirmation.checkRevokeTitle();
 
         await txConfirmation.clickScrollToBottomButton();
-        await txConfirmation.clickFooterConfirmButton();
+        await txConfirmation.clickFooterButton({ button: 'confirm' });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

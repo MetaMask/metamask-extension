@@ -1,9 +1,14 @@
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { isMoneyAccountEnabled } from '../../../shared/lib/money/feature-flags';
 import { getUseExternalServices } from '../../selectors';
+import {
+  clearReportedMoneyQueryError,
+  reportMoneyQueryErrorOnce,
+} from '../../helpers/money/report-money-error';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MoneyAccountAvailabilityServiceQueryKeys } from './query-keys';
 
@@ -43,6 +48,19 @@ export function useMoneyAccountAvailability() {
     enabled: isEnabled,
     refetchOnMount: 'always',
   });
+
+  useEffect(() => {
+    if (!query.isError) {
+      clearReportedMoneyQueryError('getAvailability');
+      return;
+    }
+    reportMoneyQueryErrorOnce(
+      'getAvailability',
+      '[Money Account] Availability query failed',
+      query.error,
+      { query: 'getAvailability' },
+    );
+  }, [query.error, query.isError]);
 
   return {
     ...query,

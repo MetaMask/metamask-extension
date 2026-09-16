@@ -225,10 +225,6 @@ messenger.registerActionHandler(
   'MetaMetricsController:setMarketingCampaignCookieId',
   () => undefined,
 );
-messenger.registerActionHandler(
-  'MetaMetricsController:updateExtensionUninstallUrl',
-  () => undefined,
-);
 
 messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
   isEvmSelected: true,

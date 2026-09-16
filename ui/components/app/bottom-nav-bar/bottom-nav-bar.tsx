@@ -29,6 +29,13 @@ import { resetBridgeController } from '../../../ducks/bridge/actions';
 import { useDispatch } from '../../../store/hooks';
 import { transitionForward } from '../../ui/transition';
 import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
+import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../../pages/money/constants/money-events';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -82,6 +89,9 @@ export function BottomNavBar() {
     useMoneyAccountAvailability();
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
   const { openBridgeExperience } = useBridging();
+  const { trackButtonClicked: trackMoneyButtonClicked } = useMoneyAnalytics({
+    componentName: MoneyComponentName.HomeTab,
+  });
 
   const { isHome, isPerps, isMoney, isSwaps, isActivity } =
     getActiveBottomNavTabs(pathname);
@@ -118,11 +128,17 @@ export function BottomNavBar() {
   }, [navigate, resetBridgeIfNeeded]);
 
   const handleMoneyClick = useCallback(() => {
+    trackMoneyButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+      labelKey: 'money',
+      redirectTarget: MoneyScreenName.MoneyHome,
+    });
     resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
     );
-  }, [navigate, resetBridgeIfNeeded]);
+  }, [navigate, resetBridgeIfNeeded, trackMoneyButtonClicked]);
 
   const handleSwapsClick = useCallback(() => {
     if (isSwaps) {

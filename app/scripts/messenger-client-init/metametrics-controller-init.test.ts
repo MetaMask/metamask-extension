@@ -38,9 +38,6 @@ describe('MetaMetricsControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       captureException: expect.any(Function),
-      environment: 'testing',
-      extension: expect.any(Object),
-      version: 'MOCK_VERSION',
     });
   });
 });

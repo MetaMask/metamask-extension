@@ -1,6 +1,6 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/preview-api';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { useArgs } from 'storybook/preview-api';
 
 import { TextFieldSize, TextFieldType } from './text-field.types';
 import { TextField } from './text-field';

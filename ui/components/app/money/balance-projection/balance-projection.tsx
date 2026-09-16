@@ -13,6 +13,13 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
+import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
+import {
+  MoneyComponentName,
+  MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
+} from '../../../../pages/money/constants/money-events';
 import { moneyFormatUsd } from '../../../../helpers/money/format';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { InfoPopover } from '../../musd/info-popover';
@@ -51,6 +58,9 @@ function isPositiveNumberOrZero(value: number | undefined): value is number {
 const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
   const t = useI18nContext();
   const { apyDecimal, apyPercent, vaultApyQuery } = useMoneyAccountBalance();
+  const { trackTooltipClicked } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyDeposit,
+  });
   const hasUsableApy =
     isPositiveNumberOrZero(apyDecimal) && isPositiveNumberOrZero(apyPercent);
 
@@ -108,6 +118,13 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
           iconColor={IconColor.IconAlternative}
           ariaLabel={t('moneyAccountProjectedBalanceInfo')}
           data-testid="balance-projection-info"
+          onOpen={() =>
+            trackTooltipClicked({
+              tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+              tooltipType: MoneyTooltipType.Info,
+              componentName: MoneyComponentName.BalanceProjection,
+            })
+          }
         >
           {t('moneyAccountProjectedBalanceTooltip', [String(apyPercent)])}
         </InfoPopover>
@@ -129,6 +146,12 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
         iconColor={IconColor.IconAlternative}
         ariaLabel={t('moneyAccountApyPitchInfo')}
         data-testid="balance-projection-apy-pitch-info"
+        onOpen={() =>
+          trackTooltipClicked({
+            tooltipName: MoneyTooltipName.Apy,
+            tooltipType: MoneyTooltipType.Info,
+          })
+        }
       >
         {t('moneyAccountApyTooltip')}
       </InfoPopover>

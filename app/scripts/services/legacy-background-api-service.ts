@@ -255,6 +255,7 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerClearStateAction,
   AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
@@ -633,6 +634,7 @@ type AllowedActions =
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerClearStateAction
   | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
@@ -1537,8 +1539,8 @@ export class LegacyBackgroundApiService {
    * reset progress flag is set.
    */
   async resetWallet(restoreOnly = false): Promise<void> {
-    // sign out from Authentication service and clear the Session Data
-    this.#messenger.call('AuthenticationController:performSignOut');
+    // Sign out and re-arm profile/social pairing for the next wallet.
+    this.#messenger.call('AuthenticationController:clearState');
 
     // clear SeedlessOnboardingController state
     this.#messenger.call('SeedlessOnboardingController:clearState');

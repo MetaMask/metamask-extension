@@ -5,11 +5,6 @@
 
 import type { MetaMetricsController } from './metametrics-controller';
 
-export type MetaMetricsControllerUpdateExtensionUninstallUrlAction = {
-  type: `MetaMetricsController:updateExtensionUninstallUrl`;
-  handler: MetaMetricsController['updateExtensionUninstallUrl'];
-};
-
 export type MetaMetricsControllerSetDataCollectionForMarketingAction = {
   type: `MetaMetricsController:setDataCollectionForMarketing`;
   handler: MetaMetricsController['setDataCollectionForMarketing'];
@@ -61,7 +56,6 @@ export type MetaMetricsControllerBufferedEndTraceAction = {
  * Union of all MetaMetricsController action types.
  */
 export type MetaMetricsControllerMethodActions =
-  | MetaMetricsControllerUpdateExtensionUninstallUrlAction
   | MetaMetricsControllerSetDataCollectionForMarketingAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction

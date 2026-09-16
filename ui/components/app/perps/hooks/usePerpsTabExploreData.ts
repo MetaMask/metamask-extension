@@ -22,6 +22,13 @@ export type UsePerpsTabExploreDataReturn = {
   allMarkets: PerpsMarketData[];
   exploreMarkets: PerpsMarketData[];
   watchlistMarkets: PerpsMarketData[];
+  /**
+   * How many markets the user has starred, read from persisted controller state
+   * rather than from the live list. Available before the markets arrive, so the
+   * loading tree can reserve the watchlist's slot instead of letting it push the
+   * sections below it down once it appears.
+   */
+  watchlistCount: number;
   isInitialLoading: boolean;
 };
 
@@ -63,6 +70,7 @@ export function usePerpsTabExploreData(
     allMarkets: liveMarkets,
     exploreMarkets,
     watchlistMarkets: filteredWatchlistMarkets,
+    watchlistCount: watchlistSymbols.length,
     isInitialLoading,
   };
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 import { MultipleAlertModal } from './multiple-alert-modal';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
-import { useArgs } from '@storybook/preview-api';
+import { useArgs } from 'storybook/preview-api';
 import { Box } from '@metamask/design-system-react';
 import { Button } from '../../../component-library';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';

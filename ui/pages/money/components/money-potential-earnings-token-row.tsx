@@ -30,6 +30,8 @@ type MoneyPotentialEarningsTokenRowProps = {
   apyDecimal: number;
   hasNoFee: boolean;
   privacyMode: boolean;
+  onAddClick: (token: MoneyDepositToken) => void;
+  isAddDisabled?: boolean;
 };
 
 export function MoneyPotentialEarningsTokenRow({
@@ -37,6 +39,8 @@ export function MoneyPotentialEarningsTokenRow({
   apyDecimal,
   hasNoFee,
   privacyMode,
+  onAddClick,
+  isAddDisabled = false,
 }: MoneyPotentialEarningsTokenRowProps) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
@@ -142,7 +146,13 @@ export function MoneyPotentialEarningsTokenRow({
         </Box>
       </Box>
 
-      <Button variant={ButtonVariant.Secondary} size={ButtonSize.Md} disabled>
+      <Button
+        variant={ButtonVariant.Secondary}
+        size={ButtonSize.Md}
+        disabled={isAddDisabled}
+        onClick={() => onAddClick(token)}
+        data-testid="money-potential-earnings-token-add"
+      >
         {t('moneyAdd')}
       </Button>
     </Box>

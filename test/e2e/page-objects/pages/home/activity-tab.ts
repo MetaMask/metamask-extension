@@ -54,8 +54,18 @@ class ActivityTab extends HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly transactionBaseFeeRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-base-fee"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
+
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
+
+  private readonly transactionBreakdownAmountRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-breakdown-value-amount"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
 
   private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
     css: `[data-testid="transaction-breakdown-row"]:nth-child(${
@@ -89,10 +99,10 @@ class ActivityTab extends HomePage {
     expectedDestToken?: string,
   ): Promise<void> {
     console.log(`Open bridge transaction details`);
-    const [completedTx] = await this.driver.findElements({
+    await this.driver.clickElement({
       text: action,
+      css: this.activityListAction,
     });
-    await completedTx.click();
     await this.driver.waitForSelector({ text: action });
 
     console.log('Checking scanner links');
@@ -106,7 +116,13 @@ class ActivityTab extends HomePage {
       this.transactionStatusLabel(expectedStatus),
     );
 
-    if (!isBridge) {
+    if (isBridge) {
+      console.log('Checking bridge fee and total amount rows are populated');
+      await this.driver.waitForSelector(this.transactionBaseFeeRowValue);
+      await this.driver.waitForSelector(
+        this.transactionBreakdownAmountRowValue,
+      );
+    } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
         await this.driver.waitForSelector({

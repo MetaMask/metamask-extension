@@ -10,4 +10,20 @@ describe('getLegacyBackgroundApiServiceMessenger', () => {
 
     expect(legacyBackgroundApiServiceMessenger).toBeInstanceOf(Messenger);
   });
+
+  it('delegates AuthenticationController:clearState and AuthenticationController:performSignOut', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getLegacyBackgroundApiServiceMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'AuthenticationController:clearState',
+          'AuthenticationController:performSignOut',
+        ]),
+      }),
+    );
+  });
 });

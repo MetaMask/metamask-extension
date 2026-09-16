@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Button, Text, TextVariant } from '@metamask/design-system-react';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';

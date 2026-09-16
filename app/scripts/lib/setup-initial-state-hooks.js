@@ -11,8 +11,10 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
+import { getPersistenceWriteTelemetrySampleRate } from '../../../shared/lib/sentry-remote-rates';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
+import { trackSplitStateWrite } from './state-write-metrics';
 
 const platform = new ExtensionPlatform();
 
@@ -38,19 +40,23 @@ function createLocalStore() {
 const localStore = createLocalStore();
 
 function getStateForEarlySegmentEvent(manager) {
-  if (globalThis.stateHooks.getSentryAppState) {
+  if (globalThis.stateHooks?.getSentryAppState) {
     return globalThis.stateHooks.getSentryAppState();
   }
 
   const persistedState =
     manager.mostRecentRetrievedState ||
-    globalThis.stateHooks.getMostRecentPersistedState?.();
+    globalThis.stateHooks?.getMostRecentPersistedState?.();
 
   return persistedState?.data ?? null;
 }
 
 // Single PersistenceManager per context: one in background, one per UI context.
-export const persistenceManager = new PersistenceManager({ localStore })
+export const persistenceManager = new PersistenceManager({
+  getIsIdle: () => globalThis.stateHooks?.getIsIdle?.(),
+  getPersistenceWriteSampleRate: getPersistenceWriteTelemetrySampleRate,
+  localStore,
+})
   .on('vaultCorruptionDetected', (payload) => {
     trackVaultCorruptionEvent(
       payload.backup,
@@ -72,6 +78,7 @@ export const persistenceManager = new PersistenceManager({ localStore })
       category: MetaMetricsEventCategory.StateMigration,
     });
   })
+  .on('splitStateWrite', trackSplitStateWrite)
   .on('writeRetryRecovered', (payload) => {
     trackEarlySegmentEvent({
       state: getStateForEarlySegmentEvent(persistenceManager),

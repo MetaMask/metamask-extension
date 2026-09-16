@@ -3116,6 +3116,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setPerpsTabBadgeSeen:
         appStateController.setPerpsTabBadgeSeen.bind(appStateController),
+      setLastPerpsDepositEntryPoint:
+        appStateController.setLastPerpsDepositEntryPoint.bind(
+          appStateController,
+        ),
       setMusdConversionEducationSeen:
         appStateController.setMusdConversionEducationSeen.bind(
           appStateController,

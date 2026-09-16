@@ -7,6 +7,7 @@ import {
   isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHomeScreenCardEnabled,
 } from '../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
@@ -58,6 +59,21 @@ const parseNonNegativeFinite = (raw: unknown): number | undefined => {
 export const selectMoneyAccountFeatureEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyAccountEnabled,
+);
+
+/**
+ * Selects whether the `moneyHomeScreenCardEnabled` flag is on.
+ *
+ * This flag controls whether the money balance is shown on the extension home.
+ * If the money account is disabled generally, having this flag turned on will
+ * still not show the balance
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the home screen Money card is enabled.
+ */
+export const selectMoneyHomeScreenCardEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyHomeScreenCardEnabled,
 );
 
 /**

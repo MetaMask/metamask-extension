@@ -2,6 +2,7 @@ import {
   getRemoteTracesSampleRate,
   getRemoteTransactionSampleRates,
 } from '../../../shared/lib/sentry-remote-rates';
+import { TraceName } from '../../../shared/lib/trace';
 
 /**
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
@@ -176,6 +177,13 @@ export function createTracesSampler({
     : DEFAULT_TRANSACTION_SAMPLE_RATES;
 
   return (samplingContext) => {
+    // `State Persist` is sampled upstream, before its bytes are measured
+    // (`getPersistenceWriteTelemetrySampleRate`, which also applies the remote
+    // ceiling). Any rate below 1 here would drop writes we already measured.
+    if (samplingContext?.name === TraceName.StatePersist) {
+      return 1;
+    }
+
     // Read per call so a remote value applied after `Sentry.init` takes effect
     // without rebuilding the sampler; the read is a cached module field, not a
     // storage lookup. The same value is passed as BOTH default and ceiling, so

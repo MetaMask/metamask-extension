@@ -5216,7 +5216,7 @@
   },
   "lowValueAssets": {
     "message": "Düşük değerli tokenlar ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -5465,9 +5465,6 @@
   },
   "moneyActivityPending": {
     "message": "Bekliyor"
-  },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Para hareketleriniz burada gösterilecek."
   },
   "moneyActivityReceived": {
     "message": "Alınan"
@@ -7851,12 +7848,6 @@
   "perpsSortByPriceChange": {
     "message": "Fiyat değişikliği"
   },
-  "perpsSortByRank": {
-    "message": "Sıralama"
-  },
-  "perpsSortBySection": {
-    "message": "Şuna göre sırala"
-  },
   "perpsSortByTitle": {
     "message": "Filtrele"
   },
@@ -8653,9 +8644,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Son kullanılma"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Teklif alınamadı."
   },
   "rampsQuoteUnavailable": {
     "message": "Teklif kullanılamıyor."

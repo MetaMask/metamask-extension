@@ -30,6 +30,12 @@ type MoneyPotentialEarningsProps = {
   apyDecimal: number | undefined;
   isNoFeeToken: (token: MoneyDepositToken) => boolean;
   privacyMode: boolean;
+  onAddToken: (
+    token: MoneyDepositToken,
+    tokenIndex: number,
+    tokenCount: number,
+  ) => void;
+  isAddDisabled?: boolean;
 };
 
 export function MoneyPotentialEarnings({
@@ -37,6 +43,8 @@ export function MoneyPotentialEarnings({
   apyDecimal,
   isNoFeeToken,
   privacyMode,
+  onAddToken,
+  isAddDisabled = false,
 }: MoneyPotentialEarningsProps) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
@@ -126,13 +134,15 @@ export function MoneyPotentialEarnings({
         )}
       </Box>
 
-      {visibleTokens.map((token) => (
+      {visibleTokens.map((token, index) => (
         <MoneyPotentialEarningsTokenRow
           key={`${token.chainId}:${token.address}`}
           token={token}
           apyDecimal={apyDecimal ?? 0}
           hasNoFee={isNoFeeToken(token)}
           privacyMode={privacyMode}
+          onAddClick={() => onAddToken(token, index, tokens.length)}
+          isAddDisabled={isAddDisabled}
         />
       ))}
 

@@ -506,7 +506,6 @@ describe('TransactionPayControllerInit', () => {
       expect(config).toEqual({
         accountOverride: ACCOUNT_OVERRIDE,
         isQuoteRequired: true,
-        atomic: false,
       });
     });
   });
@@ -559,7 +558,7 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.updateMoneyAccountDepositAmount', () => {
-    it('forces non-atomic quote-required config then forwards the amount', async () => {
+    it('re-asserts quote-required without forcing non-atomic then forwards the amount', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
       if (!api) {
@@ -582,10 +581,14 @@ describe('TransactionPayControllerInit', () => {
         atomic?: boolean;
         isQuoteRequired?: boolean;
         isMaxAmount?: boolean;
-      } = {};
+      } = {
+        atomic: false,
+        isMaxAmount: true,
+      };
       updater(config as never);
       expect(config).toEqual({
         atomic: false,
+        isMaxAmount: true,
         isQuoteRequired: true,
       });
       expect(updateDepositAmountMock).toHaveBeenCalledWith(
@@ -593,6 +596,25 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
       );
+    });
+
+    it('does not force non-atomic mode for typed deposit amounts', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      updateDepositAmountMock.mockResolvedValue(true);
+      const setTransactionConfigMock = jest.mocked(
+        messengerClient.setTransactionConfig,
+      );
+
+      await api.updateMoneyAccountDepositAmount('tx-1', '10');
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { atomic?: boolean; isQuoteRequired?: boolean } = {};
+      updater(config as never);
+      expect(config).toEqual({ isQuoteRequired: true });
     });
 
     it('refreshes the payment token before forwarding the amount', async () => {

@@ -182,7 +182,7 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
         class="mt-auto flex flex-col gap-4 pt-4"
       >
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
           data-testid="ramps-complete-buy-back-to-wallet"
           role="button"
         >
@@ -380,7 +380,7 @@ exports[`RampsCompleteBuyScreen matches snapshot when the token has no icon url 
         class="mt-auto flex flex-col gap-4 pt-4"
       >
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
           data-testid="ramps-complete-buy-back-to-wallet"
           role="button"
         >
@@ -623,7 +623,7 @@ exports[`RampsCompleteBuyScreen resolves the network badge from a non-EVM CAIP c
         class="mt-auto flex flex-col gap-4 pt-4"
       >
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
           data-testid="ramps-complete-buy-back-to-wallet"
           role="button"
         >

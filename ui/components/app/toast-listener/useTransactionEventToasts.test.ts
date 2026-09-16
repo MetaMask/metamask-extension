@@ -350,6 +350,78 @@ describe('useTransactionEventToasts', () => {
         }),
       );
     });
+
+    it('does not toast money account batches, which have their own listener', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'money-deposit',
+          status: TransactionStatus.submitted,
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('does not toast child transactions of a money account batch', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'money-deposit',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.moneyAccountDeposit },
+              ],
+              requiredTransactionIds: ['relay-submitted'],
+            }),
+          ],
+        },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'relay-submitted',
+          status: TransactionStatus.submitted,
+          type: TransactionType.relayDeposit,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('still toasts relay deposits that fund other transactions', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'other-parent',
+              status: TransactionStatus.unapproved,
+              requiredTransactionIds: ['relay-submitted'],
+            }),
+          ],
+        },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'relay-submitted',
+          status: TransactionStatus.submitted,
+          type: TransactionType.relayDeposit,
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-relay-submitted',
+        expect.any(Object),
+      );
+    });
   });
 
   describe('non-EVM via AccountsController', () => {

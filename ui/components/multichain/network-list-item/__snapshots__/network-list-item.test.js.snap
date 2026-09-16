@@ -44,7 +44,7 @@ exports[`NetworkListItem renders properly 1`] = `
     </div>
     <button
       aria-label="[networkOptions]"
-      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+      class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
       data-testid="network-list-item-options-button-0x1"
     >
       <svg

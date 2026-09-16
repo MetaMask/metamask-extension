@@ -47,6 +47,7 @@ export type RampsBuildQuoteReadyViewModel = {
   paymentMethodLabel: string;
   showPaymentMethodSpinner: boolean;
   displayedQuoteError: string | null;
+  isQuoteUnavailableError: boolean;
   providerStatusLabel: string;
   isQuoteLoading: boolean;
   canContinue: boolean;
@@ -181,6 +182,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     hasQuoteFetchError,
     quotesResponse,
     selectedQuote,
+    quoteUnavailableMessage: t('rampsQuoteFetchError'),
   });
   const providerQuoteError = quotesResponse?.error?.find(
     (error) => error.provider === selectedProvider?.id && error.error,
@@ -197,7 +199,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           formatCurrency,
           t,
           backendError: providerQuoteError,
-        }) ?? t('rampsQuoteUnavailable'))
+        }) ?? t('rampsQuoteFetchError'))
       : displayedQuoteError);
 
   const paymentMethodLabel = useMemo(
@@ -337,6 +339,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
     displayedQuoteError: continueError ?? displayedError,
+    // The inline "change providers" fragment is written to finish the generic
+    // quote-error sentence; other errors are complete sentences and get a
+    // standalone "Change provider." action instead.
+    isQuoteUnavailableError:
+      !continueError && displayedError === t('rampsQuoteFetchError'),
     providerStatusLabel: providerLabel,
     isQuoteLoading: isQuoteLoading || isContinuing,
     canContinue,

@@ -49,6 +49,7 @@ function makeMoneyTx(config: {
   symbol?: string;
   moneySubtitle?: string;
   moneyActivityTitleKey?: MoneyActivityTitleKey;
+  metamaskPay?: TransactionMeta['metamaskPay'];
 }): MoneyActivityTransactionMeta {
   const {
     id,
@@ -59,6 +60,7 @@ function makeMoneyTx(config: {
     symbol = MUSD_TOKEN.symbol,
     moneySubtitle,
     moneyActivityTitleKey,
+    metamaskPay,
   } = config;
 
   const tx: MoneyActivityTransactionMeta = {
@@ -77,6 +79,7 @@ function makeMoneyTx(config: {
     },
     moneySubtitle,
     moneyActivityTitleKey,
+    metamaskPay,
   };
 
   return tx;
@@ -90,6 +93,11 @@ const MOCK_MONEY_TRANSACTIONS: MoneyActivityTransactionMeta[] = [
     amount: '1000000000',
     moneySubtitle: 'Transak',
     moneyActivityTitleKey: 'deposited',
+    metamaskPay: {
+      networkFeeFiat: '0.12',
+      bridgeFeeFiat: '0.04',
+      totalFiat: '1000.16',
+    },
   }),
   makeMoneyTx({
     id: 'money-tx-converted-eth',
