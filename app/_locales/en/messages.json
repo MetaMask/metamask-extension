@@ -5533,16 +5533,13 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitchEarn": {
-    "message": "Earn",
-    "description": "Shown before the APY, but not hoverable"
-  },
   "moneyAccountApyPitchApy": {
     "message": "$1% APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY info"
+  "moneyAccountApyPitchEarn": {
+    "message": "Earn $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed."
@@ -5553,9 +5550,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Projected 1-year balance"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed.",
@@ -5675,9 +5669,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Retry"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money balance"
   },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
@@ -5838,14 +5829,14 @@
   "moneyLifetime": {
     "message": "Lifetime"
   },
+  "moneyLifetimeTooltip": {
+    "message": "The total you've earned on your Money account balance over time."
+  },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
   },
-  "moneyMonthlyTooltipText": {
+  "moneyMonthlyTooltip": {
     "message": "The total you've earned on your Money account balance in the last 30 days."
-  },
-  "moneyLifetimeTooltipText": {
-    "message": "The total you've earned on your Money account balance over time."
   },
   "moneyMoreInformation": {
     "message": "More information"

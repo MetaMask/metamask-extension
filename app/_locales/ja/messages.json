@@ -5453,13 +5453,6 @@
   "money": {
     "message": "マネー"
   },
-  "moneyAccountApyPitch": {
-    "message": "年換算利率 (APY) $1%を獲得",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY情報"
-  },
   "moneyAccountApyTooltip": {
     "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
   },
@@ -5469,9 +5462,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "1年後の予想残高:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1年後の予想残高"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "予測では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されるものではありません。",
@@ -5591,9 +5581,6 @@
   },
   "moneyBalanceRetry": {
     "message": "再試行"
-  },
-  "moneyBalanceTitle": {
-    "message": "マネー残高"
   },
   "moneyBalanceUnavailable": {
     "message": "残高が利用できません"

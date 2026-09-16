@@ -7,28 +7,35 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TooltipText } from '../../../components/app/money/tooltip-text'
+import { TooltipText } from '../../../components/app/money/tooltip-text';
 import { PopoverPosition } from '../../../components/component-library';
 
-const POSITION_ROWS = [
-  { key: 'monthly', labelKey: 'monthly', tooltipText: 'moneyMonthlyTooltipText' },
-  { key: 'lifetime', labelKey: 'moneyLifetime', tooltipText: 'moneyLifetimeTooltipText' },
+const EARNINGS_ROWS = [
+  {
+    key: 'monthly',
+    labelKey: 'monthly',
+    tooltipText: 'moneyMonthlyTooltip',
+  },
+  {
+    key: 'lifetime',
+    labelKey: 'moneyLifetime',
+    tooltipText: 'moneyLifetimeTooltip',
+  },
 ] as const;
 
-type MoneyPositionPlaceholderProps = {
+type MoneyEarningsProps = {
   monthlyEarnings: string;
   lifetimeEarnings: string;
   isMonthlyLoading: boolean;
   isLifetimeLoading: boolean;
 };
 
-// TODO: rename this file to MoneyEarnings - update all tests and use sites.
-export function MoneyPositionPlaceholder({
+export function MoneyEarnings({
   monthlyEarnings,
   lifetimeEarnings,
   isMonthlyLoading,
   isLifetimeLoading,
-}: MoneyPositionPlaceholderProps) {
+}: MoneyEarningsProps) {
   const t = useI18nContext();
   const earnings = {
     monthly: monthlyEarnings,
@@ -42,20 +49,20 @@ export function MoneyPositionPlaceholder({
   return (
     <section
       className="px-4 py-3"
-      aria-labelledby="money-position-heading"
-      data-testid="money-position-placeholder"
+      aria-labelledby="money-earnings-heading"
+      data-testid="money-earnings"
     >
-      <div id="money-position-heading">
+      <div id="money-earnings-heading">
         <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
           {t('moneyEarnings')}
         </Text>
       </div>
       <div className="mt-3 flex flex-col gap-4">
-        {POSITION_ROWS.map(({ key, labelKey, tooltipText }) => (
+        {EARNINGS_ROWS.map(({ key, labelKey, tooltipText }) => (
           <div
             key={key}
             className="flex min-h-6 items-center justify-between gap-4"
-            data-testid={`money-position-${key}`}
+            data-testid={`money-earnings-${key}`}
           >
             <TooltipText
               text={t(labelKey)}
@@ -68,7 +75,7 @@ export function MoneyPositionPlaceholder({
             {loading[key] ? (
               <Skeleton
                 className="h-6 w-20"
-                data-testid={`money-position-${key}-skeleton`}
+                data-testid={`money-earnings-${key}-skeleton`}
               />
             ) : (
               <Text
@@ -79,7 +86,7 @@ export function MoneyPositionPlaceholder({
                     ? 'text-success-default'
                     : undefined
                 }
-                data-testid={`money-position-${key}-value`}
+                data-testid={`money-earnings-${key}-value`}
               >
                 {earnings[key]}
               </Text>

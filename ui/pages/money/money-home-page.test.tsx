@@ -511,17 +511,15 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-balance')).toHaveTextContent('$3,475.45');
-    expect(
-      screen.getByTestId('money-position-placeholder'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('money-earnings')).toBeInTheDocument();
     expect(
       screen.getByText(messages.moneyEarnings.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-position-monthly-value'),
+      screen.getByTestId('money-earnings-monthly-value'),
     ).toHaveTextContent('+$12.34');
     expect(
-      screen.getByTestId('money-position-lifetime-value'),
+      screen.getByTestId('money-earnings-lifetime-value'),
     ).toHaveTextContent('+$56.78');
     expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
@@ -723,10 +721,10 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(
-      screen.getByTestId('money-position-monthly-skeleton'),
+      screen.getByTestId('money-earnings-monthly-skeleton'),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-position-lifetime-skeleton'),
+      screen.getByTestId('money-earnings-lifetime-skeleton'),
     ).toBeInTheDocument();
   });
 
@@ -755,10 +753,10 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(
-      screen.getByTestId('money-position-monthly-value'),
+      screen.getByTestId('money-earnings-monthly-value'),
     ).toHaveTextContent('+$0.69');
     expect(
-      screen.getByTestId('money-position-lifetime-value'),
+      screen.getByTestId('money-earnings-lifetime-value'),
     ).toHaveTextContent('$0.00');
   });
 
@@ -787,10 +785,10 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(
-      screen.getByTestId('money-position-monthly-value'),
+      screen.getByTestId('money-earnings-monthly-value'),
     ).toHaveTextContent('$0.00');
     expect(
-      screen.getByTestId('money-position-lifetime-value'),
+      screen.getByTestId('money-earnings-lifetime-value'),
     ).toHaveTextContent('$0.00');
   });
 
@@ -819,10 +817,10 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(
-      screen.getByTestId('money-position-monthly-value'),
+      screen.getByTestId('money-earnings-monthly-value'),
     ).toHaveTextContent('-$12.34');
     expect(
-      screen.getByTestId('money-position-lifetime-value'),
+      screen.getByTestId('money-earnings-lifetime-value'),
     ).toHaveTextContent('$0.00');
   });
 
@@ -845,9 +843,7 @@ describe('MoneyHomePage', () => {
 
     renderWithLocalization(<MoneyHomePage />);
 
-    expect(
-      screen.queryByTestId('money-position-placeholder'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('money-earnings')).not.toBeInTheDocument();
     expect(mockUseMoneyAccountInterest).toHaveBeenCalledWith({
       enabled: false,
     });
@@ -870,9 +866,7 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByText(messages.moneyHowItWorks.message),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId('money-position-placeholder'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('money-earnings')).not.toBeInTheDocument();
     expect(
       screen.queryByTestId('money-condensed-info-cards'),
     ).not.toBeInTheDocument();
@@ -906,9 +900,7 @@ describe('MoneyHomePage', () => {
     expect(
       screen.queryByText(messages.moneyHowItWorks.message),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('money-position-placeholder'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('money-earnings')).not.toBeInTheDocument();
   });
 
   it('redirects unavailable users to Home', () => {
