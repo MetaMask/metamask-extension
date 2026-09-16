@@ -264,7 +264,6 @@ const migrations = [
   require('./225'),
   require('./226'),
   require('./227'),
-  require('./228'),
 ];
 
 export default migrations;

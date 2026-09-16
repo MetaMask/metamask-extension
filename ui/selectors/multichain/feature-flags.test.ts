@@ -291,6 +291,7 @@ describe('Basic Functionality migration notification selectors', () => {
   it('shows a scheduled toast when the remote flag is disabled', () => {
     const state = {
       metamask: {
+        isUnlocked: true,
         remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
         preferences: {
           basicFunctionalityMigrationNotification: 'toast' as const,
@@ -300,6 +301,21 @@ describe('Basic Functionality migration notification selectors', () => {
     };
 
     expect(getShouldShowBasicFunctionalityMigrationToast(state)).toBe(true);
+  });
+
+  it('hides a scheduled toast while the wallet is locked', () => {
+    const state = {
+      metamask: {
+        isUnlocked: false,
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(getShouldShowBasicFunctionalityMigrationToast(state)).toBe(false);
   });
 
   it('hides a dismissed notification', () => {

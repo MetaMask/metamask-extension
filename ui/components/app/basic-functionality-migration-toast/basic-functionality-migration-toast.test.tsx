@@ -119,6 +119,30 @@ describe('BasicFunctionalityMigrationToast', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('does not render while the wallet is locked', () => {
+    const store = mockStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        isUnlocked: false,
+        preferences: {
+          ...mockState.metamask.preferences,
+          basicFunctionalityMigrationNotification: 'toast',
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <BasicFunctionalityMigrationToast />,
+      store,
+    );
+
+    expect(
+      queryByTestId('basic-functionality-migration-toast'),
+    ).not.toBeInTheDocument();
+  });
+
   it('tracks viewed when the toast is shown', () => {
     renderComponent();
 

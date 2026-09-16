@@ -753,8 +753,25 @@ describe('preferences controller', () => {
     });
 
     it('tracks Basic Functionality Migrated for unaligned mixed wallets', () => {
-      const { controller } = setupController({});
-      controller.setUseTokenDetection(false);
+      const childPreferenceState = Object.fromEntries(
+        BFT_CHILD_PREFERENCES.map((preference, index) => [
+          preference,
+          index < 10,
+        ]),
+      ) as Pick<
+        PreferencesControllerState,
+        (typeof BFT_CHILD_PREFERENCES)[number]
+      >;
+      const { controller } = setupController({
+        state: {
+          useExternalServices: false,
+          ...childPreferenceState,
+        },
+      });
+
+      mockTrackEvent.mockImplementationOnce(() => {
+        expect(controller.state.useExternalServices).toBe(true);
+      });
 
       controller.consolidateBasicFunctionality();
 

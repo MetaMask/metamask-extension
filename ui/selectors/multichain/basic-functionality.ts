@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
@@ -75,7 +76,9 @@ export const getShouldShowBasicFunctionalityMigrationModal = createSelector(
 export const getShouldShowBasicFunctionalityMigrationToast = createSelector(
   getBasicFunctionalityMigrationNotification,
   getIsBasicFunctionalityMigrationNotificationDismissed,
-  (notification, isDismissed) => notification === 'toast' && !isDismissed,
+  getIsUnlocked,
+  (notification, isDismissed, isUnlocked) =>
+    notification === 'toast' && !isDismissed && isUnlocked,
 );
 
 /**

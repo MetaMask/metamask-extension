@@ -680,23 +680,6 @@ export class PreferencesController extends BaseController<
       this.state.preferences
         .basicFunctionalityMigrationNotificationDismissed === true;
 
-    // First consolidation rewrite for unaligned wallets only. Aligned users
-    // (including aligned social) are not on Basic Functionality Migrated.
-    // Track before applying landing state so BF-on→off can still emit.
-    if (!hasBftConsolidationMarker && !isConsistent) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.BasicFunctionalityMigrated)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            routed_bf_state: landingState ? 'on' : 'off',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_social_login: isSocialLogin,
-          })
-          .build(),
-      );
-    }
-
     this.update((state) => {
       state.useExternalServices = landingState;
       for (const preference of BFT_CHILD_PREFERENCES) {
@@ -713,6 +696,23 @@ export class PreferencesController extends BaseController<
       'LegacyBackgroundApiService:toggleExternalServices',
       landingState,
     );
+
+    // First consolidation rewrite for unaligned wallets only. Aligned users
+    // (including aligned social) are not on Basic Functionality Migrated.
+    // Record after applying landing state so analytics can emit while BFT is on.
+    if (!hasBftConsolidationMarker && !isConsistent) {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.BasicFunctionalityMigrated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: landingState ? 'on' : 'off',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: isSocialLogin,
+          })
+          .build(),
+      );
+    }
   }
 
   /**
