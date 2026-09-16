@@ -288,7 +288,6 @@ describe('Basic Functionality migration notification selectors', () => {
     expect(getShouldShowBasicFunctionalityMigrationModal(state)).toBe(true);
   });
 
-
   it('hides a scheduled toast while the wallet is locked', () => {
     const state = {
       metamask: {
