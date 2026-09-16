@@ -19,8 +19,9 @@ export type CheckExpectedBalanceOptions = {
 
 // TODO: Remove this widened wait once #43958 completes the Solana discovery
 // mocks; until then the unmocked discovery RPCs retry-storm the Solana icon
-// past the default 10s wait.
-const NON_EVM_ICON_TIMEOUT = 20_000;
+// past the default 10s wait. With the unified AssetsController price fetches
+// (assets-controller >= 16) CI runners can exceed the previous 20s budget.
+const NON_EVM_ICON_TIMEOUT = 40_000;
 
 /**
  * Wallet home / account overview: balance, primary CTAs, and tab navigation.

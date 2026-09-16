@@ -414,13 +414,21 @@ class TokensTab extends HomePage {
   ): Promise<void> {
     const { timeout, amountTimeout } = options;
     console.log(`Checking if token ${tokenName} exists in token list`);
-    await this.expandLowValueAssetsIfPresent();
-    await this.driver.waitForSelector(
-      {
-        css: this.tokenName,
-        text: tokenName,
+    // Retry loop rather than a plain `waitForSelector`: on slow loads the
+    // low-value toggle renders after prices/balances resolve, and bucketed
+    // tokens are unreachable until it is clicked.
+    await this.driver.waitUntil(
+      async () => {
+        await this.tryExpandLowValueAssets();
+        return this.driver.isElementPresentAndVisible(
+          {
+            css: this.tokenName,
+            text: tokenName,
+          },
+          150,
+        );
       },
-      timeout === undefined ? {} : { timeout },
+      { timeout: timeout ?? 10000, interval: 500 },
     );
     console.log(`Token "${tokenName}" was found in the token list`);
 
@@ -769,6 +777,17 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }
 
+  /**
+   * Attempts a quick expansion of the low-value assets section.
+   *
+   * Unlike {@link expandLowValueAssetsIfPresent}, this uses a short presence
+   * check so it can be called from inside `waitUntil` retry loops without
+   * adding latency when the section is absent. Token lists that are still
+   * loading only render the low-value toggle after prices/balances resolve,
+   * so callers that retry this while waiting for a token row can still reach
+   * tokens that are bucketed into the collapsed section.
+   * @param tokenName
+   */
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
     await this.expandLowValueAssetsIfPresent();
 
@@ -776,6 +795,10 @@ class TokensTab extends HomePage {
 
     await this.driver.waitUntil(
       async () => {
+        // Keep retrying the low-value expansion while scanning: bucketed
+        // tokens are unreachable until the toggle is clicked, and the toggle
+        // can render late on slow loads.
+        await this.tryExpandLowValueAssets();
         const rows = await this.driver.findElements(this.tokenListItem);
         for (const row of rows) {
           const nameElement = await row.findElement(By.css(this.tokenName));
@@ -1090,7 +1113,22 @@ class TokensTab extends HomePage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    await this.expandLowValueAssetsIfPresent();
+    // Retry loop rather than a plain `clickElement`: on slow loads the
+    // low-value toggle renders after prices/balances resolve, and bucketed
+    // tokens are unreachable until it is clicked.
+    await this.driver.waitUntil(
+      async () => {
+        await this.tryExpandLowValueAssets();
+        return this.driver.isElementPresentAndVisible(
+          {
+            css: this.tokenName,
+            text: tokenSymbol,
+          },
+          150,
+        );
+      },
+      { timeout: 10000, interval: 500 },
+    );
     await this.driver.clickElement({
       text: tokenSymbol,
       css: this.tokenName,
@@ -1143,6 +1181,37 @@ class TokensTab extends HomePage {
 
   private tokenPercentage(address: string): string {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
+  }
+
+  /**
+   * Expands the low-value assets section if it is present and collapsed.
+   *
+   * Uses bounded (150ms) element checks: on slow loads the toggle renders
+   * after prices/balances resolve, so this must be safe to call repeatedly
+   * from polling loops. The driver's default `isElementPresent` timeout must
+   * NOT be used here — it blocks for its full timeout when the element is
+   * absent, which would stall the loop.
+   */
+  private async tryExpandLowValueAssets(): Promise<void> {
+    if (
+      await this.driver.isElementPresentAndVisible(
+        this.lowValueAssetsToggleExpanded,
+        150,
+      )
+    ) {
+      return;
+    }
+
+    const togglePresent = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggle,
+      150,
+    );
+    if (!togglePresent) {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }
 
   /**
