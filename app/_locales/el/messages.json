@@ -1481,9 +1481,6 @@
   "alertDisableTooltip": {
     "message": "Αυτό μπορεί να αλλάξει στις \"Ρυθμίσεις > Ειδοποιήσεις\""
   },
-  "alertInsufficientPayMethodBalance": {
-    "message": "Προσθέστε λιγότερα χρήματα ή χρησιμοποιήστε διαφορετικό τρόπο πληρωμής."
-  },
   "alertInsufficientPayTokenBalance": {
     "message": "Ανεπαρκές ποσό"
   },
@@ -1879,9 +1876,6 @@
   },
   "backupAndSyncFeatureContacts": {
     "message": "Επαφές"
-  },
-  "backupAndSyncFeatureRamps": {
-    "message": "Εντολές αγοράς και πώλησης"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "Διαχειριστείτε αυτά που συγχρονίζετε"
@@ -5504,23 +5498,8 @@
   "moneyActivityDepositing": {
     "message": "Κατάθεση σε εξέλιξη"
   },
-  "moneyActivityDetailsPaidTo": {
-    "message": "Πληρωμή προς"
-  },
-  "moneyActivityDetailsReceivedFrom": {
-    "message": "Λάβατε από"
-  },
   "moneyActivityDetailsTransactionId": {
     "message": "Αναγνωριστικό συναλλαγής"
-  },
-  "moneyActivityDetailsYouEarned": {
-    "message": "Έχετε κερδίσει"
-  },
-  "moneyActivityDetailsYouSpent": {
-    "message": "Ξοδέψατε"
-  },
-  "moneyActivityDetailsYouWereRefunded": {
-    "message": "Σας έγινε επιστροφή χρημάτων"
   },
   "moneyActivityEmpty": {
     "message": "Καμία δραστηριότητα μέχρι στιγμής"
@@ -5570,10 +5549,6 @@
   "moneyActivitySent": {
     "message": "Εστάλη"
   },
-  "moneyActivityTransactionFeeTooltip": {
-    "message": "Τα τέλη μετατροπής περιλαμβάνουν χρεώσεις δικτύου και ενδέχεται να περιλαμβάνουν τέλη παρόχου.",
-    "description": "Tooltip explaining what the Money account transaction fee covers"
-  },
   "moneyActivityViewAll": {
     "message": "Προβολή όλων"
   },
@@ -5622,12 +5597,6 @@
   "moneyBenefits": {
     "message": "Ανταμοιβές"
   },
-  "moneyContactSupport": {
-    "message": "Επικοινωνήστε με την υποστήριξη"
-  },
-  "moneyConvertYourCrypto": {
-    "message": "Μετατρέψτε τα κρυπτονομίσματά σας"
-  },
   "moneyEarnApyTitle": {
     "message": "Κερδίστε έως και $1 APY"
   },
@@ -5670,60 +5639,9 @@
   "moneyHowItWorksDescription": {
     "message": "Προσθέστε mUSD και το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Το υπόλοιπο του λογαριασμού σας είναι το διαθέσιμο υπόλοιπο για δαπάνες. Συνδέστε την MetaMask Card για να πραγματοποιείτε συναλλαγές σε περισσότερους από 150 εκατομμύρια εμπόρους παγκοσμίως. Τα χρήματά σας συνεχίζουν να αποδίδουν μέχρι τη στιγμή που θα τα χρησιμοποιήσετε."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Ο Money Account υποστηρίζεται από την Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Προσθέστε mUSD και κερδίστε έως και $1. Το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή.",
     "description": "$1 is the current mUSD APY."
-  },
-  "moneyHowItWorksDisclosuresBody": {
-    "message": "Ο Money Account δεν αποτελεί τραπεζικό λογαριασμό, λογαριασμό αποταμίευσης ή ασφαλισμένο καταθετικό προϊόν. Η ετήσια απόδοση (APY) είναι μεταβλητή και δεν είναι εγγυημένη. Ο Money Account περιλαμβάνει κινδύνους από έξυπνα συμβόλαια, πρωτόκολλα, ρευστότητα και άλλους παράγοντες, και ενδέχεται να χάσετε μέρος ή το σύνολο των κεφαλαίων σας. Υπόκειται σε τοπικούς περιορισμούς. Ισχύουν όροι."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "Μπορεί να αλλάξει το ποσοστό APY;"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Εσείς! Το MetaMask είναι ένα πορτοφόλι με αυτοδιαχείριση κεφαλαίων, δηλαδή μόνο ο κάτοχος των ιδιωτικών κλειδιών ελέγχει τον λογαριασμό. Το MetaMask δεν μπορεί να έχει πρόσβαση, να παγώσει ή να μεταφέρει τα χρήματά σας. Αυτό μας διαφοροποιεί από τους παραδοσιακούς τραπεζικούς λογαριασμούς και τις πλατφόρμες φύλαξης κρυπτονομισμάτων — δεν υπάρχουν τρίτοι να διαχειρίζονται τα χρήματά σας."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Ποιος ελέγχει τα χρήματά μου;"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Δεν υπάρχει χρέωση για την δημιουργία ενός Money Account ούτε για την κατάθεση stablecoins. Θα επιβαρυνθείτε με χρεώσεις όταν καταθέτετε tokens που δεν είναι stablecoins. Υπάρχουν επίσης χρεώσεις που σχετίζονται με συναλλαγές της MetaMask Card, αναλήψεις από ATM και τέλη μετατροπής σε τοπικό νόμισμα. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Δείτε αναλυτικά τις χρεώσεις της κάρτας εδώ."
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Υπάρχουν χρεώσεις;"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Ναι. Μπορείτε να κάνετε συναλλαγές, αποστολή, χρήση ή ανάληψη ολόκληρου του υπολοίπου σας οποιαδήποτε στιγμή, χωρίς περιόδους ειδοποίησης, χωρίς ποινές και χωρίς τέλη ανάληψης από το MetaMask. Αν η ρευστότητα είναι περιορισμένη, ενδέχεται να υπάρχουν προσωρινές καθυστερήσεις."
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Είναι τα χρήματά μου δεσμευμένα; Μπορώ να κάνω ανάληψη οποιαδήποτε στιγμή;"
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Τι είναι ο λογαριασμός Money;"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Τι είναι τα mUSD;"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Είναι αυτός λογαριασμός αποταμίευσης ή λογαριασμός δαπανών;"
-  },
-  "moneyHowItWorksFaqTitle": {
-    "message": "Συχνές Ερωτήσεις"
-  },
-  "moneyHowItWorksFaqYieldAnswer": {
-    "message": "Όταν καταθέτετε κεφάλαια, αυτά τοποθετούνται σε καθιερωμένα πρωτόκολλα με αποκεντρωμένη χρηματοδότηση (DeFi), όπως το Aave και το Morpho, όπου αποφέρουν αποδόσεις από πραγματική οικονομική δραστηριότητα. Οι αποδόσεις αυτές καταβάλλονται σε εσάς με τη μορφή της ετήσιας απόδοσης (APY).\n\nΈνας τρίτος πάροχος υπηρεσιών, η Steakhouse Financial, παρακολουθεί τον τρόπο με τον οποίο κατανέμονται τα κεφάλαια στα πρωτόκολλα. Η Veda, ένας τρίτος πάροχος υποδομών, αναπτύσσει και διατηρεί τα έξυπνα συμβόλαια στο θησαυροφυλάκιο (vault) όπου φυλάσσονται τα κεφάλαιά σας.\n\nΟι αποδόσεις δεν αποτελούν τόκο που καταβάλλεται από τo MetaMask ή από τον εκδότη των mUSD. Πρόκειται για αποδόσεις στο blockchain που παράγονται από θέσεις σε τρίτα πρωτόκολλα με αποκεντρωμένη χρηματοδότηση (DeFi)."
-  },
-  "moneyHowItWorksFaqYieldQuestion": {
-    "message": "Από πού προέρχεται η απόδοση;"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Πώς αυξάνονται τα χρήματά σας"
@@ -5764,47 +5682,11 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Η μετατροπή απέτυχε"
   },
-  "moneyToastDepositInProgressDescriptionCard": {
-    "message": "Οι αγορές με κάρτες ενδέχεται να χρειαστούν μερικά λεπτά."
-  },
-  "moneyToastDepositInProgressTitleAddMusd": {
-    "message": "Προσθήκη χρημάτων"
-  },
-  "moneyToastDepositInProgressTitleCard": {
-    "message": "Κατάθεση σε εξέλιξη"
-  },
-  "moneyToastDepositInProgressTitleConvert": {
-    "message": "Μετατροπή κρυπτονομισμάτων"
-  },
-  "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Προστέθηκαν στον Money Account."
-  },
-  "moneyToastDepositSuccessTitleAddMusd": {
-    "message": "Προστέθηκαν κεφάλαια"
-  },
-  "moneyToastDepositSuccessTitleCard": {
-    "message": "Η κατάθεση ολοκληρώθηκε"
-  },
-  "moneyToastDepositSuccessTitleConvert": {
-    "message": "Η μετατροπή ολοκληρώθηκε"
-  },
-  "moneyToastInProgressDescription": {
-    "message": "Αυτό μπορεί να διαρκέσει λίγα λεπτά."
-  },
   "moneyToastWithdrawFailedBody": {
     "message": "Δεν είναι δυνατή η μεταφορά κεφαλαίων. Προσπαθήστε ξανά."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Η μεταφορά απέτυχε"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "ο λογαριασμός σας"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "Μεταφορά σε εξέλιξη"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "Η μεταφορά ολοκληρώθηκε"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Άλλος λογαριασμός"
@@ -7681,10 +7563,6 @@
   "perpsFilterIndex": {
     "message": "Δείκτες"
   },
-  "perpsFilterMore": {
-    "message": "Περισσότερα",
-    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
-  },
   "perpsFilterNew": {
     "message": "Νέα"
   },
@@ -7966,10 +7844,6 @@
   },
   "perpsPositions": {
     "message": "Θέσεις"
-  },
-  "perpsProducts": {
-    "message": "Προϊόντα",
-    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Πάρα πολλά αιτήματα. Προσπαθήστε ξανά σε λίγο."

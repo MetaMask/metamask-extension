@@ -1481,9 +1481,6 @@
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다"
   },
-  "alertInsufficientPayMethodBalance": {
-    "message": "더 적은 액수를 추가하거나 다른 결제 수단을 사용하세요."
-  },
   "alertInsufficientPayTokenBalance": {
     "message": "자금 부족"
   },
@@ -5501,23 +5498,8 @@
   "moneyActivityDepositing": {
     "message": "예치 중"
   },
-  "moneyActivityDetailsPaidTo": {
-    "message": "결제 대상:"
-  },
-  "moneyActivityDetailsReceivedFrom": {
-    "message": "보낸 사람"
-  },
   "moneyActivityDetailsTransactionId": {
     "message": "트랜잭션 ID"
-  },
-  "moneyActivityDetailsYouEarned": {
-    "message": "수익:"
-  },
-  "moneyActivityDetailsYouSpent": {
-    "message": "지출 금액:"
-  },
-  "moneyActivityDetailsYouWereRefunded": {
-    "message": "환불되었습니다"
   },
   "moneyActivityEmpty": {
     "message": "아직 활동이 없습니다"
@@ -5567,10 +5549,6 @@
   "moneyActivitySent": {
     "message": "전송됨"
   },
-  "moneyActivityTransactionFeeTooltip": {
-    "message": "전환 수수료에는 네트워크 비용과 제공업체 수수료가 포함될 수 있습니다.",
-    "description": "Tooltip explaining what the Money account transaction fee covers"
-  },
   "moneyActivityViewAll": {
     "message": "모두 보기"
   },
@@ -5619,12 +5597,6 @@
   "moneyBenefits": {
     "message": "혜택"
   },
-  "moneyContactSupport": {
-    "message": "지원팀에 문의"
-  },
-  "moneyConvertYourCrypto": {
-    "message": "암호자산 전환"
-  },
   "moneyEarnApyTitle": {
     "message": "최대 $1 APY 수익 적립"
   },
@@ -5667,60 +5639,9 @@
   "moneyHowItWorksDescription": {
     "message": "mUSD를 추가하면 언제든지 달러 기반 잔액을 결제 또는 거래에 사용하거나 송금할 수 있습니다."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Money 잔액은 결제에 사용할 수 있는 잔액입니다. MetaMask 카드를 연결하면 전 세계 1억 5천만 개 이상의 가맹점에서 사용할 수 있습니다. 자금은 사용하는 순간까지 계속 수익을 냅니다."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account는 Monad에서 제공합니다."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD를 추가하면 최대 $1의 수익이 적립됩니다. 잔액은 달러 연동 방식으로 유지되며 언제든지 결제 또는 거래에 사용하거나 송금할 수 있습니다.",
     "description": "$1 is the current mUSD APY."
-  },
-  "moneyHowItWorksDisclosuresBody": {
-    "message": "Money Account는 은행 계좌, 저축 계좌 또는 보험이 적용되는 예금 상품이 아닙니다. APY는 변동되며 보장되지 않습니다. Money Account에는 스마트 계약, 프로토콜, 유동성 및 기타 위험이 수반되며, 자금의 일부 또는 전부가 손실될 수 있습니다. 지역별 제한이 적용될 수 있으며, 약관이 적용됩니다."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "APY 비율은 변경되나요?"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "사용자 본인입니다! MetaMask는 셀프 커스터디 지갑이므로, 계정 소유자의 개인 키만이 계정을 제어할 수 있습니다. MetaMask는 머니 계정 잔액에 액세스하거나 이를 동결 또는 이동할 수 없습니다. 이 점이 바로 기존 은행 계좌 및 커스터디형 암호화폐 플랫폼과 MetaMask를 구분하는 차이점입니다. 사용자의 자금을 보관하는 제삼자는 없습니다."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "제 자금은 누가 관리하나요?"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Money Account 개설에는 수수료가 없으며, 스테이블코인을 예치하는 데도 수수료가 없습니다. 비스테이블코인 토큰을 예치하는 경우 수수료가 부과됩니다. 또한 MetaMask 카드 거래, ATM 출금, 현지 통화 오프램프 비용과 관련된 수수료가 있습니다. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "전체 카드 수수료 세부 내역은 여기에서 확인하세요."
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "수수료가 있나요?"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "예. 사전 통지 기간이나 위약금 없이 언제든지 전체 잔액을 거래, 전송, 결제 또는 출금할 수 있으며, MetaMask에서 부과하는 출금 수수료도 없습니다. 유동성이 부족한 경우 일시적으로 지연될 수 있습니다."
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "자금은 묶이나요? 언제든지 인출할 수 있나요?"
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Money 계정이란 무엇인가요?"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD란 무엇인가요?"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "이 계정은 저축 계정인가요, 결제 계정인가요?"
-  },
-  "moneyHowItWorksFaqTitle": {
-    "message": "FAQ"
-  },
-  "moneyHowItWorksFaqYieldAnswer": {
-    "message": "자금을 예치하면 해당 자금은 Aave, Morpho와 같이 검증된 디파이프로토콜에 투입되어 실제 경제 활동에서 발생하는 수익을 창출합니다. 이렇게 발생한 수익은 APY 형태로 사용자에게 제공됩니다. \n\nSteakhouse Financial이라는 제삼자 서비스 제공업체가 프로토콜 내 자금 배분 방식을 모니터링합니다. 제삼자 인프라 제공업체인 Veda는 사용자의 자금을 보관하는 볼트 스마트 계약을 배포하고 유지 관리합니다.\n\n수익은 MetaMask 또는 mUSD 발행자가 지급하는 이자가 아닙니다. 이는 제삼자 디파이 프로토콜의 포지션에서 발생하는 온체인 수익입니다."
-  },
-  "moneyHowItWorksFaqYieldQuestion": {
-    "message": "수익은 어디에서 발생하나요?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "자산이 늘어나는 방식"
@@ -5761,47 +5682,11 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "전환 실패"
   },
-  "moneyToastDepositInProgressDescriptionCard": {
-    "message": "카드 신청에 몇 분 정도 걸릴 수 있습니다."
-  },
-  "moneyToastDepositInProgressTitleAddMusd": {
-    "message": "자금 추가"
-  },
-  "moneyToastDepositInProgressTitleCard": {
-    "message": "예치 중"
-  },
-  "moneyToastDepositInProgressTitleConvert": {
-    "message": "암호자산 전환 중"
-  },
-  "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Money Account에 추가됨"
-  },
-  "moneyToastDepositSuccessTitleAddMusd": {
-    "message": "자금 추가됨"
-  },
-  "moneyToastDepositSuccessTitleCard": {
-    "message": "예치 완료"
-  },
-  "moneyToastDepositSuccessTitleConvert": {
-    "message": "전환 완료"
-  },
-  "moneyToastInProgressDescription": {
-    "message": "몇 분 정도 소요될 수 있습니다."
-  },
   "moneyToastWithdrawFailedBody": {
     "message": "자금을 이체할 수 없습니다. 다시 시도하세요."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "이체 실패"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "내 계정"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "전송 중"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "전송 완료"
   },
   "moneyTransferBetweenAccounts": {
     "message": "다른 계정"
@@ -7678,10 +7563,6 @@
   "perpsFilterIndex": {
     "message": "지수"
   },
-  "perpsFilterMore": {
-    "message": "더 보기",
-    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
-  },
   "perpsFilterNew": {
     "message": "신규"
   },
@@ -7963,10 +7844,6 @@
   },
   "perpsPositions": {
     "message": "포지션"
-  },
-  "perpsProducts": {
-    "message": "상품",
-    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "요청이 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요."

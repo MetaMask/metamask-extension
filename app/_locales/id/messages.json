@@ -1481,9 +1481,6 @@
   "alertDisableTooltip": {
     "message": "Ini dapat diubah dalam \"Pengaturan > Peringatan\""
   },
-  "alertInsufficientPayMethodBalance": {
-    "message": "Kurangi atau gunakan metode pembayaran yang berbeda."
-  },
   "alertInsufficientPayTokenBalance": {
     "message": "Dana tidak cukup"
   },
@@ -5270,7 +5267,7 @@
   },
   "lowValueAssets": {
     "message": "Token saldo rendah ($1)",
-    "description": "$1 is the number of low balance assets in the collapsed home token list section."
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Mainnet Ethereum"
@@ -5505,23 +5502,8 @@
   "moneyActivityDepositing": {
     "message": "Mendeposit"
   },
-  "moneyActivityDetailsPaidTo": {
-    "message": "Dibayar kepada"
-  },
-  "moneyActivityDetailsReceivedFrom": {
-    "message": "Diterima dari"
-  },
   "moneyActivityDetailsTransactionId": {
     "message": "ID Transaksi"
-  },
-  "moneyActivityDetailsYouEarned": {
-    "message": "Anda mendapatkan"
-  },
-  "moneyActivityDetailsYouSpent": {
-    "message": "Anda menggunakan"
-  },
-  "moneyActivityDetailsYouWereRefunded": {
-    "message": "Anda menerima pengembalian dana"
   },
   "moneyActivityEmpty": {
     "message": "Belum ada aktivitas"
@@ -5571,10 +5553,6 @@
   "moneyActivitySent": {
     "message": "Terkirim"
   },
-  "moneyActivityTransactionFeeTooltip": {
-    "message": "Biaya konversi mencakup biaya jaringan dan mungkin termasuk biaya penyedia layanan.",
-    "description": "Tooltip explaining what the Money account transaction fee covers"
-  },
   "moneyActivityViewAll": {
     "message": "Lihat semua"
   },
@@ -5623,12 +5601,6 @@
   "moneyBenefits": {
     "message": "Manfaat"
   },
-  "moneyContactSupport": {
-    "message": "Hubungi dukungan"
-  },
-  "moneyConvertYourCrypto": {
-    "message": "Konversikan kripto Anda"
-  },
   "moneyEarnApyTitle": {
     "message": "Dapatkan hingga $1 APY"
   },
@@ -5671,79 +5643,9 @@
   "moneyHowItWorksDescription": {
     "message": "Tambahkan mUSD dan saldo yang didukung dolar siap untuk digunakan, diperdagangkan, atau dikirim setiap saat."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Saldo Dana merupakan saldo penggunaan Anda. Hubungkan Kartu MetaMask untuk digunakan di lebih dari 150 juta merchant di seluruh dunia. Dana Anda terus menghasilkan keuntungan hingga saat Anda menggunakannya."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account didukung oleh Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Tambahkan mUSD dan dapatkan hingga $1. Saldo Anda didukung dolar dan siap untuk digunakan, diperdagangkan, atau dikirim setiap saat.",
     "description": "$1 is the current mUSD APY."
-  },
-  "moneyHowItWorksDisclosuresBody": {
-    "message": "Money Account bukanlah rekening bank, rekening tabungan, atau produk deposito yang diasuransikan. APY bersifat variabel dan tidak dijamin. Money Account melibatkan kontrak cerdas, protokol, likuiditas, dan risiko lainnya, dan Anda berpotensi kehilangan sebagian atau seluruh dana. Tunduk pada pembatasan regional. Syarat dan ketentuan berlaku."
-  },
-  "moneyHowItWorksDisclosuresTitle": {
-    "message": "Risiko dan Pengungkapan"
-  },
-  "moneyHowItWorksFaqApyAnswer": {
-    "message": "APY hingga $1. Suku bunga bersifat variabel dan berfluktuasi mengikuti kondisi pasar. Suku bunga saat ini selalu dapat dilihat di dalam akun Money.",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "Apakah tingkat APY berubah?"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Anda sendiri! MetaMask merupakan dompet penyimpanan mandiri, artinya hanya Kunci Pribadi pemilik akun yang dapat mengontrolnya. MetaMask tidak dapat mengakses, membekukan, atau memindahkan dana Anda. Inilah yang membedakan kami dari rekening bank tradisional dan platform kripto kustodian—tidak ada pihak ketiga yang memegang dana Anda."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Siapa yang mengontrol dana saya?"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Tidak ada biaya untuk membuka Money Account dan tidak ada biaya untuk mendepositkan stablecoin. Anda akan dikenakan biaya saat mendepositkan token yang bukan merupakan stablecoin. Terdapat juga biaya yang terkait dengan transaksi Kartu MetaMask, penarikan ATM, dan biaya penarikan mata uang lokal. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Lihat perincian biaya Kartu selengkapnya di sini."
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Apakah ada biaya yang dikenakan?"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Ya. Anda dapat berdagang, mengirim, menggunakan, atau menarik seluruh saldo Anda setiap saat tanpa periode pemberitahuan, tanpa penalti, dan tanpa biaya penarikan dari MetaMask. Jika likuiditas terbatas, penundaan sementara dapat terjadi."
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Apakah dana saya terkunci? Bisakah saya menarik dana setiap saat?"
-  },
-  "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "Sebuah rekening yang menghasilkan APY variabel hingga $1. Anda menyetorkan dana—yang disimpan dalam rekening sebagai mUSD—dan memperoleh APY hingga $1. mUSD adalah stablecoin keluaran MetaMask yang didukung oleh dolar. Anda dapat menggunakan atau menarik dana Anda kapan saja tanpa dikenakan penalti. Anda juga dapat membelanjakan dana tersebut menggunakan MetaMask Card di lebih dari 150 juta merchant Mastercard di seluruh dunia.",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Apa itu akun Dana?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD adalah stablecoin MetaMask yang didukung oleh dolar dengan rasio 1:1. Saldo Money Anda disimpan dalam bentuk mUSD dan tetap tersedia untuk dibelanjakan, dikirim, atau diperdagangkan kapan saja.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Apa itu mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Saldo Money Anda adalah saldo untuk berbelanja — saldo ini terus menghasilkan imbal hasil hingga saat Anda menggunakannya. Akun Money bukanlah rekening bank, rekening tabungan, ataupun produk simpanan yang diasuransikan.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Apakah ini rekening tabungan atau rekening penggunaan?"
-  },
-  "moneyHowItWorksFaqTitle": {
-    "message": "Pertanyaan Umum"
-  },
-  "moneyHowItWorksFaqYieldAnswer": {
-    "message": "Saat Anda mendepositkan dana, maka dana tersebut ditempatkan dalam protokol DeFi yang sudah mapan, seperti Aave dan Morpho, di mana dana tersebut menghasilkan keuntungan dari aktivitas ekonomi riil. Keuntungan ini kemudian diberikan kepada Anda dalam bentuk APY.\n\nPenyedia layanan pihak ketiga bernama Steakhouse Financial memantau bagaimana dana dialokasikan dalam protokol tersebut. Veda, penyedia infrastruktur pihak ketiga, menyebarkan dan memelihara brankas kontrak cerdas yang menyimpan dana Anda.\n\nKeuntungan tersebut bukanlah bunga yang dibayarkan oleh MetaMask atau oleh penerbit mUSD. Itu merupakan keuntungan on-chain yang dihasilkan oleh posisi dalam protokol DeFi pihak ketiga."
-  },
-  "moneyHowItWorksFaqYieldQuestion": {
-    "message": "Dari mana hasil tersebut berasal?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Bagaimana uang Anda bertambah"
@@ -5784,47 +5686,11 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Konversi gagal"
   },
-  "moneyToastDepositInProgressDescriptionCard": {
-    "message": "Pemesanan kartu membutuhkan waktu beberapa menit."
-  },
-  "moneyToastDepositInProgressTitleAddMusd": {
-    "message": "Menambahkan dana"
-  },
-  "moneyToastDepositInProgressTitleCard": {
-    "message": "Mendeposit"
-  },
-  "moneyToastDepositInProgressTitleConvert": {
-    "message": "Mengonversi kripto"
-  },
-  "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Ditambahkan ke Money Account."
-  },
-  "moneyToastDepositSuccessTitleAddMusd": {
-    "message": "Dana ditambahkan"
-  },
-  "moneyToastDepositSuccessTitleCard": {
-    "message": "Deposit selesai"
-  },
-  "moneyToastDepositSuccessTitleConvert": {
-    "message": "Konversi selesai"
-  },
-  "moneyToastInProgressDescription": {
-    "message": "Butuh waktu beberapa menit."
-  },
   "moneyToastWithdrawFailedBody": {
     "message": "Tidak dapat mentransfer dana. Coba lagi."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Transfer gagal"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "akun Anda"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "Transfer sedang berlangsung"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "Transfer selesai"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Akun lain"
@@ -7701,10 +7567,6 @@
   "perpsFilterIndex": {
     "message": "Indeks"
   },
-  "perpsFilterMore": {
-    "message": "Selengkapnya",
-    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
-  },
   "perpsFilterNew": {
     "message": "Baru"
   },
@@ -7986,10 +7848,6 @@
   },
   "perpsPositions": {
     "message": "Posisi"
-  },
-  "perpsProducts": {
-    "message": "Produk",
-    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Terlalu banyak permintaan. Mohon tunggu dan coba lagi."

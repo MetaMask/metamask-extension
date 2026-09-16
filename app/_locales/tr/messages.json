@@ -1481,9 +1481,6 @@
   "alertDisableTooltip": {
     "message": "\"Ayarlar > Uyarılar\" kısmında değiştirilebilir"
   },
-  "alertInsufficientPayMethodBalance": {
-    "message": "Daha az miktar girin veya farklı bir ödeme yöntemi kullanın."
-  },
   "alertInsufficientPayTokenBalance": {
     "message": "Yetersiz bakiye"
   },
@@ -1879,9 +1876,6 @@
   },
   "backupAndSyncFeatureContacts": {
     "message": "Kişiler"
-  },
-  "backupAndSyncFeatureRamps": {
-    "message": "Al ve sat emirleri"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "Neleri senkronize ettiğinizi yönetin"
@@ -5273,7 +5267,7 @@
   },
   "lowValueAssets": {
     "message": "Düşük bakiyeli tokenlar ($1)",
-    "description": "$1 is the number of low balance assets in the collapsed home token list section."
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -5508,23 +5502,8 @@
   "moneyActivityDepositing": {
     "message": "Yatırılıyor"
   },
-  "moneyActivityDetailsPaidTo": {
-    "message": "Ödeme yapılan"
-  },
-  "moneyActivityDetailsReceivedFrom": {
-    "message": "Gönderen"
-  },
   "moneyActivityDetailsTransactionId": {
     "message": "İşlem Kimliği"
-  },
-  "moneyActivityDetailsYouEarned": {
-    "message": "Kazancınız"
-  },
-  "moneyActivityDetailsYouSpent": {
-    "message": "Harcadığınız"
-  },
-  "moneyActivityDetailsYouWereRefunded": {
-    "message": "Size para iadesi yapıldı"
   },
   "moneyActivityEmpty": {
     "message": "Henüz aktivite yok"
@@ -5574,10 +5553,6 @@
   "moneyActivitySent": {
     "message": "Gönderildi"
   },
-  "moneyActivityTransactionFeeTooltip": {
-    "message": "Dönüştürme ücretlerine ağ ücretleri dahildir ve sağlayıcı ücretleri dahil olabilir.",
-    "description": "Tooltip explaining what the Money account transaction fee covers"
-  },
   "moneyActivityViewAll": {
     "message": "Tümünü görüntüle"
   },
@@ -5626,12 +5601,6 @@
   "moneyBenefits": {
     "message": "Faydalar"
   },
-  "moneyContactSupport": {
-    "message": "Destek ile iletişime geç"
-  },
-  "moneyConvertYourCrypto": {
-    "message": "Kriptonuzu dönüştürün"
-  },
   "moneyEarnApyTitle": {
     "message": "$1 APY'ye varan kazanç elde edin"
   },
@@ -5674,79 +5643,9 @@
   "moneyHowItWorksDescription": {
     "message": "mUSD ekleyin; dolara endeksli bakiyeniz her zaman harcamaya, işlem yapmaya veya gönderime hazırdır."
   },
-  "moneyHowItWorksDescription1": {
-    "message": "Money account hesabınıza mUSD ekleyin ve otomatik olarak $1 APY (değişkendir) kazanın. Fonlar, Steakhouse Financial risk izlemesi ile Veda tarafından yönetilen bir DeFi kasasına gider. Oran, blokzinciri protokollerinde fon dağıtan üçüncü taraf DeFi platformları tarafından oluşturulur. Stake yok, hak talebinde bulunma yok, kilitleme yok.",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Para bakiyeniz, bakiyenizi harcıyor. MetaMask Card'ınızı bağlayarak dünya çapında 150 milyondan fazla satıcıda harcama yapabilirsiniz. Kullandığınız ana kadar para kazanmaya devam eder."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money account, Monad tarafından desteklenmektedir."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD ekleyin ve en fazla $1 kazanın. Bakiyeniz dolara endekslidir ve her zaman harcamaya, işlem yapmaya veya gönderime hazırdır.",
     "description": "$1 is the current mUSD APY."
-  },
-  "moneyHowItWorksDisclosuresBody": {
-    "message": "Money account bir banka hesabı, tasarruf hesabı ya da sigortalı bir vadeli mevduat hesabı değildir. APY değişkendir ve garantili değildir. Money account; akıllı sözleşme, protokol, likidite ve diğer riskleri taşır ve fonlarınızın bir kısmını veya tamamını kaybedebilirsiniz. Bölgesel kısıtlamalara tabidir. Şartlar uygulanır."
-  },
-  "moneyHowItWorksDisclosuresTitle": {
-    "message": "Riskler ve Açıklamalar"
-  },
-  "moneyHowItWorksFaqApyAnswer": {
-    "message": "$1 APY'ye varan kazanç sağlar. Oran değişkendir ve piyasa koşulları ile dalgalanır. Geçerli oran her zaman Money account hesabının içinde görülebilir.",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "APY oranı değişir mi?"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Sizin! MetaMask, self-custodial bir cüzdandır, yani yalnızca hesap sahibinin Özel Anahtarları ile kontrol edilir. MetaMask fonlarınıza erişemez, donduramaz veya taşıyamaz. Bu, bizi geleneksel banka hesaplarından ve custodial kripto platformlarından ayıran özelliktir. Fonlarınızı tutan üçüncü taraf yoktur."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Paramın kontrolü kimde?"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Money account açmak ve stabil kripto para yatırmak ücretsizdir. Stabil kripto para dışındaki tokenları yatırırken sizden işlem ücreti alınır. MetaMask Card işlemleri, ATM'den para çekme işlemleri ve yerel para birimi offramp maliyetleri ile ilişkili ücretler de bulunmaktadır. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Kart ücretlerinin tam dökümünü burada görebilirsiniz."
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Ücretler var mı?"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Evet. Uyarı süresi, para cezası ve MetaMask'ten para çekme ücretleri olmadan tüm bakiyenizle dilediğiniz zaman işlem yapabilir, tüm bakiyenizi gönderebilir, harcayabilir veya çekebilirsiniz. Likidite sıkışık olduğunda geçici gecikmeler yaşanabilir."
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Param kilitli mi? Dilediğim zaman çekebilir miyim?"
-  },
-  "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "$1 değişken APY'ye varan kazanç sağlayan bir hesap. Yatırdığınız fonlar mUSD olarak hesapta tutulur ve $1 APY'ye varan kazanç sağlarsınız. mUSD, MetaMask'in dolara endeksli stabil kripto parasıdır. Fonlarınızı dilediğiniz zaman para cezası ödemeden kullanabilir veya çekebilirsiniz. MetaMask Card ile fonlarınızı dünya çapında +150 milyon Mastercard satıcısında harcayabilirsiniz.",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Para hesabı nedir?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD, MetaMask'in 1:1 dolara endeksli stabil kripto parasıdır. Para bakiyeniz mUSD olarak tutulur ve dilediğiniz zaman harcamaya, gönderilmeye veya işleme hazırdır.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD nedir?"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Bu bir tasarruf hesabı mı yoksa harcama hesabı mı?"
-  },
-  "moneyHowItWorksFaqTitle": {
-    "message": "SSS"
-  },
-  "moneyHowItWorksFaqYieldAnswer": {
-    "message": "Fon yatırdığınızda varlıklarınız, gerçek ekonomik faaliyetlerden getiri elde eden Aave ve Morpho gibi köklü DeFi protokollerine aktarılır. Bu getiriler daha sonra size APY olarak yansıtılır. \n\nSteakhouse Financial adlı üçüncü taraf bir hizmet sağlayıcı, fonların protokollerde nasıl dağıtıldığını izler. Üçüncü taraf bir altyapı sağlayıcısı olan Veda ise fonlarınızı tutan kasa akıllı sözleşmelerini devreye alır ve bunların işletimini üstlenir.\n\nKazançlar, MetaMask veya mUSD ihraççısı tarafından ödenen bir faiz değildir. Üçüncü taraf DeFi protokollerindeki pozisyonlardan elde edilen zincir üstü getirilerdir."
-  },
-  "moneyHowItWorksFaqYieldQuestion": {
-    "message": "Getiri nereden gelir?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Paranız nasıl artar"
@@ -5787,47 +5686,11 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Dönüştürme işlemi başarısız oldu"
   },
-  "moneyToastDepositInProgressDescriptionCard": {
-    "message": "Kart siparişleri birkaç dakika sürebilir."
-  },
-  "moneyToastDepositInProgressTitleAddMusd": {
-    "message": "Fonlar ekleniyor"
-  },
-  "moneyToastDepositInProgressTitleCard": {
-    "message": "Yatırılıyor"
-  },
-  "moneyToastDepositInProgressTitleConvert": {
-    "message": "Kripto dönüştürülüyor"
-  },
-  "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Money account hesabına eklendi."
-  },
-  "moneyToastDepositSuccessTitleAddMusd": {
-    "message": "Fon eklendi"
-  },
-  "moneyToastDepositSuccessTitleCard": {
-    "message": "Para yatırma işlemi tamamlandı"
-  },
-  "moneyToastDepositSuccessTitleConvert": {
-    "message": "Dönüştürme işlemi tamamlandı"
-  },
-  "moneyToastInProgressDescription": {
-    "message": "Bu işlem birkaç dakika sürebilir."
-  },
   "moneyToastWithdrawFailedBody": {
     "message": "Fon transferi yapılamadı. Tekrar deneyin."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Transfer başarısız oldu"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "hesabınız"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "Transfer sürüyor"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "Transfer tamamlandı"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Başka hesap"
@@ -7710,10 +7573,6 @@
   "perpsFilterIndex": {
     "message": "Endeksler"
   },
-  "perpsFilterMore": {
-    "message": "Daha fazla",
-    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
-  },
   "perpsFilterNew": {
     "message": "Yeni"
   },
@@ -7995,10 +7854,6 @@
   },
   "perpsPositions": {
     "message": "Pozisyonlar"
-  },
-  "perpsProducts": {
-    "message": "Ürünler",
-    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Çok sayıda talepte bulunuldu. Lütfen bekleyip tekrar deneyin."

@@ -1481,9 +1481,6 @@
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
   },
-  "alertInsufficientPayMethodBalance": {
-    "message": "Agrega menos o usa otro método de pago."
-  },
   "alertInsufficientPayTokenBalance": {
     "message": "Fondos insuficientes"
   },
@@ -5501,23 +5498,8 @@
   "moneyActivityDepositing": {
     "message": "Depositando"
   },
-  "moneyActivityDetailsPaidTo": {
-    "message": "Pago a"
-  },
-  "moneyActivityDetailsReceivedFrom": {
-    "message": "Recibido de"
-  },
   "moneyActivityDetailsTransactionId": {
     "message": "ID de transacción"
-  },
-  "moneyActivityDetailsYouEarned": {
-    "message": "Ganaste"
-  },
-  "moneyActivityDetailsYouSpent": {
-    "message": "Gastaste"
-  },
-  "moneyActivityDetailsYouWereRefunded": {
-    "message": "Recibiste un reembolso"
   },
   "moneyActivityEmpty": {
     "message": "Aún no hay actividad"
@@ -5567,10 +5549,6 @@
   "moneyActivitySent": {
     "message": "Enviado"
   },
-  "moneyActivityTransactionFeeTooltip": {
-    "message": "Las tarifas de conversión incluyen los costos de red y pueden incluir las tarifas del proveedor.",
-    "description": "Tooltip explaining what the Money account transaction fee covers"
-  },
   "moneyActivityViewAll": {
     "message": "Ver todo"
   },
@@ -5619,12 +5597,6 @@
   "moneyBenefits": {
     "message": "Beneficios"
   },
-  "moneyContactSupport": {
-    "message": "Contactar a soporte"
-  },
-  "moneyConvertYourCrypto": {
-    "message": "Convierte tus criptomonedas"
-  },
   "moneyEarnApyTitle": {
     "message": "Gana hasta un $1 de APY"
   },
@@ -5667,60 +5639,9 @@
   "moneyHowItWorksDescription": {
     "message": "Agrega mUSD y tu saldo respaldado en dólares estará listo para gastar, intercambiar o enviar en cualquier momento."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Tu saldo Money es tu saldo para gastar. Vincula tu tarjeta MetaMask para comprar en más de 150 millones de comercios en todo el mundo. Tu dinero sigue generando intereses hasta el momento en que lo uses."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account cuenta con la tecnología de Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Agrega mUSD y gana hasta $1. Tu saldo está respaldado por dólares y disponible para gastar, operar o enviar en cualquier momento.",
     "description": "$1 is the current mUSD APY."
-  },
-  "moneyHowItWorksDisclosuresBody": {
-    "message": "La Money Account no es una cuenta bancaria, una cuenta de ahorros ni un producto de depósito asegurado. El APY es variable y no está garantizado. La Money Account implica riesgos relacionados con contratos inteligentes, protocolos, liquidez y otros factores, por lo que podrías perder parte o la totalidad de tus fondos. Sujeto a restricciones regionales. Se aplican los términos y condiciones."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "¿Cambia la tasa APY?"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "¡Tú! MetaMask es una billetera de autocustodia, lo que significa que solo las claves privadas del titular de la cuenta pueden controlarla. MetaMask no puede acceder a tus fondos, congelarlos ni transferirlos. Esto es lo que nos diferencia de las cuentas bancarias tradicionales y de las plataformas de criptomonedas con custodia: no hay ningún tercero que tenga el control de tus fondos."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "¿Quién controla mi dinero?"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "No hay ninguna tarifa por abrir una Money Account ni por depositar monedas estables. Se aplican tarifas al depositar tokens que no sean monedas estables. También hay tarifas asociadas con las transacciones de la tarjeta MetaMask, los retiros en cajeros automáticos y los costos por convertir fondos a moneda local. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Consulta aquí el desglose completo de las tarifas de la tarjeta."
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "¿Hay algún cargo?"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Sí. Puedes operar, enviar, gastar o retirar el saldo completo en cualquier momento, sin períodos de espera, sin penalizaciones y sin tarifas de retiro por parte de MetaMask. Si la liquidez es limitada, podrían producirse retrasos temporales."
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "¿Mi dinero está bloqueado? ¿Puedo retirarlo en cualquier momento?"
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "¿Qué es la cuenta Money?"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "¿Qué es mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "¿Es una cuenta de ahorros o una cuenta de gastos?"
-  },
-  "moneyHowItWorksFaqTitle": {
-    "message": "Preguntas frecuentes"
-  },
-  "moneyHowItWorksFaqYieldAnswer": {
-    "message": "Cuando depositas fondos, estos se colocan en protocolos DeFi consolidados, como Aave y Morpho, donde generan rendimientos a partir de actividad económica real. Esos rendimientos se transfieren a ti en forma de APY.\n\nUn proveedor de servicios externo llamado Steakhouse Financial supervisa cómo se asignan los fondos en los protocolos. Veda, un proveedor externo de infraestructura, implementa y mantiene los contratos inteligentes de la bóveda donde se resguardan tus fondos.\n\nLas ganancias no son intereses pagados por MetaMask ni por el emisor de mUSD. Son los rendimientos on-chain generados por posiciones en protocolos DeFi de terceros."
-  },
-  "moneyHowItWorksFaqYieldQuestion": {
-    "message": "¿De dónde proviene el rendimiento?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Cómo crece tu dinero"
@@ -5761,47 +5682,11 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Conversión fallida"
   },
-  "moneyToastDepositInProgressDescriptionCard": {
-    "message": "Los pedidos de tarjetas pueden tardar unos minutos."
-  },
-  "moneyToastDepositInProgressTitleAddMusd": {
-    "message": "Agregar fondos"
-  },
-  "moneyToastDepositInProgressTitleCard": {
-    "message": "Depositando"
-  },
-  "moneyToastDepositInProgressTitleConvert": {
-    "message": "Convirtiendo criptomonedas"
-  },
-  "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Agregado a Money Account."
-  },
-  "moneyToastDepositSuccessTitleAddMusd": {
-    "message": "Fondos agregados"
-  },
-  "moneyToastDepositSuccessTitleCard": {
-    "message": "Depósito completo"
-  },
-  "moneyToastDepositSuccessTitleConvert": {
-    "message": "Conversión completa"
-  },
-  "moneyToastInProgressDescription": {
-    "message": "Esto puede tardar unos minutos."
-  },
   "moneyToastWithdrawFailedBody": {
     "message": "No se pueden transferir fondos. Inténtalo de nuevo."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Transferencia fallida"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "tu cuenta"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "Transferencia en curso"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "Transferencia completa"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Otra cuenta"
@@ -7684,10 +7569,6 @@
   "perpsFilterIndex": {
     "message": "Índices"
   },
-  "perpsFilterMore": {
-    "message": "Más",
-    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
-  },
   "perpsFilterNew": {
     "message": "Nuevo"
   },
@@ -7969,10 +7850,6 @@
   },
   "perpsPositions": {
     "message": "Posiciones"
-  },
-  "perpsProducts": {
-    "message": "Productos",
-    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Demasiadas solicitudes. Espera e inténtalo de nuevo."

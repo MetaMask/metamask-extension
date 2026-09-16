@@ -1481,9 +1481,6 @@
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
   },
-  "alertInsufficientPayMethodBalance": {
-    "message": "कम राशि जोड़ें या किसी अन्य भुगतान विधि का उपयोग करें।"
-  },
   "alertInsufficientPayTokenBalance": {
     "message": "अपर्याप्त फंड"
   },
@@ -1879,9 +1876,6 @@
   },
   "backupAndSyncFeatureContacts": {
     "message": "कॉन्टेक्ट्स"
-  },
-  "backupAndSyncFeatureRamps": {
-    "message": "ऑर्डर खरीदें और बेचें"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "आप जो सिंक करते हैं उसे प्रबंधित करें"
@@ -5269,7 +5263,7 @@
   },
   "lowValueAssets": {
     "message": "कम बैलेंस वाले टोकन ($1)",
-    "description": "$1 is the number of low balance assets in the collapsed home token list section."
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -5504,23 +5498,8 @@
   "moneyActivityDepositing": {
     "message": "डिपॉज़िट कर रहे हैं"
   },
-  "moneyActivityDetailsPaidTo": {
-    "message": "इनको दिया"
-  },
-  "moneyActivityDetailsReceivedFrom": {
-    "message": "से प्राप्त किया गया"
-  },
   "moneyActivityDetailsTransactionId": {
     "message": "ट्रांसेक्शन ID"
-  },
-  "moneyActivityDetailsYouEarned": {
-    "message": "आपने कमाया"
-  },
-  "moneyActivityDetailsYouSpent": {
-    "message": "आपने खर्च किया"
-  },
-  "moneyActivityDetailsYouWereRefunded": {
-    "message": "आपको रिफ़ंड कर दिया गया था"
   },
   "moneyActivityEmpty": {
     "message": "अभी तक कोई गतिविधि नहीं हुई"
@@ -5570,10 +5549,6 @@
   "moneyActivitySent": {
     "message": "भेजा गया"
   },
-  "moneyActivityTransactionFeeTooltip": {
-    "message": "कन्वर्शन फ़ीस में नेटवर्क कॉस्ट और प्रोवाइडर फ़ीस शामिल हो सकती है।",
-    "description": "Tooltip explaining what the Money account transaction fee covers"
-  },
   "moneyActivityViewAll": {
     "message": "सभी देखें"
   },
@@ -5622,12 +5597,6 @@
   "moneyBenefits": {
     "message": "फ़ायदे"
   },
-  "moneyContactSupport": {
-    "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
-  },
-  "moneyConvertYourCrypto": {
-    "message": "अपने क्रिप्टो को कन्वर्ट करें"
-  },
   "moneyEarnApyTitle": {
     "message": "$1 APY तक कमाएं"
   },
@@ -5670,71 +5639,9 @@
   "moneyHowItWorksDescription": {
     "message": "mUSD जोड़ें और आपका डॉलर-बैक्ड बैलेंस कभी भी खर्च करने, ट्रेड करने या भेजने के लिए तैयार है।"
   },
-  "moneyHowItWorksDescription1": {
-    "message": "अपने Money Account में mUSD जोड़ें और स्वचालित रूप से $1 तक APY (वेरिएबल) कमाएं। फंड्स एक DeFi वॉल्ट में जाते हैं, जिसे Veda द्वारा प्रबंधित किया जाता है और Steakhouse Financial द्वारा जोखिम की निगरानी की जाती है। यह दर थर्ड पार्टी के DeFi प्लेटफॉर्म्स द्वारा उत्पन्न होती है जो फंड्स को ब्लॉकचेन प्रोटोकॉल्स में लगाते हैं। कोई स्टेकिंग नहीं, कोई क्लेम नहीं, कोई लॉक-अप्स नहीं।",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "आपका Money बैलेंस आपका खर्च करने का बैलेंस है। दुनिया भर में 150M+ मर्चेंट पर खर्च करने के लिए अपना MetaMask कार्ड लिंक करें। आपका पैसा तब तक कमाता रहता है जब तक आप इसका इस्तेमाल नहीं करते।"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account Monad द्वारा संचालित है।"
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD जोड़ें और $1 तक कमाएं। आपका बैलेंस डॉलर-बैक्ड है और कभी भी खर्च करने, ट्रेड करने या भेजने के लिए तैयार है।",
     "description": "$1 is the current mUSD APY."
-  },
-  "moneyHowItWorksDisclosuresBody": {
-    "message": "Money Account कोई बैंक अकाउंट, सेविंग्स अकाउंट या इंश्योर्ड डिपॉज़िट प्रोडक्ट नहीं है। APY वेरिएबल है और इसकी गारंटी नहीं है। Money Account में स्मार्ट कॉन्ट्रैक्ट, प्रोटोकॉल, लिक्विडिटी और दूसरे रिस्क शामिल हैं, और आप अपने कुछ या सभी फंड खो सकते हैं। स्थानीय पाबंदियों के अधीन। शर्तें लागू।"
-  },
-  "moneyHowItWorksDisclosuresTitle": {
-    "message": "जोखिम और प्रकटीकरण"
-  },
-  "moneyHowItWorksFaqApyAnswer": {
-    "message": "$1 APY तक। रेट बदलता रहता है और मार्केट के हालात के साथ बदलता रहता है। अभी का रेट हमेशा Money Account के अंदर दिखता है।",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "क्या APY रेट बदलता है?"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "आप! MetaMask एक सेल्फ-कस्टोडियल वॉलेट है, जिसका मतलब है कि सिर्फ़ अकाउंट होल्डर की प्राइवेट कीज़ ही इसे कंट्रोल करती हैं। MetaMask आपके फंड्स को एक्सेस, फ्रीज़ या मूव नहीं कर सकता। यही बात हमें ट्रेडिशनल बैंक अकाउंट्स और कस्टोडियल क्रिप्टो प्लेटफॉर्म्स से अलग करती है—कोई थर्ड पार्टी आपके फंड्स को होल्ड नहीं करती है।"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "मेरे पैसे को कौन कंट्रोल करता है?"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Money Account खोलने की कोई फीस नहीं है और स्टेबलकॉइन्स डिपॉज़िट करने की भी कोई फीस नहीं है। नॉन-स्टेबलकॉइन टोकन डिपॉजिट करने पर आपसे फीस ली जाएगी। MetaMask कार्ड ट्रांसेक्शन, ATM विड्रॉल और लोकल करेंसी ऑफरैंप कॉस्ट से जुड़ी फीस भी हैं। "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "कार्ड फीस का पूरा ब्रेकडाउन यहाँ देखें।"
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "क्या कोई फीस है?"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "हाँ। आप MetaMask से बिना किसी नोटिस पीरियड, बिना किसी पेनल्टी और बिना किसी विदड्रॉवल फ़ीस के किसी भी समय अपना पूरा बैलेंस ट्रेड करना, भेजना, खर्च करना या निकालना जैसी चीज़ें कर सकते हैं। अगर लिक्विडिटी कम है, तो कुछ समय के लिए देरी हो सकती है।"
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "क्या मेरा पैसा लॉक हो गया है? क्या मैं कभी भी निकाल सकता हूँ?"
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Money अकाउंट क्या है?"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD क्या है?"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "क्या यह सेविंग्स अकाउंट है या स्पेंडिंग अकाउंट?"
-  },
-  "moneyHowItWorksFaqTitle": {
-    "message": "सामान्य प्रश्न"
-  },
-  "moneyHowItWorksFaqYieldAnswer": {
-    "message": "जब आप फंड जमा करते हैं, तो उन्हें Aave और Morpho जैसे जाने-माने DeFi प्रोटोकॉल में डाल दिया जाता है, जहाँ वे असली आर्थिक गतिविधि से रिटर्न कमाते हैं। ये रिटर्न फिर आपको APY के रूप में दिए जाते हैं।\n\nSteakhouse Financial नाम का एक थर्ड-पार्टी सर्विस प्रोवाइडर मॉनिटर करता है कि प्रोटोकॉल में फंड कैसे बांटे जाते हैं। Veda, एक थर्ड-पार्टी इंफ्रास्ट्रक्चर प्रोवाइडर, आपके फंड रखने वाले वॉल्ट स्मार्ट कॉन्ट्रैक्ट को डिप्लॉय और मेंटेन करता है।\n\nकमाई MetaMask या mUSD जारी करने वाले द्वारा दिया गया ब्याज नहीं है। वे थर्ड-पार्टी DeFi प्रोटोकॉल में पोज़िशन से मिलने वाले ऑनचेन रिटर्न हैं।"
-  },
-  "moneyHowItWorksFaqYieldQuestion": {
-    "message": "यील्ड कहाँ से आती है?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "आपका पैसा कैसे बढ़ता है"
@@ -5775,47 +5682,11 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "कन्वर्शन नहीं हो पाया"
   },
-  "moneyToastDepositInProgressDescriptionCard": {
-    "message": "कार्ड ऑर्डर में कुछ मिनट लग सकते हैं।"
-  },
-  "moneyToastDepositInProgressTitleAddMusd": {
-    "message": "फ़ंड जोड़े जा रहे हैं"
-  },
-  "moneyToastDepositInProgressTitleCard": {
-    "message": "डिपॉज़िट कर रहे हैं"
-  },
-  "moneyToastDepositInProgressTitleConvert": {
-    "message": "क्रिप्टो को कन्वर्ट किया जा रहा है"
-  },
-  "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Money Account में जोड़ दिया गया है।"
-  },
-  "moneyToastDepositSuccessTitleAddMusd": {
-    "message": "फंड्स जोड़े गए"
-  },
-  "moneyToastDepositSuccessTitleCard": {
-    "message": "डिपॉज़िट पूरा हुआ"
-  },
-  "moneyToastDepositSuccessTitleConvert": {
-    "message": "कन्वर्शन पूरा हुआ"
-  },
-  "moneyToastInProgressDescription": {
-    "message": "इसमें कुछ मिनट लग सकते हैं।"
-  },
   "moneyToastWithdrawFailedBody": {
     "message": "फंड्स ट्रांसफर नहीं हो पाए। फिर से प्रयास करें।"
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "ट्रांसफर नहीं हो पाया"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "आपका अकाउंट"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "ट्रांसफर प्रोग्रेस में है"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "ट्रांसफर पूरा हुआ"
   },
   "moneyTransferBetweenAccounts": {
     "message": "दूसरा अकाउंट"
@@ -7692,10 +7563,6 @@
   "perpsFilterIndex": {
     "message": "इनडाइसेज़"
   },
-  "perpsFilterMore": {
-    "message": "अधिक",
-    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
-  },
   "perpsFilterNew": {
     "message": "नया"
   },
@@ -7977,10 +7844,6 @@
   },
   "perpsPositions": {
     "message": "पोजीशन्स"
-  },
-  "perpsProducts": {
-    "message": "प्रोडक्ट्स",
-    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "बहुत ज़्यादा रिक्वेस्ट हैं। कृपया इंतज़ार करें और फिर से कोशिश करें।"

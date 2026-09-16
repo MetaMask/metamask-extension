@@ -1481,9 +1481,6 @@
   "alertDisableTooltip": {
     "message": "Vous pouvez modifier ceci dans « Paramètres > Alertes »"
   },
-  "alertInsufficientPayMethodBalance": {
-    "message": "Réduisez le montant ou utilisez un autre moyen de paiement."
-  },
   "alertInsufficientPayTokenBalance": {
     "message": "Fonds insuffisants"
   },
@@ -1879,9 +1876,6 @@
   },
   "backupAndSyncFeatureContacts": {
     "message": "Contacts"
-  },
-  "backupAndSyncFeatureRamps": {
-    "message": "Ordres d’achat et de vente"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "Sélectionnez ce que vous voulez synchroniser"
@@ -5269,7 +5263,7 @@
   },
   "lowValueAssets": {
     "message": "Jetons à faible solde ($1)",
-    "description": "$1 is the number of low balance assets in the collapsed home token list section."
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Réseau principal Ethereum"
@@ -5504,23 +5498,8 @@
   "moneyActivityDepositing": {
     "message": "Dépôt"
   },
-  "moneyActivityDetailsPaidTo": {
-    "message": "Payé à"
-  },
-  "moneyActivityDetailsReceivedFrom": {
-    "message": "Reçu de"
-  },
   "moneyActivityDetailsTransactionId": {
     "message": "ID de transaction"
-  },
-  "moneyActivityDetailsYouEarned": {
-    "message": "Vous avez gagné"
-  },
-  "moneyActivityDetailsYouSpent": {
-    "message": "Vous avez dépensé"
-  },
-  "moneyActivityDetailsYouWereRefunded": {
-    "message": "Vous avez été remboursé"
   },
   "moneyActivityEmpty": {
     "message": "Aucune activité pour l’instant"
@@ -5570,10 +5549,6 @@
   "moneyActivitySent": {
     "message": "Envoyé"
   },
-  "moneyActivityTransactionFeeTooltip": {
-    "message": "Les frais de conversion comprennent les coûts de réseau et peuvent inclure les frais du fournisseur.",
-    "description": "Tooltip explaining what the Money account transaction fee covers"
-  },
   "moneyActivityViewAll": {
     "message": "Tout afficher"
   },
@@ -5622,12 +5597,6 @@
   "moneyBenefits": {
     "message": "Avantages"
   },
-  "moneyContactSupport": {
-    "message": "Contacter le service d’assistance"
-  },
-  "moneyConvertYourCrypto": {
-    "message": "Convertissez vos crypto-monnaies"
-  },
   "moneyEarnApyTitle": {
     "message": "Obtenez jusqu’à $1 de rendement annuel"
   },
@@ -5670,60 +5639,9 @@
   "moneyHowItWorksDescription": {
     "message": "Ajoutez des mUSD et vous pourrez utiliser à tout moment votre solde adossé au dollar pour effectuer des achats, des transferts ou des opérations de bourse."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Le solde de votre compte Money correspond à votre solde disponible. Associez votre carte MetaMask Card pour effectuer des achats auprès de plus de 150 millions de commerçants dans le monde entier. Votre argent continue de générer des revenus jusqu’à ce que vous le dépensiez."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Le Money Account est propulsé par Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Ajoutez des mUSD et gagnez jusqu'à $1. Votre solde est adossé au dollar et vous pouvez l’utiliser à tout moment pour effectuer des achats, des transferts ou des opérations de Bourse.",
     "description": "$1 is the current mUSD APY."
-  },
-  "moneyHowItWorksDisclosuresBody": {
-    "message": "Le Money Account n’est ni un compte bancaire, ni un compte d’épargne, ni un produit de dépôt assuré. Le taux de rendement annuel est variable et n’est pas garanti. Le Money Account comporte des risques liés aux contrats intelligents, au protocole, à la liquidité et à d’autres facteurs, et vous pouvez perdre une partie ou la totalité de vos fonds. Sous réserve de restrictions régionales. Des conditions s’appliquent."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "Le taux de rendement annuel varie-t-il ?"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Vous ! MetaMask est un portefeuille de détention en propre, ce qui signifie que seules les clés privées du titulaire du compte permettent de le contrôler. MetaMask ne peut ni accéder à vos fonds, ni les bloquer, ni les transférer. C’est ce qui nous distingue des comptes bancaires traditionnels et des plateformes de crypto-monnaies avec gestion de fonds : aucun tiers ne détient vos fonds."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Qui gère mon argent ?"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "L’ouverture d’un Money Account est gratuite, tout comme le dépôt de stablecoins. Des frais vous seront facturés lors du dépôt de jetons non-stablecoins. Des frais s’appliquent également aux transactions effectuées avec la MetaMask Card, aux retraits aux distributeurs automatiques et aux opérations de conversion en monnaie locale. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Découvrez ici tous les frais liés au compte MetaMask Card."
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Y a-t-il des frais à payer ?"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Oui. Vous pouvez échanger, envoyer, dépenser ou retirer l’intégralité de votre solde à tout moment, sans délai de préavis, sans pénalité et sans frais de retrait de la part de MetaMask. En cas de manque de liquidité, des retards temporaires peuvent survenir."
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Mon argent est-il bloqué ? Puis-je effectuer un retrait à tout moment ?"
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Qu’est-ce qu’un compte Money ?"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Qu’est-ce que le mUSD ?"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "S’agit-il d’un compte d’épargne ou d’un compte courant ?"
-  },
-  "moneyHowItWorksFaqTitle": {
-    "message": "FAQ"
-  },
-  "moneyHowItWorksFaqYieldAnswer": {
-    "message": "Lorsque vous déposez des fonds, ceux-ci sont placés dans des protocoles DeFi reconnus, tels qu’Aave et Morpho, où ils génèrent des rendements issus d’une activité économique réelle. Ces rendements vous sont ensuite versés sous forme de taux de rendement annuel.\n\nUn prestataire de services tiers, Steakhouse Financial, supervise la manière dont les fonds sont alloués au sein des protocoles. Veda, un fournisseur d’infrastructure tiers, déploie et gère les contrats intelligents du coffre-fort qui détiennent vos fonds.\n\nLes gains ne constituent pas des intérêts versés par MetaMask ou par l’émetteur de mUSD. Il s’agit des rendements générés par la chaîne de blocs grâce à des placements dans des protocoles DeFi tiers."
-  },
-  "moneyHowItWorksFaqYieldQuestion": {
-    "message": "D’où provient le rendement ?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Comment votre argent fructifie"
@@ -5764,47 +5682,11 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "La connexion a échoué"
   },
-  "moneyToastDepositInProgressDescriptionCard": {
-    "message": "Les commandes de cartes peuvent prendre quelques minutes."
-  },
-  "moneyToastDepositInProgressTitleAddMusd": {
-    "message": "Ajouter des fonds"
-  },
-  "moneyToastDepositInProgressTitleCard": {
-    "message": "Dépôt"
-  },
-  "moneyToastDepositInProgressTitleConvert": {
-    "message": "Conversion des crypto-monnaies"
-  },
-  "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Ajouté à votre Money Account."
-  },
-  "moneyToastDepositSuccessTitleAddMusd": {
-    "message": "Fonds ajoutés"
-  },
-  "moneyToastDepositSuccessTitleCard": {
-    "message": "Dépôt effectué "
-  },
-  "moneyToastDepositSuccessTitleConvert": {
-    "message": "Conversion terminée"
-  },
-  "moneyToastInProgressDescription": {
-    "message": "Cela peut prendre quelques minutes."
-  },
   "moneyToastWithdrawFailedBody": {
     "message": "Impossible de transférer des fonds. Réessayez."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Le transfert a échoué"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "votre compte"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "Transfert en cours"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "Transfert terminé"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Un autre compte"
@@ -7681,10 +7563,6 @@
   "perpsFilterIndex": {
     "message": "Indices"
   },
-  "perpsFilterMore": {
-    "message": "Plus",
-    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
-  },
   "perpsFilterNew": {
     "message": "Nouveau"
   },
@@ -7966,10 +7844,6 @@
   },
   "perpsPositions": {
     "message": "Positions"
-  },
-  "perpsProducts": {
-    "message": "Produits",
-    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Trop de demandes. Veuillez patienter et réessayer."

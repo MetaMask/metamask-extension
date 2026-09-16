@@ -1481,9 +1481,6 @@
   "alertDisableTooltip": {
     "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
   },
-  "alertInsufficientPayMethodBalance": {
-    "message": "Nạp ít hơn hoặc sử dụng phương thức thanh toán khác."
-  },
   "alertInsufficientPayTokenBalance": {
     "message": "Không đủ tiền"
   },
@@ -5501,23 +5498,8 @@
   "moneyActivityDepositing": {
     "message": "Đang gửi tiền"
   },
-  "moneyActivityDetailsPaidTo": {
-    "message": "Đã thanh toán cho"
-  },
-  "moneyActivityDetailsReceivedFrom": {
-    "message": "Đã nhận được từ"
-  },
   "moneyActivityDetailsTransactionId": {
     "message": "ID giao dịch"
-  },
-  "moneyActivityDetailsYouEarned": {
-    "message": "Bạn đã nhận được"
-  },
-  "moneyActivityDetailsYouSpent": {
-    "message": "Bạn đã chi tiêu"
-  },
-  "moneyActivityDetailsYouWereRefunded": {
-    "message": "Bạn đã được hoàn tiền"
   },
   "moneyActivityEmpty": {
     "message": "Chưa có hoạt động"
@@ -5567,10 +5549,6 @@
   "moneyActivitySent": {
     "message": "Đã gửi"
   },
-  "moneyActivityTransactionFeeTooltip": {
-    "message": "Phí chuyển đổi bao gồm chi phí mạng và có thể bao gồm phí của nhà cung cấp.",
-    "description": "Tooltip explaining what the Money account transaction fee covers"
-  },
   "moneyActivityViewAll": {
     "message": "Xem tất cả"
   },
@@ -5619,12 +5597,6 @@
   "moneyBenefits": {
     "message": "Quyền lợi"
   },
-  "moneyContactSupport": {
-    "message": "Liên hệ bộ phận hỗ trợ"
-  },
-  "moneyConvertYourCrypto": {
-    "message": "Chuyển đổi tiền mã hóa của bạn"
-  },
   "moneyEarnApyTitle": {
     "message": "Sinh lời với APY lên đến $1"
   },
@@ -5667,60 +5639,9 @@
   "moneyHowItWorksDescription": {
     "message": "Nạp mUSD và số dư được bảo chứng bằng đô-la của bạn sẽ sẵn sàng để chi tiêu, giao dịch hoặc gửi bất cứ lúc nào."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Số dư Tài chính của bạn là số dư để chi tiêu. Liên kết Thẻ MetaMask để chi tiêu tại hơn 150 triệu cửa hàng trên toàn cầu. Tiền của bạn vẫn sinh lời cho đến thời điểm bạn sử dụng."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account được hỗ trợ bởi Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Nạp mUSD và sinh lời lên đến $1. Số dư của bạn được bảo chứng theo đô-la, sẵn sàng để chi tiêu, giao dịch hoặc gửi bất cứ lúc nào.",
     "description": "$1 is the current mUSD APY."
-  },
-  "moneyHowItWorksDisclosuresBody": {
-    "message": "Money Account không phải là tài khoản ngân hàng, tài khoản tiết kiệm hoặc sản phẩm tiền gửi được bảo hiểm. Lãi suất APY có thể thay đổi và không được đảm bảo. Money Account có các rủi ro liên quan đến hợp đồng thông minh, giao thức, thanh khoản và các rủi ro khác, vì vậy bạn có thể mất một phần hoặc toàn bộ số tiền của mình. Việc sử dụng còn tùy thuộc vào các hạn chế theo khu vực. Có áp dụng các điều khoản và điều kiện."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "Tỷ lệ APY có thay đổi không?"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Chính bạn! MetaMask là ví tự lưu ký, nghĩa là chỉ có Khóa riêng tư của chủ tài khoản mới có quyền kiểm soát tài khoản. MetaMask không thể truy cập, đóng băng hoặc di chuyển tiền của bạn. Đây là điểm khác biệt giữa chúng tôi với tài khoản ngân hàng truyền thống và các nền tảng tiền mã hóa lưu ký — không có bên thứ ba nào nắm giữ tiền của bạn."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Ai kiểm soát tiền của tôi?"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Không có phí khi mở Money Account và không có phí khi nạp đồng ổn định. Bạn sẽ phải trả phí khi nạp các token không phải là đồng ổn định. Ngoài ra còn có các khoản phí liên quan đến giao dịch bằng MetaMask Card, rút tiền tại ATM và chi phí chuyển đổi ngược sang đồng tiền nội tệ. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Xem chi tiết đầy đủ về các khoản phí của Thẻ tại đây."
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Có phí nào không?"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Có. Bạn có thể giao dịch, gửi, chi tiêu hoặc rút toàn bộ số dư của mình bất cứ lúc nào mà không cần thông báo trước, không bị phạt và không mất phí rút tiền từ MetaMask. Trong trường hợp thanh khoản bị hạn chế, quá trình rút tiền có thể bị chậm tạm thời."
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Tiền của tôi có bị khóa không? Tôi có thể rút tiền bất cứ lúc nào không?"
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Tài khoản Tài chính là gì?"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD là gì?"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Đây là tài khoản tiết kiệm hay tài khoản chi tiêu?"
-  },
-  "moneyHowItWorksFaqTitle": {
-    "message": "Câu hỏi thường gặp"
-  },
-  "moneyHowItWorksFaqYieldAnswer": {
-    "message": "Khi bạn nạp tiền, số tiền của bạn sẽ được phân bổ vào các giao thức DeFi uy tín như Aave và Morpho, nơi tạo lợi nhuận từ các hoạt động kinh tế thực. Sau đó, các khoản lợi nhuận này sẽ được chuyển đến bạn dưới dạng APY.\n\nMột nhà cung cấp dịch vụ bên thứ ba là Steakhouse Financial sẽ giám sát việc phân bổ tiền trong các giao thức. Veda, một nhà cung cấp hạ tầng bên thứ ba, sẽ triển khai và duy trì các hợp đồng thông minh của kho lưu giữ tiền của bạn.\n\nKhoản lợi nhuận này không phải là lãi suất do MetaMask hoặc đơn vị phát hành mUSD chi trả. Đây là lợi nhuận trên chuỗi được tạo ra từ các vị thế trong các giao thức DeFi của bên thứ ba."
-  },
-  "moneyHowItWorksFaqYieldQuestion": {
-    "message": "Lợi suất đến từ đâu?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Tiền của bạn có thể sinh lời như thế nào"
@@ -5761,47 +5682,11 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Chuyển đổi thất bại"
   },
-  "moneyToastDepositInProgressDescriptionCard": {
-    "message": "Việc đặt thẻ có thể mất vài phút."
-  },
-  "moneyToastDepositInProgressTitleAddMusd": {
-    "message": "Đang nạp tiền"
-  },
-  "moneyToastDepositInProgressTitleCard": {
-    "message": "Đang gửi tiền"
-  },
-  "moneyToastDepositInProgressTitleConvert": {
-    "message": "Đang chuyển đổi tiền mã hóa"
-  },
-  "moneyToastDepositSuccessDescriptionNoAmount": {
-    "message": "Đã nạp tiền vào Money Account."
-  },
-  "moneyToastDepositSuccessTitleAddMusd": {
-    "message": "Đã nạp tiền"
-  },
-  "moneyToastDepositSuccessTitleCard": {
-    "message": "Nạp tiền hoàn tất"
-  },
-  "moneyToastDepositSuccessTitleConvert": {
-    "message": "Chuyển đổi hoàn tất"
-  },
-  "moneyToastInProgressDescription": {
-    "message": "Quá trình này có thể mất vài phút."
-  },
   "moneyToastWithdrawFailedBody": {
     "message": "Không thể chuyển tiền. Vui lòng thử lại."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Chuyển tiền thất bại"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "tài khoản của bạn"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "Đang chuyển tiền"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "Chuyển tiền hoàn tất"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Tài khoản khác"
@@ -7684,10 +7569,6 @@
   "perpsFilterIndex": {
     "message": "Chỉ số"
   },
-  "perpsFilterMore": {
-    "message": "Thêm",
-    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
-  },
   "perpsFilterNew": {
     "message": "Mới"
   },
@@ -7969,10 +7850,6 @@
   },
   "perpsPositions": {
     "message": "Vị thế"
-  },
-  "perpsProducts": {
-    "message": "Sản phẩm",
-    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Quá nhiều yêu cầu. Vui lòng chờ và thử lại."
