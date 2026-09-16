@@ -397,13 +397,13 @@ async function confirmAndGetTransaction(
   expectedStatus: 'confirmed' | 'failed',
   acknowledgeDangerAlert = false,
 ) {
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterButton({ button: 'confirm' });
 
   if (acknowledgeDangerAlert) {
     const alertModal = new ConfirmAlertModal(driver);
     await alertModal.acknowledgeAlert();
     await alertModal.confirmFromAlertModal();
-    await confirmation.clickFooterConfirmButton();
+    await confirmation.clickFooterButton({ button: 'confirm' });
   }
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);

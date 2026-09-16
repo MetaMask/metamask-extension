@@ -23,9 +23,9 @@ export const TokenCellTitle = React.memo(
     const tokenIsStock = isStockToken(token);
 
     return (
-      <Box className="flex items-center gap-2 min-w-0">
+      <Box className="flex items-center gap-1 min-w-0">
         <AssetCellTitle title={token.title} />
-        {!tokenIsStock && <SecurityBadge value={token.safetyResult} />}
+        <SecurityBadge value={token.safetyResult} />
         {label && <Tag label={label} />}
         {token.tokenRequireActivate && <AssetInactiveBadge />}
         {tokenIsStock && (

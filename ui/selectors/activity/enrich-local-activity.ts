@@ -1,5 +1,4 @@
 import {
-  isMusdToken,
   MUSD_DECIMALS,
   MUSD_TOKEN,
   MUSD_TOKEN_ASSET_ID_BY_CHAIN,
@@ -17,6 +16,7 @@ import {
   parseStandardTokenTransactionData,
 } from '../../../shared/lib/transaction.utils';
 import { hasTransactionType } from '../../../shared/lib/transactions.utils';
+import { getMoneyAccountDepositAmount } from '../../helpers/money/money-account-amounts';
 import { getMoneyAccountWithdrawTransferDetails } from '../../pages/confirmations/utils/money-account-withdraw';
 import { enrichLocalMusdClaimActivity } from './enrich-local-musd-claim';
 
@@ -127,36 +127,6 @@ function enrichApprovalActivity(
 }
 
 /**
- * Resolves the raw mUSD amount of a money-account deposit batch. The amount
- * is committed at approval into both the mUSD `requiredAssets` entry and the
- * nested approve calldata; the placeholder contains zero in both locations,
- * so no committed raw amount is available yet; callers may fall back to the
- * quoted fiat amount.
- *
- * @param transaction - The deposit batch transaction.
- * @returns Raw mUSD amount in base units, or undefined when not committed.
- */
-function getMoneyAccountDepositAmount(
-  transaction: TransactionGroup['initialTransaction'],
-): string | undefined {
-  const requiredAmount = transaction.requiredAssets?.find(({ address }) =>
-    isMusdToken(address),
-  )?.amount;
-  if (requiredAmount && BigInt(requiredAmount) > 0n) {
-    return BigInt(requiredAmount).toString();
-  }
-
-  const approve = transaction.nestedTransactions?.find(
-    (nested) => nested.type === TransactionType.tokenMethodApprove,
-  );
-  const approveAmount = approve?.data
-    ? parseApprovalTransactionData(approve.data)?.amountOrTokenId?.toFixed(0)
-    : undefined;
-
-  return approveAmount && approveAmount !== '0' ? approveAmount : undefined;
-}
-
-/**
  * Converts a raw mUSD amount to the fiat amount activity rows display,
  * falling back to MM Pay's quoted target fiat. mUSD is pegged 1:1 to USD.
  *
@@ -174,6 +144,39 @@ function toMusdFiat(
 
   const targetFiat = transaction.metamaskPay?.targetFiat;
   return targetFiat ? { amount: targetFiat } : undefined;
+}
+
+/**
+ * Get the raw mUSD amount of a money-account batch txn.
+ *
+ * @param transaction - The money-account batch transaction.
+ * @param isDeposit - Whether the batch is a deposit rather than a withdrawal.
+ * @returns Raw mUSD amount in base units, or undefined when not committed.
+ */
+function getMoneyAccountAmountRaw(
+  transaction: TransactionGroup['initialTransaction'],
+  isDeposit: boolean,
+): string | undefined {
+  return isDeposit
+    ? getMoneyAccountDepositAmount(transaction)
+    : getMoneyAccountWithdrawTransferDetails(transaction).amountRaw;
+}
+
+/**
+ * Get the fiat amount of a money-account batch for display
+ *
+ * @param transaction - The money-account batch transaction.
+ * @param isDeposit - Whether the batch is a deposit rather than a withdrawal.
+ * @returns The fiat amount, or undefined when no amount is known yet.
+ */
+export function getMoneyAccountFiatAmount(
+  transaction: TransactionGroup['initialTransaction'],
+  isDeposit: boolean,
+): string | undefined {
+  return toMusdFiat(
+    getMoneyAccountAmountRaw(transaction, isDeposit),
+    transaction,
+  )?.amount;
 }
 
 /**
@@ -207,11 +210,7 @@ function enrichMoneyAccountActivity(
   const type: MoneyAccountActivityKind = isDeposit
     ? 'moneyAccountDeposit'
     : 'moneyAccountWithdraw';
-  // Withdrawal amount comes from nested transfer calldata; undefined while
-  // the batch is still a placeholder (calldata is populated when committed).
-  const amount = isDeposit
-    ? getMoneyAccountDepositAmount(transaction)
-    : getMoneyAccountWithdrawTransferDetails(transaction).amountRaw;
+  const amount = getMoneyAccountAmountRaw(transaction, isDeposit);
   const { chainId } = transaction;
   const assetId = chainId ? MUSD_TOKEN_ASSET_ID_BY_CHAIN[chainId] : undefined;
   const token: TokenAmount = {

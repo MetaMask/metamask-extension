@@ -26,11 +26,13 @@ import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useIsFundingAccountBalanceSettling } from '../../pay/useIsFundingAccountBalanceSettling';
 import { useInsufficientPayTokenBalanceAlert } from './useInsufficientPayTokenBalanceAlert';
 
 jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData');
 jest.mock('../../send/useSendTokens');
+jest.mock('../../pay/useIsFundingAccountBalanceSettling');
 jest.mock('../../tokens/useTokenWithBalance');
 jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
   useMoneyAccountWithdrawableFiat: jest.fn(() => ({
@@ -47,6 +49,7 @@ const PAY_TOKEN_MOCK = {
 
 const REQUIRED_TOKEN_MOCK = {
   amountUsd: '5.00',
+  amountRaw: '5000000',
   skipIfBalance: false,
 } as TransactionPayRequiredToken;
 
@@ -148,6 +151,9 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     useIsTransactionPayLoading,
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
+  const useIsFundingAccountBalanceSettlingMock = jest.mocked(
+    useIsFundingAccountBalanceSettling,
+  );
   const useMoneyAccountWithdrawableFiatMock = jest.mocked(
     useMoneyAccountWithdrawableFiat,
   );
@@ -157,6 +163,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
     // Empty list so the alert falls back to the pay-token snapshot under test.
     useSendTokensMock.mockReturnValue([]);
+    useIsFundingAccountBalanceSettlingMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
       withdrawableFiatFormatted: '$10.00',
       withdrawableFiatRaw: '10',
@@ -235,6 +242,117 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       const { result } = runHook();
 
       expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert while the quote is loading and required tokens describe the previous token', () => {
+      // Switching pay token leaves the previous token's required amount in
+      // state until the refreshed quote lands. Comparing it against the newly
+      // selected token's balance must not flash insufficient funds.
+      useIsTransactionPayLoadingMock.mockReturnValue(true);
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        {
+          ...REQUIRED_TOKEN_MOCK,
+          amountUsd: '100.00',
+        },
+      ]);
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when the pay-token balance is not known yet', () => {
+      // No live funding-account token and a zero/absent snapshot: the balance
+      // is unknown rather than empty, so the amount must not be judged
+      // insufficient against it.
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceUsd: '0',
+          balanceRaw: '0',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns an alert when the funding account is genuinely empty', () => {
+      // The funding account's own token list reports zero, which is a real
+      // balance and must still block.
+      useSendTokensMock.mockReturnValue([
+        {
+          address: PAY_TOKEN_MOCK.address,
+          chainId: PAY_TOKEN_MOCK.chainId,
+          rawBalance: '0x0',
+          decimals: 18,
+        },
+      ] as unknown as ReturnType<typeof useSendTokens>);
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([
+        {
+          key: AlertsName.InsufficientPayTokenBalance,
+          field: RowAlertKey.EstimatedFee,
+          isBlocking: true,
+          reason: expect.stringContaining('Insufficient funds'),
+          message: expect.stringContaining('Insufficient funds'),
+          severity: Severity.Danger,
+        },
+      ]);
+    });
+
+    it('returns no alert while the funding account balance is still settling', () => {
+      // Immediately after a funding-account switch the only balance available
+      // is the controller snapshot, which still describes the account the user
+      // switched away from. It is positive, so the known-balance check alone
+      // does not catch it — the amount must not be judged against it.
+      useIsFundingAccountBalanceSettlingMock.mockReturnValue(true);
+
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceUsd: '4.00',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns an alert once the funding account balance has settled', () => {
+      // Same stale-looking inputs as above, but no longer settling: the check
+      // must resume so an unfundable amount is still blocked.
+      useIsFundingAccountBalanceSettlingMock.mockReturnValue(false);
+
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceUsd: '4.00',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([
+        {
+          key: AlertsName.InsufficientPayTokenBalance,
+          field: RowAlertKey.EstimatedFee,
+          isBlocking: true,
+          reason: expect.stringContaining('Insufficient funds'),
+          message: expect.stringContaining('Insufficient funds'),
+          severity: Severity.Danger,
+        },
+      ]);
     });
 
     it('returns no alert when isMax is true regardless of required token amount', () => {
@@ -322,6 +440,74 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       });
 
       const { result } = runHook({ pendingAmountUsd: '1.00' });
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when isMax is true even if source amount exceeds balance', () => {
+      useTransactionPayIsMaxAmountMock.mockReturnValue(true);
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when isMax is true even if source amount plus gas-fee-token exceeds balance', () => {
+      useTransactionPayIsMaxAmountMock.mockReturnValue(true);
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        fees: {
+          ...TOTALS_MOCK.fees,
+          isSourceGasFeeToken: true,
+        },
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when an exact-raw deposit plus fees exceeds the balance', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: TOTALS_MOCK.sourceAmount.raw,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        fees: {
+          ...TOTALS_MOCK.fees,
+          isSourceGasFeeToken: true,
+        },
+      });
+
+      const { result } = runHook(
+        {},
+        {
+          confirmationOverrides: {
+            type: TransactionType.moneyAccountDeposit,
+          },
+        },
+      );
 
       expect(result.current).toStrictEqual([]);
     });
@@ -450,6 +636,88 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
           confirmationOverrides: {
             isGasFeeSponsored: true,
             nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+          },
+        },
+      );
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      ['deposit', TransactionType.moneyAccountDeposit],
+      ['withdraw', TransactionType.moneyAccountWithdraw],
+    ])(
+      'returns no alert for a money-account %s even when sponsorship is not flagged',
+      (_name: string, type: TransactionType) => {
+        useTransactionPayTokenMock.mockReturnValue({
+          payToken: {
+            ...PAY_TOKEN_MOCK,
+            chainId: CHAIN_IDS.MONAD as Hex,
+          },
+          isNative: false,
+          setPayToken: jest.fn(),
+        });
+
+        useTokenWithBalanceMock.mockReturnValue({
+          address: NATIVE_TOKEN_MOCK.address,
+          chainId: CHAIN_IDS.MONAD,
+          symbol: 'MON',
+          decimals: 18,
+          balance: '0',
+          balanceRaw: '0',
+          balanceFiat: '$0.00',
+          tokenFiatAmount: 0,
+        });
+
+        // `isGasFeeSponsored` is deliberately absent: it is only set for
+        // `CHAIN_IDS.MONAD` at creation and `useTransactionConfirm` can clear
+        // it, which is what made this alert appear intermittently.
+        const { result } = runHook(
+          {},
+          {
+            confirmationOverrides: {
+              nestedTransactions: [{ type }],
+            },
+          },
+        );
+
+        expect(result.current).toStrictEqual([]);
+      },
+    );
+
+    it('returns no alert for a money-account withdraw when post-quote is disabled', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          chainId: CHAIN_IDS.MONAD as Hex,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: CHAIN_IDS.MONAD,
+        symbol: 'MON',
+        decimals: 18,
+        balance: '0',
+        balanceRaw: '0',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      // With `confirmations_pay_post_quote` off, `canSelectWithdrawToken` is
+      // false, so the withdraw used to fall through to the native-gas check
+      // even though it still runs as a sponsored batch from the money account.
+      const { result } = runHook(
+        {},
+        {
+          confirmationOverrides: {
+            isGasFeeSponsored: true,
+            nestedTransactions: [
+              { type: TransactionType.moneyAccountWithdraw },
+            ],
           },
         },
       );
@@ -596,6 +864,34 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
         isBlocking: true,
         reason: expect.stringContaining('Insufficient funds'),
         message: 'Add less or use a different token.',
+        severity: Severity.Danger,
+      },
+    ]);
+  });
+
+  it('returns alert when pending amount exceeds money-account balance without a pay token', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      isNative: false,
+      setPayToken: jest.fn(),
+    });
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      withdrawableFiatRaw: '10',
+      withdrawableFiatFormatted: '$10.00',
+    });
+
+    const { result } = runHook(
+      { pendingAmountUsd: '25.00' },
+      { paymentOverride: PaymentOverride.MoneyAccount },
+    );
+
+    expect(result.current).toStrictEqual([
+      {
+        key: AlertsName.InsufficientPayTokenBalance,
+        field: RowAlertKey.EstimatedFee,
+        isBlocking: true,
+        reason: expect.stringContaining('Insufficient funds'),
+        message: expect.stringContaining('Insufficient funds'),
         severity: Severity.Danger,
       },
     ]);

@@ -18,16 +18,16 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useMoneyActivityDisplayInfo } from '../../../hooks/money/use-money-activity-display';
 import {
-  getMoneyActivityDisplayInfo,
-  type MoneyActivityTranslate,
-} from '../utils/money-activity-display';
-import type { MoneyActivityItem } from '../types/money-activity';
+  isOnchainMoneyActivityItem,
+  type MoneyActivityItem,
+} from '../types/money-activity';
 
 export type MoneyActivityRowProps = {
   item: MoneyActivityItem;
   privacyMode?: boolean;
+  onItemClick?: (item: MoneyActivityItem) => void;
 };
 
 function getAmountColor({
@@ -49,25 +49,19 @@ function getAmountColor({
 export function MoneyActivityRow({
   item,
   privacyMode = false,
+  onItemClick,
 }: MoneyActivityRowProps) {
-  const t = useI18nContext() as MoneyActivityTranslate;
-  const display = getMoneyActivityDisplayInfo(item.tx, t);
+  const display = useMoneyActivityDisplayInfo(item);
   const isFailed = display.status === 'failed';
   const isPending = display.status === 'pending';
   const amountColor = getAmountColor({
     isFailed,
     isIncoming: display.isIncoming,
   });
+  const isClickable = Boolean(onItemClick) && isOnchainMoneyActivityItem(item);
 
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={4}
-      padding={4}
-      className="w-full"
-      data-testid={`money-activity-row-${item.id}`}
-    >
+  const content = (
+    <>
       <AvatarIcon
         iconName={display.icon}
         severity={AvatarIconSeverity.Neutral}
@@ -138,6 +132,34 @@ export function MoneyActivityRow({
           {display.fiatAmount}
         </SensitiveText>
       </Box>
+    </>
+  );
+
+  const rowClassName = 'flex w-full items-center gap-4 p-4';
+
+  if (isClickable && onItemClick) {
+    return (
+      <button
+        type="button"
+        onClick={() => onItemClick(item)}
+        className={`${rowClassName} bg-transparent text-left hover:bg-hover`}
+        data-testid={`money-activity-row-${item.id}`}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={4}
+      padding={4}
+      className="w-full"
+      data-testid={`money-activity-row-${item.id}`}
+    >
+      {content}
     </Box>
   );
 }
