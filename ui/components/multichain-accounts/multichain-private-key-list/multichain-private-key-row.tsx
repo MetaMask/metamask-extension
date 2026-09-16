@@ -7,7 +7,10 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
+  Button,
   ButtonBase,
+  ButtonSize,
+  ButtonVariant,
   FontWeight,
   Icon,
   IconColor,
@@ -17,17 +20,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  IconName as LegacyIconName,
-} from '../../component-library';
-import {
-  BorderRadius,
-  IconColor as LegacyIconColor,
-  TextColor as LegacyTextColor,
-} from '../../../helpers/constants/design-system';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -134,12 +126,6 @@ const PrivateKeyContent = ({
         )}
       </ButtonBase>
       <Button
-        borderRadius={BorderRadius.LG}
-        color={
-          isCopied
-            ? LegacyTextColor.successDefault
-            : LegacyTextColor.textDefault
-        }
         className={
           isCopied
             ? 'rounded-lg border-success-default bg-success-muted text-success-default hover:bg-success-muted active:bg-success-muted'
@@ -147,13 +133,9 @@ const PrivateKeyContent = ({
         }
         size={ButtonSize.Sm}
         variant={ButtonVariant.Secondary}
-        startIconName={
-          isCopied ? LegacyIconName.CopySuccess : LegacyIconName.Copy
-        }
+        startIconName={isCopied ? IconName.CopySuccess : IconName.Copy}
         startIconProps={{
-          color: isCopied
-            ? LegacyIconColor.successDefault
-            : LegacyIconColor.iconDefault,
+          color: isCopied ? IconColor.SuccessDefault : IconColor.IconDefault,
         }}
         onClick={handleCopy}
         data-testid={`multichain-private-key-copy-${chainId}`}
