@@ -1,6 +1,7 @@
 import {
   formatXlmTokenListAmount,
   shouldAllowStellarQuickstartPull,
+  specNeedsStellarQuickstartImage,
 } from '../seeder/stellar/node';
 import { extractHorizonPathFromInfuraUrl } from '../seeder/stellar/proxy';
 
@@ -29,6 +30,32 @@ describe('shouldAllowStellarQuickstartPull', () => {
       shouldAllowStellarQuickstartPull({
         STELLAR_LOCAL_DOCKER: '0',
       }),
+    ).toBe(false);
+  });
+});
+
+describe('specNeedsStellarQuickstartImage', () => {
+  it('matches Stellar Quickstart local-node specs', () => {
+    expect(
+      specNeedsStellarQuickstartImage(
+        'test/e2e/tests/stellar/assets-local-node.spec.ts',
+      ),
+    ).toBe(true);
+    expect(
+      specNeedsStellarQuickstartImage(
+        'test/e2e/tests/account/stellar/stellar-account-derivation-local-node.spec.ts',
+      ),
+    ).toBe(true);
+  });
+
+  it('ignores mocked Stellar specs and other local-node files', () => {
+    expect(
+      specNeedsStellarQuickstartImage('test/e2e/tests/stellar/assets.spec.ts'),
+    ).toBe(false);
+    expect(
+      specNeedsStellarQuickstartImage(
+        'test/e2e/tests/bitcoin/send-local-node.spec.ts',
+      ),
     ).toBe(false);
   });
 });

@@ -49,14 +49,6 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
-      pull-stellar-image:
-        type: boolean
-        default: false
-        description: >-
-          When true, start pulling stellar/quickstart as soon as the runner
-          boots (before checkout) so Quickstart-backed Selenium specs do not
-          wait on docker pull inside Mocha before(). Only the main Chrome and
-          Firefox webpack suites run those specs.
     secrets:
       INFURA_PROJECT_ID:
         required: false
@@ -92,24 +84,7 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
       RUN_ATTEMPT: ${{ github.run_attempt }}
-      # Same default as test/e2e/seeder/stellar/node.ts
-      STELLAR_QUICKSTART_IMAGE: stellar/quickstart
     steps:
-      # Start before checkout so the pull overlaps yarn install and artifact
-      # downloads. docker run in StellarNode.start() is a no-op pull when cached.
-      - name: Start stellar/quickstart image pull
-        if: ${{ inputs.pull-stellar-image }}
-        run: |
-          set -euo pipefail
-          IMAGE="${STELLAR_QUICKSTART_IMAGE:-stellar/quickstart}"
-          echo "Starting docker pull ${IMAGE}"
-          # New session so the pull survives the step shell exiting (SIGHUP).
-          setsid nohup docker pull "${IMAGE}" \
-            > "${RUNNER_TEMP}/stellar-docker-pull.log" 2>&1 < /dev/null &
-          echo $! > "${RUNNER_TEMP}/stellar-docker-pull.pid"
-          disown || true
-          echo "Started docker pull ${IMAGE} (pid $(cat "${RUNNER_TEMP}/stellar-docker-pull.pid"))"
-
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
@@ -177,33 +152,6 @@ jobs:
       - name: Pin geckodriver 0.36.0 (Firefox only)
         if: ${{ contains(inputs.test-command, 'firefox') }}
         run: .github/scripts/pin-geckodriver.sh
-
-      - name: Wait for stellar/quickstart image
-        if: ${{ inputs.pull-stellar-image }}
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          retry_wait_seconds: 15
-          command: |
-            set -euo pipefail
-            IMAGE="${STELLAR_QUICKSTART_IMAGE:-stellar/quickstart}"
-            PID_FILE="${RUNNER_TEMP}/stellar-docker-pull.pid"
-            LOG_FILE="${RUNNER_TEMP}/stellar-docker-pull.log"
-            if [[ -f "${PID_FILE}" ]]; then
-              pid="$(cat "${PID_FILE}")"
-              echo "Waiting for docker pull ${IMAGE} (pid ${pid})"
-              while kill -0 "${pid}" 2>/dev/null; do
-                sleep 2
-              done
-              echo "Background docker pull finished"
-              cat "${LOG_FILE}" || true
-            fi
-            if ! docker image inspect "${IMAGE}" >/dev/null 2>&1; then
-              echo "Image missing after background pull; retrying docker pull ${IMAGE}"
-              docker pull "${IMAGE}"
-            fi
-            docker image inspect "${IMAGE}" --format 'stellar image ready: {{.Id}} {{json .RepoTags}}'
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}

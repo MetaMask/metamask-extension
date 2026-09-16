@@ -11,10 +11,11 @@
  * passphrase. The snap signs pubnet, so wallet submit against `--local` is out
  * of scope; the classic-asset seeder submits with the standalone passphrase.
  *
- * Image pull: GitHub Actions pre-pulls `stellar/quickstart` in `run-e2e.yml`.
- * `start()` then requires that image (`docker run --pull never`) and throws if
- * it is missing. Set `STELLAR_LOCAL_DOCKER=1` (or leave `GITHUB_ACTIONS`
- * unset) so a laptop `docker run` may pull.
+ * Image pull: GitHub Actions pre-pulls `stellar/quickstart` in `run-all.mts`
+ * only for shards whose test list includes Quickstart specs. `start()` then
+ * requires that image (`docker run --pull never`) and throws if it is missing.
+ * Set `STELLAR_LOCAL_DOCKER=1` (or leave `GITHUB_ACTIONS` unset) so a laptop
+ * `docker run` may pull.
  */
 import { execFile } from 'child_process';
 import { promisify } from 'util';
@@ -360,7 +361,7 @@ export async function isDockerAvailable(): Promise<boolean> {
  *
  * - `STELLAR_LOCAL_DOCKER=1` / `true`: allow pull (laptop).
  * - `STELLAR_LOCAL_DOCKER=0` / `false`: never pull; image must already exist.
- * - Otherwise: allow pull unless `GITHUB_ACTIONS=true` (CI pre-pulls).
+ * - Otherwise: allow pull unless `GITHUB_ACTIONS=true` (CI pulls per shard).
  *
  * @param env - Process env, injectable for tests
  * @returns True when a missing image may be pulled
@@ -376,6 +377,43 @@ export function shouldAllowStellarQuickstartPull(
     return false;
   }
   return env.GITHUB_ACTIONS !== 'true';
+}
+
+/**
+ * Specs that boot `stellar/quickstart` in Docker (`*-local-node.spec.ts`).
+ *
+ * @param testPath - Repo-relative or absolute spec path
+ * @returns True when this shard should `docker pull` before Mocha
+ */
+export function specNeedsStellarQuickstartImage(testPath: string): boolean {
+  const normalized = testPath.replaceAll('\\', '/');
+  return (
+    normalized.includes('/stellar/') &&
+    normalized.endsWith('local-node.spec.ts')
+  );
+}
+
+/**
+ * Pulls Quickstart when it is not already cached. Used by CI `run-all.mts`
+ * for shards that will run local-node specs.
+ *
+ * @param image - Image reference, defaults to {@link STELLAR_QUICKSTART_IMAGE}
+ */
+export async function ensureStellarQuickstartImage(
+  image = STELLAR_QUICKSTART_IMAGE,
+): Promise<void> {
+  if (await isDockerImagePresent(image)) {
+    logStellarTiming(`image ${image} already present`);
+    return;
+  }
+  await assertDockerAvailable();
+  const pullMs = Date.now();
+  logStellarTiming(`docker pull ${image}`);
+  await execFileAsync('docker', ['pull', image], {
+    timeout: DOCKER_RUN_TIMEOUT_MS,
+    maxBuffer: 10 * 1024 * 1024,
+  });
+  logStellarTiming(`docker pull: ${elapsedSeconds(pullMs)}`);
 }
 
 async function isDockerImagePresent(image: string): Promise<boolean> {
@@ -400,7 +438,7 @@ function logStellarTiming(message: string): void {
 function missingQuickstartImageMessage(image: string): string {
   return (
     `Stellar Quickstart image "${image}" is not present and pull is disabled. ` +
-    `CI must finish the stellar/quickstart pull in run-e2e.yml before tests. ` +
+    `CI pulls it in run-all.mts only on shards that run local-node specs. ` +
     `For a laptop, set STELLAR_LOCAL_DOCKER=1 or run: docker pull ${image}`
   );
 }
