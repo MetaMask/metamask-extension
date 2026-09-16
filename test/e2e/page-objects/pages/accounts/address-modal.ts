@@ -23,11 +23,6 @@ class AccountAddressModal {
   private readonly parentSelector =
     '[data-testid="parent-selector-address-qr-code-modal"]';
 
-  private readonly viewOnEtherscanButton = {
-    css: 'button',
-    text: 'View on Etherscan',
-  };
-
   private readonly viewOnEtherscanLink =
     '[data-testid="view-address-on-etherscan"]';
 
@@ -58,7 +53,7 @@ class AccountAddressModal {
    */
   async checkViewOnEtherscanButton(): Promise<void> {
     console.log('Verifying View on Etherscan button');
-    await this.driver.findElement(this.viewOnEtherscanButton);
+    await this.driver.findElement(this.viewOnEtherscanLink);
   }
 
   /**

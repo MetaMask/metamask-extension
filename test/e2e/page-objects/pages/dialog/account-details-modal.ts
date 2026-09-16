@@ -43,10 +43,8 @@ class AccountDetailsModal {
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
 
-  private readonly showPrivateKeyButton = {
-    css: 'button',
-    text: 'Show private key',
-  };
+  private readonly showPrivateKeyButton =
+    '[data-testid="account-details-display-export-private-key"]';
 
   constructor(driver: Driver) {
     this.driver = driver;

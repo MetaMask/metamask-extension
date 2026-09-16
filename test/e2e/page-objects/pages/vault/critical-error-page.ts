@@ -22,10 +22,8 @@ class CriticalErrorPage {
   protected readonly errorMessage = '.critical-error__details';
 
   // Locators
-  protected readonly errorPageTitle: object = {
-    text: 'MetaMask had trouble starting.',
-    css: 'h1',
-  };
+  protected readonly errorPageTitle =
+    '[data-testid="critical-error-content"]';
 
   protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
