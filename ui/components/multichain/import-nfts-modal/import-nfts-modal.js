@@ -7,6 +7,7 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  Label,
   ModalContent,
   Modal,
   ModalOverlay,
@@ -52,7 +53,7 @@ import {
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
-import { Box, Icon, IconName, IconSize, Label } from '../../component-library';
+import { Box, Icon, IconName, IconSize } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';

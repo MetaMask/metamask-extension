@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { TextButton } from '@metamask/design-system-react';
+import { Label, TextButton } from '@metamask/design-system-react';
 import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -9,13 +9,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, Label, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   BlockSize,
   FontWeight,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -199,11 +198,7 @@ export const ImportAccount = ({ onActionComplete }) => {
         </Text>
       )}
       <Box paddingTop={4} paddingBottom={8}>
-        <Label
-          width={BlockSize.Full}
-          marginBottom={4}
-          justifyContent={JustifyContent.spaceBetween}
-        >
+        <Label className="mb-4 w-full justify-between">
           {t('selectType')}
           <Dropdown
             options={menuItems.map((text) => ({ value: text }))}
