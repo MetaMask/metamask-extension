@@ -6,12 +6,11 @@ import {
   BoxJustifyContent,
   FontWeight,
   Text,
-  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 
 export type MoneyTransactionDetailsRowProps = {
-  label: string;
+  label: ReactNode;
   value: ReactNode;
   testId: string;
   labelEnd?: ReactNode;
@@ -31,7 +30,6 @@ export function MoneyTransactionDetailsRow({
   label,
   value,
   testId,
-  labelEnd,
 }: MoneyTransactionDetailsRowProps) {
   if (value === undefined || value === null || value === '') {
     return null;
@@ -53,10 +51,7 @@ export function MoneyTransactionDetailsRow({
         gap={1}
         className="shrink-0"
       >
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {label}
-        </Text>
-        {labelEnd}
+        {label}
       </Box>
       <Box
         className="min-w-0 text-right"

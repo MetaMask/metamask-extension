@@ -33,7 +33,6 @@ import {
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
-import { InfoPopover } from '../../components/app/musd/info-popover';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../shared/lib/money/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
@@ -69,6 +68,7 @@ import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scr
 import { MoneyApiActivityDetails } from './components/money-api-activity-details';
 import { MoneyTransactionDetailsRow } from './components/money-transaction-details-row';
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
+import { TooltipText } from '../../components/app/money/tooltip-text/index.ts';
 
 const STATUS_I18N_KEY = {
   confirmed: 'confirmed',
@@ -257,7 +257,10 @@ export function MoneyTransactionDetailsPage() {
 
         <Box paddingLeft={4} paddingRight={4} className="flex-1">
           <MoneyTransactionDetailsRow
-            label={t('status')}
+            label={
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+                {t('status')}
+              </Text>}
             testId="money-transaction-details-status"
             value={
               <Box
@@ -280,23 +283,38 @@ export function MoneyTransactionDetailsPage() {
             }
           />
           <MoneyTransactionDetailsRow
-            label={t('date')}
+            label={
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+                {t('date')}
+              </Text>}
             testId="money-transaction-details-date"
             value={formatMoneyActivityDetailsDate(item.time)}
           />
           <MoneyTransactionDetailsRow
-            label={t('paidWith')}
+
+            label={
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+                {t('paidWith')}
+              </Text>}
             testId="money-transaction-details-paid-with"
             value={paidWith}
           />
           <MoneyTransactionDetailsRow
-            label={t('account')}
+
+            label={
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+                {t('account')}
+              </Text>}
             testId="money-transaction-details-account"
             value={accountLabel}
           />
           {transactionHash ? (
             <MoneyTransactionDetailsRow
-              label={t('moneyActivityDetailsTransactionId')}
+
+              label={
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+                {t('moneyActivityDetailsTransactionId')}
+              </Text>}
               testId="money-transaction-details-hash"
               value={
                 <Box
@@ -325,20 +343,15 @@ export function MoneyTransactionDetailsPage() {
           <div className="my-3 h-px w-full bg-border-muted" />
 
           <MoneyTransactionDetailsRow
-            label={t('transactionFee')}
-            labelEnd={
-              <InfoPopover
+              label={
+              <TooltipText text={t('transactionFee')} variant={TextVariant.BodyMd} color={TextColor.TextAlternative}
                 position={PopoverPosition.BottomStart}
-                iconColor={IconColor.IconAlternative}
-                wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
-                ariaLabel={t('transactionFee')}
                 data-testid="money-transaction-details-fee-info"
-              >
+                >
                 <Text variant={TextVariant.BodyMd}>
                   {t('moneyActivityTransactionFeeTooltip')}
                 </Text>
-              </InfoPopover>
-            }
+              </TooltipText>}
             testId="money-transaction-details-fee"
             value={
               <SensitiveText
@@ -352,7 +365,10 @@ export function MoneyTransactionDetailsPage() {
             }
           />
           <MoneyTransactionDetailsRow
-            label={t('total')}
+              label={
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+                {t('total')}
+              </Text>}
             testId="money-transaction-details-total"
             value={
               <SensitiveText
