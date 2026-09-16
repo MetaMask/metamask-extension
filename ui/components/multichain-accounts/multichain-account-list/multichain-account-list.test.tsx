@@ -14,6 +14,9 @@ import {
 } from '@metamask/account-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
+  MetaMetricsAccountHiddenLocation,
+  MetaMetricsAccountRemovedLocation,
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -1638,6 +1641,94 @@ describe('MultichainAccountList', () => {
       await act(async () => undefined);
     });
 
+    it('tracks Account Hidden from the manage accounts screen when hiding', async () => {
+      renderComponent({ isEditMode: true });
+
+      fireEvent.click(
+        within(
+          screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+        ).getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      );
+
+      await waitFor(() =>
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          name: MetaMetricsEventName.AccountHidden,
+          properties: {
+            category: MetaMetricsEventCategory.Accounts,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: MetaMetricsEventAccountType.Default,
+            hidden: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hidden_count_after: 1,
+            location: MetaMetricsAccountHiddenLocation.ManageAccounts,
+          },
+          sensitiveProperties: {},
+        }),
+      );
+    });
+
+    it('tracks Account Hidden from the manage accounts screen when unhiding', async () => {
+      renderComponent({
+        wallets: walletsWithHiddenAccount,
+        isEditMode: true,
+      });
+
+      fireEvent.click(
+        within(
+          screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+        ).getByTestId('multichain-account-cell-edit-mode-hidden-icon'),
+      );
+
+      await waitFor(() =>
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          name: MetaMetricsEventName.AccountHidden,
+          properties: {
+            category: MetaMetricsEventCategory.Accounts,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: MetaMetricsEventAccountType.Default,
+            hidden: false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hidden_count_after: 0,
+            location: MetaMetricsAccountHiddenLocation.ManageAccounts,
+          },
+          sensitiveProperties: {},
+        }),
+      );
+    });
+
+    it('counts hidden accounts from the whole tree, not the wallets it was handed', async () => {
+      // The account list page passes a search-filtered subset of wallets, so a
+      // count derived from the prop would under-report. Rendering a single
+      // wallet must still report the count for the full tree in the store.
+      renderComponent({
+        wallets: { [walletOneId]: mockWallets[walletOneId] },
+        isEditMode: true,
+      });
+
+      fireEvent.click(
+        within(
+          screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+        ).getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      );
+
+      await waitFor(() =>
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.AccountHidden,
+            properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hidden_count_after: 1,
+            }),
+          }),
+        ),
+      );
+    });
+
     it('disconnects an account from its dapps when it is hidden', async () => {
       renderComponent({ isEditMode: true });
 
@@ -1873,17 +1964,19 @@ describe('MultichainAccountList', () => {
         screen.getByTestId('account-delete-confirm-modal-remove-button'),
       );
 
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: MetaMetricsEventName.AccountRemoved,
-          properties: expect.objectContaining({
-            category: MetaMetricsEventCategory.Accounts,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: AccountWalletType.Keyring,
-          }),
-        }),
-      );
+      // Asserted exactly, not with `objectContaining`, so a stray or renamed
+      // property cannot slip past the schema contract.
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.AccountRemoved,
+        properties: {
+          category: MetaMetricsEventCategory.Accounts,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: MetaMetricsEventAccountType.Imported,
+          location: MetaMetricsAccountRemovedLocation.ManageAccounts,
+        },
+        sensitiveProperties: {},
+      });
     });
 
     it('does not remove anything when the account address cannot be resolved', () => {

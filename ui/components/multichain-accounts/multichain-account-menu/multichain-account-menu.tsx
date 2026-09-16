@@ -25,10 +25,14 @@ import {
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
+  MetaMetricsAccountHiddenLocation,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
+import {
+  getAccountWalletMetricProps,
+  isPrivateKeyWallet,
+} from '../../../helpers/utils/account-wallet';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
 import { useDispatch } from '../../../store/hooks';
@@ -189,9 +193,11 @@ export const MultichainAccountMenu = ({
         createEventBuilder(MetaMetricsEventName.AccountHidden)
           .addCategory(MetaMetricsEventCategory.Accounts)
           .addProperties({
+            ...getAccountWalletMetricProps(accountWallet ?? undefined),
             hidden: newHiddenState,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hidden_count_after: countAccountsByStatus('hidden', newHiddenState),
+            location: MetaMetricsAccountHiddenLocation.AccountMenu,
           })
           .build(),
       );
@@ -250,6 +256,7 @@ export const MultichainAccountMenu = ({
     return baseMenuItems;
   }, [
     accountGroupId,
+    accountWallet,
     handleAccountRenameAction,
     navigate,
     isRemovable,
