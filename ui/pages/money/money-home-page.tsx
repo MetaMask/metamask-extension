@@ -20,6 +20,7 @@ import {
 import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
 } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
@@ -53,6 +54,7 @@ import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards
 import { MoneyMoreMenu } from './components/money-more-menu';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
+import { MoneySectionDivider } from './components/money-section-divider';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { MoneyTransferSheet } from './components/money-transfer-sheet';
 
@@ -116,10 +118,6 @@ const MoneyActionCard = ({
       </Text>
     </button>
   );
-};
-
-const MoneySectionDivider = () => {
-  return <div className="my-5 h-px w-full bg-border-muted" />;
 };
 
 export function MoneyHomePage() {
@@ -265,6 +263,9 @@ export function MoneyHomePage() {
     });
     global.platform.openTab({ url: MONEY_URLS.MONEY_LANDING });
   }, [trackButtonClicked]);
+  const handleHowItWorks = useCallback(() => {
+    navigate(MONEY_HOW_IT_WORKS_ROUTE);
+  }, [navigate]);
   const handleOpenTransferSheet = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -495,7 +496,12 @@ export function MoneyHomePage() {
           ) : (
             <>
               <section className="px-4 py-3">
-                <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  className="flex items-center gap-1 text-left"
+                  onClick={handleHowItWorks}
+                  data-testid="money-how-it-works-header"
+                >
                   <Text
                     variant={TextVariant.HeadingMd}
                     fontWeight={FontWeight.Bold}
@@ -507,7 +513,7 @@ export function MoneyHomePage() {
                     size={IconSize.Md}
                     color={IconColor.IconAlternative}
                   />
-                </div>
+                </button>
                 <Text
                   variant={TextVariant.BodyMd}
                   color={TextColor.TextAlternative}

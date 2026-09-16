@@ -1,12 +1,25 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MONEY_HOW_IT_WORKS_ROUTE } from '../../../helpers/constants/routes';
 import { MONEY_LANDING_URL, MUSD_PRICE_URL } from '../constants/urls';
 
 const CARD_CLASS_NAME =
-  'flex min-h-[110px] w-full items-center gap-4 rounded-xl bg-background-section p-4 text-left no-underline text-inherit';
+  'flex min-h-[110px] w-full items-center gap-4 rounded-xl bg-background-section p-4 text-left no-underline text-inherit cursor-pointer';
 
-const CONDENSED_CARDS = [
+type CondensedCard = {
+  key: string;
+  image: string;
+  imageClassName: string;
+  imageWidth: number;
+  imageHeight: number;
+  labelKey: string;
+  href?: string;
+  to?: string;
+};
+
+const CONDENSED_CARDS: CondensedCard[] = [
   {
     key: 'growth',
     image: './images/money-how-it-works.png',
@@ -14,8 +27,7 @@ const CONDENSED_CARDS = [
     imageWidth: 58,
     imageHeight: 58,
     labelKey: 'moneyHowYourMoneyGrows',
-    // Pending designs — keep inert until the how-it-works destination ships.
-    href: undefined,
+    to: MONEY_HOW_IT_WORKS_ROUTE,
   },
   {
     key: 'musd',
@@ -35,7 +47,7 @@ const CONDENSED_CARDS = [
     labelKey: 'moneyExploreBenefits',
     href: MONEY_LANDING_URL,
   },
-] as const;
+];
 
 export function MoneyCondensedInfoCards() {
   const t = useI18nContext();
@@ -55,6 +67,7 @@ export function MoneyCondensedInfoCards() {
           imageHeight,
           labelKey,
           href,
+          to,
         }) => {
           const content = (
             <>
@@ -77,15 +90,16 @@ export function MoneyCondensedInfoCards() {
             </>
           );
 
-          if (href === undefined) {
+          if (to) {
             return (
-              <article
+              <Link
                 key={key}
+                to={to}
                 className={CARD_CLASS_NAME}
                 data-testid={`money-condensed-info-card-${key}`}
               >
                 {content}
-              </article>
+              </Link>
             );
           }
 
@@ -97,9 +111,9 @@ export function MoneyCondensedInfoCards() {
               rel="noopener noreferrer"
               onClick={(event) => {
                 event.preventDefault();
-                global.platform.openTab({ url: href });
+                global.platform.openTab({ url: href as string });
               }}
-              className={`${CARD_CLASS_NAME} cursor-pointer`}
+              className={CARD_CLASS_NAME}
               data-testid={`money-condensed-info-card-${key}`}
             >
               {content}
