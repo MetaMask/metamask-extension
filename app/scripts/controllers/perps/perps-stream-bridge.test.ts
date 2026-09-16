@@ -3772,6 +3772,94 @@ describe('wallet-root Perps preload', () => {
     },
   );
 
+  it.each([false, true])(
+    'restores mounted foreground streams after global invalidation with view leaving=%s',
+    async (leaveView) => {
+      let allowed = true;
+      const {
+        api,
+        bridge,
+        controller,
+        controllerApi,
+        subscribeAggregatedOrderBook,
+        emit,
+      } = setup({
+        isPreloadAllowed: () => allowed,
+      });
+      const streaming = bridge.bridgeApi() as Record<
+        string,
+        (params: Record<string, unknown>) => Promise<void>
+      >;
+      await api.perpsInitForAccount('0xfirst');
+      api.perpsViewActive(true);
+      const candle = { symbol: 'BTC', interval: '1h' };
+      await streaming.perpsActivateCandleStream(candle);
+      await streaming.perpsActivateOrderBookStream({ symbol: 'BTC' });
+      await streaming.perpsActivateOrderBookAggregatedStream({
+        symbol: 'BTC',
+        subscriptionId: 'mounted',
+      });
+      const candleCleanup = jest.mocked(controller.subscribeToCandles).mock
+        .results[0].value;
+      const bookCleanup = jest.mocked(controller.subscribeToOrderBook).mock
+        .results[0].value;
+      const other = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+        isPreloadAllowed: () => allowed,
+      });
+      allowed = false;
+      await other.bridge.bridgeApi().perpsDisconnect();
+      // The wallet-root cleanup can invalidate again while eligibility is off.
+      await api.perpsStopPreload('home');
+      expect(candleCleanup).toHaveBeenCalledTimes(1);
+      expect(bookCleanup).toHaveBeenCalledTimes(1);
+      expect(bridge.canEmit('candles')).toBe(false);
+      expect(bridge.canEmit('orderBook')).toBe(false);
+      if (leaveView) {
+        api.perpsViewActive(false);
+        await streaming.perpsDeactivateCandleStream(candle);
+        await streaming.perpsDeactivateOrderBookStream({});
+        await streaming.perpsDeactivateOrderBookAggregatedStream({});
+      }
+
+      allowed = true;
+      api.perpsRegisterPreload('resumed');
+      await api.perpsStartPreload('resumed');
+
+      expect(bridge.canEmit('candles')).toBe(!leaveView);
+      expect(bridge.canEmit('orderBook')).toBe(!leaveView);
+      expect(bridge.canEmit('orderBookAggregated')).toBe(!leaveView);
+      expect(controller.subscribeToCandles).toHaveBeenCalledTimes(
+        leaveView ? 1 : 2,
+      );
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledTimes(
+        leaveView ? 1 : 2,
+      );
+      expect(subscribeAggregatedOrderBook).toHaveBeenCalledTimes(
+        leaveView ? 1 : 2,
+      );
+      if (!leaveView) {
+        const candles = { candles: [] };
+        const orderBook = { bids: [], asks: [] };
+        controller.subscribeToCandles.mock.calls[1][0].callback(
+          candles as never,
+        );
+        controller.subscribeToOrderBook.mock.calls[1][0].callback(
+          orderBook as never,
+        );
+        subscribeAggregatedOrderBook.mock.calls[1][0].callback(orderBook);
+        expect(emit).toHaveBeenCalledWith('candles', candles, candle);
+        expect(emit).toHaveBeenCalledWith('orderBook', orderBook);
+        expect(emit).toHaveBeenCalledWith('orderBookAggregated', orderBook, {
+          subscriptionId: 'mounted',
+        });
+      }
+      bridge.dispose();
+      other.bridge.dispose();
+    },
+  );
+
   it('releases initialized wallet streams when eligibility is revoked', async () => {
     let allowed = true;
     const { api, bridge, controller } = setup({
