@@ -638,6 +638,7 @@ const HomeNetworkFilterModalContent = ({
     <NetworkSelectionModal
       isOpen
       onClose={handleClose}
+      data-testid="home-network-filter-modal"
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',
