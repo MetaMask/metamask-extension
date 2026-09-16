@@ -1,14 +1,5 @@
 import type * as Sentry from '@sentry/browser';
-import {
-  bufferedEndTrace,
-  bufferedTrace,
-  clearTracesAfterMetricsOptIn,
-  endTrace,
-  getSerializedTraceContext,
-  trace,
-  TraceName,
-  trackTracesAfterMetricsOptIn,
-} from './trace';
+import { endTrace, getSerializedTraceContext, trace, TraceName } from './trace';
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
@@ -58,8 +49,6 @@ describe('Trace', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    clearTracesAfterMetricsOptIn();
-
     globalThis.sentry = {
       startSpan: startSpanMock,
       startSpanManual: startSpanManualMock,
@@ -82,117 +71,6 @@ describe('Trace', () => {
     withIsolationScopeMock.mockImplementation((fn: any) =>
       fn({ setTag: setTagMock }),
     );
-  });
-
-  describe('buffered trace methods', () => {
-    it('executes a trace callback immediately when metrics are opted in', () => {
-      const callback = jest.fn(() => 'result');
-
-      expect(bufferedTrace({ name: NAME_MOCK }, true, callback)).toBe('result');
-
-      expect(callback).toHaveBeenCalledTimes(1);
-      expect(startSpanMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('buffers traces and flushes them in insertion order', () => {
-      const events: string[] = [];
-      const span = {
-        end: jest.fn(() => events.push('end')),
-      } as unknown as Sentry.Span;
-
-      startSpanManualMock.mockImplementation((_, fn) => {
-        events.push('start');
-        return fn(span, () => {
-          // Intentionally empty
-        });
-      });
-
-      bufferedTrace(
-        {
-          name: NAME_MOCK,
-          id: ID_MOCK,
-        },
-        false,
-      );
-      bufferedEndTrace(
-        {
-          name: NAME_MOCK,
-          id: ID_MOCK,
-          timestamp: 123,
-        },
-        false,
-      );
-
-      expect(startSpanManualMock).not.toHaveBeenCalled();
-      expect(span.end).not.toHaveBeenCalled();
-
-      trackTracesAfterMetricsOptIn();
-
-      expect(events).toStrictEqual(['start', 'end']);
-      expect(span.end).toHaveBeenCalledWith(123);
-    });
-
-    it('clears buffered traces without tracking them', () => {
-      bufferedTrace({ name: NAME_MOCK }, false);
-      clearTracesAfterMetricsOptIn();
-
-      trackTracesAfterMetricsOptIn();
-
-      expect(startSpanManualMock).not.toHaveBeenCalled();
-    });
-
-    it('shares buffered traces across calls in the same module', () => {
-      bufferedTrace({ name: NAME_MOCK }, false);
-
-      trackTracesAfterMetricsOptIn();
-      expect(startSpanManualMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('normalizes the parent context before flushing a buffered trace', () => {
-      bufferedTrace(
-        {
-          name: NAME_MOCK,
-          parentContext: PARENT_CONTEXT_MOCK,
-          startTime: 123,
-        },
-        false,
-      );
-
-      trackTracesAfterMetricsOptIn();
-
-      expect(startSpanManualMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          parentSpan: null,
-          startTime: 123,
-        }),
-        expect.any(Function),
-      );
-    });
-
-    it('executes an end trace immediately when metrics are opted in', () => {
-      const spanEndMock = jest.fn();
-      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
-
-      startSpanManualMock.mockImplementationOnce((_, fn) =>
-        fn(spanMock, () => {
-          // Intentionally empty
-        }),
-      );
-
-      trace({
-        name: NAME_MOCK,
-        id: ID_MOCK,
-      });
-      bufferedEndTrace(
-        {
-          name: NAME_MOCK,
-          id: ID_MOCK,
-        },
-        true,
-      );
-
-      expect(spanEndMock).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('trace', () => {

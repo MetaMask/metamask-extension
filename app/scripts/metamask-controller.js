@@ -161,13 +161,7 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import {
-  bufferedEndTrace,
-  bufferedTrace,
-  endTrace,
-  trace,
-  TraceName,
-} from '../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -397,6 +391,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { UserTraitsServiceInit } from './messenger-client-init/user-traits-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
+import { SentryTracingServiceInit } from './messenger-client-init/sentry-tracing-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { ChompApiServiceInit } from './messenger-client-init/chomp-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
@@ -586,6 +581,7 @@ export default class MetamaskController extends EventEmitter {
       GeolocationApiService: GeolocationApiServiceInit,
       GeolocationController: GeolocationControllerInit,
       AnalyticsController: AnalyticsControllerInit,
+      SentryTracingService: SentryTracingServiceInit,
       MetaMetricsController: MetaMetricsControllerInit,
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -2455,18 +2451,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Read the current MetaMetrics consent from AnalyticsController.
-   *
-   * @returns {boolean} Whether the user is currently opted into MetaMetrics.
-   */
-  #getIsMetricsOptedIn() {
-    const { optedIn } = this.controllerMessenger.call(
-      'AnalyticsController:getState',
-    );
-    return optedIn || false;
-  }
-
-  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
@@ -3550,15 +3534,15 @@ export default class MetamaskController extends EventEmitter {
 
       // These are background-owned buffered trace entry points. UI pages must
       // call them through submitRequestToBackground; importing the methods
-      // directly in UI would create a separate queue for each page. Consent is
-      // resolved here rather than passed in, because a caller-supplied flag can
-      // be a stale snapshot taken before the queue was flushed or cleared.
-      // The callback variant of `bufferedTrace` is not exposed, because a
-      // callback cannot cross the JSON-RPC boundary.
-      bufferedTrace: (request) =>
-        bufferedTrace(request, this.#getIsMetricsOptedIn()),
-      bufferedEndTrace: (request) =>
-        bufferedEndTrace(request, this.#getIsMetricsOptedIn()),
+      // directly in UI would create a separate queue for each page.
+      bufferedTrace: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SentryTracingService:bufferedTrace',
+      ),
+      bufferedEndTrace: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SentryTracingService:bufferedEndTrace',
+      ),
 
       // ApprovalController
       rejectAllPendingApprovals: this.controllerMessenger.call.bind(
