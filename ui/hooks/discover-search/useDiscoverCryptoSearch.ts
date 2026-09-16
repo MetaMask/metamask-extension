@@ -134,10 +134,10 @@ export const useDiscoverCryptoSearch = ({
       }),
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
+    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
-  const searchQuery = useInfiniteQuery<CryptoSearchPage, Error>({
+  const searchQuery = useInfiniteQuery({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'crypto',
@@ -145,11 +145,7 @@ export const useDiscoverCryptoSearch = ({
       trimmedQuery,
       chainIds,
     ] as const,
-    queryFn: async ({
-      pageParam,
-    }: {
-      pageParam?: string;
-    }): Promise<CryptoSearchPage> => {
+    queryFn: async ({ pageParam }): Promise<CryptoSearchPage> => {
       const response = await searchTokens(chainIds, trimmedQuery, {
         limit: DISCOVER_SEARCH_PAGE_SIZE,
         after: pageParam,
@@ -173,6 +169,7 @@ export const useDiscoverCryptoSearch = ({
         pageInfo: response.pageInfo,
       };
     },
+    initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) =>
       lastPage.pageInfo?.hasNextPage
         ? (lastPage.pageInfo.endCursor ??
@@ -181,7 +178,7 @@ export const useDiscoverCryptoSearch = ({
         : undefined,
     enabled: enabled && isSearch,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
+    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   if (isSearch) {

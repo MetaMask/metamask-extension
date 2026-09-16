@@ -20,6 +20,36 @@ import { ACCOUNT_TYPE } from '../../../constants';
  * @see ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx
  */
 class AccountListPage {
+  /**
+   * Builds an xpath matching the account cell for `account` within `wallet`'s
+   * section of the multichain account list.
+   *
+   * Every row of the virtualized list is a sibling of every other, so the
+   * `preceding-sibling` predicate is what confines the match to this wallet: on
+   * a reverse axis `[1]` is the *nearest* match, so this keeps only rows whose
+   * closest preceding wallet header is this wallet's. A bare
+   * `following-sibling::*` would spill into every later wallet and match a
+   * same-named account there — and account names are matched by substring, so
+   * e.g. 'Account 1' also matches 'Snap Account 1'.
+   *
+   * @param options - The anchor, wallet, and account to match.
+   * @param options.anchor - XPath resolving to the wallet header's row wrapper.
+   * Pass `'..'` to build an xpath relative to an already-found header element.
+   * @param options.wallet - The wallet name whose section to search.
+   * @param options.account - The account name to match.
+   * @returns The xpath for the account cell.
+   */
+  private readonly accountCellInWalletXPath = ({
+    anchor,
+    wallet,
+    account,
+  }: {
+    anchor: string;
+    wallet: string;
+    account: string;
+  }) =>
+    `${anchor}/following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]`;
+
   private readonly accountDetailsTab = {
     text: 'Account details',
     tag: 'button',
@@ -107,8 +137,8 @@ class AccountListPage {
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
 
-  private readonly hiddenAccountsList =
-    '[data-testid="multichain-account-tree-hidden-header"]';
+  private readonly hiddenAccountRevealButton =
+    '[data-testid="multichain-account-cell-edit-mode-hidden-icon"]';
 
   private readonly hideAccountButton =
     '[data-testid="multichain-account-menu-item-hideAccount"]';
@@ -144,6 +174,9 @@ class AccountListPage {
 
   private readonly importWalletFromMultichainWalletModalButton =
     '[data-testid="choose-wallet-type-import-wallet"]';
+
+  private readonly manageAccountsButton =
+    '[data-testid="account-list-page-manage-button"]';
 
   private readonly multichainAccountListItem = '.multichain-account-cell';
 
@@ -224,9 +257,6 @@ class AccountListPage {
     text: 'Nevermind',
     tag: 'button',
   };
-
-  private readonly unhideAccountButton =
-    '[data-testid="multichain-account-menu-item-showAccount"]';
 
   private readonly unpinAccountButton =
     '[data-testid="multichain-account-menu-item-unpin"]';
@@ -321,6 +351,8 @@ class AccountListPage {
   /**
    * Import a new account with a private key.
    *
+   * On success, the wallet navigates home with the imported account selected.
+   *
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
    */
@@ -343,12 +375,11 @@ class AccountListPage {
     } else {
       // Import + forceUpdateMetamaskState can outlive the default 3s staleness
       // wait under multi-SRP / Solana load on CI before the Add Wallet page
-      // navigates away.
+      // navigates home.
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
         10000,
       );
-      await this.closeChooseWalletTypePage();
     }
   }
 
@@ -545,11 +576,6 @@ class AccountListPage {
     });
   }
 
-  async checkHiddenAccountsListExists(): Promise<void> {
-    console.log(`Check that hidden accounts list is displayed in account list`);
-    await this.driver.waitForSelector(this.hiddenAccountsList);
-  }
-
   /**
    * Check that the SRP is imported through a single field, rather than one
    * input per word.
@@ -618,8 +644,13 @@ class AccountListPage {
         css: this.walletHeader,
         text: wallet,
       });
+      const accountCell = this.accountCellInWalletXPath({
+        anchor: '..',
+        wallet,
+        account,
+      });
       await this.driver.findNestedElement(walletHeader, {
-        xpath: `../following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
+        xpath: `${accountCell}//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
       });
     } else {
       // Single wallet (no wallet header rendered): find the account cell directly.
@@ -630,6 +661,54 @@ class AccountListPage {
       await this.driver.findNestedElement(accountCell, {
         xpath: `.//*[@data-testid='balance-display' and contains(text(), ${quoteXPathText(balance)})]`,
       });
+    }
+  }
+
+  /**
+   * Checks that no balance at all is rendered for a specific account on the
+   * multichain account list page.
+   *
+   * Balances are only fetched eagerly for the selected account group. Groups
+   * whose balance has not been fetched yet are indistinguishable from genuinely
+   * empty ones, so the cell renders nothing rather than a misleading "$0.00".
+   *
+   * @param options - The account and optional wallet to check.
+   * @param options.wallet - The wallet name. Only pass when multiple wallets are present.
+   * @param options.account - The account name (default: 'Account 1').
+   */
+  async checkMultichainAccountBalanceNotDisplayed({
+    wallet,
+    account = 'Account 1',
+  }: {
+    wallet?: string;
+    account?: string;
+  } = {}): Promise<void> {
+    console.log(
+      `Check that no multichain account balance is displayed for ${account}${wallet ? ` under ${wallet}` : ''}`,
+    );
+
+    if (wallet) {
+      // Same wallet-scoped cell xpath as checkMultichainAccountBalanceDisplayed,
+      // so this can never match a same-named account under a different wallet.
+      const accountCell = this.accountCellInWalletXPath({
+        anchor: `//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]/..`,
+        wallet,
+        account,
+      });
+      // Guard on the cell itself: without it this would pass while the list is
+      // still rendering, before any balance could have appeared.
+      await this.driver.assertElementNotPresent(
+        { xpath: `${accountCell}//*[@data-testid='balance-display']` },
+        { findElementGuard: { xpath: accountCell } },
+      );
+    } else {
+      // Single wallet (no wallet header rendered): only one cell can match the
+      // account name, so scoping by name alone is equivalent to the cell.
+      const accountCell = `//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]`;
+      await this.driver.assertElementNotPresent(
+        { xpath: `${accountCell}//*[@data-testid='balance-display']` },
+        { findElementGuard: { xpath: accountCell } },
+      );
     }
   }
 
@@ -841,6 +920,25 @@ class AccountListPage {
     );
   }
 
+  /**
+   * Enter the manage accounts mode of the account list, where hidden accounts
+   * are listed under their wallet and can be revealed again.
+   */
+  async enterManageAccountsMode(): Promise<void> {
+    console.log(`Enter manage accounts mode in account list`);
+    await this.driver.clickElement(this.manageAccountsButton);
+  }
+
+  /**
+   * Leave the manage accounts mode of the account list. The manage button is
+   * hidden while managing, so the back button is what closes the mode.
+   */
+  async exitManageAccountsMode(): Promise<void> {
+    console.log(`Exit manage accounts mode in account list`);
+    await this.driver.clickElement(this.closeMultichainAccountsPageButton);
+    await this.driver.waitForSelector(this.manageAccountsButton);
+  }
+
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
     await this.openAccountOptionsMenu();
@@ -849,6 +947,8 @@ class AccountListPage {
 
   /**
    * Import an account with a JSON file.
+   *
+   * On success, the wallet navigates home with the imported account selected.
    *
    * @param jsonFilePath - Path to the JSON file to import
    * @param password - Password for the imported account
@@ -876,7 +976,6 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
-    await this.closeChooseWalletTypePage();
   }
 
   /**
@@ -925,11 +1024,6 @@ class AccountListPage {
   async openHiddenAccountOptions(): Promise<void> {
     console.log(`Open hidden accounts options menu`);
     await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
-  }
-
-  async openHiddenAccountsList(): Promise<void> {
-    console.log(`Open hidden accounts option menu`);
-    await this.driver.clickElement(this.hiddenAccountsList);
   }
 
   /**
@@ -989,6 +1083,15 @@ class AccountListPage {
     }
   }
 
+  /**
+   * Reveal the first hidden account. The account list must be in manage
+   * accounts mode.
+   */
+  async revealHiddenAccount(): Promise<void> {
+    console.log(`Reveal hidden account in account list`);
+    await this.driver.clickElement(this.hiddenAccountRevealButton);
+  }
+
   async selectAccount(accountLabel: string): Promise<void> {
     console.log(`Select account with label ${accountLabel} in account list`);
     await this.driver.clickElement({
@@ -1034,12 +1137,6 @@ class AccountListPage {
     console.log(`Type "${text}" into the import SRP input`);
     const srpInput = await this.driver.findVisibleElement(this.importSrpInput);
     await srpInput.sendKeys(text);
-  }
-
-  async unhideAccount(): Promise<void> {
-    console.log(`Unhide account in account list`);
-    await this.openAccountOptionsMenu();
-    await this.driver.clickElement(this.unhideAccountButton);
   }
 
   async unpinAccount(): Promise<void> {

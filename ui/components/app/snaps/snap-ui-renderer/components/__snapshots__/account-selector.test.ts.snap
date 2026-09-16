@@ -216,7 +216,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: 0px;"
                                   >
                                     <div
@@ -231,7 +231,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
@@ -246,7 +246,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
@@ -260,7 +260,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
@@ -535,7 +535,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
                                 >
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: 0px;"
                                   >
                                     <div
@@ -550,7 +550,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
@@ -565,7 +565,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div
@@ -579,7 +579,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    class="mm-box mm-box--rounded-full"
+                                    class="mm-box mm-box--display-flex mm-box--rounded-full"
                                     style="margin-left: -8px;"
                                   >
                                     <div

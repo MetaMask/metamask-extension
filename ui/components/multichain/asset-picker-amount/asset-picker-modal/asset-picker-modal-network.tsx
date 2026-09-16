@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -16,6 +16,11 @@ import {
   TextVariant as DsTextVariant,
   TextButton,
   TextButtonSize,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalHeader,
+  ModalBody,
 } from '@metamask/design-system-react';
 import {
   Display,
@@ -27,15 +32,7 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  Modal,
-  Box,
-  Text,
-} from '../../../component-library';
+import { Box, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NetworkListItem } from '../../network-list-item';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
@@ -144,8 +141,13 @@ export const AssetPickerModalNetwork = ({
     return initialState;
   });
 
-  // Reset checkedChainIds if selectedChainIds change in parent component
-  useEffect(() => {
+  // Sync checkedChainIds when parent network selection changes (string key avoids unstable array refs).
+  const networksSyncKey = `${networksList?.map(({ chainId }) => chainId).join('|') ?? ''}:${selectedChainIds?.join('|') ?? ''}`;
+  const [prevNetworksSyncKey, setPrevNetworksSyncKey] =
+    useState(networksSyncKey);
+
+  if (networksSyncKey !== prevNetworksSyncKey) {
+    setPrevNetworksSyncKey(networksSyncKey);
     if (networksList) {
       const updatedState: Record<string, boolean> = {};
 
@@ -157,7 +159,7 @@ export const AssetPickerModalNetwork = ({
 
       setCheckedChainIds(updatedState);
     }
-  }, [networksList, selectedChainIds]);
+  }
 
   const handleToggleNetwork = useCallback((chainId: string) => {
     setCheckedChainIds((prev) => ({
@@ -188,12 +190,27 @@ export const AssetPickerModalNetwork = ({
     >
       <ModalOverlay />
       <ModalContent
-        padding={0}
-        modalDialogProps={{ padding: 0, height: BlockSize.Full }}
+        className="p-0"
+        modalDialogProps={{
+          padding: 0,
+          className: 'h-full overflow-hidden',
+        }}
       >
         <ModalHeader
-          onBack={network ? onBack : undefined}
-          onClose={isMultiselectEnabled ? undefined : onClose}
+          {...({
+            ...(network
+              ? {
+                  onBack: onBack as () => void,
+                  backButtonProps: { ariaLabel: t('back') },
+                }
+              : {}),
+            ...(isMultiselectEnabled
+              ? {}
+              : {
+                  onClose,
+                  closeButtonProps: { ariaLabel: t('close') },
+                }),
+          } as React.ComponentProps<typeof ModalHeader>)}
           endAccessory={
             isMultiselectEnabled && selectedChainIds ? (
               <TextButton
@@ -240,11 +257,7 @@ export const AssetPickerModalNetwork = ({
             </TextButton>
           </Box>
         )}
-        <ModalBody
-          paddingLeft={0}
-          paddingRight={0}
-          className="multichain-asset-picker__network-list flex min-h-0 flex-1 flex-col overflow-auto"
-        >
+        <ModalBody className="multichain-asset-picker__network-list min-h-0 flex-1 overflow-auto px-0">
           {networkSections.map((section, index) => (
             <Box
               key={section.key}

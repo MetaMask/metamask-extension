@@ -1,5 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { useDeferredValue } from '../../hooks/useDeferredValue';
+import React, { useDeferredValue, useMemo, useRef, useState } from 'react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
@@ -61,7 +60,7 @@ export function ActivityList({
     networks: deferredNetworks ?? [],
   };
 
-  const { data, isInitialLoading, fetchNextVisiblePage } =
+  const { data, isLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
 
   const localItems = useLocalTransactions(filters);
@@ -85,7 +84,7 @@ export function ActivityList({
 
   useActivityScreenViewed({
     filter,
-    isSettled: networks !== null && !isInitialLoading,
+    isSettled: networks !== null && !isLoading,
     isEmpty: groupedItems.length === 0,
     pendingLength: [...localItems, ...nonEvmItems, ...rampsItems].filter(
       (item) => item.status === 'pending',
@@ -168,6 +167,7 @@ export function ActivityList({
           showSortControl={false}
           showImportTokenButton={false}
           onNetworkSelect={setNetworks}
+          data-testid="parent-selector-activity-tab"
         />
       )}
 
@@ -182,7 +182,7 @@ export function ActivityList({
         keyExtractor={getItemKey}
         itemRef={itemRef}
         listEmptyComponent={
-          isInitialLoading ? (
+          isLoading ? (
             <ActivityListSkeleton />
           ) : (
             <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />

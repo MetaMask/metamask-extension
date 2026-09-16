@@ -50,6 +50,7 @@ const RETRYABLE_CONNECTION_STATUSES = new Set<ConnectionStatus>([
  * @param options.currentApprovalRequestId
  * @param options.returnRoute
  * @param options.isRetryingRef
+ * @param options.onRetryGenerationBump
  * @returns Retry/cancel handlers plus retry UI state (`isRetrying`,
  * `hasRetriedRef`).
  */
@@ -69,6 +70,7 @@ export function useHwSwapActions({
   currentApprovalRequestId,
   returnRoute,
   isRetryingRef,
+  onRetryGenerationBump,
 }: UseHwSwapActionsOptions) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -78,6 +80,7 @@ export function useHwSwapActions({
   // Tracks whether the user has retried at least once. Once true, the
   // "Resend transaction" button becomes eligible after the stuck timeout.
   const hasRetriedRef = useRef(false);
+  const [hasRetried, setHasRetried] = useState(false);
   // Local re-entrancy guard for handleRetry. Distinct from `isRetryingRef`,
   // which only suppresses OLD-batch reject/fail while cancelCurrentBatch runs.
   const isRetryInFlightRef = useRef(false);
@@ -98,11 +101,13 @@ export function useHwSwapActions({
     // resubmit so the new attempt can update the signature state machine.
     isRetryingRef.current = true;
     hasRetriedRef.current = true;
+    setHasRetried(true);
     setIsRetrying(true);
 
     try {
       // Invalidate the in-flight attempt so abort events during cancel are ignored.
       retryGenerationRef.current += 1;
+      onRetryGenerationBump?.();
 
       await cancelCurrentBatch();
 
@@ -116,6 +121,7 @@ export function useHwSwapActions({
 
       // Fresh generation for the resubmit (skips anything tracked during cancel).
       retryGenerationRef.current += 1;
+      onRetryGenerationBump?.();
       resetConnectionError();
       if (isStxEnabled) {
         dispatchSignatureEvent({
@@ -184,6 +190,7 @@ export function useHwSwapActions({
     needsTwoConfirmations,
     resetConnectionError,
     retryGenerationRef,
+    onRetryGenerationBump,
     retrySendBundleSubmission,
     retrySubmission,
     signatureState,
@@ -228,5 +235,6 @@ export function useHwSwapActions({
     handleCancel,
     isRetrying,
     hasRetriedRef,
+    hasRetried,
   };
 }

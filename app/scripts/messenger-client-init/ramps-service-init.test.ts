@@ -42,8 +42,10 @@ describe('RampsServiceInit', () => {
     expect(serviceMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       environment: 'staging',
-      context: 'extension',
+      context: 'browser',
       fetch: expect.any(Function),
+      clientProduct: 'metamask-extension',
+      clientVersion: process.env.METAMASK_VERSION,
     });
   });
 

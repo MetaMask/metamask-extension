@@ -7,7 +7,6 @@ import {
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { API_URLS, GC_TIMES, STALE_TIMES } from '@metamask/core-backend';
 import { fromIso8601DurationToPriceApiTimePeriod } from '../util';
@@ -201,11 +200,10 @@ export const useHistoricalPrices = ({
   const {
     data: prices = [],
     isFetching,
-    isInitialLoading,
+    isLoading,
     isFetchedAfterMount,
     isPlaceholderData,
   } = useQuery({
-    // @ts-expect-error - fix once extension in react-query v5
     queryKey,
     queryFn: async ({ queryKey: qk, signal }) => {
       if (qk[3] === 'disabled') {
@@ -228,8 +226,7 @@ export const useHistoricalPrices = ({
       );
     },
     enabled: Boolean(v3Params),
-    keepPreviousData: true,
-    placeholderData: flatlinePlaceholder,
+    placeholderData: (previousData) => previousData ?? flatlinePlaceholder,
     retry: false,
     staleTime: STALE_TIMES.PRICES,
     gcTime: GC_TIMES.DEFAULT,
@@ -239,7 +236,7 @@ export const useHistoricalPrices = ({
   const metadata = useMemo(() => deriveMetadata(prices), [prices]);
 
   return {
-    loading: isInitialLoading,
+    loading: isLoading,
     isFetching,
     isFetchedAfterMount,
     isPlaceholderData,

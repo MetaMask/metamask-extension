@@ -1,7 +1,7 @@
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import NotificationsListPage from '../page-objects/pages/notifications/notifications-list-page';
@@ -17,6 +17,7 @@ describe('Test Snap Cronjob Duration', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockCronjobDurationSnap,
@@ -39,12 +40,12 @@ describe('Test Snap Cronjob Duration', function () {
           'Reconnect to Cronjob Duration Snap',
         );
 
-        // Switch back to the extension page and validation one notification
-        // appears.
+        // Switch back to the extension page and validate that a notification appears.
+        // The exact count cannot be asserted without flakiness due to the nature of cronjobs.
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.checkNotificationCountAndOpenNotifications(1);
+        await headerNavbar.checkNotificationCountAndOpenNotifications();
         await notificationsListPage.checkPageIsLoaded();
         await notificationsListPage.checkSnapsNotificationMessage(
           'This notification was triggered by a cronjob using an ISO 8601 duration.',

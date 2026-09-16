@@ -7,7 +7,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AddEditBlockExplorerPage from '../../page-objects/pages/networks/add-edit-block-explorer-page';
 import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
 import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';

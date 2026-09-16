@@ -47,6 +47,10 @@ class NftsTab extends HomePage {
     text: nftName,
   });
 
+  private readonly nftsPage = {
+    testId: 'parent-selector-nfts-tab',
+  };
+
   private readonly noNftInfo = '[data-testid="nft-tab-empty-state"]';
 
   private readonly successImportNftMessage =
@@ -108,13 +112,7 @@ class NftsTab extends HomePage {
    * Checks if the NFT tab page is loaded.
    */
   async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.clickElement(this.actionBarButton);
-      await this.driver.waitForSelector(this.importNftButton);
-    } catch (e) {
-      console.log('Timeout while waiting for NFT list page to be loaded', e);
-      throw e;
-    }
+    await this.driver.waitForSelector(this.nftsPage);
     console.log('NFT list page is loaded');
   }
 

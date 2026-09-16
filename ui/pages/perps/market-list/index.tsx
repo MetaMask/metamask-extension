@@ -24,6 +24,7 @@ import {
 } from '@metamask/design-system-react';
 import {
   getMarketTypeFilter,
+  MARKET_CATEGORIES,
   type PerpsMarketData,
 } from '@metamask/perps-controller';
 import {
@@ -37,8 +38,8 @@ import {
 } from '../../../hooks/perps/stream';
 import {
   filterMarketsByQuery,
-  isHip3Market,
   isCryptoMarket,
+  isHip3Market,
 } from '../../../components/app/perps/utils';
 import {
   DEFAULT_ROUTE,
@@ -50,12 +51,17 @@ import {
   getHip3AllowedSourcesSet,
 } from '../../../selectors/perps/feature-flags';
 import {
+  selectPerpsIsTestnet,
+  selectPerpsWatchlistMarkets,
+} from '../../../selectors/perps-controller';
+import {
   sortMarkets,
   type SortField,
   type SortDirection,
 } from '../utils/sortMarkets';
 import {
   normalizeMarketFilter,
+  WATCHLIST_MARKET_FILTER,
   type MarketFilter,
 } from '../../../../shared/constants/perps';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -63,10 +69,10 @@ import { usePerpsEventTracking } from '../../../hooks/perps';
 import { usePerpsAttribution } from '../../../hooks/perps/usePerpsAttribution';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { MarketRow } from '../../../components/app/perps/market-row';
+import { PerpsCategoryRail } from '../../../components/app/perps/perps-market-categories';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
-import { SortDropdown } from './components/sort-dropdown';
+import { SortDropdown, SORT_FIELD_OPTIONS } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
-import { FilterSelect } from './components/filter-select';
 
 /**
  * Settle window before a typed query counts as a real search, matching mobile
@@ -87,6 +93,21 @@ const SEARCH_MODE = {
 
 /** A short ticker-like token ("btc", "hype2") reads as a targeted lookup. */
 const TICKER_LIKE_QUERY = /^[a-z0-9]{1,6}$/u;
+
+/**
+ * Sort values accepted on the `sort` / `direction` search params. The fields
+ * are the ones the sort dropdown itself offers, so a deeplink can never select
+ * a ranking the user could not reach from the UI.
+ */
+const SORT_DIRECTIONS: SortDirection[] = ['asc', 'desc'];
+const DEFAULT_SORT_FIELD: SortField = 'volume';
+const DEFAULT_SORT_DIRECTION: SortDirection = 'desc';
+
+const isSortField = (value: string | null): value is SortField =>
+  SORT_FIELD_OPTIONS.some((option) => option.id === value);
+
+const isSortDirection = (value: string | null): value is SortDirection =>
+  SORT_DIRECTIONS.some((direction) => direction === value);
 
 /**
  * Classify a search for the funnel `mode` property: chips/category narrow the
@@ -141,19 +162,23 @@ const isUncategorizedHip3Market = (
  * @param markets - Array of markets to filter
  * @param filter - Market type filter
  * @param allowedHip3Sources - Set of allowed HIP-3 market sources (used for "new" tab only)
+ * @param watchlistSymbols - Upper-cased watchlisted symbols (used for the "watchlist" filter only)
  * @returns Filtered array of markets
  */
 const filterByType = (
   markets: PerpsMarketData[],
   filter: MarketFilter,
   allowedHip3Sources: Set<string>,
+  watchlistSymbols: Set<string>,
 ): PerpsMarketData[] => {
   switch (filter) {
     case 'all': {
       return markets;
     }
-    case 'crypto': {
-      return markets.filter(isCryptoMarket);
+    case WATCHLIST_MARKET_FILTER: {
+      return markets.filter((m) =>
+        watchlistSymbols.has(m.symbol.toUpperCase()),
+      );
     }
     case 'new': {
       return markets.filter((m) =>
@@ -161,10 +186,16 @@ const filterByType = (
       );
     }
     default: {
-      // Any controller market category (stock, pre-ipo, index, etf, commodity,
-      // forex, …) is matched generically so a new category works without a new
-      // case here.
-      return markets.filter((m) => getMarketTypeFilter(m) === filter);
+      // Any controller market category (crypto, stock, pre-ipo, index, etf,
+      // commodity, forex, …) is matched generically so a new category works
+      // without a new case here. Crypto keeps the Extension's long-standing
+      // `marketSource` rule rather than the controller's `matchesCategory`,
+      // which also counts a HIP-3 market typed `marketType: 'crypto'`.
+      return markets.filter((m) =>
+        filter === 'crypto'
+          ? isCryptoMarket(m)
+          : getMarketTypeFilter(m) === filter,
+      );
     }
   }
 };
@@ -178,6 +209,8 @@ export const MarketListView = () => {
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
+  const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
   const { track } = usePerpsEventTracking();
   const { setFlowAttribution } = usePerpsAttribution();
 
@@ -186,6 +219,20 @@ export const MarketListView = () => {
     usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
+  // Upper-cased so lookups match `PerpsMarketData.symbol` casing.
+  const watchlistSymbols = useMemo(
+    () =>
+      new Set(
+        (isTestnet
+          ? watchlistMarketsState.testnet
+          : watchlistMarketsState.mainnet
+        ).map((symbol) => symbol.toUpperCase()),
+      ),
+    [isTestnet, watchlistMarketsState],
+  );
+
+  const hasWatchlistMarkets = watchlistSymbols.size > 0;
+
   // Read initial filter from URL params (set by deeplink)
   const initialFilter = useMemo<MarketFilter>(() => {
     const filterParam = searchParams.get('filter');
@@ -193,17 +240,48 @@ export const MarketListView = () => {
       // normalizeMarketFilter resolves legacy aliases (e.g. `stocks`) and returns
       // null for unknown values, so no extra validation is needed here.
       const normalizedFilter = normalizeMarketFilter(filterParam);
+      // The watchlist option is hidden while the watchlist is empty, so a stale
+      // link to it would otherwise select an option that is not in the list.
+      if (
+        normalizedFilter === WATCHLIST_MARKET_FILTER &&
+        !hasWatchlistMarkets
+      ) {
+        return 'all';
+      }
       if (normalizedFilter) {
         return normalizedFilter;
       }
     }
     return 'all';
+  }, [searchParams, hasWatchlistMarkets]);
+
+  // Read the initial sort from URL params so entry points that already know how
+  // the user wants the list ranked (the Perps tab's Top movers header) land on
+  // that ranking instead of the default volume sort. Unrecognised values fall
+  // back to the default, so an old or hand-edited link never renders unsorted.
+  const initialSort = useMemo<{
+    field: SortField;
+    direction: SortDirection;
+  }>(() => {
+    const sortParam = searchParams.get('sort');
+    const directionParam = searchParams.get('direction');
+    return {
+      field: isSortField(sortParam) ? sortParam : DEFAULT_SORT_FIELD,
+      direction: isSortDirection(directionParam)
+        ? directionParam
+        : DEFAULT_SORT_DIRECTION,
+    };
   }, [searchParams]);
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortField, setSortField] = useState<SortField>('volume');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  // The search box is revealed by the header icon rather than always occupying
+  // a row, so the categories and the list sit higher on a short popup.
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [sortField, setSortField] = useState<SortField>(initialSort.field);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(
+    initialSort.direction,
+  );
   const [selectedFilter, setSelectedFilter] =
     useState<MarketFilter>(initialFilter);
 
@@ -244,7 +322,12 @@ export const MarketListView = () => {
       markets = filterMarketsByQuery(allMarkets, searchQuery);
     } else {
       // Not searching: apply filters
-      markets = filterByType(allMarkets, selectedFilter, allowedHip3Sources);
+      markets = filterByType(
+        allMarkets,
+        selectedFilter,
+        allowedHip3Sources,
+        watchlistSymbols,
+      );
     }
 
     markets = sortMarkets({
@@ -257,6 +340,7 @@ export const MarketListView = () => {
     allMarkets,
     selectedFilter,
     allowedHip3Sources,
+    watchlistSymbols,
     searchQuery,
     sortField,
     sortDirection,
@@ -528,6 +612,60 @@ export const MarketListView = () => {
     [track],
   );
 
+  // `all` is not a pill: the rail expresses "no category" as nothing selected,
+  // and clearing the active pill is what returns the list to every market.
+  // Watchlist is not a market category either — it is user state, and it lives
+  // on the header's star toggle rather than taking a slot on the rail.
+  const railCategories = useMemo<MarketFilter[]>(() => {
+    const categories: MarketFilter[] = [
+      ...MARKET_CATEGORIES,
+      ...(hasUncategorizedMarkets ? (['new'] as const) : []),
+    ];
+    // The active category always gets a pill, even when the data no longer
+    // offers it — a `?filter=new` link outliving the last uncategorized market
+    // would otherwise leave the list narrowed with nothing to clear, because
+    // clearing lives on the active pill and there is no `All` pill to fall back
+    // to. Watchlist is excluded: it is the header star's state, not a rail slot.
+    if (
+      selectedFilter !== 'all' &&
+      selectedFilter !== WATCHLIST_MARKET_FILTER &&
+      !categories.includes(selectedFilter)
+    ) {
+      categories.push(selectedFilter);
+    }
+    return categories;
+  }, [hasUncategorizedMarkets, selectedFilter]);
+
+  const handleFilterClear = useCallback(() => {
+    handleFilterChange('all');
+  }, [handleFilterChange]);
+
+  const isWatchlistFilterActive = selectedFilter === WATCHLIST_MARKET_FILTER;
+
+  // Only a category selects a pill: `all` is the absence of a filter, and
+  // watchlist is the header star's state rather than a slot on the rail. Both
+  // read as no selection, which keeps the rail's contract "a category or
+  // nothing" with no special case inside it.
+  const railSelection =
+    selectedFilter === 'all' || isWatchlistFilterActive ? null : selectedFilter;
+
+  const handleWatchlistToggle = useCallback(() => {
+    handleFilterChange(
+      isWatchlistFilterActive ? 'all' : WATCHLIST_MARKET_FILTER,
+    );
+  }, [handleFilterChange, isWatchlistFilterActive]);
+
+  const handleSearchToggle = useCallback(() => {
+    setIsSearchOpen((open) => {
+      // Closing the box is the same end-of-session event as clearing it, so the
+      // query goes with it rather than silently narrowing a hidden list.
+      if (open) {
+        setSearchQuery('');
+      }
+      return !open;
+    });
+  }, []);
+
   const handleMarketSelect = useCallback(
     (market: PerpsMarketData) => {
       const tappedQuery = trimmedQueryRef.current.toLowerCase();
@@ -603,7 +741,7 @@ export const MarketListView = () => {
       flexDirection={BoxFlexDirection.Column}
       data-testid="parent-selector-perps-market-list"
     >
-      {/* Header */}
+      {/* Header: back, title, and the search / watchlist accessories */}
       <Box
         className="border-b border-border-muted px-4 py-3"
         flexDirection={BoxFlexDirection.Row}
@@ -622,44 +760,101 @@ export const MarketListView = () => {
             color={IconColor.IconDefault}
           />
         </ButtonBase>
-        <Text fontWeight={FontWeight.Medium}>{t('perpsMarkets')}</Text>
+        <Text fontWeight={FontWeight.Medium} className="flex-1">
+          {t('perpsMarkets')}
+        </Text>
+        <ButtonBase
+          onClick={handleSearchToggle}
+          className="rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+          data-testid="market-list-search-toggle"
+          aria-label={t('perpsSearchMarkets')}
+          aria-expanded={isSearchOpen}
+        >
+          <Icon
+            name={IconName.Search}
+            size={IconSize.Md}
+            color={IconColor.IconDefault}
+          />
+        </ButtonBase>
+        {hasWatchlistMarkets && (
+          <ButtonBase
+            onClick={handleWatchlistToggle}
+            className="rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+            data-testid="market-list-watchlist-toggle"
+            aria-label={t('perpsWatchlist')}
+            aria-pressed={isWatchlistFilterActive}
+          >
+            <Icon
+              name={
+                isWatchlistFilterActive ? IconName.StarFilled : IconName.Star
+              }
+              size={IconSize.Md}
+              color={
+                isWatchlistFilterActive
+                  ? IconColor.IconDefault
+                  : IconColor.IconAlternative
+              }
+            />
+          </ButtonBase>
+        )}
       </Box>
 
-      {/* Search Row */}
-      <Box
-        className="border-b border-border-muted px-4 py-3"
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-      >
-        <SearchInput
-          value={searchQuery}
-          onChange={handleSearchChange}
-          onClear={handleSearchClear}
-          onInputClick={handleSearchClick}
-          autoFocus
-        />
-      </Box>
-
-      {/* Filter and Sort Row - Hidden when searching */}
-      {!searchQuery.trim() && (
+      {/* Search Row — revealed by the header's search icon, not always on */}
+      {isSearchOpen && (
         <Box
-          className="border-b border-border-muted px-4 py-3 flex-wrap"
+          className="border-b border-border-muted px-4 py-3"
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Start}
+          data-testid="market-list-search-row"
+        >
+          <SearchInput
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onClear={handleSearchClear}
+            onInputClick={handleSearchClick}
+            autoFocus
+          />
+        </Box>
+      )}
+
+      {/* Category rail and Sort Row - Hidden when searching */}
+      {!searchQuery.trim() && (
+        <Box
+          className="border-b border-border-muted py-3"
+          flexDirection={BoxFlexDirection.Column}
           gap={3}
           data-testid="market-list-filter-sort-row"
         >
-          <FilterSelect
-            value={selectedFilter}
-            onChange={handleFilterChange}
-            showNewFilter={hasUncategorizedMarkets}
+          <PerpsCategoryRail
+            categories={railCategories}
+            selectedCategory={railSelection}
+            onSelect={handleFilterChange}
+            onClear={handleFilterClear}
+            isLoading={isLoading}
+            ariaLabel={t('perpsMarketCategories')}
+            testId="market-list-categories"
           />
-          <SortDropdown
-            selectedField={sortField}
-            direction={sortDirection}
-            onChange={handleSortChange}
-          />
+          <Box
+            className="px-4"
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Between}
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              data-testid="market-list-count"
+            >
+              {displayedMarkets.length === 1
+                ? t('perpsMarketCountSingular')
+                : t('perpsMarketCount', [String(displayedMarkets.length)])}
+            </Text>
+            <SortDropdown
+              selectedField={sortField}
+              direction={sortDirection}
+              onChange={handleSortChange}
+            />
+          </Box>
         </Box>
       )}
 

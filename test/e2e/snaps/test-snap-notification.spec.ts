@@ -1,7 +1,7 @@
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import NotificationsListPage from '../page-objects/pages/notifications/notifications-list-page';
@@ -18,6 +18,7 @@ describe('Test Snap Notification', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockNotificationSnap,
@@ -58,6 +59,7 @@ describe('Test Snap Notification', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockNotificationSnap,

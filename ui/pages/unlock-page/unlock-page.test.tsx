@@ -302,6 +302,44 @@ describe('Unlock Page', () => {
     });
   });
 
+  it('preserves the hash when redirecting after unlock (deep link scroll target)', async () => {
+    const intendedPath = '/settings/privacy';
+    const intendedHash = '#metametrics';
+    const mockStateNonUnlocked = withConfirmTransaction({
+      metamask: { isUnlocked: false },
+    });
+    const store = configureMockStore([thunk])(mockStateNonUnlocked);
+
+    const locationState = {
+      from: { pathname: intendedPath, hash: intendedHash },
+    };
+
+    const { queryByTestId, findByTestId } = renderWithProvider(
+      <UnlockPage />,
+      store,
+      {
+        pathname: '/unlock',
+        state: locationState,
+      } as unknown as string,
+    );
+
+    const passwordField = (await findByTestId(
+      'unlock-password',
+    )) as HTMLElement;
+    const loginButton = queryByTestId('unlock-submit') as HTMLElement;
+    fireEvent.change(passwordField, { target: { value: 'a-password' } });
+    fireEvent.click(loginButton);
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        intendedPath + intendedHash,
+        {
+          replace: true,
+        },
+      );
+    });
+  });
+
   it('should show login error modal when authentication error is thrown', async () => {
     const mockStateNonUnlocked = withConfirmTransaction({
       metamask: { isUnlocked: false, completedOnboarding: true },

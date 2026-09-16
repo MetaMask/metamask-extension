@@ -24,6 +24,9 @@ jest.mock('./swap-details', () => ({
 jest.mock('./nft-details', () => ({
   NftDetails: () => <div data-testid="nft-details" />,
 }));
+jest.mock('./money-account-details', () => ({
+  MoneyAccountDetails: () => <div data-testid="money-account-details" />,
+}));
 jest.mock('./perps-deposit-details', () => ({
   PerpsDepositDetails: () => <div data-testid="perps-deposit-details" />,
 }));
@@ -79,6 +82,22 @@ describe('TemplateLoader', () => {
     );
 
     expect(getByTestId('ramp-order-details')).toBeInTheDocument();
+  });
+
+  it('renders the money account details for a moneyAccountDeposit item', () => {
+    const { getByTestId } = render(
+      <TemplateLoader item={asItem('moneyAccountDeposit')} />,
+    );
+
+    expect(getByTestId('money-account-details')).toBeInTheDocument();
+  });
+
+  it('renders the money account details for a moneyAccountWithdraw item', () => {
+    const { getByTestId } = render(
+      <TemplateLoader item={asItem('moneyAccountWithdraw')} />,
+    );
+
+    expect(getByTestId('money-account-details')).toBeInTheDocument();
   });
 
   it('falls back to the default details for an unknown item type', () => {

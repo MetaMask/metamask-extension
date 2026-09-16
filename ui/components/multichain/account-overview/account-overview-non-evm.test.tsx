@@ -22,6 +22,18 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
+
 // Mock the dispatch function
 const mockDispatch = jest.fn();
 

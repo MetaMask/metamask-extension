@@ -6,15 +6,13 @@ import {
   Box,
   ButtonSize,
   BoxFlexDirection,
-} from '@metamask/design-system-react';
-import {
   Modal,
   ModalBody,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '../../component-library';
+  ModalContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PermissionItem } from './permission-item';
 import { DisconnectAllGatorPermissionsModalProps } from './types';
@@ -36,10 +34,13 @@ export const DisconnectAllGatorPermissionsModal = ({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           {t('otherPermissionsOnSiteTitle')}
         </ModalHeader>
-        <ModalBody paddingLeft={0} paddingRight={0}>
+        <ModalBody className="px-0">
           <Box padding={4}>
             <Text>{t('otherPermissionsOnSiteDescription')}</Text>
           </Box>
