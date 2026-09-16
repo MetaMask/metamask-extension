@@ -16,6 +16,8 @@ export type TooltipTextProps = Omit<TextProps, 'children' | 'asChild'> & {
   /** The tooltip body, shown while the text is hovered or focused. */
   children: ReactNode;
   position?: PopoverPosition;
+  /** Called each time the tooltip opens. */
+  onOpen?: () => void;
   /** Merged over the shared info popover panel styles (e.g. maxWidth, padding). */
   popoverStyle?: CSSProperties;
   'data-testid'?: string;
@@ -29,6 +31,7 @@ export function TooltipText({
   text,
   position = PopoverPosition.BottomEnd,
   popoverStyle,
+  onOpen,
   className,
   'data-testid': dataTestId,
   ...textProps
@@ -41,7 +44,8 @@ export function TooltipText({
 
   const handleOpen = useCallback(() => {
     setIsOpen(true);
-  }, []);
+    onOpen?.();
+  }, [onOpen]);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
