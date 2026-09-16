@@ -5533,8 +5533,12 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Earn $1% APY",
+  "moneyAccountApyPitchEarn": {
+    "message": "Earn",
+    "description": "Shown before the APY, but not hoverable"
+  },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
   "moneyAccountApyPitchInfo": {
