@@ -734,13 +734,19 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
     const hasUsdNativeCurrency = Object.values(
       networkConfigurationsByChainId,
     ).some(({ nativeCurrency }) => nativeCurrency === 'USD');
-    const usdPrice = Object.values(assetsPrice).find(
-      (price): price is FungibleAssetPrice =>
+    const usdPrice = Object.values(assetsPrice).reduce<
+      FungibleAssetPrice | undefined
+    >(
+      (latest, price) =>
         price.assetPriceType === 'fungible' &&
         Number.isFinite(price.price) &&
         price.price > 0 &&
         Number.isFinite(price.usdPrice) &&
-        price.usdPrice > 0,
+        price.usdPrice > 0 &&
+        (!latest || price.lastUpdated > latest.lastUpdated)
+          ? price
+          : latest,
+      undefined,
     );
 
     if (hasUsdNativeCurrency && !result.USD && usdPrice) {
