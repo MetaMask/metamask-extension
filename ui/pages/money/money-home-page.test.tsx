@@ -6,6 +6,16 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { MONEY_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
+import {
+  MONEY_URLS,
+  MoneyBottomSheetName,
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from './constants/money-events';
 import { MoneyHomePage } from './money-home-page';
 import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
 import { onchainItem } from './types/money-activity';
@@ -100,8 +110,14 @@ jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
-  useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
+  useMoneyActivityItemClick: (options: unknown) =>
+    mockUseMoneyActivityItemClick(options),
 }));
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
 jest.mock('./components/money-transfer-sheet', () => ({
   MoneyTransferSheet: ({
     isOpen,
@@ -126,6 +142,7 @@ jest.mock('../../helpers/money/report-money-error', () => ({
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockSelectMoneyEarningSectionEnabled.mockReturnValue(true);
     mockGetPrivacyMode.mockReturnValue(false);
     mockUseMoneyActivityItemClick.mockReturnValue(undefined);
@@ -262,6 +279,14 @@ describe('MoneyHomePage', () => {
 
     fireEvent.click(screen.getByTestId('money-learn-more'));
 
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.LearnMore,
+      componentName: MoneyComponentName.WhatYouGetSection,
+      labelKey: 'moneyLearnMore',
+      redirectTarget: MONEY_URLS.MONEY_LANDING,
+    });
+
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: 'https://metamask.io/money?utm_source=extension',
     });
@@ -276,6 +301,16 @@ describe('MoneyHomePage', () => {
 
     fireEvent.click(screen.getByTestId('money-send-button'));
 
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.TransferMoney,
+      componentName: MoneyComponentName.ActionButtonRow,
+      labelKey: 'moneySend',
+      redirectTarget: MoneyBottomSheetName.TransferMoneySheet,
+      buttonPosition: 2,
+      buttonRowButtonCount: 2,
+    });
+
     expect(screen.getByTestId('money-transfer-sheet')).toBeInTheDocument();
   });
 
@@ -288,6 +323,15 @@ describe('MoneyHomePage', () => {
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
     expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.ActionButtonRow,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+      buttonPosition: 1,
+      buttonRowButtonCount: 2,
+    });
   });
 
   it('initiates a deposit from the unfunded Add funds CTA', () => {
@@ -299,6 +343,42 @@ describe('MoneyHomePage', () => {
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
     expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.OnboardingCard,
+      labelKey: 'addFunds',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+  });
+
+  it('tracks the screen as viewed once after the balance has loaded', () => {
+    const loaded = mockUseMoneyAccountBalance();
+    mockUseMoneyAccountBalance.mockReturnValue({
+      ...loaded,
+      isBalanceLoading: true,
+      totalFiatFormatted: undefined,
+    });
+
+    const { rerender } = renderWithLocalization(<MoneyHomePage />);
+    expect(mockMoneyAnalytics.trackScreenViewed).not.toHaveBeenCalled();
+
+    mockUseMoneyAccountBalance.mockReturnValue(loaded);
+    rerender(<MoneyHomePage />);
+    rerender(<MoneyHomePage />);
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyHome,
+    });
+    expect(mockMoneyAnalytics.trackScreenViewed).toHaveBeenCalledTimes(1);
+  });
+
+  it('passes the home screen to the activity item click hook', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseMoneyActivityItemClick).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyHome,
+    });
   });
 
   it('initiates a deposit prefilled with the row token from Earn on your crypto', () => {
@@ -317,6 +397,30 @@ describe('MoneyHomePage', () => {
         address: DEPOSIT_TOKEN.address,
         chainId: DEPOSIT_TOKEN.chainId,
       },
+    });
+  });
+
+  it('tracks the Earn on your crypto Add button with token row properties', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [DEPOSIT_TOKEN],
+      isNoFeeToken: () => false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-potential-earnings-token-add'));
+
+    expect(mockMoneyAnalytics.trackTokenButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+      tokenSymbol: 'USDC',
+      tokenChainId: '0x1',
+      tokenPositionInList: 1,
+      tokensInList: 1,
+      tokenHasBalance: true,
     });
   });
 
@@ -386,6 +490,22 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('money-send-button')).toBeEnabled();
     expect(screen.getByTestId('money-add-button')).toBeEnabled();
+    expect(
+      screen.getByRole('link', { name: messages.moneyMeetMusd.message }),
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.io/price/metamask-usd?utm_source=extension',
+    );
+    expect(
+      screen.getByRole('link', {
+        name: messages.moneyExploreBenefits.message,
+      }),
+    ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
+    expect(
+      screen.queryByRole('link', {
+        name: messages.moneyHowYourMoneyGrows.message,
+      }),
+    ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
       if (
         [
@@ -400,6 +520,50 @@ describe('MoneyHomePage', () => {
       } else {
         expect(button).toBeDisabled();
       }
+    });
+  });
+
+  it('opens the mUSD price page from Meet mUSD', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-condensed-info-card-musd'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/price/metamask-usd?utm_source=extension',
+    });
+  });
+
+  it('opens the Money landing page from Explore your benefits', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-condensed-info-card-benefits'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/money?utm_source=extension',
     });
   });
 
@@ -427,6 +591,13 @@ describe('MoneyHomePage', () => {
     expect(screen.getByTestId('money-activity-view-all')).toBeEnabled();
     fireEvent.click(screen.getByTestId('money-activity-view-all'));
     expect(mockNavigate).toHaveBeenCalledWith(MONEY_ACTIVITY_ROUTE);
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.ViewAll,
+      componentName: MoneyComponentName.ActivitySection,
+      labelKey: 'moneyActivityViewAll',
+      redirectTarget: MoneyScreenName.MoneyActivity,
+    });
     expect(
       screen.getByText(messages.moneyActivityDeposited.message),
     ).toBeInTheDocument();

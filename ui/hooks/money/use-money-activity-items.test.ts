@@ -176,6 +176,24 @@ describe('useMoneyActivityItems', () => {
     const { result } = renderHook(() => useMoneyActivityItems());
 
     expect(result.current.items[0].id).toBe('money-tx-deposited');
+    expect(
+      result.current.items.some((item) => item.kind === 'accountsApi'),
+    ).toBe(true);
+    expect(
+      result.current.buckets[MoneyActivityFilter.All].filter(
+        (item) => item.kind === 'accountsApi',
+      ),
+    ).toHaveLength(3);
+    expect(
+      result.current.buckets[MoneyActivityFilter.Deposits].every(
+        (item) => item.kind === 'onchain',
+      ),
+    ).toBe(true);
+    expect(
+      result.current.buckets[MoneyActivityFilter.Transfers].every(
+        (item) => item.kind === 'onchain',
+      ),
+    ).toBe(true);
     expect(result.current.hasMore).toBe(false);
     expect(result.current.error).toBe(false);
     expect(result.current.isSettling).toBe(false);

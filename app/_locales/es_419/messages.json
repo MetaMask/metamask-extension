@@ -5216,7 +5216,7 @@
   },
   "lowValueAssets": {
     "message": "Tokens de bajo valor ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Red principal de Ethereum"
@@ -7851,12 +7851,6 @@
   "perpsSortByPriceChange": {
     "message": "Cambio de precio"
   },
-  "perpsSortByRank": {
-    "message": "Rango"
-  },
-  "perpsSortBySection": {
-    "message": "Ordenar por"
-  },
   "perpsSortByTitle": {
     "message": "Filtro"
   },
@@ -8653,9 +8647,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Último uso"
-  },
-  "rampsQuoteFetchError": {
-    "message": "No se pudo obtener la cotización."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotización no disponible."
