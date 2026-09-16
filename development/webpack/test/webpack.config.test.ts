@@ -345,11 +345,15 @@ ${Object.entries(env)
     );
     assert.deepStrictEqual(
       reactRefreshRules.map((rule) => rule.test?.toString()),
-      [/\.(?:ts|mts|tsx)$/u.toString(), /\.(?:js|mjs|jsx)$/u.toString()],
+      [
+        /\.(?:ts|mts)$/u.toString(),
+        /\.tsx$/u.toString(),
+        /\.(?:js|mjs|jsx)$/u.toString(),
+      ],
     );
     assert.deepStrictEqual(
       reactRefreshRules.map((rule) => rule.exclude),
-      [undefined, undefined],
+      [undefined, undefined, undefined],
     );
     assert.ok(
       reactRefreshRules.every(
