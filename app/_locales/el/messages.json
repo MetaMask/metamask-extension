@@ -172,6 +172,9 @@
   "activity": {
     "message": "Δραστηριότητα"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "Διαγράφηκαν τα δεδομένα δραστηριότητας και nonce"
+  },
   "activityEmptyDescription": {
     "message": "Ανταλλάξτε το πρώτο σας token σήμερα."
   },
@@ -1933,14 +1936,37 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Ενεργοποίηση βασικών λειτουργιών"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "Οι ρυθμίσεις σας άλλαξαν"
+  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "ανάρτηση στο blog"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "Ενημερώνουμε τον τρόπο λειτουργίας του MetaMask για τη σύνδεση μέσω κοινωνικών δικτύων. Για μια απρόσκοπτη εμπειρία σε όλο το MetaMask, το αναγνωριστικό σύνδεσής σας μέσω κοινωνικών δικτύων (email ή όνομα χρήστη) θα συνδέεται πλέον με ασφάλεια με το προφίλ χρήστη σας και τις συνδεδεμένες διευθύνσεις λογαριασμών. Στο πλαίσιο αυτής της ενημέρωσης, η Βασική Λειτουργικότητα και οι υπόλοιπες προεπιλεγμένες ρυθμίσεις θα είναι πάντα ενεργοποιημένες."
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "Δεν πουλάμε ποτέ τα δεδομένα σας σε τρίτους. Μάθετε περισσότερα σχετικά με τα δεδομένα που συλλέγουμε και τον λόγο για τον οποίο τα συλλέγουμε στην $1 και την ενημερωμένη $2.",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "Ενημέρωση Απορρήτου"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
     "message": "Ενημερώσεις απορρήτου και προϊόντος"
   },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "Τα API τρίτων μερών αποτελούν πλέον μέρος της Βασικής Λειτουργικότητας. Με βάση τις προηγούμενες προτιμήσεις σας, αυτή η ρύθμιση είναι $1. Μπορείτε να την αλλάξετε ανά πάσα στιγμή στις $2",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "απενεργοποιημένη"
+  },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "ενεργοποιημένο"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "Ρυθμίσεις > Απόρρητο"
   },
   "basicFunctionalityRequired_description": {
     "message": "Αυτή η λειτουργία δεν είναι διαθέσιμη όταν η βασική λειτουργικότητα είναι απενεργοποιημένη. Χρησιμοποιήστε τον παρακάτω διακόπτη για να την ενεργοποιήσετε."
@@ -2507,6 +2533,9 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Χρήση μέγιστου επιτρεπόμενου"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη δικτύου για αυτήν τη μεταφορά. Πληκτρολογήστε μικρότερο ποσό ή αγοράστε περισσότερα $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Χρειάζονται περισσότερα $1 για τέλη"
@@ -3551,6 +3580,10 @@
   "disable": {
     "message": "Απενεργοποίηση"
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "Το \"$1\" είναι απενεργοποιημένο, επειδή δεν πληροί την ελάχιστη προϋπόθεση αύξησης κατά 10% σε σχέση με τα αρχικά τέλη δικτύου.",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "Αποσύνδεση"
   },
@@ -4183,6 +4216,9 @@
   "gasPrice": {
     "message": "Τέλη συναλλαγών"
   },
+  "gasPriceExcessive": {
+    "message": "Τα τέλη δικτύου σας είναι υπερβολικά υψηλά. Εξετάστε το ενδεχόμενο να μειώσετε το ποσό."
+  },
   "gasPriceFetchFailed": {
     "message": "Η εκτίμηση της τιμής του τέλους συναλλαγής απέτυχε λόγω σφάλματος δικτύου."
   },
@@ -4682,9 +4718,21 @@
   "honeypotTitle": {
     "message": "Απάτη"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Καταθέστε οποιοδήποτε token. Θα το ανταλλάξουμε και θα το στείλουμε αυτόματα στον λογαριασμό σας στο Hyperliquid — χωρίς χρέωση από το MetaMask.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "Όχι, ευχαριστώ. Κατάθεση χειροκίνητα",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "Χρηματοδότηση του Hyperliquid μέσω MetaMask",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Τα κεφάλαιά σας είναι έτοιμα για συναλλαγές στο Hyperliquid και στα Perps του MetaMask.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Εφαρμογή κωδικού παραπομπής στο MetaMask σε όλες τις μελλοντικές συναλλαγές σύμφωνα με τους $1 της Hyperliquid. Το MetaMask λαμβάνει προμήθεια.",
@@ -5184,6 +5232,9 @@
   "loginErrorSessionExpiredButton": {
     "message": "Σύνδεση"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "Συνδεθείτε ξανά για να συνεχίσετε."
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "Η συνεδρία έχει λήξει"
   },
@@ -5426,6 +5477,9 @@
   "moneyActivity": {
     "message": "Δραστηριότητα"
   },
+  "moneyActivityCard": {
+    "message": "Κάρτα"
+  },
   "moneyActivityConversionFailed": {
     "message": "Η μετατροπή απέτυχε"
   },
@@ -5459,11 +5513,17 @@
   "moneyActivityFilterSends": {
     "message": "Στέλνει"
   },
+  "moneyActivityLoadError": {
+    "message": "Δεν ήταν δυνατή η φόρτωση της δραστηριότητάς σας"
+  },
+  "moneyActivityMusdBack": {
+    "message": "Επιστροφή σε mUSD"
+  },
   "moneyActivityPending": {
     "message": "Εκκρεμεί"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Η δραστηριότητα του Money account σας θα εμφανίζεται εδώ."
+  "moneyActivityPurchase": {
+    "message": "Αγορά"
   },
   "moneyActivityReceived": {
     "message": "Ελήφθη"
@@ -5473,6 +5533,12 @@
   },
   "moneyActivityReceiving": {
     "message": "Λήψη"
+  },
+  "moneyActivityRefund": {
+    "message": "Επιστροφή χρημάτων"
+  },
+  "moneyActivityRetry": {
+    "message": "Επανάληψη"
   },
   "moneyActivitySendFailed": {
     "message": "Η αποστολή απέτυχε"
@@ -5501,11 +5567,17 @@
   "moneyBalanceLastKnown": {
     "message": "Υπόλοιπο κατά την τελευταία ενημέρωση"
   },
+  "moneyBalanceRetry": {
+    "message": "Επανάληψη"
+  },
   "moneyBalanceTitle": {
     "message": "Υπόλοιπο χρημάτων"
   },
   "moneyBalanceUnavailable": {
     "message": "Το υπόλοιπο δεν είναι διαθέσιμο"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "Δεν είναι δυνατή η προβολή του υπολοίπου σας προς το παρόν. Τα χρήματά σας είναι ασφαλή — προσπαθήστε ξανά σε λίγο."
   },
   "moneyBenefitAutoEarn": {
     "message": "Κερδίστε αυτόματα απόδοση στο υπόλοιπό σας στον Money account"
@@ -5594,6 +5666,45 @@
   },
   "moneySend": {
     "message": "Αποστολή"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Δεν είναι δυνατή η προσθήκη κεφαλαίων. Προσπαθήστε ξανά."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Δεν είναι δυνατή η μετατροπή. Προσπαθήστε ξανά."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Η κατάθεση απέτυχε"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Δεν ήταν δυνατή η προσθήκη κεφαλαίων"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Η μετατροπή απέτυχε"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Δεν είναι δυνατή η μεταφορά κεφαλαίων. Προσπαθήστε ξανά."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Η μεταφορά απέτυχε"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Άλλος λογαριασμός"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Προσεχώς"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Λογαριασμός Perps"
+  },
+  "moneyTransferSendExternal": {
+    "message": "Εξωτερική διεύθυνση"
+  },
+  "moneyTransferTitle": {
+    "message": "Αποστολή χρημάτων προς"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Τραπεζικός λογαριασμός"
   },
   "month": {
     "message": "μήνας"
@@ -5981,6 +6092,10 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "Εύρος των τελών προτεραιότητας (ή αλλιώς “Miner tip”). Αυτό πηγαίνει στους miners και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "Τα τέλη δικτύου είναι $1 σε σχέση με τις τελευταίες 72 ώρες.",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "Υπόδειξη δικτύου"
@@ -7446,7 +7561,7 @@
     "message": "Forex"
   },
   "perpsFilterIndex": {
-    "message": "Δείκτης"
+    "message": "Δείκτες"
   },
   "perpsFilterNew": {
     "message": "Νέα"
@@ -7851,7 +7966,7 @@
     "message": "Ταξινόμηση κατά"
   },
   "perpsSortByTitle": {
-    "message": "Φιλτράρισμα"
+    "message": "Ταξινόμηση κατά"
   },
   "perpsSortByVolume": {
     "message": "Όγκος"
@@ -8031,6 +8146,10 @@
   "perpsToastSubmitInProgress": {
     "message": "Υποβολή της συναλλαγής σας",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeEntryFailed": {
+    "message": "Δεν ήταν δυνατό το άνοιγμα της θέσης",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
   },
   "perpsToastTradeSuccess": {
     "message": "Η θέση έκλεισε",
@@ -8741,6 +8860,9 @@
   },
   "rejected": {
     "message": "Απορρίφθηκε"
+  },
+  "relayerFee": {
+    "message": "Χρέωση αποδέκτη"
   },
   "remove": {
     "message": "Διαγραφή"
@@ -11095,6 +11217,9 @@
   "stxCancelled": {
     "message": "Η ανταλλαγή θα είχε αποτύχει"
   },
+  "stxCancelledDescription": {
+    "message": "Η συναλλαγή σας θα είχε αποτύχει και ακυρώθηκε για να μην επιβαρυνθείτε με περιττά τέλη δικτύου."
+  },
   "stxCancelledSubDescription": {
     "message": "Προσπαθήστε εκ νέου να κάνετε ανταλλαγή. Θα είμαστε εδώ για να σας προστατεύσουμε από παρόμοιους κινδύνους την επόμενη φορά."
   },
@@ -11136,6 +11261,9 @@
   },
   "stxUserCancelled": {
     "message": "Η ανταλλαγή ακυρώθηκε"
+  },
+  "stxUserCancelledDescription": {
+    "message": "Η συναλλαγή σας ακυρώθηκε και δεν επιβαρυνθήκατε με περιττά τέλη δικτύου."
   },
   "submit": {
     "message": "Υποβολή"
@@ -11266,12 +11394,19 @@
     "message": "Η ανταλλαγή από $1 έως $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesExplanation": {
+    "message": "Το MetaMask δεν αποκομίζει έσοδα από τα τέλη δικτύου. Αυτές οι χρεώσεις είναι ενδεικτικές και ενδέχεται να αλλάξουν ανάλογα με τον φόρτο του δικτύου και την πολυπλοκότητα της συναλλαγής. Μάθετε περισσότερα $1.",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
   "swapGasFeesExplanationLinkText": {
     "message": "εδώ",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " Περιλαμβάνεται"
+  },
+  "swapGasFeesSplit": {
+    "message": "Τα τέλη δικτύου που εμφανίζονταν στην προηγούμενη οθόνη κατανέμονται σε αυτές τις δύο συναλλαγές."
   },
   "swapGasFeesSponsored": {
     "message": "Πληρωμή μέσω MetaMask"
@@ -11406,6 +11541,9 @@
   "swapSource": {
     "message": "Πηγή ρευστότητας"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "Οι ανταλλαγές είναι πολύπλοκες που απαιτούν άμεση εκτέλεση. Συνιστούμε αυτά τα τέλη δικτύου για μια καλή ισορροπία μεταξύ κόστους και πιθανότητας επιτυχούς ολοκλήρωσης της ανταλλαγής."
+  },
   "swapToConfirmWithHwWallet": {
     "message": "για επιβεβαίωση με το πορτοφόλι υλικού σας"
   },
@@ -11427,6 +11565,9 @@
   },
   "swapUnknown": {
     "message": "Άγνωστο"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη δικτύου για αυτήν την ανταλλαγή. Πληκτρολογήστε μικρότερο ποσό ή αγοράστε περισσότερα $1."
   },
   "swapZeroSlippage": {
     "message": "0% Απόκλιση"
@@ -11662,6 +11803,9 @@
   "transactionHistoryBaseFee": {
     "message": "Βασικό τέλος (GWEI)"
   },
+  "transactionHistoryL1GasLabel": {
+    "message": "Συνολικά τέλη δικτύου L1"
+  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "Όριο τέλους συναλλαγής L2"
   },
@@ -11876,6 +12020,9 @@
   },
   "unlock": {
     "message": "Ξεκλείδωμα"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "Λανθασμένος κωδικός πρόσβασης. Προσπαθήστε ξανά."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Πάρα πολλές προσπάθειες. Δοκιμάστε ξανά σε "
@@ -12146,6 +12293,10 @@
   },
   "wrongNetworkName": {
     "message": "Σύμφωνα με τα αρχεία μας, το όνομα του δικτύου ενδέχεται να μην ταιριάζει απόλυτα με αυτό το αναγνωριστικό αλυσίδας."
+  },
+  "wrongPassword": {
+    "message": "Λανθασμένος κωδικός πρόσβασης. Προσπαθήστε ξανά.",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "έτος"

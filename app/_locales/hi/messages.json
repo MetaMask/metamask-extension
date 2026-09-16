@@ -172,6 +172,9 @@
   "activity": {
     "message": "एक्टिविटी"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "एक्टिविटी और nonce डेटा मिटाया गया"
+  },
   "activityEmptyDescription": {
     "message": "आज ही अपना पहला टोकन स्वैप करें।"
   },
@@ -1933,14 +1936,37 @@
   "basicConfigurationModalHeadingOn": {
     "message": "बेसिक फंक्शनलिटी को चालू करें"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "आपकी सेटिंग्स बदल गई हैं"
+  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "ब्लॉग पोस्ट"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "हम सोशल लॉगिन के लिए MetaMask के काम करने के तरीके को अपडेट कर रहे हैं। MetaMask पर एक आसान एक्सपीरियंस देने के लिए, आपका सोशल लॉगिन आइडेंटिफायर (ईमेल या हैंडल) अब आपकी यूज़र प्रोफ़ाइल और उससे जुड़े अकाउंट एड्रेस से सुरक्षित तरीके से लिंक हो जाएगा। इस अपडेट के हिस्से के तौर पर, बेसिक फंक्शनैलिटी और दूसरी डिफॉल्ट सेटिंग्स हमेशा चालू रहेंगी।"
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "हम आपका डेटा कभी भी थर्ड पार्टी को नहीं बेचते हैं। हम क्या इकट्ठा करते हैं और क्यों, इसके बारे में हमारे $1 और अपडेट किए गए $2 में और पढ़ें।",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "गोपनीयता नोटिस"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
     "message": "गोपनीयता और प्रोडक्ट अपडेट्स"
   },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "थर्ड-पार्टी API अब बेसिक फंक्शनैलिटी का हिस्सा हैं। आपकी पिछली पसंद के आधार पर, यह सेटिंग $1 है। इसे कभी भी $2 में बदलें",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "बंद किया गया"
+  },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "चालू किया गया"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "सेटिंग्स > गोपनीयता"
   },
   "basicFunctionalityRequired_description": {
     "message": "बेसिक फंक्शनैलिटी बंद होने पर यह फ़ीचर उपलब्ध नहीं है। इसे चालू करने के लिए नीचे दिए गए टॉगल का इस्तेमाल करें।"
@@ -2507,6 +2533,9 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "अधिकतम अनुमत सीमा का उपयोग करें"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "इस ब्रिज के लिए नेटवर्क फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "गैस के लिए अधिक $1 की आवश्यकता है"
@@ -3551,6 +3580,10 @@
   "disable": {
     "message": "बंद करें"
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "\"$1\" डिसेबल किया गया है क्योंकि यह ओरिजिनल नेटवर्क फ़ीस से कम-से-कम 10% वृद्धि को पूरा नहीं करता है।",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "डिसकनेक्ट करें"
   },
@@ -4183,6 +4216,9 @@
   "gasPrice": {
     "message": "गैस प्राइस"
   },
+  "gasPriceExcessive": {
+    "message": "आपकी नेटवर्क फ़ीस अनावश्यक रूप से अधिक निर्धारित की गई है। अमाउंट को कम करने पर विचार करें।"
+  },
   "gasPriceFetchFailed": {
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
   },
@@ -4682,9 +4718,21 @@
   "honeypotTitle": {
     "message": "हनी पॉट"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "कोई भी टोकन डिपॉज़िट करें। हम इसे स्वैप करके आपके हाइपरलिक्विड अकाउंट में अपने आप भेज देंगे—कोई MetaMask फ़ीस नहीं लगेगी।",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "नहीं, धन्यवाद, मैन्युअली डिपॉज़िट करें",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "MetaMask के साथ हाइपरलिक्विड को फंड करें",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "फंड हाइपरलिक्विड और MetaMask पर्प्स पर ट्रेड करने के लिए तैयार हैं।",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "हाइपरलिक्विड के $1 पर आने वाले सभी ट्रेड पर MetaMask रेफरल कोड लगाएं। MetaMask को फीस मिलती है।",
@@ -5184,6 +5232,9 @@
   "loginErrorSessionExpiredButton": {
     "message": "लॉग इन करें"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "जारी रखने के लिए फिर से लॉग इन करें।"
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "सत्र समाप्त हो गया है"
   },
@@ -5211,7 +5262,7 @@
     "message": "कम"
   },
   "lowValueAssets": {
-    "message": "कम वैल्यू वाले टोकन ($1)",
+    "message": "कम बैलेंस वाले टोकन ($1)",
     "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
@@ -5426,6 +5477,9 @@
   "moneyActivity": {
     "message": "गतिविधि"
   },
+  "moneyActivityCard": {
+    "message": "कार्ड"
+  },
   "moneyActivityConversionFailed": {
     "message": "कन्वर्शन नहीं हो पाया"
   },
@@ -5459,11 +5513,17 @@
   "moneyActivityFilterSends": {
     "message": "भेजता है"
   },
+  "moneyActivityLoadError": {
+    "message": "आपकी एक्टिविटी लोड नहीं हो सकी"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD वापस"
+  },
   "moneyActivityPending": {
     "message": "अभी पूरा नहीं हुआ"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "आपकी मनी एक्टिविटी यहाँ दिखेंगी।"
+  "moneyActivityPurchase": {
+    "message": "खरीद"
   },
   "moneyActivityReceived": {
     "message": "प्राप्त किया गया"
@@ -5473,6 +5533,12 @@
   },
   "moneyActivityReceiving": {
     "message": "प्राप्त कर रहे हैं"
+  },
+  "moneyActivityRefund": {
+    "message": "रिफंड"
+  },
+  "moneyActivityRetry": {
+    "message": "फिर से प्रयास करें"
   },
   "moneyActivitySendFailed": {
     "message": "भेजना नहीं हो पाया"
@@ -5501,11 +5567,17 @@
   "moneyBalanceLastKnown": {
     "message": "आखिरी ज्ञात बैलेंस"
   },
+  "moneyBalanceRetry": {
+    "message": "फिर से प्रयास करें"
+  },
   "moneyBalanceTitle": {
     "message": "Money बैलेंस"
   },
   "moneyBalanceUnavailable": {
     "message": "बैलेंस अनुपलब्ध है"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "हम अस्थायी रूप से आपका बैलेंस दिखाने में असमर्थ हैं। आपके फंड सुरक्षित हैं—कृपया थोड़ी देर बाद फिर से कोशिश करें।"
   },
   "moneyBenefitAutoEarn": {
     "message": "आपके मनी बैलेंस पर ऑटो-अर्न यील्ड"
@@ -5594,6 +5666,45 @@
   },
   "moneySend": {
     "message": "भेजें"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "फंड्स जोड़ने में असमर्थ। फिर से प्रयास करें।"
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "कन्वर्ट करने में असमर्थ। फिर से प्रयास करें।"
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "डिपॉज़िट नहीं हो पाया"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "फंड्स जोड़ना नहीं हो पाया"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "कन्वर्शन नहीं हो पाया"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "फंड्स ट्रांसफर नहीं हो पाए। फिर से प्रयास करें।"
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "ट्रांसफर नहीं हो पाया"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "दूसरा अकाउंट"
+  },
+  "moneyTransferComingSoon": {
+    "message": "जल्द आ रहा है"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "पर्प्स अकाउंट"
+  },
+  "moneyTransferSendExternal": {
+    "message": "बाहरी पता"
+  },
+  "moneyTransferTitle": {
+    "message": "इनको फंड भेजें"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "बैंक अकाउंट"
   },
   "month": {
     "message": "महीना"
@@ -5981,6 +6092,10 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "प्रायोरिटी फ़ीस की सीमा (उर्फ \"माइनर टिप\")। यह माइनरों के पास जाता है और उन्हें आपके ट्रांसेक्शन को प्राथमिकता देने के लिए प्रोत्साहित करता है।"
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "पिछले 72 घंटों के सापेक्ष नेटवर्क फ़ीस $1 है।",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "सुझावित नेटवर्क"
@@ -6793,6 +6908,9 @@
   "passwordToggleShow": {
     "message": "पासवर्ड दिखाएं"
   },
+  "passwordsDontMatch": {
+    "message": "पासवर्ड मेल नहीं खाते।"
+  },
   "paste": {
     "message": "पेस्ट करें"
   },
@@ -7437,13 +7555,13 @@
     "message": "क्रिप्टो"
   },
   "perpsFilterEtf": {
-    "message": "ETF"
+    "message": "ETFs"
   },
   "perpsFilterForex": {
     "message": "फॉरेक्स"
   },
   "perpsFilterIndex": {
-    "message": "इंडेक्स"
+    "message": "इनडाइसेज़"
   },
   "perpsFilterNew": {
     "message": "नया"
@@ -7848,7 +7966,7 @@
     "message": "इसके अनुसार क्रमबद्ध करें"
   },
   "perpsSortByTitle": {
-    "message": "फिल्टर"
+    "message": "इसके अनुसार क्रमबद्ध करें"
   },
   "perpsSortByVolume": {
     "message": "वॉल्यूम"
@@ -8028,6 +8146,10 @@
   "perpsToastSubmitInProgress": {
     "message": "आपका ट्रेड सबमिट कर रहे हैं",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeEntryFailed": {
+    "message": "ट्रेड ओपन नहीं किया जा सका",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
   },
   "perpsToastTradeSuccess": {
     "message": "पोज़िशन बंद किया गया",
@@ -8738,6 +8860,9 @@
   },
   "rejected": {
     "message": "अस्वीकार किया गया"
+  },
+  "relayerFee": {
+    "message": "रीलेयर (relayer) फीस"
   },
   "remove": {
     "message": "हटाएं"
@@ -11092,6 +11217,9 @@
   "stxCancelled": {
     "message": "स्वैप विफल हो गया होगा"
   },
+  "stxCancelledDescription": {
+    "message": "आपका ट्रांसेक्शन विफल हो सकता था और उसे कैंसिल कर दिया गया ताकि आपको नेटवर्क फ़ीस का अनावश्यक पेमेंट करने से रोका जा सके।"
+  },
   "stxCancelledSubDescription": {
     "message": "अपने स्वैप का पुन: प्रयास करें। हम अगली बार इसी तरह के जोखिमों से आपकी रक्षा करने के लिए यहां मौजूद रहेंगे।"
   },
@@ -11133,6 +11261,9 @@
   },
   "stxUserCancelled": {
     "message": "स्वैप कैंसिल हुआ"
+  },
+  "stxUserCancelledDescription": {
+    "message": "आपका ट्रांसेक्शन कैंसिल किया गया और आपने किसी भी तरह के अनावश्यक नेटवर्क फ़ीस का पेमेंट नहीं किया।"
   },
   "submit": {
     "message": "सबमिट करें"
@@ -11263,12 +11394,19 @@
     "message": "$1 से $2 का स्वैप",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesExplanation": {
+    "message": "MetaMask नेटवर्क फीस से पैसे नहीं कमाता है। ये शुल्क अनुमानित हैं और इस आधार पर बदल सकते हैं कि नेटवर्क कितना व्यस्त है और ट्रांसेक्शन कितना जटिल है। अधिक जानें $1।",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
   "swapGasFeesExplanationLinkText": {
     "message": "यहाँ",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " शामिल किया गया"
+  },
+  "swapGasFeesSplit": {
+    "message": "पिछली स्क्रीन पर नेटवर्क फ़ीस इन दो ट्रांसेक्शन के बीच विभाजित हैं।"
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask द्वारा भुगतान किया गया"
@@ -11403,6 +11541,9 @@
   "swapSource": {
     "message": "चलनिधि का स्रोत"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "विनिमय जटिल और समय के प्रति संवेदनशील ट्रांसेक्शन हैं। हम एक सफल विनिमय की लागत और विश्वास के बीच अच्छे संतुलन के लिए इस नेटवर्क फ़ीस की अनुशंसा करते हैं।"
+  },
   "swapToConfirmWithHwWallet": {
     "message": "अपने hardware wallet से पुष्टि करने के लिए"
   },
@@ -11424,6 +11565,9 @@
   },
   "swapUnknown": {
     "message": "अज्ञात"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "इस स्वैप के लिए नेटवर्क फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"
   },
   "swapZeroSlippage": {
     "message": "0% स्लिपेज"
@@ -11659,6 +11803,9 @@
   "transactionHistoryBaseFee": {
     "message": "बेस फी (GWEI)"
   },
+  "transactionHistoryL1GasLabel": {
+    "message": "कुल L1 नेटवर्क शुल्क"
+  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 गैस लिमिट"
   },
@@ -11873,6 +12020,9 @@
   },
   "unlock": {
     "message": "अनलॉक करें"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "गलत पासवर्ड। कृपया फिर से प्रयास करें।"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "बहुत अधिक प्रयास हो गए हैं। इतने समय में फिर से कोशिश करें "
@@ -12143,6 +12293,10 @@
   },
   "wrongNetworkName": {
     "message": "हमारे रिकॉर्ड के अनुसार, नेटवर्क का नाम इस चेन ID से ठीक से मेल नहीं खा सकता है।"
+  },
+  "wrongPassword": {
+    "message": "गलत पासवर्ड। कृपया फिर से प्रयास करें।",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "वर्ष"

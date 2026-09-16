@@ -172,6 +172,9 @@
   "activity": {
     "message": "活动"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "活动数据和唯一交易标识号已删除"
+  },
   "activityEmptyDescription": {
     "message": "今天就来兑换你的第一个代币。"
   },
@@ -1933,14 +1936,37 @@
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "您的设置已更改"
+  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "博客文章"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "我们正在调整您使用社交账号登录 MetaMask 的方式。为了让您在 MetaMask 中获得流畅体验，您用于社交账号登录的电子邮箱或用户名现在将安全地关联到您的用户资料及相关账户地址。此次更新后，基本功能和其他默认设置将始终处于启用状态。"
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "我们绝不会向第三方出售您的数据。如需详细了解我们收集哪些数据以及收集原因，请阅读我们的 $1 和更新后的 $2。",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "隐私声明"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
     "message": "隐私与产品更新"
   },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "第三方 API 现已纳入基本功能。根据您之前的偏好，此设置$1。您可以随时前往 $2 更改。",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "已禁用"
+  },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "已启用"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "设置 > 隐私"
   },
   "basicFunctionalityRequired_description": {
     "message": "此功能在基本功能关闭时无法使用。请使用下方的开关将其开启。"
@@ -2507,6 +2533,9 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "使用最大允许值"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "您的 $1 不足以支付此次跨链的网络费用。请输入较小的金额或购买更多 $1。"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "需要更多的 $1 用于燃料"
@@ -3551,6 +3580,10 @@
   "disable": {
     "message": "禁用"
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "“$1”已被禁用，因为它不满足在原来的网络费用基础上至少增加10%的要求。",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "断开连接"
   },
@@ -4183,6 +4216,9 @@
   "gasPrice": {
     "message": "Gas 价格（GWEI）"
   },
+  "gasPriceExcessive": {
+    "message": "您设置的网络费用过高，建议降低金额。"
+  },
   "gasPriceFetchFailed": {
     "message": "由于网络错误，燃料价格估算失败。"
   },
@@ -4682,9 +4718,21 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "存入任意代币即可。我们会自动将其兑换并发送到您的 Hyperliquid 账户，免收 MetaMask 费用。",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "不用了，我要手动存入",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "通过 MetaMask 为 Hyperliquid 充值",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "资金现已可用于 Hyperliquid 和 MetaMask 永续合约交易。",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "根据 Hyperliquid 的 $1，为今后的所有交易应用 MetaMask 推荐码。MetaMask 将收取费用。",
@@ -5184,6 +5232,9 @@
   "loginErrorSessionExpiredButton": {
     "message": "登录"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "请重新登录以继续。"
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "会话已过期"
   },
@@ -5209,10 +5260,6 @@
   },
   "lowLowercase": {
     "message": "低"
-  },
-  "lowValueAssets": {
-    "message": "低价值代币（$1）",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "以太坊主网"
@@ -5426,6 +5473,9 @@
   "moneyActivity": {
     "message": "活动"
   },
+  "moneyActivityCard": {
+    "message": "卡"
+  },
   "moneyActivityConversionFailed": {
     "message": "兑换失败"
   },
@@ -5459,11 +5509,17 @@
   "moneyActivityFilterSends": {
     "message": "发送"
   },
+  "moneyActivityLoadError": {
+    "message": "无法加载您的活动记录"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD 返现"
+  },
   "moneyActivityPending": {
     "message": "待定"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "您的 Money 活动将显示在此处。"
+  "moneyActivityPurchase": {
+    "message": "购买"
   },
   "moneyActivityReceived": {
     "message": "已收到"
@@ -5473,6 +5529,12 @@
   },
   "moneyActivityReceiving": {
     "message": "正在接收"
+  },
+  "moneyActivityRefund": {
+    "message": "退款"
+  },
+  "moneyActivityRetry": {
+    "message": "重试"
   },
   "moneyActivitySendFailed": {
     "message": "发送失败"
@@ -5501,11 +5563,17 @@
   "moneyBalanceLastKnown": {
     "message": "最后已知余额"
   },
+  "moneyBalanceRetry": {
+    "message": "重试"
+  },
   "moneyBalanceTitle": {
     "message": "Money 余额"
   },
   "moneyBalanceUnavailable": {
     "message": "余额不可用"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "我们暂时无法显示您的余额。您的资金安全无虞，请稍后重试。"
   },
   "moneyBenefitAutoEarn": {
     "message": "为您的 Money 余额自动赚取收益"
@@ -5594,6 +5662,45 @@
   },
   "moneySend": {
     "message": "发送"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "无法存入资金。请重试。"
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "无法兑换。请重试。"
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "存款失败"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "存入资金失败"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "兑换失败"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "无法转账。请重试。"
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "转账失败"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "其他账户"
+  },
+  "moneyTransferComingSoon": {
+    "message": "即将推出"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "永续合约（Perps）账户"
+  },
+  "moneyTransferSendExternal": {
+    "message": "外部地址"
+  },
+  "moneyTransferTitle": {
+    "message": "发送资金到"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "银行账户"
   },
   "month": {
     "message": "月"
@@ -5981,6 +6088,10 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "优先费用（又称“矿工费”）。这笔费用直接向矿工支付，激励他们优先处理您的交易。"
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "与过去 72 小时相比，当前网络费用处于$1水平。",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "建议网络"
@@ -7857,7 +7968,7 @@
     "message": "排序方式"
   },
   "perpsSortByTitle": {
-    "message": "筛选"
+    "message": "排序方式"
   },
   "perpsSortByVolume": {
     "message": "交易量"
@@ -8037,6 +8148,10 @@
   "perpsToastSubmitInProgress": {
     "message": "正在提交您的交易",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeEntryFailed": {
+    "message": "无法打开交易页面",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
   },
   "perpsToastTradeSuccess": {
     "message": "仓位已平仓",
@@ -8747,6 +8862,9 @@
   },
   "rejected": {
     "message": "已拒绝"
+  },
+  "relayerFee": {
+    "message": "中继器费用"
   },
   "remove": {
     "message": "删除"
@@ -11101,6 +11219,9 @@
   "stxCancelled": {
     "message": "交换就会失败"
   },
+  "stxCancelledDescription": {
+    "message": "由于预计交易会失败，该交易已被取消，以避免产生不必要的网络费用。"
+  },
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
   },
@@ -11142,6 +11263,9 @@
   },
   "stxUserCancelled": {
     "message": "交换已取消"
+  },
+  "stxUserCancelledDescription": {
+    "message": "您的交易已被取消，您并未支付任何不必要的网络费用。"
   },
   "submit": {
     "message": "提交"
@@ -11272,12 +11396,19 @@
     "message": "$1 到 $2 的交换",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesExplanation": {
+    "message": "MetaMask 不会从网络费用中获利。这些费用仅为估算值，可能会根据网络繁忙程度和交易复杂程度发生变化。通过$1了解更多信息。",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
   "swapGasFeesExplanationLinkText": {
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " 已包含"
+  },
+  "swapGasFeesSplit": {
+    "message": "上一页显示的网络费用包含这两笔交易产生的费用。"
   },
   "swapGasFeesSponsored": {
     "message": "由 MetaMask 支付"
@@ -11412,6 +11543,9 @@
   "swapSource": {
     "message": "流动性来源"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "兑换交易较为复杂，且对时效要求较高。我们建议采用此网络费用，以便在成本和成功完成兑换的可能性之间取得良好平衡。"
+  },
   "swapToConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"
   },
@@ -11433,6 +11567,9 @@
   },
   "swapUnknown": {
     "message": "未知"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "您的 $1 不足以支付此次兑换的网络费用。请输入较小的金额或购买更多 $1。"
   },
   "swapZeroSlippage": {
     "message": "0%滑点"
@@ -11668,6 +11805,9 @@
   "transactionHistoryBaseFee": {
     "message": "基础费用（GWEI）"
   },
+  "transactionHistoryL1GasLabel": {
+    "message": "L1 网络费用总计"
+  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 燃料限制"
   },
@@ -11882,6 +12022,9 @@
   },
   "unlock": {
     "message": "登录"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "密码错误，请重试。"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "尝试次数过多。请在以下时间之后重试： "
@@ -12152,6 +12295,10 @@
   },
   "wrongNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
+  },
+  "wrongPassword": {
+    "message": "密码错误，请重试。",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "年"
