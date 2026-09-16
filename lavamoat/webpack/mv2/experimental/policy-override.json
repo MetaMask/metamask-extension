@@ -302,6 +302,11 @@
         "__zod_globalRegistry": "write",
         "__zod_globalConfig": "write"
       }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/messaging": {
+      "globals": {
+        "PushManager": true
+      }
     }
   }
 }

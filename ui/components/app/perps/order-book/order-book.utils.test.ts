@@ -7,6 +7,7 @@ import {
   calculateGroupingOptions,
   clampOrderBookWidthPct,
   computeOrderBookWidthPct,
+  computeOrderBookWidthPctFromLeft,
   formatColumnValue,
   formatGroupingLabel,
   formatSpreadPercent,
@@ -308,6 +309,39 @@ describe('order-book.utils', () => {
       // Body 400px wide (right edge at 400). Dragging the pointer to x=0 would
       // request 100%, but the form's pixel floor caps it at 43.5%.
       expect(computeOrderBookWidthPct(400, 400, 0)).toBeCloseTo(43.5, 5);
+    });
+  });
+
+  describe('computeOrderBookWidthPctFromLeft', () => {
+    it('derives the clamped width from the pointer position', () => {
+      // containerLeft=0, width=1000, pointer at 300 → 30%
+      expect(computeOrderBookWidthPctFromLeft(0, 1000, 300)).toBe(30);
+      // pointer near right edge → clamped to max
+      expect(computeOrderBookWidthPctFromLeft(0, 1000, 900)).toBe(
+        ORDER_BOOK_MAX_WIDTH_PCT,
+      );
+    });
+
+    it('falls back to the default width when the container has no width', () => {
+      expect(computeOrderBookWidthPctFromLeft(0, 0, 300)).toBe(
+        ORDER_BOOK_DEFAULT_WIDTH_PCT,
+      );
+    });
+
+    it('caps the width to the form pixel floor when dragged far on a narrow body', () => {
+      // Body 400px wide (left edge at 0). Dragging to x=400 would request 100%,
+      // but the form pixel floor caps it at 43.5%.
+      expect(computeOrderBookWidthPctFromLeft(0, 400, 400)).toBeCloseTo(
+        43.5,
+        5,
+      );
+    });
+
+    it('produces the same result as computeOrderBookWidthPct for a symmetric drag', () => {
+      // Right-side: containerRight=1000, width=1000, pointer=700 → 30%
+      // Left-side mirror: containerLeft=0, width=1000, pointer=300 → 30%
+      expect(computeOrderBookWidthPct(1000, 1000, 700)).toBe(30);
+      expect(computeOrderBookWidthPctFromLeft(0, 1000, 300)).toBe(30);
     });
   });
 });

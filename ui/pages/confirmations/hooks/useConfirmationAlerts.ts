@@ -1,5 +1,9 @@
 import { useMemo } from 'react';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+import { PAY_TRANSACTION_TYPES } from '../constants/pay';
+import { useConfirmContext } from '../context/confirm';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
 import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
@@ -11,8 +15,11 @@ import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useAddressPoisoningAlert } from './alerts/transactions/useAddressPoisoningAlert';
 import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useAccountNoFundsAlert } from './alerts/transactions/useAccountNoFundsAlert';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
+import { useInsufficientMoneyAccountBalanceAlert } from './alerts/transactions/useInsufficientMoneyAccountBalanceAlert';
 import { usePerpsWithdrawInsufficientBalanceAlert } from './alerts/transactions/usePerpsWithdrawInsufficientBalanceAlert';
+import { useTransactionDepositLimitAlert } from './alerts/transactions/useTransactionDepositLimitAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
@@ -44,9 +51,11 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const accountNoFundsAlerts = useAccountNoFundsAlert();
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
   const addressPoisoningAlert = useAddressPoisoningAlert();
   const burnAddressAlert = useBurnAddressAlert();
+  const depositLimitAlerts = useTransactionDepositLimitAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
@@ -55,6 +64,8 @@ function useTransactionAlerts(): Alert[] {
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
   const insufficientPayTokenBalanceAlerts =
     useInsufficientPayTokenBalanceAlert();
+  const insufficientMoneyAccountBalanceAlerts =
+    useInsufficientMoneyAccountBalanceAlert();
   const perpsWithdrawInsufficientBalanceAlerts =
     usePerpsWithdrawInsufficientBalanceAlert();
   const multipleApprovalAlerts = useMultipleApprovalsAlerts();
@@ -71,9 +82,11 @@ function useTransactionAlerts(): Alert[] {
 
   return useMemo(
     () => [
+      ...accountNoFundsAlerts,
       ...accountTypeUpgradeAlerts,
       ...addressPoisoningAlert,
       ...burnAddressAlert,
+      ...depositLimitAlerts,
       ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
@@ -81,6 +94,7 @@ function useTransactionAlerts(): Alert[] {
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
       ...insufficientPayTokenBalanceAlerts,
+      ...insufficientMoneyAccountBalanceAlerts,
       ...perpsWithdrawInsufficientBalanceAlerts,
       ...multipleApprovalAlerts,
       ...noGasPriceAlerts,
@@ -95,9 +109,11 @@ function useTransactionAlerts(): Alert[] {
       ...tokenTrustSignalAlerts,
     ],
     [
+      accountNoFundsAlerts,
       accountTypeUpgradeAlerts,
       addressPoisoningAlert,
       burnAddressAlert,
+      depositLimitAlerts,
       firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
@@ -105,6 +121,7 @@ function useTransactionAlerts(): Alert[] {
       gasTooLowAlerts,
       insufficientBalanceAlerts,
       insufficientPayTokenBalanceAlerts,
+      insufficientMoneyAccountBalanceAlerts,
       perpsWithdrawInsufficientBalanceAlerts,
       multipleApprovalAlerts,
       noGasPriceAlerts,
@@ -121,7 +138,17 @@ function useTransactionAlerts(): Alert[] {
   );
 }
 
+/**
+ * MM Pay confirmations surface blocking issues as inline text (via
+ * `useTransactionCustomAmountAlerts`), so key-value row icons are redundant.
+ * @param alerts
+ */
+function withoutRowFields(alerts: Alert[]): Alert[] {
+  return alerts.map(({ field: _field, ...alert }) => alert);
+}
+
 export default function useConfirmationAlerts(): Alert[] {
+  const { currentConfirmation } = useConfirmContext();
   const blockaidAlerts = useBlockaidAlerts();
   const confirmationOriginAlerts = useConfirmationOriginAlerts();
   const signatureAlerts = useSignatureAlerts();
@@ -133,8 +160,13 @@ export default function useConfirmationAlerts(): Alert[] {
   const spenderAlerts = useSpenderAlerts();
   const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
-  return useMemo(
-    () => [
+  const isPayTransaction = hasTransactionType(
+    currentConfirmation as TransactionMeta | undefined,
+    PAY_TRANSACTION_TYPES,
+  );
+
+  return useMemo(() => {
+    const alerts = [
       ...blockaidAlerts,
       ...confirmationOriginAlerts,
       ...signatureAlerts,
@@ -145,18 +177,20 @@ export default function useConfirmationAlerts(): Alert[] {
       ...originTrustSignalAlerts,
       ...spenderAlerts,
       ...addEthereumChainAlerts,
-    ],
-    [
-      blockaidAlerts,
-      confirmationOriginAlerts,
-      signatureAlerts,
-      transactionAlerts,
-      selectedAccountAlerts,
-      networkAndOriginSwitchingAlerts,
-      addressTrustSignalAlerts,
-      originTrustSignalAlerts,
-      spenderAlerts,
-      addEthereumChainAlerts,
-    ],
-  );
+    ];
+
+    return isPayTransaction ? withoutRowFields(alerts) : alerts;
+  }, [
+    addEthereumChainAlerts,
+    addressTrustSignalAlerts,
+    blockaidAlerts,
+    confirmationOriginAlerts,
+    isPayTransaction,
+    networkAndOriginSwitchingAlerts,
+    originTrustSignalAlerts,
+    selectedAccountAlerts,
+    signatureAlerts,
+    spenderAlerts,
+    transactionAlerts,
+  ]);
 }

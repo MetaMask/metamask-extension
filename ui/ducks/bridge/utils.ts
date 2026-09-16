@@ -13,6 +13,7 @@ import {
   formatChainIdToHex,
   formatAddressToCaipReference,
   ChainId,
+  assetIdsMatch,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { Numeric } from '../../../shared/lib/Numeric';
@@ -30,17 +31,6 @@ export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
 // Re-export isTronChainId from confirmations utils for consistency
 export { isTronChainId } from '../../pages/confirmations/utils/network';
-
-export const assetIdsMatch = (
-  left?: string | null,
-  right?: string | null,
-): boolean =>
-  left === right ||
-  Boolean(
-    left?.startsWith('eip155:') &&
-    right?.startsWith('eip155:') &&
-    left.toLowerCase() === right.toLowerCase(),
-  );
 
 /**
  *
@@ -241,10 +231,7 @@ export const getDefaultToToken = (
 ) => {
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[toChainId];
   // If commonPair is defined and is not the same as the fromToken, return it
-  if (
-    commonPair &&
-    fromAssetId.toLowerCase() !== commonPair.assetId.toLowerCase()
-  ) {
+  if (commonPair && !assetIdsMatch(fromAssetId, commonPair.assetId)) {
     return toBridgeToken(commonPair);
   }
 

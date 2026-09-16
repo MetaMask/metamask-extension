@@ -2,14 +2,18 @@ import React from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { DeveloperButton } from '../developer-button';
-import { MAINNET_MUSD } from '../../../constants/musd';
+import {
+  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
+  MUSD_TOKEN,
+  MUSD_TOKEN_ADDRESS,
+} from '../../../constants/musd';
 import { useDeveloperTransferTransaction } from '../utils';
 
 export const MusdConversionButton = () => {
   const { isLoading, handleTrigger } = useDeveloperTransferTransaction({
-    chainId: MAINNET_MUSD.chainId,
-    tokenAddress: MAINNET_MUSD.address,
-    decimals: MAINNET_MUSD.decimals,
+    chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
+    tokenAddress: MUSD_TOKEN_ADDRESS,
+    decimals: MUSD_TOKEN.decimals,
     type: TransactionType.musdConversion,
     errorMessage: 'Failed to create MUSD conversion transaction',
   });

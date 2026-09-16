@@ -6,7 +6,7 @@ import AccountDetailsModal from '../../page-objects/pages/dialog/account-details
 import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/batch-confirmation';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -54,7 +54,9 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
 
         // There is apparently an issue with Anvil network that prevents correct estimation of gas limit for upgrade.
         await upgradeAndBatchTxConfirmation.editGasLimitLondon('50000');
-        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -72,7 +74,9 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
         await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           "You're switching back to a standard account (EOA).",
         );
-        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

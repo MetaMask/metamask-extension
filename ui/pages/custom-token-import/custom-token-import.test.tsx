@@ -389,13 +389,11 @@ describe('CustomTokenImportPage', () => {
     );
   });
 
-  describe('when the assets-unify-state remote feature flag is enabled', () => {
+  describe('when the unified assets state is included in the build', () => {
     it('seeds AssetsController via importCustomAssetsBatch so the token appears in the manage-tokens list', async () => {
       const actions = getMockedActions();
 
-      await submitCustomToken({
-        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
-      });
+      await submitCustomToken();
 
       const expectedAssetId =
         'eip155:1/erc20:0x1111111111111111111111111111111111111111';
@@ -428,9 +426,7 @@ describe('CustomTokenImportPage', () => {
     it('passes the full token name (not the symbol) as the name field in metadata', async () => {
       const actions = getMockedActions();
 
-      await submitCustomToken({
-        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
-      });
+      await submitCustomToken();
 
       const expectedAssetId =
         'eip155:1/erc20:0x1111111111111111111111111111111111111111';
@@ -453,7 +449,6 @@ describe('CustomTokenImportPage', () => {
         'eip155:1/erc20:0x1111111111111111111111111111111111111111';
 
       await submitCustomToken({
-        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
         assetPreferences: {
           [assetId]: { hidden: true },
         },
@@ -485,6 +480,7 @@ describe('CustomTokenImportPage', () => {
         // list when assets-unify-state is on: the token remains in
         // `customAssets` (so the unified `getAllTokens` selector still
         // returns it) and `assetPreferences[assetId].hidden` is `true`.
+        // The hidden-token filter is still gated by the runtime FF (read path).
         customAssets: { [accountId]: [assetId] },
         assetsInfo: {
           [assetId]: {

@@ -32,13 +32,6 @@ const BACKGROUND_INITIALIZATION_TIMEOUT = 16_000; // 16 seconds
 // Timeout for the background to serialize and send the full state to the UI.
 const STATE_SYNC_TIMEOUT = 16_000; // 16 seconds
 
-type Message = {
-  data: {
-    method: string;
-    params?: Record<string, unknown>;
-  };
-};
-
 export class CriticalStartupErrorHandler {
   #port: browser.Runtime.Port;
 
@@ -277,7 +270,7 @@ export class CriticalStartupErrorHandler {
    *
    * @param message - The message received from the background script.
    */
-  #handler = async (message: Message) => {
+  #handler = async (message: unknown) => {
     if (!isObject(message) || !hasProperty(message, 'data')) {
       // Ignore messages that are not objects or do not have a 'data' property,
       // they're likely for some other purpose

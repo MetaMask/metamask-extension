@@ -1,5 +1,9 @@
 import React from 'react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { render } from '@testing-library/react';
+import type {
+  ActivityListItem,
+  MoneyAccountActivityItem,
+} from '../../../../shared/lib/activity/types';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { useActivityRowContent } from './useActivityRowContent';
@@ -17,8 +21,14 @@ jest.mock('../../../hooks/useFormatAsFiat', () => ({
   useFormatAsFiat: () => jest.fn(),
 }));
 
+const mockFormatCurrencyWithMinThreshold = jest.fn(
+  (amount: number, currency: string) => `${amount} ${currency}`,
+);
+
 jest.mock('../../../hooks/useFormatters', () => ({
-  useFormatters: () => ({ formatCurrencyWithMinThreshold: jest.fn() }),
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: mockFormatCurrencyWithMinThreshold,
+  }),
 }));
 
 jest.mock('../../../components/app/activity-list-item-avatar', () => ({
@@ -162,6 +172,116 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe('ETH → USDC');
   });
 
+  it('names the provider in the ramp order subtitle', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH', amount: '1' },
+        fiat: { amount: '100', currency: 'USD' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.title.props.children).toBe(
+      'activity_rampBuy_success_title|ETH',
+    );
+    expect(result.current.subtitle).toBe('MoonPay');
+  });
+
+  it('omits the ramp subtitle when the provider is unnamed', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH', amount: '1' },
+        provider: { id: '/providers/moonpay', name: '' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.subtitle).toBeUndefined();
+  });
+
+  it('shows a placeholder for a pending ramp order without a crypto amount', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.primaryAmount.props.children).toBe('... ETH');
+  });
+
+  it('shows an ellipsis without a symbol when pending and symbol is missing', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.primaryAmount.props.children).toBe('...');
+  });
+
+  it('uses the order fiat amount for the secondary amount on ramp sells', () => {
+    const activity = {
+      type: 'rampSell',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'out', symbol: 'ETH', amount: '1' },
+        fiat: { amount: '100', currency: 'USD' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.subtitle).toBe('MoonPay');
+    expect(result.current.title.props.children).toBe(
+      'activity_rampSell_success_title|ETH',
+    );
+    expect(result.current.secondaryAmount).toBe('100 USD');
+    expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(100, 'USD');
+  });
+
   it('shows the display name in send To: subtitles', () => {
     const toAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
     mockGetDisplayName.mockReturnValue('Alice');
@@ -226,5 +346,78 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe(
       'activity_receive_success_description|Bob',
     );
+  });
+
+  describe('money account rows', () => {
+    const MUSD_ASSET_ID = 'eip155:1/erc20:0xmusd';
+
+    const buildMoneyActivity = (
+      type: MoneyAccountActivityItem['type'],
+      fiatAmount?: string,
+    ): MoneyAccountActivityItem => ({
+      type,
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        ...(fiatAmount === undefined ? {} : { fiat: { amount: fiatAmount } }),
+        token: {
+          assetId: MUSD_ASSET_ID,
+          direction: type === 'moneyAccountDeposit' ? 'in' : 'out',
+          symbol: 'mUSD',
+        },
+      },
+    });
+
+    it('renders a deposit as a positive USD amount flowing in', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5'),
+        ),
+      );
+
+      expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(
+        25.5,
+        'usd',
+      );
+      expect(result.current.primaryAmount.props.children).toBe('25.5 usd');
+      expect(result.current.primaryAmount.props.className).toBe(
+        'text-success-default',
+      );
+    });
+
+    it('negates the withdrawal amount and does not mark it as incoming', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountWithdraw', '25.5'),
+        ),
+      );
+
+      expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(
+        -25.5,
+        'usd',
+      );
+      expect(result.current.primaryAmount.props.children).toBe('-25.5 usd');
+      expect(result.current.primaryAmount.props.className).toBe('');
+    });
+
+    it('omits the amount when the activity has no fiat value', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildMoneyActivity('moneyAccountDeposit')),
+      );
+
+      expect(result.current.primaryAmount).toBeUndefined();
+    });
+
+    it('shows the mUSD token avatar', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildMoneyActivity('moneyAccountDeposit', '1')),
+      );
+
+      const { getByTestId } = render(result.current.avatar);
+      expect(getByTestId('activity-avatar')).toHaveTextContent(MUSD_ASSET_ID);
+    });
   });
 });

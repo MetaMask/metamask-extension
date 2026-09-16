@@ -4,6 +4,7 @@ exports[`App Header locked state matches snapshot: locked 1`] = `
 <div>
   <div
     class="mm-box multichain-app-header mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+    data-testid="parent-selector-header-navbar"
   >
     <div
       class="mm-box multichain-app-header__lock-contents mm-box--padding-2 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
@@ -91,6 +92,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
   </div>
   <div
     class="mm-box multichain-app-header mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-alternative"
+    data-testid="parent-selector-header-navbar"
   >
     <div
       class="mm-box multichain-app-header__contents flex mm-box--padding-2 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
@@ -157,57 +159,61 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: 0px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/arbitrum.svg"
                           />
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/pol-token.svg"
                           />
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/bnb.svg"
                           />
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
-                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[18px] w-[18px] border-background-default border rounded-md"
                         >
                           <img
-                            alt="network logo"
-                            class="mm-avatar-network__network-image"
+                            alt="Network logo"
+                            class="size-full object-contain"
+                            data-testid="avatar-group-network-image"
                             src="./images/eth_logo.svg"
                           />
                         </div>
@@ -222,7 +228,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+                    d="M20.25 3h-12a.75.75 0 0 0-.75.75V7.5H3.75a.75.75 0 0 0-.75.75v12a.75.75 0 0 0 .75.75h12a.75.75 0 0 0 .75-.75V16.5h3.75a.75.75 0 0 0 .75-.75v-12a.75.75 0 0 0-.75-.75M15 19.5H4.5V9H15Zm4.5-4.5h-3V8.25a.75.75 0 0 0-.75-.75H9v-3h10.5Z"
                   />
                 </svg>
               </div>
@@ -241,7 +247,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           />
           <button
             aria-label="Account options"
-            class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             data-testid="account-options-menu-button"
           >
             <svg
@@ -251,11 +257,426 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M3 18v-2h18v2zm0-5v-2h18v2zm0-5V6h18v2z"
+                d="M21 12a.75.75 0 0 1-.75.75H3.75a.75.75 0 0 1 0-1.5h16.5A.75.75 0 0 1 21 12M3.75 6.75h16.5a.75.75 0 0 0 0-1.5H3.75a.75.75 0 0 0 0 1.5m16.5 10.5H3.75a.75.75 0 0 0 0 1.5h16.5a.75.75 0 0 0 0-1.5"
               />
             </svg>
           </button>
         </div>
+        <dialog
+          class="group box-border border-0 bg-transparent p-0 m-0 ms-auto me-[max(0px,calc((100vw-var(--width-max))/2))] h-full max-h-full w-[min(400px,100%)] overflow-clip [translate:none] transition-[display,overlay] transition-discrete duration-300 ease-in-out motion-reduce:duration-[0.01ms] backdrop:opacity-0 open:backdrop:opacity-100 backdrop:transition-[opacity,display,overlay] backdrop:transition-discrete backdrop:duration-[var(--global-drawer-open,300ms)] backdrop:ease-linear starting:open:backdrop:opacity-0 motion-reduce:backdrop:duration-[0.01ms] max-[575px]:mx-0 max-[575px]:w-full max-[575px]:max-w-full"
+          closedby="any"
+        >
+          <div
+            class="h-full w-full [translate:100%_0] transition-[translate] duration-300 ease-in-out motion-reduce:duration-[0.01ms] group-open:[translate:0_0] group-open:[animation:var(--global-drawer-open,slide-in-from-right_300ms_ease-in-out_backwards)] starting:group-open:[translate:var(--global-drawer-open,100%_0)] motion-reduce:group-open:animate-none"
+          >
+            <div
+              class="bg-default h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
+            >
+              <div
+                class="flex-shrink-0 flex flex-row items-center justify-start p-4 w-full overflow-hidden"
+              >
+                <button
+                  aria-label="Close"
+                  class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                  data-testid="drawer-close-button"
+                >
+                  <svg
+                    class="inline-block w-6 h-6 text-inherit"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                class="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
+              >
+                <nav
+                  class="global-menu-list "
+                >
+                  <div
+                    class="flex flex-col"
+                  >
+                    <button
+                      class="grid grid-cols-[min-content_auto] items-center w-full p-4 text-start text-inherit [font-size:inherit] bg-transparent cursor-pointer hover:bg-default-hover hover:text-inherit active:bg-default-pressed active:text-inherit focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2 first:rounded-t-none last:rounded-b-none"
+                      data-testid="discover"
+                    >
+                      <svg
+                        class="inline-block w-6 h-6 text-icon-alternative mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M20.25 10.5v9a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 5.25 9H7.5a.75.75 0 0 1 0 1.5H5.25v9h13.5v-9H16.5a.75.75 0 0 1 0-1.5h2.25a1.5 1.5 0 0 1 1.5 1.5M8.78 6.53l2.47-2.47v8.69a.75.75 0 0 0 1.5 0V4.06l2.47 2.47a.75.75 0 0 0 1.06-1.06l-3.75-3.75a.75.75 0 0 0-1.06 0L7.72 5.47a.75.75 0 0 0 1.06 1.06"
+                        />
+                      </svg>
+                      <div>
+                        <div
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                        >
+                          Discover
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                  <div
+                    class="flex flex-col"
+                  >
+                    <div
+                      class="w-full px-2 py-2"
+                    >
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
+                      />
+                    </div>
+                    <div
+                      class="pt-4 pb-2 mx-4"
+                    >
+                      <p
+                        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                      >
+                        Manage
+                      </p>
+                    </div>
+                    <a
+                      class="grid grid-cols-[min-content_auto] items-center w-full p-4 text-start text-inherit [font-size:inherit] bg-transparent cursor-pointer hover:bg-default-hover hover:text-inherit active:bg-default-pressed active:text-inherit focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2 first:rounded-t-none last:rounded-b-none"
+                      data-testid="global-menu-contacts"
+                      state="[object Object]"
+                      to="/contacts?from=%2F"
+                    >
+                      <svg
+                        class="inline-block w-6 h-6 text-icon-alternative mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M21.75 4.5H15A3.75 3.75 0 0 0 12 6a3.75 3.75 0 0 0-3-1.5H2.25a.75.75 0 0 0-.75.75v13.5a.75.75 0 0 0 .75.75H9a2.25 2.25 0 0 1 2.25 2.25.75.75 0 0 0 1.5 0A2.25 2.25 0 0 1 15 19.5h6.75a.75.75 0 0 0 .75-.75V5.25a.75.75 0 0 0-.75-.75M9 18H3V6h6a2.25 2.25 0 0 1 2.25 2.25v10.5A3.73 3.73 0 0 0 9 18m12 0h-6a3.73 3.73 0 0 0-2.25.75V8.25A2.25 2.25 0 0 1 15 6h6Z"
+                        />
+                      </svg>
+                      <div>
+                        <div
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                        >
+                          <div
+                            class="flex flex-row items-center justify-between w-full"
+                          >
+                            <div
+                              class="flex-1 min-w-0"
+                            >
+                              Contacts
+                            </div>
+                            <div
+                              class="flex flex-row items-center ml-2 flex-shrink-0"
+                            >
+                              <svg
+                                class="inline-block w-4 h-4 text-icon-alternative"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <span
+                      class="grid grid-cols-[min-content_auto] items-center w-full p-4 text-start text-inherit [font-size:inherit] bg-transparent cursor-pointer hover:bg-default-hover hover:text-inherit active:bg-default-pressed active:text-inherit focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2 first:rounded-t-none last:rounded-b-none"
+                      data-testid="global-menu-connected-sites"
+                    >
+                      <svg
+                        class="inline-block w-6 h-6 text-icon-alternative mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M19.5 3.75h-15A1.5 1.5 0 0 0 3 5.25v5.25c0 4.943 2.393 7.938 4.4 9.58 2.162 1.768 4.312 2.368 4.406 2.394a.75.75 0 0 0 .394 0c.093-.026 2.241-.626 4.406-2.394C18.607 18.438 21 15.443 21 10.5V5.25a1.5 1.5 0 0 0-1.5-1.5m0 6.75c0 3.475-1.28 6.296-3.806 8.383A12.1 12.1 0 0 1 12 20.964a12 12 0 0 1-3.649-2.044C5.796 16.83 4.5 13.997 4.5 10.5V5.25h15ZM7.72 13.28a.75.75 0 0 1 1.06-1.06l1.72 1.72 4.72-4.72a.75.75 0 0 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0Z"
+                        />
+                      </svg>
+                      <div>
+                        <div
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                        >
+                          <div
+                            class="flex flex-row items-center justify-between w-full"
+                          >
+                            <div
+                              class="flex-1 min-w-0"
+                            >
+                              Permissions
+                            </div>
+                            <div
+                              class="flex flex-row items-center ml-2 flex-shrink-0"
+                            >
+                              <svg
+                                class="inline-block w-4 h-4 text-icon-alternative"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </span>
+                    <a
+                      class="grid grid-cols-[min-content_auto] items-center w-full p-4 text-start text-inherit [font-size:inherit] bg-transparent cursor-pointer hover:bg-default-hover hover:text-inherit active:bg-default-pressed active:text-inherit focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2 first:rounded-t-none last:rounded-b-none"
+                      data-testid="global-menu-networks"
+                      state="[object Object]"
+                      to="/networks?drawerOpen=true"
+                    >
+                      <svg
+                        class="inline-block w-6 h-6 text-icon-alternative mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M16.5 14.25h3a1.5 1.5 0 0 0 1.5-1.5v-3a1.5 1.5 0 0 0-1.5-1.5h-3a1.5 1.5 0 0 0-1.5 1.5v.75H8.25v-3H9A1.5 1.5 0 0 0 10.5 6V3A1.5 1.5 0 0 0 9 1.5H6A1.5 1.5 0 0 0 4.5 3v3A1.5 1.5 0 0 0 6 7.5h.75V18A2.25 2.25 0 0 0 9 20.25h6V21a1.5 1.5 0 0 0 1.5 1.5h3A1.5 1.5 0 0 0 21 21v-3a1.5 1.5 0 0 0-1.5-1.5h-3A1.5 1.5 0 0 0 15 18v.75H9a.75.75 0 0 1-.75-.75v-6H15v.75a1.5 1.5 0 0 0 1.5 1.5M6 3h3v3H6Zm10.5 15h3v3h-3Zm0-8.25h3v3h-3Z"
+                        />
+                      </svg>
+                      <div>
+                        <div
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                        >
+                          <div
+                            class="flex flex-row items-center justify-between w-full"
+                          >
+                            <div
+                              class="flex-1 min-w-0"
+                            >
+                              Networks
+                            </div>
+                            <div
+                              class="flex flex-row items-center ml-2 flex-shrink-0"
+                            >
+                              <svg
+                                class="inline-block w-4 h-4 text-icon-alternative"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <a
+                      class="grid grid-cols-[min-content_auto] items-center w-full p-4 text-start text-inherit [font-size:inherit] bg-transparent cursor-pointer hover:bg-default-hover hover:text-inherit active:bg-default-pressed active:text-inherit focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2 first:rounded-t-none last:rounded-b-none"
+                      data-testid="global-menu-snaps"
+                      state="[object Object]"
+                      to="/snaps?from=%2F"
+                    >
+                      <div
+                        class="relative inline-flex self-start mr-3"
+                      >
+                        <div
+                          class="inline-flex"
+                        >
+                          <svg
+                            class="inline-block w-6 h-6 text-icon-alternative"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="m20.97 6.202-8.25-4.514a1.49 1.49 0 0 0-1.44 0L3.03 6.203a1.5 1.5 0 0 0-.78 1.313v8.966a1.5 1.5 0 0 0 .78 1.313l8.25 4.516a1.49 1.49 0 0 0 1.44 0l8.25-4.516a1.5 1.5 0 0 0 .78-1.313V7.517a1.5 1.5 0 0 0-.78-1.315M12 3l7.532 4.125L12 11.25 4.468 7.125ZM3.75 8.438l7.5 4.104v8.043l-7.5-4.102Zm9 12.147v-8.04l7.5-4.107v8.041Z"
+                            />
+                          </svg>
+                        </div>
+                        <div
+                          class="absolute inline-flex items-center justify-center"
+                          style="top: 7%; right: 7%; transform: translate(calc(50% + 4px), -50%);"
+                        >
+                          <div
+                            class="inline-flex rounded-full border-2 border-background-default"
+                          >
+                            <div
+                              class="z-10 rounded-full border-2 h-2 w-2 bg-primary-default border-primary-default"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                        >
+                          <div
+                            class="flex flex-row items-center justify-between w-full"
+                          >
+                            <div
+                              class="flex-1 min-w-0"
+                            >
+                              Snaps
+                            </div>
+                            <div
+                              class="flex flex-row items-center ml-2 flex-shrink-0"
+                            >
+                              <svg
+                                class="inline-block w-4 h-4 text-icon-alternative"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                  <div
+                    class="flex flex-col"
+                  >
+                    <div
+                      class="w-full px-2 py-2"
+                    >
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
+                      />
+                    </div>
+                    <div
+                      class="pt-4 pb-2 mx-4"
+                    >
+                      <p
+                        class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                      >
+                        Help and settings
+                      </p>
+                    </div>
+                    <span
+                      class="grid grid-cols-[min-content_auto] items-center w-full p-4 text-start text-inherit [font-size:inherit] bg-transparent cursor-pointer hover:bg-default-hover hover:text-inherit active:bg-default-pressed active:text-inherit focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2 first:rounded-t-none last:rounded-b-none"
+                      data-testid="global-menu-settings"
+                    >
+                      <svg
+                        class="inline-block w-6 h-6 text-icon-alternative mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 7.5a4.5 4.5 0 1 0 4.5 4.5A4.505 4.505 0 0 0 12 7.5m0 7.5a3 3 0 1 1 3-3 3 3 0 0 1-3 3m8.25-2.797q.006-.203 0-.405l1.399-1.748a.75.75 0 0 0 .138-.662 10 10 0 0 0-1.02-2.46.75.75 0 0 0-.562-.37l-2.224-.247q-.138-.146-.281-.281l-.262-2.23a.75.75 0 0 0-.37-.562 10 10 0 0 0-2.46-1.019.75.75 0 0 0-.663.14L12.203 3.75h-.405L10.05 2.354a.75.75 0 0 0-.662-.139 10 10 0 0 0-2.46 1.02.75.75 0 0 0-.37.563l-.247 2.227q-.146.14-.281.282l-2.23.255a.75.75 0 0 0-.562.37 10 10 0 0 0-1.019 2.46.75.75 0 0 0 .14.663l1.391 1.742v.406L2.354 13.95a.75.75 0 0 0-.139.662 10 10 0 0 0 1.02 2.46.75.75 0 0 0 .563.37l2.224.247q.14.146.28.281l.26 2.23a.75.75 0 0 0 .37.562 10 10 0 0 0 2.46 1.019.75.75 0 0 0 .663-.14l1.742-1.391q.203.006.405 0l1.748 1.399a.75.75 0 0 0 .662.138 10 10 0 0 0 2.46-1.02.75.75 0 0 0 .37-.562l.247-2.224q.146-.138.281-.281l2.23-.262a.75.75 0 0 0 .562-.37 10 10 0 0 0 1.019-2.46.75.75 0 0 0-.14-.663Zm-1.51-.61a7 7 0 0 1 0 .814.75.75 0 0 0 .164.514l1.33 1.662a8.6 8.6 0 0 1-.584 1.406l-2.119.24a.75.75 0 0 0-.478.248 7 7 0 0 1-.575.575.75.75 0 0 0-.248.478l-.235 2.117a8.6 8.6 0 0 1-1.407.584l-1.663-1.33a.75.75 0 0 0-.468-.164h-.045a7 7 0 0 1-.814 0 .75.75 0 0 0-.514.163l-1.667 1.331a8.6 8.6 0 0 1-1.406-.584l-.24-2.116a.75.75 0 0 0-.248-.478 7 7 0 0 1-.575-.575.75.75 0 0 0-.478-.248l-2.117-.236a8.6 8.6 0 0 1-.584-1.407l1.33-1.663a.75.75 0 0 0 .163-.513 7 7 0 0 1 0-.814.75.75 0 0 0-.163-.514L3.77 9.417a8.6 8.6 0 0 1 .584-1.406l2.116-.24a.75.75 0 0 0 .478-.248 7 7 0 0 1 .576-.575.75.75 0 0 0 .248-.48l.235-2.115a8.6 8.6 0 0 1 1.407-.584l1.663 1.33a.75.75 0 0 0 .513.163 7 7 0 0 1 .814 0 .75.75 0 0 0 .514-.163l1.666-1.33a8.6 8.6 0 0 1 1.406.584l.24 2.116a.75.75 0 0 0 .248.478 7 7 0 0 1 .575.576.75.75 0 0 0 .478.247l2.117.235a8.6 8.6 0 0 1 .584 1.407l-1.33 1.663a.75.75 0 0 0-.163.518Z"
+                        />
+                      </svg>
+                      <div>
+                        <div
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                        >
+                          <div
+                            class="flex flex-row items-center justify-between w-full"
+                          >
+                            <div
+                              class="flex-1 min-w-0"
+                            >
+                              Settings
+                            </div>
+                            <div
+                              class="flex flex-row items-center ml-2 flex-shrink-0"
+                            >
+                              <svg
+                                class="inline-block w-4 h-4 text-icon-alternative"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </span>
+                    <button
+                      class="grid grid-cols-[min-content_auto] items-center w-full p-4 text-start text-inherit [font-size:inherit] bg-transparent cursor-pointer hover:bg-default-hover hover:text-inherit active:bg-default-pressed active:text-inherit focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2 first:rounded-t-none last:rounded-b-none"
+                      data-testid="global-menu-support"
+                    >
+                      <svg
+                        class="inline-block w-6 h-6 text-icon-alternative mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M20.25 3.75H3.75a1.5 1.5 0 0 0-1.5 1.5v12a1.5 1.5 0 0 0 1.5 1.5h5.665l1.283 2.244a1.5 1.5 0 0 0 2.604 0l1.283-2.244h5.665a1.5 1.5 0 0 0 1.5-1.5v-12a1.5 1.5 0 0 0-1.5-1.5m0 13.5h-6.1a.75.75 0 0 0-.657.375l-1.5 2.625-1.5-2.625a.75.75 0 0 0-.656-.375H3.75v-12h16.5Z"
+                        />
+                        <path
+                          d="M12.9 15.3a.9.9 0 1 1-.9-.9.9.9 0 0 1 .9.9M12 7.2c-1.654 0-3 1.211-3 2.7v.3a.6.6 0 0 0 1.2 0v-.3c0-.825.808-1.5 1.8-1.5s1.8.675 1.8 1.5-.808 1.5-1.8 1.5a.6.6 0 0 0-.6.6v.6a.6.6 0 0 0 1.2 0v-.054c1.368-.251 2.4-1.343 2.4-2.646 0-1.489-1.345-2.7-3-2.7"
+                        />
+                      </svg>
+                      <div>
+                        <div
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                        >
+                          <div
+                            class="flex flex-row items-center justify-between"
+                          >
+                            Support
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                  <div
+                    class="flex flex-col"
+                  >
+                    <div
+                      class="w-full px-2 py-2"
+                    >
+                      <hr
+                        class="m-0 w-full border-0 border-t border-muted"
+                      />
+                    </div>
+                    <button
+                      class="grid grid-cols-[min-content_auto] items-center w-full p-4 text-start text-inherit [font-size:inherit] bg-transparent cursor-pointer hover:bg-default-hover hover:text-inherit active:bg-default-pressed active:text-inherit focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2 first:rounded-t-none last:rounded-b-none"
+                      data-testid="global-menu-lock"
+                    >
+                      <svg
+                        class="inline-block w-6 h-6 text-error-default mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M19.5 7.5h-3V5.25a4.5 4.5 0 0 0-9 0V7.5h-3A1.5 1.5 0 0 0 3 9v10.5A1.5 1.5 0 0 0 4.5 21h15a1.5 1.5 0 0 0 1.5-1.5V9a1.5 1.5 0 0 0-1.5-1.5M9 5.25a3 3 0 0 1 6 0V7.5H9ZM19.5 19.5h-15V9h15zm-6.375-5.25A1.125 1.125 0 1 1 12 13.125a1.125 1.125 0 0 1 1.125 1.125"
+                        />
+                      </svg>
+                      <div>
+                        <div
+                          class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                        >
+                          Lock
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </dialog>
       </div>
     </div>
   </div>

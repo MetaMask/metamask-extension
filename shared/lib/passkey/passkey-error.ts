@@ -1,15 +1,11 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 
+import { PasskeyPRFRequiredError } from './passkey-capabilities';
 import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
 
-/**
- * Stable programmatic codes for passkey-related errors thrown by the extension.
- */
-export const ExtensionPasskeyErrorCode = {
-  VaultKeyRenewalFailed: 'extension_vault_key_renewal_failed',
-} as const;
-
 export type TranslateFn = (key: string, substitutions?: string[]) => string;
+
+const PASSKEY_PRF_REQUIRED_ERROR_CODE = 'prf_required';
 
 /**
  * Maps passkey error `code` strings (controller + extension) to extension `messages.json` keys.
@@ -30,8 +26,9 @@ const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<string, string> = {
   [PasskeyControllerErrorCode.VaultKeyDecryptionFailed]:
     'passkeyErrorVaultKeyDecryptionFailed',
   [PasskeyControllerErrorCode.VaultKeyMismatch]: 'passkeyErrorVaultKeyMismatch',
-  [ExtensionPasskeyErrorCode.VaultKeyRenewalFailed]:
+  [PasskeyControllerErrorCode.VaultKeyRenewalFailed]:
     'passkeyErrorVaultKeyRenewalFailed',
+  [PASSKEY_PRF_REQUIRED_ERROR_CODE]: 'passkeyErrorNotSupported',
 };
 
 /**
@@ -65,6 +62,9 @@ export function getPasskeyControllerErrorCode(error: unknown): string | null {
 export function getPasskeyErrorCode(err: unknown): string {
   if (err instanceof PasskeyCeremonyTimeoutError) {
     return 'timeout';
+  }
+  if (err instanceof PasskeyPRFRequiredError) {
+    return PASSKEY_PRF_REQUIRED_ERROR_CODE;
   }
   if (err instanceof Error) {
     if (err.name === 'NotAllowedError') {
@@ -105,8 +105,6 @@ function getCauseCode(data: unknown): unknown {
  * **Controller:** `PasskeyController` throws `PasskeyControllerError` with a stable
  * string `code` (see `@metamask/passkey-controller`).
  *
- * **Extension:** the background may attach `ExtensionPasskeyErrorCode` on the same shape.
- *
  * **Extension UI:** MetaRPC + `serializeError` (`createMetaRPCHandler`) wraps failures;
  * the string `code` is on `data.cause`, not the numeric `JsonRpcError.code`.
  *
@@ -126,6 +124,13 @@ export function translatePasskeyError(
   t: TranslateFn,
   authMethodLabel: string,
 ): string | null {
+  if (error instanceof PasskeyPRFRequiredError) {
+    return translatePasskeyCode(
+      PASSKEY_PRF_REQUIRED_ERROR_CODE,
+      t,
+      authMethodLabel,
+    );
+  }
   const code = getPasskeyControllerErrorCode(error);
   if (code === null) {
     return null;

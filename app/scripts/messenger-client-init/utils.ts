@@ -69,6 +69,7 @@ export type MessengerClientsToInitialize =
   | 'PPOMController'
   | 'QrSyncController'
   | 'SentinelApiService'
+  | 'ShieldSubscriptionService'
   | 'TransactionPayController'
   | 'UserStorageController';
 

@@ -1,13 +1,16 @@
 import { BigNumber } from 'bignumber.js';
 import {
   ChainId,
+  formatProviderLabel,
   getNativeAssetForChainId,
-  type QuoteResponseV1,
+  type DeepPartial,
+  type QuoteResponse,
 } from '@metamask/bridge-controller';
 import {
-  formatTokenAmount,
+  convertFiatToTokenAmount,
+  convertTokenAmountToFiat,
   formatCurrencyAmount,
-  formatProviderLabel,
+  formatTokenAmount,
   readMmFee,
 } from './quote';
 
@@ -124,6 +127,16 @@ describe('Bridge quote utils', () => {
     });
   });
 
+  it('converts token amounts and handles unavailable rates', () => {
+    expect(convertTokenAmountToFiat('1.234', 2.5)).toBe('3.09');
+    expect(convertTokenAmountToFiat('1', null)).toBeUndefined();
+  });
+
+  it('converts amounts and handles unavailable token precision', () => {
+    expect(convertFiatToTokenAmount('3.09', 2.5, 6)).toBe('1.236');
+    expect(convertFiatToTokenAmount('3.09', 2.5, undefined)).toBeUndefined();
+  });
+
   describe('formatProviderLabel', () => {
     it('should format provider label with bridgeId and bridges', () => {
       const args = {
@@ -134,12 +147,6 @@ describe('Bridge quote utils', () => {
       const result = formatProviderLabel(args);
 
       expect(result).toBe('bridge1_provider1');
-    });
-
-    it('should handle undefined args', () => {
-      const result = formatProviderLabel(undefined);
-
-      expect(result).toBe('undefined_undefined');
     });
 
     it('should handle empty bridges array', () => {
@@ -163,22 +170,25 @@ describe('Bridge quote utils', () => {
       baseBpsFee?: number;
       discountType?: string | null;
       quoteBpsFee?: number;
-    }) =>
-      ({
-        quote: {
-          feeData: {
-            metabridge: {
+    }): DeepPartial<QuoteResponse> => ({
+      quote: {
+        feeData: {
+          metabridge: [
+            {
               baseBpsFee,
               discountType,
               quoteBpsFee,
             },
-          },
+          ],
         },
-      }) as unknown as QuoteResponseV1;
+      },
+    });
 
     it('returns fee percentages and no discount when discountType is absent', () => {
       expect(
-        readMmFee(createQuote({ baseBpsFee: 87.5, quoteBpsFee: 50 })),
+        readMmFee(
+          createQuote({ baseBpsFee: 87.5, quoteBpsFee: 50 }) as QuoteResponse,
+        ),
       ).toStrictEqual({
         baseFeePercentage: '0.875',
         discountType: undefined,
@@ -191,7 +201,11 @@ describe('Bridge quote utils', () => {
       it(`returns discounted fee data for ${discountType} discountType`, () => {
         expect(
           readMmFee(
-            createQuote({ baseBpsFee: 87.5, discountType, quoteBpsFee: 50 }),
+            createQuote({
+              baseBpsFee: 87.5,
+              discountType,
+              quoteBpsFee: 50,
+            }) as QuoteResponse,
           ),
         ).toStrictEqual({
           baseFeePercentage: '0.875',
@@ -209,7 +223,7 @@ describe('Bridge quote utils', () => {
             baseBpsFee: 87.5,
             discountType: 'promo',
             quoteBpsFee: 0,
-          }),
+          }) as QuoteResponse,
         ),
       ).toStrictEqual({
         baseFeePercentage: '0.875',

@@ -1,5 +1,3 @@
-'use no memo';
-
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
@@ -18,6 +16,7 @@ import { selectIsPayHardwareEnabled } from '../../../selectors/feature-flags';
 
 const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
   TransactionType.predictDeposit,

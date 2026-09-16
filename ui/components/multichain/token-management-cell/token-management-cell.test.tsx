@@ -36,9 +36,7 @@ describe('TokenManagementCell', () => {
       testIdSuffix: 'musd',
     });
 
-    expect(
-      screen.getByText(messages.musdMetaMaskUsd.message),
-    ).toBeInTheDocument();
+    expect(screen.getByText('MetaMask USD')).toBeInTheDocument();
     expect(screen.getByText('200.23 mUSD')).toBeInTheDocument();
   });
 

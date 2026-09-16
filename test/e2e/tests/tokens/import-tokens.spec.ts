@@ -13,9 +13,10 @@ import {
   mockSupportedVsCurrencies,
 } from '../btc/mocks/price-api';
 import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
-import NetworkManager, {
+import SelectNetworkModal, {
   NetworkId,
-} from '../../page-objects/pages/network-manager';
+} from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;
@@ -242,7 +243,7 @@ async function mockTokens(mockServer: Mockttp) {
               address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
               symbol: 'CHANGE',
               decimals: 18,
-              name: 'Changex',
+              name: 'ChangeX',
               iconUrl: '',
               type: 'erc20',
               aggregators: [],
@@ -396,7 +397,7 @@ async function mockAssetsV3(mockServer: Mockttp) {
         },
         '0x7051faed0775f664a0286af4f75ef5ed74e02754': {
           assetId: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
-          name: 'Changex',
+          name: 'ChangeX',
           symbol: 'CHANGE',
           decimals: 18,
         },
@@ -431,7 +432,11 @@ async function mockAssetsV3(mockServer: Mockttp) {
 
       const results = Object.entries(assetMap)
         .filter(([key]) => assetIds.includes(key))
-        .map(([, value]) => value);
+        .map(([, value]) =>
+          value.assetId.includes('/erc20:')
+            ? { ...value, occurrences: 100 }
+            : value,
+        );
 
       return { statusCode: 200, json: results };
     });
@@ -698,9 +703,11 @@ describe('Import flow', function () {
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);
-        const networkManagerPage = new NetworkManager(driver);
-        await networkManagerPage.openNetworkManager();
-        await networkManagerPage.selectNetworkByChainId(NetworkId.POLYGON);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByChainId(NetworkId.POLYGON);
 
         // the token symbol is prefilled because of the mock
         await tokensTab.importCustomTokenByChain(

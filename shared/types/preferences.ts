@@ -8,11 +8,14 @@ export type Preferences = {
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
   isBasicFunctionalityConsolidatedEnabled: boolean;
+  basicFunctionalityMigrationNotification: 'modal' | 'toast' | null;
+  basicFunctionalityMigrationNotificationDismissed: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
   showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
+  showTickerWidget: boolean;
   showMultiRpcModal: boolean;
   showNativeTokenAsMainBalance: boolean;
   showTestNetworks: boolean;

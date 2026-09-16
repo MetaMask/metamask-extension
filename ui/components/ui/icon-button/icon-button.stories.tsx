@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import IconButton from './icon-button';
 import { IconColor } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';

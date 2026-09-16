@@ -157,11 +157,7 @@ export default function SrpInputImport({
         checkForInvalidWords();
       }
 
-      if (
-        (SRP_LENGTHS.includes(draftSrp.length) &&
-          isValidMnemonic(draftSrp.map((word) => word.word).join(' '))) ||
-        draftSrp.length === MAX_SRP_LENGTH
-      ) {
+      if (draftSrp.length === MAX_SRP_LENGTH) {
         return;
       }
 
@@ -439,7 +435,7 @@ export default function SrpInputImport({
                 data-testid="srp-input-import__srp-note"
                 className="srp-input-import__initial-input"
                 placeholder={t('onboardingSrpInputPlaceholder')}
-                rows={7}
+                rows={5}
                 value={firstWord}
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}

@@ -68,4 +68,35 @@ describe('getProviderLimitMessage', () => {
   it('returns null when amount is not positive', () => {
     expect(getProviderLimitMessage({ ...baseArgs, amount: 0 })).toBeNull();
   });
+
+  it('returns a backend minimum limit error when structured limits are missing', () => {
+    expect(
+      getProviderLimitMessage({
+        ...baseArgs,
+        provider: { id: '/providers/x', name: 'X' } as unknown as Provider,
+        amount: 100,
+        backendError: 'Minimum purchase is 24 USD',
+      }),
+    ).toBe('Minimum purchase is 24 USD');
+  });
+
+  it('returns a backend maximum limit error when the amount is within stale structured limits', () => {
+    expect(
+      getProviderLimitMessage({
+        ...baseArgs,
+        amount: 100,
+        backendError: 'Maximum purchase is 90 USD',
+      }),
+    ).toBe('Maximum purchase is 90 USD');
+  });
+
+  it('ignores non-limit backend errors', () => {
+    expect(
+      getProviderLimitMessage({
+        ...baseArgs,
+        amount: 100,
+        backendError: 'Provider temporarily unavailable',
+      }),
+    ).toBeNull();
+  });
 });

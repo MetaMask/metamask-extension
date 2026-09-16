@@ -14,13 +14,13 @@ const createDiscountedQuoteWithoutApproval = () =>
       ...quote.quote,
       feeData: {
         ...quote.quote.feeData,
-        metabridge: {
-          ...quote.quote.feeData.metabridge,
+        metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+          ...fee,
           amount: '1000000000000000000',
           quoteBpsFee: 50,
           baseBpsFee: 87.5,
           discountType: 'vip',
-        },
+        })),
       },
     },
   }));

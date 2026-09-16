@@ -1,4 +1,9 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
+import {
+  Box as DSBox,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
@@ -29,6 +34,8 @@ import { useFormatters } from '../../../../../hooks/useFormatters';
 import { AccountTypeLabel } from '../account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 
+export type TokenTagRenderer = (token: AssetType) => ReactNode;
+
 type AssetRowProps = {
   asset: AssetType;
   onClick?: () => void;
@@ -37,6 +44,7 @@ type AssetRowProps = {
 
 type TokenAssetProps = AssetRowProps & {
   hideBalances?: boolean;
+  tagRenderers?: TokenTagRenderer[];
 };
 
 const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
@@ -103,7 +111,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        style={{ flex: 1, overflow: 'hidden' }}
+        style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}
       >
         <Text
           variant={TextVariant.bodyMdMedium}
@@ -130,6 +138,7 @@ const TokenAsset = ({
   onClick,
   isSelected,
   hideBalances = false,
+  tagRenderers,
 }: TokenAssetProps) => {
   const tokenData = asset;
   const {
@@ -158,6 +167,10 @@ const TokenAsset = ({
     : (image ?? '');
 
   const handleClick = disabled ? undefined : onClick;
+  const tag = tagRenderers?.reduce<ReactNode>(
+    (found, render) => found ?? render(asset),
+    null,
+  );
 
   return (
     <Box
@@ -177,7 +190,7 @@ const TokenAsset = ({
       paddingRight={4}
       style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
     >
-      <Box marginRight={4}>
+      <Box marginRight={4} className="shrink-0">
         <BadgeWrapper
           badge={
             chainId ? (
@@ -200,22 +213,29 @@ const TokenAsset = ({
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        style={{ flex: 1, overflow: 'hidden' }}
+        style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+        <DSBox
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          className="min-w-0 overflow-hidden"
         >
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-            marginRight={1}
-          >
-            {name}
-          </Text>
-          <AccountTypeLabel label={typeLabel} />
-        </Box>
+          <DSBox className="mr-1 min-w-0 overflow-hidden">
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+              ellipsis
+            >
+              {name}
+            </Text>
+          </DSBox>
+          {tag ? <DSBox className="shrink-0">{tag}</DSBox> : null}
+          {typeLabel ? (
+            <DSBox className="shrink-0">
+              <AccountTypeLabel label={typeLabel} />
+            </DSBox>
+          ) : null}
+        </DSBox>
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
@@ -230,6 +250,7 @@ const TokenAsset = ({
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.flexEnd}
           marginLeft={2}
+          className="shrink-0"
         >
           <Text variant={TextVariant.bodyMdMedium}>
             {formatCurrencyWithMinThreshold(
@@ -254,6 +275,7 @@ export const Asset = ({
   onClick,
   isSelected,
   hideBalances,
+  tagRenderers,
 }: TokenAssetProps) => {
   if (NFT_STANDARDS.includes(asset.standard as AssetStandard)) {
     return <NftAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
@@ -264,6 +286,7 @@ export const Asset = ({
       onClick={onClick}
       isSelected={isSelected}
       hideBalances={hideBalances}
+      tagRenderers={tagRenderers}
     />
   );
 };

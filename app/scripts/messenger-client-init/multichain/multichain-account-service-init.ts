@@ -103,7 +103,6 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
   );
 
   // Subscribe to feature flag changes to enable Stellar provider.
-  // Note: Disable Stellar provider from enable may result abnormal behavior.
   initMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     previousValueComparator((prevState, currState) => {
@@ -115,7 +114,6 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
       );
 
       // Only handle the case when Stellar provider is enabled.
-      // Disable after enable may result in abnormal behavior.
       if (prevStellarEnabled !== currStellarEnabled && currStellarEnabled) {
         xlmProvider.setEnabled(currStellarEnabled);
 

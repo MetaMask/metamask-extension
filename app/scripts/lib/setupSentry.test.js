@@ -1,6 +1,12 @@
 import { cloneDeep } from 'lodash';
+import { eventFiltersIntegration } from '@sentry/core';
+import {
+  BROWSER_SHUTTING_DOWN_ERROR,
+  MISSING_VAULT_ERROR,
+} from '../../../shared/constants/errors';
 import { matchesBackendTarget } from './sentry-trace-propagation';
 import {
+  IGNORED_ERROR_MESSAGES,
   dropLowValueMarkSpans,
   removeUrlsFromBreadCrumb,
   rewriteReport,
@@ -678,6 +684,70 @@ describe('Setup Sentry', () => {
       expect(liveArgs[1]).toStrictEqual(
         '7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs',
       );
+    });
+  });
+
+  describe('IGNORED_ERROR_MESSAGES', () => {
+    /**
+     * Runs an event through Sentry's own filter with our ignore list, rather
+     * than asserting the list's contents. `processEvent` returns `null` for an
+     * event it drops.
+     *
+     * @param {object} event - The Sentry event to filter.
+     * @returns {object | null} The event, or null if it was dropped.
+     */
+    function filterEvent(event) {
+      const integration = eventFiltersIntegration({
+        ignoreErrors: IGNORED_ERROR_MESSAGES,
+      });
+      const client = { getOptions: () => ({}) };
+      return integration.processEvent(event, {}, client);
+    }
+
+    /**
+     * Builds an error event. Sentry orders `exception.values` cause-first, so
+     * the outermost error is last - which is the only one `ignoreErrors`
+     * compares against.
+     *
+     * @param {...string} values - Exception values, outermost last.
+     * @returns {object} A Sentry error event.
+     */
+    function errorEvent(...values) {
+      return { exception: { values: values.map((value) => ({ value })) } };
+    }
+
+    it('drops the browser shutdown error', () => {
+      expect(filterEvent(errorEvent(BROWSER_SHUTTING_DOWN_ERROR))).toBeNull();
+    });
+
+    it('keeps unrelated errors', () => {
+      const event = errorEvent('Corruption: block checksum mismatch');
+
+      expect(filterEvent(event)).toBe(event);
+    });
+
+    it('matches exactly, so an error that only embeds the phrase still reports', () => {
+      // The entry is anchored to mirror `isBrowserShuttingDownError`; a
+      // substring match could silence an unrelated storage failure whose
+      // message happens to contain the phrase.
+      const event = errorEvent(
+        `Failed to write: ${BROWSER_SHUTTING_DOWN_ERROR}`,
+      );
+
+      expect(filterEvent(event)).toBe(event);
+    });
+
+    it('does not drop an error that merely has a shutdown cause', () => {
+      // `ignoreErrors` only compares the last exception value, so a shutdown
+      // error wrapped in something else still reports. That is why
+      // `PersistenceManager` has to stop building the wrapper in the first
+      // place rather than relying on this filter alone - see its `get` method.
+      const event = errorEvent(
+        BROWSER_SHUTTING_DOWN_ERROR,
+        MISSING_VAULT_ERROR,
+      );
+
+      expect(filterEvent(event)).toBe(event);
     });
   });
 });

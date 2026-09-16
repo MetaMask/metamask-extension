@@ -1,5 +1,20 @@
 import { Driver } from '../../../../webdriver/driver';
 
+/**
+ * Transaction Shield claims list: drafts, open, completed, rejected.
+ *
+ * Screen: `#/settings/transaction-shield/claims`, reached from
+ * `ShieldDetailPage` claims entry after
+ * `SettingsPage.goToTransactionShieldPage`.
+ * Owns: claims list page load, active/completed/rejected/draft groupings,
+ * claim item presence, empty-state new-claim button, submit-claim CTA, and
+ * draft-deleted toast.
+ * Boundaries: the list only. Opening submit/edit hands off to
+ * `ShieldClaimPage`.
+ * Related: `ShieldDetailPage`, `ShieldClaimPage`, `SettingsPage`.
+ *
+ * @see ui/pages/shield/transaction-shield/claims-list/claims-list.tsx
+ */
 export default class ShieldClaimsListPage {
   private readonly activeClaimsHeading = {
     text: 'Active claims',
@@ -56,6 +71,10 @@ export default class ShieldClaimsListPage {
     tag: 'h4',
   };
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly submitClaimButton =
     '[data-testid="claims-list-submit-claim-button"]';
 
@@ -100,7 +119,10 @@ export default class ShieldClaimsListPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForSelector(this.pageContainer);
+    await this.driver.waitForMultipleSelectors([
+      this.pageContainer,
+      this.settingsPage,
+    ]);
     console.log('Shield Claims List page is loaded');
   }
 

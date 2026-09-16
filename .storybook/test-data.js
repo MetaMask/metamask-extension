@@ -1482,7 +1482,6 @@ const state = {
         },
       },
     },
-    ensResolutionsByAddress: {},
     pendingApprovals: {
       '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
         id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',

@@ -1,27 +1,17 @@
 import React, { useCallback, useState, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import {
-  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
   IconName,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalBody,
 } from '@metamask/design-system-react';
-import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
 import { getNetworkSections } from '../../../../../helpers/utils/network-sections';
-import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   NetworkSelectionModal,
   type NetworkSelectionSection,
@@ -92,7 +82,6 @@ export const NetworkFilter = ({
   disableMetrics = false,
 }: NetworkFilterProps) => {
   const t = useI18nContext();
-  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const {
@@ -241,65 +230,20 @@ export const NetworkFilter = ({
           {displayName}
         </ButtonBase>
       </Box>
-      {isNetworkManagementEnabled ? (
-        <NetworkSelectionModal
-          isOpen={isNetworkFilterPopoverOpen}
-          onClose={closePopover}
-          title={t('bridgeSelectNetwork')}
-          topItem={{
-            key: 'all-networks',
-            name: t('allNetworks'),
-            iconSrc: IconName.Global,
-            selected: selectedChainId === null,
-            onClick: () => handleNetworkSelection(null),
-            testId: 'send-network-filter-all-networks',
-          }}
-          sections={sharedModalSections}
-        />
-      ) : (
-        <Modal isOpen={isNetworkFilterPopoverOpen} onClose={closePopover}>
-          <ModalOverlay />
-          <ModalContent size={ModalContentSize.Md}>
-            <ModalHeader
-              onClose={closePopover}
-              closeButtonProps={{
-                ariaLabel: t('close'),
-                'data-testid': 'close-recipient-modal-btn',
-              }}
-            >
-              {t('selectNetworkToFilter')}
-            </ModalHeader>
-            <ModalBody className="px-0">
-              <NetworkListItem
-                name={t('allNetworks')}
-                iconSrc={IconName.Global}
-                iconSize={
-                  AvatarNetworkSize.Xl as unknown as React.ComponentProps<
-                    typeof NetworkListItem
-                  >['iconSize']
-                }
-                selected={selectedChainId === null}
-                onClick={() => handleNetworkSelection(null)}
-                focus={false}
-              />
-              {uniqueChainIds.map((chainId) => {
-                const networkDetails = getChainNetworkDetails(chainId);
-
-                return (
-                  <NetworkListItem
-                    key={chainId}
-                    name={networkDetails?.networkName || `Chain ${chainId}`}
-                    iconSrc={networkDetails?.networkImage || ''}
-                    selected={selectedChainId === chainId}
-                    onClick={() => handleNetworkSelection(chainId)}
-                    focus={false}
-                  />
-                );
-              })}
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      )}
+      <NetworkSelectionModal
+        isOpen={isNetworkFilterPopoverOpen}
+        onClose={closePopover}
+        title={t('bridgeSelectNetwork')}
+        topItem={{
+          key: 'all-networks',
+          name: t('allNetworks'),
+          iconName: IconName.Global,
+          selected: selectedChainId === null,
+          onClick: () => handleNetworkSelection(null),
+          testId: 'send-network-filter-all-networks',
+        }}
+        sections={sharedModalSections}
+      />
     </>
   );
 };

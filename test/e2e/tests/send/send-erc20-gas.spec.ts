@@ -171,6 +171,9 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
+        // dApp transfers do not always update AssetsController balances until
+        // the ERC-20 list is refreshed (AC 15 polls Accounts API / RPC on demand).
+        await tokensTab.refreshErc20TokenList();
         await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'), {
           amountTimeout: 20000,
         });
@@ -239,6 +242,7 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
+        await tokensTab.refreshErc20TokenList();
         await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'), {
           amountTimeout: 20000,
         });
@@ -297,6 +301,19 @@ describe('Send ERC20 - Gas Customization', function () {
           fullSupport: [],
           partialSupport: { balances: [] },
         }),
+      // Browse list on the token management page. Without this the catch-all
+      // answers with an empty body, which `browseTokens` fails to parse.
+      await server
+        .forGet(
+          /https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/chains\/.+\/assets/u,
+        )
+        .always()
+        .thenJson(200, {
+          data: [],
+          count: 0,
+          totalCount: 0,
+          pageInfo: { hasNextPage: false, endCursor: '' },
+        }),
       await server
         .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
         .always()
@@ -325,13 +342,17 @@ describe('Send ERC20 - Gas Customization', function () {
             results.push({
               assetId:
                 'eip155:1337/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
-              name: 'Test Standard Token',
+              // HST fixture / `withTokensControllerERC20` uses 4 decimals.
+              // TokenDataSource overwrites assetsInfo from this payload, so 18
+              // would display 1.5 TST as `-<0.00001 TST`.
+              name: 'TST',
               symbol: 'TST',
-              decimals: 18,
+              decimals: 4,
+              occurrences: 100,
             });
           }
 
-          return { statusCode: 200, json: { data: results } };
+          return { statusCode: 200, json: results };
         }),
     ];
   }

@@ -20,3 +20,5 @@ process.env.METAMASK_SHIELD_ENABLED = 'false';
 process.env.PERPS_ENABLED = 'true';
 process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
 process.env.NEW_HARDWARE_WALLET_ONBOARDING = 'false';
+process.env.PHISHING_WARNING_PAGE_URL =
+  'https://metamask.github.io/phishing-warning/v4.1.0/';

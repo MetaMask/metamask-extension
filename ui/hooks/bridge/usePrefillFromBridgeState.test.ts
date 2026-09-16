@@ -1,5 +1,4 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
-import type { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -108,7 +107,7 @@ describe('usePrefillFromBridgeState', () => {
       .mockReturnValue('popup');
     const mockStoreState = createBridgeMockStore({
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponseV1[],
+        quotes: mockBridgeQuotesErc20Erc20,
       },
       featureFlagOverrides: {
         bridgeConfig: {
@@ -151,7 +150,7 @@ describe('usePrefillFromBridgeState', () => {
           "balance": "0",
           "chainId": "eip155:10",
           "decimals": 6,
-          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x0b2c639c533813f4aa9d7837caf62653d097ff85.png",
+          "iconUrl": "https://media.socket.tech/tokens/all/USDC",
           "isVerified": undefined,
           "name": "USD Coin",
           "rwaData": undefined,
@@ -166,7 +165,7 @@ describe('usePrefillFromBridgeState', () => {
           "balance": "0",
           "chainId": "eip155:137",
           "decimals": 6,
-          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/137/erc20/0x3c499c542cef5e3811e1192ce70d8cc03d5c3359.png",
+          "iconUrl": "https://media.socket.tech/tokens/all/USDC",
           "isVerified": undefined,
           "name": "Native USD Coin (POS)",
           "rwaData": undefined,

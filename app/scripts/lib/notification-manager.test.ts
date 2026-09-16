@@ -44,7 +44,7 @@ jest.mock('webextension-polyfill', () => {
 
 describe('Notification Manager', () => {
   let notificationManager: NotificationManager,
-    setCurrentPopupIdSpy: (a: number) => void,
+    setCurrentPopupIdSpy: (a: number | undefined) => void,
     focusWindowSpy: () => void,
     currentPopupId: number | undefined;
 

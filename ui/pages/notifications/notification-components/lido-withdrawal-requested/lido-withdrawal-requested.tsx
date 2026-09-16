@@ -1,5 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -24,16 +25,9 @@ import {
   getNativeCurrencyLogoByChainId,
 } from '../../../../helpers/utils/notification.util';
 import { t } from '../../../../../shared/lib/translate';
-import {
-  TextVariant,
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 
-import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -122,8 +116,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           <NotificationDetailInfo
             icon={{
               iconName: IconName.Check,
-              color: TextColor.successDefault,
-              backgroundColor: BackgroundColor.successMuted,
+              severity: AvatarIconSeverity.Success,
             }}
             label={t('notificationItemStatus') ?? ''}
             detail={t('notificationItemConfirmed') ?? ''}

@@ -5,8 +5,8 @@ import {
   DeferredDeepLinkRouteType,
 } from './types';
 import { parse } from './parse';
-import { VALID } from './verify';
 import { DEEP_LINK_ROUTE } from './routes/route';
+import { shouldShowDeepLinkInterstitial } from './security-policy';
 
 /**
  * Builds the interstitial page route with the given URL path and query.
@@ -65,29 +65,27 @@ export async function getDeferredDeepLinkRoute(
 
     const { destination, signature } = parsed;
 
-    // If the destination has a redirectTo property, it's an external URL redirect.
-    if ('redirectTo' in destination) {
-      if (signature !== VALID) {
-        return {
-          type: DeferredDeepLinkRouteType.Interstitial,
-          urlPathAndQuery: url.pathname + url.search,
-          signature,
-        };
-      }
-
+    // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
+    // Keep the deferred flow on the same centralized policy as intercepted
+    // links. Do not add route-specific exceptions or remote lookups here.
+    if (
+      shouldShowDeepLinkInterstitial({
+        source: 'deferred',
+        signatureStatus: signature,
+      })
+    ) {
       return {
-        type: DeferredDeepLinkRouteType.Redirect,
-        url: destination.redirectTo.toString(),
+        type: DeferredDeepLinkRouteType.Interstitial,
+        urlPathAndQuery: url.pathname + url.search,
         signature,
       };
     }
 
-    // For internal routes, check the signature
-    // If signature is not valid (missing or invalid), route to the interstitial page
-    if (signature !== VALID) {
+    // If the destination has a redirectTo property, it's an external URL redirect.
+    if ('redirectTo' in destination) {
       return {
-        type: DeferredDeepLinkRouteType.Interstitial,
-        urlPathAndQuery: url.pathname + url.search,
+        type: DeferredDeepLinkRouteType.Redirect,
+        url: destination.redirectTo.toString(),
         signature,
       };
     }

@@ -11,7 +11,6 @@ import {
   enableNativeTokenAsMainBalance,
   enableTestNetworks,
 } from './settings.flow';
-import { switchToNetworkFromNetworkSelect } from './network.flow';
 
 /**
  * A JSON-like object type for representing persisted wallet state.
@@ -140,17 +139,7 @@ export const generateDefaultFixtureState = async (
   // Set the settings to match the desired fixture state:
   // 1. enabled native balance and 2. enabled test networks
   await enableNativeTokenAsMainBalance(driver);
-
-  // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
-  await switchToNetworkFromNetworkSelect(
-    driver,
-    'Popular',
-    'All popular networks',
-  );
-
   await enableTestNetworks(driver);
-
-  await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Localhost 8545');
 
   // Fiat value should be displayed as we mock the price and that is not a 'test network'
   await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');

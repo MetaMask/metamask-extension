@@ -58,7 +58,6 @@ jest.mock(
 
 jest.mock('../../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
-  sendMultichainTransaction: jest.fn(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));

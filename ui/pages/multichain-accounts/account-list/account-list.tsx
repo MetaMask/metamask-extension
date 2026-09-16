@@ -27,10 +27,10 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
+import { useAccountListSearch } from '../../../components/multichain-accounts/hooks/useAccountListSearch';
 import {
   getAccountTree,
   getSelectedAccountGroup,
-  getNormalizedGroupsMetadata,
 } from '../../../selectors/multichain-accounts/account-tree';
 import {
   getAllPermittedAccountsForCurrentTab,
@@ -51,7 +51,6 @@ import {
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { ScrollContainer } from '../../../contexts/scroll-container';
-import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -60,8 +59,6 @@ export const AccountList = () => {
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
-  const [searchPattern, setSearchPattern] = useState<string>('');
-  const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
@@ -92,24 +89,14 @@ export const AccountList = () => {
     [wallets],
   );
 
-  const onSearchBarChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      setSearchPattern(e.target.value),
-    [],
-  );
-
-  const filteredWallets = useMemo(() => {
-    return filterWalletsByGroupNameOrAddress(
-      wallets,
-      searchPattern,
-      groupsMetadata,
-    );
-  }, [wallets, searchPattern, groupsMetadata]);
-
-  const hasFilteredWallets = useMemo(
-    () => Object.keys(filteredWallets).length > 0,
-    [filteredWallets],
-  );
+  const {
+    searchPattern,
+    onSearchBarChange,
+    clearSearch,
+    filteredWallets,
+    hasFilteredWallets,
+    isInSearchMode,
+  } = useAccountListSearch(wallets);
 
   const handleNavigateToChooseNewWalletType = useCallback(() => {
     navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);
@@ -125,16 +112,31 @@ export const AccountList = () => {
     (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
       true;
 
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const handleBack = useCallback(() => {
+    // Edit mode hides the gear icon, so back is the way out of it.
+    if (isEditMode) {
+      setIsEditMode(false);
+      return;
+    }
+
     if (isFreshTab) {
       navigate(DEFAULT_ROUTE, { replace: true });
     } else {
       transitionBack(() => navigate(PREVIOUS_ROUTE));
     }
-  }, [isFreshTab, navigate]);
+  }, [isEditMode, isFreshTab, navigate]);
+
+  const handleEnterEditMode = useCallback(() => {
+    setIsEditMode(true);
+  }, []);
 
   return (
-    <Page className="account-list-page">
+    <Page
+      className="account-list-page"
+      data-testid="parent-selector-account-list-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -145,10 +147,22 @@ export const AccountList = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
+            data-testid="account-list-page-back-button"
           />
         }
+        endAccessory={
+          isEditMode ? null : (
+            <ButtonIcon
+              size={ButtonIconSize.Md}
+              ariaLabel={t('manageAccounts')}
+              iconName={IconName.Setting}
+              onClick={handleEnterEditMode}
+              data-testid="account-list-page-manage-button"
+            />
+          )
+        }
       >
-        {t('accounts')}
+        {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box
@@ -160,7 +174,7 @@ export const AccountList = () => {
         >
           <TextFieldSearch
             className="w-full"
-            clearButtonOnClick={() => setSearchPattern('')}
+            clearButtonOnClick={clearSearch}
             data-testid="multichain-account-list-search"
             onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}
@@ -172,10 +186,11 @@ export const AccountList = () => {
             <MultichainAccountList
               wallets={filteredWallets}
               selectedAccountGroups={[selectedAccountGroup]}
-              isInSearchMode={Boolean(searchPattern)}
+              isInSearchMode={isInSearchMode}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
               showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+              isEditMode={isEditMode}
             />
           ) : (
             <Box

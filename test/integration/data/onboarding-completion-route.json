@@ -123,13 +123,10 @@
       "0xaa36a7": true
     }
   },
-  "ensEntries": {},
-  "ensResolutionsByAddress": {},
   "estimatedGasFeeTimeBounds": {},
   "featureFlags": {},
   "firstTimeFlowType": "create",
   "forgottenPassword": false,
-  "fragments": {},
   "fullScreenGasPollTokens": [],
   "gasEstimateType": "none",
   "gasFeeEstimates": {},
@@ -458,7 +455,6 @@
   "tokens": [],
   "tokensChainsCache": {},
   "tracesBeforeMetricsOptIn": [],
-  "traits": {},
   "transactions": [],
   "trezorModel": null,
   "unapprovedDecryptMsgCount": 0,

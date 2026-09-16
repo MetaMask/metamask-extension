@@ -30,7 +30,6 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import {
   requestRevealSeedWords,
-  getSeedPhraseWithPasskey,
   scanUrlForPhishing,
 } from '../../store/actions';
 import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
@@ -47,6 +46,7 @@ import { PasskeyVerification } from '../../components/app/passkey-verification';
 import { useBoolean } from '../../hooks/useBoolean';
 import { Toast, ToastContainer } from '../../components/multichain/toast';
 import { useDispatch } from '../../store/hooks';
+import { usePasskeySeedPhraseExport } from '../../hooks/passkey/usePasskeySeedPhraseExport';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
 import { RevealSeedWarning } from './reveal-seed-warning';
@@ -65,6 +65,7 @@ const REVEAL_SEED_SCREEN: RevealSeedScreen = 'REVEAL_SEED_SCREEN';
 
 function RevealSeedPage() {
   const dispatch = useDispatch();
+  const exportSeedPhraseWithPasskey = usePasskeySeedPhraseExport();
   const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -332,9 +333,10 @@ function RevealSeedPage() {
       );
 
       try {
-        const revealedSeedWords = await (dispatch(
-          getSeedPhraseWithPasskey(authenticationResponse, keyringId),
-        ) as unknown as Promise<string>);
+        const revealedSeedWords = await exportSeedPhraseWithPasskey(
+          authenticationResponse,
+          keyringId,
+        );
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
@@ -380,7 +382,13 @@ function RevealSeedPage() {
         endTrace({ name: TraceName.RevealSeed });
       }
     },
-    [createEventBuilder, dispatch, hdEntropyIndex, keyringId, trackEvent],
+    [
+      createEventBuilder,
+      exportSeedPhraseWithPasskey,
+      hdEntropyIndex,
+      keyringId,
+      trackEvent,
+    ],
   );
 
   const handleUsePassword = useCallback(() => {

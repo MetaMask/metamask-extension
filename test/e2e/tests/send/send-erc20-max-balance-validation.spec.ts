@@ -239,6 +239,10 @@ describe('Send ERC20 - Max Balance Validation', function () {
         await tokensTab.startSendFlow();
         await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
 
+        // Wait for the Send balance to reflect the update before clicking Max,
+        // otherwise Max races the async balance convergence.
+        await sendPage.checkAvailableBalance('5');
+
         await sendPage.clickMaxButton();
         await sendPage.checkAmountInputValue('5');
         await sendPage.checkContinueButton({ state: 'enabled' });

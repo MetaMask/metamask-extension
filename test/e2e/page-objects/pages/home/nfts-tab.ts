@@ -1,5 +1,19 @@
 import HomePage from './homepage';
 
+/**
+ * Home NFTs tab: grid, empty state, and import-NFT modal.
+ *
+ * Screen: `#/` NFTs tab (`account-overview__nfts-tab`), reached via
+ * `HomePage.goToNftTab()`.
+ * Owns: NFT grid items and names, empty state, opening the import modal
+ * (network / address / token id), and import/remove success toasts.
+ * Boundaries: homepage chrome and other tabs stay on `HomePage`. Full NFT
+ * detail screens are outside this object — `clickNFTIconOnActivityList` only
+ * opens one.
+ * Related: `HomePage` (`goToNftTab`).
+ *
+ * @see ui/components/app/assets/nfts/nfts-tab/nfts-tab.tsx
+ */
 class NftsTab extends HomePage {
   private readonly actionBarButton =
     '[data-testid="asset-list-control-bar-action-button"]';
@@ -32,6 +46,10 @@ class NftsTab extends HomePage {
     tag: 'p',
     text: nftName,
   });
+
+  private readonly nftsPage = {
+    testId: 'parent-selector-nfts-tab',
+  };
 
   private readonly noNftInfo = '[data-testid="nft-tab-empty-state"]';
 
@@ -94,13 +112,7 @@ class NftsTab extends HomePage {
    * Checks if the NFT tab page is loaded.
    */
   async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.clickElement(this.actionBarButton);
-      await this.driver.waitForSelector(this.importNftButton);
-    } catch (e) {
-      console.log('Timeout while waiting for NFT list page to be loaded', e);
-      throw e;
-    }
+    await this.driver.waitForSelector(this.nftsPage);
     console.log('NFT list page is loaded');
   }
 

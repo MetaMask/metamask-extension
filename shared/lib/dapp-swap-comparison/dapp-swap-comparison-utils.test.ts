@@ -153,6 +153,37 @@ describe('dapp-swap utils', () => {
       expect(result.bestQuote).toBe(undefined);
       expect(result.bestFilteredQuote).toBe(undefined);
     });
+
+    it('falls back to destTokenAmount when minDestTokenAmount is undefined', () => {
+      const quotesWithoutMin = [
+        {
+          ...MOCK_QUOTES[0],
+          quote: {
+            ...MOCK_QUOTES[0].quote,
+            destTokenAmount: '100',
+            minDestTokenAmount: undefined,
+          },
+        },
+        {
+          ...MOCK_QUOTES[1],
+          quote: {
+            ...MOCK_QUOTES[1].quote,
+            destTokenAmount: '80',
+            minDestTokenAmount: '70',
+          },
+        },
+      ];
+
+      const result = getBestQuote(
+        quotesWithoutMin as unknown as QuoteResponseV1[],
+        '0x32',
+        (val) => val,
+        (val) => val.toString(),
+      );
+
+      expect(result.bestQuote).toBe(quotesWithoutMin[0]);
+      expect(result.bestFilteredQuote).toBe(quotesWithoutMin[0]);
+    });
   });
 
   describe('getBalanceChangeFromSimulationData', () => {

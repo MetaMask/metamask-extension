@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  matchPath,
   type NavigateOptions,
   type To,
   useLocation,
@@ -28,6 +29,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
+  SWAP_ASSETS_PATH,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { getBridgeState } from '../../ducks/bridge/selectors';
@@ -148,9 +150,14 @@ export const useBridgeNavigation = () => {
    * @param to - The default route to navigate to.
    */
   const resetLocationState = useCallback(
-    (to: To = { pathname }, stayOnHomePage = false) => {
+    (
+      to: To = { pathname },
+      options: { replace?: boolean } = {},
+      stayOnHomePage = false,
+    ) => {
       navigate(to, {
         state: clearedBridgeState(state, stayOnHomePage),
+        ...options,
       });
     },
     [navigate, state, pathname],
@@ -272,6 +279,20 @@ export const useBridgeNavigation = () => {
   );
 
   /**
+   * Navigates to the bridge asset picker page.
+   */
+  const navigateToBridgeAssetPickerPage = useCallback(
+    (field: 'src' | 'dest') => {
+      navigate(`${SWAP_ASSETS_PATH}?field=${field}`, {
+        state: {
+          ...state,
+        },
+      });
+    },
+    [navigate, state],
+  );
+
+  /**
    * Navigates to the hw transaction signing page.
    */
   const navigateToHwSigningPage = useCallback(
@@ -303,17 +324,20 @@ export const useBridgeNavigation = () => {
     });
   }, [navigate, state]);
 
-  const navigateToDefaultRoute = useCallback(async () => {
-    dispatch(resetBridgeController());
-    const isFromTransactionShield = new URLSearchParams(search || '').get(
-      BridgeQueryParams.IsFromTransactionShield,
-    );
-    if (isFromTransactionShield) {
-      resetLocationState(TRANSACTION_SHIELD_ROUTE);
-    } else {
-      resetLocationState(DEFAULT_ROUTE, true);
-    }
-  }, [dispatch, search, resetLocationState]);
+  const navigateToDefaultRoute = useCallback(
+    async (options: { replace?: boolean } = {}, resetController = true) => {
+      resetController && dispatch(resetBridgeController());
+      const isFromTransactionShield = new URLSearchParams(search || '').get(
+        BridgeQueryParams.IsFromTransactionShield,
+      );
+      if (isFromTransactionShield) {
+        resetLocationState(TRANSACTION_SHIELD_ROUTE, options);
+      } else {
+        resetLocationState(DEFAULT_ROUTE, options, true);
+      }
+    },
+    [dispatch, search, resetLocationState],
+  );
 
   const memoizedToken = useMemo(() => state.token, [state.token]);
   const memoizedBridgeState = useMemo(
@@ -333,7 +357,16 @@ export const useBridgeNavigation = () => {
     resetSearchParams,
     navigateToAssetPage,
     navigateToBridgePage,
+    navigateToBridgeAssetPickerPage,
+    isDestinationAssetPickerPage:
+      new URLSearchParams(search).get('field') === 'dest',
     navigateToHwSigningPage,
+    isHardwareWalletSigningPage: Boolean(
+      matchPath(
+        `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        pathname,
+      ),
+    ),
     navigateToActivityPage,
     navigateToDefaultRoute,
   };

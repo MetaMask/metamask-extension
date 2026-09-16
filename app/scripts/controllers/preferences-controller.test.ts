@@ -52,8 +52,29 @@ const setupController = ({
     actions: [
       'AccountsController:getAccountByAddress',
       'AccountsController:setAccountName',
+      'LegacyBackgroundApiService:toggleExternalServices',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:getState',
     ],
   });
+
+  const getOnboardingState = jest.fn().mockReturnValue({
+    firstTimeFlowType: 'create',
+  });
+  const getSeedlessOnboardingState = jest.fn().mockReturnValue({});
+  const toggleExternalServices = jest.fn();
+  messenger.registerActionHandler(
+    'OnboardingController:getState',
+    getOnboardingState,
+  );
+  messenger.registerActionHandler(
+    'SeedlessOnboardingController:getState',
+    getSeedlessOnboardingState,
+  );
+  messenger.registerActionHandler(
+    'LegacyBackgroundApiService:toggleExternalServices',
+    toggleExternalServices,
+  );
 
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
@@ -95,6 +116,9 @@ const setupController = ({
     controller,
     messenger,
     accountsController,
+    getOnboardingState,
+    getSeedlessOnboardingState,
+    toggleExternalServices,
   };
 };
 
@@ -477,6 +501,7 @@ describe('preferences controller', () => {
         showExtensionInFullSizeView: false,
         privacyMode: false,
         showFiatInTestnets: false,
+        showTickerWidget: true,
         showTestNetworks: false,
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
@@ -486,6 +511,8 @@ describe('preferences controller', () => {
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
+        basicFunctionalityMigrationNotification: null,
+        basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -510,6 +537,7 @@ describe('preferences controller', () => {
         avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
+        showTickerWidget: true,
         showTestNetworks: false,
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
@@ -519,6 +547,8 @@ describe('preferences controller', () => {
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
+        basicFunctionalityMigrationNotification: null,
+        basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
@@ -622,6 +652,82 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('consolidateBasicFunctionality', () => {
+    it('consolidates a social-login wallet and syncs external services', () => {
+      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
+        setupController({});
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(
+        controller.getPreferences().isBasicFunctionalityConsolidatedEnabled,
+      ).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('does not sync external services when already consolidated', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+
+      controller.consolidateBasicFunctionality();
+
+      expect(getOnboardingState).not.toHaveBeenCalled();
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('dismissBasicFunctionalityMigrationNotification', () => {
+    it('clears a scheduled migration notification', () => {
+      const { controller } = setupController({});
+      controller.setPreference(
+        'basicFunctionalityMigrationNotification',
+        'modal',
+      );
+
+      controller.dismissBasicFunctionalityMigrationNotification();
+
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBeNull();
+      expect(
+        controller.getPreferences()
+          .basicFunctionalityMigrationNotificationDismissed,
+      ).toBe(true);
+    });
+
+    it('does not reschedule a notice after dismiss', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setPreference(
+        'basicFunctionalityMigrationNotification',
+        'modal',
+      );
+      controller.dismissBasicFunctionalityMigrationNotification();
+      getOnboardingState.mockReturnValue({
+        firstTimeFlowType: 'socialCreate',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBeNull();
+      expect(
+        controller.getPreferences()
+          .basicFunctionalityMigrationNotificationDismissed,
+      ).toBe(true);
+    });
+  });
+
   describe('dismissSeedBackUpReminder', () => {
     it('defaults dismissSeedBackUpReminder to false', () => {
       const { controller } = setupController({});
@@ -711,6 +817,8 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -725,6 +833,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -781,6 +890,8 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -795,6 +906,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -811,6 +923,7 @@ describe('preferences controller', () => {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
           "snapRegistryList": {},
@@ -864,6 +977,8 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -878,6 +993,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -894,6 +1010,7 @@ describe('preferences controller', () => {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
           "showSidePanelMigrationToast": false,
@@ -948,6 +1065,8 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -962,6 +1081,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -978,6 +1098,7 @@ describe('preferences controller', () => {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
           "showSidePanelMigrationToast": false,
@@ -1114,6 +1235,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1138,6 +1260,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1179,6 +1302,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1202,6 +1326,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1225,6 +1350,9 @@ describe('preferences controller', () => {
         ).toStrictEqual({});
         expect(
           controller.state.referrals[DefiReferralPartner.AsterDEX],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.Variational],
         ).toStrictEqual({});
       });
 
@@ -1277,6 +1405,7 @@ describe('preferences controller', () => {
             showExtensionInFullSizeView: true,
             privacyMode: true,
             showFiatInTestnets: true,
+            showTickerWidget: true,
             showTestNetworks: true,
             smartTransactionsMigrationApplied: false,
             smartTransactionsOptInStatus: true,
@@ -1286,6 +1415,8 @@ describe('preferences controller', () => {
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
             isBasicFunctionalityConsolidatedEnabled: true,
+            basicFunctionalityMigrationNotification: null,
+            basicFunctionalityMigrationNotificationDismissed: false,
             skipDeepLinkInterstitial: false,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,

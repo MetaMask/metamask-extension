@@ -4,7 +4,8 @@ import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -47,14 +48,24 @@ import {
   mockSecurityAlertSwap,
   mockClientSideDetectionApi,
   mockPhishingDetectionApi,
+  type UsdcToSolSwapAmounts,
 } from './common-solana';
-
-const isUnifiedAssetsEnabled = true;
 
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 const SOL_CAIP_ASSET = `${SOLANA_CHAIN_ID}/slip44:501`;
 const USDC_CAIP_ASSET = `${SOLANA_CHAIN_ID}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
+
+// Reproduces the regression fixed by internal-snaps#108: the wallet receives
+// 290 lamports of SOL but pays a 17,129-lamport network fee. Although its total
+// SOL balance decreases, the Snap must exclude the fee before determining that
+// the native transfer is incoming and classifying the activity as a swap.
+const SMALL_USDC_TO_SOL_SWAP_AMOUNTS: UsdcToSolSwapAmounts = {
+  destinationTokenAmount: '290',
+  feeTokenAmount: '1',
+  minimumDestinationTokenAmount: '288',
+  sourceTokenAmount: '49',
+};
 
 /**
  * Mock V2 supportedNetworks to include Solana so the AccountsApiDataSource
@@ -122,35 +133,6 @@ async function mockAccountsApiV5WithSolana(mockServer: Mockttp) {
     }));
 }
 
-async function mockAccountsApiV5WithSolanaNativeOnly(mockServer: Mockttp) {
-  const balances = [
-    {
-      accountId: `eip155:1337:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
-      assetId: 'eip155:1337/slip44:1',
-      balance: '25',
-    },
-    {
-      accountId: `${SOLANA_CHAIN_ID}:${SOLANA_WALLET_ADDRESS}`,
-      assetId: `${SOLANA_CHAIN_ID}/slip44:501`,
-      balance: '50',
-    },
-  ];
-
-  return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
-    )
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: balances.length,
-        unprocessedNetworks: [],
-        balances,
-      },
-    }));
-}
-
 async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
   const solanaAssets: Record<
     string,
@@ -200,42 +182,14 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
 }
 
 /**
- * Same HTTP mocks as `main` when unified assets state is off (no accounts v2/v5,
- * no tokens v2/v3 extras; uses `mockGetSignaturesForWalletOnly`).
+ * HTTP mocks for USDC → SOL swaps under unified assets.
  *
  * @param mockServer - Mockttp server.
+ * @param amounts - Optional amounts used for the fee-dominant regression case.
  */
-async function mockSwapUSDCtoSOLLegacy(
+async function mockSwapUSDCtoSOL(
   mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  const signatureHolder: SignatureHolder = { value: '' };
-
-  return [
-    await mockGetTokenAccountsUSDCOnly(mockServer),
-    await mockGetTokenAccountBalance(mockServer),
-    await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote({ mockServer }),
-    await mockGetFeeForMessage(mockServer),
-    await mockGetLatestBlockhash(mockServer),
-    await mockGetMinimumBalanceForRentExemption(mockServer),
-    ...(await mockQuoteFromUSDCtoSOL(mockServer)),
-    await mockMultiCoinPrice(mockServer),
-    await mockPriceApiSpotPriceSwap(mockServer),
-    await mockPriceApiExchangeRates(mockServer),
-    await mockGetMultipleAccounts(mockServer),
-    await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
-    await mockGetUSDCSOLTransaction(mockServer, signatureHolder),
-    await mockGetMintAccountInfo(mockServer),
-    await mockGetSignaturesForWalletOnly(mockServer, signatureHolder),
-    await mockBridgeTxStatus(mockServer, 'USDC_TO_SOL'),
-    await mockTokenApiAssets(mockServer),
-    await mockBridgeGetTokens(mockServer),
-    await mockBridgeSearchTokens(mockServer),
-  ];
-}
-
-async function mockSwapUSDCtoSOLUnified(
-  mockServer: Mockttp,
+  amounts?: UsdcToSolSwapAmounts,
 ): Promise<MockedEndpoint[]> {
   const signatureHolder: SignatureHolder = { value: '' };
 
@@ -249,52 +203,34 @@ async function mockSwapUSDCtoSOLUnified(
     await mockGetFeeForMessage(mockServer),
     await mockGetLatestBlockhash(mockServer),
     await mockGetMinimumBalanceForRentExemption(mockServer),
-    ...(await mockQuoteFromUSDCtoSOL(mockServer)),
+    ...(await mockQuoteFromUSDCtoSOL(mockServer, amounts)),
     await mockMultiCoinPrice(mockServer),
     await mockPriceApiSpotPriceSwap(mockServer),
     await mockPriceApiExchangeRates(mockServer),
     await mockGetMultipleAccounts(mockServer),
     await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
-    await mockGetUSDCSOLTransaction(mockServer, signatureHolder),
+    await mockGetUSDCSOLTransaction(mockServer, signatureHolder, amounts),
     await mockGetMintAccountInfo(mockServer),
     await mockGetSignaturesForWalletOnly(mockServer, signatureHolder),
-    await mockBridgeTxStatus(mockServer, 'USDC_TO_SOL', signatureHolder),
+    await mockBridgeTxStatus(
+      mockServer,
+      'USDC_TO_SOL',
+      signatureHolder,
+      amounts,
+    ),
     await mockSolanaTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
   ];
 }
 
-async function mockSwapUSDCtoSOL(
+async function mockSmallSwapUSDCtoSOL(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
-  return isUnifiedAssetsEnabled
-    ? mockSwapUSDCtoSOLUnified(mockServer)
-    : mockSwapUSDCtoSOLLegacy(mockServer);
+  return mockSwapUSDCtoSOL(mockServer, SMALL_USDC_TO_SOL_SWAP_AMOUNTS);
 }
 
-async function mockSwapNoQuotesLegacy(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  return [
-    await mockGetTokenAccountsUSDCOnly(mockServer),
-    await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote({ mockServer }),
-    await mockGetFeeForMessage(mockServer),
-    await mockGetLatestBlockhash(mockServer),
-    await mockGetMinimumBalanceForRentExemption(mockServer),
-    ...(await mockNoQuotesAvailable(mockServer)),
-    await mockMultiCoinPrice(mockServer),
-    await mockPriceApiSpotPriceSwap(mockServer),
-    await mockPriceApiExchangeRates(mockServer),
-    await mockGetMultipleAccounts(mockServer),
-    await mockTokenApiAssets(mockServer),
-    await mockBridgeGetTokens(mockServer),
-    await mockBridgeSearchTokens(mockServer),
-  ];
-}
-
-async function mockSwapNoQuotesUnified(
+async function mockSwapNoQuotes(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   const signatureHolder: SignatureHolder = { value: '' };
@@ -320,42 +256,7 @@ async function mockSwapNoQuotesUnified(
   ];
 }
 
-async function mockSwapNoQuotes(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  return isUnifiedAssetsEnabled
-    ? mockSwapNoQuotesUnified(mockServer)
-    : mockSwapNoQuotesLegacy(mockServer);
-}
-
-async function mockSwapSOLtoUSDCFailedLegacy(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  const signatureHolder: SignatureHolder = { value: '' };
-
-  return [
-    await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
-    await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote({ mockServer }),
-    await mockGetFeeForMessage(mockServer),
-    await mockGetLatestBlockhash(mockServer),
-    await mockGetMinimumBalanceForRentExemption(mockServer),
-    ...(await mockQuoteFromSoltoUSDC(mockServer)),
-    await mockMultiCoinPrice(mockServer),
-    await mockPriceApiSpotPriceSwap(mockServer),
-    await mockPriceApiExchangeRates(mockServer),
-    await mockGetMultipleAccounts(mockServer),
-    await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
-    await mockGetFailedSignaturesForAddress(mockServer),
-    await mockGetFailedTransaction(mockServer),
-    await mockGetMintAccountInfo(mockServer),
-    await mockTokenApiAssets(mockServer),
-    await mockBridgeGetTokens(mockServer),
-    await mockBridgeSearchTokens(mockServer),
-  ];
-}
-
-async function mockSwapSOLtoUSDCFailedUnified(
+async function mockSwapSOLtoUSDCFailed(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   const signatureHolder: SignatureHolder = { value: '' };
@@ -389,48 +290,7 @@ async function mockSwapSOLtoUSDCFailedUnified(
   ];
 }
 
-async function mockSwapSOLtoUSDCFailed(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  return isUnifiedAssetsEnabled
-    ? mockSwapSOLtoUSDCFailedUnified(mockServer)
-    : mockSwapSOLtoUSDCFailedLegacy(mockServer);
-}
-
-/**
- * Same HTTP mocks as `main` when unified assets state is off.
- *
- * @param mockServer - Mockttp server.
- */
-async function mockSwapSOLtoUSDCLegacy(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  const signatureHolder: SignatureHolder = { value: '' };
-
-  return [
-    await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
-    await simulateSolanaTransaction(mockServer),
-    await mockSolanaBalanceQuote({ mockServer }),
-    await mockGetFeeForMessage(mockServer),
-    await mockGetLatestBlockhash(mockServer),
-    await mockGetMinimumBalanceForRentExemption(mockServer),
-    ...(await mockQuoteFromSoltoUSDC(mockServer)),
-    await mockMultiCoinPrice(mockServer),
-    await mockPriceApiSpotPriceSwap(mockServer),
-    await mockPriceApiExchangeRates(mockServer),
-    await mockGetMultipleAccounts(mockServer),
-    await mockSendSwapSolanaTransaction(mockServer, signatureHolder),
-    await mockGetSOLUSDCTransaction(mockServer, signatureHolder),
-    await mockGetMintAccountInfo(mockServer),
-    await mockGetSignaturesForWalletOnly(mockServer, signatureHolder),
-    await mockBridgeTxStatus(mockServer),
-    await mockTokenApiAssets(mockServer),
-    await mockBridgeGetTokens(mockServer),
-    await mockBridgeSearchTokens(mockServer),
-  ];
-}
-
-async function mockSwapSOLtoUSDCUnified(
+async function mockSwapSOLtoUSDC(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   const signatureHolder: SignatureHolder = { value: '' };
@@ -463,14 +323,6 @@ async function mockSwapSOLtoUSDCUnified(
     await mockTokensV2SupportedNetworks(mockServer),
     await mockTokensV3Assets(mockServer),
   ];
-}
-
-async function mockSwapSOLtoUSDC(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  return isUnifiedAssetsEnabled
-    ? mockSwapSOLtoUSDCUnified(mockServer)
-    : mockSwapSOLtoUSDCLegacy(mockServer);
 }
 
 const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
@@ -591,6 +443,42 @@ const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
   },
 };
 
+/**
+ * Builds the controller state shared by the USDC → SOL swap scenarios.
+ *
+ * @returns An isolated extension fixture for a USDC → SOL swap test.
+ */
+function buildUsdcToSolFixture() {
+  const fixture = new FixtureBuilderV2()
+    .withAssetsController(SOLANA_USDC_SWAP_ASSETS_FIXTURE)
+    .build();
+  merge(fixture.data, {
+    MultichainRatesController: {
+      conversionRates: {
+        [SOL_CAIP_ASSET]: {
+          conversionTime: 1770832998.066,
+          rate: String(SOL_PRICE),
+        },
+        [USDC_CAIP_ASSET]: {
+          conversionTime: 1770832998.066,
+          rate: String(USDC_PRICE),
+        },
+      },
+    },
+    CurrencyController: {
+      currencyRates: {
+        ETH: {
+          conversionDate: 1770832998.066,
+          conversionRate: 1932.163232734,
+          usdConversionRate: 1932.163232734,
+        },
+      },
+    },
+    ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
+  });
+  return fixture;
+}
+
 describe('Swap on Solana', function () {
   const solanaSwapFixtureOptions = {
     localNodeOptions: [{ type: 'none' as const }],
@@ -600,55 +488,35 @@ describe('Swap on Solana', function () {
     await withFixtures(
       {
         ...solanaSwapFixtureOptions,
-        fixtures: isUnifiedAssetsEnabled
-          ? (() => {
-              const fixture = new FixtureBuilderV2()
-                .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
-                .build();
-              merge(fixture.data, {
-                MultichainRatesController: {
-                  conversionRates: {
-                    [SOL_CAIP_ASSET]: {
-                      conversionTime: 1770832998.066,
-                      rate: String(SOL_PRICE),
-                    },
-                    [USDC_CAIP_ASSET]: {
-                      conversionTime: 1770832998.066,
-                      rate: String(USDC_PRICE),
-                    },
-                  },
-                },
-                CurrencyController: {
-                  currencyRates: {
-                    ETH: {
-                      conversionDate: 1770832998.066,
-                      conversionRate: 1932.163232734,
-                      usdConversionRate: 1932.163232734,
-                    },
-                  },
-                },
-              });
-              return fixture;
-            })()
-          : new FixtureBuilderV2()
-              .withConversionRates({
+        fixtures: (() => {
+          const fixture = new FixtureBuilderV2()
+            .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
+            .build();
+          merge(fixture.data, {
+            MultichainRatesController: {
+              conversionRates: {
                 [SOL_CAIP_ASSET]: {
                   conversionTime: 1770832998.066,
-                  rate: '168.88',
+                  rate: String(SOL_PRICE),
                 },
                 [USDC_CAIP_ASSET]: {
                   conversionTime: 1770832998.066,
-                  rate: '0.999761',
+                  rate: String(USDC_PRICE),
                 },
-              })
-              .withCurrencyRates({
+              },
+            },
+            CurrencyController: {
+              currencyRates: {
                 ETH: {
                   conversionDate: 1770832998.066,
                   conversionRate: 1932.163232734,
                   usdConversionRate: 1932.163232734,
                 },
-              })
-              .build(),
+              },
+            },
+          });
+          return fixture;
+        })(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDC,
       },
@@ -656,15 +524,14 @@ describe('Swap on Solana', function () {
         await login(driver, { validateBalance: false });
 
         const homePage = new HomePage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
+        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -710,9 +577,6 @@ describe('Swap on Solana', function () {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
         await activityTab.checkTxAmountInActivity('+0.1669 USDC', 1);
-        if (!isUnifiedAssetsEnabled) {
-          await activityTab.checkTransactionActivityByText('Swapped');
-        }
       },
     );
   });
@@ -720,38 +584,7 @@ describe('Swap on Solana', function () {
     await withFixtures(
       {
         ...solanaSwapFixtureOptions,
-        fixtures: isUnifiedAssetsEnabled
-          ? (() => {
-              const fixture = new FixtureBuilderV2()
-                .withAssetsController(SOLANA_USDC_SWAP_ASSETS_FIXTURE)
-                .build();
-              merge(fixture.data, {
-                MultichainRatesController: {
-                  conversionRates: {
-                    [SOL_CAIP_ASSET]: {
-                      conversionTime: 1770832998.066,
-                      rate: String(SOL_PRICE),
-                    },
-                    [USDC_CAIP_ASSET]: {
-                      conversionTime: 1770832998.066,
-                      rate: String(USDC_PRICE),
-                    },
-                  },
-                },
-                CurrencyController: {
-                  currencyRates: {
-                    ETH: {
-                      conversionDate: 1770832998.066,
-                      conversionRate: 1932.163232734,
-                      usdConversionRate: 1932.163232734,
-                    },
-                  },
-                },
-                ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
-              });
-              return fixture;
-            })()
-          : new FixtureBuilderV2().build(),
+        fixtures: buildUsdcToSolFixture(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapUSDCtoSOL,
       },
@@ -761,10 +594,11 @@ describe('Swap on Solana', function () {
         const homePage = new HomePage(driver);
 
         // Switch to Solana network
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -796,15 +630,61 @@ describe('Swap on Solana', function () {
     );
   });
 
+  it('Classifies a USDC to SOL swap when the received SOL is less than the transaction fee', async function () {
+    await withFixtures(
+      {
+        ...solanaSwapFixtureOptions,
+        fixtures: buildUsdcToSolFixture(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockSmallSwapUSDCtoSOL,
+      },
+      async ({ driver }) => {
+        await login(driver);
+
+        const homePage = new HomePage(driver);
+
+        // Switch to Solana network
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
+
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('50');
+
+        const swapPage = new SwapPage(driver);
+        await homePage.clickOnSwapButton();
+        await swapPage.createSwap({
+          amount: 0.00005,
+          swapTo: 'SOL',
+          swapFrom: 'USDC',
+          network: 'Solana',
+        });
+
+        await swapPage.reviewQuote({
+          exchangeRate: '0.0058',
+          swapToAmount: '<0.000001',
+          swapFrom: 'USDC',
+          swapTo: 'SOL',
+          swapFromAmount: '0.00005',
+        });
+
+        await homePage.goToActivityList();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkTransactionActivityByText('Swapped');
+      },
+    );
+  });
+
   it('Swap has no quotes available', async function () {
     await withFixtures(
       {
         ...solanaSwapFixtureOptions,
-        fixtures: isUnifiedAssetsEnabled
-          ? new FixtureBuilderV2()
-              .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
-              .build()
-          : new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapNoQuotes,
       },
@@ -812,15 +692,14 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
+        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -844,11 +723,9 @@ describe('Swap on Solana', function () {
     await withFixtures(
       {
         ...solanaSwapFixtureOptions,
-        fixtures: isUnifiedAssetsEnabled
-          ? new FixtureBuilderV2()
-              .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
-              .build()
-          : new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withAssetsController(SOLANA_SWAP_ASSETS_CONTROLLER_FIXTURE)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapSOLtoUSDCFailed,
       },
@@ -856,15 +733,14 @@ describe('Swap on Solana', function () {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
+        await homePage.waitForNonEvmAccountsLoaded();
 
         // Switch to Solana network
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');

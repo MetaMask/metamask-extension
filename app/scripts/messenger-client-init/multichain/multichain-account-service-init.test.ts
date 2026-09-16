@@ -244,6 +244,7 @@ describe('MultichainAccountServiceInit', () => {
       );
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([true, false])(
       'sets XLM provider enabled to %s based on stellarAccounts feature flag',
       (enabled: boolean) => {
@@ -267,6 +268,7 @@ describe('MultichainAccountServiceInit', () => {
       );
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { initial: false, next: true, setEnabledCalls: 1, alignCalls: 1 },
       { initial: true, next: false, setEnabledCalls: 0, alignCalls: 0 },

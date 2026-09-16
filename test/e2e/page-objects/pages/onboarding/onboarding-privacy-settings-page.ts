@@ -1,5 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Default privacy settings opened from the onboarding completion screen.
+ *
+ * Screen: `#/onboarding/privacy-settings`
+ * Owns: General / Assets / Security category navigation, basic-functionality
+ * and assets toggles, and adding a custom network during onboarding.
+ * Boundaries: this settings detour only. Returning to completion is via
+ * `navigateBackToOnboardingCompletePage`; finishing onboarding remains on
+ * `OnboardingCompletePage`.
+ * Related: entered from `OnboardingCompletePage.navigateToDefaultPrivacySettings`;
+ * returns to `OnboardingCompletePage`; `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/privacy-settings/privacy-settings.tsx
+ */
 class OnboardingPrivacySettingsPage {
   // General settings - add custom network section
   private readonly addCustomNetworkButton = {
@@ -19,7 +33,7 @@ class OnboardingPrivacySettingsPage {
 
   private readonly assetsSettings = '[data-testid="category-item-Assets"]';
 
-  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
+  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h4' };
 
   // General settings
   private readonly basicFunctionalityCheckbox =
@@ -44,13 +58,11 @@ class OnboardingPrivacySettingsPage {
   private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
 
   private readonly confirmAddCustomNetworkButton = {
-    text: 'Save',
-    tag: 'button',
+    testId: 'page-container-footer-next',
   };
 
   private readonly confirmAddRpcUrlButton = {
-    text: 'Add URL',
-    tag: 'button',
+    testId: 'add-rpc-url-button',
   };
 
   private readonly currencySymbolInput =
@@ -60,10 +72,13 @@ class OnboardingPrivacySettingsPage {
 
   private readonly generalSettings = '[data-testid="category-item-General"]';
 
-  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
+  private readonly generalSettingsMessage = { text: 'General', tag: 'h4' };
 
   private readonly networkNameInput =
     '[data-testid="network-form-network-name"]';
+
+  private readonly page =
+    '[data-testid="parent-selector-onboarding-privacy-settings"]';
 
   private readonly privacySettingsBackButton =
     '[data-testid="privacy-settings-back-button"]';
@@ -118,6 +133,7 @@ class OnboardingPrivacySettingsPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.generalSettings,
         this.assetsSettings,
         this.securitySettings,

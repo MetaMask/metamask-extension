@@ -14,7 +14,7 @@ export type FetchDeFiPositionsOptions = {
  * Returns a function that asks `DeFiPositionsControllerV2` to fetch DeFi
  * positions for the selected account group.
  *
- * Must be used under a `RouteWithMessenger` that includes
+ * Must be used under a `RouteMessengerProvider` that includes
  * `DeFiPositionsControllerV2:fetchDeFiPositions` in its capabilities (see
  * `DEFI_ROUTE_ALLOWED_CAPABILITIES` in `../messenger`).
  *

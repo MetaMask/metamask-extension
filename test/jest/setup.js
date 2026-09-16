@@ -5,6 +5,11 @@ jest.mock('webextension-polyfill', () => {
   return {
     runtime: {
       getManifest: () => ({ manifest_version: 2 }),
+      sendMessage: jest.fn(() => Promise.resolve()),
+      onMessage: {
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      },
     },
   };
 });

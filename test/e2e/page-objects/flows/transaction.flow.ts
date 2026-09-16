@@ -25,6 +25,7 @@ export const createInternalTransaction = async ({
   await driver.delay(1000);
 
   const homePage = new HomePage(driver);
+  await homePage.waitForNetworkStatusAvailable();
   await homePage.startSendFlow();
 
   let respAddress = recipientAddress;
@@ -59,6 +60,7 @@ export const createInternalTransactionWithMaxAmount = async ({
   await driver.delay(1000);
 
   const homePage = new HomePage(driver);
+  await homePage.waitForNetworkStatusAvailable();
   await homePage.startSendFlow();
 
   let respAddress = recipientAddress;

@@ -228,7 +228,6 @@ const MusdEducationScreen = () => {
           address: defaultPaymentToken.address,
           chainId: defaultPaymentToken.chainId,
         },
-        skipEducation: true,
         entryPoint: isDeeplink ? 'deeplink' : undefined,
       });
     } finally {

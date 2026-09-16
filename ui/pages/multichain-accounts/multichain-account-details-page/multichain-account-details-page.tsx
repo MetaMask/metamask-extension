@@ -42,6 +42,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
@@ -183,7 +184,10 @@ export const MultichainAccountDetailsPage = () => {
   }, [accountGroupId, multichainAccount, navigate]);
 
   return accountGroupId && multichainAccount ? (
-    <Page className="multichain-account-details-page">
+    <Page
+      className="multichain-account-details-page"
+      data-testid="parent-selector-multichain-account-details-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -307,6 +311,7 @@ export const MultichainAccountDetailsPage = () => {
               )}
               shouldShowBackupReminder={shouldShowBackupReminder}
               keyringId={keyringId}
+              backupFlowReturnRoute={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?${searchParams.toString()}`}
             />
           ) : null}
         </Box>

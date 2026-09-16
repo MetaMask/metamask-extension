@@ -27,7 +27,6 @@ import {
   Text,
   TextColor,
   TextVariant,
-  usePureBlack,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
@@ -55,6 +54,7 @@ import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
+import { RouteMessengerProvider } from '../../contexts/route-messenger';
 import {
   transitionBack,
   transitionForward,
@@ -97,9 +97,18 @@ const useIsSidepanelCompactSettingsLayout = (isSidepanel: boolean) => {
       : false,
   );
 
+  const [prevIsSidepanel, setPrevIsSidepanel] = useState(isSidepanel);
+  if (isSidepanel !== prevIsSidepanel) {
+    setPrevIsSidepanel(isSidepanel);
+    setIsCompact(
+      isSidepanel && typeof window !== 'undefined'
+        ? window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH
+        : false,
+    );
+  }
+
   useEffect(() => {
     if (!isSidepanel) {
-      setIsCompact(false);
       return undefined;
     }
 
@@ -107,7 +116,6 @@ const useIsSidepanelCompactSettingsLayout = (isSidepanel: boolean) => {
       setIsCompact(window.innerWidth <= SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH);
     };
 
-    updateIsCompact();
     window.addEventListener('resize', updateIsCompact);
 
     return () => window.removeEventListener('resize', updateIsCompact);
@@ -130,9 +138,6 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const normalizedPathname = normalizeSettingsPath(location.pathname);
   const meta = getSettingsRouteMeta(normalizedPathname);
   const environmentType = getEnvironmentType();
-
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
 
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isCompactSidepanel = useIsSidepanelCompactSettingsLayout(isSidepanel);
@@ -179,16 +184,26 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
     isShieldFeatureEnabled && useExternalServices && !hasSubscribedToShield;
 
   // Handle ?showShieldEntryModal=true query param (e.g. from deep links)
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true') {
-      if (hasSubscribedToShield) {
-        navigate(TRANSACTION_SHIELD_ROUTE, { replace: true });
-      } else {
-        setShowShieldEntryModal(true);
-      }
+  const shouldShowShieldEntryFromQuery =
+    new URLSearchParams(location.search).get(
+      SHIELD_QUERY_PARAMS.showShieldEntryModal,
+    ) === 'true';
+  const [hasHandledShieldEntryQuery, setHasHandledShieldEntryQuery] = useState(
+    () => !shouldShowShieldEntryFromQuery,
+  );
+  if (!hasHandledShieldEntryQuery && shouldShowShieldEntryFromQuery) {
+    setHasHandledShieldEntryQuery(true);
+    if (!hasSubscribedToShield) {
+      setShowShieldEntryModal(true);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- mount only
+  }
+  useEffect(() => {
+    if (shouldShowShieldEntryFromQuery && hasSubscribedToShield) {
+      navigate(TRANSACTION_SHIELD_ROUTE, { replace: true });
+    }
+    // Mount-only navigation for deep-link entry; subscription status is read once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only
+  }, []);
 
   // Intercept Transaction Shield tab click for non-subscribed users
   const handleTabClick = useCallback(
@@ -333,15 +348,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         })}
       >
         <Box
-          className={classnames(
-            'w-full h-full max-w-[262px]',
-            // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-            isPureBlack ? 'bg-background-alternative' : 'bg-background-muted',
-            {
-              flex: isOnSettingsRoot || !usesCompactSettingsLayout,
-              hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
-            },
-          )}
+          className={classnames('w-full h-full max-w-[262px] bg-muted', {
+            flex: isOnSettingsRoot || !usesCompactSettingsLayout,
+            hidden: !isOnSettingsRoot && usesCompactSettingsLayout,
+          })}
         >
           <TabBar
             tabs={usesCompactSettingsLayout ? itemTabs : []}
@@ -460,6 +470,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       ref={setSettingsRootRef}
+      data-testid="parent-selector-settings-page"
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="h-full w-full shadow-xs"
@@ -495,17 +506,36 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 const Settings = () => {
   return (
     <RouterRoutes>
-      {SETTINGS_RENDERABLE_ROUTES.map(({ path, component: Component }) => (
-        <Route
-          key={path}
-          path={toRelativeRoutePath(path, SETTINGS_ROUTE)}
-          element={
-            <SettingsLayout>
-              <Component />
-            </SettingsLayout>
-          }
-        />
-      ))}
+      {SETTINGS_RENDERABLE_ROUTES.map(
+        ({ path, component: Component, messengerCapabilities }) => {
+          const component = <Component />;
+          return (
+            <Route
+              key={path}
+              path={toRelativeRoutePath(path, SETTINGS_ROUTE)}
+              element={
+                <SettingsLayout>
+                  {messengerCapabilities ? (
+                    <RouteMessengerProvider
+                      // Remount when the settings sub-route changes. Sibling
+                      // routes share this component type, so without a key
+                      // React reuses the instance and keeps the previous
+                      // route's messenger capabilities.
+                      key={path}
+                      path={path}
+                      capabilities={messengerCapabilities}
+                    >
+                      {component}
+                    </RouteMessengerProvider>
+                  ) : (
+                    component
+                  )}
+                </SettingsLayout>
+              }
+            />
+          );
+        },
+      )}
       <Route
         path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}
         element={

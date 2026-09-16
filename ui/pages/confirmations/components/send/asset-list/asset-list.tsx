@@ -21,7 +21,7 @@ import { type Asset } from '../../../types/send';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { SendContext } from '../../../context/send';
-import { Asset as AssetComponent } from '../../UI/asset';
+import { Asset as AssetComponent, type TokenTagRenderer } from '../../UI/asset';
 import { useScrollContainer } from '../../../../../contexts/scroll-container';
 
 type AssetListProps = {
@@ -35,6 +35,7 @@ type AssetListProps = {
   onAssetSelect?: (asset: Asset) => void;
   emptyStateMessage?: string;
   disableMetrics?: boolean;
+  tagRenderers?: TokenTagRenderer[];
 };
 
 type ListItem =
@@ -57,6 +58,7 @@ export const AssetList = ({
   onAssetSelect,
   emptyStateMessage,
   disableMetrics = false,
+  tagRenderers,
 }: AssetListProps) => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
@@ -210,6 +212,7 @@ export const AssetList = ({
                 asset={item.asset}
                 onClick={() => handleAssetClick(item.asset)}
                 hideBalances={hideBalances}
+                tagRenderers={tagRenderers}
               />
             )}
           </div>

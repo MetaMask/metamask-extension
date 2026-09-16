@@ -9,8 +9,10 @@ import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
+import { MoneyKeyring } from '@metamask/eth-money-keyring';
 import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
-import { getKeyringV2Builders } from './keyrings';
+import { getRootMessenger } from '../lib/messenger';
+import { getKeyringBuilders, getKeyringV2Builders } from './keyrings';
 
 // The V2 wrappers have their own tests; here we only verify that
 // `getKeyringV2Builders` wires each one up correctly, so stub them out.
@@ -40,6 +42,7 @@ describe('getKeyringV2Builders', () => {
       QrKeyring.type,
       TrezorKeyring.type,
       OneKeyKeyring.type,
+      MoneyKeyring.type,
       SnapKeyringV2.type,
     ]);
   });
@@ -69,5 +72,17 @@ describe('getKeyringV2Builders', () => {
     expect(QrKeyringV2).toHaveBeenCalledWith(expectedArgs);
     expect(TrezorKeyringV2).toHaveBeenCalledWith(expectedArgs);
     expect(OneKeyKeyringV2).toHaveBeenCalledWith(expectedArgs);
+  });
+});
+
+describe('getKeyringBuilders', () => {
+  it('registers the Money keyring, so the vault can always be deserialized', () => {
+    const messenger = getRootMessenger<never, never>();
+
+    const builders = getKeyringBuilders(messenger as never);
+
+    expect(builders.map((builder) => builder.type)).toContain(
+      MoneyKeyring.type,
+    );
   });
 });

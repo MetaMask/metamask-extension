@@ -182,8 +182,9 @@ export function useDappSwapComparisonInfo() {
           ),
           swap_mm_to_token_simulated_value_usd:
             getDestinationTokenUSDValue(destTokenAmount),
-          swap_mm_minimum_received_value_usd:
-            getDestinationTokenUSDValue(minDestTokenAmount),
+          swap_mm_minimum_received_value_usd: getDestinationTokenUSDValue(
+            minDestTokenAmount ?? destTokenAmount,
+          ),
           swap_mm_slippage: (bestQuote.quote as unknown as { slippage: string })
             .slippage,
           swap_mm_quote_provider: (
