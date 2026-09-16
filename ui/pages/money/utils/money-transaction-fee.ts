@@ -97,8 +97,10 @@ export function isMoneyNetworkFeePaidByMetaMask(tx: TransactionMeta): boolean {
  * Gets a Money transaction fee, preferring the MetaMask Pay quote and falling
  * back to the confirmed receipt gas cost.
  *
- * When the network fee is MetaMask-sponsored, receipt gas is never billed to
- * the user — only any recorded provider (bridge) fee is returned.
+ * `metamaskPay.networkFeeFiat` is the Pay source-network fee. On cross-chain
+ * deposits that remains user-paid even when the Monad parent tx is
+ * gas-sponsored, so it is always included when present. Receipt gas is skipped
+ * when sponsored — that is the parent/target leg MetaMask covers.
  *
  * @param tx - Transaction metadata to inspect.
  * @param nativeUsdRate - USD exchange rate for the chain's native token.
@@ -110,15 +112,15 @@ export function getMoneyTransactionFeeUsd(
 ): number | undefined {
   const networkFee = parseFiniteNumber(tx.metamaskPay?.networkFeeFiat);
   const bridgeFee = parseFiniteNumber(tx.metamaskPay?.bridgeFeeFiat);
-  const isNetworkFeeSponsored = isMoneyNetworkFeePaidByMetaMask(tx);
 
   if (networkFee !== undefined) {
-    // Sponsored network gas must not inflate the fee the user is shown.
-    return (isNetworkFeeSponsored ? 0 : networkFee) + (bridgeFee ?? 0);
+    return networkFee + (bridgeFee ?? 0);
   }
 
-  if (isNetworkFeeSponsored) {
-    return bridgeFee ?? 0;
+  // No recorded source fee: receipt gas is the parent tx. Skip it when
+  // MetaMask sponsors that leg so we do not bill the user for it.
+  if (isMoneyNetworkFeePaidByMetaMask(tx)) {
+    return bridgeFee;
   }
 
   const gasFee = getMoneyGasFeeUsd(tx, nativeUsdRate);
@@ -131,10 +133,6 @@ export function getMoneyTransactionFeeUsd(
 
 /**
  * Gets the total recorded by MetaMask Pay for a Money transaction.
- *
- * When the network fee is MetaMask-sponsored, any recorded `networkFeeFiat`
- * embedded in `totalFiat` is subtracted so the Total row matches the fee the
- * user actually pays.
  *
  * @param tx - Transaction metadata to inspect.
  * @returns The transaction total in USD, or undefined when unavailable.
@@ -149,16 +147,5 @@ export function getMoneyTransactionTotalUsd(
     ? tx.metamaskPay?.targetFiat
     : tx.metamaskPay?.totalFiat;
 
-  const total = parseFiniteNumber(value);
-  if (total === undefined) {
-    return undefined;
-  }
-
-  // Withdrawals use targetFiat (destination amount), which does not embed fees.
-  if (isWithdraw || !isMoneyNetworkFeePaidByMetaMask(tx)) {
-    return total;
-  }
-
-  const networkFee = parseFiniteNumber(tx.metamaskPay?.networkFeeFiat) ?? 0;
-  return Math.max(0, total - networkFee);
+  return parseFiniteNumber(value);
 }

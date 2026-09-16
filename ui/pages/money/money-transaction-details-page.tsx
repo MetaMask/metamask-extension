@@ -118,8 +118,9 @@ export function MoneyTransactionDetailsPage() {
   }, [availability, controllerTx, items, transactionId]);
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
+  const onchainTx = item?.kind === 'onchain' ? item.tx : undefined;
   const { feeUsd, totalUsd, isNetworkFeePaidByMetaMask } =
-    useMoneyTransactionFee(item?.kind === 'onchain' ? item.tx : undefined);
+    useMoneyTransactionFee(onchainTx);
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
@@ -142,6 +143,19 @@ export function MoneyTransactionDetailsPage() {
       : formatCurrencyWithMinThreshold(totalUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
   const isFullySponsoredFee =
     isNetworkFeePaidByMetaMask && feeUsd !== undefined && feeUsd === 0;
+  // `networkFeeFiat` is Pay source-network gas. Cross-chain deposits keep that
+  // user-paid; only claim sponsorship in the tooltip when it is absent/zero.
+  const recordedSourceNetworkFee = onchainTx?.metamaskPay?.networkFeeFiat;
+  const hasUserPaidSourceNetworkFee = Boolean(
+    recordedSourceNetworkFee !== undefined &&
+    recordedSourceNetworkFee.trim() !== '' &&
+    Number(recordedSourceNetworkFee) > 0,
+  );
+  const showSponsoredNetworkFeeInTooltip =
+    isNetworkFeePaidByMetaMask &&
+    !hasUserPaidSourceNetworkFee &&
+    feeUsd !== undefined &&
+    feeUsd > 0;
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -310,9 +324,7 @@ export function MoneyTransactionDetailsPage() {
               >
                 <Text variant={TextVariant.BodyMd}>
                   {t('moneyActivityTransactionFeeTooltip')}
-                  {isNetworkFeePaidByMetaMask &&
-                  feeUsd !== undefined &&
-                  feeUsd > 0 ? (
+                  {showSponsoredNetworkFeeInTooltip ? (
                     <>
                       <br />
                       {`${t('networkFee')}: ${t('paidByMetaMask')}`}

@@ -30,11 +30,13 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useConfirmContext } from '../../../context/confirm';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
-import { InfoPopoverTooltip } from '../../info-popover-tooltip';
+import { getUserPaidNetworkFeeUsd } from '../../../hooks/pay/sponsored-network-fees';
 import {
-  useIsNetworkFeePaidByMetaMask,
   useIsPaidByMetaMask,
+  useSponsoredNetworkFeeFlags,
+  type SponsoredNetworkFeeFlags,
 } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -56,7 +58,7 @@ export function BridgeFeeRow({
   const totals = useTransactionPayTotals();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isPaidByMetaMask = useIsPaidByMetaMask();
-  const isNetworkFeePaidByMetaMask = useIsNetworkFeePaidByMetaMask();
+  const sponsoredNetworkFees = useSponsoredNetworkFeeFlags();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
@@ -67,19 +69,12 @@ export function BridgeFeeRow({
       return '';
     }
 
-    let totalFee = new BigNumber(totals.fees.provider?.usd ?? '0').plus(
-      totals.fees.metaMask?.usd ?? '0',
-    );
-
-    // Sponsored network gas must not inflate the fee the user is shown.
-    if (!isNetworkFeePaidByMetaMask) {
-      totalFee = totalFee
-        .plus(totals.fees.sourceNetwork?.estimate?.usd ?? '0')
-        .plus(totals.fees.targetNetwork?.usd ?? '0');
-    }
+    const totalFee = new BigNumber(totals.fees.provider?.usd ?? '0')
+      .plus(totals.fees.metaMask?.usd ?? '0')
+      .plus(getUserPaidNetworkFeeUsd(totals.fees, sponsoredNetworkFees));
 
     return formatFiat(totalFee.toNumber());
-  }, [totals, formatFiat, isNetworkFeePaidByMetaMask]);
+  }, [totals, formatFiat, sponsoredNetworkFees]);
 
   const metamaskFeeUsd = useMemo(() => {
     const raw = new BigNumber(totals?.fees?.metaMask?.usd ?? '0');
@@ -107,7 +102,7 @@ export function BridgeFeeRow({
       metamaskFeeFormatted: metamaskFeeUsd,
       includeMetamaskFee: isSmall,
       useProviderFeeLabel: isPerpsWithdraw,
-      isNetworkFeePaidByMetaMask,
+      sponsoredNetworkFees,
     });
   }, [
     isPaidByMetaMask,
@@ -119,7 +114,7 @@ export function BridgeFeeRow({
     metamaskFeeUsd,
     isSmall,
     isPerpsWithdraw,
-    isNetworkFeePaidByMetaMask,
+    sponsoredNetworkFees,
   ]);
 
   if (isLoading) {
@@ -230,7 +225,7 @@ type BuildTooltipLinesArgs = {
   metamaskFeeFormatted: string;
   includeMetamaskFee: boolean;
   useProviderFeeLabel?: boolean;
-  isNetworkFeePaidByMetaMask?: boolean;
+  sponsoredNetworkFees: SponsoredNetworkFeeFlags;
 };
 
 function buildTooltipLines({
@@ -241,11 +236,15 @@ function buildTooltipLines({
   metamaskFeeFormatted,
   includeMetamaskFee,
   useProviderFeeLabel,
-  isNetworkFeePaidByMetaMask,
+  sponsoredNetworkFees,
 }: BuildTooltipLinesArgs): string[] {
-  const networkFee = new BigNumber(
-    totals.fees.sourceNetwork?.estimate?.usd ?? '0',
-  ).plus(totals.fees.targetNetwork?.usd ?? '0');
+  const userPaidNetworkFee = getUserPaidNetworkFeeUsd(
+    totals.fees,
+    sponsoredNetworkFees,
+  );
+  const hasSponsoredNetworkFee =
+    sponsoredNetworkFees.isSourceNetworkSponsored ||
+    sponsoredNetworkFees.isTargetNetworkSponsored;
 
   const providerFeeUsd = new BigNumber(totals.fees.provider?.usd ?? '0');
 
@@ -256,9 +255,12 @@ function buildTooltipLines({
     lines.push('');
   }
 
-  const networkFeeValue = isNetworkFeePaidByMetaMask
-    ? t('paidByMetaMask')
-    : formatFiat(networkFee.toNumber());
+  // Only claim "Paid by MetaMask" when every network leg the user would see is
+  // sponsored. Cross-chain deposits keep user-paid source gas in this line.
+  const networkFeeValue =
+    hasSponsoredNetworkFee && userPaidNetworkFee.isZero()
+      ? t('paidByMetaMask')
+      : formatFiat(userPaidNetworkFee.toNumber());
 
   lines.push(
     `${t('networkFee')}: ${networkFeeValue}`,

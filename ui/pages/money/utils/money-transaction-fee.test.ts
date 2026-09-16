@@ -147,7 +147,7 @@ describe('getMoneyTransactionFeeUsd', () => {
     expect(getMoneyTransactionFeeUsd(tx, 2000)).toBe(0.88);
   });
 
-  it('excludes sponsored network fee from the MetaMask Pay total', () => {
+  it('keeps recorded source network fee when the parent tx is gas-sponsored', () => {
     const tx = createTransaction({
       isGasFeeSponsored: true,
       metamaskPay: {
@@ -156,7 +156,7 @@ describe('getMoneyTransactionFeeUsd', () => {
       },
     });
 
-    expect(getMoneyTransactionFeeUsd(tx, 2000)).toBe(0.04);
+    expect(getMoneyTransactionFeeUsd(tx, 2000)).toBe(0.16);
   });
 
   it('does not fall back to receipt gas when the network fee is sponsored', () => {
@@ -174,7 +174,7 @@ describe('getMoneyTransactionFeeUsd', () => {
     expect(getMoneyTransactionFeeUsd(tx, 2000)).toBe(0.14);
   });
 
-  it('returns zero when sponsored with no provider fee', () => {
+  it('returns zero when sponsored with zero source and provider fees', () => {
     const tx = createTransaction({
       isGasFeeSponsored: true,
       metamaskPay: {
@@ -242,33 +242,5 @@ describe('getMoneyTransactionTotalUsd', () => {
     });
 
     expect(getMoneyTransactionTotalUsd(tx)).toBe(250);
-  });
-
-  it('excludes sponsored network fee from the deposit total', () => {
-    const tx = createTransaction({
-      type: TransactionType.moneyAccountDeposit,
-      isGasFeeSponsored: true,
-      metamaskPay: {
-        totalFiat: '1000.16',
-        networkFeeFiat: '0.12',
-        bridgeFeeFiat: '0.04',
-      },
-    });
-
-    expect(getMoneyTransactionTotalUsd(tx)).toBe(1000.04);
-  });
-
-  it('does not subtract network fee from an unsponsored deposit total', () => {
-    const tx = createTransaction({
-      type: TransactionType.moneyAccountDeposit,
-      isGasFeeSponsored: false,
-      metamaskPay: {
-        totalFiat: '1000.16',
-        networkFeeFiat: '0.12',
-        bridgeFeeFiat: '0.04',
-      },
-    });
-
-    expect(getMoneyTransactionTotalUsd(tx)).toBe(1000.16);
   });
 });

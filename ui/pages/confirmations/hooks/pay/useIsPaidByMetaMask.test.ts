@@ -5,6 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
+import { useTransactionPayToken } from './useTransactionPayToken';
 import {
   useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayQuotes,
@@ -12,12 +13,14 @@ import {
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import {
-  useIsPaidByMetaMask,
   useIsNetworkFeePaidByMetaMask,
+  useIsPaidByMetaMask,
+  useSponsoredNetworkFeeFlags,
 } from './useIsPaidByMetaMask';
 
 jest.mock('../transactions/useTransactionMetadataRequest');
 jest.mock('./useTransactionPayData');
+jest.mock('./useTransactionPayToken');
 
 const useTransactionMetadataRequestOptionalMock = jest.mocked(
   useTransactionMetadataRequestOptional,
@@ -30,6 +33,7 @@ const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
 const useTransactionPaySourceAmountsMock = jest.mocked(
   useTransactionPaySourceAmounts,
 );
+const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 
 function mockConfirmation(
   type: TransactionType,
@@ -61,6 +65,10 @@ describe('useIsPaidByMetaMask', () => {
     useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(true);
     useTransactionPayQuotesMock.mockReturnValue([{}] as never);
     useTransactionPaySourceAmountsMock.mockReturnValue(undefined);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { chainId: '0x1', address: '0xabc' },
+      setPayToken: jest.fn(),
+    } as never);
   });
 
   it('returns true when all fees are zero for musdConversion', () => {
@@ -140,6 +148,7 @@ describe('useIsPaidByMetaMask', () => {
   it('returns true for a sponsored withdraw whose quote only has network gas', () => {
     mockConfirmation(TransactionType.moneyAccountWithdraw, {
       isGasFeeSponsored: true,
+      chainId: '0x1',
     });
     useTransactionPaySourceAmountsMock.mockReturnValue([
       {},
@@ -155,6 +164,7 @@ describe('useIsPaidByMetaMask', () => {
   it('returns false for a sponsored withdraw with a provider fee', () => {
     mockConfirmation(TransactionType.moneyAccountWithdraw, {
       isGasFeeSponsored: true,
+      chainId: '0x1',
     });
     useTransactionPaySourceAmountsMock.mockReturnValue([
       {},
@@ -205,7 +215,12 @@ describe('useIsPaidByMetaMask', () => {
   it('returns true for sponsored deposits after quoting even when target gas estimate is non-zero', () => {
     mockConfirmation(TransactionType.moneyAccountDeposit, {
       isGasFeeSponsored: true,
+      chainId: '0x1',
     });
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { chainId: '0x1', address: '0xabc' },
+      setPayToken: jest.fn(),
+    } as never);
     useTransactionPaySourceAmountsMock.mockReturnValue([
       {},
     ] as unknown as ReturnType<typeof useTransactionPaySourceAmounts>);
@@ -216,6 +231,27 @@ describe('useIsPaidByMetaMask', () => {
 
     const { result } = renderHook(() => useIsPaidByMetaMask());
     expect(result.current).toBe(true);
+  });
+
+  it('returns false for a sponsored cross-chain deposit with user-paid source gas', () => {
+    mockConfirmation(TransactionType.moneyAccountDeposit, {
+      isGasFeeSponsored: true,
+      chainId: '0x1',
+    });
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { chainId: '0xe708', address: '0xabc' },
+      setPayToken: jest.fn(),
+    } as never);
+    useTransactionPaySourceAmountsMock.mockReturnValue([
+      {},
+    ] as unknown as ReturnType<typeof useTransactionPaySourceAmounts>);
+    mockTotals({
+      targetNetwork: { usd: '0.05' },
+      sourceNetwork: { estimate: { usd: '0.20' } },
+    } as TransactionPayTotals['fees']);
+
+    const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
   });
 
   it('returns false when totals are undefined', () => {
@@ -271,6 +307,10 @@ describe('useIsNetworkFeePaidByMetaMask', () => {
     mockConfirmation(TransactionType.moneyAccountDeposit, {
       isGasFeeSponsored: true,
     });
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { chainId: '0x1', address: '0xabc' },
+      setPayToken: jest.fn(),
+    } as never);
   });
 
   it('returns true for a sponsored moneyAccountDeposit', () => {
@@ -319,5 +359,40 @@ describe('useIsNetworkFeePaidByMetaMask', () => {
 
     const { result } = renderHook(() => useIsNetworkFeePaidByMetaMask());
     expect(result.current).toBe(false);
+  });
+});
+
+describe('useSponsoredNetworkFeeFlags', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    mockConfirmation(TransactionType.moneyAccountDeposit, {
+      isGasFeeSponsored: true,
+      chainId: '0x1',
+    });
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { chainId: '0x1', address: '0xabc' },
+      setPayToken: jest.fn(),
+    } as never);
+  });
+
+  it('marks source and target as sponsored on same-chain routes', () => {
+    const { result } = renderHook(() => useSponsoredNetworkFeeFlags());
+    expect(result.current).toEqual({
+      isSourceNetworkSponsored: true,
+      isTargetNetworkSponsored: true,
+    });
+  });
+
+  it('keeps source unsponsored on cross-chain routes', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { chainId: '0xe708', address: '0xabc' },
+      setPayToken: jest.fn(),
+    } as never);
+
+    const { result } = renderHook(() => useSponsoredNetworkFeeFlags());
+    expect(result.current).toEqual({
+      isSourceNetworkSponsored: false,
+      isTargetNetworkSponsored: true,
+    });
   });
 });
