@@ -19,7 +19,6 @@ import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
 import * as usePayTokenAccountBalanceModule from '../pay/usePayTokenAccountBalance';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
-import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import {
   useTransactionCustomAmount,
@@ -80,7 +79,6 @@ function runHook({
   currency,
   disableUpdate = false,
   tokenFiatRate = 1,
-  tokenFiatRateMusd,
   payTokenBalanceUsd = 100,
   payTokenBalanceRaw,
   livePayTokenBalanceRaw,
@@ -104,7 +102,6 @@ function runHook({
   currency?: string;
   disableUpdate?: boolean;
   tokenFiatRate?: number;
-  tokenFiatRateMusd?: number;
   payTokenBalanceUsd?: number;
   payTokenBalanceRaw?: string;
   /** Live funding-account raw; defaults to `payTokenBalanceRaw` when omitted. */
@@ -128,15 +125,7 @@ function runHook({
 } = {}) {
   jest
     .mocked(useTokenFiatRatesModule.useTokenFiatRate)
-    .mockImplementation((address) => {
-      if (
-        tokenFiatRateMusd !== undefined &&
-        String(address).toLowerCase() === MUSD_TOKEN_ADDRESS.toLowerCase()
-      ) {
-        return tokenFiatRateMusd;
-      }
-      return tokenFiatRate;
-    });
+    .mockReturnValue(tokenFiatRate);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayIsMaxAmount)
     .mockReturnValue(isMaxAmount);
@@ -387,14 +376,16 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountHuman).toBe('50');
     });
 
-    it('converts deposit USD with the mUSD rate instead of the Monad vault rate', () => {
+    it('converts deposit USD to mUSD at par, applying no market rate', () => {
       const { result } = runHook({
         transactionMeta: {
           ...MOCK_TRANSACTION_META,
           type: TransactionType.moneyAccountDeposit,
         } as TransactionMeta,
+        // Neither the vault-chain rate nor any mUSD market rate may be
+        // applied: the background values the committed `requiredAssets` in
+        // mUSD, so dividing here made Total disagree with amount + fee.
         tokenFiatRate: 0.04,
-        tokenFiatRateMusd: 1,
       });
 
       act(() => {
@@ -1708,8 +1699,8 @@ describe('useTransactionCustomAmount', () => {
         result.current.updatePendingAmountPercentage(50);
       });
 
-      // 50% of 2.246912 rounded down = 1.12, ÷ 2 = 0.56
-      expect(updateTokenAmountMock).toHaveBeenCalledWith('0.56');
+      // 50% of 2.246912 rounded down = 1.12, committed as 1.12 mUSD (par).
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('1.12');
     });
 
     it('clears the raw Max override after manual input', () => {
@@ -1729,8 +1720,8 @@ describe('useTransactionCustomAmount', () => {
         jest.advanceTimersByTime(500);
       });
 
-      // amountFiat = 7, amountHuman = 7 ÷ 2 = 3.5
-      expect(updateTokenAmountMock).toHaveBeenCalledWith('3.5');
+      // amountFiat = 7, committed as 7 mUSD (par).
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('7');
     });
 
     it('does not use the raw balance for Max on non-deposit transactions', () => {
@@ -1784,9 +1775,9 @@ describe('useTransactionCustomAmount', () => {
       });
 
       // The raw balance is denominated in the pay token, not mUSD, so a
-      // non-1:1 token must go through the fiat conversion:
-      // 100% of 2.246912 rounded down = 2.24, ÷ 2 = 1.12
-      expect(updateTokenAmountMock).toHaveBeenCalledWith('1.12');
+      // non-1:1 token must go through the fiat amount instead:
+      // 100% of 2.246912 rounded down = 2.24, committed as 2.24 mUSD (par).
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('2.24');
       expect(updateTokenAmountMock).not.toHaveBeenCalledWith('1.123456');
     });
 
@@ -1863,7 +1854,7 @@ describe('useTransactionCustomAmount', () => {
         result.current.updatePendingAmountPercentage(100);
       });
 
-      expect(updateTokenAmountMock).toHaveBeenCalledWith('1.12');
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('2.24');
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,

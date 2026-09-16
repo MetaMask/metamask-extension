@@ -31,10 +31,6 @@ import {
   useTransactionPayTotals,
 } from '../pay/useTransactionPayData';
 import { getTokenAddress } from '../../utils/transaction-pay';
-import {
-  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
-  MUSD_TOKEN_ADDRESS,
-} from '../../constants/musd';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import {
   DepositPrefillStatus,
@@ -89,20 +85,17 @@ export function useTransactionCustomAmount({
     chainId as Hex,
     currency,
   );
-  const musdFiatRate =
-    useTokenFiatRate(
-      MUSD_TOKEN_ADDRESS,
-      MUSD_CONVERSION_DEFAULT_CHAIN_ID,
-      currency,
-    ) ?? 1;
-  // Deposit/withdraw amounts are human mUSD and the input is USD. The
-  // confirmation `to` is the vault on Monad, so `payTokenFiatRate` is the
-  // MON rate and inflates every non-Max amount past the pay-token balance.
-  const tokenFiatRate =
-    isMoneyAccountDeposit || isMoneyAccountWithdraw
-      ? musdFiatRate
-      : (payTokenFiatRate ?? 1);
+  const tokenFiatRate = payTokenFiatRate ?? 1;
   const hasBalanceUsdOverride = balanceUsdOverride !== undefined;
+  // Deposit/withdraw amounts are human mUSD and the input is already USD, so
+  // the typed value is the mUSD amount. Converting through a market rate is
+  // not just lossy, it disagrees with the background: the UI priced mUSD from
+  // mainnet market data while TransactionPayController values the committed
+  // `requiredAssets` from the vault chain's, and Total came out short of
+  // amount + fee by that spread. The money account itself counts 1 mUSD as $1
+  // (`projectWithdrawableFiat`), so par is the figure every other surface uses.
+  const skipFiatRateConversion =
+    hasBalanceUsdOverride || isMoneyAccountDeposit || isMoneyAccountWithdraw;
   const balanceUsd = usePayTokenBalanceUsd(balanceUsdOverride);
   // Live funding-account raw balance — payToken.balanceRaw is a controller
   // snapshot that can be 0/stale on money-account deposits (tx `from` is the
@@ -259,8 +252,8 @@ export function useTransactionCustomAmount({
 
   const amountHuman = useMemo(
     () =>
-      getAmountHumanFromFiat(amountFiat, tokenFiatRate, hasBalanceUsdOverride),
-    [amountFiat, hasBalanceUsdOverride, tokenFiatRate],
+      getAmountHumanFromFiat(amountFiat, tokenFiatRate, skipFiatRateConversion),
+    [amountFiat, skipFiatRateConversion, tokenFiatRate],
   );
 
   // Undebounced counterpart to `hasInput`. Quote-derived results (fee,
@@ -523,7 +516,7 @@ export function useTransactionCustomAmount({
         getAmountHumanFromFiat(
           newAmountFiat,
           tokenFiatRate,
-          hasBalanceUsdOverride,
+          skipFiatRateConversion,
         );
 
       // Percentage / prefill updates apply immediately, so drop any pending
@@ -546,6 +539,7 @@ export function useTransactionCustomAmount({
       payToken?.balanceRaw,
       payToken?.decimals,
       setIsMax,
+      skipFiatRateConversion,
       tokenFiatRate,
       transactionId,
       updateTokenAmountCallback,
@@ -614,7 +608,7 @@ export function useTransactionCustomAmount({
       const newAmountHuman = getAmountHumanFromFiat(
         fiatAmount,
         tokenFiatRate,
-        hasBalanceUsdOverride,
+        skipFiatRateConversion,
       );
 
       debounceRef.current?.cancel();
@@ -641,9 +635,9 @@ export function useTransactionCustomAmount({
     [
       balanceUsd,
       disableUpdate,
-      hasBalanceUsdOverride,
       isMaxAmount,
       setIsMax,
+      skipFiatRateConversion,
       tokenFiatRate,
       transactionId,
       updateTokenAmountCallback,
