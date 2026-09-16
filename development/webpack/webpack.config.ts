@@ -26,6 +26,8 @@ import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,
   NODE_MODULES_RE,
+  TYPESCRIPT_NON_TSX_FILE_RE,
+  TYPESCRIPT_TSX_FILE_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
@@ -445,25 +447,25 @@ const config = {
         ? [
             {
               // typescript without JSX (UI, react-refresh)
-              test: /\.(?:ts|mts)$/u,
+              test: TYPESCRIPT_NON_TSX_FILE_RE,
               include: UI_DIR_RE,
               use: reactRefreshTsLoader,
             },
             {
               // typescript JSX (UI, react-refresh)
-              test: /\.tsx$/u,
+              test: TYPESCRIPT_TSX_FILE_RE,
               include: UI_DIR_RE,
               use: reactRefreshTsxLoader,
             },
             {
               // typescript without JSX
-              test: /\.(?:ts|mts)$/u,
+              test: TYPESCRIPT_NON_TSX_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
               use: tsLoader,
             },
             {
               // typescript JSX
-              test: /\.tsx$/u,
+              test: TYPESCRIPT_TSX_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
               use: tsxLoader,
             },
@@ -471,13 +473,13 @@ const config = {
         : [
             {
               // typescript without JSX
-              test: /\.(?:ts|mts)$/u,
+              test: TYPESCRIPT_NON_TSX_FILE_RE,
               exclude: NODE_MODULES_RE,
               use: tsLoader,
             },
             {
               // typescript JSX
-              test: /\.tsx$/u,
+              test: TYPESCRIPT_TSX_FILE_RE,
               exclude: NODE_MODULES_RE,
               use: tsxLoader,
             },

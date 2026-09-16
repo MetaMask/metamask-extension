@@ -9,7 +9,7 @@ import type {
   AssignmentPatternProperty,
   KeyValuePatternProperty,
 } from '@swc/types';
-import { TYPESCRIPT_FILE_RE } from '../helpers';
+import { TYPESCRIPT_FILE_RE, TYPESCRIPT_TSX_FILE_RE } from '../helpers';
 
 // Options are serialized to a JSON array for thread-loader compatibility
 export type EnvValidationLoaderOptions = {
@@ -30,7 +30,7 @@ function getParseOptions(resourcePath: string): ParseOptions {
   const isTypeScript = TYPESCRIPT_FILE_RE.test(resourcePath);
 
   if (isTypeScript) {
-    const tsx = /\.tsx$/u.test(resourcePath);
+    const tsx = TYPESCRIPT_TSX_FILE_RE.test(resourcePath);
     return { syntax: 'typescript', tsx };
   }
   return { syntax: 'ecmascript', jsx: true };
