@@ -5345,8 +5345,8 @@
     "message": "low"
   },
   "lowValueAssets": {
-    "message": "Low value tokens ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "message": "Low balance tokens ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -8776,6 +8776,10 @@
   "rampsChangeProvider": {
     "message": "Change provider."
   },
+  "rampsChangeProviders": {
+    "message": "change providers",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Choose provider"
   },
@@ -8948,7 +8952,7 @@
     "message": "Last used"
   },
   "rampsQuoteFetchError": {
-    "message": "Failed to fetch quote."
+    "message": "Error getting quotes. Enter a lower amount or"
   },
   "rampsQuoteUnavailable": {
     "message": "Quote unavailable."

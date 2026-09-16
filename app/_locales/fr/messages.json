@@ -5212,7 +5212,7 @@
   },
   "lowValueAssets": {
     "message": "Jetons de faible valeur ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Réseau principal Ethereum"
@@ -8633,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Dernière utilisation"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Échec de la récupération de la cotation."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotation non disponible."

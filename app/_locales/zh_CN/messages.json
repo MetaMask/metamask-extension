@@ -5212,7 +5212,7 @@
   },
   "lowValueAssets": {
     "message": "低价值代币（$1）",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "以太坊主网"
@@ -8639,9 +8639,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "上次使用"
-  },
-  "rampsQuoteFetchError": {
-    "message": "获取报价失败。"
   },
   "rampsQuoteUnavailable": {
     "message": "报价不可用。"
