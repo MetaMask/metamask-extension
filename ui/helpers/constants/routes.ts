@@ -212,6 +212,7 @@ export const MONEY_ACTIVITY_ROUTE = '/money-home/activity';
 export const MONEY_HOW_IT_WORKS_ROUTE = '/money-home/how-it-works';
 export const MONEY_TRANSACTION_DETAILS_ROUTE =
   '/money-home/activity/:transactionId';
+export const MONEY_EARN_ROUTE = '/money-home/earn';
 
 /**
  * Builds the Money transaction details path for a given activity item id.
@@ -245,6 +246,11 @@ export const ROUTES = [
   {
     path: MONEY_TRANSACTION_DETAILS_ROUTE,
     label: 'Money Transaction Details',
+    trackInAnalytics: true,
+  },
+  {
+    path: MONEY_EARN_ROUTE,
+    label: 'Money Earn On Crypto',
     trackInAnalytics: true,
   },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
