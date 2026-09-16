@@ -59,7 +59,9 @@ describe('Address Book', function (this: Suite) {
           amount: '2',
         });
 
-        await new TransactionConfirmation(driver).clickFooterConfirmButton();
+        await new TransactionConfirmation(driver).clickFooterButton({
+          button: 'confirm',
+        });
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
@@ -113,7 +115,7 @@ describe('Address Book', function (this: Suite) {
 
         const confirmation = new TransactionConfirmation(driver);
         await confirmation.waitForReviewAlertToDisappear();
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterButton({ button: 'confirm' });
 
         // Select Linea to check the Activity list
         const networkSelector = new SelectNetworkModal(driver);
