@@ -8,7 +8,13 @@
  * HTTPS proxy).
  *
  * Friendbot funds accounts. Read paths do not depend on the local network
- * passphrase; transaction submit would, and is out of scope here.
+ * passphrase. The snap signs pubnet, so wallet submit against `--local` is out
+ * of scope; the classic-asset seeder submits with the standalone passphrase.
+ *
+ * Image pull: GitHub Actions pre-pulls `stellar/quickstart` in `run-e2e.yml`.
+ * `start()` then requires that image (`docker run --pull never`) and throws if
+ * it is missing. Set `STELLAR_LOCAL_DOCKER=1` (or leave `GITHUB_ACTIONS`
+ * unset) so a laptop `docker run` may pull.
  */
 import { execFile } from 'child_process';
 import { promisify } from 'util';
@@ -30,6 +36,11 @@ const HTTP_TIMEOUT_MS = 5_000;
 const RPC_PATHS = ['/rpc', '/soroban/rpc'] as const;
 
 export type StellarLocalNodeOptions = {
+  /**
+   * When true, `docker run` may pull the image. When false, the image must
+   * already exist. Defaults from {@link shouldAllowStellarQuickstartPull}.
+   */
+  allowPull?: boolean;
   horizonPort?: number;
   image?: string;
 };
@@ -44,6 +55,7 @@ export type StellarHorizonAccount = {
   account_id: string;
   balances: StellarHorizonBalance[];
   sequence: string;
+  subentry_count?: number;
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -73,10 +85,14 @@ export class StellarNode {
       const horizonPort = await resolveHorizonPort(options.horizonPort);
       const containerName = `stellar-e2e-${process.pid}-${Date.now()}`;
       const image = options.image ?? STELLAR_QUICKSTART_IMAGE;
+      const allowPull = options.allowPull ?? shouldAllowStellarQuickstartPull();
       const imageCached = await isDockerImagePresent(image);
       logStellarTiming(
-        `image ${image} cached=${imageCached} (uncached docker run includes pull)`,
+        `image ${image} cached=${imageCached} allowPull=${allowPull}`,
       );
+      if (!allowPull && !imageCached) {
+        throw new Error(missingQuickstartImageMessage(image));
+      }
       const dockerArgs = [
         'run',
         '-d',
@@ -85,6 +101,9 @@ export class StellarNode {
         '-p',
         `${STELLAR_LOCAL_NODE_HOST}:${horizonPort}:8000`,
       ];
+      if (!allowPull) {
+        dockerArgs.push('--pull', 'never');
+      }
       if (STELLAR_QUICKSTART_PLATFORM) {
         dockerArgs.push('--platform', STELLAR_QUICKSTART_PLATFORM);
       }
@@ -155,7 +174,9 @@ export class StellarNode {
     );
   }
 
-  async getAccount(address: string): Promise<StellarHorizonAccount | undefined> {
+  async getAccount(
+    address: string,
+  ): Promise<StellarHorizonAccount | undefined> {
     const response = await fetchJson(
       `${this.horizonUrl}/accounts/${encodeURIComponent(address)}`,
     );
@@ -171,15 +192,23 @@ export class StellarNode {
   }
 
   getNativeXlmBalance(account: StellarHorizonAccount): string {
-    const native = account.balances.find(
-      (balance) => balance.asset_type === 'native',
-    );
-    if (!native) {
+    return requireNativeXlmBalance(account);
+  }
+
+  /**
+   * Horizon root `network_passphrase` (Quickstart `--local` is standalone).
+   *
+   * @returns Network passphrase string used to sign seeder transactions
+   */
+  async getNetworkPassphrase(): Promise<string> {
+    const response = await fetchJson(`${this.horizonUrl}/`);
+    const passphrase = readNetworkPassphrase(response.json);
+    if (response.statusCode !== 200 || !passphrase) {
       throw new Error(
-        `Horizon account ${account.account_id} has no native XLM balance`,
+        `Horizon root returned ${response.statusCode} without network_passphrase`,
       );
     }
-    return native.balance;
+    return passphrase;
   }
 
   async waitForReady(timeoutMs = DEFAULT_READY_TIMEOUT_MS): Promise<void> {
@@ -326,6 +355,29 @@ export async function isDockerAvailable(): Promise<boolean> {
   }
 }
 
+/**
+ * Whether `docker run` may pull Quickstart.
+ *
+ * - `STELLAR_LOCAL_DOCKER=1` / `true`: allow pull (laptop).
+ * - `STELLAR_LOCAL_DOCKER=0` / `false`: never pull; image must already exist.
+ * - Otherwise: allow pull unless `GITHUB_ACTIONS=true` (CI pre-pulls).
+ *
+ * @param env - Process env, injectable for tests
+ * @returns True when a missing image may be pulled
+ */
+export function shouldAllowStellarQuickstartPull(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  const localDocker = env.STELLAR_LOCAL_DOCKER;
+  if (localDocker === '1' || localDocker === 'true') {
+    return true;
+  }
+  if (localDocker === '0' || localDocker === 'false') {
+    return false;
+  }
+  return env.GITHUB_ACTIONS !== 'true';
+}
+
 async function isDockerImagePresent(image: string): Promise<boolean> {
   try {
     await execFileAsync('docker', ['image', 'inspect', image], {
@@ -345,6 +397,14 @@ function logStellarTiming(message: string): void {
   console.log(`[stellar-node] ${message}`);
 }
 
+function missingQuickstartImageMessage(image: string): string {
+  return (
+    `Stellar Quickstart image "${image}" is not present and pull is disabled. ` +
+    `CI must finish the stellar/quickstart pull in run-e2e.yml before tests. ` +
+    `For a laptop, set STELLAR_LOCAL_DOCKER=1 or run: docker pull ${image}`
+  );
+}
+
 /**
  * Formats a Horizon native balance string the way the token list does
  * (`formatTokenQuantity` / `en-US` grouping, no trailing zeros).
@@ -362,6 +422,38 @@ export function formatXlmTokenListAmount(horizonBalance: string): string {
   }).format(amount);
 }
 
+/** Protocol base reserve per subentry, in XLM (`(2 + subentry_count) × 0.5`). */
+const STELLAR_BASE_RESERVE_PER_ENTRY_XLM = 0.5;
+
+export type XlmSpendableBreakdown = {
+  minimumReserveBalance: string;
+  spendableBalance: string;
+  totalBalance: string;
+};
+
+/**
+ * Token-list / asset-details amounts for native XLM spendable breakdown.
+ *
+ * @param account - Horizon account including native balance and subentries
+ * @returns Display strings (no symbol suffix)
+ */
+export function getXlmSpendableBreakdown(
+  account: StellarHorizonAccount,
+): XlmSpendableBreakdown {
+  const nativeBalance = requireNativeXlmBalance(account);
+  const total = Number(nativeBalance);
+  if (!Number.isFinite(total)) {
+    throw new Error(`Invalid Horizon XLM balance: ${nativeBalance}`);
+  }
+  const subentryCount = account.subentry_count ?? 0;
+  const reserve = (2 + subentryCount) * STELLAR_BASE_RESERVE_PER_ENTRY_XLM;
+  return {
+    totalBalance: formatXlmTokenListAmount(nativeBalance),
+    spendableBalance: formatXlmTokenListAmount(String(total - reserve)),
+    minimumReserveBalance: formatXlmTokenListAmount(String(reserve)),
+  };
+}
+
 async function resolveHorizonPort(requestedPort?: number): Promise<number> {
   if (requestedPort !== undefined) {
     assertValidPort(requestedPort, 'Stellar Horizon port');
@@ -369,6 +461,29 @@ async function resolveHorizonPort(requestedPort?: number): Promise<number> {
   }
   const [port] = await getAvailablePorts(1);
   return port;
+}
+
+function readNetworkPassphrase(value: unknown): string | undefined {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+  const passphrase = Reflect.get(value, 'network_passphrase');
+  if (typeof passphrase !== 'string' || passphrase.length === 0) {
+    return undefined;
+  }
+  return passphrase;
+}
+
+function requireNativeXlmBalance(account: StellarHorizonAccount): string {
+  const native = account.balances.find(
+    (balance) => balance.asset_type === 'native',
+  );
+  if (!native) {
+    throw new Error(
+      `Horizon account ${account.account_id} has no native XLM balance`,
+    );
+  }
+  return native.balance;
 }
 
 function isHorizonAccount(value: unknown): value is StellarHorizonAccount {

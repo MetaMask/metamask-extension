@@ -8,9 +8,12 @@ import {
   STELLAR_BIP44_FLAGS,
   STELLAR_CHAIN_ID,
   STELLAR_MANIFEST_FLAGS,
+  StellarTokenMetadata,
   mockStellarFeatureFlags,
+  mockStellarHistoricalPrices,
   mockStellarNativeTokenMetadata,
   mockStellarSpotPrices,
+  mockStellarTokenSearch,
   mockStellarTokensApiByChainId,
 } from '../mocks/common-stellar';
 
@@ -22,6 +25,12 @@ export type WithStellarFixtureOptions = Omit<
   'localNodeOptions'
 > & {
   accounts?: string[];
+  /**
+   * Extra Tokens API rows (e.g. local Quickstart issuers). Read when mocks are
+   * registered, after `afterLocalNodesStart`, so the caller may mutate this
+   * array while seeding.
+   */
+  extraTokenAssets?: readonly StellarTokenMetadata[];
   /** Suite-owned Quickstart node started in Mocha `before`, stopped in `after`. */
   stellarNode: StellarNode;
 };
@@ -43,6 +52,8 @@ export async function withStellarFixture(
 ): Promise<void> {
   const {
     accounts = [DEFAULT_STELLAR_ADDRESS],
+    afterLocalNodesStart,
+    extraTokenAssets = [],
     fixtures = buildDefaultStellarFixtures(),
     manifestFlags,
     stellarNode,
@@ -65,7 +76,7 @@ export async function withStellarFixture(
           ...manifestFlags?.remoteFeatureFlags,
         },
       },
-      afterLocalNodesStart: async () => {
+      afterLocalNodesStart: async (context) => {
         const fundMs = Date.now();
         for (const address of accounts) {
           await stellarNode.fundAccount(address);
@@ -73,12 +84,17 @@ export async function withStellarFixture(
         console.log(
           `[stellar-fixture] friendbot ${accounts.length} account(s): ${elapsedSeconds(fundMs)}`,
         );
+        await afterLocalNodesStart?.(context);
       },
       testSpecificMock: async (mockServer: Mockttp) => {
         const customEndpoints = (await testSpecificMock?.(mockServer)) ?? [];
         return [
           ...customEndpoints,
-          ...(await mockStellarLocalNodeClientApis(mockServer, stellarNode)),
+          ...(await mockStellarLocalNodeClientApis(
+            mockServer,
+            stellarNode,
+            extraTokenAssets,
+          )),
         ];
       },
     },
@@ -110,30 +126,35 @@ function elapsedSeconds(startedAtMs: number): string {
 }
 
 function buildDefaultStellarFixtures() {
-  return new FixtureBuilderV2()
-    .withShowNativeTokenAsMainBalanceDisabled()
-    .withRemoteFeatureFlagController({
-      remoteFeatureFlags: {
-        stellarAccounts: STELLAR_BIP44_FLAGS.stellarAccounts,
-      },
-    })
-    // Full assignment: omit localhost (`0x539`) so Network Manager stays on
-    // Popular instead of opening the Custom tab.
-    .withEnabledNetworks({
-      eip155: { '0x1': true },
-      stellar: { [STELLAR_CHAIN_ID]: true },
-    })
-    .build();
+  return (
+    new FixtureBuilderV2()
+      .withShowNativeTokenAsMainBalanceDisabled()
+      .withRemoteFeatureFlagController({
+        remoteFeatureFlags: {
+          stellarAccounts: STELLAR_BIP44_FLAGS.stellarAccounts,
+        },
+      })
+      // Full assignment: omit localhost (`0x539`) so Network Manager stays on
+      // Popular instead of opening the Custom tab.
+      .withEnabledNetworks({
+        eip155: { '0x1': true },
+        stellar: { [STELLAR_CHAIN_ID]: true },
+      })
+      .build()
+  );
 }
 
 async function mockStellarLocalNodeClientApis(
   mockServer: Mockttp,
   stellarNode: StellarNode,
+  extraTokenAssets: readonly StellarTokenMetadata[] = [],
 ): Promise<MockedEndpoint[]> {
   return [
     await mockStellarFeatureFlags(mockServer),
-    await mockStellarNativeTokenMetadata(mockServer),
-    await mockStellarTokensApiByChainId(mockServer),
+    await mockStellarNativeTokenMetadata(mockServer, extraTokenAssets),
+    await mockStellarTokensApiByChainId(mockServer, extraTokenAssets),
+    await mockStellarTokenSearch(mockServer),
+    await mockStellarHistoricalPrices(mockServer),
     await mockStellarSpotPrices(mockServer),
     ...(await proxyStellarBlockchainCalls(mockServer, stellarNode)),
   ];

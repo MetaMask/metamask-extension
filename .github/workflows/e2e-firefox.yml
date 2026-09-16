@@ -35,6 +35,7 @@ jobs:
       builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+      pull-stellar-image: true
 
   test-e2e-firefox-flask-webpack:
     uses: ./.github/workflows/run-e2e.yml

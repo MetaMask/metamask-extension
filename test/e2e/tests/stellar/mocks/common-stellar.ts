@@ -1,4 +1,4 @@
-import { Address, Keypair, nativeToScVal, xdr } from '@stellar/stellar-sdk';
+import { Address, Keypair, nativeToScVal, xdr } from '@stellar/stellar-sdk'; // eslint-disable-line import-x/no-extraneous-dependencies -- e2e Horizon/RPC fixtures; transitive via stellar snap
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   DEFAULT_STELLAR_ADDRESS,
@@ -102,8 +102,7 @@ export const FEATURE_FLAGS_URL =
  * Infura Stellar Soroban RPC (any project id). BIP44 `discover` calls
  * `NetworkService.getAccount` → RPC `getLedgerEntries`, not Horizon.
  */
-const STELLAR_RPC_URL =
-  /^https:\/\/stellar-mainnet\.infura\.io\/v3\/[^/]+$/u;
+const STELLAR_RPC_URL = /^https:\/\/stellar-mainnet\.infura\.io\/v3\/[^/]+$/u;
 
 /**
  * Infura Stellar Horizon base (any project id). Used for balances / history
@@ -273,8 +272,8 @@ export async function mockStellarRpc(
     }),
   );
   const sep41BalancesByContractId = options.sep41BalancesByContractId ?? {};
-  const {sendTransactionHash} = options;
-  const {onSendTransaction} = options;
+  const { sendTransactionHash } = options;
+  const { onSendTransaction } = options;
 
   return mockServer
     .forPost(STELLAR_RPC_URL)
@@ -702,6 +701,14 @@ export async function mockStellarAccountDiscoveryMocks(
   return endpoints;
 }
 
+export type StellarTokenMetadata = {
+  assetId: string;
+  decimals: number;
+  iconUrl?: string;
+  name: string;
+  symbol: string;
+};
+
 /**
  * Mocks Tokens API `GET /v3/assets` (by asset id). With `assetsUnifyState`, the
  * extension hydrates `assetsInfo` from this endpoint — without rows for classic /
@@ -709,12 +716,17 @@ export async function mockStellarAccountDiscoveryMocks(
  * already synced them. Also keeps common EVM natives for mixed requests.
  *
  * @param mockServer - Mockttp server
+ * @param extraAssets - Additional rows (local-node issuers) merged into lookup
  */
 export async function mockStellarNativeTokenMetadata(
   mockServer: Mockttp,
+  extraAssets: readonly StellarTokenMetadata[] = [],
 ): Promise<MockedEndpoint> {
   const stellarMetadataByAssetId = new Map(
-    stellarTokensApiResponse.data.map((asset) => [asset.assetId, asset]),
+    [...stellarTokensApiResponse.data, ...extraAssets].map((asset) => [
+      asset.assetId,
+      asset,
+    ]),
   );
 
   return mockServer
@@ -778,16 +790,21 @@ export async function mockStellarNativeTokenMetadata(
  * AssetMetadataService sync source for classic + SEP-41 catalogs.
  *
  * @param mockServer - Mockttp server
+ * @param extraAssets - Additional rows (local-node issuers) appended to catalog
  */
 export async function mockStellarTokensApiByChainId(
   mockServer: Mockttp,
+  extraAssets: readonly StellarTokenMetadata[] = [],
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(
       `https://tokens.api.cx.metamask.io/v3/chains/${STELLAR_CHAIN_ID}/assets`,
     )
     .always()
-    .thenJson(200, stellarTokensApiResponse);
+    .thenJson(200, {
+      ...stellarTokensApiResponse,
+      data: [...stellarTokensApiResponse.data, ...extraAssets],
+    });
 }
 
 /**
@@ -1019,7 +1036,9 @@ export async function mockStellarSecurityScan(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forPost('https://security-alerts.api.cx.metamask.io/stellar/transaction/scan')
+    .forPost(
+      'https://security-alerts.api.cx.metamask.io/stellar/transaction/scan',
+    )
     .always()
     .thenJson(200, {
       validation: {

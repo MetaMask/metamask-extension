@@ -1,5 +1,37 @@
-import { formatXlmTokenListAmount } from '../seeder/stellar/node';
+import {
+  formatXlmTokenListAmount,
+  shouldAllowStellarQuickstartPull,
+} from '../seeder/stellar/node';
 import { extractHorizonPathFromInfuraUrl } from '../seeder/stellar/proxy';
+
+describe('shouldAllowStellarQuickstartPull', () => {
+  it('allows pull when STELLAR_LOCAL_DOCKER is set', () => {
+    expect(
+      shouldAllowStellarQuickstartPull({
+        GITHUB_ACTIONS: 'true',
+        STELLAR_LOCAL_DOCKER: '1',
+      }),
+    ).toBe(true);
+  });
+
+  it('forbids pull in GitHub Actions without STELLAR_LOCAL_DOCKER', () => {
+    expect(shouldAllowStellarQuickstartPull({ GITHUB_ACTIONS: 'true' })).toBe(
+      false,
+    );
+  });
+
+  it('allows pull on a laptop when GitHub Actions is unset', () => {
+    expect(shouldAllowStellarQuickstartPull({})).toBe(true);
+  });
+
+  it('forbids pull when STELLAR_LOCAL_DOCKER is explicitly disabled', () => {
+    expect(
+      shouldAllowStellarQuickstartPull({
+        STELLAR_LOCAL_DOCKER: '0',
+      }),
+    ).toBe(false);
+  });
+});
 
 describe('formatXlmTokenListAmount', () => {
   it('strips Horizon stroop-scale zeros and groups thousands', () => {
