@@ -5345,8 +5345,8 @@
     "message": "low"
   },
   "lowValueAssets": {
-    "message": "Low value tokens ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "message": "Low balance tokens ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
