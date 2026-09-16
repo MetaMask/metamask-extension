@@ -15,6 +15,7 @@ import {
 import { createMockNotificationPreferences } from '../../../ui/hooks/metamask-notifications/mocks';
 import {
   ethSentNotification,
+  ethSentNotificationTemplate,
   featureNotification,
   getMockedNotificationsState,
 } from './data/notification-state';
@@ -129,12 +130,16 @@ describe('Notifications List', () => {
       ).toBeInTheDocument();
 
       // Eth sent notification details
-      const sentToElement =
-        await within(notificationsList).findByText('Sent to');
-      expect(sentToElement).toBeInTheDocument();
-
-      const addressElement = sentToElement.nextElementSibling;
-      expect(addressElement).toHaveTextContent('0x881D4...D300D');
+      expect(
+        await within(notificationsList).findByText(
+          ethSentNotificationTemplate.title,
+        ),
+      ).toBeInTheDocument();
+      expect(
+        await within(notificationsList).findByText(
+          ethSentNotificationTemplate.body,
+        ),
+      ).toBeInTheDocument();
 
       // Read all button
       expect(
