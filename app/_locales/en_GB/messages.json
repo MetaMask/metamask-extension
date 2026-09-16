@@ -5697,6 +5697,9 @@
   "moneyContactSupport": {
     "message": "Contact support"
   },
+  "moneyConvertYourCrypto": {
+    "message": "Convert your crypto"
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
   },

@@ -21,6 +21,7 @@ import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
+  MONEY_EARN_ROUTE,
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
@@ -28,9 +29,8 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
-import type { MoneyDepositToken } from '../../hooks/money/money-deposit-token-utils';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
-import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
+import { useMoneyAddDepositToken } from '../../hooks/money/use-money-add-deposit-token';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
@@ -190,12 +190,13 @@ export function MoneyHomePage() {
   const handleActivityItemClick = useMoneyActivityItemClick({
     screenName: MoneyScreenName.MoneyHome,
   });
-  const { initiateDeposit, isLoading: isDepositLoading } =
-    useMoneyAccountDeposit();
-  const { trackButtonClicked, trackTokenButtonClicked, trackScreenViewed } =
-    useMoneyAnalytics({
+  const { handleAddToken, initiateDeposit, isDepositLoading } =
+    useMoneyAddDepositToken({
       screenName: MoneyScreenName.MoneyHome,
     });
+  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHome,
+  });
   const isPageLoading =
     isAvailabilityLoading || (availability.isAvailable && isBalanceLoading);
 
@@ -211,6 +212,16 @@ export function MoneyHomePage() {
     });
     navigate(MONEY_ACTIVITY_ROUTE);
   }, [navigate, trackButtonClicked]);
+  const handleViewAllEarnTokens = useCallback(() => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.ViewAll,
+      componentName: MoneyComponentName.PotentialEarningsSection,
+      labelKey: 'viewAll',
+      redirectTarget: MoneyScreenName.MoneyEarnOnCrypto,
+    });
+    navigate(MONEY_EARN_ROUTE);
+  }, [navigate, trackButtonClicked]);
   const handleAddFundsFromActionRow = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -223,29 +234,6 @@ export function MoneyHomePage() {
     });
     initiateDeposit();
   }, [initiateDeposit, trackButtonClicked]);
-  const handleAddToken = useCallback(
-    (token: MoneyDepositToken, tokenIndex: number, tokenCount: number) => {
-      trackTokenButtonClicked({
-        buttonType: MoneyButtonType.Text,
-        buttonIntent: MoneyButtonIntent.AddMoney,
-        componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
-        labelKey: 'moneyAdd',
-        redirectTarget: MoneyScreenName.MoneyDeposit,
-        tokenSymbol: token.symbol,
-        tokenChainId: token.chainId,
-        tokenPositionInList: tokenIndex + 1,
-        tokensInList: tokenCount,
-        tokenHasBalance: token.moneyFiatAmountUsd > 0,
-      });
-      initiateDeposit({
-        preferredPaymentToken: {
-          address: token.address,
-          chainId: token.chainId,
-        },
-      });
-    },
-    [initiateDeposit, trackTokenButtonClicked],
-  );
   const handleAddFundsFromFundCard = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -319,6 +307,7 @@ export function MoneyHomePage() {
           isNoFeeToken={isNoFeeToken}
           privacyMode={privacyMode}
           onAddToken={handleAddToken}
+          onViewAll={handleViewAllEarnTokens}
           isAddDisabled={isDepositLoading}
         />
         <MoneySectionDivider />
