@@ -34,7 +34,12 @@ import {
   type BasicFunctionalityPreferenceState,
   type ExternalServicesOwnedPreference,
 } from '../../../shared/lib/basic-functionality-consolidation';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import type { LegacyBackgroundApiServiceToggleExternalServicesAction } from '../services/legacy-background-api-service-method-action-types';
+import { createEventBuilder, trackEvent } from './analytics';
 import type { OnboardingControllerGetStateAction } from './onboarding';
 import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
@@ -669,11 +674,28 @@ export class PreferencesController extends BaseController<
       preferenceState[preference] = this.state[preference];
     }
 
-    const { landingState, notification } =
+    const { landingState, notification, isConsistent } =
       getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
     const hasDismissedNotice =
       this.state.preferences
         .basicFunctionalityMigrationNotificationDismissed === true;
+
+    // First consolidation rewrite for unaligned wallets only. Aligned users
+    // (including aligned social) are not on Basic Functionality Migrated.
+    // Track before applying landing state so BF-on→off can still emit.
+    if (!hasBftConsolidationMarker && !isConsistent) {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.BasicFunctionalityMigrated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: landingState ? 'on' : 'off',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: isSocialLogin,
+          })
+          .build(),
+      );
+    }
 
     this.update((state) => {
       state.useExternalServices = landingState;

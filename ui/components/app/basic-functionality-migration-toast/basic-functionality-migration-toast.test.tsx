@@ -7,16 +7,46 @@ import {
   en as messages,
   renderWithProvider,
 } from '../../../../test/lib/render-helpers-navigate';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../shared/constants/app';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
 import { hideMigrationToast } from '../../../store/actions';
 import { BasicFunctionalityMigrationToast } from './basic-functionality-migration-toast';
+import {
+  BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
+  BasicFunctionalityMixedToastAction,
+} from './constants';
 
 const mockNavigate = jest.fn();
+const mockGetEnvironmentType = jest.fn(() => ENVIRONMENT_TYPE_FULLSCREEN);
+const mockOpenExtensionInBrowser = jest.fn();
+const mockTrackEvent = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: () => mockGetEnvironmentType(),
+}));
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -55,6 +85,10 @@ function renderComponent({
 describe('BasicFunctionalityMigrationToast', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+    globalThis.platform = {
+      openExtensionInBrowser: mockOpenExtensionInBrowser,
+    } as never;
   });
 
   it('shows the enabled Basic Functionality state', () => {
@@ -85,13 +119,59 @@ describe('BasicFunctionalityMigrationToast', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('dismisses and opens privacy settings from the inline link', () => {
+  it('tracks viewed when the toast is shown', () => {
+    renderComponent();
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NoticeUpdateDisplayed,
+        properties: expect.objectContaining({
+          name: BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
+          action: BasicFunctionalityMixedToastAction.Viewed,
+        }),
+      }),
+    );
+  });
+
+  it('dismisses and navigates to privacy settings in fullscreen', () => {
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('basic-functionality-migration-settings-link'));
 
     expect(hideMigrationToast).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith(PRIVACY_ROUTE);
+    expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NoticeUpdateDisplayed,
+        properties: expect.objectContaining({
+          name: BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
+          action: BasicFunctionalityMixedToastAction.OpenSettings,
+        }),
+      }),
+    );
+  });
+
+  it('opens privacy settings in the full extension UI from notification', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    const { getByTestId } = renderComponent();
+
+    fireEvent.click(getByTestId('basic-functionality-migration-settings-link'));
+
+    expect(hideMigrationToast).toHaveBeenCalled();
+    expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(PRIVACY_ROUTE);
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('opens privacy settings in the full extension UI from popup', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+    const { getByTestId } = renderComponent();
+
+    fireEvent.click(getByTestId('basic-functionality-migration-settings-link'));
+
+    expect(hideMigrationToast).toHaveBeenCalled();
+    expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(PRIVACY_ROUTE);
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('dismisses from the close button', () => {
@@ -104,5 +184,14 @@ describe('BasicFunctionalityMigrationToast', () => {
     );
 
     expect(hideMigrationToast).toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NoticeUpdateDisplayed,
+        properties: expect.objectContaining({
+          name: BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
+          action: BasicFunctionalityMixedToastAction.Dismiss,
+        }),
+      }),
+    );
   });
 });

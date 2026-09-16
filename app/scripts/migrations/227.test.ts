@@ -1,15 +1,47 @@
 import { cloneDeep } from 'lodash';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
 import { migrate, version } from './227';
 
 const VERSION = version;
 const OLD_VERSION = 226;
 
+const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
+  () => false,
+);
+jest.mock('../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../shared/lib/environment'),
+  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
+}));
+
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
+
+function getQueuedMigratedEvents(data: Record<string, unknown>) {
+  const analyticsController = data.AnalyticsController as
+    | {
+        eventQueue?: Record<
+          string,
+          {
+            eventName: string;
+            properties: Record<string, unknown>;
+          }
+        >;
+      }
+    | undefined;
+
+  return Object.values(analyticsController?.eventQueue ?? {}).filter(
+    (entry) =>
+      entry.eventName === MetaMetricsEventName.BasicFunctionalityMigrated,
+  );
+}
 
 function buildChildPreferences(enabled: boolean) {
   return Object.fromEntries(
@@ -46,6 +78,12 @@ function buildPreferencesController({
 }
 
 describe(`migration #${VERSION}`, () => {
+  beforeEach(() => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      false,
+    );
+  });
+
   it('bumps the version', async () => {
     const versionedData: VersionedData = {
       meta: { version: OLD_VERSION },
@@ -99,6 +137,8 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers).toStrictEqual(
       new Set(['PreferencesController']),
     );
+    // Aligned wallets are not on Basic Functionality Migrated.
+    expect(getQueuedMigratedEvents(versionedData.data)).toHaveLength(0);
   });
 
   it('does not rewrite prefs when the cached remote flag is off', async () => {
@@ -123,6 +163,65 @@ describe(`migration #${VERSION}`, () => {
 
     expect(versionedData.data).toStrictEqual(oldStorage.data);
     expect(changedControllers.size).toBe(0);
+  });
+
+  it('consolidates an unmarked BF-off wallet when the build flag is on', async () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
+    const versionedData: VersionedData = {
+      meta: { version: OLD_VERSION },
+      data: {
+        RemoteFeatureFlagController: {
+          remoteFeatureFlags: {
+            extensionBasicFunctionalityToggle: false,
+          },
+        },
+        PreferencesController: buildPreferencesController({
+          useExternalServices: false,
+          childrenEnabled: false,
+          childOverrides: {
+            useTokenDetection: true,
+          },
+        }),
+      },
+    };
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    const preferencesController = versionedData.data.PreferencesController as {
+      useExternalServices: boolean;
+      useTokenDetection: boolean;
+      preferences: {
+        isBasicFunctionalityConsolidatedEnabled: boolean;
+        basicFunctionalityMigrationNotification: string | null;
+      };
+    };
+
+    expect(preferencesController.useExternalServices).toBe(false);
+    expect(preferencesController.useTokenDetection).toBe(false);
+    expect(
+      preferencesController.preferences.isBasicFunctionalityConsolidatedEnabled,
+    ).toBe(true);
+    expect(
+      preferencesController.preferences.basicFunctionalityMigrationNotification,
+    ).toBe('toast');
+    expect(changedControllers).toStrictEqual(
+      new Set(['PreferencesController', 'AnalyticsController']),
+    );
+    expect(getQueuedMigratedEvents(versionedData.data)).toStrictEqual([
+      expect.objectContaining({
+        eventName: MetaMetricsEventName.BasicFunctionalityMigrated,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          routed_bf_state: 'off',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_social_login: false,
+        }),
+      }),
+    ]);
   });
 
   it('does not rewrite prefs when the cached remote flag is missing', async () => {
@@ -205,6 +304,50 @@ describe(`migration #${VERSION}`, () => {
     expect(
       preferencesController.preferences.basicFunctionalityMigrationNotification,
     ).toBe('modal');
+    // Aligned social (consistent all-off → on) is not on Migrated.
+    expect(getQueuedMigratedEvents(versionedData.data)).toHaveLength(0);
+  });
+
+  it('queues Basic Functionality Migrated for an unaligned social wallet', async () => {
+    const versionedData: VersionedData = {
+      meta: { version: OLD_VERSION },
+      data: {
+        RemoteFeatureFlagController: {
+          remoteFeatureFlags: {
+            extensionBasicFunctionalityToggle: true,
+          },
+        },
+        OnboardingController: {
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+        PreferencesController: buildPreferencesController({
+          useExternalServices: false,
+          childrenEnabled: false,
+          childOverrides: {
+            useTokenDetection: true,
+          },
+        }),
+      },
+    };
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(changedControllers).toStrictEqual(
+      new Set(['PreferencesController', 'AnalyticsController']),
+    );
+    expect(getQueuedMigratedEvents(versionedData.data)).toStrictEqual([
+      expect.objectContaining({
+        eventName: MetaMetricsEventName.BasicFunctionalityMigrated,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          routed_bf_state: 'on',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_social_login: true,
+        }),
+      }),
+    ]);
   });
 
   it('aligns mixed child preferences and queues a toast', async () => {
@@ -229,8 +372,9 @@ describe(`migration #${VERSION}`, () => {
         }),
       },
     };
+    const changedControllers = new Set<string>();
 
-    await migrate(versionedData, new Set<string>());
+    await migrate(versionedData, changedControllers);
 
     const preferencesController = versionedData.data.PreferencesController as {
       useExternalServices: boolean;
@@ -245,6 +389,21 @@ describe(`migration #${VERSION}`, () => {
     expect(
       preferencesController.preferences.basicFunctionalityMigrationNotification,
     ).toBe('toast');
+    expect(changedControllers).toStrictEqual(
+      new Set(['PreferencesController', 'AnalyticsController']),
+    );
+    expect(getQueuedMigratedEvents(versionedData.data)).toStrictEqual([
+      expect.objectContaining({
+        eventName: MetaMetricsEventName.BasicFunctionalityMigrated,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          routed_bf_state: 'off',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_social_login: false,
+        }),
+      }),
+    ]);
   });
 
   it('does not queue a notice when the user already dismissed it', async () => {

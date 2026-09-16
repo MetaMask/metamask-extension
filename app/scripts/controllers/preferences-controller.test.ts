@@ -22,6 +22,10 @@ import {
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -30,6 +34,16 @@ import {
   PreferencesController,
   ReferralStatus,
 } from './preferences-controller';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('./analytics', () => {
+  const actual = jest.requireActual('./analytics');
+  return {
+    ...actual,
+    trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+  };
+});
 
 const setupController = ({
   state,
@@ -713,6 +727,10 @@ describe('preferences controller', () => {
   });
 
   describe('consolidateBasicFunctionality', () => {
+    beforeEach(() => {
+      mockTrackEvent.mockClear();
+    });
+
     it('consolidates a social-login wallet and syncs external services', () => {
       const { controller, getSeedlessOnboardingState, toggleExternalServices } =
         setupController({});
@@ -730,6 +748,51 @@ describe('preferences controller', () => {
         controller.getPreferences().basicFunctionalityMigrationNotification,
       ).toBe('modal');
       expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      // Default setup is aligned (all-on); aligned social is not on Migrated.
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('tracks Basic Functionality Migrated for unaligned mixed wallets', () => {
+      const { controller } = setupController({});
+      controller.setUseTokenDetection(false);
+
+      controller.consolidateBasicFunctionality();
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.BasicFunctionalityMigrated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: 'on',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: false,
+          }),
+        }),
+      );
+    });
+
+    it('tracks Basic Functionality Migrated for unaligned social wallets', () => {
+      const { controller, getSeedlessOnboardingState } = setupController({});
+      controller.setUseTokenDetection(false);
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.BasicFunctionalityMigrated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: 'on',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: true,
+          }),
+        }),
+      );
     });
 
     it('repairs a consolidated social-login wallet with Basic Functionality disabled', () => {
@@ -752,6 +815,7 @@ describe('preferences controller', () => {
         controller.getPreferences().basicFunctionalityMigrationNotification,
       ).toBe('modal');
       expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      expect(mockTrackEvent).not.toHaveBeenCalled();
     });
 
     it('does not sync external services when already consolidated', () => {
@@ -763,6 +827,7 @@ describe('preferences controller', () => {
 
       expect(getOnboardingState).not.toHaveBeenCalled();
       expect(toggleExternalServices).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
     });
   });
 

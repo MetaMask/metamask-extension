@@ -8,9 +8,21 @@ jest.mock('../store/actions', () => ({
   consolidateBasicFunctionality: jest.fn(() => () => Promise.resolve()),
 }));
 
+const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
+  () => false,
+);
+jest.mock('../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../shared/lib/environment'),
+  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
+}));
+
 describe('useBasicFunctionalityConsolidation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      false,
+    );
   });
 
   it('repairs a consolidated social-login wallet when Basic Functionality is disabled', async () => {
@@ -53,7 +65,29 @@ describe('useBasicFunctionalityConsolidation', () => {
     expect(consolidateBasicFunctionality).not.toHaveBeenCalled();
   });
 
-  it('does not consolidate an unmarked wallet when the remote flag is disabled', () => {
+  it('does not consolidate an unmarked BF-on wallet when the remote flag is disabled', () => {
+    renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
+      metamask: {
+        completedOnboarding: true,
+        isUnlocked: true,
+        useExternalServices: true,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: false,
+        },
+        preferences: {
+          isBasicFunctionalityConsolidatedEnabled: false,
+        },
+      },
+    });
+
+    expect(consolidateBasicFunctionality).not.toHaveBeenCalled();
+  });
+
+  it('consolidates an unmarked BF-off wallet when the build flag is on', async () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
+
     renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
       metamask: {
         completedOnboarding: true,
@@ -68,7 +102,9 @@ describe('useBasicFunctionalityConsolidation', () => {
       },
     });
 
-    expect(consolidateBasicFunctionality).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(consolidateBasicFunctionality).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('does not recheck a healthy consolidated wallet', () => {

@@ -100,6 +100,12 @@ export function ToastMaster() {
   const onPerpsScreen = currentPathname.startsWith(PERPS_ROUTE);
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
+  // BFT migration toast must appear on any screen (including confirmation /
+  // notification) so users cannot complete a tx before seeing it.
+  const basicFunctionalityMigrationToast = (
+    <MemoizedBasicFunctionalityMigrationToast />
+  );
+
   if (onHomeScreen) {
     return (
       <ToastContainer>
@@ -112,7 +118,7 @@ export function ToastMaster() {
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />
         <MemoizedSidePanelMigrationToast />
-        <MemoizedBasicFunctionalityMigrationToast />
+        {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
   }
@@ -122,6 +128,7 @@ export function ToastMaster() {
       <ToastContainer>
         <MemoizedStorageErrorToast />
         <MemoizedPerpsWithdrawToast />
+        {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
   }
@@ -130,21 +137,19 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         <MemoizedStorageErrorToast />
+        {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
   }
 
-  // On other screens, only render ToastContainer if storage error toast should show
-  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
-  if (shouldShowStorageErrorToast) {
-    return (
-      <ToastContainer>
-        <MemoizedStorageErrorToast />
-      </ToastContainer>
-    );
-  }
-
-  return null;
+  // On other screens, always mount a container so the BFT migration toast can
+  // show (e.g. confirmation / notification). Storage-error toast stays optional.
+  return (
+    <ToastContainer>
+      {shouldShowStorageErrorToast ? <MemoizedStorageErrorToast /> : null}
+      {basicFunctionalityMigrationToast}
+    </ToastContainer>
+  );
 }
 
 function PrivacyPolicyToast() {

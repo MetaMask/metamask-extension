@@ -960,6 +960,7 @@ export enum MetaMetricsEventName {
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
   SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
+  BasicFunctionalityMigrated = 'Basic Functionality Migrated',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
