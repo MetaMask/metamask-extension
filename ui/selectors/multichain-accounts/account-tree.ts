@@ -940,11 +940,14 @@ export function selectAccountGroupNameByAddress(
 }
 
 /**
- * Get account list statistics (pinned count, hidden count, total accounts).
- * Used for analytics tracking in the account list views.
+ * Get account list statistics (pinned count, hidden count, total accounts,
+ * total wallets). Used for analytics tracking in the account list views.
+ *
+ * Counts come from the whole account tree, including hidden accounts, so they
+ * stay correct in views that render a searched or otherwise filtered subset.
  *
  * @param accountTree - Account tree state.
- * @returns Object with pinnedCount, hiddenCount, and totalAccounts.
+ * @returns Object with pinnedCount, hiddenCount, totalAccounts, and totalWallets.
  */
 export const getAccountListStats = createSelector(
   getAccountTree,
@@ -952,9 +955,11 @@ export const getAccountListStats = createSelector(
     let pinnedCount = 0;
     let hiddenCount = 0;
     let totalAccounts = 0;
+    let totalWallets = 0;
 
     if (accountTree?.wallets) {
       for (const wallet of Object.values(accountTree.wallets)) {
+        totalWallets += 1;
         for (const group of Object.values(wallet.groups || {})) {
           totalAccounts += 1;
           if (group.metadata?.pinned) {
@@ -967,6 +972,6 @@ export const getAccountListStats = createSelector(
       }
     }
 
-    return { pinnedCount, hiddenCount, totalAccounts };
+    return { pinnedCount, hiddenCount, totalAccounts, totalWallets };
   },
 );
