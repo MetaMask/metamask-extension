@@ -518,6 +518,22 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('money-send-button')).toBeEnabled();
     expect(screen.getByTestId('money-add-button')).toBeEnabled();
+    expect(
+      screen.getByRole('link', { name: messages.moneyMeetMusd.message }),
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.io/price/metamask-usd?utm_source=extension',
+    );
+    expect(
+      screen.getByRole('link', {
+        name: messages.moneyExploreBenefits.message,
+      }),
+    ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
+    expect(
+      screen.queryByRole('link', {
+        name: messages.moneyHowYourMoneyGrows.message,
+      }),
+    ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
       if (
         [
@@ -532,6 +548,50 @@ describe('MoneyHomePage', () => {
       } else {
         expect(button).toBeDisabled();
       }
+    });
+  });
+
+  it('opens the mUSD price page from Meet mUSD', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-condensed-info-card-musd'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/price/metamask-usd?utm_source=extension',
+    });
+  });
+
+  it('opens the Money landing page from Explore your benefits', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-condensed-info-card-benefits'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/money?utm_source=extension',
     });
   });
 

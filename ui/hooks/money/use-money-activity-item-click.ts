@@ -29,14 +29,13 @@ export function useMoneyActivityItemClick({
 
   const onClick = useCallback(
     (item: MoneyActivityItem) => {
-      if (item.kind !== 'onchain') {
-        return;
+      if (item.kind === 'onchain') {
+        trackActivitySurfaceClicked({
+          transaction: item.tx,
+          componentName: MoneyComponentName.ActivityListItem,
+          redirectTarget: MoneyScreenName.MoneyActivityDetails,
+        });
       }
-      trackActivitySurfaceClicked({
-        transaction: item.tx,
-        componentName: MoneyComponentName.ActivityListItem,
-        redirectTarget: MoneyScreenName.MoneyActivityDetails,
-      });
       navigate(getMoneyTransactionDetailsRoute(item.id));
     },
     [navigate, trackActivitySurfaceClicked],
