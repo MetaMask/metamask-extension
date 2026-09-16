@@ -121,21 +121,19 @@ describe('MoneyHowItWorksPage', () => {
     renderWithLocalization(<MoneyHowItWorksPage />);
 
     const question = screen.getByTestId('money-how-it-works-faq-musd');
-    expect(
-      screen.queryByTestId('money-how-it-works-faq-musd-answer'),
-    ).not.toBeInTheDocument();
-
-    fireEvent.click(question);
-
+    const details = screen.getByTestId('money-how-it-works-faq-musd-details');
+    expect(details).not.toHaveAttribute('open');
     expect(
       screen.getByTestId('money-how-it-works-faq-musd-answer'),
     ).toHaveTextContent(messages.moneyHowItWorksFaqMusdAnswer.message);
 
     fireEvent.click(question);
 
-    expect(
-      screen.queryByTestId('money-how-it-works-faq-musd-answer'),
-    ).not.toBeInTheDocument();
+    expect(details).toHaveAttribute('open');
+
+    fireEvent.click(question);
+
+    expect(details).not.toHaveAttribute('open');
   });
 
   it('opens the Card fees page from the fees FAQ link', () => {
@@ -144,7 +142,12 @@ describe('MoneyHowItWorksPage', () => {
     renderWithLocalization(<MoneyHowItWorksPage />);
 
     fireEvent.click(screen.getByTestId('money-how-it-works-faq-fees'));
-    fireEvent.click(screen.getByTestId('money-how-it-works-faq-fees-link'));
+    const feesLink = screen.getByTestId('money-how-it-works-faq-fees-link');
+    expect(feesLink).toHaveAttribute(
+      'href',
+      'https://support.metamask.io/manage-crypto/metamask-card/limits-and-fees/',
+    );
+    fireEvent.click(feesLink);
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: 'https://support.metamask.io/manage-crypto/metamask-card/limits-and-fees/',

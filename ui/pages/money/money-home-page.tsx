@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import {
@@ -263,9 +263,6 @@ export function MoneyHomePage() {
     });
     global.platform.openTab({ url: MONEY_URLS.MONEY_LANDING });
   }, [trackButtonClicked]);
-  const handleHowItWorks = useCallback(() => {
-    navigate(MONEY_HOW_IT_WORKS_ROUTE);
-  }, [navigate]);
   const handleOpenTransferSheet = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -496,10 +493,9 @@ export function MoneyHomePage() {
           ) : (
             <>
               <section className="px-4 py-3">
-                <button
-                  type="button"
-                  className="flex items-center gap-1 text-left"
-                  onClick={handleHowItWorks}
+                <Link
+                  to={MONEY_HOW_IT_WORKS_ROUTE}
+                  className="flex items-center gap-1 text-left no-underline text-inherit"
                   data-testid="money-how-it-works-header"
                 >
                   <Text
@@ -513,7 +509,7 @@ export function MoneyHomePage() {
                     size={IconSize.Md}
                     color={IconColor.IconAlternative}
                   />
-                </button>
+                </Link>
                 <Text
                   variant={TextVariant.BodyMd}
                   color={TextColor.TextAlternative}

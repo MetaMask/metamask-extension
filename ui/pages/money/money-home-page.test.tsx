@@ -85,6 +85,20 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  // Keep Link as a plain anchor so it does not depend on router context
+  // from a second react-router-dom instance created by requireActual.
+  Link: ({
+    to,
+    children,
+    ...props
+  }: {
+    to: string;
+    children?: React.ReactNode;
+  } & React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a href={to} {...props}>
+      {children}
+    </a>
+  ),
 }));
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
@@ -261,7 +275,6 @@ describe('MoneyHomePage', () => {
       messages.moneySend.message,
       messages.moneyLearnMore.message,
       messages.moneyMoreOptions.message,
-      messages.moneyHowItWorks.message,
     ];
     screen.getAllByRole('button').forEach((button) => {
       if (
@@ -274,14 +287,18 @@ describe('MoneyHomePage', () => {
         expect(button).toBeDisabled();
       }
     });
+    expect(
+      screen.getByRole('link', { name: messages.moneyHowItWorks.message }),
+    ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
   });
 
-  it('navigates to How it works from the empty-state section header', () => {
+  it('links to How it works from the empty-state section header', () => {
     renderWithLocalization(<MoneyHomePage />);
 
-    fireEvent.click(screen.getByTestId('money-how-it-works-header'));
-
-    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOW_IT_WORKS_ROUTE);
+    expect(screen.getByTestId('money-how-it-works-header')).toHaveAttribute(
+      'href',
+      MONEY_HOW_IT_WORKS_ROUTE,
+    );
   });
 
   it('opens the Money landing page from Learn more', () => {
