@@ -213,7 +213,7 @@ const TokenAsset = ({
       // re-enables them for itself.
       style={disabled ? { pointerEvents: 'none' } : undefined}
     >
-      <Box
+      <DSBox
         marginRight={4}
         className="shrink-0"
         style={disabled ? { opacity: 'var(--opacity-disabled)' } : undefined}
@@ -236,7 +236,7 @@ const TokenAsset = ({
             showHalo={false}
           />
         </BadgeWrapper>
-      </Box>
+      </DSBox>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -273,13 +273,13 @@ const TokenAsset = ({
         </Text>
       </Box>
       {endAccessory ? (
-        <Box
+        <DSBox
           marginLeft={2}
           className="shrink-0"
           style={disabled ? { pointerEvents: 'auto' } : undefined}
         >
           {endAccessory}
-        </Box>
+        </DSBox>
       ) : null}
       {!hideBalances && (
         <Box
