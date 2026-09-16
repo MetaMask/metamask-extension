@@ -18,7 +18,7 @@ import { Popover, PopoverPosition } from '../../../component-library';
  * parity. The Popover supplies its theme-aware elevated background.
  * Z-index above extension chrome (see ui/css/design-system/_z-index.scss).
  */
-const POPOVER_STYLE = {
+export const INFO_POPOVER_STYLE = {
   zIndex: 1050,
   paddingTop: '6px',
   paddingBottom: '6px',
@@ -132,7 +132,7 @@ export function InfoPopover({
         onPressEscKey={handleClose}
         onClickOutside={handleClose}
         isPortal
-        style={{ ...POPOVER_STYLE, ...popoverStyle }}
+        style={{ ...INFO_POPOVER_STYLE, ...popoverStyle }}
         data-testid={dataTestId}
       >
         {children}
