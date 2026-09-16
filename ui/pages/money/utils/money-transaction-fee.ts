@@ -120,7 +120,7 @@ export function getMoneyTransactionFeeUsd(
   // No recorded source fee: receipt gas is the parent tx. Skip it when
   // MetaMask sponsors that leg so we do not bill the user for it.
   if (isMoneyNetworkFeePaidByMetaMask(tx)) {
-    return bridgeFee;
+    return bridgeFee ?? 0;
   }
 
   const gasFee = getMoneyGasFeeUsd(tx, nativeUsdRate);
