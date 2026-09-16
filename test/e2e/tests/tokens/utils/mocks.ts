@@ -178,7 +178,9 @@ export async function mockTokenMetadataApis(
                   assetId: `eip155:${token.chainId}/erc20:${token.address}`,
                   balance: token.balance ?? '0',
                 })),
-            ];
+            ].map((row) =>
+              version === 'v6' ? { ...row, object: 'token' } : row,
+            );
           });
           return {
             statusCode: 200,
