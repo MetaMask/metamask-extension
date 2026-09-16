@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, { ChangeEvent, useLayoutEffect, useRef } from 'react';
 import classnames from 'clsx';
 import {
   CaipAccountId,
@@ -203,11 +203,11 @@ export const SnapUIAddressInput = ({
    * Focus input if the last focused input was this input
    * This avoids losing the focus when the UI is re-rendered
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (inputRef.current && name === getFocusedInput()) {
       (inputRef.current.querySelector('input') as HTMLInputElement).focus();
     }
-  }, [getFocusedInput, inputRef, name]);
+  }, [getFocusedInput, name]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
