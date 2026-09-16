@@ -34,8 +34,18 @@ type ActiveNavigationTrace = {
   timeout: ReturnType<typeof setTimeout>;
 };
 
+/**
+ * Handle for one unlock submission. Concurrent submissions share a single
+ * Navigated span because they share the deeplink activation, so the handle's
+ * identity is what distinguishes them.
+ */
+export type PendingUnlockTrace = {
+  id: string;
+};
+
 let activeNavigationTrace: ActiveNavigationTrace | null = null;
-let pendingUnlockStart: Promise<string | null> | null = null;
+let activeUnlockAttempt: PendingUnlockTrace | null = null;
+let pendingUnlockStart: Promise<PendingUnlockTrace | null> | null = null;
 
 function removeRecord(tabId: number, id: string): void {
   removePendingDeepLinkNavigation(tabId, id).catch((error) => {
@@ -54,6 +64,7 @@ function endActiveNavigationTrace(
 
   const current = activeNavigationTrace;
   activeNavigationTrace = null;
+  activeUnlockAttempt = null;
   clearTimeout(current.timeout);
   endTrace({
     name: TraceName.DeeplinkNavigated,
@@ -117,7 +128,7 @@ function startNavigationTrace(
   return record.id;
 }
 
-export function startPendingDeepLinkUnlockTrace(): Promise<string | null> {
+export function startPendingDeepLinkUnlockTrace(): Promise<PendingUnlockTrace | null> {
   const submitTimestamp = getPerformanceTimestamp();
   const startPromise = (async () => {
     try {
@@ -131,7 +142,16 @@ export function startPendingDeepLinkUnlockTrace(): Promise<string | null> {
         return null;
       }
 
-      return startNavigationTrace(record, tabId, 'unlock', submitTimestamp);
+      const id = startNavigationTrace(record, tabId, 'unlock', submitTimestamp);
+      if (id === null) {
+        return null;
+      }
+
+      // The newest submission takes ownership of the span, so a superseded
+      // attempt that rejects later cannot close a span this one relies on.
+      const attempt = { id };
+      activeUnlockAttempt = attempt;
+      return attempt;
     } catch (error) {
       log.error('Failed to start pending deep link unlock trace:', error);
       return null;
@@ -148,14 +168,15 @@ export function startPendingDeepLinkUnlockTrace(): Promise<string | null> {
 }
 
 export function cancelPendingDeepLinkUnlockTrace(
-  id: string | null,
+  attempt: PendingUnlockTrace | null,
   reason: 'unlock_failed',
 ): void {
-  if (!id) {
+  if (!attempt || activeUnlockAttempt !== attempt) {
     return;
   }
+
   endActiveNavigationTrace(
-    id,
+    attempt.id,
     {
       success: false,
       reason,
