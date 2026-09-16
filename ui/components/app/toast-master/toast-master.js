@@ -103,7 +103,7 @@ export function ToastMaster() {
   // BFT migration toast must appear on any screen (including confirmation /
   // notification) so users cannot complete a tx before seeing it.
   const basicFunctionalityMigrationToast = (
-    <MemoizedBasicFunctionalityMigrationToast />
+    <MemoizedBasicFunctionalityMigrationToast key="basic-functionality-migration" />
   );
 
   if (onHomeScreen) {
