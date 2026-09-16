@@ -18,6 +18,7 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import type { AcceptedPlugin } from 'postcss';
 import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
@@ -333,7 +334,7 @@ const postcssLoader = {
         autoprefixer({ overrideBrowserslist: browsersListQuery }),
         rtlCss({ processEnv: false }),
         discardFontFace(['woff2']), // keep woff2 fonts
-      ],
+      ] as AcceptedPlugin[],
     },
   },
 };
