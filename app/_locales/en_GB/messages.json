@@ -6274,9 +6274,6 @@
   "networkFeeExplanationTitle": {
     "message": "Network fee"
   },
-  "networkMenu": {
-    "message": "Network menu"
-  },
   "networkMenuHeading": {
     "message": "Select a network"
   },
