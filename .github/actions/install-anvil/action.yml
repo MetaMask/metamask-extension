@@ -1,0 +1,159 @@
+name: Install Anvil
+description: >-
+  Install Anvil directly, using a checksum-verified Actions cache only when
+  the direct download fails.
+
+inputs:
+  maintain-fallback-cache:
+    description: >-
+      Check and populate the fallback cache without installing Anvil for use.
+      This is intended for one trusted main-branch job.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve Anvil cache metadata
+      id: cache-metadata
+      shell: bash
+      run: |
+        node <<'NODE'
+        const { appendFileSync } = require('node:fs');
+
+        const packageJson = require('./package.json');
+        const foundryupPackage = require('@metamask/foundryup/package.json');
+        const architecture = { arm64: 'arm64', x64: 'amd64' }[process.arch];
+
+        if (!architecture) {
+          throw new Error(`Unsupported architecture: ${process.arch}`);
+        }
+
+        const target = `${process.platform}-${architecture}`;
+        const foundryConfig = packageJson.foundryup;
+        const checksum = foundryConfig.checksums.binaries.anvil[target];
+
+        if (!checksum) {
+          throw new Error(`Missing Anvil checksum for ${target}`);
+        }
+
+        const cacheKey = [
+          'anvil-cache-v1',
+          process.platform,
+          architecture,
+          `foundryup-${foundryupPackage.version}`,
+          `foundry-${foundryConfig.version}`,
+          checksum,
+        ].join('-');
+
+        appendFileSync(
+          process.env.GITHUB_OUTPUT,
+          `cache-key=${cacheKey}\nchecksum=${checksum}\n`,
+        );
+        NODE
+
+    - name: Check for maintained Anvil fallback cache
+      id: maintained-cache
+      if: inputs.maintain-fallback-cache == 'true'
+      continue-on-error: true
+      uses: actions/cache/restore@v5
+      with:
+        path: .metamask/cache
+        key: ${{ steps.cache-metadata.outputs.cache-key }}
+        lookup-only: true
+
+    - name: Populate Anvil fallback cache
+      id: populate-cache
+      if: >-
+        inputs.maintain-fallback-cache == 'true' &&
+        steps.maintained-cache.outputs.cache-hit != 'true'
+      continue-on-error: true
+      shell: bash
+      run: timeout --kill-after=10s 60s yarn mm-foundryup
+
+    - name: Save Anvil fallback cache
+      if: >-
+        inputs.maintain-fallback-cache == 'true' &&
+        steps.maintained-cache.outputs.cache-hit != 'true' &&
+        steps.populate-cache.outcome == 'success'
+      continue-on-error: true
+      uses: actions/cache/save@v5
+      with:
+        path: .metamask/cache
+        key: ${{ steps.cache-metadata.outputs.cache-key }}
+
+    - name: Install Anvil directly
+      id: direct-install
+      if: inputs.maintain-fallback-cache != 'true'
+      continue-on-error: true
+      shell: bash
+      run: timeout --kill-after=10s 60s yarn mm-foundryup
+
+    - name: Clean up failed direct download
+      if: >-
+        inputs.maintain-fallback-cache != 'true' &&
+        steps.direct-install.outcome == 'failure'
+      continue-on-error: true
+      shell: bash
+      run: yarn mm-foundryup cache clean
+
+    - name: Restore Anvil fallback cache
+      id: fallback-cache
+      if: >-
+        inputs.maintain-fallback-cache != 'true' &&
+        steps.direct-install.outcome == 'failure'
+      continue-on-error: true
+      uses: actions/cache/restore@v5
+      with:
+        path: .metamask/cache
+        key: ${{ steps.cache-metadata.outputs.cache-key }}
+
+    - name: Verify cached Anvil checksum
+      id: verify-cache
+      if: steps.fallback-cache.outputs.cache-hit == 'true'
+      continue-on-error: true
+      shell: bash
+      env:
+        EXPECTED_CHECKSUM: ${{ steps.cache-metadata.outputs.checksum }}
+      run: |
+        mapfile -d '' -t cached_files < <(
+          find .metamask/cache -mindepth 2 -maxdepth 2 -type f -print0
+        )
+
+        if [[ ${#cached_files[@]} -ne 1 || ${cached_files[0]##*/} != 'anvil' ]]; then
+          echo '::warning::The Anvil fallback cache has an unexpected layout.'
+          exit 1
+        fi
+
+        if ! echo "${EXPECTED_CHECKSUM}  ${cached_files[0]}" | sha256sum --check --status; then
+          echo '::warning::The cached Anvil binary failed checksum verification.'
+          exit 1
+        fi
+
+    - name: Install Anvil from fallback cache
+      id: cached-install
+      if: steps.verify-cache.outcome == 'success'
+      continue-on-error: true
+      shell: bash
+      run: yarn mm-foundryup
+
+    - name: Clean up unusable fallback cache
+      if: >-
+        inputs.maintain-fallback-cache != 'true' &&
+        steps.direct-install.outcome == 'failure' &&
+        steps.cached-install.outcome != 'success'
+      continue-on-error: true
+      shell: bash
+      run: yarn mm-foundryup cache clean
+
+    - name: Retry direct Anvil installation
+      if: >-
+        inputs.maintain-fallback-cache != 'true' &&
+        steps.direct-install.outcome == 'failure' &&
+        steps.cached-install.outcome != 'success'
+      uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+      with:
+        timeout_minutes: 1
+        max_attempts: 4
+        retry_wait_seconds: 30
+        command: yarn mm-foundryup cache clean && yarn mm-foundryup
