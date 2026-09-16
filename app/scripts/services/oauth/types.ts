@@ -3,7 +3,6 @@ import {
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerGetAccessTokenAction,
 } from '@metamask/seedless-onboarding-controller';
-import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
 import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
@@ -12,6 +11,10 @@ import type {
   AnalyticsEventBuildOptions,
 } from '../../../../shared/lib/analytics/create-event-builder';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from '../sentry/sentry-tracing-service-method-action-types';
 import ExtensionPlatform from '../../platforms/extension';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
@@ -38,7 +41,8 @@ export type OAuthServiceAction =
   | SeedlessOnboardingControllerGetAccessTokenAction
   | OnboardingControllerGetStateAction
   | GeolocationControllerGetGeolocationAction
-  | AnalyticsControllerGetStateAction;
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction;
 
 /**
  * All possible events that the OAuthService can emit.

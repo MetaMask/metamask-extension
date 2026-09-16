@@ -5,12 +5,7 @@ import {
   OAuthErrorMessages,
 } from '../../../../shared/lib/error';
 import { checkForLastError } from '../../../../shared/lib/browser-runtime.utils';
-import {
-  bufferedEndTrace,
-  bufferedTrace,
-  TraceName,
-  TraceOperation,
-} from '../../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -81,10 +76,6 @@ export class OAuthService {
       this,
       MESSENGER_EXPOSED_METHODS,
     );
-  }
-
-  #getIsMetricsOptedIn(): boolean {
-    return this.#messenger.call('AnalyticsController:getState').optedIn;
   }
 
   /**
@@ -249,13 +240,10 @@ export class OAuthService {
     let providerLoginSuccess = false;
 
     try {
-      bufferedTrace(
-        {
-          name: TraceName.OnboardingOAuthProviderLogin,
-          op: TraceOperation.OnboardingSecurityOp,
-        },
-        this.#getIsMetricsOptedIn(),
-      );
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
+        name: TraceName.OnboardingOAuthProviderLogin,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
       const redirectUrlFromOAuth = await this.#launchAuthFlow(
         authConnection,
         loginHandler,
@@ -284,13 +272,10 @@ export class OAuthService {
 
       throw error;
     } finally {
-      bufferedEndTrace(
-        {
-          name: TraceName.OnboardingOAuthProviderLogin,
-          data: { success: providerLoginSuccess },
-        },
-        this.#getIsMetricsOptedIn(),
-      );
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+        name: TraceName.OnboardingOAuthProviderLogin,
+        data: { success: providerLoginSuccess },
+      });
     }
   }
 
@@ -308,13 +293,10 @@ export class OAuthService {
     let getAuthTokensSuccess = false;
 
     try {
-      bufferedTrace(
-        {
-          name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
-          op: TraceOperation.OnboardingSecurityOp,
-        },
-        this.#getIsMetricsOptedIn(),
-      );
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
       const loginResult = await this.#handleOAuthResponse(
         loginHandler,
         redirectUrlFromOAuth,
@@ -338,13 +320,10 @@ export class OAuthService {
 
       throw error;
     } finally {
-      bufferedEndTrace(
-        {
-          name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
-          data: { success: getAuthTokensSuccess },
-        },
-        this.#getIsMetricsOptedIn(),
-      );
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        data: { success: getAuthTokensSuccess },
+      });
     }
   }
 

@@ -27,6 +27,10 @@ import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote
 import type { MetaMetricsControllerGetStateAction } from '../../controllers/metametrics-controller';
 import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../../controllers/metametrics-controller-method-action-types';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import type {
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
+} from '../../services/sentry/sentry-tracing-service-method-action-types';
 import type { RootMessenger } from '../../lib/messenger';
 
 type InitActions =
@@ -48,7 +52,9 @@ type InitActions =
   | AnalyticsControllerUpsertEventFragmentAction
   | AnalyticsControllerUpdateEventFragmentAction
   | AnalyticsControllerGetEventFragmentByIdAction
-  | AnalyticsControllerFinalizeEventFragmentAction;
+  | AnalyticsControllerFinalizeEventFragmentAction
+  | SentryTracingServiceTrackTracesAfterMetricsOptInAction
+  | SentryTracingServiceClearTracesAfterMetricsOptInAction;
 
 type InitEvents = never;
 
@@ -123,6 +129,8 @@ export function getAnalyticsControllerInitMessenger(
       'AnalyticsController:updateEventFragment',
       'AnalyticsController:getEventFragmentById',
       'AnalyticsController:finalizeEventFragment',
+      'SentryTracingService:trackTracesAfterMetricsOptIn',
+      'SentryTracingService:clearTracesAfterMetricsOptIn',
     ],
     events: [],
   });

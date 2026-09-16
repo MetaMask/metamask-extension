@@ -2,7 +2,6 @@ import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import type {
   AnalyticsControllerGetEventFragmentByIdAction,
-  AnalyticsControllerGetStateAction,
   AnalyticsControllerUpsertEventFragmentAction,
   ReadonlyAnalyticsEventFragment,
 } from '@metamask/analytics-controller';
@@ -381,8 +380,6 @@ import {
   decodeDisabledDelegationsResult,
 } from '../../../shared/lib/delegation/delegation';
 import {
-  bufferedEndTrace,
-  bufferedTrace,
   endTrace,
   getPerformanceTimestamp,
   TraceName,
@@ -418,6 +415,10 @@ import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
@@ -664,7 +665,8 @@ type AllowedActions =
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
   | KeyringControllerWithKeyringAction
-  | AnalyticsControllerGetStateAction
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
@@ -842,10 +844,6 @@ export class LegacyBackgroundApiService {
   readonly #offscreenPromise: Promise<void>;
 
   #passkeyAutoUnlockSuppressedResetTimeoutId: NodeJS.Timeout | null = null;
-
-  #getIsMetricsOptedIn(): boolean {
-    return this.#messenger.call('AnalyticsController:getState').optedIn;
-  }
 
   /**
    * Creates a new instance of the LegacyBackgroundApiService.
@@ -2450,13 +2448,10 @@ export class LegacyBackgroundApiService {
           },
         );
 
-        bufferedTrace(
-          {
-            name: TraceName.OnboardingResetPassword,
-            op: TraceOperation.OnboardingSecurityOp,
-          },
-          this.#getIsMetricsOptedIn(),
-        );
+        this.#messenger.call('SentryTracingService:bufferedTrace', {
+          name: TraceName.OnboardingResetPassword,
+          op: TraceOperation.OnboardingSecurityOp,
+        });
         // update vault password to global password
         await this.#messenger.call(
           'KeyringController:changePassword',
@@ -2488,13 +2483,10 @@ export class LegacyBackgroundApiService {
         await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
-        bufferedEndTrace(
-          {
-            name: TraceName.OnboardingResetPassword,
-            data: { success: changePasswordSuccess },
-          },
-          this.#getIsMetricsOptedIn(),
-        );
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+          name: TraceName.OnboardingResetPassword,
+          data: { success: changePasswordSuccess },
+        });
       }
     });
   }
@@ -3814,13 +3806,10 @@ export class LegacyBackgroundApiService {
   ): Promise<void> {
     let createSeedPhraseBackupSuccess = false;
     try {
-      bufferedTrace(
-        {
-          name: TraceName.OnboardingCreateKeyAndBackupSrp,
-          op: TraceOperation.OnboardingSecurityOp,
-        },
-        this.#getIsMetricsOptedIn(),
-      );
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
       const seedPhrase =
         this.#convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
@@ -3845,13 +3834,10 @@ export class LegacyBackgroundApiService {
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
     } finally {
-      bufferedEndTrace(
-        {
-          name: TraceName.OnboardingCreateKeyAndBackupSrp,
-          data: { success: createSeedPhraseBackupSuccess },
-        },
-        this.#getIsMetricsOptedIn(),
-      );
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        data: { success: createSeedPhraseBackupSuccess },
+      });
     }
   }
 
@@ -3864,13 +3850,10 @@ export class LegacyBackgroundApiService {
   async #fetchAllSecretData(password?: string): Promise<SecretMetadata[]> {
     let fetchAllSeedPhrasesSuccess = false;
     try {
-      bufferedTrace(
-        {
-          name: TraceName.OnboardingFetchSrps,
-          op: TraceOperation.OnboardingSecurityOp,
-        },
-        this.#getIsMetricsOptedIn(),
-      );
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
+        name: TraceName.OnboardingFetchSrps,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
       const allSeedPhrases = await this.#messenger.call(
         'SeedlessOnboardingController:fetchAllSecretData',
         password,
@@ -3879,13 +3862,10 @@ export class LegacyBackgroundApiService {
 
       return allSeedPhrases;
     } finally {
-      bufferedEndTrace(
-        {
-          name: TraceName.OnboardingFetchSrps,
-          data: { success: fetchAllSeedPhrasesSuccess },
-        },
-        this.#getIsMetricsOptedIn(),
-      );
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+        name: TraceName.OnboardingFetchSrps,
+        data: { success: fetchAllSeedPhrasesSuccess },
+      });
     }
   }
 
@@ -3979,13 +3959,10 @@ export class LegacyBackgroundApiService {
       await this.#seedlessOperationMutex.runExclusive(async () => {
         let addNewSeedPhraseBackupSuccess = false;
         try {
-          bufferedTrace(
-            {
-              name: TraceName.OnboardingAddSrp,
-              op: TraceOperation.OnboardingSecurityOp,
-            },
-            this.#getIsMetricsOptedIn(),
-          );
+          this.#messenger.call('SentryTracingService:bufferedTrace', {
+            name: TraceName.OnboardingAddSrp,
+            op: TraceOperation.OnboardingSecurityOp,
+          });
 
           // Run data type migration before adding new SRP to ensure data consistency.
           await runSeedlessOnboardingMigrations(this.#messenger);
@@ -4006,13 +3983,10 @@ export class LegacyBackgroundApiService {
 
           throw err;
         } finally {
-          bufferedEndTrace(
-            {
-              name: TraceName.OnboardingAddSrp,
-              data: { success: addNewSeedPhraseBackupSuccess },
-            },
-            this.#getIsMetricsOptedIn(),
-          );
+          this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+            name: TraceName.OnboardingAddSrp,
+            data: { success: addNewSeedPhraseBackupSuccess },
+          });
         }
       });
     } else {

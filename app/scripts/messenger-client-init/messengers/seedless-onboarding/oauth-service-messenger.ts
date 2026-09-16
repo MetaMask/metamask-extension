@@ -30,7 +30,8 @@ export function getOAuthServiceMessenger(
       'OnboardingController:getState',
       'SeedlessOnboardingController:getAccessToken',
       'GeolocationController:getGeolocation',
-      'AnalyticsController:getState',
+      'SentryTracingService:bufferedTrace',
+      'SentryTracingService:bufferedEndTrace',
     ],
   });
   return oauthMessenger;

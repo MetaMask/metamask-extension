@@ -30,10 +30,6 @@ import {
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
 } from '../../../../shared/constants/metametrics';
-import {
-  clearTracesAfterMetricsOptIn,
-  trackTracesAfterMetricsOptIn,
-} from '../../../../shared/lib/trace';
 import type { AnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment-tracking';
 import { getPlatform } from '../../lib/util';
@@ -441,12 +437,18 @@ export async function setParticipateInMetaMetrics(
 
   if (participateInMetaMetrics === true) {
     await analyticsMessenger.call('AnalyticsController:optIn');
-    trackTracesAfterMetricsOptIn();
-    clearTracesAfterMetricsOptIn();
+    analyticsMessenger.call(
+      'SentryTracingService:trackTracesAfterMetricsOptIn',
+    );
+    analyticsMessenger.call(
+      'SentryTracingService:clearTracesAfterMetricsOptIn',
+    );
   } else {
     if (participateInMetaMetrics === false) {
       analyticsMessenger.call('AnalyticsController:optOut');
-      clearTracesAfterMetricsOptIn();
+      analyticsMessenger.call(
+        'SentryTracingService:clearTracesAfterMetricsOptIn',
+      );
     } else {
       analyticsMessenger.call('AnalyticsController:resetConsentDecision');
     }
