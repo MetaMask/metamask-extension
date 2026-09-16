@@ -1,0 +1,39 @@
+name: Test reproducible build
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches-ignore:
+      - stable
+
+env:
+  # For a `pull_request` event, the branch is `github.head_ref``.
+  # For a `push` event, the branch is `github.ref_name`.
+  BRANCH: ${{ github.head_ref || github.ref_name }}
+  # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+  # For a `push` event, the head commit hash is `github.sha`.
+  HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+  RUN_ID: ${{ github.run_id }}
+
+permissions:
+  contents: write # required for releases
+  id-token: write # required for s3 uploads
+  statuses: write # required for build-source-hash and ci-status-gate
+
+jobs:
+  build-dist-mv2-webpack:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-webpack
+      build-command: yarn webpack:lavamoat:build:mv2 --zip --env production
+    secrets: inherit
+
+  build-flask-mv2-webpack:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-mv2-webpack
+      build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip --env production
+    secrets: inherit

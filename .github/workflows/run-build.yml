@@ -11,19 +11,10 @@ on:
         type: string
         required: true
         description: The build command to run
-      builds-from-run:
-        required: true
-        type: string
-        description: The run ID to get builds from
-      bundle-analyzer:
-        type: boolean
-        default: false
-        description: Whether to generate and upload bundle analyzer reports
 
 jobs:
   run-build:
     name: ${{ inputs.build-name }}
-    if: ${{ inputs.builds-from-run == github.run_id }} # Only run if builds are from the current run
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -91,41 +82,18 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        run: ${{ inputs.build-command }}
 
-      - name: Validate source maps
-        run: yarn validate-source-maps
+      - name: Get runtime hash
+        id: get_hash
+        run: |
+          runtime_hash="$(find ./dist/firefox/ -name "runtime.*" | cut -d . -f 3)"
+          echo "runtime_hash=${runtime_hash}" >> "${GITHUB_OUTPUT}"
 
-      - name: Run mozilla-lint
-        if: ${{ contains(inputs.build-name, 'mv2') }}
-        run: yarn mozilla-lint
-
-      - name: Upload bundle analyzer report to S3
-        if: ${{ inputs.bundle-analyzer && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ inputs.build-name }}/bundle-analyzer/report.html
-          path: dist/report.html
-
-      - name: Remove bundle analyzer report from dist
-        if: ${{ inputs.bundle-analyzer }}
-        run: rm -f dist/report.html
-
-      - name: Upload artifact '${{ inputs.build-name }}'
+      - name: Upload artifact '${{ inputs.build-name }}-${{ steps.get_hash.outputs.runtime_hash }}'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: ${{ inputs.build-name }}
+          name: ${{ inputs.build-name }}-${{ steps.get_hash.outputs.runtime_hash }}
           path: |
             builds
             dist
-
-      - name: Upload 'builds' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ inputs.build-name }}/builds
-          path: builds
