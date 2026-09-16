@@ -484,8 +484,39 @@ class HomePage {
   }
 
   async clickOnReceiveButton(): Promise<void> {
-    await this.driver.waitForSelector(this.receiveButton);
-    await this.driver.clickElement(this.receiveButton);
+    const receiveOnRow = '[data-testid$="-overview-receive"]';
+    const moreButton = '[data-testid$="-overview-more"]';
+    const receiveInMore = '[data-testid$="-overview-more-receive"]';
+    const singleActionButton = '[data-testid$="-overview-default"]';
+
+    const receiveVisible = await this.driver.isElementPresentAndVisible(
+      receiveOnRow,
+      250,
+    );
+    if (receiveVisible) {
+      await this.driver.clickElement(receiveOnRow);
+      return;
+    }
+
+    const defaultActionVisible = await this.driver.isElementPresentAndVisible(
+      singleActionButton,
+      250,
+    );
+    if (defaultActionVisible) {
+      await this.driver.clickElement(singleActionButton);
+      return;
+    }
+
+    await this.driver.waitForSelector(moreButton);
+    await this.driver.clickElement(moreButton);
+
+    const receiveInMoreVisible = await this.driver.isElementPresentAndVisible(
+      receiveInMore,
+      250,
+    );
+    await this.driver.clickElement(
+      receiveInMoreVisible ? receiveInMore : receiveOnRow,
+    );
   }
 
   async clickOnSendButton(): Promise<void> {
