@@ -46,7 +46,8 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     text: tEn('confirmTitleRevokeApproveTransaction'),
   };
 
-  private readonly spenderSection = '[data-testid="confirmation__approve-spender"]';
+  private readonly spenderSection =
+    '[data-testid="confirmation__approve-spender"]';
 
   private readonly spendingCapPermissionDescription = {
     css: '[data-testid="confirm-title-description"]',

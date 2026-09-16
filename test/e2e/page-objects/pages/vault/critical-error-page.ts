@@ -22,8 +22,7 @@ class CriticalErrorPage {
   protected readonly errorMessage = '.critical-error__details';
 
   // Locators
-  protected readonly errorPageTitle =
-    '[data-testid="critical-error-content"]';
+  protected readonly errorPageTitle = '[data-testid="critical-error-content"]';
 
   protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
 
