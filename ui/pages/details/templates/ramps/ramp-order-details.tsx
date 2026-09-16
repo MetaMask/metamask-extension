@@ -18,6 +18,7 @@ import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRa
 import { useRampsOrders } from '../../../../hooks/ramps/useRampsOrders';
 import { useRampsScreenViewed } from '../../../../hooks/ramps/useRampsScreenViewed';
 import { hasPositiveNumericAmount } from '../../../../hooks/ramps/utils/hasPositiveNumericAmount';
+import { watchRampsProviderOrderTab } from '../../../../store/controller-actions/ramps-controller';
 import { BlockExplorerButton } from '../../components/block-explorer-button';
 import { Footer, Row, Section } from '../../components/shared';
 import { RampMetadataSection } from './ramp-metadata-section';
@@ -69,10 +70,30 @@ export function RampOrderDetails({
     ? t('rampsOrderDetailsProviderFee', [provider.name])
     : t('rampsOrderDetailsFees');
 
-  const handleViewOnProvider = () => {
-    if (provider?.orderLink) {
-      global.platform.openTab({ url: provider.orderLink });
+  const handleViewOnProvider = async () => {
+    if (!provider?.orderLink) {
+      return;
     }
+
+    // Re-open the provider order page under the background callback watcher so
+    // the provider's "Return to MetaMask" redirect lands back in the extension
+    // instead of on the blank callback page. Without the raw order (provider
+    // and wallet) the callback cannot be resolved, so just open the link.
+    if (rawOrder?.provider?.id && rawOrder.walletAddress) {
+      try {
+        await watchRampsProviderOrderTab({
+          url: provider.orderLink,
+          providerCode: rawOrder.provider.id,
+          walletAddress: rawOrder.walletAddress,
+          orderCode: orderId,
+        });
+        return;
+      } catch {
+        // Fall back to a plain tab open below.
+      }
+    }
+
+    global.platform.openTab({ url: provider.orderLink });
   };
 
   const handleBuyAgain = () => {
