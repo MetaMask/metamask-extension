@@ -748,7 +748,7 @@ describe('createWatchRampsOrderTab', () => {
     expect(platform.closeTab).not.toHaveBeenCalled();
   });
 
-  it('tracks the terminal KPI without a checkout session id for a completed order', async () => {
+  it('does not track terminal KPI for a completed order without checkout context', async () => {
     const { rampsController, watchOrder, getOnUpdated } = createHarness();
     rampsController.getOrderFromCallback.mockResolvedValue({
       id: 'moonpay/orders/reentry-done',
@@ -783,8 +783,6 @@ describe('createWatchRampsOrderTab', () => {
         ([event]) =>
           event.name === MetaMetricsEventName.RampsTransactionCompleted,
       );
-    expect(completedCall?.[0].properties).not.toHaveProperty(
-      'checkout_session_id',
-    );
+    expect(completedCall).toBeUndefined();
   });
 });

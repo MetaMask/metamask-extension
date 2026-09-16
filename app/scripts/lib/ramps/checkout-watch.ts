@@ -120,7 +120,9 @@ function createWatchRampsTab(
           analyticsContext?.region,
           analyticsContext?.checkoutSessionId,
         );
-        trackRampsTerminalOrder(order, analyticsContext?.checkoutSessionId);
+        if (analyticsContext) {
+          trackRampsTerminalOrder(order, analyticsContext.checkoutSessionId);
+        }
         return;
       } catch (callbackError) {
         console.error(
@@ -145,7 +147,9 @@ function createWatchRampsTab(
           analyticsContext?.region,
           analyticsContext?.checkoutSessionId,
         );
-        trackRampsTerminalOrder(order, analyticsContext?.checkoutSessionId);
+        if (analyticsContext) {
+          trackRampsTerminalOrder(order, analyticsContext.checkoutSessionId);
+        }
       } catch (error) {
         console.error('Failed to resolve ramps order by code', error);
       }
