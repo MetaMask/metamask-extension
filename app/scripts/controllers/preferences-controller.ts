@@ -169,7 +169,7 @@ export const getDefaultPreferencesControllerState =
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
-      isBasicFunctionalityConsolidatedEnabled: false,
+      isBasicFunctionalityConsolidatedEnabled: true,
       basicFunctionalityMigrationNotification: null,
       basicFunctionalityMigrationNotificationDismissed: false,
       privacyMode: false,
