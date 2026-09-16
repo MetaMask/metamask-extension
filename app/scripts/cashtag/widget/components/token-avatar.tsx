@@ -33,7 +33,7 @@ export function TokenAvatar({ asset, size = 'sm' }: Props) {
             name={networkName}
             src={chainSrc}
             size={AvatarNetworkSize.Xs}
-            className="h-4 w-4 min-w-4 rounded-md border-2 border-background-default bg-background-default"
+            hasBorder
           />
         ) : null
       }

@@ -11,4 +11,6 @@
  * `moduleNameMapper` only accepts file paths, so the empty string has to live in
  * a module rather than inline in the config.
  */
-export default '';
+const emptyStylesheet = '';
+
+export default emptyStylesheet;

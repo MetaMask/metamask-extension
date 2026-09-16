@@ -1,6 +1,8 @@
 import React from 'react';
 import {
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
   Icon,
@@ -19,7 +21,6 @@ import {
 import { getSecurityStatusBadge } from '../../lib/security-badge';
 import type { AssetData } from '../../lib/types';
 import { PriceChart } from './price-chart';
-import { MoreMenu } from './more-menu';
 import { TokenAvatar } from './token-avatar';
 
 function onWidgetClick(handler: () => void) {
@@ -85,7 +86,13 @@ export function TokenDetail({
             width={28}
             height={28}
           />
-          <MoreMenu onDisable={onDisable} />
+          <ButtonIcon
+            iconName={IconName.Ban}
+            size={ButtonIconSize.Md}
+            ariaLabel="Disable this feature"
+            className="text-icon-alternative hover:bg-muted-hover hover:text-icon-default"
+            onClick={onWidgetClick(onDisable)}
+          />
         </div>
       </header>
 
