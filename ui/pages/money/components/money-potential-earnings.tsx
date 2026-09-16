@@ -36,15 +36,23 @@ export function MoneyPotentialEarnings({
   isAddDisabled = false,
 }: MoneyPotentialEarningsProps) {
   const t = useI18nContext();
-  const visibleTokens = useMemo(
-    () => tokens.slice(0, MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT),
+  const eligibleTokens = useMemo(
+    () => tokens.filter((token) => token.moneyFiatAmountUsd > 0),
     [tokens],
   );
+  const visibleTokens = useMemo(
+    () => eligibleTokens.slice(0, MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT),
+    [eligibleTokens],
+  );
+
+  if (visibleTokens.length === 0) {
+    return null;
+  }
 
   return (
     <section data-testid="money-potential-earnings">
       <MoneyPotentialEarningsSummary
-        tokens={tokens}
+        tokens={eligibleTokens}
         apyDecimal={apyDecimal}
         privacyMode={privacyMode}
       />
@@ -56,12 +64,12 @@ export function MoneyPotentialEarnings({
           apyDecimal={apyDecimal ?? 0}
           hasNoFee={isNoFeeToken(token)}
           privacyMode={privacyMode}
-          onAddClick={() => onAddToken(token, index, tokens.length)}
+          onAddClick={() => onAddToken(token, index, eligibleTokens.length)}
           isAddDisabled={isAddDisabled}
         />
       ))}
 
-      {tokens.length > MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT ? (
+      {eligibleTokens.length > MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT ? (
         <Box paddingLeft={4} paddingRight={4} paddingTop={3}>
           <Button
             variant={ButtonVariant.Secondary}

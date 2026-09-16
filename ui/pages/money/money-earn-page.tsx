@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -38,6 +38,10 @@ export function MoneyEarnPage() {
     enabled: availability.isAvailable,
   });
   const { tokens, isNoFeeToken } = useMoneyDepositTokens();
+  const eligibleTokens = useMemo(
+    () => tokens.filter((token) => token.moneyFiatAmountUsd > 0),
+    [tokens],
+  );
   const { handleAddToken, initiateDeposit, isDepositLoading } =
     useMoneyAddDepositToken({
       screenName: MoneyScreenName.MoneyEarnOnCrypto,
@@ -101,21 +105,23 @@ export function MoneyEarnPage() {
 
         <div className="flex-1 pb-5">
           <MoneyPotentialEarningsSummary
-            tokens={tokens}
+            tokens={eligibleTokens}
             apyDecimal={apyDecimal}
             privacyMode={privacyMode}
             headingVariant={TextVariant.HeadingLg}
             showInfoIcon={false}
           />
 
-          {tokens.map((token, index) => (
+          {eligibleTokens.map((token, index) => (
             <MoneyPotentialEarningsTokenRow
               key={`${token.chainId}:${token.address}`}
               token={token}
               apyDecimal={apyDecimal ?? 0}
               hasNoFee={isNoFeeToken(token)}
               privacyMode={privacyMode}
-              onAddClick={() => handleAddToken(token, index, tokens.length)}
+              onAddClick={() =>
+                handleAddToken(token, index, eligibleTokens.length)
+              }
               isAddDisabled={isDepositLoading}
             />
           ))}
