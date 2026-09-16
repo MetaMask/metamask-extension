@@ -23,6 +23,8 @@ import {
   MONEY_EARN_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
 } from '../../helpers/constants/routes';
+import { PopoverPosition } from '../../components/component-library';
+import { TooltipText } from '../../components/app/money/tooltip-text';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
@@ -403,12 +405,26 @@ export function MoneyHomePage() {
               ) : (
                 <>
                   {apyDisplay ? (
-                    <Text
+                    <TooltipText
+                      text={t('moneyApy', [apyDisplay])}
                       variant={TextVariant.BodyMd}
                       className="text-success-default"
+                      position={PopoverPosition.Auto}
+                      popoverStyle={{ maxWidth: 315 }}
+                      data-testid="money-home-apy"
                     >
-                      {t('moneyApy', [apyDisplay])}
-                    </Text>
+                      <div className="flex flex-col gap-4">
+                        <Text variant={TextVariant.BodyMd}>
+                          {t('moneyHomeApyTooltipEarning', [apyDisplay])}
+                        </Text>
+                        <Text variant={TextVariant.BodyMd}>
+                          {t('moneyHomeApyTooltip')}
+                        </Text>
+                        <Text variant={TextVariant.BodyMd}>
+                          {t('moneyHomeApyTooltipPoweredBy')}
+                        </Text>
+                      </div>
+                    </TooltipText>
                   ) : null}
                   <Text
                     variant={TextVariant.BodyMd}
@@ -416,11 +432,6 @@ export function MoneyHomePage() {
                   >
                     {apyDisplay ? `• ${t('moneyMusd')}` : t('moneyMusd')}
                   </Text>
-                  <Icon
-                    name={IconName.Info}
-                    size={IconSize.Sm}
-                    color={IconColor.IconAlternative}
-                  />
                 </>
               )}
             </div>

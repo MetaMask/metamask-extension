@@ -54,7 +54,7 @@ const AddOrBalance = ({
   isZeroBalance,
   isLoading,
   privacyMode,
-  initiateDeposit,
+  onAddClick,
   isDepositLoading,
   isLastKnown,
 }: {
@@ -62,7 +62,7 @@ const AddOrBalance = ({
   isZeroBalance: boolean;
   isLoading: boolean;
   privacyMode: boolean;
-  initiateDeposit: ReturnType<typeof useMoneyAccountDeposit>['initiateDeposit'];
+  onAddClick: () => void;
   isDepositLoading: boolean;
   isLastKnown: boolean;
 }) => {
@@ -76,9 +76,7 @@ const AddOrBalance = ({
         className="shrink-0 rounded-md"
         isLoading={isDepositLoading}
         data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={() => {
-          initiateDeposit();
-        }}
+        onClick={onAddClick}
       >
         {t('moneyAdd')}
       </Button>
@@ -297,7 +295,7 @@ export const MoneyAccountBalance = () => {
         isZeroBalance={isZeroBalance}
         isLoading={isLoading}
         privacyMode={privacyMode}
-        initiateDeposit={handleAddClick}
+        onAddClick={handleAddClick}
         isDepositLoading={isDepositLoading}
         isLastKnown={isLastKnown}
       />
