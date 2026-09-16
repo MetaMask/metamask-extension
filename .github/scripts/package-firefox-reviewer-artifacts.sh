@@ -119,12 +119,7 @@ run_package() {
   ensure_mtree
 
   local work_root script_ref clone_dir last_listed
-  work_root="$(mktemp -d)"
-  # Expand the path when registering the trap. With set -u, a trap that refs a
-  # function-local on EXIT runs after the local is unbound and fails the job.
-  # Shellcheck: Early expansion is intentional here
-  # shellcheck disable=SC2064
-  trap "rm -rf \"${work_root}\"" EXIT
+  work_root="/tmp/test-bundle-script"
   script_ref="${FIREFOX_BUNDLE_SCRIPT_REF}"
   clone_dir="${work_root}/firefox-bundle-script"
 
