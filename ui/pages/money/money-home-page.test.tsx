@@ -3,7 +3,10 @@ import { fireEvent, screen, within } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { MONEY_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
+import {
+  MONEY_ACTIVITY_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
+} from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
@@ -82,6 +85,20 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  // Keep Link as a plain anchor so it does not depend on router context
+  // from a second react-router-dom instance created by requireActual.
+  Link: ({
+    to,
+    children,
+    ...props
+  }: {
+    to: string;
+    children?: React.ReactNode;
+  } & React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a href={to} {...props}>
+      {children}
+    </a>
+  ),
 }));
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
@@ -185,6 +202,11 @@ describe('MoneyHomePage', () => {
       initiateDeposit: mockInitiateDeposit,
       isLoading: false,
     });
+    mockInitiateWithdrawal.mockResolvedValue(undefined);
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: false,
+    });
   });
 
   it('renders the full empty-state composition with a live zero balance', () => {
@@ -270,6 +292,18 @@ describe('MoneyHomePage', () => {
         expect(button).toBeDisabled();
       }
     });
+    expect(
+      screen.getByRole('link', { name: messages.moneyHowItWorks.message }),
+    ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
+  });
+
+  it('links to How it works from the empty-state section header', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-how-it-works-header')).toHaveAttribute(
+      'href',
+      MONEY_HOW_IT_WORKS_ROUTE,
+    );
   });
 
   it('opens the Money landing page from Learn more', () => {
@@ -292,12 +326,8 @@ describe('MoneyHomePage', () => {
     });
   });
 
-  it('opens the money transfer sheet from Send', () => {
+  it('initiates a withdrawal from Send without opening the transfer sheet', () => {
     renderWithLocalization(<MoneyHomePage />);
-
-    expect(
-      screen.queryByTestId('money-transfer-sheet'),
-    ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('money-send-button'));
 
@@ -306,12 +336,26 @@ describe('MoneyHomePage', () => {
       buttonIntent: MoneyButtonIntent.TransferMoney,
       componentName: MoneyComponentName.ActionButtonRow,
       labelKey: 'moneySend',
-      redirectTarget: MoneyBottomSheetName.TransferMoneySheet,
+      redirectTarget: MoneyScreenName.MoneyTransfer,
       buttonPosition: 2,
       buttonRowButtonCount: 2,
     });
 
-    expect(screen.getByTestId('money-transfer-sheet')).toBeInTheDocument();
+    expect(mockInitiateWithdrawal).toHaveBeenCalledTimes(1);
+    expect(
+      screen.queryByTestId('money-transfer-sheet'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('disables Send while a withdrawal is being set up', () => {
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-send-button')).toBeDisabled();
   });
 
   it('initiates a deposit from the Add action card', () => {
@@ -490,6 +534,22 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('money-send-button')).toBeEnabled();
     expect(screen.getByTestId('money-add-button')).toBeEnabled();
+    expect(
+      screen.getByRole('link', { name: messages.moneyMeetMusd.message }),
+    ).toHaveAttribute(
+      'href',
+      'https://metamask.io/price/metamask-usd?utm_source=extension',
+    );
+    expect(
+      screen.getByRole('link', {
+        name: messages.moneyExploreBenefits.message,
+      }),
+    ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
+    expect(
+      screen.getByRole('link', {
+        name: messages.moneyHowYourMoneyGrows.message,
+      }),
+    ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
     screen.getAllByRole('button').forEach((button) => {
       if (
         [
@@ -504,6 +564,69 @@ describe('MoneyHomePage', () => {
       } else {
         expect(button).toBeDisabled();
       }
+    });
+  });
+
+  it('links How your money grows to How it works', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-condensed-info-card-growth'),
+    ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
+  });
+
+  it('opens the mUSD price page from Meet mUSD', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-condensed-info-card-musd'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/price/metamask-usd?utm_source=extension',
+    });
+  });
+
+  it('opens the Money landing page from Explore your benefits', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-condensed-info-card-benefits'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/money?utm_source=extension',
     });
   });
 
