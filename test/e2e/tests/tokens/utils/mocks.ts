@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../../constants';
 
+const ACCOUNTS_API_URL = 'https://accounts.api.cx.metamask.io';
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 const TOKENS_API_URL = 'https://tokens.api.cx.metamask.io';
 const TOKEN_API_URL = 'https://token.api.cx.metamask.io';
@@ -142,52 +143,53 @@ export async function mockTokenMetadataApis(
     ),
   );
 
-  const accountBalancesMock = await mockServer
-    .forGet(
-      `${TOKEN_API_URL.replace('token.api', 'accounts.api')}/v4/multiaccount/balances`,
-    )
-    .always()
-    .thenCallback((request) => {
-      const url = new URL(request.url);
-      const accountAddressesParam =
-        url.searchParams.get('accountAddresses') ?? '';
-      const accountAddresses = accountAddressesParam
-        .split(',')
-        .map((accountAddress) => accountAddress.trim())
-        .filter(Boolean);
+  const accountBalancesMocks = await Promise.all(
+    ['v5', 'v6'].map((version) =>
+      mockServer
+        .forGet(`${ACCOUNTS_API_URL}/${version}/multiaccount/balances`)
+        .always()
+        .thenCallback((request) => {
+          const accountIds = (
+            new URL(request.url).searchParams.get('accountIds') ?? ''
+          )
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean);
+          const uniqueChainIds = [
+            ...new Set(normalizedTokens.map((token) => token.chainId)),
+          ];
+          const balances = accountIds.flatMap((accountId) => {
+            const chainRef = accountId.split(':')[1];
+            return [
+              ...uniqueChainIds
+                .filter((chainId) => String(chainId) === chainRef)
+                .map((chainId) => NATIVE_ASSET_ID_BY_CHAIN_ID[chainId])
+                .filter(Boolean)
+                .map((assetId) => ({
+                  accountId,
+                  assetId,
+                  balance: '25',
+                })),
+              ...normalizedTokens
+                .filter((token) => String(token.chainId) === chainRef)
+                .map((token) => ({
+                  accountId,
+                  assetId: `eip155:${token.chainId}/erc20:${token.address}`,
+                  balance: token.balance ?? '0',
+                })),
+            ].map((row) =>
+              version === 'v6' ? { ...row, object: 'token' } : row,
+            );
+          });
+          return {
+            statusCode: 200,
+            json: { count: balances.length, balances, unprocessedNetworks: [] },
+          };
+        }),
+    ),
+  );
 
-      const chainIds = [
-        ...new Set(normalizedTokens.map((token) => token.chainId)),
-      ];
-      const balances = accountAddresses.flatMap((accountId) => [
-        ...chainIds
-          .map((chainId) => NATIVE_ASSET_ID_BY_CHAIN_ID[chainId])
-          .filter(Boolean)
-          .map((assetId) => ({
-            accountId,
-            accountAddress: accountId,
-            assetId,
-            balance: '25',
-          })),
-        ...normalizedTokens.map((token) => ({
-          accountId,
-          accountAddress: accountId,
-          assetId: `eip155:${token.chainId}/erc20:${token.address}`,
-          balance: token.balance ?? '0',
-        })),
-      ]);
-
-      return {
-        statusCode: 200,
-        json: {
-          count: balances.length,
-          balances,
-          unprocessedNetworks: [],
-        },
-      };
-    });
-
-  return [...assetsV3Mock, ...tokenListMocks, accountBalancesMock];
+  return [...assetsV3Mock, ...tokenListMocks, ...accountBalancesMocks];
 }
 
 export const mockEmptyHistoricalPrices = async (
