@@ -3078,6 +3078,64 @@ describe('wallet-root Perps preload', () => {
     return { ...result, controller, ping, api };
   }
 
+  it.each(['eligibility revoked', 'preload released'])(
+    'does not activate streams after %s during queued initialization',
+    async (reason) => {
+      let allowed = true;
+      const {
+        api,
+        bridge,
+        controller,
+        controllerApi,
+        subscribeAggregatedOrderBook,
+      } = setup({
+        isPreloadAllowed: () => allowed,
+      });
+      let finishInit!: () => void;
+      let startInit!: () => void;
+      const started = new Promise<void>((resolve) => {
+        startInit = resolve;
+      });
+      controllerApi.perpsInit.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finishInit = resolve;
+            startInit();
+          }),
+      );
+      api.perpsRegisterPreload('home');
+      const streaming = bridge.bridgeApi() as Record<
+        string,
+        (params: Record<string, unknown>) => Promise<void>
+      >;
+      const first = streaming.perpsActivatePriceStream({ symbols: ['BTC'] });
+      await started;
+      const queued = [
+        streaming.perpsActivatePriceStream({ symbols: ['ETH'] }),
+        streaming.perpsActivateOrderBookStream({ symbol: 'BTC' }),
+        streaming.perpsActivateOrderBookAggregatedStream({
+          symbol: 'BTC',
+          subscriptionId: 'test',
+        }),
+        streaming.perpsActivateCandleStream({ symbol: 'BTC', interval: '1h' }),
+        streaming.perpsActivateStreaming({ priceSymbols: ['SOL'] }),
+      ];
+      if (reason === 'eligibility revoked') {
+        allowed = false;
+      } else {
+        api.perpsStopPreload('home');
+      }
+      finishInit();
+      await Promise.all([first, ...queued]);
+
+      expect(controller.subscribeToPrices).not.toHaveBeenCalled();
+      expect(controller.subscribeToOrderBook).not.toHaveBeenCalled();
+      expect(controller.subscribeToCandles).not.toHaveBeenCalled();
+      expect(subscribeAggregatedOrderBook).not.toHaveBeenCalled();
+      bridge.dispose();
+    },
+  );
+
   it('restores wallet subscriptions after failed preload and global lock teardown', async () => {
     let allowed = true;
     const { api, bridge, controller } = setup({
