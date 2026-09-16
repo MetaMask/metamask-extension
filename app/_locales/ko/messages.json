@@ -5216,7 +5216,7 @@
   },
   "lowValueAssets": {
     "message": "저가치 토큰($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "이더리움 메인넷"
