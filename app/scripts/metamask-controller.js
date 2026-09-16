@@ -3116,6 +3116,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setPerpsTabBadgeSeen:
         appStateController.setPerpsTabBadgeSeen.bind(appStateController),
+      setLastPerpsDepositEntryPoint:
+        appStateController.setLastPerpsDepositEntryPoint.bind(
+          appStateController,
+        ),
       setMusdConversionEducationSeen:
         appStateController.setMusdConversionEducationSeen.bind(
           appStateController,
@@ -3525,9 +3529,6 @@ export default class MetamaskController extends EventEmitter {
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
       updateEventFragment,
-      updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
-        metaMetricsController,
-      ),
 
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(

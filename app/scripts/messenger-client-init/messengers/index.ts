@@ -180,7 +180,10 @@ import {
   getChompApiServiceInitMessenger,
   getChompApiServiceMessenger,
 } from './chomp-api-service-messenger';
-import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
+import {
+  getProfileMetricsControllerInitMessenger,
+  getProfileMetricsControllerMessenger,
+} from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
 import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
@@ -333,7 +336,11 @@ export {
   getUserOperationControllerMessenger,
   getUserOperationControllerInitMessenger,
 } from './user-operation-controller-messenger';
-export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
+export type { ProfileMetricsControllerInitMessenger } from './profile-metrics-controller-messenger';
+export {
+  getProfileMetricsControllerMessenger,
+  getProfileMetricsControllerInitMessenger,
+} from './profile-metrics-controller-messenger';
 export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 export { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
 
@@ -724,7 +731,7 @@ export const MESSENGER_FACTORIES = {
   },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getProfileMetricsControllerInitMessenger,
   },
   ProfileMetricsService: {
     getMessenger: getProfileMetricsServiceMessenger,

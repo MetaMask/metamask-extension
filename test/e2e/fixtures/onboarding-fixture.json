@@ -162,11 +162,7 @@
           },
           "type": "start"
         }
-      ],
-      "traits": {
-        "install_date_ext": "2026-01-22",
-        "storage_kind": "split"
-      }
+      ]
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,

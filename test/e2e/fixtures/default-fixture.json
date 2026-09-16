@@ -396,8 +396,7 @@
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
       "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": [],
-      "traits": {}
+      "tracesBeforeMetricsOptIn": []
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -1094,10 +1093,6 @@
         "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
         "perpsTAT3382AbtestTabBadge": "control",
         "platformSplitStateGradualRollout": "feature is ON",
-        "stxMigrationBatchStatus": "sentinel on",
-        "stxMigrationCancel": "sentinel on",
-        "stxMigrationGetFees": "sentinel on",
-        "stxMigrationSubmitTransactions": "sentinel on",
         "swapsSWAPS4827AbtestChainValueOrder": "control"
       },
       "localOverrides": {},

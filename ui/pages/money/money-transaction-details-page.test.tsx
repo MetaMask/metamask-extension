@@ -4,7 +4,9 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
+import type { Hex } from '@metamask/utils';
+import { MUSD_TOKEN } from '@metamask/money-account-utils';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
@@ -17,8 +19,11 @@ import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-a
 import { getInternalAccountByAddress } from '../../selectors/accounts';
 import { selectTransactionById } from '../../selectors/transactionController';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
-import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
-import { onchainItem } from './types/money-activity';
+import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
+import MOCK_MONEY_TRANSACTIONS, {
+  MOCK_ACCOUNTS_API_ACTIVITY,
+} from './constants/mock-activity-data';
+import { accountsApiItem, onchainItem } from './types/money-activity';
 import { MoneyTransactionDetailsPage } from './money-transaction-details-page';
 import { formatMoneyActivityDetailsDate } from './utils/money-transaction-details-display';
 
@@ -36,6 +41,7 @@ const mockGetInternalAccountByAddress = jest.mocked(
 );
 const mockSelectTransactionById = jest.mocked(selectTransactionById);
 const mockUseCopyToClipboard = jest.mocked(useCopyToClipboard);
+const mockUseMoneyTransactionFee = jest.mocked(useMoneyTransactionFee);
 
 jest.mock('react-redux', () => ({
   useSelector: (selector: () => unknown) => selector(),
@@ -65,6 +71,24 @@ jest.mock('../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
 
+jest.mock('../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number) => {
+      if (value !== 0 && Math.abs(value) < 0.01) {
+        return '<$0.01';
+      }
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(value);
+    },
+  }),
+}));
+
+jest.mock('../../hooks/money/use-money-transaction-fee', () => ({
+  useMoneyTransactionFee: jest.fn(),
+}));
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Navigate: ({ to }: { to: string }) => (
@@ -80,6 +104,28 @@ jest.mock('../../hooks/money/use-money-account-availability', () => ({
 
 jest.mock('../../hooks/money/use-money-activity-items', () => ({
   useMoneyActivityItems: () => mockUseMoneyActivityItems(),
+}));
+
+jest.mock('../../components/app/token-icon', () => ({
+  TokenIcon: ({
+    chainId,
+    tokenAddress,
+    symbol,
+    size,
+  }: {
+    chainId: string;
+    tokenAddress: string;
+    symbol?: string;
+    size?: string;
+  }) => (
+    <div
+      data-testid="money-transaction-details-token-icon"
+      data-chain-id={chainId}
+      data-token-address={tokenAddress}
+      data-symbol={symbol}
+      data-size={size}
+    />
+  ),
 }));
 
 const mockItems = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
@@ -111,6 +157,11 @@ describe('MoneyTransactionDetailsPage', () => {
       mockCopyToClipboard,
       jest.fn(),
     ]);
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.16,
+      totalUsd: 1000.16,
+      isNetworkFeePaidByMetaMask: false,
+    });
     mockUseParams.mockReturnValue({ transactionId: deposited.id });
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
@@ -121,6 +172,10 @@ describe('MoneyTransactionDetailsPage', () => {
     });
     mockUseMoneyActivityItems.mockReturnValue({
       items: mockItems,
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
     });
   });
 
@@ -197,6 +252,12 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.getByTestId('money-transaction-details-account'),
     ).toHaveTextContent('Defi account (0x0000...0001)');
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('$0.16');
+    expect(
+      screen.getByTestId('money-transaction-details-total'),
+    ).toHaveTextContent('$1,000.16');
     expect(mockGetInternalAccountByAddress).toHaveBeenCalledWith(
       undefined,
       deposited.tx.txParams.from,
@@ -207,6 +268,155 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.queryByTestId('money-transaction-details-explorer'),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows unavailable fee and total values as dashes', () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: undefined,
+      totalUsd: undefined,
+      isNetworkFeePaidByMetaMask: false,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('-');
+    expect(
+      screen.getByTestId('money-transaction-details-total'),
+    ).toHaveTextContent('-');
+  });
+
+  it('shows a minimum threshold for a sub-cent transaction fee', () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.001,
+      totalUsd: 1000.001,
+      isNetworkFeePaidByMetaMask: false,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('<$0.01');
+  });
+
+  it('opens the transaction fee information popover', async () => {
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByText(messages.moneyActivityTransactionFeeTooltip.message),
+    ).toBeInTheDocument();
+  });
+
+  it('shows Paid by MetaMask when the network fee is fully sponsored', () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0,
+      totalUsd: 1000,
+      isNetworkFeePaidByMetaMask: true,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee-sponsored'),
+    ).toHaveTextContent(messages.paidByMetaMask.message);
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).not.toHaveTextContent('$0.00');
+  });
+
+  it('keeps the fee amount and states network sponsorship in the tooltip when source gas is zero', async () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.14,
+      totalUsd: 1000.14,
+      isNetworkFeePaidByMetaMask: true,
+    });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [
+        onchainItem({
+          ...deposited.tx,
+          metamaskPay: {
+            ...deposited.tx.metamaskPay,
+            networkFeeFiat: '0',
+            bridgeFeeFiat: '0.14',
+          },
+        }),
+      ],
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('$0.14');
+    expect(
+      screen.queryByTestId('money-transaction-details-fee-sponsored'),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee-info'),
+    ).toHaveTextContent(
+      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+    );
+  });
+
+  it('does not claim Paid by MetaMask for user-paid cross-chain source gas', async () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.34,
+      totalUsd: 1000.34,
+      isNetworkFeePaidByMetaMask: true,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('$0.34');
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee-info'),
+    ).not.toHaveTextContent(
+      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+    );
+  });
+
+  it('does not mention Paid by MetaMask when the fee is not sponsored', async () => {
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.queryByTestId('money-transaction-details-fee-sponsored'),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee-info'),
+    ).not.toHaveTextContent(
+      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+    );
   });
 
   it('renders the origin address when it does not belong to an internal account', () => {
@@ -246,7 +456,13 @@ describe('MoneyTransactionDetailsPage', () => {
       type: TransactionType.moneyAccountDeposit,
     } as TransactionMeta);
     mockUseParams.mockReturnValue({ transactionId: pending.id });
-    mockUseMoneyActivityItems.mockReturnValue({ items: [pending] });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [pending],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
 
@@ -267,7 +483,13 @@ describe('MoneyTransactionDetailsPage', () => {
       },
     } as TransactionMeta);
     mockUseParams.mockReturnValue({ transactionId: failed.id });
-    mockUseMoneyActivityItems.mockReturnValue({ items: [failed] });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [failed],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
 
@@ -290,7 +512,13 @@ describe('MoneyTransactionDetailsPage', () => {
       hash: VALID_TX_HASH,
     } as TransactionMeta);
     mockUseParams.mockReturnValue({ transactionId: hashed.id });
-    mockUseMoneyActivityItems.mockReturnValue({ items: [hashed] });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [hashed],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
 
@@ -307,7 +535,13 @@ describe('MoneyTransactionDetailsPage', () => {
       hash: VALID_TX_HASH,
     } as TransactionMeta);
     mockUseParams.mockReturnValue({ transactionId: hashed.id });
-    mockUseMoneyActivityItems.mockReturnValue({ items: [hashed] });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [hashed],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
     global.platform.openTab = jest.fn();
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
@@ -330,7 +564,14 @@ describe('MoneyTransactionDetailsPage', () => {
       metamaskPay: undefined,
     } as TransactionMeta;
     mockUseParams.mockReturnValue({ transactionId: promoted.id });
-    mockUseMoneyActivityItems.mockReturnValue({ items: [promoted] });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [promoted],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+
     mockSelectTransactionById.mockReturnValue(rawChild);
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
@@ -341,7 +582,13 @@ describe('MoneyTransactionDetailsPage', () => {
   });
 
   it('redirects when the controller transaction is not Money activity and is absent from the list', () => {
-    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
     mockSelectTransactionById.mockReturnValue({
       ...deposited.tx,
       type: TransactionType.swap,
@@ -357,7 +604,13 @@ describe('MoneyTransactionDetailsPage', () => {
   });
 
   it('resolves a live transaction from TransactionController instead of the paged feed', () => {
-    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
     mockSelectTransactionById.mockReturnValue(deposited.tx);
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
@@ -368,5 +621,126 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.getByTestId('money-transaction-details-title'),
     ).toHaveTextContent(messages.moneyActivityDeposited.message);
+  });
+
+  it('renders Accounts API card purchase details', () => {
+    const cardItem = accountsApiItem(MOCK_ACCOUNTS_API_ACTIVITY[0]);
+    mockUseParams.mockReturnValue({ transactionId: cardItem.id });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [cardItem],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-api-activity-details'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-api-activity-details-title'),
+    ).toHaveTextContent(messages.moneyActivityPurchase.message);
+    expect(
+      screen.getByTestId('money-api-activity-details-hero-copy'),
+    ).toHaveTextContent(messages.moneyActivityDetailsYouSpent.message);
+  });
+
+  it('shows a loading state while activity is settling and the item is missing', () => {
+    mockUseParams.mockReturnValue({ transactionId: 'card:0xmissing' });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      isSettling: true,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-loading'),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+  });
+
+  it('keeps loading and pages while an Accounts API id is missing and hasMore', () => {
+    const loadMore = jest.fn();
+    mockUseParams.mockReturnValue({ transactionId: 'card:0xlater' });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      isSettling: false,
+      hasMore: true,
+      isLoadingMore: false,
+      loadMore,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-loading'),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+    expect(loadMore).toHaveBeenCalled();
+  });
+
+  it('redirects once settled when the Accounts API item is still missing', () => {
+    mockUseParams.mockReturnValue({ transactionId: 'card:0xmissing' });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(screen.getByTestId('navigate')).toHaveAttribute(
+      'data-to',
+      MONEY_ACTIVITY_ROUTE,
+    );
+  });
+
+  it('renders the MetaMask Pay token icon for a crypto deposit', () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex;
+    const payDeposit = onchainItem({
+      ...deposited.tx,
+      id: 'money-tx-pay-deposit',
+      metamaskPay: {
+        tokenAddress: usdcAddress,
+        chainId: '0x1',
+      },
+      transferInformation: undefined,
+    } as TransactionMeta);
+    mockUseParams.mockReturnValue({ transactionId: payDeposit.id });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [payDeposit],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    const icon = screen.getByTestId('money-transaction-details-token-icon');
+    expect(icon).toHaveAttribute('data-chain-id', '0x1');
+    expect(icon).toHaveAttribute('data-token-address', usdcAddress);
+    expect(icon).toHaveAttribute('data-size', 'xl');
+  });
+
+  it('renders the mUSD token icon when no pay token is present', () => {
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    const icon = screen.getByTestId('money-transaction-details-token-icon');
+    expect(icon).toHaveAttribute('data-chain-id', deposited.tx.chainId);
+    expect(icon).toHaveAttribute(
+      'data-token-address',
+      deposited.tx.transferInformation?.contractAddress,
+    );
+    expect(icon).toHaveAttribute('data-symbol', MUSD_TOKEN.symbol);
+    expect(icon).toHaveAttribute('data-size', 'xl');
   });
 });

@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -23,34 +24,51 @@ import {
 } from '@metamask/design-system-react';
 import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { getPrivacyMode } from '../../selectors/selectors';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from './constants/money-events';
 import { MoneyActivityRow } from './components/money-activity-row';
+import { MoneyActivityRetryButton } from './components/money-activity-retry-button';
+import { MoneyActivitySettlingSkeletons } from './components/money-activity-settling-skeletons';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { groupMoneyActivityItems } from './utils/group-money-activity';
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
+
+const ACTIVITY_FILL_COUNT = 15;
 
 const FILTERS: {
   id: MoneyActivityFilter;
   labelKey: string;
   testId: string;
+  componentName: MoneyComponentName;
 }[] = [
   {
     id: MoneyActivityFilter.All,
     labelKey: 'moneyActivityFilterAll',
     testId: 'money-activity-filter-all',
+    componentName: MoneyComponentName.ActivityFilterAll,
   },
   {
     id: MoneyActivityFilter.Deposits,
     labelKey: 'moneyActivityFilterDeposits',
     testId: 'money-activity-filter-deposits',
+    componentName: MoneyComponentName.ActivityFilterDeposits,
   },
   {
     id: MoneyActivityFilter.Transfers,
     labelKey: 'moneyActivityFilterSends',
     testId: 'money-activity-filter-sends',
+    componentName: MoneyComponentName.ActivityFilterTransfers,
   },
 ];
 
@@ -61,13 +79,55 @@ export function MoneyActivityPage() {
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const [filter, setFilter] = useState(MoneyActivityFilter.All);
-  const { buckets } = useMoneyActivityItems();
-  const handleItemClick = useMoneyActivityItemClick();
+  const {
+    buckets,
+    hasMore,
+    loadMore,
+    isLoadingMore,
+    isSettling,
+    error,
+    refetch,
+  } = useMoneyActivityItems({
+    fill: { bucket: filter, count: ACTIVITY_FILL_COUNT },
+  });
+  const handleItemClick = useMoneyActivityItemClick({
+    screenName: MoneyScreenName.MoneyActivity,
+  });
+  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyActivity,
+  });
   const pageRef = useRef<HTMLDivElement>(null);
+  const [sentinelRef, isSentinelIntersecting] = useIntersectionObserver({
+    rootMargin: '400px 0px',
+  });
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);
   }, []);
+
+  useEffect(() => {
+    if (isSentinelIntersecting && hasMore) {
+      loadMore();
+    }
+  }, [isSentinelIntersecting, hasMore, loadMore]);
+
+  useTrackOnce(
+    !isAvailabilityLoading && availability.isAvailable,
+    trackScreenViewed,
+  );
+
+  const handleFilterClick = useCallback(
+    (chip: (typeof FILTERS)[number]) => {
+      trackButtonClicked({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.Filter,
+        labelKey: chip.labelKey,
+        componentName: chip.componentName,
+      });
+      setFilter(chip.id);
+    },
+    [trackButtonClicked],
+  );
 
   const filteredItems = buckets[filter];
   const sections = useMemo(
@@ -78,6 +138,10 @@ export function MoneyActivityPage() {
   const handleBack = useCallback(() => {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
+
+  const scrollSentinel = hasMore ? (
+    <div ref={sentinelRef} data-testid="money-activity-scroll-sentinel" />
+  ) : null;
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -93,7 +157,13 @@ export function MoneyActivityPage() {
     );
   } else if (availability.isAvailable) {
     let listBody: React.ReactNode;
-    if (filteredItems.length === 0) {
+    if (isSettling) {
+      listBody = (
+        <MoneyActivitySettlingSkeletons className="flex flex-col gap-3 px-4 py-4">
+          {scrollSentinel}
+        </MoneyActivitySettlingSkeletons>
+      );
+    } else if (filteredItems.length === 0) {
       listBody = (
         <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
           <Text
@@ -101,8 +171,17 @@ export function MoneyActivityPage() {
             color={TextColor.TextAlternative}
             data-testid="money-activity-empty"
           >
-            {t('moneyActivityEmpty')}
+            {t(error ? 'moneyActivityLoadError' : 'moneyActivityEmpty')}
           </Text>
+          {error ? (
+            <MoneyActivityRetryButton
+              className="mt-4"
+              onClick={() => {
+                refetch();
+              }}
+            />
+          ) : null}
+          {scrollSentinel}
         </Box>
       );
     } else {
@@ -139,6 +218,40 @@ export function MoneyActivityPage() {
               ))}
             </section>
           ))}
+          {isLoadingMore ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+              data-testid="money-activity-loading-more"
+            >
+              <Skeleton className="h-12 w-full" />
+            </Box>
+          ) : null}
+          {error ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+              data-testid="money-activity-load-error"
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('moneyActivityLoadError')}
+              </Text>
+              <MoneyActivityRetryButton
+                className="mt-3"
+                onClick={() => {
+                  refetch();
+                }}
+              />
+            </Box>
+          ) : null}
+          {scrollSentinel}
         </>
       );
     }
@@ -185,7 +298,7 @@ export function MoneyActivityPage() {
                 }
                 size={ButtonSize.Md}
                 aria-pressed={isActive}
-                onClick={() => setFilter(chip.id)}
+                onClick={() => handleFilterClick(chip)}
                 data-testid={chip.testId}
               >
                 {t(chip.labelKey)}

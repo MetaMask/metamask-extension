@@ -133,6 +133,7 @@ describe('usePayWithToken', () => {
       balanceUsd: '25',
       balanceRaw: '25000000',
       isLiveBalance: true,
+      isBalanceUsdKnown: true,
     });
     getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
@@ -173,6 +174,7 @@ describe('usePayWithToken', () => {
       balanceUsd: '0.10',
       balanceRaw: '100000',
       isLiveBalance: true,
+      isBalanceUsdKnown: true,
     });
 
     const { result } = renderHook(() => usePayWithToken());

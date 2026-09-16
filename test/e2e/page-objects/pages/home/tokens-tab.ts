@@ -26,8 +26,6 @@ class TokensTab extends HomePage {
   private readonly assetPriceInDetailsModal =
     '[data-testid="asset-hovered-price"]';
 
-  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
-
   private readonly coinOverviewSendButton =
     '[data-testid="coin-overview-send"]';
 
@@ -169,6 +167,9 @@ class TokensTab extends HomePage {
   private readonly tokenManagementCustomTokenSuccessToast =
     '[data-testid="token-management-custom-token-success-toast"]';
 
+  private readonly tokenManagementCustomTokenSuccessToastClose =
+    '[data-testid="toast-close-button"]';
+
   private readonly tokenManagementPage =
     '[data-testid="parent-selector-token-management-page"]';
 
@@ -206,11 +207,6 @@ class TokensTab extends HomePage {
       css: this.tokenName,
       text: symbol,
     });
-  }
-
-  async checkBuySellButtonIsPresent(): Promise<void> {
-    console.log(`Verify the buy/sell button is displayed`);
-    await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
   /**
@@ -267,7 +263,7 @@ class TokensTab extends HomePage {
     );
     await this.driver.waitForSelector({
       css: this.lowValueAssetsToggle,
-      text: `Low value tokens (${expectedCount})`,
+      text: `Low balance tokens (${expectedCount})`,
     });
   }
 
@@ -860,11 +856,10 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(
       this.tokenManagementCustomTokenSuccessToast,
     );
-    await this.returnFromTokenManagementToHome();
-    await this.driver.assertElementNotPresent(
-      this.tokenManagementCustomTokenSuccessToast,
-      { findElementGuard: this.tokenListItem },
+    await this.driver.clickElementAndWaitToDisappear(
+      this.tokenManagementCustomTokenSuccessToastClose,
     );
+    await this.returnFromTokenManagementToHome();
   }
 
   /**
