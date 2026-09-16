@@ -1,15 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssetType } from '@metamask/bridge-controller';
 import { EthScope, SolScope } from '@metamask/keyring-api';
+import { waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { apiClient } from '../../../helpers/api-client';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from './useCurrentPrice';
 
+jest.mock('../../../helpers/api-client', () => ({
+  apiClient: {
+    prices: {
+      getV3SpotPricesQueryOptions: jest.fn(),
+    },
+  },
+}));
+
+const mockGetV3SpotPricesQueryOptions = jest.mocked(
+  apiClient.prices.getV3SpotPricesQueryOptions,
+);
+const mockSpotPricesFetch = jest.fn();
+
 describe('useCurrentPrice', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockSpotPricesFetch.mockResolvedValue({});
+    mockGetV3SpotPricesQueryOptions.mockImplementation(
+      (assetIds, queryOptions) => ({
+        queryKey: ['prices', 'v3SpotPrices', assetIds, queryOptions],
+        queryFn: mockSpotPricesFetch,
+      }),
+    );
+  });
+
   const mockBaseState = {
     metamask: {
       isUnlocked: true,
       completedOnboarding: true,
+      currentCurrency: 'usd',
       selectedNetworkClientId: 'selectedNetworkClientId',
       networkConfigurationsByChainId: {
         '0x1': {
@@ -128,23 +155,49 @@ describe('useCurrentPrice', () => {
       expect(result.current.currentPrice).toBe(0.9998967852645477);
     });
 
-    it('returns undefined if market data is missing', () => {
+    it('fetches the spot price when market data is missing', async () => {
+      const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+      const assetId = `eip155:1/erc20:${address}`;
       const tokenAssetMissingMarket: Asset = {
         chainId: '0x1',
         type: AssetType.token,
-        address: '0xMissingTokenAddress', // An address not in marketData
+        address,
         symbol: 'MISS',
         decimals: 18,
         name: 'Missing Token',
         image: '',
       };
 
+      mockSpotPricesFetch.mockResolvedValue({ [assetId]: { price: 1.23 } });
+
       const { result } = renderHookWithProvider(
         () => useCurrentPrice(tokenAssetMissingMarket),
         mockStateIsEvm,
       );
 
-      expect(result.current.currentPrice).toBeUndefined();
+      await waitFor(() => {
+        expect(result.current.currentPrice).toBe(1.23);
+      });
+
+      expect(mockGetV3SpotPricesQueryOptions).toHaveBeenCalledWith([assetId], {
+        currency: 'usd',
+      });
+    });
+
+    it('does not fetch the spot price when market data is available', () => {
+      const tokenAsset: Asset = {
+        chainId: '0x1',
+        type: AssetType.token,
+        address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USD Coin',
+        image: '',
+      };
+
+      renderHookWithProvider(() => useCurrentPrice(tokenAsset), mockStateIsEvm);
+
+      expect(mockSpotPricesFetch).not.toHaveBeenCalled();
     });
 
     it('returns undefined if currency rate is missing', () => {
@@ -266,23 +319,33 @@ describe('useCurrentPrice', () => {
       expect(result.current.currentPrice).toBe(0.0000029141089909628);
     });
 
-    it('returns undefined if market data is missing', () => {
+    it('fetches the spot price when the conversion rate is missing', async () => {
+      const assetId =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:MissingTokenAddress';
       const tokenAssetMissingMarket: Asset = {
         chainId: SolScope.Mainnet as any,
         type: AssetType.token,
-        address: 'solana:MissingTokenAddress/slip44:501',
+        address: assetId,
         symbol: 'MISS',
         decimals: 6,
         name: 'Missing Token',
         image: '',
       };
 
+      mockSpotPricesFetch.mockResolvedValue({ [assetId]: { price: 0.42 } });
+
       const { result } = renderHookWithProvider(
         () => useCurrentPrice(tokenAssetMissingMarket),
         mockStateIsNonEvm,
       );
 
-      expect(result.current.currentPrice).toBeUndefined();
+      await waitFor(() => {
+        expect(result.current.currentPrice).toBe(0.42);
+      });
+
+      expect(mockGetV3SpotPricesQueryOptions).toHaveBeenCalledWith([assetId], {
+        currency: 'usd',
+      });
     });
   });
 });

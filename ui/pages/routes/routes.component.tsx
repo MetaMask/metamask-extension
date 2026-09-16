@@ -80,6 +80,7 @@ import {
   PERPS_HOME_PAGE_ROUTE,
   MONEY_HOME_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
@@ -123,6 +124,7 @@ import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
+import { BasicFunctionalityMigrationModal } from '../../components/app/basic-functionality-migration-modal';
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
 import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
@@ -136,6 +138,7 @@ import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccoun
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
 import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
+import { useBasicFunctionalityConsolidation } from '../../hooks/useBasicFunctionalityConsolidation';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
@@ -158,6 +161,7 @@ import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-mes
 import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
 import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
+import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -279,6 +283,9 @@ const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
 const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
 const MoneyActivityPage = mmLazy(
   () => import('../money/money-activity-page.tsx'),
+);
+const MoneyHowItWorksPage = mmLazy(
+  () => import('../money/money-how-it-works-page.tsx'),
 );
 const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
@@ -604,16 +611,21 @@ export const routeConfig = [
             element: <DeFiPage />,
           },
           {
-            path: RAMPS_BUILD_QUOTE_ROUTE,
-            element: <RampsBuildQuote />,
-          },
-          {
-            path: RAMPS_TOKEN_SELECTION_ROUTE,
-            element: <RampsTokenSelection />,
-          },
-          {
-            path: RAMPS_PAYMENT_METHOD_ROUTE,
-            element: <RampsPaymentMethod />,
+            element: <RampsFlowLayout />,
+            children: [
+              {
+                path: RAMPS_BUILD_QUOTE_ROUTE,
+                element: <RampsBuildQuote />,
+              },
+              {
+                path: RAMPS_TOKEN_SELECTION_ROUTE,
+                element: <RampsTokenSelection />,
+              },
+              {
+                path: RAMPS_PAYMENT_METHOD_ROUTE,
+                element: <RampsPaymentMethod />,
+              },
+            ],
           },
           {
             path: RAMPS_COMPLETE_BUY_ROUTE,
@@ -677,6 +689,11 @@ export const routeConfig = [
             path: MONEY_ACTIVITY_ROUTE,
             capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
             element: <MoneyActivityPage />,
+          }),
+          createRouteWithMessenger({
+            path: MONEY_HOW_IT_WORKS_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyHowItWorksPage />,
           }),
           createRouteWithMessenger({
             path: MONEY_TRANSACTION_DETAILS_ROUTE,
@@ -756,6 +773,7 @@ export default function Routes() {
   useCloseSidePanelOnWalletReset();
 
   useNavigateRouteListener();
+  useBasicFunctionalityConsolidation();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
@@ -883,6 +901,7 @@ export default function Routes() {
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}
       {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
+      {isUnlocked ? <BasicFunctionalityMigrationModal /> : null}
       {isDeprecatedNetworkModalOpen ? (
         <DeprecatedNetworkModal
           onClose={() => dispatch(hideDeprecatedNetworkModal())}

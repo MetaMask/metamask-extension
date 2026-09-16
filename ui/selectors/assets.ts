@@ -66,7 +66,11 @@ import {
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
-import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
+import {
+  isEvmChainId,
+  isNativeCaipAssetId,
+  toAssetId,
+} from '../../shared/lib/asset-utils';
 import type { ResolvedAssetRoute } from '../../shared/lib/asset-route';
 import { isEmptyHexString } from '../../shared/lib/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
@@ -479,8 +483,8 @@ export const getMultiChainAssets = createSelector(
 
     const allAssets: TokenWithFiatAmount[] = [];
     assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
-      const isNative = assetNamespace === 'slip44';
+      const { chainId } = parseCaipAssetType(assetId);
+      const isNative = isNativeCaipAssetId(assetId);
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate;
 
@@ -718,8 +722,10 @@ export const getMultichainNativeAssetType = createSelector(
   (selectedAccount, accountAssets, currentNetwork) => {
     const assetTypes = accountAssets?.[selectedAccount.id] || [];
     const nativeAssetType = assetTypes.find((assetType) => {
-      const { chainId, assetNamespace } = parseCaipAssetType(assetType);
-      return chainId === currentNetwork.chainId && assetNamespace === 'slip44';
+      const { chainId } = parseCaipAssetType(assetType);
+      return (
+        chainId === currentNetwork.chainId && isNativeCaipAssetId(assetType)
+      );
     });
 
     return nativeAssetType;
@@ -1824,7 +1830,6 @@ export const getFungibleAssetForRoute = (
     try {
       const assetsByGroup = getAssetsBySelectedAccountGroup(state);
       const chainIdsToTry = getChainIdsForAssetRouteLookup(chainId, assetId);
-      const { assetNamespace } = parseCaipAssetType(assetId);
 
       for (const id of chainIdsToTry) {
         const match = assetsByGroup[id as string]?.find((item) =>
@@ -1835,7 +1840,7 @@ export const getFungibleAssetForRoute = (
         }
       }
 
-      if (assetNamespace === 'slip44') {
+      if (isNativeCaipAssetId(assetId)) {
         for (const id of chainIdsToTry) {
           const nativeAsset = assetsByGroup[id as string]?.find(
             (item) => item.isNative,
@@ -1855,7 +1860,7 @@ export const getFungibleAssetForRoute = (
       }
 
       // Native assets may be keyed by zero address while the route uses slip44.
-      if (assetNamespace === 'slip44') {
+      if (isNativeCaipAssetId(assetId)) {
         const nativeFlatMatch = Object.values(assetsByGroup)
           .flat()
           .find(

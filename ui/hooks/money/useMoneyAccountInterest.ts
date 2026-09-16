@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@metamask/react-data-query';
@@ -9,6 +9,10 @@ import type {
 } from '@metamask/money-account-api-data-service';
 import { MoneyAccountApiDataServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { selectMoneyAccountVaultConfig } from '../../selectors/money/money-account-feature-flags';
+import {
+  clearReportedMoneyQueryError,
+  reportMoneyQueryErrorOnce,
+} from '../../helpers/money/report-money-error';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 
 const LAST_30_DAYS_WINDOW: InterestWindow = '30d';
@@ -77,6 +81,32 @@ export function useMoneyAccountInterest({
     ],
     enabled: isEnabled,
   });
+
+  useEffect(() => {
+    if (!last30DaysQuery.isError) {
+      clearReportedMoneyQueryError('interest:30d');
+      return;
+    }
+    reportMoneyQueryErrorOnce(
+      `interest:${LAST_30_DAYS_WINDOW}`,
+      '[Money Account] Interest fetch failed',
+      last30DaysQuery.error,
+      { window: LAST_30_DAYS_WINDOW },
+    );
+  }, [last30DaysQuery.error, last30DaysQuery.isError]);
+
+  useEffect(() => {
+    if (!sinceInceptionQuery.isError) {
+      clearReportedMoneyQueryError('interest:since_inception');
+      return;
+    }
+    reportMoneyQueryErrorOnce(
+      `interest:${SINCE_INCEPTION_WINDOW}`,
+      '[Money Account] Interest fetch failed',
+      sinceInceptionQuery.error,
+      { window: SINCE_INCEPTION_WINDOW },
+    );
+  }, [sinceInceptionQuery.error, sinceInceptionQuery.isError]);
 
   return { last30DaysQuery, sinceInceptionQuery };
 }

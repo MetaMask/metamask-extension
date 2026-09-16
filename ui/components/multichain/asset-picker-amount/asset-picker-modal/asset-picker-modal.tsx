@@ -153,9 +153,14 @@ export function AssetPickerModal({
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
   const isEvm = useMultichainSelector(getMultichainIsEvm);
 
-  useEffect(() => {
+  const selectedNetworkChainId = selectedNetwork?.chainId;
+  const [prevSelectedNetworkChainId, setPrevSelectedNetworkChainId] = useState(
+    selectedNetworkChainId,
+  );
+  if (selectedNetworkChainId !== prevSelectedNetworkChainId) {
+    setPrevSelectedNetworkChainId(selectedNetworkChainId);
     setSearchQuery('');
-  }, [selectedNetwork?.chainId]);
+  }
 
   const nativeCurrencyImage = useMultichainSelector(getMultichainCurrencyImage);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);

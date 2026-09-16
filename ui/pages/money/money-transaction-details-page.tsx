@@ -1,10 +1,13 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import BigNumber from 'bignumber.js';
 import {
-  AvatarToken,
-  AvatarTokenSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -31,20 +34,31 @@ import {
   MONEY_ACTIVITY_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import { PopoverPosition } from '../../components/component-library';
+import { InfoPopover } from '../../components/app/musd/info-popover';
+import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../shared/lib/money/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
+import { useFormatters } from '../../hooks/useFormatters';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
+import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { getInternalAccountByAddress } from '../../selectors/accounts';
+import {
+  selectTransactionById,
+  type TransactionState,
+} from '../../selectors/transactionController';
+import { TokenIcon } from '../../components/app/token-icon';
+import { isAccountsApiActivityId, onchainItem } from './types/money-activity';
 import {
   getMoneyActivityDisplayInfo,
   type MoneyActivityTranslate,
 } from './utils/money-activity-display';
 import {
   formatMoneyActivityDetailsDate,
+  getMoneyActivityAsset,
   getMoneyActivityErrorMessage,
   getMoneyActivityExplorerUrl,
   getMoneyActivityPaidWith,
@@ -52,11 +66,11 @@ import {
   shortenMoneyActivityHex,
 } from './utils/money-transaction-details-display';
 import { getMoneyActivityStatus } from './utils/classify-money-activity';
+import { isVisibleMoneyActivityTransaction } from './utils/money-account-transactions';
+import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
+import { MoneyApiActivityDetails } from './components/money-api-activity-details';
 import { MoneyTransactionDetailsRow } from './components/money-transaction-details-row';
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
-
-const USDC_TOKEN_IMAGE = './images/icon-usdc.png';
-const ZERO_USD = moneyFormatUsd(new BigNumber(0));
 
 const STATUS_I18N_KEY = {
   confirmed: 'confirmed',
@@ -70,29 +84,20 @@ const STATUS_COLOR = {
   failed: TextColor.ErrorDefault,
 } as const;
 
-/**
- * Money Home, Activity, and details share RootLayout's overflow container,
- * so list scroll would otherwise carry over when opening a row.
- *
- * @param element - A node on the details page.
- */
-function resetOverflowAncestorScroll(element: HTMLElement | null): void {
-  let node = element;
-  while (node) {
-    node.scrollTop = 0;
-    node = node.parentElement;
-  }
-}
-
 export function MoneyTransactionDetailsPage() {
   const t = useI18nContext() as MoneyActivityTranslate;
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const navigate = useNavigate();
   const { transactionId } = useParams<{ transactionId: string }>();
   const privacyMode = useSelector(getPrivacyMode);
   const detailsEnabled = useSelector(selectMoneyActivityDetailsEnabled);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const { items } = useMoneyActivityItems();
+  const { items, isSettling, hasMore, loadMore, isLoadingMore } =
+    useMoneyActivityItems();
+  const controllerTx = useSelector((state: TransactionState) =>
+    selectTransactionById(state, transactionId),
+  );
   const pageRef = useRef<HTMLDivElement>(null);
   // useCopyToClipboard analysis: Copies a public transaction hash
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -101,25 +106,80 @@ export function MoneyTransactionDetailsPage() {
     resetOverflowAncestorScroll(pageRef.current);
   }, [transactionId]);
 
-  const item = useMemo(
-    () => items.find((candidate) => candidate.id === transactionId),
-    [items, transactionId],
-  );
-  const fromAddress = item?.tx.txParams.from;
+  const item = useMemo(() => {
+    const listItem = items.find((candidate) => candidate.id === transactionId);
+    if (listItem) {
+      return listItem;
+    }
+    // Accounts API ids never exist on TransactionController; skip the
+    // on-chain fallback so a missing API row can keep paging instead.
+    if (!controllerTx || isAccountsApiActivityId(transactionId)) {
+      return undefined;
+    }
+    const moneyAddress = availability.isAvailable
+      ? availability.address
+      : undefined;
+    return isVisibleMoneyActivityTransaction(controllerTx, moneyAddress)
+      ? onchainItem(controllerTx)
+      : undefined;
+  }, [availability, controllerTx, items, transactionId]);
+
+  const isLookingUpApiItem =
+    isAccountsApiActivityId(transactionId) && item === undefined;
+
+  useEffect(() => {
+    if (isLookingUpApiItem && hasMore && !isLoadingMore && !isSettling) {
+      loadMore();
+    }
+  }, [hasMore, isLoadingMore, isLookingUpApiItem, isSettling, loadMore]);
+
+  const isResolvingItem =
+    item === undefined &&
+    (isSettling || isLoadingMore || (isLookingUpApiItem && hasMore));
+
+  const fromAddress =
+    item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
+  const onchainTx = item?.kind === 'onchain' ? item.tx : undefined;
+  const { feeUsd, totalUsd, isNetworkFeePaidByMetaMask } =
+    useMoneyTransactionFee(onchainTx);
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
 
-  const explorerUrl = item
-    ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
-    : undefined;
+  const explorerUrl =
+    item?.kind === 'onchain'
+      ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
+      : undefined;
 
   const handleBack = useCallback(() => {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
+  const formattedFee =
+    feeUsd === undefined
+      ? '-'
+      : formatCurrencyWithMinThreshold(feeUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
+  const formattedTotal =
+    totalUsd === undefined
+      ? '-'
+      : formatCurrencyWithMinThreshold(totalUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
+  const isFullySponsoredFee =
+    isNetworkFeePaidByMetaMask && feeUsd !== undefined && feeUsd === 0;
+  // `networkFeeFiat` is Pay source-network gas. Cross-chain deposits keep that
+  // user-paid; only claim sponsorship in the tooltip when it is absent/zero.
+  const recordedSourceNetworkFee = onchainTx?.metamaskPay?.networkFeeFiat;
+  const hasUserPaidSourceNetworkFee = Boolean(
+    recordedSourceNetworkFee !== undefined &&
+    recordedSourceNetworkFee.trim() !== '' &&
+    Number(recordedSourceNetworkFee) > 0,
+  );
+  const showSponsoredNetworkFeeInTooltip =
+    isNetworkFeePaidByMetaMask &&
+    !hasUserPaidSourceNetworkFee &&
+    feeUsd !== undefined &&
+    feeUsd > 0;
 
   let body: React.ReactNode;
-  if (isAvailabilityLoading) {
+  if (isAvailabilityLoading || isResolvingItem) {
     body = (
       <div
         className="flex min-h-full flex-col gap-4 bg-background-default p-4"
@@ -134,10 +194,19 @@ export function MoneyTransactionDetailsPage() {
     body = <Navigate to={DEFAULT_ROUTE} replace />;
   } else if (!detailsEnabled || !item) {
     body = <Navigate to={MONEY_ACTIVITY_ROUTE} replace />;
+  } else if (item.kind === 'accountsApi') {
+    body = (
+      <MoneyApiActivityDetails
+        activity={item.tx}
+        privacyMode={privacyMode}
+        onBack={handleBack}
+      />
+    );
   } else {
     const { tx } = item;
     const display = getMoneyActivityDisplayInfo(tx, t);
     const hero = getMoneyTransactionDetailsHeroAmount(tx);
+    const asset = getMoneyActivityAsset(tx);
     const status = getMoneyActivityStatus(tx);
     const errorMessage = getMoneyActivityErrorMessage(tx);
     const paidWith = getMoneyActivityPaidWith(tx);
@@ -181,10 +250,11 @@ export function MoneyTransactionDetailsPage() {
           paddingBottom={6}
           gap={3}
         >
-          <AvatarToken
-            name="USDC"
-            src={USDC_TOKEN_IMAGE}
-            size={AvatarTokenSize.Xl}
+          <TokenIcon
+            chainId={asset.chainId}
+            tokenAddress={asset.tokenAddress}
+            symbol={asset.symbol}
+            size="xl"
           />
           <SensitiveText
             variant={TextVariant.DisplayMd}
@@ -274,23 +344,55 @@ export function MoneyTransactionDetailsPage() {
           <MoneyTransactionDetailsRow
             label={t('transactionFee')}
             labelEnd={
-              <Icon
-                name={IconName.Info}
-                size={IconSize.Sm}
-                color={IconColor.IconAlternative}
-                aria-hidden
-              />
+              <InfoPopover
+                position={PopoverPosition.BottomStart}
+                iconColor={IconColor.IconAlternative}
+                wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
+                ariaLabel={t('transactionFee')}
+                data-testid="money-transaction-details-fee-info"
+              >
+                <Text variant={TextVariant.BodyMd}>
+                  {t('moneyActivityTransactionFeeTooltip')}
+                  {showSponsoredNetworkFeeInTooltip ? (
+                    <>
+                      <br />
+                      {`${t('networkFee')}: ${t('paidByMetaMask')}`}
+                    </>
+                  ) : null}
+                </Text>
+              </InfoPopover>
             }
             testId="money-transaction-details-fee"
             value={
-              <SensitiveText
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                isHidden={privacyMode}
-                length={SensitiveTextLength.Short}
-              >
-                {ZERO_USD}
-              </SensitiveText>
+              isFullySponsoredFee ? (
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                  data-testid="money-transaction-details-fee-sponsored"
+                >
+                  <Icon
+                    name={IconName.Check}
+                    size={IconSize.Sm}
+                    color={IconColor.SuccessDefault}
+                  />
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.SuccessDefault}
+                  >
+                    {t('paidByMetaMask')}
+                  </Text>
+                </Box>
+              ) : (
+                <SensitiveText
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
+                >
+                  {formattedFee}
+                </SensitiveText>
+              )
             }
           />
           <MoneyTransactionDetailsRow
@@ -303,7 +405,7 @@ export function MoneyTransactionDetailsPage() {
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {ZERO_USD}
+                {formattedTotal}
               </SensitiveText>
             }
           />
