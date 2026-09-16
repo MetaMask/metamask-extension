@@ -70,8 +70,8 @@ export const AccountList = () => {
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
-  // Counts are only needed at the moment the manage view is opened, so the
-  // store is read then rather than subscribed to for a metrics property.
+  // The metrics counts below are read from the store at click time so they
+  // reflect the moment the manage view opened. They are not used during render.
   const store = useStore<MultichainAccountsState>();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -143,8 +143,9 @@ export const AccountList = () => {
   const handleEnterEditMode = useCallback(() => {
     setIsEditMode(true);
 
-    // Counts come from the full account tree, so they are unaffected by an
-    // active search filtering the rendered list.
+    // The stats walk the whole account tree, which is what the event's counts
+    // are specified to mean: the whole wallet, not the subset an active search
+    // has left on screen.
     const { totalAccounts, totalWallets, hiddenCount } = getAccountListStats(
       store.getState(),
     );
