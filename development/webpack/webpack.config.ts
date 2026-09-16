@@ -323,6 +323,21 @@ const reactRefreshJsxLoader = getSwcLoader(
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
+const postcssLoader = {
+  loader: 'postcss-loader',
+  options: {
+    postcssOptions: {
+      config: false,
+      plugins: [
+        tailwindcss(),
+        autoprefixer({ overrideBrowserslist: browsersListQuery }),
+        rtlCss({ processEnv: false }),
+        discardFontFace(['woff2']), // keep woff2 fonts
+      ],
+    },
+  },
+};
+
 const isCashtagWidgetEntry = (chunk: { name?: string | null }) =>
   chunk.name === 'cashtag-widget';
 const isChunkableInitial = (chunk: Chunk) =>
@@ -525,20 +540,7 @@ const config = {
         test: cashtagPageStylesRe,
         use: [
           { loader: 'css-loader', options: { exportType: 'string' } },
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                config: false,
-                plugins: [
-                  tailwindcss(),
-                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
-                  rtlCss({ processEnv: false }),
-                  discardFontFace(['woff2']), // keep woff2 fonts
-                ],
-              },
-            },
-          },
+          postcssLoader,
         ],
       },
       // css, sass/scss
@@ -548,20 +550,7 @@ const config = {
         use: [
           // Resolves CSS `@import` and `url()` paths and loads the files.
           'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                config: false,
-                plugins: [
-                  tailwindcss(),
-                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
-                  rtlCss({ processEnv: false }),
-                  discardFontFace(['woff2']), // keep woff2 fonts
-                ],
-              },
-            },
-          },
+          postcssLoader,
           // Compiles Sass to CSS
           {
             loader: 'sass-loader',

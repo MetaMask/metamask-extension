@@ -4844,6 +4844,11 @@
         "@hello-pangea/dnd>css-box-model>tiny-invariant": true
       }
     },
+    "css-loader": {
+      "globals": {
+        "btoa": true
+      }
+    },
     "currency-formatter": {
       "packages": {
         "currency-formatter>accounting": true,

@@ -21,15 +21,15 @@ a[interestfor='mm-cashtag-popover'] {
   background: transparent;
   opacity: 0;
   transform: scale(0.92) translateY(8px);
-  transform-origin: top center;
+  transform-origin: block-start center;
   transition-property: opacity, transform, display, overlay;
   transition-duration: 180ms;
   transition-timing-function: ease-out;
   transition-behavior: allow-discrete;
 
   position-anchor: --cashtag-invoker;
-  top: anchor(bottom);
-  justify-self: anchor-center;
+  inset: auto;
+  position-area: block-end center;
   margin-block-start: 8px;
   position-try-fallbacks: flip-block;
 }
