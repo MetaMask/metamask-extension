@@ -7841,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Variation du prix"
   },
-  "perpsSortByRank": {
-    "message": "Rang"
-  },
-  "perpsSortBySection": {
-    "message": "Trier par"
-  },
   "perpsSortByTitle": {
     "message": "Filtrer"
   },
@@ -8639,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Dernière utilisation"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Échec de la récupération de la cotation."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotation non disponible."

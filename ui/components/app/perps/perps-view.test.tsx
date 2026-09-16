@@ -172,6 +172,7 @@ jest.mock('./hooks/usePerpsTabExploreData', () => ({
     watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
       ['BTC', 'ETH'].includes(market.symbol),
     ),
+    watchlistCount: 2,
     isInitialLoading: false,
   })),
 }));
@@ -284,6 +285,7 @@ describe('PerpsView', () => {
       watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
         ['BTC', 'ETH'].includes(market.symbol),
       ),
+      watchlistCount: 2,
       isInitialLoading: false,
     });
     mockGetPerpsStreamManager.mockReturnValue({
@@ -1033,12 +1035,49 @@ describe('PerpsView', () => {
     });
   });
 
+  describe('loading tree', () => {
+    const mockLoading = (watchlistCount: number) => {
+      jest.mocked(usePerpsTabExploreData).mockReturnValue({
+        allMarkets: [],
+        exploreMarkets: [],
+        watchlistMarkets: [],
+        watchlistCount,
+        isInitialLoading: true,
+        isLive: false,
+      });
+    };
+
+    it('reserves a row per starred market so Products does not jump', () => {
+      mockLoading(2);
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      // Positions, orders, the watchlist reservation and recent activity: the
+      // watchlist slot is what keeps Products where it lands once loaded.
+      expect(screen.getAllByTestId('perps-section-skeleton')).toHaveLength(4);
+      expect(
+        screen.getByTestId('perps-products-categories-skeleton'),
+      ).toBeInTheDocument();
+    });
+
+    it('reserves nothing for a user with an empty watchlist', () => {
+      mockLoading(0);
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      // No watchlist section will appear on load, so reserving a slot for it
+      // would itself be the layout jump.
+      expect(screen.getAllByTestId('perps-section-skeleton')).toHaveLength(3);
+    });
+  });
+
   it('passes tab explore and watchlist markets from the tab hook', () => {
     jest.mocked(usePerpsTabExploreData).mockReturnValue({
       isLive: true,
       allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       exploreMarkets: [mocks.mockCryptoMarkets[0]],
       watchlistMarkets: [mocks.mockCryptoMarkets[1]],
+      watchlistCount: 1,
       isInitialLoading: false,
     });
 

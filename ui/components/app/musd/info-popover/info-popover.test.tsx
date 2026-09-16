@@ -18,6 +18,25 @@ describe('InfoPopover', () => {
     expect(getByRole('button', { name: 'info' })).toBeInTheDocument();
   });
 
+  it('calls onOpen only when the popover opens', async () => {
+    const onOpen = jest.fn();
+    const { getByTestId } = render(
+      <InfoPopover data-testid="test-tooltip" onOpen={onOpen}>
+        <span>Tooltip content</span>
+      </InfoPopover>,
+    );
+
+    await act(async () => {
+      fireEvent.click(getByTestId('test-tooltip-button'));
+    });
+    expect(onOpen).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      fireEvent.click(getByTestId('test-tooltip-button'));
+    });
+    expect(onOpen).toHaveBeenCalledTimes(1);
+  });
+
   it('opens the popover when the info button is clicked', async () => {
     const { getByTestId } = render(
       <InfoPopover data-testid="test-tooltip">

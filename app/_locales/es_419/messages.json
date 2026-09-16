@@ -7851,12 +7851,6 @@
   "perpsSortByPriceChange": {
     "message": "Cambio de precio"
   },
-  "perpsSortByRank": {
-    "message": "Rango"
-  },
-  "perpsSortBySection": {
-    "message": "Ordenar por"
-  },
   "perpsSortByTitle": {
     "message": "Filtro"
   },
@@ -8653,9 +8647,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Último uso"
-  },
-  "rampsQuoteFetchError": {
-    "message": "No se pudo obtener la cotización."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotización no disponible."
