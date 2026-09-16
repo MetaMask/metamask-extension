@@ -179,7 +179,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 227,
+      "currentMigrationVersion": 228,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -405,8 +405,7 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": []
+      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -1289,6 +1288,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 227
+    "version": 228
   }
 }

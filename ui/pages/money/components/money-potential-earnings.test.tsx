@@ -31,8 +31,8 @@ const createToken = (
 });
 
 describe('MoneyPotentialEarnings', () => {
-  it('renders the section without token rows when there are no eligible tokens', () => {
-    renderWithLocalization(
+  it('renders nothing when there are no eligible tokens', () => {
+    const { container } = renderWithLocalization(
       <MoneyPotentialEarnings
         tokens={[]}
         apyDecimal={0.04}
@@ -42,15 +42,32 @@ describe('MoneyPotentialEarnings', () => {
       />,
     );
 
-    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
     expect(
-      screen.getByText(messages.moneyEarnOnCrypto.message),
-    ).toBeInTheDocument();
+      screen.queryByTestId('money-potential-earnings'),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByText(messages.moneyEarnOnCryptoDescription.message),
-    ).toBeInTheDocument();
+      screen.queryByText(messages.moneyEarnOnCrypto.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders nothing when all tokens have zero fiat balance', () => {
+    const { container } = renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[
+          createToken(1, { moneyFiatAmountUsd: 0 }),
+          createToken(2, { moneyFiatAmountUsd: 0 }),
+        ]}
+        apyDecimal={0.04}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
     expect(
-      screen.queryByTestId('money-potential-earnings-token-row'),
+      screen.queryByTestId('money-potential-earnings'),
     ).not.toBeInTheDocument();
   });
 
@@ -169,13 +186,13 @@ describe('MoneyPotentialEarnings', () => {
     ).toHaveTextContent('•'.repeat(6));
   });
 
-  it('calls onAddToken with the row token when Add is clicked', () => {
+  it('calls onAddToken with the row token, its position and the list size when Add is clicked', () => {
     const onAddToken = jest.fn();
-    const token = createToken(1);
+    const tokens = [createToken(1), createToken(2), createToken(3)];
 
     renderWithLocalization(
       <MoneyPotentialEarnings
-        tokens={[token]}
+        tokens={tokens}
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
@@ -183,9 +200,11 @@ describe('MoneyPotentialEarnings', () => {
       />,
     );
 
-    fireEvent.click(screen.getByTestId('money-potential-earnings-token-add'));
+    fireEvent.click(
+      screen.getAllByTestId('money-potential-earnings-token-add')[1],
+    );
 
-    expect(onAddToken).toHaveBeenCalledWith(token);
+    expect(onAddToken).toHaveBeenCalledWith(tokens[1], 1, 3);
   });
 
   it('disables the row Add buttons while a deposit is initiating', () => {

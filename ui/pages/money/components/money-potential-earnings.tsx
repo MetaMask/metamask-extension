@@ -30,7 +30,11 @@ type MoneyPotentialEarningsProps = {
   apyDecimal: number | undefined;
   isNoFeeToken: (token: MoneyDepositToken) => boolean;
   privacyMode: boolean;
-  onAddToken: (token: MoneyDepositToken) => void;
+  onAddToken: (
+    token: MoneyDepositToken,
+    tokenIndex: number,
+    tokenCount: number,
+  ) => void;
   isAddDisabled?: boolean;
 };
 
@@ -44,13 +48,21 @@ export function MoneyPotentialEarnings({
 }: MoneyPotentialEarningsProps) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const visibleTokens = useMemo(
-    () => tokens.slice(0, MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT),
+  const eligibleTokens = useMemo(
+    () => tokens.filter((token) => token.moneyFiatAmountUsd > 0),
     [tokens],
   );
+  const visibleTokens = useMemo(
+    () => eligibleTokens.slice(0, MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT),
+    [eligibleTokens],
+  );
   const totalAssetsFiat = useMemo(
-    () => tokens.reduce((total, token) => total + token.moneyFiatAmountUsd, 0),
-    [tokens],
+    () =>
+      eligibleTokens.reduce(
+        (total, token) => total + token.moneyFiatAmountUsd,
+        0,
+      ),
+    [eligibleTokens],
   );
   const projectedAmount = calculateMoneyProjectedEarnings(
     totalAssetsFiat,
@@ -58,6 +70,10 @@ export function MoneyPotentialEarnings({
   );
 
   const hasProjection = totalAssetsFiat > 0 && projectedAmount > 0;
+
+  if (visibleTokens.length === 0) {
+    return null;
+  }
 
   return (
     <section data-testid="money-potential-earnings">
@@ -130,19 +146,19 @@ export function MoneyPotentialEarnings({
         )}
       </Box>
 
-      {visibleTokens.map((token) => (
+      {visibleTokens.map((token, index) => (
         <MoneyPotentialEarningsTokenRow
           key={`${token.chainId}:${token.address}`}
           token={token}
           apyDecimal={apyDecimal ?? 0}
           hasNoFee={isNoFeeToken(token)}
           privacyMode={privacyMode}
-          onAddClick={onAddToken}
+          onAddClick={() => onAddToken(token, index, eligibleTokens.length)}
           isAddDisabled={isAddDisabled}
         />
       ))}
 
-      {tokens.length > MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT ? (
+      {eligibleTokens.length > MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT ? (
         <Box paddingLeft={4} paddingRight={4} paddingTop={3}>
           <Button
             variant={ButtonVariant.Secondary}

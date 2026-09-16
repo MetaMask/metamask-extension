@@ -14,6 +14,7 @@ import type { Backup } from '../shared/lib/stores/persistence-manager';
 
 type StateHooks = {
   getCustomTraces?: () => { [name: string]: number };
+  getIsIdle?: () => boolean;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getCleanAppState?: () => Promise<any>;

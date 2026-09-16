@@ -5212,7 +5212,7 @@
   },
   "lowValueAssets": {
     "message": "Токены с низкой стоимостью ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Мейн-нет Ethereum"
@@ -7841,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Изменение цены"
   },
-  "perpsSortByRank": {
-    "message": "Рейтинг"
-  },
-  "perpsSortBySection": {
-    "message": "Сортировать по"
-  },
   "perpsSortByTitle": {
     "message": "Фильтр"
   },
@@ -8639,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Использовалось последним"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Не удалось получить котировку."
   },
   "rampsQuoteUnavailable": {
     "message": "Котировка недоступна."
