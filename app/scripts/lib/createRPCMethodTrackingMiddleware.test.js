@@ -218,6 +218,15 @@ messenger.registerActionHandler(
   () => undefined,
 );
 
+messenger.registerActionHandler(
+  'SentryTracingService:trackTracesAfterMetricsOptIn',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'SentryTracingService:clearTracesAfterMetricsOptIn',
+  () => undefined,
+);
+
 messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
   isEvmSelected: true,
   selectedMultichainNetworkChainId: 'eip155:1',
