@@ -5,17 +5,13 @@ import {
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { ConfirmContextProvider } from '../../../context/confirm';
-import { DappSwapContextProvider } from '../../../context/dapp-swap';
-import { GasFeeModalContextProvider } from '../../../context/gas-fee-modal';
-import { HardwareWalletErrorProvider } from '../../../../../contexts/hardware-wallets';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';
 
 const mockState = getMockPersonalSignConfirmState();
+const mockStore = configureMockStore([])(mockState);
 
 const mockSetHasScrolledToBottom = jest.fn();
 const mockScrollTo = jest.fn();
@@ -37,29 +33,6 @@ jest.mock('../../../../../hooks/useScrollRequired', () => ({
   useScrollRequired: () => mockedUseScrollRequiredResult,
 }));
 
-const renderScrollToBottomWithProviders = (
-  children: React.ReactNode = 'foobar',
-) => {
-  const store = configureMockStore([])(mockState);
-
-  const ui = (
-    <HardwareWalletErrorProvider>
-      <ConfirmContextProvider>
-        <DappSwapContextProvider>
-          <GasFeeModalContextProvider>
-            <ScrollToBottom>{children}</ScrollToBottom>
-          </GasFeeModalContextProvider>
-        </DappSwapContextProvider>
-      </ConfirmContextProvider>
-    </HardwareWalletErrorProvider>
-  );
-
-  return {
-    store,
-    ...renderWithProvider(ui, store),
-  };
-};
-
 describe('ScrollToBottom', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -72,7 +45,7 @@ describe('ScrollToBottom', () => {
           <div>foo</div>
           <div>bar</div>
         </ScrollToBottom>,
-        configureMockStore([])(mockState),
+        mockStore,
       );
 
       expect(getByText('foo')).toBeInTheDocument();
@@ -94,7 +67,7 @@ describe('ScrollToBottom', () => {
             <div>bar</div>
           </ScrollToBottom>
         </div>,
-        configureMockStore([])(mockState),
+        mockStore,
       );
 
       expect(getByText('foo')).toBeInTheDocument();
@@ -105,21 +78,14 @@ describe('ScrollToBottom', () => {
     it('does not scroll to the top while the confirmation id does not change', () => {
       mockScrollTo.mockClear();
 
-      const { rerender } = renderScrollToBottomWithProviders('foobar');
+      const { rerender } = renderWithConfirmContextProvider(
+        <ScrollToBottom>foobar</ScrollToBottom>,
+        mockStore,
+      );
 
       mockScrollTo.mockClear();
 
-      rerender(
-        <HardwareWalletErrorProvider>
-          <ConfirmContextProvider>
-            <DappSwapContextProvider>
-              <GasFeeModalContextProvider>
-                <ScrollToBottom>foobar</ScrollToBottom>
-              </GasFeeModalContextProvider>
-            </DappSwapContextProvider>
-          </ConfirmContextProvider>
-        </HardwareWalletErrorProvider>,
-      );
+      rerender(<ScrollToBottom>foobar</ScrollToBottom>);
 
       expect(mockScrollTo).not.toHaveBeenCalled();
     });
@@ -129,7 +95,7 @@ describe('ScrollToBottom', () => {
 
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
-        configureMockStore([])(mockState),
+        mockStore,
       );
 
       expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
@@ -138,7 +104,7 @@ describe('ScrollToBottom', () => {
     it('resets setHasScrolledToBottom to false when the confirmation changes', () => {
       renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
-        configureMockStore([])(mockState),
+        mockStore,
       );
 
       expect(mockSetHasScrolledToBottom).toHaveBeenCalledWith(false);
@@ -163,7 +129,7 @@ describe('ScrollToBottom', () => {
       it('hides the button', () => {
         const { container } = renderWithConfirmContextProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
-          configureMockStore([])(mockState),
+          mockStore,
         );
 
         expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();

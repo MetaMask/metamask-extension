@@ -67,6 +67,9 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       return;
     }
 
+    // Mark this confirmation as handled before checking scrollEl so a remount
+    // without scrollElement still advances the ref and does not scroll again when
+    // scrollElement becomes available on a later effect run.
     previousConfirmationIdRef.current = confirmationId;
 
     const scrollEl = scrollElement as HTMLDivElement | null;

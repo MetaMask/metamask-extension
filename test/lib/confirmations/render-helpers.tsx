@@ -11,6 +11,7 @@ import {
 } from '../../../ui/pages/confirmations/context/confirm';
 import { DappSwapContextProvider } from '../../../ui/pages/confirmations/context/dapp-swap';
 import {
+  createProviderWrapper,
   I18nProvider,
   en,
   renderHookWithProvider,
@@ -27,19 +28,33 @@ export function renderWithConfirmContextProvider(
   confirmationId?: string,
   getMockTrackEvent?: () => jest.Mock,
 ) {
-  return renderWithProvider(
+  const ConfirmContextContainer = ({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) => (
     <HardwareWalletErrorProvider>
       <ConfirmContextProvider confirmationId={confirmationId}>
         <DappSwapContextProvider>
-          <GasFeeModalContextProvider>{component}</GasFeeModalContextProvider>
+          <GasFeeModalContextProvider>{children}</GasFeeModalContextProvider>
         </DappSwapContextProvider>
       </ConfirmContextProvider>
-    </HardwareWalletErrorProvider>,
+    </HardwareWalletErrorProvider>
+  );
+
+  const ProviderWrapper = createProviderWrapper(
     store,
     pathname,
-    render,
-    getMockTrackEvent,
+    getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
   );
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <ProviderWrapper>
+      <ConfirmContextContainer>{children}</ConfirmContextContainer>
+    </ProviderWrapper>
+  );
+
+  return render(component, { wrapper });
 }
 
 function renderWithContext(
