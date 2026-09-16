@@ -62,7 +62,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
-          await transactionConfirmation.clickFooterConfirmButton();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
         },
       );
     });
@@ -93,7 +95,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
-          await transactionConfirmation.clickFooterConfirmButton();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
         },
       );
     });
@@ -139,7 +143,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
-          await transactionConfirmation.clickFooterConfirmButton();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
 
           // Assert transaction is completed
           await driver.switchToWindowWithTitle(
@@ -226,7 +232,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
-          await transactionConfirmation.clickFooterConfirmButton();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
         },
       );
     });
@@ -258,7 +266,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickAdvancedDetailsButton();
           await transactionConfirmation.setCustomNonce('10');
-          await transactionConfirmation.clickFooterConfirmButton();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
         },
       );
     });

@@ -5212,7 +5212,7 @@
   },
   "lowValueAssets": {
     "message": "Tokens χαμηλής αξίας ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -8633,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Τελευταία χρήση"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Αποτυχία λήψης προσφοράς."
   },
   "rampsQuoteUnavailable": {
     "message": "Δεν υπάρχει διαθέσιμη προσφορά."

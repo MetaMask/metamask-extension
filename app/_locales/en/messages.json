@@ -5345,8 +5345,8 @@
     "message": "low"
   },
   "lowValueAssets": {
-    "message": "Low value tokens ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "message": "Low balance tokens ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -5581,8 +5581,23 @@
   "moneyActivityDepositing": {
     "message": "Depositing"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "Paid to"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "Received from"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "Transaction ID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "You earned"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "You spent"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "You were refunded"
   },
   "moneyActivityEmpty": {
     "message": "No activity yet"
@@ -8761,6 +8776,10 @@
   "rampsChangeProvider": {
     "message": "Change provider."
   },
+  "rampsChangeProviders": {
+    "message": "change providers",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Choose provider"
   },
@@ -8933,7 +8952,7 @@
     "message": "Last used"
   },
   "rampsQuoteFetchError": {
-    "message": "Failed to fetch quote."
+    "message": "Error getting quotes. Enter a lower amount or"
   },
   "rampsQuoteUnavailable": {
     "message": "Quote unavailable."
@@ -8949,6 +8968,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Show all tokens"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "This token isn't available in your region.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token unavailable",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Buying crypto isn’t supported in your region yet."

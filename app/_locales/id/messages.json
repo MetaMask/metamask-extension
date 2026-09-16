@@ -5216,7 +5216,7 @@
   },
   "lowValueAssets": {
     "message": "Token bernilai rendah ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Mainnet Ethereum"
@@ -8641,9 +8641,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Terakhir digunakan"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Gagal mengambil kuotasi."
   },
   "rampsQuoteUnavailable": {
     "message": "Kuotasi tidak tersedia."

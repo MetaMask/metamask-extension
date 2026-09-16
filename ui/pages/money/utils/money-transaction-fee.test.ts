@@ -7,6 +7,7 @@ import {
   getMoneyPayFeeUsd,
   getMoneyTransactionFeeUsd,
   getMoneyTransactionTotalUsd,
+  isMoneyNetworkFeePaidByMetaMask,
 } from './money-transaction-fee';
 
 function createTransaction(
@@ -144,6 +145,61 @@ describe('getMoneyTransactionFeeUsd', () => {
     });
 
     expect(getMoneyTransactionFeeUsd(tx, 2000)).toBe(0.88);
+  });
+
+  it('keeps recorded source network fee when the parent tx is gas-sponsored', () => {
+    const tx = createTransaction({
+      isGasFeeSponsored: true,
+      metamaskPay: {
+        networkFeeFiat: '0.12',
+        bridgeFeeFiat: '0.04',
+      },
+    });
+
+    expect(getMoneyTransactionFeeUsd(tx, 2000)).toBe(0.16);
+  });
+
+  it('does not fall back to receipt gas when the network fee is sponsored', () => {
+    const tx = createTransaction({
+      isGasFeeSponsored: true,
+      metamaskPay: {
+        bridgeFeeFiat: '0.14',
+      },
+      txReceipt: {
+        gasUsed: '0x5208',
+        effectiveGasPrice: '0x4a817c800',
+      },
+    });
+
+    expect(getMoneyTransactionFeeUsd(tx, 2000)).toBe(0.14);
+  });
+
+  it('returns zero when sponsored with zero source and provider fees', () => {
+    const tx = createTransaction({
+      isGasFeeSponsored: true,
+      metamaskPay: {
+        networkFeeFiat: '0',
+        bridgeFeeFiat: '0',
+      },
+      txReceipt: {
+        gasUsed: '0x5208',
+        effectiveGasPrice: '0x4a817c800',
+      },
+    });
+
+    expect(getMoneyTransactionFeeUsd(tx, 2000)).toBe(0);
+  });
+});
+
+describe('isMoneyNetworkFeePaidByMetaMask', () => {
+  it('returns true when the transaction is gas-fee sponsored', () => {
+    const tx = createTransaction({ isGasFeeSponsored: true });
+    expect(isMoneyNetworkFeePaidByMetaMask(tx)).toBe(true);
+  });
+
+  it('returns false when the transaction is not gas-fee sponsored', () => {
+    const tx = createTransaction({ isGasFeeSponsored: false });
+    expect(isMoneyNetworkFeePaidByMetaMask(tx)).toBe(false);
   });
 });
 
