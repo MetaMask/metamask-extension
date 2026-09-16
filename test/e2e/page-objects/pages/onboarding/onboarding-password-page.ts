@@ -106,6 +106,10 @@ class OnboardingPasswordPage {
     await this.driver.fill(this.confirmPasswordInput, confirmPassword);
     await this.driver.clickElement(this.passwordTerms);
   }
+
+  async isPageLoaded(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(this.page, 200);
+  }
 }
 
 export default OnboardingPasswordPage;
