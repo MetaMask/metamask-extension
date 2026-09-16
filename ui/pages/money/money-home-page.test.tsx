@@ -6,6 +6,7 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   MONEY_ACTIVITY_ROUTE,
   MONEY_EARN_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
 } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
@@ -75,6 +76,20 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  // Keep Link as a plain anchor so it does not depend on router context
+  // from a second react-router-dom instance created by requireActual.
+  Link: ({
+    to,
+    children,
+    ...props
+  }: {
+    to: string;
+    children?: React.ReactNode;
+  } & React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a href={to} {...props}>
+      {children}
+    </a>
+  ),
 }));
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
@@ -263,6 +278,18 @@ describe('MoneyHomePage', () => {
         expect(button).toBeDisabled();
       }
     });
+    expect(
+      screen.getByRole('link', { name: messages.moneyHowItWorks.message }),
+    ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
+  });
+
+  it('links to How it works from the empty-state section header', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-how-it-works-header')).toHaveAttribute(
+      'href',
+      MONEY_HOW_IT_WORKS_ROUTE,
+    );
   });
 
   it('opens the Money landing page from Learn more', () => {
@@ -520,10 +547,10 @@ describe('MoneyHomePage', () => {
       }),
     ).toHaveAttribute('href', 'https://metamask.io/money?utm_source=extension');
     expect(
-      screen.queryByRole('link', {
+      screen.getByRole('link', {
         name: messages.moneyHowYourMoneyGrows.message,
       }),
-    ).not.toBeInTheDocument();
+    ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
     screen.getAllByRole('button').forEach((button) => {
       if (
         [
@@ -539,6 +566,25 @@ describe('MoneyHomePage', () => {
         expect(button).toBeDisabled();
       }
     });
+  });
+
+  it('links How your money grows to How it works', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByTestId('money-condensed-info-card-growth'),
+    ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
   });
 
   it('opens the mUSD price page from Meet mUSD', () => {
