@@ -53,12 +53,19 @@ jobs:
       - name: Build main
         shell: bash
         run: bash "${GITHUB_WORKSPACE}/.github/scripts/package-firefox-reviewer-artifacts.sh" main
-      - name: Capture failed build
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v6
+      - name: Get runtime hash
+        id: get_hash
+        run: |
+          runtime_hash="$(find ./dist/firefox/ -name "runtime.*" | cut -d . -f 3)"
+          echo "runtime_hash=${runtime_hash}" >> "${GITHUB_OUTPUT}"
+      - name: Upload artifact 'main-${{ matrix.iteration }}-${{ steps.get_hash.outputs.runtime_hash }}'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: failed-build-main-${{ matrix.iteration }}
-          path: /tmp/test-bundle-script/firefox-bundle-script/output
+          name: main-${{ matrix.iteration }}-${{ steps.get_hash.outputs.runtime_hash }}
+          path: |
+            builds
+            dist
+          retention-days: 1
 
   build-flask-mv2-webpack:
     strategy:
@@ -89,9 +96,16 @@ jobs:
       - name: Build flask
         shell: bash
         run: bash "${GITHUB_WORKSPACE}/.github/scripts/package-firefox-reviewer-artifacts.sh" flask
-      - name: Capture failed build
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v6
+      - name: Get runtime hash
+        id: get_hash
+        run: |
+          runtime_hash="$(find ./dist/firefox/ -name "runtime.*" | cut -d . -f 3)"
+          echo "runtime_hash=${runtime_hash}" >> "${GITHUB_OUTPUT}"
+      - name: Upload artifact 'flask-${{ matrix.iteration }}-${{ steps.get_hash.outputs.runtime_hash }}'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: failed-build-flask-${{ matrix.iteration }}
-          path: /tmp/test-bundle-script/firefox-bundle-script/output
+          name: flask-${{ matrix.iteration }}-${{ steps.get_hash.outputs.runtime_hash }}
+          path: |
+            builds
+            dist
+          retention-days: 1
