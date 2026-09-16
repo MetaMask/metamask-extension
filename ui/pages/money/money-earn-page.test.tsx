@@ -47,17 +47,6 @@ jest.mock('../../selectors/selectors', () => ({
   getPrivacyMode: jest.fn(),
 }));
 
-jest.mock('../../hooks/useFormatters', () => ({
-  useFormatters: () => ({
-    formatCurrencyWithMinThreshold: (value: number) =>
-      new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-      }).format(value),
-  }),
-}));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Navigate: ({ to }: { to: string }) => (

@@ -5,17 +5,6 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
 import { MoneyPotentialEarnings } from './money-potential-earnings';
 
-jest.mock('../../../hooks/useFormatters', () => ({
-  useFormatters: () => ({
-    formatCurrencyWithMinThreshold: (value: number) =>
-      new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-      }).format(value),
-  }),
-}));
-
 const createToken = (
   index: number,
   overrides: Partial<MoneyDepositToken> = {},

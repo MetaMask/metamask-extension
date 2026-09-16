@@ -12,7 +12,8 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useFormatters } from '../../../hooks/useFormatters';
+import BigNumber from 'bignumber.js';
+import { moneyFormatUsd } from '../../../helpers/money/format';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   calculateMoneyProjectedEarnings,
@@ -35,7 +36,6 @@ export function MoneyPotentialEarningsSummary({
   showInfoIcon = true,
 }: MoneyPotentialEarningsSummaryProps) {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const totalAssetsFiat = useMemo(
     () => tokens.reduce((total, token) => total + token.moneyFiatAmountUsd, 0),
     [tokens],
@@ -71,7 +71,7 @@ export function MoneyPotentialEarningsSummary({
             className="inline"
             data-testid="money-potential-earnings-total"
           >
-            {formatCurrencyWithMinThreshold(totalAssetsFiat, 'USD')}
+            {moneyFormatUsd(new BigNumber(totalAssetsFiat.toString()))}
           </SensitiveText>{' '}
           <Text
             variant={TextVariant.BodyMd}
@@ -89,7 +89,7 @@ export function MoneyPotentialEarningsSummary({
             className="inline"
             data-testid="money-potential-earnings-projection"
           >
-            {`+${formatCurrencyWithMinThreshold(projectedAmount, 'USD')}`}
+            {`+${moneyFormatUsd(new BigNumber(projectedAmount.toString()))}`}
           </SensitiveText>{' '}
           <Text
             variant={TextVariant.BodyMd}
