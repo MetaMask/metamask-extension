@@ -2157,7 +2157,6 @@
         "URL": true,
         "btoa.bind": true,
         "fetch.bind": true,
-        "process.env.IN_TEST": true,
         "setTimeout": true
       },
       "meta": {
@@ -2185,7 +2184,6 @@
         "eslint>fast-deep-equal": true,
         "immer": true,
         "lodash": true,
-        "process": true,
         "reselect": true,
         "uri-js": true,
         "uuid": true
