@@ -6246,24 +6246,14 @@ type TemporarySmartTransactionGasFees = {
 const createSignedTransactions = async (
   unsignedTransaction: Partial<TransactionParams> & { chainId: string },
   fees: TemporarySmartTransactionGasFees[],
-  areCancelTransactions?: boolean,
 ): Promise<TransactionParams[]> => {
-  const unsignedTransactionsWithFees = fees.map((fee) => {
-    const unsignedTransactionWithFees = {
-      ...unsignedTransaction,
-      maxFeePerGas: decimalToHex(fee.maxFeePerGas),
-      maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
-      gas: areCancelTransactions
-        ? decimalToHex(21000) // It has to be 21000 for cancel transactions, otherwise the API would reject it.
-        : unsignedTransaction.gas,
-      value: unsignedTransaction.value,
-    };
-    if (areCancelTransactions) {
-      unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
-      unsignedTransactionWithFees.data = '0x';
-    }
-    return unsignedTransactionWithFees;
-  });
+  const unsignedTransactionsWithFees = fees.map((fee) => ({
+    ...unsignedTransaction,
+    maxFeePerGas: decimalToHex(fee.maxFeePerGas),
+    maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
+    gas: unsignedTransaction.gas,
+    value: unsignedTransaction.value,
+  }));
   const signedTransactions = await submitRequestToBackground<
     TransactionParams[]
   >('approveTransactionsWithSameNonce', [unsignedTransactionsWithFees]);
@@ -6277,7 +6267,6 @@ export function signAndSendSmartTransaction({
   unsignedTransaction: Partial<TransactionParams> & { chainId: string };
   smartTransactionFees: {
     fees: TemporarySmartTransactionGasFees[];
-    cancelFees: TemporarySmartTransactionGasFees[];
   };
 }): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -6291,9 +6280,6 @@ export function signAndSendSmartTransaction({
         [
           {
             signedTransactions,
-            // The "signedCanceledTransactions" parameter is still expected by the STX controller but is no longer used.
-            // So we are passing an empty array. The parameter may be deprecated in a future update.
-            signedCanceledTransactions: [],
             txParams: unsignedTransaction,
           },
         ],

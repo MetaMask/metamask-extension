@@ -4058,6 +4058,90 @@ describe('Actions', () => {
     });
   });
 
+  describe('signAndSendSmartTransaction', () => {
+    it('signs and submits ordinary fee variants without changing the transaction shape', async () => {
+      const store = mockStore();
+      const unsignedTransaction = {
+        chainId: '0x1',
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x2222222222222222222222222222222222222222',
+        data: '0x1234',
+        gas: '0x7530',
+        value: '0x1',
+      };
+      const signedTransactions = ['0xsigned1', '0xsigned2'];
+      const approveTransactionsWithSameNonce = sinon
+        .stub()
+        .resolves(signedTransactions);
+      const submitSignedTransactions = sinon
+        .stub()
+        .resolves({ uuid: 'smart-transaction-uuid' });
+
+      setBackgroundConnection({
+        approveTransactionsWithSameNonce,
+        submitSignedTransactions,
+      });
+
+      const uuid = await store.dispatch(
+        actions.signAndSendSmartTransaction({
+          unsignedTransaction,
+          smartTransactionFees: {
+            fees: [
+              {
+                maxFeePerGas: '100',
+                maxPriorityFeePerGas: '2',
+                gas: '21000',
+                value: '0',
+              },
+              {
+                maxFeePerGas: '200',
+                maxPriorityFeePerGas: '3',
+                gas: '21000',
+                value: '0',
+              },
+            ],
+          },
+        }),
+      );
+
+      expect(approveTransactionsWithSameNonce.getCall(0).args).toStrictEqual([
+        [
+          {
+            ...unsignedTransaction,
+            maxFeePerGas: '64',
+            maxPriorityFeePerGas: '2',
+          },
+          {
+            ...unsignedTransaction,
+            maxFeePerGas: 'c8',
+            maxPriorityFeePerGas: '3',
+          },
+        ],
+      ]);
+      expect(submitSignedTransactions.getCall(0).args).toStrictEqual([
+        {
+          signedTransactions,
+          txParams: unsignedTransaction,
+        },
+      ]);
+      expect(uuid).toBe('smart-transaction-uuid');
+    });
+  });
+
+  describe('cancelSmartTransaction', () => {
+    it('cancels the Smart Transaction by UUID', async () => {
+      const store = mockStore();
+      const cancelSmartTransaction = sinon.stub().resolves();
+      setBackgroundConnection({ cancelSmartTransaction });
+
+      await store.dispatch(actions.cancelSmartTransaction('uuid-to-cancel'));
+
+      expect(cancelSmartTransaction.getCall(0).args).toStrictEqual([
+        'uuid-to-cancel',
+      ]);
+    });
+  });
+
   describe('setSmartTransactionsRefreshInterval', () => {
     afterEach(() => {
       sinon.restore();
