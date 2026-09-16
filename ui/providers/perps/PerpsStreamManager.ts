@@ -158,6 +158,8 @@ class PerpsStreamManager {
 
   private initializationGeneration = 0;
 
+  private preloadId: string | null = null;
+
   /**
    * UI-owned identity for the active aggregated order-book subscription.
    * Background emissions whose `subscriptionId` does not match are discarded so
@@ -844,6 +846,17 @@ class PerpsStreamManager {
       : TraceName.PerpsConnectionEstablishment;
     this.setUseTerminalApi(useTerminalApi);
     const id = crypto.randomUUID();
+    this.preloadId = id;
+    let generation = this.initializationGeneration;
+    const isCurrent = () =>
+      this.preloadId === id && generation === this.initializationGeneration;
+    const invalidateReadiness = () => {
+      if (isCurrent()) {
+        // The background may disconnect even after account initialization succeeds.
+        // Retire pending init too, so late completion cannot restore readiness.
+        this.reset(true);
+      }
+    };
     let cancelled = false;
     let ended = false;
     let preloadReady = false;
@@ -899,16 +912,18 @@ class PerpsStreamManager {
       cancelled = true;
       finish(false, 'timeout');
       release();
-      this.cleanupPrewarm();
+      invalidateReadiness();
     }, CONNECTION_TIMEOUT_MS);
     submitRequestToBackground('perpsRegisterPreload', [id])
       .then(async () => {
-        if (!cancelled) {
-          await this.initForAddress(address);
+        if (!cancelled && isCurrent()) {
+          const initialization = this.initForAddress(address);
+          generation = this.initializationGeneration;
+          await initialization;
         }
       })
       .then(async () => {
-        if (cancelled) {
+        if (cancelled || !isCurrent()) {
           return;
         }
         this.prewarm();
@@ -922,7 +937,7 @@ class PerpsStreamManager {
         finish(false, 'connection_failed');
         if (!cancelled) {
           release();
-          this.cleanupPrewarm();
+          invalidateReadiness();
           console.debug('[PerpsStreamManager] Preload failed', error);
         }
       })
@@ -935,7 +950,9 @@ class PerpsStreamManager {
         finish(false, 'released');
         // Successful preload leaves provider teardown to the last-UI grace period.
         release(preloadReady);
-        this.cleanupPrewarm();
+        if (isCurrent()) {
+          this.cleanupPrewarm();
+        }
       },
     };
   }

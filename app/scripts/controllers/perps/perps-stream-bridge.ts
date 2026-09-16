@@ -386,8 +386,8 @@ export class PerpsStreamBridge {
       perpsStopPreload: (id: string, preserveConnection = false) =>
         this.#stopPreload(id, preserveConnection),
       perpsActivateStreaming: async (params: ActivateStreamingParams) => {
-        await this.#initAndActivate();
-        if (this.#isConnectionAlive()) {
+        const initialized = await this.#initAndActivate();
+        if (initialized && this.#isConnectionAlive()) {
           this.#activateStreaming(params);
         }
       },
@@ -480,13 +480,13 @@ export class PerpsStreamBridge {
 
         const generationAtStart = this.#destroyGeneration;
         const activation = (async () => {
-          await this.#initAndActivate();
+          const initialized = await this.#initAndActivate();
           // destroy() may have fired during the await; never subscribe after
           // the bridge has been torn down (the subscribe would leak past the
           // point where static/dynamic unsubs are cleared). Using a generation
           // counter rather than a latched boolean lets later init cycles
           // re-enable subscribes without needing an explicit reset.
-          if (this.#destroyGeneration !== generationAtStart) {
+          if (!initialized || this.#destroyGeneration !== generationAtStart) {
             return;
           }
           // Another caller may have raced us through activation; re-check
@@ -743,7 +743,7 @@ export class PerpsStreamBridge {
     return operation;
   }
 
-  async #initAndActivate(): Promise<void> {
+  async #initAndActivate(): Promise<boolean> {
     if (!this.#isPreloadAllowed()) {
       throw new Error('Perps connection is unavailable');
     }
@@ -762,7 +762,7 @@ export class PerpsStreamBridge {
           !this.#isConnectionAlive() ||
           !this.#isPreloadAllowed()
         ) {
-          return;
+          return false;
         }
         if (address !== this.#getSelectedAddress().toLowerCase()) {
           throw new Error('Perps account changed');
@@ -778,15 +778,18 @@ export class PerpsStreamBridge {
         if (
           generation === this.#destroyGeneration &&
           (!preloadId || this.#hasSessionOwner()) &&
-          !this.#activated &&
           this.#isConnectionAlive() &&
           this.#isPreloadAllowed()
         ) {
-          this.#activate();
+          if (!this.#activated) {
+            this.#activate();
+          }
+          return true;
         }
+        return false;
       });
     session.queue = operation;
-    await operation;
+    return operation;
   }
 
   #stopPreload(
@@ -954,9 +957,10 @@ export class PerpsStreamBridge {
       this.#dynamicActivationGeneration[channel] ?? 0;
     const destroyGenerationAtStart = this.#destroyGeneration;
 
-    await this.#initAndActivate();
+    const initialized = await this.#initAndActivate();
 
     if (
+      !initialized ||
       this.#destroyGeneration !== destroyGenerationAtStart ||
       (this.#dynamicActivationGeneration[channel] ?? 0) !==
         activationGenerationAtStart

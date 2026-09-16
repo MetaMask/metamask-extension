@@ -242,6 +242,111 @@ describe('PerpsStreamManager', () => {
       );
     });
 
+    it.each(['failure', 'timeout', 'pending init'])(
+      'reinitializes on foreground entry after preload %s',
+      async (outcome) => {
+        preloadManager.initForAddress.mockImplementation((address: string) =>
+          PerpsStreamManager.prototype.initForAddress.call(manager, address),
+        );
+        let rejectPreload!: (error: Error) => void;
+        const ready = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        const init = deferred();
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsStartPreload') {
+            return ready;
+          }
+          if (method === 'perpsInitForAccount' && outcome === 'pending init') {
+            return init.promise;
+          }
+          return Promise.resolve();
+        });
+        await settle(() => {
+          manager.startPreload({
+            address: '0xfirst',
+            useTerminalApi: false,
+            accountChanged: false,
+          });
+        });
+        expect(manager.isInitialized('0xfirst')).toBe(
+          outcome !== 'pending init',
+        );
+
+        await settle(() => {
+          if (outcome === 'failure') {
+            rejectPreload(new Error('market fetch failed'));
+          } else {
+            jest.advanceTimersByTime(30_000);
+            init.resolve();
+          }
+        });
+
+        expect(manager.isInitialized('0xfirst')).toBe(false);
+        await manager.initForAddress('0xfirst');
+        expect(manager.isInitialized('0xfirst')).toBe(true);
+        expect(
+          mockSubmitRequestToBackground.mock.calls.filter(
+            ([method]) => method === 'perpsInitForAccount',
+          ),
+        ).toHaveLength(2);
+      },
+    );
+
+    it.each([
+      ['replacement preload', 'failure'],
+      ['replacement preload', 'timeout'],
+      ['new account', 'failure'],
+      ['new account', 'timeout'],
+    ])(
+      'preserves readiness for a %s after an older preload %s',
+      async (owner, outcome) => {
+        preloadManager.initForAddress.mockImplementation((address: string) =>
+          PerpsStreamManager.prototype.initForAddress.call(manager, address),
+        );
+        let rejectPreload!: (error: Error) => void;
+        const ready = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        let starts = 0;
+        mockSubmitRequestToBackground.mockImplementation((method: string) =>
+          method === 'perpsStartPreload' && (starts += 1) === 1
+            ? ready
+            : Promise.resolve(),
+        );
+        await settle(() => {
+          manager.startPreload({
+            address: '0xfirst',
+            useTerminalApi: false,
+            accountChanged: false,
+          });
+        });
+        const address = owner === 'new account' ? '0xsecond' : '0xfirst';
+        await settle(async () => {
+          if (owner === 'new account') {
+            await manager.initForAddress(address);
+          } else {
+            manager.startPreload({
+              address,
+              useTerminalApi: false,
+              accountChanged: false,
+            });
+          }
+        });
+        preloadManager.cleanupPrewarm.mockClear();
+        await settle(() => {
+          if (outcome === 'failure') {
+            rejectPreload(new Error('old preload failed'));
+          } else {
+            jest.advanceTimersByTime(30_000);
+          }
+        });
+
+        expect(manager.isInitialized(address)).toBe(true);
+        expect(preloadManager.cleanupPrewarm).not.toHaveBeenCalled();
+      },
+    );
+
     it('records initialization failure without claiming readiness', async () => {
       preloadManager.initForAddress.mockRejectedValue(new Error('offline'));
       const debug = jest
