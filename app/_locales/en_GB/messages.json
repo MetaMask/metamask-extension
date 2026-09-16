@@ -7031,7 +7031,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "That passkey can't protect your wallet key. Try again and choose a password manager like Google Password Manager when your browser asks where to save it.",
+    "message": "That passkey can't protect your wallet key. Try again and save it to a password manager like Google Password Manager.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
