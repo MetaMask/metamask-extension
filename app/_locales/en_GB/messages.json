@@ -5581,8 +5581,23 @@
   "moneyActivityDepositing": {
     "message": "Depositing"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "Paid to"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "Received from"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "Transaction ID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "You earned"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "You spent"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "You were refunded"
   },
   "moneyActivityEmpty": {
     "message": "No activity yet"
