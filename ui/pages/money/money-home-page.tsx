@@ -30,6 +30,7 @@ import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-token
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAddDepositToken } from '../../hooks/money/use-money-add-deposit-token';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
+import { useMoneyAccountWithdrawal } from '../../hooks/money/useMoneyAccountWithdrawal';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
@@ -57,6 +58,16 @@ import { MoneyPositionPlaceholder } from './components/money-position-placeholde
 import { MoneySectionDivider } from './components/money-section-divider';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { MoneyTransferSheet } from './components/money-transfer-sheet';
+
+/**
+ * Whether Send on Money home opens the "Send funds to" sheet.
+ *
+ * Off for now: External address and Bank account have not shipped, so the
+ * sheet offers a single real destination and Send goes straight to the
+ * withdrawal confirmation instead. Flip back to `true` to reinstate the menu
+ * once those destinations ship — the sheet itself is left untouched.
+ */
+const IS_MONEY_TRANSFER_SHEET_ENABLED: boolean = false;
 
 const MONEY_FUNDED_BALANCE_THRESHOLD = 0.01;
 const ACTION_BUTTON_ROW_BUTTON_COUNT = 2;
@@ -191,6 +202,8 @@ export function MoneyHomePage() {
     useMoneyAddDepositToken({
       screenName: MoneyScreenName.MoneyHome,
     });
+  const { initiateWithdrawal, isLoading: isWithdrawLoading } =
+    useMoneyAccountWithdrawal();
   const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyHome,
   });
@@ -251,18 +264,28 @@ export function MoneyHomePage() {
     });
     global.platform.openTab({ url: MONEY_URLS.MONEY_LANDING });
   }, [trackButtonClicked]);
-  const handleOpenTransferSheet = useCallback(() => {
+  const handleSend = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.TransferMoney,
       componentName: MoneyComponentName.ActionButtonRow,
       labelKey: 'moneySend',
-      redirectTarget: MoneyBottomSheetName.TransferMoneySheet,
+      redirectTarget: IS_MONEY_TRANSFER_SHEET_ENABLED
+        ? MoneyBottomSheetName.TransferMoneySheet
+        : MoneyScreenName.MoneyTransfer,
       buttonPosition: 2,
       buttonRowButtonCount: ACTION_BUTTON_ROW_BUTTON_COUNT,
     });
-    setIsTransferSheetOpen(true);
-  }, [trackButtonClicked]);
+
+    if (IS_MONEY_TRANSFER_SHEET_ENABLED) {
+      setIsTransferSheetOpen(true);
+      return;
+    }
+
+    initiateWithdrawal().catch((error: unknown) => {
+      console.error('[MoneyHomePage] Withdrawal initiation failed', error);
+    });
+  }, [initiateWithdrawal, trackButtonClicked]);
   const handleCloseTransferSheet = useCallback(() => {
     setIsTransferSheetOpen(false);
   }, []);
@@ -417,7 +440,8 @@ export function MoneyHomePage() {
             <MoneyActionCard
               icon={IconName.Arrow2UpRight}
               label={t('moneySend')}
-              onClick={handleOpenTransferSheet}
+              onClick={handleSend}
+              disabled={!IS_MONEY_TRANSFER_SHEET_ENABLED && isWithdrawLoading}
               testId="money-send-button"
             />
           </div>
