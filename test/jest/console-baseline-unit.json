@@ -668,7 +668,7 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 28
+      "React: Act warnings (component updates not wrapped)": 32
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
       "MetaMask: Background connection not initialized": 1,

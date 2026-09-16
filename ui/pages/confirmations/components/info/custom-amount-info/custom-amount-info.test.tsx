@@ -77,10 +77,24 @@ jest.mock('../../rows/perps-account-picker-row', () => ({
   PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
 }));
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
-  BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
+  BridgeFeeRow: ({
+    label,
+    underlineLabel,
+  }: {
+    label?: string;
+    underlineLabel?: boolean;
+  }) => (
+    <div
+      data-testid="bridge-fee-row"
+      data-label={label}
+      data-underline-label={String(Boolean(underlineLabel))}
+    />
+  ),
 }));
 jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
-  BridgeTimeRow: () => <div data-testid="bridge-time-row" />,
+  BridgeTimeRow: ({ label }: { label?: string }) => (
+    <div data-testid="bridge-time-row" data-label={label} />
+  ),
 }));
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
@@ -175,6 +189,7 @@ function render(
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
     withdraw?: { isWithdraw: boolean; canSelectWithdrawToken: boolean };
     isDefaultMoneyAccount?: boolean;
+    moneySummaryRows?: boolean;
   } = {},
 ) {
   const {
@@ -200,6 +215,7 @@ function render(
     requiredTokens = [],
     withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
     isDefaultMoneyAccount = false,
+    moneySummaryRows = false,
   } = options;
   const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
     options,
@@ -317,6 +333,7 @@ function render(
       disablePercentageButtons={disablePercentageButtons}
       displayPercentageButtons={displayPercentageButtons}
       hidePayTokenAmount={hidePayTokenAmount}
+      moneySummaryRows={moneySummaryRows}
     />,
     mockStore(state),
   );
@@ -774,6 +791,48 @@ describe('CustomAmountInfo', () => {
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
       expect(getByTestId('bridge-time-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
+    });
+
+    it('renders the fee row above the time row by default', () => {
+      const { getByTestId } = render({ hasQuotes: true });
+
+      expect(getByTestId('bridge-time-row').previousElementSibling).toBe(
+        getByTestId('bridge-fee-row'),
+      );
+      expect(getByTestId('bridge-fee-row')).toHaveAttribute(
+        'data-underline-label',
+        'false',
+      );
+    });
+
+    it('renders est. time above fees with the money labels and underlined fee label when moneySummaryRows is set', () => {
+      const { getByTestId } = render({
+        hasQuotes: true,
+        moneySummaryRows: true,
+      });
+
+      const timeRow = getByTestId('bridge-time-row');
+      const feeRow = getByTestId('bridge-fee-row');
+
+      expect(feeRow.previousElementSibling).toBe(timeRow);
+      expect(timeRow).toHaveAttribute(
+        'data-label',
+        messages.moneyAccountEstimatedTime.message,
+      );
+      expect(feeRow).toHaveAttribute(
+        'data-label',
+        messages.moneyAccountFees.message,
+      );
+      expect(feeRow).toHaveAttribute('data-underline-label', 'true');
+    });
+
+    it('renders exactly one time row when moneySummaryRows is set', () => {
+      const { getAllByTestId } = render({
+        hasQuotes: true,
+        moneySummaryRows: true,
+      });
+
+      expect(getAllByTestId('bridge-time-row')).toHaveLength(1);
     });
 
     it('renders the receive row for input-based totals', () => {

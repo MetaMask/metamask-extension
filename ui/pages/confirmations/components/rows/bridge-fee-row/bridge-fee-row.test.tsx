@@ -255,6 +255,80 @@ describe('BridgeFeeRow', () => {
     expect(tooltip.textContent).not.toContain(`${messages.bridgeFee.message}:`);
   });
 
+  describe('label override and underlined tooltip trigger', () => {
+    it('renders the overridden label in place of "Transaction fee"', () => {
+      const { getByText, queryByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+        label: messages.moneyAccountFees.message,
+      });
+
+      expect(getByText(messages.moneyAccountFees.message)).toBeInTheDocument();
+      expect(
+        queryByText(messages.transactionFee.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the label once, as the underlined tooltip trigger, when underlineLabel is set', () => {
+      const { getByTestId, getAllByText, queryByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+        label: messages.moneyAccountFees.message,
+        underlineLabel: true,
+      });
+
+      expect(
+        getByTestId('bridge-fee-tooltip-popover-trigger'),
+      ).toHaveTextContent(messages.moneyAccountFees.message);
+      expect(getAllByText(messages.moneyAccountFees.message)).toHaveLength(1);
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('opens the fee tooltip when the underlined label is hovered', async () => {
+      const user = userEvent.setup();
+      const { getByTestId, findByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+        underlineLabel: true,
+        label: messages.moneyAccountFees.message,
+      });
+
+      await user.hover(getByTestId('bridge-fee-tooltip-popover-trigger'));
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.networkFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(`${messages.bridgeFee.message}:`);
+    });
+
+    it('renders a plain label with no trigger when there is no tooltip to show', () => {
+      useTransactionPayQuotesMock.mockReturnValue([]);
+
+      const { getByText, queryByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+        label: messages.moneyAccountFees.message,
+        underlineLabel: true,
+      });
+
+      expect(getByText(messages.moneyAccountFees.message)).toBeInTheDocument();
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover-trigger'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('keeps the question-mark icon trigger when underlineLabel is not set', () => {
+      const { getByTestId, queryByTestId } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      expect(
+        getByTestId('bridge-fee-tooltip-popover-button'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('bridge-fee-tooltip-popover-trigger'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('Paid by MetaMask (sponsored)', () => {
     beforeEach(() => {
       useIsPaidByMetaMaskMock.mockReturnValue(true);

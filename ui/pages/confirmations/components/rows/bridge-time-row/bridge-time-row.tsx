@@ -29,10 +29,16 @@ const HIDE_TYPES: TransactionType[] = [];
 
 export type BridgeTimeRowProps = {
   rowVariant?: ConfirmInfoRowSize;
+  /**
+   * Overrides the default "Estimated time" label. Set by the money-account
+   * flows, whose designs use the shorter "Est. time".
+   */
+  label?: string;
 };
 
 export function BridgeTimeRow({
   rowVariant = ConfirmInfoRowSize.Default,
+  label,
 }: BridgeTimeRowProps) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -41,6 +47,7 @@ export function BridgeTimeRow({
   const quotes = useTransactionPayQuotes();
   const { payToken } = useTransactionPayToken();
   const chainId = currentConfirmation?.chainId;
+  const timeLabel = label ?? t('estimatedTime');
 
   const showEstimate =
     !hasTransactionType(currentConfirmation, HIDE_TYPES) &&
@@ -57,7 +64,7 @@ export function BridgeTimeRow({
     return (
       <ConfirmInfoRowSkeleton
         data-testid="bridge-time-row-skeleton"
-        label={t('estimatedTime')}
+        label={timeLabel}
         rowVariant={rowVariant}
       />
     );
@@ -73,7 +80,7 @@ export function BridgeTimeRow({
   return (
     <ConfirmInfoRow
       data-testid="bridge-time-row"
-      label={t('estimatedTime')}
+      label={timeLabel}
       rowVariant={rowVariant}
     >
       <Text

@@ -5548,6 +5548,14 @@
     "message": "Available balance: $1",
     "description": "$1 is the formatted Money Account vault withdrawable balance"
   },
+  "moneyAccountEstimatedTime": {
+    "message": "Est. time",
+    "description": "Label of the estimated-time row on the Money Account add-funds screen"
+  },
+  "moneyAccountFees": {
+    "message": "Fees",
+    "description": "Label of the fee row on the Money Account add-funds screen"
+  },
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
   },

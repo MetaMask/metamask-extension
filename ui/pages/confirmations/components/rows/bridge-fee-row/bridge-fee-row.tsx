@@ -15,6 +15,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { PopoverPosition } from '../../../../../components/component-library';
+import { TooltipText } from '../../../../../components/app/money/tooltip-text';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,
@@ -40,11 +41,24 @@ export type BridgeFeeRowProps = {
    * (e.g. mUSD conversion copy from the parent).
    */
   tooltipDescription?: string;
+  /**
+   * Overrides the default "Transaction fee" label. Set by the money-account
+   * flows, whose designs use the shorter "Fees".
+   */
+  label?: string;
+  /**
+   * When true, the label itself is the tooltip trigger — underlined text shown
+   * on hover — instead of a question-mark icon beside it. This is the money
+   * experience's tooltip affordance; other flows keep the icon.
+   */
+  underlineLabel?: boolean;
 };
 
 export function BridgeFeeRow({
   variant = ConfirmInfoRowSize.Default,
   tooltipDescription,
+  label,
+  underlineLabel = false,
 }: BridgeFeeRowProps) {
   const t = useI18nContext();
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
@@ -56,7 +70,7 @@ export function BridgeFeeRow({
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
-  const feeLabel = t('transactionFee');
+  const feeLabel = label ?? t('transactionFee');
 
   const feeTotalUsd = useMemo(() => {
     if (!totals?.fees) {
@@ -120,34 +134,58 @@ export function BridgeFeeRow({
     );
   }
 
+  const tooltipBody = tooltipLines ? (
+    <Text variant={TextVariant.BodyMd}>
+      {tooltipLines.map((line, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && <br />}
+          {line}
+        </React.Fragment>
+      ))}
+    </Text>
+  ) : undefined;
+
+  // With `underlineLabel` the label text is itself the tooltip trigger, so it
+  // moves into `labelChildren` and the row's own `label` is left unset —
+  // otherwise the text would render twice.
+  const showUnderlinedLabel = underlineLabel && Boolean(tooltipBody);
+
+  let labelChildren: React.ReactNode;
+  if (showUnderlinedLabel) {
+    labelChildren = (
+      <TooltipText
+        text={feeLabel}
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+        position={PopoverPosition.Top}
+        data-testid="bridge-fee-tooltip-popover"
+      >
+        {tooltipBody}
+      </TooltipText>
+    );
+  } else if (tooltipBody) {
+    labelChildren = (
+      <InfoPopoverTooltip
+        position={PopoverPosition.Top}
+        offset={[0, 16]}
+        iconName={IconName.Question}
+        iconColor={IconColor.IconAlternative}
+        iconMarginLeft={1}
+        plainIcon
+        ariaLabel={feeLabel}
+        data-testid="bridge-fee-tooltip-popover"
+      >
+        {tooltipBody}
+      </InfoPopoverTooltip>
+    );
+  }
+
   return (
     <ConfirmInfoRow
       data-testid="bridge-fee-row"
-      label={feeLabel}
+      label={showUnderlinedLabel ? undefined : feeLabel}
       rowVariant={variant}
-      labelChildren={
-        tooltipLines ? (
-          <InfoPopoverTooltip
-            position={PopoverPosition.Top}
-            offset={[0, 16]}
-            iconName={IconName.Question}
-            iconColor={IconColor.IconAlternative}
-            iconMarginLeft={1}
-            plainIcon
-            ariaLabel={feeLabel}
-            data-testid="bridge-fee-tooltip-popover"
-          >
-            <Text variant={TextVariant.BodyMd}>
-              {tooltipLines.map((line, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && <br />}
-                  {line}
-                </React.Fragment>
-              ))}
-            </Text>
-          </InfoPopoverTooltip>
-        ) : undefined
-      }
+      labelChildren={labelChildren}
     >
       <FeeValue
         isPaidByMetaMask={isPaidByMetaMask}

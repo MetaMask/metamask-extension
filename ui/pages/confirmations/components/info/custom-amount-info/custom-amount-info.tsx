@@ -103,6 +103,13 @@ export type CustomAmountInfoProps = {
    */
   displayPercentageButtons?: boolean;
   hidePayTokenAmount?: boolean;
+  /**
+   * When true, the quote summary rows use the money-account treatment: est.
+   * time above fees, the shorter "Est. time" / "Fees" labels, and the money
+   * underlined-text tooltip affordance instead of a question-mark icon. Other
+   * flows sharing this component keep the default rows.
+   */
+  moneySummaryRows?: boolean;
   overrideBottomContent?: (hasAmount: boolean) => ReactNode;
   overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
   /**
@@ -125,6 +132,7 @@ export const CustomAmountInfo = React.memo(
     displayAccountRow,
     displayPercentageButtons,
     hidePayTokenAmount,
+    moneySummaryRows,
     overrideBottomContent,
     overrideCenterContent,
     prefillMaxOnLoad,
@@ -266,6 +274,7 @@ export const CustomAmountInfo = React.memo(
             displayAccountRow={displayAccountRow}
             hasAmount={hasAmount}
             hideResults={hideResults}
+            moneySummaryRows={moneySummaryRows}
           />
         )}
       </Box>
@@ -392,12 +401,14 @@ function BottomContainer({
   displayAccountRow,
   hasAmount,
   hideResults,
+  moneySummaryRows,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
   hasAmount: boolean;
   hideResults: boolean;
+  moneySummaryRows?: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady(hasAmount, disablePay);
@@ -426,13 +437,25 @@ function BottomContainer({
         <>
           {disablePay !== true && (
             <>
+              {/* Money designs put est. time first; every other flow keeps the
+                  fee row on top. */}
+              {moneySummaryRows && (
+                <BridgeTimeRow
+                  rowVariant={ConfirmInfoRowSize.Small}
+                  label={t('moneyAccountEstimatedTime')}
+                />
+              )}
               <BridgeFeeRow
                 variant={ConfirmInfoRowSize.Small}
                 tooltipDescription={
                   isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
                 }
+                label={moneySummaryRows ? t('moneyAccountFees') : undefined}
+                underlineLabel={moneySummaryRows}
               />
-              <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+              {!moneySummaryRows && (
+                <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+              )}
             </>
           )}
           {(canSelectWithdrawToken || isInputBased) && disablePay !== true ? (

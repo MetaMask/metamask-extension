@@ -134,4 +134,16 @@ describe('BridgeTimeRow', () => {
     expect(getByTestId('bridge-time-row-skeleton')).toBeInTheDocument();
     expect(queryByText(messages.estimatedTime.message)).not.toBeInTheDocument();
   });
+
+  it('renders the overridden label in place of "Estimated time"', () => {
+    const { getByText, queryByText } = render({
+      rowVariant: ConfirmInfoRowSize.Small,
+      label: messages.moneyAccountEstimatedTime.message,
+    });
+
+    expect(
+      getByText(messages.moneyAccountEstimatedTime.message),
+    ).toBeInTheDocument();
+    expect(queryByText(messages.estimatedTime.message)).not.toBeInTheDocument();
+  });
 });

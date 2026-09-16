@@ -50,6 +50,7 @@ export const MoneyAccountDepositInfo = () => {
       displayAccountRow
       displayPercentageButtons
       hidePayTokenAmount
+      moneySummaryRows
       preferredToken={preferredPaymentToken}
     />
   );
