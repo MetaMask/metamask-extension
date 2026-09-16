@@ -4,10 +4,14 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import type { Hex } from '@metamask/utils';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { useSendTokens } from '../../hooks/send/useSendTokens';
+import {
+  MUSD_TOKEN,
+  MUSD_TOKEN_ADDRESS,
+} from '../../../pages/confirmations/constants/musd';
+import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { TokenIcon } from './token-icon';
 
-jest.mock('../../hooks/send/useSendTokens');
+jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
 
 const mockStore = configureStore([]);
 
@@ -166,5 +170,27 @@ describe('TokenIcon', () => {
 
     expect(container.querySelector('.mm-avatar-token img')).toBeNull();
     expect(container.querySelector('.mm-avatar-token')).toHaveTextContent('E');
+  });
+
+  it('renders the xl size', () => {
+    const { container } = renderTokenIcon({ size: 'xl' });
+
+    expect(container.querySelector('.mm-avatar-token')).toHaveClass(
+      'mm-avatar-base--size-xl',
+    );
+  });
+
+  it('falls back to the package mUSD image when token metadata is missing', () => {
+    useSendTokensMock.mockReturnValue([]);
+
+    const { container } = renderTokenIcon({
+      tokenAddress: MUSD_TOKEN_ADDRESS,
+      symbol: MUSD_TOKEN.symbol,
+    });
+
+    expect(container.querySelector('.mm-avatar-token img')).toHaveAttribute(
+      'src',
+      MUSD_TOKEN.image,
+    );
   });
 });

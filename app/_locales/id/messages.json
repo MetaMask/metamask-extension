@@ -5466,9 +5466,6 @@
   "moneyActivityPending": {
     "message": "Menunggu"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Aktivitas Money akan ditampilkan di sini."
-  },
   "moneyActivityReceived": {
     "message": "Diterima"
   },
@@ -7848,12 +7845,6 @@
   "perpsSortByPriceChange": {
     "message": "Perubahan harga"
   },
-  "perpsSortByRank": {
-    "message": "Peringkat"
-  },
-  "perpsSortBySection": {
-    "message": "Urutkan sesuai"
-  },
   "perpsSortByTitle": {
     "message": "Filter"
   },
@@ -8650,9 +8641,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Terakhir digunakan"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Gagal mengambil kuotasi."
   },
   "rampsQuoteUnavailable": {
     "message": "Kuotasi tidak tersedia."

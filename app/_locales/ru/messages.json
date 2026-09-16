@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "Ожидающий"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Ваша активность Money появится здесь."
-  },
   "moneyActivityReceived": {
     "message": "Получено"
   },
@@ -7844,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Изменение цены"
   },
-  "perpsSortByRank": {
-    "message": "Рейтинг"
-  },
-  "perpsSortBySection": {
-    "message": "Сортировать по"
-  },
   "perpsSortByTitle": {
     "message": "Фильтр"
   },
@@ -8642,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Использовалось последним"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Не удалось получить котировку."
   },
   "rampsQuoteUnavailable": {
     "message": "Котировка недоступна."

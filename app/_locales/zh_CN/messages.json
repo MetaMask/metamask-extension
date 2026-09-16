@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "待定"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "您的 Money 活动将显示在此处。"
-  },
   "moneyActivityReceived": {
     "message": "已收到"
   },
@@ -7850,12 +7847,6 @@
   "perpsSortByPriceChange": {
     "message": "价格变化"
   },
-  "perpsSortByRank": {
-    "message": "排名"
-  },
-  "perpsSortBySection": {
-    "message": "排序方式"
-  },
   "perpsSortByTitle": {
     "message": "筛选"
   },
@@ -8648,9 +8639,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "上次使用"
-  },
-  "rampsQuoteFetchError": {
-    "message": "获取报价失败。"
   },
   "rampsQuoteUnavailable": {
     "message": "报价不可用。"
