@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,10 +9,7 @@ import {
   TextVariant,
   Toast,
 } from '@metamask/design-system-react';
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
@@ -35,6 +32,7 @@ export function BasicFunctionalityMigrationToast() {
   const shouldShow = useSelector(getShouldShowBasicFunctionalityMigrationToast);
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
   const hasTrackedView = useRef(false);
+  const [isHiding, setIsHiding] = useState(false);
 
   const trackNoticeAction = useCallback(
     (action: BasicFunctionalityMixedToastAction) => {
@@ -58,25 +56,26 @@ export function BasicFunctionalityMigrationToast() {
     trackNoticeAction(BasicFunctionalityMixedToastAction.Viewed);
   }, [shouldShow, trackNoticeAction]);
 
-  if (!shouldShow) {
+  const hideToast = useCallback(async () => {
+    setIsHiding(true);
+    await dispatch(hideMigrationToast());
+  }, [dispatch]);
+
+  if (!shouldShow || isHiding) {
     return null;
   }
 
-  const dismissToast = () => {
+  const dismissToast = async () => {
     trackNoticeAction(BasicFunctionalityMixedToastAction.Dismiss);
-    dispatch(hideMigrationToast());
+    await hideToast();
   };
 
-  const openPrivacySettings = () => {
+  const openPrivacySettings = async () => {
     trackNoticeAction(BasicFunctionalityMixedToastAction.OpenSettings);
-    dispatch(hideMigrationToast());
-    const environmentType = getEnvironmentType();
-    // Notification/popup windows are too small for Settings; open the full
-    // extension UI instead (same pattern as the backup-SRP toast).
-    if (
-      environmentType === ENVIRONMENT_TYPE_NOTIFICATION ||
-      environmentType === ENVIRONMENT_TYPE_POPUP
-    ) {
+    await hideToast();
+    // Notification windows are too small for Settings; open the full extension
+    // UI instead. Popup and other surfaces navigate in-app.
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       globalThis.platform?.openExtensionInBrowser?.(PRIVACY_ROUTE);
       return;
     }

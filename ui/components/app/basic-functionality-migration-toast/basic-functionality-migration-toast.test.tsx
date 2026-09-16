@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
@@ -14,7 +14,6 @@ import {
 } from '../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
-import { hideMigrationToast } from '../../../store/actions';
 import { BasicFunctionalityMigrationToast } from './basic-functionality-migration-toast';
 import {
   BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
@@ -48,9 +47,11 @@ jest.mock('../../../hooks/useAnalytics', () => {
   };
 });
 
+const mockHideMigrationToast = jest.fn(() => () => Promise.resolve());
+
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  hideMigrationToast: jest.fn(() => jest.fn()),
+  hideMigrationToast: (...args: unknown[]) => mockHideMigrationToast(...args),
 }));
 
 const mockStore = configureMockStore([thunk]);
@@ -157,12 +158,14 @@ describe('BasicFunctionalityMigrationToast', () => {
     );
   });
 
-  it('dismisses and navigates to privacy settings in fullscreen', () => {
+  it('dismisses and navigates to privacy settings in fullscreen', async () => {
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('basic-functionality-migration-settings-link'));
 
-    expect(hideMigrationToast).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockHideMigrationToast).toHaveBeenCalled();
+    });
     expect(mockNavigate).toHaveBeenCalledWith(PRIVACY_ROUTE);
     expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
@@ -176,29 +179,54 @@ describe('BasicFunctionalityMigrationToast', () => {
     );
   });
 
-  it('opens privacy settings in the full extension UI from notification', () => {
+  it('opens privacy settings in the full extension UI from notification', async () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('basic-functionality-migration-settings-link'));
 
-    expect(hideMigrationToast).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockHideMigrationToast).toHaveBeenCalled();
+    });
     expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(PRIVACY_ROUTE);
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('opens privacy settings in the full extension UI from popup', () => {
+  it('navigates to privacy settings in-app from popup', async () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('basic-functionality-migration-settings-link'));
 
-    expect(hideMigrationToast).toHaveBeenCalled();
-    expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(PRIVACY_ROUTE);
-    expect(mockNavigate).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockHideMigrationToast).toHaveBeenCalled();
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(PRIVACY_ROUTE);
+    expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
   });
 
-  it('dismisses from the close button', () => {
+  it('waits to navigate until the migration toast is dismissed', async () => {
+    let resolveHideMigrationToast: (() => void) | undefined;
+    mockHideMigrationToast.mockImplementationOnce(
+      () => () =>
+        new Promise<void>((resolve) => {
+          resolveHideMigrationToast = resolve;
+        }),
+    );
+
+    const { getByTestId } = renderComponent();
+
+    fireEvent.click(getByTestId('basic-functionality-migration-settings-link'));
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+    resolveHideMigrationToast?.();
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(PRIVACY_ROUTE);
+    });
+  });
+
+  it('dismisses from the close button', async () => {
     const { getByRole } = renderComponent();
 
     fireEvent.click(
@@ -207,7 +235,9 @@ describe('BasicFunctionalityMigrationToast', () => {
       }),
     );
 
-    expect(hideMigrationToast).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockHideMigrationToast).toHaveBeenCalled();
+    });
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         name: MetaMetricsEventName.NoticeUpdateDisplayed,
