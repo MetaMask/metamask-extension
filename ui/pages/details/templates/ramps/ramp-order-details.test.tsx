@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { RampOrderDetails } from './ramp-order-details';
 
@@ -303,10 +303,15 @@ describe('RampOrderDetails', () => {
         resolveWatch = resolve;
       }),
     );
-    const { getByText } = render(<RampOrderDetails item={buildItem()} />);
-    const viewOnProvider = getByText('rampsOrderDetailsViewOnProvider:Transak');
+    const { getByRole } = render(<RampOrderDetails item={buildItem()} />);
+    const viewOnProvider = getByRole('button', {
+      name: 'rampsOrderDetailsViewOnProvider:Transak',
+    });
 
     viewOnProvider.click();
+    await waitFor(() => {
+      expect(viewOnProvider).toBeDisabled();
+    });
     viewOnProvider.click();
 
     expect(mockWatchProviderOrderTab).toHaveBeenCalledTimes(1);
