@@ -13,7 +13,7 @@ import {
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
@@ -43,6 +43,8 @@ import {
 } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
+  MetaMetricsAccountHiddenLocation,
+  MetaMetricsAccountRemovedLocation,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -63,7 +65,10 @@ import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
 import { AccountDeleteConfirmModal } from '../account-delete-confirm-modal';
-import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getAccountGroupsByAddress,
+  getAccountListStats,
+} from '../../../selectors/multichain-accounts/account-tree';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -72,7 +77,11 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
-import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
+import {
+  getAccountWalletMetricProps,
+  isPrivateKeyWallet,
+  type AccountWalletMetricProps,
+} from '../../../helpers/utils/account-wallet';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
@@ -95,6 +104,8 @@ export type MultichainAccountListProps = {
    */
   isEditMode?: boolean;
 };
+
+type WalletData = AccountTreeWallets[AccountWalletId];
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
 
@@ -210,6 +221,11 @@ export const MultichainAccountList = ({
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
   const internalAccountsById = useSelector(getInternalAccountsObject);
+  // Account counts are only needed when a hide is tracked, so the store is read
+  // at that point instead of subscribed to. Subscribing would re-run on every
+  // dispatch for every consumer of this list, including the dapp permissions
+  // page that never enters edit mode, to serve a metrics property alone.
+  const store = useStore<MultichainAccountsState>();
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -226,7 +242,7 @@ export const MultichainAccountList = ({
     groupId: AccountGroupId;
     accountName: string;
     address?: string;
-    walletType?: AccountWalletType;
+    metricProps: AccountWalletMetricProps;
   } | null>(null);
 
   // Optimistic visibility so a hide/reveal shows on the cell before Redux
@@ -307,9 +323,8 @@ export const MultichainAccountList = ({
         createEventBuilder(MetaMetricsEventName.AccountRemoved)
           .addCategory(MetaMetricsEventCategory.Accounts)
           .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountToDelete?.walletType,
+            ...accountToDelete.metricProps,
+            location: MetaMetricsAccountRemovedLocation.ManageAccounts,
           })
           .build(),
       );
@@ -318,7 +333,11 @@ export const MultichainAccountList = ({
   }, [accountToDelete, createEventBuilder, dispatch, trackEvent]);
 
   const handleVisibilityToggle = useCallback(
-    async (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
+    async (
+      accountGroupId: AccountGroupId,
+      currentlyHidden: boolean,
+      wallet?: WalletData,
+    ) => {
       const nextHidden = !currentlyHidden;
       const writeId = (visibilityWriteIds.current[accountGroupId] ?? 0) + 1;
       visibilityWriteIds.current[accountGroupId] = writeId;
@@ -333,6 +352,10 @@ export const MultichainAccountList = ({
         // account has to be unpinned as it is hidden or it would stay put
         // looking untouched. This mirrors the account menu's hide action.
         const group = findAccountGroup(wallets, accountGroupId);
+        // Read before the writes below, so this and `group` describe the same
+        // pre-toggle moment. Taken from the store rather than the `wallets`
+        // prop, which the account list page passes pre-filtered by its search.
+        const { hiddenCount } = getAccountListStats(store.getState());
         if (nextHidden) {
           if (group?.metadata.pinned) {
             await dispatch(setAccountGroupPinned(accountGroupId, false));
@@ -343,6 +366,30 @@ export const MultichainAccountList = ({
         }
 
         await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
+
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.AccountHidden)
+            .addCategory(MetaMetricsEventCategory.Accounts)
+            .addProperties({
+              ...getAccountWalletMetricProps(wallet),
+              hidden: nextHidden,
+              // Counted across the whole tree with this group's new value
+              // substituted for its stored one — the same approach the account
+              // menu takes — so the total cannot drift when a toggle is still
+              // in flight. Clamped because the count and the rendered tree can
+              // momentarily disagree, and a negative total is never meaningful.
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hidden_count_after: Math.max(
+                0,
+                hiddenCount -
+                  (group?.metadata.hidden ? 1 : 0) +
+                  (nextHidden ? 1 : 0),
+              ),
+              location: MetaMetricsAccountHiddenLocation.ManageAccounts,
+            })
+            .build(),
+        );
       } finally {
         // A later toggle owns the override until its own write settles, so only
         // the most recent write hands the account back to the tree.
@@ -353,7 +400,14 @@ export const MultichainAccountList = ({
         }
       }
     },
-    [disconnectAccountGroup, dispatch, wallets],
+    [
+      createEventBuilder,
+      disconnectAccountGroup,
+      dispatch,
+      store,
+      trackEvent,
+      wallets,
+    ],
   );
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
@@ -525,7 +579,7 @@ export const MultichainAccountList = ({
             onVisibilityIconClick={
               isVisibilityMode
                 ? (accountGroupId) => {
-                    handleVisibilityToggle(accountGroupId, isHidden);
+                    handleVisibilityToggle(accountGroupId, isHidden, wallet);
                   }
                 : undefined
             }
@@ -539,7 +593,7 @@ export const MultichainAccountList = ({
                       groupId: groupId as AccountGroupId,
                       accountName: groupData.metadata.name,
                       address,
-                      walletType: wallet?.type,
+                      metricProps: getAccountWalletMetricProps(wallet),
                     });
                   }
                 : undefined

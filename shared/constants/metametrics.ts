@@ -1399,6 +1399,30 @@ export enum MetaMetricsEventLocation {
   Transaction = 'transaction',
 }
 
+/**
+ * Segment `location` for the `Account Hidden` event — the surface the hide or
+ * unhide was performed from.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/account-hidden.yaml` (`location` enum).
+ *
+ * Kept separate from {@link MetaMetricsAccountRemovedLocation} because the two
+ * events accept different sets of surfaces, so a shared enum would let an
+ * invalid value through (e.g. `account_details` is not a valid hide location).
+ */
+export enum MetaMetricsAccountHiddenLocation {
+  ManageAccounts = 'manage_accounts',
+  AccountMenu = 'account_menu',
+}
+
+/**
+ * Segment `location` for the `Account Removed` event — the surface the removal
+ * was performed from.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/account-removed.yaml` (`location` enum).
+ */
+export enum MetaMetricsAccountRemovedLocation {
+  ManageAccounts = 'manage_accounts',
+  AccountDetails = 'account_details',
+}
+
 export enum MetaMetricsEventUiCustomization {
   FlaggedAsMalicious = 'flagged_as_malicious',
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',

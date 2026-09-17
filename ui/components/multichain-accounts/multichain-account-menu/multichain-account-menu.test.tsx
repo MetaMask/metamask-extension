@@ -6,6 +6,8 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import {
+  MetaMetricsAccountHiddenLocation,
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -619,9 +621,12 @@ describe('MultichainAccountMenu', () => {
       name: MetaMetricsEventName.AccountHidden,
       properties: {
         category: MetaMetricsEventCategory.Accounts,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: MetaMetricsEventAccountType.Default,
         hidden: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hidden_count_after: 1,
+        location: MetaMetricsAccountHiddenLocation.AccountMenu,
       },
       sensitiveProperties: {},
     });
