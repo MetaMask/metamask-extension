@@ -291,10 +291,6 @@ export class PlaywrightDriver {
     this.handleCounter += 1;
     const handle = `pw-handle-${this.handleCounter}`;
     this.pages.set(handle, page);
-    // Selenium relies on the browser's native download directory. Playwright
-    // instead intercepts downloads, so persist each one under the shared
-    // downloads folder with its real filename to keep spec expectations
-    // (read file by name from `test-artifacts/downloads`) working.
     page.on('download', (download) => {
       download
         .saveAs(path.join(DOWNLOADS_FOLDER, download.suggestedFilename()))
@@ -813,7 +809,6 @@ export class PlaywrightDriver {
 
   async findScrollToAndClickElement(rawLocator: RawLocator): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
-    await locator.scrollIntoViewIfNeeded();
     await locator.click();
   }
 
@@ -826,13 +821,9 @@ export class PlaywrightDriver {
   }
 
   async clickElementUsingMouseMove(rawLocator: RawLocator): Promise<void> {
-    // Selenium escape hatch for ElementClickInterceptedError: it clicks via
-    // the raw actions API, which does NOT check whether another element (e.g.
-    // a notification badge) covers the target. The Playwright equivalent is
     // `force: true`, which skips the receives-pointer-events actionability
     // check while still waiting for the element to be visible and stable.
     const locator = this.buildLocator(rawLocator).first();
-    await locator.scrollIntoViewIfNeeded();
     await locator.click({ force: true, timeout: this.timeout });
   }
 
@@ -840,17 +831,6 @@ export class PlaywrightDriver {
     rawLocator: RawLocator,
     contentToPaste: string,
   ): Promise<void> {
-    // Selenium writes to the system clipboard (`navigator.clipboard.writeText`)
-    // and sends a Cmd/Ctrl+V chord. The async clipboard API needs
-    // browser-specific permission setup in Playwright (Chromium
-    // `grantPermissions`, Firefox prefs), so mirror the *effect* of a paste
-    // instead: focus the field and insert the full string as a single `input`
-    // event — what a paste produces for controlled React inputs — without
-    // per-character key events or touching the system clipboard.
-    //
-    // Caveat: `insertText` does not dispatch a `paste` ClipboardEvent. If a
-    // migrated spec ever exercises an `onPaste` handler (e.g. SRP word
-    // splitting), this needs a real clipboard-backed implementation.
     const locator = this.buildLocator(rawLocator).first();
     await locator.click();
     await this.page.keyboard.insertText(contentToPaste);
@@ -917,10 +897,6 @@ export class PlaywrightDriver {
 
   async openNewPage(url: string): Promise<string> {
     const page = await this.context.newPage();
-    // Selenium switches to the new tab *before* navigating, so callers that
-    // swallow navigation errors (e.g. intentional proxy failures in the ENS
-    // resolution spec) still end up focused on the new tab. Mirror that by
-    // making the page current before `goto` can throw.
     this.currentPage = page;
     const handle = this.handleFor(page);
     await page.goto(url, { waitUntil: 'domcontentloaded' });
@@ -969,20 +945,11 @@ export class PlaywrightDriver {
   }
 
   // -- Window / tab management ---------------------------------------------
-  //
-  // Selenium identifies windows/tabs by opaque string handles. The shim
-  // mirrors that with synthetic `pw-handle-N` handles mapped to Playwright
-  // `Page`s (see `registerPage`); every page the context opens — including
-  // tabs opened by the extension background — arrives via the context's
-  // 'page' event and gets a handle.
-
   async getCurrentWindowHandle(): Promise<string> {
     return this.handleFor(this.page);
   }
 
   async getAllWindowHandles(): Promise<string[]> {
-    // Defensive: make sure every page the context currently knows about is
-    // registered before reporting handles.
     for (const page of this.context.pages()) {
       this.registerPage(page);
     }
@@ -997,8 +964,6 @@ export class PlaywrightDriver {
       );
     }
     this.currentPage = page;
-    // Selenium's switchTo().window() also focuses the window; some UI (e.g.
-    // focus-dependent rendering) relies on that.
     await page.bringToFront();
   }
 
@@ -1051,9 +1016,6 @@ export class PlaywrightDriver {
         `PlaywrightDriver.closeWindowHandle: no window with handle '${handle}'`,
       );
     }
-    // If this was the current page, the 'close' listener in `registerPage`
-    // moves `currentPage` to another open page, mirroring how Selenium
-    // callers always `switchToWindow` after closing.
     await page.close();
   }
 
