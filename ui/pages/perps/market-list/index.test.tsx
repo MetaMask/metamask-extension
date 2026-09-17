@@ -678,6 +678,7 @@ describe('MarketListView', () => {
       };
 
       mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
         markets: [
           mockCryptoMarkets[0],
           dogeMarket,
