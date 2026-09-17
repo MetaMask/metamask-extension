@@ -607,9 +607,6 @@ class PerpsStreamManager {
           return;
         }
         try {
-          if (generation !== this.initializationGeneration) {
-            return;
-          }
           // The shared background coordinator serializes provider teardown and
           // activation across windows. It emits snapshots before the RPC returns.
           await submitRequestToBackground('perpsInitForAccount', [address]);
