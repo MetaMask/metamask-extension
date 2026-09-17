@@ -23,11 +23,6 @@ class AccountAddressListPage {
     text: 'Address copied',
   };
 
-  private readonly addressRow = '[data-testid="multichain-address-row"]';
-
-  private readonly addressRowsList =
-    '[data-testid="multichain-address-rows-list"]';
-
   private readonly backButton =
     '[data-testid="multichain-account-address-list-page-back-button"]';
 
@@ -39,19 +34,8 @@ class AccountAddressListPage {
   private readonly qrButton =
     '[data-testid="multichain-address-row-qr-button"]';
 
-  private readonly qrModalAddress = '[data-testid="account-address"]';
-
-  private readonly qrModalCopyButton =
-    '[data-testid="address-qr-code-modal-copy-button"]';
-
-  private readonly quickCopyPopover =
-    '[data-testid="multichain-address-rows-triggered-list"]';
-
   private readonly shortenedAddress =
     '[data-testid="multichain-address-row-address"]';
-
-  private readonly viewOnExplorerButton =
-    '[data-testid="view-address-on-etherscan"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -114,72 +98,6 @@ class AccountAddressListPage {
     console.log('Address list modal is loaded');
   }
 
-  async checkQrPopupShowsAddress(expectedAddress: string): Promise<void> {
-    console.log(`Check QR popup shows address "${expectedAddress}"`);
-    await this.driver.waitForSelector(this.qrModalAddress);
-    await this.driver.waitUntil(
-      async () => {
-        const addressElement = await this.driver.findElement(
-          this.qrModalAddress,
-        );
-        const displayedAddress = (await addressElement.getText()).replace(
-          /\s+/gu,
-          '',
-        );
-        return displayedAddress === expectedAddress;
-      },
-      { interval: 100, timeout: this.driver.timeout },
-    );
-  }
-
-  async checkQuickCopyAddressIsDisplayedForNetwork({
-    networkName,
-    networkAddress,
-  }: {
-    networkName: string;
-    networkAddress: string;
-  }): Promise<void> {
-    console.log(
-      `Check quick-copy popover shows "${networkAddress}" for "${networkName}"`,
-    );
-    const rowXpath = this.quickCopyRowByNetworkName(networkName).xpath;
-    await this.driver.waitForSelector({
-      xpath: rowXpath.replace(
-        /\]$/u,
-        ` and contains(normalize-space(.), ${quoteXPathText(networkAddress)})]`,
-      ),
-    });
-  }
-
-  async checkQuickCopyPopoverIsClosed(): Promise<void> {
-    console.log('Check quick-copy popover is closed');
-    await this.driver.assertElementNotPresent(this.quickCopyPopover);
-  }
-
-  async checkQuickCopyPopoverIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.addressRowsList,
-        this.addressRow,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for quick-copy address popover to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Quick-copy address popover is loaded');
-  }
-
-  async checkViewOnTronscanButton(): Promise<void> {
-    console.log('Verify View on Tronscan button is present');
-    await this.driver.waitForSelector({
-      css: this.viewOnExplorerButton,
-      text: 'View on Tronscan',
-    });
-  }
-
   async clickCopyButton(addressIndex: number = 0): Promise<void> {
     await this.driver.clickElement({
       xpath: `(//*[@data-testid='multichain-address-row-copy-button'])[${
@@ -214,32 +132,6 @@ class AccountAddressListPage {
     });
   }
 
-  async clickQRbuttonForNetwork(networkName: string): Promise<void> {
-    console.log(`Click QR button for network "${networkName}"`);
-    await this.driver.clickElement({
-      xpath: `${this.addressListRowByNetworkName(networkName).xpath}//*[@data-testid='multichain-address-row-qr-button']`,
-    });
-  }
-
-  async clickQrCopyAddressLink(expectedAddress: string): Promise<void> {
-    console.log('Click copy address button in QR popup');
-    await this.driver.waitForSelector(this.qrModalCopyButton);
-    await this.driver.clickElement(this.qrModalCopyButton);
-    await this.driver.waitForClipboardContent(expectedAddress);
-  }
-
-  async clickQuickCopyButtonForNetwork({
-    networkName,
-    expectedAddress,
-  }: {
-    networkName: string;
-    expectedAddress: string;
-  }): Promise<void> {
-    console.log(`Click quick-copy row for network "${networkName}"`);
-    await this.driver.clickElement(this.quickCopyRowByNetworkName(networkName));
-    await this.driver.waitForClipboardContent(expectedAddress);
-  }
-
   async getTruncatedAccountAddress(addressIndex: number = 0): Promise<string> {
     console.log('Get truncated account address');
     const addressElements = await this.driver.findElements(this.accountAddress);
@@ -253,12 +145,6 @@ class AccountAddressListPage {
 
   async goBack(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.backButton);
-  }
-
-  private quickCopyRowByNetworkName(networkName: string) {
-    return {
-      xpath: `//*[@data-testid='multichain-address-row'][contains(normalize-space(.), ${quoteXPathText(networkName)}) and not(.//*[@data-testid='multichain-address-row-network-name'])]`,
-    };
   }
 
   async verifyCopyButtonFeedback(): Promise<void> {
