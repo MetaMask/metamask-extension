@@ -1,11 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import {
-  AccountExportType,
-  KeyringRpcMethod,
-  KeyringType,
-  PrivateKeyEncoding,
-} from '@metamask/keyring-api/v2';
+import { KeyringType } from '@metamask/keyring-api/v2';
 import { SnapKeyring as SnapKeyringV2 } from '@metamask/eth-snap-keyring/v2';
 import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
 import { SnapId } from '@metamask/snaps-sdk';
@@ -239,15 +234,15 @@ describe('MultichainSnapKeyringV1Adapter', () => {
       capabilities: {
         scopes: [EthScope.Eoa],
         privateKey: {
-          exportFormats: [{ encoding: PrivateKeyEncoding.Base58 }],
+          exportFormats: [{ encoding: 'base58' }],
         },
       },
       lookupByAddress: jest.fn().mockReturnValue(mockAccount),
     } as unknown as SnapKeyringV2;
     const adapter = new MultichainSnapKeyringV1Adapter(keyring, messenger);
     mockSnapControllerHandleRequest.mockResolvedValue({
-      type: AccountExportType.PrivateKey,
-      encoding: PrivateKeyEncoding.Base58,
+      type: 'private-key',
+      encoding: 'base58',
       privateKey: 'base58-private-key',
     });
 
@@ -262,12 +257,12 @@ describe('MultichainSnapKeyringV1Adapter', () => {
         request: {
           jsonrpc: '2.0',
           id: mockAccount.id,
-          method: KeyringRpcMethod.ExportAccount,
+          method: 'keyring_exportAccount',
           params: {
             id: mockAccount.id,
             options: {
-              type: AccountExportType.PrivateKey,
-              encoding: PrivateKeyEncoding.Base58,
+              type: 'private-key',
+              encoding: 'base58',
             },
           },
         },
@@ -283,15 +278,15 @@ describe('MultichainSnapKeyringV1Adapter', () => {
       capabilities: {
         scopes: [EthScope.Eoa],
         privateKey: {
-          exportFormats: [{ encoding: PrivateKeyEncoding.Base58 }],
+          exportFormats: [{ encoding: 'base58' }],
         },
       },
       lookupByAddress: jest.fn().mockReturnValue(mockAccount),
     } as unknown as SnapKeyringV2;
     const adapter = new MultichainSnapKeyringV1Adapter(keyring, messenger);
     mockSnapControllerHandleRequest.mockResolvedValue({
-      type: AccountExportType.PrivateKey,
-      encoding: PrivateKeyEncoding.Base58,
+      type: 'private-key',
+      encoding: 'base58',
     });
 
     await expect(adapter.exportAccount(address)).rejects.toThrow(

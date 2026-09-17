@@ -3,11 +3,7 @@ import {
   SnapKeyring as SnapKeyringV2,
 } from '@metamask/eth-snap-keyring/v2';
 import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
-import {
-  AccountExportType,
-  KeyringRpcMethod,
-  KeyringType,
-} from '@metamask/keyring-api/v2';
+import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { Keyring } from '@metamask/keyring-utils';
 import { assert } from '@metamask/utils';
@@ -88,11 +84,11 @@ export class MultichainSnapKeyringV1Adapter extends SnapKeyringV1Adapter {
       request: {
         jsonrpc: '2.0',
         id: account.id,
-        method: KeyringRpcMethod.ExportAccount,
+        method: 'keyring_exportAccount',
         params: {
           id: account.id,
           options: {
-            type: AccountExportType.PrivateKey,
+            type: 'private-key',
             encoding: exportFormat.encoding,
           },
         },
