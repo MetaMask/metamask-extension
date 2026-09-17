@@ -36,9 +36,6 @@ export enum TraceName {
   NestedTest1 = 'Nested Test 1',
   NestedTest2 = 'Nested Test 2',
   NetworkList = 'Network List',
-  DeeplinkProcessed = 'Deeplink Processed',
-  DeeplinkNavigated = 'Deeplink Navigated',
-  DeeplinkSignatureVerify = 'Deeplink Signature Verify',
   NotificationDisplay = 'Notification Display',
   NotificationListTimeToContent = 'Notification List Time To Content',
   HomeBannerTimeToContent = 'Home Banner Time To Content',
@@ -110,7 +107,6 @@ export enum TraceName {
  */
 export enum TraceOperation {
   AccountList = 'account.list',
-  DeeplinkPerformance = 'deeplink.performance',
   NotificationPerformance = 'notification.performance',
   BannerPerformance = 'banner.performance',
   OnboardingUserJourney = 'onboarding.user_journey',
