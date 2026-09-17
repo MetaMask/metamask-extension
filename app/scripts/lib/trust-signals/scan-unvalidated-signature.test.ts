@@ -31,12 +31,12 @@ const makeCache = () => {
   };
 };
 
+const phishingController = {
+  scanAddress: jest.fn(),
+};
+
 jest.mock('../ppom/security-alerts-api', () => ({
   isSecurityAlertsAPIEnabled: jest.fn(),
-}));
-
-jest.mock('../../../../shared/lib/trust-signals', () => ({
-  mapChainIdToSupportedEVMChain: jest.fn(),
 }));
 
 jest.mock('./security-alerts-api', () => ({
@@ -47,10 +47,6 @@ const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
   '../ppom/security-alerts-api',
 ).isSecurityAlertsAPIEnabled;
 
-const mockMapChainIdToSupportedEVMChain = jest.requireMock(
-  '../../../../shared/lib/trust-signals',
-).mapChainIdToSupportedEVMChain;
-
 const mockScanAddressAndAddToCache = jest.requireMock(
   './security-alerts-api',
 ).scanAddressAndAddToCache;
@@ -59,7 +55,6 @@ describe('scanUnvalidatedSignatureAddresses', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
-    mockMapChainIdToSupportedEVMChain.mockReturnValue('ethereum');
   });
 
   it('scans extracted address fields after PPOM passes', () => {
@@ -72,13 +67,15 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       ),
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: cache,
+      phishingController,
     });
 
     expect(mockScanAddressAndAddToCache).toHaveBeenCalledWith(
       MALICIOUS_ADDRESS,
       cache.getAddressSecurityAlertResponse,
       cache.addAddressSecurityAlertResponse,
-      'ethereum',
+      CHAIN_ID,
+      phishingController,
     );
   });
 
@@ -90,6 +87,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       },
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: makeCache(),
+      phishingController,
     });
 
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
@@ -100,6 +98,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       request: { method: 'eth_signTypedData', params: [SIGNER_ADDRESS, '{}'] },
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: makeCache(),
+      phishingController,
     });
 
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
@@ -116,14 +115,14 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       ),
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: makeCache(),
+      phishingController,
     });
 
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
   });
 
-  it('does nothing on an unsupported chain', () => {
-    mockMapChainIdToSupportedEVMChain.mockReturnValue(null);
-
+  it('still scans on an unsupported chain so the controller can return ErrorResult', () => {
+    const cache = makeCache();
     scanUnvalidatedSignatureAddresses({
       request: makeRequest(
         'eth_signTypedData_v4',
@@ -131,10 +130,17 @@ describe('scanUnvalidatedSignatureAddresses', () => {
         TYPED_DATA_V4,
       ),
       chainId: '0x999' as `0x${string}`,
-      appStateController: makeCache(),
+      appStateController: cache,
+      phishingController,
     });
 
-    expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
+    expect(mockScanAddressAndAddToCache).toHaveBeenCalledWith(
+      MALICIOUS_ADDRESS,
+      cache.getAddressSecurityAlertResponse,
+      cache.addAddressSecurityAlertResponse,
+      '0x999',
+      phishingController,
+    );
   });
 
   it('excludes the signer address', () => {
@@ -148,6 +154,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       request: makeRequest('eth_signTypedData_v4', SIGNER_ADDRESS, data),
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: makeCache(),
+      phishingController,
     });
 
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
@@ -167,6 +174,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       request: makeRequest('eth_signTypedData_v4', SIGNER_ADDRESS, data),
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: makeCache(),
+      phishingController,
     });
 
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
@@ -184,13 +192,15 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       request: makeRequest('eth_signTypedData_v4', SIGNER_ADDRESS, data),
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: makeCache(),
+      phishingController,
     });
 
     expect(mockScanAddressAndAddToCache).toHaveBeenCalledWith(
       MALICIOUS_ADDRESS,
       expect.any(Function),
       expect.any(Function),
-      'ethereum',
+      CHAIN_ID,
+      phishingController,
     );
   });
 
@@ -207,6 +217,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
         },
         chainId: CHAIN_ID as `0x${string}`,
         appStateController: makeCache(),
+        phishingController,
       }),
     ).not.toThrow();
 
@@ -224,13 +235,15 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       },
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: cache,
+      phishingController,
     });
 
     expect(mockScanAddressAndAddToCache).toHaveBeenCalledWith(
       MALICIOUS_ADDRESS,
       expect.any(Function),
       expect.any(Function),
-      'ethereum',
+      CHAIN_ID,
+      phishingController,
     );
   });
 });
