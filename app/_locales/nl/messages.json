@@ -91,9 +91,6 @@
   "gasLimit": {
     "message": "Gaslimiet"
   },
-  "gasLimitTooLow": {
-    "message": "De gaslimiet moet minstens 21000 zijn"
-  },
   "here": {
     "message": "hier",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"

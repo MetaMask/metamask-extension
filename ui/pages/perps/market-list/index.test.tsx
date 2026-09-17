@@ -331,6 +331,9 @@ describe('MarketListView', () => {
         ).toBeInTheDocument();
       });
       expect(
+        screen.getByTestId('market-list-categories-pill-memecoin'),
+      ).toBeInTheDocument();
+      expect(
         screen.getByTestId('market-list-categories-pill-stock'),
       ).toBeInTheDocument();
       // `all` is expressed as no selection, never as its own pill.
@@ -340,6 +343,7 @@ describe('MarketListView', () => {
     });
 
     const filterLabelCases: [filter: string, expectedLabel: string][] = [
+      ['memecoin', messages.perpsFilterMemecoins.message],
       ['pre-ipo', messages.perpsFilterPreIpo.message],
       ['index', messages.perpsFilterIndex.message],
       ['etf', messages.perpsFilterEtf.message],
@@ -650,6 +654,72 @@ describe('MarketListView', () => {
           screen.queryByTestId('market-row-xyz-TSLA'),
         ).not.toBeInTheDocument();
       });
+    });
+
+    it('shows only tagged main-DEX markets on Memecoins and still lists them under Crypto', async () => {
+      const dogeMarket = {
+        ...mockCryptoMarkets[0],
+        symbol: 'DOGE',
+        name: 'Dogecoin',
+        tags: ['memecoin'],
+      };
+      const taggedHip3StockMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:FAKE',
+        name: 'Fake',
+        tags: ['memecoin'],
+      };
+      const taggedHip3CryptoMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:PEPE',
+        name: 'PEPE',
+        marketType: 'crypto' as const,
+        tags: ['memecoin'],
+      };
+
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: [
+          mockCryptoMarkets[0],
+          dogeMarket,
+          taggedHip3StockMarket,
+          taggedHip3CryptoMarket,
+        ],
+        cryptoMarkets: [mockCryptoMarkets[0], dogeMarket],
+        hip3Markets: [taggedHip3StockMarket, taggedHip3CryptoMarket],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(
+        screen.getByTestId('market-list-categories-pill-memecoin'),
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-DOGE')).toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+      expect(
+        screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('market-list-categories-pill-crypto'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-DOGE')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+      });
+      expect(
+        screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
     });
   });
 

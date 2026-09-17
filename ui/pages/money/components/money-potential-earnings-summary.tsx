@@ -2,10 +2,6 @@ import React, { useMemo } from 'react';
 import {
   Box,
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   SensitiveText,
   SensitiveTextLength,
   Text,
@@ -19,21 +15,23 @@ import {
   calculateMoneyProjectedEarnings,
   type MoneyDepositToken,
 } from '../../../hooks/money/money-deposit-token-utils';
+import { PopoverPosition } from '../../../components/component-library';
+import { TooltipText } from '../../../components/app/money/tooltip-text';
 
 type MoneyPotentialEarningsSummaryProps = {
   tokens: MoneyDepositToken[];
   apyDecimal: number | undefined;
+  apyPercent: number | undefined;
   privacyMode: boolean;
   headingVariant?: typeof TextVariant.HeadingMd | typeof TextVariant.HeadingLg;
-  showInfoIcon?: boolean;
 };
 
 export function MoneyPotentialEarningsSummary({
   tokens,
   apyDecimal,
+  apyPercent,
   privacyMode,
   headingVariant = TextVariant.HeadingMd,
-  showInfoIcon = true,
 }: MoneyPotentialEarningsSummaryProps) {
   const t = useI18nContext();
   const totalAssetsFiat = useMemo(
@@ -80,17 +78,20 @@ export function MoneyPotentialEarningsSummary({
           >
             {`${t('moneyEarnOnCryptoDescriptionMiddle')} `}
           </Text>
-          <SensitiveText
+          <TooltipText
+            text={`+${moneyFormatUsd(new BigNumber(projectedAmount.toString()))}`}
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
             color={TextColor.SuccessDefault}
             isHidden={privacyMode}
             length={SensitiveTextLength.Short}
-            className="inline"
+            position={PopoverPosition.Auto}
             data-testid="money-potential-earnings-projection"
           >
-            {`+${moneyFormatUsd(new BigNumber(projectedAmount.toString()))}`}
-          </SensitiveText>{' '}
+            {t('moneyEarnSectionAccountProjectedBalanceTooltip', [
+              String(apyPercent),
+            ])}
+          </TooltipText>{' '}
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextAlternative}
@@ -98,14 +99,6 @@ export function MoneyPotentialEarningsSummary({
           >
             {t('moneyEarnOnCryptoDescriptionSuffix')}
           </Text>
-          {showInfoIcon ? (
-            <Icon
-              name={IconName.Info}
-              size={IconSize.Sm}
-              color={IconColor.IconAlternative}
-              className="ml-1 inline-block align-text-bottom"
-            />
-          ) : null}
         </Box>
       ) : (
         <Text
