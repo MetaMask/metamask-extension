@@ -5586,7 +5586,8 @@
     "message": "Tự động sinh lời từ số dư Money của bạn"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Tự động sinh lời với APY lên đến ~$1"
+    "message": "Tự động sinh lời lên đến $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Có khả năng thanh khoản cao, không bị khóa vốn, cho phép giao dịch hoặc rút tiền bất cứ lúc nào"

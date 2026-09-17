@@ -564,20 +564,38 @@ export function MoneyHomePage() {
                 <ul className="mt-3 flex flex-col gap-3">
                   {[
                     apyDisplay
-                      ? t('moneyBenefitAutoEarnWithApy', [apyDisplay])
+                      ? t('moneyBenefitAutoEarnWithApy', [
+                          <span key="apy" className="text-success-default">
+                            {`~${t('moneyApy', [apyDisplay])}`}
+                          </span>,
+                        ])
                       : t('moneyBenefitAutoEarn'),
                     t('moneyBenefitStablecoin'),
                     t('moneyBenefitLiquidity'),
                     t('moneyBenefitSend'),
-                  ].map((benefit) => (
-                    <li key={benefit} className="flex items-start gap-3">
+                  ].map((benefit, index) => (
+                    <li
+                      key={
+                        typeof benefit === 'string'
+                          ? benefit
+                          : `benefit-${index}`
+                      }
+                      className="flex items-start gap-3"
+                    >
                       <Icon
                         name={IconName.Check}
                         size={IconSize.Md}
                         color={IconColor.SuccessDefault}
                         className="mt-0.5 shrink-0"
                       />
-                      <Text variant={TextVariant.BodyMd}>{benefit}</Text>
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        data-testid={
+                          index === 0 ? 'money-benefit-auto-earn' : undefined
+                        }
+                      >
+                        {benefit}
+                      </Text>
                     </li>
                   ))}
                 </ul>

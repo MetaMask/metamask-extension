@@ -5582,7 +5582,8 @@
     "message": "Erzielen Sie automatisch Zinsen auf Ihr Guthaben"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Erzielen Sie automatisch bis zu ca. $1 effektiven Jahreszins"
+    "message": "Erzielen Sie automatisch bis zu $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Erhalten Sie volle Liquidität ohne Sperrfristen, sodass Sie jederzeit handeln oder auszahlen können"

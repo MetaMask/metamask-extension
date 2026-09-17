@@ -5586,7 +5586,8 @@
     "message": "Money残高に対する利息を自動で獲得"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "最大約$1のAPYを自動で獲得"
+    "message": "最大$1を自動で獲得",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "ロックアップなしで完全な流動性が確保され、いつでも取引や引き出しが可能です"

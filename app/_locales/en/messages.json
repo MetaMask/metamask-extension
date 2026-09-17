@@ -5603,6 +5603,9 @@
   "moneyActivityFilterAll": {
     "message": "All"
   },
+  "moneyActivityFilterCard": {
+    "message": "Card"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Deposits"
   },
@@ -5680,7 +5683,8 @@
     "message": "Auto-earn yield on your Money balance"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Auto-earn up to ~$1 APY"
+    "message": "Auto-earn up to $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"

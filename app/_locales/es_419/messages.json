@@ -5586,7 +5586,8 @@
     "message": "Obtén rendimiento automático en tu saldo de Money"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Obtén un rendimiento automático de hasta ~$1 APY"
+    "message": "Obtén un rendimiento automático de hasta $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Obtén liquidez total sin bloqueos, para que puedas operar o retirar fondos en cualquier momento"
