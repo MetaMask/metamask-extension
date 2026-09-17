@@ -111,18 +111,6 @@ export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
 
-/**
- * Cheap size estimate for telemetry: `JSON.stringify` string length (UTF-16
- * code units), not UTF-8 byte length via `TextEncoder`.
- *
- * @param value - Controller state value to measure.
- * @returns Estimated length, or `0` when the value is not JSON-serializable.
- */
-function getSerializedLength(value: unknown): number {
-  const serializedValue = JSON.stringify(value);
-  return serializedValue === undefined ? 0 : serializedValue.length;
-}
-
 function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
   return new Promise((resolve) => {
     if (signal?.aborted) {
@@ -809,7 +797,11 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         continue;
       }
 
-      const serializedLength = getSerializedLength(value);
+      // Cheap size estimate for telemetry: `JSON.stringify` string length
+      // (UTF-16 code units), not UTF-8 byte length via `TextEncoder`.
+      const serializedValue = JSON.stringify(value);
+      const serializedLength =
+        serializedValue === undefined ? 0 : serializedValue.length;
       bytesByController[key] = serializedLength;
       controllerKeys.push(key);
       totalBytes += serializedLength;
