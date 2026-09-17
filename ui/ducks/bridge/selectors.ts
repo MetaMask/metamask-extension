@@ -127,6 +127,11 @@ import { parsePositionOverrides } from '../../../shared/lib/bridge/chain-value-o
 import { getCurrentCurrency } from '../metamask/metamask';
 import type { MetaMaskReduxState } from '../../store/store';
 import {
+  buildInsufficientNativeReserveError,
+  resolveMinimumBalanceToKeep,
+  resolveMinimumReserveBalanceForCaipAssetId,
+} from '../../pages/bridge/utils/minimum-reserve';
+import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
   getDefaultToToken,
@@ -141,11 +146,6 @@ import type {
   BridgeState,
   QuoteValidationErrors,
 } from './types';
-import {
-  buildInsufficientNativeReserveError,
-  resolveMinimumBalanceToKeep,
-  resolveMinimumReserveBalanceForCaipAssetId,
-} from '../../pages/bridge/utils/minimum-reserve';
 
 const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
