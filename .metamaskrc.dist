@@ -38,6 +38,11 @@ INFURA_STORYBOOK_PROJECT_ID=
 
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
+; Braze Web SDK (UI only). Leave unset to skip initialize.
+; From Braze dashboard → Settings → App Settings for the Extension app.
+; Endpoint looks like sdk.iad-07.braze.com (no https://).
+;BRAZE_WEB_API_KEY=
+;BRAZE_SDK_ENDPOINT=
 ; Override the Bridge API base URL (e.g. to point at a local server or a
 ; one-off environment). Takes precedence over the environment-based mapping.
 ;BRIDGE_USE_CUSTOM_BASE_URL=
