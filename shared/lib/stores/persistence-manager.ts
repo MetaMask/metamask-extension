@@ -103,11 +103,9 @@ export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
 
-function getSerializedByteLength(value: unknown): number {
+function getSerializedLength(value: unknown): number {
   const serializedValue = JSON.stringify(value);
-  return serializedValue === undefined
-    ? 0
-    : new TextEncoder().encode(serializedValue).byteLength;
+  return serializedValue === undefined ? 0 : serializedValue.length;
 }
 
 function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
@@ -781,28 +779,37 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     coalescedUpdates: number,
     writeDurationMs: number,
   ): void {
-    const controllerPairs = [...pairs.entries()]
-      .filter(([key]) => key !== 'data' && key !== 'manifest' && key !== 'meta')
-      .toSorted(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
     const sampleRate = this.#getPersistenceWriteSampleRate();
-    if (
-      controllerPairs.length === 0 ||
-      sampleRate <= 0 ||
-      this.#random() >= sampleRate
-    ) {
+    if (sampleRate <= 0 || this.#random() >= sampleRate) {
       return;
     }
 
     const measurementStartedAt = performance.now();
-    const bytesByController = Object.fromEntries(
-      controllerPairs.map(([key, value]) => [
-        key,
-        getSerializedByteLength(value),
-      ]),
-    );
-    const totalBytes = getSerializedByteLength(
-      Object.fromEntries(controllerPairs),
-    );
+    const bytesByController: Record<string, number> = {};
+    const controllerKeys: string[] = [];
+    let totalBytes = 0;
+
+    for (const [key, value] of pairs) {
+      if (key === 'data' || key === 'manifest' || key === 'meta') {
+        continue;
+      }
+
+      const serializedLength = getSerializedLength(value);
+      bytesByController[key] = serializedLength;
+      controllerKeys.push(key);
+      totalBytes += serializedLength;
+    }
+
+    if (controllerKeys.length === 0) {
+      return;
+    }
+
+    controllerKeys.sort((leftKey, rightKey) => leftKey.localeCompare(rightKey));
+    const sortedBytesByController: Record<string, number> = {};
+    for (const key of controllerKeys) {
+      sortedBytesByController[key] = bytesByController[key];
+    }
+
     const isIdle = this.#getIsIdle();
     let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
     if (isIdle === true) {
@@ -812,9 +819,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
 
     this.emit('splitStateWrite', {
-      bytesByController,
+      bytesByController: sortedBytesByController,
       coalescedUpdates,
-      controllerKeys: controllerPairs.map(([key]) => key),
+      controllerKeys,
       idleStatus,
       measurementDurationMs: performance.now() - measurementStartedAt,
       sampleRate,
