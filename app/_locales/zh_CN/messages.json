@@ -1512,9 +1512,6 @@
   "alertMessageGasFeeLow": {
     "message": "在选择低级型费用时，预计交易速度较慢，等待时间较长。如需更快交易，请选择市场型或激进型费用选项。"
   },
-  "alertMessageGasTooLow": {
-    "message": "要继续此交易，您需要将燃料限制提高到 21000 或更高。"
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "您的账户中没有足够的 $1 来支付网络费用。"
   },
@@ -4210,9 +4207,6 @@
   "gasLimit": {
     "message": "燃料限额"
   },
-  "gasLimitTooLow": {
-    "message": "燃料限制至少为21000"
-  },
   "gasPrice": {
     "message": "Gas 价格（GWEI）"
   },
@@ -5261,6 +5255,10 @@
   "lowLowercase": {
     "message": "低"
   },
+  "lowValueAssets": {
+    "message": "余额较低的代币（$1）",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "以太坊主网"
   },
@@ -5577,9 +5575,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "为您的 Money 余额自动赚取收益"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "自动赚取最高约 $1 年化收益率"
   },
   "moneyBenefitLiquidity": {
     "message": "享受完全流动性，无锁仓期限制，可随时交易或提现"
@@ -8765,7 +8760,7 @@
     "message": "上次使用"
   },
   "rampsQuoteFetchError": {
-    "message": "获取报价失败。"
+    "message": "获取报价时出错。请输入较小的金额或"
   },
   "rampsQuoteUnavailable": {
     "message": "报价不可用。"

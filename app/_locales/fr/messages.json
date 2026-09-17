@@ -4210,9 +4210,6 @@
   "gasLimit": {
     "message": "Limite de gaz"
   },
-  "gasLimitTooLow": {
-    "message": "La limite de carburant doit être d’au moins 21000"
-  },
   "gasPrice": {
     "message": "Prix du gaz (GWEI)"
   },
@@ -5581,9 +5578,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Gagnez automatiquement des intérêts sur le solde de votre compte « Money »"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Gagnez automatiquement jusqu'à environ $1 de rendement annuel"
   },
   "moneyBenefitLiquidity": {
     "message": "Profitez d’une liquidité totale sans période de blocage, vous pourrez ainsi trader ou retirer des fonds à tout moment"
@@ -8763,7 +8757,7 @@
     "message": "Dernière utilisation"
   },
   "rampsQuoteFetchError": {
-    "message": "Échec de la récupération de la cotation."
+    "message": "Erreur lors de l’obtention des cotations. Saisissez un montant inférieur ou"
   },
   "rampsQuoteUnavailable": {
     "message": "Cotation non disponible."

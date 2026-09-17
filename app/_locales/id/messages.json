@@ -1512,9 +1512,6 @@
   "alertMessageGasFeeLow": {
     "message": "Saat memilih biaya rendah, perkirakan transaksi lebih lambat dan waktu tunggu lebih lama. Untuk transaksi lebih cepat, pilih opsi biaya Pasar atau Agresif."
   },
-  "alertMessageGasTooLow": {
-    "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 21000 atau lebih tinggi."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Anda tidak memiliki cukup $1 di akun untuk membayar biaya jaringan."
   },
@@ -4210,9 +4207,6 @@
   "gasLimit": {
     "message": "Batas gas"
   },
-  "gasLimitTooLow": {
-    "message": "Batas gas minimum adalah 21000"
-  },
   "gasPrice": {
     "message": "Harga gas"
   },
@@ -5266,7 +5260,7 @@
     "message": "rendah"
   },
   "lowValueAssets": {
-    "message": "Token saldo rendah ($1)",
+    "message": "Token bersaldo rendah ($1)",
     "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
@@ -5585,9 +5579,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Persentase hasil otomatis pada saldo Money Anda"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Hasil otomatis hingga ~ $1 APY"
   },
   "moneyBenefitLiquidity": {
     "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"
@@ -8771,7 +8762,7 @@
     "message": "Terakhir digunakan"
   },
   "rampsQuoteFetchError": {
-    "message": "Gagal mengambil kuotasi."
+    "message": "Terjadi kesalahan saat mengambil kuotasi. Masukkan jumlah yang lebih rendah atau"
   },
   "rampsQuoteUnavailable": {
     "message": "Kuotasi tidak tersedia."

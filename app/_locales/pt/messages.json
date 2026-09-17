@@ -1512,9 +1512,6 @@
   "alertMessageGasFeeLow": {
     "message": "Ao escolher uma taxa baixa, a expectativa é de transações mais lentas e tempos de espera maiores. Para transações mais rápidas, escolha as opções de taxa Mercado ou Agressiva."
   },
-  "alertMessageGasTooLow": {
-    "message": "Para continuar com essa transação, você precisará aumentar o limite de gás para 21000 ou mais."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Você não tem $1 suficiente em sua conta para pagar as taxas de rede."
   },
@@ -4210,9 +4207,6 @@
   "gasLimit": {
     "message": "Limite de gás"
   },
-  "gasLimitTooLow": {
-    "message": "O limite de gás deve ser de pelo menos 21000"
-  },
   "gasPrice": {
     "message": "Preço do gás (GWEI)"
   },
@@ -5581,9 +5575,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Receba rendimentos automaticamente sobre o saldo em sua conta Money"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Receba até ~$1 de APY automaticamente"
   },
   "moneyBenefitLiquidity": {
     "message": "Obtenha liquidez total sem períodos de bloqueio, permitindo que você possa negociar ou sacar quando quiser"
@@ -8763,7 +8754,7 @@
     "message": "Usado pela última vez"
   },
   "rampsQuoteFetchError": {
-    "message": "Falha ao buscar cotação."
+    "message": "Erro ao obter cotações. Insira um valor menor ou"
   },
   "rampsQuoteUnavailable": {
     "message": "Cotação não disponível."

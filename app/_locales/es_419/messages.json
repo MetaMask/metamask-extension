@@ -1512,9 +1512,6 @@
   "alertMessageGasFeeLow": {
     "message": "Al elegir una tarifa baja, tenga en cuenta que las transacciones serán más lentas y los tiempos de espera más largos. Para transacciones más rápidas, elija las opciones de tarifa de mercado o agresiva."
   },
-  "alertMessageGasTooLow": {
-    "message": "Para continuar con esta transacción, deberá aumentar el límite de gas a 21000 o más."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "No tienes suficiente $1 en tu cuenta para pagar las tarifas de red."
   },
@@ -5265,6 +5262,10 @@
   "lowLowercase": {
     "message": "baja"
   },
+  "lowValueAssets": {
+    "message": "Tokens con saldo bajo ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "Red principal de Ethereum"
   },
@@ -5581,9 +5582,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Obtén rendimiento automático en tu saldo de Money"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Obtén un rendimiento automático de hasta ~$1 APY"
   },
   "moneyBenefitLiquidity": {
     "message": "Obtén liquidez total sin bloqueos, para que puedas operar o retirar fondos en cualquier momento"
@@ -8773,7 +8771,7 @@
     "message": "Último uso"
   },
   "rampsQuoteFetchError": {
-    "message": "No se pudo obtener la cotización."
+    "message": "Error al obtener cotizaciones. Ingresa un monto menor o"
   },
   "rampsQuoteUnavailable": {
     "message": "Cotización no disponible."

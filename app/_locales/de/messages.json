@@ -4210,9 +4210,6 @@
   "gasLimit": {
     "message": "Gas-Limit"
   },
-  "gasLimitTooLow": {
-    "message": "Gas-Limit muss mindestens 21.000 betragen"
-  },
   "gasPrice": {
     "message": "Gas-Preis"
   },
@@ -5261,6 +5258,10 @@
   "lowLowercase": {
     "message": "niedrig"
   },
+  "lowValueAssets": {
+    "message": "Token mit geringem Saldo ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "Ethereum-Hauptnetz"
   },
@@ -5577,9 +5578,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Erzielen Sie automatisch Zinsen auf Ihr Guthaben"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Erzielen Sie automatisch bis zu ca. $1 effektiven Jahreszins"
   },
   "moneyBenefitLiquidity": {
     "message": "Erhalten Sie volle Liquidität ohne Sperrfristen, sodass Sie jederzeit handeln oder auszahlen können"
@@ -8759,7 +8757,7 @@
     "message": "Zuletzt verwendet"
   },
   "rampsQuoteFetchError": {
-    "message": "Angebot konnte nicht abgerufen werden."
+    "message": "Fehler beim Abrufen der Angebote. Geben Sie einen niedrigeren Betrag ein oder"
   },
   "rampsQuoteUnavailable": {
     "message": "Angebot nicht verfügbar."

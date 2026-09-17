@@ -5261,6 +5261,10 @@
   "lowLowercase": {
     "message": "низкая"
   },
+  "lowValueAssets": {
+    "message": "Токены с низким балансом ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "Мейн-нет Ethereum"
   },
@@ -5577,9 +5581,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Автоматически получайте доход на ваш баланс Money"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Автоматически зарабатывайте до ~$1 годовых"
   },
   "moneyBenefitLiquidity": {
     "message": "Получите полную ликвидность без блокировок, чтобы вы могли торговать или выводить средства в любое время"
@@ -8759,7 +8760,7 @@
     "message": "Использовалось последним"
   },
   "rampsQuoteFetchError": {
-    "message": "Не удалось получить котировку."
+    "message": "Ошибка при получении котировок. Введите меньшую сумму или "
   },
   "rampsQuoteUnavailable": {
     "message": "Котировка недоступна."

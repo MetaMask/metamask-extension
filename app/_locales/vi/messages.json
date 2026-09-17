@@ -1512,9 +1512,6 @@
   "alertMessageGasFeeLow": {
     "message": "Khi chọn phí thấp, hãy lưu ý giao dịch sẽ chậm hơn và thời gian chờ đợi lâu hơn. Để giao dịch nhanh hơn, hãy chọn các tùy chọn phí Thị trường hoặc Cao."
   },
-  "alertMessageGasTooLow": {
-    "message": "Để tiếp tục giao dịch này, bạn cần tăng giới hạn phí gas lên 21000 hoặc cao hơn."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí mạng."
   },
@@ -4210,9 +4207,6 @@
   "gasLimit": {
     "message": "Hạn mức phí gas"
   },
-  "gasLimitTooLow": {
-    "message": "Hạn mức phí gas ít nhất phải là 21000"
-  },
   "gasPrice": {
     "message": "Giá gas"
   },
@@ -5265,6 +5259,10 @@
   "lowLowercase": {
     "message": "thấp"
   },
+  "lowValueAssets": {
+    "message": "Token có số dư thấp ($1)",
+    "description": "$1 is the number of low value assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -5581,9 +5579,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Tự động sinh lời từ số dư Money của bạn"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Tự động sinh lời với APY lên đến ~$1"
   },
   "moneyBenefitLiquidity": {
     "message": "Có khả năng thanh khoản cao, không bị khóa vốn, cho phép giao dịch hoặc rút tiền bất cứ lúc nào"
@@ -8773,7 +8768,7 @@
     "message": "Sử dụng lần cuối"
   },
   "rampsQuoteFetchError": {
-    "message": "Tìm nạp báo giá không thành công."
+    "message": "Lỗi khi lấy báo giá. Nhập số tiền thấp hơn hoặc"
   },
   "rampsQuoteUnavailable": {
     "message": "Không có báo giá."
