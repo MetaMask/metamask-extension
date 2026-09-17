@@ -5453,13 +5453,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Gana $1 % de APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Información de APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "La tasa mostrada es un rendimiento porcentual anual (APY) estimado basado en las condiciones actuales del mercado. El APY es variable y no está garantizado."
   },
@@ -5469,9 +5462,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Saldo proyectado a 1 años:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Saldo proyectado a 1 años"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "La proyección supone que el rendimiento porcentual anual (APY) de $1 % se mantiene sin cambios durante un año. El APY es variable y no está garantizado.",
@@ -5591,9 +5581,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Reintentar"
-  },
-  "moneyBalanceTitle": {
-    "message": "Saldo de Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo no disponible"
@@ -6158,9 +6145,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Tarifa de red"
-  },
-  "networkMenu": {
-    "message": "Menú de red"
   },
   "networkMenuHeading": {
     "message": "Seleccionar una red"
@@ -7683,6 +7667,9 @@
   },
   "perpsFilterIndex": {
     "message": "Índices"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
   },
   "perpsFilterMore": {
     "message": "Más",

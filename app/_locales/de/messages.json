@@ -5449,13 +5449,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1 % Effektivertrag verdienen",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Info zum effektiven Jahreszins (APY)"
-  },
   "moneyAccountApyTooltip": {
     "message": "Der angegebene effektive Jahreszins (APY) ist ein auf den aktuellen Marktbedingungen basierender Schätzwert. Der effektive Jahreszins ist variabel und wird nicht garantiert."
   },
@@ -5465,9 +5458,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Prognostizierter 1-Jahres-Saldo:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Prognostizierter 1-Jahres-Saldo"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Die Prognose geht davon aus, dass der effektive Jahreszins (APY) von $1 % über einen Zeitraum von einem Jahr unverändert bleibt. Der Effektivertrag ist variabel und wird nicht garantiert. Keine Garantie für die Rendite.",
@@ -5587,9 +5577,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Erneut versuchen"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money-Saldo"
   },
   "moneyBalanceUnavailable": {
     "message": "Kontostand nicht verfügbar"
@@ -6154,9 +6141,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Netzwerkgebühr"
-  },
-  "networkMenu": {
-    "message": "Netzwerkmenü"
   },
   "networkMenuHeading": {
     "message": "Netzwerk wählen"
@@ -7673,6 +7657,9 @@
   },
   "perpsFilterIndex": {
     "message": "Indizes"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
   },
   "perpsFilterMore": {
     "message": "Mehr",

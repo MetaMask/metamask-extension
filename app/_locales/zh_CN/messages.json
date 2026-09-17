@@ -5449,13 +5449,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "赚取 $1% 年化收益率",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "年收益率信息"
-  },
   "moneyAccountApyTooltip": {
     "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
   },
@@ -5465,9 +5458,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "预计 1 年后余额:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "预计 1 年后余额"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "预测基于 $1% 的年化收益率（APY）在一年内保持不变。APY 会随市场波动，并非固定保证。",
@@ -5587,9 +5577,6 @@
   },
   "moneyBalanceRetry": {
     "message": "重试"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money 余额"
   },
   "moneyBalanceUnavailable": {
     "message": "余额不可用"
@@ -6154,9 +6141,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "网络费"
-  },
-  "networkMenu": {
-    "message": "网络菜单"
   },
   "networkMenuHeading": {
     "message": "选择网络"
@@ -7679,6 +7663,9 @@
   },
   "perpsFilterIndex": {
     "message": "指数"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
   },
   "perpsFilterMore": {
     "message": "展开",

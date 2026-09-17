@@ -5456,13 +5456,6 @@
   "money": {
     "message": "वित्त"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1 APY कमाएं",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "एपीवाय की जानकारी"
-  },
   "moneyAccountApyTooltip": {
     "message": "दिखाया गया रेट मौजूदा मार्केट कंडीशन के आधार पर एक अनुमानित एनुअल परसेंटेज यील्ड (APY) है। APY वेरिएबल है और इसकी गारंटी नहीं है।"
   },
@@ -5472,9 +5465,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "अनुमानित 1-वर्षीय बैलेंस:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "अनुमानित 1-वर्षीय बैलेंस"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "प्रोजेक्शन में माना गया है कि $1% एनुअल परसेंटेज यील्ड (APY) एक वर्ष तक अपरिवर्तित रहती है। APY परिवर्तनशील है और इसकी गारंटी नहीं है।",
@@ -5594,9 +5584,6 @@
   },
   "moneyBalanceRetry": {
     "message": "फिर से प्रयास करें"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money बैलेंस"
   },
   "moneyBalanceUnavailable": {
     "message": "बैलेंस अनुपलब्ध है"
@@ -6172,9 +6159,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "नेटवर्क फीस"
-  },
-  "networkMenu": {
-    "message": "नेटवर्क मेन्यू"
   },
   "networkMenuHeading": {
     "message": "एक नेटवर्क चुनें"
@@ -7691,6 +7675,9 @@
   },
   "perpsFilterIndex": {
     "message": "इनडाइसेज़"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
   },
   "perpsFilterMore": {
     "message": "अधिक",
