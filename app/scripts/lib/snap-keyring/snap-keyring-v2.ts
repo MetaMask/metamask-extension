@@ -5,14 +5,12 @@ import {
 import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
 import {
   AccountExportType,
-  ExportedAccountStruct,
   KeyringRpcMethod,
   KeyringType,
 } from '@metamask/keyring-api/v2';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { Keyring } from '@metamask/keyring-utils';
 import { assert } from '@metamask/utils';
-import { assert as assertStruct } from '@metamask/superstruct';
 import { HandlerType } from '@metamask/snaps-utils';
 import { isFlask } from '../../../../shared/lib/build-types';
 import {
@@ -100,7 +98,13 @@ export class MultichainSnapKeyringV1Adapter extends SnapKeyringV1Adapter {
         },
       },
     });
-    assertStruct(result, ExportedAccountStruct);
+    assert(
+      typeof result === 'object' &&
+        result !== null &&
+        'privateKey' in result &&
+        typeof result.privateKey === 'string',
+      'Snap account export did not return a private key',
+    );
 
     return result.privateKey;
   }
