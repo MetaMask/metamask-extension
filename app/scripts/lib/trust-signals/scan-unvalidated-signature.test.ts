@@ -1,3 +1,4 @@
+import type { ScanAddressResponse } from '../../../../shared/lib/trust-signals';
 import { scanUnvalidatedSignatureAddresses } from './scan-unvalidated-signature';
 
 const MALICIOUS_ADDRESS = '0x0000000000000000000000000000000000000bad';
@@ -22,10 +23,13 @@ const makeRequest = (
 });
 
 const makeCache = () => {
-  const cache: Record<string, unknown> = {};
+  const cache: Record<string, ScanAddressResponse> = {};
   return {
     getAddressSecurityAlertResponse: (address: string) => cache[address],
-    addAddressSecurityAlertResponse: (address: string, response: unknown) => {
+    addAddressSecurityAlertResponse: (
+      address: string,
+      response: ScanAddressResponse,
+    ) => {
       cache[address] = response;
     },
   };
