@@ -424,11 +424,22 @@ export const CustomTokenImportPage = () => {
     [t],
   );
 
+  const prevSelectedNetworkForClearRef = useRef<string | null>(null);
+
   useEffect(() => {
+    const previousNetwork = prevSelectedNetworkForClearRef.current;
+    prevSelectedNetworkForClearRef.current = selectedNetwork;
+
+    // Skip the initial mount: the form starts empty and clearing here (especially
+    // via a microtask) races with the first address entry in tests and in fast UX.
+    if (previousNetwork === null || previousNetwork === selectedNetwork) {
+      return;
+    }
+
     // Bump the lookup token so any address lookup started on the previous
     // network can't apply its result here.
     addressLookupRef.current += 1;
-    queueMicrotask(() => clearFormData());
+    clearFormData();
   }, [selectedNetwork, clearFormData]);
 
   const handleSelectNetwork = useCallback(
