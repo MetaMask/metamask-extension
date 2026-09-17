@@ -5457,13 +5457,6 @@
   "money": {
     "message": "Dana"
   },
-  "moneyAccountApyPitch": {
-    "message": "Dapatkan APY $1%",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Informasi APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin."
   },
@@ -5473,9 +5466,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Proyeksi saldo 1 tahun:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Proyeksi saldo 1 tahun"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Proyeksi ini mengasumsikan bahwa Persentase Hasil Tahunan (APY) sebesar $1% tetap tidak berubah selama satu tahun. APY bersifat variabel dan tidak dijamin.",
@@ -5595,9 +5585,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Coba lagi"
-  },
-  "moneyBalanceTitle": {
-    "message": "Saldo dana"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo tidak tersedia"
@@ -7697,6 +7684,9 @@
   },
   "perpsFilterIndex": {
     "message": "Indeks"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
   },
   "perpsFilterMore": {
     "message": "Selengkapnya",
