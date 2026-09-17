@@ -16,11 +16,13 @@ export type ProviderTag = {
 };
 
 /**
- * Tag pill for a provider row (previously used / reliability / best rate).
+ * Tag pills for a provider row (previously used / reliability / best rate).
  *
  * Tags are derived only from the quote displayed on the row (`matchedQuote`),
  * matching mobile's ProviderSelection, so a tag can never appear next to a
- * different quote's amount.
+ * different quote's amount. All matching tags are returned in mobile's Quote
+ * pill order so e.g. a quote that is both most reliable and best rate shows
+ * both pills.
  * Each reason gets its own severity so the pills are visually distinct.
  * `Info` aliases the `primary-muted` / `primary-default` design tokens.
  *
@@ -28,24 +30,25 @@ export type ProviderTag = {
  * @param matchedQuote - The quote displayed for the provider row.
  * @param ordersProviders - Provider ids from completed orders.
  * @param t - i18n translate function.
- * @returns Localized tag with its severity, or null.
+ * @returns Localized tags with their severities.
  */
-export function getProviderTag(
+export function getProviderTags(
   providerId: string,
   matchedQuote: Quote | null,
   ordersProviders: string[],
   t: TranslateFn,
-): ProviderTag | null {
+): ProviderTag[] {
+  const tags: ProviderTag[] = [];
   if (ordersProviders.includes(providerId)) {
-    return { label: t('rampsPreviouslyUsed'), severity: TagSeverity.Info };
+    tags.push({ label: t('rampsPreviouslyUsed'), severity: TagSeverity.Info });
   }
   if (matchedQuote?.metadata?.tags?.isMostReliable) {
-    return { label: t('rampsMostReliable'), severity: TagSeverity.Neutral };
+    tags.push({ label: t('rampsMostReliable'), severity: TagSeverity.Neutral });
   }
   if (matchedQuote?.metadata?.tags?.isBestRate) {
-    return { label: t('rampsBestRate'), severity: TagSeverity.Success };
+    tags.push({ label: t('rampsBestRate'), severity: TagSeverity.Success });
   }
-  return null;
+  return tags;
 }
 
 type BuildProviderListItemsArgs = {

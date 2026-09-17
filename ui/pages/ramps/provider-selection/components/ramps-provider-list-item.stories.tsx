@@ -7,6 +7,7 @@ import {
   TagSeverity,
 } from '@metamask/design-system-react';
 import RampsProviderListItem from './ramps-provider-list-item';
+import type { ProviderTag } from './utils/build-provider-list-items';
 
 const provider = {
   id: '/providers/revolut',
@@ -53,12 +54,22 @@ const stripeQuote = {
   },
 } as unknown as Quote;
 
+const bestRateTag: ProviderTag = {
+  label: 'Best rate',
+  severity: TagSeverity.Success,
+};
+
+const mostReliableTag: ProviderTag = {
+  label: 'Most reliable',
+  severity: TagSeverity.Neutral,
+};
+
 const meta: Meta<typeof RampsProviderListItem> = {
   title: 'Pages/Ramps/ProviderSelection/RampsProviderListItem',
   component: RampsProviderListItem,
   argTypes: {
     provider: { control: 'object' },
-    tag: { control: 'object' },
+    tags: { control: 'object' },
     quote: { control: 'object' },
     isSelected: { control: 'boolean' },
     isDisabled: { control: 'boolean' },
@@ -74,7 +85,7 @@ type Story = StoryObj<typeof RampsProviderListItem>;
 export const BestRate: Story = {
   args: {
     provider,
-    tag: { label: 'Best rate', severity: TagSeverity.Success },
+    tags: [bestRateTag],
     showQuote: true,
     quote,
     currency: 'EUR',
@@ -86,9 +97,21 @@ export const BestRate: Story = {
 export const MostReliable: Story = {
   args: {
     provider: moonpay,
-    tag: { label: 'Most reliable', severity: TagSeverity.Neutral },
+    tags: [mostReliableTag],
     showQuote: true,
     quote: moonpayQuote,
+    currency: 'EUR',
+    tokenSymbol: 'ETH',
+    onClick: () => undefined,
+  },
+};
+
+export const BothTags: Story = {
+  args: {
+    provider,
+    tags: [mostReliableTag, bestRateTag],
+    showQuote: true,
+    quote,
     currency: 'EUR',
     tokenSymbol: 'ETH',
     onClick: () => undefined,
@@ -114,7 +137,7 @@ export const ProviderRows: Story = {
     >
       <RampsProviderListItem
         provider={provider}
-        tag={BestRate.args?.tag ?? null}
+        tags={[mostReliableTag, bestRateTag]}
         showQuote
         quote={quote}
         currency="EUR"
@@ -123,7 +146,7 @@ export const ProviderRows: Story = {
       />
       <RampsProviderListItem
         provider={moonpay}
-        tag={MostReliable.args?.tag ?? null}
+        tags={[mostReliableTag]}
         showQuote
         quote={moonpayQuote}
         currency="EUR"

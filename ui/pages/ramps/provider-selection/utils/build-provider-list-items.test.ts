@@ -2,7 +2,8 @@ import type { Provider, QuotesResponse } from '@metamask/ramps-controller';
 import {
   buildProviderListItems,
   findProviderQuote,
-  getProviderTag,
+  getProviderTags,
+  type ProviderTag,
 } from './build-provider-list-items';
 
 const transak = {
@@ -155,48 +156,56 @@ describe('findProviderQuote', () => {
       'debit-credit-card',
     );
     expect(matchedQuote?.quote?.amountOut).toBe('0.05');
-    expect(getProviderTag(transak.id, matchedQuote, [], t)).toBeNull();
+    expect(getProviderTags(transak.id, matchedQuote, [], t)).toStrictEqual([]);
   });
 });
 
-describe('getProviderTag', () => {
-  it('returns previously used before quote tags', () => {
-    expect(
-      getProviderTag(
-        transak.id,
-        {
-          provider: transak.id,
-          quote: {
-            amountIn: 1,
-            amountOut: '1',
-            paymentMethod: 'card',
-          },
-          metadata: {
-            tags: { isBestRate: true, isMostReliable: true },
-          },
+describe('getProviderTags', () => {
+  it('returns previously used first, before quote tags', () => {
+    const tags: ProviderTag[] = getProviderTags(
+      transak.id,
+      {
+        provider: transak.id,
+        quote: {
+          amountIn: 1,
+          amountOut: '1',
+          paymentMethod: 'card',
         },
-        [transak.id],
-        t,
-      ),
-    ).toStrictEqual({ label: 'rampsPreviouslyUsed', severity: 'info' });
+        metadata: {
+          tags: { isBestRate: true, isMostReliable: true },
+        },
+      },
+      [transak.id],
+      t,
+    );
+    expect(tags[0]).toStrictEqual({
+      label: 'rampsPreviouslyUsed',
+      severity: 'info',
+    });
+    expect(tags).toHaveLength(3);
   });
 
-  it('returns most reliable then best rate, each with its own severity', () => {
+  it('returns both most reliable and best rate, each with its own severity', () => {
     expect(
-      getProviderTag(
+      getProviderTags(
         transak.id,
         {
           provider: transak.id,
           quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-          metadata: { tags: { isMostReliable: true } },
+          metadata: { tags: { isMostReliable: true, isBestRate: true } },
         },
         [],
         t,
       ),
-    ).toStrictEqual({ label: 'rampsMostReliable', severity: 'neutral' });
+    ).toStrictEqual([
+      { label: 'rampsMostReliable', severity: 'neutral' },
+      { label: 'rampsBestRate', severity: 'success' },
+    ]);
+  });
 
+  it('returns only best rate when the quote is not most reliable', () => {
     expect(
-      getProviderTag(
+      getProviderTags(
         transak.id,
         {
           provider: transak.id,
@@ -206,12 +215,12 @@ describe('getProviderTag', () => {
         [],
         t,
       ),
-    ).toStrictEqual({ label: 'rampsBestRate', severity: 'success' });
+    ).toStrictEqual([{ label: 'rampsBestRate', severity: 'success' }]);
   });
 
-  it('returns null when the matched quote has no tags', () => {
+  it('returns an empty array when the matched quote has no tags', () => {
     expect(
-      getProviderTag(
+      getProviderTags(
         transak.id,
         {
           provider: transak.id,
@@ -221,10 +230,10 @@ describe('getProviderTag', () => {
         [],
         t,
       ),
-    ).toBeNull();
+    ).toStrictEqual([]);
   });
 
-  it('returns null when there is no matched quote', () => {
-    expect(getProviderTag(transak.id, null, [], t)).toBeNull();
+  it('returns an empty array when there is no matched quote', () => {
+    expect(getProviderTags(transak.id, null, [], t)).toStrictEqual([]);
   });
 });

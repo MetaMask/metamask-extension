@@ -25,7 +25,7 @@ export type RampsProviderListItemProps = {
   provider: Provider;
   isSelected?: boolean;
   isDisabled?: boolean;
-  tag?: ProviderTag | null;
+  tags?: ProviderTag[];
   subtitle?: string | null;
   showQuote?: boolean;
   quote?: Quote | null;
@@ -42,7 +42,7 @@ export type RampsProviderListItemProps = {
  * @param options0.provider
  * @param options0.isSelected
  * @param options0.isDisabled
- * @param options0.tag
+ * @param options0.tags
  * @param options0.subtitle
  * @param options0.showQuote
  * @param options0.quote
@@ -55,7 +55,7 @@ export default function RampsProviderListItem({
   provider,
   isSelected = false,
   isDisabled = false,
-  tag = null,
+  tags = [],
   subtitle = null,
   showQuote = false,
   quote = null,
@@ -114,15 +114,16 @@ export default function RampsProviderListItem({
             >
               {provider.name}
             </Text>
-            {tag ? (
+            {tags.map((tag, index) => (
               <Tag
+                key={tag.label}
                 severity={tag.severity}
                 className="shrink-0 self-center"
-                data-testid={`ramps-provider-item-tag-${provider.id}`}
+                data-testid={`ramps-provider-item-tag-${provider.id}-${index}`}
               >
                 {tag.label}
               </Tag>
-            ) : null}
+            ))}
           </Box>
           {subtitle ? (
             <Text
