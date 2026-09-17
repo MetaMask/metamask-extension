@@ -14,8 +14,9 @@
 #                                  (default: bump/swc-core-amo-determinism)
 #
 # source=stock  → tagged archive as published (@swc/core 1.13.3 on v13.47.1)
-# source=bump   → same prepare_release path, but inject SWC 1.16.2 + loader
-#                 fixes from AGENT_SWC_BUMP_REF into the extracted source
+# source=bump   → same prepare_release path, with surgical SWC 1.16.2 + loader
+#                 inject matching local Docker (.cursor/amo-13471-10x-swc-bump.sh).
+#                 Does NOT copy webpack/helpers from AGENT_SWC_BUMP_REF.
 
 set -euo pipefail
 
@@ -70,18 +71,11 @@ clone_firefox_bundle_script() {
 
 prepare_bump_patches() {
   local patch_root="$1"
-  mkdir -p "${patch_root}/development/webpack/utils/loaders"
+  mkdir -p "${patch_root}"
 
-  echo "Fetching SWC bump files from ${SWC_BUMP_REF}..."
-  git fetch --depth 1 origin "${SWC_BUMP_REF}"
-  git show "FETCH_HEAD:development/webpack/webpack.config.ts" \
-    > "${patch_root}/development/webpack/webpack.config.ts"
-  # helpers.ts exports TYPESCRIPT_{NON_,}TSX_FILE_RE required by bump loaders
-  git show "FETCH_HEAD:development/webpack/utils/helpers.ts" \
-    > "${patch_root}/development/webpack/utils/helpers.ts"
-  git show "FETCH_HEAD:development/webpack/utils/loaders/envValidationLoader.ts" \
-    > "${patch_root}/development/webpack/utils/loaders/envValidationLoader.ts"
-
+  # Surgical inject only (apples-to-apples with local Docker). Do not fetch or
+  # copy webpack/helpers/envValidationLoader from the bump branch.
+  echo "Preparing surgical SWC bump inject (no bump-branch file copies)..."
   cp "${INJECT_PY}" "${patch_root}/inject-amo-swc-bump.py"
 }
 
@@ -106,9 +100,9 @@ if needle not in text:
     raise SystemExit("compare_builds.sh inject point not found")
 
 inject = f'''log_success "Bundle script copied to ${{SOURCE_DIR}}"
-# AGENT: inject @swc/core@1.16.2 + ts/tsx loader fixes from bump branch files
+# AGENT: surgical inject @swc/core@1.16.2 + ts/tsx loader fixes (tagged source only)
 if [ "${{AGENT_APPLY_SWC_BUMP:-}}" = "1" ]; then
-  python3 "{patch_root}/inject-amo-swc-bump.py" "${{SOURCE_DIR}}" "{patch_root}"
+  python3 "{patch_root}/inject-amo-swc-bump.py" "${{SOURCE_DIR}}"
 fi
 '''
 path.write_text(text.replace(needle, inject, 1), encoding="utf-8")

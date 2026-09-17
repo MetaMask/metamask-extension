@@ -2,8 +2,10 @@ name: Test AMO prepare_release SWC A/B
 
 # Temporary experiment workflow (inspired by #46392).
 # Proves prepare_release.sh runtime determinism for:
-#   - stock tagged v13.47.1 (@swc/core 1.13.3, same as main at that release)
-#   - same path with SWC bump inject from bump/swc-core-amo-determinism (1.16.2)
+#   - stock tagged v13.47.1 (@swc/core 1.13.3)
+#   - same path with surgical SWC 1.16.2 + loader inject (apples-to-apples with
+#     local Docker .cursor/amo-13471-10x-swc-bump.sh: in-place patches only,
+#     no bump-branch webpack/helpers file copies)
 # across main + flask, 100 iterations each (400 jobs total).
 #
 # GitHub limits a single matrix to 256 jobs, so stock/bump × main/flask are
@@ -234,9 +236,10 @@ jobs:
               "cells": {},
               "proofNote": (
                   "stock = tagged v13.47.1 prepare_release (@swc/core 1.13.3). "
-                  "bump = same path with inject from bump/swc-core-amo-determinism "
-                  "(@swc/core 1.16.2, mangle ON). Determinism proof = unique local "
-                  "runtime hashes among successful local builds."
+                  "bump = same path with surgical inject matching local Docker "
+                  "(@swc/core 1.16.2 + in-place ts/tsx loader fixes, stock "
+                  "helpers/mangle ON, no bump-branch file copies). Determinism "
+                  "proof = unique local runtime hashes among successful local builds."
               ),
           }
 
