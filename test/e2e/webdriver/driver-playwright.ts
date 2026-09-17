@@ -927,7 +927,10 @@ export class PlaywrightDriver {
     url: string;
     timeout?: number;
   }): Promise<void> {
-    await this.page.waitForURL(url, { timeout });
+    await this.page.waitForURL((current) => current.href === url, {
+      timeout,
+      waitUntil: 'commit',
+    });
   }
 
   async refresh(): Promise<void> {
