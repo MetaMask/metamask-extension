@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import IndicatorBar from './advanced-chart-indicator-bar';
@@ -128,7 +129,7 @@ describe('IndicatorBar', () => {
   });
 
   describe('Indicator Toggle Interactions', () => {
-    it.each<{ name: string; displayText: string }>([
+    it.each([
       { name: 'BOL', displayText: 'BOL' },
       { name: 'RSI', displayText: 'RSI' },
       {
@@ -138,7 +139,7 @@ describe('IndicatorBar', () => {
       { name: 'MACD', displayText: 'MACD' },
     ])(
       'calls onIndicatorToggle when $name is clicked',
-      ({ name, displayText }) => {
+      ({ name, displayText }: { name: string; displayText: string }) => {
         const { getByText } = render(<IndicatorBar {...defaultProps} />);
 
         fireEvent.click(getByText(displayText));
