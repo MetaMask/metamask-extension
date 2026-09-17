@@ -1226,6 +1226,23 @@
         "@metamask/base-data-service>lodash-es": true
       }
     },
+    "@metamask/perps-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/base-data-service>lodash-es": true
+      }
+    },
     "@metamask/ppom-validator>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -2336,13 +2353,13 @@
       "packages": {
         "@metamask/perps-controller>@metamask/abi-utils": true,
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/perps-controller>@metamask/controller-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
         "@metamask/perps-controller>bignumber.js": true,
         "reselect": true,
-        "uuid": true
+        "@metamask/perps-controller>uuid": true
       }
     },
     "@metamask/phishing-controller": {
@@ -3846,7 +3863,7 @@
         "process": true
       }
     },
-    "@metamask/ramps-controller>@metamask/controller-utils>@signinwithethereum/siwe-parser": {
+    "@metamask/perps-controller>@metamask/controller-utils>@signinwithethereum/siwe-parser": {
       "packages": {
         "@noble/hashes": true,
         "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
@@ -3857,7 +3874,7 @@
         "crypto.getRandomValues": true
       },
       "packages": {
-        "@metamask/ramps-controller>@metamask/controller-utils>@signinwithethereum/siwe-parser": true,
+        "@metamask/perps-controller>@metamask/controller-utils>@signinwithethereum/siwe-parser": true,
         "ethers": true,
         "viem": true
       }
@@ -7265,6 +7282,11 @@
       }
     },
     "@metamask/notification-services-controller>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/perps-controller>uuid": {
       "globals": {
         "crypto": true
       }

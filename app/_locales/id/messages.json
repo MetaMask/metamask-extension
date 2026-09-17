@@ -7668,6 +7668,9 @@
   "perpsFilterIndex": {
     "message": "Indeks"
   },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
   "perpsFilterMore": {
     "message": "Selengkapnya",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
