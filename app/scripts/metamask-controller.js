@@ -161,7 +161,7 @@ import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { trace, endTrace, TraceName } from '../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -392,6 +392,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { UserTraitsServiceInit } from './messenger-client-init/user-traits-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
+import { SentryTracingServiceInit } from './messenger-client-init/sentry-tracing-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { ChompApiServiceInit } from './messenger-client-init/chomp-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
@@ -581,6 +582,7 @@ export default class MetamaskController extends EventEmitter {
       GeolocationApiService: GeolocationApiServiceInit,
       GeolocationController: GeolocationControllerInit,
       AnalyticsController: AnalyticsControllerInit,
+      SentryTracingService: SentryTracingServiceInit,
       MetaMetricsController: MetaMetricsControllerInit,
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -2897,6 +2899,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'PreferencesController:consolidateBasicFunctionality',
       ),
+      toggleBasicFunctionality: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PreferencesController:toggleBasicFunctionality',
+      ),
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
@@ -3532,12 +3538,16 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsPage: trackPage,
       updateEventFragment,
 
-      // Buffered Trace API that checks consent and handles buffering/immediate execution
-      bufferedTrace: metaMetricsController.bufferedTrace.bind(
-        metaMetricsController,
+      // These are background-owned buffered trace entry points. UI pages must
+      // call them through submitRequestToBackground; importing the methods
+      // directly in UI would create a separate queue for each page.
+      bufferedTrace: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SentryTracingService:bufferedTrace',
       ),
-      bufferedEndTrace: metaMetricsController.bufferedEndTrace.bind(
-        metaMetricsController,
+      bufferedEndTrace: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SentryTracingService:bufferedEndTrace',
       ),
 
       // ApprovalController

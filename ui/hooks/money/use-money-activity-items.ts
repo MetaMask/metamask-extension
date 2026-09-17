@@ -8,6 +8,7 @@ import {
   type MoneyActivityItem,
 } from '../../pages/money/types/money-activity';
 import {
+  isMoneyCardActivityItem,
   MoneyActivityFilter,
   type MoneyActivityBuckets,
 } from '../../pages/money/utils/money-activity-filters';
@@ -84,17 +85,19 @@ export function buildMergedMoneyActivityBuckets(
   apiActivity: AccountsApiActivity[],
   watermark: number = Number.NEGATIVE_INFINITY,
 ): MoneyActivityBuckets {
+  const all = safeItems(
+    mergeMoneyActivity(onchain.all, apiActivity),
+    watermark,
+  );
   return {
-    [MoneyActivityFilter.All]: safeItems(
-      mergeMoneyActivity(onchain.all, apiActivity),
-      watermark,
-    ),
+    [MoneyActivityFilter.All]: all,
     [MoneyActivityFilter.Deposits]: onchainOnly(
       safeItems(mergeMoneyActivity(onchain.deposits, apiActivity), watermark),
     ),
     [MoneyActivityFilter.Transfers]: onchainOnly(
       safeItems(mergeMoneyActivity(onchain.transfers, apiActivity), watermark),
     ),
+    [MoneyActivityFilter.Card]: all.filter(isMoneyCardActivityItem),
   };
 }
 

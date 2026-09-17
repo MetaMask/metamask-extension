@@ -196,6 +196,7 @@ import { getDataDeletionServiceMessenger } from './data-deletion-service-messeng
 import { getUserTraitsServiceMessenger } from './user-traits-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+import { getSentryTracingServiceMessenger } from './sentry-tracing-service-messenger';
 import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 import { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
@@ -271,6 +272,7 @@ export { getPermissionLogControllerMessenger } from './permission-log-controller
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+export { getSentryTracingServiceMessenger } from './sentry-tracing-service-messenger';
 export type { ChompApiServiceInitMessenger } from './chomp-api-service-messenger';
 export {
   getChompApiServiceMessenger,
@@ -584,6 +586,10 @@ export const MESSENGER_FACTORIES = {
   },
   SentinelApiService: {
     getMessenger: getSentinelApiServiceMessenger,
+    getInitMessenger: noop,
+  },
+  SentryTracingService: {
+    getMessenger: getSentryTracingServiceMessenger,
     getInitMessenger: noop,
   },
   SignatureController: {

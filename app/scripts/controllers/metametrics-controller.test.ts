@@ -217,7 +217,15 @@ describe('MetaMetricsController', function () {
       const spy = jest.spyOn(segmentMock, 'track');
       await withController(({ controller, controllerMessenger }) => {
         expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
-        expect(controller.state.marketingCampaignCookieId).toStrictEqual(null);
+        expect(controller.state).toStrictEqual({
+          dataCollectionForMarketing: null,
+          marketingCampaignCookieId: null,
+        });
+        expect(controller).not.toHaveProperty('bufferedTrace');
+        expect(controller).not.toHaveProperty('bufferedEndTrace');
+        expect(controller).not.toHaveProperty('trackTracesAfterMetricsOptIn');
+        expect(controller).not.toHaveProperty('clearTracesAfterMetricsOptIn');
+        expect(controller).not.toHaveProperty('addTraceBeforeMetricsOptIn');
         const { analyticsId, consentDecisionMade } = controllerMessenger.call(
           'AnalyticsController:getState',
         );
@@ -1566,7 +1574,6 @@ describe('MetaMetricsController', function () {
           {
             "dataCollectionForMarketing": null,
             "marketingCampaignCookieId": null,
-            "tracesBeforeMetricsOptIn": [],
           }
         `);
       });
@@ -1584,7 +1591,6 @@ describe('MetaMetricsController', function () {
           {
             "dataCollectionForMarketing": null,
             "marketingCampaignCookieId": null,
-            "tracesBeforeMetricsOptIn": [],
           }
         `);
       });
