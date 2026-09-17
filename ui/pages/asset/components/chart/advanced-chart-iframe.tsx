@@ -218,10 +218,6 @@ const AdvancedChartIframe = forwardRef<
       if (!chartReady || !realtimeBar) {
         return;
       }
-      console.log('[OHLCV-RT] Forwarding realtime bar to chart engine', {
-        time: realtimeBar.time,
-        close: realtimeBar.close,
-      });
       postToChart({
         type: 'REALTIME_UPDATE',
         payload: { bar: realtimeBar },
