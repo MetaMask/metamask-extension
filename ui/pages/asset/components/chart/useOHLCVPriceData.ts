@@ -53,7 +53,14 @@ export function useOHLCVPriceData(ohlcvData: OHLCVBar[]): OHLCVPriceData {
     }
 
     const firstBar = ohlcvData[0];
-    const latestBar = ohlcvData[ohlcvData.length - 1];
+    const latestBar = ohlcvData.at(-1);
+    if (!latestBar) {
+      return {
+        price: undefined,
+        percentChange: undefined,
+        timestamp: undefined,
+      };
+    }
 
     const price = latestBar.close;
     const comparePrice = firstBar.open;

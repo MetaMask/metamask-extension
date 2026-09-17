@@ -128,41 +128,25 @@ describe('IndicatorBar', () => {
   });
 
   describe('Indicator Toggle Interactions', () => {
-    it('calls onIndicatorToggle when BOL is clicked', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
+    it.each([
+      { name: 'BOL', displayText: 'BOL' },
+      { name: 'RSI', displayText: 'RSI' },
+      {
+        name: 'Volume',
+        displayText: messages.perpsSortByVolume.message,
+      },
+      { name: 'MACD', displayText: 'MACD' },
+    ])(
+      'calls onIndicatorToggle when $name is clicked',
+      ({ name, displayText }) => {
+        const { getByText } = render(<IndicatorBar {...defaultProps} />);
 
-      fireEvent.click(getByText('BOL'));
+        fireEvent.click(getByText(displayText));
 
-      expect(mockOnIndicatorToggle).toHaveBeenCalledTimes(1);
-      expect(mockOnIndicatorToggle).toHaveBeenCalledWith('BOL');
-    });
-
-    it('calls onIndicatorToggle when RSI is clicked', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      fireEvent.click(getByText('RSI'));
-
-      expect(mockOnIndicatorToggle).toHaveBeenCalledTimes(1);
-      expect(mockOnIndicatorToggle).toHaveBeenCalledWith('RSI');
-    });
-
-    it('calls onIndicatorToggle when Volume is clicked', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      fireEvent.click(getByText(messages.perpsSortByVolume.message));
-
-      expect(mockOnIndicatorToggle).toHaveBeenCalledTimes(1);
-      expect(mockOnIndicatorToggle).toHaveBeenCalledWith('Volume');
-    });
-
-    it('calls onIndicatorToggle when MACD is clicked', () => {
-      const { getByText } = render(<IndicatorBar {...defaultProps} />);
-
-      fireEvent.click(getByText('MACD'));
-
-      expect(mockOnIndicatorToggle).toHaveBeenCalledTimes(1);
-      expect(mockOnIndicatorToggle).toHaveBeenCalledWith('MACD');
-    });
+        expect(mockOnIndicatorToggle).toHaveBeenCalledTimes(1);
+        expect(mockOnIndicatorToggle).toHaveBeenCalledWith(name);
+      },
+    );
 
     it('allows toggling the same indicator multiple times', () => {
       const { getByText } = render(<IndicatorBar {...defaultProps} />);

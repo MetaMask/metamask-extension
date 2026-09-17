@@ -538,7 +538,7 @@ describe('useOHLCVRealtime', () => {
       await advanceTimersAndFlush(0);
 
       // No additional fetch should have been triggered
-      expect((global.fetch as jest.Mock).mock.calls.length).toBe(
+      expect((global.fetch as jest.Mock).mock.calls).toHaveLength(
         fetchCountAfterSubscribe,
       );
     });

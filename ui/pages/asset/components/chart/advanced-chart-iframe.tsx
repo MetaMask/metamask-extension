@@ -184,7 +184,7 @@ const AdvancedChartIframe = forwardRef<
           postToChart({ type: 'ADD_INDICATOR', payload: { name } });
         }
       }
-      for (const name of [...applied]) {
+      for (const name of applied) {
         if (!desired.has(name)) {
           applied.delete(name);
           postToChart({ type: 'REMOVE_INDICATOR', payload: { name } });

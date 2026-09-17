@@ -5,7 +5,6 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { useTheme } from '../../../../hooks/useTheme';
 
 /**
  * [POC — THROWAWAY] IntervalBar
@@ -34,9 +33,6 @@ const IntervalBar = ({
   chartType,
   onChartTypeSelect,
 }: IntervalBarProps) => {
-  const theme = useTheme();
-  const isDark = theme === 'dark';
-
   const toolbarText = 'var(--color-text-default)';
   const toolbarMuted = 'var(--color-text-alternative)';
   const activeBg = 'var(--color-background-default-hover)';

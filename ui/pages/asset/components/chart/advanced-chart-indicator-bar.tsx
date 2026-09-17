@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { brandColor } from '@metamask/design-tokens';
 import { useTheme } from '../../../../hooks/useTheme';
 

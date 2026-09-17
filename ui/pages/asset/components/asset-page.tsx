@@ -110,7 +110,6 @@ import AssetChart from './chart/asset-chart';
 // [POC — THROWAWAY] Advanced Chart via cross-origin iframe from localhost:8001
 import AdvancedChartIframe from './chart/advanced-chart-iframe';
 import IntervalBar, {
-  CHART_TYPE_LINE,
   CHART_TYPE_CANDLE,
 } from './chart/advanced-chart-interval-bar';
 import IndicatorBar from './chart/advanced-chart-indicator-bar';
@@ -362,10 +361,10 @@ const AssetPage = ({
       return ohlcvData;
     }
 
-    const lastBar = ohlcvData[ohlcvData.length - 1];
+    const lastBar = ohlcvData.at(-1);
 
     // If realtime bar is newer or same time as last bar, replace it
-    if (realtimeLatestBar.time >= lastBar.time) {
+    if (lastBar && realtimeLatestBar.time >= lastBar.time) {
       return [...ohlcvData.slice(0, -1), realtimeLatestBar];
     }
 
