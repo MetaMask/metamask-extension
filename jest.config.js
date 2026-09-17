@@ -18,6 +18,8 @@ module.exports = {
   moduleNameMapper: {
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
+    // Stub @braze/web-sdk so UI tests that import ui/index.js do not load the ESM SDK
+    '^@braze/web-sdk$': '<rootDir>/test/mocks/braze-web-sdk.js',
     // Stub @metamask/perps-controller so every test suite can resolve it without
     // listing jest.mock() individually. Tests needing a fuller fake can still
     // override with their own jest.mock() call.

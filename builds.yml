@@ -283,6 +283,9 @@ env:
 
   - SEGMENT_HOST: null
   - SENTRY_DSN: null
+  # Braze Web SDK (UI pages only; never the MV3 service worker)
+  - BRAZE_WEB_API_KEY: null
+  - BRAZE_SDK_ENDPOINT: null
   - SENTRY_DSN_DEV: null
   - SENTRY_DSN_PERFORMANCE: null
   # JSON map of Sentry transaction name -> sample rate (0..1), merged over the
