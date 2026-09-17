@@ -15,6 +15,7 @@ export const MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT = 5;
 type MoneyPotentialEarningsProps = {
   tokens: MoneyDepositToken[];
   apyDecimal: number | undefined;
+  apyPercent: number | undefined;
   isNoFeeToken: (token: MoneyDepositToken) => boolean;
   privacyMode: boolean;
   onAddToken: (
@@ -29,6 +30,7 @@ type MoneyPotentialEarningsProps = {
 export function MoneyPotentialEarnings({
   tokens,
   apyDecimal,
+  apyPercent,
   isNoFeeToken,
   privacyMode,
   onAddToken,
@@ -54,6 +56,7 @@ export function MoneyPotentialEarnings({
       <MoneyPotentialEarningsSummary
         tokens={eligibleTokens}
         apyDecimal={apyDecimal}
+        apyPercent={apyPercent}
         privacyMode={privacyMode}
       />
 

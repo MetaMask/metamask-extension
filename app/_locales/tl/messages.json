@@ -5449,13 +5449,6 @@
   "money": {
     "message": "Pera"
   },
-  "moneyAccountApyPitch": {
-    "message": "Kumita ng $1% APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Impormasyon ng APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "Ang rate na ipinapakita ay ang tinatayang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng market. Nagbabago ang APY at hindi ito garantisado."
   },
@@ -5465,9 +5458,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Tinatayang balanse sa 1 taon:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Tinatayang balanse sa 1 taon"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Ipinagpapalagay sa pagtatantiya na ang $1% Annual Percentage Yield (APY) ay hindi nagbabago sa loob ng isang taon. Nagbabago ang APY at hindi ito garantisado.",
@@ -5587,9 +5577,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Subukang muli"
-  },
-  "moneyBalanceTitle": {
-    "message": "Balanse sa Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Hindi available ang balanse"
