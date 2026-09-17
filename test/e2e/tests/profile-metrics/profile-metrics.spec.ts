@@ -255,6 +255,7 @@ describe('Profile Metrics', function () {
               .withAppStateController({
                 pna25Acknowledged,
               })
+              .withBasicFunctionalityConsolidationDisabled()
               .build(),
             testSpecificMock: async (server: Mockttp) => [
               await mockAuthService(server),
