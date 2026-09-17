@@ -104,10 +104,9 @@ export const useCarouselManagement = ({
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
   const slidesRef = useRef(slides);
-
-  useEffect(() => {
-    slidesRef.current = slides;
-  }, [slides]);
+  // Keep in sync during render so in-flight Contentful work sees dismissals before
+  // microtasks run (a slides-only effect would lag behind promise continuations).
+  slidesRef.current = slides;
 
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
