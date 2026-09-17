@@ -5,14 +5,26 @@ import {
   TRIGGER_TYPES,
   type INotification,
 } from '@metamask/notification-services-controller/notification-services';
-import { createMockNotificationEthSent } from '@metamask/notification-services-controller/notification-services/mocks';
+import {
+  createMockNotificationEthSent,
+  createMockNotificationERC20Sent,
+  createMockNotificationERC721Sent,
+  createMockNotificationERC1155Sent,
+  createMockNotificationMetaMaskSwapsCompleted,
+  createMockNotificationRocketPoolStakeCompleted,
+  createMockNotificationLidoWithdrawalRequested,
+  createMockNotificationLidoReadyToBeWithdrawn,
+} from '@metamask/notification-services-controller/notification-services/mocks';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
-import { NotificationComponents } from './notification-components';
+import {
+  NotificationComponents,
+  hasNotificationComponents,
+} from './notification-components';
 import { NotificationsListItem } from './notifications-list-item';
 
 const mockNavigate = jest.fn();
@@ -119,4 +131,56 @@ describe('NotificationsListItem', () => {
       `${NOTIFICATIONS_ROUTE}/${notification.id}`,
     );
   });
+});
+
+describe('NotificationsListItem details title (other on-chain subtypes)', () => {
+  type MockNotificationCreator = () => ReturnType<
+    typeof createMockNotificationEthSent
+  >;
+
+  const otherOnChainNotificationMocks: [string, MockNotificationCreator][] = [
+    ['erc20_sent', createMockNotificationERC20Sent],
+    ['erc721_sent', createMockNotificationERC721Sent],
+    ['erc1155_sent', createMockNotificationERC1155Sent],
+    ['metamask_swap_completed', createMockNotificationMetaMaskSwapsCompleted],
+    [
+      'rocketpool_stake_completed',
+      createMockNotificationRocketPoolStakeCompleted,
+    ],
+    [
+      'lido_withdrawal_requested',
+      createMockNotificationLidoWithdrawalRequested,
+    ],
+    [
+      'lido_stake_ready_to_be_withdrawn',
+      createMockNotificationLidoReadyToBeWithdrawn,
+    ],
+  ];
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each(otherOnChainNotificationMocks)(
+    'renders the %s details title from the API template',
+    (_subtype: string, createMock: MockNotificationCreator) => {
+      const otherNotification = {
+        ...processNotification(createMock()),
+        template: apiTemplate,
+        isRead: false,
+      } as INotification;
+
+      if (!hasNotificationComponents(otherNotification.type)) {
+        throw new Error('Expected notification components');
+      }
+
+      const DetailsTitle =
+        NotificationComponents[otherNotification.type].details?.title;
+
+      if (!DetailsTitle) {
+        throw new Error('Expected notification details title');
+      }
+
+      renderWithProvider(<DetailsTitle notification={otherNotification} />);
+
+      expect(screen.getByText(apiTemplate.title)).toBeInTheDocument();
+    },
+  );
 });

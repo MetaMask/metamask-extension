@@ -14,18 +14,17 @@ import {
   NotificationDetailInfo,
   NotificationDetailBlockExplorerButton,
   NotificationDetailCopyButton,
-  NotificationDetailTitle,
   NotificationDetailAddress,
 } from '../../../../components/multichain';
 import {
   createTextItems,
   getAmount,
-  formatIsoDateString,
   getUsdAmount,
   getNativeCurrencyLogoByChainId,
 } from '../../../../helpers/utils/notification.util';
 import { t } from '../../../../../shared/lib/translate';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 import { BadgeWrapperPosition } from '../../../../components/component-library';
 
@@ -76,14 +75,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       );
     },
     details: {
-      title: ({ notification }) => {
-        return (
-          <NotificationDetailTitle
-            title={notification.template?.title ?? ''}
-            date={formatIsoDateString(notification.createdAt)}
-          />
-        );
-      },
+      title: OnChainNotificationDetailsTitle,
       body: {
         type: NotificationComponentType.OnChainBody,
         Account: ({ notification }) => {

@@ -13,7 +13,6 @@ import {
   NotificationDetailInfo,
   NotificationDetailNetworkFee,
   NotificationDetailBlockExplorerButton,
-  NotificationDetailTitle,
   NotificationDetailAsset,
   NotificationDetailCopyButton,
   NotificationDetailAddress,
@@ -24,11 +23,11 @@ import { BadgeWrapperPosition } from '../../../../components/component-library';
 import {
   createTextItems,
   getAmount,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -106,14 +105,7 @@ export const components: NotificationComponent<StakeNotification> = {
     );
   },
   details: {
-    title: ({ notification }) => {
-      return (
-        <NotificationDetailTitle
-          title={notification.template?.title ?? ''}
-          date={formatIsoDateString(notification.createdAt)}
-        />
-      );
-    },
+    title: OnChainNotificationDetailsTitle,
     body: {
       type: NotificationComponentType.OnChainBody,
       Account: ({ notification }) => {

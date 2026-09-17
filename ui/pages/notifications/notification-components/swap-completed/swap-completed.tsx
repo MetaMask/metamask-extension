@@ -14,7 +14,6 @@ import {
   NotificationDetailAsset,
   NotificationDetailNetworkFee,
   NotificationDetailBlockExplorerButton,
-  NotificationDetailTitle,
   NotificationDetailCopyButton,
   NotificationDetailAddress,
 } from '../../../../components/multichain';
@@ -24,12 +23,12 @@ import { BadgeWrapperPosition } from '../../../../components/component-library';
 import {
   createTextItems,
   getAmount,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
   getNetworkDetailsFromNotifPayload,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -79,12 +78,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
     );
   },
   details: {
-    title: ({ notification }) => (
-      <NotificationDetailTitle
-        title={notification.template?.title ?? ''}
-        date={formatIsoDateString(notification.createdAt)}
-      />
-    ),
+    title: OnChainNotificationDetailsTitle,
     body: {
       type: NotificationComponentType.OnChainBody,
       Account: ({ notification }) => {

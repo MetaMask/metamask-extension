@@ -10,7 +10,6 @@ import {
 import {
   createTextItems,
   formatAmount,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
   getNetworkDetailsFromNotifPayload,
 } from '../../../../helpers/utils/notification.util';
@@ -18,7 +17,6 @@ import { TextVariant } from '../../../../helpers/constants/design-system';
 
 import {
   NotificationListItem,
-  NotificationDetailTitle,
   NotificationDetailBlockExplorerButton,
   NotificationDetailAddress,
   NotificationDetailInfo,
@@ -28,6 +26,7 @@ import {
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -89,14 +88,7 @@ export const components: NotificationComponent<ETHNotification> = {
     );
   },
   details: {
-    title: ({ notification }) => {
-      return (
-        <NotificationDetailTitle
-          title={notification.template?.title ?? ''}
-          date={formatIsoDateString(notification.createdAt)}
-        />
-      );
-    },
+    title: OnChainNotificationDetailsTitle,
     body: {
       type: NotificationComponentType.OnChainBody,
       From: ({ notification }) => (

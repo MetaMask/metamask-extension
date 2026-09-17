@@ -11,7 +11,6 @@ import {
 
 import {
   createTextItems,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
   getNetworkDetailsFromNotifPayload,
 } from '../../../../helpers/utils/notification.util';
@@ -24,12 +23,12 @@ import {
   NotificationDetailAsset,
   NotificationDetailNetworkFee,
   NotificationDetailBlockExplorerButton,
-  NotificationDetailTitle,
   NotificationDetailNft,
   NotificationDetailCollection,
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -80,14 +79,7 @@ export const components: NotificationComponent<ERC721Notification> = {
     );
   },
   details: {
-    title: ({ notification }) => {
-      return (
-        <NotificationDetailTitle
-          title={notification.template?.title ?? ''}
-          date={formatIsoDateString(notification.createdAt)}
-        />
-      );
-    },
+    title: OnChainNotificationDetailsTitle,
     body: {
       type: NotificationComponentType.OnChainBody,
       Image: ({ notification }) => {
