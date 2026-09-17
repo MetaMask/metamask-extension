@@ -1,18 +1,18 @@
 import { Suite } from 'mocha';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { Driver } from '../../webdriver/driver';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { Driver } from '../../../webdriver/driver';
 import {
   confirmTronSendAndAssertActivity,
   landOnTronSendScreen,
-} from '../../page-objects/flows/tron-send.flow';
-import { TRON_RECIPIENT_ADDRESS } from '../tron/mocks/common-tron';
-import { TRON_PORTFOLIO_ACCOUNT } from '../tron/fixtures/environments';
-import { withTronFixtures } from '../tron/fixtures/with-tron-fixtures';
+} from '../../../page-objects/flows/tron-send.flow';
+import { TRON_RECIPIENT_ADDRESS } from '../../tron/mocks/common-tron';
+import { TRON_PORTFOLIO_ACCOUNT } from '../../tron/fixtures/environments';
+import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
 
-describe('Send Tron (local blockchain)', function (this: Suite) {
+describe('Tron Send', function (this: Suite) {
   this.timeout(180_000);
 
-  it('should be possible to send TRX using a real local blockchain', async function () {
+  it('sends part of TRX balance and shows it pending then confirmed', async function () {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],

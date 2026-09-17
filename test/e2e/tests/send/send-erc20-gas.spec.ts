@@ -95,6 +95,7 @@ describe('Send ERC20 - Gas Customization', function () {
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
+        await tokensTab.refreshErc20TokenList();
         await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('9'), {
           amountTimeout: 20000,
         });

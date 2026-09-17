@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
 import { ScreenViewedEntryPoint } from '../../../shared/constants/metametrics';
-import { Page } from '../../components/multichain/pages/page';
-import { ScrollContainer } from '../../contexts/scroll-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { ActivityList } from './activity-list';
 
@@ -19,7 +17,7 @@ export const ActivityPage = () => {
   );
 
   return (
-    <Page data-testid="activity-page">
+    <div className="flex min-h-full flex-col" data-testid="activity-page">
       <Text
         variant={TextVariant.HeadingLg}
         fontWeight={FontWeight.Bold}
@@ -27,10 +25,8 @@ export const ActivityPage = () => {
       >
         {t('activity')}
       </Text>
-      <ScrollContainer className="flex-1 overflow-auto">
-        <ActivityList entryPoint={entryPoint} />
-      </ScrollContainer>
-    </Page>
+      <ActivityList entryPoint={entryPoint} />
+    </div>
   );
 };
 

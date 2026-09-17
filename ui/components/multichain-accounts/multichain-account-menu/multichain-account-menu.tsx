@@ -56,7 +56,7 @@ export const MultichainAccountMenu = ({
   );
   const setPopoverRef = useCallback((node: HTMLDivElement | null) => {
     popoverRef.current = node;
-    setReferenceElement(node);
+    setReferenceElement((previous) => (previous === node ? previous : node));
   }, []);
   const accountTree = useSelector(getAccountTree);
   const { trackEvent, createEventBuilder } = useAnalytics();
