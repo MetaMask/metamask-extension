@@ -84,7 +84,10 @@ describe('scanUnvalidatedSignatureAddresses', () => {
 
   it('does nothing for non-typed-data methods', () => {
     scanUnvalidatedSignatureAddresses({
-      request: { method: 'personal_sign', params: [SIGNER_ADDRESS, '0xdeadbeef'] },
+      request: {
+        method: 'personal_sign',
+        params: [SIGNER_ADDRESS, '0xdeadbeef'],
+      },
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: makeCache(),
     });
@@ -154,7 +157,9 @@ describe('scanUnvalidatedSignatureAddresses', () => {
     const data = {
       types: { Permit: [{ name: 'spender', type: 'address' }] },
       primaryType: 'Permit',
-      domain: { verifyingContract: '0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC' },
+      domain: {
+        verifyingContract: '0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+      },
       message: { spender: MALICIOUS_ADDRESS },
     };
 
@@ -190,21 +195,33 @@ describe('scanUnvalidatedSignatureAddresses', () => {
   });
 
   it('handles malformed typed data without throwing', () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
     expect(() =>
       scanUnvalidatedSignatureAddresses({
-        request: { method: 'eth_signTypedData_v4', params: [SIGNER_ADDRESS, 'not-json{'] },
+        request: {
+          method: 'eth_signTypedData_v4',
+          params: [SIGNER_ADDRESS, 'not-json{'],
+        },
         chainId: CHAIN_ID as `0x${string}`,
         appStateController: makeCache(),
       }),
     ).not.toThrow();
 
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
   });
 
   it('accepts typed data as an object in params[1]', () => {
     const cache = makeCache();
     scanUnvalidatedSignatureAddresses({
-      request: { method: 'eth_signTypedData_v4', params: [SIGNER_ADDRESS, TYPED_DATA_V4] },
+      request: {
+        method: 'eth_signTypedData_v4',
+        params: [SIGNER_ADDRESS, TYPED_DATA_V4],
+      },
       chainId: CHAIN_ID as `0x${string}`,
       appStateController: cache,
     });

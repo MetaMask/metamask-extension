@@ -18,16 +18,20 @@ type AppStateCache = Pick<
  * real-time security-alerts API. Called after PPOM when PPOM has not flagged
  * the request, since PPOM's threat data is refreshed on a delay. Results are
  * cached so addresses scanned elsewhere are not re-requested.
+ *
+ * @param options - Request, chain, and cache used to scan signature addresses.
+ * @param options.request - JSON-RPC signature request.
+ * @param options.request.method - RPC method name.
+ * @param options.request.params - RPC params (`from`, typed data).
+ * @param options.chainId - Hex chain ID of the request.
+ * @param options.appStateController - Address-scan cache accessors.
  */
-export function scanUnvalidatedSignatureAddresses({
-  request,
-  chainId,
-  appStateController,
-}: {
+export function scanUnvalidatedSignatureAddresses(options: {
   request: { method: string; params?: unknown };
   chainId: Hex;
   appStateController: AppStateCache;
 }): void {
+  const { request, chainId, appStateController } = options;
   if (
     request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
     request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
