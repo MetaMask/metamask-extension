@@ -4002,6 +4002,13 @@ For more information on the use of the Business Source License for MariaDB produ
 
 ******************************
 
+@braze/web-sdk
+6.13.0 <https://github.com/braze-inc/braze-web-sdk>
+license: Custom: https://github.com/braze-inc/braze-web-sdk
+authors: Braze, Inc
+
+******************************
+
 bn.js
 5.2.3 <https://github.com/indutny/bn.js>
 Copyright Fedor Indutny, 2015.

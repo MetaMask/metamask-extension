@@ -16,6 +16,7 @@ module.exports = {
     // @noble/hashes). Mirrors the unit jest config mapping.
     '^@metamask/perps-controller$':
       '<rootDir>/test/mocks/metamask-perps-controller.js',
+    '^@braze/web-sdk$': '<rootDir>/test/mocks/braze-web-sdk.js',
   },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
