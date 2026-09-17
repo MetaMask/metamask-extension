@@ -6503,18 +6503,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "출금 준비 완료"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "이제 언스테이킹한 $1을(를) 출금할 수 있습니다"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1 언스테이킹 요청이 전송되었습니다"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "수취한 NFT 출처:"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "전송한 NFT 수취 대상:"
-  },
   "notificationItemNetwork": {
     "message": "네트워크:"
   },
@@ -6523,18 +6511,6 @@
   },
   "notificationItemReceived": {
     "message": "받음"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "발신처:"
-  },
-  "notificationItemSent": {
-    "message": "전송됨"
-  },
-  "notificationItemSentTo": {
-    "message": "수신처:"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "스테이킹 완료"
   },
   "notificationItemStaked": {
     "message": "스테이킹됨"
@@ -6548,17 +6524,11 @@
   "notificationItemSwapped": {
     "message": "스왑 완료"
   },
-  "notificationItemSwappedFor": {
-    "message": "지금 스와프를 "
-  },
   "notificationItemTo": {
     "message": "수신:"
   },
   "notificationItemTransactionId": {
     "message": "트랜잭션 ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "언스테이킹 완료"
   },
   "notificationItemUnStaked": {
     "message": "언스테이킹됨"
