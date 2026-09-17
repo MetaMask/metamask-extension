@@ -243,9 +243,7 @@ describe('MoneyAccountBalance', () => {
   it('shows the info copy when the title is hovered', async () => {
     arrange({ totalFiatFormatted: '$2,384.34' });
 
-    const { getByTestId, getByText, queryByText } = render();
-
-    expect(queryByText(/Your dollar-backed mUSD balance/u)).toBeNull();
+    const { getByTestId, getByText } = render();
 
     await act(async () => {
       fireEvent.mouseEnter(

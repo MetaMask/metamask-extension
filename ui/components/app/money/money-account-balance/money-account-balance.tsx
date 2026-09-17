@@ -16,7 +16,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PopoverPosition } from '../../../component-library';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
 import { isMoneyBalanceFunded } from '../../../../helpers/money/format';
@@ -255,7 +254,7 @@ export const MoneyAccountBalance = () => {
         >
           <TooltipText
             text={t('money')}
-            position={PopoverPosition.Auto}
+            position="bottom"
             data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}

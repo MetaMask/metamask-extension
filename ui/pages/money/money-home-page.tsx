@@ -23,7 +23,6 @@ import {
   MONEY_EARN_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
 } from '../../helpers/constants/routes';
-import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
@@ -412,7 +411,7 @@ export function MoneyHomePage() {
                       text={t('moneyApy', [apyDisplay])}
                       variant={TextVariant.BodyMd}
                       className="text-success-default"
-                      position={PopoverPosition.Auto}
+                      position="bottom"
                       popoverStyle={{ maxWidth: 315 }}
                       data-testid="money-home-apy"
                     >

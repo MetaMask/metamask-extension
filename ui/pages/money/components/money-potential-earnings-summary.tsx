@@ -15,7 +15,6 @@ import {
   calculateMoneyProjectedEarnings,
   type MoneyDepositToken,
 } from '../../../hooks/money/money-deposit-token-utils';
-import { PopoverPosition } from '../../../components/component-library';
 import { TooltipText } from '../../../components/app/money/tooltip-text';
 
 type MoneyPotentialEarningsSummaryProps = {
@@ -85,7 +84,7 @@ export function MoneyPotentialEarningsSummary({
             color={TextColor.SuccessDefault}
             isHidden={privacyMode}
             length={SensitiveTextLength.Short}
-            position={PopoverPosition.Auto}
+            position="bottom"
             data-testid="money-potential-earnings-projection"
           >
             {t('moneyEarnSectionAccountProjectedBalanceTooltip', [

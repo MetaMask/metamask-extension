@@ -8,7 +8,6 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TooltipText } from '../../../components/app/money/tooltip-text';
-import { PopoverPosition } from '../../../components/component-library';
 
 const EARNINGS_ROWS = [
   {
@@ -68,7 +67,7 @@ export function MoneyEarnings({
               text={t(labelKey)}
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
-              position={PopoverPosition.Auto}
+              position="bottom"
             >
               {t(tooltipText)}
             </TooltipText>
