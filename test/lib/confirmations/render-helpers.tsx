@@ -48,11 +48,16 @@ export function renderWithConfirmContextProvider(
     getMockTrackEvent ?? (() => jest.fn().mockResolvedValue(undefined)),
   );
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <ProviderWrapper>
+  const wrapper = ({ children }: { children: React.ReactNode }) => {
+    const confirmContext = (
       <ConfirmContextContainer>{children}</ConfirmContextContainer>
-    </ProviderWrapper>
-  );
+    );
+
+    return (
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
+      <ProviderWrapper>{confirmContext}</ProviderWrapper>
+    );
+  };
 
   return render(component, { wrapper });
 }

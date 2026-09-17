@@ -5702,6 +5702,9 @@
   "moneyContactSupport": {
     "message": "Contact support"
   },
+  "moneyConvertYourCrypto": {
+    "message": "Convert your crypto"
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
   },
@@ -6270,9 +6273,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Network fee"
-  },
-  "networkMenu": {
-    "message": "Network menu"
   },
   "networkMenuHeading": {
     "message": "Select a network"

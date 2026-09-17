@@ -5,6 +5,7 @@ import { renderWithLocalization } from '../../../test/lib/render-helpers-navigat
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   MONEY_ACTIVITY_ROUTE,
+  MONEY_EARN_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
 } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
@@ -68,16 +69,6 @@ jest.mock('../../selectors/money/money-account-feature-flags', () => ({
 jest.mock('../../selectors/selectors', () => ({
   ...jest.requireActual('../../selectors/selectors'),
   getPrivacyMode: jest.fn(),
-}));
-jest.mock('../../hooks/useFormatters', () => ({
-  useFormatters: () => ({
-    formatCurrencyWithMinThreshold: (value: number) =>
-      new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-      }).format(value),
-  }),
 }));
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -465,6 +456,31 @@ describe('MoneyHomePage', () => {
       tokenPositionInList: 1,
       tokensInList: 1,
       tokenHasBalance: true,
+    });
+  });
+
+  it('navigates to the Earn on your crypto page from View all', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: Array.from({ length: 6 }, (_, index) => ({
+        ...DEPOSIT_TOKEN,
+        address: `0x${(index + 1).toString().padStart(40, '0')}`,
+        symbol: `TOK${index + 1}`,
+        title: `Token ${index + 1}`,
+      })),
+      isNoFeeToken: () => false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-potential-earnings-view-all'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_EARN_ROUTE);
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.ViewAll,
+      componentName: MoneyComponentName.PotentialEarningsSection,
+      labelKey: 'viewAll',
+      redirectTarget: MoneyScreenName.MoneyEarnOnCrypto,
     });
   });
 
