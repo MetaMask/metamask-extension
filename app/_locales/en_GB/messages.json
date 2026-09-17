@@ -5721,6 +5721,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "No fee"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed. No guarantee of return.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Earn on your balance"
   },

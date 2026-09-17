@@ -6,7 +6,11 @@ import React, {
   type ReactNode,
 } from 'react';
 import classnames from 'clsx';
-import { Text, type TextProps } from '@metamask/design-system-react';
+import {
+  SensitiveTextLength,
+  Text,
+  type TextProps,
+} from '@metamask/design-system-react';
 import { Popover, PopoverPosition } from '../../../component-library';
 
 const TOOLTIP_POPOVER_STYLE = {
@@ -23,6 +27,10 @@ export type TooltipTextProps = Omit<TextProps, 'children' | 'asChild'> & {
   text: string;
   /** The tooltip body, shown while the text is hovered. */
   children: ReactNode;
+  /** Replaces the trigger text with bullet characters, like `SensitiveText`. */
+  isHidden?: boolean;
+  /** Number of bullet characters shown while hidden. */
+  length?: SensitiveTextLength | string;
   position?: PopoverPosition;
   /** Called each time the tooltip opens. */
   onOpen?: () => void;
@@ -34,6 +42,8 @@ export type TooltipTextProps = Omit<TextProps, 'children' | 'asChild'> & {
 export function TooltipText({
   children,
   text,
+  isHidden = false,
+  length = SensitiveTextLength.Short,
   position = PopoverPosition.BottomEnd,
   popoverStyle,
   onOpen,
@@ -73,7 +83,7 @@ export function TooltipText({
           onMouseLeave={handleClose}
           data-testid={dataTestId ? `${dataTestId}-trigger` : undefined}
         >
-          {text}
+          {isHidden ? '•'.repeat(Number(length)) : text}
         </span>
       </Text>
       <Popover

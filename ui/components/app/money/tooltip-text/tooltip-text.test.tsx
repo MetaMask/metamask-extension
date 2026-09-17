@@ -3,7 +3,11 @@
  */
 import React from 'react';
 import { act, render, fireEvent } from '@testing-library/react';
-import { FontWeight, TextVariant } from '@metamask/design-system-react';
+import {
+  FontWeight,
+  SensitiveTextLength,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { PopoverPosition } from '../../../component-library';
 import { TooltipText } from './tooltip-text';
 
@@ -104,6 +108,17 @@ describe('TooltipText', () => {
       paddingTop: '12px',
       paddingBottom: '6px',
     });
+  });
+
+  it('masks the trigger text with bullets when hidden', () => {
+    const { getByTestId } = renderTooltipText({
+      isHidden: true,
+      length: SensitiveTextLength.Medium,
+    });
+
+    expect(getByTestId('test-tooltip-trigger')).toHaveTextContent(
+      '•'.repeat(9),
+    );
   });
 
   it('forwards Text props and className to the trigger', () => {

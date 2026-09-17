@@ -163,6 +163,7 @@ describe('MoneyHomePage', () => {
     });
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -500,6 +501,7 @@ describe('MoneyHomePage', () => {
   it('renders the filled-state composition for a funded Money account', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -603,6 +605,7 @@ describe('MoneyHomePage', () => {
   it('opens the mUSD price page from Meet mUSD', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -625,6 +628,7 @@ describe('MoneyHomePage', () => {
   it('opens the Money landing page from Explore your benefits', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -647,6 +651,7 @@ describe('MoneyHomePage', () => {
   it('renders mock activity rows instead of the empty copy', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -686,6 +691,7 @@ describe('MoneyHomePage', () => {
     mockUseMoneyActivityItemClick.mockReturnValue(onItemClick);
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -705,6 +711,7 @@ describe('MoneyHomePage', () => {
   it('shows earnings skeletons during the initial interest load', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -731,6 +738,7 @@ describe('MoneyHomePage', () => {
   it('uses Mobile-parity fallbacks when interest data is invalid', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.06917567309149253,
+      apyPercent: 6.9,
       apyPercentFormatted: '6.9%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -763,6 +771,7 @@ describe('MoneyHomePage', () => {
   it('formats zero interest without a positive prefix', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -795,6 +804,7 @@ describe('MoneyHomePage', () => {
   it('formats negative interest with a minus sign', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -828,6 +838,7 @@ describe('MoneyHomePage', () => {
     mockSelectMoneyEarningSectionEnabled.mockReturnValue(false);
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -853,6 +864,7 @@ describe('MoneyHomePage', () => {
 
   it('keeps a balance below the funded threshold in the empty state', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -885,6 +897,7 @@ describe('MoneyHomePage', () => {
 
   it('keeps state-specific content hidden while the balance is loading', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: true,
@@ -916,6 +929,7 @@ describe('MoneyHomePage', () => {
 
   it('does not fabricate a balance when the balance service fails', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: true,
       isBalanceLoading: false,
@@ -947,6 +961,7 @@ describe('MoneyHomePage', () => {
   it('shows the last-known balance and a retry banner when the live fetch fails', () => {
     const refetchBalance = jest.fn().mockResolvedValue(undefined);
     mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: true,
       isBalanceLoading: false,
@@ -980,6 +995,7 @@ describe('MoneyHomePage', () => {
       .fn()
       .mockRejectedValue(new Error('retry failed'));
     mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: true,
       isBalanceLoading: false,
@@ -1001,6 +1017,7 @@ describe('MoneyHomePage', () => {
 
   it('shows a configured APY override while the service query is loading', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercent: 5,
       apyPercentFormatted: '5%',
       apyDecimal: 0.05,
       isBalanceFetchError: false,
@@ -1074,13 +1091,14 @@ describe('MoneyHomePage', () => {
       screen.getByText(messages.moneyEarnOnCryptoNoFee.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-potential-earnings-projection'),
+      screen.getByTestId('money-potential-earnings-projection-trigger'),
     ).toHaveTextContent('+$0.50');
   });
 
   it('previews eligible wallet assets on a funded Money account', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,
+      apyPercent: 4.2,
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
@@ -1102,7 +1120,7 @@ describe('MoneyHomePage', () => {
       screen.getByText(messages.moneyEarnOnCryptoNoFee.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-potential-earnings-projection'),
+      screen.getByTestId('money-potential-earnings-projection-trigger'),
     ).toHaveTextContent('+$0.50');
   });
 });

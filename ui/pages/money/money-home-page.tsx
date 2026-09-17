@@ -144,6 +144,7 @@ export function MoneyHomePage() {
   useUpgradeMoneyAccount();
   const {
     apyDecimal,
+    apyPercent,
     apyPercentFormatted,
     isBalanceFetchError,
     isBalanceLoading,
@@ -327,6 +328,7 @@ export function MoneyHomePage() {
         <MoneyPotentialEarnings
           tokens={depositTokens}
           apyDecimal={apyDecimal}
+          apyPercent={apyPercent}
           isNoFeeToken={isNoFeeToken}
           privacyMode={privacyMode}
           onAddToken={handleAddToken}
