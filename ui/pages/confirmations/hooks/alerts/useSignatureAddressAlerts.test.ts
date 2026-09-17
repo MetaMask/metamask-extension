@@ -11,6 +11,7 @@ import {
   rawMessageV4,
 } from '../../../../../test/data/confirmations/typed_sign';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { SignatureRequestType } from '../../types/confirm';
 import { useSignatureAddressAlerts } from './useSignatureAddressAlerts';
 
@@ -204,10 +205,14 @@ describe('useSignatureAddressAlerts', () => {
     );
 
     expect(
-      result.current.some((a) => a.key === 'signatureAddressScanIncomplete'),
+      result.current.some(
+        (a: Alert) => a.key === 'signatureAddressScanIncomplete',
+      ),
     ).toBe(true);
     expect(
-      result.current.find((a) => a.key === 'signatureAddressScanIncomplete'),
+      result.current.find(
+        (a: Alert) => a.key === 'signatureAddressScanIncomplete',
+      ),
     ).toMatchObject({
       severity: Severity.Warning,
       field: RowAlertKey.InteractingWith,

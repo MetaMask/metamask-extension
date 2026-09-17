@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { extractSignatureAddresses } from '@metamask/phishing-controller';
+import type { Hex } from '@metamask/utils';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -73,7 +74,7 @@ export function useSignatureAddressAlerts(): Alert[] {
     signatureAddresses.map((value) => ({
       value,
       type: NameType.ETHEREUM_ADDRESS,
-      chainId: currentConfirmation?.chainId,
+      chainId: currentConfirmation?.chainId as Hex | undefined,
     })),
   );
 
