@@ -187,10 +187,14 @@ const filterByType = (
       );
     }
     case 'memecoin': {
-      // Derived category: `getMarketTypeFilter` never returns `'memecoin'`
-      // because tagged markets keep `marketType: 'crypto'`. Overlaps with
-      // Crypto by design — those markets appear under both pills.
-      return markets.filter((m) => matchesCategory(m, 'memecoin'));
+      // Derived category: tagged main-DEX crypto. `getMarketTypeFilter`
+      // never returns `'memecoin'` because those rows keep `marketType:
+      // 'crypto'`. HIP-3 is excluded so membership matches the Crypto
+      // pill (`isCryptoMarket`). Tagged main-DEX markets appear under
+      // both pills.
+      return markets.filter(
+        (m) => isCryptoMarket(m) && matchesCategory(m, 'memecoin'),
+      );
     }
     default: {
       // Any remaining controller market category (crypto, stock, pre-ipo,

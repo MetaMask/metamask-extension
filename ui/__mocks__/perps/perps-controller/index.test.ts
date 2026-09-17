@@ -47,5 +47,13 @@ describe('@metamask/perps-controller mock', () => {
         'memecoin',
       ),
     ).toBe(false);
+    // Controller still counts HIP-3 crypto-typed tagged rows; the
+    // market-list filter additionally requires `isCryptoMarket`.
+    expect(
+      matchesCategory(
+        { isHip3: true, marketType: 'crypto', tags: ['memecoin'] },
+        'memecoin',
+      ),
+    ).toBe(true);
   });
 });

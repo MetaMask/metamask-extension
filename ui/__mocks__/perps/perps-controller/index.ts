@@ -764,7 +764,6 @@ export type OrderType = 'market' | 'limit';
 // Market asset type classification (reusable across components)
 export type MarketType =
   | 'crypto'
-  | 'memecoin'
   | 'stock'
   | 'pre-ipo'
   | 'index'
@@ -772,7 +771,7 @@ export type MarketType =
   | 'commodity'
   | 'forex';
 
-export type MarketTypeFilter = MarketType | 'all' | 'new';
+export type MarketTypeFilter = MarketType | 'all' | 'new' | 'memecoin';
 
 export const MARKET_CATEGORIES = [
   'crypto',
@@ -783,7 +782,7 @@ export const MARKET_CATEGORIES = [
   'etf',
   'commodity',
   'forex',
-] as const satisfies readonly MarketType[];
+] as const satisfies readonly MarketTypeFilter[];
 
 export function isHip3Market(
   market: Pick<PerpsMarketData, 'isHip3' | 'marketSource'>,

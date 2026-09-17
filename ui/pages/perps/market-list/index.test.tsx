@@ -647,17 +647,29 @@ describe('MarketListView', () => {
         name: 'Dogecoin',
         tags: ['memecoin'],
       };
-      const taggedHip3Market = {
+      const taggedHip3StockMarket = {
         ...mockHip3Markets[0],
         symbol: 'xyz:FAKE',
         name: 'Fake',
         tags: ['memecoin'],
       };
+      const taggedHip3CryptoMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:PEPE',
+        name: 'PEPE',
+        marketType: 'crypto' as const,
+        tags: ['memecoin'],
+      };
 
       mockUsePerpsLiveMarketListData.mockReturnValue({
-        markets: [mockCryptoMarkets[0], dogeMarket, taggedHip3Market],
+        markets: [
+          mockCryptoMarkets[0],
+          dogeMarket,
+          taggedHip3StockMarket,
+          taggedHip3CryptoMarket,
+        ],
         cryptoMarkets: [mockCryptoMarkets[0], dogeMarket],
-        hip3Markets: [taggedHip3Market],
+        hip3Markets: [taggedHip3StockMarket, taggedHip3CryptoMarket],
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
@@ -676,6 +688,9 @@ describe('MarketListView', () => {
       expect(
         screen.queryByTestId('market-row-xyz-FAKE'),
       ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
 
       fireEvent.click(screen.getByTestId('market-list-categories-pill-crypto'));
 
@@ -685,6 +700,9 @@ describe('MarketListView', () => {
       });
       expect(
         screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
       ).not.toBeInTheDocument();
     });
   });
