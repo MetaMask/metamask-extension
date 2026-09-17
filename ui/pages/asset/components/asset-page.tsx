@@ -617,7 +617,7 @@ const AssetPage = ({
               ohlcvData={mergedOhlcvData}
               onError={setAdvancedChartError}
               onReady={handleAdvancedChartReady}
-              realtimeBar={realtimeLatestBar}
+              realtimeBar={realtimeLatestBar ?? undefined}
             />
             {/* Candlestick-only: the selection is kept in preferences, but the
                 bar and the studies themselves are hidden on a line chart. */}
