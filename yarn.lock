@@ -5488,7 +5488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^14.0.2":
+"@metamask/assets-controller@npm:^14.0.3":
   version: 14.0.3
   resolution: "@metamask/assets-controller@npm:14.0.3"
   dependencies:
@@ -8932,7 +8932,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^69.5.2, @metamask/transaction-controller@npm:^69.6.1, @metamask/transaction-controller@npm:^69.8.0, @metamask/transaction-controller@npm:^69.8.1":
+"@metamask/transaction-controller@npm:^69.5.2, @metamask/transaction-controller@npm:^69.6.1, @metamask/transaction-controller@npm:^69.7.0, @metamask/transaction-controller@npm:^69.8.0, @metamask/transaction-controller@npm:^69.8.1":
   version: 69.8.1
   resolution: "@metamask/transaction-controller@npm:69.8.1"
   dependencies:
@@ -9010,14 +9010,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-controller@npm:^27.1.0":
-  version: 27.1.0
-  resolution: "@metamask/transaction-pay-controller@npm:27.1.0"
+"@metamask/transaction-pay-controller@npm:^27.1.1":
+  version: 27.1.1
+  resolution: "@metamask/transaction-pay-controller@npm:27.1.1"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/assets-controller": "npm:^14.0.2"
+    "@metamask/assets-controller": "npm:^14.0.3"
     "@metamask/assets-controllers": "npm:^111.1.3"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
@@ -9029,13 +9029,13 @@ __metadata:
     "@metamask/ramps-controller": "npm:^20.2.0"
     "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
     "@metamask/sentinel-api-service": "npm:^1.0.1"
-    "@metamask/transaction-controller": "npm:^69.6.1"
+    "@metamask/transaction-controller": "npm:^69.7.0"
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
-  checksum: 10/4c15879987aa924f89ed9b24ef0ca7ebf0d9bb3c4f2f496fe371924ea3c260b0ab816bea5c393b55119030dda973e31d3e78ebf8a2b1ca453f5b1e8d87591b89
+  checksum: 10/d4ae68fb02011cfc730dcea823e2dc2e2f198eb2e1bbe6c4f9e0fc716815d4c8b3ad26d0da760e0bbce84d1d46a142118306ea920a3c7f84297cb82c33743c8a
   languageName: node
   linkType: hard
 
@@ -31820,7 +31820,7 @@ __metadata:
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.5.2"
     "@metamask/transaction-controller": "npm:^69.8.0"
-    "@metamask/transaction-pay-controller": "npm:^27.1.0"
+    "@metamask/transaction-pay-controller": "npm:^27.1.1"
     "@metamask/tron-wallet-snap": "npm:^3.2.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.12.1"

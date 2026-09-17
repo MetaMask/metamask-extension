@@ -6159,9 +6159,6 @@
   "networkFeeExplanationTitle": {
     "message": "네트워크 수수료"
   },
-  "networkMenu": {
-    "message": "네트워크 메뉴"
-  },
   "networkMenuHeading": {
     "message": "네트워크 선택"
   },
