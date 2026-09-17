@@ -8497,9 +8497,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@3.0.0-preview-09a5567a0":
-  version: 3.0.0-preview-09a5567a0
-  resolution: "@metamask-previews/snap-account-service@npm:3.0.0-preview-09a5567a0"
+"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@3.0.0-preview-5c7968943":
+  version: 3.0.0-preview-5c7968943
+  resolution: "@metamask-previews/snap-account-service@npm:3.0.0-preview-5c7968943"
   dependencies:
     "@metamask/account-api": "npm:^2.0.0"
     "@metamask/accounts-controller": "npm:^40.0.0"
@@ -8511,9 +8511,9 @@ __metadata:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
-    "@metamask/utils": "npm:^11.12.0"
+    "@metamask/utils": "npm:^12.0.0"
     lodash-es: "npm:^4.17.21"
-  checksum: 10/f3e49adac0b5c4c38dc72399a5aba075fead8bc7a36c560f625ca7d7c013f2c8bbb9e502badc67fe5567cd7811ee5cbbe903d85eec55f1169ded3dda26b92ba3
+  checksum: 10/f2a5035a75036c94c8aba884dd69461268d5cc10c02daa67172c769b2919f3510d583fe57bc826fd5984c4cc56f462ac36e73f568d795589d1a68fb342ae467b
   languageName: node
   linkType: hard
 
