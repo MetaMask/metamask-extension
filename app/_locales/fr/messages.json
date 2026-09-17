@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "Si vous choisissez des frais peu élevés, attendez-vous à des transactions plus lentes et à des temps d’attente plus longs. Pour des transactions plus rapides, choisissez les options « Ordre au marché » ou « Agressif »."
   },
-  "alertMessageGasTooLow": {
-    "message": "Pour effectuer cette transaction, vous devez augmenter la limite de gaz à 21 000 ou plus."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de réseau."
   },
@@ -4216,8 +4213,8 @@
   "gasLimit": {
     "message": "Limite de gaz"
   },
-  "gasLimitTooLow": {
-    "message": "La limite de carburant doit être d’au moins 21000"
+  "gasLimitBelowMinimum": {
+    "message": "La limite de carburant doit être d’au moins 12000"
   },
   "gasPrice": {
     "message": "Prix du gaz (GWEI)"
@@ -5518,6 +5515,9 @@
   "moneyActivityFilterAll": {
     "message": "Tous"
   },
+  "moneyActivityFilterCard": {
+    "message": "Carte"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Dépôts"
   },
@@ -5594,9 +5594,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Gagnez automatiquement des intérêts sur le solde de votre compte « Money »"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Gagnez automatiquement jusqu'à environ $1 de rendement annuel"
-  },
   "moneyBenefitLiquidity": {
     "message": "Profitez d’une liquidité totale sans période de blocage, vous pourrez ainsi trader ou retirer des fonds à tout moment"
   },
@@ -5651,11 +5648,21 @@
   "moneyFundDescriptionWithApy": {
     "message": "Approvisionnez votre compte Money et profitez d’un taux de rendement annuel pouvant atteindre les $1."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Le taux affiché est un taux de rendement annuel estimé en fonction des conditions actuelles du marché. Ce taux est variable et n’est pas garanti. Les fonds sont placés dans un coffre-fort DeFi, géré par Veda sous la supervision de Steakhouse Financial, qui génère des rendements sur des marchés de prêt bien établis."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Le Money Account est propulsé par Monad."
+  },
   "moneyHowItWorks": {
     "message": "Comment ça marche "
   },
   "moneyHowItWorksDescription": {
     "message": "Ajoutez des mUSD et vous pourrez utiliser à tout moment votre solde adossé au dollar pour effectuer des achats, des transferts ou des opérations de bourse."
+  },
+  "moneyHowItWorksDescription1": {
+    "message": "Ajoutez des mUSD sur votre compte Money et gagnez automatiquement jusqu’à $1 de RMP (variable). Les fonds sont placés dans un coffre-fort DeFi, géré par Veda et dont le suivi des risques est assuré par Steakhouse Financial. Le taux est généré par des plateformes DeFi tierces qui déploient les fonds dans des protocoles blockchain. Pas de staking, pas de réclamation, pas de blocage de fonds.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescription2": {
     "message": "Le solde de votre compte Money correspond à votre solde disponible. Associez votre carte MetaMask Card pour effectuer des achats auprès de plus de 150 millions de commerçants dans le monde entier. Votre argent continue de générer des revenus jusqu’à ce que vous le dépensiez."
@@ -5669,6 +5676,13 @@
   },
   "moneyHowItWorksDisclosuresBody": {
     "message": "Le Money Account n’est ni un compte bancaire, ni un compte d’épargne, ni un produit de dépôt assuré. Le taux de rendement annuel est variable et n’est pas garanti. Le Money Account comporte des risques liés aux contrats intelligents, au protocole, à la liquidité et à d’autres facteurs, et vous pouvez perdre une partie ou la totalité de vos fonds. Sous réserve de restrictions régionales. Des conditions s’appliquent."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Risques et mentions légales"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Jusqu’à $1 % de RMP. Ce taux est variable et évolue en fonction des conditions du marché. Le taux actuel est affiché sur votre compte Money.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Le taux de rendement annuel varie-t-il ?"
@@ -5694,11 +5708,23 @@
   "moneyHowItWorksFaqLockedQuestion": {
     "message": "Mon argent est-il bloqué ? Puis-je effectuer un retrait à tout moment ?"
   },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Un compte offrant un RMP variable pouvant atteindre les $1. Vous déposez des fonds, qui sont conservés sur le compte sous forme de mUSD, et bénéficiez d’un RMP pouvant atteindre les $1. Le mUSD est le stablecoin adossé au dollar de MetaMask. Vous pouvez utiliser ou retirer vos fonds à tout moment sans pénalité. Vous pouvez dépenser vos fonds en utilisant la carte MetaMask Card chez les plus de 150 millions de commerçants qui acceptent les cartes Mastercard dans le monde entier.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Qu’est-ce qu’un compte Money ?"
   },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "Le mUSD est le stablecoin de MetaMask adossé au dollar à parité 1:1. Le solde de votre compte « Money » est détenu sous forme de mUSD et vous pouvez l’utiliser à tout moment pour effectuer des achats, des transferts ou des opérations de Bourse.",
+    "description": "Drafted from existing Money copy for content review."
+  },
   "moneyHowItWorksFaqMusdQuestion": {
     "message": "Qu’est-ce que le mUSD ?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Votre solde « Money » correspond à votre solde disponible : il continue de générer des intérêts jusqu’au moment où vous l’utilisez. Le compte « Money » n’est ni un compte bancaire, ni un compte d’épargne, ni un produit de dépôt assuré.",
+    "description": "Drafted from existing Money copy for content review."
   },
   "moneyHowItWorksFaqSpendingQuestion": {
     "message": "S’agit-il d’un compte d’épargne ou d’un compte courant ?"
@@ -5721,8 +5747,14 @@
   "moneyLifetime": {
     "message": "À ce jour"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Le montant total que vous avez gagné sur votre solde Money Account au fil du temps."
+  },
   "moneyMeetMusd": {
     "message": "Découvrir les mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Le montant total que vous avez gagné sur votre solde Money Account au cours des 30 derniers jours."
   },
   "moneyMoreInformation": {
     "message": "Plus d’informations"
@@ -5763,6 +5795,10 @@
   "moneyToastDepositInProgressTitleConvert": {
     "message": "Conversion des crypto-monnaies"
   },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 ajoutés au compte « Money ».",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
   "moneyToastDepositSuccessDescriptionNoAmount": {
     "message": "Ajouté à votre Money Account."
   },
@@ -5789,6 +5825,14 @@
   },
   "moneyToastWithdrawInProgressTitle": {
     "message": "Transfert en cours"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 ajoutés à $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Ajoutés à $1.",
+    "description": "$1 is the destination account name"
   },
   "moneyToastWithdrawSuccessTitle": {
     "message": "Transfert terminé"
@@ -6452,18 +6496,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Retrait prêt à être effectué"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Vous pouvez maintenant retirer vos $1 non stakés"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "La demande que vous avez soumise pour déstaker vos $1 a été envoyée"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "A reçu un NFT de"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "A envoyé un NFT à"
-  },
   "notificationItemNetwork": {
     "message": "Réseau :"
   },
@@ -6472,18 +6504,6 @@
   },
   "notificationItemReceived": {
     "message": "Reçu"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Reçu de la part de"
-  },
-  "notificationItemSent": {
-    "message": "Envoyé"
-  },
-  "notificationItemSentTo": {
-    "message": "Envoyé à"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake terminé"
   },
   "notificationItemStaked": {
     "message": "A staké"
@@ -6497,17 +6517,11 @@
   "notificationItemSwapped": {
     "message": "Échangé"
   },
-  "notificationItemSwappedFor": {
-    "message": "contre"
-  },
   "notificationItemTo": {
     "message": "Vers"
   },
   "notificationItemTransactionId": {
     "message": "ID de transaction"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Annulation du staking terminée"
   },
   "notificationItemUnStaked": {
     "message": "Déstaké"
@@ -7650,6 +7664,10 @@
   "perpsFilterAll": {
     "message": "Tous"
   },
+  "perpsFilterClear": {
+    "message": "$1, supprimer le filtre",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Matières premières"
   },
@@ -7671,6 +7689,10 @@
   "perpsFilterMore": {
     "message": "Plus",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Plus, $1 sélectionné(e)",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Nouveau"
@@ -7767,6 +7789,18 @@
   },
   "perpsMarket": {
     "message": "Marché"
+  },
+  "perpsMarketCategories": {
+    "message": "Catégories du marché",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 marchés",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 marché",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Marché introuvable"
@@ -8698,6 +8732,10 @@
   "rampsChangeProvider": {
     "message": "Changer de fournisseur."
   },
+  "rampsChangeProviders": {
+    "message": "changer de fournisseur",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Choisir un fournisseur"
   },
@@ -8869,6 +8907,9 @@
   "rampsPreviouslyUsed": {
     "message": "Dernière utilisation"
   },
+  "rampsQuoteFetchError": {
+    "message": "Erreur lors de l’obtention des cotations. Saisissez un montant inférieur ou"
+  },
   "rampsQuoteUnavailable": {
     "message": "Cotation non disponible."
   },
@@ -8883,6 +8924,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Afficher tous les jetons"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Ce jeton n’est pas disponible dans votre région.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Jeton non disponible",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "L’achat de crypto-monnaies n’est pas encore pris en charge dans votre région."

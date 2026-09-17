@@ -5729,6 +5729,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/authenticated-user-storage@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/authenticated-user-storage@npm:4.0.0"
+  dependencies:
+    "@metamask/base-data-service": "npm:^2.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.12.0"
+  checksum: 10/fff8ba2c4cddd1810bfe8db887eba7b80bec8aa86d982354a659f8e21dcb73f3de8cdea854bba64db4e35132e80b6dbad24be3da317176095358d017a3258442
+  languageName: node
+  linkType: hard
+
 "@metamask/auto-changelog@npm:^6.2.0":
   version: 6.2.0
   resolution: "@metamask/auto-changelog@npm:6.2.0"
@@ -7745,25 +7758,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^27.0.1":
-  version: 27.0.1
-  resolution: "@metamask/notification-services-controller@npm:27.0.1"
+"@metamask/notification-services-controller@npm:^29.0.0":
+  version: 29.0.0
+  resolution: "@metamask/notification-services-controller@npm:29.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/authenticated-user-storage": "npm:^3.0.2"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/keyring-controller": "npm:^27.1.1"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^29.0.0"
-    "@metamask/utils": "npm:^11.12.0"
+    "@metamask/authenticated-user-storage": "npm:^4.0.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-controller": "npm:^28.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/profile-sync-controller": "npm:^32.1.1"
+    "@metamask/utils": "npm:^12.0.0"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^11.2.0"
-    lodash: "npm:^4.17.21"
+    lodash-es: "npm:^4.17.21"
     loglevel: "npm:^1.8.1"
     semver: "npm:^7.6.3"
-    uuid: "npm:^8.3.2"
-  checksum: 10/ba0b726893c8d947eaf87a9cda6847d5f88f904b9804a4bf9c66d621143e3567b9a6329039ee360b250646e93fff169d1785faf8ac22436de6914e74c0875d7e
+    uuid: "npm:^11.1.1"
+  checksum: 10/349b3defd26aaace33c725015147e0ee7f447c31fb56685b3e78ec53c85cb863f48bab8a48ad559125a9016490392dac4fd3282e13b69c2e0c343238f03f41ec
   languageName: node
   linkType: hard
 
@@ -31671,7 +31684,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:^16.1.0"
     "@metamask/assets-controllers": "npm:^112.0.2"
-    "@metamask/authenticated-user-storage": "npm:^3.0.2"
+    "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/base-data-service": "npm:^2.0.0"
@@ -31764,7 +31777,7 @@ __metadata:
     "@metamask/network-connection-banner-controller": "npm:^0.2.0"
     "@metamask/network-controller": "npm:^36.0.0"
     "@metamask/network-enablement-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:^27.0.1"
+    "@metamask/notification-services-controller": "npm:^29.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/passkey-controller": "npm:^3.0.0"
@@ -41701,7 +41714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^11.1.0":
+"uuid@npm:^11.1.0, uuid@npm:^11.1.1":
   version: 11.1.1
   resolution: "uuid@npm:11.1.1"
   bin:
