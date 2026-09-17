@@ -1,9 +1,11 @@
 import type { Hex } from '@metamask/utils';
-import { extractSignatureAddresses } from '@metamask/phishing-controller';
+import {
+  extractSignatureAddresses,
+  type PhishingController,
+} from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
@@ -25,13 +27,15 @@ type AppStateCache = Pick<
  * @param options.request.params - RPC params (`from`, typed data).
  * @param options.chainId - Hex chain ID of the request.
  * @param options.appStateController - Address-scan cache accessors.
+ * @param options.phishingController - Controller providing scanAddress.
  */
 export function scanUnvalidatedSignatureAddresses(options: {
   request: { method: string; params?: unknown };
   chainId: Hex;
   appStateController: AppStateCache;
+  phishingController: Pick<PhishingController, 'scanAddress'>;
 }): void {
-  const { request, chainId, appStateController } = options;
+  const { request, chainId, appStateController, phishingController } = options;
   if (
     request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
     request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
@@ -45,11 +49,6 @@ export function scanUnvalidatedSignatureAddresses(options: {
 
   const { params } = request;
   if (!Array.isArray(params) || params[1] === undefined || params[1] === null) {
-    return;
-  }
-
-  const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
-  if (!supportedEVMChain) {
     return;
   }
 
@@ -82,7 +81,8 @@ export function scanUnvalidatedSignatureAddresses(options: {
       address,
       appStateController.getAddressSecurityAlertResponse,
       appStateController.addAddressSecurityAlertResponse,
-      supportedEVMChain,
+      chainId,
+      phishingController,
     ).catch((error) => {
       console.error('Error scanning signature address', error);
     });
