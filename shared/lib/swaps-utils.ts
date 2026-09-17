@@ -22,54 +22,127 @@ import fetchWithCache from './fetch-with-cache';
 
 const FALLBACK_GAS_MULTIPLIER = 1.5;
 
-const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
+const TEST_CHAIN_IDS: string[] = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
-export const validHex = (string) => Boolean(string?.match(/^0x[a-f0-9]+$/u));
-export const truthyString = (string) => Boolean(string?.length);
-export const truthyDigitString = (string) =>
+export type SwapsApiCallType =
+  | 'trade'
+  | 'tokens'
+  | 'token'
+  | 'topAssets'
+  | 'aggregatorMetadata'
+  | 'gasPrices'
+  | 'blockedTokens'
+  | 'network'
+  | 'refreshTime';
+
+export type SwapsQuoteValidator = {
+  property: string;
+  type: string;
+  validator?: (value: unknown) => boolean;
+};
+
+type SwapsTradeTxFields = {
+  data?: string;
+  to?: string;
+  from?: string;
+  value?: string;
+};
+
+type SwapsTradeQuoteResponse = {
+  trade?: SwapsTradeTxFields;
+  approvalNeeded?: SwapsTradeTxFields | null;
+  error?: unknown;
+  aggregator?: string;
+  maxGas?: number;
+  slippage?: string;
+  [key: string]: unknown;
+};
+
+type ConstructTxParamsInput = {
+  sendToken?: boolean;
+  data?: string;
+  to?: string;
+  amount?: string;
+  from?: string;
+  gas?: string;
+  gasPrice?: string;
+};
+
+type FetchTradesInfoInput = {
+  slippage: string;
+  sourceToken: string;
+  sourceDecimals: number;
+  destinationToken: string;
+  value: string;
+  fromAddress: string;
+  exchangeList?: string;
+  enableGasIncludedQuotes?: boolean;
+};
+
+export const validHex = (string: string | undefined): boolean =>
+  Boolean(string?.match(/^0x[a-f0-9]+$/u));
+export const truthyString = (string: string | undefined): boolean =>
+  Boolean(string?.length);
+export const truthyDigitString = (string: string | undefined): boolean =>
   truthyString(string) && Boolean(string.match(/^\d+$/u));
 
-export function validateData(validators, object, urlUsed, logError = true) {
+export function validateData(
+  validators: SwapsQuoteValidator[],
+  object: Record<string, unknown>,
+  urlUsed: string,
+  logError = true,
+): boolean {
   return validators.every(({ property, type, validator }) => {
     const types = type.split('|');
 
+    const propertyValue = object[property];
     const valid =
-      types.some((_type) => typeof object[property] === _type) &&
-      (!validator || validator(object[property]));
+      types.some((_type) => typeof propertyValue === _type) &&
+      (!validator || validator(propertyValue));
     if (!valid && logError) {
       log.error(
         `response to GET ${urlUsed} invalid for property ${property}; value was:`,
-        object[property],
+        propertyValue,
         '| type was: ',
-        typeof object[property],
+        typeof propertyValue,
       );
     }
     return valid;
   });
 }
 
-export const QUOTE_VALIDATORS = [
+export const QUOTE_VALIDATORS: SwapsQuoteValidator[] = [
   {
     property: 'trade',
     type: 'object',
-    validator: (trade) =>
-      trade &&
-      validHex(trade.data) &&
-      isValidHexAddress(trade.to, { allowNonPrefixed: false }) &&
-      isValidHexAddress(trade.from, { allowNonPrefixed: false }) &&
-      truthyString(trade.value),
+    validator: (trade) => {
+      const tradeObj = trade as SwapsTradeTxFields | null | undefined;
+      return Boolean(
+        tradeObj &&
+        validHex(tradeObj.data) &&
+        isValidHexAddress(tradeObj.to, { allowNonPrefixed: false }) &&
+        isValidHexAddress(tradeObj.from, { allowNonPrefixed: false }) &&
+        truthyString(tradeObj.value),
+      );
+    },
   },
   {
     property: 'approvalNeeded',
     type: 'object',
-    validator: (approvalTx) =>
-      approvalTx === null ||
-      (approvalTx &&
-        validHex(approvalTx.data) &&
-        isValidHexAddress(approvalTx.to, { allowNonPrefixed: false }) &&
-        isValidHexAddress(approvalTx.from, { allowNonPrefixed: false })),
+    validator: (approvalTx) => {
+      const approval = approvalTx as SwapsTradeTxFields | null | undefined;
+      return (
+        approvalTx === null ||
+        Boolean(
+          approval &&
+          validHex(approval.data) &&
+          isValidHexAddress(approval.to, { allowNonPrefixed: false }) &&
+          isValidHexAddress(approval.from, { allowNonPrefixed: false }),
+        )
+      );
+    },
   },
   {
     property: 'sourceAmount',
@@ -84,12 +157,14 @@ export const QUOTE_VALIDATORS = [
   {
     property: 'sourceToken',
     type: 'string',
-    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
+    validator: (input) =>
+      isValidHexAddress(String(input), { allowNonPrefixed: false }),
   },
   {
     property: 'destinationToken',
     type: 'string',
-    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
+    validator: (input) =>
+      isValidHexAddress(String(input), { allowNonPrefixed: false }),
   },
   {
     property: 'aggregator',
@@ -117,7 +192,9 @@ export const QUOTE_VALIDATORS = [
   {
     property: 'gasEstimate',
     type: 'number|undefined',
-    validator: (gasEstimate) => gasEstimate === undefined || gasEstimate > 0,
+    validator: (gasEstimate) =>
+      gasEstimate === undefined ||
+      (typeof gasEstimate === 'number' && gasEstimate > 0),
   },
   {
     property: 'fee',
@@ -125,38 +202,39 @@ export const QUOTE_VALIDATORS = [
   },
 ];
 
-/**
- * @param {string} type - Type of an API call, e.g. "tokens"
- * @param {string} chainId
- * @returns string
- */
-const getBaseUrlForNewSwapsApi = (type, chainId) => {
+const getBaseUrlForNewSwapsApi = (
+  type: SwapsApiCallType,
+  chainId?: string,
+): string | undefined => {
   const useDevApis = process.env.SWAPS_USE_DEV_APIS;
   const v2ApiBaseUrl = useDevApis
     ? BRIDGE_DEV_API_BASE_URL
     : BRIDGE_PROD_API_BASE_URL;
   const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
   const tokenApiBaseUrl = TOKEN_API_BASE_URL;
-  const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
+  const noNetworkSpecificTypes: SwapsApiCallType[] = ['refreshTime'];
   if (noNetworkSpecificTypes.includes(type)) {
     return v2ApiBaseUrl;
   }
   const chainIdDecimal = chainId && parseInt(chainId, 16);
-  if (isNaN(chainIdDecimal)) {
+  if (chainIdDecimal === undefined || Number.isNaN(chainIdDecimal)) {
     return undefined;
   }
-  const gasApiTypes = ['gasPrices'];
+  const gasApiTypes: SwapsApiCallType[] = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
-    return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
+    return `${gasApiBaseUrl}/networks/${chainIdDecimal}`;
   }
-  const tokenApiTypes = ['blockedTokens'];
+  const tokenApiTypes: SwapsApiCallType[] = ['blockedTokens'];
   if (tokenApiTypes.includes(type)) {
-    return `${tokenApiBaseUrl}/blocklist?chainId=${chainIdDecimal}`; // Token blocklist is in its own api
+    return `${tokenApiBaseUrl}/blocklist?chainId=${chainIdDecimal}`;
   }
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-export const getBaseApi = function (type, chainId) {
+export const getBaseApi = function getBaseApi(
+  type: SwapsApiCallType,
+  chainId: string,
+): string {
   const _chainId = TEST_CHAIN_IDS.includes(chainId)
     ? CHAIN_IDS.MAINNET
     : chainId;
@@ -186,20 +264,23 @@ export const getBaseApi = function (type, chainId) {
   }
 };
 
-export function calcTokenValue(value, decimals) {
+export function calcTokenValue(value: number | string, decimals: number) {
   const multiplier = new BigNumber(10).pow(new BigNumber(decimals));
   return new BigNumber(String(value)).times(multiplier);
 }
 
+type SwapsWrappedTokensChainId = keyof typeof SWAPS_WRAPPED_TOKENS_ADDRESSES;
+
 export const shouldEnableDirectWrapping = (
-  chainId,
-  sourceToken,
-  destinationToken,
-) => {
+  chainId: string,
+  sourceToken?: string,
+  destinationToken?: string,
+): boolean => {
   if (!sourceToken || !destinationToken) {
     return false;
   }
-  const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId];
+  const wrappedToken =
+    SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId as SwapsWrappedTokensChainId];
   const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
   return (
     (isEqualCaseInsensitive(sourceToken, wrappedToken) &&
@@ -209,32 +290,21 @@ export const shouldEnableDirectWrapping = (
   );
 };
 
-/**
- * Given and object where all values are strings, returns the same object with all values
- * now prefixed with '0x'
- *
- * @param obj
- */
-export function addHexPrefixToObjectValues(obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: addHexPrefix(obj[key]) };
-  }, {});
+export function addHexPrefixToObjectValues(
+  obj: Record<string, string | undefined>,
+): Record<string, string | undefined> {
+  return Object.keys(obj).reduce<Record<string, string | undefined>>(
+    (newObj, key) => {
+      const value = obj[key];
+      return {
+        ...newObj,
+        [key]: value === undefined ? undefined : addHexPrefix(value),
+      };
+    },
+    {},
+  );
 }
 
-/**
- * Given the standard set of information about a transaction, returns a transaction properly formatted for
- * publishing via JSON RPC and web3
- *
- * @param {object} options
- * @param {boolean} [options.sendToken] - Indicates whether or not the transaction is a token transaction
- * @param {string} options.data - A hex string containing the data to include in the transaction
- * @param {string} options.to - A hex address of the tx recipient address
- * @param options.amount
- * @param {string} options.from - A hex address of the tx sender address
- * @param {string} options.gas - A hex representation of the gas value for the transaction
- * @param {string} options.gasPrice - A hex representation of the gas price for the transaction
- * @returns {object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
- */
 export function constructTxParams({
   sendToken,
   data,
@@ -243,8 +313,8 @@ export function constructTxParams({
   from,
   gas,
   gasPrice,
-}) {
-  const txParams = {
+}: ConstructTxParamsInput) {
+  const txParams: Record<string, string | undefined> = {
     data,
     from,
     value: '0',
@@ -269,46 +339,49 @@ export async function fetchTradesInfo(
     fromAddress,
     exchangeList,
     enableGasIncludedQuotes,
-  },
-  { chainId },
+  }: FetchTradesInfoInput,
+  { chainId }: { chainId: string },
 ) {
-  const urlParams = {
+  const urlParams: Record<string, string | boolean | number> = {
     destinationToken,
     sourceToken,
     sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
     slippage,
     timeout: SECOND * 10,
     walletAddress: fromAddress,
-    enableGasIncludedQuotes,
+    enableGasIncludedQuotes: Boolean(enableGasIncludedQuotes),
   };
 
   if (exchangeList) {
     urlParams.exchangeList = exchangeList;
   }
   if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
-    urlParams.enableDirectWrapping = true;
+    urlParams.enableDirectWrapping = 'true';
   }
 
   const queryString = new URLSearchParams(urlParams).toString();
   const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
-  const tradesResponse = await fetchWithCache({
+  const tradesResponse = (await fetchWithCache({
     url: tradeURL,
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
     functionName: 'fetchTradesInfo',
-  });
-  const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
+  })) as SwapsTradeQuoteResponse[];
+
+  const newQuotes = tradesResponse.reduce<
+    Record<string, SwapsTradeQuoteResponse>
+  >((aggIdTradeMap, quote) => {
     if (
       quote.trade &&
       !quote.error &&
-      validateData(QUOTE_VALIDATORS, quote, tradeURL)
+      validateData(QUOTE_VALIDATORS, quote as Record<string, unknown>, tradeURL)
     ) {
       const constructedTrade = constructTxParams({
         to: quote.trade.to,
         from: quote.trade.from,
         data: quote.trade.data,
-        amount: decimalToHex(quote.trade.value),
-        gas: decimalToHex(quote.maxGas),
+        amount: decimalToHex(quote.trade.value ?? '0'),
+        gas: decimalToHex(String(quote.maxGas ?? 0)),
       });
 
       let { approvalNeeded } = quote;
@@ -321,7 +394,7 @@ export async function fetchTradesInfo(
 
       return {
         ...aggIdTradeMap,
-        [quote.aggregator]: {
+        [quote.aggregator as string]: {
           ...quote,
           slippage,
           trade: constructedTrade,
@@ -335,23 +408,12 @@ export async function fetchTradesInfo(
   return newQuotes;
 }
 
-/**
- * Given a gas estimate, gas multiplier, max gas, and custom max gas, returns the max gas limit
- * to use for a transaction.
- *
- * @param {string} gasEstimate - The gas estimate for the transaction.
- * @param {number} gasMultiplier - The gas multiplier to use.
- * @param {number} maxGas - The max gas limit to use.
- * @param {string} customMaxGas - The custom max gas limit to use.
- * @returns {string} The max gas limit to use for the transaction.
- */
-
 export function calculateMaxGasLimit(
-  gasEstimate,
-  gasMultiplier = FALLBACK_GAS_MULTIPLIER,
-  maxGas,
-  customMaxGas,
-) {
+  gasEstimate: string | undefined,
+  gasMultiplier: number = FALLBACK_GAS_MULTIPLIER,
+  maxGas?: number,
+  customMaxGas?: string,
+): string {
   const gasLimitForMax = new BigNumber(gasEstimate || 0, 16)
     .round(0)
     .toString(16);
