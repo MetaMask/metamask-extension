@@ -367,7 +367,6 @@ import { SubjectMetadataControllerInit } from './messenger-client-init/subject-m
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
-import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
 import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
 import { AlertControllerInit } from './messenger-client-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
@@ -627,8 +626,6 @@ export default class MetamaskController extends EventEmitter {
       MultichainNetworkController: MultichainNetworkControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
       TokenRatesController: TokenRatesControllerInit,
-      // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
-      AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
@@ -814,7 +811,6 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.GatorPermissionsController;
     this.nameController = messengerClientsByName.NameController;
     this.announcementController = messengerClientsByName.AnnouncementController;
-    this.accountOrderController = messengerClientsByName.AccountOrderController;
     this.rewardsController = messengerClientsByName.RewardsController;
     this.qrSyncController = messengerClientsByName.QrSyncController;
     this.claimsController = this.wallet.getInstance('ClaimsController');
@@ -1382,7 +1378,6 @@ export default class MetamaskController extends EventEmitter {
       AnnouncementController: this.announcementController,
       NetworkOrderController: this.networkOrderController,
       NetworkEnablementController: this.networkEnablementController,
-      AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
       GatorPermissionsController: this.gatorPermissionsController,
       TokenListController: this.tokenListController,
@@ -1451,7 +1446,6 @@ export default class MetamaskController extends EventEmitter {
         AnnouncementController: this.announcementController,
         NetworkOrderController: this.networkOrderController,
         NetworkEnablementController: this.networkEnablementController,
-        AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
