@@ -7,6 +7,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import type {
   ActivityListItem,
   FiatAmount,
+  MoneyAccountActivityItem,
   MoneyAccountActivityKind,
   TokenAmount,
 } from '../../../shared/lib/activity/types';
@@ -192,13 +193,23 @@ function enrichMoneyAccountActivity(
     symbol: MUSD_TOKEN.symbol,
   };
   const fiat = toMusdFiat(amount, transaction);
+  const execution = transaction.metamaskPay?.solanaExecution;
+  let payOutcome: MoneyAccountActivityItem['payOutcome'];
+  if (execution?.relayStatus === 'refund') {
+    payOutcome = 'refunded';
+  } else if (
+    execution?.phase === 'unknown' ||
+    execution?.sourceStatus === 'unknown' ||
+    execution?.relayStatus === 'unknown' ||
+    execution?.followUpStatus === 'unknown'
+  ) {
+    payOutcome = 'unknown';
+  }
 
   return {
     ...activity,
     type,
-    ...(transaction.metamaskPay?.intent?.outcome?.type
-      ? { payOutcome: transaction.metamaskPay.intent.outcome.type }
-      : {}),
+    ...(payOutcome ? { payOutcome } : {}),
     data: {
       from: transaction.txParams?.from ?? '',
       ...(fiat ? { fiat } : {}),

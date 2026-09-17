@@ -346,10 +346,7 @@ export const selectNonEvmActivityItems = createSelector(
       localTransactionGroups.flatMap(
         ({ initialTransaction, primaryTransaction }) =>
           [initialTransaction, primaryTransaction]
-            .map(
-              (transaction) =>
-                transaction.metamaskPay?.intent?.sourceTransactionId,
-            )
+            .map((transaction) => getSolanaSourceTransactionId(transaction))
             .filter((id): id is string => Boolean(id)),
       ),
     );
@@ -389,6 +386,15 @@ export const selectNonEvmActivityItems = createSelector(
       });
   },
 );
+
+function getSolanaSourceTransactionId(
+  transaction: TransactionMeta,
+): string | undefined {
+  const execution = transaction.metamaskPay?.solanaExecution;
+  return execution && 'sourceTransactionId' in execution
+    ? execution.sourceTransactionId
+    : undefined;
+}
 
 export const selectNonEvmActivityItemsById = createSelector(
   selectNonEvmActivityItems,

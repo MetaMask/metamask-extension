@@ -5,8 +5,6 @@ import { submitRequestToBackground } from '../background-connection';
 
 export type { MoneyAccountWithdrawAmountUpdate };
 
-const solanaPayQuotePromiseByTransactionId = new Map<string, Promise<void>>();
-
 export async function setSolanaPaySource({
   transactionId,
   sourceWalletAccountId,
@@ -20,43 +18,13 @@ export async function setSolanaPaySource({
   sourceAssetId: CaipAssetType;
   sourceAmountRaw: string;
 }): Promise<void> {
-  return await submitSolanaPayQuoteRequest(transactionId, () =>
-    submitRequestToBackground('setSolanaPaySource', [
-      transactionId,
-      sourceWalletAccountId,
-      sourceAccountId,
-      sourceAssetId,
-      sourceAmountRaw,
-    ]),
-  );
-}
-
-export async function refreshSolanaPayQuote(
-  transactionId: string,
-): Promise<void> {
-  return await submitSolanaPayQuoteRequest(transactionId, () =>
-    submitRequestToBackground('refreshSolanaPayQuote', [transactionId]),
-  );
-}
-
-async function submitSolanaPayQuoteRequest(
-  transactionId: string,
-  submit: () => Promise<unknown>,
-): Promise<void> {
-  const activeRequest = solanaPayQuotePromiseByTransactionId.get(transactionId);
-  if (activeRequest) {
-    return await activeRequest;
-  }
-
-  const request = submit().then(() => undefined);
-  solanaPayQuotePromiseByTransactionId.set(transactionId, request);
-  try {
-    await request;
-  } finally {
-    if (solanaPayQuotePromiseByTransactionId.get(transactionId) === request) {
-      solanaPayQuotePromiseByTransactionId.delete(transactionId);
-    }
-  }
+  await submitRequestToBackground('setSolanaPaySource', [
+    transactionId,
+    sourceWalletAccountId,
+    sourceAccountId,
+    sourceAssetId,
+    sourceAmountRaw,
+  ]);
 }
 
 export async function updateTransactionPaymentToken({

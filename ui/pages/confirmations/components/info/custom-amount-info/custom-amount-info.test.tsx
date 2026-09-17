@@ -510,6 +510,22 @@ describe('CustomAmountInfo', () => {
         'true',
       );
     });
+
+    it('locks the amount after Core creates the Solana execution checkpoint', () => {
+      const { getByTestId } = render({
+        transactionMeta: {
+          ...MOCK_TRANSACTION_META,
+          metamaskPay: {
+            solanaExecution: { phase: 'ready' } as never,
+          },
+        },
+      });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'true',
+      );
+    });
   });
 
   describe('awaiting required token', () => {

@@ -17,7 +17,7 @@ import {
 } from '../../hooks/pay/useTransactionPayData';
 import { useTransactionPayAvailableTokens } from '../../hooks/pay/useTransactionPayAvailableTokens';
 import {
-  selectTransactionPayIntentByTransactionId,
+  selectTransactionPaySourceByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
@@ -39,13 +39,13 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const { payToken } = useTransactionPayToken();
   const solanaPayQuote = useSolanaPayQuote();
   const availableTokens = useTransactionPayAvailableTokens();
-  const payIntent = useSelector((state: TransactionPayState) =>
-    selectTransactionPayIntentByTransactionId(state, transactionId),
+  const paySource = useSelector((state: TransactionPayState) =>
+    selectTransactionPaySourceByTransactionId(state, transactionId),
   );
   const solanaToken = availableTokens.find(
-    ({ accountId, assetId }) =>
-      accountId === payIntent?.sourceWalletAccountId &&
-      assetId === payIntent?.sourceAssetId,
+    ({ accountAddress, assetId, chainId: sourceChainId }) =>
+      `${String(sourceChainId)}:${accountAddress}` ===
+        paySource?.sourceAccountId && assetId === paySource?.sourceAssetId,
   );
   const targetTokenAddress = getTokenAddress(currentConfirmation);
   const isQuotesLoading = useIsTransactionPayLoading();
@@ -109,7 +109,7 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
     );
   }
 
-  if (payIntent?.sourceChainId.startsWith('solana:')) {
+  if (paySource?.sourceAccountId.startsWith('solana:')) {
     if (!formattedSolanaAmount || !solanaToken) {
       return <PayTokenAmountSkeleton />;
     }

@@ -2,8 +2,8 @@ import { SolScope } from '@metamask/keyring-api';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type {
-  TransactionPayIntent,
   TransactionPayRequiredToken,
+  TransactionPaySource,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -222,16 +222,12 @@ describe('transaction-pay utils', () => {
         chainId: SolScope.Mainnet,
         standard: AssetStandard.Native,
       });
-      const payIntent = {
-        version: 2,
-        sourceWalletAccountId: 'internal-account-id',
-        sourceAmountRaw: '1000000000',
+      const paySource = {
         sourceAccountId: `${SolScope.Mainnet}:solana-address`,
         sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
-        sourceChainId: SolScope.Mainnet,
-      } as TransactionPayIntent;
+      } as TransactionPaySource;
 
-      const result = getAvailableTokens({ tokens: [solanaAsset], payIntent });
+      const result = getAvailableTokens({ tokens: [solanaAsset], paySource });
 
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual(

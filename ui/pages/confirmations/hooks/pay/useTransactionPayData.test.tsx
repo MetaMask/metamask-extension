@@ -2,13 +2,15 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import {
   TransactionPayStrategy,
   TransactionPayQuote,
   type SolanaPayQuote,
   type TransactionData,
-  type TransactionPayIntent,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
   type TransactionPayTotals,
@@ -57,7 +59,6 @@ const mockStore = configureStore([]);
 
 const STATE_MOCK = {
   metamask: {
-    payIntents: {},
     transactionData: {
       [TRANSACTION_ID_MOCK]: {
         isLoading: true,
@@ -75,27 +76,27 @@ const STATE_MOCK = {
 function createWrapper(
   stateOverrides?: Partial<TransactionData>,
   transactionType?: TransactionType,
-  payIntent?: TransactionPayIntent,
+  metamaskPay?: TransactionMeta['metamaskPay'],
 ) {
-  const state = stateOverrides
-    ? {
-        metamask: {
-          payIntents: payIntent ? { [TRANSACTION_ID_MOCK]: payIntent } : {},
-          transactionData: {
-            [TRANSACTION_ID_MOCK]: {
-              ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
-              ...stateOverrides,
-            },
-          },
+  const state = {
+    metamask: {
+      ...STATE_MOCK.metamask,
+      transactions: [
+        {
+          id: TRANSACTION_ID_MOCK,
+          metamaskPay,
+          time: 0,
+          type: transactionType,
         },
-      }
-    : {
-        ...STATE_MOCK,
-        metamask: {
-          ...STATE_MOCK.metamask,
-          payIntents: payIntent ? { [TRANSACTION_ID_MOCK]: payIntent } : {},
+      ],
+      transactionData: {
+        [TRANSACTION_ID_MOCK]: {
+          ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
+          ...stateOverrides,
         },
-      };
+      },
+    },
+  };
 
   const store = mockStore(state);
 
@@ -154,10 +155,14 @@ describe('useTransactionPayData', () => {
     });
 
     it('returns false when Core reports a required product action was omitted', () => {
-      const payIntent = {
-        atomicProductActionRequired: true,
-        sourceChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      } as unknown as TransactionPayIntent;
+      const metamaskPay = {
+        source: {
+          sourceAccountId:
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:solana-address',
+          sourceAssetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        },
+        solanaExecution: { atomicProductActionRequired: true },
+      } as unknown as TransactionMeta['metamaskPay'];
       const solanaPayQuote = {
         preflight: { affordability: { isAffordable: true } },
         route: { atomicProductActionIncluded: false },
@@ -168,7 +173,7 @@ describe('useTransactionPayData', () => {
           wrapper: createWrapper(
             { solanaPayQuote },
             TransactionType.perpsDeposit,
-            payIntent,
+            metamaskPay,
           ),
         },
       );
@@ -177,10 +182,14 @@ describe('useTransactionPayData', () => {
     });
 
     it('returns true when Core includes the required exact-output product action', () => {
-      const payIntent = {
-        atomicProductActionRequired: true,
-        sourceChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      } as unknown as TransactionPayIntent;
+      const metamaskPay = {
+        source: {
+          sourceAccountId:
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:solana-address',
+          sourceAssetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        },
+        solanaExecution: { atomicProductActionRequired: true },
+      } as unknown as TransactionMeta['metamaskPay'];
       const solanaPayQuote = {
         preflight: { affordability: { isAffordable: true } },
         route: {
@@ -194,7 +203,7 @@ describe('useTransactionPayData', () => {
           wrapper: createWrapper(
             { solanaPayQuote },
             TransactionType.predictDeposit,
-            payIntent,
+            metamaskPay,
           ),
         },
       );

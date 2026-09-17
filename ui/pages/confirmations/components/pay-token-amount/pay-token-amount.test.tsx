@@ -10,7 +10,7 @@ import {
   useTransactionPayIsMaxAmount,
 } from '../../hooks/pay/useTransactionPayData';
 import { useTransactionPayAvailableTokens } from '../../hooks/pay/useTransactionPayAvailableTokens';
-import { selectTransactionPayIntentByTransactionId } from '../../../../selectors/transactionPayController';
+import { selectTransactionPaySourceByTransactionId } from '../../../../selectors/transactionPayController';
 import { PayTokenAmount } from './pay-token-amount';
 
 jest.mock('../../hooks/tokens/useTokenFiatRates');
@@ -18,7 +18,7 @@ jest.mock('../../hooks/pay/useTransactionPayToken');
 jest.mock('../../hooks/pay/useTransactionPayData');
 jest.mock('../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../../selectors/transactionPayController', () => ({
-  selectTransactionPayIntentByTransactionId: jest.fn(),
+  selectTransactionPaySourceByTransactionId: jest.fn(),
 }));
 
 const ASSET_AMOUNT_MOCK = '100';
@@ -45,8 +45,8 @@ describe('PayTokenAmount', () => {
   const useTransactionPayAvailableTokensMock = jest.mocked(
     useTransactionPayAvailableTokens,
   );
-  const selectTransactionPayIntentByTransactionIdMock = jest.mocked(
-    selectTransactionPayIntentByTransactionId,
+  const selectTransactionPaySourceByTransactionIdMock = jest.mocked(
+    selectTransactionPaySourceByTransactionId,
   );
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
   const useIsTransactionPayLoadingMock = jest.mocked(
@@ -81,7 +81,7 @@ describe('PayTokenAmount', () => {
 
     useSolanaPayQuoteMock.mockReturnValue(undefined);
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
-    selectTransactionPayIntentByTransactionIdMock.mockReturnValue(undefined);
+    selectTransactionPaySourceByTransactionIdMock.mockReturnValue(undefined);
     useIsTransactionPayLoadingMock.mockReturnValue(false);
     useTransactionPayIsMaxAmountMock.mockReturnValue(false);
   });
@@ -99,15 +99,16 @@ describe('PayTokenAmount', () => {
   });
 
   it('renders the provider-final exact-output Solana amount', () => {
-    selectTransactionPayIntentByTransactionIdMock.mockReturnValue({
+    selectTransactionPaySourceByTransactionIdMock.mockReturnValue({
+      sourceAccountId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:solana-address',
       sourceAssetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-      sourceChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      sourceWalletAccountId: 'solana-account-id',
-    } as never);
+    });
     useTransactionPayAvailableTokensMock.mockReturnValue([
       {
+        accountAddress: 'solana-address',
         accountId: 'solana-account-id',
         assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         decimals: 9,
         symbol: 'SOL',
       },

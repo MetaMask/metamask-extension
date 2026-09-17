@@ -1,4 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { type TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -51,10 +52,13 @@ import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMe
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
-import { useRefreshSolanaPayQuote } from '../../../hooks/pay/useRefreshSolanaPayQuote';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  selectSolanaPayExecutionByTransactionId,
+  type TransactionPayState,
+} from '../../../../../selectors/transactionPayController';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
@@ -145,6 +149,13 @@ export const CustomAmountInfo = React.memo(
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+    const solanaExecution = useSelector((state: TransactionPayState) =>
+      selectSolanaPayExecutionByTransactionId(
+        state,
+        currentConfirmation?.id ?? '',
+      ),
+    );
+    const isAmountLocked = Boolean(solanaExecution);
     const availableTokens = useTransactionPayAvailableTokens();
     const accountNoFundsAlert = useAccountNoFundsAlert();
     const hasAccountNoFunds = accountNoFundsAlert.length > 0;
@@ -155,7 +166,6 @@ export const CustomAmountInfo = React.memo(
     const { isWithdraw } = useTransactionPayWithdraw();
     const hasTokens = availableTokens.length > 0 || isWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-    useRefreshSolanaPayQuote(primaryRequiredToken);
     // Withdraws source funds off-chain (vault / HyperCore) and money-account
     // withdraw batches have no `requiredAssets`, so Pay never populates a
     // primary required token. Waiting on it leaves the amount UI on the
@@ -244,6 +254,7 @@ export const CustomAmountInfo = React.memo(
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
           isAmountLoading={showAmountLoader}
+          isAmountLocked={isAmountLocked}
           onAmountChange={handleAmountChange}
           overrideCenterContent={overrideCenterContent}
         >
@@ -252,7 +263,9 @@ export const CustomAmountInfo = React.memo(
         <AlertMessage alertContent={alertContent} alertMessage={alertMessage} />
         {displayPercentageButtons && (
           <PercentageButtons
-            disabled={!hasTokens || Boolean(disablePercentageButtons)}
+            disabled={
+              !hasTokens || Boolean(disablePercentageButtons) || isAmountLocked
+            }
             hasMax={showMax}
             onPercentageClick={updatePendingAmountPercentage}
           />
@@ -303,6 +316,7 @@ type CenterContainerProps = {
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
   isAmountLoading?: boolean;
+  isAmountLocked?: boolean;
   onAmountChange: (value: string) => void;
   overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
 };
@@ -320,6 +334,7 @@ function CenterContainer({
   hasTokens,
   hidePayTokenAmount,
   isAmountLoading = false,
+  isAmountLocked = false,
   onAmountChange,
   overrideCenterContent,
 }: CenterContainerProps) {
@@ -336,7 +351,7 @@ function CenterContainer({
         amountFiat={amountFiat}
         autoFocus={autoFocusAmount}
         currency={currency}
-        disabled={!hasTokens}
+        disabled={!hasTokens || isAmountLocked}
         hasAlert={hasAlert}
         isLoading={isAmountLoading}
         onChange={onAmountChange}

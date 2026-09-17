@@ -1,8 +1,5 @@
 import { Web3Provider, type ExternalProvider } from '@ethersproject/providers';
-import type {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerGetStateAction,
-} from '@metamask/accounts-controller';
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type { Messenger } from '@metamask/messenger';
 import type {
@@ -25,7 +22,6 @@ import type { DelegationMessengerActions } from '../../transaction/delegation';
 
 export type MoneyPayActions =
   | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction

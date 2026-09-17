@@ -1,21 +1,20 @@
 import { createSelector } from 'reselect';
-import type {
-  TransactionPayControllerState,
-  TransactionPayIntent,
-} from '@metamask/transaction-pay-controller';
+import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type { TransactionControllerState } from '@metamask/transaction-controller';
+import { selectTransactionById } from './transactionController';
 
 export type TransactionPayState = {
-  metamask: TransactionPayControllerState;
+  metamask: TransactionPayControllerState & TransactionControllerState;
 };
 
-export const selectTransactionPayIntentByTransactionId = createSelector(
-  (state: TransactionPayState) => state,
-  (_state: TransactionPayState, transactionId: string) => transactionId,
-  (
-    state: TransactionPayState,
-    transactionId: string,
-  ): TransactionPayIntent | undefined =>
-    state.metamask.payIntents?.[transactionId],
+export const selectTransactionPaySourceByTransactionId = createSelector(
+  selectTransactionById,
+  (transaction) => transaction?.metamaskPay?.source,
+);
+
+export const selectSolanaPayExecutionByTransactionId = createSelector(
+  selectTransactionById,
+  (transaction) => transaction?.metamaskPay?.solanaExecution,
 );
 
 export const selectTransactionDataByTransactionId = createSelector(

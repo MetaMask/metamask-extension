@@ -6,10 +6,7 @@ import {
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import type {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerGetStateAction,
-} from '@metamask/accounts-controller';
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type {
   MultichainTransactionsControllerGetStateAction,
   MultichainTransactionsControllerUpdateTransactionsForAccountAction,
@@ -94,7 +91,6 @@ export function getTransactionPayControllerMessenger(
 
 type InitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
   | TransactionControllerGetNonceLockAction
@@ -133,7 +129,6 @@ export function getTransactionPayControllerInitMessenger(
     messenger: controllerInitMessenger,
     actions: [
       'AccountsController:getSelectedAccount',
-      'AccountsController:getState',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'MoneyAccountController:getMoneyAccount',
