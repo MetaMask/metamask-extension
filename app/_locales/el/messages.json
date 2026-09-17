@@ -1512,8 +1512,8 @@
   "alertMessageGasFeeLow": {
     "message": "Όταν επιλέγετε χαμηλά τέλη, να αναμένετε πιο αργές συναλλαγές και μεγαλύτερους χρόνους αναμονής. Για ταχύτερες συναλλαγές, επιλέξτε τις επιλογές χρέωσης Market (Αγοράς) ή Aggressive (Υψηλότερη αγοραστική τιμή)."
   },
-  "alertMessageGasTooLow": {
-    "message": "Για να συνεχίσετε με αυτή τη συναλλαγή, θα πρέπει να αυξήσετε το όριο των τελών συναλλαγών σε 21000 ή περισσότερο."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Για να συνεχίσετε με αυτή τη συναλλαγή, θα πρέπει να αυξήσετε το όριο των τελών συναλλαγών σε 12000 ή περισσότερο."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη δικτύου."
@@ -4210,8 +4210,8 @@
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
   },
-  "gasLimitTooLow": {
-    "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον 12000"
   },
   "gasPrice": {
     "message": "Τέλη συναλλαγών"
@@ -5507,6 +5507,9 @@
   "moneyActivityFilterAll": {
     "message": "Όλες"
   },
+  "moneyActivityFilterCard": {
+    "message": "Κάρτα"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Καταθέσεις"
   },
@@ -5582,9 +5585,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Κερδίστε αυτόματα απόδοση στο υπόλοιπό σας στον Money account"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Κερδίστε αυτόματα έως και ~$1 APY"
-  },
   "moneyBenefitLiquidity": {
     "message": "Πλήρης ρευστότητα χωρίς δεσμεύσεις, ώστε να μπορείτε να κάνετε συναλλαγές ή ανάληψη οποιαδήποτε στιγμή"
   },
@@ -5633,15 +5633,95 @@
   "moneyFundDescriptionWithApy": {
     "message": "Προσθέστε χρήματα στον Money account σας και δείτε το υπόλοιπό σας να αυξάνεται με απόδοση έως και $1 APY."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Η απόδοση που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Απόδοση (APY), βάσει των τρεχουσών συνθηκών της αγοράς. Το APY είναι κυμαινόμενο και δεν εγγυάται απόδοση. Τα κεφάλαια τοποθετούνται σε ένα DeFi vault, με διαχείριση από τη Veda και εποπτεία κινδύνου από τη Steakhouse Financial, το οποίο αποφέρει αποδόσεις σε καθιερωμένες αγορές δανεισμού."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Ο Money Account υποστηρίζεται από την Monad."
+  },
   "moneyHowItWorks": {
     "message": "Πώς λειτουργεί"
   },
   "moneyHowItWorksDescription": {
     "message": "Προσθέστε mUSD και το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή."
   },
+  "moneyHowItWorksDescription1": {
+    "message": "Προσθέστε mUSD στον Money account σας και κερδίστε αυτόματα έως και $1 APY (μεταβλητό). Τα κεφάλαιά σας τοποθετούνται σε ένα DeFi vault, το οποίο διαχειρίζεται η Veda, με παρακολούθηση κινδύνου από τη Steakhouse Financial. Το επιτόκιο προκύπτει από πλατφόρμες DeFi τρίτων, οι οποίες επενδύουν κεφάλαια σε πρωτόκολλα blockchain. Χωρίς δέσμευση κεφαλαίων, χωρίς διεκδίκηση ανταμοιβών και χωρίς περιορισμοί ανάληψης.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksDescription2": {
+    "message": "Το υπόλοιπο του λογαριασμού σας είναι το διαθέσιμο υπόλοιπο για δαπάνες. Συνδέστε την MetaMask Card για να πραγματοποιείτε συναλλαγές σε περισσότερους από 150 εκατομμύρια εμπόρους παγκοσμίως. Τα χρήματά σας συνεχίζουν να αποδίδουν μέχρι τη στιγμή που θα τα χρησιμοποιήσετε."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Ο Money Account υποστηρίζεται από την Monad."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Προσθέστε mUSD και κερδίστε έως και $1. Το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Ο Money Account δεν αποτελεί τραπεζικό λογαριασμό, λογαριασμό αποταμίευσης ή ασφαλισμένο καταθετικό προϊόν. Η ετήσια απόδοση (APY) είναι μεταβλητή και δεν είναι εγγυημένη. Ο Money Account περιλαμβάνει κινδύνους από έξυπνα συμβόλαια, πρωτόκολλα, ρευστότητα και άλλους παράγοντες, και ενδέχεται να χάσετε μέρος ή το σύνολο των κεφαλαίων σας. Υπόκειται σε τοπικούς περιορισμούς. Ισχύουν όροι."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Κίνδυνοι και γνωστοποιήσεις"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Έως και $1 APY. Το επιτόκιο είναι μεταβλητό και μεταβάλλεται ανάλογα με τις συνθήκες της αγοράς. Το τρέχον επιτόκιο εμφανίζεται πάντα στον Money account σας.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Μπορεί να αλλάξει το ποσοστό APY;"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "Εσείς! Το MetaMask είναι ένα πορτοφόλι με αυτοδιαχείριση κεφαλαίων, δηλαδή μόνο ο κάτοχος των ιδιωτικών κλειδιών ελέγχει τον λογαριασμό. Το MetaMask δεν μπορεί να έχει πρόσβαση, να παγώσει ή να μεταφέρει τα χρήματά σας. Αυτό μας διαφοροποιεί από τους παραδοσιακούς τραπεζικούς λογαριασμούς και τις πλατφόρμες φύλαξης κρυπτονομισμάτων — δεν υπάρχουν τρίτοι να διαχειρίζονται τα χρήματά σας."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Ποιος ελέγχει τα χρήματά μου;"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Δεν υπάρχει χρέωση για την δημιουργία ενός Money Account ούτε για την κατάθεση stablecoins. Θα επιβαρυνθείτε με χρεώσεις όταν καταθέτετε tokens που δεν είναι stablecoins. Υπάρχουν επίσης χρεώσεις που σχετίζονται με συναλλαγές της MetaMask Card, αναλήψεις από ATM και τέλη μετατροπής σε τοπικό νόμισμα. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "Δείτε αναλυτικά τις χρεώσεις της κάρτας εδώ."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Υπάρχουν χρεώσεις;"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Ναι. Μπορείτε να κάνετε συναλλαγές, αποστολή, χρήση ή ανάληψη ολόκληρου του υπολοίπου σας οποιαδήποτε στιγμή, χωρίς περιόδους ειδοποίησης, χωρίς ποινές και χωρίς τέλη ανάληψης από το MetaMask. Αν η ρευστότητα είναι περιορισμένη, ενδέχεται να υπάρχουν προσωρινές καθυστερήσεις."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Είναι τα χρήματά μου δεσμευμένα; Μπορώ να κάνω ανάληψη οποιαδήποτε στιγμή;"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Ένας λογαριασμός που αποφέρει έως και $1 μεταβλητό APY. Καταθέτετε κεφάλαια, τα οποία διατηρούνται στον λογαριασμό σας ως mUSD, και κερδίζετε έως και $1 APY. Το mUSD είναι το stablecoin της MetaMask, το οποίο υποστηρίζεται από δολάρια ΗΠΑ. Μπορείτε να χρησιμοποιείτε ή να κάνετε ανάληψη των κεφαλαίων σας οποιαδήποτε στιγμή, χωρίς επιβαρύνσεις. Μπορείτε να χρησιμοποιείτε τα κεφάλαιά σας μέσω της MetaMask Card σε περισσότερες από 150 εκατομμύρια επιχειρήσεις που δέχονται την Mastercard παγκοσμίως.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Τι είναι ο λογαριασμός Money;"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "Το mUSD είναι το stablecoin της MetaMask, με αναλογία 1:1 προς το δολάριο ΗΠΑ. Το υπόλοιπό σας στον Money account διατηρείται σε mUSD και παραμένει διαθέσιμο για αγορές, αποστολή ή συναλλαγές οποιαδήποτε στιγμή.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "Τι είναι τα mUSD;"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Το υπόλοιπό σας στον Money account είναι το διαθέσιμο υπόλοιπό σας για αγορές — συνεχίζει να αποφέρει απόδοση μέχρι τη στιγμή που θα το χρησιμοποιήσετε. Ο Money account δεν είναι τραπεζικός λογαριασμός, λογαριασμός ταμιευτηρίου ή ασφαλισμένο καταθετικό προϊόν.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Είναι αυτός λογαριασμός αποταμίευσης ή λογαριασμός δαπανών;"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "Συχνές Ερωτήσεις"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Όταν καταθέτετε κεφάλαια, αυτά τοποθετούνται σε καθιερωμένα πρωτόκολλα με αποκεντρωμένη χρηματοδότηση (DeFi), όπως το Aave και το Morpho, όπου αποφέρουν αποδόσεις από πραγματική οικονομική δραστηριότητα. Οι αποδόσεις αυτές καταβάλλονται σε εσάς με τη μορφή της ετήσιας απόδοσης (APY).\n\nΈνας τρίτος πάροχος υπηρεσιών, η Steakhouse Financial, παρακολουθεί τον τρόπο με τον οποίο κατανέμονται τα κεφάλαια στα πρωτόκολλα. Η Veda, ένας τρίτος πάροχος υποδομών, αναπτύσσει και διατηρεί τα έξυπνα συμβόλαια στο θησαυροφυλάκιο (vault) όπου φυλάσσονται τα κεφάλαιά σας.\n\nΟι αποδόσεις δεν αποτελούν τόκο που καταβάλλεται από τo MetaMask ή από τον εκδότη των mUSD. Πρόκειται για αποδόσεις στο blockchain που παράγονται από θέσεις σε τρίτα πρωτόκολλα με αποκεντρωμένη χρηματοδότηση (DeFi)."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Από πού προέρχεται η απόδοση;"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Πώς αυξάνονται τα χρήματά σας"
@@ -5652,8 +5732,14 @@
   "moneyLifetime": {
     "message": "Συνολικά"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Τα συνολικά κέρδη σας από το υπόλοιπο του λογαριασμού Money μέχρι σήμερα."
+  },
   "moneyMeetMusd": {
     "message": "Μάθετε για τα mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Τα συνολικά κέρδη σας από το υπόλοιπο του λογαριασμού Money τις τελευταίες 30 ημέρες."
   },
   "moneyMoreInformation": {
     "message": "Περισσότερες πληροφορίες"
@@ -5682,11 +5768,59 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Η μετατροπή απέτυχε"
   },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Οι αγορές με κάρτες ενδέχεται να χρειαστούν μερικά λεπτά."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Προσθήκη χρημάτων"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Κατάθεση σε εξέλιξη"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Μετατροπή κρυπτονομισμάτων"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "Προστέθηκαν $1 στον Money account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Προστέθηκαν στον Money Account."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Προστέθηκαν κεφάλαια"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Η κατάθεση ολοκληρώθηκε"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Η μετατροπή ολοκληρώθηκε"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Αυτό μπορεί να διαρκέσει λίγα λεπτά."
+  },
   "moneyToastWithdrawFailedBody": {
     "message": "Δεν είναι δυνατή η μεταφορά κεφαλαίων. Προσπαθήστε ξανά."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Η μεταφορά απέτυχε"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "ο λογαριασμός σας"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Μεταφορά σε εξέλιξη"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "Προστέθηκαν $1 στο $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Προστέθηκαν στο $1.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Η μεταφορά ολοκληρώθηκε"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Άλλος λογαριασμός"
@@ -7548,6 +7682,10 @@
   "perpsFilterAll": {
     "message": "Όλες"
   },
+  "perpsFilterClear": {
+    "message": "$1, κατάργηση φίλτρου",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Εμπορεύματα"
   },
@@ -7562,6 +7700,17 @@
   },
   "perpsFilterIndex": {
     "message": "Δείκτες"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
+  "perpsFilterMore": {
+    "message": "Περισσότερα",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Περισσότερα, επιλεγμένη κατηγορία: $1",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Νέα"
@@ -7658,6 +7807,18 @@
   },
   "perpsMarket": {
     "message": "Τιμή αγοράς"
+  },
+  "perpsMarketCategories": {
+    "message": "Κατηγορίες αγοράς",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 αγορές",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 αγορά",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Η αγορά δεν βρέθηκε"
@@ -8591,6 +8752,10 @@
   "rampsChangeProvider": {
     "message": "Αλλαγή παρόχου."
   },
+  "rampsChangeProviders": {
+    "message": "αλλαγή παρόχων",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Επιλέξτε πάροχο"
   },
@@ -8763,7 +8928,7 @@
     "message": "Τελευταία χρήση"
   },
   "rampsQuoteFetchError": {
-    "message": "Αποτυχία λήψης προσφοράς."
+    "message": "Σφάλμα κατά τη λήψη προσφορών. Πληκτρολογήστε μικρότερο ποσό ή"
   },
   "rampsQuoteUnavailable": {
     "message": "Δεν υπάρχει διαθέσιμη προσφορά."
@@ -8779,6 +8944,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Εμφάνιση όλων των tokens"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Αυτό το token δεν είναι διαθέσιμο στην περιοχή σας.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Το token δεν είναι διαθέσιμο",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Η αγορά κρυπτονομισμάτων δεν υποστηρίζεται ακόμη στην περιοχή σας."

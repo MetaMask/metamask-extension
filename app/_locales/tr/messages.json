@@ -1512,8 +1512,8 @@
   "alertMessageGasFeeLow": {
     "message": "Düşük bir ücret seçerken işlemlerin daha yavaş olmasını ve bekleme sürelerinin daha uzun olmasını bekleyebilirsiniz. Daha hızlı işlemler için Piyasa veya Agresif ücret seçeneklerini seçin."
   },
-  "alertMessageGasTooLow": {
-    "message": "Bu işlemle devam etmek için gaz limitini 21000 veya üzeri olacak şekilde artırmanız gerekecek."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Bu işlemle devam etmek için gaz limitini 12000 veya üzeri olacak şekilde artırmanız gerekecek."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Hesabınızda ağ ücretlerini ödemek için yeterli $1 yok."
@@ -4210,8 +4210,8 @@
   "gasLimit": {
     "message": "Gaz limiti"
   },
-  "gasLimitTooLow": {
-    "message": "Gaz limiti en az 21000 olmalıdır"
+  "gasLimitBelowMinimum": {
+    "message": "Gaz limiti en az 12000 olmalıdır"
   },
   "gasPrice": {
     "message": "Gaz fiyatı"
@@ -5511,6 +5511,9 @@
   "moneyActivityFilterAll": {
     "message": "Tümü"
   },
+  "moneyActivityFilterCard": {
+    "message": "Kart"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Yatırma İşlemleri"
   },
@@ -5586,9 +5589,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Para bakiyeniz üzerinden otomatik getiri elde edin"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "$1 APY'ye varan otomatik kazanç elde edin"
-  },
   "moneyBenefitLiquidity": {
     "message": "Kilitleme olmadan tam likidite alarak dilediğiniz zaman işlem yapabilir veya para çekebilirsiniz"
   },
@@ -5637,6 +5637,12 @@
   "moneyFundDescriptionWithApy": {
     "message": "Money account hesabınıza fon ekleyin ve $1 APY ile bakiyenizin yükselişini izleyin."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiri (APY) oranıdır. APY değişkendir ve garanti edilmez. Fonlar, Veda tarafından yönetilen ve Steakhouse Financial tarafından risk denetimi yapılan, yerleşik kredi piyasalarında getiri sağlayan bir DeFi kasasına yatırılır."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money account, Monad tarafından desteklenmektedir."
+  },
   "moneyHowItWorks": {
     "message": "Nasıl çalışır?"
   },
@@ -5647,6 +5653,70 @@
     "message": "mUSD ekleyin ve en fazla $1 kazanın. Bakiyeniz dolara endekslidir ve her zaman harcamaya, işlem yapmaya veya gönderime hazırdır.",
     "description": "$1 is the current mUSD APY."
   },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money account bir banka hesabı, tasarruf hesabı ya da sigortalı bir vadeli mevduat hesabı değildir. APY değişkendir ve garantili değildir. Money account; akıllı sözleşme, protokol, likidite ve diğer riskleri taşır ve fonlarınızın bir kısmını veya tamamını kaybedebilirsiniz. Bölgesel kısıtlamalara tabidir. Şartlar uygulanır."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Riskler ve Açıklamalar"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "$1 APY'ye varan kazanç sağlar. Oran değişkendir ve piyasa koşulları ile dalgalanır. Geçerli oran her zaman Money account hesabının içinde görülebilir.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "APY oranı değişir mi?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "Sizin! MetaMask, self-custodial bir cüzdandır, yani yalnızca hesap sahibinin Özel Anahtarları ile kontrol edilir. MetaMask fonlarınıza erişemez, donduramaz veya taşıyamaz. Bu, bizi geleneksel banka hesaplarından ve custodial kripto platformlarından ayıran özelliktir. Fonlarınızı tutan üçüncü taraf yoktur."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Paramın kontrolü kimde?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Money account açmak ve stabil kripto para yatırmak ücretsizdir. Stabil kripto para dışındaki tokenları yatırırken sizden işlem ücreti alınır. MetaMask Card işlemleri, ATM'den para çekme işlemleri ve yerel para birimi offramp maliyetleri ile ilişkili ücretler de bulunmaktadır. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "Kart ücretlerinin tam dökümünü burada görebilirsiniz."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Ücretler var mı?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Evet. Uyarı süresi, para cezası ve MetaMask'ten para çekme ücretleri olmadan tüm bakiyenizle dilediğiniz zaman işlem yapabilir, tüm bakiyenizi gönderebilir, harcayabilir veya çekebilirsiniz. Likidite sıkışık olduğunda geçici gecikmeler yaşanabilir."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Param kilitli mi? Dilediğim zaman çekebilir miyim?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "$1 değişken APY'ye varan kazanç sağlayan bir hesap. Yatırdığınız fonlar mUSD olarak hesapta tutulur ve $1 APY'ye varan kazanç sağlarsınız. mUSD, MetaMask'in dolara endeksli stabil kripto parasıdır. Fonlarınızı dilediğiniz zaman para cezası ödemeden kullanabilir veya çekebilirsiniz. MetaMask Card ile fonlarınızı dünya çapında +150 milyon Mastercard satıcısında harcayabilirsiniz.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Para hesabı nedir?"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD, MetaMask'in 1:1 dolara endeksli stabil kripto parasıdır. Para bakiyeniz mUSD olarak tutulur ve dilediğiniz zaman harcamaya, gönderilmeye veya işleme hazırdır.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "mUSD nedir?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Para bakiyeniz harcama bakiyenizdir; siz kullanana kadar kazanmaya devam eder. Money account hesabı bir banka hesabı, birikim hesabı veya sigortalı mevduat ürünü değildir.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Bu bir tasarruf hesabı mı yoksa harcama hesabı mı?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "SSS"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Fon yatırdığınızda varlıklarınız, gerçek ekonomik faaliyetlerden getiri elde eden Aave ve Morpho gibi köklü DeFi protokollerine aktarılır. Bu getiriler daha sonra size APY olarak yansıtılır. \n\nSteakhouse Financial adlı üçüncü taraf bir hizmet sağlayıcı, fonların protokollerde nasıl dağıtıldığını izler. Üçüncü taraf bir altyapı sağlayıcısı olan Veda ise fonlarınızı tutan kasa akıllı sözleşmelerini devreye alır ve bunların işletimini üstlenir.\n\nKazançlar, MetaMask veya mUSD ihraççısı tarafından ödenen bir faiz değildir. Üçüncü taraf DeFi protokollerindeki pozisyonlardan elde edilen zincir üstü getirilerdir."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Getiri nereden gelir?"
+  },
   "moneyHowYourMoneyGrows": {
     "message": "Paranız nasıl artar"
   },
@@ -5656,8 +5726,14 @@
   "moneyLifetime": {
     "message": "Toplam"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Money account bakiyenizde zaman içinde kazandığınız toplam."
+  },
   "moneyMeetMusd": {
     "message": "mUSD ile tanış"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Money account bakiyenizde son 30 gün içinde kazandığınız toplam."
   },
   "moneyMoreInformation": {
     "message": "Daha fazla bilgi"
@@ -5686,11 +5762,59 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Dönüştürme işlemi başarısız oldu"
   },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Kart siparişleri birkaç dakika sürebilir."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Fonlar ekleniyor"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Yatırılıyor"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Kripto dönüştürülüyor"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 Money account hesabına eklendi.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Money account hesabına eklendi."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Fon eklendi"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Para yatırma işlemi tamamlandı"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Dönüştürme işlemi tamamlandı"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Bu işlem birkaç dakika sürebilir."
+  },
   "moneyToastWithdrawFailedBody": {
     "message": "Fon transferi yapılamadı. Tekrar deneyin."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Transfer başarısız oldu"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "hesabınız"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Transfer sürüyor"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 $2 hesabına eklendi.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "$1 hesabına eklendi.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Transfer tamamlandı"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Başka hesap"
@@ -7558,6 +7682,10 @@
   "perpsFilterAll": {
     "message": "Tümü"
   },
+  "perpsFilterClear": {
+    "message": "$1, filtreyi temizleyin",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Emtialar"
   },
@@ -7572,6 +7700,17 @@
   },
   "perpsFilterIndex": {
     "message": "Endeksler"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoinler"
+  },
+  "perpsFilterMore": {
+    "message": "Daha fazla",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Daha fazla, $1 seçildi",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Yeni"
@@ -7668,6 +7807,18 @@
   },
   "perpsMarket": {
     "message": "Piyasa"
+  },
+  "perpsMarketCategories": {
+    "message": "Piyasa kategorileri",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 piyasaları",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 piyasa",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Piyasa bulunamadı"
@@ -8605,6 +8756,10 @@
   "rampsChangeProvider": {
     "message": "Sağlayıcı değiştirin."
   },
+  "rampsChangeProviders": {
+    "message": "sağlayıcı değiştirin",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Sağlayıcı seç"
   },
@@ -8777,7 +8932,7 @@
     "message": "Son kullanılma"
   },
   "rampsQuoteFetchError": {
-    "message": "Teklif alınamadı."
+    "message": "Fiyat teklifleri alınırken hata oluştu. Daha düşük bir tutar girin veya"
   },
   "rampsQuoteUnavailable": {
     "message": "Teklif kullanılamıyor."
@@ -8793,6 +8948,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Tüm tokenları göster"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Bu token bölgenizde kullanılamıyor.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token kullanılamıyor",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Kripto alışı henüz bölgenizde desteklenmiyor."

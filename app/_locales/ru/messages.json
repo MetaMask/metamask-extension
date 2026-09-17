@@ -1877,6 +1877,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "Контакты"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "Ордера на покупку и продажу"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Управляйте тем, что вы синхронизируете"
   },
@@ -5261,6 +5264,10 @@
   "lowLowercase": {
     "message": "низкая"
   },
+  "lowValueAssets": {
+    "message": "Токены с низким балансом ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "Мейн-нет Ethereum"
   },
@@ -5503,6 +5510,9 @@
   "moneyActivityFilterAll": {
     "message": "Все"
   },
+  "moneyActivityFilterCard": {
+    "message": "Карта"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Депозиты"
   },
@@ -5578,9 +5588,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Автоматически получайте доход на ваш баланс Money"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Автоматически зарабатывайте до ~$1 годовых"
-  },
   "moneyBenefitLiquidity": {
     "message": "Получите полную ликвидность без блокировок, чтобы вы могли торговать или выводить средства в любое время"
   },
@@ -5629,15 +5636,95 @@
   "moneyFundDescriptionWithApy": {
     "message": "Пополните свой счет Money Account и наблюдайте, как растет ваш баланс с доходностью до $1 годовых."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Указанная ставка — это ориентировочная годовая процентная доходность (APY), основанная на текущих рыночных условиях. APY является переменной и не гарантируется. Средства поступают в хранилище DeFi, управляемое Veda с контролем рисков от Steakhouse Financial, которое генерирует доходность на устоявшихся рынках кредитования."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money Account работает на базе Monad."
+  },
   "moneyHowItWorks": {
     "message": "Как это работает"
   },
   "moneyHowItWorksDescription": {
     "message": "Внесите mUSD, и ваш баланс, обеспеченный долларами, будет готов к тратам, торговле или отправке в любое время."
   },
+  "moneyHowItWorksDescription1": {
+    "message": "Добавьте mUSD на свой счет Money Account и автоматически зарабатывайте до $1 годовых (переменная ставка). Средства поступают в DeFi-хранилище, управляемое Veda с мониторингом рисков от Steakhouse Financial. Ставка генерируется сторонними DeFi-платформами, которые размещают средства в блокчейн-протоколах. Никакого стейкинга, никаких требований к выводу, никаких блокировок.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksDescription2": {
+    "message": "Ваш Денежный баланс — это ваш баланс для расходов. Привяжите свою карту MetaMask, чтобы расплачиваться в более чем 150 млн магазинов по всему миру. Ваши деньги продолжают приносить доход до того момента, пока вы их не потратите."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money Account работает на базе Monad."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Внесите mUSD и зарабатывайте до $1. Ваш баланс обеспечен долларами и готов к тратам, торговле или отправке в любое время.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Account не является банковским счетом, сберегательным счетом или застрахованным депозитным продуктом. Годовая процентная ставка (APY) является переменной величиной и не гарантируется. Использование Money Account сопряжено с рисками смарт-контрактов, протоколов, ликвидности и другими рисками, и вы можете потерять часть или все свои средства. Действуют региональные ограничения. Применяются Условия использования."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Риски и раскрытие информации"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "До $1 годовых. Ставка является переменной и колеблется в зависимости от рыночных условий. Текущая ставка всегда видна внутри счета Money Account.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Меняется ли годовая процентная ставка?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "Вы! MetaMask — это некастодиальный кошелек, то есть им управляют только закрытые ключи владельца счета. MetaMask не может получить доступ к вашим средствам, заморозить или переместить их. Это то, что отличает нас от традиционных банковских счетов и кастодиальных криптоплатформ — здесь нет третьей стороны, хранящей ваши средства."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Кто контролирует мои деньги?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "За открытие Money Account и за внесение стейблкоинов комиссия не взимается. Комиссия будет взиматься при внесении токенов, не являющихся стейблкоинами. Также существуют комиссии, связанные с транзакциями по карте MetaMask Card, снятием наличных в банкоматах и расходами на вывод средств в местную валюту. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "Полную разбивку комиссий по карте смотрите здесь."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Есть ли какие-либо комиссии?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Да. Вы можете торговать, отправлять, тратить или выводить весь свой баланс в любое время без периодов уведомления, штрафов и комиссий за вывод средств со стороны MetaMask. В случае нехватки ликвидности возможны временные задержки."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Заблокированы ли мои деньги? Могу ли я вывести их в любое время?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Счет, который приносит до $1 по переменой годовой ставке. Вы вносите средства, которые хранятся на счете в виде mUSD, и зарабатываете до $1 годовых. mUSD — это обеспеченный долларами стейблкоин MetaMask. Вы можете использовать или вывести свои средства в любое время без штрафов. Вы можете тратить свои средства с помощью карты MetaMask Card в более чем 150 миллионах торговых точек Mastercard по всему миру.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Что такое Денежный счет?"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD — это стейблкоин MetaMask, обеспеченный долларами в соотношении 1:1. Ваш баланс Money хранится в mUSD и остается доступным для трат, отправки или торговли в любое время.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "Что такое mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Ваш баланс Money — это ваш баланс для трат: он продолжает приносить доход до того момента, пока вы его не используете. Счет Money Account не является банковским счетом, сберегательным счетом или застрахованным депозитным продуктом.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Это сберегательный или расчетный счет?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "Часто задаваемые вопросы"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Когда вы вносите средства, они направляются в проверенные протоколы DeFi, такие как Aave и Morpho, где они приносят доход от реальной экономической деятельности. Этот доход затем предоставляется вам в виде годовой процентной ставки (APY).\n\nСторонний поставщик услуг Steakhouse Financial контролирует распределение средств в протоколах. Veda, сторонний поставщик инфраструктуры, развертывает и поддерживает смарт-контракты хранилища, в которых находятся ваши средства.\n\nДоход не является процентами, выплачиваемыми MetaMask или эмитентом mUSD. Это ончейн-доход, генерируемый позициями в сторонних протоколах DeFi."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Откуда берется доходность?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Как растут ваши деньги"
@@ -5648,8 +5735,14 @@
   "moneyLifetime": {
     "message": "За всё время"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Общая сумма, заработанная на балансе вашего счета Money Account за всё время."
+  },
   "moneyMeetMusd": {
     "message": "Познакомьтесь с mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Общая сумма, заработанная на балансе вашего счета Money Account за последние 30 дней."
   },
   "moneyMoreInformation": {
     "message": "Дополнительная информация"
@@ -5678,11 +5771,59 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Ошибка конвертации"
   },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Заказ карты может занять несколько минут."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Добавление средств"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Внесение депозита"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Конвертация криптовалюты"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 добавлено на счет Money Account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Внесено на Money Account."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Средства добавлены"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Внесение средств завершено"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Конвертация завершена"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Это может занять несколько минут."
+  },
   "moneyToastWithdrawFailedBody": {
     "message": "Не удалось перевести средства. Повторите попытку."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Ошибка перевода"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "ваш счет"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Перевод в процессе"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 добавлено на $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Добавлено на $1.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Перевод завершен"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Другой счет"
@@ -7544,6 +7685,10 @@
   "perpsFilterAll": {
     "message": "Все"
   },
+  "perpsFilterClear": {
+    "message": "$1, очистить фильтр",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Товары"
   },
@@ -7558,6 +7703,17 @@
   },
   "perpsFilterIndex": {
     "message": "Индексы"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Мемкоины"
+  },
+  "perpsFilterMore": {
+    "message": "Еще",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Еще, выбрано $1",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Новые"
@@ -7654,6 +7810,18 @@
   },
   "perpsMarket": {
     "message": "Рынок"
+  },
+  "perpsMarketCategories": {
+    "message": "Категории рынков",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 рынка(-ов)",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 рынок",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Рынок не найден"
@@ -8587,6 +8755,10 @@
   "rampsChangeProvider": {
     "message": "Изменить поставщика."
   },
+  "rampsChangeProviders": {
+    "message": "сменить провайдеров",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Выберите провайдера"
   },
@@ -8759,7 +8931,7 @@
     "message": "Использовалось последним"
   },
   "rampsQuoteFetchError": {
-    "message": "Не удалось получить котировку."
+    "message": "Ошибка при получении котировок. Введите меньшую сумму или "
   },
   "rampsQuoteUnavailable": {
     "message": "Котировка недоступна."
@@ -8775,6 +8947,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Показать все токены"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Этот токен недоступен в вашем регионе.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Токен недоступен",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Покупка криптовалюты в вашем регионе пока не поддерживается."

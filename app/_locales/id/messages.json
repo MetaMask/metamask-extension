@@ -1512,8 +1512,8 @@
   "alertMessageGasFeeLow": {
     "message": "Saat memilih biaya rendah, perkirakan transaksi lebih lambat dan waktu tunggu lebih lama. Untuk transaksi lebih cepat, pilih opsi biaya Pasar atau Agresif."
   },
-  "alertMessageGasTooLow": {
-    "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 21000 atau lebih tinggi."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 12000 atau lebih tinggi."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Anda tidak memiliki cukup $1 di akun untuk membayar biaya jaringan."
@@ -1876,6 +1876,9 @@
   },
   "backupAndSyncFeatureContacts": {
     "message": "Kontak"
+  },
+  "backupAndSyncFeatureRamps": {
+    "message": "Order beli & jual"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "Kelola apa saja yang Anda sinkronkan"
@@ -4210,8 +4213,8 @@
   "gasLimit": {
     "message": "Batas gas"
   },
-  "gasLimitTooLow": {
-    "message": "Batas gas minimum adalah 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Batas gas minimum adalah 12000"
   },
   "gasPrice": {
     "message": "Harga gas"
@@ -5266,8 +5269,8 @@
     "message": "rendah"
   },
   "lowValueAssets": {
-    "message": "Token saldo rendah ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "message": "Token bersaldo rendah ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Mainnet Ethereum"
@@ -5511,6 +5514,9 @@
   "moneyActivityFilterAll": {
     "message": "Semua"
   },
+  "moneyActivityFilterCard": {
+    "message": "Kartu"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Deposit"
   },
@@ -5586,9 +5592,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Persentase hasil otomatis pada saldo Money Anda"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Hasil otomatis hingga ~ $1 APY"
-  },
   "moneyBenefitLiquidity": {
     "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"
   },
@@ -5637,15 +5640,95 @@
   "moneyFundDescriptionWithApy": {
     "message": "Danai Money account dan lihat saldo Anda bertambah hingga $1 APY."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin. Dana masuk ke brankas DeFi, yang dikelola oleh Veda dengan pengawasan risiko oleh Steakhouse Financial, yang menghasilkan pengembalian di pasar pinjaman yang sudah mapan."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money Account didukung oleh Monad."
+  },
   "moneyHowItWorks": {
     "message": "Cara kerjanya"
   },
   "moneyHowItWorksDescription": {
     "message": "Tambahkan mUSD dan saldo yang didukung dolar siap untuk digunakan, diperdagangkan, atau dikirim setiap saat."
   },
+  "moneyHowItWorksDescription1": {
+    "message": "Tambahkan mUSD ke Money account dan dapatkan hingga $1 APY (variabel) secara otomatis. Dana masuk ke brankas DeFi, yang dikelola oleh Veda dengan pemantauan risiko oleh Steakhouse Financial. Nilai dihasilkan oleh platform DeFi pihak ketiga yang menyebarkan dana dalam protokol blockchain. Tanpa stake, tanpa klaim, tanpa penguncian.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksDescription2": {
+    "message": "Saldo Dana merupakan saldo penggunaan Anda. Hubungkan Kartu MetaMask untuk digunakan di lebih dari 150 juta merchant di seluruh dunia. Dana Anda terus menghasilkan keuntungan hingga saat Anda menggunakannya."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money Account didukung oleh Monad."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Tambahkan mUSD dan dapatkan hingga $1. Saldo Anda didukung dolar dan siap untuk digunakan, diperdagangkan, atau dikirim setiap saat.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Account bukanlah rekening bank, rekening tabungan, atau produk deposito yang diasuransikan. APY bersifat variabel dan tidak dijamin. Money Account melibatkan kontrak cerdas, protokol, likuiditas, dan risiko lainnya, dan Anda berpotensi kehilangan sebagian atau seluruh dana. Tunduk pada pembatasan regional. Syarat dan ketentuan berlaku."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Risiko dan Pengungkapan"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Hingga $1 APY. Nilainya bersifat variabel dan berfluktuasi sesuai kondisi pasar. Nilai saat ini selalu ditampilkan di dalam Money account.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Apakah tingkat APY berubah?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "Anda sendiri! MetaMask merupakan dompet penyimpanan mandiri, artinya hanya Kunci Pribadi pemilik akun yang dapat mengontrolnya. MetaMask tidak dapat mengakses, membekukan, atau memindahkan dana Anda. Inilah yang membedakan kami dari rekening bank tradisional dan platform kripto kustodian—tidak ada pihak ketiga yang memegang dana Anda."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Siapa yang mengontrol dana saya?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Tidak ada biaya untuk membuka Money Account dan tidak ada biaya untuk mendepositkan stablecoin. Anda akan dikenakan biaya saat mendepositkan token yang bukan merupakan stablecoin. Terdapat juga biaya yang terkait dengan transaksi Kartu MetaMask, penarikan ATM, dan biaya penarikan mata uang lokal. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "Lihat perincian biaya Kartu selengkapnya di sini."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Apakah ada biaya yang dikenakan?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Ya. Anda dapat berdagang, mengirim, menggunakan, atau menarik seluruh saldo Anda setiap saat tanpa periode pemberitahuan, tanpa penalti, dan tanpa biaya penarikan dari MetaMask. Jika likuiditas terbatas, penundaan sementara dapat terjadi."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Apakah dana saya terkunci? Bisakah saya menarik dana setiap saat?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Akun yang menghasilkan APY variabel hingga $1. Anda mendepositkan dana, yang disimpan di akun sebagai mUSD, dan mendapatkan APY hingga $1. mUSD merupakan stablecoin berbasis dolar milik MetaMask. Anda dapat menggunakan atau menarik dana Anda setiap saat tanpa penalti. Anda dapat menggunakan dana Anda melalui Kartu MetaMask di lebih dari 150 juta merchant Mastercard di seluruh dunia.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Apa itu akun Dana?"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD merupakan stablecoin berbasis dolar milik MetaMask dengan rasio 1:1. Saldo Money Anda disimpan dalam bentuk mUSD dan tetap tersedia untuk digunakan, dikirim, atau diperdagangkan setiap saat.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "Apa itu mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Saldo Money Anda adalah saldo yang dapat digunakan — saldo ini terus menghasilkan keuntungan hingga saat Anda menggunakannya. Money account bukanlah rekening bank, rekening tabungan, atau produk simpanan yang dijamin.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Apakah ini rekening tabungan atau rekening penggunaan?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "Pertanyaan Umum"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Saat Anda mendepositkan dana, maka dana tersebut ditempatkan dalam protokol DeFi yang sudah mapan, seperti Aave dan Morpho, di mana dana tersebut menghasilkan keuntungan dari aktivitas ekonomi riil. Keuntungan ini kemudian diberikan kepada Anda dalam bentuk APY.\n\nPenyedia layanan pihak ketiga bernama Steakhouse Financial memantau bagaimana dana dialokasikan dalam protokol tersebut. Veda, penyedia infrastruktur pihak ketiga, menyebarkan dan memelihara brankas kontrak cerdas yang menyimpan dana Anda.\n\nKeuntungan tersebut bukanlah bunga yang dibayarkan oleh MetaMask atau oleh penerbit mUSD. Itu merupakan keuntungan on-chain yang dihasilkan oleh posisi dalam protokol DeFi pihak ketiga."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Dari mana hasil tersebut berasal?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Bagaimana uang Anda bertambah"
@@ -5656,8 +5739,14 @@
   "moneyLifetime": {
     "message": "Seumur Hidup"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Jumlah total yang Anda peroleh dari saldo Money account selama ini."
+  },
   "moneyMeetMusd": {
     "message": "Jumpai mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Jumlah total yang Anda peroleh dari saldo Money account dalam 30 hari terakhir."
   },
   "moneyMoreInformation": {
     "message": "Informasi selengkapnya"
@@ -5686,11 +5775,59 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Konversi gagal"
   },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Pemesanan kartu membutuhkan waktu beberapa menit."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Menambahkan dana"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Mendeposit"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Mengonversi kripto"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 ditambahkan ke Money account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Ditambahkan ke Money Account."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Dana ditambahkan"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Deposit selesai"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Konversi selesai"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Butuh waktu beberapa menit."
+  },
   "moneyToastWithdrawFailedBody": {
     "message": "Tidak dapat mentransfer dana. Coba lagi."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Transfer gagal"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "akun Anda"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Transfer sedang berlangsung"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 ditambahkan ke $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Ditambahkan ke $1.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Transfer selesai"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Akun lain"
@@ -7552,6 +7689,10 @@
   "perpsFilterAll": {
     "message": "Semua"
   },
+  "perpsFilterClear": {
+    "message": "$1, hapus filter",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Komoditas"
   },
@@ -7566,6 +7707,17 @@
   },
   "perpsFilterIndex": {
     "message": "Indeks"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Koin meme"
+  },
+  "perpsFilterMore": {
+    "message": "Selengkapnya",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Lainnya, $1 dipilih",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Baru"
@@ -7662,6 +7814,18 @@
   },
   "perpsMarket": {
     "message": "Pasar"
+  },
+  "perpsMarketCategories": {
+    "message": "Kategori pasar",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 pasar",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 pasar",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Pasar tidak ditemukan"
@@ -8599,6 +8763,10 @@
   "rampsChangeProvider": {
     "message": "Ubah penyedia."
   },
+  "rampsChangeProviders": {
+    "message": "ubah penyedia",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Pilih penyedia"
   },
@@ -8771,7 +8939,7 @@
     "message": "Terakhir digunakan"
   },
   "rampsQuoteFetchError": {
-    "message": "Gagal mengambil kuotasi."
+    "message": "Terjadi kesalahan saat mengambil kuotasi. Masukkan jumlah yang lebih rendah atau"
   },
   "rampsQuoteUnavailable": {
     "message": "Kuotasi tidak tersedia."
@@ -8787,6 +8955,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Tampilkan semua token"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Token ini tidak tersedia di wilayah Anda.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token tidak tersedia",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Pembelian kripto belum didukung di wilayah Anda."
