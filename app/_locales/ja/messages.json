@@ -1515,6 +1515,9 @@
   "alertMessageGasFeeLow": {
     "message": "低い手数料を選択すると、トランザクションに時間がかかり、待機時間が長くなります。より素早くトランザクションを行うには、市場に合った、または積極的な手数料のオプションを選択してください。"
   },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "このトランザクションを続行するには、ガスリミットを12000以上に上げる必要があります。"
+  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
   },
@@ -4210,6 +4213,9 @@
   "gasLimit": {
     "message": "ガスリミット"
   },
+  "gasLimitBelowMinimum": {
+    "message": "ガスリミットは12000以上にする必要があります"
+  },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
   },
@@ -5509,6 +5515,9 @@
   "moneyActivityFilterAll": {
     "message": "すべて"
   },
+  "moneyActivityFilterCard": {
+    "message": "カード"
+  },
   "moneyActivityFilterDeposits": {
     "message": "デポジット"
   },
@@ -5585,10 +5594,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Money残高に対する利息を自動で獲得"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "最大$1を自動で獲得",
-    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
-  },
   "moneyBenefitLiquidity": {
     "message": "ロックアップなしで完全な流動性が確保され、いつでも取引や引き出しが可能です"
   },
@@ -5642,6 +5647,12 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Money Accountに入金して、残高が最大$1のAPYで増えていく様子を眺めましょう。"
+  },
+  "moneyHomeApyTooltip": {
+    "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。資金は、Vedaが管理し、Steakhouse Financialがリスク監督を行うDeFiボールトに預け入れられ、確立された融資市場を通じて収益を生み出します。"
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money AccountはMonadにより運用されています。"
   },
   "moneyHowItWorks": {
     "message": "報酬獲得の仕組み"
@@ -5713,8 +5724,14 @@
   "moneyLifetime": {
     "message": "全期間"
   },
+  "moneyLifetimeTooltip": {
+    "message": "これまでMoney Accountで発生した総収益額。"
+  },
   "moneyMeetMusd": {
     "message": "mUSDのご紹介"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "過去30日間にMoney Accountで発生した総収益額。"
   },
   "moneyMoreInformation": {
     "message": "他の情報"
@@ -7658,7 +7675,7 @@
     "message": "インデックス"
   },
   "perpsFilterMemecoins": {
-    "message": "Memecoins"
+    "message": "ミームコイン"
   },
   "perpsFilterMore": {
     "message": "さらに表示",

@@ -1515,6 +1515,9 @@
   "alertMessageGasFeeLow": {
     "message": "Düşük bir ücret seçerken işlemlerin daha yavaş olmasını ve bekleme sürelerinin daha uzun olmasını bekleyebilirsiniz. Daha hızlı işlemler için Piyasa veya Agresif ücret seçeneklerini seçin."
   },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Bu işlemle devam etmek için gaz limitini 12000 veya üzeri olacak şekilde artırmanız gerekecek."
+  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Hesabınızda ağ ücretlerini ödemek için yeterli $1 yok."
   },
@@ -4213,6 +4216,9 @@
   "gasLimit": {
     "message": "Gaz limiti"
   },
+  "gasLimitBelowMinimum": {
+    "message": "Gaz limiti en az 12000 olmalıdır"
+  },
   "gasPrice": {
     "message": "Gaz fiyatı"
   },
@@ -5516,6 +5522,9 @@
   "moneyActivityFilterAll": {
     "message": "Tümü"
   },
+  "moneyActivityFilterCard": {
+    "message": "Kart"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Yatırma İşlemleri"
   },
@@ -5592,10 +5601,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Para bakiyeniz üzerinden otomatik getiri elde edin"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "$1'ye varan otomatik kazanç elde edin",
-    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
-  },
   "moneyBenefitLiquidity": {
     "message": "Kilitleme olmadan tam likidite alarak dilediğiniz zaman işlem yapabilir veya para çekebilirsiniz"
   },
@@ -5649,6 +5654,12 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Money account hesabınıza fon ekleyin ve $1 APY ile bakiyenizin yükselişini izleyin."
+  },
+  "moneyHomeApyTooltip": {
+    "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiri (APY) oranıdır. APY değişkendir ve garanti edilmez. Fonlar, Veda tarafından yönetilen ve Steakhouse Financial tarafından risk denetimi yapılan, yerleşik kredi piyasalarında getiri sağlayan bir DeFi kasasına yatırılır."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money account, Monad tarafından desteklenmektedir."
   },
   "moneyHowItWorks": {
     "message": "Nasıl çalışır?"
@@ -5718,6 +5729,10 @@
   "moneyHowItWorksFaqMusdQuestion": {
     "message": "mUSD nedir?"
   },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Para bakiyeniz harcama bakiyenizdir; siz kullanana kadar kazanmaya devam eder. Money account hesabı bir banka hesabı, birikim hesabı veya sigortalı mevduat ürünü değildir.",
+    "description": "Drafted from existing Money copy for content review."
+  },
   "moneyHowItWorksFaqSpendingQuestion": {
     "message": "Bu bir tasarruf hesabı mı yoksa harcama hesabı mı?"
   },
@@ -5739,8 +5754,14 @@
   "moneyLifetime": {
     "message": "Toplam"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Money account bakiyenizde zaman içinde kazandığınız toplam."
+  },
   "moneyMeetMusd": {
     "message": "mUSD ile tanış"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Money account bakiyenizde son 30 gün içinde kazandığınız toplam."
   },
   "moneyMoreInformation": {
     "message": "Daha fazla bilgi"
@@ -5781,6 +5802,10 @@
   "moneyToastDepositInProgressTitleConvert": {
     "message": "Kripto dönüştürülüyor"
   },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 Money account hesabına eklendi.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
   "moneyToastDepositSuccessDescriptionNoAmount": {
     "message": "Money account hesabına eklendi."
   },
@@ -5807,6 +5832,14 @@
   },
   "moneyToastWithdrawInProgressTitle": {
     "message": "Transfer sürüyor"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 $2 hesabına eklendi.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "$1 hesabına eklendi.",
+    "description": "$1 is the destination account name"
   },
   "moneyToastWithdrawSuccessTitle": {
     "message": "Transfer tamamlandı"
@@ -7674,6 +7707,10 @@
   "perpsFilterAll": {
     "message": "Tümü"
   },
+  "perpsFilterClear": {
+    "message": "$1, filtreyi temizleyin",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Emtialar"
   },
@@ -7690,11 +7727,15 @@
     "message": "Endeksler"
   },
   "perpsFilterMemecoins": {
-    "message": "Memecoins"
+    "message": "Memecoinler"
   },
   "perpsFilterMore": {
     "message": "Daha fazla",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Daha fazla, $1 seçildi",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Yeni"
@@ -7791,6 +7832,18 @@
   },
   "perpsMarket": {
     "message": "Piyasa"
+  },
+  "perpsMarketCategories": {
+    "message": "Piyasa kategorileri",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 piyasaları",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 piyasa",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Piyasa bulunamadı"
@@ -8726,6 +8779,10 @@
   "rampsChangeProvider": {
     "message": "Sağlayıcı değiştirin."
   },
+  "rampsChangeProviders": {
+    "message": "sağlayıcı değiştirin",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Sağlayıcı seç"
   },
@@ -8897,6 +8954,9 @@
   "rampsPreviouslyUsed": {
     "message": "Son kullanılma"
   },
+  "rampsQuoteFetchError": {
+    "message": "Fiyat teklifleri alınırken hata oluştu. Daha düşük bir tutar girin veya"
+  },
   "rampsQuoteUnavailable": {
     "message": "Teklif kullanılamıyor."
   },
@@ -8911,6 +8971,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Tüm tokenları göster"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Bu token bölgenizde kullanılamıyor.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token kullanılamıyor",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Kripto alışı henüz bölgenizde desteklenmiyor."
