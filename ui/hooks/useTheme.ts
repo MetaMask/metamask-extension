@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { getTheme } from '../selectors';
 import { ThemeType } from '../../shared/constants/preferences';

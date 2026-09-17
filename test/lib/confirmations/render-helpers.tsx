@@ -15,7 +15,6 @@ import {
   I18nProvider,
   en,
   renderHookWithProvider,
-  renderWithProvider,
 } from '../render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../ui/helpers/constants/routes';
 import { GasFeeModalContextProvider } from '../../../ui/pages/confirmations/context/gas-fee-modal';

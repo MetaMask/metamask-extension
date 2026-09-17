@@ -8,7 +8,6 @@ import {
 } from '../ducks/app/app';
 import { useDispatch } from '../store/hooks';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
-import { usePrevious } from './usePrevious';
 
 export function useShouldAnimateGasEstimations() {
   const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();
@@ -18,21 +17,26 @@ export function useShouldAnimateGasEstimations() {
     getGasLoadingAnimationIsShowing,
   );
 
-  const previousGasFeeEstimates = usePrevious(gasFeeEstimates);
+  const lastGasEstimatesRef = useRef(gasFeeEstimates);
 
   // Do the animation only when gas prices have changed...
-  const gasEstimatesChanged =
-    previousGasFeeEstimates !== undefined &&
-    !isEqual(previousGasFeeEstimates, gasFeeEstimates);
+  const gasEstimatesChanged = !isEqual(
+    lastGasEstimatesRef.current,
+    gasFeeEstimates,
+  );
 
   // ... and only if gas didn't just load
   // Removing this line will cause the initial loading screen to stay empty
-  const gasJustLoaded = isEqual(previousGasFeeEstimates, {});
+  const gasJustLoaded = isEqual(lastGasEstimatesRef.current, {});
 
   const showLoadingAnimation =
     isGasEstimatesLoading || (gasEstimatesChanged && !gasJustLoaded);
 
   const hideAnimationTimerRef = useRef(undefined);
+
+  useEffect(() => {
+    lastGasEstimatesRef.current = gasFeeEstimates;
+  }, [gasFeeEstimates]);
 
   useEffect(() => {
     if (

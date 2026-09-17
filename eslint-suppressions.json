@@ -477,7 +477,17 @@
   },
   "ui/hooks/usePrevious.ts": {
     "react-hooks/refs": {
-      "count": 5
+      "count": 1
+    }
+  },
+  "ui/hooks/useScrollRequired.js": {
+    "react-hooks/set-state-in-effect": {
+      "count": 2
+    }
+  },
+  "ui/hooks/useShouldAnimateGasEstimations.js": {
+    "react-hooks/refs": {
+      "count": 2
     }
   },
   "ui/hooks/useShallowEqualityCheck.ts": {

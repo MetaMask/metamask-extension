@@ -70,14 +70,14 @@ export const useScrollRequired = (
     if (!scrollElement) {
       return;
     }
-    queueMicrotask(() => update(scrollElement));
+    update(scrollElement);
   }, [scrollElement, dependencySnapshot, update]);
 
   useEffect(() => {
     if (!scrollElement) {
       return;
     }
-    queueMicrotask(() => update(scrollElement));
+    update(scrollElement);
   }, [offsetHeight, scrollElement, update]);
 
   const scrollToBottom = useCallback(() => {
