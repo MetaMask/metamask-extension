@@ -117,7 +117,7 @@ export default function RampsProviderListItem({
             {tag ? (
               <Tag
                 severity={tag.severity}
-                className="shrink-0"
+                className="shrink-0 self-center"
                 data-testid={`ramps-provider-item-tag-${provider.id}`}
               >
                 {tag.label}

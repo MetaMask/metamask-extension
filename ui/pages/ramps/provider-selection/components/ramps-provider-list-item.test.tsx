@@ -90,4 +90,21 @@ describe('RampsProviderListItem', () => {
 
     expect(container).toMatchSnapshot();
   });
+
+  it('vertically centers the tag with the provider label', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        tag={{ label: 'Best rate', severity: 'success' }}
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    const tag = getByTestId(
+      'ramps-provider-item-tag-/providers/transak',
+    ) as HTMLElement;
+    expect(tag.className).toContain('self-center');
+    expect(tag.className).not.toContain('self-start');
+  });
 });
