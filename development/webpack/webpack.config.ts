@@ -18,7 +18,6 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import type { AcceptedPlugin } from 'postcss';
 import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
@@ -324,21 +323,6 @@ const reactRefreshJsxLoader = getSwcLoader(
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
-const postcssLoader = {
-  loader: 'postcss-loader',
-  options: {
-    postcssOptions: {
-      config: false,
-      plugins: [
-        tailwindcss(),
-        autoprefixer({ overrideBrowserslist: browsersListQuery }),
-        rtlCss({ processEnv: false }),
-        discardFontFace(['woff2']), // keep woff2 fonts
-      ] as AcceptedPlugin[],
-    },
-  },
-};
-
 const isCashtagWidgetEntry = (chunk: { name?: string | null }) =>
   chunk.name === 'cashtag-widget';
 const isChunkableInitial = (chunk: Chunk) =>
@@ -541,7 +525,20 @@ const config = {
         test: cashtagPageStylesRe,
         use: [
           { loader: 'css-loader', options: { exportType: 'string' } },
-          postcssLoader,
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                config: false,
+                plugins: [
+                  tailwindcss(),
+                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
+                  rtlCss({ processEnv: false }),
+                  discardFontFace(['woff2']), // keep woff2 fonts
+                ],
+              },
+            },
+          },
         ],
       },
       // css, sass/scss
@@ -551,7 +548,20 @@ const config = {
         use: [
           // Resolves CSS `@import` and `url()` paths and loads the files.
           'css-loader',
-          postcssLoader,
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                config: false,
+                plugins: [
+                  tailwindcss(),
+                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
+                  rtlCss({ processEnv: false }),
+                  discardFontFace(['woff2']), // keep woff2 fonts
+                ],
+              },
+            },
+          },
           // Compiles Sass to CSS
           {
             loader: 'sass-loader',
