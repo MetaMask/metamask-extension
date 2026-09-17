@@ -21,7 +21,10 @@ import { AccountTreeWallets } from '../../../selectors/multichain-accounts/accou
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import {
@@ -64,10 +67,19 @@ jest.mock('@metamask/chain-agnostic-permission', () => {
 });
 
 const mockUseNavigate = jest.fn();
+let mockLocationKey = 'abc123';
+let mockLocationState: Record<string, unknown> | null = null;
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => ({
+      key: mockLocationKey,
+      pathname: '/account-list',
+      search: '',
+      hash: '',
+      state: mockLocationState,
+    }),
   };
 });
 
@@ -344,6 +356,8 @@ describe('MultichainAccountList', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocationKey = 'abc123';
+    mockLocationState = null;
     setBackgroundConnection(backgroundConnectionMock as never);
     mockGetAccountGroupsByAddress.mockReturnValue([]);
     mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
@@ -423,6 +437,25 @@ describe('MultichainAccountList', () => {
       walletTwoGroupId,
     );
     expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('navigates home when the account list has no in-app history', async () => {
+    mockLocationKey = 'default';
+    renderComponent();
+
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
+
+    expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
+      walletTwoGroupId,
+    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
   });
 
   it('does not wrap custom handleAccountClick in the default switch transition gate', async () => {
