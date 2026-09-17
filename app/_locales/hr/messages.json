@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
-  "gasLimitTooLow": {
-    "message": "Ograničenje za gorivo mora biti najmanje 21000"
-  },
   "gasUsed": {
     "message": "Upotrijebljeno gorivo"
   },

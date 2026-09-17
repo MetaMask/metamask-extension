@@ -310,7 +310,7 @@ class ActivityTab extends HomePage {
    * This function checks the specified number of pending transactions are displayed in the activity list on the homepage.
    * It waits up to 10 seconds for the expected number of pending transactions to be visible.
    *
-   * @param expectedNumber - The number of pending transactions expected to be displayed in the activity list. Defaults to 1.
+   * @param expectedNumber - The number of pending transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of pending transactions is displayed within the timeout period.
    */
   async checkPendingTxNumberDisplayedInActivity(

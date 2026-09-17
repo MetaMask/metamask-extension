@@ -353,9 +353,6 @@
   "alertMessageGasFeeLow": {
     "message": "Agus táille íseal á roghnú agat, bí ag súil le hidirbhearta níos moille agus amanna feithimh níos faide. Le haghaidh idirbhearta níos tapúla, roghnaigh roghanna táille Margaidh nó Ionsaitheach."
   },
-  "alertMessageGasTooLow": {
-    "message": "Chun leanúint leis an idirbheart seo, beidh ort an teorainn gáis a mhéadú go 21000 nó níos airde."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Níl go leor $1 i do chuntas agat chun táillí líonra a íoc."
   },
@@ -2004,9 +2001,6 @@
   "gasLimit": {
     "message": "Teorainn gáis"
   },
-  "gasLimitTooLow": {
-    "message": "Ní mór teorainn gáis a bheith 21000 ar a laghad"
-  },
   "gasPriceExcessive": {
     "message": "Tá do tháille gáis socraithe ró-ard. Smaoinigh ar an méid a ísliú."
   },
@@ -2927,9 +2921,6 @@
   },
   "networkFeeExplanationTitle": {
     "message": "Táille Líonra"
-  },
-  "networkMenu": {
-    "message": "Roghchlár Líonra"
   },
   "networkMenuHeading": {
     "message": "Roghnaigh líonra"

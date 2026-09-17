@@ -344,9 +344,8 @@
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "Reselect: Input stability warnings": 3
     },
-    "ui/components/multichain/app-header/app-header.test.js": {
-      "React: Act warnings (component updates not wrapped)": 4,
-      "Reselect: Input stability warnings": 3
+    "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 16
     },
     "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
@@ -658,8 +657,7 @@
       "React: Act warnings (component updates not wrapped)": 12
     },
     "ui/pages/confirmations/components/confirm/title/hooks/useCurrentSpendingCap.test.ts": {
-      "MetaMask: Background connection not initialized": 2,
-      "React: Act warnings (component updates not wrapped)": 2
+      "MetaMask: Background connection not initialized": 2
     },
     "ui/pages/confirmations/components/gas-timing/gas-timing.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 1

@@ -88,13 +88,6 @@ export function useTokenTracker({
   const tokenTracker = useRef(null);
   const memoizedTokens = useEqualityCheck(tokens);
 
-  const tokenListFingerprint = useMemo(
-    () =>
-      memoizedTokens
-        .map((token) => `${token.address ?? ''}:${token.chainId ?? ''}`)
-        .join('|'),
-    [memoizedTokens],
-  );
   const updateBalances = useCallback(
     (tokenWithBalances) => {
       const matchingTokens = hideZeroBalanceTokens
@@ -164,6 +157,8 @@ export function useTokenTracker({
 
   // Initialize or tear down the tracker when tracker inputs change.
   useEffect(() => {
+    // Match main: signal loading when tracker inputs change. Kept in the effect
+    // (with microtask) to avoid render-phase setState and set-state-in-effect sync.
     queueMicrotask(() => setLoading(true));
 
     if (!userAddress || chainId === undefined || !provider) {
@@ -186,7 +181,7 @@ export function useTokenTracker({
     teardownTracker,
     chainId,
     rpcUrl,
-    tokenListFingerprint,
+    memoizedTokens,
     updateBalances,
     buildTracker,
     provider,
