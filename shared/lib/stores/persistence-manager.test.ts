@@ -828,21 +828,21 @@ describe('PersistenceManager', () => {
 
       expect(listener).toHaveBeenCalledTimes(1);
       const [event] = listener.mock.calls[0];
-      const fooControllerBytes = JSON.stringify({
+      const fooControllerLength = JSON.stringify({
         privateValue: 'latest controller state value',
       }).length;
-      const barControllerBytes = JSON.stringify({ enabled: true }).length;
+      const barControllerLength = JSON.stringify({ enabled: true }).length;
       expect(event).toStrictEqual({
         bytesByController: {
-          BarController: barControllerBytes,
-          FooController: fooControllerBytes,
+          BarController: barControllerLength,
+          FooController: fooControllerLength,
         },
         coalescedUpdates: 3,
         controllerKeys: ['BarController', 'FooController'],
         idleStatus: 'idle',
         measurementDurationMs: expect.any(Number),
         sampleRate: 1,
-        totalBytes: barControllerBytes + fooControllerBytes,
+        totalBytes: barControllerLength + fooControllerLength,
         writeDurationMs: expect.any(Number),
       });
       expect(Object.keys(event.bytesByController)).toStrictEqual(

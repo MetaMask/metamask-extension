@@ -69,12 +69,20 @@ export type WriteRetryRecoveredEvent = {
 };
 
 export type SplitStateWriteEvent = {
+  /**
+   * Per-controller size estimates from `JSON.stringify(value).length`.
+   * Not exact storage byte counts.
+   */
   bytesByController: Record<string, number>;
   coalescedUpdates: number;
   controllerKeys: string[];
   idleStatus: 'active' | 'idle' | 'unknown';
   measurementDurationMs: number;
   sampleRate: number;
+  /**
+   * Sum of {@link bytesByController} values. Approximate write size, not exact
+   * encoded payload bytes.
+   */
   totalBytes: number;
   writeDurationMs: number;
 };
@@ -103,6 +111,13 @@ export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
 
+/**
+ * Cheap size estimate for telemetry: `JSON.stringify` string length (UTF-16
+ * code units), not UTF-8 byte length via `TextEncoder`.
+ *
+ * @param value - Controller state value to measure.
+ * @returns Estimated length, or `0` when the value is not JSON-serializable.
+ */
 function getSerializedLength(value: unknown): number {
   const serializedValue = JSON.stringify(value);
   return serializedValue === undefined ? 0 : serializedValue.length;
