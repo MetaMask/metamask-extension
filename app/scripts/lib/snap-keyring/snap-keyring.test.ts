@@ -151,9 +151,6 @@ const createControllerMessenger = ({
       case 'KeyringController:persistAllKeyrings':
         return mockPersistKeyringHelper();
 
-      case 'AccountsController:updateAccounts':
-        return undefined;
-
       case 'AccountsController:listMultichainAccounts':
         return mockListMultichainAccounts.mockReturnValue([])();
 

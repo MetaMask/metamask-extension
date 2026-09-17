@@ -82,10 +82,8 @@ export const AccountTreeControllerInit: MessengerClientInitFunction<
   });
 
   // Re-build initial account wallet tree.
-  // FIXME: We cannot do call `init` here, since we need to have the `KeyringController`'s
-  // state to be "ready" (thus, unlocked). So we instead follow the same pattern than
-  // the `AccountsController.updateAccounts` method and re-construct the tree at the
-  // same time.
+  // FIXME: We cannot call `init` here, since we need the `KeyringController`'s
+  // state to be "ready" (unlocked). Instead we reconstruct the tree directly.
 
   return { messengerClient };
 };

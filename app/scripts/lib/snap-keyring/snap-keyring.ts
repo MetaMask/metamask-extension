@@ -125,7 +125,6 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
 
   async saveState() {
     await this.#messenger.call('KeyringController:persistAllKeyrings');
-    await this.#messenger.call('AccountsController:updateAccounts');
   }
 
   async #withApprovalFlow<Return>(

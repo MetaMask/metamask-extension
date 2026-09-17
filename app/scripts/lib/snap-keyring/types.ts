@@ -10,7 +10,6 @@ import {
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
-  AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import type {
   ApprovalControllerAcceptRequestAction,
@@ -46,7 +45,6 @@ export type SnapKeyringBuilderAllowedActions =
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerListMultichainAccountsAction
-  | AccountsControllerUpdateAccountsAction
   | SnapControllerHandleRequestAction
   | SnapControllerGetSnapAction
   | PreferencesControllerGetStateAction
