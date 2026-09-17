@@ -129,7 +129,7 @@ async function waitForScopesToBeSynced(
 
 describe('Profile Metrics', function () {
   describe('when MetaMetrics is enabled and the user acknowledged the privacy change', function () {
-    it('sends existing accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
+    it('sends existing accounts to the API on wallet unlock and an initial delay', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
@@ -230,12 +230,6 @@ describe('Profile Metrics', function () {
   });
 
   [
-    {
-      title: 'when MetaMetrics is disabled',
-      consentDecisionMade: true,
-      optedIn: false,
-      pna25Acknowledged: true,
-    },
     {
       title: 'when the user has not acknowledged the privacy change',
       consentDecisionMade: true,
