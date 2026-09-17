@@ -128,14 +128,16 @@ async function waitForScopesToBeSynced(
 }
 
 describe('Profile Metrics', function () {
-  describe('when MetaMetrics is enabled and the user acknowledged the privacy change', function () {
+  describe('when the user acknowledged the privacy change and basic functionality is consolidated', function () {
     it('sends existing accounts to the API on wallet unlock and an initial delay', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               consentDecisionMade: true,
-              optedIn: true,
+            })
+            .withAppStateController({
+              pna25Acknowledged: true,
             })
             .build(),
           testSpecificMock: async (server: Mockttp) => [
@@ -175,7 +177,9 @@ describe('Profile Metrics', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               consentDecisionMade: true,
-              optedIn: true,
+            })
+            .withAppStateController({
+              pna25Acknowledged: true,
             })
             .build(),
           testSpecificMock: async (server: Mockttp) => [
