@@ -81,7 +81,10 @@ export function useSendBundleSubmission({
       });
     } catch (error) {
       if (!isStaleAttempt(submissionGeneration)) {
-        dispatchSignatureEvent(getHardwareWalletSignatureErrorEvent(error));
+        const event = getHardwareWalletSignatureErrorEvent(error);
+        if (event) {
+          dispatchSignatureEvent(event);
+        }
       }
     }
   }, [
@@ -170,7 +173,10 @@ export function useSendBundleSubmission({
       });
     } catch (error) {
       if (!isStaleAttempt(submissionGeneration)) {
-        dispatchSignatureEvent(getHardwareWalletSignatureErrorEvent(error));
+        const event = getHardwareWalletSignatureErrorEvent(error);
+        if (event) {
+          dispatchSignatureEvent(event);
+        }
       }
     }
   }, [
