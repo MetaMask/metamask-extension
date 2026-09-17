@@ -1,9 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../../lib/messenger';
-import {
-  getAccountTreeControllerInitMessenger,
-  getAccountTreeControllerMessenger,
-} from './account-tree-controller-messenger';
+import { getAccountTreeControllerMessenger } from './account-tree-controller-messenger';
 
 const ACCOUNT_TREE_CONTROLLER_DELEGATED_ACTIONS = [
   'AccountsController:listMultichainAccounts',
@@ -33,11 +30,6 @@ const ACCOUNT_TREE_CONTROLLER_DELEGATED_EVENTS = [
   'AccountsController:selectedAccountChange',
   'UserStorageController:stateChange',
   'MultichainAccountService:walletStatusChange',
-] as const;
-
-const ACCOUNT_TREE_CONTROLLER_INIT_DELEGATED_ACTIONS = [
-  'AccountsController:getAccount',
-  'AccountOrderController:getState',
 ] as const;
 
 describe('getAccountTreeControllerMessenger', () => {
@@ -78,33 +70,6 @@ describe('getAccountTreeControllerMessenger', () => {
       expect(delegateSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           events: expect.arrayContaining([event]),
-        }),
-      );
-    },
-  );
-});
-
-describe('getAccountTreeControllerInitMessenger', () => {
-  it('returns a restricted messenger', () => {
-    const messenger = getRootMessenger<never, never>();
-    const accountTreeControllerInitMessenger =
-      getAccountTreeControllerInitMessenger(messenger);
-
-    expect(accountTreeControllerInitMessenger).toBeInstanceOf(Messenger);
-  });
-
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(ACCOUNT_TREE_CONTROLLER_INIT_DELEGATED_ACTIONS)(
-    'delegates %s action for initialization',
-    (action: string) => {
-      const messenger = getRootMessenger<never, never>();
-      const delegateSpy = jest.spyOn(messenger, 'delegate');
-
-      getAccountTreeControllerInitMessenger(messenger);
-
-      expect(delegateSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          actions: expect.arrayContaining([action]),
         }),
       );
     },
