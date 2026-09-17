@@ -77,6 +77,8 @@ import { createDeepEqualSelector } from './selector-creators';
 // TokenListController
 // tokensChainsCache: TODO (There are no plans to port this state)
 
+const USD_CURRENCY = 'USD';
+
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
 type ControllerStateSelector<
@@ -733,7 +735,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
 
     const hasUsdNativeCurrency = Object.values(
       networkConfigurationsByChainId,
-    ).some(({ nativeCurrency }) => nativeCurrency === 'USD');
+    ).some(({ nativeCurrency }) => nativeCurrency === USD_CURRENCY);
     const usdPrice = Object.values(assetsPrice).reduce<
       FungibleAssetPrice | undefined
     >(
@@ -749,8 +751,8 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       undefined,
     );
 
-    if (hasUsdNativeCurrency && !result.USD && usdPrice) {
-      result.USD = {
+    if (hasUsdNativeCurrency && !result[USD_CURRENCY] && usdPrice) {
+      result[USD_CURRENCY] = {
         conversionDate: usdPrice.lastUpdated / 1000,
         conversionRate: usdPrice.price / usdPrice.usdPrice,
         usdConversionRate: 1,

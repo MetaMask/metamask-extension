@@ -1726,6 +1726,43 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
       expect(result.USD?.usdConversionRate).toBe(1);
       expect(result.USD?.conversionDate).toBe(1700000001);
     });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      { price: 0, usdPrice: 1 },
+      { price: -1, usdPrice: 1 },
+      { price: 1, usdPrice: 0 },
+      { price: 1, usdPrice: -1 },
+    ])(
+      'does not derive a USD rate from an invalid price (price $price, usdPrice $usdPrice)',
+      ({ price, usdPrice }: { price: number; usdPrice: number }) => {
+        const state = {
+          metamask: {
+            ...enabledFlags,
+            currencyRates: {},
+            assetsInfo: {
+              [tempoPathUsdAssetId]: {
+                type: 'erc20',
+                symbol: 'pathUSD',
+                decimals: 6,
+              },
+            },
+            assetsPrice: {
+              [tempoPathUsdAssetId]: makeMockPrice({
+                id: 'pathusd',
+                price,
+                usdPrice,
+              }),
+            },
+            networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
+          },
+        };
+
+        const result = getCurrencyRateControllerCurrencyRates(state);
+
+        expect(result.USD).toBeUndefined();
+      },
+    );
   });
 });
 
