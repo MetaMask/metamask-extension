@@ -43,7 +43,7 @@ export default function updateTxData({
 }: UpdateTxDataParams): UpdateTxDataMeta {
   if (
     [TransactionType.simpleSend, TransactionType.swapAndSend].includes(
-      txData.type,
+      txData.type as TransactionType,
     ) &&
     addToAddressBookIfNew &&
     toAddress !== undefined &&

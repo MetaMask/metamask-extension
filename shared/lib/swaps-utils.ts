@@ -37,11 +37,13 @@ export type SwapsApiCallType =
   | 'network'
   | 'refreshTime';
 
-export type SwapsQuoteValidator = {
+export type ValidateDataValidator = {
   property: string;
   type: string;
   validator?: (value: unknown) => boolean;
 };
+
+export type SwapsQuoteValidator = ValidateDataValidator;
 
 type SwapsTradeTxFields = {
   data?: string;
@@ -86,10 +88,16 @@ export const validHex = (string: string | undefined): boolean =>
 export const truthyString = (string: string | undefined): boolean =>
   Boolean(string?.length);
 export const truthyDigitString = (string: string | undefined): boolean =>
-  truthyString(string) && Boolean(string.match(/^\d+$/u));
+  truthyString(string) && Boolean(string?.match(/^\d+$/u));
+
+const validateTruthyDigitString = (value: unknown): boolean =>
+  truthyDigitString(typeof value === 'string' ? value : undefined);
+
+const validateTruthyString = (value: unknown): boolean =>
+  truthyString(typeof value === 'string' ? value : undefined);
 
 export function validateData(
-  validators: SwapsQuoteValidator[],
+  validators: readonly ValidateDataValidator[],
   object: Record<string, unknown>,
   urlUsed: string,
   logError = true,
@@ -122,6 +130,8 @@ export const QUOTE_VALIDATORS: SwapsQuoteValidator[] = [
       return Boolean(
         tradeObj &&
         validHex(tradeObj.data) &&
+        tradeObj.to &&
+        tradeObj.from &&
         isValidHexAddress(tradeObj.to, { allowNonPrefixed: false }) &&
         isValidHexAddress(tradeObj.from, { allowNonPrefixed: false }) &&
         truthyString(tradeObj.value),
@@ -138,6 +148,8 @@ export const QUOTE_VALIDATORS: SwapsQuoteValidator[] = [
         Boolean(
           approval &&
           validHex(approval.data) &&
+          approval.to &&
+          approval.from &&
           isValidHexAddress(approval.to, { allowNonPrefixed: false }) &&
           isValidHexAddress(approval.from, { allowNonPrefixed: false }),
         )
@@ -147,12 +159,12 @@ export const QUOTE_VALIDATORS: SwapsQuoteValidator[] = [
   {
     property: 'sourceAmount',
     type: 'string',
-    validator: truthyDigitString,
+    validator: validateTruthyDigitString,
   },
   {
     property: 'destinationAmount',
     type: 'string',
-    validator: truthyDigitString,
+    validator: validateTruthyDigitString,
   },
   {
     property: 'sourceToken',
@@ -169,12 +181,12 @@ export const QUOTE_VALIDATORS: SwapsQuoteValidator[] = [
   {
     property: 'aggregator',
     type: 'string',
-    validator: truthyString,
+    validator: validateTruthyString,
   },
   {
     property: 'aggType',
     type: 'string',
-    validator: truthyString,
+    validator: validateTruthyString,
   },
   {
     property: 'error',
@@ -265,11 +277,12 @@ export const getBaseApi = function getBaseApi(
 };
 
 export function calcTokenValue(value: number | string, decimals: number) {
-  const multiplier = new BigNumber(10).pow(new BigNumber(decimals));
+  const multiplier = new BigNumber(10).pow(decimals);
   return new BigNumber(String(value)).times(multiplier);
 }
 
 type SwapsWrappedTokensChainId = keyof typeof SWAPS_WRAPPED_TOKENS_ADDRESSES;
+type SwapsDefaultTokenChainId = keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
 
 export const shouldEnableDirectWrapping = (
   chainId: string,
@@ -281,7 +294,9 @@ export const shouldEnableDirectWrapping = (
   }
   const wrappedToken =
     SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId as SwapsWrappedTokensChainId];
-  const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
+  const nativeToken =
+    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId as SwapsDefaultTokenChainId]
+      ?.address;
   return (
     (isEqualCaseInsensitive(sourceToken, wrappedToken) &&
       isEqualCaseInsensitive(destinationToken, nativeToken)) ||
@@ -359,7 +374,11 @@ export async function fetchTradesInfo(
     urlParams.enableDirectWrapping = 'true';
   }
 
-  const queryString = new URLSearchParams(urlParams).toString();
+  const searchParams = new URLSearchParams();
+  for (const [key, paramValue] of Object.entries(urlParams)) {
+    searchParams.set(key, String(paramValue));
+  }
+  const queryString = searchParams.toString();
   const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
   const tradesResponse = (await fetchWithCache({
     url: tradeURL,
