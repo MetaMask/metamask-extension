@@ -35,7 +35,13 @@ def main() -> None:
       print(f"AGENT: copied {rel} from bump ref", flush=True)
 
   env_text = envloader.read_text(encoding="utf-8")
-  if "const tsx = /\\.tsx$/u.test(resourcePath)" not in env_text:
+  # Bump branch may already ship the fix via TYPESCRIPT_TSX_FILE_RE, or via an
+  # inline /\.tsx$/u check. Either means parse options are tsx-aware.
+  env_already_fixed = (
+      "TYPESCRIPT_TSX_FILE_RE.test(resourcePath)" in env_text
+      or "const tsx = /\\.tsx$/u.test(resourcePath)" in env_text
+  )
+  if not env_already_fixed:
     old_env = """  if (isTypeScript) {
     return { syntax: 'typescript', tsx: true };
   }"""
