@@ -12067,6 +12067,10 @@
   "unexpectedBehavior": {
     "message": "Este comportamiento es inesperado y debe informarse como un error, incluso si se restauran tus cuentas."
   },
+  "unexpectedError": {
+    "message": "Ocurrió un error inesperado.",
+    "description": "This is a fallback error message used for unexpected errors."
+  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Permitir acceso exacto a $1 $2 en $3 para canjear"
   },

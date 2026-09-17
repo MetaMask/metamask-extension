@@ -12084,6 +12084,10 @@
   "unexpectedBehavior": {
     "message": "Perilaku ini tidak terduga dan harus dilaporkan sebagai bug, bahkan jika akun Anda dipulihkan."
   },
+  "unexpectedError": {
+    "message": "Terjadi kesalahan tidak terduga.",
+    "description": "This is a fallback error message used for unexpected errors."
+  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Izinkan akses yang tepat ke $1 $2 pada $3 untuk swap"
   },

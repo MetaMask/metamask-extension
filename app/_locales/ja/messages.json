@@ -12057,6 +12057,10 @@
   "unexpectedBehavior": {
     "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
   },
+  "unexpectedError": {
+    "message": "予期せぬエラーが発生しました。",
+    "description": "This is a fallback error message used for unexpected errors."
+  },
   "unifiedSwapAllowSwappingOf": {
     "message": "スワップ用に$3での$1 $2への正確なアクセスを許可してください"
   },

@@ -12067,6 +12067,10 @@
   "unexpectedBehavior": {
     "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
   },
+  "unexpectedError": {
+    "message": "Đã xảy ra lỗi không mong muốn.",
+    "description": "This is a fallback error message used for unexpected errors."
+  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Cho phép truy cập chính xác vào $1 $2 trên $3 để thực hiện hoán đổi"
   },

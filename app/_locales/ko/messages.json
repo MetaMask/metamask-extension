@@ -12061,6 +12061,10 @@
   "unexpectedBehavior": {
     "message": "이 동작은 예상치 못한 것이며 계정이 복원되더라도 버그로 신고해야 합니다."
   },
+  "unexpectedError": {
+    "message": "예기치 않은 오류가 발생했습니다.",
+    "description": "This is a fallback error message used for unexpected errors."
+  },
   "unifiedSwapAllowSwappingOf": {
     "message": "스왑을 위해 $3의 $1 $2에 대한 정확한 액세스 허용"
   },

@@ -314,6 +314,7 @@ async function verifyEnglishLocale() {
     'appDescription',
     'rejected',
     'signed',
+    'unexpectedError',
     // used via CSS
     'CSS_loadingTakingTooLongMessageText',
     'CSS_loadingTakingTooLongActionText',
