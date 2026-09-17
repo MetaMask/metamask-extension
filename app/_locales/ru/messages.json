@@ -3105,9 +3105,6 @@
   "copyAddressShort": {
     "message": "Копировать адрес"
   },
-  "copyPrivateKey": {
-    "message": "Копировать закрытый ключ"
-  },
   "copyToClipboard": {
     "message": "Копировать в буфер обмена"
   },
@@ -5022,9 +5019,6 @@
   "lattice": {
     "message": "Решетка",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "В целях вашей безопасности выбор этого текста в данный момент недоступен."
   },
   "learnHow": {
     "message": "Узнайте как"
@@ -8558,10 +8552,6 @@
     "message": "Закрытый ключ",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Закрытый ключ за $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Закрытый ключ скрыт",
     "description": "Explains that the private key input is hidden"
@@ -8573,9 +8563,6 @@
   "privateKeyShown": {
     "message": "Этот закрытый ключ отображается",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Предупреждение: никогда не раскрывайте этот ключ. Любой, у кого есть ваши закрытые ключи, может украсть любые активы, хранящиеся на вашем счете."
   },
   "privateKeys": {
     "message": "Закрытые ключи",
@@ -10678,12 +10665,6 @@
   },
   "showPermissions": {
     "message": "Показать разрешения"
-  },
-  "showPrivateKey": {
-    "message": "Показать закрытый ключ"
-  },
-  "showSRP": {
-    "message": "Показать секретную фразу для восстановления"
   },
   "showTestnetNetworks": {
     "message": "Показать тестовые сети"
