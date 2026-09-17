@@ -60,9 +60,6 @@ const mockRequestRevealSeedWords = jest
 const mockScanUrlForPhishing = jest.fn().mockResolvedValue(null);
 
 const mockPasskeyAuthResponse = { id: 'assertion-id', type: 'public-key' };
-const mockGeneratePasskeyAuthenticationOptions = jest
-  .fn()
-  .mockResolvedValue({ challenge: 'challenge' });
 const mockRequestRevealSeedWordsWithPasskey = jest
   .fn()
   .mockReturnValue(() => Promise.resolve('test srp'));
@@ -81,18 +78,27 @@ const mockCancelPasskeyCeremony = jest.fn();
 const mockIsPasskeyCeremonySilentError = jest.fn().mockReturnValue(false);
 const mockGetEnvironmentType = jest.fn().mockReturnValue('fullscreen');
 
+jest.mock('../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => () => mockStartPasskeyAuthentication(),
+}));
+
+jest.mock('../../hooks/passkey/usePasskeySeedPhraseExport', () => ({
+  usePasskeySeedPhraseExport:
+    () => (authenticationResponse: unknown, keyringId?: string) => {
+      const result = mockRequestRevealSeedWordsWithPasskey(
+        authenticationResponse,
+        keyringId,
+      );
+      return typeof result === 'function' ? result() : result;
+    },
+}));
+
 const password = 'password';
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   requestRevealSeedWords: (userPassword: string, keyringId?: string) =>
     mockRequestRevealSeedWords(userPassword, keyringId),
-  getSeedPhraseWithPasskey: (
-    authenticationResponse: unknown,
-    keyringId?: string,
-  ) => mockRequestRevealSeedWordsWithPasskey(authenticationResponse, keyringId),
-  generatePasskeyAuthenticationOptions: (...args: unknown[]) =>
-    mockGeneratePasskeyAuthenticationOptions(...args),
   scanUrlForPhishing: (...args: unknown[]) => mockScanUrlForPhishing(...args),
 }));
 

@@ -34,35 +34,43 @@ export class BatchTrackingStrategy implements TrackingStrategy {
 
   #trackedTxIds = new Set<string>();
 
+  /**
+   * Tx IDs that have finished signing (signed / rejected / failed / finished).
+   * Cancel uses this to skip waiting for abort events that will never come.
+   */
+  #settledTxIds = new Set<string>();
+
   // ---------------------------------------------------------------
   // TrackingStrategy implementation
   // ---------------------------------------------------------------
 
   /**
    * Detects a retry-generation bump and marks all seen batches as stale. When
-   * `retryGenerationRef` advances past `lastSeenGenerationRef`, every seen
-   * batch ID is moved to the stale set, seen batches are cleared, and the
-   * active batch is unlocked (`#currentBatchId = null`) so the next signed
-   * event re-establishes the batch from the new retry generation.
+   * `retryGenerationRef` advances past `lastSeenGeneration`, every seen batch
+   * ID is moved to the stale set, seen batches are cleared, and the active
+   * batch is unlocked (`#currentBatchId = null`) so the next signed event
+   * re-establishes the batch from the new retry generation.
    *
    * @param retryGenerationRef - External ref bumped on retry; `undefined`
    * disables retry tracking.
-   * @param lastSeenGenerationRef - Mutable ref tracking the last retry
-   * generation this strategy observed; updated in place when a bump is detected.
+   * @param lastSeenGeneration - The last-seen generation value to compare against.
+   * @returns The new last-seen generation when a bump was applied, otherwise
+   * `null`; the caller owns persisting the returned value.
    */
   checkRetryGeneration(
     retryGenerationRef: React.RefObject<number | undefined> | undefined,
-    lastSeenGenerationRef: React.MutableRefObject<number>,
-  ): void {
-    const bumped = applyRetryGenerationBump(
+    lastSeenGeneration: number,
+  ): number | null {
+    const newLastSeenGeneration = applyRetryGenerationBump(
       retryGenerationRef,
-      lastSeenGenerationRef,
+      lastSeenGeneration,
       this.#seenBatchIds,
       this.#staleBatchIds,
     );
-    if (bumped) {
+    if (newLastSeenGeneration !== null) {
       this.#currentBatchId = null;
     }
+    return newLastSeenGeneration;
   }
 
   /**
@@ -85,6 +93,16 @@ export class BatchTrackingStrategy implements TrackingStrategy {
 
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
+
+    // Mark settled even if #handleSigned/#handleFailed ignore this batch.
+    // The tx is still done; cancel must not wait for abort confirmations.
+    if (
+      status === TransactionStatus.signed ||
+      status === TransactionStatus.failed ||
+      status === TransactionStatus.rejected
+    ) {
+      this.#settledTxIds.add(transactionMeta.id);
+    }
 
     if (status === TransactionStatus.signed) {
       return this.#handleSigned(
@@ -116,6 +134,8 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     const wasTracked = this.#trackedTxIds.has(transactionMeta.id);
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
+    // Settled even if we drop the action — signing already finished.
+    this.#settledTxIds.add(transactionMeta.id);
 
     if (
       shouldIgnoreBatchEvent(
@@ -148,6 +168,8 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     const wasTracked = this.#trackedTxIds.has(transactionMeta.id);
     this.#seenBatchIds.add(batchId);
     this.#trackedTxIds.add(transactionMeta.id);
+    // Finished is always terminal, even if we drop a stale-batch action.
+    this.#settledTxIds.add(transactionMeta.id);
 
     if (
       shouldIgnoreBatchEvent(
@@ -181,6 +203,21 @@ export class BatchTrackingStrategy implements TrackingStrategy {
   }
 
   /**
+   * True when every tracked tx has finished signing.
+   * Cancel uses this to skip waiting for abort confirmations.
+   *
+   * @returns True when all tracked transaction IDs have settled.
+   */
+  hasSettledSigning(): boolean {
+    for (const txId of this.#trackedTxIds) {
+      if (!this.#settledTxIds.has(txId)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
    * Clears all batch, stale, seen, and tracked-tx state. Called on cancel,
    * subscription teardown, and when the tracker is disabled.
    */
@@ -189,6 +226,7 @@ export class BatchTrackingStrategy implements TrackingStrategy {
     this.#staleBatchIds = new Set();
     this.#seenBatchIds = new Set();
     this.#trackedTxIds = new Set();
+    this.#settledTxIds = new Set();
   }
 
   // ---------------------------------------------------------------

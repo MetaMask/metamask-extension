@@ -39,7 +39,7 @@ import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
-import BridgeAssetPickerPage from './prepare/bridge-asset-picker-page';
+import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
@@ -95,6 +95,20 @@ const CrossChainSwap = () => {
   const handleBack = () => {
     transitionBack(() => navigateToDefaultRoute());
   };
+
+  const containerClass = 'flex min-h-full w-full flex-col';
+
+  const prepareBody = (
+    <>
+      <BridgeTransactionSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => {
+          setIsSettingsModalOpen(false);
+        }}
+      />
+      <PrepareBridgePage onOpenSettings={() => setIsSettingsModalOpen(true)} />
+    </>
+  );
 
   const swapHeader = showBottomBar ? (
     <div className="flex items-center justify-between p-4 gap-4">
@@ -152,36 +166,43 @@ const CrossChainSwap = () => {
       <Route
         path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
         element={
-          <Page className="bridge__container">
-            {swapHeader}
-            <Content padding={0}>
-              <BridgeTransactionSettingsModal
-                isOpen={isSettingsModalOpen}
-                onClose={() => {
-                  setIsSettingsModalOpen(false);
-                }}
-              />
-              <PrepareBridgePage
-                onOpenSettings={() => setIsSettingsModalOpen(true)}
-              />
-            </Content>
-          </Page>
+          showBottomBar ? (
+            <div className={containerClass}>
+              {swapHeader}
+              {prepareBody}
+            </div>
+          ) : (
+            <Page className="bridge__container">
+              {swapHeader}
+              <Content padding={0}>{prepareBody}</Content>
+            </Page>
+          )
         }
       />
       <Route
         path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
         element={
-          <Page className="bridge__container">
-            {swapHeader}
-            <Content padding={0}>
-              <Content>
-                <AwaitingSignatures />
-              </Content>
+          showBottomBar ? (
+            <div className={containerClass}>
+              {swapHeader}
+              <AwaitingSignatures />
               <Footer>
                 <AwaitingSignaturesCancelButton />
               </Footer>
-            </Content>
-          </Page>
+            </div>
+          ) : (
+            <Page className="bridge__container">
+              {swapHeader}
+              <Content padding={0}>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </Content>
+            </Page>
+          )
         }
       />
     </Routes>

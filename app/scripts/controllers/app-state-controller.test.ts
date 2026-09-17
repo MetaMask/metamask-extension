@@ -410,6 +410,15 @@ describe('AppStateController', () => {
         expect(controller.state.currentPopupId).toBe(popupId);
       });
     });
+
+    it('clears the currentPopupId when undefined is passed', async () => {
+      await withController(({ controller }) => {
+        controller.setCurrentPopupId(12345);
+        controller.setCurrentPopupId(undefined);
+
+        expect(controller.state.currentPopupId).toBeUndefined();
+      });
+    });
   });
 
   describe('getCurrentPopupId', () => {
@@ -518,6 +527,22 @@ describe('AppStateController', () => {
         expect(controller.state.newPrivacyPolicyToastShownDate).toStrictEqual(
           mockParams,
         );
+      });
+    });
+  });
+
+  describe('setArcUsageNoticeShown', () => {
+    it('defaults arcUsageNoticeShown to false', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.arcUsageNoticeShown).toBe(false);
+      });
+    });
+
+    it('sets arcUsageNoticeShown to true', async () => {
+      await withController(({ controller }) => {
+        controller.setArcUsageNoticeShown();
+
+        expect(controller.state.arcUsageNoticeShown).toBe(true);
       });
     });
   });
@@ -775,22 +800,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setCanTrackWalletFundsObtained', () => {
-    it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
-      await withController(({ controller }) => {
-        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
-
-        controller.setCanTrackWalletFundsObtained(false);
-
-        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
-
-        controller.setCanTrackWalletFundsObtained(true);
-
-        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
-      });
-    });
-  });
-
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
@@ -822,8 +831,8 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -838,6 +847,7 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
@@ -912,8 +922,8 @@ describe('AppStateController', () => {
             {
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -928,6 +938,7 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -998,8 +1009,8 @@ describe('AppStateController', () => {
             ),
           ).toMatchInlineSnapshot(`
             {
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -1073,6 +1084,7 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -1088,6 +1100,7 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
@@ -1095,9 +1108,6 @@ describe('AppStateController', () => {
               "lastVisitedRoute": null,
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
-              "networkConnectionBanner": {
-                "status": "unknown",
-              },
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDropdownState": {},

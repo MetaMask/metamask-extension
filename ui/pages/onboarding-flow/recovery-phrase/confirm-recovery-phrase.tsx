@@ -10,11 +10,8 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Box,
-  Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSize,
-  ButtonVariant,
   IconName,
   Text,
   TextVariant,
@@ -99,7 +96,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const [quizWords, setQuizWords] = useState(
     generateQuizWords(splitSecretRecoveryPhrase),
   );
-  const [answerSrp, setAnswerSrp] = useState('');
 
   useEffect(() => {
     if (!secretRecoveryPhrase) {
@@ -138,23 +134,19 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         (answer: { word: string }) => !answer.word,
       );
       if (isNotAnswered) {
-        setAnswerSrp('');
-      } else {
-        const copySplitSrp = [...splitSecretRecoveryPhrase];
-        inputValue.forEach((answer: { index: number; word: string }) => {
-          copySplitSrp[answer.index] = answer.word;
-        });
-        setAnswerSrp(copySplitSrp.join(' '));
+        return;
       }
-    },
-    [splitSecretRecoveryPhrase],
-  );
 
-  const onContinue = useCallback(() => {
-    const isMatching = answerSrp === secretRecoveryPhrase;
-    setMatching(isMatching);
-    setShowConfirmModal(true);
-  }, [answerSrp, secretRecoveryPhrase]);
+      const copySplitSrp = [...splitSecretRecoveryPhrase];
+      inputValue.forEach((answer: { index: number; word: string }) => {
+        copySplitSrp[answer.index] = answer.word;
+      });
+      const nextAnswerSrp = copySplitSrp.join(' ');
+      setMatching(nextAnswerSrp === secretRecoveryPhrase);
+      setShowConfirmModal(true);
+    },
+    [secretRecoveryPhrase, splitSecretRecoveryPhrase],
+  );
 
   const handleConfirmedPhrase = useCallback(() => {
     dispatch(setSeedPhraseBackedUp(true));
@@ -200,7 +192,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      justifyContent={BoxJustifyContent.Between}
+      justifyContent={BoxJustifyContent.Start}
       gap={6}
       className="recovery-phrase recovery-phrase__confirm h-full"
       data-testid="confirm-recovery-phrase"
@@ -285,18 +277,6 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             setInputValue={handleQuizInput}
           />
         )}
-      </Box>
-      <Box className="w-full">
-        <Button
-          variant={ButtonVariant.Primary}
-          data-testid="recovery-phrase-confirm"
-          size={ButtonSize.Lg}
-          className="recovery-phrase__footer__confirm--button w-full"
-          onClick={() => onContinue()}
-          disabled={answerSrp.trim() === ''}
-        >
-          {t('continue')}
-        </Button>
       </Box>
     </Box>
   );

@@ -25,10 +25,10 @@ export function useAddToken({
   symbol,
   tokenAddress,
 }: {
-  chainId: Hex;
-  decimals: number;
-  symbol: string;
-  tokenAddress: Hex;
+  chainId?: Hex;
+  decimals?: number;
+  symbol?: string;
+  tokenAddress?: Hex;
 }) {
   const dispatch = useDispatch();
   const allTokens = useSelector(getAllTokens);
@@ -36,11 +36,21 @@ export function useAddToken({
   const assetsPrice = useSelector(getAssetsPrice);
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
 
+  // Callers may resolve metadata asynchronously (e.g. `useImportPayToken`);
+  // skip until the token is fully specified.
+  const isTokenSpecified =
+    chainId !== undefined &&
+    tokenAddress !== undefined &&
+    symbol !== undefined &&
+    decimals !== undefined;
+
   const hasToken =
-    allTokens?.[chainId]?.[selectedAccount?.address]?.some(
-      (token: { address: string }) =>
-        token.address.toLowerCase() === tokenAddress.toLowerCase(),
-    ) ?? false;
+    (tokenAddress !== undefined &&
+      allTokens?.[chainId as Hex]?.[selectedAccount?.address]?.some(
+        (token: { address: string }) =>
+          token.address.toLowerCase() === tokenAddress.toLowerCase(),
+      )) ??
+    false;
 
   // Under unified assets state the token can stay in state without a usable
   // price, for example when the price request failed the first time it was
@@ -59,12 +69,17 @@ export function useAddToken({
     };
 
     return (
+      tokenAddress !== undefined &&
       hasFungiblePrice(toAssetId(tokenAddress, chainId)) &&
       hasFungiblePrice(getNativeAssetId(chainId))
     );
   }, [assetsPrice, chainId, isAssetsUnifyStateEnabled, tokenAddress]);
 
   const { error } = useAsyncResult(async () => {
+    if (!isTokenSpecified) {
+      return;
+    }
+
     if (hasToken && hasPrice) {
       log('Token already exists', { tokenAddress, chainId });
       return;
@@ -85,7 +100,16 @@ export function useAddToken({
     );
 
     log('Added token', { tokenAddress, chainId });
-  }, [hasToken, hasPrice, chainId, tokenAddress, symbol, decimals, dispatch]);
+  }, [
+    hasToken,
+    hasPrice,
+    isTokenSpecified,
+    chainId,
+    tokenAddress,
+    symbol,
+    decimals,
+    dispatch,
+  ]);
 
   if (error) {
     log('Failed', { tokenAddress, chainId, error });

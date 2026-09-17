@@ -678,7 +678,10 @@ const SecurityTrustPage = () => {
     );
 
   return (
-    <ScrollContainer className="main-container asset__container">
+    <ScrollContainer
+      className="main-container asset__container"
+      data-testid="asset-page-scroll-container"
+    >
       {pageContent}
     </ScrollContainer>
   );

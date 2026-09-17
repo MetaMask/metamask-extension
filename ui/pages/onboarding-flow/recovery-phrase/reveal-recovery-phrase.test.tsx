@@ -9,6 +9,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getSeedPhrase } from '../../../store/actions';
 import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
@@ -38,9 +39,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
 });
 
 const mockPasskeyAuthResponse = { id: 'assertion-id', type: 'public-key' };
-const mockGeneratePasskeyAuthenticationOptions = jest
-  .fn()
-  .mockResolvedValue({ challenge: 'challenge' });
 const mockGetSeedPhraseWithPasskey = jest
   .fn()
   .mockReturnValue(() => Promise.resolve('test srp'));
@@ -59,15 +57,28 @@ const mockCancelPasskeyCeremony = jest.fn();
 const mockIsPasskeyCeremonySilentError = jest.fn().mockReturnValue(false);
 const mockGetEnvironmentType = jest.fn().mockReturnValue('fullscreen');
 
+const mockAuthenticateWithPasskey = jest.fn(() =>
+  mockStartPasskeyAuthentication(),
+);
+
+jest.mock('../../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => mockAuthenticateWithPasskey,
+}));
+
+jest.mock('../../../hooks/passkey/usePasskeySeedPhraseExport', () => ({
+  usePasskeySeedPhraseExport:
+    () => (authenticationResponse: unknown, keyringId?: string) => {
+      const result = mockGetSeedPhraseWithPasskey(
+        authenticationResponse,
+        keyringId,
+      );
+      return typeof result === 'function' ? result() : result;
+    },
+}));
+
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   getSeedPhrase: jest.fn(),
-  getSeedPhraseWithPasskey: (
-    authenticationResponse: unknown,
-    keyringId?: string,
-  ) => mockGetSeedPhraseWithPasskey(authenticationResponse, keyringId),
-  generatePasskeyAuthenticationOptions: (...args: unknown[]) =>
-    mockGeneratePasskeyAuthenticationOptions(...args),
 }));
 
 jest.mock('../../../selectors', () => ({
@@ -525,7 +536,7 @@ describe('RevealRecoveryPhrase', () => {
       expect(
         queryByTestId('reveal-recovery-phrase-passkey-verifying'),
       ).not.toBeInTheDocument();
-      expect(mockGeneratePasskeyAuthenticationOptions).not.toHaveBeenCalled();
+      expect(mockAuthenticateWithPasskey).not.toHaveBeenCalled();
       expect(mockStartPasskeyAuthentication).not.toHaveBeenCalled();
       expect(mockGetSeedPhraseWithPasskey).not.toHaveBeenCalled();
     });
@@ -681,6 +692,74 @@ describe('RevealRecoveryPhrase', () => {
           replace: true,
         },
       );
+    });
+
+    it('navigates to the previous page when one is provided', () => {
+      const accountDetailsPage = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=entropy%3A01JKAF%2F0`;
+      mockUseLocation.mockReturnValue({
+        search: `?isFromReminder=true&previousPage=${encodeURIComponent(
+          accountDetailsPage,
+        )}`,
+      });
+      const mockStore = configureMockStore()(mockState);
+      const { getByTestId } = renderWithProvider(
+        <RevealRecoveryPhrase
+          setSecretRecoveryPhrase={mockSetSecretRecoveryPhrase}
+        />,
+        mockStore,
+      );
+
+      const backButton = getByTestId('reveal-recovery-phrase-back-button');
+      fireEvent.click(backButton);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(accountDetailsPage, {
+        replace: true,
+      });
+    });
+
+    it('navigates to the default route when closing with a previous page', () => {
+      const accountDetailsPage = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=entropy%3A01JKAF%2F0`;
+      mockUseLocation.mockReturnValue({
+        search: `?isFromReminder=true&previousPage=${encodeURIComponent(
+          accountDetailsPage,
+        )}`,
+      });
+      const mockStore = configureMockStore()(mockState);
+      const { getByTestId } = renderWithProvider(
+        <RevealRecoveryPhrase
+          setSecretRecoveryPhrase={mockSetSecretRecoveryPhrase}
+        />,
+        mockStore,
+      );
+
+      const closeButton = getByTestId('reveal-recovery-phrase-close-button');
+      fireEvent.click(closeButton);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+    });
+
+    it('ignores a previous page that is not an in-app path', () => {
+      mockUseLocation.mockReturnValue({
+        search: `?isFromReminder=true&previousPage=${encodeURIComponent(
+          '//evil.test',
+        )}`,
+      });
+      const mockStore = configureMockStore()(mockState);
+      const { getByTestId } = renderWithProvider(
+        <RevealRecoveryPhrase
+          setSecretRecoveryPhrase={mockSetSecretRecoveryPhrase}
+        />,
+        mockStore,
+      );
+
+      const backButton = getByTestId('reveal-recovery-phrase-back-button');
+      fireEvent.click(backButton);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
     });
   });
 });

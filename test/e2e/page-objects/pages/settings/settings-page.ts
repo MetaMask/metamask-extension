@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Settings hub: search, tab navigation, and a few in-hub toggles/actions.
+ *
+ * Screen: `#/settings`, usually opened from `HeaderNavbar.openSettingsPage`.
+ * Owns: settings search, navigation into child tabs (privacy, assets,
+ * developer tools, notifications, Transaction Shield, etc.), auto-lock entry,
+ * and closing settings back toward home.
+ * Boundaries: the hub and its nav only. Once a child tab or sub-page opens,
+ * that page object takes over (e.g. `PrivacySettings`,
+ * `PreferencesAndDisplaySettings`, `ShieldDetailPage`).
+ * Related: child page objects under `pages/settings/`;
+ * `flows/settings.flow.ts` for common journeys.
+ *
+ * @see ui/pages/settings/settings.tsx
+ * @see ui/pages/settings/tab-bar.tsx
+ */
 class SettingsPage {
   private readonly aboutViewButton =
     '[data-testid="settings-tab-item-about-us"]';
@@ -69,6 +85,10 @@ class SettingsPage {
   private readonly securityAndPasswordSettingsButton =
     '[data-testid="settings-tab-item-security-and-password"]';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-tab-bar-grouped"]';
 
@@ -104,7 +124,10 @@ class SettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
-    await this.driver.waitForSelector(this.settingsPageFullscreenRoot);
+    await this.driver.waitForMultipleSelectors([
+      this.settingsPage,
+      this.settingsPageFullscreenRoot,
+    ]);
   }
 
   /**

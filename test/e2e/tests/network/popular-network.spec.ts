@@ -7,7 +7,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AddEditBlockExplorerPage from '../../page-objects/pages/networks/add-edit-block-explorer-page';
 import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
 import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
@@ -174,16 +174,8 @@ describe('Popular Networks', function (this: Suite) {
           'https://unresponsive-rpc.test',
         );
         await addEditRpcUrlPage.fillAddRpcNameInput('testName');
-        await addEditRpcUrlPage.saveAddRpcUrl();
-
-        // check the error message is displayed
-        await addEditNetworkPage.checkChainIdInputErrorMessageIsDisplayed(
-          'Could not fetch chain ID. Is your RPC URL correct?',
-        );
-        assert.equal(
-          await addEditNetworkPage.checkSaveButtonIsEnabled(),
-          false,
-        );
+        await addEditRpcUrlPage.checkErrorMessageFailedToFetchChainIdIsDisplayed();
+        await addEditRpcUrlPage.checkAddRpcUrlButtonIsEnabled(false);
       },
     );
   });

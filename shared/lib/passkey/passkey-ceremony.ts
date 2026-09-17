@@ -16,12 +16,23 @@ import type {
 } from '@metamask/passkey-controller';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../constants/app';
 import { getEnvironmentType } from '../environment-type';
+import {
+  hasPasskeyPRFEnabled,
+  hasPasskeyPRFResult,
+  PasskeyPRFRequiredError,
+} from './passkey-capabilities';
 
 /**
  * Wall-clock cap for WebAuthn in the **side panel** only (where ceremonies often hang).
  * Popup/fullscreen rely on the browser/OS without an extra app timeout.
  */
 export const PASSKEY_SIDEPANEL_CEREMONY_TIMEOUT_MS = 30_000;
+
+export const MOCK_PASSKEY_PRF_RESULT = {
+  results: {
+    first: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+  },
+};
 
 export class PasskeyCeremonyTimeoutError extends Error {
   override readonly name = 'PasskeyCeremonyTimeoutError';
@@ -125,11 +136,28 @@ export async function startPasskeyRegistration(
       extensions: decodePrfInExtensionOptions(options.extensions),
     };
     const response = await startRegistration({ optionsJSON });
+    const clientExtensionResults = encodePrfInClientExtensionResults(
+      response.clientExtensionResults,
+    );
+
+    // Virtual authenticators do not support PRF, so test builds supply the
+    // capability result required to exercise passkey enrollment.
+    if (
+      process.env.IN_TEST &&
+      !hasPasskeyPRFEnabled({ clientExtensionResults })
+    ) {
+      clientExtensionResults.prf = {
+        enabled: true,
+      };
+    }
+
+    if (!hasPasskeyPRFEnabled({ clientExtensionResults })) {
+      throw new PasskeyPRFRequiredError();
+    }
+
     return {
       ...response,
-      clientExtensionResults: encodePrfInClientExtensionResults(
-        response.clientExtensionResults,
-      ),
+      clientExtensionResults,
     };
   });
 }
@@ -150,11 +178,22 @@ export async function startPasskeyAuthentication(
       extensions: decodePrfInExtensionOptions(options.extensions),
     };
     const response = await startAuthentication({ optionsJSON });
+    const clientExtensionResults = encodePrfInClientExtensionResults(
+      response.clientExtensionResults,
+    );
+
+    // In test (e2e) env, we add a deterministic PRF result to the response for the virtual authenticator to use.
+    // so we can test the passkey PRF flow in the e2e tests.
+    if (
+      process.env.IN_TEST &&
+      !hasPasskeyPRFResult({ clientExtensionResults })
+    ) {
+      clientExtensionResults.prf = MOCK_PASSKEY_PRF_RESULT;
+    }
+
     return {
       ...response,
-      clientExtensionResults: encodePrfInClientExtensionResults(
-        response.clientExtensionResults,
-      ),
+      clientExtensionResults,
     };
   });
 }

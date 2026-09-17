@@ -3,6 +3,7 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
 } from './selectors';
 
@@ -184,6 +185,27 @@ describe('getPasskeyDerivationMethod', () => {
       },
     };
     expect(getPasskeyDerivationMethod(state)).toBe('userHandle');
+  });
+});
+
+describe('getPasskeyAuthenticatorType', () => {
+  it('returns the enrolled passkey credential AAGUID', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          credential: { aaguid: GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID },
+        },
+      },
+    };
+
+    expect(getPasskeyAuthenticatorId(state)).toBe(
+      GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID,
+    );
+  });
+
+  it('returns undefined when no passkey record exists', () => {
+    const state = { metamask: { passkeyRecord: null } };
+    expect(getPasskeyAuthenticatorId(state)).toBeUndefined();
   });
 });
 

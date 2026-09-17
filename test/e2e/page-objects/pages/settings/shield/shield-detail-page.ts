@@ -1,6 +1,22 @@
-// ShieldDetailPage class for interacting with the Shield Detail page
 import { Driver } from '../../../../webdriver/driver';
 
+/**
+ * Transaction Shield membership detail: status, billing, manage plan.
+ *
+ * Screen: `#/settings/transaction-shield`, reached from
+ * `SettingsPage.goToTransactionShieldPage`.
+ * Owns: membership status/billing/payment assertions, cancel membership,
+ * manage-plan / payment-method entry, claims navigation, notification banner,
+ * and add-funds modal when shown.
+ * Boundaries: membership detail only. Plan selection belongs to
+ * `ShieldPlanPage`; claims list/form to `ShieldClaimsListPage` /
+ * `ShieldClaimPage`; crypto approve confirmation to
+ * `ShieldSubscriptionApprovePage`.
+ * Related: `SettingsPage`, `ShieldPlanPage`, `ShieldClaimsListPage`,
+ * `ShieldSubscriptionApprovePage`.
+ *
+ * @see ui/pages/shield/transaction-shield/transaction-shield.tsx
+ */
 export default class ShieldDetailPage {
   private readonly addFundsModal = '[data-testid="add-funds-modal"]';
 
@@ -90,6 +106,10 @@ export default class ShieldDetailPage {
 
   private readonly resubscribeButton =
     '[data-testid="shield-detail-resubscribe-button"]';
+
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
 
   private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
 
@@ -206,6 +226,7 @@ export default class ShieldDetailPage {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
       this.membershipStatus,
+      this.settingsPage,
     ]);
     console.log('Shield Detail page is loaded');
   }

@@ -2,13 +2,14 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
-import { TrustSignalModal } from './trust-signal-modal';
+import { TrustSignalModal } from '../../../components/app/trust-signal-modal/trust-signal-modal';
 
 const MOCK_I18N: Record<string, string> = {
-  trustSignalBlockTitle: messages.trustSignalBlockTitle.message,
-  trustSignalBlockDescription: messages.trustSignalBlockDescription.message,
-  trustSignalContinueAnyway: messages.trustSignalContinueAnyway.message,
+  continueAtYourOwnRisk: messages.continueAtYourOwnRisk.message,
+  trustSignalPhishingWarning: messages.trustSignalPhishingWarning.message,
+  connectAnyway: messages.connectAnyway.message,
   cancel: messages.cancel.message,
+  close: messages.close.message,
 };
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -17,62 +18,45 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 
 describe('TrustSignalModal', () => {
   const defaultProps = {
-    origin: 'https://malicious-site.example.com',
     onContinue: jest.fn(),
+    onCancel: jest.fn(),
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders with the hostname visible', () => {
-    const { getByText, getByTestId } = render(
-      <TrustSignalModal {...defaultProps} />,
-    );
+  it('renders the modal', () => {
+    const { getByTestId } = render(<TrustSignalModal {...defaultProps} />);
 
     expect(getByTestId('trust-signal-block-modal')).toBeInTheDocument();
-    expect(getByText('malicious-site.example.com')).toBeInTheDocument();
   });
 
-  it('shows "Malicious site detected" title', () => {
+  it('shows "Continue at your own risk" title', () => {
     const { getByText } = render(<TrustSignalModal {...defaultProps} />);
 
     expect(
-      getByText(messages.trustSignalBlockTitle.message),
+      getByText(messages.continueAtYourOwnRisk.message),
     ).toBeInTheDocument();
   });
 
-  it('calls onContinue when "Connect Anyway" is clicked', () => {
+  it('calls onContinue when "Connect anyway" is clicked', () => {
     const { getByTestId } = render(<TrustSignalModal {...defaultProps} />);
 
     fireEvent.click(getByTestId('trust-signal-block-modal-continue'));
     expect(defaultProps.onContinue).toHaveBeenCalledTimes(1);
   });
 
-  it('renders cancel button when onCancel is provided', () => {
-    const onCancel = jest.fn();
-    const { getByTestId } = render(
-      <TrustSignalModal {...defaultProps} onCancel={onCancel} />,
-    );
+  it('renders cancel button', () => {
+    const { getByTestId } = render(<TrustSignalModal {...defaultProps} />);
 
     expect(getByTestId('trust-signal-block-modal-cancel')).toBeInTheDocument();
   });
 
   it('calls onCancel when cancel button is clicked', () => {
-    const onCancel = jest.fn();
-    const { getByTestId } = render(
-      <TrustSignalModal {...defaultProps} onCancel={onCancel} />,
-    );
+    const { getByTestId } = render(<TrustSignalModal {...defaultProps} />);
 
     fireEvent.click(getByTestId('trust-signal-block-modal-cancel'));
-    expect(onCancel).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not render cancel button when onCancel is not provided', () => {
-    const { queryByTestId } = render(<TrustSignalModal {...defaultProps} />);
-
-    expect(
-      queryByTestId('trust-signal-block-modal-cancel'),
-    ).not.toBeInTheDocument();
+    expect(defaultProps.onCancel).toHaveBeenCalledTimes(1);
   });
 });

@@ -60,8 +60,6 @@ export function useSelectedTokenSecurityData(
   toToken: BridgeToken,
 ): SelectedTokenSecurityDataByAssetId {
   const useExternalServices = useSelector(getUseExternalServices);
-  const [securityDataByAssetId, setSecurityDataByAssetId] =
-    useState<SelectedTokenSecurityDataByAssetId>(EMPTY_SECURITY_DATA);
 
   const assetIds = useMemo(() => {
     const tokens = [fromToken, toToken];
@@ -81,8 +79,14 @@ export function useSelectedTokenSecurityData(
     return [...assetIdsByKey.values()];
   }, [fromToken, toToken]);
 
+  const fetchKey = `${useExternalServices}:${assetIds.join('|')}`;
+  // Keyed cache: ignore stale entries when the fetch key changes (no render reset).
+  const [securityDataCache, setSecurityDataCache] = useState<{
+    key: string;
+    data: SelectedTokenSecurityDataByAssetId;
+  }>({ key: fetchKey, data: EMPTY_SECURITY_DATA });
+
   useEffect(() => {
-    setSecurityDataByAssetId(EMPTY_SECURITY_DATA);
     if (!useExternalServices || assetIds.length === 0) {
       return undefined;
     }
@@ -107,18 +111,23 @@ export function useSelectedTokenSecurityData(
             return result;
           }, {});
 
-        setSecurityDataByAssetId(nextSecurityData);
+        setSecurityDataCache({ key: fetchKey, data: nextSecurityData });
       })
       .catch(() => {
         if (isCurrentRequest) {
-          setSecurityDataByAssetId(EMPTY_SECURITY_DATA);
+          setSecurityDataCache({ key: fetchKey, data: EMPTY_SECURITY_DATA });
         }
       });
 
     return () => {
       isCurrentRequest = false;
     };
-  }, [assetIds, useExternalServices]);
+  }, [assetIds, useExternalServices, fetchKey]);
+
+  const securityDataByAssetId =
+    securityDataCache.key === fetchKey
+      ? securityDataCache.data
+      : EMPTY_SECURITY_DATA;
 
   return useExternalServices ? securityDataByAssetId : EMPTY_SECURITY_DATA;
 }

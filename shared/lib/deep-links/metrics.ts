@@ -5,6 +5,7 @@ import {
   MetaMetricsEventName,
 } from '../../constants/metametrics';
 import { UTM_PARAMETERS, type UTMParameter } from '../../types/metametrics';
+import type { ParsedDeepLink } from './parse';
 import type { SignatureStatus } from './verify';
 
 export type Properties = {
@@ -19,6 +20,22 @@ export type EventDetails = {
   url: URL;
   signature: SignatureStatus;
 };
+
+/**
+ * Determines whether a parsed deep-link navigation should be tracked.
+ *
+ * Destinations that redirect outside the extension are excluded because the
+ * extension does not handle the resulting navigation.
+ *
+ * @param parsed - The parsed deep-link destination.
+ * @param parsed.destination
+ * @returns Whether the navigation should produce a deep-link analytics event.
+ */
+export function shouldTrackDeepLinkNavigation({
+  destination,
+}: Pick<ParsedDeepLink, 'destination'>): boolean {
+  return !('redirectTo' in destination);
+}
 
 /**
  * Creates a trackable analytics event representing deep link usage.

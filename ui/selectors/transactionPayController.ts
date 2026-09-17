@@ -27,6 +27,11 @@ export const selectTransactionPayQuotesByTransactionId = createSelector(
   (transactionData) => transactionData?.quotes,
 );
 
+export const selectTransactionPayQuoteErrorByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.quoteError,
+);
+
 export const selectTransactionPayTokensByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.tokens ?? [],
@@ -44,10 +49,12 @@ export const selectTransactionPaySourceAmountsByTransactionId = createSelector(
 
 export const selectTransactionPayIsMaxAmountByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
-  // TODO: Remove type assertion once isMaxAmount is added to @metamask/transaction-pay-controller
-  (transactionData) =>
-    (transactionData as { isMaxAmount?: boolean } | undefined)?.isMaxAmount ??
-    false,
+  (transactionData) => transactionData?.isMaxAmount ?? false,
+);
+
+export const selectTransactionPayIsPostQuoteByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.isPostQuote ?? false,
 );
 
 /**
@@ -59,3 +66,11 @@ export const selectTransactionPayAccountOverrideByTransactionId =
     selectTransactionDataByTransactionId,
     (transactionData) => transactionData?.accountOverride,
   );
+
+/**
+ * Alternate payment strategy override (e.g. Money Account) for a transaction.
+ */
+export const selectPaymentOverrideByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.paymentOverride,
+);

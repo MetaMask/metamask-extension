@@ -112,7 +112,7 @@ const CreatePasswordForm = ({
       justifyContent={BoxJustifyContent.Between}
       gap={4}
       className="create-password h-full w-full"
-      data-testid="create-password"
+      data-testid="parent-selector-onboarding-password"
     >
       <form onSubmit={handleCreatePassword}>
         <Box>

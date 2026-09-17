@@ -1,5 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Decrypt-message request confirmation (`eth_decrypt`).
+ *
+ * Screen: `#/confirm-transaction/:id/decrypt-message` (legacy decrypt page,
+ * not redesigned `#/confirmation`).
+ * Owns: decrypt request title, account balance, decrypt-message CTA,
+ * decrypted message text, and final Decrypt confirm.
+ * Boundaries: encryption public key requests are
+ * `GetEncryptionKeyConfirmation`. Signature confirms are separate classes.
+ * Related: `GetEncryptionKeyConfirmation`.
+ *
+ * @see ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.js
+ */
 class DecryptMessageConfirmation {
   private readonly accountBalanceValue =
     '.request-decrypt-message__balance-value';
@@ -22,6 +35,10 @@ class DecryptMessageConfirmation {
   };
 
   driver: Driver;
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-decrypt-message-confirmation',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -59,6 +76,7 @@ class DecryptMessageConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.decryptMessageConfirmationTitle,
         this.decryptMessageButton,
       ]);

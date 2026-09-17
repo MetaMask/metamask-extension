@@ -34,9 +34,8 @@ export { NotificationsSettingsAccount } from './notifications-settings-account';
 export { NotificationListItemSnap } from './notification-list-item-snap';
 export { NotificationsTagCounter } from './notifications-tag-counter';
 export { Toast, ToastContainer } from './toast';
-export { DisconnectPermissionsModal } from './disconnect-permissions-modal';
+export { DisconnectAllGatorPermissionsModal } from './disconnect-all-gator-permissions-modal';
 export { ReceiveModal } from './receive-modal';
-export { EditNetworksModal } from './edit-networks-modal';
 export {
   Carousel,
   CarouselWithEmptyState,

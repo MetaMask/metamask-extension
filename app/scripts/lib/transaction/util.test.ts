@@ -27,10 +27,7 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
-import {
-  SupportedEVMChain,
-  ResultType,
-} from '../../../../shared/lib/trust-signals';
+import { ResultType } from '../../../../shared/lib/trust-signals';
 import { accountSupports7702 } from '../account-supports-7702';
 import {
   AddDappTransactionRequest,
@@ -187,6 +184,7 @@ describe('Transaction Utils', () => {
   let addTransactionBatchMock: jest.Mock;
   let addUserOperationFromTransactionMock: jest.Mock;
   let startPollingByNetworkClientIdMock: jest.Mock;
+  let scanAddressActionMock: jest.Mock;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const scanAddressAndAddToCacheMock = jest.mocked(scanAddressAndAddToCache);
@@ -250,6 +248,11 @@ describe('Transaction Utils', () => {
     messenger.registerActionHandler(
       'UserOperationController:startPollingByNetworkClientId',
       startPollingByNetworkClientIdMock,
+    );
+    scanAddressActionMock = jest.fn();
+    messenger.registerActionHandler(
+      'PhishingController:scanAddress',
+      scanAddressActionMock,
     );
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
@@ -663,7 +666,28 @@ describe('Transaction Utils', () => {
           '0x1234567890123456789012345678901234567890',
           expect.any(Function),
           expect.any(Function),
-          SupportedEVMChain.Ethereum,
+          CHAIN_IDS.MAINNET,
+          expect.objectContaining({ scanAddress: expect.any(Function) }),
+        );
+      });
+
+      it('provides a scanAddress adapter that forwards to PhishingController:scanAddress', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        const scanAdapter = scanAddressAndAddToCacheMock.mock.calls[0][4];
+        await scanAdapter.scanAddress(
+          CHAIN_IDS.MAINNET,
+          '0x1234567890123456789012345678901234567890',
+        );
+
+        expect(scanAddressActionMock).toHaveBeenCalledTimes(1);
+        expect(scanAddressActionMock).toHaveBeenCalledWith(
+          CHAIN_IDS.MAINNET,
+          '0x1234567890123456789012345678901234567890',
         );
       });
 
@@ -701,15 +725,23 @@ describe('Transaction Utils', () => {
         expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
       });
 
-      it('does not call scanAddressAndAddToCache when chain is not supported', async () => {
-        // Test with a chain ID that the real function doesn't support
+      it('calls scanAddressAndAddToCache even for a chain the extension does not recognize', async () => {
+        // The PhishingController now decides chain support internally, so
+        // callers no longer pre-gate on a recognized chain ID.
         const transactionMeta = await addTransaction({
           ...request,
           securityAlertsEnabled: true,
-          chainId: '0xfake-chain-id', // This will return undefined from the real function
+          chainId: '0xfake-chain-id',
         });
 
-        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
+          '0x1234567890123456789012345678901234567890',
+          expect.any(Function),
+          expect.any(Function),
+          '0xfake-chain-id',
+          expect.objectContaining({ scanAddress: expect.any(Function) }),
+        );
         expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
       });
     });

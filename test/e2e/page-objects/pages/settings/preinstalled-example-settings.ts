@@ -1,9 +1,26 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Settings sidebar entry for the Preinstalled Example Snap settings UI.
+ *
+ * Screen: `#/settings/snap/...` (Snap settings renderer), reached from
+ * `SettingsPage.goToPreInstalledExample`.
+ * Owns: Snap settings panel load, toggle on/off, dropdown and radio option
+ * selection/assertions rendered by the example Snap.
+ * Boundaries: Snap-rendered settings only. Experimental account-Snap toggles
+ * belong to `ExperimentalSettings`.
+ * Related: `SettingsPage`, `ExperimentalSettings`.
+ *
+ * @see ui/components/app/snaps/snap-settings-page/snap-settings-renderer.tsx
+ */
 class PreinstalledExampleSettings {
   private readonly driver: Driver;
 
   private readonly settingsDropdown = '[data-testid="snaps-dropdown"]';
+
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
 
   private readonly settingsPageTitle = {
     text: 'Preferences and display',
@@ -29,6 +46,7 @@ class PreinstalledExampleSettings {
     try {
       await this.driver.waitForMultipleSelectors([
         this.snapRenderPanel,
+        this.settingsPage,
         this.settingsPageTitle,
       ]);
     } catch (e) {

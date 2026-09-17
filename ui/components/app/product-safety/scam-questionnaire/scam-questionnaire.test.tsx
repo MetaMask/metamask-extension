@@ -6,6 +6,7 @@ import { renderWithConfirmContextProvider } from '../../../../../test/lib/confir
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import { ScamQuestionnaire } from './scam-questionnaire';
+import { ScamQuestionnaireTrigger } from './scam-questionnaire.constants';
 
 jest.mock('./useScamQuestionnaireMetrics', () => ({
   useScamQuestionnaireMetrics: () => ({
@@ -21,6 +22,7 @@ function render(props = {}) {
     onReject: jest.fn(),
     onBypass: jest.fn(),
     onDismiss: jest.fn(),
+    trigger: ScamQuestionnaireTrigger.SecurityAlert,
     ...props,
   };
   const result = renderWithConfirmContextProvider(

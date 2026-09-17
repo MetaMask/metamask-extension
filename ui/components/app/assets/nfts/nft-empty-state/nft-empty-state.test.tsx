@@ -13,9 +13,9 @@ describe('NftEmptyState', () => {
   const mockStore = configureMockStore([thunk]);
   let store: ReturnType<typeof mockStore>;
 
-  const renderComponent = (props = {}, stateOverride = {}) => {
+  const renderComponent = (stateOverride = {}) => {
     store = mockStore({ ...mockState, ...stateOverride });
-    return renderWithProvider(<NftEmptyState {...props} />, store);
+    return renderWithProvider(<NftEmptyState />, store);
   };
 
   beforeEach(() => {
@@ -39,14 +39,6 @@ describe('NftEmptyState', () => {
     expect(
       screen.getByRole('button', { name: messages.importNFT.message }),
     ).toBeInTheDocument();
-  });
-
-  it('should apply custom className when provided', () => {
-    const customClassName = 'custom-test-class';
-    renderComponent({ className: customClassName });
-
-    const emptyState = screen.getByTestId('nft-tab-empty-state');
-    expect(emptyState).toHaveClass(customClassName);
   });
 
   it('should dispatch showImportNftsModal when import button is clicked', () => {
@@ -76,9 +68,37 @@ describe('NftEmptyState', () => {
       },
     };
 
-    renderComponent({}, darkThemeState);
+    renderComponent(darkThemeState);
 
     const image = screen.getByAltText('NFTs');
     expect(image).toHaveAttribute('src', './images/empty-state-nfts-dark.png');
+  });
+
+  describe('when a non-EVM network is selected', () => {
+    const nonEvmNetworkState = {
+      metamask: {
+        ...mockState.metamask,
+        isEvmSelected: false,
+      },
+    };
+
+    it('should render the unsupported empty state', () => {
+      renderComponent(nonEvmNetworkState);
+
+      expect(
+        screen.getByTestId('nft-tab-unsupported-empty-state'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('nft-tab-empty-state'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should not render import button', () => {
+      renderComponent(nonEvmNetworkState);
+
+      expect(
+        screen.queryByRole('button', { name: messages.importNFT.message }),
+      ).not.toBeInTheDocument();
+    });
   });
 });

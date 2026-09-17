@@ -26,7 +26,7 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--rounded-lg mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
           role="dialog"
         >
           <header
@@ -38,7 +38,7 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
             >
               <button
                 aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -204,7 +204,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--rounded-lg mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
           role="dialog"
         >
           <header
@@ -216,7 +216,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
             >
               <button
                 aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -382,7 +382,7 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--rounded-lg mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
           role="dialog"
         >
           <header
@@ -394,7 +394,7 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
             >
               <button
                 aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"

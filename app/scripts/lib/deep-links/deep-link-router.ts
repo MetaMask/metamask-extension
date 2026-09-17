@@ -109,7 +109,7 @@ export class DeepLinkRouter extends EventEmitter<{
     url,
     initiator,
     originUrl,
-  }: browser.WebRequest.OnBeforeRequestDetailsType): browser.WebRequest.BlockingResponseOrPromise => {
+  }: browser.WebRequest.OnBeforeRequestDetailsType): browser.WebRequest.BlockingResponseOrPromiseOrVoid => {
     if (tabId === browser.tabs.TAB_ID_NONE) {
       return {};
     }

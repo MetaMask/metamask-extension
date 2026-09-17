@@ -101,6 +101,8 @@ export type PerpsTransaction = {
 
   /** For orders: order lifecycle info */
   order?: {
+    /** Hyperliquid order ID — used to correlate fills for recorded fee lookup */
+    orderId?: string;
     /** Status display text */
     text: PerpsOrderTransactionStatus;
     /** Status type for styling */

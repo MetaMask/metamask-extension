@@ -1,6 +1,5 @@
 import React from 'react';
 import { act, fireEvent } from '@testing-library/react';
-import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
 import configureStore from '../../../store/store';
@@ -13,7 +12,6 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import {
   ConnectionStatus,
   HardwareWalletType,
@@ -205,7 +203,7 @@ describe('HardwareWalletSignatures', () => {
       ).toBeDefined();
     });
 
-    it('shows "Transaction failed" for other connection errors', () => {
+    it('shows "Reconnect your device and try again" when the connection times out', () => {
       mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: {
@@ -218,13 +216,40 @@ describe('HardwareWalletSignatures', () => {
         },
       });
 
-      const { getAllByText, getByRole } = renderWithLedgerAccount();
+      const { getByText, getByRole } = renderWithLedgerAccount();
 
       expect(
-        getAllByText(messages.transactionFailed.message).length,
-      ).toBeGreaterThan(0);
+        getByText(messages.hardwareDeviceDisconnected.message),
+      ).toBeDefined();
       expect(
-        getByRole('button', { name: messages.errorPageTryAgain.message }),
+        getByRole('button', {
+          name: messages.hardwareWalletErrorReconnectButton.message,
+        }),
+      ).toBeDefined();
+    });
+
+    it('shows "Reconnect your device and try again" when the device is locked', () => {
+      mockUseSubmitBridgeTransaction.mockReturnValue(defaultMockSubmitReturn());
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: {
+          status: ConnectionStatus.ErrorState,
+          error: createHardwareWalletError(
+            ErrorCode.AuthenticationDeviceLocked,
+            HardwareWalletType.Ledger,
+            'Device locked',
+          ),
+        },
+      });
+
+      const { getByText, getByRole } = renderWithLedgerAccount();
+
+      expect(
+        getByText(messages.hardwareDeviceDisconnected.message),
+      ).toBeDefined();
+      expect(
+        getByRole('button', {
+          name: messages.hardwareWalletErrorReconnectButton.message,
+        }),
       ).toBeDefined();
     });
 

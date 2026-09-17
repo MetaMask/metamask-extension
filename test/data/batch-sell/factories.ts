@@ -65,6 +65,7 @@ export function buildRecommendedQuote(
       dest: {
         asset: {
           decimals: 6,
+          ...(overrides.dest?.asset ?? {}),
         },
         normalizedAmount: overrides.dest?.normalizedAmount,
         minAmount: overrides.dest?.minAmount,
