@@ -656,6 +656,7 @@ describe('preferences controller', () => {
     it('consolidates a social-login wallet and syncs external services', () => {
       const { controller, getSeedlessOnboardingState, toggleExternalServices } =
         setupController({});
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', false);
       getSeedlessOnboardingState.mockReturnValue({
         authConnection: 'google',
       });
@@ -675,7 +676,6 @@ describe('preferences controller', () => {
     it('does not sync external services when already consolidated', () => {
       const { controller, getOnboardingState, toggleExternalServices } =
         setupController({});
-      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
 
       controller.consolidateBasicFunctionality();
 
@@ -706,6 +706,7 @@ describe('preferences controller', () => {
     it('does not reschedule a notice after dismiss', () => {
       const { controller, getOnboardingState, toggleExternalServices } =
         setupController({});
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', false);
       controller.setPreference(
         'basicFunctionalityMigrationNotification',
         'modal',
@@ -824,7 +825,7 @@ describe('preferences controller', () => {
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
-            "isBasicFunctionalityConsolidatedEnabled": false,
+            "isBasicFunctionalityConsolidatedEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -897,7 +898,7 @@ describe('preferences controller', () => {
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
-            "isBasicFunctionalityConsolidatedEnabled": false,
+            "isBasicFunctionalityConsolidatedEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -984,7 +985,7 @@ describe('preferences controller', () => {
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
-            "isBasicFunctionalityConsolidatedEnabled": false,
+            "isBasicFunctionalityConsolidatedEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -1072,7 +1073,7 @@ describe('preferences controller', () => {
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
-            "isBasicFunctionalityConsolidatedEnabled": false,
+            "isBasicFunctionalityConsolidatedEnabled": true,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
