@@ -504,6 +504,8 @@ export class OAuthService {
         throw this.#getAuthFlowError();
       }
 
+      const confirmedTabId: number = openedTabId;
+
       const redirectUrl = await new Promise<string>((resolve, reject) => {
         const platform = this.#platform;
 
@@ -514,16 +516,16 @@ export class OAuthService {
 
         function finish(callback: () => void): void {
           cleanup();
-          platform.closeTab(openedTabId).catch(() => undefined);
+          platform.closeTab(confirmedTabId).catch(() => undefined);
           callback();
         }
 
         function onUpdated(
           tabId: number,
           changeInfo: { url?: string; pendingUrl?: string },
-          tab?: { url?: string },
+          tab: { url?: string },
         ): void {
-          if (tabId !== openedTabId) {
+          if (tabId !== confirmedTabId) {
             return;
           }
 
@@ -543,7 +545,7 @@ export class OAuthService {
         }
 
         function onRemoved(tabId: number): void {
-          if (tabId !== openedTabId) {
+          if (tabId !== confirmedTabId) {
             return;
           }
 
