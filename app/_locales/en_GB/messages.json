@@ -5603,6 +5603,9 @@
   "moneyActivityFilterAll": {
     "message": "All"
   },
+  "moneyActivityFilterCard": {
+    "message": "Card"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Deposits"
   },
@@ -5680,7 +5683,8 @@
     "message": "Auto-earn yield on your Money balance"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Auto-earn up to ~$1 APY"
+    "message": "Auto-earn up to $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"
@@ -6592,18 +6596,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal ready"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "You can now withdraw your unstaked $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Your request to unstake $1 has been sent"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Received NFT from"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Sent NFT to"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6612,18 +6604,6 @@
   },
   "notificationItemReceived": {
     "message": "Received"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Received from"
-  },
-  "notificationItemSent": {
-    "message": "Sent"
-  },
-  "notificationItemSentTo": {
-    "message": "Sent to"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake completed"
   },
   "notificationItemStaked": {
     "message": "Staked"
@@ -6637,17 +6617,11 @@
   "notificationItemSwapped": {
     "message": "Swapped"
   },
-  "notificationItemSwappedFor": {
-    "message": "for"
-  },
   "notificationItemTo": {
     "message": "To"
   },
   "notificationItemTransactionId": {
     "message": "Transaction ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "UnStaking complete"
   },
   "notificationItemUnStaked": {
     "message": "Unstaked"

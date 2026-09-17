@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { usePrevious } from './usePrevious';
 
 const DEFAULT_DEBOUNCE_MS = 300;
 
@@ -19,6 +20,7 @@ export const useDebouncedValue = <Value>(
 ): Value => {
   const [debounced, setDebounced] = useState<Value>(value);
   const prevDelayMsRef = useRef(delayMs);
+  const previousDelayMs = usePrevious(delayMs);
 
   useEffect(() => {
     if (delayMs <= 0) {
@@ -37,6 +39,12 @@ export const useDebouncedValue = <Value>(
   }, [value, delayMs]);
 
   if (delayMs <= 0) {
+    return value;
+  }
+
+  // After immediate mode, `debounced` can lag until the effect runs; show `value` on
+  // the first delayed render so callers do not flash stale data.
+  if (previousDelayMs !== undefined && previousDelayMs <= 0) {
     return value;
   }
 

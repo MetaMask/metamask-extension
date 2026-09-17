@@ -939,7 +939,7 @@
       },
       "packages": {
         "@metamask/base-data-service": true,
-        "@metamask/controller-utils": true,
+        "@metamask/authenticated-user-storage>@metamask/controller-utils": true,
         "@metamask/superstruct": true
       }
     },
@@ -1140,6 +1140,23 @@
         "lodash": true
       }
     },
+    "@metamask/authenticated-user-storage>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/base-data-service>lodash-es": true
+      }
+    },
     "@metamask/bridge-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1189,6 +1206,24 @@
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
+      }
+    },
+    "@metamask/notification-services-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/notification-services-controller>@metamask/controller-utils>@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/base-data-service>lodash-es": true
       }
     },
     "@metamask/perps-controller>@metamask/controller-utils": {
@@ -2234,14 +2269,14 @@
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
         "@metamask/authenticated-user-storage": true,
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
+        "@metamask/notification-services-controller>@metamask/controller-utils": true,
+        "@metamask/notification-services-controller>@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
-        "lodash": true,
+        "@metamask/base-data-service>lodash-es": true,
         "loglevel": true,
         "semver": true,
-        "uuid": true
+        "@metamask/notification-services-controller>uuid": true
       }
     },
     "@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": {
@@ -2991,6 +3026,13 @@
         "semver": true
       }
     },
+    "@metamask/notification-services-controller>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
     "@metamask/mobile-wallet-protocol-dapp-client>@metamask/utils": {
       "globals": {
         "Buffer": true,
@@ -3001,6 +3043,11 @@
         "@metamask/superstruct": true,
         "@scure/base": true,
         "buffer": true
+      }
+    },
+    "@metamask/notification-services-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true
       }
     },
     "@metamask/wallet": {
@@ -7230,6 +7277,11 @@
       }
     },
     "@metamask/mobile-wallet-protocol-dapp-client>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/notification-services-controller>uuid": {
       "globals": {
         "crypto": true
       }

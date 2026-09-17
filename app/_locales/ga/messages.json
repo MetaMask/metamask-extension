@@ -3178,18 +3178,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Réidh le Tarraingt Siar"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Is féidir leat do $1 neamh-gheallta a tharraingt siar anois"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Tá d’iarratas chun $1 a bhaint den gheall seolta"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Fuarthas NFT ó"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFT seolta chuig"
-  },
   "notificationItemNetwork": {
     "message": "Líonra"
   },
@@ -3198,18 +3186,6 @@
   },
   "notificationItemReceived": {
     "message": "Faighte"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Fuarthas ó"
-  },
-  "notificationItemSent": {
-    "message": "Seolta"
-  },
-  "notificationItemSentTo": {
-    "message": "Seolta chuig"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Geall críochnaithe"
   },
   "notificationItemStaked": {
     "message": "Geallta"
@@ -3223,17 +3199,11 @@
   "notificationItemSwapped": {
     "message": "Malartaithe"
   },
-  "notificationItemSwappedFor": {
-    "message": "do"
-  },
   "notificationItemTo": {
     "message": "Chuig"
   },
   "notificationItemTransactionId": {
     "message": "Aitheantas Idirbhirt"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Dí-Geallchur críochnaithe"
   },
   "notificationItemUnStaked": {
     "message": "Gan Geallta"

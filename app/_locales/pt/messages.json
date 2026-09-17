@@ -1515,6 +1515,9 @@
   "alertMessageGasFeeLow": {
     "message": "Ao escolher uma taxa baixa, a expectativa é de transações mais lentas e tempos de espera maiores. Para transações mais rápidas, escolha as opções de taxa Mercado ou Agressiva."
   },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Para continuar com essa transação, você precisará aumentar o limite de gás para 12000 ou mais."
+  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Você não tem $1 suficiente em sua conta para pagar as taxas de rede."
   },
@@ -4213,6 +4216,9 @@
   "gasLimit": {
     "message": "Limite de gás"
   },
+  "gasLimitBelowMinimum": {
+    "message": "Limite de gás deve ser no mínimo 12000"
+  },
   "gasPrice": {
     "message": "Preço do gás (GWEI)"
   },
@@ -5512,6 +5518,9 @@
   "moneyActivityFilterAll": {
     "message": "Tudo"
   },
+  "moneyActivityFilterCard": {
+    "message": "Cartão"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Depósitos"
   },
@@ -5588,9 +5597,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Receba rendimentos automaticamente sobre o saldo em sua conta Money"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Receba até ~$1 de APY automaticamente"
-  },
   "moneyBenefitLiquidity": {
     "message": "Obtenha liquidez total sem períodos de bloqueio, permitindo que você possa negociar ou sacar quando quiser"
   },
@@ -5645,11 +5651,21 @@
   "moneyFundDescriptionWithApy": {
     "message": "Adicione fundos à sua conta Money e veja seu saldo crescer com até $1 de APY."
   },
+  "moneyHomeApyTooltip": {
+    "message": "A taxa exibida representa um Rendimento Percentual Anual (APY) estimado, calculado com base nas condições atuais do mercado. O APY é variável e não é garantido. Os fundos são alocados em um cofre DeFi, administrado pela Veda com supervisão de risco pela Steakhouse Financial, que gera rendimentos em mercados de empréstimo consolidados."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "A Money Account tem tecnologia da Monad."
+  },
   "moneyHowItWorks": {
     "message": "Como funciona"
   },
   "moneyHowItWorksDescription": {
     "message": "Adicione mUSD e seu saldo lastreado em dólares estará pronto para você gastar, negociar ou enviar quando você quiser."
+  },
+  "moneyHowItWorksDescription1": {
+    "message": "Adicione mUSD à sua conta Money e ganhe automaticamente até $1 de APY (variável). Os fundos são direcionados para um cofre DeFi, administrado pela Veda e com monitoramento de risco pela Steakhouse Financial. A taxa é gerada por plataformas DeFi terceirizadas que alocam fundos em protocolos blockchain. Sem necessidade de staking, resgates manuais ou períodos de carência.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescription2": {
     "message": "O saldo da sua conta Money é o seu saldo disponível para gastos. Vincule seu cartão MetaMask para gastar em mais de 150 milhões de estabelecimentos comerciais em todo o mundo. Seu dinheiro continua rendendo até o momento em que você o utiliza."
@@ -5663,6 +5679,13 @@
   },
   "moneyHowItWorksDisclosuresBody": {
     "message": "A Money Account não é uma conta bancária, conta poupança ou produto de depósito segurado. O APY é variável e não garantido. A Money Account envolve contrato inteligente, protocolo, liquidez e outros riscos, e você pode perder seus fundos parcial ou totalmente. Sujeito a restrições regionais. Termo se aplicam."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Riscos e Avisos legais"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Até $1 de APY. A taxa é variável e flutua de acordo com as condições do mercado. A taxa atual fica sempre visível na conta Money.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
     "message": "A taxa APY muda?"
@@ -5688,11 +5711,23 @@
   "moneyHowItWorksFaqLockedQuestion": {
     "message": "Meu dinheiro está bloqueado? Posso sacar a qualquer hora?"
   },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Uma conta que rende até $1 de APY variável. Você deposita os fundos, que ficam guardados na conta como mUSD, e ganha até $1 de APY. O mUSD é a moeda estával da MetaMask pareada ao dólar dos EUA. Você pode usar ou sacar seus fundos quando quiser, sem penalidades. Você pode gastar seus fundos com o cartão MetaMask Card em mais de 150 milhões de estabelecimentos que aceitam o Mastercard em todo o mundo.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "O que é a conta Money?"
   },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD é a moeda estável da MetaMask pareada com o dólar dos EUA. O saldo da sua conta Money é mantido em mUSD e permanece disponível para gastar, enviar ou negociar quando você quiser.",
+    "description": "Drafted from existing Money copy for content review."
+  },
   "moneyHowItWorksFaqMusdQuestion": {
     "message": "O que é mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "O saldo da sua conta Money é o seu saldo para gastos — ele continua rendendo até o momento em que você o utiliza. A conta Money não é uma conta bancária, conta de poupança ou um produto de depósito segurado.",
+    "description": "Drafted from existing Money copy for content review."
   },
   "moneyHowItWorksFaqSpendingQuestion": {
     "message": "Trata-se de uma conta poupança ou é uma conta corrente?"
@@ -5715,8 +5750,14 @@
   "moneyLifetime": {
     "message": "Vitalício"
   },
+  "moneyLifetimeTooltip": {
+    "message": "O total de rendimentos obtidos sobre o saldo da sua conta Money ao longo do tempo."
+  },
   "moneyMeetMusd": {
     "message": "Conheça o mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "O total de rendimentos obtidos sobre o saldo da sua conta Money nos últimos 30 dias."
   },
   "moneyMoreInformation": {
     "message": "Mais Informações"
@@ -5757,6 +5798,10 @@
   "moneyToastDepositInProgressTitleConvert": {
     "message": "Convertendo criptomoedas"
   },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 adicionado à conta Money.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
   "moneyToastDepositSuccessDescriptionNoAmount": {
     "message": "Adicionado à Money Account."
   },
@@ -5783,6 +5828,14 @@
   },
   "moneyToastWithdrawInProgressTitle": {
     "message": "Transferência em andamento"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 adicionado à $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Adicionado à $1.",
+    "description": "$1 is the destination account name"
   },
   "moneyToastWithdrawSuccessTitle": {
     "message": "Transferência concluída"
@@ -6446,18 +6499,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Saque pronto"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Você já pode sacar seus $1 sem staking"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Sua solicitação de remover $1 do staking foi enviada"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFT recebido de"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFT enviado para"
-  },
   "notificationItemNetwork": {
     "message": "Rede"
   },
@@ -6466,18 +6507,6 @@
   },
   "notificationItemReceived": {
     "message": "Recebido"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Recebido de"
-  },
-  "notificationItemSent": {
-    "message": "Enviado"
-  },
-  "notificationItemSentTo": {
-    "message": "Enviado para"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Staking concluído"
   },
   "notificationItemStaked": {
     "message": "Em staking"
@@ -6491,17 +6520,11 @@
   "notificationItemSwapped": {
     "message": "Troca realizada"
   },
-  "notificationItemSwappedFor": {
-    "message": "por"
-  },
   "notificationItemTo": {
     "message": "Para"
   },
   "notificationItemTransactionId": {
     "message": "ID da transação"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Retirada de staking concluída"
   },
   "notificationItemUnStaked": {
     "message": "Retirado de staking"
@@ -7644,6 +7667,10 @@
   "perpsFilterAll": {
     "message": "Tudo"
   },
+  "perpsFilterClear": {
+    "message": "$1, limpar filtro",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Commodities"
   },
@@ -7665,6 +7692,10 @@
   "perpsFilterMore": {
     "message": "Mais",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Mais, $1 selecionado",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Nova"
@@ -7761,6 +7792,18 @@
   },
   "perpsMarket": {
     "message": "Mercado"
+  },
+  "perpsMarketCategories": {
+    "message": "Categorias de mercado",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 mercados",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 mercado",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Mercado não encontrado"
@@ -8692,6 +8735,10 @@
   "rampsChangeProvider": {
     "message": "Alterar fornecedor."
   },
+  "rampsChangeProviders": {
+    "message": "altere o provedor",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Escolher provedor"
   },
@@ -8863,6 +8910,9 @@
   "rampsPreviouslyUsed": {
     "message": "Usado pela última vez"
   },
+  "rampsQuoteFetchError": {
+    "message": "Erro ao obter cotações. Insira um valor menor ou"
+  },
   "rampsQuoteUnavailable": {
     "message": "Cotação não disponível."
   },
@@ -8877,6 +8927,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Mostrar todos os tokens"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Este token não está disponível em sua região.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token não disponível",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "A compra de criptomoedas ainda não é suportada em sua região."
