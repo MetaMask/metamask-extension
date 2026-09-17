@@ -96,9 +96,6 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
     if (IN_FLIGHT_STATUSES.includes(tx.status) && !isTracing) {
       setIsTracing(true);
       setTracedTxId(tx.id);
-    } else if (isTracing && isTerminalStatus(tx.status)) {
-      setIsTracing(false);
-      setTracedTxId(null);
     }
   } else if (!isTracing && tracedTxId !== null) {
     setTracedTxId(null);
@@ -182,6 +179,8 @@ export function useMusdConversionConfirmTrace(transactionId: string): void {
       });
 
       traceContextRef.current = null;
+      setIsTracing(false);
+      setTracedTxId(null);
     }
   }, [tx, paymentToken, quotes]);
 
