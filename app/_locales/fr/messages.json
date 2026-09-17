@@ -6163,9 +6163,6 @@
   "networkFeeExplanationTitle": {
     "message": "Frais de réseau"
   },
-  "networkMenu": {
-    "message": "Menu du réseau"
-  },
   "networkMenuHeading": {
     "message": "Sélectionner un réseau"
   },

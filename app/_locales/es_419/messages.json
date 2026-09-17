@@ -6160,9 +6160,6 @@
   "networkFeeExplanationTitle": {
     "message": "Tarifa de red"
   },
-  "networkMenu": {
-    "message": "Menú de red"
-  },
   "networkMenuHeading": {
     "message": "Seleccionar una red"
   },

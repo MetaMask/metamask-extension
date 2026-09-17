@@ -293,7 +293,7 @@ export function MoneyHomePage() {
   if (isPageLoading) {
     return (
       <div
-        className="flex min-h-full flex-col gap-4 bg-background-default p-4"
+        className="flex min-h-full flex-col gap-4 p-4"
         data-testid="money-home-loading"
       >
         <Skeleton className="h-8 w-24" />
@@ -350,10 +350,7 @@ export function MoneyHomePage() {
 
   return (
     <>
-      <main
-        className="min-h-full bg-background-default pb-5"
-        data-testid="money-home-page"
-      >
+      <div className="min-h-full pb-5" data-testid="money-home-page">
         <header className="flex h-14 items-center justify-between px-4">
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
             {t('money')}
@@ -600,7 +597,7 @@ export function MoneyHomePage() {
             </>
           )}
         </div>
-      </main>
+      </div>
       {isTransferSheetOpen ? (
         <MoneyTransferSheet
           isOpen={isTransferSheetOpen}

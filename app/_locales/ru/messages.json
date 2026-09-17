@@ -6156,9 +6156,6 @@
   "networkFeeExplanationTitle": {
     "message": "Комиссия сети"
   },
-  "networkMenu": {
-    "message": "Сетевое меню"
-  },
   "networkMenuHeading": {
     "message": "Выбрать сеть"
   },
