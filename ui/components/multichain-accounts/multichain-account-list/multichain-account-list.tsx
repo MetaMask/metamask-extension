@@ -41,7 +41,8 @@ import {
   setAccountGroupPinned,
   setSelectedMultichainAccount,
 } from '../../../store/actions';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { transitionBack } from '../../ui/transition';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -416,7 +417,7 @@ export const MultichainAccountList = ({
       // Defer expensive Home/Routes re-renders so the account list shell stays responsive.
       startTransition(() => {
         dispatch(setSelectedMultichainAccount(accountGroupId));
-        navigate(DEFAULT_ROUTE);
+        transitionBack(() => navigate(PREVIOUS_ROUTE));
       });
     },
     [
