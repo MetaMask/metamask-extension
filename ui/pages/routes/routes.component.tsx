@@ -7,9 +7,8 @@ import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
-import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
-
 import { MainLayout } from '#ui/layouts/main-layout';
+import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
