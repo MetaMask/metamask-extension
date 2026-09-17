@@ -112,4 +112,21 @@ describe('RampsProviderListItem', () => {
       expect(tag.className).not.toContain('self-start');
     }
   });
+
+  it('lets the provider name shrink beside non-shrinking tags', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        tags={[{ label: 'Best rate', severity: 'success' }]}
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    const name = getByTestId(
+      'ramps-provider-item-name-/providers/transak',
+    ) as HTMLElement;
+    expect(name.className).toContain('min-w-0');
+    expect(name.className).toContain('flex-1');
+  });
 });
