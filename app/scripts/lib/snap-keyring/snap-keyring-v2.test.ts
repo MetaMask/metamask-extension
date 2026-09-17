@@ -11,6 +11,7 @@ import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { isFlask } from '../../../../shared/lib/build-types';
 import {
+  MultichainSnapKeyringV1Adapter,
   SnapKeyringV2Impl,
   snapKeyringV2Builder,
   snapKeyringV2AdaptedAsV1Builder,
@@ -217,6 +218,96 @@ describe('SnapKeyringV2Impl', () => {
       ).resolves.toBeUndefined();
       expect(callSpy).not.toHaveBeenCalled();
     });
+  });
+});
+
+describe('MultichainSnapKeyringV1Adapter', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('exports a private key using the encoding declared by the Snap', async () => {
+    const messenger = createControllerMessenger();
+    const keyring = {
+      type: KeyringType.Snap,
+      snapId: mockSnapId,
+      capabilities: {
+        scopes: [EthScope.Eoa],
+        privateKey: {
+          exportFormats: [{ encoding: 'base58' }],
+        },
+      },
+      lookupByAddress: jest.fn().mockReturnValue(mockAccount),
+    } as unknown as SnapKeyringV2;
+    const adapter = new MultichainSnapKeyringV1Adapter(keyring, messenger);
+    mockSnapControllerHandleRequest.mockResolvedValue({
+      type: 'private-key',
+      encoding: 'base58',
+      privateKey: 'base58-private-key',
+    });
+
+    await expect(adapter.exportAccount(address)).resolves.toBe(
+      'base58-private-key',
+    );
+    expect(mockSnapControllerHandleRequest).toHaveBeenCalledWith([
+      {
+        origin: 'metamask',
+        snapId: mockSnapId,
+        handler: 'onKeyringRequest',
+        request: {
+          jsonrpc: '2.0',
+          id: mockAccount.id,
+          method: 'keyring_exportAccount',
+          params: {
+            id: mockAccount.id,
+            options: {
+              type: 'private-key',
+              encoding: 'base58',
+            },
+          },
+        },
+      },
+    ]);
+  });
+
+  it('rejects an export response without a private key', async () => {
+    const messenger = createControllerMessenger();
+    const keyring = {
+      type: KeyringType.Snap,
+      snapId: mockSnapId,
+      capabilities: {
+        scopes: [EthScope.Eoa],
+        privateKey: {
+          exportFormats: [{ encoding: 'base58' }],
+        },
+      },
+      lookupByAddress: jest.fn().mockReturnValue(mockAccount),
+    } as unknown as SnapKeyringV2;
+    const adapter = new MultichainSnapKeyringV1Adapter(keyring, messenger);
+    mockSnapControllerHandleRequest.mockResolvedValue({
+      type: 'private-key',
+      encoding: 'base58',
+    });
+
+    await expect(adapter.exportAccount(address)).rejects.toThrow(
+      'Snap account export did not return a private key',
+    );
+  });
+
+  it('rejects export when the Snap declares no private-key format', async () => {
+    const messenger = createControllerMessenger();
+    const keyring = {
+      type: KeyringType.Snap,
+      snapId: mockSnapId,
+      capabilities: { scopes: [EthScope.Eoa] },
+      lookupByAddress: jest.fn().mockReturnValue(mockAccount),
+    } as unknown as SnapKeyringV2;
+    const adapter = new MultichainSnapKeyringV1Adapter(keyring, messenger);
+
+    await expect(adapter.exportAccount(address)).rejects.toThrow(
+      `Snap "${mockSnapId}" does not support private key export`,
+    );
+    expect(mockSnapControllerHandleRequest).not.toHaveBeenCalled();
   });
 });
 

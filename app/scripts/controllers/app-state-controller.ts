@@ -789,7 +789,7 @@ export class AppStateController extends BaseController<
 > {
   readonly #extension: AppStateControllerOptions['extension'];
 
-  #timer: NodeJS.Timeout | null;
+  #timer: ReturnType<typeof setTimeout> | number | null;
 
   readonly waitingForUnlock: { resolve: () => void }[];
 
