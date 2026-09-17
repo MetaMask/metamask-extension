@@ -203,7 +203,9 @@ describe('useSignatureAddressAlerts', () => {
       getMockTypedSignConfirmStateForRequest(request),
     );
 
-    expect(result.current.some((a) => a.key === 'signatureAddressScanIncomplete')).toBe(true);
+    expect(
+      result.current.some((a) => a.key === 'signatureAddressScanIncomplete'),
+    ).toBe(true);
     expect(
       result.current.find((a) => a.key === 'signatureAddressScanIncomplete'),
     ).toMatchObject({
