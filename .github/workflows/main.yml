@@ -410,7 +410,6 @@ jobs:
     with:
       changed-files: ${{ join(fromJSON(needs.get-requirements.outputs.changed-files), ' ') }}
     secrets:
-      AI_ANALYZER_TOKEN: ${{ secrets.AI_ANALYZER_TOKEN }}
       AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
       AI_ANALYZER_LANGFUSE_PUBLIC_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_PUBLIC_KEY }}
       AI_ANALYZER_LANGFUSE_SECRET_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_SECRET_KEY }}

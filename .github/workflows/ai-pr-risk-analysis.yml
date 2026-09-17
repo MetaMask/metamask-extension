@@ -21,9 +21,6 @@ on:
         required: true
         type: string
     secrets:
-      AI_ANALYZER_TOKEN:
-        description: Token with read access to MetaMask/ai-analyzer (private action checkout)
-        required: true
       AI_ANALYZER_LITELLM_KEY:
         description: LiteLLM API key for AI PR analysis
         required: true
