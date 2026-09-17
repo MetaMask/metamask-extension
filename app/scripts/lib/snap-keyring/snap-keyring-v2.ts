@@ -7,7 +7,6 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { Keyring } from '@metamask/keyring-utils';
 import { assert } from '@metamask/utils';
-import { HandlerType } from '@metamask/snaps-utils';
 import { isFlask } from '../../../../shared/lib/build-types';
 import {
   RootMessenger,
@@ -80,7 +79,7 @@ export class MultichainSnapKeyringV1Adapter extends SnapKeyringV1Adapter {
     const result = await this.#messenger.call('SnapController:handleRequest', {
       origin: 'metamask',
       snapId: this.inner.snapId,
-      handler: HandlerType.OnKeyringRequest,
+      handler: 'onKeyringRequest',
       request: {
         jsonrpc: '2.0',
         id: account.id,
