@@ -1,12 +1,12 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
-import { MoneyPositionPlaceholder } from './money-position-placeholder';
+import { MoneyEarnings } from './money-earnings';
 
-describe('MoneyPositionPlaceholder', () => {
+describe('MoneyEarnings', () => {
   it('renders the monthly and lifetime earnings', () => {
     renderWithLocalization(
-      <MoneyPositionPlaceholder
+      <MoneyEarnings
         monthlyEarnings="+$1.23"
         lifetimeEarnings="+$4.56"
         isMonthlyLoading={false}
@@ -15,22 +15,22 @@ describe('MoneyPositionPlaceholder', () => {
     );
 
     expect(
-      screen.getByTestId('money-position-monthly-value'),
+      screen.getByTestId('money-earnings-monthly-value'),
     ).toHaveTextContent('+$1.23');
-    expect(screen.getByTestId('money-position-monthly-value')).toHaveClass(
+    expect(screen.getByTestId('money-earnings-monthly-value')).toHaveClass(
       'text-success-default',
     );
     expect(
-      screen.getByTestId('money-position-lifetime-value'),
+      screen.getByTestId('money-earnings-lifetime-value'),
     ).toHaveTextContent('+$4.56');
-    expect(screen.getByTestId('money-position-lifetime-value')).toHaveClass(
+    expect(screen.getByTestId('money-earnings-lifetime-value')).toHaveClass(
       'text-success-default',
     );
   });
 
   it('renders skeletons during the initial load', () => {
     renderWithLocalization(
-      <MoneyPositionPlaceholder
+      <MoneyEarnings
         monthlyEarnings="$0.00"
         lifetimeEarnings="$0.00"
         isMonthlyLoading
@@ -39,19 +39,19 @@ describe('MoneyPositionPlaceholder', () => {
     );
 
     expect(
-      screen.getByTestId('money-position-monthly-skeleton'),
+      screen.getByTestId('money-earnings-monthly-skeleton'),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-position-lifetime-skeleton'),
+      screen.getByTestId('money-earnings-lifetime-skeleton'),
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('money-position-monthly-value'),
+      screen.queryByTestId('money-earnings-monthly-value'),
     ).not.toBeInTheDocument();
   });
 
   it('keeps a loaded row visible while the other row is loading', () => {
     renderWithLocalization(
-      <MoneyPositionPlaceholder
+      <MoneyEarnings
         monthlyEarnings="+$1.23"
         lifetimeEarnings="$0.00"
         isMonthlyLoading={false}
@@ -60,16 +60,16 @@ describe('MoneyPositionPlaceholder', () => {
     );
 
     expect(
-      screen.getByTestId('money-position-monthly-value'),
+      screen.getByTestId('money-earnings-monthly-value'),
     ).toHaveTextContent('+$1.23');
     expect(
-      screen.getByTestId('money-position-lifetime-skeleton'),
+      screen.getByTestId('money-earnings-lifetime-skeleton'),
     ).toBeInTheDocument();
   });
 
   it('does not use the success color for non-positive earnings', () => {
     renderWithLocalization(
-      <MoneyPositionPlaceholder
+      <MoneyEarnings
         monthlyEarnings="$0.00"
         lifetimeEarnings="-$1.23"
         isMonthlyLoading={false}
@@ -77,10 +77,10 @@ describe('MoneyPositionPlaceholder', () => {
       />,
     );
 
-    expect(screen.getByTestId('money-position-monthly-value')).not.toHaveClass(
+    expect(screen.getByTestId('money-earnings-monthly-value')).not.toHaveClass(
       'text-success-default',
     );
-    expect(screen.getByTestId('money-position-lifetime-value')).not.toHaveClass(
+    expect(screen.getByTestId('money-earnings-lifetime-value')).not.toHaveClass(
       'text-success-default',
     );
   });

@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Gas-grænse"
   },
-  "gasLimitTooLow": {
-    "message": "Brændstofgrænsen skal være mindst 21000"
-  },
   "gasUsed": {
     "message": "Gas brugt"
   },

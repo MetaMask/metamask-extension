@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasLimitTooLow": {
-    "message": "Limit gazu musi wynosić co najmniej 21000"
-  },
   "gasUsed": {
     "message": "Użyty gaz"
   },
