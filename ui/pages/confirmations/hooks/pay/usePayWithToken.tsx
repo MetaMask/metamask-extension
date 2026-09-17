@@ -14,7 +14,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import {
   selectPaymentOverrideByTransactionId,
-  selectTransactionPayIntentByTransactionId,
+  selectSolanaPayExecutionByTransactionId,
+  selectTransactionPaySourceByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
@@ -69,14 +70,17 @@ export function usePayWithToken(): PayWithToken {
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const payIntent = useSelector((state: TransactionPayState) =>
-    selectTransactionPayIntentByTransactionId(state, transactionId),
+  const paySource = useSelector((state: TransactionPayState) =>
+    selectTransactionPaySourceByTransactionId(state, transactionId),
+  );
+  const solanaExecution = useSelector((state: TransactionPayState) =>
+    selectSolanaPayExecutionByTransactionId(state, transactionId),
   );
   const selectedSolanaToken = availableTokens.find(
     (token) =>
-      token.assetId === payIntent?.sourceAssetId &&
+      token.assetId === paySource?.sourceAssetId &&
       `${String(token.chainId)}:${token.accountAddress}` ===
-        payIntent?.sourceAccountId,
+        paySource?.sourceAccountId,
   );
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const isMoneyAccountSelected =
@@ -169,7 +173,7 @@ export function usePayWithToken(): PayWithToken {
     balanceUsdFormatted,
     label: isPostQuoteWithdraw ? t('withdrawTo') : t('payWith'),
     from:
-      selectedSolanaToken && payIntent?.requestId
+      selectedSolanaToken && solanaExecution
         ? undefined
         : (selectedSolanaToken?.accountAddress ?? from),
     ownerId: currentConfirmation?.id ?? '',

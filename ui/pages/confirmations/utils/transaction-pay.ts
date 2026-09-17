@@ -7,8 +7,8 @@ import {
 import type { Hex } from '@metamask/utils';
 import {
   PaymentOverride,
-  type TransactionPayIntent,
   type TransactionPayRequiredToken,
+  type TransactionPaySource,
   type TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { BigNumber } from 'bignumber.js';
@@ -157,13 +157,13 @@ export function getTokenAddress(
 
 export function getAvailableTokens({
   payToken,
-  payIntent,
+  paySource,
   requiredTokens,
   tokens,
   blockedTokens,
 }: {
   payToken?: TransactionPaymentToken;
-  payIntent?: TransactionPayIntent;
+  paySource?: TransactionPaySource;
   requiredTokens?: TransactionPayRequiredToken[];
   tokens: Asset[];
   blockedTokens?: BlockedPayTokensListConfig;
@@ -194,7 +194,7 @@ export function getAvailableTokens({
         return false;
       }
 
-      const isSelected = isPayTokenSelected(token, payToken, payIntent);
+      const isSelected = isPayTokenSelected(token, payToken, paySource);
 
       if (isSelected) {
         return true;
@@ -215,7 +215,7 @@ export function getAvailableTokens({
     })
     .map((token) => {
       const blocked = isTokenBlocked(token, blockedTokens);
-      const isSelected = isPayTokenSelected(token, payToken, payIntent);
+      const isSelected = isPayTokenSelected(token, payToken, paySource);
 
       return {
         ...token,
@@ -229,12 +229,12 @@ export function getAvailableTokens({
 function isPayTokenSelected(
   token: Asset,
   payToken?: TransactionPaymentToken,
-  payIntent?: TransactionPayIntent,
+  paySource?: TransactionPaySource,
 ): boolean {
   if (
-    payIntent?.sourceAccountId ===
+    paySource?.sourceAccountId ===
       `${String(token.chainId)}:${token.accountAddress}` &&
-    payIntent?.sourceAssetId === token.assetId
+    paySource?.sourceAssetId === token.assetId
   ) {
     return true;
   }

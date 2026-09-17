@@ -86,7 +86,7 @@ function getInitRequestMock(
 describe('TransactionPayControllerInit', () => {
   beforeEach(() => {
     jest
-      .mocked(TransactionPayController.prototype.recoverSolanaPay)
+      .mocked(TransactionPayController.prototype.recoverSolanaPayStatus)
       .mockResolvedValue({});
   });
 
@@ -94,7 +94,7 @@ describe('TransactionPayControllerInit', () => {
     const { messengerClient } =
       TransactionPayControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
-    expect(messengerClient.recoverSolanaPay).toHaveBeenCalledTimes(1);
+    expect(messengerClient.recoverSolanaPayStatus).toHaveBeenCalledTimes(1);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -151,7 +151,7 @@ describe('TransactionPayControllerInit', () => {
         throw new Error('Expected init result to expose an api');
       }
       Object.defineProperty(messengerClient, 'state', {
-        value: { transactionData: {}, payIntents: {} },
+        value: { transactionData: {} },
       });
       jest.mocked(messengerClient.getSolanaPayQuote).mockResolvedValue({
         providerQuote: {
@@ -167,18 +167,16 @@ describe('TransactionPayControllerInit', () => {
         '1000000000',
       );
 
-      expect(messengerClient.setPayIntent).toHaveBeenCalledWith({
+      expect(messengerClient.setPaySource).toHaveBeenCalledWith({
         transactionId: 'tx-1',
-        intent: {
-          version: 2,
-          sourceWalletAccountId: 'wallet-account-id',
-          sourceAmountRaw: '1000000000',
+        source: {
           sourceAccountId: `${SolScope.Mainnet}:solana-address`,
           sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
-          sourceChainId: SolScope.Mainnet,
         },
       });
       expect(messengerClient.getSolanaPayQuote).toHaveBeenCalledWith({
+        sourceAmountRaw: '1000000000',
+        sourceWalletAccountId: 'wallet-account-id',
         transactionId: 'tx-1',
       });
     });
@@ -217,22 +215,6 @@ describe('TransactionPayControllerInit', () => {
       expect(config).toStrictEqual({
         atomic: false,
         paymentOverride: PaymentOverride.MoneyAccount,
-      });
-    });
-  });
-
-  describe('api.refreshSolanaPayQuote', () => {
-    it('requests a Core-derived route for the current transaction', async () => {
-      const { api, messengerClient } =
-        TransactionPayControllerInit(getInitRequestMock());
-      if (!api) {
-        throw new Error('Expected init result to expose an api');
-      }
-
-      await api.refreshSolanaPayQuote('tx-1');
-
-      expect(messengerClient.getSolanaPayQuote).toHaveBeenCalledWith({
-        transactionId: 'tx-1',
       });
     });
   });

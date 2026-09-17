@@ -4,9 +4,10 @@ import { type TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
+  selectSolanaPayExecutionByTransactionId,
   selectSolanaPayQuoteByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
-  selectTransactionPayIntentByTransactionId,
+  selectTransactionPaySourceByTransactionId,
   selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayQuoteErrorByTransactionId,
   selectTransactionPayQuotesByTransactionId,
@@ -27,10 +28,10 @@ export function useTransactionPayQuotes() {
 
 export function useSolanaPayQuote() {
   const quote = useTransactionPayData(selectSolanaPayQuoteByTransactionId);
-  const intent = useTransactionPayData(
-    selectTransactionPayIntentByTransactionId,
+  const source = useTransactionPayData(
+    selectTransactionPaySourceByTransactionId,
   );
-  return intent?.sourceChainId.startsWith('solana:') ? quote : undefined;
+  return source?.sourceAccountId.startsWith('solana:') ? quote : undefined;
 }
 
 export function useTransactionPayQuoteError() {
@@ -40,13 +41,13 @@ export function useTransactionPayQuoteError() {
 export function useTransactionPayHasExecutableQuote() {
   const quotes = useTransactionPayQuotes();
   const solanaPayQuote = useSolanaPayQuote();
-  const payIntent = useTransactionPayData(
-    selectTransactionPayIntentByTransactionId,
+  const solanaExecution = useTransactionPayData(
+    selectSolanaPayExecutionByTransactionId,
   );
 
   if (solanaPayQuote) {
     const hasRequiredProductAction =
-      !payIntent?.atomicProductActionRequired ||
+      !solanaExecution?.atomicProductActionRequired ||
       solanaPayQuote.route.atomicProductActionIncluded;
     return (
       solanaPayQuote.preflight.affordability.isAffordable &&

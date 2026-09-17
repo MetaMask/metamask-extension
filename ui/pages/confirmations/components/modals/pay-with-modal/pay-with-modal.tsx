@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { SolScope } from '@metamask/keyring-api';
 import {
@@ -44,7 +44,8 @@ import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useDispatch } from '../../../../../store/hooks';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import {
-  selectTransactionPayIntentByTransactionId,
+  selectSolanaPayExecutionByTransactionId,
+  selectTransactionPaySourceByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
 import { setSolanaPaySource } from '../../../../../store/controller-actions/transaction-pay-controller';
@@ -62,12 +63,14 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
-  const payIntent = useSelector((state: TransactionPayState) =>
-    selectTransactionPayIntentByTransactionId(
-      state,
-      currentConfirmation?.id ?? '',
-    ),
+  const transactionId = currentConfirmation?.id ?? '';
+  const paySource = useSelector((state: TransactionPayState) =>
+    selectTransactionPaySourceByTransactionId(state, transactionId),
   );
+  const solanaExecution = useSelector((state: TransactionPayState) =>
+    selectSolanaPayExecutionByTransactionId(state, transactionId),
+  );
+  const isSolanaSelectionPending = useRef(false);
   const blockedTokens = useTransactionPayBlockedTokens();
   const clearOverride = useClearPaymentOverride();
   const [showOtherAssets, setShowOtherAssets] = useState(false);
@@ -119,14 +122,14 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
   const handleTokenSelect = useCallback(
     async (token: AssetType) => {
-      if (token.disabled) {
+      if (token.disabled || solanaExecution) {
         return;
       }
 
       if (
-        (payIntent !== undefined &&
-          payIntent.sourceAccountId === getSolanaAccountId(token) &&
-          payIntent.sourceAssetId === token.assetId) ||
+        (paySource !== undefined &&
+          paySource.sourceAccountId === getSolanaAccountId(token) &&
+          paySource.sourceAssetId === token.assetId) ||
         (payToken &&
           payToken.address.toLowerCase() === token.address?.toLowerCase() &&
           payToken.chainId.toLowerCase() ===
@@ -137,31 +140,39 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       }
 
       if (isSolanaAsset(token)) {
+        if (isSolanaSelectionPending.current) {
+          return;
+        }
+        isSolanaSelectionPending.current = true;
         const requiredToken = requiredTokens?.[0];
         const sourceAccountId = getSolanaAccountId(token);
         const sourceAssetId = token.assetId as CaipAssetType;
         const sourceWalletAccountId = token.accountId;
-        const transactionId = currentConfirmation?.id;
         if (
           !requiredToken ||
           !sourceAccountId ||
           !sourceWalletAccountId ||
           !transactionId
         ) {
+          isSolanaSelectionPending.current = false;
           return;
         }
         const sourceAmount = getSolanaSourceAmount(
           token,
           requiredToken.amountUsd,
         );
-        await setSolanaPaySource({
-          transactionId,
-          sourceWalletAccountId,
-          sourceAccountId,
-          sourceAssetId,
-          sourceAmountRaw: sourceAmount,
-        });
-        handleClose();
+        try {
+          await setSolanaPaySource({
+            transactionId,
+            sourceWalletAccountId,
+            sourceAccountId,
+            sourceAssetId,
+            sourceAmountRaw: sourceAmount,
+          });
+          handleClose();
+        } finally {
+          isSolanaSelectionPending.current = false;
+        }
         return;
       }
 
@@ -225,10 +236,12 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       handleClose,
       isPostQuoteWithdraw,
       onMusdPaymentTokenChange,
-      payIntent,
+      paySource,
       payToken,
       requiredTokens,
       setPayToken,
+      solanaExecution,
+      transactionId,
     ],
   );
 
@@ -240,7 +253,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
       let available = getAvailableTokens({
         payToken,
-        payIntent,
+        paySource,
         requiredTokens,
         tokens,
         blockedTokens,
@@ -255,7 +268,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
       musdTokenFilter,
-      payIntent,
+      paySource,
       payToken,
       postQuoteWithdrawTokenFilter,
       requiredTokens,

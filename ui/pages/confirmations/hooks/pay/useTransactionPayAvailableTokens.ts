@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
-  selectTransactionPayIntentByTransactionId,
+  selectTransactionPaySourceByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
@@ -14,8 +14,8 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 export function useTransactionPayAvailableTokens() {
   const tokens = useSendTokens();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const payIntent = useSelector((state: TransactionPayState) =>
-    selectTransactionPayIntentByTransactionId(
+  const paySource = useSelector((state: TransactionPayState) =>
+    selectTransactionPaySourceByTransactionId(
       state,
       currentConfirmation?.id ?? '',
     ),
@@ -29,9 +29,9 @@ export function useTransactionPayAvailableTokens() {
         tokens,
         blockedTokens,
         payToken,
-        payIntent,
+        paySource,
       }),
-    [blockedTokens, payIntent, payToken, tokens],
+    [blockedTokens, paySource, payToken, tokens],
   );
 
   return availableTokens;

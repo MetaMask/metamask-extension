@@ -249,13 +249,13 @@ describe('selectNonEvmActivityItems', () => {
         chainId: '0x1',
         id: 'parent-transaction-id',
         metamaskPay: {
-          intent: {
-            version: 2,
+          source: {
             sourceAccountId: `${MultichainNetworks.SOLANA}:${solanaAddress}`,
             sourceAssetId: `${MultichainNetworks.SOLANA}/slip44:501`,
-            sourceChainId: MultichainNetworks.SOLANA,
+          },
+          solanaExecution: {
+            phase: 'submitted',
             sourceTransactionId: solanaTxId,
-            sourceWalletAccountId: MOCK_ACCOUNT_SOLANA_MAINNET.id,
           },
         },
         networkClientId: 'mainnet',

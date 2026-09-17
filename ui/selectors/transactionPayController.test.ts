@@ -1,7 +1,8 @@
-import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import {
+  selectSolanaPayExecutionByTransactionId,
   selectTransactionDataByTransactionId,
+  selectTransactionPaySourceByTransactionId,
   selectTransactionPayTotalsByTransactionId,
   selectIsTransactionPayLoadingByTransactionId,
   selectTransactionPayQuotesByTransactionId,
@@ -42,11 +43,33 @@ function createMockState(
       transactionData: {
         [TRANSACTION_ID]: transactionData,
       },
-    } as unknown as TransactionPayControllerState,
+      transactions: [],
+    } as unknown as TransactionPayState['metamask'],
   };
 }
 
 describe('transactionPayController selectors', () => {
+  it('selects durable source and execution from TransactionController metadata', () => {
+    const source = {
+      sourceAccountId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:solana-address',
+      sourceAssetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+    };
+    const execution = { phase: 'ready' };
+    const state = createMockState();
+    state.metamask.transactions = [
+      {
+        id: TRANSACTION_ID,
+        metamaskPay: { source, solanaExecution: execution },
+      },
+    ] as never;
+
+    expect(
+      selectTransactionPaySourceByTransactionId(state, TRANSACTION_ID),
+    ).toStrictEqual(source);
+    expect(
+      selectSolanaPayExecutionByTransactionId(state, TRANSACTION_ID),
+    ).toStrictEqual(execution);
+  });
   describe('selectTransactionDataByTransactionId', () => {
     it('returns transaction data for given transaction ID', () => {
       const transactionData = { isLoading: true };
