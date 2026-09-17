@@ -11,24 +11,14 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 const CHAIN_ID = 'eip155:1';
 const PRIVATE_KEY = 'private-key-mock';
 const mockOnCopy = jest.fn();
-const mockOnToggle = jest.fn();
 
-const renderComponent = ({
-  isCollapsible = true,
-  isExpanded = true,
-}: {
-  isCollapsible?: boolean;
-  isExpanded?: boolean;
-} = {}) =>
+const renderComponent = () =>
   render(
     <MultichainPrivateKeyRow
       address="0x1234567890abcdef1234567890abcdef12345678"
       chainId={CHAIN_ID}
-      isCollapsible={isCollapsible}
-      isExpanded={isExpanded}
       networkName={messages.ethereumAndEvms.message}
       onCopy={mockOnCopy}
-      onToggle={mockOnToggle}
       privateKey={PRIVATE_KEY}
     />,
   );
@@ -52,31 +42,13 @@ describe('MultichainPrivateKeyRow', () => {
     expect(screen.getByText('0x12345...45678')).toBeInTheDocument();
   });
 
-  it('toggles the section from its header', () => {
+  it('renders a non-interactive EVM header', () => {
     renderComponent();
 
-    fireEvent.click(
-      screen.getByTestId(`multichain-private-key-row-toggle-${CHAIN_ID}`),
-    );
-
-    expect(mockOnToggle).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not render an interactive header for a single section', () => {
-    renderComponent({ isCollapsible: false });
-
-    const header = screen.getByTestId(
-      `multichain-private-key-row-toggle-${CHAIN_ID}`,
-    );
-    fireEvent.click(header);
-
-    expect(mockOnToggle).not.toHaveBeenCalled();
     expect(
-      screen.queryByTestId(
-        `multichain-private-key-row-toggle-icon-${CHAIN_ID}`,
-      ),
-    ).not.toBeInTheDocument();
-    expect(header).not.toHaveClass('hover:bg-hover');
+      screen.getByTestId(`multichain-private-key-row-header-${CHAIN_ID}`)
+        .tagName,
+    ).toBe('DIV');
   });
 
   it('obscures the private key until tapped', () => {
@@ -129,13 +101,5 @@ describe('MultichainPrivateKeyRow', () => {
       'bg-success-muted',
       'text-success-default',
     );
-  });
-
-  it('hides the private key content while collapsed', () => {
-    renderComponent({ isExpanded: false });
-
-    expect(
-      screen.queryByTestId(`multichain-private-key-reveal-${CHAIN_ID}`),
-    ).not.toBeInTheDocument();
   });
 });

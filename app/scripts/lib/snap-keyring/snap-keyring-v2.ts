@@ -3,17 +3,10 @@ import {
   SnapKeyring as SnapKeyringV2,
 } from '@metamask/eth-snap-keyring/v2';
 import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
-import {
-  AccountExportType,
-  ExportedAccountStruct,
-  KeyringRpcMethod,
-  KeyringType,
-} from '@metamask/keyring-api/v2';
+import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { Keyring } from '@metamask/keyring-utils';
 import { assert } from '@metamask/utils';
-import { assert as assertStruct } from '@metamask/superstruct';
-import { HandlerType } from '@metamask/snaps-utils';
 import { isFlask } from '../../../../shared/lib/build-types';
 import {
   RootMessenger,
@@ -46,63 +39,6 @@ export class SnapKeyringV2Impl extends SnapKeyringImpl {
   async assertAccountCanBeUsed(_account: KeyringAccount) {
     // No-op because the v2 keyring is relying on proper user of `withKeyringV2` which will make sure the
     // account can be used (e.g unique addresses, unique account IDs).
-  }
-}
-
-/**
- * Adapts a v2 Snap keyring for legacy private-key export calls.
- *
- * The upstream adapter assumes every private key is hexadecimal. Multichain
- * Snaps declare their supported encoding in their keyring capabilities, so
- * export must use that encoding instead.
- */
-export class MultichainSnapKeyringV1Adapter extends SnapKeyringV1Adapter {
-  readonly #messenger: SnapKeyringV2BuilderMessenger;
-
-  constructor(
-    keyring: SnapKeyringV2,
-    messenger: SnapKeyringV2BuilderMessenger,
-  ) {
-    super(keyring);
-    this.#messenger = messenger;
-  }
-
-  /**
-   * Exports an account using the first private-key format declared by its Snap.
-   *
-   * @param address - Address of the account to export.
-   * @returns The private key encoded in the format declared by the Snap.
-   */
-  async exportAccount(address: string): Promise<string> {
-    const account = this.inner.lookupByAddress(address);
-    assert(account, `No Snap account found for address: ${address}`);
-
-    const exportFormat = this.inner.capabilities.privateKey?.exportFormats?.[0];
-    assert(
-      exportFormat,
-      `Snap "${this.inner.snapId}" does not support private key export`,
-    );
-
-    const result = await this.#messenger.call('SnapController:handleRequest', {
-      origin: 'metamask',
-      snapId: this.inner.snapId,
-      handler: HandlerType.OnKeyringRequest,
-      request: {
-        jsonrpc: '2.0',
-        id: account.id,
-        method: KeyringRpcMethod.ExportAccount,
-        params: {
-          id: account.id,
-          options: {
-            type: AccountExportType.PrivateKey,
-            encoding: exportFormat.encoding,
-          },
-        },
-      },
-    });
-    assertStruct(result, ExportedAccountStruct);
-
-    return result.privateKey;
   }
 }
 
@@ -141,10 +77,7 @@ export function snapKeyringV2AdaptedAsV1Builder(
     // we only need it to satisfy the type requirements of the existing keyring controller
     // so it can be used for the usual keyrings lifecycles, it MUST NOT be used it with
     // the other v1 methods!
-    return new MultichainSnapKeyringV1Adapter(
-      v2,
-      messenger,
-    ) as unknown as Keyring;
+    return new SnapKeyringV1Adapter(v2) as unknown as Keyring;
   };
   SnapKeyringV2AdaptedAsV1Builder.type = KeyringType.Snap as const;
 
