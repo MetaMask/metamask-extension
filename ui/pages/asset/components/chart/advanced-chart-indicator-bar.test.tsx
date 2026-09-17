@@ -128,7 +128,7 @@ describe('IndicatorBar', () => {
   });
 
   describe('Indicator Toggle Interactions', () => {
-    it.each([
+    it.each<{ name: string; displayText: string }>([
       { name: 'BOL', displayText: 'BOL' },
       { name: 'RSI', displayText: 'RSI' },
       {
