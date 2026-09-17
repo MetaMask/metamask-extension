@@ -14,37 +14,7 @@ const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 const AUTH_URL =
   'https://authentication.api.cx.metamask.io/api/v2/profile/accounts';
 
-const CONSOLIDATED_PROFILE_METRICS_MANIFEST_FLAGS = {
-  remoteFeatureFlags: {
-    extensionBasicFunctionalityToggle: true,
-  },
-};
-
-const mockRemoteFeatureFlagsWithBftConsolidation =
-  () => (mockServer: Mockttp) =>
-    mockServer
-      .forGet(FEATURE_FLAGS_URL)
-      .withQuery({
-        client: 'extension',
-        distribution: 'main',
-        environment: 'dev',
-      })
-      .thenCallback(() => {
-        return {
-          ok: true,
-          statusCode: 200,
-          json: [
-            {
-              extensionBasicFunctionalityToggle: {
-                enabled: true,
-                minimumVersion: '0.0.0',
-              },
-            },
-          ],
-        };
-      });
-
-const mockRemoteFeatureFlagsNeutral = () => (mockServer: Mockttp) =>
+const mockRemoteFeatureFlags = () => (mockServer: Mockttp) =>
   mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
@@ -56,35 +26,18 @@ const mockRemoteFeatureFlagsNeutral = () => (mockServer: Mockttp) =>
       return {
         ok: true,
         statusCode: 200,
-        json: [],
       };
     });
 
 /**
- * Consolidated-wallet fixture for profile metrics positive tests.
- *
- * MetaMetrics stays opted out; profile sync is allowed when the BFT
- * consolidation gate is on (persisted cohort marker + remote flag).
+ * Default fixture marks the wallet consolidated; keep MetaMetrics opted out
+ * and clear reported accounts so all scopes are re-synced on unlock.
  */
 function buildConsolidatedProfileMetricsFixture() {
   const fixture = new FixtureBuilderV2()
     .withMetaMetricsController({
       analyticsId: MOCK_ANALYTICS_ID,
-      consentDecisionMade: true,
       optedIn: false,
-    })
-    .withAppStateController({
-      pna25Acknowledged: true,
-    })
-    .withPreferencesController({
-      preferences: {
-        isBasicFunctionalityConsolidatedEnabled: true,
-      },
-    })
-    .withRemoteFeatureFlagController({
-      remoteFeatureFlags: {
-        extensionBasicFunctionalityToggle: true,
-      },
     })
     .build();
 
@@ -199,10 +152,9 @@ describe('Profile Metrics', function () {
       await withFixtures(
         {
           fixtures: buildConsolidatedProfileMetricsFixture(),
-          manifestFlags: CONSOLIDATED_PROFILE_METRICS_MANIFEST_FLAGS,
           testSpecificMock: async (server: Mockttp) => [
             await mockAuthService(server),
-            await mockRemoteFeatureFlagsWithBftConsolidation()(server),
+            await mockRemoteFeatureFlags()(server),
           ],
           title: this.test?.fullTitle(),
         },
@@ -235,10 +187,9 @@ describe('Profile Metrics', function () {
       await withFixtures(
         {
           fixtures: buildConsolidatedProfileMetricsFixture(),
-          manifestFlags: CONSOLIDATED_PROFILE_METRICS_MANIFEST_FLAGS,
           testSpecificMock: async (server: Mockttp) => [
             await mockAuthService(server),
-            await mockRemoteFeatureFlagsWithBftConsolidation()(server),
+            await mockRemoteFeatureFlags()(server),
           ],
           title: this.test?.fullTitle(),
         },
@@ -318,7 +269,7 @@ describe('Profile Metrics', function () {
               .build(),
             testSpecificMock: async (server: Mockttp) => [
               await mockAuthService(server),
-              await mockRemoteFeatureFlagsNeutral()(server),
+              await mockRemoteFeatureFlags()(server),
             ],
             title: this.test?.fullTitle(),
           },
