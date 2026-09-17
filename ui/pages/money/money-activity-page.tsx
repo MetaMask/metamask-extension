@@ -28,7 +28,15 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { getPrivacyMode } from '../../selectors/selectors';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from './constants/money-events';
 import { MoneyActivityRow } from './components/money-activity-row';
 import { MoneyActivityRetryButton } from './components/money-activity-retry-button';
 import { MoneyActivitySettlingSkeletons } from './components/money-activity-settling-skeletons';
@@ -42,21 +50,25 @@ const FILTERS: {
   id: MoneyActivityFilter;
   labelKey: string;
   testId: string;
+  componentName: MoneyComponentName;
 }[] = [
   {
     id: MoneyActivityFilter.All,
     labelKey: 'moneyActivityFilterAll',
     testId: 'money-activity-filter-all',
+    componentName: MoneyComponentName.ActivityFilterAll,
   },
   {
     id: MoneyActivityFilter.Deposits,
     labelKey: 'moneyActivityFilterDeposits',
     testId: 'money-activity-filter-deposits',
+    componentName: MoneyComponentName.ActivityFilterDeposits,
   },
   {
     id: MoneyActivityFilter.Transfers,
     labelKey: 'moneyActivityFilterSends',
     testId: 'money-activity-filter-sends',
+    componentName: MoneyComponentName.ActivityFilterTransfers,
   },
 ];
 
@@ -78,7 +90,12 @@ export function MoneyActivityPage() {
   } = useMoneyActivityItems({
     fill: { bucket: filter, count: ACTIVITY_FILL_COUNT },
   });
-  const handleItemClick = useMoneyActivityItemClick();
+  const handleItemClick = useMoneyActivityItemClick({
+    screenName: MoneyScreenName.MoneyActivity,
+  });
+  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyActivity,
+  });
   const pageRef = useRef<HTMLDivElement>(null);
   const [sentinelRef, isSentinelIntersecting] = useIntersectionObserver({
     rootMargin: '400px 0px',
@@ -93,6 +110,24 @@ export function MoneyActivityPage() {
       loadMore();
     }
   }, [isSentinelIntersecting, hasMore, loadMore]);
+
+  useTrackOnce(
+    !isAvailabilityLoading && availability.isAvailable,
+    trackScreenViewed,
+  );
+
+  const handleFilterClick = useCallback(
+    (chip: (typeof FILTERS)[number]) => {
+      trackButtonClicked({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.Filter,
+        labelKey: chip.labelKey,
+        componentName: chip.componentName,
+      });
+      setFilter(chip.id);
+    },
+    [trackButtonClicked],
+  );
 
   const filteredItems = buckets[filter];
   const sections = useMemo(
@@ -112,7 +147,7 @@ export function MoneyActivityPage() {
   if (isAvailabilityLoading) {
     body = (
       <div
-        className="flex min-h-full flex-col gap-4 bg-background-default p-4"
+        className="flex min-h-full flex-col gap-4 p-4"
         data-testid="money-activity-loading"
       >
         <Skeleton className="h-8 w-8" />
@@ -222,10 +257,7 @@ export function MoneyActivityPage() {
     }
 
     body = (
-      <main
-        className="min-h-full bg-background-default pb-5"
-        data-testid="money-activity-page"
-      >
+      <div className="min-h-full pb-5" data-testid="money-activity-page">
         <div className="flex items-center px-2 py-2">
           <ButtonIcon
             iconName={IconName.ArrowLeft}
@@ -263,7 +295,7 @@ export function MoneyActivityPage() {
                 }
                 size={ButtonSize.Md}
                 aria-pressed={isActive}
-                onClick={() => setFilter(chip.id)}
+                onClick={() => handleFilterClick(chip)}
                 data-testid={chip.testId}
               >
                 {t(chip.labelKey)}
@@ -273,7 +305,7 @@ export function MoneyActivityPage() {
         </Box>
 
         {listBody}
-      </main>
+      </div>
     );
   } else {
     body = <Navigate to={DEFAULT_ROUTE} replace />;

@@ -172,6 +172,9 @@
   "activity": {
     "message": "活动"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "活动数据和唯一交易标识号已删除"
+  },
   "activityEmptyDescription": {
     "message": "今天就来兑换你的第一个代币。"
   },
@@ -1478,6 +1481,9 @@
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "添加更少的资金或使用其他支付方式。"
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "资金不足"
   },
@@ -1933,14 +1939,37 @@
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "您的设置已更改"
+  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "博客文章"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "我们正在调整您使用社交账号登录 MetaMask 的方式。为了让您在 MetaMask 中获得流畅体验，您用于社交账号登录的电子邮箱或用户名现在将安全地关联到您的用户资料及相关账户地址。此次更新后，基本功能和其他默认设置将始终处于启用状态。"
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "我们绝不会向第三方出售您的数据。如需详细了解我们收集哪些数据以及收集原因，请阅读我们的 $1 和更新后的 $2。",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "隐私声明"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
     "message": "隐私与产品更新"
   },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "第三方 API 现已纳入基本功能。根据您之前的偏好，此设置$1。您可以随时前往 $2 更改。",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "已禁用"
+  },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "已启用"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "设置 > 隐私"
   },
   "basicFunctionalityRequired_description": {
     "message": "此功能在基本功能关闭时无法使用。请使用下方的开关将其开启。"
@@ -2507,6 +2536,9 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "使用最大允许值"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "您的 $1 不足以支付此次跨链的网络费用。请输入较小的金额或购买更多 $1。"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "需要更多的 $1 用于燃料"
@@ -3551,6 +3583,10 @@
   "disable": {
     "message": "禁用"
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "“$1”已被禁用，因为它不满足在原来的网络费用基础上至少增加10%的要求。",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "断开连接"
   },
@@ -4183,6 +4219,9 @@
   "gasPrice": {
     "message": "Gas 价格（GWEI）"
   },
+  "gasPriceExcessive": {
+    "message": "您设置的网络费用过高，建议降低金额。"
+  },
   "gasPriceFetchFailed": {
     "message": "由于网络错误，燃料价格估算失败。"
   },
@@ -4682,9 +4721,21 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "存入任意代币即可。我们会自动将其兑换并发送到您的 Hyperliquid 账户，免收 MetaMask 费用。",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "不用了，我要手动存入",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "通过 MetaMask 为 Hyperliquid 充值",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "资金现已可用于 Hyperliquid 和 MetaMask 永续合约交易。",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "根据 Hyperliquid 的 $1，为今后的所有交易应用 MetaMask 推荐码。MetaMask 将收取费用。",
@@ -5184,6 +5235,9 @@
   "loginErrorSessionExpiredButton": {
     "message": "登录"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "请重新登录以继续。"
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "会话已过期"
   },
@@ -5209,10 +5263,6 @@
   },
   "lowLowercase": {
     "message": "低"
-  },
-  "lowValueAssets": {
-    "message": "低价值代币（$1）",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "以太坊主网"
@@ -5399,13 +5449,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "赚取 $1% 年化收益率",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "年收益率信息"
-  },
   "moneyAccountApyTooltip": {
     "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
   },
@@ -5416,15 +5459,15 @@
   "moneyAccountProjectedBalance": {
     "message": "预计 1 年后余额:"
   },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "预计 1 年后余额"
-  },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "预测基于 $1% 的年化收益率（APY）在一年内保持不变。APY 会随市场波动，并非固定保证。",
     "description": "$1 is the APY percentage used in the one-year projection"
   },
   "moneyActivity": {
     "message": "活动"
+  },
+  "moneyActivityCard": {
+    "message": "卡"
   },
   "moneyActivityConversionFailed": {
     "message": "兑换失败"
@@ -5444,8 +5487,23 @@
   "moneyActivityDepositing": {
     "message": "正在存入"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "支付给"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "来自"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "交易 ID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "您已赚取"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "您已消费"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "已为您退款"
   },
   "moneyActivityEmpty": {
     "message": "暂无活动"
@@ -5459,8 +5517,17 @@
   "moneyActivityFilterSends": {
     "message": "发送"
   },
+  "moneyActivityLoadError": {
+    "message": "无法加载您的活动记录"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD 返现"
+  },
   "moneyActivityPending": {
     "message": "待定"
+  },
+  "moneyActivityPurchase": {
+    "message": "购买"
   },
   "moneyActivityReceived": {
     "message": "已收到"
@@ -5471,6 +5538,12 @@
   "moneyActivityReceiving": {
     "message": "正在接收"
   },
+  "moneyActivityRefund": {
+    "message": "退款"
+  },
+  "moneyActivityRetry": {
+    "message": "重试"
+  },
   "moneyActivitySendFailed": {
     "message": "发送失败"
   },
@@ -5479,6 +5552,10 @@
   },
   "moneyActivitySent": {
     "message": "已发送"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "兑换费用包含网络成本，且可能包含服务商费用。",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
   },
   "moneyActivityViewAll": {
     "message": "查看全部"
@@ -5498,11 +5575,14 @@
   "moneyBalanceLastKnown": {
     "message": "最后已知余额"
   },
-  "moneyBalanceTitle": {
-    "message": "Money 余额"
+  "moneyBalanceRetry": {
+    "message": "重试"
   },
   "moneyBalanceUnavailable": {
     "message": "余额不可用"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "我们暂时无法显示您的余额。您的资金安全无虞，请稍后重试。"
   },
   "moneyBenefitAutoEarn": {
     "message": "为您的 Money 余额自动赚取收益"
@@ -5521,6 +5601,12 @@
   },
   "moneyBenefits": {
     "message": "福利"
+  },
+  "moneyContactSupport": {
+    "message": "联系支持团队"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "兑换加密货币"
   },
   "moneyEarnApyTitle": {
     "message": "赚取最高 $1 年化收益率"
@@ -5564,9 +5650,60 @@
   "moneyHowItWorksDescription": {
     "message": "添加 mUSD，您的美元挂钩余额即可随时用于消费、交易或转账。"
   },
+  "moneyHowItWorksDescription2": {
+    "message": "您的 Money 账户余额即您的消费余额。关联您的 MetaMask 卡，即可在全球超过 1.5 亿家商户消费。您的资金在您使用之前会持续赚取收益。"
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money Account 由 Monad 提供支持。"
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "添加 mUSD，赚取最高 $1 年化收益率。您的余额与美元挂钩，可随时消费、交易或转账。",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Account 并非银行账户、储蓄账户或受保存款产品。年化收益率为浮动值，不作保证。Money Account 涉及智能合约、协议、流动性及其他风险，您可能损失部分或全部资金。受地区限制约束。条款适用。"
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "年化收益率会变化吗？"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "您自己！MetaMask 是一款自托管钱包，意味着只有账户持有人的私钥才能控制它。MetaMask 无法访问、冻结或转移您的资金。这正是我们区别于传统银行账户和托管式加密平台之处——没有任何第三方持有您的资金。"
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "谁控制我的资金？"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "开设 Money Account 无需费用，存入稳定币也无需费用。存入非稳定币代币时会产生费用。此外，MetaMask 卡交易、ATM 取款及本币出金也会产生相应费用。 "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "在此查看完整的卡费用明细。"
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "是否需要支付任何费用？"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "可以。您可以随时交易、发送、消费或提取全部余额，无需提前通知，不收取任何罚金，MetaMask 也不收取提现费用。如果流动性紧张，可能会出现暂时延迟。"
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "我的资金会被锁定吗？可以随时提现吗？"
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "什么是 Money 账户？"
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "什么是 mUSD？"
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "这是储蓄账户还是消费账户？"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "常见问题"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "当您存入资金时，这些资金会被配置到成熟的去中心化金融协议（例如 Aave 和 Morpho）中，它们通过真实经济活动产生收益。这些收益随后以年化收益率的形式返还给您。\n\n第三方服务提供商 Steakhouse Financial 负责监控资金在协议中的分配情况。第三方基础设施提供商 Veda 负责部署和维护存放您资金的金库智能合约。\n\n收益并非由 MetaMask 或 mUSD 发行方支付的利息，而是通过在第三方去中心化金融协议中持仓所产生的链上收益。"
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "收益从何而来？"
   },
   "moneyHowYourMoneyGrows": {
     "message": "资金增长方式"
@@ -5591,6 +5728,81 @@
   },
   "moneySend": {
     "message": "发送"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "无法存入资金。请重试。"
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "无法兑换。请重试。"
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "存款失败"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "存入资金失败"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "兑换失败"
+  },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "卡订单可能需要几分钟时间。"
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "正在存入资金"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "正在存入"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "正在兑换加密货币"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "已存入 Money Account。"
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "已存入资金"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "存款完成"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "兑换完成"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "这可能需要几分钟时间。"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "无法转账。请重试。"
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "转账失败"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "您的账户"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "转账进行中"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "转账完成"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "其他账户"
+  },
+  "moneyTransferComingSoon": {
+    "message": "即将推出"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "永续合约（Perps）账户"
+  },
+  "moneyTransferSendExternal": {
+    "message": "外部地址"
+  },
+  "moneyTransferTitle": {
+    "message": "发送资金到"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "银行账户"
   },
   "month": {
     "message": "月"
@@ -5930,9 +6142,6 @@
   "networkFeeExplanationTitle": {
     "message": "网络费"
   },
-  "networkMenu": {
-    "message": "网络菜单"
-  },
   "networkMenuHeading": {
     "message": "选择网络"
   },
@@ -5978,6 +6187,10 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "优先费用（又称“矿工费”）。这笔费用直接向矿工支付，激励他们优先处理您的交易。"
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "与过去 72 小时相比，当前网络费用处于$1水平。",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "建议网络"
@@ -7451,6 +7664,13 @@
   "perpsFilterIndex": {
     "message": "指数"
   },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
+  "perpsFilterMore": {
+    "message": "展开",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
   "perpsFilterNew": {
     "message": "新增"
   },
@@ -7733,6 +7953,10 @@
   "perpsPositions": {
     "message": "头寸"
   },
+  "perpsProducts": {
+    "message": "产品",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "请求次数过多。请稍等片刻，然后重试。"
   },
@@ -7847,14 +8071,8 @@
   "perpsSortByPriceChange": {
     "message": "价格变化"
   },
-  "perpsSortByRank": {
-    "message": "排名"
-  },
-  "perpsSortBySection": {
-    "message": "排序方式"
-  },
   "perpsSortByTitle": {
-    "message": "筛选"
+    "message": "排序方式"
   },
   "perpsSortByVolume": {
     "message": "交易量"
@@ -8034,6 +8252,10 @@
   "perpsToastSubmitInProgress": {
     "message": "正在提交您的交易",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeEntryFailed": {
+    "message": "无法打开交易页面",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
   },
   "perpsToastTradeSuccess": {
     "message": "仓位已平仓",
@@ -8646,9 +8868,6 @@
   "rampsPreviouslyUsed": {
     "message": "上次使用"
   },
-  "rampsQuoteFetchError": {
-    "message": "获取报价失败。"
-  },
   "rampsQuoteUnavailable": {
     "message": "报价不可用。"
   },
@@ -8744,6 +8963,9 @@
   },
   "rejected": {
     "message": "已拒绝"
+  },
+  "relayerFee": {
+    "message": "中继器费用"
   },
   "remove": {
     "message": "删除"
@@ -11098,6 +11320,9 @@
   "stxCancelled": {
     "message": "交换就会失败"
   },
+  "stxCancelledDescription": {
+    "message": "由于预计交易会失败，该交易已被取消，以避免产生不必要的网络费用。"
+  },
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
   },
@@ -11139,6 +11364,9 @@
   },
   "stxUserCancelled": {
     "message": "交换已取消"
+  },
+  "stxUserCancelledDescription": {
+    "message": "您的交易已被取消，您并未支付任何不必要的网络费用。"
   },
   "submit": {
     "message": "提交"
@@ -11269,12 +11497,19 @@
     "message": "$1 到 $2 的交换",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesExplanation": {
+    "message": "MetaMask 不会从网络费用中获利。这些费用仅为估算值，可能会根据网络繁忙程度和交易复杂程度发生变化。通过$1了解更多信息。",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
   "swapGasFeesExplanationLinkText": {
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " 已包含"
+  },
+  "swapGasFeesSplit": {
+    "message": "上一页显示的网络费用包含这两笔交易产生的费用。"
   },
   "swapGasFeesSponsored": {
     "message": "由 MetaMask 支付"
@@ -11409,6 +11644,9 @@
   "swapSource": {
     "message": "流动性来源"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "兑换交易较为复杂，且对时效要求较高。我们建议采用此网络费用，以便在成本和成功完成兑换的可能性之间取得良好平衡。"
+  },
   "swapToConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"
   },
@@ -11430,6 +11668,9 @@
   },
   "swapUnknown": {
     "message": "未知"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "您的 $1 不足以支付此次兑换的网络费用。请输入较小的金额或购买更多 $1。"
   },
   "swapZeroSlippage": {
     "message": "0%滑点"
@@ -11665,6 +11906,9 @@
   "transactionHistoryBaseFee": {
     "message": "基础费用（GWEI）"
   },
+  "transactionHistoryL1GasLabel": {
+    "message": "L1 网络费用总计"
+  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 燃料限制"
   },
@@ -11879,6 +12123,9 @@
   },
   "unlock": {
     "message": "登录"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "密码错误，请重试。"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "尝试次数过多。请在以下时间之后重试： "
@@ -12149,6 +12396,10 @@
   },
   "wrongNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
+  },
+  "wrongPassword": {
+    "message": "密码错误，请重试。",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "年"

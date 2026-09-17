@@ -1252,7 +1252,6 @@
       "testnet": {},
       "mainnet": {}
     },
-    "tracesBeforeMetricsOptIn": [],
     "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},
