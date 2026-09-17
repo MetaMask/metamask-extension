@@ -8,6 +8,8 @@ import {
   getIsNetworkManagementEnabled,
   getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
+  getShouldShowBasicFunctionalityMigrationModal,
+  getShouldShowBasicFunctionalityMigrationToast,
 } from './feature-flags';
 
 const buildState = (
@@ -267,6 +269,57 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getIsBasicFunctionalityToggleEnabled(buildState() as any),
+    ).toBe(false);
+  });
+});
+
+describe('Basic Functionality migration notification selectors', () => {
+  it('shows a scheduled modal when the remote flag is disabled', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'modal' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(getShouldShowBasicFunctionalityMigrationModal(state)).toBe(true);
+  });
+
+  it('hides a scheduled toast while the wallet is locked', () => {
+    const state = {
+      metamask: {
+        isUnlocked: false,
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getShouldShowBasicFunctionalityMigrationToast(state as any),
+    ).toBe(false);
+  });
+
+  it('hides a dismissed notification', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: true,
+        },
+      },
+    };
+
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getShouldShowBasicFunctionalityMigrationToast(state as any),
     ).toBe(false);
   });
 });
