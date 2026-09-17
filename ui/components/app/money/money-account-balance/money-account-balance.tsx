@@ -95,7 +95,13 @@ const AddOrBalance = ({
           data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
         />
       ) : (
-        <Box className="relative">
+        // The last-known caption (16px) is absorbed by the card's bottom
+        // padding via -mb-4 so the row keeps its height when it appears.
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.End}
+          className={isLastKnown ? '-mb-4 shrink-0' : 'shrink-0'}
+        >
           <SensitiveText
             variant={TextVariant.BodyMd}
             isHidden={privacyMode}
@@ -109,7 +115,7 @@ const AddOrBalance = ({
             <Text
               variant={TextVariant.BodyXs}
               color={TextColor.TextAlternative}
-              className="absolute top-4 end-0 whitespace-nowrap"
+              className="whitespace-nowrap"
               data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
             >
               {t('moneyBalanceLastKnown')}
