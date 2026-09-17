@@ -123,7 +123,7 @@ describe('findProviderQuote', () => {
     ).toBe('0.05');
   });
 
-  it('gets provider tags from all of the provider quotes', () => {
+  it('derives tags only from the matched quote, not other provider quotes', () => {
     const quotes: QuotesResponse = {
       success: [
         {
@@ -149,14 +149,13 @@ describe('findProviderQuote', () => {
       customActions: [],
     };
 
-    expect(
-      findProviderQuote(quotes, transak.id, 'debit-credit-card')?.quote
-        ?.amountOut,
-    ).toBe('0.05');
-    expect(getProviderTag(transak.id, quotes, [], t)).toStrictEqual({
-      label: 'rampsMostReliable',
-      severity: 'neutral',
-    });
+    const matchedQuote = findProviderQuote(
+      quotes,
+      transak.id,
+      'debit-credit-card',
+    );
+    expect(matchedQuote?.quote?.amountOut).toBe('0.05');
+    expect(getProviderTag(transak.id, matchedQuote, [], t)).toBeNull();
   });
 });
 
@@ -166,22 +165,15 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          success: [
-            {
-              provider: transak.id,
-              quote: {
-                amountIn: 1,
-                amountOut: '1',
-                paymentMethod: 'card',
-              },
-              metadata: {
-                tags: { isBestRate: true, isMostReliable: true },
-              },
-            },
-          ],
-          sorted: [],
-          error: [],
-          customActions: [],
+          provider: transak.id,
+          quote: {
+            amountIn: 1,
+            amountOut: '1',
+            paymentMethod: 'card',
+          },
+          metadata: {
+            tags: { isBestRate: true, isMostReliable: true },
+          },
         },
         [transak.id],
         t,
@@ -194,16 +186,9 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          success: [
-            {
-              provider: transak.id,
-              quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-              metadata: { tags: { isMostReliable: true } },
-            },
-          ],
-          sorted: [],
-          error: [],
-          customActions: [],
+          provider: transak.id,
+          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
+          metadata: { tags: { isMostReliable: true } },
         },
         [],
         t,
@@ -214,20 +199,32 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          success: [
-            {
-              provider: transak.id,
-              quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-              metadata: { tags: { isBestRate: true } },
-            },
-          ],
-          sorted: [],
-          error: [],
-          customActions: [],
+          provider: transak.id,
+          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
+          metadata: { tags: { isBestRate: true } },
         },
         [],
         t,
       ),
     ).toStrictEqual({ label: 'rampsBestRate', severity: 'success' });
+  });
+
+  it('returns null when the matched quote has no tags', () => {
+    expect(
+      getProviderTag(
+        transak.id,
+        {
+          provider: transak.id,
+          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
+          metadata: { tags: {} },
+        },
+        [],
+        t,
+      ),
+    ).toBeNull();
+  });
+
+  it('returns null when there is no matched quote', () => {
+    expect(getProviderTag(transak.id, null, [], t)).toBeNull();
   });
 });

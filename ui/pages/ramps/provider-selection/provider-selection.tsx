@@ -108,7 +108,7 @@ function buildProviderListRows({
     );
     const tag =
       showQuotes && !quotesLoading
-        ? getProviderTag(provider.id, quotes, ordersProviders, t)
+        ? getProviderTag(provider.id, matchedQuote, ordersProviders, t)
         : null;
 
     return {
