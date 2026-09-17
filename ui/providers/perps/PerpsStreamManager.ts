@@ -259,8 +259,12 @@ class PerpsStreamManager {
           }
           submitRequestToBackground<AccountState>('perpsGetAccountState', [])
             .then((data) => {
-              if (!cancelled && !this.account.hasCachedData()) {
-                push(data ?? null);
+              // An empty resolution is not account data either — pushing the
+              // channel's own `null` initialValue notifies subscribers without
+              // setting a cache, which is the same fabricated `$0.00` as the
+              // rejection path below.
+              if (!cancelled && data && !this.account.hasCachedData()) {
+                push(data);
               }
             })
             .catch((err) => {

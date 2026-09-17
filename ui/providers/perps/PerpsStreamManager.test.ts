@@ -1967,7 +1967,29 @@ describe('PerpsStreamManager', () => {
       await jest.advanceTimersByTimeAsync(3_000);
 
       expect(manager.account.getCachedData()).toBe(cachedAccount);
-      expect(onData).not.toHaveBeenCalledWith(null);
+      // Subscribing with a cache present already fires once with that cache.
+      // Pinning the exact call count and payload proves nothing *else*
+      // notified — a bare `not.toHaveBeenCalledWith(null)` would pass even if
+      // the failure path had pushed something.
+      expect(onData).toHaveBeenCalledTimes(1);
+      expect(onData).toHaveBeenCalledWith(cachedAccount);
+    });
+
+    it('does not notify subscribers when the REST fallback settles empty', async () => {
+      // The messenger can settle with no payload instead of rejecting. `null`
+      // is this channel's initialValue, so pushing it notifies without setting
+      // a cache — the same fabricated `$0.00` as an outright rejection.
+      mockSubmitRequestToBackground.mockImplementation(() =>
+        Promise.resolve(undefined),
+      );
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
     });
 
     it('still delivers account data pushed after an account fetch failure', async () => {

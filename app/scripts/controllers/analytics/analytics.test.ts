@@ -24,11 +24,11 @@ import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
+import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../metametrics-controller-method-action-types';
 import type {
-  MetaMetricsControllerClearTracesAfterMetricsOptInAction,
-  MetaMetricsControllerSetMarketingCampaignCookieIdAction,
-  MetaMetricsControllerTrackTracesAfterMetricsOptInAction,
-} from '../metametrics-controller-method-action-types';
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
+} from '../../services/sentry/sentry-tracing-service-method-action-types';
 import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import {
   configureAnalytics,
@@ -92,9 +92,9 @@ function createConfiguredMessenger({
     | NetworkControllerGetNetworkClientByIdAction
     | RemoteFeatureFlagControllerGetStateAction
     | MetaMetricsControllerGetStateAction
-    | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
-    | MetaMetricsControllerClearTracesAfterMetricsOptInAction
     | MetaMetricsControllerSetMarketingCampaignCookieIdAction
+    | SentryTracingServiceTrackTracesAfterMetricsOptInAction
+    | SentryTracingServiceClearTracesAfterMetricsOptInAction
     | AnalyticsControllerGetStateAction
     | AnalyticsControllerTrackEventAction
     | AnalyticsControllerIdentifyAction
@@ -152,19 +152,19 @@ function createConfiguredMessenger({
     () => metaMetricsControllerState as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:trackTracesAfterMetricsOptIn',
-    trackTracesHandler as never,
-  );
-  rootMessenger.registerActionHandler(
-    'MetaMetricsController:clearTracesAfterMetricsOptIn',
-    clearTracesHandler as never,
-  );
-  rootMessenger.registerActionHandler(
     'MetaMetricsController:setMarketingCampaignCookieId',
     ((cookieId: string | null) => {
       metaMetricsControllerState.marketingCampaignCookieId = cookieId;
       setMarketingCampaignCookieIdHandler(cookieId);
     }) as never,
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:trackTracesAfterMetricsOptIn',
+    trackTracesHandler,
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:clearTracesAfterMetricsOptIn',
+    clearTracesHandler,
   );
   rootMessenger.registerActionHandler(
     'AnalyticsController:getState',
