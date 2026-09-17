@@ -25,6 +25,7 @@ import {
 import {
   getMarketTypeFilter,
   MARKET_CATEGORIES,
+  matchesCategory,
   type PerpsMarketData,
 } from '@metamask/perps-controller';
 import {
@@ -185,12 +186,19 @@ const filterByType = (
         isUncategorizedHip3Market(m, allowedHip3Sources),
       );
     }
+    case 'memecoin': {
+      // Derived category: `getMarketTypeFilter` never returns `'memecoin'`
+      // because tagged markets keep `marketType: 'crypto'`. Overlaps with
+      // Crypto by design — those markets appear under both pills.
+      return markets.filter((m) => matchesCategory(m, 'memecoin'));
+    }
     default: {
-      // Any controller market category (crypto, stock, pre-ipo, index, etf,
-      // commodity, forex, …) is matched generically so a new category works
-      // without a new case here. Crypto keeps the Extension's long-standing
-      // `marketSource` rule rather than the controller's `matchesCategory`,
-      // which also counts a HIP-3 market typed `marketType: 'crypto'`.
+      // Any remaining controller market category (crypto, stock, pre-ipo,
+      // index, etf, commodity, forex, …) is matched generically so a new
+      // 1:1 `marketType` category works without a new case here. Crypto
+      // keeps the Extension's long-standing `marketSource` rule rather than
+      // the controller's `matchesCategory`, which also counts a HIP-3
+      // market typed `marketType: 'crypto'`.
       return markets.filter((m) =>
         filter === 'crypto'
           ? isCryptoMarket(m)

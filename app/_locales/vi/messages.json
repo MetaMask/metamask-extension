@@ -7681,6 +7681,9 @@
   "perpsFilterIndex": {
     "message": "Chỉ số"
   },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
   "perpsFilterMore": {
     "message": "Thêm",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"

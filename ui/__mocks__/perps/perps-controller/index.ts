@@ -764,6 +764,7 @@ export type OrderType = 'market' | 'limit';
 // Market asset type classification (reusable across components)
 export type MarketType =
   | 'crypto'
+  | 'memecoin'
   | 'stock'
   | 'pre-ipo'
   | 'index'
@@ -775,6 +776,7 @@ export type MarketTypeFilter = MarketType | 'all' | 'new';
 
 export const MARKET_CATEGORIES = [
   'crypto',
+  'memecoin',
   'stock',
   'pre-ipo',
   'index',
@@ -797,6 +799,35 @@ export function getMarketTypeFilter(
   }
 
   return isHip3Market(market) ? 'new' : 'crypto';
+}
+
+export function matchesCategory(
+  market: Pick<
+    PerpsMarketData,
+    'isHip3' | 'marketSource' | 'marketType' | 'tags'
+  >,
+  category: MarketTypeFilter,
+): boolean {
+  switch (category) {
+    case 'all': {
+      return true;
+    }
+    case 'crypto': {
+      return !isHip3Market(market) || market.marketType === 'crypto';
+    }
+    case 'memecoin': {
+      return (
+        (!isHip3Market(market) || market.marketType === 'crypto') &&
+        (market.tags?.includes('memecoin') ?? false)
+      );
+    }
+    case 'new': {
+      return isHip3Market(market) && market.marketType === undefined;
+    }
+    default: {
+      return market.marketType !== undefined && market.marketType === category;
+    }
+  }
 }
 
 // Badge type for market badges in UI (used by marketUtils)
@@ -1103,6 +1134,10 @@ export type PerpsMarketData = {
    * - forex: Foreign exchange pairs (HIP-3)
    */
   marketType?: MarketType;
+  /**
+   * Terminal backend tags (e.g. `'memecoin'`). Used for derived categories.
+   */
+  tags?: string[];
   /**
    * Multi-provider: which provider this market data comes from (injected by aggregator)
    */

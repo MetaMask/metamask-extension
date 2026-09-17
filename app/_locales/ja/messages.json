@@ -7675,6 +7675,9 @@
   "perpsFilterIndex": {
     "message": "インデックス"
   },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
   "perpsFilterMore": {
     "message": "さらに表示",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"

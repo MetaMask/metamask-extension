@@ -7675,6 +7675,9 @@
   "perpsFilterIndex": {
     "message": "지수"
   },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
   "perpsFilterMore": {
     "message": "더 보기",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
