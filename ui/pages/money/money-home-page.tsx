@@ -23,6 +23,8 @@ import {
   MONEY_EARN_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
 } from '../../helpers/constants/routes';
+import { PopoverPosition } from '../../components/component-library';
+import { TooltipText } from '../../components/app/money/tooltip-text';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
@@ -35,7 +37,10 @@ import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-item
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { useTrackOnce } from '../../hooks/useTrackOnce';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import {
+  isMoneyBalanceFunded,
+  moneyFormatUsd,
+} from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { reportMoneyError } from '../../helpers/money/report-money-error';
@@ -54,7 +59,7 @@ import {
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
 import { MoneyMoreMenu } from './components/money-more-menu';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
-import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
+import { MoneyEarnings } from './components/money-earnings';
 import { MoneySectionDivider } from './components/money-section-divider';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { MoneyTransferSheet } from './components/money-transfer-sheet';
@@ -69,7 +74,6 @@ import { MoneyTransferSheet } from './components/money-transfer-sheet';
  */
 const IS_MONEY_TRANSFER_SHEET_ENABLED: boolean = false;
 
-const MONEY_FUNDED_BALANCE_THRESHOLD = 0.01;
 const ACTION_BUTTON_ROW_BUTTON_COUNT = 2;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 const FORMATTED_ZERO = moneyFormatUsd(new BigNumber(0));
@@ -140,6 +144,7 @@ export function MoneyHomePage() {
   useUpgradeMoneyAccount();
   const {
     apyDecimal,
+    apyPercent,
     apyPercentFormatted,
     isBalanceFetchError,
     isBalanceLoading,
@@ -153,8 +158,7 @@ export function MoneyHomePage() {
   const isMoneyEarningSectionEnabled = useSelector(
     selectMoneyEarningSectionEnabled,
   );
-  const isFunded =
-    tokenTotal?.abs().gte(MONEY_FUNDED_BALANCE_THRESHOLD) === true;
+  const isFunded = isMoneyBalanceFunded(tokenTotal);
   const { last30DaysQuery, sinceInceptionQuery } = useMoneyAccountInterest({
     enabled:
       availability.isAvailable && isMoneyEarningSectionEnabled && isFunded,
@@ -324,6 +328,7 @@ export function MoneyHomePage() {
         <MoneyPotentialEarnings
           tokens={depositTokens}
           apyDecimal={apyDecimal}
+          apyPercent={apyPercent}
           isNoFeeToken={isNoFeeToken}
           privacyMode={privacyMode}
           onAddToken={handleAddToken}
@@ -403,12 +408,26 @@ export function MoneyHomePage() {
               ) : (
                 <>
                   {apyDisplay ? (
-                    <Text
+                    <TooltipText
+                      text={t('moneyApy', [apyDisplay])}
                       variant={TextVariant.BodyMd}
                       className="text-success-default"
+                      position={PopoverPosition.Auto}
+                      popoverStyle={{ maxWidth: 315 }}
+                      data-testid="money-home-apy"
                     >
-                      {t('moneyApy', [apyDisplay])}
-                    </Text>
+                      <div className="flex flex-col gap-4">
+                        <Text variant={TextVariant.BodyMd}>
+                          {t('moneyHomeApyTooltipEarning', [apyDisplay])}
+                        </Text>
+                        <Text variant={TextVariant.BodyMd}>
+                          {t('moneyHomeApyTooltip')}
+                        </Text>
+                        <Text variant={TextVariant.BodyMd}>
+                          {t('moneyHomeApyTooltipPoweredBy')}
+                        </Text>
+                      </div>
+                    </TooltipText>
                   ) : null}
                   <Text
                     variant={TextVariant.BodyMd}
@@ -416,11 +435,6 @@ export function MoneyHomePage() {
                   >
                     {apyDisplay ? `• ${t('moneyMusd')}` : t('moneyMusd')}
                   </Text>
-                  <Icon
-                    name={IconName.Info}
-                    size={IconSize.Sm}
-                    color={IconColor.IconAlternative}
-                  />
                 </>
               )}
             </div>
@@ -487,7 +501,7 @@ export function MoneyHomePage() {
             <>
               {isMoneyEarningSectionEnabled ? (
                 <>
-                  <MoneyPositionPlaceholder
+                  <MoneyEarnings
                     monthlyEarnings={monthlyEarnings}
                     lifetimeEarnings={lifetimeEarnings}
                     isMonthlyLoading={isMonthlyEarningsLoading}
@@ -550,20 +564,38 @@ export function MoneyHomePage() {
                 <ul className="mt-3 flex flex-col gap-3">
                   {[
                     apyDisplay
-                      ? t('moneyBenefitAutoEarnWithApy', [apyDisplay])
+                      ? t('moneyBenefitAutoEarnWithApy', [
+                          <span key="apy" className="text-success-default">
+                            {`~${t('moneyApy', [apyDisplay])}`}
+                          </span>,
+                        ])
                       : t('moneyBenefitAutoEarn'),
                     t('moneyBenefitStablecoin'),
                     t('moneyBenefitLiquidity'),
                     t('moneyBenefitSend'),
-                  ].map((benefit) => (
-                    <li key={benefit} className="flex items-start gap-3">
+                  ].map((benefit, index) => (
+                    <li
+                      key={
+                        typeof benefit === 'string'
+                          ? benefit
+                          : `benefit-${index}`
+                      }
+                      className="flex items-start gap-3"
+                    >
                       <Icon
                         name={IconName.Check}
                         size={IconSize.Md}
                         color={IconColor.SuccessDefault}
                         className="mt-0.5 shrink-0"
                       />
-                      <Text variant={TextVariant.BodyMd}>{benefit}</Text>
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        data-testid={
+                          index === 0 ? 'money-benefit-auto-earn' : undefined
+                        }
+                      >
+                        {benefit}
+                      </Text>
                     </li>
                   ))}
                 </ul>

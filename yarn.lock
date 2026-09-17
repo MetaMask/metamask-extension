@@ -5768,6 +5768,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/authenticated-user-storage@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/authenticated-user-storage@npm:4.0.0"
+  dependencies:
+    "@metamask/base-data-service": "npm:^2.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.12.0"
+  checksum: 10/fff8ba2c4cddd1810bfe8db887eba7b80bec8aa86d982354a659f8e21dcb73f3de8cdea854bba64db4e35132e80b6dbad24be3da317176095358d017a3258442
+  languageName: node
+  linkType: hard
+
 "@metamask/auto-changelog@npm:^6.2.0":
   version: 6.2.0
   resolution: "@metamask/auto-changelog@npm:6.2.0"
@@ -7784,25 +7797,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^27.0.1":
-  version: 27.0.1
-  resolution: "@metamask/notification-services-controller@npm:27.0.1"
+"@metamask/notification-services-controller@npm:^29.0.0":
+  version: 29.0.0
+  resolution: "@metamask/notification-services-controller@npm:29.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
-    "@metamask/authenticated-user-storage": "npm:^3.0.2"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/keyring-controller": "npm:^27.1.1"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^29.0.0"
-    "@metamask/utils": "npm:^11.12.0"
+    "@metamask/authenticated-user-storage": "npm:^4.0.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-controller": "npm:^28.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/profile-sync-controller": "npm:^32.1.1"
+    "@metamask/utils": "npm:^12.0.0"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^11.2.0"
-    lodash: "npm:^4.17.21"
+    lodash-es: "npm:^4.17.21"
     loglevel: "npm:^1.8.1"
     semver: "npm:^7.6.3"
-    uuid: "npm:^8.3.2"
-  checksum: 10/ba0b726893c8d947eaf87a9cda6847d5f88f904b9804a4bf9c66d621143e3567b9a6329039ee360b250646e93fff169d1785faf8ac22436de6914e74c0875d7e
+    uuid: "npm:^11.1.1"
+  checksum: 10/349b3defd26aaace33c725015147e0ee7f447c31fb56685b3e78ec53c85cb863f48bab8a48ad559125a9016490392dac4fd3282e13b69c2e0c343238f03f41ec
   languageName: node
   linkType: hard
 
@@ -7913,21 +7926,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^16.2.0":
-  version: 16.2.0
-  resolution: "@metamask/perps-controller@npm:16.2.0"
+"@metamask/perps-controller@npm:^17.1.0":
+  version: 17.1.0
+  resolution: "@metamask/perps-controller@npm:17.1.0"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.12.0"
     "@nktkas/hyperliquid": "npm:^0.33.1"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/ca1b4389e8ff92bed3fcdaa66272ebc96b5e554d987a30b47f964b2ac05ab31c957131161d7a03aada4dd7d638bfd37c48b14fa420740323e1883c135d929ed3
+    uuid: "npm:^9.0.1"
+  checksum: 10/5c44a15079b680c15b4071079ac7f0d1d915bbe68c5954b8efbf9b311bf83c334949a7b963088ef17a830efc49a648aaa65b7afebcef49cb11b238e1b7b29aec
   languageName: node
   linkType: hard
 
@@ -9148,6 +9161,26 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10/2d91b1d5338929f7a7c0e272ea564426d229e4d5bc33f7b124043245b3d14afb0f01ca15fcee70c434fa1cd537eb82c537ea575489a8672a10ea3da6ae74da81
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/utils@npm:12.0.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@metamask/scure-bip39": "npm:^2.1.1"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@noble/hashes": "npm:^1.8.0"
+    "@scure/base": "npm:^1.2.6"
+    "@types/debug": "npm:^4.1.7"
+    "@types/lodash": "npm:^4.17.20"
+    debug: "npm:^4.3.4"
+    lodash: "npm:^4.17.21"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.6.3"
+    uuid: "npm:^9.0.1"
+  checksum: 10/3a2c592283b081ac627262d903bbac84d7ce81896c86e5839ffee4c5cbc48b161cc1599c4b57f74bcc576d8b27bb517ced4c9e4e7b31e69e3113873acfde5f03
   languageName: node
   linkType: hard
 
@@ -11788,7 +11821,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:^1.1.3, @scure/base@npm:^1.2.5, @scure/base@npm:~1.2.2, @scure/base@npm:~1.2.4, @scure/base@npm:~1.2.5":
+"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:^1.1.3, @scure/base@npm:^1.2.5, @scure/base@npm:^1.2.6, @scure/base@npm:~1.2.2, @scure/base@npm:~1.2.4, @scure/base@npm:~1.2.5":
   version: 1.2.6
   resolution: "@scure/base@npm:1.2.6"
   checksum: 10/c1a7bd5e0b0c8f94c36fbc220f4a67cc832b00e2d2065c7d8a404ed81ab1c94c5443def6d361a70fc382db3496e9487fb9941728f0584782b274c18a4bed4187
@@ -31690,7 +31723,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^9.0.0"
     "@metamask/assets-controller": "npm:^15.0.0"
     "@metamask/assets-controllers": "npm:^111.3.0"
-    "@metamask/authenticated-user-storage": "npm:^3.0.2"
+    "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/base-data-service": "npm:^2.0.0"
@@ -31783,14 +31816,14 @@ __metadata:
     "@metamask/network-connection-banner-controller": "npm:^0.2.0"
     "@metamask/network-controller": "npm:^36.0.0"
     "@metamask/network-enablement-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:^27.0.1"
+    "@metamask/notification-services-controller": "npm:^29.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/passkey-controller": "npm:^3.0.0"
     "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
-    "@metamask/perps-controller": "npm:^16.2.0"
+    "@metamask/perps-controller": "npm:^17.1.0"
     "@metamask/phishing-controller": "npm:^17.4.1"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/polling-controller": "npm:^16.0.7"
@@ -41720,7 +41753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^11.1.0":
+"uuid@npm:^11.1.0, uuid@npm:^11.1.1":
   version: 11.1.1
   resolution: "uuid@npm:11.1.1"
   bin:
