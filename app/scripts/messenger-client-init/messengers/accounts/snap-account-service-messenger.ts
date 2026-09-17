@@ -43,6 +43,7 @@ export function getSnapAccountServiceMessenger(
       'SnapController:handleRequest',
       'AccountTreeController:getAccountGroupObject',
       'AccountTreeController:getSelectedAccountGroup',
+      'AccountsController:getState',
     ],
     events: [
       'KeyringController:stateChange',
