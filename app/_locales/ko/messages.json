@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "낮은 수수료를 선택하면 트랜잭션 속도가 느려지고 대기 시간이 길어집니다. 트랜잭션 속도를 높이려면 시장 수수료 또는 공격적 수수료 옵션을 선택하세요."
   },
-  "alertMessageGasTooLow": {
-    "message": "이 트랜잭션을 계속 진행하려면, 가스 한도를 21000 이상으로 늘려야 합니다."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "계정에 네트워크 수수료를 지불할 만큼의 $1(이)가 부족합니다."
   },
@@ -4212,9 +4209,6 @@
   },
   "gasLimit": {
     "message": "가스 한도"
-  },
-  "gasLimitTooLow": {
-    "message": "가스 한도는 21000 이상이어야 합니다."
   },
   "gasPrice": {
     "message": "가스 가격(GWEI)"
