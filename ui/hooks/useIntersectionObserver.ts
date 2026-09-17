@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -14,7 +15,7 @@ type State = {
 
 type UseIntersectionObserverOptions = {
   root?: Element | Document | null;
-  rootRef?: RefObject<Element | null>;
+  rootRef?: RefObject<Element | Document | null>;
   rootMargin?: string;
   threshold?: number | number[];
   onChange?: (
@@ -74,12 +75,23 @@ export function useIntersectionObserver({
     thresholdRef.current = threshold;
   }, [threshold]);
 
+  const [observerRoot, setObserverRoot] = useState<Element | Document | null>(
+    null,
+  );
+
+  // Re-read rootRef every commit; the ref object is stable while `.current` is set
+  // when the scroll container mounts (see activity list + ScrollContainer).
+  useLayoutEffect(() => {
+    const nextRoot = rootRef?.current ?? root ?? null;
+    setObserverRoot((previous) =>
+      previous === nextRoot ? previous : nextRoot,
+    );
+  });
+
   useEffect(() => {
     if (!ref || !('IntersectionObserver' in globalThis)) {
       return undefined;
     }
-
-    const resolvedRoot = rootRef ? rootRef.current : root;
 
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
@@ -91,7 +103,7 @@ export function useIntersectionObserver({
           callbackRef.current?.(isIntersecting, entry);
         }
       },
-      { threshold: thresholdRef.current, root: resolvedRoot, rootMargin },
+      { threshold: thresholdRef.current, root: observerRoot, rootMargin },
     );
 
     observer.observe(ref);
@@ -99,7 +111,7 @@ export function useIntersectionObserver({
     return () => {
       observer.disconnect();
     };
-  }, [ref, thresholdKey, root, rootMargin, rootRef]);
+  }, [ref, thresholdKey, observerRoot, rootMargin]);
 
   const setRefFn = useCallback(
     (node?: Element | null) => {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce } from 'lodash';
 import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
@@ -47,24 +47,45 @@ export const useScrollRequired = (
         setIsScrollable(isScrollable);
       }
 
-      setIsScrolledToBottom(!isScrollable || isScrolledToBottom);
+      const nextIsScrolledToBottom = !isScrollable || isScrolledToBottom;
+      if (nextIsScrolledToBottom !== isScrolledToBottomState) {
+        setIsScrolledToBottom(nextIsScrolledToBottom);
+      }
 
       if (!isScrollable || isScrolledToBottom) {
         setHasScrolledToBottom(true);
       }
     },
-    [isScrollableState, offsetPxFromBottom, scrollElement],
+    [
+      isScrollableState,
+      isScrolledToBottomState,
+      offsetPxFromBottom,
+      scrollElement,
+    ],
   );
 
-  const setRef = useCallback(
-    (node) => {
-      setScrollElement(node);
-      if (node) {
-        update(node);
-      }
-    },
-    [update],
-  );
+  const updateRef = useRef(update);
+
+  useEffect(() => {
+    updateRef.current = update;
+  }, [update]);
+
+  const setRef = useCallback((node) => {
+    setScrollElement((previous) =>
+      Object.is(previous, node) ? previous : node,
+    );
+    if (node) {
+      updateRef.current(node);
+    }
+  }, []);
+
+  const debouncedUpdateRef = useRef(null);
+  if (debouncedUpdateRef.current === null) {
+    debouncedUpdateRef.current = debounce(() => {
+      updateRef.current();
+    }, 25);
+  }
+  const onScroll = debouncedUpdateRef.current;
 
   useEffect(() => {
     if (!scrollElement) {
@@ -92,13 +113,11 @@ export const useScrollRequired = (
     }
   }, [scrollElement]);
 
-  const onScroll = useMemo(() => debounce(() => update(), 25), [update]);
-
   useEffect(
     () => () => {
-      onScroll.cancel();
+      debouncedUpdateRef.current?.cancel();
     },
-    [onScroll],
+    [],
   );
 
   return {

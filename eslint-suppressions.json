@@ -19,29 +19,14 @@
       "count": 1
     }
   },
-  "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.tsx": {
-    "react-hooks/refs": {
-      "count": 4
-    }
-  },
   "ui/components/app/assets/nfts/nft-details/nft-full-image.tsx": {
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/app/assets/nfts/nft-options/nft-options.tsx": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
   "ui/components/app/balance-empty-state/balance-empty-state.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    }
-  },
-  "ui/components/app/change-password/change-password.tsx": {
-    "react-hooks/refs": {
-      "count": 1
     }
   },
   "ui/components/app/compliance/useComplianceGate.ts": {
@@ -315,6 +300,11 @@
       "count": 6
     }
   },
+  "ui/hooks/activity/useActivityCacheInvalidation.ts": {
+    "react-hooks/refs": {
+      "count": 1
+    }
+  },
   "ui/hooks/accounts/useAccountsOperationsLoadingStates.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -435,6 +425,11 @@
       "count": 1
     }
   },
+  "ui/hooks/rewards/useValidateReferralCode.ts": {
+    "react-hooks/refs": {
+      "count": 1
+    }
+  },
   "ui/hooks/rewards/useVipTier.ts": {
     "react-hooks/preserve-manual-memoization": {
       "count": 1
@@ -460,6 +455,22 @@
       "count": 4
     }
   },
+  "ui/hooks/useCarouselManagement/useCarouselManagement.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    },
+    "react-hooks/refs": {
+      "count": 1
+    },
+    "react-hooks/set-state-in-effect": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useClickOutside.ts": {
+    "react-hooks/refs": {
+      "count": 1
+    }
+  },
   "ui/hooks/useDebouncedValue.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1
@@ -467,6 +478,16 @@
   },
   "ui/hooks/useEqualityCheck.js": {
     "react-hooks/set-state-in-effect": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useEventListener.ts": {
+    "react-hooks/refs": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useIntersectionObserver.ts": {
+    "react-hooks/exhaustive-deps": {
       "count": 1
     }
   },
@@ -481,6 +502,9 @@
     }
   },
   "ui/hooks/useScrollRequired.js": {
+    "react-hooks/refs": {
+      "count": 3
+    },
     "react-hooks/set-state-in-effect": {
       "count": 2
     }
@@ -498,6 +522,14 @@
   "ui/hooks/useSyncEqualityCheck.ts": {
     "react-hooks/refs": {
       "count": 5
+    }
+  },
+  "ui/hooks/useTheme.ts": {
+    "react-hooks/refs": {
+      "count": 1
+    },
+    "react-hooks/set-state-in-effect": {
+      "count": 1
     }
   },
   "ui/hooks/useMultichainAccountsIntroModal.ts": {
@@ -535,26 +567,8 @@
       "count": 1
     }
   },
-  "ui/pages/activity/activity-list.tsx": {
-    "react-hooks/refs": {
-      "count": 3
-    }
-  },
-  "ui/pages/activity/useActivityScreenViewed.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/pages/activity/useTransactionsQuery.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/asset/components/asset-options.js": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -949,11 +963,6 @@
   "ui/pages/swaps/awaiting-signatures/awaiting-signatures.js": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/pages/token-management/token-management.tsx": {
-    "react-hooks/refs": {
-      "count": 2
     }
   }
 }

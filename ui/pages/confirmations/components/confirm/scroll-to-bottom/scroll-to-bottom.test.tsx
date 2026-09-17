@@ -57,6 +57,7 @@ describe('ScrollToBottom', () => {
   describe('when content is scrollable', () => {
     beforeEach(() => {
       mockedUseScrollRequiredResult.isScrollable = true;
+      mockedUseScrollRequiredResult.scrollElement = { scrollTo: mockScrollTo };
     });
 
     it('renders with button', () => {
@@ -97,6 +98,24 @@ describe('ScrollToBottom', () => {
         <ScrollToBottom>foobar</ScrollToBottom>,
         mockStore,
       );
+
+      expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
+    });
+
+    it('scrolls to the top when scrollElement attaches after the first render', () => {
+      mockScrollTo.mockClear();
+      mockedUseScrollRequiredResult.scrollElement = null;
+
+      const { rerender } = renderWithConfirmContextProvider(
+        <ScrollToBottom>foobar</ScrollToBottom>,
+        mockStore,
+      );
+
+      expect(mockScrollTo).not.toHaveBeenCalled();
+
+      mockedUseScrollRequiredResult.scrollElement = { scrollTo: mockScrollTo };
+
+      rerender(<ScrollToBottom>foobar</ScrollToBottom>);
 
       expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
     });

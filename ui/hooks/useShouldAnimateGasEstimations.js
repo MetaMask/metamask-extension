@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 
@@ -34,7 +34,7 @@ export function useShouldAnimateGasEstimations() {
 
   const hideAnimationTimerRef = useRef(undefined);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     lastGasEstimatesRef.current = gasFeeEstimates;
   }, [gasFeeEstimates]);
 

@@ -1,3 +1,4 @@
+import type { MutableRefObject } from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { useIntersectionObserver } from './useIntersectionObserver';
 
@@ -110,6 +111,65 @@ describe('useIntersectionObserver', () => {
     expect(instances).toHaveLength(1);
     expect(instances[0].observed).toStrictEqual([element]);
     expect(instances[0].options?.rootMargin).toBe('-24px 0px 0px 0px');
+  });
+
+  it('uses rootRef.current as the observer root when provided', () => {
+    const instances = mockIntersectionObserver();
+    const target = document.createElement('div');
+    const scrollRoot = document.createElement('div');
+    const rootRef: MutableRefObject<Element | null> = { current: scrollRoot };
+
+    const { result } = renderHook(() => useIntersectionObserver({ rootRef }));
+
+    act(() => {
+      result.current.ref(target);
+    });
+
+    expect(instances).toHaveLength(1);
+    expect(instances[0].options?.root).toBe(scrollRoot);
+    expect(instances[0].observed).toStrictEqual([target]);
+  });
+
+  it('uses rootRef.current after it is populated on a later render', () => {
+    const instances = mockIntersectionObserver();
+    const target = document.createElement('div');
+    const scrollRoot = document.createElement('div');
+    const rootRef: MutableRefObject<Element | null> = { current: null };
+
+    const { result, rerender } = renderHook(() =>
+      useIntersectionObserver({ rootRef }),
+    );
+
+    act(() => {
+      result.current.ref(target);
+    });
+
+    expect(instances[0].options?.root).toBeNull();
+
+    rootRef.current = scrollRoot;
+    rerender();
+
+    expect(instances).toHaveLength(2);
+    expect(instances[1].options?.root).toBe(scrollRoot);
+    expect(instances[1].observed).toStrictEqual([target]);
+  });
+
+  it('prefers rootRef.current over root when both are provided', () => {
+    const instances = mockIntersectionObserver();
+    const target = document.createElement('div');
+    const scrollRoot = document.createElement('div');
+    const otherRoot = document.createElement('div');
+    const rootRef: MutableRefObject<Element | null> = { current: scrollRoot };
+
+    const { result } = renderHook(() =>
+      useIntersectionObserver({ root: otherRoot, rootRef }),
+    );
+
+    act(() => {
+      result.current.ref(target);
+    });
+
+    expect(instances[0].options?.root).toBe(scrollRoot);
   });
 
   it('updates state and calls onChange when an entry intersects', () => {

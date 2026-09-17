@@ -10,7 +10,10 @@ import {
   showPendingToast,
   showSuccessToast,
 } from './shared';
-import { useTransactionEventToasts } from './useTransactionEventToasts';
+import {
+  batchHelperTransactionTypes,
+  useTransactionEventToasts,
+} from './useTransactionEventToasts';
 
 const transactionControllerEvent =
   'TransactionController:transactionStatusUpdated';
@@ -283,18 +286,21 @@ describe('useTransactionEventToasts', () => {
       expect(mockDismissToast).not.toHaveBeenCalled();
     });
 
-    it('does not toast excluded approval transactions', () => {
-      const { handlers } = mountHook();
+    it('does not toast batch helper transaction types', () => {
+      for (const type of batchHelperTransactionTypes) {
+        mockShowPendingToast.mockClear();
+        const { handlers } = mountHook();
 
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'excluded-approval',
-          status: TransactionStatus.submitted,
-          type: TransactionType.bridgeApproval,
-        }),
-      });
+        handlers[transactionControllerEvent]({
+          transactionMeta: createTransactionMeta({
+            id: `batch-helper-${type}`,
+            status: TransactionStatus.submitted,
+            type,
+          }),
+        });
 
-      expect(mockShowPendingToast).not.toHaveBeenCalled();
+        expect(mockShowPendingToast).not.toHaveBeenCalled();
+      }
     });
 
     it('shows a pending toast for musdClaim transactions on approved', () => {

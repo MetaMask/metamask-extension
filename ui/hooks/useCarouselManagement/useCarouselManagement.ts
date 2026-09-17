@@ -115,30 +115,21 @@ export const useCarouselManagement = ({
   const currentLocale = useSelector(getCurrentLocale);
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
-  const eligibilityNeeded =
-    contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
-
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
-  const [downloadEligibilityReady, setDownloadEligibilityReady] = useState(
-    () => !eligibilityNeeded,
-  );
-  const [trackedEligibilityNeeded, setTrackedEligibilityNeeded] =
-    useState(eligibilityNeeded);
-
-  if (eligibilityNeeded !== trackedEligibilityNeeded) {
-    setTrackedEligibilityNeeded(eligibilityNeeded);
-    if (eligibilityNeeded) {
-      setDownloadEligibilityReady(false);
-    } else {
-      setDownloadEligible(false);
-      setDownloadEligibilityReady(true);
-    }
-  }
+  const [downloadEligibilityReady, setDownloadEligibilityReady] =
+    useState<boolean>(false);
 
   useEffect(() => {
+    const eligibilityNeeded =
+      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
+
     if (!eligibilityNeeded) {
+      setDownloadEligible(false);
+      setDownloadEligibilityReady(true);
       return () => undefined;
     }
+
+    setDownloadEligibilityReady(false);
 
     let cancelled = false;
 
@@ -169,7 +160,6 @@ export const useCarouselManagement = ({
     useExternalServices,
     showDownloadMobileAppSlide,
     contentfulEnabled,
-    eligibilityNeeded,
   ]);
 
   useEffect(() => {
