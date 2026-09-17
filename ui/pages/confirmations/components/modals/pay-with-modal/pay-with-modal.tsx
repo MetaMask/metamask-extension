@@ -42,7 +42,10 @@ import {
 import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useDispatch } from '../../../../../store/hooks';
-import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
+import {
+  selectIsMoneyAccountTransactionEnabled,
+  selectIsSolanaPayEnabled,
+} from '../../../selectors/feature-flags';
 import {
   selectSolanaPayExecutionByTransactionId,
   selectTransactionPaySourceByTransactionId,
@@ -80,6 +83,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const isMoneyAccountPayEnabled = useSelector((state) =>
     selectIsMoneyAccountTransactionEnabled(state, confirmationType),
   );
+  const isSolanaPayEnabled = useSelector(selectIsSolanaPayEnabled);
 
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
     transactionType: currentConfirmation?.type,
@@ -140,7 +144,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       }
 
       if (isSolanaAsset(token)) {
-        if (isSolanaSelectionPending.current) {
+        if (!isSolanaPayEnabled || isSolanaSelectionPending.current) {
           return;
         }
         isSolanaSelectionPending.current = true;
@@ -235,6 +239,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       dispatch,
       handleClose,
       isPostQuoteWithdraw,
+      isSolanaPayEnabled,
       onMusdPaymentTokenChange,
       paySource,
       payToken,
@@ -257,6 +262,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         requiredTokens,
         tokens,
         blockedTokens,
+        isSolanaPayEnabled,
       });
 
       available = musdTokenFilter(available);
@@ -267,6 +273,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       blockedTokens,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
+      isSolanaPayEnabled,
       musdTokenFilter,
       paySource,
       payToken,

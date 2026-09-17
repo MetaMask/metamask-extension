@@ -75,6 +75,39 @@ type HardwareWalletConfig = {
   enabled?: boolean;
 };
 
+type ConfirmationsPayFlag = {
+  payStrategies?: {
+    relay?: {
+      solana?: {
+        enabled?: unknown;
+      };
+    };
+  };
+};
+
+const selectConfirmationsPayFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay?: ConfirmationsPayFlag;
+      }
+    ).confirmations_pay,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
+/**
+ * Whether new Solana-source Pay intents may be selected.
+ *
+ * This mirrors Core's fail-closed admission gate. Existing persisted intents
+ * remain visible and recoverable after the flag is disabled.
+ */
+export const selectIsSolanaPayEnabled = createSelector(
+  selectConfirmationsPayFlag,
+  (flag): boolean => flag?.payStrategies?.relay?.solana?.enabled === true,
+);
+
 const selectConfirmationsPayDappsFlag = createSelector(
   getRemoteFeatureFlags,
   (flags) =>

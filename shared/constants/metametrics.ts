@@ -879,6 +879,7 @@ export enum MetaMetricsEventName {
   MusdFullscreenAnnouncementButtonClicked = 'MUSD Fullscreen Announcement Button Clicked',
   MusdBonusTermsOfUsePressed = 'MUSD Bonus Terms of Use Pressed',
   MusdFullscreenAnnouncementDisplayed = 'MUSD Fullscreen Announcement Displayed',
+  MetaMaskPaySolanaLifecycle = 'MetaMask Pay Solana Lifecycle',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',

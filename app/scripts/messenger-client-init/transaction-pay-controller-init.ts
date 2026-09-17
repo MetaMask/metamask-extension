@@ -35,6 +35,7 @@ import {
 } from '../lib/money/pay/update-deposit-amount';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
 import { createSolanaPayCallbacks } from '../lib/money/pay/solana-pay-callbacks';
+import { trackSolanaPayLifecycle } from '../lib/money/pay/solana-pay-metrics';
 import type {
   MoneyPayMessenger,
   PaymentOverrideMessenger,
@@ -85,6 +86,11 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     solana: createSolanaPayCallbacks(initMessenger, request.infuraProjectId),
     state: persistedState.TransactionPayController,
   });
+
+  controllerMessenger.subscribe(
+    'TransactionPayController:solanaPayLifecycle',
+    trackSolanaPayLifecycle,
+  );
 
   messengerClient.recoverSolanaPayStatus().catch((error) => {
     console.error('Failed to recover Solana Pay status', error);

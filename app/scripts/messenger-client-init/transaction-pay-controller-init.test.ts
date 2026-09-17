@@ -22,6 +22,7 @@ import {
 import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
 import { getDelegationTransaction } from '../lib/transaction/delegation';
+import { trackSolanaPayLifecycle } from '../lib/money/pay/solana-pay-metrics';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -32,6 +33,9 @@ import {
 import { TransactionPayControllerInit } from './transaction-pay-controller-init';
 
 jest.mock('@metamask/transaction-pay-controller');
+jest.mock('../lib/money/pay/solana-pay-metrics', () => ({
+  trackSolanaPayLifecycle: jest.fn(),
+}));
 jest.mock('../lib/transaction/delegation', () => ({
   getDelegationTransaction: jest.fn(),
 }));
@@ -90,10 +94,17 @@ describe('TransactionPayControllerInit', () => {
       .mockResolvedValue({});
   });
 
-  it('initializes the controller and starts recovery', () => {
-    const { messengerClient } =
-      TransactionPayControllerInit(getInitRequestMock());
+  it('initializes the controller, subscribes to lifecycle metrics, and starts recovery', () => {
+    const request = getInitRequestMock();
+    const subscribeSpy = jest.spyOn(request.controllerMessenger, 'subscribe');
+
+    const { messengerClient } = TransactionPayControllerInit(request);
+
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
+    expect(subscribeSpy).toHaveBeenCalledWith(
+      'TransactionPayController:solanaPayLifecycle',
+      trackSolanaPayLifecycle,
+    );
     expect(messengerClient.recoverSolanaPayStatus).toHaveBeenCalledTimes(1);
   });
 

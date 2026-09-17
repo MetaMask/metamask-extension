@@ -1,12 +1,19 @@
 import { renderHook } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
 import { Asset, AssetStandard } from '../../types/send';
+import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayBlockedTokens } from './useTransactionPayBlockedTokens';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
+jest.mock('../../context/confirm');
 jest.mock('../send/useSendTokens');
 jest.mock('./useTransactionPayBlockedTokens');
 jest.mock('./useTransactionPayToken');
@@ -36,6 +43,8 @@ const TOKEN_MOCK: Asset = {
 };
 
 describe('useTransactionPayAvailableTokens', () => {
+  const useSelectorMock = jest.mocked(useSelector);
+  const useConfirmContextMock = jest.mocked(useConfirmContext);
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useTransactionPayBlockedTokensMock = jest.mocked(
     useTransactionPayBlockedTokens,
@@ -52,6 +61,10 @@ describe('useTransactionPayAvailableTokens', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    useSelectorMock.mockReturnValueOnce(undefined).mockReturnValueOnce(false);
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: undefined,
+    } as ReturnType<typeof useConfirmContext>);
     useSendTokensMock.mockReturnValue([SEND_TOKEN_MOCK]);
     useTransactionPayBlockedTokensMock.mockReturnValue(blockedTokensMock);
     useTransactionPayTokenMock.mockReturnValue({
@@ -79,6 +92,8 @@ describe('useTransactionPayAvailableTokens', () => {
         }),
       ]),
       blockedTokens: blockedTokensMock,
+      isSolanaPayEnabled: false,
+      paySource: undefined,
       payToken: undefined,
     });
   });

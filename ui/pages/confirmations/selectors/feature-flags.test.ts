@@ -11,6 +11,7 @@ import {
   selectIsMoneyAccountTransactionEnabled,
   selectIsPayAmountPrefillEnabled,
   selectIsPayHardwareEnabled,
+  selectIsSolanaPayEnabled,
   selectMinimumRequiredTokenBalance,
   selectPayQuoteConfig,
   selectPreferredPayToken,
@@ -20,6 +21,16 @@ import {
 
 type ConfirmationsPayDappsFlag = {
   enabled?: boolean;
+};
+
+type ConfirmationsPayFlag = {
+  payStrategies?: {
+    relay?: {
+      solana?: {
+        enabled?: boolean | string;
+      };
+    };
+  };
 };
 
 type EnforcedSimulationsFlag = {
@@ -87,6 +98,7 @@ type HardwareWalletFlag = {
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
+      confirmations_pay?: ConfirmationsPayFlag;
       confirmations_pay_dapps?: ConfirmationsPayDappsFlag;
       confirmations_enforced_simulations?: EnforcedSimulationsFlag;
       confirmations_pay_post_quote?: PayPostQuoteFlag;
@@ -105,6 +117,16 @@ const getMockState = (
       ...(confirmations_pay_dapps !== undefined && {
         confirmations_pay_dapps,
       }),
+    },
+  },
+});
+
+const getMockSolanaPayState = (
+  confirmations_pay?: ConfirmationsPayFlag,
+): MockState => ({
+  metamask: {
+    remoteFeatureFlags: {
+      ...(confirmations_pay !== undefined && { confirmations_pay }),
     },
   },
 });
@@ -158,6 +180,34 @@ const getMockPayExtendedState = (
 });
 
 describe('Confirmations Pay Feature Flags', () => {
+  describe('selectIsSolanaPayEnabled', () => {
+    it('returns true only when the nested Relay Solana capability is explicitly enabled', () => {
+      const state = getMockSolanaPayState({
+        payStrategies: { relay: { solana: { enabled: true } } },
+      });
+
+      expect(selectIsSolanaPayEnabled(state)).toBe(true);
+    });
+
+    const disabledCases: (ConfirmationsPayFlag | undefined)[] = [
+      undefined,
+      {},
+      { payStrategies: {} },
+      { payStrategies: { relay: {} } },
+      { payStrategies: { relay: { solana: {} } } },
+      { payStrategies: { relay: { solana: { enabled: false } } } },
+      { payStrategies: { relay: { solana: { enabled: 'true' } } } },
+    ];
+
+    disabledCases.forEach((confirmationsPay) => {
+      it(`fails closed for ${JSON.stringify(confirmationsPay)}`, () => {
+        expect(
+          selectIsSolanaPayEnabled(getMockSolanaPayState(confirmationsPay)),
+        ).toBe(false);
+      });
+    });
+  });
+
   describe('selectIsMetaMaskPayDappsEnabled', () => {
     it('returns true when enabled is true', () => {
       const state = getMockState({ enabled: true });

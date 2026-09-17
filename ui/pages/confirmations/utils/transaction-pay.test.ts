@@ -213,7 +213,45 @@ describe('transaction-pay utils', () => {
       ]);
     });
 
-    it('includes account-scoped Solana mainnet assets and marks the exact source selected', () => {
+    it('includes an enabled account-scoped Solana mainnet asset', () => {
+      const solanaAsset = createMockAsset({
+        accountAddress: 'solana-address',
+        accountId: 'internal-account-id',
+        accountType: 'solana:data-account' as Asset['accountType'],
+        assetId: `${SolScope.Mainnet}/slip44:501`,
+        chainId: SolScope.Mainnet,
+        standard: AssetStandard.Native,
+      });
+
+      const result = getAvailableTokens({
+        tokens: [solanaAsset],
+        isSolanaPayEnabled: true,
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual(
+        expect.objectContaining({
+          accountId: 'internal-account-id',
+          assetId: `${SolScope.Mainnet}/slip44:501`,
+          isSelected: false,
+        }),
+      );
+    });
+
+    it('filters out a new Solana source when the rollout is disabled', () => {
+      const solanaAsset = createMockAsset({
+        accountAddress: 'solana-address',
+        accountId: 'internal-account-id',
+        accountType: 'solana:data-account' as Asset['accountType'],
+        assetId: `${SolScope.Mainnet}/slip44:501`,
+        chainId: SolScope.Mainnet,
+        standard: AssetStandard.Native,
+      });
+
+      expect(getAvailableTokens({ tokens: [solanaAsset] })).toStrictEqual([]);
+    });
+
+    it('keeps an admitted Solana source visible after rollout is disabled', () => {
       const solanaAsset = createMockAsset({
         accountAddress: 'solana-address',
         accountId: 'internal-account-id',
