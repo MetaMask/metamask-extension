@@ -373,6 +373,16 @@
       "lastFetched": null,
       "version": null
     },
+    "CurrencyController": {
+      "currencyRates": {
+        "ETH": {
+          "conversionDate": null,
+          "conversionRate": 1700,
+          "usdConversionRate": null
+        }
+      },
+      "currentCurrency": "usd"
+    },
     "DeFiPositionsControllerV2": {
       "allDeFiPositionsV2": {}
     },
@@ -428,6 +438,33 @@
               "symbol": "SOL"
             }
           ]
+        }
+      }
+    },
+    "MultichainAssetsRatesController": {
+      "conversionRates": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+          "conversionTime": 1776106420,
+          "currency": "swift:0/iso4217:USD",
+          "expirationTime": 1776106480,
+          "marketData": {
+            "allTimeHigh": "126080",
+            "allTimeLow": "67.81",
+            "circulatingSupply": "19975290",
+            "fungible": true,
+            "marketCap": "1836592437357",
+            "pricePercentChange": {
+              "P14D": 4.795747124043681,
+              "P1D": 1.6980683447716627,
+              "P1Y": -1.0484081200296924,
+              "P200D": -14.088182161660676,
+              "P30D": 2.1388997840239408,
+              "P7D": -1.6285705945180806,
+              "PT1H": -0.09840133404969334
+            },
+            "totalVolume": "45216146754"
+          },
+          "rate": "106763"
         }
       }
     },
@@ -1053,12 +1090,7 @@
       "initialDelayEndTimestamp": 1770282498299,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
-      "reportedAccounts": [
-        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
-        "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
-        "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
-        "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3"
-      ],
+      "reportedAccounts": [],
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1226,6 +1258,16 @@
     },
     "TokenBalancesController": {
       "tokenBalances": {}
+    },
+    "TokenRatesController": {
+      "marketData": {
+        "0x539": {}
+      }
+    },
+    "TokensController": {
+      "allDetectedTokens": {},
+      "allIgnoredTokens": {},
+      "allTokens": {}
     },
     "TransactionController": {
       "lastFetchedBlockNumbers": {},

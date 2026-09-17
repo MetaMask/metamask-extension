@@ -132,6 +132,16 @@
       "lastFetched": null,
       "version": null
     },
+    "CurrencyController": {
+      "currencyRates": {
+        "ETH": {
+          "conversionDate": 0,
+          "conversionRate": 0,
+          "usdConversionRate": null
+        }
+      },
+      "currentCurrency": "usd"
+    },
     "DeFiPositionsControllerV2": {
       "allDeFiPositionsV2": {}
     },
@@ -178,6 +188,9 @@
       "accountsAssets": {},
       "allIgnoredAssets": {},
       "assetsMetadata": {}
+    },
+    "MultichainAssetsRatesController": {
+      "conversionRates": {}
     },
     "MultichainBalancesController": {
       "balances": {}
@@ -2218,6 +2231,14 @@
     },
     "TokenBalancesController": {
       "tokenBalances": {}
+    },
+    "TokenRatesController": {
+      "marketData": {}
+    },
+    "TokensController": {
+      "allDetectedTokens": {},
+      "allIgnoredTokens": {},
+      "allTokens": {}
     },
     "TransactionController": {
       "lastFetchedBlockNumbers": {},
