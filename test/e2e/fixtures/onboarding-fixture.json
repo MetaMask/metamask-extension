@@ -1,8 +1,5 @@
 {
   "data": {
-    "AccountOrderController": {
-      "pinnedAccountList": []
-    },
     "AccountTreeController": {
       "accountGroupsMetadata": {},
       "accountTree": {

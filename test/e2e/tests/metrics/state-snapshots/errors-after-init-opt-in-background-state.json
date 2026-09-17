@@ -1,7 +1,4 @@
 {
-  "AccountOrderController": {
-    "pinnedAccountList": "object"
-  },
   "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountGroupsMetadata": "object",

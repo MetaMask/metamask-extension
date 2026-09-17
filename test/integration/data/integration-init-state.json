@@ -836,7 +836,6 @@
       }
     }
   },
-  "pinnedAccountList": [],
   "preferences": {
     "defaultAddressScope": "eip155",
     "hideZeroBalanceTokens": false,

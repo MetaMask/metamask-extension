@@ -1,8 +1,5 @@
 {
   "data": {
-    "AccountOrderController": {
-      "pinnedAccountList": "object"
-    },
     "AccountTracker": {},
     "AccountTreeController": {
       "accountGroupsMetadata": "object",

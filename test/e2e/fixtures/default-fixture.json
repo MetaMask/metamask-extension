@@ -1,8 +1,5 @@
 {
   "data": {
-    "AccountOrderController": {
-      "pinnedAccountList": []
-    },
     "AccountTracker": {
       "accountsByChainId": {
         "0x1": {
