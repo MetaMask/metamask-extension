@@ -4,7 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import {
   en,
   I18nProvider,
@@ -336,6 +336,11 @@ describe('MoneyActivityPage', () => {
     fireEvent.click(screen.getByTestId('money-activity-filter-card'));
 
     expect(screen.getByTestId('money-activity-card-empty')).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('money-activity-card-empty')).getByText(
+        messages.moneyActivityEmpty.message,
+      ),
+    ).toHaveClass('sr-only');
     expect(
       screen.queryByTestId('money-activity-empty'),
     ).not.toBeInTheDocument();

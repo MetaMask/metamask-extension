@@ -174,7 +174,10 @@ export function MoneyActivityPage() {
       // load errors so retry remains available.
       if (filter === MoneyActivityFilter.Card && !error) {
         listBody = (
-          <div data-testid="money-activity-card-empty">{scrollSentinel}</div>
+          <div data-testid="money-activity-card-empty">
+            <span className="sr-only">{t('moneyActivityEmpty')}</span>
+            {scrollSentinel}
+          </div>
         );
       } else {
         listBody = (
