@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { KeyringType } from '@metamask/keyring-api/v2';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -25,10 +24,7 @@ import {
   TextFieldType,
 } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import {
-  getInternalAccountListSpreadByScopesByGroupId,
-  getInternalAccountsFromGroupById,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getInternalAccountsFromGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { verifyPassword, exportAccounts } from '../../../store/actions';
 import {
   useIsPasskeyActive,
@@ -60,21 +56,11 @@ import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers
 import { PasskeyVerification } from '../../app/passkey-verification';
 import { useDispatch } from '../../../store/hooks';
 import { usePasskeyPrivateKeyExport } from '../../../hooks/passkey/usePasskeyPrivateKeyExport';
-import {
-  BITCOIN_WALLET_SNAP_ID,
-  SOLANA_WALLET_SNAP_ID,
-  TRON_WALLET_SNAP_ID,
-} from '../../../../shared/lib/accounts';
 import { MultichainPrivateKeyRow } from './multichain-private-key-row';
 
 const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
 const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
 const ETHEREUM_MAINNET_CAIP_CHAIN_ID = 'eip155:1' as CaipChainId;
-const PRIVATE_KEY_EXPORTING_SNAP_IDS = new Set<string>([
-  BITCOIN_WALLET_SNAP_ID,
-  SOLANA_WALLET_SNAP_ID,
-  TRON_WALLET_SNAP_ID,
-]);
 
 /**
  * Check if the account has the private key available according to its keyring type.
@@ -83,11 +69,7 @@ const PRIVATE_KEY_EXPORTING_SNAP_IDS = new Set<string>([
  */
 const hasPrivateKeyAvailable = (account: InternalAccount) =>
   account.metadata.keyring.type === KeyringTypes.hd ||
-  account.metadata.keyring.type === KeyringTypes.simple ||
-  ((account.metadata.keyring.type === KeyringTypes.snap ||
-    account.metadata.keyring.type === KeyringType.Snap) &&
-    account.metadata.snap?.id !== undefined &&
-    PRIVATE_KEY_EXPORTING_SNAP_IDS.has(account.metadata.snap.id));
+  account.metadata.keyring.type === KeyringTypes.simple;
 
 export type MultichainPrivateKeyListProps = {
   /**
@@ -113,9 +95,6 @@ const MultichainPrivateKeyList = ({
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
   const [reveal, setReveal] = useState<boolean>(false);
   const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
-  const [expandedAccountAddress, setExpandedAccountAddress] = useState<
-    string | null
-  >(null);
 
   const isPasskeyActive = useIsPasskeyActive();
   const isPasskeyIncompatibleInSidepanel =
@@ -132,7 +111,6 @@ const MultichainPrivateKeyList = ({
     setPassword('');
     setWrongPassword(false);
     setReveal(false);
-    setExpandedAccountAddress(null);
     setScreen(VERIFY_PASSWORD_SCREEN);
   }, []);
 
@@ -146,10 +124,6 @@ const MultichainPrivateKeyList = ({
 
   // useCopyToClipboard analysis: Copies one of your private keys
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: MINUTE });
-
-  const accountsSpreadByNetworkByGroupId = useSelector((state) =>
-    getInternalAccountListSpreadByScopesByGroupId(state, groupId),
-  );
 
   const accounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, groupId),
@@ -165,20 +139,12 @@ const MultichainPrivateKeyList = ({
   const exportableAddresses = useMemo(
     () =>
       accounts
-        .filter((account: InternalAccount) => hasPrivateKeyAvailable(account))
+        .filter(
+          (account: InternalAccount) =>
+            hasPrivateKeyAvailable(account) && isEvmAccountType(account.type),
+        )
         .map((account) => account.address),
     [accounts],
-  );
-
-  const defaultExpandedAccountAddress = useMemo(
-    () =>
-      accounts.find(
-        (account) =>
-          hasPrivateKeyAvailable(account) && isEvmAccountType(account.type),
-      )?.address ??
-      exportableAddresses[0] ??
-      null,
-    [accounts, exportableAddresses],
   );
 
   const buildPrivateKeyMap = useCallback(
@@ -191,45 +157,6 @@ const MultichainPrivateKeyList = ({
         {} as Record<string, string>,
       ),
     [exportableAddresses],
-  );
-
-  const exportPrivateKeysWithFallback = useCallback(async () => {
-    try {
-      const privateKeysList = (await dispatch(
-        exportAccounts(password, exportableAddresses),
-      )) as unknown as string[];
-
-      return buildPrivateKeyMap(privateKeysList);
-    } catch (bulkExportError) {
-      const exportResults = await Promise.allSettled(
-        exportableAddresses.map(async (address) => {
-          const [privateKey] = (await dispatch(
-            exportAccounts(password, [address]),
-          )) as unknown as string[];
-
-          return [address, privateKey] as const;
-        }),
-      );
-      const exportedPrivateKeys = Object.fromEntries(
-        exportResults.flatMap((result) =>
-          result.status === 'fulfilled' ? [result.value] : [],
-        ),
-      );
-
-      if (Object.keys(exportedPrivateKeys).length === 0) {
-        throw bulkExportError;
-      }
-
-      return exportedPrivateKeys;
-    }
-  }, [buildPrivateKeyMap, dispatch, exportableAddresses, password]);
-
-  const getExpandedAccountAddress = useCallback(
-    (exportedPrivateKeys: Record<string, string>) =>
-      [defaultExpandedAccountAddress, ...exportableAddresses].find(
-        (address) => address !== null && exportedPrivateKeys[address],
-      ) ?? null,
-    [defaultExpandedAccountAddress, exportableAddresses],
   );
 
   const onSubmit = useCallback(async () => {
@@ -258,9 +185,10 @@ const MultichainPrivateKeyList = ({
         op: TraceOperation.AccountUi,
       });
 
-      const exportedPrivateKeys = await exportPrivateKeysWithFallback();
-      setPrivateKeys(exportedPrivateKeys);
-      setExpandedAccountAddress(getExpandedAccountAddress(exportedPrivateKeys));
+      const privateKeysList = (await dispatch(
+        exportAccounts(password, exportableAddresses),
+      )) as unknown as string[];
+      setPrivateKeys(buildPrivateKeyMap(privateKeysList));
       setReveal(true);
 
       trackEvent(
@@ -295,9 +223,10 @@ const MultichainPrivateKeyList = ({
       );
     }
   }, [
+    buildPrivateKeyMap,
     createEventBuilder,
-    exportPrivateKeysWithFallback,
-    getExpandedAccountAddress,
+    dispatch,
+    exportableAddresses,
     hdEntropyIndex,
     password,
     trackEvent,
@@ -331,9 +260,6 @@ const MultichainPrivateKeyList = ({
 
         const exportedPrivateKeys = buildPrivateKeyMap(pks);
         setPrivateKeys(exportedPrivateKeys);
-        setExpandedAccountAddress(
-          getExpandedAccountAddress(exportedPrivateKeys),
-        );
         setReveal(true);
 
         trackEvent(
@@ -379,7 +305,6 @@ const MultichainPrivateKeyList = ({
       createEventBuilder,
       exportAccountsWithPasskey,
       exportableAddresses,
-      getExpandedAccountAddress,
       hdEntropyIndex,
       trackEvent,
     ],
@@ -483,39 +408,25 @@ const MultichainPrivateKeyList = ({
   const privateKeySections = useMemo(
     () =>
       accounts.flatMap((account) => {
-        const privateKey = privateKeys[account.address];
-        if (!privateKey) {
+        if (!isEvmAccountType(account.type)) {
           return [];
         }
 
-        if (isEvmAccountType(account.type)) {
-          return [
-            {
-              account,
-              chainId: ETHEREUM_MAINNET_CAIP_CHAIN_ID,
-              networkName: t('ethereumAndEvms'),
-              privateKey,
-            },
-          ];
-        }
-
-        const network = accountsSpreadByNetworkByGroupId.find(
-          (item) => item.account.id === account.id,
-        );
-        if (!network) {
+        const privateKey = privateKeys[account.address];
+        if (!privateKey) {
           return [];
         }
 
         return [
           {
             account,
-            chainId: network.scope,
-            networkName: network.networkName,
+            chainId: ETHEREUM_MAINNET_CAIP_CHAIN_ID,
+            networkName: t('ethereumAndEvms'),
             privateKey,
           },
         ];
       }),
-    [accounts, accountsSpreadByNetworkByGroupId, privateKeys, t],
+    [accounts, privateKeys, t],
   );
 
   const handlePrivateKeyCopy = useCallback(
@@ -546,20 +457,13 @@ const MultichainPrivateKeyList = ({
             key={account.id}
             address={account.address}
             chainId={chainId}
-            isCollapsible={privateKeySections.length > 1}
-            isExpanded={expandedAccountAddress === account.address}
             networkName={networkName}
             onCopy={() => handlePrivateKeyCopy(privateKey)}
-            onToggle={() =>
-              setExpandedAccountAddress((currentAddress) =>
-                currentAddress === account.address ? null : account.address,
-              )
-            }
             privateKey={privateKey}
           />
         ),
       ),
-    [expandedAccountAddress, handlePrivateKeyCopy, privateKeySections],
+    [handlePrivateKeyCopy, privateKeySections],
   );
 
   useEffect(() => {
