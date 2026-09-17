@@ -7707,6 +7707,9 @@
   "perpsFilterIndex": {
     "message": "Endeksler"
   },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
   "perpsFilterMore": {
     "message": "Daha fazla",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"

@@ -7678,6 +7678,9 @@
   "perpsFilterIndex": {
     "message": "Índices"
   },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
   "perpsFilterMore": {
     "message": "Mais",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
