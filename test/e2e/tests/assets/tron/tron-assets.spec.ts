@@ -12,6 +12,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import {
   EMPTY_TRON_ACCOUNT,
+  TRON_CHECK_BALANCE_ACCOUNT,
   TRON_PORTFOLIO_ACCOUNT,
   TRON_PORTFOLIO_LOW_VALUE_ASSET_NAMES,
   TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
@@ -198,6 +199,46 @@ describe('Tron - Assets', function (this: Suite) {
           },
         );
       });
+    });
+  });
+
+  describe('Homepage balance', function () {
+    it('displays zero TRX for a newly created Tron account', async function () {
+      await withTronFixtures(
+        {
+          accounts: [EMPTY_TRON_ACCOUNT],
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await setupTronAssetsHome(driver);
+          const homePage = new HomePage(driver);
+          await homePage.navigateToHome('0 TRX');
+        },
+      );
+    });
+
+    it('displays the fiat total and native TRX balance for a funded account', async function () {
+      await withTronFixtures(
+        {
+          accounts: [TRON_CHECK_BALANCE_ACCOUNT],
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await setupTronAssetsHome(driver, { expectedTrxAmount: '106.072' });
+
+          // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
+          // Total Fiat = TRX $31.26, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $39.65
+          const homePage = new HomePage(driver);
+          await homePage.navigateToHome('$39.65');
+
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.checkTokenAmountIsDisplayed('106.072');
+        },
+      );
     });
   });
 
