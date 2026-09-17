@@ -218,6 +218,9 @@
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
+  "gasLimitTooLow": {
+    "message": "Kikomo cha gesi kinapaswa kua angalau 12000"
+  },
   "gasUsed": {
     "message": "Gesi iliyotumika"
   },

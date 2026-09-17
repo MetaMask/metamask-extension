@@ -224,6 +224,9 @@
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
+  "gasLimitTooLow": {
+    "message": "Minimālajai Gas robežvērtībai jābūt vismaz 12000"
+  },
   "gasUsed": {
     "message": "Izlietotie Gas"
   },

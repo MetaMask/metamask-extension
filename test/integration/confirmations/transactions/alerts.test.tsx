@@ -348,7 +348,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(screen.queryByTestId('alert-modal')).not.toBeInTheDocument();
   });
 
-  it('does not display a universal gas-limit alert below 21000', async () => {
+  it('displays the alert for a gas limit below 12000', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -358,7 +358,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
     const transaction = mockedMetaMaskState.transactions[0];
-    transaction.txParams.gas = '0x2ee0';
+    transaction.txParams.gas = '0x2edf';
 
     await act(async () => {
       await integrationTestRender({
@@ -370,7 +370,19 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    expect(screen.queryByTestId('inline-alert')).not.toBeInTheDocument();
+    fireEvent.click(await screen.findByTestId('inline-alert'));
+
+    expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      'To continue with this transaction, you’ll need to increase the gas limit to 12000 or higher.',
+    );
+
+    expect(
+      await screen.findByTestId('alert-modal-action-showAdvancedGasModal'),
+    ).toHaveTextContent('Update gas limit');
   });
 
   it('displays the alert for no gas price', async () => {

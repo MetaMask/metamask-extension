@@ -221,6 +221,9 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
+  "gasLimitTooLow": {
+    "message": "Datakraftsgrense må være minst 12000"
+  },
   "gasUsed": {
     "message": "Brukt datakraft "
   },

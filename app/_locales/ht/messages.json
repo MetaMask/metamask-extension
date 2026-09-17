@@ -145,6 +145,9 @@
   "gasLimit": {
     "message": "Limit gaz"
   },
+  "gasLimitTooLow": {
+    "message": "Limit gaz dwe omwen 12000"
+  },
   "gasUsed": {
     "message": "Gaz yo Itilize"
   },

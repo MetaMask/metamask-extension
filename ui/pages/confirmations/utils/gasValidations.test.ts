@@ -14,6 +14,7 @@ const mockT = ((key: string, args?: string | string[]) => {
     onlyNumbersAllowed: 'Only numbers are allowed',
     onlyIntegersAllowed: 'Only whole numbers are allowed',
     gasLimitTooHigh: 'Gas limit exceeds the maximum supported value',
+    gasLimitTooLow: 'Gas limit must be at least 12000',
     priorityFeeTooHigh: 'Priority fee must be less than max base fee',
     maxBaseFeeMustBeGreaterThanPriorityFee:
       'Max base fee must be greater than priority fee',
@@ -54,13 +55,19 @@ describe('gas-validations', () => {
       expect(validateGas('-1', mockT)).toBe('Only numbers are allowed');
     });
 
+    it('return error message when gas is below 12000', () => {
+      expect(validateGas('11999', mockT)).toBe(
+        'Gas limit must be at least 12000',
+      );
+    });
+
     it('return error message when gas is not an integer', () => {
-      expect(validateGas('21000.5', mockT)).toBe(
+      expect(validateGas('12000.5', mockT)).toBe(
         'Only whole numbers are allowed',
       );
     });
 
-    it('return undefined for an upgraded node gas estimate', () => {
+    it('return undefined for the EIP-2780 minimum gas limit', () => {
       expect(validateGas('12000', mockT)).toBeUndefined();
     });
 

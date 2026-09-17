@@ -224,6 +224,9 @@
   "gasLimit": {
     "message": "Ліміт газу"
   },
+  "gasLimitTooLow": {
+    "message": "Ліміт газу має бути не менше 12000"
+  },
   "gasUsed": {
     "message": "Пального використано"
   },

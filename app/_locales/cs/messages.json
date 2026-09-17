@@ -109,6 +109,9 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
+  "gasLimitTooLow": {
+    "message": "Limit paliva musí být alespoň 12000"
+  },
   "here": {
     "message": "zde",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"

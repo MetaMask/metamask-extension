@@ -221,6 +221,9 @@
   "gasLimit": {
     "message": "Límit de gas"
   },
+  "gasLimitTooLow": {
+    "message": "El límit de gas ha de ser al menys 12000"
+  },
   "gasUsed": {
     "message": "Gas utilitzat"
   },

@@ -1509,6 +1509,9 @@
   "alertMessageGasFeeLow": {
     "message": "在选择低级型费用时，预计交易速度较慢，等待时间较长。如需更快交易，请选择市场型或激进型费用选项。"
   },
+  "alertMessageGasTooLow": {
+    "message": "要继续此交易，您需要将燃料限制提高到 12000 或更高。"
+  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "您的账户中没有足够的 $1 来支付网络费用。"
   },
@@ -1577,6 +1580,9 @@
   },
   "alertReasonGasFeeLow": {
     "message": "速度慢"
+  },
+  "alertReasonGasTooLow": {
+    "message": "燃料限制较低"
   },
   "alertReasonInsufficientBalance": {
     "message": "资金不足"
@@ -4170,6 +4176,9 @@
   },
   "gasLimit": {
     "message": "燃料限额"
+  },
+  "gasLimitTooLow": {
+    "message": "燃料限制至少为12000"
   },
   "gasPrice": {
     "message": "Gas 价格（GWEI）"

@@ -423,6 +423,9 @@
   "gasLimit": {
     "message": "Gas 上限"
   },
+  "gasLimitTooLow": {
+    "message": "Gas 上限至少為 12000"
+  },
   "gasPriceExcessive": {
     "message": "您的 gas 費用設定得太高了。考慮降低一些。"
   },

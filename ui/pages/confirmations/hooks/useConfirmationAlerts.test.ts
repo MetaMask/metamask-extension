@@ -10,6 +10,7 @@ import {
 } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../test/data/mock-state.json';
+import type { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../components/app/confirm/info/row/constants';
 import * as Actions from '../../../store/actions';
@@ -78,21 +79,11 @@ async function renderAlertsHook(state: Record<string, unknown>) {
   return renderResult;
 }
 
-async function expectNoUniversalGasLimitAlert({
-  gas,
-  gasEstimate,
-}: {
-  gas: string;
-  gasEstimate?: string;
-}) {
+async function getGasLimitAlerts(gas: string) {
   const baseConfirmation =
     genUnapprovedContractInteractionConfirmation() as TransactionMeta;
   const confirmation = {
     ...baseConfirmation,
-    defaultGasEstimates: gasEstimate
-      ? { ...baseConfirmation.defaultGasEstimates, gas: gasEstimate }
-      : undefined,
-    gasLimitNoBuffer: gasEstimate,
     txParams: { ...baseConfirmation.txParams, gas },
   } as TransactionMeta;
 
@@ -100,9 +91,7 @@ async function expectNoUniversalGasLimitAlert({
     getMockConfirmStateForTransaction(confirmation),
   );
 
-  expect(result.current).not.toContainEqual(
-    expect.objectContaining({ key: 'gasTooLow' }),
-  );
+  return (result.current as Alert[]).filter(({ key }) => key === 'gasTooLow');
 }
 
 describe('useConfirmationAlerts', () => {
@@ -125,29 +114,16 @@ describe('useConfirmationAlerts', () => {
     expect(result.current).toEqual([]);
   });
 
-  it('does not add a universal alert for a legacy-node gas limit', async () => {
-    await expectNoUniversalGasLimitAlert({
-      gas: '0x5208',
-      gasEstimate: '0x5208',
-    });
+  it('adds a gas limit alert below the EIP-2780 minimum', async () => {
+    expect(await getGasLimitAlerts('0x2edf')).toHaveLength(1);
   });
 
-  it('does not add a universal alert for an upgraded-node gas limit', async () => {
-    await expectNoUniversalGasLimitAlert({
-      gas: '0x2ee0',
-      gasEstimate: '0x2ee0',
-    });
+  it('does not add a gas limit alert at the EIP-2780 minimum', async () => {
+    expect(await getGasLimitAlerts('0x2ee0')).toHaveLength(0);
   });
 
-  it('does not add a universal alert without a gas estimate', async () => {
-    await expectNoUniversalGasLimitAlert({ gas: '0x2ee0' });
-  });
-
-  it('does not add a universal alert from a stale higher gas estimate', async () => {
-    await expectNoUniversalGasLimitAlert({
-      gas: '0x2ee0',
-      gasEstimate: '0x5208',
-    });
+  it('does not add a gas limit alert for a legacy gas limit', async () => {
+    expect(await getGasLimitAlerts('0x5208')).toHaveLength(0);
   });
 
   it('strips row field associations for MM Pay transactions', async () => {

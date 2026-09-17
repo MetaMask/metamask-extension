@@ -1509,6 +1509,9 @@
   "alertMessageGasFeeLow": {
     "message": "Wenn Sie eine niedrige Gebühr wählen, müssen Sie mit langsameren Transaktionen und längeren Wartezeiten rechnen. Für schnellere Transaktionen wählen Sie die Gebührenoptionen Markt oder Aggressiv."
   },
+  "alertMessageGasTooLow": {
+    "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 12.000 oder mehr erhöhen."
+  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
   },
@@ -1577,6 +1580,9 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Langsame Geschwindigkeit"
+  },
+  "alertReasonGasTooLow": {
+    "message": "Niedriges Gas-Limit"
   },
   "alertReasonInsufficientBalance": {
     "message": "Unzureichende Gelder"
@@ -4170,6 +4176,9 @@
   },
   "gasLimit": {
     "message": "Gas-Limit"
+  },
+  "gasLimitTooLow": {
+    "message": "Gas-Limit muss mindestens 12.000 betragen"
   },
   "gasPrice": {
     "message": "Gas-Preis"

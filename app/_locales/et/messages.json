@@ -224,6 +224,9 @@
   "gasLimit": {
     "message": "Gaasi ülemmäär"
   },
+  "gasLimitTooLow": {
+    "message": "Gaasi ülemmäär peab olema vähemalt 12 000"
+  },
   "gasUsed": {
     "message": "Kasutatud gaasihulk"
   },

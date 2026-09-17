@@ -121,6 +121,9 @@
   "gasLimit": {
     "message": "วงเงินแก็ส"
   },
+  "gasLimitTooLow": {
+    "message": "วงเงินแก็สต้องอย่างน้อย 12000"
+  },
   "general": {
     "message": "ทั่วไป"
   },
