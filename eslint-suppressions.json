@@ -300,11 +300,6 @@
       "count": 6
     }
   },
-  "ui/hooks/activity/useActivityCacheInvalidation.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/hooks/accounts/useAccountsOperationsLoadingStates.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -425,11 +420,6 @@
       "count": 1
     }
   },
-  "ui/hooks/rewards/useValidateReferralCode.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/hooks/rewards/useVipTier.ts": {
     "react-hooks/preserve-manual-memoization": {
       "count": 1
@@ -456,18 +446,7 @@
     }
   },
   "ui/hooks/useCarouselManagement/useCarouselManagement.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 1
-    },
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/hooks/useClickOutside.ts": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -481,17 +460,22 @@
       "count": 1
     }
   },
-  "ui/hooks/useEventListener.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/hooks/useIntersectionObserver.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
     }
   },
   "ui/hooks/useMultiPolling.ts": {
+    "react-hooks/exhaustive-deps": {
+      "count": 1
+    }
+  },
+  "ui/hooks/useMultichainAccountsIntroModal.ts": {
+    "react-hooks/set-state-in-effect": {
+      "count": 1
+    }
+  },
+  "ui/hooks/usePolling.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
     }
@@ -509,37 +493,14 @@
       "count": 2
     }
   },
-  "ui/hooks/useShouldAnimateGasEstimations.js": {
-    "react-hooks/refs": {
-      "count": 2
-    }
-  },
   "ui/hooks/useShallowEqualityCheck.ts": {
     "react-hooks/refs": {
       "count": 3
     }
   },
-  "ui/hooks/useSyncEqualityCheck.ts": {
+  "ui/hooks/useShouldAnimateGasEstimations.js": {
     "react-hooks/refs": {
-      "count": 5
-    }
-  },
-  "ui/hooks/useTheme.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/hooks/useMultichainAccountsIntroModal.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/hooks/usePolling.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
+      "count": 2
     }
   },
   "ui/hooks/useShouldShowSpeedUp.js": {
@@ -550,6 +511,11 @@
   "ui/hooks/useSpinDelay.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1
+    }
+  },
+  "ui/hooks/useSyncEqualityCheck.ts": {
+    "react-hooks/refs": {
+      "count": 5
     }
   },
   "ui/hooks/useTokenFiatAmount.js": {
