@@ -35,9 +35,10 @@ export {
  * "Reconnect your device and try again") rather than `Failed` ("Transaction
  * failed"), because the user can recover by reconnecting/unlocking the device.
  *
- * `DeviceStateEthAppClosed` is intentionally excluded: it is routed to
- * `AwaitingApp` (not `ErrorState`) by `getConnectionStateFromError`, so it
- * never reaches the signing-error path.
+ * `DeviceStateEthAppClosed` is intentionally excluded: it maps to the
+ * `AppNotOpen` device event (see `getDeviceEventForError`), which routes the
+ * connection to `AwaitingApp` rather than an error state, so it never reaches
+ * the signing-error path.
  */
 const DEVICE_UNAVAILABLE_ERROR_CODES = new Set<ErrorCode>([
   ErrorCode.AuthenticationDeviceLocked,

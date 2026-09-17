@@ -1,33 +1,7 @@
 import { HardwareWalletError, ErrorCode } from '@metamask/hw-wallet-sdk';
-import { ConnectionState } from './connectionState';
-import { DeviceEvent, type HardwareWalletConnectionState } from './types';
+import { DeviceEvent } from './types';
 
 export { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
-
-/**
- * Convert a HardwareWalletError to an appropriate connection state
- *
- * @param error - The hardware wallet error
- * @returns The corresponding connection state
- */
-export function getConnectionStateFromError(
-  error: HardwareWalletError,
-): HardwareWalletConnectionState {
-  switch (error.code) {
-    case ErrorCode.AuthenticationDeviceLocked:
-    case ErrorCode.AuthenticationDeviceBlocked:
-    case ErrorCode.ConnectionTransportMissing:
-    case ErrorCode.AuthenticationSecurityCondition:
-    case ErrorCode.ConnectionClosed:
-    case ErrorCode.DeviceDisconnected:
-    case ErrorCode.UserRejected:
-    case ErrorCode.UserCancelled:
-    case ErrorCode.ConnectionTimeout:
-      return ConnectionState.error(error);
-    default:
-      return ConnectionState.error(error);
-  }
-}
 
 /**
  * Map an error code to the appropriate device event
