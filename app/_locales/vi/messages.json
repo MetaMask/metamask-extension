@@ -6503,18 +6503,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Sẵn sàng rút tiền"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Bây giờ bạn có thể rút $1 chưa ký gửi của bạn"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Đã gửi yêu cầu hủy ký gửi $1 của bạn"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Đã nhận NFT từ"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Đã gửi NFT đến"
-  },
   "notificationItemNetwork": {
     "message": "Mạng"
   },
@@ -6523,18 +6511,6 @@
   },
   "notificationItemReceived": {
     "message": "Đã nhận"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Đã nhận từ"
-  },
-  "notificationItemSent": {
-    "message": "Đã gửi"
-  },
-  "notificationItemSentTo": {
-    "message": "Đã gửi đến"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Đã hoàn tất ký gửi"
   },
   "notificationItemStaked": {
     "message": "Đã ký gửi"
@@ -6548,17 +6524,11 @@
   "notificationItemSwapped": {
     "message": "Đã hoán đổi"
   },
-  "notificationItemSwappedFor": {
-    "message": "để lấy"
-  },
   "notificationItemTo": {
     "message": "Đến"
   },
   "notificationItemTransactionId": {
     "message": "ID giao dịch"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Hoàn tất hủy ký gửi"
   },
   "notificationItemUnStaked": {
     "message": "Đã hủy ký gửi"

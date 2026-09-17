@@ -6499,18 +6499,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Saque pronto"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Você já pode sacar seus $1 sem staking"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Sua solicitação de remover $1 do staking foi enviada"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFT recebido de"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFT enviado para"
-  },
   "notificationItemNetwork": {
     "message": "Rede"
   },
@@ -6519,18 +6507,6 @@
   },
   "notificationItemReceived": {
     "message": "Recebido"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Recebido de"
-  },
-  "notificationItemSent": {
-    "message": "Enviado"
-  },
-  "notificationItemSentTo": {
-    "message": "Enviado para"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Staking concluído"
   },
   "notificationItemStaked": {
     "message": "Em staking"
@@ -6544,17 +6520,11 @@
   "notificationItemSwapped": {
     "message": "Troca realizada"
   },
-  "notificationItemSwappedFor": {
-    "message": "por"
-  },
   "notificationItemTo": {
     "message": "Para"
   },
   "notificationItemTransactionId": {
     "message": "ID da transação"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Retirada de staking concluída"
   },
   "notificationItemUnStaked": {
     "message": "Retirado de staking"
