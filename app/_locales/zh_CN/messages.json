@@ -3102,9 +3102,6 @@
   "copyAddressShort": {
     "message": "复制地址"
   },
-  "copyPrivateKey": {
-    "message": "复制私钥"
-  },
   "copyToClipboard": {
     "message": "复制到剪贴板"
   },
@@ -5019,9 +5016,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "为了您的安全，现在无法选择此文本。"
   },
   "learnHow": {
     "message": "了解操作方法"
@@ -8520,10 +8514,6 @@
     "message": "私钥",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 的私钥",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "私钥已隐藏",
     "description": "Explains that the private key input is hidden"
@@ -8535,9 +8525,6 @@
   "privateKeyShown": {
     "message": "正在显示此私钥",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "警告：切勿泄露此私钥。任何拥有您私钥的人都可以窃取您账户中持有的任何资产。"
   },
   "privateKeys": {
     "message": "私钥",
@@ -10626,12 +10613,6 @@
   "showPermissions": {
     "message": "显示权限"
   },
-  "showPrivateKey": {
-    "message": "显示私钥"
-  },
-  "showSRP": {
-    "message": "显示私钥助记词"
-  },
   "showTestnetNetworks": {
     "message": "显示测试网络"
   },
@@ -12077,10 +12058,6 @@
   },
   "unexpectedBehavior": {
     "message": "该行为属异常行为，即使账户已成功恢复，仍须作为漏洞提交报告。"
-  },
-  "unexpectedError": {
-    "message": "发生意外错误。",
-    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "允许在 $3 上精准授权 $1 $2 用于兑换"

@@ -3105,9 +3105,6 @@
   "copyAddressShort": {
     "message": "Αντιγραφή διεύθυνσης"
   },
-  "copyPrivateKey": {
-    "message": "Αντιγραφή ιδιωτικού κλειδιού"
-  },
   "copyToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
   },
@@ -5022,9 +5019,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Για την ασφάλειά σας, η επιλογή αυτού του κειμένου δεν είναι διαθέσιμη αυτή τη στιγμή."
   },
   "learnHow": {
     "message": "Μάθετε πώς"
@@ -8521,10 +8515,6 @@
     "message": "Ιδιωτικό κλειδί",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Ιδιωτικό κλειδί για $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Το ιδιωτικό κλειδί είναι κρυφό",
     "description": "Explains that the private key input is hidden"
@@ -8536,9 +8526,6 @@
   "privateKeyShown": {
     "message": "Αυτό το ιδιωτικό κλειδί είναι ορατό",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Προειδοποίηση: Ποτέ μην αποκαλύπτετε αυτό το κλειδί. Οποιοσδήποτε έχει τα ιδιωτικά σας κλειδιά μπορεί να κλέψει όλα τα περιουσιακά στοιχεία που βρίσκονται στον λογαριασμό σας."
   },
   "privateKeys": {
     "message": "Ιδιωτικά κλειδιά",
@@ -10627,12 +10614,6 @@
   "showPermissions": {
     "message": "Εμφάνιση αδειών"
   },
-  "showPrivateKey": {
-    "message": "Εμφάνιση ιδιωτικού κλειδιού"
-  },
-  "showSRP": {
-    "message": "Εμφάνιση της Μυστικής Φράσης Ανάκτησης"
-  },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
   },
@@ -12078,10 +12059,6 @@
   },
   "unexpectedBehavior": {
     "message": "Αυτή η συμπεριφορά είναι απρόβλεπτη και πρέπει να αναφερθεί ως σφάλμα, ακόμη κι αν οι λογαριασμοί σας έχουν αποκατασταθεί."
-  },
-  "unexpectedError": {
-    "message": "Παρουσιάστηκε απρόσμενο σφάλμα.",
-    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Επιτρέψτε την ακριβή πρόσβαση των $1 $2 στο $3 για ανταλλαγή"

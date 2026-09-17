@@ -3102,9 +3102,6 @@
   "copyAddressShort": {
     "message": "Adresse kopieren"
   },
-  "copyPrivateKey": {
-    "message": "Privaten Schlüssel kopieren"
-  },
   "copyToClipboard": {
     "message": "In die Zwischenablage kopieren"
   },
@@ -5019,9 +5016,6 @@
   "lattice": {
     "message": "Gitter",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Zu Ihrer Sicherheit ist die Auswahl dieses Textes im Moment nicht möglich."
   },
   "learnHow": {
     "message": "Erfahren Sie, wie es funktioniert"
@@ -8514,10 +8508,6 @@
     "message": "Privater Schlüssel",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Privater Schlüssel für $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Der private Schlüssel ist verborgen",
     "description": "Explains that the private key input is hidden"
@@ -8529,9 +8519,6 @@
   "privateKeyShown": {
     "message": "Dieser private Schlüssel wird angezeigt",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Warnung: Niemals jemandem ihren privaten Key mitteilen. Jeder der im Besitz Ihres privaten Keys ist, kann jegliches Guthaben Ihres Kontos stehlen."
   },
   "privateKeys": {
     "message": "Private Schlüssel",
@@ -10620,12 +10607,6 @@
   "showPermissions": {
     "message": "Genehmigungen anzeigen"
   },
-  "showPrivateKey": {
-    "message": "Privaten Schlüssel anzeigen"
-  },
-  "showSRP": {
-    "message": "Geheime Wiederherstellungsphrase anzeigen"
-  },
   "showTestnetNetworks": {
     "message": "Testnetzwerke anzeigen"
   },
@@ -12071,10 +12052,6 @@
   },
   "unexpectedBehavior": {
     "message": "Dieses Verhalten ist unerwartet und sollte als Fehler gemeldet werden, auch wenn Ihre Konten wiederhergestellt werden."
-  },
-  "unexpectedError": {
-    "message": "Ein unerwarteter Fehler ist aufgetreten.",
-    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Genehmigen Sie für das Swappen genauen Zugriff auf $1 $2 für $3"

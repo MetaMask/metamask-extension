@@ -3102,9 +3102,6 @@
   "copyAddressShort": {
     "message": "Copiar dirección"
   },
-  "copyPrivateKey": {
-    "message": "Copiar clave privada"
-  },
   "copyToClipboard": {
     "message": "Copiar al Portapapeles"
   },
@@ -5023,9 +5020,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Por su seguridad, seleccionar este texto no está disponible en este momento."
   },
   "learnHow": {
     "message": "Más información"
@@ -8528,10 +8522,6 @@
     "message": "Clave privada",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Clave privada para $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "La clave privada está oculta",
     "description": "Explains that the private key input is hidden"
@@ -8543,9 +8533,6 @@
   "privateKeyShown": {
     "message": "Esta clave privada se está mostrando",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Advertencia: No revele esta clave. Cualquier persona que tenga sus claves privadas podría robar los activos de su cuenta."
   },
   "privateKeys": {
     "message": "Claves privadas",
@@ -10634,12 +10621,6 @@
   "showPermissions": {
     "message": "Mostrar permisos"
   },
-  "showPrivateKey": {
-    "message": "Mostrar clave privada"
-  },
-  "showSRP": {
-    "message": "Mostrar frase secreta de recuperación"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"
   },
@@ -12085,10 +12066,6 @@
   },
   "unexpectedBehavior": {
     "message": "Este comportamiento es inesperado y debe informarse como un error, incluso si se restauran tus cuentas."
-  },
-  "unexpectedError": {
-    "message": "Ocurrió un error inesperado.",
-    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Permitir acceso exacto a $1 $2 en $3 para canjear"

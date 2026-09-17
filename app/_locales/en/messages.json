@@ -3165,9 +3165,6 @@
   "copyAddressShort": {
     "message": "Copy address"
   },
-  "copyPrivateKey": {
-    "message": "Copy private key"
-  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -5105,9 +5102,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "For your safety, selecting this text is not available right now."
   },
   "learnHow": {
     "message": "Learn how"
@@ -8697,10 +8691,6 @@
     "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Private key for $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "The private key is hidden",
     "description": "Explains that the private key input is hidden"
@@ -8712,9 +8702,6 @@
   "privateKeyShown": {
     "message": "This private key is being shown",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateKeys": {
     "message": "Private keys",
@@ -10818,12 +10805,6 @@
   "showPermissions": {
     "message": "Show permissions"
   },
-  "showPrivateKey": {
-    "message": "Show private key"
-  },
-  "showSRP": {
-    "message": "Show Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -12269,10 +12250,6 @@
   },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
-  },
-  "unexpectedError": {
-    "message": "An unexpected error occurred.",
-    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Allow exact access to $1 $2 on $3 for swapping"

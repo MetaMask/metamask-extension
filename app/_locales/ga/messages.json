@@ -1174,9 +1174,6 @@
   "copyAddressShort": {
     "message": "Cóipeáil an seoladh"
   },
-  "copyPrivateKey": {
-    "message": "Cóipeáil eochair phríobháideach"
-  },
   "copyToClipboard": {
     "message": "Cóipeáil chuig an ghearrthaisce"
   },
@@ -2419,9 +2416,6 @@
   },
   "lastSold": {
     "message": "Díolta go deireanach"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Ar mhaithe le do shábháilteacht, ní féidir an téacs seo a roghnú faoi láthair."
   },
   "learnHow": {
     "message": "Foghlaim conas"
@@ -3865,10 +3859,6 @@
     "message": "Eochair phríobháideach",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Eochair phríobháideach ar $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Tá an eochair phríobháideach i bhfolach",
     "description": "Explains that the private key input is hidden"
@@ -3880,9 +3870,6 @@
   "privateKeyShown": {
     "message": "Tá an eochair phríobháideach seo á taispeáint",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Rabhadh: Ná nocht an eochair seo choíche. Is féidir le duine ar bith a bhfuil d’eochracha príobháideacha aige aon sócmhainní atá i do chuntas a ghoid."
   },
   "privateKeys": {
     "message": "Eochracha príobháideacha",
@@ -4542,12 +4529,6 @@
   },
   "showPermissions": {
     "message": "Taispeáin ceadanna"
-  },
-  "showPrivateKey": {
-    "message": "Taispeáin eochair phríobháideach"
-  },
-  "showSRP": {
-    "message": "Taispeáin Frása Rúnda Aisghabhála"
   },
   "showTestnetNetworks": {
     "message": "Taispeáin líonraí tástála"

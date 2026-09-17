@@ -3105,9 +3105,6 @@
   "copyAddressShort": {
     "message": "एड्रेस कॉपी करें"
   },
-  "copyPrivateKey": {
-    "message": "प्राइवेट की (key) को कॉपी करें"
-  },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी करें"
   },
@@ -5022,9 +5019,6 @@
   "lattice": {
     "message": "लैटिस",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "सुरक्षा कारणों से, इस टेक्स्ट को चुनने का विकल्प अभी उपलब्ध नहीं है।"
   },
   "learnHow": {
     "message": "अधिक जानें"
@@ -8532,10 +8526,6 @@
     "message": "प्राइवेट की (key)",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 के लिए प्राइवेट की (key)",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "प्राइवेट की (key) छिपी हुई है",
     "description": "Explains that the private key input is hidden"
@@ -8547,9 +8537,6 @@
   "privateKeyShown": {
     "message": "प्राइवेट की (key) दिखाई जा रही है",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "चेतावनी: इस कुंजी का खुलासा कभी न करें। आपकी निजी कुंजियों के साथ कोई भी व्यक्ति आपके अकाउंट में रखी कोई भी एसेट चुरा सकता है।"
   },
   "privateKeys": {
     "message": "प्राइवेट कीज़ (keys)",
@@ -10638,12 +10625,6 @@
   "showPermissions": {
     "message": "अनुमतियां दिखाएं"
   },
-  "showPrivateKey": {
-    "message": "प्राइवेट की (key) दिखाएं"
-  },
-  "showSRP": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
-  },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
   },
@@ -12089,10 +12070,6 @@
   },
   "unexpectedBehavior": {
     "message": "यह व्यवहार अप्रत्याशित है और इसे बग के रूप में रिपोर्ट किया जाना चाहिए, भले ही आपके एकाउंट्स रिस्टोर कर दिए गए हों।"
-  },
-  "unexpectedError": {
-    "message": "एक अनपेक्षित गड़बड़ी हुई।",
-    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "स्वैपिंग के लिए $3 पर $1 $2 तक सटीक पहुंच की अनुमति दें"

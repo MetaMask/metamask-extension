@@ -3102,9 +3102,6 @@
   "copyAddressShort": {
     "message": "Sao chép địa chỉ"
   },
-  "copyPrivateKey": {
-    "message": "Sao chép khóa riêng tư"
-  },
   "copyToClipboard": {
     "message": "Sao chép vào bộ nhớ đệm"
   },
@@ -5023,9 +5020,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Vì sự an toàn của bạn, việc chọn văn bản này hiện không khả dụng."
   },
   "learnHow": {
     "message": "Tìm hiểu cách thức"
@@ -8528,10 +8522,6 @@
     "message": "Khóa riêng tư",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Khóa riêng tư cho $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Khóa riêng tư bị ẩn",
     "description": "Explains that the private key input is hidden"
@@ -8543,9 +8533,6 @@
   "privateKeyShown": {
     "message": "Khóa riêng tư này đang được hiển thị",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Cảnh báo: Tuyệt đối không để lộ khóa này. Bất kỳ ai có khóa riêng tư cũng có thể đánh cắp tài sản được lưu giữ trong tài khoản của bạn."
   },
   "privateKeys": {
     "message": "Khóa riêng tư",
@@ -10634,12 +10621,6 @@
   "showPermissions": {
     "message": "Hiển thị quyền"
   },
-  "showPrivateKey": {
-    "message": "Hiển thị khóa riêng tư"
-  },
-  "showSRP": {
-    "message": "Hiển thị Cụm mật khẩu khôi phục bí mật"
-  },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"
   },
@@ -12085,10 +12066,6 @@
   },
   "unexpectedBehavior": {
     "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
-  },
-  "unexpectedError": {
-    "message": "Đã xảy ra lỗi không mong muốn.",
-    "description": "This is a fallback error message used for unexpected errors."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Cho phép truy cập chính xác vào $1 $2 trên $3 để thực hiện hoán đổi"
