@@ -25,6 +25,7 @@ def main() -> None:
 
   for rel in (
     "development/webpack/webpack.config.ts",
+    "development/webpack/utils/helpers.ts",
     "development/webpack/utils/loaders/envValidationLoader.ts",
   ):
     src = patches / rel
@@ -124,6 +125,8 @@ def main() -> None:
   )
   if "runtimeChunkRe" in helpers or "mangle: false" in helpers:
     raise SystemExit("helpers unexpectedly have nomangle fix; abort")
+  if "TYPESCRIPT_TSX_FILE_RE" not in helpers:
+    raise SystemExit("helpers missing TYPESCRIPT_TSX_FILE_RE after inject")
 
   print("AGENT: injected SWC 1.16.2 + loader fixes; stock mangle confirmed", flush=True)
 

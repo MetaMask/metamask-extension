@@ -76,6 +76,9 @@ prepare_bump_patches() {
   git fetch --depth 1 origin "${SWC_BUMP_REF}"
   git show "FETCH_HEAD:development/webpack/webpack.config.ts" \
     > "${patch_root}/development/webpack/webpack.config.ts"
+  # helpers.ts exports TYPESCRIPT_{NON_,}TSX_FILE_RE required by bump loaders
+  git show "FETCH_HEAD:development/webpack/utils/helpers.ts" \
+    > "${patch_root}/development/webpack/utils/helpers.ts"
   git show "FETCH_HEAD:development/webpack/utils/loaders/envValidationLoader.ts" \
     > "${patch_root}/development/webpack/utils/loaders/envValidationLoader.ts"
 
