@@ -760,7 +760,7 @@ describe('useOHLCVRealtime', () => {
   });
 
   describe('bar equality (pulse animation)', () => {
-    it('always produces a new reference to drive the pulse animation', async () => {
+    it('skips state update when bar data is identical', async () => {
       mockFetchSuccess();
 
       const { result } = renderHook(() =>
@@ -788,12 +788,9 @@ describe('useOHLCVRealtime', () => {
         });
       });
 
-      await waitFor(() => {
-        // Reference should be different even though data is identical,
-        // because the chart needs a REALTIME_UPDATE on every update
-        // to show the pulse animation (intentionally differs from mobile).
-        expect(result.current.latestBar).not.toBe(initialBar);
-      });
+      // Same reference = no unnecessary re-render (areBarsEqual returns true)
+      expect(result.current.latestBar).toBe(initialBar);
+      expect(result.current.latestBar).toStrictEqual(initialBar);
     });
 
     it('updates state when bar data changes via WS', async () => {

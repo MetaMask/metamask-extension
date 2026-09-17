@@ -695,7 +695,7 @@ describe('AdvancedChartIframe', () => {
 
       postMessageSpy.mockClear();
 
-      // Change data
+      // Change data — bulk change (diff > 1 bar triggers full SET_OHLCV_DATA)
       const newData = [
         {
           time: 1700010000,
@@ -704,6 +704,30 @@ describe('AdvancedChartIframe', () => {
           low: 1.5,
           close: 2.8,
           volume: 300,
+        },
+        {
+          time: 1700013600,
+          open: 2.8,
+          high: 4,
+          low: 2.5,
+          close: 3.5,
+          volume: 400,
+        },
+        {
+          time: 1700017200,
+          open: 3.5,
+          high: 5,
+          low: 3,
+          close: 4.2,
+          volume: 500,
+        },
+        {
+          time: 1700020800,
+          open: 4.2,
+          high: 6,
+          low: 4,
+          close: 5.1,
+          volume: 600,
         },
       ];
 

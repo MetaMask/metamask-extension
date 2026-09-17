@@ -224,14 +224,48 @@ const AdvancedChartIframe = forwardRef<
       });
     }, [realtimeBar, chartReady, postToChart]);
 
-    // Main data-sending path: post OHLCV data to iframe when it arrives and
-    // the iframe is loaded. Gated on iframeLoaded (NOT chartReady) to match
-    // mobile's pattern — the chart engine needs data BEFORE it can build the
-    // widget and emit CHART_READY.
+    // Smart diffing: avoid full SET_OHLCV_DATA on every WS tick so the chart
+    // engine can show a smooth real-time pulse via REALTIME_UPDATE instead of
+    // a full resetData() rebuild. Matches mobile's AdvancedChart.tsx pattern.
+    const prevOhlcvDataRef = useRef<OHLCVBar[]>([]);
+
     useEffect(() => {
-      if (iframeLoaded && ohlcvData?.length > 0) {
-        postToChart({ type: 'SET_OHLCV_DATA', payload: { data: ohlcvData } });
+      if (!iframeLoaded || !ohlcvData?.length) {
+        return;
       }
+
+      const prevData = prevOhlcvDataRef.current;
+
+      // First load or bulk change (new asset, interval change, pagination)
+      // → full SET_OHLCV_DATA
+      if (
+        prevData.length === 0 ||
+        Math.abs(ohlcvData.length - prevData.length) > 1
+      ) {
+        postToChart({ type: 'SET_OHLCV_DATA', payload: { data: ohlcvData } });
+        prevOhlcvDataRef.current = ohlcvData;
+        return;
+      }
+
+      // If only the last candle changed → lightweight REALTIME_UPDATE
+      // (matches mobile's AdvancedChart.tsx diffing logic)
+      const last = ohlcvData[ohlcvData.length - 1];
+      const prevLast = prevData[prevData.length - 1];
+      if (
+        last &&
+        prevLast &&
+        (last.time !== prevLast.time ||
+          last.close !== prevLast.close ||
+          last.high !== prevLast.high ||
+          last.low !== prevLast.low ||
+          last.volume !== prevLast.volume)
+      ) {
+        postToChart({ type: 'REALTIME_UPDATE', payload: { bar: last } });
+        prevOhlcvDataRef.current = ohlcvData;
+        return;
+      }
+
+      prevOhlcvDataRef.current = ohlcvData;
     }, [iframeLoaded, ohlcvData, postToChart]);
 
     return (

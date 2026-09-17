@@ -47,6 +47,31 @@ const STALENESS_THRESHOLD_MS = 5_000;
 /** REST endpoint for fetching the latest single candle. */
 const OHLCV_LATEST_URL = OHLCV_BASE_URL.replace('/ohlcv-chart', '/ohlcv');
 
+/**
+ * Field-by-field equality check to avoid re-rendering on identical bars.
+ * @param a
+ * @param b
+ */
+function areBarsEqual(
+  a: OHLCVRealtimeBar | null,
+  b: OHLCVRealtimeBar | null,
+): boolean {
+  if (a === b) {
+    return true;
+  }
+  if (!a || !b) {
+    return false;
+  }
+  return (
+    a.time === b.time &&
+    a.open === b.open &&
+    a.high === b.high &&
+    a.low === b.low &&
+    a.close === b.close &&
+    a.volume === b.volume
+  );
+}
+
 // ─── Helper functions ───────────────────────────────────────────────────────
 
 type OHLCVApiBar = {
@@ -158,12 +183,11 @@ export function useOHLCVRealtime({
 }: UseOHLCVRealtimeOptions): UseOHLCVRealtimeResult {
   const [latestBar, setLatestBar] = useState<OHLCVRealtimeBar | null>(null);
 
-  // Always update state with a new object reference to trigger re-render.
-  // The chart needs REALTIME_UPDATE on every update to show the "pulse"
-  // animation, even if the underlying bar data hasn't changed.
-  // This intentionally differs from mobile which skips identical bars.
+  // Skip state update (and re-render) when the bar hasn't changed.
+  // Matches mobile's areBarsEqual pattern to avoid unnecessary re-renders
+  // of the entire AssetPage tree on every WS message.
   const updateLatestBar = useCallback((bar: OHLCVRealtimeBar) => {
-    setLatestBar(() => ({ ...bar }));
+    setLatestBar((prev) => (areBarsEqual(prev, bar) ? prev : bar));
   }, []);
 
   const subscribedRef = useRef(false);
