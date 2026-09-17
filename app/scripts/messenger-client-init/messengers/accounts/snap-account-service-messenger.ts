@@ -58,6 +58,8 @@ export function getSnapAccountServiceMessenger(
       'AccountTreeController:accountGroupCreated',
       'AccountTreeController:accountGroupUpdated',
       'AccountTreeController:accountGroupRemoved',
+      'AccountsController:accountsAdded',
+      'AccountsController:accountsRemoved',
     ],
   });
   return serviceMessenger;
