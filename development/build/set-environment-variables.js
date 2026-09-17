@@ -24,6 +24,20 @@ function setEnvironmentVariables({
   variables,
   version,
 }) {
+  // Rewards API host selection. Explicit configuration (`.metamaskrc`, the
+  // environment, or builds.yml) wins in either direction. When nothing is set,
+  // local development builds default to UAT so engineers don't point their
+  // day-to-day builds at production Rewards data, and everything else defaults
+  // to production.
+  const configuredRewardsUseUatApis = variables.getMaybe(
+    'REWARDS_USE_UAT_APIS',
+  );
+  const rewardsUseUatApis =
+    configuredRewardsUseUatApis === null ||
+    configuredRewardsUseUatApis === undefined
+      ? isDevBuild
+      : Boolean(configuredRewardsUseUatApis);
+
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -76,6 +90,10 @@ function setEnvironmentVariables({
     ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
       'ASSETS_UNIFIED_STATE_ENABLED',
     ),
+    // Test builds always use production, the host mocked in
+    // `test/e2e/mock-e2e.js`. Anything else leaves the requests unmatched and
+    // they fall through to the catch-all rule.
+    REWARDS_USE_UAT_APIS: !isTestBuild && rewardsUseUatApis,
     COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
   });
 }

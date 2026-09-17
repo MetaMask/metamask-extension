@@ -1,3 +1,5 @@
+import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
+
 export const BASE_SUBSCRIPTION_API_URL =
   'https://subscription.api.cx.metamask.io/v1';
 
@@ -6,8 +8,9 @@ export const BASE_RULESET_ENGINE_API_URL =
 
 export const BASE_CLAIMS_API_URL = 'https://claims.api.cx.metamask.io';
 
-// Rewards uses UAT API in test & dev environments
-export const BASE_REWARDS_API_URL = 'https://rewards.uat-api.cx.metamask.io';
+// Test builds always resolve to the production Rewards host; the requests are
+// mocked at the network layer.
+export const BASE_REWARDS_API_URL = REWARDS_API_URL.PRD;
 
 export const SUBSCRIPTION_API = {
   PRICING: `${BASE_SUBSCRIPTION_API_URL}/pricing`,
