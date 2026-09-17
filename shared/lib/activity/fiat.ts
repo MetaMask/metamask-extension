@@ -64,8 +64,10 @@ export function getHumanReadableTokenAmount(
   ) {
     // Mapper fail-closed (client-utils / TMCU-1303) omits amount when the scale
     // is unknown but keeps symbol/assetId. Do not invent "0" — that looks like
-    // a real zero transfer and scares users.
-    if (token.assetType === 'erc20' || token.assetType === 'native') {
+    // a real zero transfer and scares users. Use hasUnknownScale (not assetType
+    // alone): client-utils has set assetType on mapper tokens since 1.3.0 and
+    // already omits amount for zero txParams.value while keeping decimals.
+    if (hasUnknownScale(token)) {
       return undefined;
     }
     // `@metamask/client-utils` omits zero native `txParams.value` from mapped

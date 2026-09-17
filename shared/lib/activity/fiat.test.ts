@@ -75,6 +75,18 @@ describe('getHumanReadableTokenAmount', () => {
     ).toBe('0');
   });
 
+  it('treats omitted zero native amounts as 0 when assetType is set but scale is known', () => {
+    expect(
+      getHumanReadableTokenAmount({
+        decimals: 18,
+        direction: 'out',
+        symbol: 'ETH',
+        assetId: 'eip155:1/slip44:60',
+        assetType: 'native',
+      }),
+    ).toBe('0');
+  });
+
   it('returns undefined when amount and token metadata are both missing', () => {
     expect(
       getHumanReadableTokenAmount({
