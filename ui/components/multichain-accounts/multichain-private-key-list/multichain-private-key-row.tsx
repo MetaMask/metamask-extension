@@ -28,8 +28,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 export type MultichainPrivateKeyRowProps = {
   address: string;
   chainId: CaipChainId;
+  isCollapsible: boolean;
+  isExpanded: boolean;
   networkName: string;
   onCopy: () => void;
+  onToggle: () => void;
   privateKey: string;
 };
 
@@ -146,8 +149,11 @@ const PrivateKeyContent = ({
 export const MultichainPrivateKeyRow = ({
   address,
   chainId,
+  isCollapsible,
+  isExpanded,
   networkName,
   onCopy,
+  onToggle,
   privateKey,
 }: MultichainPrivateKeyRowProps) => {
   const networkImageSrc = getImageForChainId(
@@ -156,47 +162,75 @@ export const MultichainPrivateKeyRow = ({
       : chainId,
   );
 
+  const headerContent = (
+    <>
+      <AvatarNetwork
+        size={AvatarNetworkSize.Md}
+        name={networkName}
+        src={networkImageSrc}
+        className="mr-3 rounded-lg"
+      />
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        className="min-w-0 flex-1"
+      >
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+          ellipsis
+          className="w-full text-left"
+        >
+          {networkName}
+        </Text>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {shortenAddress(address)}
+        </Text>
+      </Box>
+      {isCollapsible ? (
+        <Icon
+          name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+          color={IconColor.IconAlternative}
+          size={IconSize.Sm}
+          data-testid={`multichain-private-key-row-toggle-icon-${chainId}`}
+        />
+      ) : null}
+    </>
+  );
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
       data-testid={`multichain-private-key-row-${chainId}`}
     >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        className="min-w-0 px-4 py-3"
-        data-testid={`multichain-private-key-row-header-${chainId}`}
-      >
-        <AvatarNetwork
-          size={AvatarNetworkSize.Md}
-          name={networkName}
-          src={networkImageSrc}
-          className="mr-3 rounded-lg"
-        />
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Start}
-          className="min-w-0 flex-1"
+      {isCollapsible ? (
+        <ButtonBase
+          className="h-auto min-w-0 cursor-pointer justify-start rounded-none bg-transparent px-4 py-3"
+          isFullWidth
+          onClick={onToggle}
+          aria-expanded={isExpanded}
+          data-testid={`multichain-private-key-row-toggle-${chainId}`}
         >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-            ellipsis
-            className="w-full text-left"
-          >
-            {networkName}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {shortenAddress(address)}
-          </Text>
+          {headerContent}
+        </ButtonBase>
+      ) : (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          className="min-w-0 px-4 py-3"
+          data-testid={`multichain-private-key-row-toggle-${chainId}`}
+        >
+          {headerContent}
         </Box>
-      </Box>
-      <PrivateKeyContent
-        chainId={chainId}
-        onCopy={onCopy}
-        privateKey={privateKey}
-      />
+      )}
+      {isExpanded ? (
+        <PrivateKeyContent
+          chainId={chainId}
+          onCopy={onCopy}
+          privateKey={privateKey}
+        />
+      ) : null}
     </Box>
   );
 };
