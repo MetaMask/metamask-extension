@@ -400,7 +400,6 @@ export const MultichainTriggeredAddressRowsList = ({
         onClickOutside={handlePopoverClose}
         preventOverflow
         isPortal={true}
-        data-testid="multichain-address-rows-triggered-list"
         offset={[0, 3]}
         paddingInline={1}
         paddingBottom={1}
