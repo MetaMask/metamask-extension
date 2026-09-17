@@ -35,6 +35,11 @@ const phishingController = {
   scanAddress: jest.fn(),
 };
 
+jest.mock('@metamask/phishing-controller', () => ({
+  ...jest.requireActual('@metamask/phishing-controller'),
+  isAddressScanSupportedChainId: jest.fn(),
+}));
+
 jest.mock('../ppom/security-alerts-api', () => ({
   isSecurityAlertsAPIEnabled: jest.fn(),
 }));
@@ -42,6 +47,10 @@ jest.mock('../ppom/security-alerts-api', () => ({
 jest.mock('./security-alerts-api', () => ({
   scanAddressAndAddToCache: jest.fn().mockResolvedValue(undefined),
 }));
+
+const mockIsAddressScanSupportedChainId = jest.requireMock(
+  '@metamask/phishing-controller',
+).isAddressScanSupportedChainId;
 
 const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
   '../ppom/security-alerts-api',
@@ -55,6 +64,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
+    mockIsAddressScanSupportedChainId.mockReturnValue(true);
   });
 
   it('scans extracted address fields after PPOM passes', () => {
@@ -121,8 +131,9 @@ describe('scanUnvalidatedSignatureAddresses', () => {
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
   });
 
-  it('still scans on an unsupported chain so the controller can return ErrorResult', () => {
-    const cache = makeCache();
+  it('does nothing on an unsupported chain', () => {
+    mockIsAddressScanSupportedChainId.mockReturnValue(false);
+
     scanUnvalidatedSignatureAddresses({
       request: makeRequest(
         'eth_signTypedData_v4',
@@ -130,17 +141,11 @@ describe('scanUnvalidatedSignatureAddresses', () => {
         TYPED_DATA_V4,
       ),
       chainId: '0x999' as `0x${string}`,
-      appStateController: cache,
+      appStateController: makeCache(),
       phishingController,
     });
 
-    expect(mockScanAddressAndAddToCache).toHaveBeenCalledWith(
-      MALICIOUS_ADDRESS,
-      cache.getAddressSecurityAlertResponse,
-      cache.addAddressSecurityAlertResponse,
-      '0x999',
-      phishingController,
-    );
+    expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
   });
 
   it('excludes the signer address', () => {
