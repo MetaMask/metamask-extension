@@ -3,10 +3,6 @@ import { MIN_GAS_LIMIT_DEC } from '../send-utils/send.constants';
 
 type TranslateFunction = ReturnType<typeof useI18nContext>;
 
-const MAX_GAS_LIMIT = BigInt(
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-);
-
 function normalizeGasInput(value: string) {
   return value.replace(',', '.');
 }
@@ -22,7 +18,6 @@ export const validateGas = (
     validateValueIsInteger(value, t) ||
     validateValueIsPositive(value, field, t) ||
     validateGasLimitMeetsMinimum(value, t) ||
-    validateGasLimitIsRepresentable(value, t) ||
     undefined
   );
 };
@@ -157,17 +152,7 @@ function validateGasLimitMeetsMinimum(
   if (BigInt(value) >= BigInt(MIN_GAS_LIMIT_DEC)) {
     return false;
   }
-  return t('gasLimitTooLow');
-}
-
-function validateGasLimitIsRepresentable(
-  value: string,
-  t: TranslateFunction,
-): string | false {
-  if (BigInt(value) <= MAX_GAS_LIMIT) {
-    return false;
-  }
-  return t('gasLimitTooHigh');
+  return t('gasLimitBelowMinimum');
 }
 
 function validateValueIsInteger(

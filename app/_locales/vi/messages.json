@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "Khi chọn phí thấp, hãy lưu ý giao dịch sẽ chậm hơn và thời gian chờ đợi lâu hơn. Để giao dịch nhanh hơn, hãy chọn các tùy chọn phí Thị trường hoặc Cao."
   },
-  "alertMessageGasTooLow": {
-    "message": "Để tiếp tục giao dịch này, bạn cần tăng giới hạn phí gas lên 12000 hoặc cao hơn."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí mạng."
   },
@@ -4176,9 +4173,6 @@
   },
   "gasLimit": {
     "message": "Hạn mức phí gas"
-  },
-  "gasLimitTooLow": {
-    "message": "Hạn mức phí gas ít nhất phải là 12000"
   },
   "gasPrice": {
     "message": "Giá gas"

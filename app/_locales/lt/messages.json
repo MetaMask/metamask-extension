@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasLimitTooLow": {
-    "message": "Dujų apribojimas turi būti bent 12000"
-  },
   "gasUsed": {
     "message": "Sunaudotos dujos"
   },

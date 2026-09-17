@@ -94,9 +94,6 @@
   "gasLimit": {
     "message": "गैस सीमा"
   },
-  "gasLimitTooLow": {
-    "message": "२१००० - गैस की सीमा कम से कम 12000 होनी चाहिए"
-  },
   "here": {
     "message": "यहां",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"

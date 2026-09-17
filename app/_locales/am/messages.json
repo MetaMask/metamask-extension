@@ -215,9 +215,6 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitTooLow": {
-    "message": "የነዳጅ ገደብ ቢያንስ 12000 መሆን አለበት"
-  },
   "gasUsed": {
     "message": "ጥቅም ላይ የዋለ ነዳጅ"
   },

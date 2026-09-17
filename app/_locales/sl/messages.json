@@ -221,9 +221,6 @@
   "from": {
     "message": "Od"
   },
-  "gasLimitTooLow": {
-    "message": "Gas limit mora biti vsaj 12000"
-  },
   "gasUsed": {
     "message": "Uporabljen gas"
   },

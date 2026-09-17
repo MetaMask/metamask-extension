@@ -13,8 +13,7 @@ const mockT = ((key: string, args?: string | string[]) => {
     gasPrice: 'Gas price',
     onlyNumbersAllowed: 'Only numbers are allowed',
     onlyIntegersAllowed: 'Only whole numbers are allowed',
-    gasLimitTooHigh: 'Gas limit exceeds the maximum supported value',
-    gasLimitTooLow: 'Gas limit must be at least 12000',
+    gasLimitBelowMinimum: 'Gas limit must be at least 12000',
     priorityFeeTooHigh: 'Priority fee must be less than max base fee',
     maxBaseFeeMustBeGreaterThanPriorityFee:
       'Max base fee must be greater than priority fee',
@@ -75,22 +74,8 @@ describe('gas-validations', () => {
       expect(validateGas('21000', mockT)).toBeUndefined();
     });
 
-    it('return undefined for the maximum representable value', () => {
-      expect(
-        validateGas(
-          '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-          mockT,
-        ),
-      ).toBeUndefined();
-    });
-
-    it('return error message when gas exceeds the representable range', () => {
-      expect(
-        validateGas(
-          '115792089237316195423570985008687907853269984665640564039457584007913129639936',
-          mockT,
-        ),
-      ).toBe('Gas limit exceeds the maximum supported value');
+    it('defers chain-specific upper limits to the selected node', () => {
+      expect(validateGas('16777217', mockT)).toBeUndefined();
     });
   });
 

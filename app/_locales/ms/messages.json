@@ -221,9 +221,6 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasLimitTooLow": {
-    "message": "Had gas mestilah sekurang-kurangnya 12000"
-  },
   "gasUsed": {
     "message": "Gas Digunakan"
   },

@@ -1572,7 +1572,7 @@
   "alertMessageGasFeeLow": {
     "message": "When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options."
   },
-  "alertMessageGasTooLow": {
+  "alertMessageGasLimitBelowMinimum": {
     "message": "To continue with this transaction, you’ll need to increase the gas limit to 12000 or higher."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
@@ -4273,10 +4273,7 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitTooHigh": {
-    "message": "Gas limit exceeds the maximum supported value"
-  },
-  "gasLimitTooLow": {
+  "gasLimitBelowMinimum": {
     "message": "Gas limit must be at least 12000"
   },
   "gasPrice": {

@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Gáz határértéke"
   },
-  "gasLimitTooLow": {
-    "message": "A gáz határértéke legyen legalább 12000"
-  },
   "gasUsed": {
     "message": "Használt gáz"
   },

@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Gas-raja"
   },
-  "gasLimitTooLow": {
-    "message": "Gas-rajan tulee olla vähintään 12 000"
-  },
   "gasUsed": {
     "message": "Käytetty bensaa"
   },

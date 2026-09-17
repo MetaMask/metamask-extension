@@ -1509,9 +1509,6 @@
   "alertMessageGasFeeLow": {
     "message": "Al elegir una tarifa baja, tenga en cuenta que las transacciones serán más lentas y los tiempos de espera más largos. Para transacciones más rápidas, elija las opciones de tarifa de mercado o agresiva."
   },
-  "alertMessageGasTooLow": {
-    "message": "Para continuar con esta transacción, deberá aumentar el límite de gas a 12000 o más."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "No tienes suficiente $1 en tu cuenta para pagar las tarifas de red."
   },
@@ -4176,9 +4173,6 @@
   },
   "gasLimit": {
     "message": "Límite de gas"
-  },
-  "gasLimitTooLow": {
-    "message": "El límite de gas debe ser al menos 12 000"
   },
   "gasPrice": {
     "message": "Precio del gas"

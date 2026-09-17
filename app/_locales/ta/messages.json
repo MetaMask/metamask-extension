@@ -136,9 +136,6 @@
   "gasLimit": {
     "message": "எரிவாயு வரம்பு"
   },
-  "gasLimitTooLow": {
-    "message": "எரிவாயு வரம்பு குறைந்தது 12000 ஆக இருக்க வேண்டும்"
-  },
   "here": {
     "message": "இங்கே",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
