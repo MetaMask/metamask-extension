@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "Wenn Sie eine niedrige Gebühr wählen, müssen Sie mit langsameren Transaktionen und längeren Wartezeiten rechnen. Für schnellere Transaktionen wählen Sie die Gebührenoptionen Markt oder Aggressiv."
   },
-  "alertMessageGasTooLow": {
-    "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 21.000 oder mehr erhöhen."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
   },
@@ -4213,9 +4210,6 @@
   "gasLimit": {
     "message": "Gas-Limit"
   },
-  "gasLimitTooLow": {
-    "message": "Gas-Limit muss mindestens 21.000 betragen"
-  },
   "gasPrice": {
     "message": "Gas-Preis"
   },
@@ -5449,13 +5443,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1 % Effektivertrag verdienen",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Info zum effektiven Jahreszins (APY)"
-  },
   "moneyAccountApyTooltip": {
     "message": "Der angegebene effektive Jahreszins (APY) ist ein auf den aktuellen Marktbedingungen basierender Schätzwert. Der effektive Jahreszins ist variabel und wird nicht garantiert."
   },
@@ -5465,9 +5452,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Prognostizierter 1-Jahres-Saldo:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Prognostizierter 1-Jahres-Saldo"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Die Prognose geht davon aus, dass der effektive Jahreszins (APY) von $1 % über einen Zeitraum von einem Jahr unverändert bleibt. Der Effektivertrag ist variabel und wird nicht garantiert. Keine Garantie für die Rendite.",
@@ -5587,9 +5571,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Erneut versuchen"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money-Saldo"
   },
   "moneyBalanceUnavailable": {
     "message": "Kontostand nicht verfügbar"

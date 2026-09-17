@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "Ao escolher uma taxa baixa, a expectativa é de transações mais lentas e tempos de espera maiores. Para transações mais rápidas, escolha as opções de taxa Mercado ou Agressiva."
   },
-  "alertMessageGasTooLow": {
-    "message": "Para continuar com essa transação, você precisará aumentar o limite de gás para 21000 ou mais."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Você não tem $1 suficiente em sua conta para pagar as taxas de rede."
   },
@@ -4216,9 +4213,6 @@
   "gasLimit": {
     "message": "Limite de gás"
   },
-  "gasLimitTooLow": {
-    "message": "O limite de gás deve ser de pelo menos 21000"
-  },
   "gasPrice": {
     "message": "Preço do gás (GWEI)"
   },
@@ -5456,13 +5450,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Ganhe $1% de APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Informações sobre APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "A taxa apresentada é uma estimativa da Taxa Anual Efetiva (APY) com base nas condições atuais do mercado. A APY é variável e não é garantida."
   },
@@ -5472,9 +5459,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Saldo projetado para 1 anos:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Saldo projetado para 1 anos"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "A projeção pressupõe que a Taxa Anual Efetiva (APY) de $1% permanecerá inalterada por um ano. A APY é variável e não é garantida.",
@@ -5594,9 +5578,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Tentar novamente"
-  },
-  "moneyBalanceTitle": {
-    "message": "Saldo monetário"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo indisponível"

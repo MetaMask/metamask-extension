@@ -144,7 +144,14 @@ export function MoneyApiActivityDetails({
 
       <Box paddingLeft={4} paddingRight={4} className="flex-1">
         <MoneyTransactionDetailsRow
-          label={t('status')}
+          label={
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {t('status')}
+            </Text>
+          }
           testId="money-api-activity-details-status"
           value={
             <Text
@@ -158,17 +165,38 @@ export function MoneyApiActivityDetails({
           }
         />
         <MoneyTransactionDetailsRow
-          label={t('date')}
+          label={
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {t('date')}
+            </Text>
+          }
           testId="money-api-activity-details-date"
           value={formatMoneyActivityDetailsDate(activity.time)}
         />
         <MoneyTransactionDetailsRow
-          label={counterpartyLabel}
+          label={
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {counterpartyLabel}
+            </Text>
+          }
           testId="money-api-activity-details-counterparty"
           value={shortenMoneyActivityHex(counterparty)}
         />
         <MoneyTransactionDetailsRow
-          label={t('moneyActivityDetailsTransactionId')}
+          label={
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {t('moneyActivityDetailsTransactionId')}
+            </Text>
+          }
           testId="money-api-activity-details-hash"
           value={
             <Box

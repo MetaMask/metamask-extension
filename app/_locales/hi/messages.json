@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "कम शुल्क चुनते समय, धीमे ट्रांसेक्शन और लंबे समय तक प्रतीक्षा करने की अपेक्षा करें। तेज़ ट्रांसेक्शन के लिए, मार्केट या एग्रेसिव शुल्क के विकल्प चुनें।"
   },
-  "alertMessageGasTooLow": {
-    "message": "इस ट्रांसेक्शन को जारी रखने के लिए, आपको गैस लिमिट को 21000 या अधिक तक बढ़ाना होगा।"
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "नेटवर्क फीस का भुगतान करने के लिए आपके अकाउंट में पर्याप्त $1 नहीं है।"
   },
@@ -4216,9 +4213,6 @@
   "gasLimit": {
     "message": "गैस लिमिट"
   },
-  "gasLimitTooLow": {
-    "message": "गैस लिमिट कम से कम 21000 होनी चाहिए"
-  },
   "gasPrice": {
     "message": "गैस प्राइस"
   },
@@ -5456,13 +5450,6 @@
   "money": {
     "message": "वित्त"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1 APY कमाएं",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "एपीवाय की जानकारी"
-  },
   "moneyAccountApyTooltip": {
     "message": "दिखाया गया रेट मौजूदा मार्केट कंडीशन के आधार पर एक अनुमानित एनुअल परसेंटेज यील्ड (APY) है। APY वेरिएबल है और इसकी गारंटी नहीं है।"
   },
@@ -5472,9 +5459,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "अनुमानित 1-वर्षीय बैलेंस:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "अनुमानित 1-वर्षीय बैलेंस"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "प्रोजेक्शन में माना गया है कि $1% एनुअल परसेंटेज यील्ड (APY) एक वर्ष तक अपरिवर्तित रहती है। APY परिवर्तनशील है और इसकी गारंटी नहीं है।",
@@ -5594,9 +5578,6 @@
   },
   "moneyBalanceRetry": {
     "message": "फिर से प्रयास करें"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money बैलेंस"
   },
   "moneyBalanceUnavailable": {
     "message": "बैलेंस अनुपलब्ध है"

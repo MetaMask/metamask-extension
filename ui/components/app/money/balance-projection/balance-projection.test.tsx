@@ -82,7 +82,9 @@ describe('BalanceProjection', () => {
     expect(
       screen.getByTestId('balance-projection-apy-pitch'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Earn 6.9% APY')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('balance-projection-apy-pitch'),
+    ).toHaveTextContent('Earn 6.9% APY');
   });
 
   it('renders the APY pitch when the amount is empty', () => {
@@ -93,26 +95,37 @@ describe('BalanceProjection', () => {
     expect(
       screen.getByTestId('balance-projection-apy-pitch'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Earn 4% APY')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('balance-projection-apy-pitch'),
+    ).toHaveTextContent('Earn 4% APY');
   });
 
-  it('renders the info button on the APY pitch', () => {
+  it('shows the APY tooltip when the pitch is hovered', async () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('0');
 
+    const trigger = screen.getByTestId(
+      'balance-projection-apy-pitch-info-trigger',
+    );
+    expect(trigger).toHaveTextContent('4% APY');
+
+    await act(async () => {
+      fireEvent.mouseEnter(trigger);
+    });
+
     expect(
-      screen.getByTestId('balance-projection-apy-pitch-info-button'),
+      screen.getByText(messages.moneyAccountApyTooltip.message),
     ).toBeInTheDocument();
   });
 
-  it('tracks the APY tooltip when the pitch info button is opened', async () => {
+  it('tracks the APY tooltip when the pitch APY text is hovered', async () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('0');
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('balance-projection-apy-pitch-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('balance-projection-apy-pitch-info-trigger'),
       );
     });
 
@@ -125,12 +138,14 @@ describe('BalanceProjection', () => {
     });
   });
 
-  it('tracks the earn-on-crypto tooltip when the projection info button is opened', async () => {
+  it('tracks the earn-on-crypto tooltip when the projected balance is hovered', async () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('1000');
     await act(async () => {
-      fireEvent.click(screen.getByTestId('balance-projection-info-button'));
+      fireEvent.mouseEnter(
+        screen.getByTestId('balance-projection-info-trigger'),
+      );
     });
 
     expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
@@ -140,13 +155,22 @@ describe('BalanceProjection', () => {
     });
   });
 
-  it('renders the info button next to the projected balance', () => {
+  it('shows the projection tooltip when the projected balance is hovered', async () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('1000');
 
+    const trigger = screen.getByTestId('balance-projection-info-trigger');
+    expect(trigger).toHaveTextContent('$1,040.00');
+
+    await act(async () => {
+      fireEvent.mouseEnter(trigger);
+    });
+
     expect(
-      screen.getByTestId('balance-projection-info-button'),
+      screen.getByText(
+        messages.moneyAccountProjectedBalanceTooltip.message.replace('$1', '4'),
+      ),
     ).toBeInTheDocument();
   });
 

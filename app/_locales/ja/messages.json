@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "低い手数料を選択すると、トランザクションに時間がかかり、待機時間が長くなります。より素早くトランザクションを行うには、市場に合った、または積極的な手数料のオプションを選択してください。"
   },
-  "alertMessageGasTooLow": {
-    "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
   },
@@ -4213,9 +4210,6 @@
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitTooLow": {
-    "message": "ガスリミットは21000以上にする必要があります"
-  },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
   },
@@ -5453,13 +5447,6 @@
   "money": {
     "message": "マネー"
   },
-  "moneyAccountApyPitch": {
-    "message": "年換算利率 (APY) $1%を獲得",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY情報"
-  },
   "moneyAccountApyTooltip": {
     "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
   },
@@ -5469,9 +5456,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "1年後の予想残高:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1年後の予想残高"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "予測では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されるものではありません。",
@@ -5591,9 +5575,6 @@
   },
   "moneyBalanceRetry": {
     "message": "再試行"
-  },
-  "moneyBalanceTitle": {
-    "message": "マネー残高"
   },
   "moneyBalanceUnavailable": {
     "message": "残高が利用できません"

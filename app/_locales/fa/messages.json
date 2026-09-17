@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "محدوده گاز"
   },
-  "gasLimitTooLow": {
-    "message": "حدود گاز باید حد اقل 21000 باشد"
-  },
   "gasUsed": {
     "message": "گاز استفاده شد"
   },

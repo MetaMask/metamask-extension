@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "在选择低级型费用时，预计交易速度较慢，等待时间较长。如需更快交易，请选择市场型或激进型费用选项。"
   },
-  "alertMessageGasTooLow": {
-    "message": "要继续此交易，您需要将燃料限制提高到 21000 或更高。"
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "您的账户中没有足够的 $1 来支付网络费用。"
   },
@@ -4213,9 +4210,6 @@
   "gasLimit": {
     "message": "燃料限额"
   },
-  "gasLimitTooLow": {
-    "message": "燃料限制至少为21000"
-  },
   "gasPrice": {
     "message": "Gas 价格（GWEI）"
   },
@@ -5449,13 +5443,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "赚取 $1% 年化收益率",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "年收益率信息"
-  },
   "moneyAccountApyTooltip": {
     "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
   },
@@ -5465,9 +5452,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "预计 1 年后余额:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "预计 1 年后余额"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "预测基于 $1% 的年化收益率（APY）在一年内保持不变。APY 会随市场波动，并非固定保证。",
@@ -5587,9 +5571,6 @@
   },
   "moneyBalanceRetry": {
     "message": "重试"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money 余额"
   },
   "moneyBalanceUnavailable": {
     "message": "余额不可用"

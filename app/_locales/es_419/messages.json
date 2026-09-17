@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "Al elegir una tarifa baja, tenga en cuenta que las transacciones serán más lentas y los tiempos de espera más largos. Para transacciones más rápidas, elija las opciones de tarifa de mercado o agresiva."
   },
-  "alertMessageGasTooLow": {
-    "message": "Para continuar con esta transacción, deberá aumentar el límite de gas a 21000 o más."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "No tienes suficiente $1 en tu cuenta para pagar las tarifas de red."
   },
@@ -4213,9 +4210,6 @@
   "gasLimit": {
     "message": "Límite de gas"
   },
-  "gasLimitTooLow": {
-    "message": "El límite de gas debe ser al menos 21 000"
-  },
   "gasPrice": {
     "message": "Precio del gas"
   },
@@ -5453,13 +5447,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Gana $1 % de APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Información de APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "La tasa mostrada es un rendimiento porcentual anual (APY) estimado basado en las condiciones actuales del mercado. El APY es variable y no está garantizado."
   },
@@ -5469,9 +5456,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Saldo proyectado a 1 años:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Saldo proyectado a 1 años"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "La proyección supone que el rendimiento porcentual anual (APY) de $1 % se mantiene sin cambios durante un año. El APY es variable y no está garantizado.",
@@ -5591,9 +5575,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Reintentar"
-  },
-  "moneyBalanceTitle": {
-    "message": "Saldo de Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo no disponible"

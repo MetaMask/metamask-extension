@@ -1515,9 +1515,6 @@
   "alertMessageGasFeeLow": {
     "message": "При выборе низкой комиссии транзакций будут медленнее, а время ожидания — дольше. Для более быстрых транзакций выберите вариант комиссии «Рыночная» или «Агрессивная»."
   },
-  "alertMessageGasTooLow": {
-    "message": "Чтобы продолжить эту транзакцию, вам необходимо увеличить лимит газа до 21 000 или выше."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "У вас на счету недостаточно $1 для оплаты комиссий сети."
   },
@@ -4213,9 +4210,6 @@
   "gasLimit": {
     "message": "Лимит газа"
   },
-  "gasLimitTooLow": {
-    "message": "Лимит газа должен быть не менее 21 000"
-  },
   "gasPrice": {
     "message": "Цена газа (Гвей)"
   },
@@ -5449,13 +5443,6 @@
   "money": {
     "message": "Финансы"
   },
-  "moneyAccountApyPitch": {
-    "message": "Зарабатывайте $1% годовых (APY)",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Информация о годовом процентном доходе (APY)"
-  },
   "moneyAccountApyTooltip": {
     "message": "Указанная ставка является предполагаемой годовой процентной доходностью (APY), основанной на текущих рыночных условиях. APY может меняться и не гарантируется."
   },
@@ -5465,9 +5452,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Прогнозируемый баланс через 1 лет:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Прогнозируемый баланс через 1 лет"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Прогноз предполагает, что годовая процентная доходность (APY) в размере $1% останется неизменной в течение одного года. APY может меняться и не гарантируется.",
@@ -5587,9 +5571,6 @@
   },
   "moneyBalanceRetry": {
     "message": "Повтор"
-  },
-  "moneyBalanceTitle": {
-    "message": "Баланс Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Баланс недоступен"
