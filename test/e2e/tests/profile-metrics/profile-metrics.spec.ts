@@ -7,13 +7,44 @@ import { Driver } from '../../webdriver/driver';
 import { MockedEndpoint } from '../../mock-e2e';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
 const AUTH_URL =
   'https://authentication.api.cx.metamask.io/api/v2/profile/accounts';
 
-const mockRemoteFeatureFlags = () => (mockServer: Mockttp) =>
+const CONSOLIDATED_PROFILE_METRICS_MANIFEST_FLAGS = {
+  remoteFeatureFlags: {
+    extensionBasicFunctionalityToggle: true,
+  },
+};
+
+const mockRemoteFeatureFlagsWithBftConsolidation =
+  () => (mockServer: Mockttp) =>
+    mockServer
+      .forGet(FEATURE_FLAGS_URL)
+      .withQuery({
+        client: 'extension',
+        distribution: 'main',
+        environment: 'dev',
+      })
+      .thenCallback(() => {
+        return {
+          ok: true,
+          statusCode: 200,
+          json: [
+            {
+              extensionBasicFunctionalityToggle: {
+                enabled: true,
+                minimumVersion: '0.0.0',
+              },
+            },
+          ],
+        };
+      });
+
+const mockRemoteFeatureFlagsNeutral = () => (mockServer: Mockttp) =>
   mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
@@ -25,8 +56,43 @@ const mockRemoteFeatureFlags = () => (mockServer: Mockttp) =>
       return {
         ok: true,
         statusCode: 200,
+        json: [],
       };
     });
+
+/**
+ * Consolidated-wallet fixture for profile metrics positive tests.
+ *
+ * MetaMetrics stays opted out; profile sync is allowed when the BFT
+ * consolidation gate is on (persisted cohort marker + remote flag).
+ */
+function buildConsolidatedProfileMetricsFixture() {
+  const fixture = new FixtureBuilderV2()
+    .withMetaMetricsController({
+      analyticsId: MOCK_ANALYTICS_ID,
+      consentDecisionMade: true,
+      optedIn: false,
+    })
+    .withAppStateController({
+      pna25Acknowledged: true,
+    })
+    .withPreferencesController({
+      preferences: {
+        isBasicFunctionalityConsolidatedEnabled: true,
+      },
+    })
+    .withRemoteFeatureFlagController({
+      remoteFeatureFlags: {
+        extensionBasicFunctionalityToggle: true,
+      },
+    })
+    .build();
+
+  // FixtureBuilder merges partial state; lodash merge does not clear arrays.
+  fixture.data.ProfileMetricsController.reportedAccounts = [];
+
+  return fixture;
+}
 
 /**
  * Mocks the authentication service endpoint for profile metrics.
@@ -132,17 +198,11 @@ describe('Profile Metrics', function () {
     it('sends existing accounts to the API on wallet unlock and an initial delay', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              consentDecisionMade: true,
-            })
-            .withAppStateController({
-              pna25Acknowledged: true,
-            })
-            .build(),
+          fixtures: buildConsolidatedProfileMetricsFixture(),
+          manifestFlags: CONSOLIDATED_PROFILE_METRICS_MANIFEST_FLAGS,
           testSpecificMock: async (server: Mockttp) => [
             await mockAuthService(server),
-            await mockRemoteFeatureFlags()(server),
+            await mockRemoteFeatureFlagsWithBftConsolidation()(server),
           ],
           title: this.test?.fullTitle(),
         },
@@ -174,17 +234,11 @@ describe('Profile Metrics', function () {
     it('sends new accounts to the API when they are created after wallet unlock', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              consentDecisionMade: true,
-            })
-            .withAppStateController({
-              pna25Acknowledged: true,
-            })
-            .build(),
+          fixtures: buildConsolidatedProfileMetricsFixture(),
+          manifestFlags: CONSOLIDATED_PROFILE_METRICS_MANIFEST_FLAGS,
           testSpecificMock: async (server: Mockttp) => [
             await mockAuthService(server),
-            await mockRemoteFeatureFlags()(server),
+            await mockRemoteFeatureFlagsWithBftConsolidation()(server),
           ],
           title: this.test?.fullTitle(),
         },
@@ -235,6 +289,13 @@ describe('Profile Metrics', function () {
 
   [
     {
+      title:
+        'when MetaMetrics is disabled and basic functionality is not consolidated',
+      consentDecisionMade: true,
+      optedIn: false,
+      pna25Acknowledged: true,
+    },
+    {
       title: 'when the user has not acknowledged the privacy change',
       consentDecisionMade: true,
       optedIn: true,
@@ -257,7 +318,7 @@ describe('Profile Metrics', function () {
               .build(),
             testSpecificMock: async (server: Mockttp) => [
               await mockAuthService(server),
-              await mockRemoteFeatureFlags()(server),
+              await mockRemoteFeatureFlagsNeutral()(server),
             ],
             title: this.test?.fullTitle(),
           },
