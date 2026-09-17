@@ -160,6 +160,7 @@ describe('MoneyTransactionDetailsPage', () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: 0.16,
       totalUsd: 1000.16,
+      isNetworkFeePaidByMetaMask: false,
     });
     mockUseParams.mockReturnValue({ transactionId: deposited.id });
     mockUseMoneyAccountAvailability.mockReturnValue({
@@ -273,6 +274,7 @@ describe('MoneyTransactionDetailsPage', () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: undefined,
       totalUsd: undefined,
+      isNetworkFeePaidByMetaMask: false,
     });
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
@@ -289,6 +291,7 @@ describe('MoneyTransactionDetailsPage', () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: 0.001,
       totalUsd: 1000.001,
+      isNetworkFeePaidByMetaMask: false,
     });
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
@@ -310,6 +313,110 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.getByText(messages.moneyActivityTransactionFeeTooltip.message),
     ).toBeInTheDocument();
+  });
+
+  it('shows Paid by MetaMask when the network fee is fully sponsored', () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0,
+      totalUsd: 1000,
+      isNetworkFeePaidByMetaMask: true,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee-sponsored'),
+    ).toHaveTextContent(messages.paidByMetaMask.message);
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).not.toHaveTextContent('$0.00');
+  });
+
+  it('keeps the fee amount and states network sponsorship in the tooltip when source gas is zero', async () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.14,
+      totalUsd: 1000.14,
+      isNetworkFeePaidByMetaMask: true,
+    });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [
+        onchainItem({
+          ...deposited.tx,
+          metamaskPay: {
+            ...deposited.tx.metamaskPay,
+            networkFeeFiat: '0',
+            bridgeFeeFiat: '0.14',
+          },
+        }),
+      ],
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('$0.14');
+    expect(
+      screen.queryByTestId('money-transaction-details-fee-sponsored'),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee-info'),
+    ).toHaveTextContent(
+      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+    );
+  });
+
+  it('does not claim Paid by MetaMask for user-paid cross-chain source gas', async () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.34,
+      totalUsd: 1000.34,
+      isNetworkFeePaidByMetaMask: true,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('$0.34');
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee-info'),
+    ).not.toHaveTextContent(
+      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+    );
+  });
+
+  it('does not mention Paid by MetaMask when the fee is not sponsored', async () => {
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.queryByTestId('money-transaction-details-fee-sponsored'),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee-info'),
+    ).not.toHaveTextContent(
+      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+    );
   });
 
   it('renders the origin address when it does not belong to an internal account', () => {
