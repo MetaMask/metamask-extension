@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { ApprovalRequest } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import { isStrictHexString, Json } from '@metamask/utils';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates/approval-types';
 import {
@@ -22,6 +22,7 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
+import type { SetPayTokenRequest } from './pay/types';
 
 export enum ConfirmationLoader {
   Default = 'default',
@@ -42,7 +43,11 @@ export enum PayWithOption {
  * Query params scoped to a single confirmation entry point. They must not
  * survive navigation to another pending confirmation via `getConfirmationRoute`.
  */
-const FLOW_SCOPED_SEARCH_PARAMS = ['payWithOption'] as const;
+const FLOW_SCOPED_SEARCH_PARAMS = [
+  'payWithOption',
+  'preferredPaymentTokenAddress',
+  'preferredPaymentTokenChainId',
+] as const;
 
 export function sanitizeConfirmationSearchParams(
   queryString: string = '',
@@ -77,6 +82,10 @@ export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
   goBackTo?: string;
   payWithOption?: PayWithOption;
+  /**
+   * Token the confirmation should select as the source of funds.
+   */
+  preferredPaymentToken?: SetPayTokenRequest;
 };
 
 export function useConfirmationNavigation() {
@@ -148,6 +157,17 @@ export function useConfirmationNavigation() {
 
       if (options.payWithOption) {
         params.set('payWithOption', options.payWithOption);
+      }
+
+      if (options.preferredPaymentToken) {
+        params.set(
+          'preferredPaymentTokenAddress',
+          options.preferredPaymentToken.address,
+        );
+        params.set(
+          'preferredPaymentTokenChainId',
+          options.preferredPaymentToken.chainId,
+        );
       }
 
       navigate({
@@ -261,9 +281,25 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
       ? PayWithOption.MoneyAccount
       : undefined;
 
+  const preferredPaymentTokenAddress = searchParams.get(
+    'preferredPaymentTokenAddress',
+  );
+  const preferredPaymentTokenChainId = searchParams.get(
+    'preferredPaymentTokenChainId',
+  );
+  const preferredPaymentToken =
+    isStrictHexString(preferredPaymentTokenAddress) &&
+    isStrictHexString(preferredPaymentTokenChainId)
+      ? {
+          address: preferredPaymentTokenAddress,
+          chainId: preferredPaymentTokenChainId,
+        }
+      : undefined;
+
   return {
     loader,
     goBackTo,
     payWithOption,
+    preferredPaymentToken,
   };
 }

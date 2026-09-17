@@ -36,7 +36,10 @@ import {
   MUSD_TOKEN_ADDRESS,
 } from '../../constants/musd';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
-import { useDepositPrefillAmount } from './useDepositPrefillAmount';
+import {
+  DepositPrefillStatus,
+  useDepositPrefillAmount,
+} from './useDepositPrefillAmount';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
@@ -145,9 +148,15 @@ export function useTransactionCustomAmount({
   const hasUserEditedAmount =
     editedTransactionId !== undefined && editedTransactionId === transactionId;
   const depositPrefill = useDepositPrefillAmount();
+  const isDepositPrefillEnabled =
+    depositPrefill.status !== DepositPrefillStatus.Disabled;
+  const isDepositPrefilled =
+    depositPrefill.status === DepositPrefillStatus.Prefilled;
+  const isDepositPrefillSkipped =
+    depositPrefill.status === DepositPrefillStatus.Skipped;
   const shouldUseDepositPrefill =
-    isMoneyAccountDeposit && depositPrefill.enabled;
-  const prevDepositHasPrefilledRef = useRef(depositPrefill.hasPrefilled);
+    isMoneyAccountDeposit && isDepositPrefillEnabled;
+  const prevDepositHasPrefilledRef = useRef(isDepositPrefilled);
   // The prefill amount is written by an effect, one commit after prefill
   // reports `hasPrefilled`. Without tracking that gap the field paints "$0"
   // between the skeleton coming down and the amount arriving.
@@ -428,6 +437,8 @@ export function useTransactionCustomAmount({
         .times(balanceUsdValue);
       // Arm isMaxAmount on a full (100%) selection, including money-account
       // deposits, so Pay quotes the whole pay-token balance as EXACT_INPUT.
+      // Typed / percentage amounts leave isMaxAmount off so Relay stays
+      // atomic and quotes EXACT_OUTPUT (mobile parity).
       // Flows passing balanceUsdOverride (Perps and money-account withdraw)
       // spend an external vault balance the background cannot read, so they
       // stay off that path and keep the typed amount authoritative.
@@ -645,20 +656,20 @@ export function useTransactionCustomAmount({
   // same token must not overwrite a committed prefill.
   useEffect(() => {
     if (!shouldUseDepositPrefill) {
-      prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
+      prevDepositHasPrefilledRef.current = isDepositPrefilled;
       return;
     }
 
     // Skip if the user has manually typed — a transient hasPrefilled toggle
     // (from tokenKey changes) must not overwrite their input.
     if (userEditedRef.current) {
-      prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
+      prevDepositHasPrefilledRef.current = isDepositPrefilled;
       // Nothing left to apply — the manual input owns the field.
       setHasAppliedDepositPrefill(true);
       return;
     }
 
-    if (depositPrefill.hasPrefilled) {
+    if (isDepositPrefilled) {
       // Uncapped 100% (stablecoin) submits exact balanceRaw as requiredAssets
       // and arms isMaxAmount like pressing Max. The fiat literal path can
       // ROUND_UP past available balance and yield "No quotes".
@@ -680,9 +691,9 @@ export function useTransactionCustomAmount({
       setHasAppliedDepositPrefill(false);
     }
 
-    prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
+    prevDepositHasPrefilledRef.current = isDepositPrefilled;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- see comment above
-  }, [depositPrefill.hasPrefilled, shouldUseDepositPrefill]);
+  }, [isDepositPrefilled, shouldUseDepositPrefill]);
 
   // Pre-fill the max amount once the balance is known, unless the user has
   // already edited the field. `userEditedRef` is used instead of
@@ -718,13 +729,15 @@ export function useTransactionCustomAmount({
     // Hide the skeleton after a manual edit on the *current* token. A pay
     // token / funding account change clears the edit guard so loading (and
     // the new prefill) can show again. A committed prefill that has not been
-    // written to the field yet still counts as loading.
+    // written to the field yet still counts as loading. A skipped prefill can
+    // never commit, so it settles immediately to $0 instead of loading.
     isDepositPrefillLoading:
       shouldUseDepositPrefill &&
-      (depositPrefill.isLoading ||
-        (depositPrefill.hasPrefilled && !hasAppliedDepositPrefill)) &&
+      !isDepositPrefillSkipped &&
+      (!isDepositPrefilled || !hasAppliedDepositPrefill) &&
       !hasUserEditedAmount,
-    isDepositPrefilled: shouldUseDepositPrefill && depositPrefill.hasPrefilled,
+    isDepositPrefilled: shouldUseDepositPrefill && isDepositPrefilled,
+    isDepositPrefillSkipped: shouldUseDepositPrefill && isDepositPrefillSkipped,
     isInputChanged,
     isQuoteDerivedAmountLoading: isQuoteDerivedAmount && isQuotesLoading,
     updatePendingAmount,

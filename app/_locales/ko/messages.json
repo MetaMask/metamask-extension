@@ -172,6 +172,9 @@
   "activity": {
     "message": "활동"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "활동 내역 및 논스 데이터가 삭제되었습니다"
+  },
   "activityEmptyDescription": {
     "message": "오늘 첫 토큰을 스왑하세요."
   },
@@ -1478,6 +1481,9 @@
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다"
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "더 적은 액수를 추가하거나 다른 결제 수단을 사용하세요."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "자금 부족"
   },
@@ -1933,14 +1939,37 @@
   "basicConfigurationModalHeadingOn": {
     "message": "기본 기능 켜기"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "설정이 변경되었습니다"
+  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "블로그 포스트"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "소셜 로그인과 관련된 MetaMask의 작동 방식을 업데이트하고 있습니다. MetaMask 전반에 걸쳐 원활한 이용 경험을 제공하기 위해 소셜 로그인 식별자(이메일 주소 또는 핸들)가 이제 사용자 프로필 및 연결된 계정 주소에 안전하게 연동됩니다. 이번 업데이트의 일부로 기본 기능 및 기타 기본 설정은 항상 활성화됩니다."
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "당사는 사용자 데이터를 제3자에 절대 판매하지 않습니다. 당사가 수집하는 정보와 수집 목적에 관한 자세한 내용은 $1 및 업데이트된 $2에서 확인하세요.",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "개인정보 처리 안내"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
     "message": "개인정보 보호 및 제품 업데이트"
   },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "이제 제3자 API가 기본 기능의 일부로 포함됩니다. 이전 기본 설정에 따라 이 설정은 $1 상태입니다. $2에서 언제든지 설정을 변경할 수 있습니다",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "비활성화됨"
+  },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "활성화됨"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "설정 > 개인정보 보호"
   },
   "basicFunctionalityRequired_description": {
     "message": "기본 기능이 꺼져 있는 경우 이 기능을 사용할 수 없습니다. 아래 토글을 사용해 기능을 켤 수 있습니다."
@@ -2507,6 +2536,9 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "최대 허용량 사용"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "$1(이)가 부족해 이 브릿지에 대한 가스비를 지불할 수 없습니다. 더 적은 금액을 입력하거나 더 많은 $1(을)를 구매하세요."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "가스비를 위해 더 많은 $1 필요"
@@ -3551,6 +3583,10 @@
   "disable": {
     "message": "비활성화"
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "‘$1’은(는) 기존 네트워크 수수료보다 최소 10% 높아야 한다는 조건을 충족하지 않아 비활성화되었습니다.",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "연결 해제"
   },
@@ -4183,6 +4219,9 @@
   "gasPrice": {
     "message": "가스 가격(GWEI)"
   },
+  "gasPriceExcessive": {
+    "message": "네트워크 수수료가 불필요하게 높게 설정되었습니다. 금액을 낮춰 보세요."
+  },
   "gasPriceFetchFailed": {
     "message": "네트워크 오류로 인해 가스 가격 견적 추산을 실패했습니다."
   },
@@ -4686,9 +4725,21 @@
   "honeypotTitle": {
     "message": "허니팟"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "원하는 토큰을 입금하세요. 해당 토큰을 스왑하여 Hyperliquid 계정으로 보내드립니다. MetaMask 수수료는 없습니다.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "아니요, 직접 입금하겠습니다",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "MetaMask로 Hyperliquid에 자금 입금",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "이제 Hyperliquid 및 MetaMask 무기한 선물 거래에 자금을 사용할 수 있습니다.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Hyperliquid의 $1에 따라 향후 모든 거래에 MetaMask 추천인 코드를 적용합니다. MetaMask는 수수료를 받습니다.",
@@ -5188,6 +5239,9 @@
   "loginErrorSessionExpiredButton": {
     "message": "로그인"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "계속 진행하려면 다시 로그인하세요."
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "세션이 만료되었습니다"
   },
@@ -5213,10 +5267,6 @@
   },
   "lowLowercase": {
     "message": "낮음"
-  },
-  "lowValueAssets": {
-    "message": "저가치 토큰($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "이더리움 메인넷"
@@ -5403,13 +5453,6 @@
   "money": {
     "message": "머니"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1% APY 수익 적립",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY 정보"
-  },
   "moneyAccountApyTooltip": {
     "message": "표시된 수익률은 현재 시장 상황에 기반한 예상 연간수익률(APY)입니다. APY는 변동되며 보장되지 않습니다."
   },
@@ -5420,15 +5463,15 @@
   "moneyAccountProjectedBalance": {
     "message": "1년 후 예상 잔액:"
   },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1년 후 예상 잔액"
-  },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "이 예상치는 연간수익률(APY) $1%가 1년 동안 변함 없이 유지된다는 가정하에 계산되었습니다. APY는 변동되며 보장되지 않습니다.",
     "description": "$1 is the APY percentage used in the one-year projection"
   },
   "moneyActivity": {
     "message": "활동"
+  },
+  "moneyActivityCard": {
+    "message": "카드"
   },
   "moneyActivityConversionFailed": {
     "message": "전환 실패"
@@ -5448,8 +5491,23 @@
   "moneyActivityDepositing": {
     "message": "예치 중"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "결제 대상:"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "보낸 사람"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "트랜잭션 ID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "수익:"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "지출 금액:"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "환불되었습니다"
   },
   "moneyActivityEmpty": {
     "message": "아직 활동이 없습니다"
@@ -5463,11 +5521,17 @@
   "moneyActivityFilterSends": {
     "message": "전송"
   },
+  "moneyActivityLoadError": {
+    "message": "활동 내역을 불러올 수 없습니다"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD 캐시백"
+  },
   "moneyActivityPending": {
     "message": "보류 중"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "머니 활동 내역이 여기에 표시됩니다."
+  "moneyActivityPurchase": {
+    "message": "매수"
   },
   "moneyActivityReceived": {
     "message": "받음"
@@ -5478,6 +5542,12 @@
   "moneyActivityReceiving": {
     "message": "받는 중"
   },
+  "moneyActivityRefund": {
+    "message": "환불"
+  },
+  "moneyActivityRetry": {
+    "message": "다시 시도"
+  },
   "moneyActivitySendFailed": {
     "message": "전송 실패"
   },
@@ -5486,6 +5556,10 @@
   },
   "moneyActivitySent": {
     "message": "전송됨"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "전환 수수료에는 네트워크 비용과 제공업체 수수료가 포함될 수 있습니다.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
   },
   "moneyActivityViewAll": {
     "message": "모두 보기"
@@ -5505,11 +5579,14 @@
   "moneyBalanceLastKnown": {
     "message": "마지막으로 확인된 잔액"
   },
-  "moneyBalanceTitle": {
-    "message": "머니 잔액"
+  "moneyBalanceRetry": {
+    "message": "다시 시도"
   },
   "moneyBalanceUnavailable": {
     "message": "잔액을 확인할 수 없음"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "일시적으로 잔액을 표시할 수 없습니다. 자금은 안전하게 보관되고 있습니다. 잠시 후 다시 시도해 보세요."
   },
   "moneyBenefitAutoEarn": {
     "message": "머니 잔액에 대한 수익을 자동으로 적립하세요."
@@ -5528,6 +5605,12 @@
   },
   "moneyBenefits": {
     "message": "혜택"
+  },
+  "moneyContactSupport": {
+    "message": "지원팀에 문의"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "암호자산 전환"
   },
   "moneyEarnApyTitle": {
     "message": "최대 $1 APY 수익 적립"
@@ -5571,9 +5654,60 @@
   "moneyHowItWorksDescription": {
     "message": "mUSD를 추가하면 언제든지 달러 기반 잔액을 결제 또는 거래에 사용하거나 송금할 수 있습니다."
   },
+  "moneyHowItWorksDescription2": {
+    "message": "Money 잔액은 결제에 사용할 수 있는 잔액입니다. MetaMask 카드를 연결하면 전 세계 1억 5천만 개 이상의 가맹점에서 사용할 수 있습니다. 자금은 사용하는 순간까지 계속 수익을 냅니다."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money Account는 Monad에서 제공합니다."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD를 추가하면 최대 $1의 수익이 적립됩니다. 잔액은 달러 연동 방식으로 유지되며 언제든지 결제 또는 거래에 사용하거나 송금할 수 있습니다.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Account는 은행 계좌, 저축 계좌 또는 보험이 적용되는 예금 상품이 아닙니다. APY는 변동되며 보장되지 않습니다. Money Account에는 스마트 계약, 프로토콜, 유동성 및 기타 위험이 수반되며, 자금의 일부 또는 전부가 손실될 수 있습니다. 지역별 제한이 적용될 수 있으며, 약관이 적용됩니다."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "APY 비율은 변경되나요?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "사용자 본인입니다! MetaMask는 셀프 커스터디 지갑이므로, 계정 소유자의 개인 키만이 계정을 제어할 수 있습니다. MetaMask는 머니 계정 잔액에 액세스하거나 이를 동결 또는 이동할 수 없습니다. 이 점이 바로 기존 은행 계좌 및 커스터디형 암호화폐 플랫폼과 MetaMask를 구분하는 차이점입니다. 사용자의 자금을 보관하는 제삼자는 없습니다."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "제 자금은 누가 관리하나요?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Money Account 개설에는 수수료가 없으며, 스테이블코인을 예치하는 데도 수수료가 없습니다. 비스테이블코인 토큰을 예치하는 경우 수수료가 부과됩니다. 또한 MetaMask 카드 거래, ATM 출금, 현지 통화 오프램프 비용과 관련된 수수료가 있습니다. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "전체 카드 수수료 세부 내역은 여기에서 확인하세요."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "수수료가 있나요?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "예. 사전 통지 기간이나 위약금 없이 언제든지 전체 잔액을 거래, 전송, 결제 또는 출금할 수 있으며, MetaMask에서 부과하는 출금 수수료도 없습니다. 유동성이 부족한 경우 일시적으로 지연될 수 있습니다."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "자금은 묶이나요? 언제든지 인출할 수 있나요?"
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Money 계정이란 무엇인가요?"
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "mUSD란 무엇인가요?"
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "이 계정은 저축 계정인가요, 결제 계정인가요?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "FAQ"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "자금을 예치하면 해당 자금은 Aave, Morpho와 같이 검증된 디파이프로토콜에 투입되어 실제 경제 활동에서 발생하는 수익을 창출합니다. 이렇게 발생한 수익은 APY 형태로 사용자에게 제공됩니다. \n\nSteakhouse Financial이라는 제삼자 서비스 제공업체가 프로토콜 내 자금 배분 방식을 모니터링합니다. 제삼자 인프라 제공업체인 Veda는 사용자의 자금을 보관하는 볼트 스마트 계약을 배포하고 유지 관리합니다.\n\n수익은 MetaMask 또는 mUSD 발행자가 지급하는 이자가 아닙니다. 이는 제삼자 디파이 프로토콜의 포지션에서 발생하는 온체인 수익입니다."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "수익은 어디에서 발생하나요?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "자산이 늘어나는 방식"
@@ -5598,6 +5732,81 @@
   },
   "moneySend": {
     "message": "전송"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "자금을 추가할 수 없습니다. 다시 시도하세요."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "전환할 수 없습니다. 다시 시도하세요."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "예치 실패"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "자금 추가 실패"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "전환 실패"
+  },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "카드 신청에 몇 분 정도 걸릴 수 있습니다."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "자금 추가"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "예치 중"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "암호자산 전환 중"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Money Account에 추가됨"
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "자금 추가됨"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "예치 완료"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "전환 완료"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "몇 분 정도 소요될 수 있습니다."
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "자금을 이체할 수 없습니다. 다시 시도하세요."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "이체 실패"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "내 계정"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "전송 중"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "전송 완료"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "다른 계정"
+  },
+  "moneyTransferComingSoon": {
+    "message": "곧 추가 예정"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "무기한 선물 계정"
+  },
+  "moneyTransferSendExternal": {
+    "message": "외부 주소"
+  },
+  "moneyTransferTitle": {
+    "message": "자금 전송 대상:"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "은행 계좌"
   },
   "month": {
     "message": "월"
@@ -5937,9 +6146,6 @@
   "networkFeeExplanationTitle": {
     "message": "네트워크 수수료"
   },
-  "networkMenu": {
-    "message": "네트워크 메뉴"
-  },
   "networkMenuHeading": {
     "message": "네트워크 선택"
   },
@@ -5985,6 +6191,10 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "우선 요금의 범위(일명 \"채굴자 팁\"). 이것은 채굴자에게 전달되어 트랜잭션의 우선 순위를 정하도록 장려합니다."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "현재 네트워크 수수료는 최근 72시간과 비교해 $1 수준입니다.",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "네트워크 제안"
@@ -7450,7 +7660,14 @@
     "message": "외환"
   },
   "perpsFilterIndex": {
-    "message": "지수 가격"
+    "message": "지수"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
+  "perpsFilterMore": {
+    "message": "더 보기",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
   },
   "perpsFilterNew": {
     "message": "신규"
@@ -7734,6 +7951,10 @@
   "perpsPositions": {
     "message": "포지션"
   },
+  "perpsProducts": {
+    "message": "상품",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "요청이 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요."
   },
@@ -7848,14 +8069,8 @@
   "perpsSortByPriceChange": {
     "message": "가격 변동"
   },
-  "perpsSortByRank": {
-    "message": "순위"
-  },
-  "perpsSortBySection": {
-    "message": "정렬 기준"
-  },
   "perpsSortByTitle": {
-    "message": "필터"
+    "message": "정렬 기준"
   },
   "perpsSortByVolume": {
     "message": "거래량"
@@ -8039,6 +8254,10 @@
   "perpsToastSubmitInProgress": {
     "message": "거래 제출 중",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeEntryFailed": {
+    "message": "거래를 시작할 수 없습니다",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
   },
   "perpsToastTradeSuccess": {
     "message": "포지션 종료 완료",
@@ -8651,9 +8870,6 @@
   "rampsPreviouslyUsed": {
     "message": "마지막 사용"
   },
-  "rampsQuoteFetchError": {
-    "message": "견적을 불러오지 못했습니다."
-  },
   "rampsQuoteUnavailable": {
     "message": "견적을 확인할 수 없습니다."
   },
@@ -8749,6 +8965,9 @@
   },
   "rejected": {
     "message": "거부됨"
+  },
+  "relayerFee": {
+    "message": "릴레이어 수수료"
   },
   "remove": {
     "message": "제거"
@@ -11103,6 +11322,9 @@
   "stxCancelled": {
     "message": "스왑이 실패했을 것입니다"
   },
+  "stxCancelledDescription": {
+    "message": "트랜잭션 실패가 예상되어 불필요한 네트워크 수수료가 부과되지 않도록 트랜잭션을 취소했습니다."
+  },
   "stxCancelledSubDescription": {
     "message": "스왑을 다시 진행하세요. 다음에도 유사한 위험이 발생한다면 보호해 드리겠습니다."
   },
@@ -11144,6 +11366,9 @@
   },
   "stxUserCancelled": {
     "message": "스왑 취소됨"
+  },
+  "stxUserCancelledDescription": {
+    "message": "트랜잭션이 취소되어 네트워크 수수료를 지불하지 않았습니다."
   },
   "submit": {
     "message": "제출"
@@ -11274,12 +11499,19 @@
     "message": "$1을(를) $2(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesExplanation": {
+    "message": "MetaMask는 네트워크 수수료로 수익을 얻지 않습니다. 이 수수료는 추정치이며 네트워크 혼잡도와 트랜잭션 복잡성에 따라 변동될 수 있습니다. 자세히 알아보기 $1",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
   "swapGasFeesExplanationLinkText": {
     "message": "확인하세요",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " 포함됨"
+  },
+  "swapGasFeesSplit": {
+    "message": "이전 화면에 표시된 네트워크 수수료는 이 두 건의 트랜잭션에 나뉘어 적용됩니다."
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask가 지불함"
@@ -11414,6 +11646,9 @@
   "swapSource": {
     "message": "유동성 소스"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "스왑은 복잡하고 신속한 처리가 필요한 거래입니다. 비용과 스왑 성공 가능성을 균형 있게 고려하여 이 네트워크 수수료를 권장합니다."
+  },
   "swapToConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 컨펌하기 위해"
   },
@@ -11435,6 +11670,9 @@
   },
   "swapUnknown": {
     "message": "알 수 없음"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "$1(이)가 부족해 이 스왑에 대한 네트워크 수수료를 지불할 수 없습니다. 더 적은 금액을 입력하거나 더 많은 $1(을)를 구매하세요."
   },
   "swapZeroSlippage": {
     "message": "0% 슬리패지"
@@ -11670,6 +11908,9 @@
   "transactionHistoryBaseFee": {
     "message": "기본 수수료 (GWEI)"
   },
+  "transactionHistoryL1GasLabel": {
+    "message": "총 L1 네트워크 수수료"
+  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 가스 한도"
   },
@@ -11884,6 +12125,9 @@
   },
   "unlock": {
     "message": "잠금해제"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "잘못된 비밀번호입니다. 다시 시도해 주세요."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "시도 횟수가 너무 많습니다. 다음 시간이 지난 후에 다시 시도하세요. "
@@ -12154,6 +12398,10 @@
   },
   "wrongNetworkName": {
     "message": "기록에 따르면 네트워크 이름이 이 체인 ID와 일치하지 않습니다."
+  },
+  "wrongPassword": {
+    "message": "잘못된 비밀번호입니다. 다시 시도해 주세요.",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "년"

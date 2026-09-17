@@ -212,7 +212,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
-    tracesBeforeMetricsOptIn: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
   },
@@ -296,6 +295,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
+  },
+  ProfileMetricsController: {
+    accountSourceBackfillEnqueued: true,
+    reportedAccounts: false,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,

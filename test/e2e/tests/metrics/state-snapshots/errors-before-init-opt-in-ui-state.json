@@ -123,8 +123,7 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object"
+      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -276,7 +275,14 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": "boolean"
     },
-    "ProfileMetricsController": "object",
+    "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
+      "initialDelayEndTimestamp": "number",
+      "initialEnqueueCompleted": "boolean",
+      "proofBackfillEnqueued": "boolean",
+      "reportedAccounts": "object",
+      "syncQueue": "object"
+    },
     "RampsController": {
       "autoramps": "object",
       "orders": "object",
@@ -351,6 +357,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 226
+    "version": 227
   }
 }
