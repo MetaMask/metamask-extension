@@ -139,6 +139,7 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.getTokenStandardAndDetailsByChain = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.toggleBasicFunctionality = sinon.stub();
     background.setUseMultiAccountBalanceChecker = sinon.stub();
     background.setUseTransactionSimulations = sinon.stub();
     background.setSecurityAlertsEnabled = sinon.stub();
@@ -3898,32 +3899,78 @@ describe('Actions', () => {
   });
 
   describe('#toggleBasicFunctionality', () => {
-    it('calls toggleExternalServices and consolidated preference setters', async () => {
+    it('calls the background toggleBasicFunctionality action', async () => {
       const store = mockStore();
 
       setBackgroundConnection(background);
 
       await store.dispatch(actions.toggleBasicFunctionality(false));
 
-      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
-      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
-        false,
-      ]);
-      expect(
-        background.setUseMultiAccountBalanceChecker.getCall(0).args,
-      ).toStrictEqual([false]);
-      expect(
-        background.setUseTransactionSimulations.getCall(0).args,
-      ).toStrictEqual([false]);
-      expect(background.setSecurityAlertsEnabled.getCall(0).args).toStrictEqual(
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
         [false],
       );
-      expect(background.setUse4ByteResolution.getCall(0).args).toStrictEqual([
-        false,
+    });
+  });
+
+  describe('#enableBasicFunctionality', () => {
+    const buildStateForConsolidation = (isConsolidated) => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        useExternalServices: false,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: isConsolidated,
+        },
+        preferences: {
+          ...defaultState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled: isConsolidated,
+        },
+      },
+    });
+
+    it('uses the consolidated toggle when the wallet is consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
+        [true],
+      );
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
+    });
+
+    it('uses the legacy toggle when the wallet is not consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(false));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
       ]);
-      expect(
-        background.setUseExternalNameSources.getCall(0).args,
-      ).toStrictEqual([false]);
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(0);
+    });
+
+    it('reads consolidation state when dispatched, not when created', async () => {
+      const unconsolidatedStore = mockStore(buildStateForConsolidation(false));
+      const consolidatedStore = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      // Built while the wallet is unconsolidated, dispatched after
+      // consolidation has landed.
+      const thunkAction = actions.enableBasicFunctionality();
+      unconsolidatedStore.getState();
+      await consolidatedStore.dispatch(thunkAction);
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
     });
   });
 
