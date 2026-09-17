@@ -4,23 +4,10 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
-  SensitiveText,
-  SensitiveTextLength,
-  Text,
-  TextColor,
-  TextVariant,
 } from '@metamask/design-system-react';
-import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  calculateMoneyProjectedEarnings,
-  type MoneyDepositToken,
-} from '../../../hooks/money/money-deposit-token-utils';
+import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
+import { MoneyPotentialEarningsSummary } from './money-potential-earnings-summary';
 import { MoneyPotentialEarningsTokenRow } from './money-potential-earnings-token-row';
 
 export const MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT = 5;
@@ -28,6 +15,7 @@ export const MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT = 5;
 type MoneyPotentialEarningsProps = {
   tokens: MoneyDepositToken[];
   apyDecimal: number | undefined;
+  apyPercent: number | undefined;
   isNoFeeToken: (token: MoneyDepositToken) => boolean;
   privacyMode: boolean;
   onAddToken: (
@@ -35,19 +23,21 @@ type MoneyPotentialEarningsProps = {
     tokenIndex: number,
     tokenCount: number,
   ) => void;
+  onViewAll: () => void;
   isAddDisabled?: boolean;
 };
 
 export function MoneyPotentialEarnings({
   tokens,
   apyDecimal,
+  apyPercent,
   isNoFeeToken,
   privacyMode,
   onAddToken,
+  onViewAll,
   isAddDisabled = false,
 }: MoneyPotentialEarningsProps) {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const eligibleTokens = useMemo(
     () => tokens.filter((token) => token.moneyFiatAmountUsd > 0),
     [tokens],
@@ -56,20 +46,6 @@ export function MoneyPotentialEarnings({
     () => eligibleTokens.slice(0, MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT),
     [eligibleTokens],
   );
-  const totalAssetsFiat = useMemo(
-    () =>
-      eligibleTokens.reduce(
-        (total, token) => total + token.moneyFiatAmountUsd,
-        0,
-      ),
-    [eligibleTokens],
-  );
-  const projectedAmount = calculateMoneyProjectedEarnings(
-    totalAssetsFiat,
-    apyDecimal ?? 0,
-  );
-
-  const hasProjection = totalAssetsFiat > 0 && projectedAmount > 0;
 
   if (visibleTokens.length === 0) {
     return null;
@@ -77,74 +53,12 @@ export function MoneyPotentialEarnings({
 
   return (
     <section data-testid="money-potential-earnings">
-      <Box paddingLeft={4} paddingRight={4} paddingTop={3} paddingBottom={3}>
-        <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
-          {t('moneyEarnOnCrypto')}
-        </Text>
-        {hasProjection ? (
-          <Box
-            className="mt-2"
-            data-testid="money-potential-earnings-description"
-          >
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              className="inline"
-            >
-              {`${t('moneyEarnOnCryptoDescriptionPrefix')} `}
-            </Text>
-            <SensitiveText
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              isHidden={privacyMode}
-              length={SensitiveTextLength.Medium}
-              className="inline"
-              data-testid="money-potential-earnings-total"
-            >
-              {formatCurrencyWithMinThreshold(totalAssetsFiat, 'USD')}
-            </SensitiveText>{' '}
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              className="inline"
-            >
-              {`${t('moneyEarnOnCryptoDescriptionMiddle')} `}
-            </Text>
-            <SensitiveText
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.SuccessDefault}
-              isHidden={privacyMode}
-              length={SensitiveTextLength.Short}
-              className="inline"
-              data-testid="money-potential-earnings-projection"
-            >
-              {`+${formatCurrencyWithMinThreshold(projectedAmount, 'USD')}`}
-            </SensitiveText>{' '}
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              className="inline"
-            >
-              {t('moneyEarnOnCryptoDescriptionSuffix')}
-            </Text>
-            <Icon
-              name={IconName.Info}
-              size={IconSize.Sm}
-              color={IconColor.IconAlternative}
-              className="ml-1 inline-block align-text-bottom"
-            />
-          </Box>
-        ) : (
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-            className="mt-2"
-          >
-            {t('moneyEarnOnCryptoDescription')}
-          </Text>
-        )}
-      </Box>
+      <MoneyPotentialEarningsSummary
+        tokens={eligibleTokens}
+        apyDecimal={apyDecimal}
+        apyPercent={apyPercent}
+        privacyMode={privacyMode}
+      />
 
       {visibleTokens.map((token, index) => (
         <MoneyPotentialEarningsTokenRow
@@ -163,8 +77,9 @@ export function MoneyPotentialEarnings({
           <Button
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
-            disabled
+            onClick={onViewAll}
             className="w-full"
+            data-testid="money-potential-earnings-view-all"
           >
             {t('viewAll')}
           </Button>
