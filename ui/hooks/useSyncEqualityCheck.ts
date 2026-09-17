@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef } from 'react';
 import stringify from 'fast-json-stable-stringify';
 import type { Json } from '@metamask/utils';
 
@@ -24,23 +24,17 @@ import type { Json } from '@metamask/utils';
  */
 export function useSyncEqualityCheck<Value extends Json>(value: Value): Value {
   const currentSnapshot = stringify(value);
-  const [cache, setCache] = useState<{ snapshot: string; value: Value }>(
-    () => ({
-      snapshot: currentSnapshot,
-      value,
-    }),
-  );
+  const snapshotRef = useRef<string>(currentSnapshot);
+  const valueRef = useRef<Value>(value);
 
-  if (currentSnapshot !== cache.snapshot) {
-    setCache({
-      snapshot: currentSnapshot,
-      value: Object.is(value, cache.value)
-        ? (JSON.parse(currentSnapshot) as Value)
-        : value,
-    });
+  if (currentSnapshot !== snapshotRef.current) {
+    valueRef.current = Object.is(value, valueRef.current)
+      ? (JSON.parse(currentSnapshot) as Value)
+      : value;
+    snapshotRef.current = currentSnapshot;
   }
 
-  return cache.value;
+  return valueRef.current;
 }
 
 export default useSyncEqualityCheck;

@@ -310,6 +310,11 @@
       "count": 8
     }
   },
+  "ui/helpers/higher-order-components/with-router-hooks/with-router-hooks.tsx": {
+    "react-hooks/refs": {
+      "count": 6
+    }
+  },
   "ui/hooks/accounts/useAccountsOperationsLoadingStates.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -468,6 +473,21 @@
   "ui/hooks/useMultiPolling.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
+    }
+  },
+  "ui/hooks/usePrevious.ts": {
+    "react-hooks/refs": {
+      "count": 5
+    }
+  },
+  "ui/hooks/useShallowEqualityCheck.ts": {
+    "react-hooks/refs": {
+      "count": 3
+    }
+  },
+  "ui/hooks/useSyncEqualityCheck.ts": {
+    "react-hooks/refs": {
+      "count": 5
     }
   },
   "ui/hooks/useMultichainAccountsIntroModal.ts": {
