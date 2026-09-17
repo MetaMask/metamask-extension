@@ -1,6 +1,7 @@
 import type { Hex } from '@metamask/utils';
 import {
   extractSignatureAddresses,
+  isAddressScanSupportedChainId,
   type PhishingController,
 } from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
@@ -49,6 +50,10 @@ export function scanUnvalidatedSignatureAddresses(options: {
 
   const { params } = request;
   if (!Array.isArray(params) || params[1] === undefined || params[1] === null) {
+    return;
+  }
+
+  if (!isAddressScanSupportedChainId(chainId)) {
     return;
   }
 
