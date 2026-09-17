@@ -8,7 +8,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
-describe('Multichain Accounts - Wallet Details', function (this: Suite) {
+describe('Multichain Accounts - Wallet Details ', function (this: Suite) {
   it('should view wallet details with one Ethereum', async function () {
     await withFixtures(
       {
