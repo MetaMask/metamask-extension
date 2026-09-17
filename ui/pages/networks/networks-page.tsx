@@ -4,7 +4,13 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -372,20 +378,28 @@ export const NetworksPage = () => {
     view === '' && rawEditedNetwork?.editCompleted
       ? `${rawEditedNetwork.chainId}:${rawEditedNetwork.nickname ?? ''}:${Boolean(rawEditedNetwork.newNetwork)}`
       : null;
-  const [consumedEditCompletedToastKey, setConsumedEditCompletedToastKey] =
-    useState<string | null>(null);
-  if (
-    editCompletedToastKey &&
-    editCompletedToastKey !== consumedEditCompletedToastKey &&
-    rawEditedNetwork
-  ) {
-    setConsumedEditCompletedToastKey(editCompletedToastKey);
-    setPageToast({
-      chainId: rawEditedNetwork.chainId,
-      nickname: rawEditedNetwork.nickname ?? '',
-      newNetwork: Boolean(rawEditedNetwork.newNetwork),
+  const consumedEditCompletedToastKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!editCompletedToastKey) {
+      consumedEditCompletedToastKeyRef.current = null;
+      return;
+    }
+    if (
+      editCompletedToastKey === consumedEditCompletedToastKeyRef.current ||
+      !rawEditedNetwork
+    ) {
+      return;
+    }
+    consumedEditCompletedToastKeyRef.current = editCompletedToastKey;
+    queueMicrotask(() => {
+      setPageToast({
+        chainId: rawEditedNetwork.chainId,
+        nickname: rawEditedNetwork.nickname ?? '',
+        newNetwork: Boolean(rawEditedNetwork.newNetwork),
+      });
     });
-  }
+  }, [editCompletedToastKey, rawEditedNetwork]);
 
   useEffect(() => {
     if (view !== '' || !rawEditedNetwork?.editCompleted) {

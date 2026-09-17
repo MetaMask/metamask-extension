@@ -782,9 +782,6 @@
   "ui/pages/custom-token-import/custom-token-import.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 2
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/pages/details/components/convert-again-button.tsx": {

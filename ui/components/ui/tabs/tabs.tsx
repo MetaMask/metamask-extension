@@ -101,13 +101,24 @@ export const Tabs = <TKey extends string = string>({
     [getValidChildren],
   );
 
+  const tabKeysFingerprint = useMemo(
+    () => getValidChildren.map((child) => child.props.tabKey).join('\0'),
+    [getValidChildren],
+  );
+
   const [activeTabIndex, setActiveTabIndex] = useState<number>(() =>
     Math.max(findChildByKey(activeTab), 0),
   );
   const [prevActiveTab, setPrevActiveTab] = useState(activeTab);
+  const [prevTabKeysFingerprint, setPrevTabKeysFingerprint] =
+    useState(tabKeysFingerprint);
 
-  if (activeTab !== prevActiveTab) {
+  if (
+    activeTab !== prevActiveTab ||
+    tabKeysFingerprint !== prevTabKeysFingerprint
+  ) {
     setPrevActiveTab(activeTab);
+    setPrevTabKeysFingerprint(tabKeysFingerprint);
     const childIndex = findChildByKey(activeTab);
     if (childIndex >= 0) {
       setActiveTabIndex(childIndex);

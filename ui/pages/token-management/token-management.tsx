@@ -902,19 +902,20 @@ export const TokenManagementPage = () => {
 
   const toastFromRoute = getTokenManagementToastFromRouteState(location.state);
   const toastFromRouteSymbol = toastFromRoute?.symbol;
-  const [prevToastFromRouteSymbol, setPrevToastFromRouteSymbol] = useState<
-    string | undefined
-  >(undefined);
-  if (
-    toastFromRoute &&
-    toastFromRouteSymbol &&
-    toastFromRouteSymbol !== prevToastFromRouteSymbol
-  ) {
-    setPrevToastFromRouteSymbol(toastFromRouteSymbol);
-    showPageToast(toastFromRoute);
-  } else if (!toastFromRouteSymbol && prevToastFromRouteSymbol) {
-    setPrevToastFromRouteSymbol(undefined);
-  }
+  const prevToastFromRouteSymbolRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (
+      toastFromRoute &&
+      toastFromRouteSymbol &&
+      toastFromRouteSymbol !== prevToastFromRouteSymbolRef.current
+    ) {
+      prevToastFromRouteSymbolRef.current = toastFromRouteSymbol;
+      showPageToast(toastFromRoute);
+    } else if (!toastFromRouteSymbol) {
+      prevToastFromRouteSymbolRef.current = undefined;
+    }
+  }, [showPageToast, toastFromRoute, toastFromRouteSymbol]);
 
   useEffect(() => {
     if (!toastFromRoute) {

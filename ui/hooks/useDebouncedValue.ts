@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const DEFAULT_DEBOUNCE_MS = 300;
 
@@ -18,11 +18,20 @@ export const useDebouncedValue = <Value>(
   delayMs: number = DEFAULT_DEBOUNCE_MS,
 ): Value => {
   const [debounced, setDebounced] = useState<Value>(value);
+  const prevDelayMsRef = useRef(delayMs);
 
   useEffect(() => {
     if (delayMs <= 0) {
+      queueMicrotask(() => setDebounced(value));
+      prevDelayMsRef.current = delayMs;
       return undefined;
     }
+
+    if (prevDelayMsRef.current <= 0) {
+      queueMicrotask(() => setDebounced(value));
+    }
+    prevDelayMsRef.current = delayMs;
+
     const timer = setTimeout(() => setDebounced(value), delayMs);
     return () => clearTimeout(timer);
   }, [value, delayMs]);
