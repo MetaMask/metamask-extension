@@ -1,17 +1,15 @@
 import React from 'react';
-import { BadgeCount } from '@metamask/design-system-react';
 import { useUnreadNotificationsCounter } from '../../../hooks/metamask-notifications/useCounter';
 import { Box, Text } from '../../component-library';
 import {
   BackgroundColor,
   BorderRadius,
   BorderStyle,
+  Display,
   TextColor,
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-
-const MAX_DISPLAYED_COUNT = 9;
 
 type NotificationsTagCounterProps = {
   noLabel?: boolean;
@@ -28,11 +26,26 @@ export const NotificationsTagCounter = ({
 
   if (noLabel) {
     return (
-      <BadgeCount
-        count={notificationsUnreadCount}
-        max={MAX_DISPLAYED_COUNT}
-        data-testid="notifications-tag-counter__unread-dot"
-      />
+      <Box
+        display={Display.Block}
+        backgroundColor={BackgroundColor.errorDefault}
+        borderStyle={BorderStyle.none}
+        borderRadius={BorderRadius.LG}
+        paddingTop={0}
+        paddingBottom={0}
+        paddingLeft={0}
+        paddingRight={0}
+      >
+        <Text
+          color={TextColor.errorInverse}
+          variant={TextVariant.bodyXs}
+          className="notifications-tag-counter__unread-dot"
+          data-testid="notifications-tag-counter__unread-dot"
+          textAlign={TextAlign.Center}
+        >
+          {notificationsUnreadCount > 10 ? '9+' : notificationsUnreadCount}
+        </Text>
+      </Box>
     );
   }
 
@@ -52,9 +65,7 @@ export const NotificationsTagCounter = ({
         className="notifications-tag-counter__text"
         textAlign={TextAlign.Center}
       >
-        {notificationsUnreadCount > MAX_DISPLAYED_COUNT
-          ? `${MAX_DISPLAYED_COUNT}+`
-          : notificationsUnreadCount}
+        {notificationsUnreadCount > 10 ? '9+' : notificationsUnreadCount}
       </Text>
     </Box>
   );

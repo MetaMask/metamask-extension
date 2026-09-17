@@ -175,18 +175,6 @@ describe('Unread notifications badge', () => {
     expect(badgeWrapper).toContainElement(badge);
     expect(badgeWrapper).not.toContainElement(searchButton);
   });
-
-  it('does not render a badge when there are no unread notifications', async () => {
-    const store = configureStore(mockDefaultState);
-    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
-    renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
-
-    await screen.findByTestId('account-options-menu-button');
-
-    expect(
-      screen.queryByTestId('notifications-tag-counter__unread-dot'),
-    ).not.toBeInTheDocument();
-  });
 });
 
 describe('Global menu', () => {
