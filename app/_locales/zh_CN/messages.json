@@ -6499,18 +6499,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "提取已就绪"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "您现在可以提取已解除质押的 $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "您解除质押 $1 的请求已发送"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "已从下列地址收到 NFT："
-  },
-  "notificationItemNFTSentTo": {
-    "message": "已发送 NFT 至"
-  },
   "notificationItemNetwork": {
     "message": "网络"
   },
@@ -6519,18 +6507,6 @@
   },
   "notificationItemReceived": {
     "message": "已收到"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "已从下列地址收到："
-  },
-  "notificationItemSent": {
-    "message": "已发送"
-  },
-  "notificationItemSentTo": {
-    "message": "已发送至"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "质押已完成"
   },
   "notificationItemStaked": {
     "message": "已质押"
@@ -6544,17 +6520,11 @@
   "notificationItemSwapped": {
     "message": "已兑换"
   },
-  "notificationItemSwappedFor": {
-    "message": "用于"
-  },
   "notificationItemTo": {
     "message": "至"
   },
   "notificationItemTransactionId": {
     "message": "交易 ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "解除质押完成"
   },
   "notificationItemUnStaked": {
     "message": "已解除质押"

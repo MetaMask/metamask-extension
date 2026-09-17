@@ -6461,18 +6461,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "出金準備ができました"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "これでステーキングが解除された$1を引き出すことができます"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1のステーキングを解除するリクエストが送信されました"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFTを次の相手から受け取りました:"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFTを次の相手に送りました:"
-  },
   "notificationItemNetwork": {
     "message": "ネットワーク:"
   },
@@ -6481,18 +6469,6 @@
   },
   "notificationItemReceived": {
     "message": "受け取りました"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "次の相手から受け取りました:"
-  },
-  "notificationItemSent": {
-    "message": "送信完了"
-  },
-  "notificationItemSentTo": {
-    "message": "次の相手に送りました:"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "ステーキングが完了しました"
   },
   "notificationItemStaked": {
     "message": "ステーキング中"
@@ -6506,17 +6482,11 @@
   "notificationItemSwapped": {
     "message": "スワップ完了"
   },
-  "notificationItemSwappedFor": {
-    "message": "-"
-  },
   "notificationItemTo": {
     "message": "送り先"
   },
   "notificationItemTransactionId": {
     "message": "トランザクションID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "ステーキングの解除が完了しました"
   },
   "notificationItemUnStaked": {
     "message": "ステーキングが解除されました"

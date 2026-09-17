@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -34,7 +34,7 @@ const AssetOptions = ({
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
-  const ref = useRef(false);
+  const [menuAnchorElement, setMenuAnchorElement] = useState(null);
 
   const assetId =
     token?.address && token?.chainId
@@ -77,7 +77,7 @@ const AssetOptions = ({
   };
 
   return (
-    <div ref={ref} className="shrink-0">
+    <div ref={setMenuAnchorElement} className="shrink-0">
       <ButtonIcon
         data-testid="asset-options__button"
         onClick={() => setAssetOptionsOpen(true)}
@@ -87,7 +87,7 @@ const AssetOptions = ({
       />
       {assetOptionsOpen ? (
         <Menu
-          anchorElement={ref.current}
+          anchorElement={menuAnchorElement}
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem
