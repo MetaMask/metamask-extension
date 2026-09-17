@@ -3,8 +3,6 @@ import {
   type CaipAssetType,
   type CaipChainId,
 } from '@metamask/utils';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import type { BridgeToken } from '../../../ducks/bridge/types';
 import {
   calcNormalizedTokenAmount,
   getNativeAssetForChainId,
@@ -13,6 +11,8 @@ import {
   isSolanaChainId,
 } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
 const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
   {
