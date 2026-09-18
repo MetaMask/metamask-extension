@@ -1,4 +1,5 @@
 import {
+  QuoteStreamCompleteReason,
   RequestStatus,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
@@ -8,21 +9,18 @@ import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-n
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as bridgeActions from '../../ducks/bridge/actions';
-import { TraceName } from '../../../shared/lib/trace';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
 import { useQuoteFetchEvents } from './useQuoteFetchEvents';
 
 const mockDispatch = jest.fn((...args: unknown[]) => jest.fn()(...args));
 
-const mockEndTrace = jest.fn();
+const mockQuoteTraceFinish = jest.fn();
 
-jest.mock('../../../shared/lib/trace', () => {
-  const actual = jest.requireActual('../../../shared/lib/trace');
-  return {
-    ...actual,
-    endTrace: (...args: unknown[]) => mockEndTrace(...args),
-  };
-});
+jest.mock('../../pages/bridge/utils/swap-quote-fetch-trace', () => ({
+  swapQuoteFetchTrace: {
+    finish: (...args: unknown[]) => mockQuoteTraceFinish(...args),
+  },
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -186,10 +184,7 @@ describe('useQuoteFetchEvents', () => {
       }),
     );
 
-    expect(mockEndTrace).toHaveBeenCalledWith({
-      name: TraceName.SwapQuoteFetch,
-      timestamp: expect.any(Number),
-    });
+    expect(mockQuoteTraceFinish).toHaveBeenCalledWith('success');
   });
 
   it('ends the quote fetch trace when a completed request has no quotes', () => {
@@ -200,14 +195,20 @@ describe('useQuoteFetchEvents', () => {
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotes: [],
+          quoteStreamComplete: {
+            hasQuotes: false,
+            quoteCount: 0,
+            reason: QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
+          },
         },
       }),
     );
 
-    expect(mockEndTrace).toHaveBeenCalledWith({
-      name: TraceName.SwapQuoteFetch,
-      timestamp: expect.any(Number),
-    });
+    expect(mockQuoteTraceFinish).toHaveBeenCalledWith(
+      'no_quotes',
+      undefined,
+      QuoteStreamCompleteReason.AMOUNT_TOO_HIGH,
+    );
   });
 
   it('ends the quote fetch trace as unsuccessful when quote fetching fails', () => {
@@ -222,14 +223,10 @@ describe('useQuoteFetchEvents', () => {
       }),
     );
 
-    expect(mockEndTrace).toHaveBeenCalledWith({
-      name: TraceName.SwapQuoteFetch,
-      timestamp: expect.any(Number),
-      data: { success: false },
-    });
+    expect(mockQuoteTraceFinish).toHaveBeenCalledWith('error');
   });
 
-  it('ends the quote fetch trace as unsuccessful when the hook unmounts', () => {
+  it('does not finish a quote fetch trace when the hook unmounts', () => {
     const { unmount } = renderUseQuoteFetchEvents(
       createBridgeMockStore({
         bridgeStateOverrides: {
@@ -239,13 +236,9 @@ describe('useQuoteFetchEvents', () => {
       }),
     );
 
-    mockEndTrace.mockClear();
+    mockQuoteTraceFinish.mockClear();
     unmount();
 
-    expect(mockEndTrace).toHaveBeenCalledWith({
-      name: TraceName.SwapQuoteFetch,
-      timestamp: expect.any(Number),
-      data: { success: false },
-    });
+    expect(mockQuoteTraceFinish).not.toHaveBeenCalled();
   });
 });
