@@ -48,7 +48,11 @@ export const Amount = ({
     getFiatDisplayValue,
     getNativeValue,
   } = useCurrencyConversions();
-  const { getMaxAmount } = useMaxAmount();
+  const {
+    getMaxAmount,
+    isMaxAmountAvailable = true,
+    isMaxAmountPending = false,
+  } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
   const {
     setAmountInputMethodManual,
@@ -211,8 +215,15 @@ export const Amount = ({
           </Text>
           {!isNonEvmNativeSendType && (
             <ButtonLink
+              disabled={!isMaxAmountAvailable}
+              loading={isMaxAmountPending}
               marginLeft={2}
               onClick={updateToMax}
+              title={
+                !isMaxAmountAvailable && !isMaxAmountPending
+                  ? t('maxAmountUnavailable')
+                  : undefined
+              }
               variant={TextVariant.bodySm}
             >
               {t('max')}

@@ -92,8 +92,10 @@ export function useAsyncCallback<T>(
 ): [() => Promise<void>, AsyncResult<T>] {
   const [result, setResult] = useState<AsyncResult<T>>(RESULT_IDLE);
 
-  // Track component mount state
+  // Track component mount state and ensure only the latest execution can update
+  // the result.
   const isMounted = useRef(true);
+  const executionId = useRef(0);
 
   // Re-arm on mount so a StrictMode remount doesn't leave the ref stuck false
   useEffect(() => {
@@ -107,14 +109,16 @@ export function useAsyncCallback<T>(
     if (!isMounted.current) {
       return;
     }
+    executionId.current += 1;
+    const currentExecutionId = executionId.current;
     setResult(RESULT_PENDING);
     try {
       const value = await asyncFn();
-      if (isMounted.current) {
+      if (isMounted.current && currentExecutionId === executionId.current) {
         setResult(createSuccessResult(value));
       }
     } catch (error) {
-      if (isMounted.current) {
+      if (isMounted.current && currentExecutionId === executionId.current) {
         setResult(createErrorResult(error as Error));
       }
     }
