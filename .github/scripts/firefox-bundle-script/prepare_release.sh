@@ -89,8 +89,7 @@ else
     fi
 fi
 
-WORK_DIR_PREFIX="comparison"
-SUBMISSION_DIR_PREFIX="submission"
+WORK_DIR_PREFIX="main0_comparison"
 
 # Main-release defaults. These are set unconditionally (not only in the Flask
 # branch below) so that a value left over in the caller's shell environment
@@ -105,7 +104,6 @@ if [ "${RELEASE_TYPE}" = "flask" ]; then
     fi
     FLASK_VERSION="${VERSION}-flask.0"
     WORK_DIR_PREFIX="flask_comparison"
-    SUBMISSION_DIR_PREFIX="flask_submission"
     PRODUCTION_BUILD_FILE="metamask-firefox-${FLASK_VERSION}.zip"
     # NOTE: This variable must NOT be named with a `BUNDLE_` prefix. The
     # metamask-extension webpack CLI reads env vars prefixed `BUNDLE_` as CLI
@@ -117,7 +115,6 @@ fi
 
 export PRODUCTION_BUILD_FILE
 export FIREFOX_BUNDLE_SCRIPT_ARGS
-export SUBMISSION_DIR_PREFIX
 
 log_info "Starting Firefox release preparation for MetaMask Extension version ${VERSION}"
 log_info "Last submitted version: ${LAST_VERSION}"
@@ -170,7 +167,6 @@ echo "=========================================="
 echo ""
 
 log_info "Working directory: ${ABS_WORK_DIR}"
-log_info "Submission package: ${ABS_OUTPUT_DIR}/${SUBMISSION_DIR_PREFIX}_v${VERSION}"
 
 echo ""
 
