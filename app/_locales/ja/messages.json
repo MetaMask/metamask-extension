@@ -3105,9 +3105,6 @@
   "copyAddressShort": {
     "message": "アドレスをコピー"
   },
-  "copyPrivateKey": {
-    "message": "秘密鍵をコピー"
-  },
   "copyToClipboard": {
     "message": "クリップボードにコピー"
   },
@@ -5029,9 +5026,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "安全上の理由により、現在このテキストは選択できません。"
   },
   "learnHow": {
     "message": "方法"
@@ -8506,10 +8500,6 @@
     "message": "秘密鍵",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1の秘密鍵",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "秘密鍵は非表示になっています",
     "description": "Explains that the private key input is hidden"
@@ -8521,9 +8511,6 @@
   "privateKeyShown": {
     "message": "秘密鍵は表示されています",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "警告: この鍵は絶対に公開しないでください。秘密鍵を持つ人は誰でも、アカウントに保持されているアセットを盗むことができます。"
   },
   "privateKeys": {
     "message": "秘密鍵",
@@ -10611,12 +10598,6 @@
   },
   "showPermissions": {
     "message": "表示許可"
-  },
-  "showPrivateKey": {
-    "message": "秘密鍵を表示"
-  },
-  "showSRP": {
-    "message": "シークレットリカバリーフレーズを表示"
   },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
