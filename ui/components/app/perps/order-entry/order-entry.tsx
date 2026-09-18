@@ -1,4 +1,10 @@
-import React, { useMemo, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   twMerge,
@@ -176,7 +182,10 @@ export const OrderEntry = ({
       : t('perpsFeesTooltipProviderFee');
 
   const onCalculationsChangeRef = useRef(onCalculationsChange);
-  onCalculationsChangeRef.current = onCalculationsChange;
+
+  useLayoutEffect(() => {
+    onCalculationsChangeRef.current = onCalculationsChange;
+  }, [onCalculationsChange]);
 
   const prevCalculationsRef = useRef<OrderCalculations | null>(null);
 

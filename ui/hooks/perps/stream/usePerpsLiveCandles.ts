@@ -93,19 +93,16 @@ export function usePerpsLiveCandles(
   const [prevSubscriptionKey, setPrevSubscriptionKey] =
     useState(subscriptionKey);
 
-  // Stable refs for the current subscription params (for validation in callbacks)
-  const currentSymbolRef = useRef(symbol);
-  const currentIntervalRef = useRef(interval);
-  currentSymbolRef.current = symbol;
-  currentIntervalRef.current = interval;
-
   if (subscriptionKey !== prevSubscriptionKey) {
     setPrevSubscriptionKey(subscriptionKey);
     setCandleData(null);
     setError(null);
-    hasReceivedFirstUpdate.current = false;
     setIsInitialLoading(Boolean(symbol && interval));
   }
+
+  useEffect(() => {
+    hasReceivedFirstUpdate.current = false;
+  }, [subscriptionKey]);
 
   useEffect(() => {
     if (!symbol || !interval) {
@@ -122,10 +119,7 @@ export function usePerpsLiveCandles(
       callback: (data: CandleData) => {
         // Validate incoming data matches current subscription
         // (prevents stale data from race conditions during symbol/interval switch)
-        if (
-          data.symbol !== currentSymbolRef.current ||
-          data.interval !== currentIntervalRef.current
-        ) {
+        if (data.symbol !== symbol || data.interval !== interval) {
           return;
         }
 

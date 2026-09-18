@@ -273,19 +273,6 @@ export function usePerpsTransactionHistory({
   }, [fetchAllTransactions, refetchUserHistory, coalesceKeys]);
 
   const scopeFingerprint = `${perpsScopeKey}:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}:${forceFreshOnMount ? '1' : '0'}`;
-  const [prevScopeFingerprint, setPrevScopeFingerprint] = useState<
-    string | undefined
-  >(undefined);
-
-  if (
-    !skipInitialFetch &&
-    scopeFingerprint !== prevScopeFingerprint &&
-    lastFetchedScopeRef.current !== scopeFingerprint
-  ) {
-    setPrevScopeFingerprint(scopeFingerprint);
-    setIsLoading(true);
-    setError(null);
-  }
 
   useEffect(() => {
     if (skipInitialFetch) {
@@ -300,6 +287,8 @@ export function usePerpsTransactionHistory({
       return;
     }
     lastFetchedScopeRef.current = scopeFingerprint;
+    setIsLoading(true);
+    setError(null);
     // Activity surfaces that open on user intent (e.g. PerpsActivityPage)
     // must force a fresh fetch so they never surface a stale snapshot held
     // by a sibling consumer inside the TTL window. Passive previews (e.g.
