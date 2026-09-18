@@ -20,6 +20,9 @@ jest.mock('../../hooks/identity/useAccountSyncing');
 jest.mock('../../hooks/identity/useContactSyncing');
 jest.mock('../../hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing');
 jest.mock('../../hooks/identity/useAuthentication');
+jest.mock('../../helpers/braze/use-braze-identity', () => ({
+  useBrazeIdentity: jest.fn(),
+}));
 
 const mockUseSelector = jest.mocked(redux.useSelector);
 
