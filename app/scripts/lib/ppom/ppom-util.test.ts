@@ -37,10 +37,17 @@ import {
 import { SecurityAlertResponse } from './types';
 import * as securityAlertAPI from './security-alerts-api';
 
-jest.mock('@metamask/transaction-controller', () => ({
-  ...jest.requireActual('@metamask/transaction-controller'),
-  normalizeTransactionParams: jest.fn(),
-}));
+jest.mock('@metamask/transaction-controller', () => {
+  const actual = jest.requireActual('@metamask/transaction-controller');
+  const descriptors = Object.getOwnPropertyDescriptors(actual);
+  descriptors.normalizeTransactionParams = {
+    configurable: true,
+    enumerable: true,
+    value: jest.fn(),
+    writable: true,
+  };
+  return Object.defineProperties({}, descriptors);
+});
 
 jest.mock('@metamask/snaps-utils', () => ({
   ...jest.requireActual('@metamask/snaps-utils'),

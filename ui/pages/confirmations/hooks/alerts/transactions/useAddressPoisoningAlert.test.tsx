@@ -17,10 +17,17 @@ import { AlertsName } from '../constants';
 import { useAddressPoisoningAlert } from './useAddressPoisoningAlert';
 
 jest.mock('../../../../../hooks/useI18nContext');
-jest.mock('@metamask/transaction-controller', () => ({
-  ...jest.requireActual('@metamask/transaction-controller'),
-  getSendRecipients: jest.fn(),
-}));
+jest.mock('@metamask/transaction-controller', () => {
+  const actual = jest.requireActual('@metamask/transaction-controller');
+  const descriptors = Object.getOwnPropertyDescriptors(actual);
+  descriptors.getSendRecipients = {
+    configurable: true,
+    enumerable: true,
+    value: jest.fn(),
+    writable: true,
+  };
+  return Object.defineProperties({}, descriptors);
+});
 jest.mock('../../transactions/useTransactionMetadataRequest', () => ({
   useTransactionMetadataRequestOptional: jest.fn(),
 }));

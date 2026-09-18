@@ -25,10 +25,17 @@ import reduceMetamask, {
 } from './metamask';
 import { getConversionRate, isNotEIP1559Network } from './base-selectors';
 
-jest.mock('@metamask/transaction-controller', () => ({
-  ...jest.requireActual('@metamask/transaction-controller'),
-  mergeGasFeeEstimates: jest.fn(),
-}));
+jest.mock('@metamask/transaction-controller', () => {
+  const actual = jest.requireActual('@metamask/transaction-controller');
+  const descriptors = Object.getOwnPropertyDescriptors(actual);
+  descriptors.mergeGasFeeEstimates = {
+    configurable: true,
+    enumerable: true,
+    value: jest.fn(),
+    writable: true,
+  };
+  return Object.defineProperties({}, descriptors);
+});
 
 const GAS_FEE_CONTROLLER_ESTIMATES_MOCK = {
   low: '0x1',
