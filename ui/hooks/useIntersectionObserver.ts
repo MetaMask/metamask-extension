@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 
 type State = {
@@ -90,20 +90,24 @@ export function useIntersectionObserver({
     };
   }, [ref, thresholdKey, root, rootRef, rootMargin]);
 
-  useEffect(() => {
-    if (!ref && state.entry?.target) {
-      setState({ isIntersecting: initialIsIntersecting, entry: undefined });
-    }
-  }, [ref, state.entry, initialIsIntersecting]);
+  const setRefCallback = useCallback(
+    (node?: Element | null) => {
+      setRef(node ?? null);
+      if (!node) {
+        setState({ isIntersecting: initialIsIntersecting, entry: undefined });
+      }
+    },
+    [initialIsIntersecting],
+  );
 
   const result = useMemo(
     () =>
       [
-        setRef,
+        setRefCallback,
         Boolean(state.isIntersecting),
         state.entry,
       ] as IntersectionReturn,
-    [state.entry, state.isIntersecting],
+    [setRefCallback, state.entry, state.isIntersecting],
   );
 
   result.ref = result[0];

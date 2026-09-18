@@ -38,6 +38,20 @@ describe('useDebouncedValue', () => {
     expect(result.current).toBe('abc');
   });
 
+  it('keeps debounced state in sync when switching from immediate to delayed mode', () => {
+    const { result, rerender } = renderHook(
+      ({ value, delayMs }: { value: string; delayMs: number }) =>
+        useDebouncedValue(value, delayMs),
+      { initialProps: { value: 'a', delayMs: 0 } },
+    );
+
+    rerender({ value: 'b', delayMs: 0 });
+    expect(result.current).toBe('b');
+
+    rerender({ value: 'b', delayMs: 200 });
+    expect(result.current).toBe('b');
+  });
+
   it('tracks the source synchronously when delayMs <= 0', () => {
     const { result, rerender } = renderHook(
       ({ value }: { value: number }) => useDebouncedValue(value, 0),

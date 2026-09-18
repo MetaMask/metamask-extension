@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 
@@ -15,15 +15,18 @@ function ButtonGroup({
   const [activeButtonIndex, setActiveButtonIndex] = useState(() =>
     noButtonActiveByDefault ? null : defaultActiveButtonIndex,
   );
+  const [prevNewActiveButtonIndex, setPrevNewActiveButtonIndex] =
+    useState(newActiveButtonIndex);
 
-  useEffect(() => {
+  if (newActiveButtonIndex !== prevNewActiveButtonIndex) {
+    setPrevNewActiveButtonIndex(newActiveButtonIndex);
     if (
       typeof newActiveButtonIndex === 'number' &&
       activeButtonIndex !== newActiveButtonIndex
     ) {
       setActiveButtonIndex(newActiveButtonIndex);
     }
-  }, [newActiveButtonIndex, activeButtonIndex]);
+  }
 
   const renderButtons = () =>
     React.Children.map(children, (child, index) => {

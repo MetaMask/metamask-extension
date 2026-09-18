@@ -903,15 +903,30 @@ export const TokenManagementPage = () => {
     };
   }, []);
 
+  const toastFromRoute = getTokenManagementToastFromRouteState(location.state);
+  const toastFromRouteSymbol = toastFromRoute?.symbol;
+  const prevToastFromRouteSymbolRef = useRef<string | undefined>(undefined);
+
   useEffect(() => {
-    const routeToast = getTokenManagementToastFromRouteState(location.state);
-    if (!routeToast) {
+    if (
+      toastFromRoute &&
+      toastFromRouteSymbol &&
+      toastFromRouteSymbol !== prevToastFromRouteSymbolRef.current
+    ) {
+      prevToastFromRouteSymbolRef.current = toastFromRouteSymbol;
+      showPageToast(toastFromRoute);
+    } else if (!toastFromRouteSymbol) {
+      prevToastFromRouteSymbolRef.current = undefined;
+    }
+  }, [showPageToast, toastFromRoute, toastFromRouteSymbol]);
+
+  useEffect(() => {
+    if (!toastFromRoute) {
       return;
     }
 
-    showPageToast(routeToast);
     navigate(TOKEN_MANAGEMENT_ROUTE, { replace: true, state: null });
-  }, [location.state, navigate, showPageToast]);
+  }, [toastFromRoute, navigate]);
 
   useEffect(() => {
     commitStagedHidesRef.current = async () => {
