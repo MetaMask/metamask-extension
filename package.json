@@ -619,7 +619,7 @@
     "@metamask/auto-changelog": "^6.2.0",
     "@metamask/bitcoin-regtest-up": "^1.0.0",
     "@metamask/browser-playground": "0.8.1",
-    "@metamask/client-mcp-core": "0.5.0",
+    "@metamask/client-mcp-core": "github:MetaMask/client-mcp-core#windows-support",
     "@metamask/design-system-shared": "^0.38.0",
     "@metamask/eslint-config": "^14.1.1",
     "@metamask/eslint-config-jest": "^14.1.1",
