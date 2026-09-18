@@ -245,6 +245,18 @@ class SwapPage {
     });
   }
 
+  /**
+   * Waits for the from/to amount fields to be populated. Throws if the
+   * amounts are still empty once the wait times out.
+   */
+  async checkSwapAmountsArePopulated(): Promise<void> {
+    await this.driver.wait(async () => {
+      const fromAmount = await this.getFromAmountValue();
+      const toAmount = await this.getToAmountValue();
+      return fromAmount !== '' && toAmount !== '';
+    }, this.driver.timeout);
+  }
+
   async checkSwapButtonIsEnabled(): Promise<void> {
     await this.driver.waitForSelector(this.swapButton, {
       state: 'enabled',

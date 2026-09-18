@@ -212,7 +212,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
-    tracesBeforeMetricsOptIn: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
   },

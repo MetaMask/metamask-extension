@@ -62,7 +62,7 @@ export default class NotificationManager extends EventEmitter {
     this._popup = popupState;
     const popup = await this._getPopup();
     // Bring focus to chrome popup
-    if (popup) {
+    if (popup && typeof popup.id === 'number') {
       // bring focus to existing chrome popup
       await this.platform.focusWindow(popup.id);
     } else {
@@ -99,7 +99,11 @@ export default class NotificationManager extends EventEmitter {
       });
 
       // Firefox currently ignores left/top for create, but it works for update
-      if (popupWindow.left !== left && popupWindow.state !== 'fullscreen') {
+      if (
+        typeof popupWindow.id === 'number' &&
+        popupWindow.left !== left &&
+        popupWindow.state !== 'fullscreen'
+      ) {
         await this.platform.updateWindowPosition(popupWindow.id, left, top);
       }
       // Pass the new popup window id to the appController setter and keep it

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -18,6 +18,8 @@ import {
   TextButton,
   TextVariant,
 } from '@metamask/design-system-react';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getShouldShowBasicFunctionalityMigrationModal } from '../../../selectors/multichain/feature-flags';
 import { hideMigrationModal } from '../../../store/actions';
@@ -25,6 +27,8 @@ import { useAppSelector, useDispatch } from '../../../store/hooks';
 import {
   BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK,
   BASIC_FUNCTIONALITY_MIGRATION_PRIVACY_NOTICE_LINK,
+  BASIC_FUNCTIONALITY_SOCIAL_PRIVACY_NOTICE_NAME,
+  BasicFunctionalitySocialPrivacyNoticeAction,
 } from './constants';
 
 const linkClassName =
@@ -33,7 +37,31 @@ const linkClassName =
 export function BasicFunctionalityMigrationModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const isOpen = useAppSelector(getShouldShowBasicFunctionalityMigrationModal);
+  const hasTrackedView = useRef(false);
+
+  const trackNoticeAction = useCallback(
+    (action: BasicFunctionalitySocialPrivacyNoticeAction) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NoticeUpdateDisplayed)
+          .addProperties({
+            name: BASIC_FUNCTIONALITY_SOCIAL_PRIVACY_NOTICE_NAME,
+            action,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, trackEvent],
+  );
+
+  useEffect(() => {
+    if (!isOpen || hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
+    trackNoticeAction(BasicFunctionalitySocialPrivacyNoticeAction.Viewed);
+  }, [isOpen, trackNoticeAction]);
 
   if (!isOpen) {
     return null;
@@ -111,7 +139,12 @@ export function BasicFunctionalityMigrationModal() {
             className="w-full"
             size={ButtonSize.Lg}
             variant={ButtonVariant.Primary}
-            onClick={() => dispatch(hideMigrationModal())}
+            onClick={() => {
+              trackNoticeAction(
+                BasicFunctionalitySocialPrivacyNoticeAction.AcceptAndClose,
+              );
+              dispatch(hideMigrationModal());
+            }}
             data-testid="basic-functionality-migration-modal-accept"
           >
             {t('acceptAndClose')}

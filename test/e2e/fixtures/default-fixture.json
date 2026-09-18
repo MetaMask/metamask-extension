@@ -179,7 +179,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 226,
+      "currentMigrationVersion": 227,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -405,8 +405,7 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": []
+      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -1037,7 +1036,7 @@
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
-        "isBasicFunctionalityConsolidatedEnabled": false,
+        "isBasicFunctionalityConsolidatedEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1090,7 +1089,7 @@
       "initialDelayEndTimestamp": 1770282498299,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
-      "reportedAccounts": [],
+      "reportedAccounts": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"],
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1289,6 +1288,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 226
+    "version": 227
   }
 }

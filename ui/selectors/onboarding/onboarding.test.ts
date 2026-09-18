@@ -2,6 +2,7 @@ import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   OnboardingState,
+  getIsBasicFunctionalitySocialLoginUser,
   getIsSocialLoginUserAuthenticated,
   getSocialLoginEmail,
   getSocialLoginType,
@@ -49,6 +50,38 @@ const MOCK_STATE: OnboardingState = {
 };
 
 describe('social-sync selectors', () => {
+  describe('#getIsBasicFunctionalitySocialLoginUser', () => {
+    it('returns true for a social first-time flow without an auth connection', () => {
+      expect(
+        getIsBasicFunctionalitySocialLoginUser({
+          ...MOCK_STATE,
+          metamask: {
+            ...MOCK_STATE.metamask,
+            authConnection: undefined,
+            firstTimeFlowType: FirstTimeFlowType.socialCreate,
+          },
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true when an auth connection is present', () => {
+      expect(getIsBasicFunctionalitySocialLoginUser(MOCK_STATE)).toBe(true);
+    });
+
+    it('returns false for a non-social flow without an auth connection', () => {
+      expect(
+        getIsBasicFunctionalitySocialLoginUser({
+          ...MOCK_STATE,
+          metamask: {
+            ...MOCK_STATE.metamask,
+            authConnection: undefined,
+            firstTimeFlowType: FirstTimeFlowType.import,
+          },
+        }),
+      ).toBe(false);
+    });
+  });
+
   describe('#getSocialLoginType', () => {
     it('returns the social login type', () => {
       expect(getSocialLoginType(MOCK_STATE)).toBe(AuthConnection.Google);

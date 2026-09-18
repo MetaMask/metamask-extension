@@ -294,6 +294,7 @@ import {
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsSeedlessOnboardingFeatureEnabled,
 } from '../../../shared/lib/environment';
+import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
@@ -364,10 +365,6 @@ import {
   ReferralStatus,
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
-import {
-  MetaMetricsControllerBufferedEndTraceAction,
-  MetaMetricsControllerBufferedTraceAction,
-} from '../controllers/metametrics-controller-method-action-types';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import {
   DefiReferralPartner,
@@ -419,6 +416,10 @@ import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
@@ -665,8 +666,8 @@ type AllowedActions =
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
   | KeyringControllerWithKeyringAction
-  | MetaMetricsControllerBufferedTraceAction
-  | MetaMetricsControllerBufferedEndTraceAction
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
@@ -2448,7 +2449,7 @@ export class LegacyBackgroundApiService {
           },
         );
 
-        this.#messenger.call('MetaMetricsController:bufferedTrace', {
+        this.#messenger.call('SentryTracingService:bufferedTrace', {
           name: TraceName.OnboardingResetPassword,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -2483,7 +2484,7 @@ export class LegacyBackgroundApiService {
         await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
-        this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
           name: TraceName.OnboardingResetPassword,
           data: { success: changePasswordSuccess },
         });
@@ -3090,11 +3091,20 @@ export class LegacyBackgroundApiService {
    * and the shield service is stopped if applicable.
    *
    * @param useExternal - Whether external services should be enabled.
+   * @param ownedPreferences - Optional per-preference values forwarded to
+   * PreferencesController so enabling can preserve granular onboarding choices
+   * in one write.
    */
-  toggleExternalServices(useExternal: boolean): void {
+  toggleExternalServices(
+    useExternal: boolean,
+    ownedPreferences?: Partial<
+      Record<ExternalServicesOwnedPreference, boolean>
+    >,
+  ): void {
     this.#messenger.call(
       'PreferencesController:toggleExternalServices',
       useExternal,
+      ownedPreferences,
     );
 
     const subscriptionState = this.#messenger.call(
@@ -3806,7 +3816,7 @@ export class LegacyBackgroundApiService {
   ): Promise<void> {
     let createSeedPhraseBackupSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3834,7 +3844,7 @@ export class LegacyBackgroundApiService {
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         data: { success: createSeedPhraseBackupSuccess },
       });
@@ -3850,7 +3860,7 @@ export class LegacyBackgroundApiService {
   async #fetchAllSecretData(password?: string): Promise<SecretMetadata[]> {
     let fetchAllSeedPhrasesSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingFetchSrps,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3862,7 +3872,7 @@ export class LegacyBackgroundApiService {
 
       return allSeedPhrases;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingFetchSrps,
         data: { success: fetchAllSeedPhrasesSuccess },
       });
@@ -3959,7 +3969,7 @@ export class LegacyBackgroundApiService {
       await this.#seedlessOperationMutex.runExclusive(async () => {
         let addNewSeedPhraseBackupSuccess = false;
         try {
-          this.#messenger.call('MetaMetricsController:bufferedTrace', {
+          this.#messenger.call('SentryTracingService:bufferedTrace', {
             name: TraceName.OnboardingAddSrp,
             op: TraceOperation.OnboardingSecurityOp,
           });
@@ -3983,7 +3993,7 @@ export class LegacyBackgroundApiService {
 
           throw err;
         } finally {
-          this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+          this.#messenger.call('SentryTracingService:bufferedEndTrace', {
             name: TraceName.OnboardingAddSrp,
             data: { success: addNewSeedPhraseBackupSuccess },
           });

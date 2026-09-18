@@ -262,6 +262,7 @@ async function verifyEnglishLocale() {
       'app/scripts/constants/**/*.js',
       'app/scripts/constants/**/*.ts',
       'app/scripts/platforms/**/*.js',
+      'app/scripts/platforms/**/*.ts',
       'app/scripts/controllers/**/*.ts',
     ],
     {

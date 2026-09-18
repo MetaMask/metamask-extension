@@ -1642,6 +1642,123 @@ async function setupMocking(
       },
     }));
 
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .flatMap((value) => value.split(','))
+        .filter(Boolean);
+      return {
+        statusCode: 200,
+        json: Object.fromEntries(
+          assetIds.map((assetId) => [
+            assetId,
+            { price: 0, marketCap: 0, pricePercentChange1d: 0 },
+          ]),
+        ),
+      };
+    });
+
+  // The price API client only caches this response when it contains both
+  // `fullSupport` and `partialSupport`; anything else (such as the empty-200
+  // catch-all this used to land on) makes it silently fall back to its
+  // hardcoded list without caching, so every later price fetch re-requests the
+  // endpoint. The lists below are that same hardcoded fallback
+  // (`SPOT_PRICES_SUPPORT_INFO` in @metamask/assets-controllers), so supported
+  // chains are unchanged and only the repeated requests go away.
+  const spotPricesSupportedChains = [
+    'eip155:1',
+    'eip155:10',
+    'eip155:25',
+    'eip155:30',
+    'eip155:42',
+    'eip155:50',
+    'eip155:56',
+    'eip155:57',
+    'eip155:82',
+    'eip155:88',
+    'eip155:100',
+    'eip155:106',
+    'eip155:122',
+    'eip155:128',
+    'eip155:137',
+    'eip155:143',
+    'eip155:146',
+    'eip155:196',
+    'eip155:232',
+    'eip155:250',
+    'eip155:252',
+    'eip155:288',
+    'eip155:321',
+    'eip155:324',
+    'eip155:336',
+    'eip155:361',
+    'eip155:747',
+    'eip155:988',
+    'eip155:999',
+    'eip155:1088',
+    'eip155:1101',
+    'eip155:1284',
+    'eip155:1285',
+    'eip155:1329',
+    'eip155:1776',
+    'eip155:1868',
+    'eip155:2525',
+    'eip155:2741',
+    'eip155:4217',
+    'eip155:4326',
+    'eip155:5000',
+    'eip155:5031',
+    'eip155:5042',
+    'eip155:7000',
+    'eip155:8453',
+    'eip155:4663',
+    'eip155:9745',
+    'eip155:10000',
+    'eip155:33139',
+    'eip155:41923',
+    'eip155:42161',
+    'eip155:42220',
+    'eip155:42262',
+    'eip155:42431',
+    'eip155:42793',
+    'eip155:43111',
+    'eip155:43114',
+    'eip155:57073',
+    'eip155:59144',
+    'eip155:60808',
+    'eip155:68414',
+    'eip155:73115',
+    'eip155:80094',
+    'eip155:81457',
+    'eip155:88888',
+    'eip155:97741',
+    'eip155:98866',
+    'eip155:167000',
+    'eip155:333999',
+    'eip155:534352',
+    'eip155:747474',
+    'eip155:984122',
+    'eip155:1440000',
+    'eip155:1313161554',
+    'eip155:1666600000',
+    'eip155:16661',
+  ];
+  await server
+    .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenJson(200, {
+      fullSupport: spotPricesSupportedChains.slice(0, 11),
+      partialSupport: {
+        spotPricesV2: spotPricesSupportedChains,
+        spotPricesV3: spotPricesSupportedChains,
+      },
+    });
+
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
   await server
@@ -1999,10 +2116,17 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
-          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
-          partialSupport: {
-            balances: [42220, 43114],
-          },
+          fullSupport: [
+            'eip155:1',
+            'eip155:137',
+            'eip155:56',
+            'eip155:59144',
+            'eip155:8453',
+            'eip155:10',
+            'eip155:42161',
+            'eip155:534352',
+          ],
+          partialSupport: ['eip155:42220', 'eip155:43114'],
         },
       };
     });

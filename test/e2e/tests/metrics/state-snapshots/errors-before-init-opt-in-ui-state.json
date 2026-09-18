@@ -123,8 +123,7 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object"
+      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -358,6 +357,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 226
+    "version": 227
   }
 }

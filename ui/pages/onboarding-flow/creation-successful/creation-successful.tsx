@@ -277,6 +277,7 @@ export default function CreationSuccessful() {
           className="w-full"
           data-testid="manage-default-settings"
           onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          disabled={isSidePanelEnabled && isSidePanelOpen}
         >
           {t('manageDefaultSettings')}
         </Button>

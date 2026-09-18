@@ -418,7 +418,6 @@
     "tokenWarnings": "object",
     "tokens": "object",
     "tokensChainsCache": {},
-    "tracesBeforeMetricsOptIn": "object",
     "tradeConfigurations": "object",
     "transactionBatches": "object",
     "transactionData": "object",

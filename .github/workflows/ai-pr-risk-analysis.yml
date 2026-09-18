@@ -21,9 +21,6 @@ on:
         required: true
         type: string
     secrets:
-      AI_ANALYZER_TOKEN:
-        description: Token with read access to MetaMask/ai-analyzer (private action checkout)
-        required: true
       AI_ANALYZER_LITELLM_KEY:
         description: LiteLLM API key for AI PR analysis
         required: true
@@ -41,6 +38,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+      id-token: write
       pull-requests: write
       checks: write
     steps:
@@ -56,6 +54,15 @@ jobs:
             exit 1
           fi
 
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/ai-analyzer
+          permissions: |
+            contents: read
+
       # Pinned immutable SHA — see header pin bump process
       - name: Checkout AI Analyzer
         uses: actions/checkout@v6
@@ -63,7 +70,7 @@ jobs:
           repository: MetaMask/ai-analyzer
           ref: f9a82c6ae0bfdadb352b9b736d26174705fe6348
           path: .ai-analyzer-action
-          token: ${{ secrets.AI_ANALYZER_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
 
       - name: Run AI PR Analysis
         uses: ./.ai-analyzer-action

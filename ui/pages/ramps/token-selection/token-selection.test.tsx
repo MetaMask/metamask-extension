@@ -50,6 +50,7 @@ jest.mock('../../../components/app/asset-picker', () => ({
     onSearchQueryChange,
     onSelectedChainIdChange,
     emptyStateMessage,
+    endRenderers,
   }: {
     tokens?: AssetType[];
     hideBalances?: boolean;
@@ -58,6 +59,7 @@ jest.mock('../../../components/app/asset-picker', () => ({
     onSearchQueryChange?: (query: string) => void;
     onSelectedChainIdChange?: (chainId: string | null) => void;
     emptyStateMessage?: string;
+    endRenderers?: ((asset: AssetType) => React.ReactNode)[];
   }) => {
     mockOnAssetSelectRef.current = onAssetSelect;
     mockOnSearchQueryChangeRef.current = onSearchQueryChange;
@@ -76,13 +78,18 @@ jest.mock('../../../components/app/asset-picker', () => ({
           Apply network filter
         </button>
         {(tokens ?? []).map((token) => (
-          <button
-            key={token.assetId}
-            data-testid={`mapped-token-${token.assetId}`}
-            onClick={() => onAssetSelect?.(token)}
-          >
-            {token.symbol}
-          </button>
+          <div key={token.assetId}>
+            <button
+              data-testid={`mapped-token-${token.assetId}`}
+              onClick={() => onAssetSelect?.(token)}
+            >
+              {token.symbol}
+            </button>
+            {endRenderers?.map((renderTag, index) => {
+              const tag = renderTag(token);
+              return tag ? <div key={index}>{tag}</div> : null;
+            })}
+          </div>
         ))}
       </div>
     );
@@ -245,6 +252,39 @@ describe('RampsTokenSelectionScreen', () => {
       messages.noTokensMatchingYourFilters.message,
     );
     expect(screen.queryByTestId('ramps-show-all-tokens')).toBeNull();
+  });
+
+  it('shows the region-unavailable info button for unsupported tokens', () => {
+    useRampsController.mockReturnValue({
+      tokens: {
+        topTokens: [{ ...mockTopTokens[0], tokenSupported: false }],
+        allTokens: [{ ...mockTopTokens[0], tokenSupported: false }],
+      },
+      tokensLoading: false,
+      tokensError: null,
+    });
+
+    renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    expect(
+      screen.getByTestId('ramps-token-unavailable-info-button'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not show the region-unavailable info button for supported tokens', () => {
+    renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    expect(
+      screen.queryByTestId('ramps-token-unavailable-info-button'),
+    ).not.toBeInTheDocument();
   });
 
   it('shows loading state when tokensLoading is true', () => {

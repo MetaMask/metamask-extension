@@ -261,6 +261,7 @@ const mockPerpsAnalyticsEventNames = {
 
 const mockMarketCategories = [
   'crypto',
+  'memecoin',
   'stock',
   'pre-ipo',
   'index',
@@ -279,6 +280,25 @@ function mockGetMarketTypeFilter(market) {
   }
 
   return mockIsHip3Market(market) ? 'new' : 'crypto';
+}
+
+function mockMatchesCategory(market, category) {
+  if (category === 'all') {
+    return true;
+  }
+  if (category === 'crypto') {
+    return !mockIsHip3Market(market) || market?.marketType === 'crypto';
+  }
+  if (category === 'memecoin') {
+    return (
+      (!mockIsHip3Market(market) || market?.marketType === 'crypto') &&
+      Boolean(market?.tags?.includes('memecoin'))
+    );
+  }
+  if (category === 'new') {
+    return mockIsHip3Market(market) && market?.marketType === undefined;
+  }
+  return market?.marketType !== undefined && market.marketType === category;
 }
 
 function mockGetPerpsDisplaySymbol(symbol) {
@@ -472,6 +492,7 @@ module.exports = {
   MARKET_CATEGORIES: mockMarketCategories,
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,
+  matchesCategory: mockMatchesCategory,
   getPerpsDisplaySymbol: mockGetPerpsDisplaySymbol,
   AggregatedOrderBookConnection: MockAggregatedOrderBookConnection,
 };
