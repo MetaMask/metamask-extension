@@ -132,7 +132,11 @@ export const BridgeTransactionSettingsModal = ({
     event.preventDefault();
     event.stopPropagation();
     const sanitizedValue = sanitizeAmountInput(value, false);
-    setInputValue(sanitizedValue);
+    const clampedValue =
+      sanitizedValue !== '' && Number(sanitizedValue) > 100
+        ? '100'
+        : sanitizedValue;
+    setInputValue(clampedValue);
   };
 
   const isCustomSlippage = !(
@@ -246,7 +250,7 @@ export const BridgeTransactionSettingsModal = ({
                   setShowCustomInput(false);
                   const newSlippage = Number(inputValue);
                   if (!isNaN(newSlippage) && inputValue.length > 0) {
-                    selectSlippageOption(newSlippage);
+                    selectSlippageOption(Math.min(newSlippage, 100));
                   }
                   setInputValue('');
                 }}

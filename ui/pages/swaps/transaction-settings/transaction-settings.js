@@ -246,8 +246,10 @@ export default function TransactionSettings({
                               const { value } = event.target;
                               const isValueNumeric = !isNaN(Number(value));
                               if (isValueNumeric) {
-                                setCustomValue(value);
-                                setNewSlippage(Number(value));
+                                const clampedValue =
+                                  Number(value) > 100 ? '100' : value;
+                                setCustomValue(clampedValue);
+                                setNewSlippage(Number(clampedValue));
                               }
                             }}
                             type="text"

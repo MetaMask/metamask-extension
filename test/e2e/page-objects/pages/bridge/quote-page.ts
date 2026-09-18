@@ -109,6 +109,9 @@ class BridgeQuotePage {
 
   private slippageEditButton = '[data-testid="slippage-edit-button"]';
 
+  private slippageSubmitButton =
+    '[data-testid="bridge__tx-settings-modal-submit-button"]';
+
   private sourceAmount = '[data-testid="from-amount"]';
 
   public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
@@ -597,6 +600,17 @@ class BridgeQuotePage {
     await input.sendKeys(Key.BACK_SPACE);
     await this.driver.fill(this.slippageCustomInput, value);
     await input.sendKeys(Key.TAB);
+  }
+
+  async checkCustomSlippageDisplayedValue(value: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.slippageCustomButton,
+      text: `${value}%`,
+    });
+  }
+
+  async submitSlippageModal(): Promise<void> {
+    await this.driver.clickElement(this.slippageSubmitButton);
   }
 
   submitQuote = async () => {
