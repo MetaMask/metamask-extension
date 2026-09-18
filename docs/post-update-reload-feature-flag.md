@@ -68,17 +68,5 @@ rid of the toolbar button, this would no longer be possible.
 
 ## Rollout
 
-Configure the flag in the production client-config service with a default of
-`true`, then assign `false` to the intended rollout cohort.
-
-The handler reads resolved, cached RemoteFeatureFlagController state after
-background initialization. It does not wait for a network refresh. A client
-without a cached value retains the reload, and a stale cached value can continue
-to apply until refreshed. Publish the flag before the update under observation
-and allow clients to fetch it; changing the remote value is not an instantaneous
-switch for clients already updating or offline. The flag only affects releases
-that include this check.
-
-This flag does not address failures that occur before background initialization
-or before the update handler runs. Disabling it is not proof those failures are
-fixed.
+We're actually re-using an existing flag, so we just need to flip it from `true`
+to `false` before a release starts rolling out.
