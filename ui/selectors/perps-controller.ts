@@ -137,6 +137,34 @@ export const selectPerpsLastDepositTransactionId = (state: PerpsState) =>
 export const selectPerpsLastDepositResult = (state: PerpsState) =>
   state.metamask.lastDepositResult ?? null;
 
+type EventFragmentsState = {
+  metamask: {
+    eventFragments?: Record<
+      string,
+      { properties?: Record<string, unknown> } | undefined
+    >;
+    lastDepositTransactionId?: string | null;
+  };
+};
+
+/**
+ * Returns the mm_pay_entry_point from the last deposit transaction's UI
+ * metrics fragment, or undefined if not set. Used to customize the deposit
+ * toast for Hyperliquid-initiated deposits.
+ * @param state
+ */
+export const selectPerpsLastDepositEntryPoint = (
+  state: EventFragmentsState,
+): string | undefined => {
+  const transactionId = state.metamask.lastDepositTransactionId;
+  if (!transactionId) {
+    return undefined;
+  }
+  const fragmentId = `transaction-ui-${transactionId}`;
+  const fragment = state.metamask.eventFragments?.[fragmentId];
+  return fragment?.properties?.mm_pay_entry_point as string | undefined;
+};
+
 export const selectPerpsWithdrawInProgress = (state: PerpsState): boolean =>
   state.metamask.withdrawInProgress ?? false;
 
@@ -205,6 +233,20 @@ export const selectPerpsCachedAccountState = (state: PerpsState) => {
   return (
     state.metamask.cachedUserDataByProvider?.[provider]?.accountState ?? null
   );
+};
+
+/**
+ * Full cached user-data entry for the active provider, including the
+ * `address` the snapshot was stored for. Prefer this over
+ * `selectPerpsCachedAccountState` when the caller must verify ownership
+ * before overlaying `accountState`.
+ *
+ * @param state - Flattened Perps controller state.
+ * @returns The provider cache entry, or null when absent.
+ */
+export const selectPerpsCachedUserData = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return state.metamask.cachedUserDataByProvider?.[provider] ?? null;
 };
 
 export const selectPerpsPerpsBalances = (state: PerpsState) =>

@@ -156,6 +156,26 @@ describe('useNoPayTokenQuotesAlert', () => {
     expect(result.current).toStrictEqual([]);
   });
 
+  it('returns alert for moneyAccountDeposit when source amounts are missing', () => {
+    useTransactionPaySourceAmountsMock.mockReturnValue(undefined);
+    useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(true);
+
+    const transaction = {
+      ...genUnapprovedContractInteractionConfirmation(),
+      type: TransactionType.moneyAccountDeposit,
+    } as TransactionMeta;
+
+    const { result } = runHook(getMockConfirmStateForTransaction(transaction));
+
+    expect(result.current).toStrictEqual([
+      expect.objectContaining({
+        key: AlertsName.NoPayTokenQuotes,
+        reason: 'No quotes',
+        isBlocking: true,
+      }),
+    ]);
+  });
+
   it('returns no alerts if all source amounts have skipIfBalance', () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([
       {

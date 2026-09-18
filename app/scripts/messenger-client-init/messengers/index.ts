@@ -125,10 +125,7 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-import {
-  getQrSyncControllerMessenger,
-  getQrSyncDataServiceMessenger,
-} from './qr-sync';
+import { getQrSyncControllerMessenger } from './qr-sync';
 import {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -183,7 +180,10 @@ import {
   getChompApiServiceInitMessenger,
   getChompApiServiceMessenger,
 } from './chomp-api-service-messenger';
-import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
+import {
+  getProfileMetricsControllerInitMessenger,
+  getProfileMetricsControllerMessenger,
+} from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
 import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
@@ -202,6 +202,10 @@ import {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
 } from './money-account-controller-messenger';
+import {
+  getMoneyAccountUpgradeControllerMessenger,
+  getMoneyAccountUpgradeControllerInitMessenger,
+} from './money-account-upgrade-controller-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -247,10 +251,7 @@ export {
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
-export {
-  getQrSyncControllerMessenger,
-  getQrSyncDataServiceMessenger,
-} from './qr-sync';
+export { getQrSyncControllerMessenger } from './qr-sync';
 export {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -281,6 +282,10 @@ export {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
 } from './money-account-controller-messenger';
+export {
+  getMoneyAccountUpgradeControllerMessenger,
+  getMoneyAccountUpgradeControllerInitMessenger,
+} from './money-account-upgrade-controller-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -331,7 +336,11 @@ export {
   getUserOperationControllerMessenger,
   getUserOperationControllerInitMessenger,
 } from './user-operation-controller-messenger';
-export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
+export type { ProfileMetricsControllerInitMessenger } from './profile-metrics-controller-messenger';
+export {
+  getProfileMetricsControllerMessenger,
+  getProfileMetricsControllerInitMessenger,
+} from './profile-metrics-controller-messenger';
 export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 export { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
 
@@ -496,6 +505,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getMoneyAccountControllerMessenger,
     getInitMessenger: getMoneyAccountControllerInitMessenger,
   },
+  MoneyAccountUpgradeController: {
+    getMessenger: getMoneyAccountUpgradeControllerMessenger,
+    getInitMessenger: getMoneyAccountUpgradeControllerInitMessenger,
+  },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
     getInitMessenger: getMultichainAssetsControllerInitMessenger,
@@ -628,10 +641,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getPreferencesControllerMessenger,
     getInitMessenger: noop,
   },
-  QrSyncDataService: {
-    getMessenger: getQrSyncDataServiceMessenger,
-    getInitMessenger: noop,
-  },
   QrSyncController: {
     getMessenger: getQrSyncControllerMessenger,
     getInitMessenger: noop,
@@ -722,7 +731,7 @@ export const MESSENGER_FACTORIES = {
   },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getProfileMetricsControllerInitMessenger,
   },
   ProfileMetricsService: {
     getMessenger: getProfileMetricsServiceMessenger,

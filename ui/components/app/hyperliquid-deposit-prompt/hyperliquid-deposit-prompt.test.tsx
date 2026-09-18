@@ -4,7 +4,17 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
+import { PERPS_HOME_TAB_ROUTE } from '../../../hooks/perps/usePerpsHomeRoute';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import {
@@ -15,19 +25,50 @@ import {
   selectBlockedPayTokens,
   type BlockedPayTokenEntry,
 } from '../../../pages/confirmations/selectors/feature-flags';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
 
 const mockStartPerpsDeposit = jest.fn();
+let mockIsStartingDeposit = false;
 jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
   usePerpsDepositConfirmation: () => ({
-    isLoading: false,
+    isLoading: mockIsStartingDeposit,
     trigger: mockStartPerpsDeposit,
   }),
 }));
 
+const mockTrackEvent = jest.fn();
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(() => 'notification'),
+}));
+
 jest.mock('../../../store/controller-actions/transaction-pay-controller');
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  upsertTransactionUIMetricsFragment: jest.fn(),
+}));
+
+const mockUsePerpsHomeRoute = jest.fn(() => PERPS_HOME_PAGE_ROUTE);
+jest.mock('../../../hooks/perps/usePerpsHomeRoute', () => ({
+  ...jest.requireActual('../../../hooks/perps/usePerpsHomeRoute'),
+  usePerpsHomeRoute: () => mockUsePerpsHomeRoute(),
+}));
 
 jest.mock('../../../pages/confirmations/selectors/feature-flags', () => ({
   selectBlockedPayTokens: jest.fn(() => ({
@@ -65,6 +106,7 @@ const mockSelectBlockedPayTokens = jest.mocked(selectBlockedPayTokens);
 const mockUpdateTransactionPaymentToken = jest.mocked(
   updateTransactionPaymentToken,
 );
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
 const ETH_TOKEN: Asset = {
   accountType: 'eip155:eoa',
@@ -121,22 +163,28 @@ const renderComponent = (
 describe('HyperliquidDepositPrompt', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsStartingDeposit = false;
     mockSelectBlockedPayTokens.mockReturnValue({
       chainIds: [],
       tokens: [],
     });
+    mockUsePerpsHomeRoute.mockReturnValue(PERPS_HOME_PAGE_ROUTE);
     mockUseSendTokens.mockReturnValue([ETH_TOKEN, USDC_TOKEN]);
     mockStartPerpsDeposit.mockResolvedValue({
       transactionId: 'transaction-id-mock',
     });
     mockUpdateTransactionPaymentToken.mockResolvedValue(undefined);
+    mockGetEnvironmentType.mockReturnValue('notification');
   });
 
-  it('renders the title, logos, default token and continue button', () => {
+  it('renders the title, description, logos, default token and action buttons', () => {
     renderComponent();
 
     expect(
       screen.getByText(messages.hyperliquidDepositPromptTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.hyperliquidDepositPromptDescription.message),
     ).toBeInTheDocument();
     expect(screen.getByText(messages.payWith.message)).toBeInTheDocument();
     expect(
@@ -151,6 +199,21 @@ describe('HyperliquidDepositPrompt', () => {
     expect(
       screen.getByTestId('hyperliquid-deposit-prompt-continue'),
     ).toBeEnabled();
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'),
+    ).toHaveTextContent(messages.hyperliquidDepositPromptNoThanks.message);
+  });
+
+  it('tracks Hyperliquid Deposit Prompt Viewed on render', () => {
+    renderComponent();
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.HyperliquidDepositPromptViewed,
+      properties: {
+        category: MetaMetricsEventCategory.Confirmations,
+      },
+      sensitiveProperties: {},
+    });
   });
 
   it('resolves the approval without starting a deposit when closed', () => {
@@ -160,6 +223,43 @@ describe('HyperliquidDepositPrompt', () => {
 
     expect(onActionComplete).toHaveBeenCalledWith({ action: 'dismiss' });
     expect(mockStartPerpsDeposit).not.toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+      properties: {
+        category: MetaMetricsEventCategory.Confirmations,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'dismiss',
+      },
+      sensitiveProperties: {},
+    });
+  });
+
+  it('resolves the approval without starting a deposit when No thanks is clicked', () => {
+    const { onActionComplete } = renderComponent();
+
+    fireEvent.click(screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'));
+
+    expect(onActionComplete).toHaveBeenCalledWith({ action: 'dismiss' });
+    expect(mockStartPerpsDeposit).not.toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+      properties: {
+        category: MetaMetricsEventCategory.Confirmations,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'dismiss',
+      },
+      sensitiveProperties: {},
+    });
+  });
+
+  it('disables No thanks while a deposit is being started', () => {
+    mockIsStartingDeposit = true;
+
+    renderComponent();
+
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'),
+    ).toBeDisabled();
   });
 
   it('updates the selected token when one is picked from the modal', () => {
@@ -196,10 +296,19 @@ describe('HyperliquidDepositPrompt', () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-        search: '?loader=customAmount',
+        search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_PAGE_ROUTE}?source=${HYPERLIQUID_DEPOSIT_PROMPT}`)}`,
       },
       { replace: true },
     );
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+      properties: {
+        category: MetaMetricsEventCategory.Confirmations,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'continue',
+      },
+      sensitiveProperties: {},
+    });
   });
 
   it('defaults to the first selectable token when the largest balance is blocked', () => {
@@ -235,6 +344,27 @@ describe('HyperliquidDepositPrompt', () => {
     expect(
       screen.getByTestId('hyperliquid-deposit-prompt-continue'),
     ).toBeDisabled();
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'),
+    ).toBeEnabled();
+  });
+
+  it('uses the wallet home perps tab as goBackTo when bottom nav is disabled', async () => {
+    mockUsePerpsHomeRoute.mockReturnValue(PERPS_HOME_TAB_ROUTE);
+
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId('hyperliquid-deposit-prompt-continue'));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        {
+          pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
+          search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_TAB_ROUTE}&source=${HYPERLIQUID_DEPOSIT_PROMPT}`)}`,
+        },
+        { replace: true },
+      );
+    });
   });
 
   it('shows an error and keeps the prompt open when the deposit fails to start', async () => {
@@ -251,6 +381,11 @@ describe('HyperliquidDepositPrompt', () => {
 
     expect(onActionComplete).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+      }),
+    );
   });
 
   it('dismisses immediately when the signer address does not match the selected account', async () => {
@@ -262,5 +397,6 @@ describe('HyperliquidDepositPrompt', () => {
     });
 
     expect(mockStartPerpsDeposit).not.toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 });

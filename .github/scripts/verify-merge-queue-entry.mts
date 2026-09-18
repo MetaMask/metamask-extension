@@ -105,6 +105,7 @@ const verification = await verifyMergeQueueRetry({
         (error as { stderr?: unknown }).stderr ?? '',
       );
       if (stderr.includes('HTTP 404')) {
+        // Only GitHub's explicit absence response proves the ref is gone.
         return false;
       }
 
