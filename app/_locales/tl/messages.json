@@ -1515,8 +1515,8 @@
   "alertMessageGasFeeLow": {
     "message": "Kapag pumipili ng mababang bayad, asahan ang mas mabagal na mga transaksyon at mas matagal na paghihintay. Para sa mas mabilis na transaksyon, piliin ang Market o Aggressive na mga pagpipilian sa bayad."
   },
-  "alertMessageGasTooLow": {
-    "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 21000 o mas mataas."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 12000 o mas mataas."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga bayarin sa network."
@@ -4213,8 +4213,8 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitTooLow": {
-    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 12000"
   },
   "gasPrice": {
     "message": "Presyo ng gas (GWEI)"
@@ -5449,13 +5449,6 @@
   "money": {
     "message": "Pera"
   },
-  "moneyAccountApyPitch": {
-    "message": "Kumita ng $1% APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Impormasyon ng APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "Ang rate na ipinapakita ay ang tinatayang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng market. Nagbabago ang APY at hindi ito garantisado."
   },
@@ -5465,9 +5458,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Tinatayang balanse sa 1 taon:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Tinatayang balanse sa 1 taon"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Ipinagpapalagay sa pagtatantiya na ang $1% Annual Percentage Yield (APY) ay hindi nagbabago sa loob ng isang taon. Nagbabago ang APY at hindi ito garantisado.",
@@ -5520,6 +5510,9 @@
   },
   "moneyActivityFilterAll": {
     "message": "Lahat"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Card"
   },
   "moneyActivityFilterDeposits": {
     "message": "Mga deposito"
@@ -5588,9 +5581,6 @@
   "moneyBalanceRetry": {
     "message": "Subukang muli"
   },
-  "moneyBalanceTitle": {
-    "message": "Balanse sa Money"
-  },
   "moneyBalanceUnavailable": {
     "message": "Hindi available ang balanse"
   },
@@ -5599,9 +5589,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Awtomatikong kumita ng yield sa balanse mo sa Money"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Awtomatikong kumita ng hanggang ~$1 APY"
   },
   "moneyBenefitLiquidity": {
     "message": "Makakuha ng ganap na liquidity nang walang lockup, kaya maaari kang mag-trade o mag-withdraw anumang oras"
@@ -5656,6 +5643,12 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo ng hanggang $1 APY."
+  },
+  "moneyHomeApyTooltip": {
+    "message": "Ang rate na ipinapakita ay tinantyang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng merkado. Nag-iiba-iba ang APY at hindi ito garantisado. Napupunta ang pondo sa isang DeFi vault, na pinapangasiwaan ng Veda at sinusubaybayan ng Steakhouse Financial ang panganib, at tumutubo ito sa mga kilalang merkado ng pagpapautang."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Ang Money account ay pinapagana ng Monad."
   },
   "moneyHowItWorks": {
     "message": "Paano ito gumagana"
@@ -5727,8 +5720,14 @@
   "moneyLifetime": {
     "message": "Panghabambuhay"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Ang kabuuang kinita mo sa iyong balanse ng Money account sa paglipas ng panahon."
+  },
   "moneyMeetMusd": {
     "message": "Kilalanin ang mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Ang kabuuang kinita mo sa balanse ng iyong Money account sa nakalipas na 30 araw."
   },
   "moneyMoreInformation": {
     "message": "Higit pang impormasyon"
@@ -6458,18 +6457,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Handa na ang Pag-withdraw"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Maaari mo ng i-withdraw ang iyong in-unstake na $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Ang iyong hiling na i-unstake ang $1 ay naipadala na"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Nakatanggap ng NFT mula kay/sa"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Ipinadala ang NFT kay/sa"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6478,18 +6465,6 @@
   },
   "notificationItemReceived": {
     "message": "Natanggap"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Natanggap mula kay/sa"
-  },
-  "notificationItemSent": {
-    "message": "Ipinadala"
-  },
-  "notificationItemSentTo": {
-    "message": "Ipinadala kay/sa"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Nakumpleto ang pag-stake"
   },
   "notificationItemStaked": {
     "message": "Naka-stake"
@@ -6503,17 +6478,11 @@
   "notificationItemSwapped": {
     "message": "Nai-swap"
   },
-  "notificationItemSwappedFor": {
-    "message": "sa"
-  },
   "notificationItemTo": {
     "message": "Sa/Kay"
   },
   "notificationItemTransactionId": {
     "message": "ID ng Transaksyon"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Nakumpleto ang pag-unstake"
   },
   "notificationItemUnStaked": {
     "message": "Na-unstake"
@@ -7672,7 +7641,7 @@
     "message": "Mga Index"
   },
   "perpsFilterMemecoins": {
-    "message": "Memecoins"
+    "message": "Mga Memecoin"
   },
   "perpsFilterMore": {
     "message": "Higit pa",
