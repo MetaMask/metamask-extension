@@ -340,6 +340,13 @@ export type TimerStatisticsOptions = {
   maxDurationMs?: number;
   /** Override min duration (ms) for sanity check. Set to 0 for metrics that are legitimately zero (e.g. long task counts, TBT). */
   minDurationMs?: number;
+  /**
+   * Iteration index for each entry of `durations`, in the same order. Supplied,
+   * the durations are retained as `values`. Omitted, `values` is omitted too:
+   * a failed iteration contributes no duration, so the position in `durations`
+   * is not the iteration number and must not be guessed.
+   */
+  iterations?: number[];
 };
 
 export const calculateTimerStatistics = (
@@ -365,6 +372,14 @@ export const calculateTimerStatistics = (
   const mean = calculateMean(filtered);
   const stdDev = calculateStdDev(filtered);
   const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
+  const { iterations } = options ?? {};
+  const values =
+    iterations && iterations.length === durations.length
+      ? durations.map((value, index) => ({
+          iteration: iterations[index],
+          value,
+        }))
+      : undefined;
 
   return {
     id: timerId,
@@ -381,6 +396,7 @@ export const calculateTimerStatistics = (
     outliers: totalExcluded,
     trimmedCount: iqrResult.outlierCount,
     dataQuality: assessDataQuality(cv),
+    ...(values && { values }),
   };
 };
 
