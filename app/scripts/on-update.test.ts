@@ -41,11 +41,11 @@ describe('onUpdate', () => {
 
   it.each([
     ['absent', {}],
-    ['enabled', { extensionAutomaticReloadAfterUpdate: true }],
-    ['null', { extensionAutomaticReloadAfterUpdate: null }],
-    ['a string', { extensionAutomaticReloadAfterUpdate: 'false' }],
-    ['a number', { extensionAutomaticReloadAfterUpdate: 0 }],
-    ['an object', { extensionAutomaticReloadAfterUpdate: {} }],
+    ['enabled', { extensionPlatformAutoReloadAfterUpdate: true }],
+    ['null', { extensionPlatformAutoReloadAfterUpdate: null }],
+    ['a string', { extensionPlatformAutoReloadAfterUpdate: 'false' }],
+    ['a number', { extensionPlatformAutoReloadAfterUpdate: 0 }],
+    ['an object', { extensionPlatformAutoReloadAfterUpdate: {} }],
   ] satisfies [string, Flags][])(
     'defers the reload when the flag is %s',
     (_label, flags) => {
@@ -62,7 +62,7 @@ describe('onUpdate', () => {
 
   it('does not schedule a reload when the flag is false', () => {
     const { controller, platform, requestSafeReload } = setup({
-      extensionAutomaticReloadAfterUpdate: false,
+      extensionPlatformAutoReloadAfterUpdate: false,
     });
 
     onUpdate(controller, platform, '13.48.0', requestSafeReload);
@@ -74,9 +74,9 @@ describe('onUpdate', () => {
 
   it.each([true, false])(
     'records update bookkeeping before timers run with the flag set to %s',
-    (extensionAutomaticReloadAfterUpdate) => {
+    (extensionPlatformAutoReloadAfterUpdate) => {
       const { controller, platform, requestSafeReload } = setup({
-        extensionAutomaticReloadAfterUpdate,
+        extensionPlatformAutoReloadAfterUpdate,
       });
 
       onUpdate(controller, platform, '13.48.0', requestSafeReload);
@@ -96,9 +96,9 @@ describe('onUpdate', () => {
 
   it.each([true, false])(
     'skips a previously handled update with the flag set to %s',
-    (extensionAutomaticReloadAfterUpdate) => {
+    (extensionPlatformAutoReloadAfterUpdate) => {
       const { controller, platform, requestSafeReload } = setup({
-        extensionAutomaticReloadAfterUpdate,
+        extensionPlatformAutoReloadAfterUpdate,
       });
       controller.appStateController.state.lastUpdatedFromVersion = '13.48.0';
 
@@ -120,12 +120,12 @@ describe('onUpdate', () => {
 
   it.each([undefined, true, false])(
     'never reloads Firefox with the flag set to %s',
-    (extensionAutomaticReloadAfterUpdate) => {
+    (extensionPlatformAutoReloadAfterUpdate) => {
       jest.mocked(getPlatform).mockReturnValue(PLATFORM_FIREFOX);
       const { controller, platform, requestSafeReload } = setup(
-        extensionAutomaticReloadAfterUpdate === undefined
+        extensionPlatformAutoReloadAfterUpdate === undefined
           ? {}
-          : { extensionAutomaticReloadAfterUpdate },
+          : { extensionPlatformAutoReloadAfterUpdate },
       );
 
       onUpdate(controller, platform, '13.48.0', requestSafeReload);
@@ -140,20 +140,20 @@ describe('onUpdate', () => {
 
   it.each([true, false])(
     'honors a manifest override of %s over the cached remote value',
-    (extensionAutomaticReloadAfterUpdate) => {
+    (extensionPlatformAutoReloadAfterUpdate) => {
       jest.mocked(manifestFlags.getManifestFlags).mockReturnValue({
-        remoteFeatureFlags: { extensionAutomaticReloadAfterUpdate },
+        remoteFeatureFlags: { extensionPlatformAutoReloadAfterUpdate },
       });
       const { controller, platform, requestSafeReload } = setup({
-        extensionAutomaticReloadAfterUpdate:
-          !extensionAutomaticReloadAfterUpdate,
+        extensionPlatformAutoReloadAfterUpdate:
+          !extensionPlatformAutoReloadAfterUpdate,
       });
 
       onUpdate(controller, platform, '13.48.0', requestSafeReload);
       jest.runAllTimers();
 
       expect(requestSafeReload).toHaveBeenCalledTimes(
-        extensionAutomaticReloadAfterUpdate ? 1 : 0,
+        extensionPlatformAutoReloadAfterUpdate ? 1 : 0,
       );
     },
   );

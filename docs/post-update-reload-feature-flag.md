@@ -35,7 +35,7 @@ If we see a reduction in "background connection unresponsive" errors, and
 related errors. We should _remove_ the post-update `reload` from the codebase in
 a future release.
 
-The flag I propose is `extensionAutomaticReloadAfterUpdate`. `extensionAutomaticReloadAfterUpdate`
+The flag is `extensionPlatformAutoReloadAfterUpdate`. `extensionPlatformAutoReloadAfterUpdate`
 is a boolean remote feature flag controlling the extra automatic safe reload
 requested after an extension update on Chromium.
 

@@ -72,11 +72,11 @@ export function onUpdate(
   // Use cached flags without waiting for a network refresh during startup.
   // Only an explicit false disables the workaround; missing or malformed flags
   // retain the existing behavior. Manifest overrides support local testing.
-  const { extensionAutomaticReloadAfterUpdate } = getRemoteFeatureFlags({
+  const { extensionPlatformAutoReloadAfterUpdate } = getRemoteFeatureFlags({
     metamask: controller.remoteFeatureFlagController.state,
   });
 
-  if (!isFirefox && extensionAutomaticReloadAfterUpdate !== false) {
+  if (!isFirefox && extensionPlatformAutoReloadAfterUpdate !== false) {
     // Work around Chromium bug https://issues.chromium.org/issues/40805401
     // by doing a safe reload after an update.
     //
