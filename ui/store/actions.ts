@@ -99,6 +99,7 @@ import {
 } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -4623,11 +4624,15 @@ export function setIpfsGateway(
 
 export function toggleExternalServices(
   val: boolean,
+  ownedPreferences?: Record<string, boolean>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleExternalServices`);
     try {
-      await submitRequestToBackground('toggleExternalServices', [val]);
+      await submitRequestToBackground(
+        'toggleExternalServices',
+        ownedPreferences ? [val, ownedPreferences] : [val],
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
@@ -4641,18 +4646,33 @@ export function toggleBasicFunctionality(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleBasicFunctionality`);
     try {
-      await submitRequestToBackground('toggleExternalServices', [val]);
-      await Promise.all([
-        submitRequestToBackground('setUseMultiAccountBalanceChecker', [val]),
-        submitRequestToBackground('setUseTransactionSimulations', [val]),
-        submitRequestToBackground('setSecurityAlertsEnabled', [val]),
-        submitRequestToBackground('setUse4ByteResolution', [val]),
-        submitRequestToBackground('setUseExternalNameSources', [val]),
-      ]);
+      await submitRequestToBackground('toggleBasicFunctionality', [val]);
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
+  };
+}
+
+/**
+ * Turns Basic Functionality on using the path that matches the wallet's
+ * consolidation state when this runs, rather than the state read when the
+ * caller rendered. Consolidation can complete while a confirmation dialog is
+ * open, and the legacy path only owns seven of the child preferences, so it
+ * would leave the rest off behind a consolidated toggle.
+ */
+export function enableBasicFunctionality(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    await dispatch(
+      getIsBasicFunctionalityConsolidationEnabled(getState())
+        ? toggleBasicFunctionality(true)
+        : toggleExternalServices(true),
+    );
   };
 }
 
@@ -6246,24 +6266,14 @@ type TemporarySmartTransactionGasFees = {
 const createSignedTransactions = async (
   unsignedTransaction: Partial<TransactionParams> & { chainId: string },
   fees: TemporarySmartTransactionGasFees[],
-  areCancelTransactions?: boolean,
 ): Promise<TransactionParams[]> => {
-  const unsignedTransactionsWithFees = fees.map((fee) => {
-    const unsignedTransactionWithFees = {
-      ...unsignedTransaction,
-      maxFeePerGas: decimalToHex(fee.maxFeePerGas),
-      maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
-      gas: areCancelTransactions
-        ? decimalToHex(21000) // It has to be 21000 for cancel transactions, otherwise the API would reject it.
-        : unsignedTransaction.gas,
-      value: unsignedTransaction.value,
-    };
-    if (areCancelTransactions) {
-      unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
-      unsignedTransactionWithFees.data = '0x';
-    }
-    return unsignedTransactionWithFees;
-  });
+  const unsignedTransactionsWithFees = fees.map((fee) => ({
+    ...unsignedTransaction,
+    maxFeePerGas: decimalToHex(fee.maxFeePerGas),
+    maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
+    gas: unsignedTransaction.gas,
+    value: unsignedTransaction.value,
+  }));
   const signedTransactions = await submitRequestToBackground<
     TransactionParams[]
   >('approveTransactionsWithSameNonce', [unsignedTransactionsWithFees]);
@@ -6277,7 +6287,6 @@ export function signAndSendSmartTransaction({
   unsignedTransaction: Partial<TransactionParams> & { chainId: string };
   smartTransactionFees: {
     fees: TemporarySmartTransactionGasFees[];
-    cancelFees: TemporarySmartTransactionGasFees[];
   };
 }): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -6291,9 +6300,6 @@ export function signAndSendSmartTransaction({
         [
           {
             signedTransactions,
-            // The "signedCanceledTransactions" parameter is still expected by the STX controller but is no longer used.
-            // So we are passing an empty array. The parameter may be deprecated in a future update.
-            signedCanceledTransactions: [],
             txParams: unsignedTransaction,
           },
         ],
@@ -7492,6 +7498,12 @@ export function setPerpsTabBadgeSeen(value: boolean) {
   return async () => {
     await submitRequestToBackground('setPerpsTabBadgeSeen', [value]);
   };
+}
+
+export function setLastPerpsDepositEntryPoint(entryPoint: string | null) {
+  return submitRequestToBackground('setLastPerpsDepositEntryPoint', [
+    entryPoint,
+  ]);
 }
 
 /**

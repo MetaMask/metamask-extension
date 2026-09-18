@@ -38,7 +38,7 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
             >
               <button
                 aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -101,6 +101,7 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: $0.16
@@ -152,6 +153,7 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: $0.34
@@ -216,7 +218,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
             >
               <button
                 aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -279,6 +281,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: $0.16
@@ -330,6 +333,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: $0.34
@@ -394,7 +398,7 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
             >
               <button
                 aria-label="Back"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -457,6 +461,7 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: 0.001 ETH
@@ -506,6 +511,7 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: 0.001 ETH

@@ -1,0 +1,81 @@
+import { strict as assert } from 'assert';
+import { test as pwTest } from '@playwright/test';
+import { Mockttp } from 'mockttp';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';
+import { login } from '../../page-objects/flows/login.flow';
+
+type PageEvent = {
+  timestamp: string;
+  context: {
+    page: {
+      title: string;
+      path: string;
+    };
+  };
+};
+
+async function mockSegment(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({ batch: [{ type: 'page' }] })
+      .times(3)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
+}
+
+function sortEventsByTime(events: PageEvent[]): PageEvent[] {
+  events.sort((event1, event2) => {
+    const timestamp1 = new Date(event1.timestamp).getTime();
+    const timestamp2 = new Date(event2.timestamp).getTime();
+    return timestamp1 - timestamp2;
+  });
+  return events;
+}
+
+function assertBatchValue(
+  event: PageEvent,
+  assertedTitle: string,
+  assertedPath: string,
+): void {
+  const { title, path } = event.context.page;
+  assert.equal(title, assertedTitle);
+  assert.equal(path, assertedPath);
+}
+
+pwTest.describe('Unlock wallet', () => {
+  pwTest(
+    'should send first three Page metric events upon fullscreen page load',
+    async () => {
+      await withFixtures(
+        {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          fixtures: new FixtureBuilderV2()
+            .withMetaMetricsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
+            })
+            .build(),
+          title: pwTest.info().titlePath.join(' '),
+          testSpecificMock: mockSegment,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await login(driver);
+          const events = await getEventPayloads(driver, mockedEndpoint);
+          const sortedEvents = sortEventsByTime(events);
+          assert.equal(sortedEvents.length, 3);
+          assertBatchValue(sortedEvents[0], 'Home', '/');
+          assertBatchValue(sortedEvents[1], 'Unlock Page', '/unlock');
+          assertBatchValue(sortedEvents[2], 'Home', '/');
+        },
+      );
+    },
+  );
+});

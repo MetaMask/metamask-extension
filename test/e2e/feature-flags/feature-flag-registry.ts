@@ -26,6 +26,7 @@ import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-d
 import {
   MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+  MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME,
 } from '../../../shared/lib/money/feature-flags';
 import { toDeterministicThresholdScopes } from './deterministic-threshold-scopes';
 
@@ -75,7 +76,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-09-01
+ * Production defaults last synced: 2026-09-15
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -212,20 +213,53 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           minimumVersion: '13.38.0',
         },
         '13.42.0': {
-          deprecatedControllers: ['TokenListController'],
+          deprecatedControllers: [
+            'TokenListController',
+            'TokenDetectionController',
+            'TokensController',
+            'CurrencyRateController',
+            'TokenRatesController',
+            'TokenBalancesController',
+            'AccountTrackerController',
+            'MultichainAssetsController',
+            'MultichainAssetsRatesController',
+            'MultichainBalancesController',
+          ],
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
         },
         '13.43.0': {
-          deprecatedControllers: ['TokenListController'],
+          deprecatedControllers: [
+            'TokenListController',
+            'TokenDetectionController',
+            'TokensController',
+            'CurrencyRateController',
+            'TokenRatesController',
+            'TokenBalancesController',
+            'AccountTrackerController',
+            'MultichainAssetsController',
+            'MultichainAssetsRatesController',
+            'MultichainBalancesController',
+          ],
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
           tracesEnabled: false,
         },
         '13.46.1': {
-          deprecatedControllers: ['TokenListController'],
+          deprecatedControllers: [
+            'TokenListController',
+            'TokenDetectionController',
+            'TokensController',
+            'CurrencyRateController',
+            'TokenRatesController',
+            'TokenBalancesController',
+            'AccountTrackerController',
+            'MultichainAssetsController',
+            'MultichainAssetsRatesController',
+            'MultichainBalancesController',
+          ],
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
@@ -1038,6 +1072,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       default: 1,
       included: 1.5,
       perChainConfig: {
+        '0x1237': {
+          base: 1.5,
+          name: 'robinhood',
+        },
         '0x18c6': {
           base: 1.3,
           name: 'megaeth',
@@ -2434,6 +2472,21 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         '13.41.0': {
           enabled: false,
         },
+        '13.47.0': [
+          {
+            scope: {
+              type: 'threshold',
+              value: 1,
+            },
+            thresholdName: 'feature is ON',
+            thresholdVersion: 2,
+            value: {
+              enabled: true,
+              maxAttempts: 5,
+              pollInterval: 5000,
+            },
+          },
+        ],
       },
     },
     status: FeatureFlagStatus.Active,
@@ -2464,11 +2517,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   },
 
   earnMoneyEarningSectionEnabled: {
-    inProd: false,
+    inProd: true,
     name: 'earnMoneyEarningSectionEnabled',
     productionDefault: {
       enabled: false,
-      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2751,8 +2803,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'extensionUxHyperliquidDepositPrompt',
     productionDefault: {
-      enabled: true,
-      minimumVersion: '13.45.0',
+      enabled: false,
+      minimumVersion: '13.49.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2850,11 +2902,29 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyAccountBalanceSource: {
+    inProd: true,
+    name: 'moneyAccountBalanceSource',
+    productionDefault: 'rpc',
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   moneyAccountChompConfig: {
     inProd: true,
     name: 'moneyAccountChompConfig',
     productionDefault: {
       baseUrl: 'https://chomp.dev-api.cx.metamask.io',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  moneyAccountGeoBlockedCountries: {
+    inProd: true,
+    name: 'moneyAccountGeoBlockedCountries',
+    productionDefault: {
+      blockedRegions: ['US', 'CA-ON'],
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2883,17 +2953,27 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: {
-    inProd: false,
-    name: MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
+  moneyEnableActivityDetails: {
+    inProd: true,
+    name: 'moneyEnableActivityDetails',
     productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
 
-  [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
+  moneyEnableMoneyAccount: {
     inProd: true,
-    name: MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+    name: 'moneyEnableMoneyAccount',
+    productionDefault: {
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  moneyHomeScreenCardEnabled: {
+    inProd: true,
+    name: 'moneyHomeScreenCardEnabled',
     productionDefault: {
       enabled: false,
     },
@@ -3026,6 +3106,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  perpsCrossMarginEnabled: {
+    inProd: true,
+    name: 'perpsCrossMarginEnabled',
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '13.30.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   perpsEnabled: {
     inProd: true,
     name: 'perpsEnabled',
@@ -3144,39 +3235,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  platformPersistenceSuspendWritesOnShutdown: {
-    inProd: true,
-    name: 'platformPersistenceSuspendWritesOnShutdown',
-    productionDefault: [
-      {
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        thresholdName: 'enabled — 0% rollout',
-        thresholdVersion: 2,
-        value: {
-          enabled: true,
-          minimumVersion: '13.41.0',
-        },
-      },
-      {
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        thresholdName: 'disabled — remaining 100%',
-        thresholdVersion: 2,
-        value: {
-          enabled: false,
-          minimumVersion: '0.0.0',
-        },
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
   platformSplitStateGradualRollout: {
     inProd: true,
     name: 'platformSplitStateGradualRollout',
@@ -3223,6 +3281,41 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           type: 'threshold',
           value: 0,
         },
+        value: [
+          'alfcasino-9672.com',
+          'alfcasino.cz',
+          'ardovextrade.com',
+          'atlas-system.tech',
+          'aurum.foundation',
+          'bitnest.fi',
+          'bitnest.finance',
+          'defipulsex.com',
+          'digitalglobetrust.com',
+          'eth-et3.vip',
+          'ethton.vip',
+          'fusion-lots.com',
+          'helpry.jp',
+          'icb.community',
+          'mak3-eth.vip',
+          'marketsmaven.live',
+          'merax.app',
+          'mintora-nft.com',
+          'neyro.network',
+          'netmeta.icu',
+          'nba-limited.app',
+          'nodefi99.xyz',
+          'ocdashboard.lol',
+          'ocdashboard.vip',
+          'open-gpt.world',
+          'opus-finance.online',
+          'optionsmarketpro.com',
+          'patrimonialsrl.com',
+          'tellidex.io',
+          'titancreditfx.com',
+          'veltrixfx.trade',
+          'vortexax.com',
+          'web3portal.partners',
+        ],
       },
     ],
     status: FeatureFlagStatus.Active,
@@ -3233,8 +3326,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'rampsEnabled',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '13.47.0',
+      enabled: true,
+      minimumVersion: '13.48.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3460,6 +3553,106 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  stxMigrationBatchStatus: {
+    inProd: true,
+    name: 'stxMigrationBatchStatus',
+    productionDefault: [
+      {
+        name: 'sentinel on',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: true,
+      },
+      {
+        name: 'sentinel off',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+        value: false,
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  stxMigrationCancel: {
+    inProd: true,
+    name: 'stxMigrationCancel',
+    productionDefault: [
+      {
+        name: 'sentinel on',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: true,
+      },
+      {
+        name: 'sentinel off',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+        value: false,
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  stxMigrationGetFees: {
+    inProd: true,
+    name: 'stxMigrationGetFees',
+    productionDefault: [
+      {
+        name: 'sentinel on',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: true,
+      },
+      {
+        name: 'sentinel off',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+        value: false,
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  stxMigrationSubmitTransactions: {
+    inProd: true,
+    name: 'stxMigrationSubmitTransactions',
+    productionDefault: [
+      {
+        name: 'sentinel on',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+        value: true,
+      },
+      {
+        name: 'sentinel off',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+        value: false,
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   swapsChainValueOrderOverride: {
     inProd: true,
     name: 'swapsChainValueOrderOverride',
@@ -3483,6 +3676,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'tempoConfig',
     productionDefault: {
       enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  tokenDetailsAdvancedCharts: {
+    inProd: true,
+    name: 'tokenDetailsAdvancedCharts',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.49.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

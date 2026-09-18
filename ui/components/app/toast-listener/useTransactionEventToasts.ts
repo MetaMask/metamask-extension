@@ -17,9 +17,14 @@ import {
   hasTransactionType,
   isPerpsWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
+import {
+  isMoneyAccountChildTx,
+  isMoneyAccountTx,
+} from '../../../helpers/money/money-transaction-guards';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { selectTransactions } from '../../../selectors/transactionController';
 import {
   dismissToast,
   showPendingToast,
@@ -59,15 +64,28 @@ const earlyPendingToastTypes = new Set([
   TransactionType.musdClaim,
 ]);
 
-function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
-  // Top-level only — nested swapApproval inside batch txs must still toast.
+// Separate batch txs that share one toast with the main send/swap/bridge tx.
+export const batchHelperTransactionTypes = [
+  TransactionType.bridgeApproval,
+  TransactionType.swapApproval,
+  TransactionType.gasPayment,
+];
+
+function isExcludedTransactionType(
+  transactionMeta: TransactionMeta,
+  transactions: TransactionMeta[],
+): boolean {
   if (
-    transactionMeta.type === TransactionType.bridgeApproval ||
-    transactionMeta.type === TransactionType.swapApproval
+    transactionMeta.type &&
+    batchHelperTransactionTypes.includes(transactionMeta.type)
   ) {
     return true;
   }
-  return hasTransactionType(transactionMeta, excludedTransactionTypes);
+  return (
+    hasTransactionType(transactionMeta, excludedTransactionTypes) ||
+    isMoneyAccountTx(transactionMeta) ||
+    isMoneyAccountChildTx(transactionMeta, transactions)
+  );
 }
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
@@ -165,7 +183,8 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      if (isExcludedTransactionType(transactionMeta)) {
+      const transactions = selectTransactions(store.getState());
+      if (isExcludedTransactionType(transactionMeta, transactions)) {
         return;
       }
 
@@ -183,7 +202,6 @@ export function useTransactionEventToasts(): void {
         showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
-          const transactions = store.getState().metamask?.transactions ?? [];
           if (
             isSpeedUpReplacement(transactionMeta.replacedById, transactions)
           ) {

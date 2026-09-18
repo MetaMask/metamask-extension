@@ -47,7 +47,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -88,7 +88,8 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -151,7 +152,8 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/moonpay"
                         >
                           MoonPay
                         </p>
@@ -250,7 +252,7 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -339,7 +341,7 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -428,7 +430,7 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -591,7 +593,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -632,7 +634,8 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -732,7 +735,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -773,7 +776,8 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -811,7 +815,8 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/moonpay"
                         >
                           MoonPay
                         </p>

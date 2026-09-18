@@ -19,16 +19,16 @@ import type {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { Browser } from 'webextension-polyfill';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
+import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../metametrics-controller-method-action-types';
 import type {
-  MetaMetricsControllerClearTracesAfterMetricsOptInAction,
-  MetaMetricsControllerSetMarketingCampaignCookieIdAction,
-  MetaMetricsControllerTrackTracesAfterMetricsOptInAction,
-  MetaMetricsControllerUpdateExtensionUninstallUrlAction,
-} from '../metametrics-controller-method-action-types';
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
+} from '../../services/sentry/sentry-tracing-service-method-action-types';
 import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import {
   configureAnalytics,
@@ -78,7 +78,12 @@ function createConfiguredMessenger({
   const trackTracesHandler = jest.fn();
   const clearTracesHandler = jest.fn();
   const setMarketingCampaignCookieIdHandler = jest.fn();
-  const updateExtensionUninstallUrlHandler = jest.fn();
+  const setUninstallURL = jest.fn();
+  const mockExtension = {
+    runtime: {
+      setUninstallURL,
+    },
+  } as unknown as Browser;
   const rootMessenger = new Messenger<
     MockAnyNamespace,
     | PreferencesControllerGetStateAction
@@ -87,10 +92,9 @@ function createConfiguredMessenger({
     | NetworkControllerGetNetworkClientByIdAction
     | RemoteFeatureFlagControllerGetStateAction
     | MetaMetricsControllerGetStateAction
-    | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
-    | MetaMetricsControllerClearTracesAfterMetricsOptInAction
     | MetaMetricsControllerSetMarketingCampaignCookieIdAction
-    | MetaMetricsControllerUpdateExtensionUninstallUrlAction
+    | SentryTracingServiceTrackTracesAfterMetricsOptInAction
+    | SentryTracingServiceClearTracesAfterMetricsOptInAction
     | AnalyticsControllerGetStateAction
     | AnalyticsControllerTrackEventAction
     | AnalyticsControllerIdentifyAction
@@ -148,14 +152,6 @@ function createConfiguredMessenger({
     () => metaMetricsControllerState as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:trackTracesAfterMetricsOptIn',
-    trackTracesHandler as never,
-  );
-  rootMessenger.registerActionHandler(
-    'MetaMetricsController:clearTracesAfterMetricsOptIn',
-    clearTracesHandler as never,
-  );
-  rootMessenger.registerActionHandler(
     'MetaMetricsController:setMarketingCampaignCookieId',
     ((cookieId: string | null) => {
       metaMetricsControllerState.marketingCampaignCookieId = cookieId;
@@ -163,8 +159,12 @@ function createConfiguredMessenger({
     }) as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:updateExtensionUninstallUrl',
-    updateExtensionUninstallUrlHandler as never,
+    'SentryTracingService:trackTracesAfterMetricsOptIn',
+    trackTracesHandler,
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:clearTracesAfterMetricsOptIn',
+    clearTracesHandler,
   );
   rootMessenger.registerActionHandler(
     'AnalyticsController:getState',
@@ -199,6 +199,7 @@ function createConfiguredMessenger({
 
   configureAnalytics({
     messenger: analyticsMessenger,
+    extension: mockExtension,
   });
 
   return {
@@ -211,7 +212,7 @@ function createConfiguredMessenger({
     trackTracesHandler,
     clearTracesHandler,
     setMarketingCampaignCookieIdHandler,
-    updateExtensionUninstallUrlHandler,
+    setUninstallURL,
     analyticsControllerState,
     metaMetricsControllerState,
   };
@@ -379,12 +380,19 @@ describe('analytics', () => {
       expect(analyticsControllerState.consentDecisionMade).toBe(false);
     });
 
-    it('does not nullify the analyticsId when set to false', async () => {
+    it('preserves the analyticsId when opting out and back in', async () => {
       const { analyticsControllerState } = createConfiguredMessenger();
 
-      const analyticsId = await setParticipateInMetaMetrics(false);
+      const analyticsIdAfterOptOut = await setParticipateInMetaMetrics(false);
 
-      expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(analyticsIdAfterOptOut).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(analyticsControllerState.analyticsId).toStrictEqual(
+        TEST_ANALYTICS_ID,
+      );
+
+      const analyticsIdAfterOptIn = await setParticipateInMetaMetrics(true);
+
+      expect(analyticsIdAfterOptIn).toStrictEqual(TEST_ANALYTICS_ID);
       expect(analyticsControllerState.analyticsId).toStrictEqual(
         TEST_ANALYTICS_ID,
       );
@@ -411,73 +419,81 @@ describe('analytics', () => {
     describe('the extension uninstall URL', () => {
       const originalEnvironment = process.env.METAMASK_ENVIRONMENT;
       const originalBuildType = process.env.METAMASK_BUILD_TYPE;
+      const originalVersion = process.env.METAMASK_VERSION;
+      const testVersion = '13.0.0';
+      const encodedAnalyticsId =
+        Buffer.from(TEST_ANALYTICS_ID).toString('base64');
+
+      beforeEach(() => {
+        process.env.METAMASK_VERSION = testVersion;
+      });
 
       afterEach(() => {
         process.env.METAMASK_ENVIRONMENT = originalEnvironment;
         process.env.METAMASK_BUILD_TYPE = originalBuildType;
+        process.env.METAMASK_VERSION = originalVersion;
       });
 
       it('updates it when opting in on a main production build', async () => {
         process.env.METAMASK_BUILD_TYPE = 'main';
         process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-        const { updateExtensionUninstallUrlHandler } =
-          createConfiguredMessenger();
+        const { setUninstallURL } = createConfiguredMessenger();
 
         await setParticipateInMetaMetrics(true);
 
-        expect(updateExtensionUninstallUrlHandler).toHaveBeenCalledTimes(1);
-        expect(updateExtensionUninstallUrlHandler).toHaveBeenCalledWith(
-          true,
-          TEST_ANALYTICS_ID,
+        expect(setUninstallURL).toHaveBeenCalledTimes(1);
+        expect(setUninstallURL).toHaveBeenCalledWith(
+          `https://metamask.io/uninstalled?${new URLSearchParams({
+            av: testVersion,
+            mmi: encodedAnalyticsId,
+            env: ENVIRONMENT.PRODUCTION,
+          }).toString()}`,
         );
       });
 
       it('updates it when opting out on a main production build', async () => {
         process.env.METAMASK_BUILD_TYPE = 'main';
         process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-        const { updateExtensionUninstallUrlHandler } =
-          createConfiguredMessenger();
+        const { setUninstallURL } = createConfiguredMessenger();
 
         await setParticipateInMetaMetrics(false);
 
-        expect(updateExtensionUninstallUrlHandler).toHaveBeenCalledTimes(1);
-        expect(updateExtensionUninstallUrlHandler).toHaveBeenCalledWith(
-          false,
-          TEST_ANALYTICS_ID,
+        expect(setUninstallURL).toHaveBeenCalledTimes(1);
+        expect(setUninstallURL).toHaveBeenCalledWith(
+          `https://metamask.io/uninstalled?${new URLSearchParams({
+            av: testVersion,
+          }).toString()}`,
         );
       });
 
       it('does not update it when participation is reset to null', async () => {
         process.env.METAMASK_BUILD_TYPE = 'main';
         process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-        const { updateExtensionUninstallUrlHandler } =
-          createConfiguredMessenger();
+        const { setUninstallURL } = createConfiguredMessenger();
 
         await setParticipateInMetaMetrics(null);
 
-        expect(updateExtensionUninstallUrlHandler).not.toHaveBeenCalled();
+        expect(setUninstallURL).not.toHaveBeenCalled();
       });
 
       it('does not update it in development', async () => {
         process.env.METAMASK_BUILD_TYPE = 'main';
         process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
-        const { updateExtensionUninstallUrlHandler } =
-          createConfiguredMessenger();
+        const { setUninstallURL } = createConfiguredMessenger();
 
         await setParticipateInMetaMetrics(true);
 
-        expect(updateExtensionUninstallUrlHandler).not.toHaveBeenCalled();
+        expect(setUninstallURL).not.toHaveBeenCalled();
       });
 
       it('does not update it for a non-main build', async () => {
         process.env.METAMASK_BUILD_TYPE = 'flask';
         process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-        const { updateExtensionUninstallUrlHandler } =
-          createConfiguredMessenger();
+        const { setUninstallURL } = createConfiguredMessenger();
 
         await setParticipateInMetaMetrics(true);
 
-        expect(updateExtensionUninstallUrlHandler).not.toHaveBeenCalled();
+        expect(setUninstallURL).not.toHaveBeenCalled();
       });
     });
   });

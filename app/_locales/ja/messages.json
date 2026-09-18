@@ -1481,6 +1481,9 @@
   "alertDisableTooltip": {
     "message": "これは「設定」>「アラート」で変更できます"
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "追加する額を減らすか、別の支払方法を使用してください。"
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "資金不足"
   },
@@ -1511,6 +1514,9 @@
   },
   "alertMessageGasFeeLow": {
     "message": "低い手数料を選択すると、トランザクションに時間がかかり、待機時間が長くなります。より素早くトランザクションを行うには、市場に合った、または積極的な手数料のオプションを選択してください。"
+  },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "このトランザクションを続行するには、ガスリミットを12000以上に上げる必要があります。"
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
@@ -4207,6 +4213,9 @@
   "gasLimit": {
     "message": "ガスリミット"
   },
+  "gasLimitBelowMinimum": {
+    "message": "ガスリミットは12000以上にする必要があります"
+  },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
   },
@@ -5444,13 +5453,6 @@
   "money": {
     "message": "マネー"
   },
-  "moneyAccountApyPitch": {
-    "message": "年換算利率 (APY) $1%を獲得",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY情報"
-  },
   "moneyAccountApyTooltip": {
     "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
   },
@@ -5460,9 +5462,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "1年後の予想残高:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1年後の予想残高"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "予測では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されるものではありません。",
@@ -5492,14 +5491,32 @@
   "moneyActivityDepositing": {
     "message": "入金中"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "支払先"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "送金元"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "トランザクションID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "獲得額"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "支払額"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "返金が行われました"
   },
   "moneyActivityEmpty": {
     "message": "まだアクティビティがありません"
   },
   "moneyActivityFilterAll": {
     "message": "すべて"
+  },
+  "moneyActivityFilterCard": {
+    "message": "カード"
   },
   "moneyActivityFilterDeposits": {
     "message": "デポジット"
@@ -5543,6 +5560,10 @@
   "moneyActivitySent": {
     "message": "送信完了"
   },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "換算手数料にはネットワーク費用が含まれ、プロバイダー手数料も含まれる場合があります。",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
+  },
   "moneyActivityViewAll": {
     "message": "すべて表示"
   },
@@ -5564,9 +5585,6 @@
   "moneyBalanceRetry": {
     "message": "再試行"
   },
-  "moneyBalanceTitle": {
-    "message": "マネー残高"
-  },
   "moneyBalanceUnavailable": {
     "message": "残高が利用できません"
   },
@@ -5587,6 +5605,12 @@
   },
   "moneyBenefits": {
     "message": "特典"
+  },
+  "moneyContactSupport": {
+    "message": "サポートへのお問い合わせ"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "仮想通貨を変換"
   },
   "moneyEarnApyTitle": {
     "message": "最大$1のAPYを獲得"
@@ -5624,15 +5648,72 @@
   "moneyFundDescriptionWithApy": {
     "message": "Money Accountに入金して、残高が最大$1のAPYで増えていく様子を眺めましょう。"
   },
+  "moneyHomeApyTooltip": {
+    "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。資金は、Vedaが管理し、Steakhouse Financialがリスク監督を行うDeFiボールトに預け入れられ、確立された融資市場を通じて収益を生み出します。"
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money AccountはMonadにより運用されています。"
+  },
   "moneyHowItWorks": {
     "message": "報酬獲得の仕組み"
   },
   "moneyHowItWorksDescription": {
     "message": "mUSDを追加しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。"
   },
+  "moneyHowItWorksDescription2": {
+    "message": "マネー残高は使用可能な残高です。MetaMaskカードをリンクすれば、世界中の1億5千万以上のマーチャントで使用できます。資金は使うまで収益を生み続けます。"
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money AccountはMonadにより運用されています。"
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSDを追加して、最大$1を獲得しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Accountは、銀行口座、普通預金口座、または保険対象の預金商品ではありません。APYは変動制であり、保証されるものではありません。Money Accountには、スマートコントラクト、プロトコル、流動性その他に関するリスクが伴い、資金の一部または全部が失われる可能性があります。地域ごとの制限の対象となります。規約が適用されます。"
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "APYは変動しますか？"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "ユーザー自身です。MetaMaskはセルフカストディウォレットであるため、アカウント所有者の秘密鍵でのみ管理できます。MetaMaskがユーザーの資金にアクセスしたり、凍結したり、移動させたりすることはできません。これが、第三者がユーザーの資金を保管する従来の銀行口座やカストディ型暗号資産プラットフォームとの違いです。"
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "資金は誰が管理するのですか？"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Money Accountは無料で開設でき、ステーブルコインの入金には手数料がかかりません。ステーブルコイン以外のトークンを入金する場合は、手数料がかかります。それ以外にも、MetaMask Cardの取引手数料、ATM引き出し手数料、現地通貨へのオフランプ手数料がかかります。"
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "カード手数料の詳細については、こちらをご覧ください。"
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "手数料はかかりますか？"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "はい。MetaMaskに対する通知期間、違約金、出金手数料を設けられておらず、いつでも残高全額を取引、送金、ショッピング、出金にご利用いただけます。流動性が逼迫している場合は、一時的に遅延が発生することがあります。"
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "資金はロックされますか？いつでも引き出せますか？"
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "マネーアカウントとは？"
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "mUSDとは？"
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "これは貯蓄用アカウントですか？それとも使用用アカウントですか？"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "FAQ"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "ユーザーが入金すると、その資金はAaveやMorphoなどの確立されたDeFiプロトコルに預け入れられます。これらのプロトコルは実際の経済活動から収益を上げ、これらの収益がAPY（年換算利回り）の形でユーザーに届けられます。\n\nプロトコル内での資金の配分状況は、Steakhouse Financialという第三者サービスプロバイダーによって監視されます。ユーザーの資金を保管するボールトスマートコントラクトのデプロイと維持・管理は、第三者インフラプロバイダーのVedaが担当します。\n\nここで得られる収益は、MetaMaskまたはmUSDの発行者が利息として支払うものではありません。第三者であるDeFiプロトコル内のポジションから生まれるオンチェーン上の収益が配分される仕組みとなっています。"
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "利益はどこから生まれるのですか？"
   },
   "moneyHowYourMoneyGrows": {
     "message": "お金が増えていく仕組み"
@@ -5643,8 +5724,14 @@
   "moneyLifetime": {
     "message": "全期間"
   },
+  "moneyLifetimeTooltip": {
+    "message": "これまでMoney Accountで発生した総収益額。"
+  },
   "moneyMeetMusd": {
     "message": "mUSDのご紹介"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "過去30日間にMoney Accountで発生した総収益額。"
   },
   "moneyMoreInformation": {
     "message": "他の情報"
@@ -5673,11 +5760,47 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "換金に失敗しました"
   },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "カードのご注文には少し時間がかかるかもしれません。"
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "資金を追加中"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "入金中"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "仮想通貨の換金"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Money Accountに追加されました。"
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "入金されました"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "デポジット完了"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "換金完了"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "これには少し時間がかかるかもしれません。"
+  },
   "moneyToastWithdrawFailedBody": {
     "message": "送金できません。もう一度お試しください。"
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "送金に失敗しました"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "お客様のアカウント"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "送金中"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "送金完了"
   },
   "moneyTransferBetweenAccounts": {
     "message": "別のアカウント"
@@ -6035,9 +6158,6 @@
   "networkFeeExplanationTitle": {
     "message": "ネットワーク手数料"
   },
-  "networkMenu": {
-    "message": "ネットワークメニュー"
-  },
   "networkMenuHeading": {
     "message": "ネットワークを選択"
   },
@@ -6341,18 +6461,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "出金準備ができました"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "これでステーキングが解除された$1を引き出すことができます"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1のステーキングを解除するリクエストが送信されました"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFTを次の相手から受け取りました:"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFTを次の相手に送りました:"
-  },
   "notificationItemNetwork": {
     "message": "ネットワーク:"
   },
@@ -6361,18 +6469,6 @@
   },
   "notificationItemReceived": {
     "message": "受け取りました"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "次の相手から受け取りました:"
-  },
-  "notificationItemSent": {
-    "message": "送信完了"
-  },
-  "notificationItemSentTo": {
-    "message": "次の相手に送りました:"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "ステーキングが完了しました"
   },
   "notificationItemStaked": {
     "message": "ステーキング中"
@@ -6386,17 +6482,11 @@
   "notificationItemSwapped": {
     "message": "スワップ完了"
   },
-  "notificationItemSwappedFor": {
-    "message": "-"
-  },
   "notificationItemTo": {
     "message": "送り先"
   },
   "notificationItemTransactionId": {
     "message": "トランザクションID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "ステーキングの解除が完了しました"
   },
   "notificationItemUnStaked": {
     "message": "ステーキングが解除されました"
@@ -7554,6 +7644,13 @@
   "perpsFilterIndex": {
     "message": "インデックス"
   },
+  "perpsFilterMemecoins": {
+    "message": "ミームコイン"
+  },
+  "perpsFilterMore": {
+    "message": "さらに表示",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
   "perpsFilterNew": {
     "message": "新登場"
   },
@@ -7836,6 +7933,10 @@
   "perpsPositions": {
     "message": "ポジション"
   },
+  "perpsProducts": {
+    "message": "商品",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "リクエストが多すぎます。時間をおいて、もう一度お試しください。"
   },
@@ -7949,12 +8050,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "価格変動"
-  },
-  "perpsSortByRank": {
-    "message": "ランキング"
-  },
-  "perpsSortBySection": {
-    "message": "並べ替え基準"
   },
   "perpsSortByTitle": {
     "message": "並べ替え基準"
@@ -8752,9 +8847,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "前回の利用"
-  },
-  "rampsQuoteFetchError": {
-    "message": "クォートを取得できませんでした。"
   },
   "rampsQuoteUnavailable": {
     "message": "クォートが利用できません。"
