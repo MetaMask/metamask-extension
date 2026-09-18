@@ -9,10 +9,8 @@ import {
   currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
 } from '../store/actions';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import usePolling from './usePolling';
@@ -79,8 +77,6 @@ const useCurrencyRatePolling = () => {
   // usePolling is a custom hook that is invoked synchronously.
   usePolling({
     startPolling: currencyRateStartPolling,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
     input: nativeCurrencies,
     enabled,

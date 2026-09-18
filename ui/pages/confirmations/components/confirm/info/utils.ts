@@ -92,7 +92,10 @@ function percentageChangeWithinThreshold(
 export function hasValueAndNativeBalanceMismatch(
   transactionMeta: TransactionMeta | undefined,
 ): boolean {
-  const value = transactionMeta?.txParams?.value ?? '0x0';
+  const value =
+    transactionMeta?.txParamsOriginal?.value ??
+    transactionMeta?.txParams?.value ??
+    '0x0';
   const nativeBalanceChange =
     transactionMeta?.simulationData?.nativeBalanceChange;
   const simulatedNativeBalanceDifference =

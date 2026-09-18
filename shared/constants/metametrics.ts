@@ -1,3 +1,4 @@
+import type { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Json } from '@metamask/utils';
 import type {
   DeviceType,
@@ -99,10 +100,6 @@ export type MetaMetricsEventPayload = {
    */
   category?: string;
   /**
-   * The action ID to deduplicate event requests from the UI.
-   */
-  actionId?: string;
-  /**
    * The type of environment this event occurred in. Defaults to the background
    * process type.
    */
@@ -139,19 +136,6 @@ export type MetaMetricsEventPayload = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /*
-   * The unique identifier for the event.
-   */
-  uniqueIdentifier?: string;
-  /**
-   * Whether the event is a duplicate of an anonymized event.
-   */
-  isDuplicateAnonymizedEvent?: boolean;
-  /**
-   * The timestamp of the event. If provided, this timestamp will be used
-   * instead of the current time when sending to Segment.
-   */
-  timestamp?: string;
 };
 
 export type UnsanitizedMetaMetricsEventPayload = Omit<
@@ -163,26 +147,9 @@ export type UnsanitizedMetaMetricsEventPayload = Omit<
 
 export type MetaMetricsEventOptions = {
   /**
-   * Whether or not the event happened during the opt-in workflow.
-   */
-  isOptIn?: boolean;
-  /**
-   * Whether the segment queue should be flushed after tracking the event.
-   * Recommended if the result of tracking the event must be known before UI
-   * transition or update.
-   */
-  flushImmediately?: boolean;
-  /**
    * Whether to exclude the user's `metaMetricsId` for anonymity.
    */
   excludeMetaMetricsId?: boolean;
-  /**
-   * An override for the `metaMetricsId` in the event (no pun intended) one is
-   * created as a part of an asynchronous workflow, such as awaiting the result
-   * of the MetaMetrics opt-in function that generates the user's
-   * `metaMetricsId`.
-   */
-  metaMetricsId?: string;
   /**
    * Is this event a holdover from Matomo that needs further migration? When
    * true, sends the data to a special Segment source that marks the event data
@@ -195,44 +162,43 @@ export type MetaMetricsEventOptions = {
   contextPropsIntoEventProperties?: string | string[];
 };
 
-export type MetaMetricsEventFragment = {
+/**
+ * Options accepted when opening an event fragment.
+ *
+ * Fragments themselves live in the `AnalyticsController`, which stores the
+ * platform-agnostic `properties`, `sensitiveProperties` and `context`. The
+ * extension-specific fields below are flattened into those by
+ * `app/scripts/controllers/analytics`, so every event a fragment emits is
+ * shaped exactly like one built through `trackEvent`.
+ */
+export type MetaMetricsEventFragmentOptions = {
   /**
-   * The action ID of transaction metadata object.
+   * The fragment id. Generated when not supplied.
    */
-  actionId?: string;
+  id?: string;
+  /**
+   * An event name to fire immediately upon fragment creation. This is useful
+   * for building funnels and for reduction of code duplication.
+   */
+  initialEvent?: string;
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
-  successEvent: string;
+  successEvent?: string;
   /**
    * The event name to fire when the fragment is closed with a rejection.
    */
   failureEvent?: string;
   /**
-   * An event name to fire immediately upon fragment creation. This is useful
-   * for building funnels in mixpanel and for reduction of code duplication.
-   */
-  initialEvent?: string;
-  /**
-   * The event category to use for both the success and failure events.
+   * The event category to use for every event the fragment fires.
    */
   category?: string;
   /**
-   * Should this fragment be persisted in state and progressed after the
-   * extension is locked and unlocked.
+   * Should this fragment survive a restart of the background process. Fragments
+   * that do not set this are discarded on the next initialization, since the
+   * journey they belonged to cannot be resumed.
    */
   persist?: boolean;
-  /**
-   * Time in seconds the event should be persisted for. After the timeout the
-   * fragment will be closed as abandoned. If not supplied the fragment is
-   * stored indefinitely.
-   */
-  timeout?: number;
-  /**
-   * `Date.now()` when the fragment was last updated. Used to determine if the
-   * timeout has expired and the fragment should be closed.
-   */
-  lastUpdated?: number;
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
@@ -244,18 +210,10 @@ export type MetaMetricsEventFragment = {
    */
   sensitiveProperties?: Record<string, Json>;
   /**
-   * Amount of currency that the event creates in revenue for MetaMask.
+   * The type of environment the fragment was opened in. Defaults to the
+   * background process type.
    */
-  revenue?: number;
-  /**
-   * ISO-4127-formatted currency for events with revenue. Defaults to US
-   * dollars.
-   */
-  currency?: string;
-  /**
-   * Abstract business "value" attributable to customers who trigger this event.
-   */
-  value?: number;
+  environmentType?: string;
   /**
    * The page/route that the event occurred on.
    */
@@ -264,32 +222,15 @@ export type MetaMetricsEventFragment = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * Overrides the automatic generation of UUID for the event fragment. This is
-   * useful when tracking events for subsystems that already generate UUIDs so
-   * to avoid unnecessary lookups and reduce accidental duplication.
-   */
-  uniqueIdentifier?: string;
-  /*
-   * The event id.
-   */
-  id: string;
-  /*
-   * The environment type.
-   */
-  environmentType?: string;
-  /*
-   * The event name.
-   */
-  event?: string;
-
-  /**
-   * HACK: "transaction-submitted-<id>" fragment hack
-   * If this is true and the fragment is found as an abandoned fragment,
-   * then delete the fragment instead of finalizing it.
-   */
-  canDeleteIfAbandoned?: boolean;
 };
+
+/**
+ * The fields that can be written to an already open event fragment.
+ */
+export type MetaMetricsEventFragmentPayload = Pick<
+  MetaMetricsEventFragmentOptions,
+  'properties' | 'sensitiveProperties'
+>;
 
 /**
  * Data sent to the `segment.track` method.
@@ -322,11 +263,26 @@ export type SegmentEventPayload = {
     chain_id: string | null;
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    chain_id_caip?: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type?: string;
     revenue?: number;
     value?: number;
     currency?: string;
     category?: string;
+    /**
+     * The profile ID of the user if they have been signed in.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    profile_id?: string;
+    /**
+     * The canonical profile ID grouping profile IDs for the same person.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    canonical_profile_id?: string;
   };
   /**
    * The context the event occurred in.
@@ -378,19 +334,6 @@ export type MetaMetricsPagePayload = {
    * The dapp that triggered the page view.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * The action ID of the page view.
-   */
-  actionId?: string;
-};
-
-export type MetaMetricsPageOptions = {
-  /**
-   * Is the current path one of the pages in the onboarding workflow? (If this
-   * is true and participateInMetaMetrics is null, then the page view will be
-   * tracked.)
-   */
-  isOptInPath?: boolean;
 };
 
 /**
@@ -524,6 +467,16 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   install_date_ext?: string;
   /**
+   * The raw Google Analytics cookie value read at install time.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  cookie_id?: string;
+  /**
+   * The parsed Google Analytics client identifier read at install time.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ga_client_id?: string;
+  /**
    * The persistence storage kind currently in use.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -542,35 +495,43 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   token_sort_preference?: string;
   /**
+   * Whether privacy mode is enabled.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  privacy_mode_toggle?: boolean;
+  /**
+   * The selected token network filters.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  selected_network_filter?: string[];
+  /**
    * The number of petname addresses
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   petname_addresses_count?: number;
   /**
-   * The profile ID of the user if they have been signed in
+   * The canonical profile ID of the user if they have been signed in
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  profile_id?: string;
+  canonical_profile_id?: string;
   /**
-   * Whether the user has opted into Rewards.
+   * The account type derived from the user's onboarding flow.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  has_rewards_opted_in?: string;
+  account_type?:
+    | 'metamask'
+    | 'imported'
+    | `metamask_${AuthConnection}`
+    | `imported_${AuthConnection}`;
   /**
-   * Whether the user was referred when opting into Rewards.
+   * The configured EVM and non-EVM chain ids in CAIP-2 format.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  rewards_referred?: boolean;
-  /**
-   * The referral code used when opting into Rewards.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  rewards_referral_code_used?: string;
+  chain_id_list?: string[];
   /**
    * The platform (browser) where the extension is running.
    */
@@ -591,6 +552,52 @@ export type MetaMetricsUserTraits = {
    * The operating system (normalized).
    */
   os?: Os;
+  /**
+   * Total BIP44 account groups across all keyring types — what users perceive
+   * as "accounts" in the Account Management UI.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_account_groups?: number;
+  /**
+   * Number of accounts added via raw private key (Simple Key Pair keyring).
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_imported_accounts?: number;
+  /**
+   * Number of account groups from Ledger hardware wallet.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_ledger_accounts?: number;
+  /**
+   * Number of account groups from Trezor hardware wallet.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_trezor_accounts?: number;
+  /**
+   * Number of account groups from Lattice (GridPlus) hardware wallet.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_lattice_accounts?: number;
+  /**
+   * Number of account groups from QR-based hardware wallets (OneKey, Keystone,
+   * AirGap Vault, CoolWallet, DCent, Ngrave, imToken, Keycard Shell).
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_qr_hardware_accounts?: number;
+  /**
+   * Total number of hardware wallet accounts across all hardware wallet types
+   * (Ledger, Trezor, Lattice, QR-based). Combined with number_of_hd_entropies
+   * and number_of_imported_accounts, gives the total number of wallets.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  number_of_hardware_wallets?: number;
 };
 
 export enum MetaMetricsUserTrait {
@@ -610,6 +617,14 @@ export enum MetaMetricsUserTrait {
    * Identified when the user installed the extension.
    */
   InstallDateExt = 'install_date_ext',
+  /**
+   * Identified from the raw Google Analytics cookie value captured at install time.
+   */
+  CookieId = 'cookie_id',
+  /**
+   * Identified from the Google Analytics client identifier captured at install time.
+   */
+  GaClientId = 'ga_client_id',
   /**
    * Identifies which persistence storage kind is in use.
    */
@@ -696,17 +711,15 @@ export enum MetaMetricsUserTrait {
   /**
    * Identified when the user signs in
    */
-  ProfileId = 'profile_id',
+  CanonicalProfileId = 'canonical_profile_id',
+  /**
+   * Identifies the account type derived from the user's onboarding flow.
+   */
+  AccountType = 'account_type',
   /**
    * Identified when the user adds or removes configured chains (evm or non-evm)
    */
   ChainIdList = 'chain_id_list',
-  /**
-   * Rewards-specific traits
-   */
-  HasRewardsOptedIn = 'has_rewards_opted_in',
-  RewardsReferred = 'rewards_referred',
-  RewardsReferralCodeUsed = 'rewards_referral_code_used',
   /**
    * The platform (browser) where the extension is running.
    */
@@ -718,13 +731,43 @@ export enum MetaMetricsUserTrait {
   /**
    * Whether the device is mobile or desktop.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   DeviceType = 'device_type',
   /**
    * The operating system (normalized).
    */
   Os = 'os',
+  /**
+   * Total BIP44 account groups across all keyring types — what users perceive
+   * as "accounts" in the Account Management UI.
+   */
+  NumberOfAccountGroups = 'number_of_account_groups',
+  /**
+   * Number of accounts added via raw private key (Simple Key Pair keyring).
+   */
+  NumberOfImportedAccounts = 'number_of_imported_accounts',
+  /**
+   * Number of account groups from Ledger hardware wallet.
+   */
+  NumberOfLedgerAccounts = 'number_of_ledger_accounts',
+  /**
+   * Number of account groups from Trezor hardware wallet.
+   */
+  NumberOfTrezorAccounts = 'number_of_trezor_accounts',
+  /**
+   * Number of account groups from Lattice (GridPlus) hardware wallet.
+   */
+  NumberOfLatticeAccounts = 'number_of_lattice_accounts',
+  /**
+   * Number of account groups from QR-based hardware wallets (OneKey, Keystone,
+   * AirGap Vault, CoolWallet, DCent, Ngrave, imToken, Keycard Shell).
+   */
+  NumberOfQrHardwareAccounts = 'number_of_qr_hardware_accounts',
+  /**
+   * Total number of hardware wallet accounts across all hardware wallet types
+   * (Ledger, Trezor, Lattice, QR-based). Combined with number_of_hd_entropies
+   * and number_of_imported_accounts, gives the total number of wallets.
+   */
+  NumberOfHardwareWallets = 'number_of_hardware_wallets',
 }
 
 /**
@@ -761,6 +804,7 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountPinned = 'Account Pinned',
   AccountHidden = 'Account Hidden',
+  ManageAccountsViewed = 'Manage Accounts Viewed',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
@@ -778,6 +822,7 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BannerDisplay = 'Banner Display',
+  BannerDismissed = 'Banner Dismissed',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
   BridgeLinkClicked = 'Bridge Link Clicked',
@@ -804,6 +849,8 @@ export enum MetaMetricsEventName {
   ForceUpgradeUpdateNeededPromptViewed = 'Force Upgrade Update Needed Prompt Viewed',
   ForceUpgradeSkipped = 'Force Upgrade Skipped',
   ForceUpgradeClickedUpdateToLatestVersion = 'Force Upgrade Clicked Update to Latest Version',
+  HyperliquidDepositPromptViewed = 'Hyperliquid Deposit Prompt Viewed',
+  HyperliquidDepositPromptInteracted = 'Hyperliquid Deposit Prompt Interacted',
   ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
@@ -815,10 +862,14 @@ export enum MetaMetricsEventName {
   KeyGlobalSecurityToggleSelected = 'Key Global Security/Privacy Settings',
   KeyBalanceTokenPriceChecker = 'Key Show Balance and Token Price Checker Settings',
   KeyGasFeeEstimationBuySwapTokens = 'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
-  MarkAllNotificationsRead = 'Notifications Marked All as Read',
+  MarkAllNotificationsRead = 'InApp Notifications Marked All as Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
+  MoneyButtonClicked = 'Money Button Clicked',
+  MoneySurfaceClicked = 'Money Surface Clicked',
+  MoneySurfaceViewed = 'Money Surface Viewed',
+  MoneyTooltipClicked = 'Money Tooltip Clicked',
   MusdClaimBonusButtonClicked = 'MUSD Claim Bonus Button Clicked',
   MusdClaimBonusCtaDisplayed = 'mUSD Claim Bonus CTA Displayed',
   MusdClaimBonusStatusUpdated = 'MUSD Claim Bonus Status Updated',
@@ -846,12 +897,16 @@ export enum MetaMetricsEventName {
   StorageErrorToastViewed = 'Storage Error Toast Viewed',
   StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
   StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  NetworkUsageNoticeToastViewed = 'Network Usage Notice Toast Viewed',
+  NetworkUsageNoticeToastInteracted = 'Network Usage Notice Toast Interacted',
+  DataPersistenceWriteRetryRecovered = 'Data Persistence Write Retry Recovered',
   StateMigrationSucceeded = 'State Migration Succeeded',
   StateMigrationFailed = 'State Migration Failed',
   VaultCorruptionDetected = 'Vault Corruption Detected',
   VaultCorruptionRestoreWalletScreenViewed = 'Vault Corruption Restore Wallet Screen Viewed',
   VaultCorruptionRestoreWalletButtonPressed = 'Vault Corruption Restore Wallet Button Pressed',
-  ViewPermissionedNetworks = 'View Permissioned Networks',
+  CriticalErrorScreenViewed = 'Critical Error Screen Viewed',
+  CriticalErrorRestoreWalletButtonPressed = 'Critical Error Restore Wallet Button Pressed',
   ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',
@@ -861,6 +916,7 @@ export enum MetaMetricsEventName {
   NavSendButtonClicked = 'Send Button Clicked',
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
+  NavBatchSellButtonClicked = 'Batch Sell Button Clicked',
   NftAdded = 'NFT Added',
   NftDetected = 'NFT Detected',
   NoticeUpdateDisplayed = 'Notice Update Displayed',
@@ -874,7 +930,17 @@ export enum MetaMetricsEventName {
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingCompleted = 'Onboarding Completed',
   OnrampProviderSelected = 'On-ramp Provider Selected',
+  RampsScreenViewed = 'Ramps Screen Viewed',
+  RampsTokenSelected = 'Ramps Token Selected',
+  RampsProviderSelected = 'Ramps Provider Selected',
+  RampsCheckoutOpened = 'Ramps Checkout Opened',
+  RampsCheckoutCallbackDetected = 'Ramps Checkout Callback Detected',
+  RampsCheckoutClosed = 'Ramps Checkout Closed',
+  RampsTransactionCompleted = 'Ramps Transaction Completed',
+  RampsTransactionConfirmed = 'Ramps Transaction Confirmed',
+  RampsTransactionFailed = 'Ramps Transaction Failed',
   PasswordChanged = 'Password Changed',
+  PasswordChangeWithPasskey = 'Password Change With Passkey',
   ForgotPasswordClicked = 'Forgot Password Clicked',
   ReferralViewed = 'Referral Viewed',
   ReferralConfirmButtonClicked = 'Referral Confirm Button Clicked',
@@ -897,6 +963,9 @@ export enum MetaMetricsEventName {
   RpcServiceDegraded = 'RPC Service Degraded',
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
+  SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
+  SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
+  BasicFunctionalityMigrated = 'Basic Functionality Migrated',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
@@ -908,6 +977,14 @@ export enum MetaMetricsEventName {
   SignatureRequestedAnon = 'Signature Requested Anon',
   SimulationFails = 'Simulation Fails',
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
+  ScamQuestionnaireCompleted = 'Scam Questionnaire Completed',
+  ScamQuestionnaireSupportContacted = 'Scam Questionnaire Support Contacted',
+  ScamQuestionnaireViewed = 'Scam Questionnaire Viewed',
+  SecurityPageCtaClicked = 'security_page_cta_clicked',
+  SecurityPageDismissed = 'security_page_dismissed',
+  SecurityPageViewed = 'security_page_viewed',
+  SecurityTrustBottomSheetActionTaken = 'Security Trust BottomSheet Action Taken',
+  SecurityTrustBottomSheetOpened = 'Security Trust BottomSheet Opened',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -932,8 +1009,11 @@ export enum MetaMetricsEventName {
   TermsOfUseAccepted = 'Terms of Use Accepted',
   ThemeChanged = 'Theme Changed',
   TokenImportButtonClicked = 'Import Token Button Clicked',
-  TokenScreenOpened = 'Token Screen Opened',
+  ImportCustomTokenViewed = 'Import Custom Token Viewed',
+  ImportCustomTokenInteracted = 'Import Custom Token Interacted',
+  TokenScreenViewed = 'Token Screen Viewed',
   TokenAdded = 'Token Added',
+  LowValueAssetsToggled = 'Low Value Assets Toggled',
   TokenSortPreference = 'Token Sort Preference Updated',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
@@ -943,7 +1023,6 @@ export enum MetaMetricsEventName {
   TokenImportClicked = 'Token Import Clicked',
   ToastDisplayed = 'Toast Displayed',
   WalletSetupStarted = 'Wallet Setup Started',
-  WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
   WalletImportAttempted = 'Wallet Import Attempted',
   WalletImported = 'Wallet Imported',
@@ -960,6 +1039,11 @@ export enum MetaMetricsEventName {
   RehydrationPasswordFailed = 'Rehydration Password Failed',
   UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
   PasswordOutdatedModalViewed = 'Password Outdated Modal Viewed',
+  PasskeyOnboardingSetup = 'Passkey Onboarding Setup',
+  PasskeyTroubleshoot = 'Passkey Troubleshoot',
+  PasskeyTurnOff = 'Passkey Turn Off',
+  PasskeySetup = 'Passkey Setup',
+  PasskeyUnlockInteracted = 'Passkey Unlock Interacted',
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
@@ -967,13 +1051,36 @@ export enum MetaMetricsEventName {
   AccountRemoveFailed = 'Account Remove Failed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
+  ChainlistAddClicked = 'Chainlist Add Clicked',
+  ChainlistNetworkSelected = 'Chainlist Network Selected',
+  CustomNetworkFormViewed = 'Custom Network Form Viewed',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  TokenDetailsCtaClicked = 'Token Details CTA Clicked',
+  ExploreSearchInteracted = 'Explore Search Interacted',
+  TokenDetailsSecuritySectionClicked = 'token_details_security_section_clicked',
+  TokenDetailsSecuritySectionViewed = 'token_details_security_section_viewed',
+  NftScreenViewed = 'NFT Screen Viewed',
   NftDetailsOpened = 'NFT Details Opened',
-  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiScreenViewed = 'DeFi Screen Viewed',
   DeFiDetailsOpened = 'DeFi Details Opened',
-  ActivityScreenOpened = 'Activity Screen Opened',
-  PerpsScreenOpened = 'Perps Screen Opened',
+  ActivityScreenViewed = 'Activity Screen Viewed',
+  PerpsScreenViewed = 'Perp Screen Viewed',
+  PerpsUiInteraction = 'Perp UI Interaction',
+  PerpsTradeTransaction = 'Perp Trade Transaction',
+  PerpsPositionCloseTransaction = 'Perp Position Close Transaction',
+  PerpsOrderCancelTransaction = 'Perp Order Cancel Transaction',
+  PerpsWithdrawalTransaction = 'Perp Withdrawal Transaction',
+  PerpsRiskManagement = 'Perp Risk Management',
+  PerpsError = 'Perp Error',
+  // Order funnel events. Mirror the controller's PerpsAnalyticsEvent
+  // string values exactly so client- and controller-emitted names match.
+  PerpsTransactionConsidered = 'Perp Transaction Considered',
+  PerpsTradeQuoteReceived = 'Perp Trade Quote Received',
+  // Market search funnel events, same mirroring rule as the order funnel above.
+  PerpsSearchQuery = 'Perp Search Query',
+  PerpsSearchResultTapped = 'Perp Search Result Tapped',
+  PerpsSearchAbandoned = 'Perp Search Abandoned',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
@@ -1022,12 +1129,10 @@ export enum MetaMetricsEventName {
   TurnOnMetaMetrics = 'MetaMetrics Turned On',
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
-  NotificationClicked = 'Notification Clicked',
-  NotificationDetailClicked = 'Notification Detail Clicked',
-  NotificationsMenuOpened = 'Notifications Menu Opened',
+  NotificationClicked = 'InApp Notification Clicked',
+  NotificationDetailClicked = 'InApp Notification Detail Clicked',
+  NotificationsMenuOpened = 'InApp Notifications Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
-  NotificationsActivated = 'Notifications Activated',
-  PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
   // Send
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -1068,6 +1173,8 @@ export enum MetaMetricsEventName {
   HardwareWalletRecoveryModalViewed = 'Hardware Wallet Recovery Modal Viewed',
   HardwareWalletRecoverySuccessModalViewed = 'Hardware Wallet Recovery Success Modal Viewed',
   HardwareWalletRecoveryCtaClicked = 'Hardware Wallet Recovery CTA Clicked',
+  HardwareWalletRecoveryRepairCtaClicked = 'Hardware Wallet Recovery Repair CTA Clicked',
+  QrHardwareScanFailed = 'QR Hardware Scan Failed',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
@@ -1127,6 +1234,8 @@ export enum MetaMetricsHardwareWalletRecoveryErrorType {
   DeviceDisconnected = 'Device Disconnected',
   EthereumAppNotOpened = 'Ethereum App Not Opened',
   BlindSigningNotEnabled = 'Blind Signing Not Enabled',
+  CameraPermissionDenied = 'Camera Permission Denied',
+  CameraPermissionPromptDismissed = 'Camera Permission Prompt Dismissed',
   GenericError = 'Generic Error',
 }
 
@@ -1146,6 +1255,16 @@ export enum MetaMetricsEventAccountType {
   Hardware = 'hardware',
   Imported = 'imported',
   Snap = 'snap',
+}
+
+/**
+ * Segment `source` for the `Manage Accounts Viewed` event — the entry point
+ * that opened the account management view.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/manage-accounts-viewed.yaml` (`source` enum).
+ */
+export enum MetaMetricsManageAccountsSource {
+  AccountList = 'account_list',
+  AccountMenu = 'account_menu',
 }
 
 export enum QueueType {
@@ -1178,17 +1297,19 @@ export enum MetaMetricsEventCategory {
   MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
+  Money = 'Money',
   MusdConversion = 'MUSD Conversion',
   Navigation = 'Navigation',
   Network = 'Network',
   Onboarding = 'Onboarding',
   NotificationInteraction = 'Notification Interaction',
-  NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
+  Perps = 'Perps',
   Phishing = 'Phishing',
+  Ramps = 'Ramps',
   Referrals = 'Referrals',
   BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
@@ -1221,6 +1342,11 @@ export enum MetaMetricsEventKeyType {
   Srp = 'srp',
 }
 
+export enum MetaMetricsEventVerificationMethod {
+  Password = 'password',
+  Passkey = 'passkey',
+}
+
 export enum MetaMetricsEventErrorType {
   InsufficientGas = 'insufficient_gas',
   GasTimeout = 'gas_timeout',
@@ -1239,7 +1365,10 @@ export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
   ActivityTabEmptyState = 'Activity Tab Empty State',
+  ActivityDetails = 'Activity Details',
   TransactionShield = 'Transaction Shield',
+  TransactionDetails = 'Transaction Details',
+  BottomNavBar = 'Bottom Nav Bar',
 }
 
 export enum MetaMetricsTokenEventSource {
@@ -1247,6 +1376,7 @@ export enum MetaMetricsTokenEventSource {
   Dapp = 'dapp',
   Detected = 'detected',
   List = 'list',
+  ManageTokens = 'manage_tokens',
 }
 
 export enum MetaMetricsTransactionEventSource {
@@ -1313,4 +1443,9 @@ export const DATA_DELETION_REQUESTED_STATUSES: DeleteRegulationStatus[] = [
 export enum MetaMetricsEventTransactionEstimateType {
   DappProposed = 'dapp_proposed',
   DefaultEstimate = 'default_estimate',
+}
+
+export enum ScreenViewedEntryPoint {
+  SubtabClick = 'subtab_click',
+  BottomNavClick = 'bottom_nav_click',
 }

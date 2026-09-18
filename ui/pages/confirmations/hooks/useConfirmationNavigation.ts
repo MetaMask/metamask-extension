@@ -2,11 +2,10 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
-import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import { isStrictHexString, Json } from '@metamask/utils';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates/approval-types';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -23,11 +22,53 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
+import type { SetPayTokenRequest } from './pay/types';
 
 export enum ConfirmationLoader {
   Default = 'default',
   CustomAmount = 'customAmount',
   Send = 'send',
+}
+
+/**
+ * Pre-selected payment method for a confirmation, passed as a query param.
+ * Mirrors mobile `PayWithOption` so Money Account → Perps (and similar)
+ * entry points can lock the source of funds without showing the token picker.
+ */
+export enum PayWithOption {
+  MoneyAccount = 'money_account',
+}
+
+/**
+ * Query params scoped to a single confirmation entry point. They must not
+ * survive navigation to another pending confirmation via `getConfirmationRoute`.
+ */
+const FLOW_SCOPED_SEARCH_PARAMS = [
+  'payWithOption',
+  'preferredPaymentTokenAddress',
+  'preferredPaymentTokenChainId',
+] as const;
+
+export function sanitizeConfirmationSearchParams(
+  queryString: string = '',
+): string {
+  if (!queryString.length) {
+    return '';
+  }
+
+  const normalizedQuery = queryString.startsWith('?')
+    ? queryString.slice(1)
+    : queryString;
+
+  if (!normalizedQuery.length) {
+    return '';
+  }
+
+  const params = new URLSearchParams(normalizedQuery);
+  FLOW_SCOPED_SEARCH_PARAMS.forEach((param) => params.delete(param));
+
+  const sanitized = params.toString();
+  return sanitized.length ? `?${sanitized}` : '';
 }
 
 const CONNECT_APPROVAL_TYPES = [
@@ -39,12 +80,17 @@ const CONNECT_APPROVAL_TYPES = [
 
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
-  returnTo?: string;
+  goBackTo?: string;
+  payWithOption?: PayWithOption;
+  /**
+   * Token the confirmation should select as the source of funds.
+   */
+  preferredPaymentToken?: SetPayTokenRequest;
 };
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
-  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const approvalFlows = useSelector(getApprovalFlows);
   const navigate = useNavigate();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
@@ -105,8 +151,23 @@ export function useConfirmationNavigation() {
         params.set('loader', options.loader);
       }
 
-      if (options.returnTo) {
-        params.set('returnTo', options.returnTo);
+      if (options.goBackTo) {
+        params.set('goBackTo', options.goBackTo);
+      }
+
+      if (options.payWithOption) {
+        params.set('payWithOption', options.payWithOption);
+      }
+
+      if (options.preferredPaymentToken) {
+        params.set(
+          'preferredPaymentTokenAddress',
+          options.preferredPaymentToken.address,
+        );
+        params.set(
+          'preferredPaymentTokenChainId',
+          options.preferredPaymentToken.chainId,
+        );
       }
 
       navigate({
@@ -154,7 +215,11 @@ export function getConfirmationRoute(
 
   const type = nextConfirmation.type as ApprovalType;
 
-  if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
+  if (
+    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.find(
+      (approvalType) => approvalType === type,
+    ) !== undefined
+  ) {
     return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;
   }
 
@@ -163,8 +228,9 @@ export function getConfirmationRoute(
   }
   if (type === ApprovalType.Transaction) {
     let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
-    if (queryString.length) {
-      url = `${url}${queryString}`;
+    const sanitizedQueryString = sanitizeConfirmationSearchParams(queryString);
+    if (sanitizedQueryString.length) {
+      url = `${url}${sanitizedQueryString}`;
     }
     return url;
   }
@@ -207,10 +273,33 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
     (searchParams.get('loader') as ConfirmationLoader) ??
     ConfirmationLoader.Default;
 
-  const returnTo = sanitizeRedirectUrl(searchParams.get('returnTo'));
+  const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
+
+  const payWithOptionParam = searchParams.get('payWithOption');
+  const payWithOption =
+    payWithOptionParam === PayWithOption.MoneyAccount
+      ? PayWithOption.MoneyAccount
+      : undefined;
+
+  const preferredPaymentTokenAddress = searchParams.get(
+    'preferredPaymentTokenAddress',
+  );
+  const preferredPaymentTokenChainId = searchParams.get(
+    'preferredPaymentTokenChainId',
+  );
+  const preferredPaymentToken =
+    isStrictHexString(preferredPaymentTokenAddress) &&
+    isStrictHexString(preferredPaymentTokenChainId)
+      ? {
+          address: preferredPaymentTokenAddress,
+          chainId: preferredPaymentTokenChainId,
+        }
+      : undefined;
 
   return {
     loader,
-    returnTo,
+    goBackTo,
+    payWithOption,
+    preferredPaymentToken,
   };
 }

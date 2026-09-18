@@ -23,3 +23,6 @@ export type {
   MusdTransferDetails,
   TransactionControllerCallbacks,
 } from './transaction-utils';
+
+/** Ensures mUSD is imported for a chain before conversion confirm UI (token list / assets). */
+export { ensureMusdTokenImportedForChain } from './ensure-musd-token-imported';

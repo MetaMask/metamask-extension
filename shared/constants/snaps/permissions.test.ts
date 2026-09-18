@@ -2,6 +2,7 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
+import { Messenger, MOCK_ANY_NAMESPACE } from '@metamask/messenger';
 import { RestrictedMethods } from '../permissions';
 import {
   EndowmentPermissions,
@@ -12,18 +13,20 @@ import {
 describe('buildSnapRestrictedMethodSpecifications', () => {
   it('creates valid permission specification objects', () => {
     const hooks = {
-      addSnap: () => undefined,
-      clearSnapState: () => undefined,
-      getMnemonic: () => undefined,
-      getSnap: () => undefined,
-      getSnapRpcHandler: () => undefined,
-      getSnapState: () => undefined,
-      updateSnapState: () => undefined,
+      getUnlockPromise: jest.fn(),
+      getClientCryptography: jest.fn(),
+      isOnPhishingList: jest.fn(),
+      maybeUpdatePhishingList: jest.fn(),
+      getSnapKeyring: jest.fn(),
+      getPreferences: jest.fn(),
     };
+
+    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 
     const specifications = buildSnapRestrictedMethodSpecifications(
       Object.keys(ExcludedSnapPermissions),
       hooks,
+      messenger,
     );
 
     const allRestrictedMethods = Object.keys(RestrictedMethods);

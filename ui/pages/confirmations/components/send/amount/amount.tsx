@@ -105,7 +105,6 @@ export const Amount = ({
     amount,
     fiatMode,
     getFiatValue,
-    getNativeValue,
     setAmount,
     setAmountInputTypeFiat,
     setAmountInputTypeToken,
@@ -197,12 +196,17 @@ export const Amount = ({
             amountError ? TextColor.errorDefault : TextColor.textAlternative
           }
           variant={TextVariant.bodySm}
+          data-testid="send-amount-fiat-value"
         >
           {amountError ||
             (conversionSupportedForAsset ? alternateDisplayValue : '')}
         </Text>
         <Box display={Display.Flex}>
-          <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
+            data-testid="send-amount-balance"
+          >
             {balanceDisplayValue}
           </Text>
           {!isNonEvmNativeSendType && (

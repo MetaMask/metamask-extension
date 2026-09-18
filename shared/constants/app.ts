@@ -20,6 +20,10 @@ export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
 export const ENVIRONMENT_TYPE_SIDEPANEL = 'sidepanel';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
+export const POPUP_FILE = 'popup.html';
+export const POPUP_INIT_FILE = 'popup-init.html';
+export const SIDEPANEL_FILE = 'sidepanel.html';
+
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
 export const PLATFORM_CHROMIUM = 'Chromium';
@@ -161,9 +165,11 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_CONFIRMATION: DIALOG_APPROVAL_TYPES.confirmation,
   SNAP_DIALOG_PROMPT: DIALOG_APPROVAL_TYPES.prompt,
   SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
+  HYPERLIQUID_DEPOSIT_PROMPT: 'hyperliquid_deposit_prompt',
   HYPERLIQUID_REFERRAL_CONSENT: 'hyperliquid_referral_consent',
   ASTERDEX_REFERRAL_CONSENT: 'asterdex_referral_consent',
   GMX_REFERRAL_CONSENT: 'gmx_referral_consent',
+  VARIATIONAL_REFERRAL_CONSENT: 'variational_referral_consent',
 } as const;
 
 export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
@@ -171,19 +177,18 @@ export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
 // Custom ApprovalTypes for DeFi referral consent
 export const HYPERLIQUID_APPROVAL_TYPE =
   MESSAGE_TYPE.HYPERLIQUID_REFERRAL_CONSENT;
+export const HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE =
+  MESSAGE_TYPE.HYPERLIQUID_DEPOSIT_PROMPT;
 export const ASTERDEX_APPROVAL_TYPE = MESSAGE_TYPE.ASTERDEX_REFERRAL_CONSENT;
 export const GMX_APPROVAL_TYPE = MESSAGE_TYPE.GMX_REFERRAL_CONSENT;
+export const VARIATIONAL_APPROVAL_TYPE =
+  MESSAGE_TYPE.VARIATIONAL_REFERRAL_CONSENT;
 
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
   showSnapAccountRedirect: 'snap_manageAccounts:showSnapAccountRedirect',
-};
-
-export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
-  showSmartTransactionStatusPage:
-    'smartTransaction:showSmartTransactionStatusPage',
-};
+} as const;
 
 // PoC: 1-click state log export
 export const STATE_LOG_EXPORT_APPROVAL_TYPE = 'stateLogExport:userConsent';

@@ -7,18 +7,18 @@ import {
 } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
 import React, {
-  FunctionComponent,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useRef,
 } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   handleSnapRequest as handleSnapRequestFunction,
   updateInterfaceState,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
 import { mergeValue } from './utils';
 
 export type HandleEvent = <Type extends State>(args: {
@@ -43,13 +43,15 @@ export type HandleFileChange = (
 
 export type SetCurrentInputFocus = (name: string | null) => void;
 
+export type GetFocusedInput = () => string | null;
+
 export type SnapInterfaceContextType = {
   handleEvent: HandleEvent;
   getValue: GetValue;
   handleInputChange: HandleInputChange;
   handleFileChange: HandleFileChange;
   setCurrentFocusedInput: SetCurrentInputFocus;
-  focusedInput: string | null;
+  getFocusedInput: GetFocusedInput;
   snapId: string;
 };
 
@@ -72,16 +74,19 @@ export type SnapInterfaceContextProviderProps = {
  * @param params.initialState - The initial state of the interface.
  * @returns The context provider.
  */
-export const SnapInterfaceContextProvider: FunctionComponent<
-  SnapInterfaceContextProviderProps
-> = ({ children, interfaceId, snapId, initialState }) => {
+export const SnapInterfaceContextProvider = ({
+  children,
+  interfaceId,
+  snapId,
+  initialState,
+}: React.PropsWithChildren<SnapInterfaceContextProviderProps>) => {
   const dispatch = useDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the
   // UI. It's kept in a ref to avoid useless re-rendering of the entire tree of
   // components.
   const internalState = useRef<InterfaceState>(initialState ?? {});
-  const focusedInput = useRef<string | null>(null);
+  const focusedInputRef = useRef<string | null>(null);
 
   // Since the internal state is kept in a reference, it won't update when the
   // interface is updated. We have to manually update it.
@@ -247,8 +252,14 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     return undefined;
   };
 
-  const setCurrentFocusedInput: SetCurrentInputFocus = (name) =>
-    (focusedInput.current = name);
+  const setCurrentFocusedInput: SetCurrentInputFocus = useCallback((name) => {
+    focusedInputRef.current = name;
+  }, []);
+
+  const getFocusedInput: GetFocusedInput = useCallback(
+    () => focusedInputRef.current,
+    [],
+  );
 
   return (
     <SnapInterfaceContext.Provider
@@ -258,7 +269,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         handleInputChange,
         handleFileChange,
         setCurrentFocusedInput,
-        focusedInput: focusedInput.current,
+        getFocusedInput,
         snapId,
       }}
     >

@@ -70,7 +70,6 @@ describe('version-gating', () => {
 
     it('returns false when semver.gte throws a non-Error exception', () => {
       semverGteMock.mockImplementation(() => {
-        // eslint-disable-next-line no-throw-literal
         throw 'Some string error';
       });
 

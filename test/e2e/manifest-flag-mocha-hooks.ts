@@ -1,7 +1,7 @@
 /**
  * Before this file was created, there was no way to pass runtime flags from an E2E test to the built extension.
  * (Well okay, more precisely, you could change certain things through Fixtures, and you could change certain things
- * through Ganache parameters, but both of these didn't load until late in the app load. Sentry is one of the first
+ * through local node parameters, but both of these didn't load until late in the app load. Sentry is one of the first
  * things to load, and it needed a way to get runtime flags very early in the app load.)
  *
  * The way this works is a bit of a hack, but it's the only solution we could come up with that would load early enough:
@@ -60,8 +60,15 @@ process.env.ENABLE_MV3 = getManifestVersion() === 3 ? 'true' : 'false';
 
 // Global beforeEach hook to backup the manifest.json file
 if (typeof beforeEach === 'function' && process.env.SELENIUM_BROWSER) {
-  beforeEach(() => {
+  beforeEach(function () {
     console.debug('manifest-flag-mocha-hooks.ts -- beforeEach hook');
+
+    // Expose the per-test Mocha timeout (including suite-level overrides)
+    // so withFixtures can set an internal deadline just before it.
+    const testTimeout = this.currentTest?.timeout?.() ?? 0;
+    if (testTimeout > 0) {
+      process.env.MOCHA_TIMEOUT = String(testTimeout);
+    }
 
     restoreBackupManifest();
 

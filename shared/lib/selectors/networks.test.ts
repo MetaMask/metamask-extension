@@ -12,6 +12,7 @@ import {
   getNonTestNetworks,
   getNetworksByScopes,
   MultichainNetworkConfigurationsByChainIdState,
+  selectNetworkConfigurationByChainId,
 } from './networks';
 
 const typedMockState =
@@ -57,8 +58,6 @@ const extendedMockState = {
             },
             snap: {
               id: 'npm:@metamask/solana-wallet-snap',
-              name: 'Solana',
-              enabled: true,
             },
             lastSelected: 1747401519439,
           },
@@ -68,10 +67,36 @@ const extendedMockState = {
         typedMockState.metamask.internalAccounts.selectedAccount ||
         '499e262e-eed1-4743-b9bf-92b1a23b4a98',
     },
+    snaps: {
+      'npm:@metamask/solana-wallet-snap': { enabled: true },
+    },
   },
 };
 
 describe('Network Selectors', () => {
+  describe('selectNetworkConfigurationByChainId', () => {
+    it('caches results per chain ID', () => {
+      selectNetworkConfigurationByChainId.resetRecomputations();
+
+      const mainnetNetwork = selectNetworkConfigurationByChainId(
+        extendedMockState,
+        '0x1',
+      );
+      const goerliNetwork = selectNetworkConfigurationByChainId(
+        extendedMockState,
+        '0x5',
+      );
+
+      expect(
+        selectNetworkConfigurationByChainId(extendedMockState, '0x1'),
+      ).toBe(mainnetNetwork);
+      expect(
+        selectNetworkConfigurationByChainId(extendedMockState, '0x5'),
+      ).toBe(goerliNetwork);
+      expect(selectNetworkConfigurationByChainId.recomputations()).toBe(2);
+    });
+  });
+
   describe('getNonTestNetworks', () => {
     it('returns non-test networks from the state', () => {
       const result = getNonTestNetworks(extendedMockState);

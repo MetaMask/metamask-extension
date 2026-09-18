@@ -1,5 +1,5 @@
-import { useCallback, useState, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import log from 'loglevel';
 import {
@@ -7,21 +7,21 @@ import {
   getInternalAccountsFromGroupById,
 } from '../../selectors/multichain-accounts/account-tree';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import {
   rewardsOptIn,
   rewardsLinkAccountsToSubscriptionCandidate,
-  updateMetaMetricsTraits,
   linkRewardToShieldSubscription,
 } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
 import { useI18nContext } from '../useI18nContext';
+import { useDispatch } from '../../store/hooks';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 export type UseOptinResult = {
@@ -53,7 +53,7 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const [optinError, setOptinError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const [optinLoading, setOptinLoading] = useState<boolean>(false);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
 
@@ -64,7 +64,7 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
           state,
           selectedAccountGroupId as AccountGroupId,
         )
-      : [],
+      : EMPTY_ARRAY,
   );
 
   // Get accounts for the primary account group
@@ -81,11 +81,12 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         referral_code_used: referralCode,
       };
-      trackEvent({
-        category: MetaMetricsEventCategory.Rewards,
-        event: MetaMetricsEventName.RewardsOptInStarted,
-        properties: metricsProps,
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.RewardsOptInStarted)
+          .addCategory(MetaMetricsEventCategory.Rewards)
+          .addProperties(metricsProps)
+          .build(),
+      );
 
       let subscriptionId: string | null = null;
 
@@ -127,26 +128,12 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
             }
           }
 
-          trackEvent({
-            category: MetaMetricsEventCategory.Rewards,
-            event: MetaMetricsEventName.RewardsOptInCompleted,
-            properties: metricsProps,
-          });
-
-          // Update user traits
-          try {
-            await dispatch(
-              updateMetaMetricsTraits({
-                [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
-                ...(referralCode && {
-                  [MetaMetricsUserTrait.RewardsReferred]: true,
-                  [MetaMetricsUserTrait.RewardsReferralCodeUsed]: referralCode,
-                }),
-              }),
-            );
-          } catch {
-            // Silently fail - traits update should not block opt-in
-          }
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.RewardsOptInCompleted)
+              .addCategory(MetaMetricsEventCategory.Rewards)
+              .addProperties(metricsProps)
+              .build(),
+          );
 
           // Link the reward to the shield subscription if opt in from the shield subscription
           if (options?.rewardPoints && options?.shieldSubscriptionId) {
@@ -164,11 +151,12 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
           }
         }
       } catch (error) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Rewards,
-          event: MetaMetricsEventName.RewardsOptInFailed,
-          properties: metricsProps,
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.RewardsOptInFailed)
+            .addCategory(MetaMetricsEventCategory.Rewards)
+            .addProperties(metricsProps)
+            .build(),
+        );
 
         const errorMessage = handleRewardsErrorMessage(error, t);
         setOptinError(errorMessage);
@@ -182,6 +170,7 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
     },
     [
       trackEvent,
+      createEventBuilder,
       primaryWalletAccountGroupId,
       primaryWalletGroupAccounts,
       activeGroupAccounts,

@@ -1,5 +1,3 @@
-import React from 'react';
-import { ReactNodeLike } from 'prop-types';
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
@@ -12,11 +10,9 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import { useGasFeeLowAlerts } from './useGasFeeLowAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';
-const TRANSACTION_ID_MOCK_2 = '456-789';
 
 const CONFIRMATION_MOCK = {
   ...genUnapprovedContractInteractionConfirmation({
@@ -27,10 +23,8 @@ const CONFIRMATION_MOCK = {
 
 function buildState({
   currentConfirmation,
-  transaction,
 }: {
   currentConfirmation?: TransactionMeta;
-  transaction?: TransactionMeta;
 } = {}) {
   let pendingApprovals = {};
   if (currentConfirmation) {
@@ -45,24 +39,17 @@ function buildState({
   return getMockConfirmState({
     metamask: {
       pendingApprovals,
-      transactions: transaction ? [transaction] : [],
+      transactions: currentConfirmation ? [currentConfirmation] : [],
     },
   });
 }
 
 function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
   const state = buildState(stateOptions);
-  const transaction = stateOptions?.transaction;
 
   const response = renderHookWithConfirmContextProvider(
     useGasFeeLowAlerts,
     state,
-    '/',
-    ({ children }: { children: NonNullable<ReactNodeLike> }) => (
-      <GasFeeContextProvider transaction={transaction}>
-        {children}
-      </GasFeeContextProvider>
-    ),
   );
 
   return response.result.current;
@@ -77,19 +64,6 @@ describe('useGasFeeLowAlerts', () => {
     expect(runHook()).toEqual([]);
   });
 
-  it('returns no alerts if confirmation does not match gas fee context transaction', () => {
-    expect(
-      runHook({
-        currentConfirmation: CONFIRMATION_MOCK,
-        transaction: {
-          ...CONFIRMATION_MOCK,
-          id: TRANSACTION_ID_MOCK_2,
-          userFeeLevel: PriorityLevels.low,
-        },
-      }),
-    ).toEqual([]);
-  });
-
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each(
     Object.values(PriorityLevels).filter(
@@ -100,10 +74,8 @@ describe('useGasFeeLowAlerts', () => {
     (userFeeLevel: PriorityLevels) => {
       expect(
         runHook({
-          currentConfirmation: CONFIRMATION_MOCK,
-          transaction: {
+          currentConfirmation: {
             ...CONFIRMATION_MOCK,
-            id: TRANSACTION_ID_MOCK,
             userFeeLevel,
           },
         }),
@@ -113,10 +85,8 @@ describe('useGasFeeLowAlerts', () => {
 
   it('returns alert if transaction has low user fee level', () => {
     const alerts = runHook({
-      currentConfirmation: CONFIRMATION_MOCK,
-      transaction: {
+      currentConfirmation: {
         ...CONFIRMATION_MOCK,
-        id: TRANSACTION_ID_MOCK,
         userFeeLevel: PriorityLevels.low,
       },
     });

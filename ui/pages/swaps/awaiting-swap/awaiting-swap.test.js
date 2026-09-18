@@ -18,6 +18,19 @@ import {
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AwaitingSwap from '.';
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const middleware = [thunk];
 
 const createProps = (customProps = {}) => {

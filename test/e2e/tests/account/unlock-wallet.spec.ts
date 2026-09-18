@@ -4,22 +4,24 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import {
   lockAndWaitForLoginPage,
+  lockAndWaitForPasskeyUnlockPage,
   login,
 } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import {
+  completeOnboardingWithPasskey,
   importWalletWithSocialLoginOnboardingFlow,
   onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
@@ -29,14 +31,13 @@ describe('Unlock wallet - ', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
       },
       async ({
         driver,
         localNodes,
       }: {
         driver: Driver;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
       }) => {
         await login(driver, { localNode: localNodes[0] });
         // Lock Wallet
@@ -55,7 +56,6 @@ describe('Unlock wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -78,10 +78,10 @@ describe('Unlock wallet - ', function () {
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
         await privacySettings.openChangePassword();
 
         const changePasswordPage = new ChangePasswordPage(driver);
@@ -93,12 +93,10 @@ describe('Unlock wallet - ', function () {
         await changePasswordPage.checkPasswordChangedWarning();
         await changePasswordPage.confirmChangePasswordWarning();
 
-        await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
-
-        await settingsPage.closeSettingsPage();
-
         // Wait for the password change to be applied to the social login user
         await driver.delay(2_000);
+
+        await closeSettings(driver);
 
         await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);
@@ -109,7 +107,8 @@ describe('Unlock wallet - ', function () {
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           await onboardingMetricsFlow(driver, {
-            participateInMetaMetrics: false,
+            consentDecisionMade: true,
+            optedIn: false,
             dataCollectionForMarketing: false,
           });
         }
@@ -117,6 +116,56 @@ describe('Unlock wallet - ', function () {
         // check onboarding welcome page is loaded after resetting the wallet
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
+      },
+    );
+  });
+
+  it('Unlocks wallet with passkey after onboarding', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    // (WebAuthn platform authenticator emulation), so passkey tests are
+    // Chrome/Chromium only.
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await completeOnboardingWithPasskey({ driver });
+
+        // Check unlock with passkey at first visit
+        await lockAndWaitForPasskeyUnlockPage(driver);
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.clickPasskeyUnlock();
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        // Check unlock with passkey by passkey icon at password textbox
+        await lockAndWaitForPasskeyUnlockPage(driver);
+        await loginPage.clickUsePassword();
+        await loginPage.checkPageIsLoaded();
+
+        // React re-renders the unlock page asynchronously when switching between
+        // passkey and password modes. No DOM condition reliably signals the
+        // transition is complete, so a brief delay prevents a race where
+        // clickUnlockWithPasskey acts on a stale/transitioning DOM.
+        await driver.delay(2_000);
+        await loginPage.clickUnlockWithPasskey();
+        await homePage.checkPageIsLoaded();
+
+        // Check unlock with password by password textbox
+        await lockAndWaitForPasskeyUnlockPage(driver);
+        await loginPage.clickUsePassword();
+        await loginPage.checkPageIsLoaded();
+
+        await loginPage.loginToHomepage(WALLET_PASSWORD);
+        await homePage.checkPageIsLoaded();
       },
     );
   });

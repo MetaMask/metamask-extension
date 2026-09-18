@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
-import { getSelectedInternalAccount } from '../selectors';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
 import { getNftImage } from '../helpers/utils/nfts';
 import { useI18nContext } from './useI18nContext';

@@ -24,13 +24,13 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { isBeta } from '../../../shared/lib/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -43,7 +43,6 @@ import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
-  NetworkConnectionBanner,
   StorageWriteErrorType,
 } from '../../../shared/constants/app-state';
 import type {
@@ -63,14 +62,21 @@ import {
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
+import type { Preferences } from '../../../shared/types/preferences';
+import {
+  createHardwareWalletError,
+  HardwareWalletType,
+  toHardwareWalletError,
+} from '../../../shared/lib/hardware-wallets';
+import { LegacyBackgroundApiServiceSetLockedAction } from '../services/legacy-background-api-service-method-action-types';
 import type {
-  Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+import { AppStateControllerMethodActions } from './app-state-controller-method-action-types';
 
 export type DappSwapComparisonData = {
-  quotes?: QuoteResponse[];
+  quotes?: QuoteResponseV1[];
   latency?: number;
   commands?: string;
   error?: string;
@@ -84,6 +90,8 @@ export type DappSwapComparisonData = {
 
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
+  /** True when QR scan completed successfully, false when cancelled/rejected, null when no recent completion. Used to avoid navigating to activity on rejection. */
+  lastQrScanCompletedSuccessfully: boolean | null;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
   appActiveTab?: {
     id: number;
@@ -108,18 +116,15 @@ export type AppStateControllerState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  canTrackWalletFundsObtained: boolean;
-  isRampCardClosed: boolean;
   pendingExtensionVersion: string | null;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
   lastUpdatedFromVersion: string | null;
   lastViewedUserSurvey: number | null;
-  networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
+  arcUsageNoticeShown: boolean;
   pna25Acknowledged: boolean;
-  nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
   onboardingDate: number | null;
@@ -129,16 +134,10 @@ export type AppStateControllerState = {
   productTour?: string;
   recoveryPhraseReminderHasBeenShown: boolean;
   recoveryPhraseReminderLastShown: number;
-  showAccountBanner: boolean;
-  showBetaHeader: boolean;
   showDownloadMobileAppSlide: boolean;
-  showNetworkBanner: boolean;
-  showPermissionsTour: boolean;
-  showTestnetMessageInDropdown: boolean;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
-  surveyLinkLastClickedOrClosed: number | null;
   shieldSubscriptionError: ShieldSubscriptionError | null;
   shieldEndingToastLastClickedOrClosed: number | null;
   shieldPausedToastLastClickedOrClosed: number | null;
@@ -148,6 +147,7 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  perpsTabBadgeSeen: boolean;
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
   showShieldEntryModalOnce: boolean | null;
@@ -156,6 +156,12 @@ export type AppStateControllerState = {
    * If this is set, next time default page is loaded, the redirect will be applied.
    */
   pendingRedirectRoute: PendingRedirectRoute | null;
+  /**
+   * The last visited feature route together with the timestamp it was recorded.
+   * Used by feature flows that resume a recent in-extension route after a brief
+   * close/reopen, then clear the entry once inspected.
+   */
+  lastVisitedRoute: { name: string; path: string; timestamp: number } | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -181,6 +187,18 @@ export type AppStateControllerState = {
    * Used to show specific error messages (e.g., disk space vs general error).
    */
   storageWriteErrorType: StorageWriteErrorType | null;
+
+  /**
+   * When true, unlock UI must not auto-start biometrics unlock (cross-surface).
+   * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
+   */
+  passkeyAutoUnlockSuppressed: boolean;
+
+  /**
+   * The entry point that initiated the last Perps deposit flow (e.g.
+   * 'hyperliquid_deposit_prompt'). Currently used to show custom toast UI.
+   */
+  lastPerpsDepositEntryPoint: string | null;
 };
 
 const controllerName = 'AppStateController';
@@ -193,47 +211,12 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
-export type AppStateControllerGetUnlockPromiseAction = {
-  type: 'AppStateController:getUnlockPromise';
-  handler: (shouldShowUnlockRequest: boolean) => Promise<void>;
-};
-
-export type AppStateControllerRequestQrCodeScanAction = {
-  type: 'AppStateController:requestQrCodeScan';
-  handler: (request: QrScanRequest) => Promise<SerializedUR>;
-};
-
-export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
-  type: 'AppStateController:setCanTrackWalletFundsObtained';
-  handler: AppStateController['setCanTrackWalletFundsObtained'];
-};
-
-export type AppStateControllerSetPendingShieldCohortAction = {
-  type: 'AppStateController:setPendingShieldCohort';
-  handler: AppStateController['setPendingShieldCohort'];
-};
-
-export type AppStateControllerSetPendingRedirectRouteAction = {
-  type: 'AppStateController:setPendingRedirectRoute';
-  handler: AppStateController['setPendingRedirectRoute'];
-};
-
-export type AppStateControllerSetShieldSubscriptionErrorAction = {
-  type: 'AppStateController:setShieldSubscriptionError';
-  handler: AppStateController['setShieldSubscriptionError'];
-};
-
 /**
  * Actions exposed by the {@link AppStateController}.
  */
 export type AppStateControllerActions =
   | AppStateControllerGetStateAction
-  | AppStateControllerGetUnlockPromiseAction
-  | AppStateControllerRequestQrCodeScanAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction
-  | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetPendingRedirectRouteAction
-  | AppStateControllerSetShieldSubscriptionErrorAction;
+  | AppStateControllerMethodActions;
 
 /**
  * Actions that this controller is allowed to call.
@@ -242,6 +225,7 @@ export type AllowedActions =
   | ApprovalControllerAddRequestAction
   | ApprovalControllerAcceptRequestAction
   | KeyringControllerGetStateAction
+  | LegacyBackgroundApiServiceSetLockedAction
   | PreferencesControllerGetStateAction
   | ProfileMetricsControllerSkipInitialDelayAction;
 
@@ -291,19 +275,18 @@ type AppStateControllerInitState = Partial<
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
-    | 'networkConnectionBanner'
   >
 >;
 
 export type AppStateControllerOptions = {
   state?: AppStateControllerInitState;
-  onInactiveTimeout?: () => void;
   messenger: AppStateControllerMessenger;
   extension: Browser;
 };
 
 const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   activeQrCodeScanRequest: null,
+  lastQrScanCompletedSuccessfully: null,
   appActiveTab: undefined,
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
@@ -312,16 +295,14 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  canTrackWalletFundsObtained: true,
-  isRampCardClosed: false,
   pendingExtensionVersion: null,
   lastUpdatedAt: null,
   lastUpdatedFromVersion: null,
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  arcUsageNoticeShown: false,
   pna25Acknowledged: false,
-  nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
   outdatedBrowserWarningLastShown: null,
@@ -330,14 +311,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   productTour: 'accountIcon',
   recoveryPhraseReminderHasBeenShown: false,
   recoveryPhraseReminderLastShown: new Date().getTime(),
-  showAccountBanner: true,
-  showBetaHeader: isBeta(),
   showDownloadMobileAppSlide: true,
-  showNetworkBanner: true,
-  showPermissionsTour: true,
-  showTestnetMessageInDropdown: true,
   slides: [],
-  surveyLinkLastClickedOrClosed: null,
   shieldSubscriptionError: null,
   shieldEndingToastLastClickedOrClosed: null,
   shieldPausedToastLastClickedOrClosed: null,
@@ -346,15 +321,19 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
+  perpsTabBadgeSeen: false,
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
+  lastVisitedRoute: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
+  passkeyAutoUnlockSuppressed: false,
+  lastPerpsDepositEntryPoint: null,
   ...getInitialStateOverrides(),
 });
 
@@ -371,14 +350,17 @@ function getInitialStateOverrides() {
     currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
-    networkConnectionBanner: {
-      status: 'unknown' as const,
-    },
   };
 }
 
 const controllerMetadata: StateMetadata<AppStateControllerState> = {
   activeQrCodeScanRequest: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  lastQrScanCompletedSuccessfully: {
     includeInStateLogs: false,
     persist: false,
     includeInDebugSnapshot: true,
@@ -440,18 +422,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: false,
   },
-  canTrackWalletFundsObtained: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
-  },
-  isRampCardClosed: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   pendingExtensionVersion: {
     includeInStateLogs: true,
     persist: false,
@@ -482,12 +452,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  networkConnectionBanner: {
-    includeInStateLogs: false,
-    persist: false,
-    includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
   newPrivacyPolicyToastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
@@ -500,17 +464,17 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  pna25Acknowledged: {
+  arcUsageNoticeShown: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  nftsDetectionNoticeDismissed: {
+  pna25Acknowledged: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
-    usedInUi: false,
+    usedInUi: true,
   },
   nftsDropdownState: {
     includeInStateLogs: true,
@@ -566,41 +530,11 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  showAccountBanner: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showBetaHeader: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   showDownloadMobileAppSlide: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
-  },
-  showNetworkBanner: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showPermissionsTour: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showTestnetMessageInDropdown: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
   },
   signatureSecurityAlertResponses: {
     includeInStateLogs: true,
@@ -615,12 +549,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   snapsInstallPrivacyWarningShown: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  surveyLinkLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -680,6 +608,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
+  perpsTabBadgeSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
   musdConversionEducationSeen: {
     persist: true,
     includeInDebugSnapshot: true,
@@ -700,6 +634,18 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   },
   pendingRedirectRoute: {
     includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  lastVisitedRoute: {
+    // Scrubbed from shared state logs — feature paths can reveal portfolio or
+    // activity details when a user shares a support log.
+    includeInStateLogs: false,
+    // Memory-only, like `pendingRedirectRoute` — the "brief close/reopen"
+    // the feature targets happens within the MV3 service worker's
+    // in-memory lifetime and a 5-minute TTL, so disk persistence is not
+    // needed and would leave stale paths in persisted state indefinitely.
     persist: false,
     includeInDebugSnapshot: true,
     usedInUi: true,
@@ -746,13 +692,95 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  passkeyAutoUnlockSuppressed: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   deferredDeepLink: {
     includeInStateLogs: false,
     persist: true,
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  lastPerpsDepositEntryPoint: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
+
+const MESSENGER_EXPOSED_METHODS = [
+  'addAddressSecurityAlertResponse',
+  'addMusdConversionDismissedCtaKey',
+  'addPollingToken',
+  'addSignatureSecurityAlertResponse',
+  'cancelQrCodeScan',
+  'clearAppActiveTab',
+  'clearPollingTokens',
+  'completeQrCodeScan',
+  'deleteDappSwapComparisonData',
+  'getAddressSecurityAlertResponse',
+  'getCurrentPopupId',
+  'getDappSwapComparisonData',
+  'getIsWalletResetInProgress',
+  'getLastInteractedConfirmationInfo',
+  'getSignatureSecurityAlertResponse',
+  'getThrottledOriginState',
+  'getUnlockPromise',
+  'removeDeferredDeepLink',
+  'removePollingToken',
+  'removeSlide',
+  'requestQrCodeScan',
+  'setAppActiveTab',
+  'setArcUsageNoticeShown',
+  'setBrowserEnvironment',
+  'setConnectedStatusPopoverHasBeenShown',
+  'setCurrentExtensionPopupId',
+  'setCurrentPopupId',
+  'setDappSwapComparisonData',
+  'setDefaultHomeActiveTabName',
+  'setDefaultSubscriptionPaymentOptions',
+  'setDeferredDeepLink',
+  'setHasShownMultichainAccountsIntroModal',
+  'setIsWalletResetInProgress',
+  'setLastActiveTime',
+  'setLastInteractedConfirmationInfo',
+  'setLastPerpsDepositEntryPoint',
+  'setLastUpdatedAt',
+  'setLastUpdatedFromVersion',
+  'setLastViewedUserSurvey',
+  'setLastVisitedRoute',
+  'setMusdConversionEducationSeen',
+  'setNewPrivacyPolicyToastClickedOrClosed',
+  'setNewPrivacyPolicyToastShownDate',
+  'setOnboardingDate',
+  'setOutdatedBrowserWarningLastShown',
+  'setPasskeyAutoUnlockSuppressed',
+  'setPendingExtensionVersion',
+  'setPendingRedirectRoute',
+  'setPendingShieldCohort',
+  'setPerpsTabBadgeSeen',
+  'setPna25Acknowledged',
+  'setProductTour',
+  'setRecoveryPhraseReminderHasBeenShown',
+  'setRecoveryPhraseReminderLastShown',
+  'setShieldEndingToastLastClickedOrClosed',
+  'setShieldPausedToastLastClickedOrClosed',
+  'setShieldSubscriptionError',
+  'setShieldSubscriptionMetricsProps',
+  'setShowShieldEntryModalOnce',
+  'setSnapsInstallPrivacyWarningShownStatus',
+  'setStorageWriteErrorType',
+  'setTermsOfUseLastAgreed',
+  'setTrezorModel',
+  'setUpdateModalLastDismissedAt',
+  'updateNftDropDownState',
+  'updateSlides',
+  'updateThrottledOriginState',
+] as const;
 
 export class AppStateController extends BaseController<
   typeof controllerName,
@@ -760,8 +788,6 @@ export class AppStateController extends BaseController<
   AppStateControllerMessenger
 > {
   readonly #extension: AppStateControllerOptions['extension'];
-
-  readonly #onInactiveTimeout: () => void;
 
   #timer: NodeJS.Timeout | null;
 
@@ -771,12 +797,7 @@ export class AppStateController extends BaseController<
 
   #qrCodeScanPromise: DeferredPromise<SerializedUR> | null = null;
 
-  constructor({
-    state = {},
-    messenger,
-    onInactiveTimeout,
-    extension,
-  }: AppStateControllerOptions) {
+  constructor({ state = {}, messenger, extension }: AppStateControllerOptions) {
     super({
       name: controllerName,
       metadata: controllerMetadata,
@@ -789,10 +810,19 @@ export class AppStateController extends BaseController<
     });
 
     this.#extension = extension;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
+
+    // Clearing an alarm does not remove the listeners, so we only need to register the listener once.
+    if (isManifestV3) {
+      this.#extension.alarms.onAlarm.addListener(
+        (alarmInfo: { name: string }) => {
+          if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
+            this.messenger.call('LegacyBackgroundApiService:setLocked');
+            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+          }
+        },
+      );
+    }
 
     this.waitingForUnlock = [];
 
@@ -819,34 +849,9 @@ export class AppStateController extends BaseController<
       this.#setInactiveTimeout(preferences.autoLockTimeLimit);
     }
 
-    this.messenger.registerActionHandler(
-      'AppStateController:getUnlockPromise',
-      this.getUnlockPromise.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:requestQrCodeScan',
-      this.#requestQrCodeScan.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setCanTrackWalletFundsObtained',
-      this.setCanTrackWalletFundsObtained.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setPendingShieldCohort',
-      this.setPendingShieldCohort.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setPendingRedirectRoute',
-      this.setPendingRedirectRoute.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      'AppStateController:setShieldSubscriptionError',
-      this.setShieldSubscriptionError.bind(this),
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
 
     this.#approvalRequestId = null;
@@ -935,12 +940,6 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setSurveyLinkLastClickedOrClosed(time: number): void {
-    this.update((state) => {
-      state.surveyLinkLastClickedOrClosed = time;
-    });
-  }
-
   setOnboardingDate(): void {
     this.update((state) => {
       state.onboardingDate = Date.now();
@@ -953,9 +952,14 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setRampCardClosed(): void {
+  /**
+   * Sets whether the unlock screen should suppress automatic passkey WebAuthn.
+   *
+   * @param suppressed - When true, auto passkey unlock is suppressed.
+   */
+  setPasskeyAutoUnlockSuppressed(suppressed: boolean): void {
     this.update((state) => {
-      state.isRampCardClosed = true;
+      state.passkeyAutoUnlockSuppressed = suppressed;
     });
   }
 
@@ -968,6 +972,12 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  setArcUsageNoticeShown(): void {
+    this.update((state) => {
+      state.arcUsageNoticeShown = true;
     });
   }
 
@@ -1194,9 +1204,9 @@ export class AppStateController extends BaseController<
     }
 
     // This is a temporary fix until we add a state migration.
-    // Due to a bug in ui/pages/settings/advanced-tab/advanced-tab.component.js,
-    // it was possible for timeoutMinutes to be saved as a string, as explained
-    // in PR 25109. `alarms.create` will fail in that case. We are
+    // Due to a historical bug in the (now-removed) legacy advanced settings
+    // tab, it was possible for timeoutMinutes to be saved as a string, as
+    // explained in PR 25109. `alarms.create` will fail in that case. We are
     // converting this to a number here to prevent that failure. Once
     // we add a migration to update the malformed state to the right type,
     // we will remove this conversion.
@@ -1207,17 +1217,12 @@ export class AppStateController extends BaseController<
         delayInMinutes: timeoutToSet,
         periodInMinutes: timeoutToSet,
       });
-      this.#extension.alarms.onAlarm.addListener(
-        (alarmInfo: { name: string }) => {
-          if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
-            this.#onInactiveTimeout();
-            this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
-          }
-        },
-      );
     } else {
       this.#timer = setTimeout(
-        () => this.#onInactiveTimeout(),
+        this.messenger.call.bind(
+          this.messenger,
+          'LegacyBackgroundApiService:setLocked',
+        ),
         timeoutToSet * MINUTE,
       );
     }
@@ -1324,39 +1329,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether the testnet dismissal link should be shown in the network dropdown
-   *
-   * @param showTestnetMessageInDropdown
-   */
-  setShowTestnetMessageInDropdown(showTestnetMessageInDropdown: boolean): void {
-    this.update((state) => {
-      state.showTestnetMessageInDropdown = showTestnetMessageInDropdown;
-    });
-  }
-
-  /**
-   * Sets whether the beta notification heading on the home page
-   *
-   * @param showBetaHeader
-   */
-  setShowBetaHeader(showBetaHeader: boolean): void {
-    this.update((state) => {
-      state.showBetaHeader = showBetaHeader;
-    });
-  }
-
-  /**
-   * Sets whether the permissions tour should be shown to the user
-   *
-   * @param showPermissionsTour
-   */
-  setShowPermissionsTour(showPermissionsTour: boolean): void {
-    this.update((state) => {
-      state.showPermissionsTour = showPermissionsTour;
-    });
-  }
-
-  /**
    * Sets whether the multichain intro modal has been shown to the user
    *
    * @param hasShown - Whether the modal has been shown
@@ -1364,6 +1336,18 @@ export class AppStateController extends BaseController<
   setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
     this.update((state) => {
       state.hasShownMultichainAccountsIntroModal = hasShown;
+    });
+  }
+
+  /**
+   * Sets whether the user has seen (and therefore dismissed) the Perps tab
+   * "New" badge.
+   *
+   * @param value - Whether the Perps tab badge has been seen
+   */
+  setPerpsTabBadgeSeen(value: boolean): void {
+    this.update((state) => {
+      state.perpsTabBadgeSeen = value;
     });
   }
 
@@ -1404,41 +1388,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether the Network Banner should be shown
-   *
-   * @param showNetworkBanner
-   */
-  setShowNetworkBanner(showNetworkBanner: boolean): void {
-    this.update((state) => {
-      state.showNetworkBanner = showNetworkBanner;
-    });
-  }
-
-  /**
-   * Updates the network connection banner state
-   *
-   * @param networkConnectionBanner - The new banner state
-   */
-  updateNetworkConnectionBanner(
-    networkConnectionBanner: AppStateControllerState['networkConnectionBanner'],
-  ): void {
-    this.update((state) => {
-      state.networkConnectionBanner = networkConnectionBanner;
-    });
-  }
-
-  /**
-   * Sets whether the Account Banner should be shown
-   *
-   * @param showAccountBanner
-   */
-  setShowAccountBanner(showAccountBanner: boolean): void {
-    this.update((state) => {
-      state.showAccountBanner = showAccountBanner;
-    });
-  }
-
-  /**
    * Sets a unique ID for the current extension popup
    *
    * @param currentExtensionPopupId
@@ -1467,8 +1416,8 @@ export class AppStateController extends BaseController<
    */
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
-      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-      state.nftsDropdownState = nftsDropdownState;
+      const appState = state as unknown as AppStateControllerState;
+      appState.nftsDropdownState = nftsDropdownState;
     });
   }
 
@@ -1528,11 +1477,12 @@ export class AppStateController extends BaseController<
   };
 
   /**
-   * A setter for the currentPopupId which indicates the id of popup window that's currently active
+   * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+   * Pass `undefined` to clear when the popup is closed.
    *
    * @param currentPopupId
    */
-  setCurrentPopupId(currentPopupId: number): void {
+  setCurrentPopupId(currentPopupId: number | undefined): void {
     this.update((state) => {
       state.currentPopupId = currentPopupId;
     });
@@ -1557,6 +1507,17 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.lastInteractedConfirmationInfo = lastInteractedConfirmationInfo;
+    });
+  }
+
+  /**
+   * Sets the entry point that initiated the last Perps deposit flow.
+   *
+   * @param entryPoint - The entry point identifier, or undefined to clear.
+   */
+  setLastPerpsDepositEntryPoint(entryPoint: string | null): void {
+    this.update((state) => {
+      state.lastPerpsDepositEntryPoint = entryPoint;
     });
   }
 
@@ -1632,6 +1593,7 @@ export class AppStateController extends BaseController<
 
     this.update((state) => {
       state.activeQrCodeScanRequest = null;
+      state.lastQrScanCompletedSuccessfully = true;
     });
 
     this.#qrCodeScanPromise.resolve(scannedData);
@@ -1642,19 +1604,34 @@ export class AppStateController extends BaseController<
    * Cancels the current QR code scan, if one is in progress.
    * This will reject the promise with an error.
    *
-   * @param error - The error to reject the promise with.
+   * @param error - The error (or serialized form) to reject the promise with.
+   * Callers across the extension-port boundary may pass a plain string or a
+   * serialized `HardwareWalletError` JSON shape because `Error` instances do
+   * not survive port serialization. Missing payloads default to
+   * `ErrorCode.UserCancelled`.
    * @throws If no QR code scan is in progress.
    */
-  cancelQrCodeScan(error?: Error): void {
+  cancelQrCodeScan(error?: unknown): void {
     if (!this.#qrCodeScanPromise) {
       throw new Error('No QR code scan is in progress.');
     }
 
     this.update((state) => {
       state.activeQrCodeScanRequest = null;
+      state.lastQrScanCompletedSuccessfully = false;
     });
 
-    this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
+    this.#qrCodeScanPromise.reject(
+      toHardwareWalletError(
+        error ??
+          createHardwareWalletError(
+            ErrorCode.UserCancelled,
+            HardwareWalletType.Qr,
+            'Scan cancelled',
+          ),
+        HardwareWalletType.Qr,
+      ),
+    );
     this.#qrCodeScanPromise = null;
   }
 
@@ -1665,7 +1642,7 @@ export class AppStateController extends BaseController<
    * @param request - The QR code scan request.
    * @returns The scanned QR code data.
    */
-  #requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
+  requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
     if (this.#qrCodeScanPromise) {
       return this.#qrCodeScanPromise.promise;
     }
@@ -1675,6 +1652,7 @@ export class AppStateController extends BaseController<
 
     this.update((state) => {
       state.activeQrCodeScanRequest = request;
+      state.lastQrScanCompletedSuccessfully = null;
     });
 
     return deferredPromise.promise;
@@ -1727,18 +1705,30 @@ export class AppStateController extends BaseController<
     });
   }
 
+  /**
+   * Records the last visited feature route with the current timestamp, or
+   * clears it. Feature UIs read this on home page mount to resume a recent
+   * route after a brief close/reopen.
+   *
+   * @param name - The feature route namespace.
+   * @param path - The route path to persist, or `null` to clear.
+   */
+  setLastVisitedRoute(name: string, path: string | null): void {
+    this.update((state) => {
+      if (path) {
+        state.lastVisitedRoute = { name, path, timestamp: Date.now() };
+      } else if (state.lastVisitedRoute?.name === name) {
+        state.lastVisitedRoute = null;
+      }
+    });
+  }
+
   setPendingShieldCohort(cohort: string | null, txType?: string | null): void {
     this.update((state) => {
       state.pendingShieldCohort = cohort;
       if (txType !== undefined) {
         state.pendingShieldCohortTxType = txType;
       }
-    });
-  }
-
-  setCanTrackWalletFundsObtained(enabled: boolean): void {
-    this.update((state) => {
-      state.canTrackWalletFundsObtained = enabled;
     });
   }
 

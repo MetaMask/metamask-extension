@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { ButtonIcon } from './button-icon';
 import { IconName } from '../icon';
 
@@ -11,7 +11,7 @@ export default {
     docs: {
       description: {
         component:
-          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [`ButtonIcon` from `@metamask/design-system-react`](https://metamask.github.io/metamask-design-system/?path=/docs/react-components-buttonicon--docs) instead. See the [Migration Guide](https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#buttonicon-component) for variant migration details.',
       },
     },
   },

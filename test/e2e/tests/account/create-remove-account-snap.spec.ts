@@ -1,12 +1,12 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SnapListPage from '../../page-objects/pages/snap-list-page';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import SnapListPage from '../../page-objects/pages/snaps/list-page';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
@@ -18,7 +18,9 @@ describe('Create and remove Snap Account', function (this: Suite) {
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
       },

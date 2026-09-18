@@ -1,6 +1,7 @@
 import React, {
   useState,
   useEffect,
+  useRef,
   MouseEvent as ReactMouseEvent,
   CSSProperties,
 } from 'react';
@@ -59,7 +60,7 @@ type SelectorItemProps = {
   style?: CSSProperties;
 };
 
-const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
+const SelectorItem = ({
   className,
   value,
   children,
@@ -67,7 +68,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   onSelect,
   disabled,
   style,
-}) => {
+}: SelectorItemProps) => {
   const handleClick = () => {
     onSelect(value);
   };
@@ -124,7 +125,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   );
 };
 
-export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
+export const SnapUISelector = ({
   className,
   name,
   title,
@@ -137,19 +138,31 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   onSelect,
   style,
   itemStyle,
-}) => {
+}: SnapUISelectorProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form);
 
   const [selectedOptionValue, setSelectedOption] = useState(initialValue);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const onSelectRef = useRef(onSelect);
+  const prevInitialValueRef = useRef(initialValue);
 
   useEffect(() => {
-    if (initialValue !== undefined && initialValue !== null) {
-      setSelectedOption(initialValue);
-      onSelect?.(initialValue);
+    onSelectRef.current = onSelect;
+  }, [onSelect]);
+
+  useEffect(() => {
+    if (initialValue === undefined || initialValue === null) {
+      prevInitialValueRef.current = initialValue;
+      return;
     }
+    const valueChanged = initialValue !== prevInitialValueRef.current;
+    prevInitialValueRef.current = initialValue;
+    if (valueChanged) {
+      queueMicrotask(() => setSelectedOption(initialValue));
+    }
+    onSelectRef.current?.(initialValue);
   }, [initialValue]);
 
   const handleModalOpen = (event: ReactMouseEvent<HTMLElement>) => {

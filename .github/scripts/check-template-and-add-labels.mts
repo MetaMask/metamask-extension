@@ -1,0 +1,582 @@
+import type * as actionsCore from '@actions/core';
+import type * as actionsGithub from '@actions/github';
+import type { GitHub } from '@actions/github/lib/utils';
+
+import { retrieveIssue } from './shared/issue.mts';
+import {
+  LabelableType,
+  type Labelable,
+  findLabel,
+  addLabelToLabelable,
+  removeLabelFromLabelable,
+  removeLabelFromLabelableIfPresent,
+} from './shared/labelable.mts';
+import {
+  type Label,
+  RegressionStage,
+  craftRegressionLabel,
+  externalContributorLabel,
+  needsTriageLabel,
+  areaSentryLabel,
+  flakyTestsLabel,
+  invalidIssueTemplateLabel,
+  invalidPullRequestTemplateLabel,
+} from './shared/label.mts';
+import { TemplateType, templates } from './shared/template.mts';
+import { retrievePullRequest } from './shared/pull-request.mts';
+
+const knownBots = [
+  'metamaskbot',
+  'metamaskbotv2',
+  'dependabot',
+  'github-actions',
+  'sentry-io',
+  'devin-ai-integration',
+  'runway-github',
+  'cursor',
+  'copilot-swe-agent',
+  'metamask-aep',
+];
+
+// GitHub App / bot logins that cannot be resolved as User in GraphQL (user(login:) returns null).
+// Issues/PRs from these actors still get full template and label checks; we only skip the org check.
+const loginsExemptFromOrgCheck = ['issuebridge'];
+
+type Core = Pick<typeof actionsCore, 'error' | 'setFailed'>;
+type Context = typeof actionsGithub.context;
+type Octokit = InstanceType<typeof GitHub>;
+
+type MainOptions = {
+  core: Core;
+  context: Context;
+  github: Octokit;
+};
+
+export async function main({
+  core,
+  context,
+  github: octokit,
+}: MainOptions): Promise<void> {
+  // Retrieve labelable object (i.e. a pull request or an issue) info from context
+  const labelableRepoOwner = context.repo.owner;
+  const labelableRepoName = context.repo.repo;
+  let labelable: Labelable;
+  if (context.payload.issue?.number) {
+    // Retrieve issue
+    labelable = await retrieveIssue(
+      octokit,
+      labelableRepoOwner,
+      labelableRepoName,
+      context.payload.issue?.number,
+    );
+  } else if (context.payload.pull_request?.number) {
+    // Retrieve PR
+    labelable = await retrievePullRequest(
+      octokit,
+      labelableRepoOwner,
+      labelableRepoName,
+      context.payload.pull_request?.number,
+    );
+  } else {
+    core.setFailed(
+      'Labelable object (i.e. a pull request or an issue) number not found',
+    );
+    process.exit(1);
+  }
+
+  // If author is not part of the MetaMask organisation, add external contributor label.
+  // Skip org check for loginsExemptFromOrgCheck (e.g. issuebridge): GraphQL user(login) does not resolve apps, and we treat them as internal.
+  if (
+    !knownBots.includes(labelable?.author) &&
+    !loginsExemptFromOrgCheck.includes(labelable?.author) &&
+    !(await userBelongsToMetaMaskOrg(octokit, labelable?.author))
+  ) {
+    await addLabelToLabelable(octokit, labelable, externalContributorLabel);
+  }
+
+  // Check if labelable's body matches one of the issue or PR templates ('general-issue.yml' or 'bug-report.yml' or 'pull-request-template.md').
+  const templateType: TemplateType = extractTemplateTypeFromBody(
+    labelable.body,
+  );
+
+  // If labelable's author is a bot we skip the rest of the script, including the template checks as bots don't use templates.
+  // Exception: For issues created the 'sentry-io' bot, we don't skip the rest of the script because there's a specific handling for those issues.
+  if (
+    knownBots.includes(labelable.author) &&
+    labelable.author !== 'sentry-io'
+  ) {
+    console.log(
+      `${
+        labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'
+      } was created by a bot (${labelable.author}). Skip template checks.`,
+    );
+    failIfPullRequestHasRequiredLabelError(labelable, context, core);
+    process.exit(0); // Stop the process and exit with a success status code
+  }
+
+  if (labelable.type === LabelableType.Issue) {
+    // If labelable is a flaky test report, no template is needed (we just add a link to ci in the description), we skip the template checks
+    const flakyTestsLabelFound = findLabel(labelable, flakyTestsLabel);
+    if (flakyTestsLabelFound?.id) {
+      console.log(
+        `Issue ${labelable?.number} was created to report a flaky test. Issue's description doesn't need to match issue template in that case as the issue's description only includes a link redirecting to ci. Skip template checks.`,
+      );
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidIssueTemplateLabel,
+      );
+      process.exit(0); // Stop the process and exit with a success status code
+    }
+
+    if (labelable.author === 'sentry-io') {
+      console.log(
+        `Issue ${labelable?.number} was created through Sentry. Issue's description doesn't need to match issue template in that case. Skip template checks.`,
+      );
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidIssueTemplateLabel,
+      );
+      // Add needs triage label ONLY if issue is created (not updated)
+      if (context.payload.action === 'opened') {
+        await addNeedsTriageLabelToIssue(octokit, labelable);
+      }
+      // Add area-Sentry label to the bug report issue
+      await addAreaSentryLabelToIssue(octokit, labelable);
+      await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
+      process.exit(0); // Stop the process and exit with a success status code
+    }
+
+    if (templateType === TemplateType.GeneralIssue) {
+      console.log("Issue matches 'general-issue.yml' template.");
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidIssueTemplateLabel,
+      );
+    } else if (templateType === TemplateType.BugReportIssue) {
+      console.log("Issue matches 'bug-report.yml' template.");
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidIssueTemplateLabel,
+      );
+
+      // Add regression label to the bug report issue
+      await addRegressionLabelToIssue(octokit, labelable);
+
+      // Add needs triage label ONLY if issue is created (not updated)
+      if (context.payload.action === 'opened') {
+        await addNeedsTriageLabelToIssue(octokit, labelable);
+      }
+      await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
+    } else {
+      const errorMessage =
+        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.mts#L14-L37";
+      console.log(errorMessage);
+
+      // Add label to indicate issue does not match any template
+      await addLabelToLabelable(octokit, labelable, invalidIssueTemplateLabel);
+      await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
+
+      // Github action shall fail in case issue body doesn't match any template
+      core.setFailed(errorMessage);
+      process.exit(1);
+    }
+  } else if (labelable.type === LabelableType.PullRequest) {
+    const pullRequestRequiredLabelError =
+      getPullRequestRequiredLabelErrorIfNeeded(labelable, context);
+
+    // Check changelog entry for all PRs (regardless of template match)
+    const hasNoChangelogLabel = labelable.labels?.some(
+      (label) => label.name === 'no-changelog',
+    );
+
+    // Require changelog entry
+    if (hasNoChangelogLabel) {
+      console.log(
+        `PR ${labelable.number} has "no-changelog" label. Skipping changelog entry check.`,
+      );
+    } else if (!hasChangelogEntry(labelable.body)) {
+      const errorMessage = `PR is missing a valid "CHANGELOG entry:" line.`;
+
+      failIfErrors(core, errorMessage, pullRequestRequiredLabelError);
+    }
+
+    if (templateType === TemplateType.PullRequest) {
+      console.log("PR matches 'pull-request-template.md' template.");
+      await removeLabelFromLabelableIfPresent(
+        octokit,
+        labelable,
+        invalidPullRequestTemplateLabel,
+      );
+      failIfErrors(core, pullRequestRequiredLabelError);
+    } else {
+      const errorMessage = `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.mts#L40-L47`;
+      console.log(errorMessage);
+
+      // Add label to indicate PR body doesn't match template
+      await addLabelToLabelable(
+        octokit,
+        labelable,
+        invalidPullRequestTemplateLabel,
+      );
+
+      // TODO: Remove these two lines in January 2024. By then, most PRs will match the new PR template, and we'll want the action to fail if they don't.
+      // For now, we're in a transition period and Github action shall add an annotation in case PR doesn't match template, but shall not fail.
+      // Indeed, many PRs were created before the new PR template was introduced and don't match the template for now.
+      core.error(errorMessage, {
+        title: invalidPullRequestTemplateLabel.name,
+        file: '.github/scripts/shared/template.mts',
+        startLine: 40,
+        endLine: 47,
+      }); // This creates an annotation on the PR
+      failIfErrors(core, pullRequestRequiredLabelError);
+      process.exit(0);
+
+      // TODO: Uncomment these two lines in January 2024. By then, most PRs will match the new PR template, and we'll want the action to fail if they don't.
+      // Github action shall fail in case PR doesn't match template
+      // core.setFailed(errorMessage); // This creates a failure status for the action
+      // process.exit(1);
+    }
+  } else {
+    core.setFailed(
+      `Shall never happen: Labelable is neither an issue nor a PR (${JSON.stringify(
+        labelable,
+      )}).`,
+    );
+    process.exit(1);
+  }
+}
+
+// This helper function checks if body matches one of the issue or PR templates ('general-issue.yml' or 'bug-report.yml' or 'pull-request-template.md')
+function extractTemplateTypeFromBody(body: string): TemplateType {
+  for (const [templateType, template] of templates) {
+    let matches = true;
+
+    for (const title of template.titles) {
+      if (!body.includes(title)) {
+        matches = false;
+        break;
+      }
+    }
+
+    if (matches) {
+      return templateType;
+    }
+  }
+
+  return TemplateType.None;
+}
+
+function shouldCheckPullRequestLabels(
+  labelable: Labelable,
+  context: Context,
+): boolean {
+  const requiredLabelActions = new Set([
+    'opened',
+    'reopened',
+    'synchronize',
+    'labeled',
+    'unlabeled',
+  ]);
+
+  return (
+    labelable.type === LabelableType.PullRequest &&
+    context.eventName === 'pull_request_target' &&
+    context.payload.pull_request?.base?.ref === 'main' &&
+    requiredLabelActions.has(context.payload.action ?? '')
+  );
+}
+
+function getPullRequestRequiredLabelErrorIfNeeded(
+  labelable: Labelable,
+  context: Context,
+): string | undefined {
+  return shouldCheckPullRequestLabels(labelable, context)
+    ? getPullRequestRequiredLabelError(labelable)
+    : undefined;
+}
+
+function getPullRequestRequiredLabelError(
+  pullRequest: Labelable,
+): string | undefined {
+  const pullRequestLabels =
+    pullRequest.labels?.map((labelObject) => labelObject?.name) || [];
+
+  const preventMergeLabels = [
+    'needs-qa',
+    'need-ux-ds-review',
+    'blocked',
+    'stale',
+    'DO-NOT-MERGE',
+  ];
+
+  let hasTeamLabel = false;
+  let preventMergeLabel: string | undefined;
+
+  for (const label of pullRequestLabels) {
+    if (label.startsWith('team-') || label === externalContributorLabel.name) {
+      console.log(`PR contains a team label as expected: ${label}`);
+      hasTeamLabel = true;
+    }
+
+    if (preventMergeLabels.includes(label)) {
+      preventMergeLabel ??= label;
+    }
+  }
+
+  if (preventMergeLabel) {
+    return `PR cannot be merged because it still contains this label: ${preventMergeLabel}`;
+  }
+
+  if (!hasTeamLabel) {
+    return `No team labels found on the PR. Please make sure the PR is appropriately labeled before merging it.\n\nSee labeling guidelines for more detail: https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/LABELING_GUIDELINES.md`;
+  }
+
+  return undefined;
+}
+
+function failIfPullRequestHasRequiredLabelError(
+  labelable: Labelable,
+  context: Context,
+  core: Core,
+): void {
+  failIfErrors(
+    core,
+    getPullRequestRequiredLabelErrorIfNeeded(labelable, context),
+  );
+}
+
+function failIfErrors(core: Core, ...errors: (string | undefined)[]): void {
+  const presentErrors = errors.filter((error): error is string =>
+    Boolean(error),
+  );
+
+  if (presentErrors.length === 0) {
+    return;
+  }
+
+  for (const error of presentErrors) {
+    console.log(error);
+  }
+
+  core.setFailed(presentErrors.join('\n\n'));
+  process.exit(1);
+}
+
+// This helper function extracts regression stage (Development, Testing, Production) from bug report issue's body.
+function extractRegressionStageFromBugReportIssueBody(
+  body: string,
+): RegressionStage | undefined {
+  const detectionStageRegex = /### Where was this bug found\?\s*\n\s*(.*)/i;
+  const match = body.match(detectionStageRegex);
+  const extractedAnswer = match ? match[1].trim() : undefined;
+
+  switch (extractedAnswer) {
+    case 'Live version (from official store)':
+      return RegressionStage.Production;
+    case 'Internal release testing':
+      return RegressionStage.Testing;
+    default:
+      return undefined;
+  }
+}
+
+// This helper function extracts release version from bug report issue's body.
+function extractReleaseVersionFromBugReportIssueBody(
+  body: string,
+): string | undefined {
+  // Remove newline characters
+  const cleanedBody = body.replace(/\r?\n/g, ' ');
+
+  // Extract version from the cleaned body
+  const regex = /### Version\s+(.*?)(?=\s+###|$)/;
+  const versionMatch = cleanedBody.match(regex);
+  const fullVersionString = versionMatch?.[1]?.trim();
+
+  // Extract just the x.x.x part from the full version string
+  const versionRegex = /(\d+\.\d+\.\d+)/;
+  const semanticVersionMatch = fullVersionString?.match(versionRegex);
+  const version = semanticVersionMatch?.[1];
+
+  // Check if version is in the format x.y.z
+  if (version && !/^(\d+\.)?(\d+\.)?(\*|\d+)$/.test(version)) {
+    throw new Error('Version is not in the format x.y.z');
+  }
+
+  return version;
+}
+
+// This function adds the "needs-triage" label to the issue if it doesn't have it
+async function addNeedsTriageLabelToIssue(
+  octokit: Octokit,
+  issue: Labelable,
+): Promise<void> {
+  await addLabelToLabelable(octokit, issue, needsTriageLabel);
+}
+// This function adds the "area-Sentry" label to the issue if it doesn't have it
+async function addAreaSentryLabelToIssue(
+  octokit: Octokit,
+  issue: Labelable,
+): Promise<void> {
+  await addLabelToLabelable(octokit, issue, areaSentryLabel);
+}
+// This function adds the correct regression label to the issue, and removes other ones
+async function addRegressionLabelToIssue(
+  octokit: Octokit,
+  issue: Labelable,
+): Promise<void> {
+  // Extract regression stage from bug report issue body (if existing)
+  const regressionStage = extractRegressionStageFromBugReportIssueBody(
+    issue.body,
+  );
+
+  // Extract release version from bug report issue body (if existing)
+  const releaseVersion = extractReleaseVersionFromBugReportIssueBody(
+    issue.body,
+  );
+
+  // Craft regression label to add
+  const regressionLabel: Label = craftRegressionLabel(
+    regressionStage,
+    releaseVersion,
+  );
+
+  let regressionLabelFound: boolean = false;
+  const regressionLabelsToBeRemoved: {
+    id: string;
+    name: string;
+  }[] = [];
+
+  // Loop over issue's labels, to see if regression labels are either missing, or to be removed
+  issue?.labels?.forEach((label) => {
+    if (label?.name === regressionLabel.name) {
+      regressionLabelFound = true;
+    } else if (label?.name?.startsWith('regression-')) {
+      regressionLabelsToBeRemoved.push(label);
+    }
+  });
+
+  // Add regression prod label to the issue if missing
+  if (regressionLabelFound) {
+    console.log(
+      `Issue ${issue?.number} already has ${regressionLabel.name} label.`,
+    );
+  } else {
+    console.log(`Add ${regressionLabel.name} label to issue ${issue?.number}.`);
+    await addLabelToLabelable(octokit, issue, regressionLabel);
+  }
+
+  // Remove other regression prod label from the issue
+  await Promise.all(
+    regressionLabelsToBeRemoved.map((label) => {
+      removeLabelFromLabelable(octokit, issue, label?.id);
+    }),
+  );
+}
+
+// This function checks if user belongs to MetaMask organization on Github
+async function userBelongsToMetaMaskOrg(
+  octokit: Octokit,
+  username: string,
+): Promise<boolean> {
+  const userBelongsToMetaMaskOrgQuery = `
+    query UserBelongsToMetaMaskOrg($login: String!) {
+      user(login: $login) {
+        organization(login: "MetaMask") {
+          id
+        }
+      }
+    }
+  `;
+
+  const userBelongsToMetaMaskOrgResult: {
+    user: {
+      organization: {
+        id: string;
+      };
+    };
+  } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
+
+  return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
+}
+
+// This function checks if the PR description has a changelog entry
+function hasChangelogEntry(body: string): boolean {
+  // Remove HTML comments (including multiline)
+  let uncommentedBody = body;
+  let prevBody;
+  let iterationCount = 0;
+  const MAX_ITERATIONS = 100;
+  do {
+    prevBody = uncommentedBody;
+    uncommentedBody = uncommentedBody.replace(/<!--[\s\S]*?-->/g, '');
+    iterationCount++;
+    if (iterationCount >= MAX_ITERATIONS) {
+      console.warn(
+        `Reached maximum HTML comment removal iterations (${MAX_ITERATIONS}). Input may be malformed or malicious.`,
+      );
+      break;
+    }
+  } while (uncommentedBody !== prevBody);
+
+  // Split body into lines
+  const lines = uncommentedBody.split(/\r?\n/);
+
+  // Find the line starting with "CHANGELOG entry:"
+  const changelogLine = lines.find((line) =>
+    line.trim().startsWith('CHANGELOG entry:'),
+  );
+
+  if (!changelogLine) {
+    console.log('Changelog entry line missing');
+    return false;
+  }
+
+  // Extract everything after the prefix, tolerating extra spaces after the colon
+  const match = changelogLine.match(/^\s*CHANGELOG entry:\s*(.*)$/);
+  const entry = match?.[1]?.trim() ?? '';
+
+  if (entry === '') {
+    console.log('Changelog entry is empty');
+    return false;
+  }
+
+  console.log(`Changelog entry found: ${entry}`);
+  return true; // allow any non-empty value, including "null"
+}
+
+// This function checks if issue has both team and severity labels and removes needs-triage label if present
+async function checkAndRemoveNeedsTriageIfFullyLabeled(
+  octokit: Octokit,
+  issue: Labelable,
+): Promise<void> {
+  let hasTeamLabel = false;
+  let hasSeverityLabel = false;
+
+  for (const label of issue.labels || []) {
+    // Check for team labels
+    if (
+      label.name.startsWith('team-') ||
+      label.name === externalContributorLabel.name
+    ) {
+      console.log(`Issue contains a team label: ${label.name}`);
+      hasTeamLabel = true;
+    }
+    // Check for severity labels (Sev0-urgent, Sev1-high, etc.)
+    if (/^Sev\d-\w+$/.test(label.name)) {
+      console.log(`Issue contains a severity label: ${label.name}`);
+      hasSeverityLabel = true;
+    }
+  }
+
+  // If both team and severity labels are present, remove needs-triage label
+  if (hasTeamLabel && hasSeverityLabel) {
+    console.log(
+      'Both team and severity labels found. Removing needs-triage label if present...',
+    );
+    await removeLabelFromLabelableIfPresent(octokit, issue, needsTriageLabel);
+  }
+}

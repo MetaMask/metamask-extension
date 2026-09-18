@@ -1,10 +1,10 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import GeneralSettings from '../../page-objects/pages/settings/general-settings';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 const SHOW_DEFAULT_ADDRESS_FLAG = {
   remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
@@ -24,9 +24,11 @@ describe('Show default address', function (this: Suite) {
         // Navigate to settings and check "show default address" section is displayed
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.openSettingsPage();
-        const generalSettings = new GeneralSettings(driver);
-        await generalSettings.checkPageIsLoaded();
-        await generalSettings.checkShowDefaultAddressSectionIsDisplayed();
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
+        await preferencesAndDisplaySettings.checkPageIsLoaded();
+        await preferencesAndDisplaySettings.checkShowDefaultAddressSectionIsDisplayed();
       },
     );
   });
@@ -62,36 +64,16 @@ describe('Show default address', function (this: Suite) {
         // Navigate to settings and toggle off "show default address" feature
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.openSettingsPage();
-        const generalSettings = new GeneralSettings(driver);
-        await generalSettings.checkPageIsLoaded();
-        await generalSettings.toggleShowDefaultAddress();
-        await new SettingsPage(driver).closeSettingsPage();
+        const preferencesAndDisplaySettings = new PreferencesAndDisplaySettings(
+          driver,
+        );
+        await preferencesAndDisplaySettings.checkPageIsLoaded();
+        await preferencesAndDisplaySettings.toggleShowDefaultAddress();
+        await closeSettings(driver);
 
         // Check on home page that default address is not present
         await homePage.checkPageIsLoaded();
         await homePage.checkDefaultAddressIsNotDisplayed();
-      },
-    );
-  });
-
-  it('does not display Show default address section when feature flag is off', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: { extensionUxDefaultAddressVersioned: false },
-        },
-      },
-      async ({ driver }) => {
-        await login(driver);
-
-        // Navigate to settings and check "show default address" section is not displayed
-        const homePage = new HomePage(driver);
-        await homePage.headerNavbar.openSettingsPage();
-        const generalSettings = new GeneralSettings(driver);
-        await generalSettings.checkPageIsLoaded();
-        await generalSettings.checkShowDefaultAddressSectionIsNotDisplayed();
       },
     );
   });

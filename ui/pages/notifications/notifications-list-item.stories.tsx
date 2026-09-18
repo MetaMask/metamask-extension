@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { Box } from '../../components/component-library';
 import {
   createMockNotificationEthSent,
@@ -62,10 +62,13 @@ export default {
   component: NotificationsListItem,
 } as Meta;
 
-const NotificationItemWrapper: React.FC<{
+const NotificationItemWrapper = ({
+  notification,
+  onRead,
+}: {
   notification: INotification;
   onRead: (id: string) => void;
-}> = ({ notification, onRead }) => {
+}) => {
   const handleCustomNotificationClick = () => {
     onRead(notification.id);
   };

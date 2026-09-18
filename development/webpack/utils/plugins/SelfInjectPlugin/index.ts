@@ -114,7 +114,12 @@ export class SelfInjectPlugin {
    */
   updateAsset(compilation: Compilation, file: string, asset: Source): Source {
     const { ConcatSource, RawSource } = sources;
-    const { map, source } = asset.sourceAndMap();
+    const { map, source: rawSource } = asset.sourceAndMap();
+    // `source` from `sourceAndMap()` is `string | Buffer`; normalize to a
+    // string so it can be used in template-literal interpolation and passed
+    // to `escapeJs(string)`.
+    const source =
+      typeof rawSource === 'string' ? rawSource : rawSource.toString();
 
     let sourceMappingURLComment = '';
     // emit a separate source map file (if this asset already has one)
@@ -144,7 +149,16 @@ export class SelfInjectPlugin {
     newSource.add(`{`);
     newSource.add(`let d=document,s=d.createElement('script');`);
     newSource.add(`s.textContent=`);
-    newSource.add(this.escapeJs(source + sourceMappingURLComment));
+    // window.ethereum set by the inner script lives on the main
+    // world's window and isn't visible from the isolated world. Because of that,
+    // we set an attribute on the script element via `document.currentScript` to
+    // indicate that the script was injected successfully.  It is added after the
+    // original source so that the source-map line numbers remain aligned
+    newSource.add(
+      this.escapeJs(
+        `${source}\ndocument.currentScript.dataset.loaded='1';${sourceMappingURLComment}`,
+      ),
+    );
     newSource.add(`+`);
     // The browser's dev tools can't map our inline javascript back to its
     // source. We add a sourceURL directive to help with that. It also helps
@@ -155,7 +169,21 @@ export class SelfInjectPlugin {
     );
     newSource.add(`;`);
     // add and immediately remove the script to avoid modifying the DOM.
-    newSource.add(`d.documentElement.appendChild(s).remove()`);
+    newSource.add(`d.documentElement.appendChild(s).remove();`);
+    // If the synchronous injection did not execute, fall back to a asynchronous injection strategy
+    // that loads the same source via a `Blob` URL assigned to `script.src`.
+    // This can succeed in environments where the synchronous approach is blocked or
+    // stripped (e.g. some CSP/sandbox configurations that disallow inline
+    // scripts but allow `blob:` script sources).
+    newSource.add(`if(s.dataset.loaded!=='1'){`);
+    newSource.add(`let s2=d.createElement('script');`);
+    newSource.add(
+      `let u=URL.createObjectURL(new Blob([s.textContent],{type:'text/javascript'}));`,
+    );
+    newSource.add(`s2.src=u;`);
+    newSource.add(`(d.head||d.documentElement||d).appendChild(s2);`);
+    newSource.add(`URL.revokeObjectURL(u);`);
+    newSource.add(`}`);
     newSource.add(`}`);
 
     return newSource;

@@ -3,9 +3,9 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -14,9 +14,12 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from '../identity/account-syncing/mock-data';
-import { mockPriceApi } from '../tokens/utils/mocks';
+import {
+  getMockAssetsPrice,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
 import { mockIdentityServices } from '../identity/mocks';
-import { withMultichainAccountsDesignEnabled } from './common';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
 
@@ -37,9 +40,21 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
+          })
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           userStorageMockttpController.setupPath(
@@ -67,6 +82,7 @@ describe('Add wallet', function () {
           DEFAULT_LOCAL_NODE_USD_BALANCE,
           '$',
         );
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);
@@ -88,18 +104,27 @@ describe('Add wallet', function () {
   it('Add wallet using SRP', async function () {
     const E2E_SRP =
       'bench top weekend buyer spoon side resist become detect gauge eye feed';
-    await withMultichainAccountsDesignEnabled(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
       },
-      async (driver: Driver) => {
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.startImportSecretPhrase(E2E_SRP);
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
+
+        const accountListPage = new AccountListPage(driver);
+        // Extended timeout: AccountTreeController sync (triggered by the
+        // multi-SRP vault) can take longer than the default 10s on Firefox CI.
+        await accountListPage.checkPageIsLoaded(30000);
+        await accountListPage.startImportSecretPhrase(E2E_SRP);
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded(30000);
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );
@@ -111,10 +136,9 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withAccountsControllerImportedAccount()
           .withKeyringControllerImportedAccountVault()
-          .withPreferencesController()
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           await mockPriceApi(server);
@@ -151,18 +175,21 @@ describe('Add wallet', function () {
           'foobarbazqux',
         );
 
-        // Check new imported account has correct name and label
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkAccountImportedToastIsDisplayed();
+        await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);
+
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Imported accounts',
           account: IMPORTED_ACCOUNT_NAME,
-          balance: '$0.00',
         });
         await accountListPage.checkNumberOfAvailableAccounts(4);
-        await accountListPage.switchToAccount(IMPORTED_ACCOUNT_NAME);
-        await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);
       },
     );
   });
@@ -174,7 +201,7 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withKeyringControllerImportedAccountVault()
           .build(),
         testSpecificMock: async (server: Mockttp) => {
@@ -203,7 +230,6 @@ describe('Add wallet', function () {
         await accountListPage.addNewImportedAccount(
           testPrivateKey,
           'The account you are trying to import is a duplicate',
-          { isMultichainAccountsState2Enabled: true },
         );
       },
     );

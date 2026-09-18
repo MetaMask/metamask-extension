@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -12,6 +12,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
+import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -19,40 +23,97 @@ import {
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
+import { getPerpsTransactionDestination } from '../../components/app/perps/utils/getPerpsTransactionDestination';
 import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   groupTransactionsByDate,
   filterTransactionsByType,
 } from '../../components/app/perps/utils';
-import type { PerpsTransactionFilter } from '../../components/app/perps/types';
+import type {
+  PerpsTransaction,
+  PerpsTransactionFilter,
+} from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
+import { usePerpsEventTracking } from '../../hooks/perps';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   Dropdown,
   type DropdownOption,
-} from './market-list/components/dropdown';
+} from '../../components/app/perps/dropdown';
+
+const ACTIVITY_FILTERS: PerpsTransactionFilter[] = [
+  'trade',
+  'order',
+  'funding',
+  'deposit',
+];
+const DEFAULT_ACTIVITY_FILTER: PerpsTransactionFilter = 'trade';
+
+const isValidActivityFilter = (
+  value: string | null,
+): value is PerpsTransactionFilter =>
+  ACTIVITY_FILTERS.includes(value as PerpsTransactionFilter);
 
 /**
  * PerpsActivityPage component
  * Displays the full transaction history with filter tabs
  * Accessible via /perps/activity route
  */
-const PerpsActivityPage: React.FC = () => {
+const PerpsActivityPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const [activeFilter, setActiveFilter] =
-    useState<PerpsTransactionFilter>('trade');
+  // The active filter is stored in the URL (rather than local state) so it
+  // survives navigating to a transaction's details page and back: `navigate(-1)`
+  // pops the history entry, and the query param travels with it, whereas local
+  // state would reset on remount.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterParam = searchParams.get('filter');
+  const activeFilter: PerpsTransactionFilter = isValidActivityFilter(
+    filterParam,
+  )
+    ? filterParam
+    : DEFAULT_ACTIVITY_FILTER;
 
-  // Fetch real transaction data from the Perps controller
-  const { transactions, isLoading, error, refetch } =
-    usePerpsTransactionHistory();
+  const handleFilterChange = useCallback(
+    (filter: PerpsTransactionFilter) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set('filter', filter);
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
-  // Refetch on mount to ensure fresh data
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  // Fetch real transaction data from the Perps controller.
+  // forceFreshOnMount: user opening the Activity page must see the latest
+  // orders/funding/deposits even if PerpsView ("Recent activity") grabbed a
+  // snapshot inside the 10s TTL. Orders/funding/userHistory do not update via
+  // the live-fills WebSocket merge, so without this the page could render a
+  // stale snapshot. The hook's in-flight dedup still suppresses bursts.
+  const { transactions, isLoading, error } = usePerpsTransactionHistory({
+    forceFreshOnMount: true,
+  });
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.ACTIVITY,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+  });
 
   // Filter options for dropdown
   const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(
@@ -82,8 +143,23 @@ const PerpsActivityPage: React.FC = () => {
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
+
+  // Navigate to the transaction's details view. Orders/trades/funding open
+  // the dedicated Perps transaction details page; deposits/withdrawals open
+  // the existing generic on-chain transaction details route. Kept as a
+  // defensive no-op guard even though rows without a destination don't get
+  // this handler wired up (see `hasDestination` below).
+  const handleTransactionClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      const destination = getPerpsTransactionDestination(transaction);
+      if (destination) {
+        navigate(destination.pathname, { state: destination.state });
+      }
+    },
+    [navigate],
+  );
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsExperienceAvailable) {
@@ -91,7 +167,7 @@ const PerpsActivityPage: React.FC = () => {
   }
 
   return (
-    <Page data-testid="perps-activity-page">
+    <Page data-testid="parent-selector-perps-activity">
       <Header
         startAccessory={
           <ButtonIcon
@@ -111,7 +187,7 @@ const PerpsActivityPage: React.FC = () => {
           <Dropdown
             options={filterOptions}
             selectedId={activeFilter}
-            onChange={setActiveFilter}
+            onChange={handleFilterChange}
             testId="perps-activity-filter"
           />
         </Box>
@@ -119,7 +195,12 @@ const PerpsActivityPage: React.FC = () => {
         {/* Transaction List */}
         <Box flexDirection={BoxFlexDirection.Column}>
           {/* Loading State */}
-          {isLoading && transactions.length === 0 && (
+          {/* Gated on groupedTransactions (not the raw transactions array) so
+              that wallet-tracked deposits/withdrawals which are already
+              available (and thus render immediately, see mergedTransactions
+              in usePerpsTransactionHistory) don't wrongly suppress the
+              skeleton when they don't match the currently selected filter. */}
+          {isLoading && groupedTransactions.length === 0 && (
             <PerpsActivityPageSkeleton />
           )}
 
@@ -159,8 +240,11 @@ const PerpsActivityPage: React.FC = () => {
           )}
 
           {/* Transaction Groups */}
-          {!isLoading &&
-            !error &&
+          {/* Not gated on isLoading: wallet-tracked deposits/withdrawals (and,
+              once the REST fetch resolves, the full merged list) must render
+              immediately rather than waiting for isLoading to flip to false,
+              otherwise the list would go blank until the fetch completes. */}
+          {!error &&
             groupedTransactions.map((group) => (
               <Box
                 key={group.date}
@@ -185,12 +269,27 @@ const PerpsActivityPage: React.FC = () => {
 
                 {/* Transactions */}
                 <Box flexDirection={BoxFlexDirection.Column}>
-                  {group.transactions.map((transaction) => (
-                    <TransactionCard
-                      key={transaction.id}
-                      transaction={transaction}
-                    />
-                  ))}
+                  {group.transactions.map((transaction) => {
+                    // Only render the row as clickable when it actually has
+                    // somewhere to navigate to (e.g. a deposit/withdrawal
+                    // missing a tx hash has no destination) — otherwise the
+                    // row would look interactive but silently no-op on click.
+                    const hasDestination = Boolean(
+                      getPerpsTransactionDestination(transaction),
+                    );
+                    return (
+                      <TransactionCard
+                        key={transaction.id}
+                        transaction={transaction}
+                        onClick={
+                          hasDestination ? handleTransactionClick : undefined
+                        }
+                        screenName={
+                          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ACTIVITY_HISTORY
+                        }
+                      />
+                    );
+                  })}
                 </Box>
               </Box>
             ))}

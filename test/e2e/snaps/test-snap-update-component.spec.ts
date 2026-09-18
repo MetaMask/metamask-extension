@@ -6,8 +6,8 @@ import {
   mockWebpackPluginOldSnap,
   mockWebpackPluginSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
-import SnapListPage from '../page-objects/pages/snap-list-page';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
+import SnapListPage from '../page-objects/pages/snaps/list-page';
 import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
@@ -35,7 +35,7 @@ describe('Test Snap update via snaps component', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const snapListPage = new SnapListPage(driver);

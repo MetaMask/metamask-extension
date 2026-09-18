@@ -10,9 +10,7 @@ import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
 // eslint-disable-next-line import-x/no-restricted-paths
-import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
-import { SETTINGS_ROUTE } from '../deep-links/routes/route';
-import { SHIELD_QUERY_PARAMS } from '../deep-links/routes/shield';
+import { setParticipateInMetaMetrics } from '../../../app/scripts/controllers/analytics';
 import { getIsShieldSubscriptionActive } from './subscription-utils';
 import { loadShieldConfig } from './config';
 
@@ -65,37 +63,6 @@ export async function getShieldGatewayConfig(
       authorization: undefined,
     };
   }
-}
-
-/**
- * Calculate the remaining billing cycles for a subscription
- *
- * @param params
- * @param params.currentPeriodEnd - The current period end date.
- * @param params.endDate - The end date.
- * @param params.interval - The interval.
- * @returns The remaining billing cycles.
- */
-export function calculateSubscriptionRemainingBillingCycles({
-  currentPeriodEnd,
-  endDate,
-  interval,
-}: {
-  currentPeriodEnd: Date;
-  endDate: Date;
-  interval: (typeof RECURRING_INTERVALS)[keyof typeof RECURRING_INTERVALS];
-}): number {
-  if (interval === RECURRING_INTERVALS.month) {
-    const yearDiff = endDate.getFullYear() - currentPeriodEnd.getFullYear();
-    const monthDiff = endDate.getMonth() - currentPeriodEnd.getMonth();
-    // Assume the period end and endDate have the same day of the month and time
-    // Current period is inclusive, so we need to add 1
-    return yearDiff * 12 + monthDiff + 1;
-  }
-  const yearDiff = endDate.getFullYear() - currentPeriodEnd.getFullYear();
-  // Assume the period end and endDate have the same month, day of the month and time
-  // Current period is inclusive, so we need to add 1
-  return yearDiff + 1;
 }
 
 /**
@@ -154,35 +121,17 @@ export function getIsSubscriptionCancelNotAllowed(
 /**
  * Update the preferences after a shield subscription is active
  *
- * @param metaMetricsController - MetaMetricsController instance.
  * @param preferencesController - PreferencesController instance.
  */
 export function updatePreferencesAndMetricsForShieldSubscription(
-  metaMetricsController: MetaMetricsController,
   preferencesController: PreferencesController,
 ) {
   // shield subscribers have to turn on metametrics
-  metaMetricsController.setParticipateInMetaMetrics(true);
+  setParticipateInMetaMetrics(true);
   // shield subscribers have to turn on security alerts
   preferencesController.setSecurityAlertsEnabled(true);
   // shield subscribers have to turn on phishing detection
   preferencesController.setUsePhishDetect(true);
   // shield subscribers have to turn on transaction simulations
   preferencesController.setUseTransactionSimulations(true);
-}
-
-/**
- * Get the shield in app navigation from an external link.
- * This function is used to navigate to the shield page from an external link instead of opening a new tab
- * TODO: clean this once we have better control of how deeplink are opened
- *
- * @param externalLink - The external link.
- * @returns The shield in app navigation.
- */
-export function getShieldInAppNavigationFromExternalLink(
-  externalLink: string,
-): string {
-  const url = new URL(externalLink);
-  const params = url.searchParams.toString();
-  return `${SETTINGS_ROUTE}?${SHIELD_QUERY_PARAMS.showShieldEntryModal}=true${params ? `&${params}` : ''}`;
 }

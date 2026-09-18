@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MaterialSlider from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
+import { Slider as MaterialSlider } from '@mui/material';
 
 import {
   TextColor,
@@ -11,42 +10,38 @@ import {
 import InfoTooltip from '../info-tooltip/info-tooltip';
 import { Text } from '../../component-library';
 
-const styles = {
-  root: {
-    height: 6,
-    padding: '6px 0',
-  },
-  rail: {
+const sliderSx = {
+  height: 6,
+  padding: '6px 0',
+  '& .MuiSlider-rail': {
     borderRadius: 50,
     background: 'var(--color-background-alternative)',
     height: 6,
   },
-  track: {
+  '& .MuiSlider-track': {
     borderRadius: 50,
     background: 'var(--color-primary-default)',
     height: 6,
+    border: 'none',
   },
-  thumb: {
+  '& .MuiSlider-thumb': {
     height: 20,
     width: 20,
-    marginTop: -7,
-    marginLeft: -7,
     backgroundColor: 'var(--color-primary-default)',
     border: '1px solid var(--color-border-muted)',
     boxSizing: 'border-box',
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
-    '&:focus, &$active': {
+    '&::before': {
+      display: 'none',
+    },
+    '&:focus, &.Mui-active': {
       height: 20,
       width: 20,
-      marginTop: -7,
-      marginLeft: -7,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&:hover': {
       height: 22,
       width: 22,
-      marginTop: -8,
-      marginLeft: -8,
       border: 'none',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
@@ -54,13 +49,14 @@ const styles = {
 };
 
 const Slider = ({
-  editText,
+  editText = 'Edit',
   infoText,
   onEdit,
   titleDetail,
   titleText,
   tooltipText,
   valueText,
+  sx,
   ...rest
 }) => (
   <div className="slider">
@@ -88,7 +84,7 @@ const Slider = ({
         </div>
       )}
     </div>
-    <MaterialSlider {...rest} />
+    <MaterialSlider {...rest} sx={[sliderSx, sx]} />
     <div className="slider__footer">
       <div className="slider__footer-info">
         {infoText && (
@@ -107,10 +103,6 @@ const Slider = ({
     </div>
   </div>
 );
-
-Slider.defaultProps = {
-  editText: 'Edit',
-};
 
 Slider.propTypes = {
   /**
@@ -138,6 +130,10 @@ Slider.propTypes = {
    */
   valueText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
+   * MUI sx prop for custom slider styles
+   */
+  sx: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /**
    * Set maximum step
    */
   max: PropTypes.number,
@@ -163,4 +159,4 @@ Slider.propTypes = {
   value: PropTypes.number,
 };
 
-export default withStyles(styles)(Slider);
+export default Slider;

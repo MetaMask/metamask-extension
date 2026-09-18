@@ -20,6 +20,7 @@ import {
   assertSignatureRejectedMetrics,
   WALLET_ETH_BALANCE,
 } from './signature-helpers';
+import { SIGN_TYPED_DATA_EXPECTED } from './sign-typed-data-expected';
 
 describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -47,7 +48,10 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await assertInfoValues(driver);
 
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await assertAccountDetailsMetrics(
           driver,
@@ -83,7 +87,10 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
           SignatureType.SignTypedData,
         );
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -106,8 +113,10 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 async function assertInfoValues(driver: Driver) {
   const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await signTypedData.verifySignTypedDataMessage();
-  await signTypedData.verifyOrigin();
+  await signTypedData.verifySignTypedDataMessage(
+    SIGN_TYPED_DATA_EXPECTED.v1Message,
+  );
+  await signTypedData.verifyOrigin(SIGN_TYPED_DATA_EXPECTED.origin);
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {

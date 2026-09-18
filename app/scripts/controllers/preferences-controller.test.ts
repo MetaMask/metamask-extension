@@ -21,6 +21,11 @@ import {
 } from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -29,6 +34,16 @@ import {
   PreferencesController,
   ReferralStatus,
 } from './preferences-controller';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('./analytics', () => {
+  const actual = jest.requireActual('./analytics');
+  return {
+    ...actual,
+    trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+  };
+});
 
 const setupController = ({
   state,
@@ -52,8 +67,29 @@ const setupController = ({
     actions: [
       'AccountsController:getAccountByAddress',
       'AccountsController:setAccountName',
+      'LegacyBackgroundApiService:toggleExternalServices',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:getState',
     ],
   });
+
+  const getOnboardingState = jest.fn().mockReturnValue({
+    firstTimeFlowType: 'create',
+  });
+  const getSeedlessOnboardingState = jest.fn().mockReturnValue({});
+  const toggleExternalServices = jest.fn();
+  messenger.registerActionHandler(
+    'OnboardingController:getState',
+    getOnboardingState,
+  );
+  messenger.registerActionHandler(
+    'SeedlessOnboardingController:getState',
+    getSeedlessOnboardingState,
+  );
+  messenger.registerActionHandler(
+    'LegacyBackgroundApiService:toggleExternalServices',
+    toggleExternalServices,
+  );
 
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
@@ -73,10 +109,9 @@ const setupController = ({
     messenger: accountsControllerMessenger,
     events: [
       'KeyringController:stateChange',
-      'SnapController:stateChange',
-      'SnapKeyring:accountAssetListUpdated',
-      'SnapKeyring:accountBalancesUpdated',
-      'SnapKeyring:accountTransactionsUpdated',
+      'SnapAccountService:accountAssetListUpdated',
+      'SnapAccountService:accountBalancesUpdated',
+      'SnapAccountService:accountTransactionsUpdated',
       'MultichainNetworkController:networkDidChange',
     ],
   });
@@ -96,6 +131,9 @@ const setupController = ({
     controller,
     messenger,
     accountsController,
+    getOnboardingState,
+    getSeedlessOnboardingState,
+    toggleExternalServices,
   };
 };
 
@@ -120,19 +158,6 @@ describe('preferences controller', () => {
       });
 
       expect(mergedController.state.preferences.avatarType).toBe('jazzicon');
-    });
-  });
-
-  describe('useBlockie', () => {
-    it('defaults useBlockie to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.useBlockie).toStrictEqual(false);
-    });
-
-    it('setUseBlockie to true', () => {
-      const { controller } = setupController({});
-      controller.setUseBlockie(true);
-      expect(controller.state.useBlockie).toStrictEqual(true);
     });
   });
 
@@ -279,24 +304,64 @@ describe('preferences controller', () => {
 
   describe('setAdvancedGasFee', () => {
     const { controller } = setupController({});
+    const account = '0xabc';
+
     it('should default to an empty object', () => {
       expect(controller.state.advancedGasFee).toStrictEqual({});
     });
 
     it('should set the setAdvancedGasFee property in state', () => {
       controller.setAdvancedGasFee({
+        account: '0xABC',
         chainId: CHAIN_IDS.GOERLI,
         gasFeePreferences: {
+          userFeeLevel: 'custom',
           maxBaseFee: '1.5',
           priorityFee: '2',
         },
       });
       expect(
-        controller.state.advancedGasFee[CHAIN_IDS.GOERLI].maxBaseFee,
+        controller.state.advancedGasFee[CHAIN_IDS.GOERLI][account].userFeeLevel,
+      ).toStrictEqual('custom');
+      expect(
+        controller.state.advancedGasFee[CHAIN_IDS.GOERLI][account].maxBaseFee,
       ).toStrictEqual('1.5');
       expect(
-        controller.state.advancedGasFee[CHAIN_IDS.GOERLI].priorityFee,
+        controller.state.advancedGasFee[CHAIN_IDS.GOERLI][account].priorityFee,
       ).toStrictEqual('2');
+    });
+
+    it('should clear advancedGasFee for one account without clearing other accounts', () => {
+      const { controller: accountScopedController } = setupController({});
+      accountScopedController.setAdvancedGasFee({
+        account: '0xabc',
+        chainId: CHAIN_IDS.GOERLI,
+        gasFeePreferences: {
+          userFeeLevel: 'custom',
+          maxBaseFee: '1.5',
+          priorityFee: '2',
+        },
+      });
+      accountScopedController.setAdvancedGasFee({
+        account: '0xdef',
+        chainId: CHAIN_IDS.GOERLI,
+        gasFeePreferences: {
+          userFeeLevel: 'high',
+        },
+      });
+
+      accountScopedController.setAdvancedGasFee({
+        account: '0xabc',
+        chainId: CHAIN_IDS.GOERLI,
+      });
+
+      expect(
+        accountScopedController.state.advancedGasFee[CHAIN_IDS.GOERLI],
+      ).toStrictEqual({
+        '0xdef': {
+          userFeeLevel: 'high',
+        },
+      });
     });
   });
 
@@ -348,18 +413,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setServiceWorkerKeepAlivePreference', () => {
-    const { controller } = setupController({});
-    it('should default to true', () => {
-      expect(controller.state.enableMV3TimestampSave).toStrictEqual(true);
-    });
-
-    it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
-      controller.setServiceWorkerKeepAlivePreference(false);
-      expect(controller.state.enableMV3TimestampSave).toStrictEqual(false);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -395,6 +448,65 @@ describe('preferences controller', () => {
       expect(controller.state.openSeaEnabled).toStrictEqual(false);
       expect(controller.state.useNftDetection).toStrictEqual(false);
       expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
+    });
+
+    it('preserves owned preference overrides when enabling', () => {
+      const { controller } = setupController({});
+      controller.toggleExternalServices(false);
+
+      controller.toggleExternalServices(true, {
+        useTokenDetection: false,
+        useCurrencyRateCheck: false,
+      });
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(controller.state.useTokenDetection).toBe(false);
+      expect(controller.state.useCurrencyRateCheck).toBe(false);
+      expect(controller.state.usePhishDetect).toBe(true);
+      expect(controller.state.useAddressBarEnsResolution).toBe(true);
+      expect(controller.state.openSeaEnabled).toBe(true);
+      expect(controller.state.useNftDetection).toBe(true);
+      expect(controller.state.useSafeChainsListValidation).toBe(true);
+    });
+
+    it('ignores owned preference overrides when disabling', () => {
+      const { controller } = setupController({});
+
+      controller.toggleExternalServices(false, {
+        useTokenDetection: true,
+      });
+
+      expect(controller.state.useExternalServices).toBe(false);
+      expect(controller.state.useTokenDetection).toBe(false);
+    });
+  });
+
+  describe('toggleBasicFunctionality', () => {
+    it('sets Basic Functionality and every child preference together', () => {
+      const { controller, toggleExternalServices } = setupController({});
+      controller.toggleExternalServices(false);
+
+      controller.toggleBasicFunctionality(true);
+
+      expect(controller.state.useExternalServices).toBe(true);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(true);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('turns every child preference off together', () => {
+      const { controller, toggleExternalServices } = setupController({});
+
+      controller.toggleBasicFunctionality(false);
+
+      expect(controller.state.useExternalServices).toBe(false);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(false);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(false);
+      expect(toggleExternalServices).toHaveBeenCalledWith(false);
     });
   });
 
@@ -463,14 +575,18 @@ describe('preferences controller', () => {
         showExtensionInFullSizeView: false,
         privacyMode: false,
         showFiatInTestnets: false,
+        showTickerWidget: true,
         showTestNetworks: false,
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: false,
+        useSidePanelAsDefault: true,
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
+        isBasicFunctionalityConsolidatedEnabled: false,
+        basicFunctionalityMigrationNotification: null,
+        basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -483,6 +599,7 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        gasSponsorshipOptOutByChainId: {},
       });
     });
 
@@ -494,14 +611,18 @@ describe('preferences controller', () => {
         avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
+        showTickerWidget: true,
         showTestNetworks: false,
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: false,
+        useSidePanelAsDefault: true,
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
+        isBasicFunctionalityConsolidatedEnabled: false,
+        basicFunctionalityMigrationNotification: null,
+        basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
@@ -515,7 +636,54 @@ describe('preferences controller', () => {
           sortCallback: 'stringNumeric',
         },
         tokenNetworkFilter: {},
+        gasSponsorshipOptOutByChainId: {},
       });
+    });
+
+    it('disables side panel default when enabling full screen view', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        true,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+    });
+
+    it('disables full screen default when enabling side panel default', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+      controller.setPreference('useSidePanelAsDefault', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
+    });
+
+    it('stores perpsSelectedCandlePeriod as a string preference', () => {
+      const { controller } = setupController({});
+      controller.setPreference('perpsSelectedCandlePeriod', '1h');
+      expect(controller.getPreferences().perpsSelectedCandlePeriod).toBe('1h');
+    });
+
+    it('enables side panel default when disabling full screen view', () => {
+      const { controller: defaultController } = setupController({});
+      const { controller } = setupController({
+        state: {
+          preferences: {
+            ...defaultController.getPreferences(),
+            showExtensionInFullSizeView: true,
+            useSidePanelAsDefault: false,
+          },
+        },
+      });
+
+      controller.setPreference('showExtensionInFullSizeView', false);
+
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
     });
   });
 
@@ -555,6 +723,172 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setUseAddressBarEnsResolution(false);
       expect(controller.state.useAddressBarEnsResolution).toStrictEqual(false);
+    });
+  });
+
+  describe('consolidateBasicFunctionality', () => {
+    beforeEach(() => {
+      mockTrackEvent.mockClear();
+    });
+
+    it('consolidates a social-login wallet and syncs external services', () => {
+      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
+        setupController({});
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(
+        controller.getPreferences().isBasicFunctionalityConsolidatedEnabled,
+      ).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      // Default setup is aligned (all-on); aligned social is not on Migrated.
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('tracks Basic Functionality Migrated for unaligned mixed wallets', () => {
+      const childPreferenceState = Object.fromEntries(
+        BFT_CHILD_PREFERENCES.map((preference, index) => [
+          preference,
+          index < 10,
+        ]),
+      ) as Pick<
+        PreferencesControllerState,
+        (typeof BFT_CHILD_PREFERENCES)[number]
+      >;
+      const { controller } = setupController({
+        state: {
+          useExternalServices: false,
+          ...childPreferenceState,
+        },
+      });
+
+      mockTrackEvent.mockImplementationOnce(() => {
+        expect(controller.state.useExternalServices).toBe(true);
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.BasicFunctionalityMigrated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: 'on',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: false,
+          }),
+        }),
+      );
+    });
+
+    it('tracks Basic Functionality Migrated for unaligned social wallets', () => {
+      const { controller, getSeedlessOnboardingState } = setupController({});
+      controller.setUseTokenDetection(false);
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.BasicFunctionalityMigrated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: 'on',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: true,
+          }),
+        }),
+      );
+    });
+
+    it('repairs a consolidated social-login wallet with Basic Functionality disabled', () => {
+      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.toggleExternalServices(false);
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(true);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not sync external services when already consolidated', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+
+      controller.consolidateBasicFunctionality();
+
+      expect(getOnboardingState).not.toHaveBeenCalled();
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('dismissBasicFunctionalityMigrationNotification', () => {
+    it('clears a scheduled migration notification', () => {
+      const { controller } = setupController({});
+      controller.setPreference(
+        'basicFunctionalityMigrationNotification',
+        'modal',
+      );
+
+      controller.dismissBasicFunctionalityMigrationNotification();
+
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBeNull();
+      expect(
+        controller.getPreferences()
+          .basicFunctionalityMigrationNotificationDismissed,
+      ).toBe(true);
+    });
+
+    it('does not reschedule a notice after dismiss', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setPreference(
+        'basicFunctionalityMigrationNotification',
+        'modal',
+      );
+      controller.dismissBasicFunctionalityMigrationNotification();
+      getOnboardingState.mockReturnValue({
+        firstTimeFlowType: 'socialCreate',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBeNull();
+      expect(
+        controller.getPreferences()
+          .basicFunctionalityMigrationNotificationDismissed,
+      ).toBe(true);
     });
   });
 
@@ -638,7 +972,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "isMultiAccountBalancesEnabled": true,
@@ -648,10 +981,14 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -660,6 +997,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -670,12 +1008,11 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useMultiAccountBalanceChecker": true,
           "useNftDetection": true,
@@ -704,7 +1041,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",
@@ -718,10 +1054,14 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -730,6 +1070,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -740,12 +1081,13 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
           "snapRegistryList": {},
@@ -754,7 +1096,6 @@ describe('preferences controller', () => {
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -787,7 +1128,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",
@@ -801,10 +1141,14 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -813,6 +1157,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -823,21 +1168,22 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -870,7 +1216,6 @@ describe('preferences controller', () => {
           "advancedGasFee": {},
           "currentLocale": "",
           "dismissSeedBackUpReminder": false,
-          "enableMV3TimestampSave": true,
           "featureFlags": {},
           "forgottenPassword": false,
           "ipfsGateway": "dweb.link",
@@ -884,10 +1229,14 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
+            "gasSponsorshipOptOutByChainId": {},
             "hideZeroBalanceTokens": false,
+            "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
             "showConfirmationAdvancedDetails": false,
             "showDefaultAddress": true,
@@ -896,6 +1245,7 @@ describe('preferences controller', () => {
             "showMultiRpcModal": false,
             "showNativeTokenAsMainBalance": false,
             "showTestNetworks": false,
+            "showTickerWidget": true,
             "skipDeepLinkInterstitial": false,
             "smartTransactionsMigrationApplied": false,
             "smartTransactionsOptInStatus": true,
@@ -906,21 +1256,22 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
             "gmx": {},
             "hyperliquid": {},
+            "variational": {},
           },
           "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
-          "useBlockie": false,
           "useCurrencyRateCheck": true,
           "useExternalNameSources": true,
           "useExternalServices": true,
@@ -1048,6 +1399,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1072,6 +1424,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1113,6 +1466,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1136,6 +1490,7 @@ describe('preferences controller', () => {
               },
               [DefiReferralPartner.GMX]: {},
               [DefiReferralPartner.AsterDEX]: {},
+              [DefiReferralPartner.Variational]: {},
             },
           },
         });
@@ -1159,6 +1514,9 @@ describe('preferences controller', () => {
         ).toStrictEqual({});
         expect(
           controller.state.referrals[DefiReferralPartner.AsterDEX],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.Variational],
         ).toStrictEqual({});
       });
 
@@ -1194,16 +1552,24 @@ describe('preferences controller', () => {
       const { controller } = setupController({
         state: {
           currentLocale: 'ja',
-          useBlockie: true,
           theme: ThemeType.dark,
           knownMethodData: { '0x12345678': 'transfer' },
-          advancedGasFee: { '0x1': { maxBaseFee: '100', priorityFee: '10' } },
+          advancedGasFee: {
+            '0x1': {
+              '0xabc': {
+                userFeeLevel: 'custom',
+                maxBaseFee: '100',
+                priorityFee: '10',
+              },
+            },
+          },
           preferences: {
             autoLockTimeLimit: undefined,
             avatarType: 'jazzicon',
             showExtensionInFullSizeView: true,
             privacyMode: true,
             showFiatInTestnets: true,
+            showTickerWidget: true,
             showTestNetworks: true,
             smartTransactionsMigrationApplied: false,
             smartTransactionsOptInStatus: true,
@@ -1212,6 +1578,9 @@ describe('preferences controller', () => {
             showDefaultAddress: true,
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
+            isBasicFunctionalityConsolidatedEnabled: false,
+            basicFunctionalityMigrationNotification: null,
+            basicFunctionalityMigrationNotificationDismissed: false,
             skipDeepLinkInterstitial: false,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,
@@ -1224,20 +1593,19 @@ describe('preferences controller', () => {
               sortCallback: 'stringNumeric',
             },
             tokenNetworkFilter: {},
+            gasSponsorshipOptOutByChainId: {},
           },
         },
       });
 
       // Verify state was customized
       expect(controller.state.currentLocale).toBe('ja');
-      expect(controller.state.useBlockie).toBe(true);
       expect(controller.state.theme).toBe(ThemeType.dark);
 
       controller.resetState();
 
       // Verify state was reset to defaults
       expect(controller.state.currentLocale).toBe(FALLBACK_LOCALE);
-      expect(controller.state.useBlockie).toBe(false);
       expect(controller.state.theme).toBe(ThemeType.os);
       expect(controller.state.knownMethodData).toStrictEqual({});
       expect(controller.state.advancedGasFee).toStrictEqual({});

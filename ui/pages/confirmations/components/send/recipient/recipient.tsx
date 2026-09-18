@@ -24,25 +24,33 @@ import {
   ModalContentSize,
   HelpText,
   HelpTextSeverity,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
+import { AddressPoisoningDetectionResult } from '../../../hooks/send/useAddressPoisoningDetection';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
 import { RecipientList } from '../recipient-list';
 import { RecipientInput } from '../recipient-input';
+import { AddressPoisoningAlertContent } from '../address-poisoning-alert-content/address-poisoning-alert-content';
 
 export const Recipient = ({
+  addressPoisoningDetectionResult,
   recipientValidationResult,
+  recipientCandidateAddress,
   onAlertIconClick,
 }: {
+  addressPoisoningDetectionResult?: AddressPoisoningDetectionResult;
   recipientValidationResult: ReturnType<typeof useRecipientValidation>;
+  recipientCandidateAddress?: string;
   onAlertIconClick?: () => void;
 }) => {
   const {
     recipientError,
-    recipientErrorAllowAcknowledge,
+    hasUnacknowledgedAlerts,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
@@ -57,6 +65,7 @@ export const Recipient = ({
   } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
   const recipientInputRef = useRef<HTMLInputElement>(null);
+  const poisoningMatch = addressPoisoningDetectionResult?.bestMatch;
   const closeRecipientModal = useCallback(() => {
     setIsRecipientModalOpen(false);
   }, []);
@@ -104,7 +113,7 @@ export const Recipient = ({
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t('to')}
         </Text>
-        {to === toAddressValidated && recipientErrorAllowAcknowledge && (
+        {to === toAddressValidated && hasUnacknowledgedAlerts && (
           <Icon
             name={IconName.Danger}
             size={IconSize.Sm}
@@ -120,13 +129,27 @@ export const Recipient = ({
         recipientInputRef={recipientInputRef}
         recipientValidationResult={recipientValidationResult}
       />
-      {to === toAddressValidated &&
-        recipientError &&
-        !recipientErrorAllowAcknowledge && (
-          <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
-            {recipientError}
-          </HelpText>
-        )}
+      {recipientCandidateAddress && poisoningMatch && (
+        <Box className="mt-2">
+          <BannerAlert
+            data-testid="address-poisoning-warning-banner"
+            severity={BannerAlertSeverity.Danger}
+            title={t('addressPoisoningTitle')}
+            description={t('addressPoisoningMessage')}
+          >
+            <AddressPoisoningAlertContent
+              address={recipientCandidateAddress}
+              knownAddress={poisoningMatch.knownAddress}
+              diffIndices={poisoningMatch.diffIndices}
+            />
+          </BannerAlert>
+        </Box>
+      )}
+      {to === toAddressValidated && recipientError && (
+        <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
+          {recipientError}
+        </HelpText>
+      )}
       {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}

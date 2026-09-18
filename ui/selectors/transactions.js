@@ -6,6 +6,10 @@ import {
 } from '@metamask/transaction-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import {
+  isCorrectDeveloperTransactionType,
+  isCorrectSignatureApprovalType,
+} from '../../shared/lib/confirmation.utils';
+import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
@@ -17,13 +21,18 @@ import {
   getProviderConfig,
   getCurrentChainId,
 } from '../../shared/lib/selectors/networks';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+
 import {
   createShallowEqualInputAndResultSelector,
   createParameterizedShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
-import { getSelectedInternalAccount } from './accounts';
-import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import { firstPendingConfirmationSelector } from '../pages/confirmations/selectors/confirm';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import {
+  hasPendingApprovals,
+  getApprovalRequestsByType,
+  getPendingApprovals,
+} from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 /**
@@ -90,55 +99,54 @@ export const getTransactionsByChainId = createChainIdSelector(
  * @param {object} state - Root state
  * @returns {object[]} Array of transaction objects
  */
-export const getCurrentNetworkTransactions = (state) => {
-  const providerConfig = getProviderConfigSafe(state);
-  if (!providerConfig?.chainId) {
-    return EMPTY_ARRAY;
-  }
-  return getTransactionsByChainId(state, providerConfig.chainId);
-};
+export const getCurrentNetworkTransactions =
+  createShallowEqualInputAndResultSelector(
+    getTransactions,
+    getCurrentChainIdSafe,
+    (transactions, chainId) => {
+      if (!transactions.length || !chainId) {
+        return EMPTY_ARRAY;
+      }
+      return transactions.filter(
+        (transaction) => transaction.chainId === chainId,
+      );
+    },
+  );
 
-export const incomingTxListSelectorAllChains = createDeepEqualSelector(
-  (state) => {
-    const allNetworkTransactions = getTransactions(state);
-    const { address: selectedAddress } = getSelectedInternalAccount(state);
+export const incomingTxListSelectorAllChains =
+  createShallowEqualInputAndResultSelector(
+    getTransactions,
+    getSelectedInternalAccount,
+    (allNetworkTransactions, { address: selectedAddress }) =>
+      allNetworkTransactions.filter(
+        (tx) =>
+          tx.type === TransactionType.incoming &&
+          tx.txParams.to === selectedAddress,
+      ),
+  );
 
-    return allNetworkTransactions.filter(
-      (tx) =>
-        tx.type === TransactionType.incoming &&
-        tx.txParams.to === selectedAddress,
-    );
-  },
-  (transactions) => transactions,
-);
-
-export const getApprovedAndSignedTransactions = createDeepEqualSelector(
-  (state) => {
+export const getApprovedAndSignedTransactions =
+  createShallowEqualInputAndResultSelector(
+    getTransactions,
     // Fetch transactions across all networks to address a nonce management limitation.
     // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
-    const transactions = getTransactions(state);
-
-    return transactions.filter((transaction) =>
-      [TransactionStatus.approved, TransactionStatus.signed].includes(
-        transaction.status,
+    (transactions) =>
+      transactions.filter((transaction) =>
+        [TransactionStatus.approved, TransactionStatus.signed].includes(
+          transaction.status,
+        ),
       ),
-    );
-  },
-  (transactions) => transactions,
-);
+  );
 
-export const incomingTxListSelector = createDeepEqualSelector(
-  (state) => {
-    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    const { address: selectedAddress } = getSelectedInternalAccount(state);
-
-    return currentNetworkTransactions.filter(
+export const incomingTxListSelector = createShallowEqualInputAndResultSelector(
+  getCurrentNetworkTransactions,
+  getSelectedInternalAccount,
+  (currentNetworkTransactions, { address: selectedAddress }) =>
+    currentNetworkTransactions.filter(
       (tx) =>
         tx.type === TransactionType.incoming &&
         tx.txParams.to === selectedAddress,
-    );
-  },
-  (transactions) => transactions,
+    ),
 );
 
 export const unapprovedPersonalMsgsSelector = (state) =>
@@ -150,11 +158,25 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
-// Memoized to prevent new array creation on every render
+/**
+ * Smart transaction
+ *
+ * @typedef {object} SmartTransaction
+ * @property {string} [id] - Transaction id
+ * @property {string} [hash] - Transaction hash
+ * @property {import('@metamask/transaction-controller').TransactionType} [type] - Transaction type
+ * @property {boolean} [isSmartTransaction] - Whether this entry came from smart transactions state
+ */
+
+/**
+ * Memoized to prevent new array creation on every render.
+ *
+ * @type {(state: object) => SmartTransaction[]}
+ */
 export const smartTransactionsListSelector = createSelector(
   getSelectedInternalAccount,
   (state) => state.metamask.smartTransactionsState?.smartTransactions,
-  getCurrentChainId,
+  getCurrentChainIdSafe,
   (selectedInternalAccount, smartTransactions, chainId) => {
     // The statuses listed below are allowed in the Activity list for Smart Swaps.
     // SUCCESS and REVERTED statuses are excluded because smart transactions with
@@ -420,14 +442,19 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
   transactions.forEach((transaction) => {
     const {
       networkClientId,
-      txParams: { nonce } = {},
+      txParams: { nonce, from } = {},
       status,
       type,
       time: txTime,
       txReceipt,
     } = transaction;
 
-    const nonceNetworkKey = `${nonce}-${networkClientId}`;
+    // Nonce spaces are per sender. Include `from` so mixing accounts (e.g.
+    // selected account + money-account batches) cannot collapse unrelated
+    // transactions that share a nonce on the same network client.
+    const nonceNetworkKey = `${nonce}-${networkClientId}-${(
+      from ?? ''
+    ).toLowerCase()}`;
     // Don't group transactions by nonce if:
     // 1. Tx nonce is undefined
     // 2. Tx is incoming (deposit)
@@ -760,3 +787,27 @@ function getProviderConfigSafe(state) {
     return null;
   }
 }
+
+function getCurrentChainIdSafe(state) {
+  const providerConfig = getProviderConfigSafe(state);
+  return providerConfig?.chainId;
+}
+
+const selectIsTransactionTypeRedesigned = createSelector(
+  (state, transactionId) =>
+    selectTransactionMetadata(state, transactionId)?.type,
+  (transactionType) => isCorrectDeveloperTransactionType(transactionType),
+);
+
+export const selectIsRedesignedConfirmationType = createSelector(
+  (state, paramsId) => {
+    const id = paramsId ?? firstPendingConfirmationSelector(state)?.id;
+    return selectIsTransactionTypeRedesigned(state, id);
+  },
+  (state, paramsId) => {
+    const id = paramsId ?? firstPendingConfirmationSelector(state)?.id;
+    return getPendingApprovals(state).find((a) => a.id === id)?.type;
+  },
+  (isRedesignedTx, approvalType) =>
+    isRedesignedTx || isCorrectSignatureApprovalType(approvalType),
+);

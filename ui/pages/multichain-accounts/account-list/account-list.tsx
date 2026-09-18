@@ -1,50 +1,50 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useStore } from 'react-redux';
 
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonIcon,
   ButtonIconSize,
   ButtonSize,
   ButtonVariant,
+  FontWeight,
   Icon,
   IconColor,
   IconName,
   IconSize,
-} from '@metamask/design-system-react';
-
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Text,
   TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+  TextFieldSearch,
+  TextVariant as DsrTextVariant,
+} from '@metamask/design-system-react';
+import { TextVariant } from '../../../helpers/constants/design-system';
+
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
+import { useAccountListSearch } from '../../../components/multichain-accounts/hooks/useAccountListSearch';
 import {
+  getAccountListStats,
   getAccountTree,
-  getNormalizedGroupsMetadata,
+  getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   getAllPermittedAccountsForCurrentTab,
   getIsDefaultAddressEnabled,
+  getShowDefaultAddressPreference,
 } from '../../../selectors';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
-import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
-import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
-  Box,
-  Text,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../../components/component-library';
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+  CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
+import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
   Footer,
   Header,
@@ -53,18 +53,27 @@ import {
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { ScrollContainer } from '../../../contexts/scroll-container';
-import { filterWalletsByGroupNameOrAddress } from './utils';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsManageAccountsSource,
+} from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 export const AccountList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
-  const { selectedAccountGroup } = accountTree;
-  const [searchPattern, setSearchPattern] = useState<string>('');
-  const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
+  const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
+  // The metrics counts below are read from the store at click time so they
+  // reflect the moment the manage view opened. They are not used during render.
+  const store = useStore<MultichainAccountsState>();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const {
     isAccountTreeSyncingInProgress,
@@ -92,41 +101,81 @@ export const AccountList = () => {
     [wallets],
   );
 
-  const onSearchBarChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      setSearchPattern(e.target.value),
-    [],
-  );
+  const {
+    searchPattern,
+    onSearchBarChange,
+    clearSearch,
+    filteredWallets,
+    hasFilteredWallets,
+    isInSearchMode,
+  } = useAccountListSearch(wallets);
 
-  const filteredWallets = useMemo(() => {
-    return filterWalletsByGroupNameOrAddress(
-      wallets,
-      searchPattern,
-      groupsMetadata,
-    );
-  }, [wallets, searchPattern, groupsMetadata]);
-
-  const hasFilteredWallets = useMemo(
-    () => Object.keys(filteredWallets).length > 0,
-    [filteredWallets],
-  );
-
-  const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
-
-  const handleOpenAddWalletModal = useCallback(() => {
-    setIsAddWalletModalOpen(true);
-  }, [setIsAddWalletModalOpen]);
-
-  const handleCloseAddWalletModal = useCallback(() => {
-    setIsAddWalletModalOpen(false);
-  }, [setIsAddWalletModalOpen]);
-
-  const handleBack = useCallback(() => {
-    transitionBack(() => navigate(PREVIOUS_ROUTE));
+  const handleNavigateToChooseNewWalletType = useCallback(() => {
+    navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);
   }, [navigate]);
 
+  // When opened in a fresh tab (e.g. redirected from side panel/popup for
+  // hardware wallet onboarding), there is no browser history to go back to.
+  // Detect this via location.key being 'default' (initial entry) or
+  // fromFreshTab state propagated from downstream pages, then navigate
+  // directly to home instead of using history-based back navigation.
+  const isFreshTab =
+    location.key === 'default' ||
+    (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
+      true;
+
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const handleBack = useCallback(() => {
+    // Edit mode hides the gear icon, so back is the way out of it.
+    if (isEditMode) {
+      setIsEditMode(false);
+      return;
+    }
+
+    if (isFreshTab) {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } else {
+      transitionBack(() => navigate(PREVIOUS_ROUTE));
+    }
+  }, [isEditMode, isFreshTab, navigate]);
+
+  const handleEnterEditMode = useCallback(() => {
+    setIsEditMode(true);
+
+    // The stats walk the whole account tree, which is what the event's counts
+    // are specified to mean: the whole wallet, not the subset an active search
+    // has left on screen.
+    const { totalAccounts, totalWallets, hiddenCount } = getAccountListStats(
+      store.getState(),
+    );
+
+    // Tracked on the click rather than from an effect on `isEditMode`, so a
+    // re-render while editing cannot fire a second view event.
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ManageAccountsViewed)
+        .addCategory(MetaMetricsEventCategory.Accounts)
+        .addProperties({
+          source: MetaMetricsManageAccountsSource.AccountList,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          total_accounts: totalAccounts,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          total_wallets: totalWallets,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hidden_count: hiddenCount,
+        })
+        .build(),
+    );
+  }, [createEventBuilder, store, trackEvent]);
+
   return (
-    <Page className="account-list-page">
+    <Page
+      className="account-list-page"
+      data-testid="parent-selector-account-list-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -137,30 +186,38 @@ export const AccountList = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
+            data-testid="account-list-page-back-button"
           />
         }
+        endAccessory={
+          isEditMode ? null : (
+            <ButtonIcon
+              size={ButtonIconSize.Md}
+              ariaLabel={t('manageAccounts')}
+              iconName={IconName.Setting}
+              onClick={handleEnterEditMode}
+              data-testid="account-list-page-manage-button"
+            />
+          )
+        }
       >
-        {t('accounts')}
+        {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           paddingTop={1}
           paddingLeft={4}
           paddingRight={4}
           paddingBottom={2}
         >
           <TextFieldSearch
-            size={TextFieldSearchSize.Lg}
+            className="w-full"
+            clearButtonOnClick={clearSearch}
+            data-testid="multichain-account-list-search"
+            onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}
             value={searchPattern}
-            onChange={onSearchBarChange}
-            clearButtonOnClick={() => setSearchPattern('')}
-            width={BlockSize.Full}
-            borderWidth={0}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            borderRadius={BorderRadius.LG}
-            data-testid="multichain-account-list-search"
           />
         </Box>
         <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
@@ -168,22 +225,23 @@ export const AccountList = () => {
             <MultichainAccountList
               wallets={filteredWallets}
               selectedAccountGroups={[selectedAccountGroup]}
-              isInSearchMode={Boolean(searchPattern)}
+              isInSearchMode={isInSearchMode}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
-              showHoverableNetworkGroup={isDefaultAddressEnabled}
+              showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+              isEditMode={isEditMode}
             />
           ) : (
             <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              width={BlockSize.Full}
-              height={BlockSize.Full}
+              className="flex h-full w-full"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Center}
+              alignItems={BoxAlignItems.Center}
             >
               <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMdMedium}
+                color={TextColor.TextAlternative}
+                variant={DsrTextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
               >
                 {t('noAccountsFound')}
               </Text>
@@ -195,12 +253,16 @@ export const AccountList = () => {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
-          onClick={handleOpenAddWalletModal}
+          onClick={handleNavigateToChooseNewWalletType}
           isDisabled={isAccountTreeSyncingInProgress}
           isFullWidth
           data-testid="account-list-add-wallet-button"
         >
-          <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            gap={2}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+          >
             {isAccountTreeSyncingInProgress && (
               <Icon
                 className="add-multichain-account__icon-box__icon-loading"
@@ -209,16 +271,15 @@ export const AccountList = () => {
                 size={IconSize.Lg}
               />
             )}
-            <Text variant={TextVariant.bodyMdMedium}>
+            <Text
+              variant={DsrTextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+            >
               {addWalletButtonLabel}
             </Text>
           </Box>
         </Button>
       </Footer>
-      <AddWalletModal
-        isOpen={isAddWalletModalOpen}
-        onClose={handleCloseAddWalletModal}
-      />
     </Page>
   );
 };

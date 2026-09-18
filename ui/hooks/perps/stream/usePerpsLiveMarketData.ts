@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { hasVolume, parseVolume } from '../../../components/app/perps/utils';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
@@ -93,30 +94,59 @@ export function usePerpsLiveMarketData(
 
   const [error, setError] = useState<Error | null>(null);
 
-  // Track whether we've received real data
-  const hasReceivedData = useRef(false);
+  // Track whether we've received real data. Seed from cache so the subscribe
+  // callback does not re-enter loading after a warm cache hit — without writing
+  // a ref inside the useState initializer (react-hooks/refs).
+  const hasReceivedData = useRef(
+    Boolean(autoSubscribe && streamManager?.markets.hasCachedData()),
+  );
   const [isInitialLoading, setIsInitialLoading] = useState(() => {
-    if (streamManager?.markets.hasCachedData()) {
-      hasReceivedData.current = true;
+    // No subscription ⇒ nothing to wait for (avoid setState-in-effect for this).
+    if (!autoSubscribe) {
       return false;
     }
-    return true;
+    return !streamManager?.markets.hasCachedData();
   });
 
-  // Derive crypto and HIP-3 markets
-  const cryptoMarkets = markets.filter((m) => !m.marketSource);
-  const hip3Markets = markets.filter((m) => m.marketSource);
+  const compareByVolumeDesc = useCallback(
+    (a: PerpsMarketData, b: PerpsMarketData) =>
+      parseVolume(b.volume) - parseVolume(a.volume),
+    [],
+  );
+
+  // Filter out markets with no trading volume (inactive/delisted)
+  const activeMarkets = useMemo(() => {
+    return markets.filter(hasVolume).sort(compareByVolumeDesc);
+  }, [markets, compareByVolumeDesc]);
+
+  // Derive crypto and HIP-3 markets from active markets, sorted by 24h volume descending
+  const cryptoMarkets = useMemo(
+    () => activeMarkets.filter((m) => !m.marketSource),
+    [activeMarkets],
+  );
+  const hip3Markets = useMemo(
+    () => activeMarkets.filter((m) => m.marketSource),
+    [activeMarkets],
+  );
 
   // Manual refresh function
   const refresh = useCallback(() => {
     if (!streamManager) {
       return;
     }
-    // Clear and re-subscribe to trigger a fresh fetch
-    streamManager.markets.clearCache();
-    hasReceivedData.current = false;
-    setIsInitialLoading(true);
+    streamManager.markets.refresh();
   }, [streamManager]);
+
+  const [prevAutoSubscribe, setPrevAutoSubscribe] = useState(autoSubscribe);
+  if (autoSubscribe !== prevAutoSubscribe) {
+    setPrevAutoSubscribe(autoSubscribe);
+    if (autoSubscribe) {
+      // false → true: re-enter loading unless cache can satisfy immediately.
+      setIsInitialLoading(!streamManager?.markets.hasCachedData());
+    } else {
+      setIsInitialLoading(false);
+    }
+  }
 
   useEffect(() => {
     // If still initializing stream manager, stay in loading state
@@ -125,19 +155,12 @@ export function usePerpsLiveMarketData(
     }
 
     if (!autoSubscribe) {
-      setIsInitialLoading(false);
       return;
     }
 
-    // Check if we have cached data immediately
-    if (streamManager.markets.hasCachedData()) {
-      const cached = streamManager.markets.getCachedData();
-      setMarkets(cached);
-      if (!hasReceivedData.current) {
-        hasReceivedData.current = true;
-        setIsInitialLoading(false);
-      }
-    }
+    // Align with render-time loading when autoSubscribe turns on (Copilot):
+    // warm cache ⇒ already "received"; cold ⇒ wait for first callback.
+    hasReceivedData.current = streamManager.markets.hasCachedData();
 
     // Subscribe - callback fires immediately with cached data (if any)
     const unsubscribe = streamManager.markets.subscribe((newMarkets) => {
@@ -168,7 +191,7 @@ export function usePerpsLiveMarketData(
   }
 
   return {
-    markets,
+    markets: activeMarkets,
     cryptoMarkets,
     hip3Markets,
     isInitialLoading,

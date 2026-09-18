@@ -15,13 +15,11 @@ const DEPRECATED_COMPONENT_PATHS = [
   'component-library/button-icon',
   'component-library/button-link',
   'component-library/button-primary',
-  'component-library/checkbox',
   'component-library/form-text-field/deprecated',
   'component-library/icon',
   'component-library/modal-content/deprecated/modal-content',
   'component-library/modal-header/deprecated/modal-header',
   'component-library/text',
-  'component-library/text-field-search/deprecated',
   // Deprecated ui/components/ui paths
   'ui/actionable-message',
   'ui/box',

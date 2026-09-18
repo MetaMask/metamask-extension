@@ -2,7 +2,6 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { errorCodes } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -21,6 +20,7 @@ import {
   submitEvmTransaction,
 } from '../../utils/send';
 import { useSendContext } from '../../context/send';
+import { useDispatch } from '../../../../store/hooks';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
 
@@ -93,11 +93,11 @@ export const useSendActions = () => {
             ? mapSnapErrorCodeIntoTranslation(result.errors[0].code, t)
             : t('transactionError');
           updateNonEVMSubmitError(errorMessage);
-          navigate(-1);
+          navigate(PREVIOUS_ROUTE);
           return;
         }
 
-        // Success - navigate to activity tab
+        // Success
         navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } catch (error) {
         // Check for user rejection using error code (4001) - this is language-independent
@@ -112,7 +112,7 @@ export const useSendActions = () => {
           // Actual snap/internal error - display error message to user
           updateNonEVMSubmitError(t('transactionError'));
         }
-        navigate(-1);
+        navigate(PREVIOUS_ROUTE);
       }
     }
   }, [

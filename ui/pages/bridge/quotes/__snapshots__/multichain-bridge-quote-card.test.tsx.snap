@@ -27,10 +27,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           0:30
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -49,10 +49,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         </p>
         <button
           aria-label="More quotes"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
@@ -70,10 +70,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           Network fee
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -92,6 +92,21 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+      >
+        Relayer fee
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="relayer-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
@@ -101,10 +116,10 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
           Slippage
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -119,15 +134,15 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          undefined%
+          -
         </p>
         <button
           aria-label="Edit slippage"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           data-testid="slippage-edit-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -142,47 +157,13 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          Price impact
-        </p>
-        <div
-          class="mm-box"
-        >
-          <div
-            class="mm-box mm-box--display-flex"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/info.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        >
-          0%
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-    >
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        >
           Minimum received
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -206,20 +187,8 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
     <p
       class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
     >
-      Includes 0.875% MM fee. Approves token for bridge.
+      Includes 0.875% MetaMask fee
     </p>
-    <div
-      class="mm-box"
-    >
-      <div
-        class="mm-box mm-box--display-flex"
-      >
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-          style="mask-image: url('./images/icons/info.svg');"
-        />
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -247,10 +216,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           0:30
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -269,10 +238,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
         </p>
         <button
           aria-label="More quotes"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
@@ -290,10 +259,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           Network fee
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -320,6 +289,21 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+      >
+        Relayer fee
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="relayer-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
@@ -329,10 +313,10 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           Slippage
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -347,15 +331,15 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          undefined%
+          -
         </p>
         <button
           aria-label="Edit slippage"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           data-testid="slippage-edit-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -370,47 +354,13 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          Price impact
-        </p>
-        <div
-          class="mm-box"
-        >
-          <div
-            class="mm-box mm-box--display-flex"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/info.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        >
-          0%
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-    >
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        >
           Minimum received
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -427,28 +377,6 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
       </p>
     </div>
   </div>
-  <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
-    data-testid="bridge-cta-info-text"
-  >
-    <p
-      class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
-    >
-      Approves token for bridge.
-    </p>
-    <div
-      class="mm-box"
-    >
-      <div
-        class="mm-box mm-box--display-flex"
-      >
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-          style="mask-image: url('./images/icons/info.svg');"
-        />
-      </div>
-    </div>
-  </div>
 </div>
 `;
 
@@ -458,16 +386,22 @@ exports[`MultichainBridgeQuoteCard should render price impact warnings: .06 1`] 
 >
   <button
     aria-label="Read price impact warning details"
-    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-warning-default mm-box--background-color-transparent mm-box--rounded-lg"
+    class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent hover:bg-hover active:bg-pressed text-warning-default"
     data-testid="price-impact-warning-button"
   >
-    <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-      style="mask-image: url('./images/icons/warning.svg');"
-    />
+    <svg
+      class="inline-block w-5 h-5 text-inherit"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m-.75-7.5V7.5a.75.75 0 0 1 1.5 0v5.25a.75.75 0 0 1-1.5 0m1.875 3.375A1.125 1.125 0 1 1 12 15a1.125 1.125 0 0 1 1.125 1.125"
+      />
+    </svg>
   </button>
   <p
-    class="mm-box mm-text mm-text--body-sm mm-box--color-warning-default"
+    class="text-warning-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
   >
     6.0%
   </p>
@@ -480,16 +414,22 @@ exports[`MultichainBridgeQuoteCard should render price impact warnings: .26 1`] 
 >
   <button
     aria-label="Read price impact warning details"
-    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-lg"
+    class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent hover:bg-hover active:bg-pressed text-error-default"
     data-testid="price-impact-warning-button"
   >
-    <span
-      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-      style="mask-image: url('./images/icons/danger.svg');"
-    />
+    <svg
+      class="inline-block w-5 h-5 text-inherit"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22.2 17.633 14.002 3.396a2.32 2.32 0 0 0-4.004 0L1.8 17.633a2.2 2.2 0 0 0 0 2.224A2.28 2.28 0 0 0 3.802 21h16.396a2.28 2.28 0 0 0 2-1.143 2.2 2.2 0 0 0 .002-2.224m-1.3 1.473a.8.8 0 0 1-.702.394H3.802a.8.8 0 0 1-.702-.394.71.71 0 0 1 0-.724L11.3 4.146a.82.82 0 0 1 1.406 0l8.198 14.238a.71.71 0 0 1-.003.723M11.25 13.5V9.75a.75.75 0 0 1 1.5 0v3.75a.75.75 0 0 1-1.5 0m1.875 3.375A1.125 1.125 0 1 1 12 15.75a1.125 1.125 0 0 1 1.125 1.125"
+      />
+    </svg>
   </button>
   <p
-    class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
+    class="text-error-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
   >
     26%
   </p>
@@ -519,10 +459,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           0:30
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -541,10 +481,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         </p>
         <button
           aria-label="More quotes"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
@@ -562,10 +502,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           Network fee
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -584,6 +524,21 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+      >
+        Relayer fee
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="relayer-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
@@ -593,10 +548,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
           Slippage
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -611,15 +566,15 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          undefined%
+          -
         </p>
         <button
           aria-label="Edit slippage"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           data-testid="slippage-edit-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -634,47 +589,13 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          Price impact
-        </p>
-        <div
-          class="mm-box"
-        >
-          <div
-            class="mm-box mm-box--display-flex"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/info.svg');"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        >
-          0%
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-    >
-      <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-        >
           Minimum received
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -689,28 +610,6 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
       >
         13.98 USDC
       </p>
-    </div>
-  </div>
-  <div
-    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
-    data-testid="bridge-cta-info-text"
-  >
-    <p
-      class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
-    >
-      Approves token for bridge.
-    </p>
-    <div
-      class="mm-box"
-    >
-      <div
-        class="mm-box mm-box--display-flex"
-      >
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-          style="mask-image: url('./images/icons/info.svg');"
-        />
-      </div>
     </div>
   </div>
 </div>
@@ -733,16 +632,16 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Rate
         </p>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           style="width: 32px;"
         >
-          0:00
+          0:30
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -761,10 +660,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         </p>
         <button
           aria-label="More quotes"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-right.svg');"
           />
         </button>
@@ -782,10 +681,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Network fee
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -804,6 +703,21 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+      >
+        Relayer fee
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="relayer-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
@@ -813,10 +727,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Slippage
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -835,11 +749,11 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         </p>
         <button
           aria-label="Edit slippage"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           data-testid="slippage-edit-button"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/edit.svg');"
           />
         </button>
@@ -852,15 +766,15 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
         >
           Price impact
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -873,7 +787,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
         >
           2.0%
         </p>
@@ -891,10 +805,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Minimum received
         </p>
         <div
-          class="mm-box"
+          class=""
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"

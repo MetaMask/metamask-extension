@@ -4,28 +4,13 @@ import type {
   E2EEnvironmentConfig,
   ProdEnvironmentConfig,
 } from '@metamask/client-mcp-core';
-import type { MockedEndpoint, Mockttp } from '../../../mock-e2e';
 import { MetaMaskFixtureCapability } from './fixture';
 import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
 import { MetaMaskContractSeedingCapability } from './seeding';
 import { MetaMaskStateSnapshotCapability } from './state-snapshot';
-import { MetaMaskMockServerCapability } from './mock-server';
 
 export type CreateMetaMaskContextOptions = {
   config?: Partial<E2EEnvironmentConfig>;
-  ports?: {
-    anvil?: number;
-    fixtureServer?: number;
-  };
-  mockServer?: {
-    enabled?: boolean;
-    port?: number;
-    chainId?: number;
-    ethConversionInUsd?: string;
-    testSpecificMock?: (
-      mockServer: Mockttp,
-    ) => Promise<void | MockedEndpoint[]>;
-  };
   forkUrl?: string;
   forkBlockNumber?: number;
 };
@@ -33,7 +18,6 @@ export type CreateMetaMaskContextOptions = {
 const DEFAULT_BASE_CONFIG: BaseEnvironmentConfig = {
   extensionName: 'MetaMask',
   defaultPassword: 'correct horse battery staple',
-  toolPrefix: 'mm',
   artifactsDir: 'test-artifacts',
 };
 
@@ -58,11 +42,12 @@ export function createMetaMaskE2EContext(
   };
 
   const fixture = new MetaMaskFixtureCapability({
-    port: options.ports?.fixtureServer,
+    port: config.ports?.fixtureServer,
+    anvilPort: config.ports?.anvil,
   });
 
   const chain = new MetaMaskChainCapability({
-    port: options.ports?.anvil,
+    port: config.ports?.anvil,
     chainId: config.defaultChainId,
     forkUrl: options.forkUrl,
     forkBlockNumber: options.forkBlockNumber,
@@ -76,20 +61,11 @@ export function createMetaMaskE2EContext(
     defaultChainId: config.defaultChainId,
   });
 
-  const mockServer = new MetaMaskMockServerCapability({
-    enabled: options.mockServer?.enabled,
-    port: options.mockServer?.port,
-    chainId: options.mockServer?.chainId ?? config.defaultChainId,
-    ethConversionInUsd: options.mockServer?.ethConversionInUsd,
-    testSpecificMock: options.mockServer?.testSpecificMock,
-  });
-
   return {
     fixture,
     chain,
     contractSeeding,
     stateSnapshot,
-    mockServer,
     config,
   };
 }

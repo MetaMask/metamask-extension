@@ -18,10 +18,10 @@ import { useFormatters } from '../../../../../hooks/useFormatters';
 import { EtherDenomination } from '../../../../../../shared/constants/common';
 import { Numeric } from '../../../../../../shared/lib/Numeric';
 import {
-  getConversionRate,
   getCurrentCurrency,
   getNativeCurrency,
 } from '../../../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import {
   formatValue,
   isValidAmount,
@@ -104,7 +104,14 @@ export const PercentageAndAmountChange = ({
       return null;
     }
     return null;
-  }, [marketData]);
+  }, [
+    balanceValue,
+    conversionRate,
+    currentChainId,
+    fiatCurrency,
+    marketData,
+    nativeCurrency,
+  ]);
 
   let color = TextColor.textDefault;
 

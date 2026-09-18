@@ -1,15 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, ButtonIcon, IconName } from '@metamask/design-system-react';
 import {
-  Box,
-  ButtonIcon,
   FormTextField,
   FormTextFieldSize,
-  IconName,
   InputType,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
-import { TextColor } from '../../../helpers/constants/design-system';
 
 type PasswordFormProps = {
   onChange: (password: string) => void;
@@ -18,8 +15,17 @@ type PasswordFormProps = {
   disabled?: boolean;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+export function computeMismatchError(
+  password: string,
+  confirmPassword: string,
+): boolean {
+  return (
+    confirmPassword.length >= PASSWORD_MIN_LENGTH &&
+    confirmPassword.length >= password.length &&
+    password !== confirmPassword
+  );
+}
+
 export default function PasswordForm({
   onChange,
   pwdInputTestId,
@@ -36,12 +42,23 @@ export default function PasswordForm({
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [passwordLengthError, setPasswordLengthError] = useState(false);
 
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+
+  const handlePasswordKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        confirmPasswordRef.current?.focus();
+      }
+    },
+    [],
+  );
+
   const handlePasswordChange = useCallback(
     (passwordInput: string) => {
-      const confirmError =
-        !confirmPassword || passwordInput === confirmPassword
-          ? ''
-          : t('passwordsDontMatch');
+      const confirmError = computeMismatchError(passwordInput, confirmPassword)
+        ? t('passwordsDontMatch')
+        : '';
 
       setPassword(passwordInput);
 
@@ -53,10 +70,9 @@ export default function PasswordForm({
 
   const handleConfirmPasswordChange = useCallback(
     (confirmPasswordInput: string) => {
-      const error =
-        password === confirmPasswordInput || confirmPasswordInput.length === 0
-          ? ''
-          : t('passwordsDontMatch');
+      const error = computeMismatchError(password, confirmPasswordInput)
+        ? t('passwordsDontMatch')
+        : '';
 
       setConfirmPassword(confirmPasswordInput);
       setConfirmPasswordError(error);
@@ -98,12 +114,13 @@ export default function PasswordForm({
         inputProps={{
           'data-testid': pwdInputTestId || 'create-password-new-input',
           type: showPassword ? InputType.Text : InputType.Password,
+          onKeyDown: handlePasswordKeyDown,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handlePasswordChange(e.target.value);
         }}
         helpTextProps={{
-          color: TextColor.textAlternative,
+          className: 'text-alternative',
           'data-testid': 'short-password-error',
         }}
         helpText={t('passwordNotLongEnough')}
@@ -138,6 +155,7 @@ export default function PasswordForm({
         }}
         helpText={confirmPasswordError}
         value={confirmPassword}
+        inputRef={confirmPasswordRef}
         inputProps={{
           'data-testid':
             confirmPwdInputTestId || 'create-password-confirm-input',

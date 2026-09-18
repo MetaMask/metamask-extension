@@ -46,7 +46,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
                   class="address-display-clickable"
                 >
                   <button
-                    class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
+                    class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
                     data-testid="confirm-info-row-display-name"
                     role="button"
                   >
@@ -62,7 +62,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           style="flex-shrink: 0;"
         >
           <div
@@ -146,7 +146,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
                   class="address-display-clickable"
                 >
                   <button
-                    class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
+                    class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed hover:bg-transparent active:bg-transparent whitespace-nowrap"
                     data-testid="confirm-info-row-display-name"
                     role="button"
                   >
@@ -162,7 +162,7 @@ exports[`<TransactionFlowSection /> renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-8 w-8"
           style="flex-shrink: 0;"
         >
           <div

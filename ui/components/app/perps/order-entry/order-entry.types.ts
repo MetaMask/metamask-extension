@@ -1,3 +1,4 @@
+import type { InputMethod } from '@metamask/perps-controller';
 import { OrderType } from '../types';
 
 /**
@@ -50,6 +51,8 @@ export type OrderFormState = {
   asset: string;
   /** Order direction - long or short */
   direction: OrderDirection;
+  /** Percentage of the existing position to close in close mode */
+  closePercent: number;
   /** USD amount to trade (string for input handling) */
   amount: string;
   /** Leverage multiplier (1-50x typically) */
@@ -69,6 +72,19 @@ export type OrderFormState = {
 };
 
 /**
+ * Transient new-order fields persisted by PerpsController for a short return
+ * window. Derived fields such as balancePercent and autoCloseEnabled are
+ * reconstructed when the form is restored.
+ */
+export type OrderFormDraft = Pick<OrderFormState, 'type' | 'direction'> &
+  Partial<
+    Pick<
+      OrderFormState,
+      'amount' | 'leverage' | 'takeProfitPrice' | 'stopLossPrice' | 'limitPrice'
+    >
+  >;
+
+/**
  * Calculated values derived from form state
  * These are read-only display values
  */
@@ -77,12 +93,14 @@ export type OrderCalculations = {
   positionSize: string | null;
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated liquidation price */
+  /** Estimated liquidation price (formatted) */
   liquidationPrice: string | null;
+  /** Raw estimated liquidation price as a number (for comparisons) */
+  liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount) */
+  estimatedFees: number | null;
 };
 
 /**
@@ -103,6 +121,8 @@ export type OrderEntryProps = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Callback when form state changes (used when showSubmitButton is false) */
   onFormStateChange?: (formState: OrderFormState) => void;
+  /** Callback when the user changes the size via a specific input control */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
   /** Callback when calculated values change (liquidation price, margin, fees) */
   onCalculationsChange?: (calculations: OrderCalculations) => void;
   /** Whether to show the internal submit button (defaults to true) */
@@ -121,6 +141,32 @@ export type OrderEntryProps = {
   onOrderTypeChange?: (orderType: OrderType) => void;
   /** Callback when add-funds icon is pressed in the amount input */
   onAddFunds?: () => void;
+  /** Initial leverage override for new orders (e.g. last used leverage for this market) */
+  initialLeverage?: number;
+  /** Unexpired same-market draft used to restore a new-order form. */
+  initialDraft?: OrderFormDraft;
+  /** Called when the user selects a leverage value. */
+  onLeverageChange?: (leverage: number) => void;
+  /** Market size decimals for controller-based position-size formatting */
+  sizeDecimals?: number;
+  /**
+   * Oracle mark price (oraclePx from HyperLiquid's activeAssetCtx feed).
+   * Used for margin calculation to match mobile's source of truth.
+   * Falls back to currentPrice when not yet available.
+   */
+  markPrice?: number;
+  /** Auto-focus the USD size input on mount / when market order type is active */
+  autoFocusUsd?: boolean;
+  /** Auto-focus the limit price input on mount / when switching to limit order type */
+  autoFocusLimitPrice?: boolean;
+  /** Placeholder override for the USD input. Defaults to AmountInput's '0.00'. */
+  usdPlaceholder?: string;
+  /**
+   * One-shot limit-price prefill (e.g. from tapping a price in the order book).
+   * Provide a fresh object per selection; the value is applied to the limit
+   * price input while manual edits between selections are preserved.
+   */
+  limitPricePrefill?: { price: string };
 };
 
 /**
@@ -141,6 +187,11 @@ export type AmountInputProps = {
   amount: string;
   /** Callback when amount changes */
   onAmountChange: (amount: string) => void;
+  /**
+   * Callback reporting which control the user used to set the size
+   * (keypad/slider/percentage/max), for analytics attribution.
+   */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
   /** Current balance percentage (0-100) */
   balancePercent: number;
   /** Callback when balance percentage changes */
@@ -153,8 +204,25 @@ export type AmountInputProps = {
   asset: string;
   /** Current asset price for token conversion */
   currentPrice: number;
+  /**
+   * HyperLiquid size decimals for the asset (from MarketInfo.szDecimals). Used
+   * to cap the token-input display precision so PUMP (szDecimals=0) never shows
+   * fractional token counts and ETH (szDecimals=4) stops at 4 decimals instead
+   * of the previous hard-coded 6.
+   */
+  szDecimals?: number;
+  /** Current open position size in asset units, shown when increasing exposure */
+  currentPositionSize?: string;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
+  /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
+  autoFocus?: boolean;
+  /** Placeholder override for the USD input. Defaults to '0.00'. */
+  usdPlaceholder?: string;
+  /** Ref to the USD input element so parents can imperatively refocus it on order-type changes */
+  usdInputRef?:
+    | React.MutableRefObject<HTMLInputElement | null>
+    | ((instance: HTMLInputElement | null) => void);
 };
 
 /**
@@ -177,10 +245,35 @@ export type LeverageSliderProps = {
 export type OrderSummaryProps = {
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount, after discount) */
+  estimatedFees: number | null;
+  /** Estimated trading fees before any VIP discount (raw USD amount) */
+  originalEstimatedFees?: number | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
+  /**
+   * MetaMask fee discount percentage (whole numbers). When provided and
+   * positive, the fees row renders a VIP badge alongside the fee value.
+   */
+  metamaskFeeRateDiscountPercentage?: number;
+  /** MetaMask fee rate used in the fees tooltip. */
+  metamaskFeeRate?: number;
+  /** MetaMask fee rate before any VIP discount. */
+  originalMetamaskFeeRate?: number;
+  /** Protocol/provider fee rate used in the fees tooltip. */
+  protocolFeeRate?: number;
+  /** Label for the protocol/provider fee rate in the fees tooltip. */
+  protocolFeeLabel?: string;
+  /** Whether to show the slippage row (market orders only). */
+  showSlippageRow?: boolean;
+  /** Formatted slippage value, e.g. "Est: 0.12% / Max: 3%" */
+  slippageDisplay?: string | null;
+  /** True when estimated slippage exceeds the configured max. */
+  exceedsMaxSlippage?: boolean;
+  /** Opens the max-slippage configuration modal. */
+  onSlippageClick?: () => void;
+  /** Disables slippage row interaction while the persisted cap is still loading. */
+  isSlippageRowDisabled?: boolean;
 };
 
 /**
@@ -205,6 +298,18 @@ export type AutoCloseSectionProps = {
   currentPrice: number;
   /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
   entryPrice?: number;
+  /** Signed position size in asset units (positive=long, negative=short) for estimated PnL */
+  estimatedSize?: number;
+  /** Order type – used to pick the correct validation reference price */
+  orderType?: OrderType;
+  /** Limit price string – used as the reference price for limit-order TP/SL validation */
+  limitPrice?: string;
+  /** Estimated liquidation price – used for stop-loss safety validation */
+  liquidationPrice?: number | null;
+  /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
+  leverage: number;
+  /** Asset symbol (e.g. 'BTC', 'ETH') – used to fetch dynamic closing fee rates */
+  asset: string;
 };
 
 /**
@@ -222,4 +327,11 @@ export type CloseAmountSectionProps = {
   asset: string;
   /** Current asset price for USD value calculation */
   currentPrice: number;
+  /** Market size decimals for controller-based position-size formatting */
+  sizeDecimals?: number;
+  /**
+   * Callback when the user changes the close amount via a specific input
+   * control (keypad/slider/percentage/max), for analytics attribution.
+   */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
 };

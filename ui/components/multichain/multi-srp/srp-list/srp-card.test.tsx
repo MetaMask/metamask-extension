@@ -53,7 +53,10 @@ const mockSecondHdKeyring = {
   },
 };
 
-const render = (shouldTriggerBackup: boolean) => {
+const render = (
+  shouldTriggerBackup: boolean,
+  { isSettingsPage = false }: { isSettingsPage?: boolean } = {},
+) => {
   const store = configureMockStore([thunk])({
     ...mockState,
     metamask: {
@@ -70,6 +73,7 @@ const render = (shouldTriggerBackup: boolean) => {
       walletId={mockWalletId}
       shouldTriggerBackup={shouldTriggerBackup}
       onActionComplete={mocks.onActionComplete}
+      isSettingsPage={isSettingsPage}
     />,
     store,
   );
@@ -102,5 +106,13 @@ describe('SrpCard', () => {
     fireEvent.click(keyring);
 
     expect(mocks.onActionComplete).toHaveBeenCalledWith(firstKeyringId, true);
+  });
+
+  it('renders expanded account rows on settings page', () => {
+    const { getByText } = render(false, { isSettingsPage: true });
+
+    fireEvent.click(getByText(messages.SrpListShowSingleAccount.message));
+
+    expect(getByText('Mock Account 1')).toBeInTheDocument();
   });
 });

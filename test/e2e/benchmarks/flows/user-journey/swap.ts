@@ -9,19 +9,27 @@ import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-n
 import { withFixtures } from '../../../helpers';
 import type { MockedEndpoint } from '../../../mock-e2e';
 import { login } from '../../../page-objects/flows/login.flow';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import { Driver } from '../../../webdriver/driver';
-import { performanceTracker } from '../../utils/performance-tracker';
-import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { collectTimerResults } from '../../utils/timer-helper';
+import {
+  measureStepWithLongTasks,
+  buildLongTaskTimerResults,
+} from '../../utils/long-task-helper';
 import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
-import { BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  type WebVitalsMetrics,
+} from '../../../../../shared/constants/benchmarks';
+import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import { collectWebVitals } from '../../utils';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';
@@ -30,6 +38,8 @@ const SOLANA_USDC_CONTRACT_ADDRESS =
   'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
+  const steps: LongTaskStepResult[] = [];
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     const branchMock = getTestSpecificMock();
 
@@ -41,7 +51,6 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           .build(),
         manifestFlags: {
           testing: {
-            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
@@ -65,30 +74,32 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerOpenSwapPage = new TimerHelper('openSwapPageFromHome');
-        const timerQuoteFetching = new TimerHelper('fetchAndDisplaySwapQuotes');
-
         // Login flow
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.waitForTokenToBeDisplayed('Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenListIsDisplayed();
+        await tokensTab.waitForTokenToBeDisplayed('Ethereum');
 
         // Wait for Solana balance to load before starting the swap flow
         if (shouldUseMockedRequests()) {
-          await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+          await tokensTab.checkTokenAmountIsDisplayed('50 SOL');
         } else {
-          await assetListPage.waitForTokenToBeDisplayed('SOL');
+          await tokensTab.waitForTokenToBeDisplayed('SOL');
         }
 
         // Measure: Open swap page
         await homePage.startSwapFlow();
-        await timerOpenSwapPage.measure(async () => {
-          const swapPage = new SwapPage(driver);
-          await swapPage.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerOpenSwapPage);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'openSwapPageFromHome',
+            async () => {
+              const swapPage = new SwapPage(driver);
+              await swapPage.checkPageIsLoaded();
+            },
+          ),
+        );
 
         // Measure: Fetch quotes
         const swapPage = new SwapPage(driver);
@@ -100,21 +111,34 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           network: 'Solana',
         });
 
-        await timerQuoteFetching.measure(async () => {
-          await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
-        });
-        performanceTracker.addTimer(timerQuoteFetching);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'fetchAndDisplaySwapQuotes',
+            async () => {
+              await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
+            },
+          ),
+        );
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,

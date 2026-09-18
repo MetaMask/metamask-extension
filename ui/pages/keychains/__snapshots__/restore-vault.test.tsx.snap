@@ -4,7 +4,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-4 justify-between border-muted bg-default import-srp-restore-vault h-full rounded-lg border border-solid"
-    data-testid="import-srp-restore-vault"
+    data-testid="parent-selector-import-srp-restore-vault"
   >
     <div
       class=""
@@ -14,7 +14,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
       >
         <button
           aria-label="Back"
-          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+          class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
           color="text-icon-default"
           data-testid="import-srp-back-button"
         >
@@ -25,7 +25,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+              d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
             />
           </svg>
         </button>
@@ -49,7 +49,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
              
             Enter your 
             <button
-              class="inline-flex items-center justify-center font-medium min-w-20 overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:bg-hover hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:bg-pressed active:text-primary-default-pressed active:decoration-primary-default-pressed"
+              class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
               role="button"
             >
               <span
@@ -71,36 +71,40 @@ exports[`Restore vault Component renders match snapshot 1`] = `
         >
           <form>
             <div
-              class="mm-box"
+              class="flex flex-col gap-1"
             >
               <div
-                class="mm-box srp-input-import__container mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-muted mm-box--rounded-lg"
+                class="flex flex-col bg-muted srp-input-import__container rounded-lg"
               >
                 <div
-                  class="mm-box srp-input-import__srp-note mm-box--padding-4 mm-box--rounded-lg"
+                  class="p-4 srp-input-import__srp-note rounded-lg"
                   style="flex: 1;"
                 >
                   <textarea
-                    class="mm-box mm-text mm-textarea mm-textarea--resize-none mm-text--body-md mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-sm mm-box--border-color-transparent mm-box--border-width-1 box--border-style-solid"
+                    class="srp-input-import__initial-input"
                     data-testid="srp-input-import__srp-note"
+                    id="first-word-input-text-area"
                     placeholder="Add a space between each word and make sure no one is watching."
-                    resize="none"
-                    rows="7"
+                    rows="5"
                   />
                 </div>
               </div>
               <div
-                class="mm-box srp-input-import__actions mm-box--padding-right-2 mm-box--display-flex mm-box--justify-content-flex-end"
+                class="flex flex-row justify-end srp-input-import__actions"
               >
                 <button
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-transparent text-default hover:bg-hover active:bg-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
                   data-testid="srp-input-import__paste-button"
+                  role="button"
                 >
-                  Paste
+                  <span
+                    class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+                  >
+                    Paste
+                  </span>
                 </button>
               </div>
             </div>
-            
           </form>
         </div>
       </div>
@@ -109,7 +113,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
       class="flex flex-col items-center justify-center w-full text-left"
     >
       <button
-        class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default import-srp__continue-button w-full"
+        class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default import-srp__continue-button w-full"
         data-testid="import-srp-confirm"
         disabled=""
         role="button"

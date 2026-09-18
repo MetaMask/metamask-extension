@@ -20,6 +20,7 @@ export {
   resetPerpsStreamManager,
   PerpsStreamManager,
 } from './PerpsStreamManager';
+export type { OrderBookConnectionStatus } from './PerpsStreamManager';
 
 // Legacy mock provider + controller (kept for PR 4/5 migration)
 export { getPerpsController } from './getPerpsController.mock';
@@ -30,6 +31,12 @@ export {
 
 // Data Channel (building block for stream manager)
 export { PerpsDataChannel } from './PerpsDataChannel';
+
+// REST cache helpers (shared between hooks and PerpsStreamManager)
+export {
+  clearPerpsMarketInfoModuleCache,
+  clearPerpsMarketFillsModuleCache,
+} from './perps-cache';
 
 // Re-export commonly used types from the controller package
 export type {

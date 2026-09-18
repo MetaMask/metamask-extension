@@ -5,12 +5,26 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import * as useBackupAndSyncHook from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import { MetamaskIdentityProvider } from '../../../../contexts/identity';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   BackupAndSyncFeaturesToggles,
   backupAndSyncFeaturesTogglesTestIds,
 } from './backup-and-sync-features-toggles';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockStore = configureMockStore();
 const initialStore = () => ({
@@ -20,13 +34,19 @@ const initialStore = () => ({
     isBackupAndSyncEnabled: true,
     isAccountSyncingEnabled: false,
     isContactSyncingEnabled: false,
-    participateInMetaMetrics: false,
+    isRampsSyncingEnabled: false,
+    consentDecisionMade: true,
+    optedIn: false,
     isBackupAndSyncUpdateLoading: false,
     keyrings: [],
   },
 });
 
 describe('BackupAndSyncFeaturesToggles', () => {
+  beforeEach(() => {
+    mockTrackEvent.mockClear();
+  });
+
   it('renders correctly', () => {
     const { getByTestId } = render(
       <Redux.Provider store={mockStore(initialStore())}>
@@ -41,22 +61,13 @@ describe('BackupAndSyncFeaturesToggles', () => {
   });
 
   it('tracks the toggle event', () => {
-    const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
     const store = initialStore();
 
     store.metamask.isAccountSyncingEnabled = true;
     arrangeMocks();
 
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <BackupAndSyncFeaturesToggles />
-      </MetaMetricsContext.Provider>,
+      <BackupAndSyncFeaturesToggles />,
       mockStore(store),
     );
     fireEvent.click(
@@ -65,9 +76,9 @@ describe('BackupAndSyncFeaturesToggles', () => {
       ),
     );
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: 'Settings',
-      event: 'Settings Updated',
+      name: 'Settings Updated',
       properties: {
+        category: 'Settings',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         settings_group: 'backup_and_sync',
@@ -84,6 +95,7 @@ describe('BackupAndSyncFeaturesToggles', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         was_notifications_on: undefined,
       },
+      sensitiveProperties: {},
     });
   });
 
@@ -175,11 +187,40 @@ describe('BackupAndSyncFeaturesToggles', () => {
     );
   });
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  it.each([
+    [false, true],
+    [true, false],
+  ])(
+    'toggles ramps syncing from %s to %s',
+    (currentValue: boolean, nextValue: boolean) => {
+      const store = initialStore();
+      store.metamask.isRampsSyncingEnabled = currentValue;
+      const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
+      const { getByTestId } = render(
+        <Redux.Provider store={mockStore(store)}>
+          <BackupAndSyncFeaturesToggles />
+        </Redux.Provider>,
+      );
+      fireEvent.click(
+        getByTestId(
+          backupAndSyncFeaturesTogglesTestIds.rampsSyncingToggleButton,
+        ),
+      );
+      expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+        BACKUPANDSYNC_FEATURES.rampsSyncing,
+        nextValue,
+      );
+    },
+  );
+
   it('disables main backup and sync when all sub-features are manually turned off', async () => {
     const store = initialStore();
     store.metamask.isBackupAndSyncEnabled = true;
-    store.metamask.isAccountSyncingEnabled = false; // Already off
-    store.metamask.isContactSyncingEnabled = false; // Already off
+    store.metamask.isAccountSyncingEnabled = false;
+    store.metamask.isContactSyncingEnabled = false;
+    store.metamask.isRampsSyncingEnabled = false;
 
     const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
 
@@ -201,8 +242,9 @@ describe('BackupAndSyncFeaturesToggles', () => {
   it('does not disable main backup and sync when at least one sub-feature is enabled', async () => {
     const store = initialStore();
     store.metamask.isBackupAndSyncEnabled = true;
-    store.metamask.isAccountSyncingEnabled = true; // One is ON
-    store.metamask.isContactSyncingEnabled = false; // One is OFF
+    store.metamask.isAccountSyncingEnabled = true;
+    store.metamask.isContactSyncingEnabled = false;
+    store.metamask.isRampsSyncingEnabled = false;
 
     const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
 

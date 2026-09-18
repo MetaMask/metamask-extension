@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import configureStore from '../../../../store/store';
 import { SnapUICheckbox } from './snap-ui-checkbox';
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
@@ -30,7 +30,8 @@ const meta: Meta<typeof SnapUICheckbox> = {
   parameters: {
     docs: {
       description: {
-        component: 'A customizable checkbox component that supports both checkbox and toggle variants.',
+        component:
+          'A customizable checkbox component that supports both checkbox and toggle variants.',
       },
     },
   },

@@ -1,54 +1,42 @@
-import React, { useMemo, useCallback } from 'react';
-import {
-  Box,
-  BoxFlexDirection,
-  BoxAlignItems,
-  BoxJustifyContent,
-  Text,
-  FontWeight,
-} from '@metamask/design-system-react';
+import React, { useCallback } from 'react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import type { PerpsMarketData } from '@metamask/perps-controller';
+import { WATCHLIST_MARKET_FILTER } from '../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsLiveMarketData } from '../../../../hooks/perps/stream';
-import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
-import { PerpsMarketCard } from '../perps-market-card';
 import {
-  selectPerpsIsTestnet,
-  selectPerpsWatchlistMarkets,
-} from '../../../../selectors/perps-controller';
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+} from '../../../../helpers/constants/routes';
+import { MarketRow } from '../market-row';
+import { PerpsSectionHeader } from '../perps-section-header';
 
 /**
  * PerpsWatchlist displays a list of watched markets.
- * Resolves symbols from Redux with usePerpsLiveMarketData for live price and change.
+ * Receives already-resolved markets from the Perps tab data hook.
  */
-export const PerpsWatchlist: React.FC = () => {
+export type PerpsWatchlistProps = {
+  markets: PerpsMarketData[];
+};
+
+export const PerpsWatchlist = ({ markets }: PerpsWatchlistProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { cryptoMarkets, hip3Markets } = usePerpsLiveMarketData();
-  const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
-  const isTestnet = useSelector(selectPerpsIsTestnet);
-  const watchlistSymbols = isTestnet
-    ? watchlistMarketsState.testnet
-    : watchlistMarketsState.mainnet;
-
-  const watchlistMarkets = useMemo(() => {
-    const allMarkets = [...cryptoMarkets, ...hip3Markets];
-    return watchlistSymbols
-      .map((symbol) =>
-        allMarkets.find((m) => m.symbol.toUpperCase() === symbol.toUpperCase()),
-      )
-      .filter(Boolean) as typeof allMarkets;
-  }, [cryptoMarkets, hip3Markets, watchlistSymbols]);
 
   const handleMarketClick = useCallback(
-    (symbol: string) => {
-      navigate(`${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(symbol)}`);
+    (market: PerpsMarketData) => {
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(market.symbol)}`,
+      );
     },
     [navigate],
   );
 
-  if (watchlistMarkets.length === 0) {
+  const handleHeaderClick = useCallback(() => {
+    navigate(`${PERPS_MARKET_LIST_ROUTE}?filter=${WATCHLIST_MARKET_FILTER}`);
+  }, [navigate]);
+
+  if (markets.length === 0) {
     return null;
   }
 
@@ -58,27 +46,18 @@ export const PerpsWatchlist: React.FC = () => {
       gap={2}
       data-testid="perps-watchlist"
     >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        marginBottom={2}
-      >
-        <Text fontWeight={FontWeight.Medium}>{t('perpsWatchlist')}</Text>
-      </Box>
+      <PerpsSectionHeader
+        label={t('perpsWatchlist')}
+        onClick={handleHeaderClick}
+        data-testid="perps-watchlist-header"
+      />
       <Box flexDirection={BoxFlexDirection.Column}>
-        {watchlistMarkets.map((market) => (
-          <PerpsMarketCard
+        {markets.map((market) => (
+          <MarketRow
             key={market.symbol}
-            symbol={market.symbol}
-            name={market.name}
-            price={market.price}
-            change24hPercent={market.change24hPercent}
-            volume={market.volume}
-            onClick={handleMarketClick}
+            market={market}
+            displayMetric="volume"
+            onPress={handleMarketClick}
             data-testid={`perps-watchlist-${market.symbol}`}
           />
         ))}

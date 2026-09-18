@@ -5,13 +5,13 @@ import {
 import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { providerErrors } from '@metamask/rpc-errors';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-import { rejectAllApprovals, rejectOriginApprovals } from './utils';
+import {
+  getAttentionRequiredApprovalCount,
+  rejectOriginApprovals,
+} from './utils';
 
 const ID_MOCK = '123';
 const ID_MOCK_2 = '456';
-const INTERFACE_ID_MOCK = '789';
 const REJECT_ALL_APPROVALS_DATA = {
   data: {
     cause: 'rejectAllApprovals',
@@ -31,84 +31,18 @@ function createApprovalControllerMock(
 }
 
 describe('Approval Utils', () => {
-  describe('rejectAllApprovals', () => {
-    it('rejects approval requests with rejected error', () => {
+  describe('getAttentionRequiredApprovalCount', () => {
+    it('returns the total number of pending approvals', () => {
       const approvalController = createApprovalControllerMock([
         { id: ID_MOCK, type: ApprovalType.Transaction },
-        { id: ID_MOCK_2, type: ApprovalType.EthSignTypedData },
+        { id: ID_MOCK_2, type: ApprovalType.PersonalSign },
       ]);
 
-      rejectAllApprovals({
-        approvalController,
-      });
-
-      expect(approvalController.rejectRequest).toHaveBeenCalledTimes(2);
-      expect(approvalController.rejectRequest).toHaveBeenCalledWith(
-        ID_MOCK,
-        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
-      );
-      expect(approvalController.rejectRequest).toHaveBeenCalledWith(
-        ID_MOCK_2,
-        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
-      );
-    });
-
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ApprovalType.SnapDialogAlert,
-      ApprovalType.SnapDialogPrompt,
-      DIALOG_APPROVAL_TYPES.default,
-    ])('accepts pending approval if type is %s', (type: string) => {
-      const approvalController = createApprovalControllerMock([
-        { id: ID_MOCK, type },
-      ]);
-
-      rejectAllApprovals({ approvalController });
-
-      expect(approvalController.acceptRequest).toHaveBeenCalledTimes(1);
-      expect(approvalController.acceptRequest).toHaveBeenCalledWith(
-        ID_MOCK,
-        null,
-      );
-    });
-
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ApprovalType.SnapDialogConfirmation,
-      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-    ])('accepts pending approval if type is %s', (type: string) => {
-      const approvalController = createApprovalControllerMock([
-        { id: ID_MOCK, type },
-      ]);
-
-      rejectAllApprovals({ approvalController });
-
-      expect(approvalController.acceptRequest).toHaveBeenCalledTimes(1);
-      expect(approvalController.acceptRequest).toHaveBeenCalledWith(
-        ID_MOCK,
-        false,
-      );
-    });
-
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ApprovalType.SnapDialogAlert,
-      ApprovalType.SnapDialogPrompt,
-      DIALOG_APPROVAL_TYPES.default,
-      ApprovalType.SnapDialogConfirmation,
-    ])('deletes interface if type is %s', (type: string) => {
-      const approvalController = createApprovalControllerMock([
-        { id: ID_MOCK, type, requestData: { id: INTERFACE_ID_MOCK } },
-      ]);
-
-      const deleteInterface = jest.fn();
-
-      rejectAllApprovals({ approvalController, deleteInterface });
-
-      expect(deleteInterface).toHaveBeenCalledTimes(1);
-      expect(deleteInterface).toHaveBeenCalledWith(INTERFACE_ID_MOCK);
+      expect(
+        getAttentionRequiredApprovalCount({
+          approvalController,
+        }),
+      ).toBe(2);
     });
   });
 

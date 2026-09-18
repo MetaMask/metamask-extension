@@ -1,18 +1,28 @@
 import {
-  type QuoteResponse,
   RequestStatus,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as bridgeActions from '../../ducks/bridge/actions';
+import { TraceName } from '../../../shared/lib/trace';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
 import { useQuoteFetchEvents } from './useQuoteFetchEvents';
 
 const mockDispatch = jest.fn((...args: unknown[]) => jest.fn()(...args));
+
+const mockEndTrace = jest.fn();
+
+jest.mock('../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../shared/lib/trace');
+  return {
+    ...actual,
+    endTrace: (...args: unknown[]) => mockEndTrace(...args),
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -39,7 +49,9 @@ describe('useQuoteFetchEvents', () => {
     trackEventSpy = jest
       .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
       .mockImplementation(
-        (..._args: unknown[]) => (() => Promise.resolve()) as never,
+        (..._args: unknown[]) =>
+          () =>
+            Promise.resolve(),
       );
   });
 
@@ -136,7 +148,7 @@ describe('useQuoteFetchEvents', () => {
           quotesRefreshCount: 1,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
         },
         metamaskStateOverrides: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -154,5 +166,86 @@ describe('useQuoteFetchEvents', () => {
         provider: expect.stringMatching(/.+_.+/u),
       }),
     );
+  });
+
+  it('ends the quote fetch trace when the first quote becomes available', () => {
+    renderUseQuoteFetchEvents(
+      createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotesRefreshCount: 1,
+          quotesLastFetched: Date.now(),
+          quotesLoadingStatus: RequestStatus.LOADING,
+          quotes: mockBridgeQuotesNativeErc20,
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          currencyRates: {
+            ETH: { conversionRate: 2500, usdConversionRate: 2500 },
+          },
+        },
+      }),
+    );
+
+    expect(mockEndTrace).toHaveBeenCalledWith({
+      name: TraceName.SwapQuoteFetch,
+      timestamp: expect.any(Number),
+    });
+  });
+
+  it('ends the quote fetch trace when a completed request has no quotes', () => {
+    renderUseQuoteFetchEvents(
+      createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotesRefreshCount: 1,
+          quotesLastFetched: Date.now(),
+          quotesLoadingStatus: RequestStatus.FETCHED,
+          quotes: [],
+        },
+      }),
+    );
+
+    expect(mockEndTrace).toHaveBeenCalledWith({
+      name: TraceName.SwapQuoteFetch,
+      timestamp: expect.any(Number),
+    });
+  });
+
+  it('ends the quote fetch trace as unsuccessful when quote fetching fails', () => {
+    renderUseQuoteFetchEvents(
+      createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotesRefreshCount: 1,
+          quotesLastFetched: Date.now(),
+          quotesLoadingStatus: RequestStatus.ERROR,
+          quoteFetchError: 'Network error',
+        },
+      }),
+    );
+
+    expect(mockEndTrace).toHaveBeenCalledWith({
+      name: TraceName.SwapQuoteFetch,
+      timestamp: expect.any(Number),
+      data: { success: false },
+    });
+  });
+
+  it('ends the quote fetch trace as unsuccessful when the hook unmounts', () => {
+    const { unmount } = renderUseQuoteFetchEvents(
+      createBridgeMockStore({
+        bridgeStateOverrides: {
+          quotesRefreshCount: 0,
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      }),
+    );
+
+    mockEndTrace.mockClear();
+    unmount();
+
+    expect(mockEndTrace).toHaveBeenCalledWith({
+      name: TraceName.SwapQuoteFetch,
+      timestamp: expect.any(Number),
+      data: { success: false },
+    });
   });
 });

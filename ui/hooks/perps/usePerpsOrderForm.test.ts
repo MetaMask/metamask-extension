@@ -1,7 +1,13 @@
-import { act } from '@testing-library/react-hooks';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { act } from '@testing-library/react';
+
 import mockState from '../../../test/data/mock-state.json';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsOrderForm } from './usePerpsOrderForm';
+
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
 
 describe('usePerpsOrderForm', () => {
   const defaultOptions = {
@@ -17,6 +23,32 @@ describe('usePerpsOrderForm', () => {
     },
   };
 
+  beforeEach(() => {
+    jest.mocked(submitRequestToBackground).mockImplementation((method) => {
+      const immediate = <ResolvedValue>(
+        value: ResolvedValue,
+      ): Promise<ResolvedValue> =>
+        ({
+          then(onFulfilled: (resolved: ResolvedValue) => unknown) {
+            const result = onFulfilled(value);
+            return immediate(result as ResolvedValue);
+          },
+          catch() {
+            return immediate(value);
+          },
+          finally(onFinally: () => void) {
+            onFinally();
+            return immediate(value);
+          },
+        }) as Promise<ResolvedValue>;
+
+      if (method === 'perpsCalculateLiquidationPrice') {
+        return immediate('40000');
+      }
+      return immediate(undefined);
+    });
+  });
+
   describe('initialization', () => {
     it('initializes with default form state', () => {
       const { result } = renderHookWithProvider(
@@ -28,7 +60,7 @@ describe('usePerpsOrderForm', () => {
         asset: 'BTC',
         direction: 'long',
         amount: '',
-        leverage: 1,
+        leverage: 3,
         type: 'market',
         autoCloseEnabled: false,
         takeProfitPrice: '',
@@ -43,6 +75,502 @@ describe('usePerpsOrderForm', () => {
       );
 
       expect(result.current.closePercent).toBe(100);
+    });
+
+    it('pre-fills default order amount for new orders when balance is available', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 100,
+            szDecimals: 6,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('10');
+    });
+
+    // Regression: TAT-3763. The initial balancePercent used to be rounded to 2
+    // decimals, so it rendered as a long decimal in the narrow percentage pill
+    // next to the size slider and was visibly clipped ("22..."). It must be a
+    // whole percent, matching every other writer of balancePercent.
+    it('rounds the initial balancePercent to a whole number for new orders', () => {
+      // 756.36 reproduces the reported defect: (10 / 3) / 756.36 * 100 is
+      // 0.4407…, which the old 2-decimal rounding surfaced as 0.44.
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 756.36,
+            szDecimals: 6,
+          }),
+        mockStateWithLocale,
+      );
+
+      const { balancePercent } = result.current.formState;
+      expect(balancePercent).toBe(0);
+      expect(Number.isInteger(balancePercent)).toBe(true);
+    });
+
+    it('rounds a non-zero initial balancePercent to a whole number', () => {
+      // (10 / 3) / 15 * 100 is 22.22…, the ticket's reported "22..." case.
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 15,
+            szDecimals: 6,
+          }),
+        mockStateWithLocale,
+      );
+
+      const { balancePercent } = result.current.formState;
+      expect(balancePercent).toBe(22);
+      expect(Number.isInteger(balancePercent)).toBe(true);
+    });
+
+    it('recaps default order amount when price resolves after mount', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 0,
+        availableBalance: 1,
+        szDecimals: 6,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('10');
+
+      props.currentPrice = 45000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).not.toBe('10');
+      expect(Number.parseFloat(result.current.formState.amount)).toBeLessThan(
+        10,
+      );
+    });
+
+    it('recaps default order amount using current leverage after balance increases', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 45000,
+        availableBalance: 10,
+        szDecimals: 6,
+        initialLeverage: 3,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(10);
+      });
+
+      // 100 rather than a larger balance so the 10x and 3x percentages stay
+      // distinguishable once rounded to whole percents (1% vs 3%).
+      props.availableBalance = 100;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('10');
+      const marginAtTenX = 10 / 10;
+      const expectedBalancePercent = Math.round((marginAtTenX / 100) * 100);
+      expect(result.current.formState.balancePercent).toBe(
+        expectedBalancePercent,
+      );
+      const marginAtDefaultLeverage = 10 / 3;
+      const balancePercentAtDefaultLeverage = Math.round(
+        (marginAtDefaultLeverage / 100) * 100,
+      );
+      expect(result.current.formState.balancePercent).not.toBe(
+        balancePercentAtDefaultLeverage,
+      );
+    });
+
+    it('recaps default order amount when tradeable balance increases', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 45000,
+        availableBalance: 1,
+        szDecimals: 6,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      const cappedAmount = Number.parseFloat(result.current.formState.amount);
+      expect(cappedAmount).toBeLessThan(10);
+
+      props.availableBalance = 1000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('10');
+    });
+
+    it('preserves user-edited amount when price resolves after mount', () => {
+      const props = {
+        ...defaultOptions,
+        currentPrice: 0,
+        availableBalance: 1,
+        szDecimals: 6,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5');
+      });
+      expect(result.current.formState.amount).toBe('5');
+
+      props.currentPrice = 45000;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('5');
+    });
+
+    it('uses initialLeverage when provided for new orders', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            initialLeverage: 7,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(7);
+    });
+
+    it('restores transient fields from an unexpired order draft', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 100,
+            orderType: 'limit',
+            initialDraft: {
+              amount: '25',
+              leverage: 5,
+              type: 'limit',
+              direction: 'long',
+              limitPrice: '44000',
+              takeProfitPrice: '50000',
+              stopLossPrice: '40000',
+            },
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState).toMatchObject({
+        amount: '25',
+        leverage: 5,
+        type: 'limit',
+        limitPrice: '44000',
+        takeProfitPrice: '50000',
+        stopLossPrice: '40000',
+        autoCloseEnabled: true,
+      });
+    });
+
+    it('preserves a restored amount when the available balance changes', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 10,
+        initialDraft: {
+          amount: '25',
+          leverage: 5,
+          type: 'market' as const,
+          direction: 'long' as const,
+        },
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      props.availableBalance = 100;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('25');
+    });
+
+    it('applies initialLeverage when it changes after initial render (async hydration)', () => {
+      const props = {
+        ...defaultOptions,
+        initialLeverage: undefined as number | undefined,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(3);
+
+      props.initialLeverage = 8;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(8);
+    });
+
+    it('applies a persisted leverage that replaces the seeded default', () => {
+      const props = {
+        ...defaultOptions,
+        initialLeverage: 3,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(3);
+
+      props.initialLeverage = 10;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(10);
+    });
+
+    it('applies a lower market maximum that replaces a stale cached one', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 25,
+        maxLeverage: 40,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(30);
+      });
+      expect(result.current.formState.leverage).toBe(30);
+
+      // Fresh metadata replaces the cached market with a lower maximum, so the
+      // page re-clamps the leverage it seeds.
+      props.maxLeverage = 10;
+      props.initialLeverage = 10;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(10);
+    });
+
+    it('clamps a locally picked leverage when the maximum drops before the save lands', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+        maxLeverage: 40,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(30);
+      });
+
+      // The save is still in flight, so `initialLeverage` stays at the persisted
+      // 3 and only the maximum moves.
+      props.maxLeverage = 10;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(10);
+    });
+
+    it('carries the last picked leverage rather than an earlier peak of the drag', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+        initialDirection: 'long' as 'long' | 'short',
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      // The slider emits every step, so dragging up to 6 and back down to 4
+      // revisits values already seen.
+      act(() => {
+        result.current.handleLeverageChange(4);
+        result.current.handleLeverageChange(5);
+        result.current.handleLeverageChange(6);
+        result.current.handleLeverageChange(5);
+        result.current.handleLeverageChange(4);
+      });
+      expect(result.current.formState.leverage).toBe(4);
+
+      props.initialDirection = 'short';
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState).toMatchObject({
+        direction: 'short',
+        leverage: 4,
+      });
+    });
+
+    it('keeps a pending leverage edit and ignores its stale acknowledgment across a direction switch', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+        initialDirection: 'long' as 'long' | 'short',
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(5);
+        result.current.handleLeverageChange(6);
+      });
+
+      // Switching side before either save is acknowledged rebuilds the form,
+      // which must keep the market's leverage rather than the stale persisted 3.
+      props.initialDirection = 'short';
+      act(() => {
+        rerender();
+      });
+      expect(result.current.formState).toMatchObject({
+        direction: 'short',
+        leverage: 6,
+      });
+
+      act(() => {
+        result.current.handleAmountChange('25');
+      });
+
+      props.initialLeverage = 5;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState).toMatchObject({
+        amount: '25',
+        direction: 'short',
+        leverage: 6,
+      });
+    });
+
+    it('does not reset edited fields when a delayed leverage acknowledgment is stale', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('25');
+        result.current.handleOrderTypeChange('limit');
+        result.current.handleLimitPriceChange('44000');
+        result.current.handleTakeProfitPriceChange('50000');
+        result.current.handleStopLossPriceChange('40000');
+        result.current.handleLeverageChange(5);
+        result.current.handleLeverageChange(6);
+      });
+
+      props.initialLeverage = 5;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState).toMatchObject({
+        amount: '25',
+        leverage: 6,
+        type: 'limit',
+        limitPrice: '44000',
+        takeProfitPrice: '50000',
+        stopLossPrice: '40000',
+      });
+    });
+
+    it('does not reset edited fields when persisted leverage catches up', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('25');
+        result.current.handleOrderTypeChange('limit');
+        result.current.handleLimitPriceChange('44000');
+        result.current.handleTakeProfitPriceChange('50000');
+        result.current.handleStopLossPriceChange('40000');
+        result.current.handleLeverageChange(5);
+      });
+
+      props.initialLeverage = 5;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState).toMatchObject({
+        amount: '25',
+        leverage: 5,
+        type: 'limit',
+        limitPrice: '44000',
+        takeProfitPrice: '50000',
+        stopLossPrice: '40000',
+      });
+    });
+
+    it('ignores initialLeverage in modify mode (uses position leverage)', () => {
+      const existingPosition = {
+        size: '1.0',
+        leverage: 5,
+        entryPrice: '44000',
+      };
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition,
+            initialLeverage: 10,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(5);
     });
 
     it('initializes with short direction when specified', () => {
@@ -303,6 +831,135 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.calculations.liquidationPrice).toBeNull();
     });
 
+    it('uses markPrice (oracle) for margin calculation when provided', () => {
+      // amount=$15, leverage=3x, currentPrice=$24.95, markPrice=$25.65, szDecimals=1
+      // positionSize = round(15/24.95, 1) = 0.6, but 0.6 * 24.95 = 14.97 < 15,
+      // so calculatePositionSize bumps up to 0.7.
+      // notional = 0.7 × 25.65 = $17.955, margin = $17.955 / 3 ≈ $5.98 (float truncation)
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 24.95, // mid/candle price — different from oracle
+            markPrice: 25.65, // oracle price — what mobile uses for margin
+            szDecimals: 1,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('15');
+        result.current.handleLeverageChange(3);
+      });
+
+      // Assertion verified: '5.98' matches the bumped-position-size calculation above.
+      expect(result.current.calculations.marginRequired).toContain('5.98');
+    });
+
+    it('falls back to currentPrice for margin when markPrice is not provided', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 45000,
+            // markPrice omitted — should fall back
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('9000');
+        result.current.handleLeverageChange(3);
+      });
+
+      // margin = 9000 / 3 = $3,000 using currentPrice as fallback
+      expect(result.current.calculations.marginRequired).toContain('3,000');
+    });
+
+    it('uses limit price (not markPrice) for margin on limit orders', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            currentPrice: 45000,
+            markPrice: 44000, // oracle — should be ignored for limit orders
+            orderType: 'limit',
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('9000');
+        result.current.handleLimitPriceChange('45000');
+        result.current.handleLeverageChange(3);
+      });
+
+      // margin = 9000 / 3 = $3,000 using the limit price, not markPrice
+      expect(result.current.calculations.marginRequired).toContain('3,000');
+    });
+
+    it('calculates margin as notional divided by leverage (no fee included)', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('10000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size = $10,000, leverage = 10x → margin = $10,000 / 10 = $1,000
+      // Fees are a separate line item and are NOT included in margin
+      expect(result.current.calculations.marginRequired).not.toBeNull();
+      expect(result.current.calculations.marginRequired).toContain('1,000');
+      expect(result.current.calculations.marginRequired).not.toContain(
+        '10,000',
+      );
+    });
+
+    it('sets orderValue equal to size (not size × leverage)', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(5);
+      });
+
+      // orderValue should be $5000 (the size), not $25000 (size × leverage)
+      expect(result.current.calculations.orderValue).toContain('5,000');
+      expect(result.current.calculations.orderValue).not.toContain('25,000');
+    });
+
+    it('recalculates balancePercent when leverage changes', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 1000,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('5000');
+        result.current.handleLeverageChange(10);
+      });
+
+      // Size $5000, available $1000, leverage 10x → maxSize $10000 → 50%
+      expect(result.current.formState.balancePercent).toBe(50);
+
+      act(() => {
+        result.current.handleLeverageChange(5);
+      });
+
+      // Same size $5000, now leverage 5x → maxSize $5000 → 100%
+      expect(result.current.formState.balancePercent).toBe(100);
+    });
+
     it('recalculates when closePercent changes', () => {
       const existingPosition = {
         size: '2.0',
@@ -331,6 +988,30 @@ describe('usePerpsOrderForm', () => {
         initialPositionSize,
       );
     });
+
+    it('uses dot-decimal limit price correctly in calculations', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            orderType: 'limit',
+          }),
+        mockState,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+      });
+
+      act(() => {
+        result.current.handleLimitPriceChange('45050.00');
+      });
+
+      expect(result.current.calculations.positionSize).toContain('BTC');
+      // Amount is treated as notional position size (TAT-2684 fix), so
+      // orderValue equals the entered amount ($1000) regardless of leverage.
+      expect(result.current.calculations.orderValue).toBe('$1,000');
+    });
   });
 
   describe('order type prop', () => {
@@ -354,6 +1035,71 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.amount).toBe('1000');
       expect(result.current.formState.leverage).toBe(10);
       expect(result.current.formState.type).toBe('limit');
+    });
+  });
+
+  describe('limit price prefill', () => {
+    it('applies the prefilled limit price', () => {
+      const props = {
+        ...defaultOptions,
+        orderType: 'limit' as const,
+        limitPricePrefill: { price: '73790' },
+      };
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.limitPrice).toBe('73790');
+    });
+
+    it('re-applies when a new prefill object is provided', () => {
+      const props = {
+        ...defaultOptions,
+        orderType: 'limit' as const,
+        limitPricePrefill: { price: '73790' } as { price: string },
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      // User manually overrides the prefilled value.
+      act(() => {
+        result.current.handleLimitPriceChange('70000');
+      });
+      expect(result.current.formState.limitPrice).toBe('70000');
+
+      // A fresh object (new tap) re-applies even for the same price.
+      props.limitPricePrefill = { price: '73790' };
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.limitPrice).toBe('73790');
+    });
+
+    it('does not overwrite manual edits without a new prefill object', () => {
+      const props = {
+        ...defaultOptions,
+        orderType: 'limit' as const,
+        limitPricePrefill: { price: '73790' } as { price: string },
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLimitPriceChange('70000');
+      });
+
+      // Re-render without changing the prefill reference must not clobber edits.
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.limitPrice).toBe('70000');
     });
   });
 

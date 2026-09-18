@@ -1,9 +1,14 @@
-export { PerpsBalanceDropdown } from './perps-balance-dropdown';
-export type { PerpsBalanceDropdownProps } from './perps-balance-dropdown';
+export {
+  PerpsMarketBalanceActions,
+  invokePerpsBalanceAction,
+  type PerpsBalanceActionHandler,
+} from './perps-market-balance-actions';
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
+export { PerpsTab } from './perps-tab';
 export { PerpsView } from './perps-view';
 export { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
+export { PerpsToastProvider, usePerpsToast } from './perps-toast';
 export { PerpsTutorialModal } from './perps-tutorial-modal';
 export { PerpsWatchlist } from './perps-watchlist';
 export { PerpsPositionsOrders } from './perps-positions-orders';
@@ -12,13 +17,13 @@ export { PerpsExploreMarkets } from './perps-explore-markets';
 export type { PerpsExploreMarketsProps } from './perps-explore-markets';
 export { PerpsSupportLearn } from './perps-support-learn';
 export {
-  getDisplayName,
   getPositionDirection,
   formatOrderType,
   formatStatus,
   getStatusColor,
   getDisplaySymbol,
-  getAssetIconUrl,
+  getAssetIconUrls,
+  type AssetIconUrls,
   groupTransactionsByDate,
   filterTransactionsByType,
   getTransactionStatusColor,
@@ -26,6 +31,7 @@ export {
   filterMarketsByQuery,
   isHip3Market,
   isCryptoMarket,
+  hasVolume,
 } from './utils';
 
 // Edit Margin
@@ -68,7 +74,6 @@ export type {
 // Skeleton components
 export {
   PerpsCardSkeleton,
-  PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
   PerpsBalanceActionsSkeleton,
   PerpsHomeCardSkeleton,

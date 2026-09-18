@@ -5,11 +5,11 @@ import level from 'level';
 import { Driver } from '../webdriver/driver';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
-import VaultDecryptorPage from '../page-objects/pages/vault-decryptor-page';
+import VaultDecryptorPage from '../page-objects/pages/vault/decryptor-page';
 import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from '../page-objects/flows/onboarding.flow';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
@@ -181,18 +181,18 @@ describe('Vault Decryptor Page', function () {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          // go to privacy settings page
+          // go to security and password settings page
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkBalanceEmptyStateIsDisplayed();
           await new HeaderNavbar(driver).openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToPrivacySettings();
+          await settingsPage.goToSecurityAndPasswordSettings();
 
           // fill password to reveal SRP and get the SRP
           const privacySettings = new PrivacySettings(driver);
-          await privacySettings.checkPageIsLoaded();
+          await privacySettings.checkSecurityAndPasswordPageIsLoaded();
           await privacySettings.openRevealSrpQuiz();
           await privacySettings.completeRevealSrpQuiz();
           await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
@@ -240,18 +240,18 @@ describe('Vault Decryptor Page', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // go to privacy settings page
+        // go to security and password settings page
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkBalanceEmptyStateIsDisplayed();
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToSecurityAndPasswordSettings();
 
         // fill password to reveal SRP and get the SRP
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+        await privacySettings.checkSecurityAndPasswordPageIsLoaded();
         await privacySettings.openRevealSrpQuiz();
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);

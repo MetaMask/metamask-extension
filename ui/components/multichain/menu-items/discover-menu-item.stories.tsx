@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -8,8 +8,9 @@ import { DiscoverMenuItem } from './discover-menu-item';
 const mockStore = configureStore({
   metamask: {
     currentLocale: 'en',
-    metaMetricsId: 'test-metrics-id',
-    participateInMetaMetrics: true,
+    analyticsId: 'test-metrics-id',
+    optedIn: true,
+    consentDecisionMade: true,
     dataCollectionForMarketing: false,
   },
 });

@@ -1,8 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { IconName, TextColor } from '@metamask/design-system-react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { TextColor } from '../../../helpers/constants/design-system';
-import { IconName } from '../../component-library';
 import { MultichainAccountMenuItems } from './multichain-account-menu-items';
 
 const menuItemSelector = '.multichain-account-cell-menu-item';
@@ -18,19 +17,19 @@ describe('MultichainAccountMenuItems', () => {
     {
       textKey: 'accountDetails',
       iconName: IconName.Details,
-      textColor: TextColor.textDefault,
+      textColor: TextColor.TextDefault,
       onClick: mockOnClick,
     },
     {
       textKey: 'rename',
       iconName: IconName.Edit,
-      textColor: TextColor.textDefault,
+      textColor: TextColor.TextDefault,
       onClick: mockOnClick,
     },
     {
       textKey: 'remove',
       iconName: IconName.Trash,
-      textColor: TextColor.errorDefault,
+      textColor: TextColor.ErrorDefault,
       onClick: mockOnClick,
     },
   ];

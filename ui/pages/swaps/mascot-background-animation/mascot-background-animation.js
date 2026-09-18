@@ -1,13 +1,13 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
 import EventEmitter from 'events';
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Mascot from '../../../components/ui/mascot';
 import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 
 export default function MascotBackgroundAnimation({ height, width }) {
-  const animationEventEmitter = useRef(new EventEmitter());
+  const [animationEventEmitter] = useState(() => new EventEmitter());
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -30,7 +30,7 @@ export default function MascotBackgroundAnimation({ height, width }) {
     }
     return (
       <Mascot
-        animationEventEmitter={animationEventEmitter.current}
+        animationEventEmitter={animationEventEmitter}
         width={width ?? '42'}
         height={height ?? '42'}
         followMouse={false}

@@ -7,16 +7,16 @@ import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
 const mockBenignAddress = '0x50587E46C5B96a3F6f9792922EC647F13E6EFAE4';
 
-const expectedMaliciousTitle = 'This is a deceptive request';
+const expectedMaliciousTitle = 'High-risk transfer';
 const expectedMaliciousDescription =
-  'If you approve this request, a third party known for scams will take all your assets.';
+  "You're sending assets to an address flagged by security partners. If this is a scam, your funds can't be recovered.";
 
 const SEND_REQUEST_BASE_MOCK = {
   method: 'eth_sendTransaction',
@@ -152,6 +152,9 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithBenignResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 
@@ -200,6 +203,9 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 
@@ -226,7 +232,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
     );
   });
 
-  it('should show "Be careful" if the PPOM request fails to check transaction', async function () {
+  it('should show "Security check unavailable" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -239,6 +245,9 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 
@@ -258,7 +267,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
         const transactionConfirmationPage = new TransactionConfirmation(driver);
         await transactionConfirmationPage.checkPageIsLoaded();
 
-        const expectedTitle = 'Be careful';
+        const expectedTitle = 'Security check unavailable';
         await transactionConfirmationPage.checkAlertMessageIsDisplayed(
           expectedTitle,
         );

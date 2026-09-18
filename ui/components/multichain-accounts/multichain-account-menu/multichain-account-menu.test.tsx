@@ -1,10 +1,10 @@
 import React from 'react';
-import { AccountGroupId } from '@metamask/account-api';
-import { fireEvent, act, within } from '@testing-library/react';
+import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { fireEvent, act, within, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -24,18 +24,23 @@ jest.mock('../../../../shared/lib/trace', () => {
 });
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
 const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
-const errorColorSelector = '.mm-box--color-error-default';
 
 const mockState = {
   metamask: {
@@ -48,6 +53,7 @@ const mockState = {
                 name: 'Test Account',
                 pinned: false,
                 hidden: false,
+                lastSelected: 0,
               },
             },
           },
@@ -73,6 +79,11 @@ jest.mock('../../../store/actions', () => {
     }),
   };
 });
+
+const mockDisconnectAccountGroup = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../hooks/useDisconnectAccountGroup', () => ({
+  useDisconnectAccountGroup: () => mockDisconnectAccountGroup,
+}));
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -101,12 +112,7 @@ describe('MultichainAccountMenu', () => {
     state = mockState,
   ) => {
     const store = configureStore(state);
-    return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <MultichainAccountMenu {...props} />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+    return renderWithProvider(<MultichainAccountMenu {...props} />, store);
   };
 
   beforeEach(() => {
@@ -186,6 +192,50 @@ describe('MultichainAccountMenu', () => {
     expect(menuItems.length).toBe(5);
   });
 
+  it('omits the hide option for an imported private key account', () => {
+    const accountGroupId = 'keyring:simple/0';
+    const stateWithPrivateKeyAccount = {
+      metamask: {
+        accountTree: {
+          wallets: {
+            'keyring:simple': {
+              type: AccountWalletType.Keyring,
+              metadata: {
+                name: 'Imported',
+                keyring: { type: KeyringTypes.simple },
+              },
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Imported Account',
+                    pinned: false,
+                    hidden: false,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as unknown as typeof mockState;
+
+    renderComponent(
+      {
+        accountGroupId: accountGroupId as AccountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithPrivateKeyAccount,
+    );
+
+    expect(document.querySelectorAll(menuItemSelector)).toHaveLength(4);
+    expect(
+      screen.queryByTestId('multichain-account-menu-item-hideAccount'),
+    ).not.toBeInTheDocument();
+  });
+
   it('adds the remove option to menu when isRemovable is true', () => {
     renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
@@ -197,8 +247,9 @@ describe('MultichainAccountMenu', () => {
     const menuItems = document.querySelectorAll(menuItemSelector);
     expect(menuItems.length).toBe(6);
 
-    const removeOption = document.querySelector(errorColorSelector);
-    expect(removeOption).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-account-menu-item-remove'),
+    ).toBeInTheDocument();
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
@@ -313,6 +364,67 @@ describe('MultichainAccountMenu', () => {
       true,
     );
     expect(mockOnToggle).toHaveBeenCalled();
+  });
+
+  it('disconnects the account from dapps when clicking the hide option', async () => {
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+    renderComponent({
+      accountGroupId,
+      isRemovable: false,
+      isOpen: true,
+      onToggle: jest.fn(),
+    });
+
+    const hideOption = document.querySelectorAll(menuItemSelector)[4];
+    fireEvent.click(hideOption);
+
+    expect(mockDisconnectAccountGroup).toHaveBeenCalledWith(accountGroupId);
+  });
+
+  it('leaves dapp connections alone when revealing a hidden account', async () => {
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+    const stateWithHiddenAccount = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        accountTree: {
+          wallets: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Test Account',
+                    pinned: false,
+                    hidden: true,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    renderComponent(
+      {
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithHiddenAccount,
+    );
+
+    const revealOption = document.querySelectorAll(menuItemSelector)[4];
+    fireEvent.click(revealOption);
+
+    expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
+      accountGroupId,
+      false,
+    );
+    expect(mockDisconnectAccountGroup).not.toHaveBeenCalled();
   });
 
   it('unpins account before hiding when clicking hide on a pinned account', async () => {
@@ -472,13 +584,14 @@ describe('MultichainAccountMenu', () => {
     }
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.AccountPinned,
-      category: MetaMetricsEventCategory.Accounts,
+      name: MetaMetricsEventName.AccountPinned,
       properties: {
+        category: MetaMetricsEventCategory.Accounts,
         pinned: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         pinned_count_after: 1,
       },
+      sensitiveProperties: {},
     });
   });
 
@@ -503,18 +616,19 @@ describe('MultichainAccountMenu', () => {
     }
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.AccountHidden,
-      category: MetaMetricsEventCategory.Accounts,
+      name: MetaMetricsEventName.AccountHidden,
       properties: {
+        category: MetaMetricsEventCategory.Accounts,
         hidden: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hidden_count_after: 1,
       },
+      sensitiveProperties: {},
     });
   });
 
   describe('tracing', () => {
-    const groupId = mockDefaultState.metamask.accountTree
+    const groupId = mockDefaultState.metamask
       .selectedAccountGroup as AccountGroupId;
 
     beforeEach(() => {
@@ -524,14 +638,12 @@ describe('MultichainAccountMenu', () => {
     it('calls trace ShowAccountAddressList when clicking Addresses', async () => {
       const store = configureStore(mockDefaultState);
       renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-          <MultichainAccountMenu
-            accountGroupId={groupId}
-            isRemovable={false}
-            isOpen
-            onToggle={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
+        <MultichainAccountMenu
+          accountGroupId={groupId}
+          isRemovable={false}
+          isOpen
+          onToggle={() => undefined}
+        />,
         store,
       );
 

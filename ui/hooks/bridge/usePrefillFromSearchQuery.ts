@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,
   CaipAssetTypeStruct,
@@ -17,6 +17,8 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
+import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import { useDispatch } from '../../store/hooks';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
 const parseAsset = (assetId: string | null) => {
@@ -101,11 +103,15 @@ export const usePrefillFromSearchQuery = () => {
     const searchParamsAmount = searchParams.get(BridgeQueryParams.Amount);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
-      setParsedToAssetId(searchParamsTo);
-      setParsedFromAssetId(searchParamsFrom);
-      if (searchParamsAmount) {
-        setParsedAmount(searchParamsAmount);
-      }
+      // Defer state updates so they are not synchronous effect setStates
+      // (react-hooks/set-state-in-effect).
+      queueMicrotask(() => {
+        setParsedToAssetId(searchParamsTo);
+        setParsedFromAssetId(searchParamsFrom);
+        if (searchParamsAmount) {
+          setParsedAmount(searchParamsAmount);
+        }
+      });
       resetSearchParams([
         BridgeQueryParams.From,
         BridgeQueryParams.To,
@@ -133,7 +139,7 @@ export const usePrefillFromSearchQuery = () => {
       // Clear parsed to asset ID after successful processing
       setParsedToAssetId(null);
     },
-    [],
+    [dispatch],
   );
 
   // Main effect to orchestrate the parameter processing
@@ -148,26 +154,39 @@ export const usePrefillFromSearchQuery = () => {
         parsedFromAssetId.assetId.toLowerCase() as unknown as CaipAssetType
       ];
 
-    // Process from chain/token first
-    if (fromTokenMetadata) {
-      dispatch(setFromToken(fromTokenMetadata));
+    if (!fromTokenMetadata) {
+      // Exit effect if from-token metadata is not available due to unknown or malformed asset id.
+      return;
     }
-  }, [assetMetadataByAssetId, parsedFromAssetId]);
+
+    // setFromToken auto-enables the network via addNetwork when needed, then
+    // falls through to complete the full token-setting flow in one thunk invocation.
+    dispatch(setFromToken(fromTokenMetadata));
+  }, [assetMetadataByAssetId, parsedFromAssetId, dispatch]);
 
   // Set toChainId and toToken
   useEffect(() => {
     if (!parsedToAssetId) {
       return;
     }
+
+    if (!isSupportedBridgeChain(parsedToAssetId.chainId)) {
+      // Reject unsupported or unknown to-chains (similar to for from-chains check).
+      return;
+    }
+
     const toTokenMetadata =
       assetMetadataByAssetId?.[parsedToAssetId.assetId] ??
       assetMetadataByAssetId?.[
         parsedToAssetId.assetId.toLowerCase() as unknown as CaipAssetType
       ];
     if (toTokenMetadata) {
-      setToChainAndToken(toTokenMetadata);
+      // Defer clear so setState is not synchronous in the effect body.
+      queueMicrotask(() => {
+        setToChainAndToken(toTokenMetadata);
+      });
     }
-  }, [parsedToAssetId, assetMetadataByAssetId]);
+  }, [parsedToAssetId, assetMetadataByAssetId, setToChainAndToken]);
 
   // Process amount after fromToken is set
   useEffect(() => {
@@ -178,18 +197,27 @@ export const usePrefillFromSearchQuery = () => {
       fromToken.assetId?.toLowerCase() ===
         parsedFromAssetId.assetId.toLowerCase()
     ) {
-      // Clear parsed from asset ID after successful processing
-      setParsedFromAssetId(null);
-      if (parsedAmount) {
-        dispatch(
-          setFromTokenInputValue(
-            calcTokenAmount(parsedAmount, fromToken.decimals).toFixed(
-              fromToken.decimals,
+      const amount = parsedAmount;
+      // Defer clears/dispatches so setState is not synchronous in the effect body.
+      queueMicrotask(() => {
+        setParsedFromAssetId(null);
+        if (amount) {
+          dispatch(
+            setFromTokenInputValue(
+              calcTokenAmount(amount, fromToken.decimals).toFixed(
+                fromToken.decimals,
+              ),
             ),
-          ),
-        );
-        setParsedAmount(null);
-      }
+          );
+          setParsedAmount(null);
+        }
+      });
     }
-  }, [parsedAmount, parsedFromAssetId, assetMetadataByAssetId, fromToken]);
+  }, [
+    parsedAmount,
+    parsedFromAssetId,
+    assetMetadataByAssetId,
+    fromToken,
+    dispatch,
+  ]);
 };

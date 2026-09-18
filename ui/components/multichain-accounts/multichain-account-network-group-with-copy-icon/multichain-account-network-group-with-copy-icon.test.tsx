@@ -1,6 +1,5 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import type { AccountGroupId } from '@metamask/account-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
@@ -43,7 +42,7 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
     mockUseCopyToClipboard.mockReturnValue([false, mockHandleCopy, jest.fn()]);
   });
 
-  it('renders default-address-container when default address is available', () => {
+  it('renders default address when showDefaultAddress preference is true', () => {
     renderWithProvider(
       <MultichainAccountNetworkGroupWithCopyIcon {...defaultProps} />,
       createStore(),
@@ -53,7 +52,7 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('calls copy handler with normalized address when container is clicked', () => {
+  it('calls copy handler with normalized address when default address is clicked', () => {
     renderWithProvider(
       <MultichainAccountNetworkGroupWithCopyIcon {...defaultProps} />,
       createStore(),
@@ -87,7 +86,9 @@ describe('MultichainAccountNetworkGroupWithCopyIcon', () => {
     );
 
     expect(
-      screen.getByText(messages.addressCopied.message),
+      screen.getByText(
+        `${messages.networkNameEthereum.message} ${messages.addressCopied.message.toLowerCase()}`,
+      ),
     ).toBeInTheDocument();
   });
 

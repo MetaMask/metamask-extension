@@ -106,6 +106,72 @@ describe('TokenAsset', () => {
       queryByRole('img', { name: messages.networkNameEthereum.message }),
     ).not.toBeInTheDocument();
   });
+
+  it('hides balances when hideBalances is true', () => {
+    const { container, queryByText } = render(
+      <Asset asset={mockTokenAsset} hideBalances />,
+    );
+
+    expect(queryByText('$100.00')).not.toBeInTheDocument();
+    expect(queryByText('10.5 TEST')).not.toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('does not call onClick when token is disabled', () => {
+    const mockOnClick = jest.fn();
+    const { getByTestId } = render(
+      <Asset
+        asset={{ ...mockTokenAsset, disabled: true }}
+        onClick={mockOnClick}
+      />,
+    );
+
+    fireEvent.click(getByTestId('token-asset-0x1-TEST'));
+    expect(mockOnClick).not.toHaveBeenCalled();
+  });
+
+  it('renders tags from tagRenderers next to the token name', () => {
+    const { getByTestId } = render(
+      <Asset
+        asset={mockTokenAsset}
+        tagRenderers={[
+          () => <span data-testid="custom-token-tag">No fee</span>,
+        ]}
+      />,
+    );
+
+    expect(getByTestId('custom-token-tag')).toBeInTheDocument();
+  });
+
+  it('applies ellipsis to long token names so virtualized rows do not overlap', () => {
+    const { getByText } = render(
+      <Asset
+        asset={{
+          ...mockTokenAsset,
+          name: 'Coinbase Wrapped BTC',
+        }}
+      />,
+    );
+
+    expect(getByText('Coinbase Wrapped BTC')).toHaveClass('mm-text--ellipsis');
+  });
+
+  it('keeps a pay-with tag next to a long token name that ellipsizes', () => {
+    const { getByText, getByTestId } = render(
+      <Asset
+        asset={{
+          ...mockTokenAsset,
+          name: 'Coinbase Wrapped BTC',
+        }}
+        tagRenderers={[
+          () => <span data-testid="custom-token-tag">No fee</span>,
+        ]}
+      />,
+    );
+
+    expect(getByText('Coinbase Wrapped BTC')).toHaveClass('mm-text--ellipsis');
+    expect(getByTestId('custom-token-tag')).toBeInTheDocument();
+  });
 });
 
 describe('NFTAsset', () => {

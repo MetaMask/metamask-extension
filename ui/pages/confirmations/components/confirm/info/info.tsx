@@ -1,22 +1,29 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
+import { Skeleton } from '@metamask/design-system-react';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
 import {
   ConfirmationLoader,
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
-import { MusdClaimInfo } from '../../info/musd-claim-info';
+import { MoneyAccountDepositInfo } from '../../info/money-account-deposit-info';
+import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
 import { MusdConversionInfo } from '../../info/musd-conversion-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
+import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -29,8 +36,6 @@ import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const DefaultHeadingSkeleton = () => (
   <>
     <Skeleton
@@ -52,7 +57,6 @@ const DefaultHeadingSkeleton = () => (
   </>
 );
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const SendHeadingSkeleton = () => (
   <div
     data-testid="confirmation__send_info_skeleton"
@@ -74,7 +78,6 @@ const SendHeadingSkeleton = () => (
   </div>
 );
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const SectionSkeletons = () => (
   <>
     <Skeleton
@@ -106,6 +109,7 @@ export const InfoSkeleton = ({
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
   const { loader } = useConfirmationNavigationOptions();
+  const enabledPermissions = useEnabledAdvancedPermissions();
 
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
@@ -133,8 +137,6 @@ const Info = () => {
           const requestedPermissionType =
             signatureRequest.decodedPermission.permission.type;
 
-          const enabledPermissions = getEnabledAdvancedPermissions();
-
           if (!enabledPermissions.includes(requestedPermissionType)) {
             // This should never happen, as `wallet_requestExecutionPermissions`
             // only accepts permissions of enabled types. This is here as a
@@ -159,11 +161,16 @@ const Info = () => {
 
       [ApprovalType.AddEthereumChain]: () => AddEthereumChain,
 
-      [TransactionType.musdClaim]: () => MusdClaimInfo,
+      [TransactionType.moneyAccountDeposit]: () => MoneyAccountDepositInfo,
+      [TransactionType.moneyAccountWithdraw]: () => MoneyAccountWithdrawInfo,
+      // Merkl claiming was removed (MUSD-1223); the type stays mapped so a claim
+      // still in flight across the upgrade renders instead of throwing here.
+      [TransactionType.musdClaim]: () => BaseTransactionInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
+      [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
     }),
-    [currentConfirmation],
+    [currentConfirmation, enabledPermissions],
   );
 
   if (!currentConfirmation?.type) {
@@ -182,9 +189,14 @@ const Info = () => {
     );
   }
 
+  // Mirrors mobile's info-root routing.
+  const confirmationType = getConfirmationTransactionType(
+    currentConfirmation as TransactionMeta,
+  );
+
   const InfoComponent =
     ConfirmationInfoComponentMap[
-      currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
+      confirmationType as keyof typeof ConfirmationInfoComponentMap
     ]();
 
   return <InfoComponent />;

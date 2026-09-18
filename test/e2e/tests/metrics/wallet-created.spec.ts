@@ -2,13 +2,14 @@ import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletWithSocialLoginOnboardingFlow,
   handleSidepanelPostOnboarding,
+  type OnboardingMetricsFlowOptions,
 } from '../../page-objects/flows/onboarding.flow';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { Driver } from '../../webdriver/driver';
@@ -104,9 +105,9 @@ describe('Wallet Created Events', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -115,7 +116,8 @@ describe('Wallet Created Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
+          consentDecisionMade: true,
+          optedIn: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 6);
@@ -203,9 +205,9 @@ describe('Wallet Created Events', function () {
   it('are not sent when onboarding user who chooses to opt out metrics', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -228,7 +230,7 @@ describe('Wallet Created Events', function () {
   it('are sent when user onboarding with social login', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -241,15 +243,13 @@ describe('Wallet Created Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         const onboardingOptions: {
           driver: Driver;
-          participateInMetaMetrics?: boolean;
-          dataCollectionForMarketing?: boolean;
-        } = {
+        } & OnboardingMetricsFlowOptions = {
           driver,
         };
         // If running in Firefox, set the onboarding options to true
-        // Otherwise, `participateInMetaMetrics` is automatically set to true for social login users
+        // Otherwise, `optedIn` is automatically set to true for social login users
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          onboardingOptions.participateInMetaMetrics = true;
+          onboardingOptions.optedIn = true;
           onboardingOptions.dataCollectionForMarketing = true;
         }
 

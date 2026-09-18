@@ -8,37 +8,23 @@
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-export const MERKL_API_BASE_URL = 'https://api.merkl.xyz/v4';
-
+/**
+ * The Merkl Distributor contract that paid out mUSD bonus claims.
+ *
+ * Merkl claiming has been removed from the extension, but historical claim
+ * transactions are still decoded so the activity list can show the payout:
+ * the receipt's ERC-20 `Transfer` event is matched on this address.
+ */
 export const MERKL_DISTRIBUTOR_ADDRESS =
   '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae' as const;
 
-export const MERKL_CLAIM_METHOD_ID = '0x71ee95c0';
-
 /**
- * The chain where Merkl rewards are claimed (Linea mainnet = 0xe708 = 59144).
- * Even if a user holds mUSD on mainnet, rewards are always claimed on Linea.
+ * ABI for the claim method on the Merkl Distributor contract, used to decode
+ * the stored calldata of historical claim transactions.
  */
-export const MERKL_CLAIM_CHAIN_ID = CHAIN_IDS.LINEA_MAINNET as Hex;
-
-// Test token addresses used for Merkl test campaigns
-export const AGLAMERKL_ADDRESS_MAINNET =
-  '0x8d652c6d4A8F3Db96Cd866C1a9220B1447F29898';
-export const AGLAMERKL_ADDRESS_LINEA =
-  '0x03C2d2014795EE8cA78B62738433B457AB19F4b3';
-
-// ABI for the claim method on the Merkl Distributor contract
 export const DISTRIBUTOR_CLAIM_ABI = [
   'function claim(address[] calldata users, address[] calldata tokens, uint256[] calldata amounts, bytes32[][] calldata proofs)',
 ];
-
-// ABI for the claimed mapping on the Merkl Distributor contract
-export const DISTRIBUTOR_CLAIMED_ABI = [
-  'function claimed(address user, address token) external view returns (uint208 amount, uint48 timestamp, bytes32 merkleRoot)',
-];
-
-/** Remote feature flag key for Merkl campaign claiming */
-export const MERKL_FEATURE_FLAG_KEY = 'earnMerklCampaignClaiming';
 
 /**
  * mUSD token address (same on all supported chains)
@@ -46,17 +32,6 @@ export const MERKL_FEATURE_FLAG_KEY = 'earnMerklCampaignClaiming';
  */
 export const MUSD_TOKEN_ADDRESS: Hex =
   '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
-
-/**
- * Map of chains and their eligible token addresses for Merkl rewards.
- * mUSD on mainnet is eligible because users earn rewards for holding it,
- * even though the actual reward claiming happens on Linea.
- */
-export const ELIGIBLE_TOKENS: Record<string, string[]> = {
-  [CHAIN_IDS.MAINNET]: [AGLAMERKL_ADDRESS_MAINNET, MUSD_TOKEN_ADDRESS],
-  [CHAIN_IDS.LINEA_MAINNET]: [AGLAMERKL_ADDRESS_LINEA, MUSD_TOKEN_ADDRESS],
-  '0xe709': [AGLAMERKL_ADDRESS_LINEA, MUSD_TOKEN_ADDRESS],
-};
 
 /**
  * mUSD token metadata
@@ -144,6 +119,13 @@ export const MUSD_CONVERSION_BONUS_TERMS_OF_USE =
   'https://metamask.io/musd-bonus-terms-of-use';
 
 /**
+ * URL for the mUSD Help Center article
+ * Linked from the asset details bonus and convert sections
+ */
+export const MUSD_SUPPORT_ARTICLE_URL =
+  'https://support.metamask.io/manage-crypto/tokens/musd';
+
+/**
  * Minimum asset balance required in USD for a token to be eligible for conversion
  * Default is $0.01 (1 cent) if not configured via feature flag
  */
@@ -156,13 +138,6 @@ export const RELAY_API_ENDPOINTS = {
   QUOTE: 'https://api.relay.link/quote',
   STATUS: 'https://api.relay.link/intents/status',
 } as const;
-
-/**
- * Geolocation API endpoint for geo-blocking checks
- * Uses the Ramps geolocation API
- */
-export const GEOLOCATION_API_ENDPOINT =
-  'https://on-ramp.api.cx.metamask.io/geolocation';
 
 // ============================================================================
 // Utility Functions

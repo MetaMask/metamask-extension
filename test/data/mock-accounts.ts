@@ -11,6 +11,9 @@ import {
   SolMethod,
   SolScope,
   TrxScope,
+  XlmAccountType,
+  XlmMethod,
+  XlmScope,
 } from '@metamask/keyring-api';
 import {
   ETH_EOA_METHODS,
@@ -103,8 +106,6 @@ export const MOCK_ACCOUNT_INSTITUTIONAL: InternalAccount = {
     keyring: { type: KeyringTypes.snap },
     snap: {
       id: 'npm:@metamask/institutional-wallet-snap',
-      name: 'Institutional Wallet',
-      enabled: true,
     },
     lastSelected: 1751048625755,
   },
@@ -216,6 +217,21 @@ export const MOCK_ACCOUNT_TRON_SHASTA: InternalAccount = {
   },
 };
 
+export const MOCK_ACCOUNT_STELLAR_PUBNET: InternalAccount = {
+  id: 'stellar-pubnet-account-id',
+  address: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHNMDQEQJKUY2C3D2U7HN3I4LJLQYGX',
+  options: {},
+  methods: [XlmMethod.SignTransaction, XlmMethod.SignMessage],
+  scopes: [XlmScope.Pubnet],
+  type: XlmAccountType.Account,
+  metadata: {
+    name: 'Stellar Account',
+    keyring: { type: KeyringTypes.snap },
+    importTime: 1691565967600,
+    lastSelected: 1955565967656,
+  },
+};
+
 export const MOCK_ACCOUNTS = {
   [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
   [MOCK_ACCOUNT_ERC4337.id]: MOCK_ACCOUNT_ERC4337,
@@ -225,6 +241,7 @@ export const MOCK_ACCOUNTS = {
   [MOCK_ACCOUNT_TRON_MAINNET.id]: MOCK_ACCOUNT_TRON_MAINNET,
   [MOCK_ACCOUNT_TRON_NILE.id]: MOCK_ACCOUNT_TRON_NILE,
   [MOCK_ACCOUNT_TRON_SHASTA.id]: MOCK_ACCOUNT_TRON_SHASTA,
+  [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
   [MOCK_ACCOUNT_HARDWARE.id]: MOCK_ACCOUNT_HARDWARE,
   [MOCK_ACCOUNT_PRIVATE_KEY.id]: MOCK_ACCOUNT_PRIVATE_KEY,
 };
@@ -239,6 +256,88 @@ export const MOCK_ACCOUNT_ID_BY_ADDRESS = {
   [MOCK_ACCOUNT_TRON_MAINNET.address]: MOCK_ACCOUNT_TRON_MAINNET.id,
   [MOCK_ACCOUNT_TRON_NILE.address]: MOCK_ACCOUNT_TRON_NILE.id,
   [MOCK_ACCOUNT_TRON_SHASTA.address]: MOCK_ACCOUNT_TRON_SHASTA.id,
+  [MOCK_ACCOUNT_STELLAR_PUBNET.address]: MOCK_ACCOUNT_STELLAR_PUBNET.id,
   [MOCK_ACCOUNT_HARDWARE.address]: MOCK_ACCOUNT_HARDWARE.id,
   [MOCK_ACCOUNT_PRIVATE_KEY.address]: MOCK_ACCOUNT_PRIVATE_KEY.id,
 };
+
+type MockInternalAccountOptions = Omit<
+  InternalAccount['options'],
+  'entropy'
+> & {
+  entropy?:
+    | {
+        type: 'mnemonic';
+        id: string;
+        groupIndex: number;
+        derivationPath?: string;
+      }
+    | { type: 'private-key' }
+    | { type: 'custom' };
+};
+
+type MockInternalAccountOverrides = Omit<
+  Partial<InternalAccount>,
+  'metadata' | 'options'
+> &
+  Pick<InternalAccount, 'id'> & {
+    metadata?: Partial<InternalAccount['metadata']>;
+    options?: MockInternalAccountOptions;
+  };
+
+function normalizeOptions(
+  options?: MockInternalAccountOptions,
+): InternalAccount['options'] {
+  if (!options?.entropy) {
+    return (options ?? {}) as InternalAccount['options'];
+  }
+
+  if (options.entropy.type !== 'mnemonic') {
+    return options as InternalAccount['options'];
+  }
+
+  return {
+    ...options,
+    entropy: {
+      ...options.entropy,
+      derivationPath: options.entropy.derivationPath ?? '',
+    },
+  };
+}
+
+export function createMockInternalAccount({
+  id,
+  address,
+  metadata,
+  options,
+  ...overrides
+}: MockInternalAccountOverrides): InternalAccount {
+  const normalizedOptions = normalizeOptions(options);
+
+  return {
+    ...MOCK_ACCOUNT_EOA,
+    ...overrides,
+    id,
+    address: address ?? `${id}-address`,
+    metadata: {
+      ...MOCK_ACCOUNT_EOA.metadata,
+      ...metadata,
+      keyring: {
+        ...MOCK_ACCOUNT_EOA.metadata.keyring,
+        ...metadata?.keyring,
+      },
+    },
+    options: normalizedOptions,
+  };
+}
+
+export function createMockInternalAccounts(
+  mockAccounts: MockInternalAccountOverrides[],
+): Record<string, InternalAccount> {
+  return Object.fromEntries(
+    mockAccounts.map((mockAccount) => [
+      mockAccount.id,
+      createMockInternalAccount(mockAccount),
+    ]),
+  );
+}

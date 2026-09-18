@@ -12,30 +12,19 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, uniq } from 'lodash';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import {
-  errorCodes,
-  JsonRpcError,
-  providerErrors,
-  rpcErrors,
-} from '@metamask/rpc-errors';
-import { Mutex } from 'await-semaphore';
+import { rpcErrors } from '@metamask/rpc-errors';
 import log from 'loglevel';
-import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
-import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
-import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
-import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/messenger';
 import {
   MethodNames,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
   SubjectType,
+  createPermissionMiddleware,
 } from '@metamask/permission-controller';
 import {
   METAMASK_DOMAIN,
@@ -48,15 +37,15 @@ import {
   createSnapsMethodMiddleware,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
-import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
-
-import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
 import {
-  BRIDGE_CONTROLLER_NAME,
-  BridgeUserAction,
-  BridgeBackgroundAction,
-} from '@metamask/bridge-controller';
+  ApprovalType,
+  ERC1155,
+  ERC20,
+  ERC721,
+  toHex,
+} from '@metamask/controller-utils';
+
+import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
 
 import {
   TransactionStatus,
@@ -64,23 +53,15 @@ import {
 } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import {
-  isEvmAccountType,
-  SolAccountType,
-  TrxAccountType,
-  BtcAccountType,
-} from '@metamask/keyring-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   hexToBigInt,
   toCaipChainId,
   parseCaipAccountId,
-  add0x,
-  hexToBytes,
-  bytesToHex,
   parseCaipAssetType,
   KnownCaipNamespace,
+  createDeferredPromise,
 } from '@metamask/utils';
-import { normalize } from '@metamask/eth-sig-util';
 
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
@@ -88,11 +69,7 @@ import {
   multichainMethodCallValidatorMiddleware,
   MultichainSubscriptionManager,
   MultichainMiddlewareManager,
-  walletGetSession,
-  walletRevokeSession,
-  walletInvokeMethod,
   MultichainApiNotifications,
-  walletCreateSession,
 } from '@metamask/multichain-api-middleware';
 
 import {
@@ -123,13 +100,12 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
 
-import {
-  SeedlessOnboardingControllerErrorMessage,
-  SecretType,
-  RecoveryError,
-} from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
+import { KeyringType } from '@metamask/keyring-api/v2';
+import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
+import { AggregatedOrderBookConnection } from '@metamask/perps-controller';
+import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -138,7 +114,6 @@ import {
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import { captureException } from '../../shared/lib/sentry';
 import {
-  CHAIN_IDS,
   CHAIN_SPEC_URL,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
@@ -146,10 +121,8 @@ import {
 
 import {
   HardwareDeviceNames,
-  LedgerTransportTypes,
   KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
@@ -169,15 +142,10 @@ import {
   getStorageItem,
   setStorageItem,
 } from '../../shared/lib/storage-helpers';
-import {
-  getTokenIdParam,
-  fetchTokenBalance,
-  fetchERC1155Balance,
-} from '../../shared/lib/token-util';
+import { getTokenIdParam } from '../../shared/lib/token-util';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/lib/transaction.utils';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
 import {
   createEnsureOnboardingCompleteCallback,
@@ -185,31 +153,26 @@ import {
 } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { convertNetworkId } from '../../shared/lib/network.utils';
-import { getIsSmartTransaction } from '../../shared/lib/selectors';
+import {
+  getIsSmartTransaction,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsEnabled,
+} from '../../shared/lib/selectors';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
-import { getProviderConfig } from '../../shared/lib/selectors/networks';
-import { selectAllEnabledNetworkClientIds } from '../../shared/lib/selectors/multichain';
-import {
-  trace,
-  endTrace,
-  TraceName,
-  TraceOperation,
-} from '../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
-import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
-  getIsSeedlessOnboardingFeatureEnabled,
-  getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
   getIsAssetsUnifiedStateIncludedInBuild,
 } from '../../shared/lib/environment';
+import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
@@ -217,29 +180,26 @@ import {
   updatePreferencesAndMetricsForShieldSubscription,
   getIsShieldSubscriptionActive,
 } from '../../shared/lib/shield';
-import { createSentryError } from '../../shared/lib/error';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
-  getRatesControllerRates,
-  getRatesControllerFiatCurrency,
 } from '../../shared/lib/selectors/assets-migration';
-import {
-  isUserRejectedHardwareWalletError,
-  toHardwareWalletError,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../ui/contexts/hardware-wallets';
-import {
-  isAssetsUnifyStateFeatureEnabled,
-  ASSETS_UNIFY_STATE_VERSION_1,
-} from '../../shared/lib/assets-unify-state/remote-feature-flag';
+import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { accountSupports7702 } from './lib/account-supports-7702';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import { createDappSwapMiddleware } from './lib/dapp-swap/dapp-swap-middleware';
-import { createTrustSignalsMiddleware } from './lib/trust-signals/trust-signals-middleware';
+import {
+  createAddressScanMiddleware,
+  createOriginScanMiddleware,
+} from './lib/trust-signals/trust-signals-middleware';
+import {
+  createCaipOriginScanGate,
+  createEip1193OriginScanGate,
+} from './lib/trust-signals/trust-signals-util';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -251,8 +211,8 @@ import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
   createUnsupportedMethodMiddleware,
-  createMultichainMethodMiddleware,
-  makeMethodMiddlewareMaker,
+  createMultichainApiMethodMiddleware,
+  createMultichainInvokedMethodMiddleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createRpcBlockingMiddleware, {
@@ -260,29 +220,35 @@ import createRpcBlockingMiddleware, {
 } from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
+import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
-import { ReferralStatus } from './controllers/preferences-controller';
+import {
+  createEventBuilder,
+  setParticipateInMetaMetrics,
+  trackEvent,
+  trackPage,
+  updateEventFragment,
+} from './controllers/analytics';
 import Backup from './lib/backup';
+import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
   getMethodDataName,
   previousValueComparator,
   initializeRpcProviderDomains,
-  isPublicEndpointUrl,
   getPlatform,
   getBooleanFlag,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
-import {
-  createDefiReferralMiddleware,
-  ReferralTriggerType,
-} from './lib/createDefiReferralMiddleware';
+import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiReferralMiddleware';
+import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
+import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
+import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
 
 import {
   diffMap,
-  getPermissionBackgroundApiMethods,
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
@@ -293,8 +259,7 @@ import {
   getOriginsWithSessionProperty,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { getAccountsBySnapId } from './lib/snap-keyring';
-import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import { addDappTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -309,23 +274,19 @@ import {
 } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
-import { decodeTransactionData } from './lib/transaction/decode/util';
 import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import {
-  rejectAllApprovals,
-  rejectOriginApprovals,
-} from './lib/approval/utils';
-import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
+import { rejectOriginApprovals } from './lib/approval/utils';
+import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainBalancesControllerInit,
   MultichainAssetsRatesControllerInit,
   MultichainNetworkControllerInit,
-} from './controller-init/multichain';
+} from './messenger-client-init/multichain';
 import {
   AssetsContractControllerInit,
   AssetsControllerInit,
@@ -334,14 +295,19 @@ import {
   NftControllerInit,
   NftDetectionControllerInit,
   TokenRatesControllerInit,
-} from './controller-init/assets';
-import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
-import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
-import { PerpsControllerInit } from './controller-init/perps-controller-init';
+} from './messenger-client-init/assets';
+import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
+import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
+import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
+import { ComplianceServiceInit } from './messenger-client-init/compliance-service-init';
+import { ComplianceControllerInit } from './messenger-client-init/compliance-controller-init';
+import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
+import { RampsControllerInit } from './messenger-client-init/ramps-controller-init';
+import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
-import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
-import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
-import { initControllers } from './controller-init/utils';
+import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
+import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
+import { initMessengerClients } from './messenger-client-init/utils';
 import {
   CronjobControllerInit,
   ExecutionServiceInit,
@@ -350,96 +316,93 @@ import {
   SnapInsightsControllerInit,
   SnapInterfaceControllerInit,
   SnapsNameProviderInit,
-  SnapsRegistryInit,
+  SnapRegistryControllerInit,
   WebSocketServiceInit,
-  MultichainRouterInit,
-} from './controller-init/snaps';
+  MultichainRoutingServiceInit,
+} from './messenger-client-init/snaps';
 import {
   BackendWebSocketServiceInit,
   AccountActivityServiceInit,
-} from './controller-init/core-backend';
-import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
-import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
-import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
-import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
-import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
-import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
+} from './messenger-client-init/core-backend';
+import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
+import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
+import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
+import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
+import { DeFiPositionsControllerV2Init } from './messenger-client-init/defi-positions/defi-positions-controller-v2-init';
+import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
+import { NotificationServicesPushControllerInit } from './messenger-client-init/notifications/notification-services-push-controller-init';
+import { DelegationControllerInit } from './messenger-client-init/delegation/delegation-controller-init';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
-import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
-import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
-import { MultichainAccountServiceInit } from './controller-init/multichain/multichain-account-service-init';
-import {
-  OAuthServiceInit,
-  SeedlessOnboardingControllerInit,
-} from './controller-init/seedless-onboarding';
-import { applyTransactionContainersExisting } from './lib/transaction/containers/util';
+import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
+import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
+import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
+import { OAuthServiceInit } from './messenger-client-init/seedless-onboarding';
 import {
   getSendBundleSupportedChains,
-  isSendBundleSupported,
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
-import { ShieldControllerInit } from './controller-init/shield/shield-controller-init';
-import { GatorPermissionsControllerInit } from './controller-init/gator-permissions/gator-permissions-controller-init';
+import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { MetaMetricsControllerInit } from './controller-init/metametrics-controller-init';
-import { TokenListControllerInit } from './controller-init/token-list-controller-init';
-import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
-import { TokensControllerInit } from './controller-init/tokens-controller-init';
-import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
-import { StaticAssetsControllerInit } from './controller-init/static-assets-controller-init';
-import { RatesControllerInit } from './controller-init/rates-controller-init';
-import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
-import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
-import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
-import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
-import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
-import {
-  SubscriptionControllerInit,
-  SubscriptionServiceInit,
-} from './controller-init/subscription';
-import { ConnectivityControllerInit } from './controller-init/connectivity';
-import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
-import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
-import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
-import { BridgeControllerInit } from './controller-init/bridge-controller-init';
-import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
-import { PreferencesControllerInit } from './controller-init/preferences-controller-init';
-import { AppStateControllerInit } from './controller-init/app-state-controller-init';
-import { PermissionControllerInit } from './controller-init/permission-controller-init';
-import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
-import { NetworkEnablementControllerInit } from './controller-init/assets/network-enablement-controller-init';
-import { KeyringControllerInit } from './controller-init/keyring-controller-init';
-import { SnapKeyringBuilderInit } from './controller-init/accounts/snap-keyring-builder-init';
-import { PermissionLogControllerInit } from './controller-init/permission-log-controller-init';
-import { NetworkControllerInit } from './controller-init/network-controller-init';
-import { AnnouncementControllerInit } from './controller-init/announcement-controller-init';
-import { AccountOrderControllerInit } from './controller-init/account-order-controller-init';
-import { AccountsControllerInit } from './controller-init/accounts-controller-init';
-import { PhishingControllerInit } from './controller-init/phishing-controller-init';
-import { AlertControllerInit } from './controller-init/alert-controller-init';
-import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
-import { LoggingControllerInit } from './controller-init/logging-controller-init';
-import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
-import { StorageServiceInit } from './controller-init/storage-service-init';
-import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
-import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
-import { DecryptMessageManagerInit } from './controller-init/confirmations/decrypt-message-manager-init';
-import { DecryptMessageControllerInit } from './controller-init/confirmations/decrypt-message-controller-init';
-import { EncryptionPublicKeyControllerInit } from './controller-init/confirmations/encryption-public-key-controller-init';
-import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
-import { SignatureControllerInit } from './controller-init/confirmations/signature-controller-init';
-import { UserOperationControllerInit } from './controller-init/confirmations/user-operation-controller-init';
-import { RewardsDataServiceInit } from './controller-init/rewards-data-service-init';
-import { RewardsControllerInit } from './controller-init/rewards-controller-init';
+import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
+import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
+import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
+import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
+import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
+import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
+import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
+import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
+import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
+import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
+import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
+import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
+import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
+import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
+import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
+import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
+import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
+import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
+import { AppStateControllerInit } from './messenger-client-init/app-state-controller-init';
+import { PermissionControllerInit } from './messenger-client-init/permission-controller-init';
+import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
+import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
+import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
+import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
+import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
+import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
+import { AlertControllerInit } from './messenger-client-init/alert-controller-init';
+import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
+import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
+import { AppMetadataControllerInit } from './messenger-client-init/app-metadata-controller-init';
+import { DecryptMessageManagerInit } from './messenger-client-init/confirmations/decrypt-message-manager-init';
+import { DecryptMessageControllerInit } from './messenger-client-init/confirmations/decrypt-message-controller-init';
+import { EncryptionPublicKeyControllerInit } from './messenger-client-init/confirmations/encryption-public-key-controller-init';
+import { EncryptionPublicKeyManagerInit } from './messenger-client-init/confirmations/encryption-public-key-message-manager-init';
+import { SignatureControllerInit } from './messenger-client-init/confirmations/signature-controller-init';
+import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
+import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
+import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
+import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
-import {
-  ClaimsControllerInit,
-  ClaimsServiceInit,
-} from './controller-init/claims';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
-import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
-import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
+import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
+import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ownership-service-init';
+import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
+import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
+import { UserTraitsServiceInit } from './messenger-client-init/user-traits-service-init';
+import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
+import { SentryTracingServiceInit } from './messenger-client-init/sentry-tracing-service-init';
+import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
+import { ChompApiServiceInit } from './messenger-client-init/chomp-api-service-init';
+import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
+import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
+import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
+import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
+import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
+import { initializeWallet } from './wallet-init/initialization';
+import { ExtensionConnectivityAdapter } from './controllers/connectivity';
+import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -459,6 +422,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('@metamask/seedless-onboarding-controller').SecretMetadata} SecretMetadata
  */
 
 // Types of APIs
@@ -469,6 +433,21 @@ const API_TYPE = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
+
+/**
+ * Grace window (ms) after the last UI connection closes before the Perps
+ * WebSocket is torn down. Matches the "brief close/reopen" pattern from
+ * Swaps: reopening the extension within this window reuses the live
+ * provider session so positions/markets stay hot and no skeleton flashes.
+ * Wallet lock bypasses this grace — see {@link MetamaskController._onLock}.
+ */
+const PERPS_DISCONNECT_GRACE_MS = 60 * 1000;
+
+function isKeyringV2NotSupportedError(error) {
+  return error?.message?.includes(
+    KeyringControllerErrorMessage.KeyringV2NotSupported,
+  );
+}
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -503,12 +482,33 @@ export default class MetamaskController extends EventEmitter {
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0;
 
+    // Timer id for the deferred perps disconnect. Set when the last UI
+    // connection closes; cleared either by a reconnect within the grace
+    // window or by the timer firing (which then disconnects perps).
+    this.perpsDisconnectTimer = null;
+
     this.offscreenPromise = opts.offscreenPromise ?? Promise.resolve();
 
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
     this.initializeChainlist();
+
+    const connectivityAdapter = new ExtensionConnectivityAdapter();
+    this.connectivityAdapter = connectivityAdapter;
+    this.wallet = initializeWallet({
+      connectivityAdapter,
+      encryptor: this.opts.encryptor,
+      getFlatState: this.getState.bind(this),
+      getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      getTransactionMetricsRequest:
+        this.getTransactionMetricsRequest.bind(this),
+      infuraProjectId: this.opts.infuraProjectId,
+      messenger: controllerMessenger,
+      showApprovalRequest: this.opts.showUserConfirmation,
+      state: initState,
+      platform: this.extension,
+    });
 
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
@@ -524,11 +524,9 @@ export default class MetamaskController extends EventEmitter {
     // Do not modify directly. Use the associated methods.
     this.connections = {};
 
-    // lock to ensure only one vault created at once
-    this.createVaultMutex = new Mutex();
-
-    // lock to ensure only one seedless onboarding operation is running at once
-    this.seedlessOperationMutex = new Mutex();
+    // timer to reset passkey auto unlock suppressed state
+    /** @type {NodeJS.Timeout | null} */
+    this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -548,6 +546,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:findNetworkClientIdByChainId',
       ),
     });
+    this.multichainSubscriptionManager.setMaxListeners(25);
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.deprecatedNetworkVersions = {};
 
@@ -561,29 +560,11 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    // Monitor for first wallet funding event based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      const { completedOnboarding } = this.onboardingController.state;
-      if (
-        activeControllerConnections > 0 &&
-        completedOnboarding &&
-        this.appStateController.state.canTrackWalletFundsObtained
-      ) {
-        this.walletFundsObtainedMonitor.setupMonitoring();
-      }
-    });
-
-    /** @type {import('./controller-init/utils').InitFunctions} */
-    const controllerInitFunctions = {
-      ApprovalController: ApprovalControllerInit,
+    /** @type {import('./messenger-client-init/utils').InitFunctions} */
+    const messengerClientInitFunctions = {
       LoggingController: LoggingControllerInit,
-      StorageService: StorageServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
-      SnapKeyringBuilder: SnapKeyringBuilderInit,
-      KeyringController: KeyringControllerInit,
-      AccountsController: AccountsControllerInit,
-      AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
       DecryptMessageManager: DecryptMessageManagerInit,
       DecryptMessageController: DecryptMessageControllerInit,
@@ -595,16 +576,22 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
-      RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
-      NetworkController: NetworkControllerInit,
+      // GeolocationController must init before AnalyticsController, which
+      // resolves geolocation during its own init via
+      // GeolocationController:getGeolocationData.
+      GeolocationApiService: GeolocationApiServiceInit,
+      GeolocationController: GeolocationControllerInit,
+      AnalyticsController: AnalyticsControllerInit,
+      SentryTracingService: SentryTracingServiceInit,
       MetaMetricsController: MetaMetricsControllerInit,
+      UserTraitsService: UserTraitsServiceInit,
+      DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
-      GasFeeController: GasFeeControllerInit,
       UserOperationController: UserOperationControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
-      SnapsRegistry: SnapsRegistryInit,
+      SnapRegistryController: SnapRegistryControllerInit,
       CronjobController: CronjobControllerInit,
       SelectedNetworkController: SelectedNetworkControllerInit,
       SnapController: SnapControllerInit,
@@ -613,13 +600,17 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      SentinelApiService: SentinelApiServiceInit,
+      ComplianceService: ComplianceServiceInit,
+      ComplianceController: ComplianceControllerInit,
+      RampsService: RampsServiceInit,
+      RampsController: RampsControllerInit,
       ...(getIsPerpsIncludedInBuild()
         ? { PerpsController: PerpsControllerInit }
         : {}),
       PPOMController: PPOMControllerInit,
-      PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
-      TransactionController: TransactionControllerInit,
+      PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       BridgeController: BridgeControllerInit,
@@ -644,165 +635,210 @@ export default class MetamaskController extends EventEmitter {
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
+      SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
-      MultichainRouter: MultichainRouterInit,
+      MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
+      AuthenticatedUserStorageService: AuthenticatedUserStorageServiceInit,
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
+      DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
-      SeedlessOnboardingController: SeedlessOnboardingControllerInit,
-      SubscriptionController: SubscriptionControllerInit,
-      SubscriptionService: SubscriptionServiceInit,
-      ConnectivityController: ConnectivityControllerInit,
+      NetworkConnectionBannerController: NetworkConnectionBannerControllerInit,
+      ShieldSubscriptionService: ShieldSubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
-      ShieldController: ShieldControllerInit,
-      ClaimsController: ClaimsControllerInit,
-      ClaimsService: ClaimsServiceInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
       SnapsNameProvider: SnapsNameProviderInit,
-      EnsController: EnsControllerInit,
       NameController: NameControllerInit,
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
+      ProofOfOwnershipService: ProofOfOwnershipServiceInit,
+      QrSyncController: QrSyncControllerInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
+      ChompApiService: ChompApiServiceInit,
+      MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
+      MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
+      MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
+      MoneyAccountController: MoneyAccountControllerInit,
+      MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }
         : {}),
+      LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
     };
 
     const {
-      controllerApi,
+      messengerClientApi,
       controllerMemState,
       controllerPersistedState,
-      controllersByName,
-    } = this.#initControllers({
-      initFunctions: controllerInitFunctions,
+      messengerClientsByName,
+    } = this.#initMessengerClients({
+      initFunctions: messengerClientInitFunctions,
       initState,
     });
 
-    this.controllerApi = controllerApi;
+    this.messengerClientApi = messengerClientApi;
     this.controllerMemState = controllerMemState;
     this.controllerPersistedState = controllerPersistedState;
-    this.controllersByName = controllersByName;
+    this.messengerClientsByName = messengerClientsByName;
+
+    this.rampsController = messengerClientsByName.RampsController;
 
     // Backwards compatibility for existing references
-    this.approvalController = controllersByName.ApprovalController;
-    this.loggingController = controllersByName.LoggingController;
-    this.appMetadataController = controllersByName.AppMetadataController;
-    this.preferencesController = controllersByName.PreferencesController;
-    this.keyringController = controllersByName.KeyringController;
-    this.accountsController = controllersByName.AccountsController;
-    this.addressBookController = controllersByName.AddressBookController;
-    this.alertController = controllersByName.AlertController;
-    this.decryptMessageController = controllersByName.DecryptMessageController;
+    this.approvalController = this.wallet.getInstance('ApprovalController');
+    this.loggingController = messengerClientsByName.LoggingController;
+    this.appMetadataController = messengerClientsByName.AppMetadataController;
+    this.preferencesController = messengerClientsByName.PreferencesController;
+    this.keyringController = this.wallet.getInstance('KeyringController');
+    this.snapAccountService = messengerClientsByName.SnapAccountService;
+    this.accountsController = this.wallet.getInstance('AccountsController');
+    this.connectivityController = this.wallet.getInstance(
+      'ConnectivityController',
+    );
+    this.addressBookController = this.wallet.getInstance(
+      'AddressBookController',
+    );
+    this.alertController = messengerClientsByName.AlertController;
+    this.decryptMessageController =
+      messengerClientsByName.DecryptMessageController;
     this.encryptionPublicKeyController =
-      controllersByName.EncryptionPublicKeyController;
-    this.signatureController = controllersByName.SignatureController;
-    this.permissionController = controllersByName.PermissionController;
-    this.permissionLogController = controllersByName.PermissionLogController;
+      messengerClientsByName.EncryptionPublicKeyController;
+    this.signatureController = messengerClientsByName.SignatureController;
+    this.permissionController = messengerClientsByName.PermissionController;
+    this.permissionLogController =
+      messengerClientsByName.PermissionLogController;
     this.subjectMetadataController =
-      controllersByName.SubjectMetadataController;
-    this.appStateController = controllersByName.AppStateController;
-    this.networkController = controllersByName.NetworkController;
-    this.metaMetricsController = controllersByName.MetaMetricsController;
+      messengerClientsByName.SubjectMetadataController;
+    this.appStateController = messengerClientsByName.AppStateController;
+    this.networkController = this.wallet.getInstance('NetworkController');
+    this.analyticsController = messengerClientsByName.AnalyticsController;
+    this.metaMetricsController = messengerClientsByName.MetaMetricsController;
+    this.userTraitsService = messengerClientsByName.UserTraitsService;
+    this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
-      controllersByName.MetaMetricsDataDeletionController;
-    this.remoteFeatureFlagController =
-      controllersByName.RemoteFeatureFlagController;
-    this.gasFeeController = controllersByName.GasFeeController;
-    this.userOperationController = controllersByName.UserOperationController;
-    this.cronjobController = controllersByName.CronjobController;
-    this.rateLimitController = controllersByName.RateLimitController;
+      messengerClientsByName.MetaMetricsDataDeletionController;
+    this.remoteFeatureFlagController = this.wallet.getInstance(
+      'RemoteFeatureFlagController',
+    );
+    this.gasFeeController = this.wallet.getInstance('GasFeeController');
+    this.userOperationController =
+      messengerClientsByName.UserOperationController;
+    this.cronjobController = messengerClientsByName.CronjobController;
+    this.rateLimitController = messengerClientsByName.RateLimitController;
     this.selectedNetworkController =
-      controllersByName.SelectedNetworkController;
-    this.snapController = controllersByName.SnapController;
-    this.snapInsightsController = controllersByName.SnapInsightsController;
-    this.snapInterfaceController = controllersByName.SnapInterfaceController;
-    this.snapsRegistry = controllersByName.SnapsRegistry;
-    this.ppomController = controllersByName.PPOMController;
-    this.phishingController = controllersByName.PhishingController;
-    this.onboardingController = controllersByName.OnboardingController;
-    this.accountTrackerController = controllersByName.AccountTrackerController;
-    this.txController = controllersByName.TransactionController;
+      messengerClientsByName.SelectedNetworkController;
+    this.snapController = messengerClientsByName.SnapController;
+    this.snapInsightsController = messengerClientsByName.SnapInsightsController;
+    this.snapInterfaceController =
+      messengerClientsByName.SnapInterfaceController;
+    this.snapsRegistry = messengerClientsByName.SnapRegistryController;
+    this.ppomController = messengerClientsByName.PPOMController;
+    this.phishingController = messengerClientsByName.PhishingController;
+    this.onboardingController = messengerClientsByName.OnboardingController;
+    this.accountTrackerController =
+      messengerClientsByName.AccountTrackerController;
+    this.txController = this.wallet.getInstance('TransactionController');
+    this.txPayController = messengerClientsByName.TransactionPayController;
     this.smartTransactionsController =
-      controllersByName.SmartTransactionsController;
-    this.bridgeController = controllersByName.BridgeController;
-    this.bridgeStatusController = controllersByName.BridgeStatusController;
-    this.backendWebSocketService = controllersByName.BackendWebSocketService;
-    this.accountActivityService = controllersByName.AccountActivityService;
-    this.nftController = controllersByName.NftController;
-    this.nftDetectionController = controllersByName.NftDetectionController;
-    this.assetsContractController = controllersByName.AssetsContractController;
-    this.assetsController = controllersByName.AssetsController;
+      messengerClientsByName.SmartTransactionsController;
+    this.bridgeController = messengerClientsByName.BridgeController;
+    this.bridgeStatusController = messengerClientsByName.BridgeStatusController;
+    this.backendWebSocketService =
+      messengerClientsByName.BackendWebSocketService;
+    this.accountActivityService = messengerClientsByName.AccountActivityService;
+    this.nftController = messengerClientsByName.NftController;
+    this.nftDetectionController = messengerClientsByName.NftDetectionController;
+    this.assetsContractController =
+      messengerClientsByName.AssetsContractController;
+    this.assetsController = messengerClientsByName.AssetsController;
     this.multichainAssetsController =
-      controllersByName.MultichainAssetsController;
+      messengerClientsByName.MultichainAssetsController;
     this.multichainBalancesController =
-      controllersByName.MultichainBalancesController;
+      messengerClientsByName.MultichainBalancesController;
     this.multichainTransactionsController =
-      controllersByName.MultichainTransactionsController;
+      messengerClientsByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
-      controllersByName.MultichainAssetsRatesController;
-    this.multichainAccountService = controllersByName.MultichainAccountService;
-    this.tokenBalancesController = controllersByName.TokenBalancesController;
-    this.staticAssetsController = controllersByName.StaticAssetsController;
-    this.tokenListController = controllersByName.TokenListController;
-    this.tokenDetectionController = controllersByName.TokenDetectionController;
-    this.tokensController = controllersByName.TokensController;
-    this.tokenRatesController = controllersByName.TokenRatesController;
-    this.currencyRateController = controllersByName.CurrencyRateController;
+      messengerClientsByName.MultichainAssetsRatesController;
+    this.multichainAccountService =
+      messengerClientsByName.MultichainAccountService;
+    this.tokenBalancesController =
+      messengerClientsByName.TokenBalancesController;
+    this.staticAssetsController = messengerClientsByName.StaticAssetsController;
+    this.tokenListController = messengerClientsByName.TokenListController;
+    this.tokenDetectionController =
+      messengerClientsByName.TokenDetectionController;
+    this.tokensController = messengerClientsByName.TokensController;
+    this.tokenRatesController = messengerClientsByName.TokenRatesController;
+    this.currencyRateController = messengerClientsByName.CurrencyRateController;
     this.multichainNetworkController =
-      controllersByName.MultichainNetworkController;
-    this.multichainRatesController = controllersByName.RatesController;
-    this.authenticationController = controllersByName.AuthenticationController;
-    this.userStorageController = controllersByName.UserStorageController;
-    this.delegationController = controllersByName.DelegationController;
+      messengerClientsByName.MultichainNetworkController;
+    this.multichainRatesController = messengerClientsByName.RatesController;
+    this.authenticationController =
+      messengerClientsByName.AuthenticationController;
+    this.userStorageController = messengerClientsByName.UserStorageController;
+    this.authenticatedUserStorageService =
+      messengerClientsByName.AuthenticatedUserStorageService;
+    this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
-      controllersByName.NotificationServicesController;
+      messengerClientsByName.NotificationServicesController;
     this.notificationServicesPushController =
-      controllersByName.NotificationServicesPushController;
-    this.deFiPositionsController = controllersByName.DeFiPositionsController;
-    this.accountTreeController = controllersByName.AccountTreeController;
-    this.oauthService = controllersByName.OAuthService;
-    this.subscriptionService = controllersByName.SubscriptionService;
-    this.seedlessOnboardingController =
-      controllersByName.SeedlessOnboardingController;
-    this.subscriptionController = controllersByName.SubscriptionController;
-    this.networkOrderController = controllersByName.NetworkOrderController;
+      messengerClientsByName.NotificationServicesPushController;
+    this.deFiPositionsController =
+      messengerClientsByName.DeFiPositionsController;
+    this.deFiPositionsControllerV2 =
+      messengerClientsByName.DeFiPositionsControllerV2;
+    this.accountTreeController = messengerClientsByName.AccountTreeController;
+    this.oauthService = messengerClientsByName.OAuthService;
+    this.shieldSubscriptionService =
+      messengerClientsByName.ShieldSubscriptionService;
+    this.seedlessOnboardingController = this.wallet.getInstance(
+      'SeedlessOnboardingController',
+    );
+    this.subscriptionController = this.wallet.getInstance(
+      'SubscriptionController',
+    );
+    this.networkOrderController = messengerClientsByName.NetworkOrderController;
     this.networkEnablementController =
-      controllersByName.NetworkEnablementController;
-    this.shieldController = controllersByName.ShieldController;
+      messengerClientsByName.NetworkEnablementController;
+    this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
-      controllersByName.GatorPermissionsController;
-    this.ensController = controllersByName.EnsController;
-    this.nameController = controllersByName.NameController;
-    this.announcementController = controllersByName.AnnouncementController;
-    this.accountOrderController = controllersByName.AccountOrderController;
-    this.rewardsController = controllersByName.RewardsController;
-    this.claimsController = controllersByName.ClaimsController;
-    this.claimsService = controllersByName.ClaimsService;
-    this.profileMetricsController = controllersByName.ProfileMetricsController;
+      messengerClientsByName.GatorPermissionsController;
+    this.nameController = messengerClientsByName.NameController;
+    this.announcementController = messengerClientsByName.AnnouncementController;
+    this.accountOrderController = messengerClientsByName.AccountOrderController;
+    this.rewardsController = messengerClientsByName.RewardsController;
+    this.qrSyncController = messengerClientsByName.QrSyncController;
+    this.claimsController = this.wallet.getInstance('ClaimsController');
+    this.claimsService = this.wallet.getInstance('ClaimsService');
+    this.profileMetricsController =
+      messengerClientsByName.ProfileMetricsController;
+    this.legacyBackgroundApiService =
+      messengerClientsByName.LegacyBackgroundApiService;
+    this.passkeyController = this.wallet.getInstance('PasskeyController');
+    this.configRegistryController = this.wallet.getInstance(
+      'ConfigRegistryController',
+    );
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
       accountsController: this.accountsController,
       networkController: this.networkController,
-      trackMetaMetricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
     });
+    this.geolocationController = messengerClientsByName.GeolocationController;
+    this.moneyAccountUpgradeController =
+      messengerClientsByName.MoneyAccountUpgradeController;
 
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
@@ -810,11 +846,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
 
+    // Derives MetaMetrics user traits from the full state and forwards changes
+    // to the analytics pipeline. This lives in a service (not MetaMetricsController)
+    // as part of the MetaMetricsController deprecation; the `update` firehose
+    // subscription stays here because it is the only source of the flattened state.
     this.on('update', (update) => {
-      this.metaMetricsController.handleMetaMaskStateUpdate(update);
+      this.userTraitsService.handleMetaMaskStateUpdate(update);
     });
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
@@ -823,6 +861,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe('KeyringController:lock', () =>
       this._onLock(),
+    );
+
+    // Ramps buy-flow terminal-outcome KPIs (completed / failed). Fires in the
+    // background (not the UI) so the outcome is captured even when the popup is
+    // closed — the common case, since the order polls to a terminal status
+    // after the user finishes on the provider's page.
+    this.controllerMessenger.subscribe(
+      'RampsController:orderStatusChanged',
+      (event) => handleRampsOrderStatusChanged(event),
     );
 
     // on/off shield controller based on shield subscription
@@ -848,7 +895,6 @@ export default class MetamaskController extends EventEmitter {
 
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
-            this.metaMetricsController,
             this.preferencesController,
           );
           this.shieldController.start();
@@ -876,29 +922,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: petnamesBridgeMessenger,
     }).init();
 
-    const walletFundsObtainedMonitorMessenger = new Messenger({
-      namespace: 'WalletFundsObtainedMonitor',
-      parent: this.controllerMessenger,
-    });
-    this.controllerMessenger.delegate({
-      messenger: walletFundsObtainedMonitorMessenger,
-      events: ['NotificationServicesController:notificationsListUpdated'],
-      actions: [
-        'MetaMetricsController:trackEvent',
-        'AppStateController:setCanTrackWalletFundsObtained',
-        'OnboardingController:getState',
-        'NotificationServicesController:getState',
-        'TokenBalancesController:getState',
-        'MultichainBalancesController:getState',
-        'RemoteFeatureFlagController:getState',
-        'AssetsController:getState',
-      ],
-    });
-
-    this.walletFundsObtainedMonitor = new WalletFundsObtainedMonitor({
-      messenger: walletFundsObtainedMonitorMessenger,
-    });
-
     this.getSecurityAlertsConfig = async (url) => {
       const getShieldSubscription = () =>
         this.controllerMessenger.call(
@@ -918,6 +941,7 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesController.init();
     this.snapController.init();
     this.cronjobController.init();
+    this.moneyAccountUpgradeController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -929,7 +953,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionSubmitted',
       ({ transactionMeta }) => {
-        this.subscriptionService
+        this.shieldSubscriptionService
           .handlePostTransaction(transactionMeta)
           .catch((err) => {
             console.error('Error onShieldSubscriptionApprovalTransaction', err);
@@ -956,15 +980,23 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-          await this.getSnapKeyring();
-
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
-            await this._importAccountsWithBalances();
+            for (const {
+              metadata: { id: entropySource },
+            } of this.getHDKeyringObjects()) {
+              await this.controllerMessenger.call(
+                'LegacyBackgroundApiService:discoverAndCreateAccounts',
+                entropySource,
+              );
+            }
           } else {
-            await this.discoverAndCreateAccounts(id);
+            await this.controllerMessenger.call(
+              'LegacyBackgroundApiService:discoverAndCreateAccounts',
+              id,
+            );
           }
 
           this.postOnboardingInitialization();
@@ -1002,6 +1034,10 @@ export default class MetamaskController extends EventEmitter {
                   .dismissSmartAccountSuggestionEnabled,
               getIsSmartTransaction: (chainId) =>
                 getIsSmartTransaction(this._getMetaMaskState(), chainId),
+              getSmartTransactionsPreferenceEnabled: () =>
+                getSmartTransactionsPreferenceEnabled(this._getMetaMaskState()),
+              getSmartTransactionsEnabled: (chainId) =>
+                getSmartTransactionsEnabled(this._getMetaMaskState(), chainId),
               isAtomicBatchSupported:
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
@@ -1016,6 +1052,12 @@ export default class MetamaskController extends EventEmitter {
         }),
       ),
       wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
+        const addTransactionExtraOptions =
+          await getAddTransactionSendCallExtraOptions({
+            req,
+            networkController: this.networkController,
+            keyringController: this.keyringController,
+          });
         return await walletSendCalls(req, res, {
           getAccounts,
           getPermittedAccountsForOrigin: async () => {
@@ -1024,12 +1066,16 @@ export default class MetamaskController extends EventEmitter {
           processSendCalls: processSendCalls.bind(
             null,
             {
-              addTransaction: this.txController.addTransaction.bind(
-                this.txController,
-              ),
-              addTransactionBatch: this.txController.addTransactionBatch.bind(
-                this.txController,
-              ),
+              addTransaction: async (txParams, options) =>
+                this.txController.addTransaction(txParams, {
+                  ...options,
+                  ...addTransactionExtraOptions,
+                }),
+              addTransactionBatch: async (request) =>
+                this.txController.addTransactionBatch({
+                  ...request,
+                  ...addTransactionExtraOptions,
+                }),
               getDismissSmartAccountSuggestionEnabled: () =>
                 this.preferencesController.state.preferences
                   .dismissSmartAccountSuggestionEnabled,
@@ -1043,7 +1089,7 @@ export default class MetamaskController extends EventEmitter {
               validateSecurity: (securityAlertId, request, chainId) =>
                 validateRequestWithPPOM({
                   chainId,
-                  ppomController: this.ppomController,
+                  messenger: this.controllerMessenger,
                   request,
                   securityAlertId,
                   updateSecurityAlertResponse:
@@ -1095,7 +1141,10 @@ export default class MetamaskController extends EventEmitter {
           await walletGetAccountUpgradeStatus(req, res, {
             getCurrentChainIdForDomain:
               this.getCurrentChainIdForDomain.bind(this),
-            getCode: this.getCode.bind(this),
+            getCode: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'LegacyBackgroundApiService:getCode',
+            ),
             getSelectedNetworkClientIdForChain:
               this.getSelectedNetworkClientIdForChain.bind(this),
             getPermittedAccountsForOrigin: async () => {
@@ -1116,14 +1165,27 @@ export default class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
-      processTransaction: (transactionParams, dappRequest, requestContext) =>
-        addDappTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            dappRequest,
-            requestContext,
-          }),
-        ),
+      processTransaction: (transactionParams, dappRequest, requestContext) => {
+        const networkClientId = requestContext?.get('networkClientId');
+        const { chainId } =
+          this.networkController.getNetworkConfigurationByNetworkClientId(
+            networkClientId,
+          );
+        return addDappTransaction({
+          messenger: this.controllerMessenger,
+          internalAccounts: this.accountsController.listAccounts(),
+          selectedAccount: this.accountsController.getAccountByAddress(
+            transactionParams.from,
+          ),
+          networkClientId,
+          chainId,
+          transactionParams,
+          dappRequest,
+          requestContext,
+          securityAlertsEnabled:
+            this.preferencesController.state?.securityAlertsEnabled,
+        });
+      },
       // msg signing
       processTypedMessage: (...args) =>
         addTypedMessage({
@@ -1162,7 +1224,9 @@ export default class MetamaskController extends EventEmitter {
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
       processRequestExecutionPermissions: async (params, req, context) => {
-        const enabledTypes = getEnabledAdvancedPermissions();
+        const enabledTypes = getEnabledAdvancedPermissions(
+          this.remoteFeatureFlagController.state,
+        );
 
         if (!params || params.length === 0) {
           throw rpcErrors.methodNotSupported('No permission type provided');
@@ -1201,7 +1265,10 @@ export default class MetamaskController extends EventEmitter {
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
             onBeforeRequest,
             onAfterRequest,
           },
@@ -1211,32 +1278,64 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       processGetSupportedExecutionPermissions: async (req, context) => {
-        const enabledTypes = getEnabledAdvancedPermissions();
+        const enabledTypes = getEnabledAdvancedPermissions(
+          this.remoteFeatureFlagController.state,
+        );
+        const supportedChains = getEip7702SupportedChains(
+          this.remoteFeatureFlagController.state,
+        ).map((chainId) => chainId.toLowerCase());
 
-        const result = await forwardRequestToSnap(
+        const permissionsSupportedByKernel = await forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
           },
           [],
           req,
           context,
         );
 
-        // Filter the result to only include permission types that are enabled
-        if (!result || typeof result !== 'object') {
-          return result;
+        if (
+          !permissionsSupportedByKernel ||
+          typeof permissionsSupportedByKernel !== 'object'
+        ) {
+          return {};
         }
 
+        const enabledPermissionEntries = Object.entries(
+          permissionsSupportedByKernel,
+        ).filter(([permissionKey]) => enabledTypes.includes(permissionKey));
+
+        const supportedPermissionsWithResolvedChainIdsEntries =
+          enabledPermissionEntries.map(([permissionKey, specification]) => {
+            return [
+              permissionKey,
+              {
+                ...specification,
+                chainIds: specification.chainIds
+                  ?.map((chainId) => chainId.toLowerCase())
+                  .filter((chainId) => supportedChains.includes(chainId)) || [
+                  ...supportedChains,
+                ],
+              },
+            ];
+          });
+
         return Object.fromEntries(
-          Object.entries(result).filter(([key]) => enabledTypes.includes(key)),
+          supportedPermissionsWithResolvedChainIdsEntries,
         );
       },
       processGetGrantedExecutionPermissions: async (req, context) => {
         return forwardRequestToSnap(
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-            handleRequest: this.handleSnapRequest.bind(this),
+            handleRequest: this.controllerMessenger.call.bind(
+              this.controllerMessenger,
+              'SnapController:handleRequest',
+            ),
           },
           [],
           req,
@@ -1260,7 +1359,6 @@ export default class MetamaskController extends EventEmitter {
       SignatureController: this.signatureController,
       BridgeController: this.bridgeController,
       BridgeStatusController: this.bridgeStatusController,
-      EnsController: this.ensController,
       ApprovalController: this.approvalController,
     };
 
@@ -1270,6 +1368,7 @@ export default class MetamaskController extends EventEmitter {
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
+      AnalyticsController: this.analyticsController,
       MetaMetricsController: this.metaMetricsController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
@@ -1278,6 +1377,7 @@ export default class MetamaskController extends EventEmitter {
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
+      PasskeyController: this.passkeyController,
       SeedlessOnboardingController: this.seedlessOnboardingController,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
@@ -1311,7 +1411,13 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
+      ShieldController: this.shieldController,
+      ClaimsController: this.claimsController,
+      SubscriptionController: this.subscriptionController,
       ProfileMetricsController: this.profileMetricsController,
+      ConfigRegistryController: this.configRegistryController,
+      TransactionController: this.txController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -1319,6 +1425,7 @@ export default class MetamaskController extends EventEmitter {
     this.memStore = new ComposableObservableStore({
       config: {
         AccountsController: this.accountsController,
+        ConnectivityController: this.connectivityController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
@@ -1330,6 +1437,7 @@ export default class MetamaskController extends EventEmitter {
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
+        AnalyticsController: this.analyticsController,
         MetaMetricsController: this.metaMetricsController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
@@ -1337,6 +1445,7 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
+        PasskeyController: this.passkeyController,
         SeedlessOnboardingController: this.seedlessOnboardingController,
         SubscriptionController: this.subscriptionController,
         PermissionController: this.permissionController,
@@ -1361,7 +1470,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainRatesController: this.multichainRatesController,
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
-        SnapsRegistry: this.snapsRegistry,
+        SnapRegistryController: this.snapsRegistry,
         SnapInterfaceController: this.snapInterfaceController,
         SnapInsightsController: this.snapInsightsController,
         NameController: this.nameController,
@@ -1374,11 +1483,14 @@ export default class MetamaskController extends EventEmitter {
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
         DeFiPositionsController: this.deFiPositionsController,
+        DeFiPositionsControllerV2: this.deFiPositionsControllerV2,
         PhishingController: this.phishingController,
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
         ClaimsService: this.claimsService,
         ProfileMetricsController: this.profileMetricsController,
+        ConfigRegistryController: this.configRegistryController,
+        TxController: this.txController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -1395,7 +1507,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       this.signatureController.resetState.bind(this.signatureController),
       this.bridgeController.resetState.bind(this.bridgeController),
-      this.ensController.resetState.bind(this.ensController),
       this.approvalController.clearRequests.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
@@ -1558,27 +1669,16 @@ export default class MetamaskController extends EventEmitter {
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
     ) {
-      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
-        console.error(error);
-      });
+      this.messengerClientApi
+        .perpsStartEligibilityMonitoring?.()
+        ?.catch((error) => {
+          console.error(error);
+        });
     }
-  }
 
-  /**
-   * Gathers metadata (primarily connectivity status) about the globally selected
-   * network as well as each enabled network and persists it to state.
-   */
-  async lookupSelectedNetworks() {
-    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds(
-      this._getMetaMaskState(),
-    );
-
-    await Promise.allSettled([
-      this.networkController.lookupNetwork(),
-      ...enabledNetworkClientIds.map(async (networkClientId) => {
-        return await this.networkController.lookupNetwork(networkClientId);
-      }),
-    ]);
+    if (this.preferencesController.state.useExternalServices) {
+      this.messengerClientApi.startRampsLifecycle?.();
+    }
   }
 
   triggerNetworkrequests() {
@@ -1588,7 +1688,9 @@ export default class MetamaskController extends EventEmitter {
       !isEvmAccountType(
         this.accountsController.getSelectedMultichainAccount().type,
       ) &&
-      !this.#isAssetsUnifyStateEnabled()
+      !this.controllerMessenger.call(
+        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+      )
     ) {
       this.multichainRatesController.start();
     }
@@ -1596,23 +1698,94 @@ export default class MetamaskController extends EventEmitter {
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
     ) {
-      this.controllerApi.perpsStartEligibilityMonitoring?.()?.catch((error) => {
-        console.error(error);
-      });
+      this.messengerClientApi
+        .perpsStartEligibilityMonitoring?.()
+        ?.catch((error) => {
+          console.error(error);
+        });
+    }
+    if (this.preferencesController.state.useExternalServices) {
+      this.messengerClientApi.startRampsLifecycle?.();
     }
   }
 
   stopNetworkRequests() {
-    this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-    if (!this.#isAssetsUnifyStateEnabled()) {
+    if (
+      !this.controllerMessenger.call(
+        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+      )
+    ) {
       this.multichainRatesController.stop();
     }
     if (getIsPerpsIncludedInBuild()) {
-      this.controllerApi.perpsStopEligibilityMonitoring?.()?.catch((error) => {
+      this.messengerClientApi
+        .perpsStopEligibilityMonitoring?.()
+        ?.catch((error) => {
+          console.error(error);
+        });
+    }
+    this.messengerClientApi.stopRampsLifecycle?.();
+  }
+
+  /**
+   * Disconnect an active Perps session without affecting non-Perps users.
+   *
+   * Perps is an optional feature, so guard on build inclusion, controller
+   * presence, and active connection state before calling into the controller.
+   */
+  #disconnectPerpsIfActive() {
+    try {
+      if (
+        !getIsPerpsIncludedInBuild() ||
+        !this.messengerClientsByName.PerpsController ||
+        typeof this.messengerClientApi.perpsDisconnect !== 'function'
+      ) {
+        return;
+      }
+
+      if (
+        this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
+      ) {
+        return;
+      }
+
+      this.messengerClientApi.perpsDisconnect().catch((error) => {
         console.error(error);
       });
+    } catch (error) {
+      console.error(error);
     }
+  }
+
+  /**
+   * Cancel any pending deferred perps disconnect. Called when a UI
+   * connection reopens within {@link PERPS_DISCONNECT_GRACE_MS} so the
+   * live provider session survives the close/reopen round-trip.
+   */
+  #cancelPerpsDisconnectTimer() {
+    if (this.perpsDisconnectTimer) {
+      clearTimeout(this.perpsDisconnectTimer);
+      this.perpsDisconnectTimer = null;
+    }
+  }
+
+  /**
+   * Schedule a deferred perps disconnect. If another UI connection
+   * arrives within the grace window, the timer is cancelled; otherwise
+   * the perps WebSocket is torn down. Re-schedules are no-ops — the
+   * existing timer keeps running.
+   */
+  #schedulePerpsDisconnect() {
+    if (this.perpsDisconnectTimer) {
+      return;
+    }
+    this.perpsDisconnectTimer = setTimeout(() => {
+      this.perpsDisconnectTimer = null;
+      if (this.activeControllerConnections === 0) {
+        this.#disconnectPerpsIfActive();
+      }
+    }, PERPS_DISCONNECT_GRACE_MS);
   }
 
   resetStates(resetMethods) {
@@ -1623,115 +1796,6 @@ export default class MetamaskController extends EventEmitter {
         console.error(err);
       }
     });
-  }
-
-  /**
-   * Initialize the snap keyring if it is not present.
-   *
-   * @returns {SnapKeyring}
-   */
-  async getSnapKeyring() {
-    // TODO: Use `withKeyring` instead
-    let [snapKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.snap,
-    );
-    if (!snapKeyring) {
-      await this.keyringController.addNewKeyring(KeyringType.snap);
-      // TODO: Use `withKeyring` instead
-      [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
-      );
-    }
-    return snapKeyring;
-  }
-
-  /**
-   * Get the snap keyring instance if available.
-   *
-   * @returns {SnapKeyring}
-   */
-  getSnapKeyringIfAvailable() {
-    // Check if the controller has been unlocked, otherwise this will throw.
-    if (this.keyringController.isUnlocked()) {
-      // TODO: Use `withKeyring` instead
-      const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
-      );
-
-      return snapKeyring;
-    }
-    return undefined;
-  }
-
-  /**
-   * Forward currently selected account group to the Snap keyring.
-   *
-   * @param snapKeyring - Snap keyring instance or undefined if not available.
-   * @param groupId - Currently selected account group.
-   */
-  async forwardSelectedAccountGroupToSnapKeyring(snapKeyring, groupId) {
-    if (!snapKeyring) {
-      // Nothing to forward if the Snap keyring is not available.
-      return;
-    }
-
-    if (groupId) {
-      const group = this.accountTreeController.getAccountGroupObject(groupId);
-      if (group) {
-        // FIXME: For now, only our non-EVM Snaps support this `keyring_setSelectedAccounts`
-        // method. There's also no way to know which optional method is supported on an
-        // account management Snap for now.
-        // Calling this on the SSK has an undesired side-effect on the Snap itself, to avoid
-        // making it fail, we ONLY scope this call to "multichain account groups" which are
-        // backed by non-EVM Snaps.
-        const hasNonEvmAccounts = group.accounts.some((id) => {
-          const account = this.accountsController.getAccount(id);
-
-          return Boolean(account) && !isEvmAccountType(account.type);
-        });
-
-        if (hasNonEvmAccounts) {
-          await snapKeyring.setSelectedAccounts(group.accounts);
-        }
-      }
-    }
-  }
-
-  trackInsightSnapView(snapId) {
-    this.metaMetricsController.trackEvent({
-      event: MetaMetricsEventName.InsightSnapViewed,
-      category: MetaMetricsEventCategory.Snaps,
-      properties: {
-        snap_id: snapId,
-      },
-    });
-  }
-
-  /**
-   * Get snap metadata from the current state without refreshing the registry database.
-   *
-   * @param {string} snapId - A snap id.
-   * @returns The available metadata for the snap, if any.
-   */
-  _getSnapMetadata(snapId) {
-    return this.snapsRegistry.state.database?.verifiedSnaps?.[snapId]?.metadata;
-  }
-
-  /**
-   * Passes a JSON-RPC request object to the SnapController for execution.
-   *
-   * @param {object} args - A bag of options.
-   * @param {string} args.snapId - The ID of the recipient snap.
-   * @param {string} args.origin - The origin of the RPC request.
-   * @param {string} args.handler - The handler to trigger on the snap for the request.
-   * @param {object} args.request - The JSON-RPC request object.
-   * @returns The result of the JSON-RPC request.
-   */
-  async handleSnapRequest(args) {
-    return await this.controllerMessenger.call(
-      'SnapController:handleRequest',
-      args,
-    );
   }
 
   /**
@@ -1784,21 +1848,32 @@ export default class MetamaskController extends EventEmitter {
         if (
           getIsPerpsIncludedInBuild() &&
           prev !== curr &&
-          this.controllerApi.perpsStartEligibilityMonitoring &&
-          this.controllerApi.perpsStopEligibilityMonitoring
+          this.messengerClientApi.perpsStartEligibilityMonitoring &&
+          this.messengerClientApi.perpsStopEligibilityMonitoring
         ) {
           if (curr) {
-            this.controllerApi
+            this.messengerClientApi
               .perpsStartEligibilityMonitoring?.()
               ?.catch((error) => {
                 console.error(error);
               });
           } else {
-            this.controllerApi
+            this.messengerClientApi
               .perpsStopEligibilityMonitoring?.()
               ?.catch((error) => {
                 console.error(error);
               });
+          }
+        }
+        if (
+          prev !== curr &&
+          this.messengerClientApi.startRampsLifecycle &&
+          this.messengerClientApi.stopRampsLifecycle
+        ) {
+          if (curr) {
+            this.messengerClientApi.startRampsLifecycle?.();
+          } else {
+            this.messengerClientApi.stopRampsLifecycle?.();
           }
         }
         return true;
@@ -1975,14 +2050,17 @@ export default class MetamaskController extends EventEmitter {
     // wallet_notify for multichain accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      (groupId) => {
-        // TODO: Move this logic to the SnapKeyring directly.
-        // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-        // eslint-disable-next-line no-void
-        void this.forwardSelectedAccountGroupToSnapKeyring(
-          this.getSnapKeyringIfAvailable(),
-          groupId,
+      () => {
+        const authorizationsByOrigin = getAuthorizedScopesByOrigin(
+          this.permissionController.state,
         );
+
+        for (const [
+          origin,
+          authorization,
+        ] of authorizationsByOrigin.entries()) {
+          this._notifyAuthorizationChange(origin, authorization);
+        }
 
         NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ network, accountType, notificationProperty, chains }) => {
@@ -2035,23 +2113,6 @@ export default class MetamaskController extends EventEmitter {
             }
           },
         );
-      },
-    );
-
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    this.controllerMessenger.subscribe(
-      `${this.multichainAccountService.name}:multichainAccountGroupUpdated`,
-      (group) => {
-        // If the current group gets updated, then maybe there are more accounts being "selected"
-        // now, so we have to forward them to the Snap keyring too!
-        if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
-          // eslint-disable-next-line no-void
-          void this.forwardSelectedAccountGroupToSnapKeyring(
-            this.getSnapKeyringIfAvailable(),
-            group.id,
-          );
-        }
       },
     );
 
@@ -2115,93 +2176,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstallStarted`,
-      (snapId, origin, isUpdate) => {
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: isUpdate
-            ? MetaMetricsEventName.SnapUpdateStarted
-            : MetaMetricsEventName.SnapInstallStarted,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstallFailed`,
-      (snapId, origin, isUpdate, error) => {
-        const isRejected = error.includes('User rejected the request.');
-        const failedEvent = isUpdate
-          ? MetaMetricsEventName.SnapUpdateFailed
-          : MetaMetricsEventName.SnapInstallFailed;
-        const rejectedEvent = isUpdate
-          ? MetaMetricsEventName.SnapUpdateRejected
-          : MetaMetricsEventName.SnapInstallRejected;
-
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: isRejected ? rejectedEvent : failedEvent,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapInstalled`,
-      (truncatedSnap, origin, preinstalled) => {
-        if (preinstalled) {
-          return;
-        }
-
-        const snapId = truncatedSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapInstalled,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            version: truncatedSnap.version,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      `${this.snapController.name}:snapUpdated`,
-      (newSnap, oldVersion, origin, preinstalled) => {
-        if (preinstalled) {
-          return;
-        }
-
-        const snapId = newSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapUpdated,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            old_version: oldVersion,
-            new_version: newSnap.version,
-            origin,
-            snap_category: snapCategory,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapTerminated`,
       (truncatedSnap) => {
         const approvals = Object.values(
@@ -2233,18 +2207,6 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesController.deleteNotificationsById(
           notificationIds,
         );
-
-        const snapId = truncatedSnap.id;
-        const snapCategory = this._getSnapMetadata(snapId)?.category;
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.SnapUninstalled,
-          category: MetaMetricsEventCategory.Snaps,
-          properties: {
-            snap_id: snapId,
-            version: truncatedSnap.version,
-            snap_category: snapCategory,
-          },
-        });
       },
     );
   }
@@ -2256,7 +2218,11 @@ export default class MetamaskController extends EventEmitter {
    * and subscribes to account changes.
    */
   setupMultichainDataAndSubscriptions() {
-    if (this.#isAssetsUnifyStateEnabled()) {
+    if (
+      this.controllerMessenger.call(
+        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+      )
+    ) {
       return;
     }
 
@@ -2479,26 +2445,10 @@ export default class MetamaskController extends EventEmitter {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
     const flatState = this.memStore.getFlatState();
-
     return {
       isInitialized,
       ...sanitizeUIState(flatState),
     };
-  }
-
-  /**
-   * Adds a network and sets it as the active network.
-   *
-   * @param {object} networkConfiguration - The network configuration to add.
-   * @returns {Promise<object>} The added network configuration.
-   */
-  async _addNetworkAndSetActive(networkConfiguration) {
-    const addedNetwork =
-      await this.networkController.addNetwork(networkConfiguration);
-    const { networkClientId } =
-      addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ?? {};
-    await this.networkController.setActiveNetwork(networkClientId);
-    return addedNetwork;
   }
 
   /**
@@ -2507,6 +2457,10 @@ export default class MetamaskController extends EventEmitter {
    * The API object can be transmitted over a stream via JSON-RPC.
    *
    * @returns {object} Object containing API functions.
+   *
+   * @deprecated This method is deprecated and will be removed in a future release.
+   * All legacy methods from getApi() are being migrated to the LegacyBackgroundApiService and can be accessed via the messenger.
+   * New methods should be defined in controllers and exposed via the messenger, rather than being added to this API object.
    */
   getApi() {
     const {
@@ -2519,16 +2473,13 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       tokenBalancesController,
       tokenDetectionController,
-      ensController,
       tokenListController,
       gasFeeController,
       gatorPermissionsController,
       metaMetricsController,
       networkController,
-      multichainNetworkController,
       announcementController,
       onboardingController,
-      permissionController,
       preferencesController,
       tokensController,
       smartTransactionsController,
@@ -2540,29 +2491,20 @@ export default class MetamaskController extends EventEmitter {
       // Notification Controllers
       authenticationController,
       userStorageController,
+      authenticatedUserStorageService,
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
       multichainAssetsRatesController,
       staticAssetsController,
-      assetsController,
     } = this;
 
     return {
       // etc
-      setCurrentCurrency: (currencyCode) => {
-        currencyRateController.setCurrentCurrency(currencyCode);
-
-        if (assetsController) {
-          assetsController.setSelectedCurrency(currencyCode);
-        }
-      },
-      // @deprecated Use setAvatarType instead
-      setUseBlockie: preferencesController.setUseBlockie.bind(
-        preferencesController,
+      setCurrentCurrency: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setCurrentCurrency',
       ),
-      setAvatarType: (avatarType) =>
-        preferencesController.setPreference('avatarType', avatarType),
       setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
         preferencesController,
       ),
@@ -2590,12 +2532,10 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
-      getProviderConfig: () =>
-        getProviderConfig({
-          metamask: this.networkController.state,
-        }),
-      isPublicEndpointUrl: (endpointUrl) =>
-        isPublicEndpointUrl(endpointUrl, this.opts.infuraProjectId),
+      isPublicEndpointUrl: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:isPublicEndpointUrl',
+      ),
       grantPermissionsIncremental:
         this.permissionController.grantPermissionsIncremental.bind(
           this.permissionController,
@@ -2634,10 +2574,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseAddressBarEnsResolution.bind(
           preferencesController,
         ),
-      setParticipateInMetaMetrics:
-        metaMetricsController.setParticipateInMetaMetrics.bind(
-          metaMetricsController,
-        ),
+      setParticipateInMetaMetrics,
       setDataCollectionForMarketing:
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,
@@ -2649,34 +2586,70 @@ export default class MetamaskController extends EventEmitter {
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
-      setServiceWorkerKeepAlivePreference:
-        preferencesController.setServiceWorkerKeepAlivePreference.bind(
-          preferencesController,
+      markPasswordForgotten: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:markPasswordForgotten',
+      ),
+      unMarkPasswordForgotten: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:unMarkPasswordForgotten',
+      ),
+      getRequestAccountTabIds: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getRequestAccountTabIds',
+      ),
+      getOpenMetamaskTabsIds: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
+      ),
+      markNotificationPopupAsAutomaticallyClosed:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
         ),
-      markPasswordForgotten: this.markPasswordForgotten.bind(this),
-      unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      getRequestAccountTabIds: this.getRequestAccountTabIds,
-      getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
-      markNotificationPopupAsAutomaticallyClosed: () =>
-        this.notificationManager.markAsAutomaticallyClosed(),
-      getCode: this.getCode.bind(this),
+      getCode: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getCode',
+      ),
 
       // primary keyring management
-      addNewAccount: this.addNewAccount.bind(this),
-      getSeedPhrase: this.getSeedPhrase.bind(this),
-      resetAccount: this.resetAccount.bind(this),
-      removeAccount: this.removeAccount.bind(this),
-      importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
-      getAccountsBySnapId: (snapId) =>
-        getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
-      checkIsSeedlessPasswordOutdated:
-        this.checkIsSeedlessPasswordOutdated.bind(this),
-      syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
+      getSeedPhrase: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getSeedPhrase',
+      ),
+      resetAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resetAccount',
+      ),
+      removeAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removeAccount',
+      ),
+      importAccountWithStrategy: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:importAccountWithStrategy',
+      ),
+      getAccountsBySnapId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getAccountsBySnapId',
+      ),
+      checkIsSeedlessPasswordOutdated: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+      ),
+      syncPasswordAndUnlockWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+      ),
 
       // subscription
       subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
         this.subscriptionController,
       ),
+      subscriptionsStopPolling:
+        this.subscriptionController.stopPollingByPollingToken.bind(
+          this.subscriptionController,
+        ),
       getSubscriptionsEligibilities:
         this.subscriptionController.getSubscriptionsEligibilities.bind(
           this.subscriptionController,
@@ -2710,24 +2683,24 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
       startSubscriptionWithCard:
-        this.subscriptionService.startSubscriptionWithCard.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.startSubscriptionWithCard.bind(
+          this.shieldSubscriptionService,
         ),
       updateSubscriptionCardPaymentMethod:
-        this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.updateSubscriptionCardPaymentMethod.bind(
+          this.shieldSubscriptionService,
         ),
       updateSubscriptionCryptoPaymentMethod:
-        this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
+          this.shieldSubscriptionService,
         ),
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
         ),
       linkRewardToShieldSubscription:
-        this.subscriptionService.linkRewardToExistingSubscription.bind(
-          this.subscriptionService,
+        this.shieldSubscriptionService.linkRewardToExistingSubscription.bind(
+          this.shieldSubscriptionService,
         ),
 
       // rewards
@@ -2752,7 +2725,7 @@ export default class MetamaskController extends EventEmitter {
         this.rewardsController.validateReferralCode.bind(
           this.rewardsController,
         ),
-      getRewardsGeoMetadata: this.rewardsController.getRewardsGeoMetadata.bind(
+      getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
         this.rewardsController,
       ),
       rewardsOptIn: this.rewardsController.optIn.bind(this.rewardsController),
@@ -2764,6 +2737,14 @@ export default class MetamaskController extends EventEmitter {
       ),
       rewardsLinkAccountsToSubscriptionCandidate:
         this.rewardsController.linkAccountsToSubscriptionCandidate.bind(
+          this.rewardsController,
+        ),
+      rewardsGetPerpsDiscountForAccount:
+        this.rewardsController.getPerpsDiscountForAccount.bind(
+          this.rewardsController,
+        ),
+      rewardsGetVipTierForAccount:
+        this.rewardsController.getVipTierForAccount.bind(
           this.rewardsController,
         ),
 
@@ -2789,16 +2770,50 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // hardware wallets
-      connectHardware: this.connectHardware.bind(this),
-      forgetDevice: this.forgetDevice.bind(this),
-      checkHardwareStatus: this.checkHardwareStatus.bind(this),
-      getHdPathForLedgerKeyring: this.getHdPathForLedgerKeyring.bind(this),
-      unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
-      attemptLedgerTransportCreation:
-        this.attemptLedgerTransportCreation.bind(this),
-      getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
-      getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
-      getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
+      connectHardware: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:connectHardware',
+      ),
+      forgetDevice: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:forgetDevice',
+      ),
+      checkHardwareStatus: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:checkHardwareStatus',
+      ),
+      getHdPathForLedgerKeyring: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getHdPathForLedgerKeyring',
+      ),
+      unlockHardwareWalletAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+      ),
+      attemptLedgerTransportCreation: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:attemptLedgerTransportCreation',
+      ),
+      getAppNameAndVersion: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getAppNameAndVersion',
+      ),
+      getLedgerPublicKey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getLedgerPublicKey',
+      ),
+      getLedgerAppConfiguration: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getLedgerAppConfiguration',
+      ),
+      getLedgerMode: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getLedgerMode',
+      ),
+      getTrezorFeatures: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTrezorFeatures',
+      ),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -2807,8 +2822,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.cancelQrCodeScan.bind(appStateController),
 
       // vault management
-      submitPassword: this.submitPassword.bind(this),
-      verifyPassword: this.verifyPassword.bind(this),
+      submitPasswordOrEncryptionKey: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
+      ),
+      verifyPassword: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'KeyringController:verifyPassword',
+      ),
 
       // network management
       setActiveNetwork: async (id) => {
@@ -2839,7 +2860,10 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      addNetwork: this._addNetworkAndSetActive.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -2855,22 +2879,28 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      setSelectedAddress: (address) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account) {
-          this.accountsController.setSelectedAccount(account.id);
-        } else {
-          throw new Error(`No account found for address: ${address}`);
-        }
-      },
-      toggleExternalServices: this.toggleExternalServices.bind(this),
-      addToken: tokensController.addToken.bind(tokensController),
+      toggleExternalServices: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:toggleExternalServices',
+      ),
+      addToken: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addToken',
+      ),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
       setPreference: preferencesController.setPreference.bind(
         preferencesController,
+      ),
+      consolidateBasicFunctionality: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PreferencesController:consolidateBasicFunctionality',
+      ),
+      toggleBasicFunctionality: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PreferencesController:toggleBasicFunctionality',
       ),
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
@@ -2892,6 +2922,15 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
           preferencesController,
         ),
+      dismissSidePanelMigrationToast:
+        preferencesController.dismissSidePanelMigrationToast.bind(
+          preferencesController,
+        ),
+      dismissBasicFunctionalityMigrationNotification:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'PreferencesController:dismissBasicFunctionalityMigrationNotification',
+        ),
 
       setManageInstitutionalWallets:
         preferencesController.setManageInstitutionalWallets.bind(
@@ -2899,23 +2938,18 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // AccountsController
-      setSelectedInternalAccount: (id) => {
-        const account = this.accountsController.getAccount(id);
-        if (account) {
-          this.accountsController.setSelectedAccount(id);
-        }
-      },
+      setSelectedInternalAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setSelectedInternalAccount',
+      ),
 
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
 
-      setAccountLabel: (address, label) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account === undefined) {
-          throw new Error(`No account found for address: ${address}`);
-        }
-        this.accountsController.setAccountName(account.id, label);
-      },
+      setAccountLabel: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setAccountLabel',
+      ),
 
       // AccountTreeController
       setSelectedMultichainAccount: (accountGroupId) => {
@@ -2935,29 +2969,35 @@ export default class MetamaskController extends EventEmitter {
         this.accountTreeController.setAccountGroupHidden.bind(
           this.accountTreeController,
         ),
-      syncAccountTreeWithUserStorage: async () => {
-        await this.getSnapKeyring();
-        await this.accountTreeController.syncWithUserStorage();
-      },
+      syncAccountTreeWithUserStorage: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountTreeController:syncWithUserStorage',
+      ),
 
       // MultichainAccountService
-      createNextMultichainAccountGroup: async (walletId) => {
-        await this.multichainAccountService.createNextMultichainAccountGroup({
-          entropySource: walletId,
-        });
-      },
+      createNextMultichainAccountGroup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:createNextMultichainAccountGroup',
+      ),
 
-      alignMultichainWallets: async () => {
-        if (this.multichainAccountService) {
-          await this.multichainAccountService.alignWallets();
-        }
-      },
+      alignMultichainWallets: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'MultichainAccountService:alignWallets',
+      ),
 
       // AssetsContractController
-      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
-      getTokenSymbol: this.getTokenSymbol.bind(this),
-      getTokenStandardAndDetailsByChain:
-        this.getTokenStandardAndDetailsByChain.bind(this),
+      getTokenStandardAndDetails: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTokenStandardAndDetails',
+      ),
+      getTokenSymbol: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTokenSymbol',
+      ),
+      getTokenStandardAndDetailsByChain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain',
+      ),
       getERC1155BalanceOf:
         this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
@@ -2998,6 +3038,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setBrowserEnvironment.bind(appStateController),
       setDefaultHomeActiveTabName:
         appStateController.setDefaultHomeActiveTabName.bind(appStateController),
+      setLastVisitedRoute:
+        appStateController.setLastVisitedRoute.bind(appStateController),
       removeDeferredDeepLink:
         appStateController.removeDeferredDeepLink.bind(appStateController),
       setConnectedStatusPopoverHasBeenShown:
@@ -3014,16 +3056,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setTermsOfUseLastAgreed:
         appStateController.setTermsOfUseLastAgreed.bind(appStateController),
-      setSurveyLinkLastClickedOrClosed:
-        appStateController.setSurveyLinkLastClickedOrClosed.bind(
-          appStateController,
-        ),
       setOnboardingDate:
         appStateController.setOnboardingDate.bind(appStateController),
       setLastViewedUserSurvey:
         appStateController.setLastViewedUserSurvey.bind(appStateController),
-      setRampCardClosed:
-        appStateController.setRampCardClosed.bind(appStateController),
       setNewPrivacyPolicyToastClickedOrClosed:
         appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
           appStateController,
@@ -3032,6 +3068,21 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setNewPrivacyPolicyToastShownDate.bind(
           appStateController,
         ),
+      setArcUsageNoticeShown: () => {
+        if (appStateController.state.arcUsageNoticeShown) {
+          return;
+        }
+        appStateController.setArcUsageNoticeShown();
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.NetworkUsageNoticeToastViewed)
+            .addCategory(MetaMetricsEventCategory.Home)
+            .addProperties({
+              network_name: 'arc',
+              chain_id_caip: 'eip155:5042',
+            })
+            .build(),
+        );
+      },
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
@@ -3048,20 +3099,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setLastUpdatedAt:
         appStateController.setLastUpdatedAt.bind(appStateController),
-      setShowTestnetMessageInDropdown:
-        appStateController.setShowTestnetMessageInDropdown.bind(
-          appStateController,
-        ),
-      setShowBetaHeader:
-        appStateController.setShowBetaHeader.bind(appStateController),
-      setShowPermissionsTour:
-        appStateController.setShowPermissionsTour.bind(appStateController),
-      setShowAccountBanner:
-        appStateController.setShowAccountBanner.bind(appStateController),
       setProductTour:
         appStateController.setProductTour.bind(appStateController),
-      setShowNetworkBanner:
-        appStateController.setShowNetworkBanner.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
       getLastInteractedConfirmationInfo:
@@ -3082,16 +3121,18 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
         ),
+      setPerpsTabBadgeSeen:
+        appStateController.setPerpsTabBadgeSeen.bind(appStateController),
+      setLastPerpsDepositEntryPoint:
+        appStateController.setLastPerpsDepositEntryPoint.bind(
+          appStateController,
+        ),
       setMusdConversionEducationSeen:
         appStateController.setMusdConversionEducationSeen.bind(
           appStateController,
         ),
       addMusdConversionDismissedCtaKey:
         appStateController.addMusdConversionDismissedCtaKey.bind(
-          appStateController,
-        ),
-      updateNetworkConnectionBanner:
-        appStateController.updateNetworkConnectionBanner.bind(
           appStateController,
         ),
       setShowShieldEntryModalOnce:
@@ -3123,10 +3164,6 @@ export default class MetamaskController extends EventEmitter {
           appStateController,
         ),
 
-      // EnsController
-      tryReverseResolveAddress:
-        ensController.reverseResolveAddress.bind(ensController),
-
       // OAuthService
       startOAuthLogin: this.oauthService.startOAuthLogin.bind(
         this.oauthService,
@@ -3136,6 +3173,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       getMarketingConsent: this.oauthService.getMarketingConsent.bind(
         this.oauthService,
+      ),
+      getGeolocation: this.geolocationController.getGeolocation.bind(
+        this.geolocationController,
       ),
 
       // SeedlessOnboardingController
@@ -3149,15 +3189,26 @@ export default class MetamaskController extends EventEmitter {
       resetOAuthLoginState: this.seedlessOnboardingController.clearState.bind(
         this.seedlessOnboardingController,
       ),
-      createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
+      createSeedPhraseBackup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createSeedPhraseBackup',
+      ),
       storeKeyringEncryptionKey:
         this.seedlessOnboardingController.storeKeyringEncryptionKey.bind(
           this.seedlessOnboardingController,
         ),
-      restoreSocialBackupAndGetSeedPhrase:
-        this.restoreSocialBackupAndGetSeedPhrase.bind(this),
-      syncSeedPhrases: this.syncSeedPhrases.bind(this),
-      changePassword: this.changePassword.bind(this),
+      restoreSocialBackupAndGetSeedPhrase: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
+      ),
+      syncSeedPhrases: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:syncSeedPhrases',
+      ),
+      changePassword: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:changePassword',
+      ),
       getIsSeedlessOnboardingUserAuthenticated:
         this.seedlessOnboardingController.getIsUserAuthenticated.bind(
           this.seedlessOnboardingController,
@@ -3176,45 +3227,74 @@ export default class MetamaskController extends EventEmitter {
         gatorPermissionsController.submitDirectRevocation.bind(
           gatorPermissionsController,
         ),
-      checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
+      checkDelegationDisabled: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:checkDelegationDisabled',
+      ),
 
       // KeyringController
-      setLocked: this.setLocked.bind(this),
-      createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
-      createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      importMnemonicToVault: this.importMnemonicToVault.bind(this),
-      exportAccount: this.exportAccount.bind(this),
+      setLocked: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setLocked',
+      ),
+      createNewVaultAndKeychain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createNewVaultAndKeychain',
+      ),
+      createNewVaultAndGetSeedPhrase: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
+      ),
+      unlockAndGetSeedPhrase: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
+      ),
+      createNewVaultAndRestore: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createNewVaultAndRestore',
+      ),
+      importMnemonicToVault: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:importMnemonicToVault',
+      ),
+      exportAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:exportAccount',
+      ),
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
       approveTransactionsWithSameNonce:
         txController.approveTransactionsWithSameNonce.bind(txController),
-      createCancelTransaction: this.createCancelTransaction.bind(this),
-      createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
-      estimateGas: this.estimateGas.bind(this),
+      createCancelTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'TransactionController:stopTransaction',
+      ),
+      createSpeedUpTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'TransactionController:speedUpTransaction',
+      ),
+      estimateGas: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:estimateGas',
+      ),
       estimateGasFee: txController.estimateGasFee.bind(txController),
-      getNextNonce: this.getNextNonce.bind(this),
-      addTransaction: (transactionParams, transactionOptions) =>
-        addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions,
-            waitForSubmit: false,
-          }),
-        ),
-      addTransactionAndWaitForPublish: (
-        transactionParams,
-        transactionOptions,
-      ) =>
-        addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions,
-            waitForSubmit: true,
-          }),
-        ),
-      upsertTransactionUIMetricsFragment:
-        this.upsertTransactionUIMetricsFragment.bind(this),
+      getNextNonce: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getNextNonce',
+      ),
+      addTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addTransaction',
+      ),
+      addTransactionAndWaitForPublish: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+      ),
+      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+      ),
       setTransactionActive:
         txController.setTransactionActive.bind(txController),
       // decryptMessageController
@@ -3245,6 +3325,10 @@ export default class MetamaskController extends EventEmitter {
         onboardingController.setSeedPhraseBackedUp.bind(onboardingController),
       completeOnboarding:
         onboardingController.completeOnboarding.bind(onboardingController),
+      setHasSeenOnboardingCompletionPage:
+        onboardingController.setHasSeenOnboardingCompletionPage.bind(
+          onboardingController,
+        ),
       setFirstTimeFlowType:
         onboardingController.setFirstTimeFlowType.bind(onboardingController),
 
@@ -3257,59 +3341,107 @@ export default class MetamaskController extends EventEmitter {
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
 
       // permissions
-      removePermissionsFor: this.removePermissionsFor,
-      approvePermissionsRequest: this.acceptPermissionsRequest,
-      rejectPermissionsRequest: this.rejectPermissionsRequest,
-      ...getPermissionBackgroundApiMethods({
-        permissionController,
-        approvalController,
-        accountsController,
-        networkController,
-        multichainNetworkController,
-      }),
+      removePermissionsFor: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermissionsFor',
+      ),
+      approvePermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:acceptPermissionsRequest',
+      ),
+      rejectPermissionsRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectPermissionsRequest',
+      ),
+      addPermittedAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedAccount',
+      ),
+      addPermittedAccounts: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedAccounts',
+      ),
+      removePermittedAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermittedAccount',
+      ),
+      setPermittedAccounts: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setPermittedAccounts',
+      ),
+      addPermittedChain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedChain',
+      ),
+      addPermittedChains: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedChains',
+      ),
+      removePermittedChain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermittedChain',
+      ),
+      setPermittedChains: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setPermittedChains',
+      ),
+      requestAccountsAndChainPermissionsWithId:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
+        ),
 
-      // snaps
+      // Snaps
       disableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'SnapController:disable',
+        'SnapController:disableSnap',
       ),
       enableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'SnapController:enable',
+        'SnapController:enableSnap',
       ),
-      updateSnap: (origin, requestedSnaps) => {
-        // We deliberately do not await this promise as that would mean waiting for the update to complete
-        // Instead we return null to signal to the UI that it is safe to redirect to the update flow
-        this.controllerMessenger.call(
-          'SnapController:install',
-          origin,
-          requestedSnaps,
-        );
-        return null;
-      },
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'SnapController:remove',
+        'SnapController:removeSnap',
       ),
-      handleSnapRequest: this.handleSnapRequest.bind(this),
+      handleSnapRequest: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:handleRequest',
+      ),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'SnapController:revokeDynamicPermissions',
+        'SnapController:revokeDynamicSnapPermissions',
       ),
       disconnectOriginFromSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:disconnectOrigin',
       ),
-      updateNetworksList: this.updateNetworksList.bind(this),
-      updateAccountsList: this.updateAccountsList.bind(this),
-      setEnabledNetworks: this.setEnabledNetworks.bind(this),
-      setEnabledAllPopularNetworks:
-        this.setEnabledAllPopularNetworks.bind(this),
-      updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
-      getPhishingResult: async (website) => {
-        await phishingController.maybeUpdateState();
-
-        return phishingController.test(website);
+      updateNetworksList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkOrderController:updateNetworksList',
+      ),
+      updateAccountsList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountOrderController:updateAccountsList',
+      ),
+      setEnabledNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setEnabledNetworks',
+      ),
+      setEnabledAllPopularNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+      ),
+      updateHiddenAccountsList: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'AccountOrderController:updateHiddenAccountsList',
+      ),
+      getPhishingResult: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getPhishingResult',
+      ),
+      checkAddressPoisoning: (address) => {
+        return phishingController.checkAddressPoisoning(address);
       },
       scanUrlForPhishing: async (origin) => {
         return phishingController.scanUrl(origin);
@@ -3324,23 +3456,37 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
+      resetState: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
+        `${BRIDGE_CONTROLLER_NAME}:resetState`,
       ),
-      [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
-        ),
-      [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
-        ),
-      [BridgeBackgroundAction.FETCH_QUOTES]: this.controllerMessenger.call.bind(
+      setInputPrimaryDenomination: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+        `${BRIDGE_CONTROLLER_NAME}:setInputPrimaryDenomination`,
+      ),
+      updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
+      ),
+      trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
+      ),
+      setLocation: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:setLocation`,
+      ),
+      getLocation: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:getLocation`,
+      ),
+      fetchQuotes: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
+      ),
+      updateBatchSellTrades: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
       ),
 
       // Bridge Tx submission
@@ -3351,6 +3497,10 @@ export default class MetamaskController extends EventEmitter {
       submitIntent: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
+      ),
+      submitBatchSell: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitBatchSell'}`,
       ),
 
       // Smart Transactions
@@ -3382,48 +3532,42 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
-        metaMetricsController,
-      ),
-      trackMetaMetricsPage: metaMetricsController.trackPage.bind(
-        metaMetricsController,
-      ),
-      createEventFragment: metaMetricsController.createEventFragment.bind(
-        metaMetricsController,
-      ),
-      updateEventFragment: metaMetricsController.updateEventFragment.bind(
-        metaMetricsController,
-      ),
-      finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
-        metaMetricsController,
-      ),
-      trackInsightSnapView: this.trackInsightSnapView.bind(this),
-      updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
-        metaMetricsController,
-      ),
+      trackAnalyticsEvent: trackEvent,
+      trackAnalyticsPage: trackPage,
+      trackMetaMetricsPage: trackPage,
+      updateEventFragment,
 
-      // MetaMetrics buffering for onboarding
-      addEventBeforeMetricsOptIn:
-        metaMetricsController.addEventBeforeMetricsOptIn.bind(
-          metaMetricsController,
-        ),
-
-      // Buffered Trace API that checks consent and handles buffering/immediate execution
-      bufferedTrace: metaMetricsController.bufferedTrace.bind(
-        metaMetricsController,
+      // These are background-owned buffered trace entry points. UI pages must
+      // call them through submitRequestToBackground; importing the methods
+      // directly in UI would create a separate queue for each page.
+      bufferedTrace: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SentryTracingService:bufferedTrace',
       ),
-      bufferedEndTrace: metaMetricsController.bufferedEndTrace.bind(
-        metaMetricsController,
+      bufferedEndTrace: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SentryTracingService:bufferedEndTrace',
       ),
 
       // ApprovalController
-      rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
-      rejectPendingApproval: this.rejectPendingApproval,
+      rejectAllPendingApprovals: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectAllPendingApprovals',
+      ),
+      rejectPendingApproval: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:rejectPendingApproval',
+      ),
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
-      resolvePendingApproval: this.resolvePendingApproval,
-      approveHardwareWalletTransaction:
-        this.approveHardwareWalletTransaction.bind(this),
+      resolvePendingApproval: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resolvePendingApproval',
+      ),
+      approveHardwareWalletTransaction: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:approveHardwareWalletTransaction',
+      ),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -3522,27 +3666,16 @@ export default class MetamaskController extends EventEmitter {
         tokenDetectionController,
       ),
 
-      // MultichainAssetsRatesController
-      fetchHistoricalPricesForAsset: (...args) =>
-        this.multichainAssetsRatesController.fetchHistoricalPricesForAsset(
-          ...args,
-        ),
-
       // DetectCollectibleController
       detectNfts: nftDetectionController.detectNfts.bind(
         nftDetectionController,
       ),
 
       // Assets Controller - accounts passed from UI; options may include chainIds, assetTypes
-      getAssets: (accounts, options) => {
-        if (!this.assetsController) {
-          return Promise.resolve();
-        }
-        return this.assetsController.getAssets(accounts, {
-          ...options,
-          forceUpdate: true,
-        });
-      },
+      getAssets: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getAssets',
+      ),
 
       /** Token Detection V2 */
       addDetectedTokens:
@@ -3577,6 +3710,10 @@ export default class MetamaskController extends EventEmitter {
       getBearerToken: authenticationController.getBearerToken.bind(
         authenticationController,
       ),
+      requestProfilePairing:
+        authenticationController.requestProfilePairing.bind(
+          authenticationController,
+        ),
 
       // UserStorageController
       setIsBackupAndSyncFeatureEnabled:
@@ -3590,6 +3727,14 @@ export default class MetamaskController extends EventEmitter {
       syncContactsWithUserStorage:
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
+        ),
+      getNotificationPreferences:
+        authenticatedUserStorageService.getNotificationPreferences.bind(
+          authenticatedUserStorageService,
+        ),
+      putNotificationPreferences:
+        authenticatedUserStorageService.putNotificationPreferences.bind(
+          authenticatedUserStorageService,
         ),
       // NotificationServicesController
       checkAccountsPresence:
@@ -3634,33 +3779,28 @@ export default class MetamaskController extends EventEmitter {
         notificationServicesPushController.disablePushNotifications.bind(
           notificationServicesPushController,
         ),
-      enableMetamaskNotifications:
-        notificationServicesController.enableMetamaskNotifications.bind(
-          notificationServicesController,
-        ),
+      enableMetamaskNotifications: (options) =>
+        notificationServicesController.enableMetamaskNotifications(options),
       disableMetamaskNotifications:
         notificationServicesController.disableNotificationServices.bind(
           notificationServicesController,
         ),
 
       // Testing
-      throwTestError: this.throwTestError.bind(this),
-      captureTestError: this.captureTestError.bind(this),
+      throwTestError: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:throwTestError',
+      ),
+      captureTestError: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:captureTestError',
+      ),
 
       // NameController
       updateProposedNames: this.nameController.updateProposedNames.bind(
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
-
-      // SnapKeyring
-      createSnapAccount: async (snapId, options, internalOptions) => {
-        // NOTE: We should probably start using `withKeyring` with `createIfMissing: true`
-        // in this case.
-        const keyring = await this.getSnapKeyring();
-
-        return await keyring.createAccount(snapId, options, internalOptions);
-      },
 
       // Multichain Assets Controller
       multichainAddAssets: (assetIds, accountId) =>
@@ -3679,11 +3819,10 @@ export default class MetamaskController extends EventEmitter {
           accountId,
         ),
       // Transaction Decode
-      decodeTransactionData: (request) =>
-        decodeTransactionData({
-          ...request,
-          provider: this.provider,
-        }),
+      decodeTransactionData: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:decodeTransactionData',
+      ),
       // metrics data deleteion
       createMetaMetricsDataDeletionTask:
         this.metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
@@ -3695,23 +3834,38 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Other
-      endTrace,
-      isRelaySupported,
-      isSendBundleSupported,
-      openUpdateTabAndReload: () =>
-        openUpdateTabAndReload(this.requestSafeReload.bind(this)),
-      requestSafeReload: this.requestSafeReload.bind(this),
-      applyTransactionContainersExisting: (transactionId, containerTypes) =>
-        applyTransactionContainersExisting({
-          containerTypes,
-          messenger: this.controllerMessenger,
-          transactionId,
-          updateEditableParams: this.txController.updateEditableParams.bind(
-            this.txController,
-          ),
-        }),
-      lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
-      resetWallet: this.resetWallet.bind(this),
+      isRelaySupported: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:isRelaySupported',
+      ),
+      isSendBundleSupported: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:isSendBundleSupported',
+      ),
+      getSentinelNetworkFlags: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getSentinelNetworkFlags',
+      ),
+      openUpdateTabAndReload: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:openUpdateTabAndReload',
+      ),
+      requestSafeReload: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:requestSafeReload',
+      ),
+      applyTransactionContainersExisting: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:applyTransactionContainersExisting',
+      ),
+      lookupSelectedNetworks: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:lookupSelectedNetworks',
+      ),
+      resetWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resetWallet',
+      ),
     };
   }
 
@@ -3729,1296 +3883,9 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  /**
-   * Reset the wallet, restart the from the onboarding flow
-   *
-   * @param {boolean} restoreOnly - Whether to only restore the vault, without resetting the onboarding.
-   * @returns void
-   */
-  async resetWallet(restoreOnly = false) {
-    // sign out from Authentication service and clear the Session Data
-    this.authenticationController.performSignOut();
-
-    // clear SeedlessOnboardingController state
-    this.seedlessOnboardingController.clearState();
-
-    // stop subscription polling
-    this.subscriptionController.stopAllPolling();
-
-    // clear States
-    this.subscriptionController.clearState();
-    this.shieldController.clearState();
-    this.claimsController.clearState();
-
-    // clear contacts (address book)
-    this.addressBookController.clear();
-
-    // reset preferences to defaults
-    this.preferencesController.resetState();
-
-    if (!restoreOnly) {
-      // reset onboarding state
-      this.onboardingController.resetOnboarding();
-      this.appStateController.setIsWalletResetInProgress(true);
-    }
-  }
-
-  async exportAccount(address, password) {
-    await this.verifyPassword(password);
-    return this.keyringController.exportAccount(password, address);
-  }
-
-  async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const currentChainId = this.#getGlobalChainId();
-
-    const { tokensChainsCache } = this.tokenListController.state;
-    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
-    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
-
-    const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
-
-    const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
-    const userDefinedTokenDetails =
-      tokens.find(({ address: _address }) =>
-        isEqualCaseInsensitive(_address, address),
-      ) || {};
-
-    const tokenDetails = {
-      ...staticTokenListDetails,
-      ...tokenListDetails,
-      ...userDefinedTokenDetails,
-    };
-
-    // boolean to check if the token is an ERC20
-    const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
-      tokenDetails.erc20 === true;
-
-    // boolean to check if the token is an NFT
-    const noEvidenceThatTokenIsAnNFT =
-      !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
-      !tokenDetails.erc721;
-
-    // boolean to check if the token is an ERC20 like
-    const otherDetailsAreERC20Like =
-      tokenDetails.decimals !== undefined && tokenDetails.symbol;
-
-    // boolean to check if the token can be treated as an ERC20
-    const tokenCanBeTreatedAsAnERC20 =
-      tokenDetailsStandardIsERC20 ||
-      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
-
-    let details;
-    if (tokenCanBeTreatedAsAnERC20) {
-      try {
-        const balance = userAddress
-          ? await fetchTokenBalance(address, userAddress, this.provider)
-          : undefined;
-
-        details = {
-          address,
-          balance,
-          standard: ERC20,
-          decimals: tokenDetails.decimals,
-          symbol: tokenDetails.symbol,
-        };
-      } catch (e) {
-        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warn(`Failed to get token balance. Error: ${e}`);
-      }
-    }
-
-    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
-    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
-    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
-    if (details === undefined) {
-      try {
-        details =
-          await this.assetsContractController.getTokenStandardAndDetails(
-            address,
-            userAddress,
-            tokenId,
-          );
-      } catch (e) {
-        log.warn(`Failed to get token standard and details. Error: ${e}`);
-      }
-    }
-
-    if (details) {
-      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
-        details.standard,
-        ERC1155,
-      );
-
-      if (tokenDetailsStandardIsERC1155) {
-        try {
-          const balance = await fetchERC1155Balance(
-            address,
-            userAddress,
-            tokenId,
-            this.provider,
-          );
-
-          const balanceToUse = balance?._hex
-            ? parseInt(balance._hex, 16).toString()
-            : null;
-
-          details = {
-            ...details,
-            balance: balanceToUse,
-          };
-        } catch (e) {
-          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-          // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-          log.warn('Failed to get token balance. Error:', e);
-        }
-      }
-    }
-
-    return {
-      ...details,
-      decimals: details?.decimals?.toString(10),
-      balance: details?.balance?.toString(10),
-    };
-  }
-
-  async getTokenStandardAndDetailsByChain(
-    address,
-    userAddress,
-    tokenId,
-    chainId,
-  ) {
-    const { tokensChainsCache } = this.tokenListController.state;
-    const tokenList = tokensChainsCache?.[chainId]?.data || {};
-
-    const allTokens = getTokensControllerAllTokens(this._getMetaMaskState());
-    const selectedAccount = this.accountsController.getSelectedAccount();
-    const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
-
-    let staticTokenListDetails = {};
-    if (chainId === CHAIN_IDS.MAINNET) {
-      staticTokenListDetails =
-        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    }
-
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
-    const userDefinedTokenDetails =
-      tokens.find(({ address: _address }) =>
-        isEqualCaseInsensitive(_address, address),
-      ) || {};
-    const tokenDetails = {
-      ...staticTokenListDetails,
-      ...tokenListDetails,
-      ...userDefinedTokenDetails,
-    };
-
-    const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
-      tokenDetails.erc20 === true;
-
-    const noEvidenceThatTokenIsAnNFT =
-      !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
-      !tokenDetails.erc721;
-
-    const otherDetailsAreERC20Like =
-      tokenDetails.decimals !== undefined && tokenDetails.symbol;
-
-    // boolean to check if the token can be treated as an ERC20
-    const tokenCanBeTreatedAsAnERC20 =
-      tokenDetailsStandardIsERC20 ||
-      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
-
-    let details;
-    if (tokenCanBeTreatedAsAnERC20) {
-      try {
-        let balance = 0;
-        if (this.#getGlobalChainId() === chainId) {
-          balance = await fetchTokenBalance(
-            address,
-            userAddress,
-            this.provider,
-          );
-        }
-
-        details = {
-          address,
-          balance,
-          standard: ERC20,
-          decimals: tokenDetails.decimals,
-          symbol: tokenDetails.symbol,
-        };
-      } catch (e) {
-        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warn(`Failed to get token balance. Error: ${e}`);
-      }
-    }
-
-    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
-    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
-    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
-    if (details === undefined) {
-      try {
-        const networkClientId =
-          this.networkController?.state?.networkConfigurationsByChainId?.[
-            chainId
-          ]?.rpcEndpoints[
-            this.networkController?.state?.networkConfigurationsByChainId?.[
-              chainId
-            ]?.defaultRpcEndpointIndex
-          ]?.networkClientId;
-
-        details =
-          await this.assetsContractController.getTokenStandardAndDetails(
-            address,
-            userAddress,
-            tokenId,
-            networkClientId,
-          );
-      } catch (e) {
-        log.warn(`Failed to get token standard and details. Error: ${e}`);
-      }
-    }
-
-    if (details) {
-      const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
-        details.standard,
-        ERC1155,
-      );
-
-      if (tokenDetailsStandardIsERC1155) {
-        try {
-          const balance = await fetchERC1155Balance(
-            address,
-            userAddress,
-            tokenId,
-            this.provider,
-          );
-
-          const balanceToUse = balance?._hex
-            ? parseInt(balance._hex, 16).toString()
-            : null;
-
-          details = {
-            ...details,
-            balance: balanceToUse,
-          };
-        } catch (e) {
-          // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
-          // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-          log.warn('Failed to get token balance. Error:', e);
-        }
-      }
-    }
-
-    return {
-      ...details,
-      decimals: details?.decimals?.toString(10),
-      balance: details?.balance?.toString(10),
-    };
-  }
-
-  async getTokenSymbol(address) {
-    try {
-      const details =
-        await this.assetsContractController.getTokenStandardAndDetails(address);
-      return details?.symbol;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /**
-   * Creates a PRIMARY seed phrase backup for the user.
-   *
-   * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
-   * Save the encrypted seed phrase in the metadata store.
-   *
-   * @param {string} password - The user's password.
-   * @param {number[]} encodedSeedPhrase - The seed phrase to backup.
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   */
-  async createSeedPhraseBackup(password, encodedSeedPhrase, keyringId) {
-    let createSeedPhraseBackupSuccess = false;
-    try {
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrp,
-        op: TraceOperation.OnboardingSecurityOp,
-      });
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-
-      const seedPhrase =
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-      await this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
-        password,
-        seedPhrase,
-        keyringId,
-      );
-      createSeedPhraseBackupSuccess = true;
-
-      await this.syncKeyringEncryptionKey();
-    } catch (error) {
-      this.controllerMessenger?.captureException?.(
-        createSentryError(
-          TraceName.OnboardingCreateKeyAndBackupSrpError,
-          error,
-        ),
-      );
-
-      log.error('[createSeedPhraseBackup] error', error);
-      throw error;
-    } finally {
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrp,
-        data: { success: createSeedPhraseBackupSuccess },
-      });
-    }
-  }
-
-  /**
-   * Fetches and restores all the backed-up Secret Data (SRPs and Private keys)
-   *
-   * @param {string} password - The user's password.
-   * @returns {Promise<Buffer[]>} The seed phrase.
-   */
-  async fetchAllSecretData(password) {
-    let fetchAllSeedPhrasesSuccess = false;
-    try {
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingFetchSrps,
-        op: TraceOperation.OnboardingSecurityOp,
-      });
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSecretData(password);
-      fetchAllSeedPhrasesSuccess = true;
-
-      return allSeedPhrases;
-    } finally {
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingFetchSrps,
-        data: { success: fetchAllSeedPhrasesSuccess },
-      });
-    }
-  }
-
-  /**
-   * Sync latest global seedless password and override the current device password with latest global password.
-   * Unlock the vault with the latest global password.
-   *
-   * @param {string} password - latest global seedless password
-   * @returns {void}
-   */
-  async syncPasswordAndUnlockWallet(password) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    // check if the password is outdated
-    let isPasswordOutdated = false;
-    if (isSocialLoginFlow) {
-      try {
-        isPasswordOutdated = await this.checkIsSeedlessPasswordOutdated({
-          skipCache: false,
-          captureSentryError: true,
-        });
-      } catch (error) {
-        // we don't want to block the unlock flow if the password outdated check fails
-        log.error('error while checking if password is outdated', error);
-      }
-    }
-
-    // if the flow is not social login or the password is not outdated,
-    // we will proceed with the normal flow and use the password to unlock the vault
-    if (!isSocialLoginFlow || !isPasswordOutdated) {
-      await this.submitPassword(password);
-      if (isSocialLoginFlow) {
-        // try to revoke pending refresh tokens asynchronously
-        this.seedlessOnboardingController
-          .revokePendingRefreshTokens()
-          .catch((err) => {
-            log.error('error while revoking pending refresh tokens', err);
-          });
-      }
-      return;
-    }
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-
-    try {
-      const isKeyringPasswordValid = await this.keyringController
-        .verifyPassword(password)
-        .then(() => true)
-        .catch((err) => {
-          if (err.message.includes('Incorrect password')) {
-            return false;
-          }
-          log.error('error while verifying keyring password', err.message);
-          throw err;
-        });
-
-      // here e could be invalid password or outdated password error, which can result in following cases:
-      // 1. Seedless controller password verification succeeded.
-      // 2. Seedless controller failed but Keyring controller password verification succeeded.
-      // 3. Both keyring and seedless controller password verification failed.
-      await this.seedlessOnboardingController
-        .submitGlobalPassword({
-          globalPassword: password,
-          maxKeyChainLength: 20,
-        })
-        .catch((err) => {
-          if (err instanceof RecoveryError) {
-            // Keyring controller password verification succeeds and seedless controller failed.
-            if (
-              err?.message ===
-                SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
-              isKeyringPasswordValid
-            ) {
-              throw new Error(
-                SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-              );
-            }
-            throw new JsonRpcError(-32603, err.message, err.data);
-          }
-          log.error(`error while submitting global password: ${err.message}`);
-          throw err;
-        });
-
-      // re-encrypt the old vault data with the latest global password
-      const keyringEncryptionKey =
-        await this.seedlessOnboardingController.loadKeyringEncryptionKey();
-      // use encryption key to unlock the keyring vault
-      await this.submitEncryptionKey(keyringEncryptionKey);
-
-      let changePasswordSuccess = false;
-      try {
-        // update seedlessOnboardingController to use latest global password
-        await this.seedlessOnboardingController.syncLatestGlobalPassword({
-          globalPassword: password,
-        });
-
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingResetPassword,
-          op: TraceOperation.OnboardingSecurityOp,
-        });
-        // update vault password to global password
-        await this.keyringController.changePassword(password);
-        changePasswordSuccess = true;
-        // sync the new keyring encryption key after keyring changePassword to the seedless onboarding controller
-        await this.syncKeyringEncryptionKey();
-
-        // check password outdated again skip cache to reset the cache after successful syncing
-        await this.checkIsSeedlessPasswordOutdated({
-          skipCache: true,
-          captureSentryError: true,
-        });
-
-        // revoke pending refresh tokens asynchronously
-        this.seedlessOnboardingController
-          .revokePendingRefreshTokens()
-          .catch((err) => {
-            log.error('error while revoking pending refresh tokens', err);
-          });
-      } catch (err) {
-        this.controllerMessenger?.captureException?.(
-          createSentryError(TraceName.OnboardingResetPasswordError, err),
-        );
-
-        // lock app again on error after submitPassword succeeded
-        // here we skip the seedless operation lock as we are already in the seedless operation lock
-        await this.setLocked({ skipSeedlessOperationLock: true });
-        throw err;
-      } finally {
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingResetPassword,
-          data: { success: changePasswordSuccess },
-        });
-      }
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
-   * Syncs the keyring encryption key with the seedless onboarding controller.
-   *
-   * @returns {Promise<void>}
-   */
-  async syncKeyringEncryptionKey() {
-    // store the keyring encryption key in the seedless onboarding controller
-    const keyringEncryptionKey =
-      await this.keyringController.exportEncryptionKey();
-    await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-      keyringEncryptionKey,
-    );
-  }
-
-  /**
-   * Checks if the seedless password is outdated.
-   *
-   * @param {object} args - The arguments for the checkIsSeedlessPasswordOutdated method.
-   * @param {boolean} args.skipCache - whether to skip the cache @default false
-   * @param {boolean} args.captureSentryError - whether to capture the sentry error. @default false
-   * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
-   */
-  async checkIsSeedlessPasswordOutdated(args) {
-    const skipCache = args?.skipCache || false;
-    const captureSentryError = args?.captureSentryError || false;
-    try {
-      const isSocialLoginFlow =
-        this.onboardingController.getIsSocialLoginFlow();
-      const { completedOnboarding } = this.onboardingController.state;
-
-      if (!isSocialLoginFlow || !completedOnboarding) {
-        // this is only available for seedless onboarding flow and completed onboarding
-        return false;
-      }
-
-      const isPasswordOutdated =
-        await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache,
-        });
-      return isPasswordOutdated;
-    } catch (error) {
-      if (captureSentryError) {
-        this.controllerMessenger?.captureException?.(
-          createSentryError(
-            'Failed to check if seedless password is outdated',
-            error,
-          ),
-        );
-      }
-      throw error;
-    }
-  }
-
-  /**
-   * Syncs the seed phrases with the social login flow.
-   *
-   * @returns {Promise<void>}
-   */
-  async syncSeedPhrases() {
-    try {
-      const isSocialLoginFlow =
-        this.onboardingController.getIsSocialLoginFlow();
-
-      if (!isSocialLoginFlow) {
-        throw new Error(
-          'Syncing seed phrases is only available for social login flow',
-        );
-      }
-
-      // 1. fetch all seed phrases
-      const [rootSecret, ...otherSecrets] = await this.fetchAllSecretData();
-      if (!rootSecret) {
-        throw new Error('No root SRP found');
-      }
-
-      for (const secret of otherSecrets) {
-        // import SRP secret
-        // Get the SRP hash, and find the hash in the local state
-        const srpHash =
-          this.seedlessOnboardingController.getSecretDataBackupState(
-            secret.data,
-            secret.type,
-          );
-
-        if (!srpHash) {
-          // import private key secret
-          if (secret.type === SecretType.PrivateKey) {
-            await this.importAccountWithStrategy(
-              'privateKey',
-              [bytesToHex(secret.data)],
-              {
-                shouldCreateSocialBackup: false,
-                shouldSelectAccount: false,
-              },
-            );
-            continue;
-          }
-
-          // If SRP is not in the local state, import it to the vault
-          // convert the seed phrase to a mnemonic (string)
-          const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
-            secret.data,
-          );
-          const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
-
-          // import the new mnemonic to the current vault
-          await this.importMnemonicToVault(mnemonicToRestore, {
-            shouldCreateSocialBackup: false,
-            shouldSelectAccount: false,
-          });
-        }
-      }
-    } catch (error) {
-      log.error('error while syncing seed phrases', error);
-
-      this.controllerMessenger?.captureException?.(
-        createSentryError('Error while syncing seed phrases', error),
-      );
-
-      throw error;
-    }
-  }
-
-  /**
-   * Adds a new seed phrase backup for the user.
-   *
-   * If `syncWithSocial` is false, it will only update the local state,
-   * and not sync the seed phrase to the server.
-   *
-   * @param {string} mnemonic - The mnemonic to derive the seed phrase from.
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   * @param {boolean} syncWithSocial - whether to skip syncing with social login
-   */
-  async addNewSeedPhraseBackup(mnemonic, keyringId, syncWithSocial = true) {
-    const seedPhraseAsBuffer = Buffer.from(mnemonic, 'utf8');
-
-    const seedPhraseAsUint8Array =
-      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-    if (syncWithSocial) {
-      const releaseLock = await this.seedlessOperationMutex.acquire();
-      let addNewSeedPhraseBackupSuccess = false;
-      try {
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingAddSrp,
-          op: TraceOperation.OnboardingSecurityOp,
-        });
-        await this.seedlessOnboardingController.addNewSecretData(
-          seedPhraseAsUint8Array,
-          SecretType.Mnemonic,
-          {
-            keyringId,
-          },
-        );
-        addNewSeedPhraseBackupSuccess = true;
-      } catch (err) {
-        this.controllerMessenger?.captureException?.(
-          createSentryError(TraceName.OnboardingAddSrpError, err),
-        );
-
-        throw err;
-      } finally {
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingAddSrp,
-          data: { success: addNewSeedPhraseBackupSuccess },
-        });
-        releaseLock();
-      }
-    } else {
-      // Do not sync the seed phrase to the server, only update the local state
-      this.seedlessOnboardingController.updateBackupMetadataState({
-        keyringId,
-        data: seedPhraseAsUint8Array,
-        type: SecretType.Mnemonic,
-      });
-    }
-  }
-
-  /**
-   * Changes the password for the wallet.
-   *
-   * If the flow is social login flow, it will also change the password for the seedless onboarding controller.
-   *
-   * @param {string} newPassword - The new password.
-   * @param {string} oldPassword - The old password.
-   */
-  async changePassword(newPassword, oldPassword) {
-    const releaseLock = await this.seedlessOperationMutex.acquire();
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    try {
-      await this.keyringController.changePassword(newPassword);
-
-      if (isSocialLoginFlow) {
-        try {
-          await this.seedlessOnboardingController.changePassword(
-            newPassword,
-            oldPassword,
-          );
-          // store the new keyring encryption key in the seedless onboarding controller
-          const keyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            keyringEncKey,
-          );
-        } catch (err) {
-          log.error('error while changing seedless-onboarding password', err);
-          log.error('reverting keyring password change');
-          // revert the keyring password change by changing the password back to the old password
-          await this.keyringController.changePassword(oldPassword);
-          // store the old keyring encryption key in the seedless onboarding controller
-          const revertedKeyringEncKey =
-            await this.keyringController.exportEncryptionKey();
-          await this.seedlessOnboardingController.storeKeyringEncryptionKey(
-            revertedKeyringEncKey,
-          );
-
-          this.controllerMessenger?.captureException?.(
-            createSentryError(
-              'error while changing password for social login flow',
-              err,
-            ),
-          );
-          throw err;
-        }
-      }
-    } catch (error) {
-      log.error('error while changing password', error);
-      throw error;
-    } finally {
-      releaseLock();
-    }
-  }
-
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
   //=============================================================================
-
-  /**
-   * Creates a new Vault and create a new keychain.
-   *
-   * A vault, or KeyringController, is a controller that contains
-   * many different account strategies, currently called Keyrings.
-   * Creating it new means wiping all previous keyrings.
-   *
-   * A keychain, or keyring, controls many accounts with a single backup and signing strategy.
-   * For example, a mnemonic phrase can generate many accounts, and is a keyring.
-   *
-   * @param {string} password
-   * @returns {object} created keyring object
-   */
-  async createNewVaultAndKeychain(password) {
-    const releaseLock = await this.createVaultMutex.acquire();
-    const isWalletResetInProgress =
-      this.appStateController.getIsWalletResetInProgress();
-    try {
-      if (isWalletResetInProgress) {
-        // clear permissions
-        this.permissionController.clearState();
-
-        // Clear snap state
-        await this.snapController.clearState();
-
-        // Clear account tree state
-        this.accountTreeController.clearState();
-
-        // Currently, the account-order-controller is not in sync with
-        // the accounts-controller. To properly persist the hidden state
-        // of accounts, we should add a new flag to the account struct
-        // to indicate if it is hidden or not.
-        // TODO: Update @metamask/accounts-controller to support this.
-        this.accountOrderController.updateHiddenAccountsList([]);
-
-        this.txController.clearUnapprovedTransactions();
-      }
-
-      await this.multichainAccountService.createMultichainAccountWallet({
-        type: 'create',
-        password,
-      });
-
-      // set is resetting wallet in progress to false, after new vault and keychain are created
-      this.appStateController.setIsWalletResetInProgress(false);
-
-      const primaryKeyring = this.keyringController.state.keyrings[0];
-
-      // Once we have our first HD keyring available, we re-create the internal list of
-      // accounts (they should be up-to-date already, but we still run `updateAccounts` as
-      // there are some account migration happening in that function).
-      await this.accountsController.updateAccounts();
-      // Then we can build the initial tree.
-      this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await this.getSnapKeyring(),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
-
-      return primaryKeyring;
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
-   * Counts the number of accounts discovered by provider.
-   *
-   * @param {Array} accounts - The discovered accounts to count by provider.
-   */
-  getDiscoveryCountByProvider(accounts) {
-    // count includes Bitcoin to maintain return type for the ImportSRP component
-    const counts = {
-      Bitcoin: 0,
-      Solana: 0,
-      Tron: 0,
-    };
-
-    const solanaAccountTypes = Object.values(SolAccountType);
-    const bitcoinAccountTypes = Object.values(BtcAccountType);
-    const tronAccountTypes = Object.values(TrxAccountType);
-
-    for (const account of accounts) {
-      // Newly supported account types should be added here
-      // No BTC discovery/account creation until the provider is added to the MultichainAccountsService
-      if (solanaAccountTypes.includes(account.type)) {
-        counts.Solana += 1;
-      }
-      if (bitcoinAccountTypes.includes(account.type)) {
-        counts.Bitcoin += 1;
-      }
-      if (tronAccountTypes.includes(account.type)) {
-        counts.Tron += 1;
-      }
-    }
-
-    return counts;
-  }
-
-  /**
-   * Discovers and creates accounts for the given keyring id.
-   *
-   * @param {string} id - The keyring id to discover and create accounts for.
-   * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
-   */
-  async discoverAndCreateAccounts(id) {
-    trace({
-      name: TraceName.DiscoverAccounts,
-      op: TraceOperation.AccountDiscover,
-    });
-    try {
-      // If no keyring id is provided, we assume one keyring was added to the vault
-      const keyringIdToDiscover =
-        id || this.keyringController.state.keyrings[0]?.metadata.id;
-
-      if (!keyringIdToDiscover) {
-        throw new Error('No keyring id to discover accounts for');
-      }
-
-      // Ensure the snap keyring is initialized
-      await this.getSnapKeyring();
-
-      const wallet = this.multichainAccountService.getMultichainAccountWallet({
-        entropySource: keyringIdToDiscover,
-      });
-
-      const result = await wallet.discoverAccounts();
-
-      const counts = this.getDiscoveryCountByProvider(result);
-
-      return counts;
-    } catch (error) {
-      log.warn(`Failed to add accounts with balance. ${error}`);
-      return {
-        Bitcoin: 0,
-        Solana: 0,
-        Tron: 0,
-      };
-    } finally {
-      endTrace({
-        name: TraceName.DiscoverAccounts,
-      });
-    }
-  }
-
-  /**
-   * Imports a new mnemonic to the vault.
-   *
-   * @param {string} mnemonic - The mnemonic to import.
-   * @param {object} options - The options for the import.
-   * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
-   * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
-   * @returns {Promise<void>}
-   */
-  async importMnemonicToVault(
-    mnemonic,
-    options = {
-      shouldCreateSocialBackup: true,
-      shouldSelectAccount: true,
-    },
-  ) {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      const { entropySource: id } =
-        await this.multichainAccountService.createMultichainAccountWallet({
-          type: 'import',
-          mnemonic: this._convertMnemonicToWordlistIndices(
-            Buffer.from(mnemonic, 'utf8'),
-          ),
-        });
-
-      const [newAccountAddress] = await this.keyringController.withKeyring(
-        { id },
-        async ({ keyring }) => keyring.getAccounts(),
-      );
-
-      if (this.onboardingController.getIsSocialLoginFlow()) {
-        try {
-          // if social backup is requested, add the seed phrase backup
-          await this.addNewSeedPhraseBackup(
-            mnemonic,
-            id,
-            shouldCreateSocialBackup,
-          );
-        } catch (err) {
-          await this.multichainAccountService.removeMultichainAccountWallet(
-            id,
-            newAccountAddress,
-          );
-          throw err;
-        }
-      }
-
-      if (shouldSelectAccount) {
-        const account =
-          this.accountsController.getAccountByAddress(newAccountAddress);
-        this.accountsController.setSelectedAccount(account.id);
-      }
-
-      const syncAndDiscoverAccounts = async () => {
-        // We want to trigger a full sync of the account tree after importing a new SRP
-        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
-        await this.accountTreeController.syncWithUserStorage();
-
-        const discoveredAccounts = await this.discoverAndCreateAccounts(id);
-
-        const newHdEntropyIndex = this.getHDEntropyIndex();
-
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-          properties: {
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: newHdEntropyIndex,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
-          },
-        });
-      };
-
-      // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
-      // eslint-disable-next-line no-void
-      void syncAndDiscoverAccounts();
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
-   * Restores an array of seed phrases to the vault and updates the SocialBackupMetadataState if import is successful.
-   *
-   * This method is used to restore seed phrases from the Social Backup.
-   *
-   * @param {{data: Uint8Array, type: SecretType, timestamp: number, version: number}[]} secretDatas - The seed phrases to restore.
-   * @returns {Promise<void>}
-   */
-  async restoreSeedPhrasesToVault(secretDatas) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    if (!isSocialLoginFlow) {
-      // import the restored seed phrase (mnemonics) to the vault
-      // this is only available for social login flow
-      return; // or throw error here?
-    }
-
-    // These mnemonics are restored from the Social Backup, so we don't need to do it again
-    const shouldCreateSocialBackup = false;
-    // This is used to select the new account in the wallet.
-    // During the restore seed phrases, we just do the import, but don't change the selected account.
-    // Just let the user select the account manually after the restore.
-    const shouldSetSelectedAccount = false;
-
-    for (const secret of secretDatas) {
-      // import SRP secret
-      // Get the SRP hash, and find the hash in the local state
-      const srpHash =
-        this.seedlessOnboardingController.getSecretDataBackupState(
-          secret.data,
-          secret.type,
-        );
-      if (srpHash) {
-        // If SRP is in the local state, skip it
-        continue;
-      }
-
-      if (secret.type === SecretType.PrivateKey) {
-        await this.importAccountWithStrategy(
-          'privateKey',
-          [bytesToHex(secret.data)],
-          {
-            shouldCreateSocialBackup,
-            shouldSelectAccount: shouldSetSelectedAccount,
-          },
-        );
-        continue;
-      }
-
-      // If SRP is not in the local state, import it to the vault
-      // convert the seed phrase to a mnemonic (string)
-      const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
-        secret.data,
-      );
-      const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
-
-      // import the new mnemonic to the vault
-      await this.importMnemonicToVault(mnemonicToRestore, {
-        shouldCreateSocialBackup,
-        shouldSelectAccount: shouldSetSelectedAccount,
-      });
-    }
-  }
-
-  /**
-   * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
-   *
-   * @param {string} password - The password.
-   * @returns The seed phrase.
-   */
-  async restoreSocialBackupAndGetSeedPhrase(password) {
-    try {
-      // get the first seed phrase from the array, this is the oldest seed phrase
-      // and we will use it to create the initial vault
-      const [firstSecretData, ...remainingSecretData] =
-        await this.fetchAllSecretData(password);
-
-      const firstSeedPhrase = this._convertEnglishWordlistIndicesToCodepoints(
-        firstSecretData.data,
-      );
-      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
-      const encodedSeedPhrase = Array.from(
-        Buffer.from(mnemonic, 'utf8').values(),
-      );
-      // restore the vault using the root seed phrase
-      await this.createNewVaultAndRestore(password, encodedSeedPhrase);
-
-      // restore the remaining Mnemonics/SeedPhrases/PrivateKeys to the vault
-      if (remainingSecretData.length > 0) {
-        await this.restoreSeedPhrasesToVault(remainingSecretData);
-      }
-
-      return mnemonic;
-    } catch (error) {
-      if (error instanceof RecoveryError) {
-        throw new JsonRpcError(-32603, error.message, error.data);
-      }
-
-      this.controllerMessenger?.captureException?.(
-        createSentryError(
-          'Failed to restore social backup and get seed phrase',
-          error,
-        ),
-      );
-
-      throw error;
-    }
-  }
-
-  /**
-   * Create a new Vault and restore an existent keyring.
-   *
-   * @param {string} password
-   * @param {number[]} encodedSeedPhrase - The seed phrase, encoded as an array
-   * of UTF-8 bytes.
-   */
-  async createNewVaultAndRestore(password, encodedSeedPhrase) {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      const { completedOnboarding } = this.onboardingController.state;
-
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-
-      // clear permissions
-      this.permissionController.clearState();
-
-      // Clear snap state
-      await this.snapController.clearState();
-
-      // Clear account tree state
-      this.accountTreeController.clearState();
-
-      // Currently, the account-order-controller is not in sync with
-      // the accounts-controller. To properly persist the hidden state
-      // of accounts, we should add a new flag to the account struct
-      // to indicate if it is hidden or not.
-      // TODO: Update @metamask/accounts-controller to support this.
-      this.accountOrderController.updateHiddenAccountsList([]);
-
-      this.txController.clearUnapprovedTransactions();
-
-      if (completedOnboarding) {
-        this.tokenDetectionController.enable();
-      }
-
-      // create new vault
-      const seedPhraseAsUint8Array =
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-
-      const { entropySource: id } =
-        await this.multichainAccountService.createMultichainAccountWallet({
-          type: 'restore',
-          password,
-          mnemonic: seedPhraseAsUint8Array,
-        });
-
-      // set is resetting wallet in progress to false, after new vault and keychain are created
-      this.appStateController.setIsWalletResetInProgress(false);
-
-      // We re-created the vault, meaning we only have 1 new HD keyring
-      // now. We re-create the internal list of accounts (which is
-      // not an expensive operation, since we should only have 1 HD
-      // keyring that has one default account.
-      // TODO: Remove this once the `accounts-controller` once only
-      // depends only on keyrings `:stateChange`.
-      await this.accountsController.updateAccounts();
-
-      // Init multichain accounts after creating internal accounts.
-      await this.multichainAccountService.init();
-
-      // And we re-init the account tree controller too, to use the
-      // newly created accounts.
-      // TODO: Remove this once the `accounts-controller` once only
-      // depends only on keyrings `:stateChange`.
-      this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await this.getSnapKeyring(),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
-
-      if (completedOnboarding) {
-        // check if external services are enabled
-        const { useExternalServices } = this.preferencesController.state;
-        if (useExternalServices) {
-          await this.getSnapKeyring();
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-        }
-        await this.discoverAndCreateAccounts(id);
-      }
-
-      if (getIsSeedlessOnboardingFeatureEnabled()) {
-        const isSocialLoginFlow =
-          this.onboardingController.getIsSocialLoginFlow();
-        if (isSocialLoginFlow) {
-          // if it's social login flow, update the local backup metadata state of SeedlessOnboarding Controller
-          const primaryKeyringId =
-            this.keyringController.state.keyrings[0].metadata.id;
-          this.seedlessOnboardingController.updateBackupMetadataState({
-            keyringId: primaryKeyringId,
-            data: seedPhraseAsUint8Array,
-            type: SecretType.Mnemonic,
-          });
-
-          await this.syncKeyringEncryptionKey();
-        }
-      }
-    } finally {
-      releaseLock();
-    }
-  }
-
-  async _getMultichainWalletSnapClient(snapId) {
-    const keyring = await this.getSnapKeyring();
-    const messenger = this.controllerMessenger;
-
-    return new MultichainWalletSnapClient(snapId, keyring, messenger);
-  }
-
-  /**
-   * Imports accounts with balances to the keyring.
-   */
-  async _importAccountsWithBalances() {
-    const { keyrings } = this.keyringController.state;
-
-    // walk through all the keyrings and import the solana accounts for the HD keyrings
-    for (const { metadata } of keyrings) {
-      // check if the keyring is an HD keyring
-      const isHdKeyring = await this.keyringController.withKeyring(
-        { id: metadata.id },
-        async ({ keyring }) => {
-          return keyring.type === KeyringTypes.hd;
-        },
-      );
-      if (isHdKeyring) {
-        await this.getSnapKeyring();
-        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-        await this.discoverAndCreateAccounts(metadata.id);
-      }
-    }
-  }
-
-  /**
-   * Adds Snap account to the keyring.
-   *
-   * @param {string} keyringId - The ID of the keyring to add the account to.
-   * @param {object} client - The Snap client instance.
-   * @param {object} options - The options to pass to the createAccount method.
-   */
-  async _addSnapAccount(keyringId, client, options = {}) {
-    let entropySource = keyringId;
-    try {
-      if (!entropySource) {
-        // Get the entropy source from the first HD keyring
-        const id = await this.keyringController.withKeyring(
-          { type: KeyringTypes.hd },
-          async ({ metadata }) => {
-            return metadata.id;
-          },
-        );
-        entropySource = id;
-      }
-
-      return await client.createAccount(
-        { ...options, entropySource },
-        {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        },
-      );
-    } catch (e) {
-      // Do not block the onboarding flow if this fails
-      log.warn(`Failed to add Snap account. Error: ${e}`);
-      captureException(e);
-      return null;
-    }
-  }
-
-  /**
-   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
-   *
-   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
-   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
-   */
-  _convertMnemonicToWordlistIndices(mnemonic) {
-    const indices = mnemonic
-      .toString()
-      .split(' ')
-      .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(new Uint16Array(indices).buffer);
-  }
-
-  /**
-   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
-   *
-   * @param {Uint8Array} wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
-   * @returns {Buffer} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
-   */
-  _convertEnglishWordlistIndicesToCodepoints(wordlistIndices) {
-    return Buffer.from(
-      Array.from(new Uint16Array(wordlistIndices.buffer))
-        .map((i) => wordlist[i])
-        .join(' '),
-    );
-  }
 
   /**
    * Get an account balance from the AccountTrackerController or request it directly from the network.
@@ -5030,7 +3897,12 @@ export default class MetamaskController extends EventEmitter {
     const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
       this._getMetaMaskState(),
     );
-    const accounts = accountsByChainId[this.#getGlobalChainId()];
+    const accounts =
+      accountsByChainId[
+        this.controllerMessenger.call(
+          'LegacyBackgroundApiService:getGlobalChainId',
+        )
+      ];
     const cached = accounts?.[toChecksumHexAddress(address)];
 
     if (cached && cached.balance) {
@@ -5049,102 +3921,12 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  /**
-   * Submits the user's password and attempts to unlock the vault.
-   * Also synchronizes the preferencesController, to ensure its schema
-   * is up to date with known accounts once the vault is decrypted.
-   *
-   * @param {string} password - The user's password
-   */
-  async submitPassword(password) {
-    await this.submitPasswordOrEncryptionKey({ password });
-  }
-
-  /**
-   * Submits the user's encryption key and attempts to unlock the vault.
-   * Also synchronizes the preferencesController, to ensure its schema
-   * is up to date with known accounts once the vault is decrypted.
-   *
-   * @param {string} encryptionKey - The user's encryption key
-   */
-  async submitEncryptionKey(encryptionKey) {
-    await this.submitPasswordOrEncryptionKey({ encryptionKey });
-  }
-
-  /**
-   * Attempts to unlock the vault using either the user's password or encryption
-   * key. Also synchronizes the preferencesController, to ensure its schema is
-   * up to date with known accounts once the vault is decrypted.
-   *
-   * @param {object} params - The function parameters.
-   * @param {string} params.password - The user's password.
-   * @param {string} params.encryptionKey - The user's encryption key.
-   */
-  async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
-    await this.offscreenPromise;
-
-    if (encryptionKey) {
-      await this.keyringController.submitEncryptionKey(encryptionKey);
-    } else {
-      await this.keyringController.submitPassword(password);
-      if (isSocialLoginFlow) {
-        // unlock the seedless onboarding vault
-        await this.seedlessOnboardingController.submitPassword(password);
-      }
-    }
-
-    try {
-      await this.blockTracker.checkForLatestBlock();
-    } catch (error) {
-      log.error('Error while unlocking extension.', error);
-    }
-
-    await this.accountsController.updateAccounts();
-
-    // Init multichain accounts after creating internal accounts.
-    await this.multichainAccountService.init();
-
-    // Force account-tree refresh after all accounts have been updated.
-    this.accountTreeController.init();
-
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    // It is not necessary to await this since it is just expected for the snap to receive
-    // the information without blocking the login flow. Despite not awaiting for
-    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
-    // getSnapKeyring to ensure the Snap keyring is available.
-    // eslint-disable-next-line no-void
-    void this.forwardSelectedAccountGroupToSnapKeyring(
-      await this.getSnapKeyring(),
-      this.accountTreeController.getSelectedAccountGroup(),
-    );
-
-    const resyncAndAlignAccounts = async () => {
-      // READ THIS CAREFULLY:
-      // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
-      // automatically "fix" this corrupted state, we run this method which will re-sync
-      // MetaMask accounts and Snap accounts upon login.
-      // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
-      await this.multichainAccountService.resyncAccounts();
-
-      // This allows to create missing accounts if new account providers have been added.
-      await this.multichainAccountService.alignWallets();
-    };
-
-    // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-    // for mobile.
-    // NOTE: We run this asynchronously on purpose, see FIXME^.
-    // eslint-disable-next-line no-void
-    void resyncAndAlignAccounts();
-  }
-
   async _loginUser(password) {
     try {
       // Automatic login via config password
-      await this.submitPassword(password);
+      await this.legacyBackgroundApiService.submitPasswordOrEncryptionKey({
+        password,
+      });
     } finally {
       this._startUISync();
     }
@@ -5193,105 +3975,9 @@ export default class MetamaskController extends EventEmitter {
     await this.extension.storage.session.remove(['loginToken', 'loginSalt']);
   }
 
-  /**
-   * Submits a user's password to check its validity.
-   *
-   * @param {string} password - The user's password
-   */
-  async verifyPassword(password) {
-    await this.keyringController.verifyPassword(password);
-  }
-
   //
   // Hardware
   //
-
-  async attemptLedgerTransportCreation() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
-      async (keyring) => await keyring.attemptMakeApp(),
-    );
-  }
-
-  async getAppNameAndVersion() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
-      async (keyring) => await keyring.getAppNameAndVersion(),
-    );
-  }
-
-  async getLedgerAppConfiguration() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
-      async (keyring) => await keyring.bridge.getAppConfiguration(),
-    );
-  }
-
-  /**
-   * Fetch account list from a hardware device.
-   *
-   * @param deviceName
-   * @param page
-   * @param hdPath
-   * @returns [] accounts
-   */
-  async connectHardware(deviceName, page, hdPath) {
-    return this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
-      async (keyring) => {
-        let accounts = [];
-        switch (page) {
-          case -1:
-            accounts = await keyring.getPreviousPage();
-            break;
-          case 1:
-            accounts = await keyring.getNextPage();
-            break;
-          default:
-            accounts = await keyring.getFirstPage();
-        }
-
-        return accounts;
-      },
-    );
-  }
-
-  /**
-   * Check if the device is unlocked
-   *
-   * @param deviceName
-   * @param hdPath
-   * @returns {Promise<boolean>}
-   */
-  async checkHardwareStatus(deviceName, hdPath) {
-    return this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
-      async (keyring) => {
-        return keyring.isUnlocked();
-      },
-    );
-  }
-
-  /**
-   * Get the hd path currently configured on a hardware keyring.
-   *
-   * @returns {Promise<string>}
-   */
-  async getHdPathForLedgerKeyring() {
-    return this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
-      async (keyring) => {
-        return await keyring.hdPath;
-      },
-    );
-  }
-
-  async getLedgerPublicKey(hdPath) {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
-      async (keyring) => await keyring.bridge.getPublicKey({ hdPath }),
-    );
-  }
 
   /**
    * Get hardware type that will be sent for metrics logging.
@@ -5300,28 +3986,17 @@ export default class MetamaskController extends EventEmitter {
    * @returns {HardwareKeyringType} Keyring hardware type
    */
   async getHardwareTypeForMetric(address) {
-    return await this.keyringController.withKeyring(
-      { address },
-      ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
-    );
-  }
-
-  /**
-   * Clear
-   *
-   * @param deviceName
-   * @returns {Promise<boolean>}
-   */
-  async forgetDevice(deviceName) {
-    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      for (const address of await keyring.getAccounts()) {
-        this._onAccountRemoved(address);
+    try {
+      return await this.keyringController.withKeyringV2(
+        { address },
+        ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
+      );
+    } catch (error) {
+      if (isKeyringV2NotSupportedError(error)) {
+        return undefined;
       }
-
-      keyring.forgetDevice();
-
-      return true;
-    });
+      throw error;
+    }
   }
 
   /**
@@ -5332,18 +4007,27 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
+    // `getAccountKeyringType` returns the legacy keyring `.type` string
+    // ('Ledger Hardware', etc). For hardware cases the V2-keyed
+    // `KEYRING_DEVICE_PROPERTY_MAP` is indexed via the matching V2 enum
+    // value so the legacy lookup and rekeyed map stay aligned without
+    // requiring a V2 builder for snap accounts.
     const keyringType =
       await this.keyringController.getAccountKeyringType(address);
     switch (keyringType) {
-      case KeyringType.trezor:
-      case KeyringType.oneKey:
-      case KeyringType.lattice:
-      case KeyringType.qr:
-      case KeyringType.ledger:
-        return KEYRING_DEVICE_PROPERTY_MAP[keyringType];
-      case KeyringType.imported:
+      case KeyringTypes.trezor:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Trezor];
+      case KeyringTypes.oneKey:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.OneKey];
+      case KeyringTypes.lattice:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Lattice];
+      case KeyringTypes.qr:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Qr];
+      case KeyringTypes.ledger:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Ledger];
+      case KeyringTypes.imported:
         return 'imported';
-      case KeyringType.snap:
+      case KeyringTypes.snap:
         return 'snap';
       default:
         return 'MetaMask';
@@ -5359,87 +4043,33 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    return this.keyringController.withKeyring(
-      { address },
-      async ({ keyring }) => {
-        switch (keyring.type) {
-          case KeyringType.trezor:
-          case KeyringType.oneKey:
-            return keyring.getModel();
-          case KeyringType.qr:
-            return keyring.getName();
-          case KeyringType.ledger:
-            // TODO: get model after ledger keyring exposes method
-            return HardwareDeviceNames.ledger;
-          case KeyringType.lattice:
-            // TODO: get model after lattice keyring exposes method
-            return HardwareDeviceNames.lattice;
-          default:
-            return undefined;
-        }
-      },
-    );
-  }
-
-  /**
-   * get hardware account label
-   *
-   * @param name
-   * @param index
-   * @param hdPathDescription
-   * @returns string label
-   */
-  getAccountLabel(name, index, hdPathDescription) {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
-      parseInt(index, 10) + 1
-    } ${hdPathDescription || ''}`.trim();
-  }
-
-  /**
-   * Imports an account from a Trezor or Ledger device.
-   *
-   * @param index
-   * @param deviceName
-   * @param hdPath
-   * @param hdPathDescription
-   * @returns {} keyState
-   */
-  async unlockHardwareWalletAccount(
-    index,
-    deviceName,
-    hdPath,
-    hdPathDescription,
-  ) {
-    const { address: unlockedAccount } = await this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
-      async (keyring) => {
-        keyring.setAccountToUnlock(index);
-        const [address] = await keyring.addAccounts(1);
-        return {
-          address: normalize(address),
-          label: this.getAccountLabel(
-            deviceName === HardwareDeviceNames.qr
-              ? keyring.getName()
-              : deviceName,
-            index,
-            hdPathDescription,
-          ),
-        };
-      },
-    );
-
-    const accounts = this.accountsController.listAccounts();
-
-    const internalAccount =
-      this.accountsController.getAccountByAddress(unlockedAccount);
-
-    if (internalAccount) {
-      this.accountsController.setSelectedAccount(internalAccount.id);
-    } else {
-      throw new Error(`No account found for address: ${unlockedAccount}`);
+    try {
+      return await this.keyringController.withKeyringV2(
+        { address },
+        async ({ keyring }) => {
+          switch (keyring.type) {
+            case KeyringType.Trezor:
+            case KeyringType.OneKey:
+              return keyring.getModel();
+            case KeyringType.Qr:
+              return keyring.getName();
+            case KeyringType.Ledger:
+              // TODO: get model after ledger keyring exposes method
+              return HardwareDeviceNames.ledger;
+            case KeyringType.Lattice:
+              // TODO: get model after lattice keyring exposes method
+              return HardwareDeviceNames.lattice;
+            default:
+              return undefined;
+          }
+        },
+      );
+    } catch (error) {
+      if (isKeyringV2NotSupportedError(error)) {
+        return undefined;
+      }
+      throw error;
     }
-
-    return { unlockedAccount, accounts };
   }
 
   //
@@ -5447,175 +4077,18 @@ export default class MetamaskController extends EventEmitter {
   //
 
   /**
-   * Adds a new account to the keyring corresponding to the given `keyringId`,
-   * or to the default (first) HD keyring if no `keyringId` is provided.
-   *
-   * @param {number} accountCount - The number of accounts to create
-   * @param {string} _keyringId - The keyring identifier.
-   * @returns {Promise<string>} The address of the newly-created account.
-   */
-  async addNewAccount(accountCount, _keyringId) {
-    const oldAccounts = await this.keyringController.getAccounts();
-    const keyringSelector = _keyringId
-      ? { id: _keyringId }
-      : { type: KeyringTypes.hd };
-
-    const addedAccountAddress = await this.keyringController.withKeyring(
-      keyringSelector,
-      async ({ keyring }) => {
-        if (keyring.type !== KeyringTypes.hd) {
-          throw new Error('Cannot add account to non-HD keyring');
-        }
-        const accountsInKeyring = await keyring.getAccounts();
-
-        // Only add an account if the accountCount matches the accounts in the keyring.
-        if (accountCount && accountCount !== accountsInKeyring.length) {
-          if (accountCount > accountsInKeyring.length) {
-            throw new Error('Account out of sequence');
-          }
-
-          const existingAccount = accountsInKeyring[accountCount];
-
-          if (!existingAccount) {
-            throw new Error(`Can't find account at index ${accountCount}`);
-          }
-
-          return existingAccount;
-        }
-
-        const [newAddress] = await keyring.addAccounts(1);
-        if (oldAccounts.includes(newAddress)) {
-          await keyring.removeAccount(newAddress);
-          throw new Error(`Cannot add duplicate ${newAddress} account`);
-        }
-        return newAddress;
-      },
-    );
-
-    if (!oldAccounts.includes(addedAccountAddress)) {
-      const internalAccount =
-        this.accountsController.getAccountByAddress(addedAccountAddress);
-      if (internalAccount) {
-        this.accountsController.setSelectedAccount(internalAccount.id);
-      } else {
-        throw new Error(`No account found for address: ${addedAccountAddress}`);
-      }
-    }
-
-    return addedAccountAddress;
-  }
-
-  /**
-   * Verifies the validity of the current vault's seed phrase.
-   *
-   * Validity: seed phrase restores the accounts belonging to the current vault.
-   *
-   * Called when the first account is created and on unlocking the vault.
-   *
-   * @param {string} password
-   * @param {string} _keyringId - This is the identifier for the hd keyring.
-   * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
-   * encoded as an array of UTF-8 bytes.
-   */
-  async getSeedPhrase(password, _keyringId) {
-    return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.exportSeedPhrase(password, _keyringId),
-    );
-  }
-
-  /**
-   * Clears the transaction history, to allow users to force-reset their nonces.
-   * Mostly used in development environments, when networks are restarted with
-   * the same network ID.
-   *
-   * @returns {Promise<string>} The current selected address.
-   */
-  async resetAccount() {
-    const selectedAddress =
-      this.accountsController.getSelectedAccount().address;
-
-    const globalChainId = this.#getGlobalChainId();
-
-    this.txController.wipeTransactions({
-      address: selectedAddress,
-      chainId: globalChainId,
-    });
-
-    this.smartTransactionsController.wipeSmartTransactions({
-      address: selectedAddress,
-      ignoreNetwork: false,
-    });
-
-    this.bridgeStatusController.wipeBridgeStatus({
-      address: selectedAddress,
-      ignoreNetwork: false,
-    });
-
-    this.networkController.resetConnection();
-
-    return selectedAddress;
-  }
-
-  /**
-   * Checks that all accounts referenced have a matching InternalAccount. Sends
-   * an error to sentry for any accounts that were expected but are missing from the wallet.
-   *
-   * @param {InternalAccount[]} [internalAccounts] - The list of evm accounts the wallet knows about.
-   * @param {Hex[]} [accounts] - The list of evm accounts addresses that should exist.
-   */
-  captureKeyringTypesWithMissingIdentities(
-    internalAccounts = [],
-    accounts = [],
-  ) {
-    const accountsMissingIdentities = accounts.filter(
-      (address) =>
-        !internalAccounts.some(
-          (account) => account.address.toLowerCase() === address.toLowerCase(),
-        ),
-    );
-    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-      (address) => this.keyringController.getAccountKeyringType(address),
-    );
-
-    const internalAccountCount = internalAccounts.length;
-
-    const accountsByChainId = getAccountTrackerControllerAccountsByChainId(
-      this._getMetaMaskState(),
-    );
-    const accountsForCurrentChain = accountsByChainId[this.#getGlobalChainId()];
-
-    const accountTrackerCount = Object.keys(
-      accountsForCurrentChain || {},
-    ).length;
-
-    captureException(
-      new Error(
-        `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${internalAccountCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
-      ),
-    );
-  }
-
-  /**
-   * Sorts a list of evm account addresses by most recently selected by using
-   * the lastSelected value for the matching InternalAccount object stored in state.
-   *
-   * @param {Hex[]} [addresses] - The list of evm accounts addresses to sort.
-   * @returns {Hex[]} The sorted evm accounts addresses.
-   */
-  sortEvmAccountsByLastSelected(addresses) {
-    const internalAccounts = this.accountsController.listAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
-  }
-
-  /**
-   * Sorts a list of multichain account addresses by most recently selected by using
-   * the lastSelected value for the matching InternalAccount object stored in state.
+   * Sorts a list of account addresses by most recently selected by using
+   * the lastSelected value for the matching AccountGroup object stored in state.
    *
    * @param {string[]} [addresses] - The list of addresses (not full CAIP-10 Account IDs) to sort.
    * @returns {string[]} The sorted accounts addresses.
    */
-  sortMultichainAccountsByLastSelected(addresses) {
+  sortAddressesByLastSelected(addresses) {
+    const cachedLastSelected = new Map();
     const getLastSelected = (address) => {
+      if (cachedLastSelected.has(address)) {
+        return cachedLastSelected.get(address);
+      }
       const account = this.accountsController.getAccountByAddress(address);
       if (!account) {
         return undefined;
@@ -5624,75 +4097,19 @@ export default class MetamaskController extends EventEmitter {
       if (!context) {
         return undefined;
       }
-      // Get the group object to find the EOA account having lastSelected set
       const group = this.accountTreeController.getAccountGroupObject(
         context.groupId,
       );
       if (!group) {
         return undefined;
       }
-      // Find the EVM EOA account in this group, as it's the only one with lastSelected
-      for (const accountId of group.accounts) {
-        const groupAccount = this.accountsController.getAccount(accountId);
-        if (groupAccount && isEvmAccountType(groupAccount.type)) {
-          return groupAccount.metadata.lastSelected;
-        }
-      }
-      return undefined;
+      cachedLastSelected.set(address, group.metadata.lastSelected);
+      return group.metadata.lastSelected;
     };
 
     return addresses.sort(
       (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
     );
-  }
-
-  /**
-   * Sorts a list of addresses by most recently selected by using the lastSelected value for
-   * the matching InternalAccount object from the list of internalAccounts provided.
-   *
-   * @param {string[]} [addresses] - The list of caip accounts addresses to sort.
-   * @param {InternalAccount[]} [internalAccounts] - The list of InternalAccounts to determine lastSelected from.
-   * @returns {string[]} The sorted accounts addresses.
-   */
-  sortAddressesWithInternalAccounts(addresses, internalAccounts) {
-    return addresses.sort((firstAddress, secondAddress) => {
-      const firstAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
-      );
-
-      const secondAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
-      );
-
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
-        firstAccount.metadata.lastSelected ===
-        secondAccount.metadata.lastSelected
-      ) {
-        return 0;
-      } else if (firstAccount.metadata.lastSelected === undefined) {
-        return 1;
-      } else if (secondAccount.metadata.lastSelected === undefined) {
-        return -1;
-      }
-
-      return (
-        secondAccount.metadata.lastSelected - firstAccount.metadata.lastSelected
-      );
-    });
   }
 
   /**
@@ -5721,214 +4138,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const ethAccounts = getEthAccounts(caveat.value);
-    return this.sortEvmAccountsByLastSelected(ethAccounts);
-  }
-
-  /**
-   * Handles DeFi referral approval flow for a partner.
-   * Shows approval confirmation screen if needed and manages referral URL redirection.
-   * This can be triggered by connection permission grants or existing connections.
-   *
-   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
-   * @param {number} tabId - The browser tab ID to update.
-   * @param {ReferralTriggerType} triggerType - The trigger type.
-   */
-  async handleDefiReferral(partner, tabId, triggerType) {
-    const isReferralEnabled =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.extensionUxDefiReferralPartners?.[partner.id];
-
-    if (!isReferralEnabled) {
-      return;
-    }
-
-    // Only continue if the partner has permitted accounts
-    const permittedAccounts = this.getPermittedAccounts(partner.origin);
-    if (permittedAccounts.length === 0) {
-      return;
-    }
-
-    // Only continue if there is no pending approval
-    const hasPendingApproval = this.approvalController.hasRequest({
-      origin: partner.origin,
-      type: partner.approvalType,
-    });
-
-    if (hasPendingApproval) {
-      return;
-    }
-
-    // First account is the active permitted account for this partner
-    const activePermittedAccount = permittedAccounts[0];
-
-    const referralStatusByAccount =
-      this.preferencesController.state.referrals[partner.id];
-    const permittedAccountStatus =
-      referralStatusByAccount[activePermittedAccount];
-    const declinedAccounts = Object.keys(referralStatusByAccount).filter(
-      (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
-    );
-
-    // We should show approval screen if the account does not have a status
-    const shouldShowApproval = permittedAccountStatus === undefined;
-
-    // We should redirect to the referral url if the account is approved
-    const shouldRedirect = permittedAccountStatus === ReferralStatus.Approved;
-
-    if (shouldShowApproval) {
-      try {
-        // Track referral viewed event
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.ReferralViewed,
-          category: MetaMetricsEventCategory.Referrals,
-          properties: {
-            url: partner.origin,
-            trigger_type: triggerType,
-          },
-        });
-
-        const approvalResponse = await this.approvalController.add({
-          origin: partner.origin,
-          type: partner.approvalType,
-          requestData: {
-            selectedAddress: activePermittedAccount,
-            partnerId: partner.id,
-            partnerName: partner.name,
-            learnMoreUrl: partner.learnMoreUrl,
-          },
-          shouldShowRequest: triggerType === ReferralTriggerType.NewConnection,
-        });
-
-        if (approvalResponse?.approved) {
-          this._handleDefiReferralApprovedAccount(
-            partner,
-            activePermittedAccount,
-            permittedAccounts,
-            declinedAccounts,
-          );
-          await this._handleDefiReferralRedirect(
-            partner,
-            tabId,
-            activePermittedAccount,
-          );
-        } else {
-          this.preferencesController.addReferralDeclinedAccount(
-            partner.id,
-            activePermittedAccount,
-          );
-        }
-
-        // Track referral confirm button clicked event
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.ReferralConfirmButtonClicked,
-          category: MetaMetricsEventCategory.Referrals,
-          properties: {
-            opt_in: Boolean(approvalResponse?.approved),
-            url: partner.origin,
-          },
-        });
-      } catch (error) {
-        // Do nothing if the user rejects the request
-        if (error.code === errorCodes.provider.userRejectedRequest) {
-          return;
-        }
-        throw error;
-      }
-    }
-
-    if (shouldRedirect) {
-      await this._handleDefiReferralRedirect(
-        partner,
-        tabId,
-        activePermittedAccount,
-      );
-    }
-  }
-
-  /**
-   * Handles redirection to the DeFi partner's referral page.
-   *
-   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
-   * @param {number} tabId - The browser tab ID to update.
-   * @param {string} permittedAccount - The permitted account.
-   */
-  async _handleDefiReferralRedirect(partner, tabId, permittedAccount) {
-    await this._updateDefiReferralUrl(partner, tabId);
-    // Mark this account as having been shown the referral page
-    this.preferencesController.addReferralPassedAccount(
-      partner.id,
-      permittedAccount,
-    );
-  }
-
-  /**
-   * Handles referral states for permitted accounts after user approval.
-   *
-   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
-   * @param {string} activePermittedAccount - The active permitted account.
-   * @param {string[]} permittedAccounts - The permitted accounts.
-   * @param {string[]} declinedAccounts - The previously declined permitted accounts.
-   */
-  _handleDefiReferralApprovedAccount(
-    partner,
-    activePermittedAccount,
-    permittedAccounts,
-    declinedAccounts,
-  ) {
-    if (declinedAccounts.length === 0) {
-      // If there are no previously declined permitted accounts then
-      // we approve all permitted accounts so that the user is not
-      // shown the approval screen unnecessarily when switching
-      this.preferencesController.setAccountsReferralApproved(
-        partner.id,
-        permittedAccounts,
-      );
-    } else {
-      this.preferencesController.addReferralApprovedAccount(
-        partner.id,
-        activePermittedAccount,
-      );
-      // If there are any previously declined accounts then
-      // we do not approve them, but instead remove them from the declined list
-      // so they have the option to participate again in future
-      permittedAccounts.forEach((account) => {
-        if (declinedAccounts.includes(account)) {
-          this.preferencesController.removeReferralDeclinedAccount(
-            partner.id,
-            account,
-          );
-        }
-      });
-    }
-  }
-
-  /**
-   * Updates the browser tab URL to the DeFi partner's referral page.
-   *
-   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
-   * @param {number} tabId - The browser tab ID to update.
-   */
-  async _updateDefiReferralUrl(partner, tabId) {
-    try {
-      const { url } = await browser.tabs.get(tabId);
-      const currentUrl = new URL(url || '');
-      const referralUrl = new URL(partner.referralUrl);
-
-      // Preserve (or update) existing params and add referral params
-      const mergedParams = new URLSearchParams(currentUrl.search);
-      for (const [key, value] of referralUrl.searchParams) {
-        mergedParams.set(key, value);
-      }
-
-      // Apply merged params to the referral URL
-      referralUrl.search = mergedParams.toString();
-      await browser.tabs.update(tabId, { url: referralUrl.toString() });
-    } catch (error) {
-      log.error(
-        `Failed to update URL to ${partner.name} referral page: `,
-        error,
-      );
-    }
+    return this.sortAddressesByLastSelected(ethAccounts);
   }
 
   /**
@@ -5967,121 +4177,6 @@ export default class MetamaskController extends EventEmitter {
           targetAccount,
         ),
     );
-  }
-
-  /**
-   * Removes an account from state / storage.
-   *
-   * @param {string} address - A hex address
-   */
-  async removeAccount(address) {
-    this._onAccountRemoved(address);
-    await this.keyringController.removeAccount(address);
-
-    return address;
-  }
-
-  /**
-   * Imports an account with the specified import strategy.
-   * These are defined in @metamask/keyring-controller
-   * Each strategy represents a different way of serializing an Ethereum key pair.
-   *
-   * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
-   * @param {any} args - The data required by that strategy to import an account.
-   * @param {object} options - The options for the import.
-   * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
-   * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
-   */
-  async importAccountWithStrategy(
-    strategy,
-    args,
-    options = {
-      shouldCreateSocialBackup: true,
-      shouldSelectAccount: true,
-    },
-  ) {
-    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
-
-    const importedAccountAddress =
-      await this.keyringController.importAccountWithStrategy(strategy, args);
-
-    if (this.onboardingController.getIsSocialLoginFlow()) {
-      // Use withKeyring to get keyring metadata for an address
-      const { id: keyringId, privateKey: privateKeyFromKeyring } =
-        await this.keyringController.withKeyring(
-          { address: importedAccountAddress },
-          async ({ keyring, metadata }) => {
-            const privateKey = await keyring.exportAccount(
-              importedAccountAddress,
-            );
-            return { id: metadata.id, privateKey };
-          },
-        );
-
-      try {
-        // if social backup is requested, add the seed phrase backup
-        await this.addNewPrivateKeyBackup(
-          privateKeyFromKeyring,
-          keyringId,
-          shouldCreateSocialBackup,
-        );
-      } catch (err) {
-        // handle seedless controller import error by reverting keyring controller mnemonic import
-        // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
-        await this.keyringController.removeAccount(importedAccountAddress);
-        throw err;
-      }
-    }
-
-    if (shouldSelectAccount) {
-      const account = this.accountsController.getAccountByAddress(
-        importedAccountAddress,
-      );
-      if (account) {
-        this.accountsController.setSelectedAccount(account.id);
-      } else {
-        throw new Error(
-          `No account found for address: ${importedAccountAddress}`,
-        );
-      }
-    }
-  }
-
-  /**
-   * Adds a new private key backup for the user
-   *
-   * If `syncWithSocial` is false, it will only update the local state,
-   * and not sync the private key to the server.
-   *
-   * @param {string} privateKey - The privateKey from keyring.
-   * @param {string} keyringId - The keyring id to add the private key backup to.
-   * @param {boolean} syncWithSocial - whether to skip syncing with social login
-   */
-  async addNewPrivateKeyBackup(privateKey, keyringId, syncWithSocial = true) {
-    const bufferedPrivateKey = hexToBytes(add0x(privateKey));
-
-    if (syncWithSocial) {
-      const releaseLock = await this.seedlessOperationMutex.acquire();
-      try {
-        await this.seedlessOnboardingController.addNewSecretData(
-          bufferedPrivateKey,
-          SecretType.PrivateKey,
-          { keyringId },
-        );
-      } catch (error) {
-        log.error('Error adding new private key backup', error);
-        throw error;
-      } finally {
-        releaseLock();
-      }
-    } else {
-      // Do not sync the seed phrase to the server, only update the local state
-      this.seedlessOnboardingController.updateBackupMetadataState({
-        keyringId,
-        data: bufferedPrivateKey,
-        type: SecretType.PrivateKey,
-      });
-    }
   }
 
   /**
@@ -6142,7 +4237,7 @@ export default class MetamaskController extends EventEmitter {
 
   getNonEvmSupportedMethods(scope) {
     return this.controllerMessenger.call(
-      'MultichainRouter:getSupportedMethods',
+      'MultichainRoutingService:getSupportedMethods',
       scope,
     );
   }
@@ -6211,8 +4306,9 @@ export default class MetamaskController extends EventEmitter {
           },
         );
 
-        const [accountAddressToEmit] =
-          this.sortMultichainAccountsByLastSelected(parsedPermittedAddresses);
+        const [accountAddressToEmit] = this.sortAddressesByLastSelected(
+          parsedPermittedAddresses,
+        );
 
         if (accountAddressToEmit) {
           this._notifyMultichainAccountChange(
@@ -6226,111 +4322,9 @@ export default class MetamaskController extends EventEmitter {
   }
   // Identity Management (signature operations)
 
-  getAddTransactionRequest({
-    transactionParams,
-    transactionOptions,
-    dappRequest,
-    requestContext,
-    ...otherParams
-  }) {
-    const networkClientId =
-      requestContext?.get('networkClientId') ??
-      transactionOptions?.networkClientId;
-    const { chainId } =
-      this.networkController.getNetworkConfigurationByNetworkClientId(
-        networkClientId,
-      );
-    return {
-      internalAccounts: this.accountsController.listAccounts(),
-      dappRequest,
-      requestContext,
-      networkClientId,
-      selectedAccount: this.accountsController.getAccountByAddress(
-        transactionParams.from,
-      ),
-      transactionController: this.txController,
-      transactionOptions,
-      transactionParams,
-      userOperationController: this.userOperationController,
-      chainId,
-      ppomController: this.ppomController,
-      securityAlertsEnabled:
-        this.preferencesController.state?.securityAlertsEnabled,
-      updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
-      getSecurityAlertResponse:
-        this.appStateController.getAddressSecurityAlertResponse.bind(
-          this.appStateController,
-        ),
-      addSecurityAlertResponse:
-        this.appStateController.addAddressSecurityAlertResponse.bind(
-          this.appStateController,
-        ),
-      getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
-      ...otherParams,
-    };
-  }
-
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
-
-  /**
-   * Allows a user to attempt to cancel a previously submitted transaction
-   * by creating a new transaction.
-   *
-   * @param {number} originalTxId - the id of the txMeta that you want to
-   * attempt to cancel
-   * @param {import(
-   *  './controllers/transactions'
-   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
-   * instead of allowing this method to generate them
-   * @param options
-   * @returns {object} MetaMask state
-   */
-  async createCancelTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.stopTransaction(
-      originalTxId,
-      customGasSettings,
-      options,
-    );
-    const state = this.getState();
-    return state;
-  }
-
-  /**
-   * Allows a user to attempt to speed up a previously submitted transaction
-   * by creating a new transaction.
-   *
-   * @param {number} originalTxId - the id of the txMeta that you want to
-   * attempt to speed up
-   * @param {import(
-   *  './controllers/transactions'
-   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
-   * instead of allowing this method to generate them
-   * @param options
-   * @returns {object} MetaMask state
-   */
-  async createSpeedUpTransaction(originalTxId, customGasSettings, options) {
-    await this.txController.speedUpTransaction(
-      originalTxId,
-      customGasSettings,
-      options,
-    );
-    const state = this.getState();
-    return state;
-  }
-
-  async estimateGas(estimateGasParams) {
-    return new Promise((resolve, reject) => {
-      this.provider
-        .request({
-          method: 'eth_estimateGas',
-          params: [estimateGasParams],
-        })
-        .then((result) => resolve(result.toString(16)))
-        .catch((err) => reject(err));
-    });
-  }
 
   /**
    * When assets-unify-state is enabled, validates ERC-20 `wallet_watchAsset`
@@ -6383,11 +4377,63 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * After the user approves EIP-747, persist the token on the unified
-   * AssetsController. Must run only after `TokensController.watchAsset` succeeds
-   * so a rejected confirmation does not leave orphaned unified state.
+   * Requests the EIP-747 (`wallet_watchAsset`) confirmation for the unified
+   * assets path. Because the unified build no longer routes through
+   * `TokensController.watchAsset` (which owns the approval in the legacy path),
+   * the approval must be requested here so the user still confirms the import.
    *
-   * @param {object} asset - The asset descriptor (possibly enriched by TokensController).
+   * Resolves when the user approves and rejects (throwing) when the user
+   * declines, mirroring the legacy behavior so callers persist only on approval.
+   *
+   * @param {object} asset - The asset descriptor from the dapp request.
+   * @param {string} origin - The origin that initiated the request.
+   * @param {string} networkClientId - The network client the request targets.
+   */
+  #requestUnifiedWatchAssetApproval = async (
+    asset,
+    origin,
+    networkClientId,
+  ) => {
+    const { address } = this.accountsController.getSelectedAccount();
+    const id = crypto.randomUUID();
+    const image =
+      typeof asset.image === 'string' && asset.image.trim() !== ''
+        ? asset.image
+        : null;
+
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
+
+    await this.controllerMessenger.call(
+      'ApprovalController:addRequest',
+      {
+        id,
+        origin: origin || ORIGIN_METAMASK,
+        type: ApprovalType.WatchAsset,
+        requestData: {
+          id,
+          interactingAddress: address,
+          asset: {
+            address: asset.address,
+            decimals: asset.decimals,
+            symbol: asset.symbol,
+            image,
+            chainId,
+          },
+        },
+      },
+      true,
+    );
+  };
+
+  /**
+   * After the user approves EIP-747, persist the token on the unified
+   * AssetsController. Must run only after the confirmation is approved so a
+   * rejected confirmation does not leave orphaned unified state.
+   *
+   * @param {object} asset - The asset descriptor from the dapp request.
    * @param {string} networkClientId - The network client the request targets.
    */
   #persistUnifiedWatchAsset = async (asset, networkClientId) => {
@@ -6450,17 +4496,26 @@ export default class MetamaskController extends EventEmitter {
   }) => {
     switch (type) {
       case ERC20: {
-        const unifyWatchAsset = this.#isAssetsUnifyStateEnabled();
-        if (unifyWatchAsset) {
+        // Write operations (importing an asset) use the unified AssetsController
+        // whenever it is included in the build; the runtime rollout flag is
+        // treated as always-on for writes. The compile-time build gate still
+        // decides between the unified and legacy paths.
+        if (getIsAssetsUnifiedStateIncludedInBuild()) {
           this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
-        }
-        await this.tokensController.watchAsset({
-          asset,
-          type,
-          networkClientId,
-        });
-        if (unifyWatchAsset) {
+          // Show the EIP-747 confirmation and wait for the user. A rejection
+          // throws here, so we never reach the persist step below.
+          await this.#requestUnifiedWatchAssetApproval(
+            asset,
+            origin,
+            networkClientId,
+          );
           await this.#persistUnifiedWatchAsset(asset, networkClientId);
+        } else {
+          await this.tokensController.watchAsset({
+            asset,
+            type,
+            networkClientId,
+          });
         }
         return undefined;
       }
@@ -6483,14 +4538,22 @@ export default class MetamaskController extends EventEmitter {
     securityAlertResponse,
   ) {
     return await updateSecurityAlertResponse({
-      appStateController: this.appStateController,
       messenger: this.controllerMessenger,
       method,
       securityAlertId,
       securityAlertResponse,
-      signatureController: this.signatureController,
-      transactionController: this.txController,
     });
+  }
+
+  /**
+   * Returns the list of HD keyring objects in the keyring controller's state.
+   *
+   * @returns {Array} The list of HD keyring objects.
+   */
+  getHDKeyringObjects() {
+    return this.keyringController.state.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hdKeyTree,
+    );
   }
 
   /**
@@ -6500,34 +4563,12 @@ export default class MetamaskController extends EventEmitter {
    */
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
-    const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hd,
-    );
+    const hdKeyrings = this.getHDKeyringObjects();
     const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
     );
 
     return index === -1 ? undefined : index;
-  }
-
-  //=============================================================================
-  // PASSWORD MANAGEMENT
-  //=============================================================================
-
-  /**
-   * Allows a user to begin the seed phrase recovery process.
-   */
-  markPasswordForgotten() {
-    this.preferencesController.setPasswordForgotten(true);
-    this.sendUpdate();
-  }
-
-  /**
-   * Allows a user to end the seed phrase recovery process.
-   */
-  unMarkPasswordForgotten() {
-    this.preferencesController.setPasswordForgotten(false);
-    this.sendUpdate();
   }
 
   //=============================================================================
@@ -6572,13 +4613,14 @@ export default class MetamaskController extends EventEmitter {
           const phishingTestResponse = this.phishingController.test(sender.url);
           if (phishingTestResponse?.result) {
             this.sendPhishingWarning(connectionStream, hostname);
-            this.metaMetricsController.trackEvent({
-              event: MetaMetricsEventName.PhishingPageDisplayed,
-              category: MetaMetricsEventCategory.Phishing,
-              properties: {
-                url: hostname,
-              },
-            });
+            trackEvent(
+              createEventBuilder(MetaMetricsEventName.PhishingPageDisplayed)
+                .addCategory(MetaMetricsEventCategory.Phishing)
+                .addProperties({
+                  url: hostname,
+                })
+                .build(),
+            );
             return;
           }
         }
@@ -6646,17 +4688,23 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {*} connectionStream - The duplex stream to connect to.
    * @param {MessageSender} sender - The sender of the messages on this stream
+   * @returns {Promise<void>} Resolves when the UI starts sending patches or
+   * when the patch-store substream closes first (so callers can run cleanup in
+   * `finally`).
    */
   setupTrustedCommunication(connectionStream, sender) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    this.setupControllerConnection(mux.createStream('controller'));
+    const { patchesPromise } = this.setupControllerConnection(
+      mux.createStream('controller'),
+    );
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
       SubjectType.Internal,
     );
+    return patchesPromise;
   }
 
   /**
@@ -6692,15 +4740,17 @@ export default class MetamaskController extends EventEmitter {
 
   setUpCookieHandlerCommunication({ connectionStream }) {
     const {
-      metaMetricsId,
+      analyticsId,
       dataCollectionForMarketing,
-      participateInMetaMetrics,
-    } = this.metaMetricsController.state;
+      consentDecisionMade,
+      optedIn,
+    } = this.getState();
 
     if (
-      metaMetricsId &&
+      analyticsId &&
       dataCollectionForMarketing &&
-      participateInMetaMetrics
+      consentDecisionMade &&
+      optedIn
     ) {
       // setup multiplexing
       const mux = setupMultiplex(connectionStream);
@@ -6745,10 +4795,24 @@ export default class MetamaskController extends EventEmitter {
    * A method for providing our API over a stream using JSON-RPC.
    *
    * @param {*} outStream - The stream to provide our API over.
+   * @returns {{ patchesPromise: Promise<void> }} `patchesPromise` settles when
+   * the UI starts sending patches or when this substream closes first.
    */
   setupControllerConnection(outStream) {
     const patchStore = new PatchStore(this.memStore);
     let uiReady = false;
+
+    let isPromiseResolved = false;
+    const { promise: patchesPromise, resolve: resolvePromise } =
+      createDeferredPromise();
+
+    const onStartSendingPatchesOrStreamClosed = () => {
+      if (isPromiseResolved) {
+        return;
+      }
+      isPromiseResolved = true;
+      resolvePromise();
+    };
 
     const handleUpdate = () => {
       if (!isStreamWritable(outStream) || !uiReady) {
@@ -6764,19 +4828,72 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
+    // A UI reopened within the grace window. Keep the live perps WS and
+    // cancel the deferred disconnect so positions/markets stay hot.
+    this.#cancelPerpsDisconnectTimer();
+
     const messengerSubscriptions = new MessengerSubscriptions(
       this.controllerMessenger,
       outStream,
     );
 
-    const perpsController = this.controllersByName.PerpsController;
+    const perpsController = this.messengerClientsByName.PerpsController;
+    // Dedicated Hyperliquid WebSocket for the order-book panel's aggregated
+    // (`nSigFigs`) subscription, isolated from the controller's shared socket so
+    // the raw and aggregated `l2Book` streams for the same coin cannot
+    // cross-contaminate (the SDK dispatches `l2Book` events by coin only).
+    const aggregatedOrderBookConnection = perpsController
+      ? new AggregatedOrderBookConnection({
+          isTestnet: () => Boolean(perpsController.state?.isTestnet),
+        })
+      : null;
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
-          perpsInit: this.controllerApi.perpsInit,
-          perpsDisconnect: this.controllerApi.perpsDisconnect,
-          perpsToggleTestnet: this.controllerApi.perpsToggleTestnet,
+          onControllerStateChange: (cb) => {
+            this.controllerMessenger.subscribe(
+              'PerpsController:stateChange',
+              cb,
+            );
+            return () =>
+              this.controllerMessenger.unsubscribe(
+                'PerpsController:stateChange',
+                cb,
+              );
+          },
+          onConnectivityChange: (cb) => {
+            this.controllerMessenger.subscribe(
+              'ConnectivityController:stateChange',
+              cb,
+            );
+            return () =>
+              this.controllerMessenger.unsubscribe(
+                'ConnectivityController:stateChange',
+                cb,
+              );
+          },
+          perpsInit: this.messengerClientApi.perpsInit,
+          perpsDisconnect: this.messengerClientApi.perpsDisconnect,
+          perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          subscribeAggregatedOrderBook: (params) =>
+            aggregatedOrderBookConnection.subscribe(params),
+          isTerminalBackendEnabled: () => {
+            const { remoteFeatureFlags } = this.controllerMessenger.call(
+              'RemoteFeatureFlagController:getState',
+            );
+            // Resolve through the same manifest-merged path as the UI selector
+            // (`getIsPerpsTerminalBackendEnabled`). Reading raw controller state
+            // here would ignore `.manifest-overrides.json`, so a manifest
+            // override could enable the Terminal backend in the UI while the
+            // bridge kept emitting un-enriched direct-provider market data.
+            const mergedFlags = getRemoteFeatureFlags({
+              metamask: { remoteFeatureFlags },
+            });
+            return isPerpsRemoteConfigSatisfied(
+              mergedFlags.perpsTerminalBackendEnabled,
+            );
+          },
           emit: (channel, data, extra) => {
             if (!perpsStream.isActive || !isStreamWritable(outStream)) {
               return;
@@ -6792,9 +4909,11 @@ export default class MetamaskController extends EventEmitter {
 
     const api = {
       ...this.getApi(),
-      ...this.controllerApi,
+      ...this.messengerClientApi,
+      ...getTransactionControllerApi(this.txController),
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
+        onStartSendingPatchesOrStreamClosed();
         uiReady = true;
         handleUpdate();
       },
@@ -6849,10 +4968,18 @@ export default class MetamaskController extends EventEmitter {
           this.activeControllerConnections,
         );
         outStream.mmFinished = true;
+        onStartSendingPatchesOrStreamClosed();
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
         perpsStream?.destroy();
+        aggregatedOrderBookConnection?.close();
+        if (this.activeControllerConnections === 0) {
+          // Defer the controller-owned Perps WS teardown so a brief close/reopen
+          // within PERPS_DISCONNECT_GRACE_MS reuses the live session instead of
+          // re-fetching markets + positions and flashing a skeleton.
+          this.#schedulePerpsDisconnect();
+        }
       }
     };
 
@@ -6877,6 +5004,8 @@ export default class MetamaskController extends EventEmitter {
     finished(outStream, outstreamEndHandler);
     outStream.once('close', outstreamEndHandler);
     outStream.once('end', outstreamEndHandler);
+
+    return { patchesPromise };
   }
 
   /**
@@ -6909,6 +5038,8 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
+    const { frameId } = sender;
+
     let mainFrameOrigin = origin;
     if (sender.tab && sender.tab.url) {
       // If sender origin is an iframe, then get the top-level frame's origin
@@ -6920,6 +5051,7 @@ export default class MetamaskController extends EventEmitter {
       sender,
       subjectType,
       tabId,
+      frameId,
       mainFrameOrigin,
     });
 
@@ -6986,11 +5118,20 @@ export default class MetamaskController extends EventEmitter {
       tabId = sender.tab.id;
     }
 
-    const engine = this.setupProviderEngineCaip({
+    const { frameId } = sender;
+
+    let mainFrameOrigin = origin;
+    if (sender.tab && sender.tab.url) {
+      mainFrameOrigin = new URL(sender.tab.url).origin;
+    }
+
+    const { engine, destroy } = this.setupProviderEngineCaip({
       origin,
       sender,
       subjectType,
       tabId,
+      frameId,
+      mainFrameOrigin,
     });
 
     const dupeReqFilterStream = createDupeReqFilterStream();
@@ -7021,7 +5162,7 @@ export default class MetamaskController extends EventEmitter {
       outStream,
       (err) => {
         // handle any middleware cleanup
-        engine.destroy();
+        destroy();
         connectionId && this.removeConnection(origin, connectionId);
         // For context and todos related to the error message match, see https://github.com/MetaMask/metamask-extension/issues/26337
         if (err && !err.message?.match('Premature close')) {
@@ -7083,7 +5224,10 @@ export default class MetamaskController extends EventEmitter {
         }),
 
       // Network configuration-related
-      addNetwork: this._addNetworkAndSetActive.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -7149,6 +5293,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {number} [options.frameId] - The frame ID of the sender (0 = top-level, >0 = iframe)
    * @param {mainFrameOrigin} [options.mainFrameOrigin] - The origin of the main frame if the sender is an iframe
    */
   setupProviderEngineEip1193({
@@ -7156,6 +5301,7 @@ export default class MetamaskController extends EventEmitter {
     subjectType,
     sender,
     tabId,
+    frameId,
     mainFrameOrigin,
   }) {
     const engine = new JsonRpcEngine();
@@ -7192,6 +5338,11 @@ export default class MetamaskController extends EventEmitter {
       engine.push(createTabIdMiddleware({ tabId }));
     }
 
+    // Append frameId to each request if provided, including 0 for top-level frames
+    if (typeof frameId === 'number') {
+      engine.push(createFrameIdMiddleware({ frameId }));
+    }
+
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
 
@@ -7215,7 +5366,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(
       createPPOMMiddleware(
-        this.ppomController,
+        this.controllerMessenger,
         this.preferencesController,
         this.networkController,
         this.appStateController,
@@ -7229,7 +5380,7 @@ export default class MetamaskController extends EventEmitter {
       createDappSwapMiddleware({
         fetchQuotes: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+          `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
         ),
         setDappSwapComparisonData:
           this.appStateController.setDappSwapComparisonData.bind(
@@ -7246,12 +5397,20 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(
-      createTrustSignalsMiddleware(
+      createOriginScanMiddleware(
+        this.phishingController,
+        this.preferencesController,
+        createEip1193OriginScanGate(this.getPermittedAccounts.bind(this)),
+        sender?.url,
+      ),
+    );
+
+    engine.push(
+      createAddressScanMiddleware(
         this.networkController,
         this.appStateController,
         this.phishingController,
         this.preferencesController,
-        this.getPermittedAccounts.bind(this),
       ),
     );
 
@@ -7264,7 +5423,7 @@ export default class MetamaskController extends EventEmitter {
       actions: [
         'KeyringController:getKeyringForAccount',
         'KeyringController:getState',
-        'SnapController:get',
+        'SnapController:getSnap',
         'AccountsController:getSelectedAccount',
       ],
     });
@@ -7277,7 +5436,7 @@ export default class MetamaskController extends EventEmitter {
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
-        metaMetricsController: this.metaMetricsController,
+        analyticsController: this.analyticsController,
       }),
     );
 
@@ -7297,7 +5456,10 @@ export default class MetamaskController extends EventEmitter {
           grantPermissions: (approvedPermissions) =>
             this.controllerMessenger.call(
               'PermissionController:grantPermissions',
-              { approvedPermissions, subject: { origin } },
+              {
+                approvedPermissions,
+                subject: { origin },
+              },
             ),
         }),
       );
@@ -7315,16 +5477,43 @@ export default class MetamaskController extends EventEmitter {
 
     if (subjectType !== SubjectType.Internal) {
       engine.push(
-        this.permissionController.createPermissionMiddleware({
+        createPermissionMiddleware({
           origin,
+          messenger: this.controllerMessenger,
         }),
       );
 
       // Add Defi referral partner permission monitoring middleware
       engine.push(
         createDefiReferralMiddleware((partner, referralTabId, triggerType) =>
-          this.handleDefiReferral(partner, referralTabId, triggerType),
+          this.controllerMessenger.call(
+            'LegacyBackgroundApiService:handleDefiReferral',
+            partner,
+            referralTabId,
+            triggerType,
+          ),
         ),
+      );
+
+      // Prompt the user to fund Hyperliquid through MetaMask after a
+      // successful ApproveAgent ("Enable trading") signature.
+      engine.push(
+        createHyperliquidDepositMiddleware({
+          isEligible: ({ signerAddress }) =>
+            isHyperliquidDepositPromptEligible({
+              accountsController: this.accountsController,
+              assetsController: this.assetsController,
+              perpsController: this.messengerClientsByName.PerpsController,
+              remoteFeatureFlagController: this.remoteFeatureFlagController,
+              signerAddress,
+            }),
+          showDepositPrompt: ({ origin: promptOrigin, signerAddress }) =>
+            showHyperliquidDepositPromptApproval({
+              approvalController: this.approvalController,
+              origin: promptOrigin,
+              selectedAddress: signerAddress,
+            }),
+        }),
       );
     }
 
@@ -7332,7 +5521,9 @@ export default class MetamaskController extends EventEmitter {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
-          registerOnboarding: this.onboardingController.registerOnboarding,
+          registerOnboarding: this.onboardingController.registerOnboarding.bind(
+            this.onboardingController,
+          ),
         }),
       );
     }
@@ -7363,9 +5554,35 @@ export default class MetamaskController extends EventEmitter {
 
         // Miscellaneous
         metamaskState: this.getState(),
-        sendMetrics: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
+        sendMetrics: (payload, options) => {
+          trackEvent(
+            createEventBuilder(payload.event)
+              .addProperties({
+                ...(payload.properties ?? {}),
+                ...(payload.category === undefined
+                  ? {}
+                  : { category: payload.category }),
+                ...(payload.revenue === undefined
+                  ? {}
+                  : { revenue: payload.revenue }),
+                ...(payload.value === undefined
+                  ? {}
+                  : { value: payload.value }),
+                ...(payload.currency === undefined
+                  ? {}
+                  : { currency: payload.currency }),
+              })
+              .addSensitiveProperties(payload.sensitiveProperties)
+              .build({
+                environmentType: payload.environmentType,
+                page: payload.page,
+                referrer: payload.referrer,
+                excludeMetaMetricsId: options?.excludeMetaMetricsId,
+                matomoEvent: options?.matomoEvent,
+              }),
+            options,
+          );
+        },
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
@@ -7402,224 +5619,89 @@ export default class MetamaskController extends EventEmitter {
           }
         },
 
-        updateCaveat: this.permissionController.updateCaveat.bind(
-          this.permissionController,
-          origin,
-        ),
         hasApprovalRequestsForOrigin: () =>
           this.approvalController.hasRequest({ origin }),
       }),
     );
 
     engine.push(
-      createSnapsMethodMiddleware(subjectType === SubjectType.Snap, {
-        clearSnapState: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:clearSnapState',
-          origin,
-        ),
-        getUnlockPromise: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'AppStateController:getUnlockPromise',
-        ),
-        getSnaps: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:getPermitted',
-          origin,
-        ),
-        requestPermissions: async (requestedPermissions) =>
-          await this.permissionController.requestPermissions(
-            { origin },
-            requestedPermissions,
+      createSnapsMethodMiddleware(
+        subjectType === SubjectType.Snap,
+        {
+          getUnlockPromise: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'AppStateController:getUnlockPromise',
           ),
-        getPermissions: this.permissionController.getPermissions.bind(
-          this.permissionController,
-          origin,
-        ),
-        getSnapFile: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:getFile',
-          origin,
-        ),
-        getSnapState: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:getSnapState',
-          origin,
-        ),
-        updateSnapState: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:updateSnapState',
-          origin,
-        ),
-        installSnaps: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:install',
-          origin,
-        ),
-        invokeSnap: this.permissionController.executeRestrictedMethod.bind(
-          this.permissionController,
-          origin,
-          RestrictedMethods.wallet_snap,
-        ),
-        getIsLocked: () => {
-          const { isUnlocked } = this.controllerMessenger.call(
-            'KeyringController:getState',
-          );
+          getIsActive: () => {
+            const { isUnlocked } = this.controllerMessenger.call(
+              'KeyringController:getState',
+            );
 
-          return !isUnlocked;
-        },
-        getIsActive: () => {
-          const { isUnlocked } = this.controllerMessenger.call(
-            'KeyringController:getState',
-          );
-
-          return Boolean(this._isClientOpen && isUnlocked);
-        },
-        getVersion: () => {
-          return process.env.METAMASK_VERSION;
-        },
-        getInterfaceState: (...args) =>
-          this.controllerMessenger.call(
-            'SnapInterfaceController:getInterfaceState',
+            return Boolean(this._isClientOpen && isUnlocked);
+          },
+          getVersion: () => {
+            return process.env.METAMASK_VERSION;
+          },
+          getMessenger: ({ actions, events }) =>
+            this.controllerMessenger.buildChild({
+              namespace: origin,
+              actions,
+              events,
+            }),
+          trackError: (error) => {
+            // `captureException` imported from `@sentry/browser` does not seem to
+            // work in E2E tests. This is a workaround which works in both E2E
+            // tests and production.
+            return global.sentry?.captureException?.(error);
+          },
+          trackEvent: (payload, options) => {
+            trackEvent(
+              createEventBuilder(payload.event)
+                .addProperties({
+                  ...(payload.properties ?? {}),
+                  ...(payload.category === undefined
+                    ? {}
+                    : { category: payload.category }),
+                  ...(payload.revenue === undefined
+                    ? {}
+                    : { revenue: payload.revenue }),
+                  ...(payload.value === undefined
+                    ? {}
+                    : { value: payload.value }),
+                  ...(payload.currency === undefined
+                    ? {}
+                    : { currency: payload.currency }),
+                })
+                .addSensitiveProperties(payload.sensitiveProperties)
+                .build({
+                  environmentType: payload.environmentType,
+                  page: payload.page,
+                  referrer: payload.referrer,
+                  excludeMetaMetricsId: options?.excludeMetaMetricsId,
+                  matomoEvent: options?.matomoEvent,
+                }),
+              options,
+            );
+          },
+          startTrace: (options) => {
+            // Must return a JSON-serializable TraceContext: spreading the raw
+            // Sentry Span leaks internal `undefined` fields that fail the snap
+            // response's JSON validation, and only the `SerializedTraceContext`
+            // shape round-trips into a later `startTrace` `parentContext`.
+            const span = trace(options);
+            const spanContext = span?.spanContext?.();
+            return spanContext
+              ? { _traceId: spanContext.traceId, _spanId: spanContext.spanId }
+              : {};
+          },
+          endTrace,
+          getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
+            this.subjectMetadataController,
             origin,
-            ...args,
           ),
-        getInterfaceContext: (...args) =>
-          this.controllerMessenger.call(
-            'SnapInterfaceController:getInterface',
-            origin,
-            ...args,
-          ).context,
-        createInterface: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapInterfaceController:createInterface',
-          origin,
-        ),
-        updateInterface: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapInterfaceController:updateInterface',
-          origin,
-        ),
-        resolveInterface: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapInterfaceController:resolveInterface',
-          origin,
-        ),
-        getSnap: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:get',
-        ),
-        trackError: (error) => {
-          // `captureException` imported from `@sentry/browser` does not seem to
-          // work in E2E tests. This is a workaround which works in both E2E
-          // tests and production.
-          return global.sentry?.captureException?.(error);
         },
-        trackEvent: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
-        getAllSnaps: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:getAll',
-        ),
-        openWebSocket: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'WebSocketService:open',
-          origin,
-        ),
-        closeWebSocket: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'WebSocketService:close',
-          origin,
-        ),
-        getWebSockets: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'WebSocketService:getAll',
-          origin,
-        ),
-        sendWebSocketMessage: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'WebSocketService:sendMessage',
-          origin,
-        ),
-        getCurrencyRate: (currency) => {
-          const state = this._getMetaMaskState();
-          const fiatCurrency = getRatesControllerFiatCurrency(state);
-          const rate = getRatesControllerRates(state)[currency];
-
-          if (!rate) {
-            return undefined;
-          }
-
-          return {
-            ...rate,
-            currency: fiatCurrency,
-          };
-        },
-        getEntropySources: () => {
-          /**
-           * @type {KeyringController['state']}
-           */
-          const state = this.controllerMessenger.call(
-            'KeyringController:getState',
-          );
-
-          return state.keyrings
-            .map((keyring, index) => {
-              if (keyring.type === KeyringTypes.hd) {
-                return {
-                  id: keyring.metadata.id,
-                  name: keyring.metadata.name,
-                  type: 'mnemonic',
-                  primary: index === 0,
-                };
-              }
-
-              return null;
-            })
-            .filter(Boolean);
-        },
-        hasPermission: this.permissionController.hasPermission.bind(
-          this.permissionController,
-          origin,
-        ),
-        scheduleBackgroundEvent: (event) =>
-          this.controllerMessenger.call('CronjobController:schedule', {
-            ...event,
-            snapId: origin,
-          }),
-        cancelBackgroundEvent: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'CronjobController:cancel',
-          origin,
-        ),
-        getBackgroundEvents: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'CronjobController:get',
-          origin,
-        ),
-        getNetworkConfigurationByChainId: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'NetworkController:getNetworkConfigurationByChainId',
-        ),
-        getNetworkClientById: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'NetworkController:getNetworkClientById',
-        ),
-        startTrace: (options) => {
-          // We intentionally strip out `_isStandaloneSpan` since it can be undefined
-          // eslint-disable-next-line no-unused-vars
-          const { _isStandaloneSpan, ...result } = trace(options);
-          return result;
-        },
-        endTrace,
-        handleSnapRpcRequest: (args) =>
-          this.handleSnapRequest({ ...args, origin }),
-        getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
-          this.subjectMetadataController,
-          origin,
-        ),
-      }),
+        this.controllerMessenger,
+      ),
     );
 
     engine.push(filterMiddleware);
@@ -7646,16 +5728,35 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
+   * @param {number} [options.frameId] - The frame ID of the sender (0 = top-level, >0 = iframe)
+   * @param {mainFrameOrigin} [options.mainFrameOrigin] - The origin of the main frame if the sender is an iframe
    */
-  setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
+  setupProviderEngineCaip({
+    origin,
+    sender,
+    subjectType,
+    tabId,
+    frameId,
+    mainFrameOrigin,
+  }) {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
+    // Append mainFrameOrigin to each request if present
+    if (mainFrameOrigin) {
+      engine.push(createMainFrameOriginMiddleware({ mainFrameOrigin }));
+    }
+
     // Append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
+    }
+
+    // Append frameId to each request if provided, including 0 for top-level frames
+    if (typeof frameId === 'number') {
+      engine.push(createFrameIdMiddleware({ frameId }));
     }
 
     engine.push(createLoggerMiddleware({ origin }));
@@ -7692,7 +5793,7 @@ export default class MetamaskController extends EventEmitter {
       actions: [
         'KeyringController:getKeyringForAccount',
         'KeyringController:getState',
-        'SnapController:get',
+        'SnapController:getSnap',
         'AccountsController:getSelectedAccount',
       ],
     });
@@ -7705,20 +5806,37 @@ export default class MetamaskController extends EventEmitter {
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
-        metaMetricsController: this.metaMetricsController,
+        analyticsController: this.analyticsController,
       }),
     );
 
     engine.push(multichainMethodCallValidatorMiddleware);
-    const middlewareMaker = makeMethodMiddlewareMaker([
-      walletRevokeSession,
-      walletGetSession,
-      walletInvokeMethod,
-      walletCreateSession,
-    ]);
 
+    // Above the Multichain API handlers on purpose. `wallet_createSession` and
+    // `wallet_getSession` are answered there and never reach the rest of the
+    // stack, so this is the only position from which the connect-time scan can
+    // see them. It also leaves room to cover non-EVM scopes, which terminate
+    // during the `wallet_invokeMethod` unwrap.
     engine.push(
-      middlewareMaker({
+      createOriginScanMiddleware(
+        this.phishingController,
+        this.preferencesController,
+        createCaipOriginScanGate((requestOrigin) =>
+          this.permissionController.hasPermission(
+            requestOrigin,
+            Caip25EndowmentPermissionName,
+          ),
+        ),
+        sender?.url,
+      ),
+    );
+
+    // Handles MultiChain API methods (e.g., `wallet_invokeMethod`,
+    // `wallet_createSession`). The `wallet_invokeMethod` handler unwraps inner
+    // requests and forwards them via `next()`, where they are picked up by
+    // `createMultichainInvokedMethodMiddleware` below.
+    engine.push(
+      createMultichainApiMethodMiddleware({
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
@@ -7750,28 +5868,34 @@ export default class MetamaskController extends EventEmitter {
         getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
         isNonEvmScopeSupported: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'MultichainRouter:isSupportedScope',
+          'MultichainRoutingService:isSupportedScope',
         ),
         handleNonEvmRequestForOrigin: (params) =>
-          this.controllerMessenger.call('MultichainRouter:handleRequest', {
-            ...params,
-            origin,
-          }),
+          this.controllerMessenger.call(
+            'MultichainRoutingService:handleRequest',
+            {
+              ...params,
+              origin,
+            },
+          ),
         getNonEvmAccountAddresses: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'MultichainRouter:getSupportedAccounts',
+          'MultichainRoutingService:getSupportedAccounts',
         ),
         trackSessionCreatedEvent: (approvedCaip25CaveatValue) =>
-          this.metaMetricsController.trackEvent({
-            event: MetaMetricsEventName.PermissionsRequested,
-            properties: {
-              api_source: MetaMetricsRequestedThrough.MultichainApi,
-              method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
-              chain_id_list: getAllScopesFromCaip25CaveatValue(
-                approvedCaip25CaveatValue,
-              ),
-            },
-          }),
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PermissionsRequested)
+              .addProperties({
+                api_source: MetaMetricsRequestedThrough.MultichainApi,
+                method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+                chain_id_list: getAllScopesFromCaip25CaveatValue(
+                  approvedCaip25CaveatValue,
+                ),
+              })
+              .build(),
+          ),
+        sortAccountIdsByLastSelected:
+          this.sortAccountIdsByLastSelected.bind(this),
       }),
     );
 
@@ -7789,13 +5913,45 @@ export default class MetamaskController extends EventEmitter {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
-          registerOnboarding: this.onboardingController.registerOnboarding,
+          registerOnboarding: this.onboardingController.registerOnboarding.bind(
+            this.onboardingController,
+          ),
         }),
       );
     }
 
+    // Handles RPC methods (e.g., `wallet_addEthereumChain`,
+    // `wallet_watchAsset`) invoked via `wallet_invokeMethod` and unwrapped by
+    // `createMultichainApiMethodMiddleware` above.
     engine.push(
-      createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
+      createMultichainInvokedMethodMiddleware(
+        this.setupCommonMiddlewareHooks(origin),
+      ),
+    );
+
+    engine.push(
+      createPPOMMiddleware(
+        this.controllerMessenger,
+        this.preferencesController,
+        this.networkController,
+        this.appStateController,
+        this.accountsController,
+        this.updateSecurityAlertResponse.bind(this),
+        this.getSecurityAlertsConfig.bind(this),
+      ),
+    );
+
+    // Placed after the `wallet_invokeMethod` unwrap so it sees the inner method
+    // under its EIP-1193 name, with `networkClientId` already resolved from the
+    // request's own CAIP scope. Only EVM requests get this far; the origin scan
+    // that has to cover the rest runs above the Multichain API handlers.
+    engine.push(
+      createAddressScanMiddleware(
+        this.networkController,
+        this.appStateController,
+        this.phishingController,
+        this.preferencesController,
+      ),
     );
 
     engine.push(this.metamaskMiddleware);
@@ -7832,13 +5988,15 @@ export default class MetamaskController extends EventEmitter {
       // noop
     }
 
+    const onMultichainNotification = (targetOrigin, targetTabId, message) => {
+      if (origin === targetOrigin && tabId === targetTabId) {
+        engine.emit('notification', message);
+      }
+    };
+
     this.multichainSubscriptionManager.on(
       'notification',
-      (targetOrigin, targetTabId, message) => {
-        if (origin === targetOrigin && tabId === targetTabId) {
-          engine.emit('notification', message);
-        }
-      },
+      onMultichainNotification,
     );
 
     engine.push(
@@ -7856,7 +6014,15 @@ export default class MetamaskController extends EventEmitter {
       return end();
     });
 
-    return engine;
+    const destroy = () => {
+      engine.destroy();
+      this.multichainSubscriptionManager.removeListener(
+        'notification',
+        onMultichainNotification,
+      );
+    };
+
+    return { engine, destroy };
   }
 
   /**
@@ -8020,7 +6186,9 @@ export default class MetamaskController extends EventEmitter {
    * Handle global application unlock.
    */
   _onUnlock() {
-    this.unMarkPasswordForgotten();
+    this.controllerMessenger.call(
+      'LegacyBackgroundApiService:unMarkPasswordForgotten',
+    );
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'
@@ -8036,6 +6204,9 @@ export default class MetamaskController extends EventEmitter {
     // KeyringController event. Other controllers subscribe to the 'lock'
     // event of the MetaMaskController itself.
     this.emit('lock');
+    // Lock bypasses the close/reopen grace window — the user is done.
+    this.#cancelPerpsDisconnectTimer();
+    this.#disconnectPerpsIfActive();
   }
 
   /**
@@ -8049,16 +6220,6 @@ export default class MetamaskController extends EventEmitter {
   _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
     this._notifyChainChange();
-  }
-
-  /**
-   * Execute side effects of a removed account.
-   *
-   * @param {string} address - The address of the account to remove.
-   */
-  _onAccountRemoved(address) {
-    // Remove all associated permissions
-    this.removeAllAccountPermissions(address);
   }
 
   // misc
@@ -8130,109 +6291,50 @@ export default class MetamaskController extends EventEmitter {
     return pendingNonce;
   }
 
-  /**
-   * Returns the next nonce according to the nonce-tracker
-   *
-   * @param {string} address - The hex string address for the transaction
-   * @param networkClientId - The networkClientId to get the nonce lock with
-   * @returns {Promise<number>}
-   */
-  async getNextNonce(address, networkClientId) {
-    const nonceLock = await this.txController.getNonceLock(
-      address,
-      networkClientId,
-    );
-    nonceLock.releaseLock();
-    return nonceLock.nextNonce;
-  }
-
-  /**
-   * Throw an artificial error in a timeout handler for testing purposes.
-   *
-   * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
-   * use this for handling errors.
-   */
-  throwTestError(message) {
-    setTimeout(() => {
-      const error = new Error(message);
-      error.name = 'TestError';
-      throw error;
-    });
-  }
-
-  /**
-   * Capture an artificial error in a timeout handler for testing purposes.
-   *
-   * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E tests testing. We should not
-   * use this for handling errors.
-   */
-  captureTestError(message) {
-    setTimeout(() => {
-      const error = new Error(message);
-      error.name = 'TestError';
-      captureException(error);
-    });
-  }
-
-  getTransactionUIMetricsFragmentId(transactionId) {
-    return `transaction-ui-${transactionId}`;
-  }
-
-  getTransactionUIMetricsFragment(transactionId) {
-    return this.controllerMessenger.call(
-      'MetaMetricsController:getEventFragmentById',
-      this.getTransactionUIMetricsFragmentId(transactionId),
-    );
-  }
-
-  upsertTransactionUIMetricsFragment(transactionId, payload) {
-    if (!transactionId || !payload) {
-      return;
-    }
-
-    const fragmentId = this.getTransactionUIMetricsFragmentId(transactionId);
-    const existingFragment =
-      this.getTransactionUIMetricsFragment(transactionId);
-
-    if (existingFragment) {
-      this.controllerMessenger.call(
-        'MetaMetricsController:updateEventFragment',
-        fragmentId,
-        payload,
-      );
-      return;
-    }
-
-    this.controllerMessenger.call('MetaMetricsController:createEventFragment', {
-      id: fragmentId,
-      uniqueIdentifier: fragmentId,
-      // Required by createEventFragment, but this fragment is storage-only.
-      // We never finalize this fragment and we do not set initialEvent.
-      successEvent: 'Transaction Fragment Created',
-      category: MetaMetricsEventCategory.Transactions,
-      canDeleteIfAbandoned: true,
-      properties: payload.properties ?? {},
-      sensitiveProperties: payload.sensitiveProperties ?? {},
-    });
-  }
-
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Transaction metrics state
-      getTransactionUIMetricsFragment:
-        this.getTransactionUIMetricsFragment.bind(this),
-      upsertTransactionUIMetricsFragment:
-        this.upsertTransactionUIMetricsFragment.bind(this),
-      // Metametrics Actions
-      getParticipateInMetrics: () =>
-        this.controllerMessenger.call('MetaMetricsController:getState')
-          .participateInMetaMetrics,
-      trackEvent: this.controllerMessenger.call.bind(
+      getTransactionUIMetricsFragment: (transactionId) =>
+        this.controllerMessenger.call(
+          'AnalyticsController:getEventFragmentById',
+          `transaction-ui-${transactionId}`,
+        ),
+      upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
       ),
+      // Metametrics Actions
+      getParticipateInMetrics: () => {
+        const { consentDecisionMade, optedIn } = this.analyticsController.state;
+        return consentDecisionMade === true && optedIn === true;
+      },
+      trackEvent: (payload, options) => {
+        trackEvent(
+          createEventBuilder(payload.event)
+            .addProperties({
+              ...(payload.properties ?? {}),
+              ...(payload.category === undefined
+                ? {}
+                : { category: payload.category }),
+              ...(payload.revenue === undefined
+                ? {}
+                : { revenue: payload.revenue }),
+              ...(payload.value === undefined ? {} : { value: payload.value }),
+              ...(payload.currency === undefined
+                ? {}
+                : { currency: payload.currency }),
+            })
+            .addSensitiveProperties(payload.sensitiveProperties)
+            .build({
+              environmentType: payload.environmentType,
+              page: payload.page,
+              referrer: payload.referrer,
+              excludeMetaMetricsId: options?.excludeMetaMetricsId,
+              matomoEvent: options?.matomoEvent,
+            }),
+          options,
+        );
+      },
       // Other dependencies
       getAccountBalance: (account, chainId) =>
         getAccountTrackerControllerAccountsByChainId(this._getMetaMaskState())[
@@ -8245,11 +6347,23 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController.fetchGasFeeEstimates(...args),
       getSelectedAddress: () =>
         this.accountsController.getSelectedAccount().address,
-      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
+      getTokenStandardAndDetails: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:getTokenStandardAndDetails',
+      ),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
+      getTransactionPayData: (id) =>
+        this.txPayController?.state?.transactionData?.[id],
+      getAllTransactions: () => this.txController.state.transactions,
       getIsSmartTransaction: (chainId) => {
         return getIsSmartTransaction(this._getMetaMaskState(), chainId);
+      },
+      getSmartTransactionsPreferenceEnabled: () => {
+        return getSmartTransactionsPreferenceEnabled(this._getMetaMaskState());
+      },
+      getSmartTransactionsEnabled: (chainId) => {
+        return getSmartTransactionsEnabled(this._getMetaMaskState(), chainId);
       },
       getSmartTransactionByMinedTxHash: (txHash) => {
         return this.smartTransactionsController.getSmartTransactionByMinedTxHash(
@@ -8334,7 +6448,7 @@ export default class MetamaskController extends EventEmitter {
       actions: [
         'KeyringController:getKeyringForAccount',
         'KeyringController:getState',
-        'SnapController:get',
+        'SnapController:getSnap',
         'AccountsController:getSelectedAccount',
       ],
     });
@@ -8348,55 +6462,9 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  toggleExternalServices(useExternal) {
-    this.preferencesController.toggleExternalServices(useExternal);
-    const subscriptionState = this.controllerMessenger.call(
-      'SubscriptionController:getState',
-    );
-    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
-      subscriptionState.subscriptions,
-    );
-    if (useExternal) {
-      this.tokenDetectionController.enable();
-      this.gasFeeController.enableNonRPCGasFeeApis();
-      if (hasActiveShieldSubscription) {
-        this.shieldController.start();
-      }
-    } else {
-      this.tokenDetectionController.disable();
-      this.gasFeeController.disableNonRPCGasFeeApis();
-      // stop polling for the subscriptions if external services are disabled
-      this.subscriptionController.stopAllPolling();
-      if (hasActiveShieldSubscription) {
-        this.shieldController.stop();
-      }
-    }
-  }
-
   //=============================================================================
   // CONFIG
   //=============================================================================
-
-  /**
-   * Sets the Ledger Live preference to use for Ledger hardware wallet support
-   *
-   * @param keyring
-   * @deprecated This method is deprecated and will be removed in the future.
-   * Only webhid connections are supported in chrome and u2f in firefox.
-   */
-  async setLedgerTransportPreference(keyring) {
-    const transportType = window.navigator.hid
-      ? LedgerTransportTypes.webhid
-      : LedgerTransportTypes.u2f;
-
-    if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(transportType).catch((e) => {
-        throw e;
-      });
-    }
-
-    return undefined;
-  }
 
   // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
   /* eslint-disable accessor-pairs */
@@ -8418,6 +6486,20 @@ export default class MetamaskController extends EventEmitter {
       // Notify Snaps that the client is open or closed when the client is
       // unlocked.
       this.controllerMessenger.call('SnapController:setClientActive', open);
+
+      const { completedOnboarding } = this.controllerMessenger.call(
+        'OnboardingController:getState',
+      );
+
+      if (open && completedOnboarding) {
+        // If the client is open and unlocked, request a periodic update of the
+        // Snaps registry.
+        this.controllerMessenger
+          .call('SnapRegistryController:requestPeriodicUpdate')
+          .catch((error) => {
+            captureException(error);
+          });
+      }
     }
 
     if (open) {
@@ -8489,20 +6571,21 @@ export default class MetamaskController extends EventEmitter {
   safelistPhishingDomain(origin) {
     const isFirefox = getPlatform() === PLATFORM_FIREFOX;
     if (!isFirefox) {
-      this.metaMetricsController.trackEvent(
-        {
-          category: MetaMetricsEventCategory.Phishing,
-          event: MetaMetricsEventName.ProceedAnywayClicked,
-          properties: {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ProceedAnywayClicked)
+          .addCategory(MetaMetricsEventCategory.Phishing)
+          .addProperties({
             url: origin,
             referrer: {
               url: origin,
             },
-          },
-        },
-        {
-          excludeMetaMetricsId: true,
-        },
+          })
+          .build({
+            referrer: {
+              url: origin,
+            },
+            excludeMetaMetricsId: true,
+          }),
       );
     }
 
@@ -8513,68 +6596,18 @@ export default class MetamaskController extends EventEmitter {
     const portfolioBaseURL = process.env.PORTFOLIO_URL;
     const portfolioURL = `${portfolioBaseURL}/?metamaskEntry=phishing_page_portfolio_button`;
 
-    this.metaMetricsController.trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: 'phishing_page',
-        text: 'Back to safety',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'phishing_page',
+          text: 'Back to safety',
+        })
+        .build(),
+    );
 
     await this.platform.switchToAnotherURL(undefined, portfolioURL);
   }
-
-  /**
-   * Locks MetaMask
-   *
-   * @param {object} options - The options for setting the locked state.
-   * @param {boolean} options.skipSeedlessOperationLock - If true, the seedless operation mutex will not be locked.
-   */
-  async setLocked(options = { skipSeedlessOperationLock: false }) {
-    const { skipSeedlessOperationLock } = options;
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-
-    let releaseLock;
-    if (isSocialLoginFlow && !skipSeedlessOperationLock) {
-      releaseLock = await this.seedlessOperationMutex.acquire();
-    }
-
-    try {
-      if (isSocialLoginFlow) {
-        await this.seedlessOnboardingController.setLocked();
-      }
-      await this.keyringController.setLocked();
-
-      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
-      this.subscriptionController.stopAllPolling();
-
-      // sign out from Authentication service and clear the Session Data if user is signed in
-      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
-      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
-      const { isSignedIn } = this.authenticationController.state;
-      if (isSignedIn) {
-        this.authenticationController.performSignOut();
-      }
-    } catch (error) {
-      log.error('Error setting locked state', error);
-      throw error;
-    } finally {
-      if (releaseLock) {
-        releaseLock();
-      }
-    }
-  }
-
-  removePermissionsFor = (subjects) => {
-    try {
-      this.permissionController.revokePermissions(subjects);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
 
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
@@ -8591,214 +6624,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
-
-  updateNetworksList = (chainIds) => {
-    try {
-      this.networkOrderController.updateNetworksList(chainIds);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  };
-
-  /**
-   * Updates the pinned accounts list
-   *
-   * @deprecated This method is deprecated and will be removed in the future.
-   * use AccountTreeController.setAccountGroupPinned instead
-   * @param {AccountAddress[]} pinnedAccountList - The list of accounts to update in the state.
-   */
-  updateAccountsList = (pinnedAccountList) => {
-    try {
-      this.accountOrderController.updateAccountsList(pinnedAccountList);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  };
-
-  setEnabledNetworks = async (chainId) => {
-    try {
-      this.networkEnablementController.enableNetwork(chainId);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
-  };
-
-  setEnabledAllPopularNetworks = async () => {
-    try {
-      this.networkEnablementController.enableAllPopularNetworks();
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-
-    await this.lookupSelectedNetworks();
-  };
-
-  /**
-   * Updates the hidden accounts list
-   *
-   * @deprecated This method is deprecated and will be removed in the future.
-   * use AccountTreeController.setAccountGroupHidden instead
-   * @param {AccountAddress[]} hiddenAccountList - The list of accounts to update in the state.
-   */
-  updateHiddenAccountsList = (hiddenAccountList) => {
-    try {
-      this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  };
-
-  rejectPermissionsRequest = (requestId) => {
-    try {
-      this.permissionController.rejectPermissionsRequest(requestId);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  acceptPermissionsRequest = (request) => {
-    try {
-      this.permissionController.acceptPermissionsRequest(request);
-    } catch (exp) {
-      if (!(exp instanceof PermissionsRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  /**
-   * Resolve a pending approval. For hardware wallet transactions and signatures,
-   * this handles error parsing.
-   *
-   * @param {string} id - The approval ID
-   * @param {unknown} value - The value to resolve with (for transactions, contains txMeta)
-   * @param {object} options - Options for the approval
-   * @param {string} [options.walletType] - The hardware wallet type (if hardware wallet)
-   * @param {boolean} [options.waitForResult] - Whether to wait for the result
-   */
-  resolvePendingApproval = async (id, value, options = {}) => {
-    // RPC params may serialize an omitted argument as `null`, so normalize first
-    // before destructuring to avoid a runtime TypeError.
-    const normalizedOptions = options ?? {};
-    const { walletType, waitForResult } = normalizedOptions;
-    const approvalOptions =
-      typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
-
-    try {
-      await this.approvalController.acceptRequest(id, value, approvalOptions);
-    } catch (error) {
-      // Ignore if approval was already handled
-      if (error instanceof ApprovalRequestNotFoundError) {
-        return;
-      }
-
-      if (walletType) {
-        await this.#handleHardwareWalletError(error, walletType);
-        return;
-      }
-
-      throw error;
-    }
-  };
-
-  rejectPendingApproval = (id, error) => {
-    try {
-      this.approvalController.rejectRequest(
-        id,
-        new JsonRpcError(error.code, error.message, error.data),
-      );
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
-      }
-    }
-  };
-
-  /**
-   * Handle hardware wallet errors with retry support.
-   * Parses the error, checks if it's retryable, and if so, attempts to recreate
-   * the request (transaction or signature). Always throws an RPC error with
-   * properly formatted data.
-   *
-   * @param {Error} error - The original error from the hardware wallet
-   * @param {string} walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
-   * @throws {JsonRpcError} Always throws with hardware wallet error data
-   */
-  async #handleHardwareWalletError(error, walletType) {
-    const hwError = toHardwareWalletError(error, walletType);
-    const createRpcError = isUserRejectedHardwareWalletError(hwError)
-      ? providerErrors.userRejectedRequest
-      : rpcErrors.internal;
-    // Throw a JsonRpcError with hardware wallet error data preserved
-    // This ensures the error properties survive serialization across the RPC boundary
-    throw createRpcError({
-      message: hwError.message,
-      data: {
-        code: hwError.code,
-        severity: hwError.severity,
-        category: hwError.category,
-        userMessage: hwError.userMessage,
-        metadata: hwError.metadata,
-      },
-    });
-  }
-
-  /**
-   * Approve a hardware wallet transaction with retry support.
-   * This is a convenience wrapper around resolvePendingApproval for the
-   * transaction confirmation flow, which passes txMeta in a specific format.
-   *
-   * @param {object} opts - Options for the transaction
-   * @param {string} opts.txId - The transaction ID to approve
-   * @param {object} opts.txMeta - The transaction metadata
-   * @param {string} opts.actionId - The action ID for tracking
-   * @param {string} opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
-   * @throws {JsonRpcError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
-   */
-  approveHardwareWalletTransaction = async ({
-    txId,
-    txMeta,
-    actionId,
-    walletType,
-  }) => {
-    await this.resolvePendingApproval(
-      String(txId),
-      { txMeta, actionId },
-      { waitForResult: true, walletType },
-    );
-  };
-
-  rejectAllPendingApprovals() {
-    const deleteInterface = (id) =>
-      this.controllerMessenger.call(
-        'SnapInterfaceController:deleteInterface',
-        id,
-      );
-
-    rejectAllApprovals({
-      approvalController: this.approvalController,
-      deleteInterface,
-    });
-  }
-
-  async getCode(address, networkClientId) {
-    const { provider } =
-      this.networkController.getNetworkClientById(networkClientId);
-
-    return await provider.request({
-      method: 'eth_getCode',
-      params: [address],
-    });
-  }
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(
@@ -8835,18 +6660,52 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async _notifyAuthorizationChange(origin, newAuthorization) {
+    const sessionScopes = getSessionScopes(newAuthorization, {
+      getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+      sortAccountIdsByLastSelected:
+        this.sortAccountIdsByLastSelected.bind(this),
+    });
+
     this.notifyConnections(
       origin,
       {
         method: MultichainApiNotifications.sessionChanged,
         params: {
-          sessionScopes: getSessionScopes(newAuthorization, {
-            getNonEvmSupportedMethods:
-              this.getNonEvmSupportedMethods.bind(this),
-          }),
+          sessionScopes,
         },
       },
       API_TYPE.CAIP_MULTICHAIN,
+    );
+  }
+
+  /**
+   * Sorts CAIP account IDs by the associated account address lastSelected value.
+   *
+   * @param {string[]} accountIds - CAIP account IDs to sort.
+   * @returns {string[]} Sorted CAIP account IDs.
+   */
+  sortAccountIdsByLastSelected(accountIds) {
+    if (accountIds.length < 2) {
+      return accountIds;
+    }
+
+    const addressByCaipAccountId = new Map(
+      accountIds.map((caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return [caipAccountId, address];
+      }),
+    );
+
+    const addresses = [...new Set(addressByCaipAccountId.values())];
+    const sortedAddresses = this.sortAddressesByLastSelected(addresses);
+    const rankByAddress = new Map(
+      sortedAddresses.map((address, index) => [address, index]),
+    );
+
+    return [...accountIds].sort(
+      (firstAccountId, secondAccountId) =>
+        rankByAddress.get(addressByCaipAccountId.get(firstAccountId)) -
+        rankByAddress.get(addressByCaipAccountId.get(secondAccountId)),
     );
   }
 
@@ -8868,7 +6727,7 @@ export default class MetamaskController extends EventEmitter {
         (caipAccountId) => parseCaipAccountId(caipAccountId).address,
       ),
     );
-    return this.sortMultichainAccountsByLastSelected(addresses)?.[0];
+    return this.sortAddressesByLastSelected(addresses)?.[0];
   }
 
   async _notifyMultichainAccountChange(origin, accountAddressArray, scope) {
@@ -9021,7 +6880,6 @@ export default class MetamaskController extends EventEmitter {
       if (knownNft) {
         this.nftController.checkAndUpdateSingleNftOwnershipStatus(
           knownNft,
-          false,
           networkClientId,
           // TODO add networkClientId once it is available in the transactionMeta
           // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
@@ -9115,7 +6973,6 @@ export default class MetamaskController extends EventEmitter {
         const refreshOwnershipNFts = knownNFTs.map(async (singleNft) => {
           return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
             singleNft,
-            false,
             networkClientId,
             // TODO add networkClientId once it is available in the transactionMeta
             // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
@@ -9149,21 +7006,19 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    this.metaMetricsController.trackEvent(
-      {
-        event: 'Tx Status Update: On-Chain Failure',
-        category: MetaMetricsEventCategory.Background,
-        properties: {
+    trackEvent(
+      createEventBuilder('Tx Status Update: On-Chain Failure')
+        .addCategory(MetaMetricsEventCategory.Background)
+        .addProperties({
           action: 'Transactions',
           errorMessage: transactionMeta.simulationFails?.reason,
           numberOfTokens: tokens.length,
           // TODO: remove this once we have migrated to the new account balances state
           numberOfAccounts: Object.keys(metamaskState.accounts).length,
-        },
-      },
-      {
-        matomoEvent: true,
-      },
+        })
+        .build({
+          matomoEvent: true,
+        }),
     );
   }
 
@@ -9173,176 +7028,44 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  /**
-   * Select a hardware wallet device and execute a
-   * callback with the keyring for that device.
-   *
-   * Note that KeyringController state is not updated before
-   * the end of the callback execution, and calls to KeyringController
-   * methods within the callback can lead to deadlocks.
-   *
-   * @param {object} options - The options for the device
-   * @param {string} options.name - The device name to select
-   * @param {string} options.hdPath - An optional hd path to be set on the device
-   * keyring
-   * @param {*} callback - The callback to execute with the keyring
-   * @returns {*} The result of the callback
-   */
-  async #withKeyringForDevice(options, callback) {
-    const keyringOverrides = this.opts.overrides?.keyrings;
-    let keyringType = null;
-    switch (options.name) {
-      case HardwareDeviceNames.trezor:
-        keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
-        break;
-      case HardwareDeviceNames.oneKey:
-        keyringType = keyringOverrides?.oneKey?.type || OneKeyKeyring?.type;
-        break;
-      case HardwareDeviceNames.ledger:
-        keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
-        break;
-      case HardwareDeviceNames.qr:
-        keyringType = QrKeyring.type;
-        break;
-      case HardwareDeviceNames.lattice:
-        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
-        break;
-      default:
-        throw new Error(
-          'MetamaskController:#withKeyringForDevice - Unknown device',
-        );
-    }
-
-    return this.keyringController.withKeyring(
-      { type: keyringType },
-      async ({ keyring }) => {
-        if (options.hdPath && keyring.setHdPath) {
-          keyring.setHdPath(options.hdPath);
-        }
-
-        if (options.name === HardwareDeviceNames.lattice) {
-          keyring.appName = 'MetaMask';
-        }
-
-        if (options.name === HardwareDeviceNames.ledger) {
-          await this.setLedgerTransportPreference(keyring);
-        }
-
-        if (
-          options.name === HardwareDeviceNames.trezor ||
-          options.name === HardwareDeviceNames.oneKey
-        ) {
-          const model = keyring.getModel();
-          this.appStateController.setTrezorModel(model);
-        }
-
-        keyring.network = getProviderConfig({
-          metamask: this.networkController.state,
-        }).type;
-
-        return await callback(keyring);
-      },
-      {
-        createIfMissing: true,
-      },
-    );
-  }
-
-  /**
-   * @deprecated Avoid new references to the global network.
-   * Will be removed once multi-chain support is fully implemented.
-   * @returns {string} The chain ID of the currently selected network.
-   */
-  #getGlobalChainId() {
-    const globalNetworkClientId = this.#getGlobalNetworkClientId();
-
-    const globalNetworkClient = this.networkController.getNetworkClientById(
-      globalNetworkClientId,
-    );
-
-    return globalNetworkClient.configuration.chainId;
-  }
-
-  /**
-   * @deprecated Avoid new references to the global network.
-   * Will be removed once multi-chain support is fully implemented.
-   * @returns {string} The network client ID of the currently selected network client.
-   */
-  #getGlobalNetworkClientId() {
-    return this.networkController.state.selectedNetworkClientId;
-  }
-
-  /**
-   * Checks if a delegation is already disabled on-chain by querying the
-   * delegation manager contract's disabledDelegations mapping.
-   *
-   * @param {string} delegationManagerAddress - The delegation manager contract address.
-   * @param {string} delegationHash - The hash of the delegation to check.
-   * @param {string} networkClientId - The network client ID to use for the query.
-   * @returns {Promise<boolean>} True if the delegation is disabled, false otherwise.
-   */
-  async checkDelegationDisabled(
-    delegationManagerAddress,
-    delegationHash,
-    networkClientId,
-  ) {
-    const { encodeDisabledDelegationsCheck, decodeDisabledDelegationsResult } =
-      await import('../../shared/lib/delegation/delegation');
-
-    // Encode the call to disabledDelegations(bytes32)
-    const callData = encodeDisabledDelegationsCheck({ delegationHash });
-
-    // Make eth_call request through the network controller
-    const networkClient =
-      this.networkController.getNetworkClientById(networkClientId);
-
-    const result = await networkClient.provider.request({
-      method: 'eth_call',
-      params: [
-        {
-          to: delegationManagerAddress,
-          data: callData,
-        },
-        'latest',
-      ],
-    });
-
-    // Decode the result
-    const isDisabled = decodeDisabledDelegationsResult(result);
-
-    return isDisabled;
-  }
-
   #createEnsureOnboardingCompleteCallback() {
     return createEnsureOnboardingCompleteCallback(this.controllerMessenger);
   }
 
-  #initControllers({ existingControllers, initFunctions, initState }) {
+  #initMessengerClients({ initFunctions, initState }) {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
-      encryptor: this.opts.encryptor,
       ensureOnboardingComplete: this.#createEnsureOnboardingCompleteCallback(),
       extension: this.extension,
       platform: this.platform,
       getCronjobControllerStorageManager: () =>
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
+      getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      getTabUrl: async (tabId) => (await browser.tabs.get(tabId))?.url,
+      updateTabUrl: async (tabId, url) => {
+        await browser.tabs.update(tabId, { url });
+      },
+      markNotificationPopupAsAutomaticallyClosed:
+        this.notificationManager.markAsAutomaticallyClosed.bind(
+          this.notificationManager,
+        ),
+      getRequestAccountTabIds: this.getRequestAccountTabIds.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
       getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
-      keyringOverrides: this.opts.overrides?.keyrings,
+      requestSafeReload: this.requestSafeReload.bind(this),
+      sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
-      removeAccount: this.removeAccount.bind(this),
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:
         this.setupUntrustedCommunicationCaip.bind(this),
-      setLocked: this.setLocked.bind(this),
       showNotification: this.platform._showNotification,
       showUserConfirmation: this.opts.showUserConfirmation,
       getAccountType: this.getAccountType.bind(this),
@@ -9351,9 +7074,9 @@ export default class MetamaskController extends EventEmitter {
       trace,
     };
 
-    return initControllers({
+    return initMessengerClients({
+      wallet: this.wallet,
       baseControllerMessenger: this.controllerMessenger,
-      existingControllers,
       initFunctions,
       initRequest,
     });
@@ -9380,20 +7103,16 @@ export default class MetamaskController extends EventEmitter {
         upgradeContractAddress,
         networkClientId,
       },
-      async (transactionParams, options) => {
-        const transactionMeta = await addTransaction(
-          this.getAddTransactionRequest({
-            transactionParams,
-            transactionOptions: {
-              ...options,
-              origin: 'metamask',
-              requireApproval: true,
-            },
-            waitForSubmit: true,
-          }),
-        );
-        return transactionMeta;
-      },
+      async (transactionParams, options) =>
+        this.controllerMessenger.call(
+          'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
+          transactionParams,
+          {
+            ...options,
+            origin: 'metamask',
+            requireApproval: true,
+          },
+        ),
     );
   }
 
@@ -9403,12 +7122,27 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} request - The request object
    * @param {string} request.address - The account address
    * @param {string} request.chainId - The chain ID to check
-   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>}
+   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>} Whether the account can be upgraded and, if so, the contract address it should delegate to.
    */
   async isEip7702Supported(request) {
     const { address, chainId } = request;
     const normalizedAccount = address;
 
+    // Accounts whose keyring cannot sign EIP-7702 authorizations (e.g.
+    // hardware and snap keyrings) can never be upgraded. Fail closed on
+    // lookup errors so callers do not attempt an upgrade that must fail.
+    if (
+      !(await accountSupports7702(
+        normalizedAccount,
+        this.keyringController,
+        false,
+      ))
+    ) {
+      return { isSupported: false, upgradeContractAddress: null };
+    }
+
+    // Although this method is named for atomic batch support, it also checks
+    // the LaunchDarkly flag used to enable the EIP-7702/7715 flow.
     const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
       address: normalizedAccount,
       chainIds: [chainId],
@@ -9427,17 +7161,5 @@ export default class MetamaskController extends EventEmitter {
       isSupported,
       upgradeContractAddress,
     };
-  }
-
-  #isAssetsUnifyStateEnabled() {
-    const assetsUnifyFlag =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.assetsUnifyState;
-    return (
-      isAssetsUnifyStateFeatureEnabled(
-        assetsUnifyFlag,
-        ASSETS_UNIFY_STATE_VERSION_1,
-      ) && getIsAssetsUnifiedStateIncludedInBuild()
-    );
   }
 }

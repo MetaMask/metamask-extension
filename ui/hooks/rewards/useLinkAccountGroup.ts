@@ -1,8 +1,8 @@
-import { useCallback, useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../useAnalytics';
 import { getInternalAccountsFromGroupById } from '../../selectors/multichain-accounts/account-tree';
 import {
   rewardsGetOptInStatus,
@@ -16,6 +16,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../../pages/multichain-accounts/account-details/account-type-utils';
 import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
+import { useDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type LinkStatusReport = {
@@ -41,7 +42,7 @@ export const useLinkAccountGroup = (
       : [],
   );
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   // Get accounts for the primary account group
   const { accounts: primaryWalletGroupAccounts } =
@@ -53,13 +54,14 @@ export const useLinkAccountGroup = (
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: getAccountTypeCategory(account),
       };
-      trackEvent({
-        category: MetaMetricsEventCategory.Rewards,
-        event,
-        properties: accountMetricProps,
-      });
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Rewards)
+          .addProperties(accountMetricProps)
+          .build(),
+      );
     },
-    [trackEvent],
+    [trackEvent, createEventBuilder],
   );
 
   const linkAccountGroup = useCallback(async (): Promise<LinkStatusReport> => {

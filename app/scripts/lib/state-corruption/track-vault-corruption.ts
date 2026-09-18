@@ -5,8 +5,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import type { Backup } from '../stores/persistence-manager';
-import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
+import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
+import { trackEarlySegmentEvent } from '../segment/custom-segment-tracking';
 
 /**
  * Tracks a vault corruption event directly to Segment.

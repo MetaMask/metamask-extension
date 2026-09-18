@@ -7,11 +7,12 @@ import {
 } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import {
-  bridgeTransaction,
   getBridgeFixtures,
   EventTypes,
   EXPECTED_EVENT_TYPES,
+  checkInputChangedEvents,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import { login } from '../../page-objects/flows/login.flow';
@@ -28,34 +29,63 @@ describe('Bridge tests', function (this: Suite) {
   this.timeout(160000);
   it('Execute multiple bridge transactions', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        false,
-        true,
-      ),
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
+      }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver, { expectedBalance: '0' });
+        await login(driver, {
+          expectedBalance: '225,730.11',
+          waitForNonEvmAccounts: false,
+        });
 
         const homePage = new HomePage(driver);
+        const bridgePage = new BridgeQuotePage(driver);
 
         // QUOTE REQUEST #1
+        console.log('Starting 1st Swap flow');
         await bridgeTransaction({
           driver,
           quote,
           expectedTransactionsCount: 2,
           expectedDestAmount: '0.0157',
+          expectedActivityAmount: '+0.01567',
+          openPickersWithDebounce: true,
         });
 
-        // Start the flow again
+        const inputChangesCount1 = await checkInputChangedEvents(
+          'quoteRequest1',
+          driver,
+          mockedEndpoints,
+        );
+
+        // QUOTE REQUEST #2 - Start the flow again
+        console.log('Starting 2nd Swap flow');
         await homePage.startSwapFlow();
 
-        const bridgePage = new BridgeQuotePage(driver);
-        // QUOTE REQUEST #2
-        await bridgePage.enterBridgeQuote(quote);
+        const inputChangesCount2 = await checkInputChangedEvents(
+          'resetPage',
+          driver,
+          mockedEndpoints,
+          inputChangesCount1,
+        );
+
+        console.log('Entering 2nd Swap quote');
+        await bridgePage.enterBridgeQuote(quote, {
+          openPickersWithDebounce: true,
+        });
         await bridgePage.waitForQuote();
         await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+
+        const inputChangesCount3 = await checkInputChangedEvents(
+          'quoteRequest2',
+          driver,
+          mockedEndpoints,
+          inputChangesCount1 + inputChangesCount2,
+        );
+
         // QUOTE REQUEST #3
+        console.log('Switching tokens');
         await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
@@ -100,45 +130,30 @@ describe('Bridge tests', function (this: Suite) {
               'Unified SwapBridge',
         );
 
+        const inputChangesCount4 = await checkInputChangedEvents(
+          'switchTokens',
+          driver,
+          mockedEndpoints,
+          inputChangesCount3 + inputChangesCount2 + inputChangesCount1,
+        );
+
+        // Check total input change events
         const swapBridgeInputChanged = findEventsByName(
           EventTypes.SwapBridgeInputChanged,
         );
-        /**
-         * token_source
-         * chain_source
-         * slippage
-         * token_destination
-         * chain_destination
-         */
-
-        assert(
-          swapBridgeInputChanged.length === 16,
-          `Should have 16 input change events, but got ${swapBridgeInputChanged.length}`,
+        const expectedInputChangeLength =
+          inputChangesCount1 +
+          inputChangesCount2 +
+          inputChangesCount3 +
+          inputChangesCount4;
+        assert.equal(
+          swapBridgeInputChanged.length,
+          expectedInputChangeLength,
+          `Should have ${expectedInputChangeLength} total input change events, but got ${swapBridgeInputChanged.length}`,
         );
-
-        const swapBridgeInputChangedKeys = new Set(
-          swapBridgeInputChanged.map((event) => event.properties.input),
+        console.log(
+          `${expectedInputChangeLength} expected Input Change events found`,
         );
-
-        const inputTypes = [
-          'token_source',
-          'chain_source',
-          'slippage',
-          'token_destination',
-          'chain_destination',
-        ];
-
-        assert.ok(
-          swapBridgeInputChangedKeys.size === 5,
-          'Should have 5 input types',
-        );
-
-        inputTypes.forEach((inputType) => {
-          assert.ok(
-            swapBridgeInputChangedKeys.has(inputType),
-            `Missing input type: ${inputType}`,
-          );
-        });
 
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,
@@ -194,7 +209,19 @@ describe('Bridge tests', function (this: Suite) {
             unifiedSwapBridgeSubmitted[0].properties
               .token_symbol_destination === 'ETH',
         );
+        const { actionId, ...properties } =
+          unifiedSwapBridgeSubmitted[0]?.properties ?? {};
 
+        console.log('Verifying Submitted event properties');
+        const propertiesString = JSON.stringify(properties);
+        const expectedProperties =
+          '{"category":"Unified SwapBridge","action_type":"swapbridge-v1","feature_id":"unified_swap_bridge","price_impact":-0.003660017836029515,"usd_quoted_gas":241.72268937750394,"gas_included":false,"gas_included_7702":false,"provider":"lifi_across","quoted_time_minutes":0.8,"usd_quoted_return":-194.5627915675127,"chain_id_source":"eip155:1","token_symbol_source":"DAI","token_address_source":"eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f","chain_id_destination":"eip155:59144","token_symbol_destination":"ETH","token_address_destination":"eip155:59144/slip44:60","token_security_type_destination":null,"account_hardware_type":null,"is_hardware_wallet":false,"swap_type":"crosschain","usd_amount_source":0,"stx_enabled":true,"slippage_limit":0,"custom_slippage":false,"location":"Main View","source_hash_present":false,"destination_hash_present":false,"input_primary_denomination":"token_amount","environment_type":"background","locale":"en","chain_id":"0x1","profile_id":"MOCK_SRP_IDENTIFIER_1","canonical_profile_id":"MOCK_SRP_IDENTIFIER_1"}';
+        assert.ok(
+          propertiesString === expectedProperties,
+          `Expected Submitted event properties: ${expectedProperties} but got ${propertiesString}`,
+        );
+
+        console.log('Verifying other events');
         const assetTypeCheck1 = [
           (req: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -220,35 +247,12 @@ describe('Bridge tests', function (this: Suite) {
           }) => req.properties.token_standard === 'NONE',
         ];
 
-        const transactionAddedAnonEvents = findEventsByName(
-          EventTypes.TransactionAddedAnon,
-        );
-        assert.ok(transactionAddedAnonEvents.length === 2);
-
-        assert.ok(
-          assertInAnyOrder(transactionAddedAnonEvents, [
-            assetTypeCheck1,
-            assetTypeCheck2,
-          ]),
-        );
-
         const transactionAddedEvents = findEventsByName(
           EventTypes.TransactionAdded,
         );
         assert.ok(transactionAddedEvents.length === 2);
         assert.ok(
           assertInAnyOrder(transactionAddedEvents, [
-            assetTypeCheck1,
-            assetTypeCheck2,
-          ]),
-        );
-
-        const transactionSubmittedAnonEvents = findEventsByName(
-          EventTypes.TransactionSubmittedAnon,
-        );
-        assert.ok(transactionSubmittedAnonEvents.length === 2);
-        assert.ok(
-          assertInAnyOrder(transactionSubmittedAnonEvents, [
             assetTypeCheck1,
             assetTypeCheck2,
           ]),
@@ -265,34 +269,12 @@ describe('Bridge tests', function (this: Suite) {
           ]),
         );
 
-        const transactionApprovedAnonEvents = findEventsByName(
-          EventTypes.TransactionApprovedAnon,
-        );
-        assert.ok(transactionApprovedAnonEvents.length === 2);
-        assert.ok(
-          assertInAnyOrder(transactionApprovedAnonEvents, [
-            assetTypeCheck1,
-            assetTypeCheck2,
-          ]),
-        );
-
         const transactionApprovedEvents = findEventsByName(
           EventTypes.TransactionApproved,
         );
         assert.ok(transactionApprovedEvents.length === 2);
         assert.ok(
           assertInAnyOrder(transactionApprovedEvents, [
-            assetTypeCheck1,
-            assetTypeCheck2,
-          ]),
-        );
-
-        const transactionFinalizedAnonEvents = findEventsByName(
-          EventTypes.TransactionFinalizedAnon,
-        );
-        assert.ok(transactionFinalizedAnonEvents.length === 2);
-        assert.ok(
-          assertInAnyOrder(transactionFinalizedAnonEvents, [
             assetTypeCheck1,
             assetTypeCheck2,
           ]),

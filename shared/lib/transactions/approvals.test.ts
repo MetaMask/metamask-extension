@@ -34,6 +34,17 @@ describe('Approvals Utils', () => {
       );
     });
 
+    it('does not throw when newAmount has more than 15 significant digits', () => {
+      // 17 decimals so that newAmount * 10^decimals is an integer smallest-unit amount.
+      expect(() =>
+        updateApprovalAmount(
+          buildApproveTransactionData(SPENDER_MOCK, AMOUNT_MOCK),
+          0.07086574003221964,
+          17,
+        ),
+      ).not.toThrow();
+    });
+
     it('updates Permit2 approval amount', () => {
       expect(
         updateApprovalAmount(

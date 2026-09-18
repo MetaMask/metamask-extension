@@ -6,7 +6,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { DAPP_ONE_URL, DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 
@@ -37,7 +37,10 @@ describe('Petnames - Signatures', function (this: Suite) {
           name: 'Custom Name',
         });
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav3();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -77,7 +80,10 @@ describe('Petnames - Signatures', function (this: Suite) {
           name: 'Custom Name',
         });
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickSignTypedDatav4();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -95,10 +101,11 @@ describe('Petnames - Signatures', function (this: Suite) {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
           numberOfTestDapps: 1,
         },
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSnapsPrivacyWarningAlreadyShown()
           .withNoNames()
-          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: mockLookupSnap,
         title: this.test?.fullTitle(),

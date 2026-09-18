@@ -16,7 +16,7 @@ exports[`ConfirmNav should match snapshot 1`] = `
         disabled=""
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-left.svg');"
         />
       </button>
@@ -34,7 +34,7 @@ exports[`ConfirmNav should match snapshot 1`] = `
         data-testid="confirm-nav__next-confirmation"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-right.svg');"
         />
       </button>

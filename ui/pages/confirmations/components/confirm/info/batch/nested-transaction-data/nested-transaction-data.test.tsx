@@ -101,7 +101,7 @@ describe('NestedTransaction', () => {
     expect(getByText('0x12345...67890')).toBeInTheDocument();
     expect(getByText(messages.amount.message)).toBeInTheDocument();
     expect(getByText('<0.000001')).toBeInTheDocument();
-    expect(getByText('ETH')).toBeInTheDocument();
+    expect(getByText('GoerliETH')).toBeInTheDocument();
   });
 
   it('renders transaction data', () => {

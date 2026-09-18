@@ -3,9 +3,12 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { tEn } from '../../../../../test/lib/i18n-helpers';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockCryptoMarkets } from '../mocks';
-import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { PerpsWatchlist } from './perps-watchlist';
 
 const mockNavigate = jest.fn();
@@ -15,21 +18,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../../hooks/perps/stream', () => ({
-  usePerpsLiveMarketData: () => ({
-    cryptoMarkets: mockCryptoMarkets,
-    hip3Markets: [],
-    isInitialLoading: false,
-  }),
-}));
-
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
-    isTestnet: false,
-    watchlistMarkets: {
-      testnet: [],
-      mainnet: ['BTC', 'ETH'],
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
     },
   },
 });
@@ -39,43 +33,102 @@ describe('PerpsWatchlist', () => {
     mockNavigate.mockClear();
   });
 
+  describe('header navigation', () => {
+    const renderWatchlist = () =>
+      renderWithProvider(
+        <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
+        mockStore,
+      );
+
+    it('navigates to the market list with the watchlist filter pre-selected', () => {
+      renderWatchlist();
+
+      fireEvent.click(screen.getByTestId('perps-watchlist-header'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${PERPS_MARKET_LIST_ROUTE}?filter=watchlist`,
+      );
+    });
+
+    it('renders the header as a button', () => {
+      renderWatchlist();
+
+      expect(screen.getByTestId('perps-watchlist-header').tagName).toBe(
+        'BUTTON',
+      );
+    });
+
+    it('matches the other Perps section headers', () => {
+      renderWatchlist();
+
+      expect(
+        screen.getByRole('button', { name: messages.perpsWatchlist.message }),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('renders the watchlist section', () => {
-    renderWithProvider(<PerpsWatchlist />, mockStore);
+    renderWithProvider(
+      <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
+      mockStore,
+    );
 
     expect(screen.getByTestId('perps-watchlist')).toBeInTheDocument();
   });
 
   it('displays the watchlist heading', () => {
-    renderWithProvider(<PerpsWatchlist />, mockStore);
+    renderWithProvider(
+      <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
+      mockStore,
+    );
 
     expect(screen.getByText(/watchlist/iu)).toBeInTheDocument();
   });
 
   it('renders market cards for watchlist symbols (BTC, ETH) that exist in market data', () => {
-    renderWithProvider(<PerpsWatchlist />, mockStore);
+    renderWithProvider(
+      <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
+      mockStore,
+    );
 
     expect(screen.getByTestId('perps-watchlist-BTC')).toBeInTheDocument();
     expect(screen.getByTestId('perps-watchlist-ETH')).toBeInTheDocument();
   });
 
-  it('displays market name, volume, and price for each watchlist item', () => {
-    renderWithProvider(<PerpsWatchlist />, mockStore);
+  it('displays full asset name, volume, and price for each watchlist item', () => {
+    renderWithProvider(
+      <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
+      mockStore,
+    );
 
-    expect(screen.getByText(tEn('networkNameBitcoin'))).toBeInTheDocument();
-    expect(screen.getByText(tEn('networkNameEthereum'))).toBeInTheDocument();
-    expect(screen.getByText('$1.2B')).toBeInTheDocument();
-    expect(screen.getByText('$850M')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameBitcoin.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/\$1\.2B Vol/u)).toBeInTheDocument();
+    expect(screen.getByText(/\$850M Vol/u)).toBeInTheDocument();
     expect(screen.getByText('$45,250.00')).toBeInTheDocument();
     expect(screen.getByText('$3,025.50')).toBeInTheDocument();
   });
 
   it('navigates to market detail when a watchlist card is clicked', () => {
-    renderWithProvider(<PerpsWatchlist />, mockStore);
+    renderWithProvider(
+      <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
+      mockStore,
+    );
 
     fireEvent.click(screen.getByTestId('perps-watchlist-ETH'));
 
     expect(mockNavigate).toHaveBeenCalledWith(
       `${PERPS_MARKET_DETAIL_ROUTE}/ETH`,
     );
+  });
+
+  it('renders nothing when there are no watchlist markets', () => {
+    renderWithProvider(<PerpsWatchlist markets={[]} />, mockStore);
+
+    expect(screen.queryByTestId('perps-watchlist')).not.toBeInTheDocument();
   });
 });

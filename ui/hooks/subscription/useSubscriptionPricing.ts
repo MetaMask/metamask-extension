@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   ChainPaymentInfo,
@@ -32,6 +32,7 @@ import {
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import { useDispatch } from '../../store/hooks';
 
 export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
@@ -224,14 +225,28 @@ export const useSubscriptionProductPlans = (
   );
 };
 
-export const useSubscriptionPaymentMethods = (
-  paymentType: PaymentType,
+/**
+ * Look up the pricing payment method for a payment type.
+ *
+ * `PricingPaymentMethod` is a discriminated union on `type`, so the return type
+ * is narrowed to the matching variant. Crypto-only fields such as `chains` are
+ * therefore accessible without a further narrowing at the call site.
+ *
+ * @param paymentType - The payment type to look up.
+ * @param pricing - The subscription pricing response.
+ * @returns The matching payment method, or `undefined` when absent.
+ */
+export const useSubscriptionPaymentMethods = <Type extends PaymentType>(
+  paymentType: Type,
   pricing?: PricingResponse,
-): PricingPaymentMethod | undefined => {
+): Extract<PricingPaymentMethod, { type: Type }> | undefined => {
   return useMemo(
     () =>
       pricing?.paymentMethods.find(
-        (paymentMethod) => paymentMethod.type === paymentType,
+        (
+          paymentMethod,
+        ): paymentMethod is Extract<PricingPaymentMethod, { type: Type }> =>
+          paymentMethod.type === paymentType,
       ),
     [pricing, paymentType],
   );

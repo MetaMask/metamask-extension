@@ -1,8 +1,6 @@
 import type { PerpsMarketData } from '../../../components/app/perps/types';
-import {
-  MARKET_SORTING_CONFIG,
-  PERPS_CONSTANTS,
-} from '../../../components/app/perps/constants';
+import { MARKET_SORTING_CONFIG } from '../../../components/app/perps/constants';
+import { parseVolume } from '../../../components/app/perps/utils';
 
 export type SortField =
   | 'volume'
@@ -10,63 +8,6 @@ export type SortField =
   | 'fundingRate'
   | 'openInterest';
 export type SortDirection = 'asc' | 'desc';
-
-const multipliers: Record<string, number> = {
-  K: 1e3,
-  M: 1e6,
-  B: 1e9,
-  T: 1e12,
-} as const;
-
-// Pre-compiled regex for better performance
-const VOLUME_SUFFIX_REGEX = /\$?([\d.,]+)([KMBT])?/u;
-
-// Helper function to remove commas
-const removeCommas = (str: string): string => {
-  let result = '';
-  for (const char of str) {
-    if (char !== ',') {
-      result += char;
-    }
-  }
-  return result;
-};
-
-/**
- * Parse volume strings with magnitude suffixes (e.g., '$1.2B', '$850M')
- * Returns numeric value for sorting
- *
- * @param volumeStr - The volume string to parse
- * @returns Numeric value for sorting
- */
-export const parseVolume = (volumeStr: string | undefined): number => {
-  if (!volumeStr) {
-    return -1;
-  }
-
-  // Handle special cases
-  if (volumeStr === PERPS_CONSTANTS.FALLBACK_PRICE_DISPLAY) {
-    return -1;
-  }
-  if (volumeStr === '$<1') {
-    return 0.5;
-  }
-
-  // Handle suffixed values (e.g., "$1.5M", "$2.3B", "$500K")
-  const suffixMatch = VOLUME_SUFFIX_REGEX.exec(volumeStr);
-  if (suffixMatch) {
-    const [, numberPart, suffix] = suffixMatch;
-    const baseValue = Number.parseFloat(removeCommas(numberPart));
-
-    if (Number.isNaN(baseValue)) {
-      return -1;
-    }
-
-    return suffix ? baseValue * multipliers[suffix] : baseValue;
-  }
-
-  return -1;
-};
 
 type SortMarketsParams = {
   markets: PerpsMarketData[];

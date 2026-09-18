@@ -10,6 +10,9 @@ export const getClientForTransactionMetadata = (): string =>
     ? CLIENT_ID_EXTENSION_FIREFOX
     : CLIENT_ID_EXTENSION_CHROME;
 
+export const getClientVersionForTransactionMetadata = (): string =>
+  process.env.METAMASK_VERSION ?? '';
+
 /**
  * Sanitizes transaction origin for analytics.
  * - For URL origins (dApps): extracts hostname only for privacy

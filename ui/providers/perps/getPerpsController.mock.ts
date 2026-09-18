@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Mock implementation of PerpsController for UI development
  *
@@ -76,9 +75,51 @@ class MockPerpsController {
    * @param options0
    * @param options0.cancelAll
    */
-  async cancelOrders({ cancelAll }: { cancelAll: boolean }): Promise<void> {
+  async cancelOrders({ cancelAll }: { cancelAll: boolean }): Promise<{
+    success: boolean;
+    successCount: number;
+    failureCount: number;
+    results: {
+      orderId: string;
+      symbol: string;
+      success: boolean;
+      error?: string;
+    }[];
+  }> {
     console.log(`[MockPerpsController] Canceling all orders: ${cancelAll}`);
     await new Promise((resolve) => setTimeout(resolve, 100));
+    return {
+      success: true,
+      successCount: 0,
+      failureCount: 0,
+      results: [],
+    };
+  }
+
+  /**
+   * Close all positions or a subset by symbol
+   *
+   * @param params
+   * @param params.closeAll
+   * @param params.symbols
+   */
+  async closePositions(params: {
+    closeAll?: boolean;
+    symbols?: string[];
+  }): Promise<{
+    success: boolean;
+    successCount: number;
+    failureCount: number;
+    results: { symbol: string; success: boolean; error?: string }[];
+  }> {
+    console.log('[MockPerpsController] Closing positions:', params);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return {
+      success: true,
+      successCount: 0,
+      failureCount: 0,
+      results: [],
+    };
   }
 
   /**
@@ -142,7 +183,6 @@ class MockPerpsController {
    * @param options0
    * @param options0.callback
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   subscribeToAccount({
     callback,
   }: {

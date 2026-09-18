@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
 import GasTiming from './gas-timing.component';
@@ -14,13 +14,15 @@ const storeMock = configureStore({
 
 const meta: Meta<typeof GasTiming> = {
   title: 'Pages/Confirmations/Components/GasTiming',
-  component: GasTiming as React.ComponentType<{
-    maxFeePerGas?: number;
-    maxPriorityFeePerGas?: number;
-    gasWarnings: any;
-  }>,
+  component: GasTiming as React.ComponentType<
+    React.PropsWithChildren<{
+      maxFeePerGas?: number;
+      maxPriorityFeePerGas?: number;
+      gasWarnings: any;
+    }>
+  >,
   decorators: [
-    (StoryComponent: React.FC) => (
+    (StoryComponent: React.ComponentType) => (
       <Provider store={storeMock}>
         <StoryComponent />
       </Provider>

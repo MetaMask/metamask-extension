@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import {
   AvatarToken,
@@ -8,7 +9,6 @@ import {
   Box,
   Text,
 } from '../../../../../../../components/component-library';
-import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -18,7 +18,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { getPreferences } from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 
 import { BannerAlert } from './banner-alert';
 import { BannerAlertSeverity } from './banner-alert.types';
@@ -12,7 +12,7 @@ export default {
     docs: {
       description: {
         component:
-          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead. See the [Migration Guide](https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#banneralert-component) for details.',
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [`BannerAlert` from `@metamask/design-system-react`](https://metamask.github.io/metamask-design-system/?path=/docs/react-components-banneralert--docs) instead. See the [Migration Guide](https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#banneralert-component) for migration details.',
       },
     },
   },

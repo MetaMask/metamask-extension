@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import { ButtonBase, IconName, Box } from '../../component-library';
+import { ButtonBase, Box, IconName } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -15,9 +15,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 
 function AddressCopyButton({ address, shorten = false, wrap = false }) {
   const checksummedAddress = normalizeSafeAddress(address);

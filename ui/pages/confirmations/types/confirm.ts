@@ -2,7 +2,7 @@ import { ApprovalControllerState } from '@metamask/approval-controller';
 import { DecodingData } from '@metamask/signature-controller';
 import { SIWEMessage } from '@metamask/controller-utils';
 import { DecodedPermission } from '@metamask/gator-permissions-controller';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import {
   TransactionMeta,
   TransactionType,
@@ -47,6 +47,9 @@ export type SignatureRequestType = {
   decodedPermission?: DecodedPermission;
 };
 
+/**
+ * @deprecated Use {@link TransactionMeta} or {@link SignatureRequest} from the relevant controller package directly.
+ */
 export type Confirmation = SignatureRequestType | TransactionMeta;
 
 export type ConfirmMetamaskState = {
@@ -56,7 +59,7 @@ export type ConfirmMetamaskState = {
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
     dappSwapComparisonData?: Record<
       string,
-      { quotes?: QuoteResponse[]; latency?: number }
+      { quotes?: QuoteResponseV1[]; latency?: number }
     >;
   };
 };

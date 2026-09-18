@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import BigNumber from 'bignumber.js';
 import { CANCEL_RATE, SPEED_UP_RATE } from '@metamask/transaction-controller';
@@ -19,8 +18,10 @@ import {
   updateCustomSwapsEIP1559GasParams,
   updatePreviousGasParams,
   updateSwapsUserFeeLevel,
-  updateTransactionGasFees,
 } from '../../../store/actions';
+import { updateTransactionGasFees } from '../../../store/actions/update-transaction-gas-fees';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   decGWEIToHexWEI,
   decimalToHex,
@@ -28,8 +29,8 @@ import {
 
 /**
  * @typedef {object} TransactionFunctionsReturnType
- * @property {() => void} cancelTransaction - cancel the transaction.
- * @property {() => void} speedUpTransaction - speed up the transaction.
+ * @property {() => Promise<unknown>} cancelTransaction - cancel the transaction.
+ * @property {() => Promise<unknown>} speedUpTransaction - speed up the transaction.
  * @property {(string, number, number, number, string) => void} updateTransaction - update the transaction.
  * @property {(boolean) => void} updateTransactionToTenPercentIncreasedGasFee - update the cancel / speed transaction to
  * gas fee which is equal to current gas fee +10 percent.
@@ -153,7 +154,7 @@ export const useTransactionFunctions = ({
       transaction.previousGas,
       CANCEL_RATE,
     );
-    dispatch(
+    return dispatch(
       createCancelTransaction(transaction.id, gasValuesForCancel, {
         estimatedBaseFee,
       }),
@@ -166,7 +167,7 @@ export const useTransactionFunctions = ({
       transaction.previousGas,
       SPEED_UP_RATE,
     );
-    dispatch(
+    return dispatch(
       createSpeedUpTransaction(transaction.id, gasValuesForSpeedUp, {
         estimatedBaseFee,
       }),

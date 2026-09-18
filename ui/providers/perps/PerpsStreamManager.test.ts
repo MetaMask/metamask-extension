@@ -71,6 +71,174 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('positions channel', () => {
+    it('fetches positions via REST after WS grace period when no WS data arrives', async () => {
+      jest.useFakeTimers();
+      const mockPositions = [makePosition('BTC')];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      try {
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetPositions',
+          [],
+        );
+        expect(cb).toHaveBeenCalledWith(mockPositions);
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('skips REST fallback when WS pushes positions before grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        const wsPositions = [makePosition('ETH')];
+        manager.positions.pushData(wsPositions);
+        expect(cb).toHaveBeenCalledWith(wsPositions);
+
+        mockSubmitRequestToBackground.mockClear();
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetPositions',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('notifies subscribers with empty positions when REST fallback fails', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetPositions') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(cb).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch positions',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+  });
+
+  describe('orders channel', () => {
+    it('fetches orders via REST after WS grace period when no WS data arrives', async () => {
+      jest.useFakeTimers();
+      const mockOrders = [{ id: 'order-1' }];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetOpenOrders') {
+          return Promise.resolve(mockOrders);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      try {
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          [],
+        );
+        expect(cb).toHaveBeenCalledWith(mockOrders);
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('skips REST fallback when WS pushes orders before grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        const wsOrders = [{ id: 'ws-order-1' }] as never[];
+        manager.orders.pushData(wsOrders);
+        expect(cb).toHaveBeenCalledWith(wsOrders);
+
+        mockSubmitRequestToBackground.mockClear();
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('notifies subscribers with empty orders when REST fallback fails', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetOpenOrders') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(cb).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch orders',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+  });
+
   describe('markets channel', () => {
     beforeEach(() => {
       jest.useRealTimers();
@@ -82,7 +250,8 @@ describe('PerpsStreamManager', () => {
       jest.useFakeTimers();
     });
 
-    it('notifies subscribers with empty markets when fetch fails', async () => {
+    it('notifies subscribers with empty markets when REST fallback fails without cache', async () => {
+      jest.useFakeTimers();
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
@@ -98,9 +267,13 @@ describe('PerpsStreamManager', () => {
         const onData = jest.fn();
         manager.markets.subscribe(onData);
 
-        await Promise.resolve();
-        await Promise.resolve();
+        // Advance past WS grace period to trigger REST fallback
+        await jest.advanceTimersByTimeAsync(3_000);
 
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: false }],
+        );
         expect(onData).toHaveBeenCalledWith([]);
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           '[PerpsStreamManager] Failed to fetch markets',
@@ -108,6 +281,126 @@ describe('PerpsStreamManager', () => {
         );
       } finally {
         consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+      }
+    });
+
+    it('passes useTerminalApi: true when setUseTerminalApi(true) has been called', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockResolvedValue([]);
+
+        manager.setUseTerminalApi(true);
+        manager.markets.subscribe(jest.fn());
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: true }],
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+      }
+    });
+
+    it('clears cached markets when the terminal mode changes so the next fetch uses the new backend', () => {
+      manager.markets.pushData([{ symbol: 'BTC' }] as never[]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      manager.setUseTerminalApi(true);
+
+      expect(manager.markets.hasCachedData()).toBe(false);
+    });
+
+    it('keeps cached markets when the terminal mode is unchanged', () => {
+      manager.markets.pushData([{ symbol: 'BTC' }] as never[]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      // Default mode is already `false`; a no-op update must not wipe the
+      // warm cache on every remount that re-applies the same flag value.
+      manager.setUseTerminalApi(false);
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+    });
+
+    it('skips REST fallback when WS delivers data within grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+        const onData = jest.fn();
+        manager.markets.subscribe(onData);
+
+        // WS pushes data before grace period expires
+        const wsMarkets = [{ symbol: 'BTC', name: 'Bitcoin' }] as never[];
+        manager.markets.pushData(wsMarkets);
+        expect(onData).toHaveBeenCalledWith(wsMarkets);
+
+        mockSubmitRequestToBackground.mockClear();
+
+        // Advance past grace period — REST should NOT fire
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('preserves cached markets when reconnecting after data was already received', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cachedMarkets = [
+          {
+            symbol: 'BTC',
+            name: 'Bitcoin',
+          },
+        ] as never[];
+
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return Promise.resolve(cachedMarkets);
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const onData = jest.fn();
+        const unsubscribe = manager.markets.subscribe(onData);
+
+        // Advance past grace period for initial fetch
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(onData).toHaveBeenCalledWith(cachedMarkets);
+
+        unsubscribe();
+        mockSubmitRequestToBackground.mockClear();
+
+        const onDataAfterReconnect = jest.fn();
+        manager.markets.subscribe(onDataAfterReconnect);
+
+        // Advance past grace period — REST should be skipped because cache exists
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        // Subscriber should receive cached data immediately
+        expect(onDataAfterReconnect).toHaveBeenCalledWith(cachedMarkets);
+        // No additional REST call because cache is warm
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
       }
     });
   });
@@ -165,6 +458,27 @@ describe('PerpsStreamManager', () => {
 
       expect(clearSpy).not.toHaveBeenCalled();
       clearSpy.mockRestore();
+    });
+
+    it('clears optimistic TP/SL overrides on address change', () => {
+      manager.init('0xold');
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      manager.init('0xnew');
+
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBeUndefined();
+      expect(delivered[0].stopLossPrice).toBeUndefined();
     });
   });
 
@@ -442,6 +756,98 @@ describe('PerpsStreamManager', () => {
       expect(cb).toHaveBeenCalledWith(orderBook);
     });
 
+    it('routes orderBookAggregated channel to orderBookAggregated.pushData', () => {
+      const aggregatedCb = jest.fn();
+      const rawCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.orderBook.subscribe(rawCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-1');
+
+      const aggregated = { bids: [{ price: '1750' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: aggregated,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(aggregated);
+      // The raw channel must not receive aggregated data.
+      expect(rawCb).not.toHaveBeenCalled();
+    });
+
+    it('rejects aggregated packets when no subscription is active', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: { bids: [{ price: '1750' }], asks: [] },
+        subscriptionId: 'agg-closed',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('discards aggregated packets that do not match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const staleBook = { bids: [{ price: '73775' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: staleBook,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('accepts aggregated packets that match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const book = { bids: [{ price: '73770' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: book,
+        subscriptionId: 'agg-2',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(book);
+    });
+
+    it('discards aggregated status updates that do not match the active identity', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'connected',
+        subscriptionId: 'agg-1',
+      });
+
+      expect(statusCb).not.toHaveBeenCalledWith('connected');
+    });
+
+    it('routes orderBookAggregatedStatus to orderBookAggregatedStatus.pushData', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-status');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'error',
+        subscriptionId: 'agg-status',
+      });
+
+      expect(statusCb).toHaveBeenLastCalledWith('error');
+    });
+
     it('routes candles channel to candles.pushFromBackground', () => {
       const pushFromBackground = jest.fn();
       (
@@ -492,6 +898,49 @@ describe('PerpsStreamManager', () => {
         expect.stringContaining('Unknown channel'),
         'unknown',
       );
+      consoleSpy.mockRestore();
+    });
+
+    it('updates lastStreamUpdateAt on every call', () => {
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+    });
+
+    it('updates lastStreamUpdateAt even for unknown channels', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      manager.handleBackgroundUpdate({ channel: 'unknown', data: {} });
+
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+      consoleSpy.mockRestore();
+    });
+
+    it('routes markets channel to markets.pushData', () => {
+      const cb = jest.fn();
+      manager.markets.subscribe(cb);
+
+      const markets = [{ symbol: 'BTC', name: 'Bitcoin' }];
+      manager.handleBackgroundUpdate({ channel: 'markets', data: markets });
+
+      expect(cb).toHaveBeenCalledWith(markets);
+    });
+
+    it('handles connectionState channel silently (no-op)', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      manager.handleBackgroundUpdate({
+        channel: 'connectionState',
+        data: { connected: true },
+      });
+
+      expect(consoleSpy).not.toHaveBeenCalled();
       consoleSpy.mockRestore();
     });
   });
@@ -652,6 +1101,86 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('clearAllOptimisticTPSL', () => {
+    it('removes overrides for all symbols', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.setOptimisticTPSL('ETH', '4000', '3000');
+      manager.clearAllOptimisticTPSL();
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC'), makePosition('ETH')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBeUndefined();
+      expect(delivered[1].takeProfitPrice).toBeUndefined();
+    });
+  });
+
+  describe('multiple simultaneous optimistic overrides', () => {
+    it('applies overrides independently per symbol', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.setOptimisticTPSL('ETH', '4000', '3000');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC'), makePosition('ETH')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBe('120');
+      expect(delivered[0].stopLossPrice).toBe('80');
+      expect(delivered[1].takeProfitPrice).toBe('4000');
+      expect(delivered[1].stopLossPrice).toBe('3000');
+    });
+
+    it('clears only the matching symbol when WS confirms', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.setOptimisticTPSL('ETH', '4000', '3000');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [
+          makePosition('BTC', {
+            takeProfitPrice: '120',
+            stopLossPrice: '80',
+          }),
+          makePosition('ETH'),
+        ],
+      });
+
+      cb.mockClear();
+      jest.advanceTimersByTime(100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC'), makePosition('ETH')],
+      });
+
+      const second = cb.mock.calls[0][0] as Position[];
+      // BTC override was cleared (WS confirmed) — no longer overridden
+      expect(second[0].takeProfitPrice).toBeUndefined();
+      // ETH override is still active
+      expect(second[1].takeProfitPrice).toBe('4000');
+    });
+  });
+
   describe('pushPositionsWithOverrides', () => {
     it('applies overrides to manually pushed positions', () => {
       manager.setOptimisticTPSL('BTC', '150', '90');
@@ -703,6 +1232,188 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('getLastStreamUpdateAt', () => {
+    it('returns 0 before any updates', () => {
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+
+    it('returns the timestamp of the most recent handleBackgroundUpdate', () => {
+      manager.handleBackgroundUpdate({ channel: 'orders', data: [] });
+      const t1 = manager.getLastStreamUpdateAt();
+      expect(t1).toBeGreaterThan(0);
+
+      jest.advanceTimersByTime(5000);
+
+      manager.handleBackgroundUpdate({ channel: 'account', data: null });
+      const t2 = manager.getLastStreamUpdateAt();
+      expect(t2).toBeGreaterThan(t1);
+    });
+  });
+
+  describe('account channel delayed REST fallback', () => {
+    it('does not fetch account state immediately on subscribe', () => {
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        expect.anything(),
+      );
+    });
+
+    it('fetches account state via REST after fallback delay when no WS data arrives', async () => {
+      const mockAccount = { totalBalance: '100' };
+      mockSubmitRequestToBackground.mockResolvedValueOnce(mockAccount);
+
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      jest.advanceTimersByTime(4000);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        [],
+      );
+      expect(cb).toHaveBeenCalledWith(mockAccount);
+    });
+
+    it('skips REST fallback if WebSocket pushes account data before the delay', () => {
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      const wsAccount = { totalBalance: '200' };
+      manager.handleBackgroundUpdate({ channel: 'account', data: wsAccount });
+
+      expect(cb).toHaveBeenCalledWith(wsAccount);
+
+      jest.advanceTimersByTime(4000);
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        expect.anything(),
+      );
+    });
+  });
+
+  describe('account fetch failure', () => {
+    /**
+     * Rejects `perpsGetAccountState` the way a total HyperLiquid outage does —
+     * the TAT-3832 report's `Failed to fetch account state
+     * (failedDexs=[main,xyz], spotError=WebSocket connection permanently
+     * terminated)`.
+     *
+     * @param error - The rejection surfaced to the account channel.
+     */
+    function rejectAccountStateWith(error: Error) {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetAccountState') {
+          return Promise.reject(error);
+        }
+        return Promise.resolve(undefined);
+      });
+    }
+
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('does not notify subscribers when the REST fallback fails without cache', async () => {
+      rejectAccountStateWith(
+        new Error(
+          'Failed to fetch account state (failedDexs=[main,xyz], spotError=WebSocket connection permanently terminated)',
+        ),
+      );
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      // A failed fetch is not data. Notifying here is what let the balance
+      // header leave its loading state and render a funded account as $0.00.
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[PerpsStreamManager] Failed to fetch account',
+        expect.any(Error),
+      );
+    });
+
+    // Pre-existing-behaviour guard, not proof of this fix: the old code's
+    // `!hasCachedData()` check already suppressed the push once a cache
+    // existed, so this passes with or without the fix. Kept to pin the
+    // behaviour that a later failure must never clobber a good balance.
+    it('keeps previously cached account data when a later REST fallback fails', async () => {
+      const cachedAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: cachedAccount,
+      });
+
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(manager.account.getCachedData()).toBe(cachedAccount);
+      // Subscribing with a cache present already fires once with that cache.
+      // Pinning the exact call count and payload proves nothing *else*
+      // notified — a bare `not.toHaveBeenCalledWith(null)` would pass even if
+      // the failure path had pushed something.
+      expect(onData).toHaveBeenCalledTimes(1);
+      expect(onData).toHaveBeenCalledWith(cachedAccount);
+    });
+
+    it('does not notify subscribers when the REST fallback settles empty', async () => {
+      // The messenger can settle with no payload instead of rejecting. `null`
+      // is this channel's initialValue, so pushing it notifies without setting
+      // a cache — the same fabricated `$0.00` as an outright rejection.
+      mockSubmitRequestToBackground.mockImplementation(() =>
+        Promise.resolve(undefined),
+      );
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('still delivers account data pushed after an account fetch failure', async () => {
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+
+      const recoveredAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: recoveredAccount,
+      });
+
+      expect(onData).toHaveBeenCalledWith(recoveredAccount);
+      expect(manager.account.hasCachedData()).toBe(true);
+    });
+  });
+
   describe('getCurrentAddress', () => {
     it('returns null before initialization', () => {
       expect(manager.getCurrentAddress()).toBeNull();
@@ -744,6 +1455,12 @@ describe('PerpsStreamManager', () => {
     it('cleanupPrewarm is safe to call when not prewarming', () => {
       expect(() => manager.cleanupPrewarm()).not.toThrow();
     });
+
+    it('does not prewarm fills channel (fills are REST-only)', () => {
+      manager.prewarm();
+
+      expect(manager.fills.isPrewarming()).toBe(false);
+    });
   });
 
   describe('clearAllCaches', () => {
@@ -768,6 +1485,23 @@ describe('PerpsStreamManager', () => {
       expect(manager.orderBook.getCachedData()).toBeNull();
       expect(manager.fills.getCachedData()).toEqual([]);
     });
+
+    it('resets lastStreamUpdateAt to 0', () => {
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+
+      manager.clearAllCaches();
+
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+
+    it('preserves the initialized address (unlike reset)', () => {
+      manager.init('0xabc');
+      manager.clearAllCaches();
+
+      expect(manager.isInitialized('0xabc')).toBe(true);
+      expect(manager.getCurrentAddress()).toBe('0xabc');
+    });
   });
 
   describe('reset', () => {
@@ -783,6 +1517,107 @@ describe('PerpsStreamManager', () => {
       expect(manager.positions.getCachedData()).toEqual([]);
       expect(manager.isInitialized()).toBe(false);
       expect(manager.getCurrentAddress()).toBeNull();
+    });
+
+    it('resets lastStreamUpdateAt to 0', () => {
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+
+      manager.reset();
+
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+  });
+
+  describe('hydrateFromControllerCache', () => {
+    const ADDR = '0xABCDEF0000000000000000000000000000000001';
+
+    it('hydrates markets when channel has no cached data', () => {
+      const markets = [
+        { symbol: 'BTC', name: 'Bitcoin' } as unknown as Parameters<
+          typeof manager.markets.pushData
+        >[0][number],
+      ];
+
+      manager.hydrateFromControllerCache({ markets });
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.markets.getCachedData()).toEqual(markets);
+    });
+
+    it('does not hydrate markets when an empty array is provided', () => {
+      manager.hydrateFromControllerCache({ markets: [] });
+
+      expect(manager.markets.hasCachedData()).toBe(false);
+    });
+
+    it('is a no-op when the live stream already populated the channel', () => {
+      manager.markets.pushData([{ symbol: 'ETH' } as never]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      manager.hydrateFromControllerCache({
+        markets: [{ symbol: 'BTC' } as never],
+      });
+
+      expect(manager.markets.getCachedData()).toEqual([{ symbol: 'ETH' }]);
+    });
+
+    it('only hydrates user-scoped channels when the cache address matches the selected account', () => {
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache({ positions, address: ADDR }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(true);
+      expect(manager.positions.getCachedData()).toEqual(positions);
+    });
+
+    it('refuses to hydrate user-scoped channels when the cache address does not match', () => {
+      const positions = [makePosition('BTC')];
+      const OTHER = '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+
+      manager.hydrateFromControllerCache({ positions, address: OTHER }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('refuses to hydrate user-scoped channels when no selected address is provided', () => {
+      manager.hydrateFromControllerCache({
+        positions: [makePosition('BTC')],
+        address: ADDR,
+      });
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('does not flip positions cache when an empty array is supplied', () => {
+      manager.hydrateFromControllerCache(
+        { positions: [], address: ADDR },
+        ADDR,
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('skips account hydration when the snapshot value is null', () => {
+      manager.hydrateFromControllerCache(
+        { account: null, address: ADDR },
+        ADDR,
+      );
+
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('hydrates markets even when the user scope does not match', () => {
+      const markets = [{ symbol: 'BTC' } as never];
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache(
+        { markets, positions, address: '0xwrong' },
+        ADDR,
+      );
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.positions.hasCachedData()).toBe(false);
     });
   });
 });

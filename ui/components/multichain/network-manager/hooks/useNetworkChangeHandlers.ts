@@ -1,6 +1,7 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
 import { type CaipChainId } from '@metamask/utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -22,12 +23,12 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   BUILT_IN_NETWORKS,
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { useDispatch } from '../../../../store/hooks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -58,7 +59,10 @@ export enum ACTION_MODE {
 
 export const useNetworkChangeHandlers = () => {
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const [isTransitionPending, startTransition] = useTransition();
+  const [isNetworkChangePending, setIsNetworkChangePending] = useState(false);
+  const isPending = isTransitionPending || isNetworkChangePending;
 
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -92,28 +96,48 @@ export const useNetworkChangeHandlers = () => {
   }, [enabledNetworksByNamespace, dispatch, allChainIds]);
 
   const handleEvmNetworkChange = useCallback(
-    (chainId: CaipChainId) => {
+    async (chainId: CaipChainId) => {
       const hexChainId = convertCaipToHexChainId(chainId);
 
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-      dispatch(setEnabledNetworks(hexChainId));
-
-      // deferring execution to keep select all unblocked
-      setTimeout(() => {
-        dispatch(setActiveNetwork(finalNetworkClientId));
-      }, 0);
+      setIsNetworkChangePending(true);
+      try {
+        // Defer expensive Home/Routes re-renders so the network list stays responsive.
+        // Promise.resolve unwraps thunk promises so isPending covers the background switch.
+        await new Promise<void>((resolve, reject) => {
+          startTransition(() => {
+            Promise.all([
+              Promise.resolve(dispatch(setEnabledNetworks(hexChainId))),
+              Promise.resolve(dispatch(setActiveNetwork(finalNetworkClientId))),
+            ]).then(() => resolve(), reject);
+          });
+        });
+      } finally {
+        setIsNetworkChangePending(false);
+      }
     },
-    [dispatch, evmNetworks],
+    [dispatch, evmNetworks, startTransition],
   );
 
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
-      dispatch(setActiveNetwork(chainId));
-      dispatch(setEnabledNetworks(chainId));
+      setIsNetworkChangePending(true);
+      try {
+        await new Promise<void>((resolve, reject) => {
+          startTransition(() => {
+            Promise.all([
+              Promise.resolve(dispatch(setActiveNetwork(chainId))),
+              Promise.resolve(dispatch(setEnabledNetworks(chainId))),
+            ]).then(() => resolve(), reject);
+          });
+        });
+      } finally {
+        setIsNetworkChangePending(false);
+      }
     },
-    [dispatch],
+    [dispatch, startTransition],
   );
 
   const getMultichainNetworkConfigurationOrThrow = useCallback(
@@ -131,6 +155,10 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
+      if (isPending) {
+        return;
+      }
+
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
@@ -170,25 +198,26 @@ export const useNetworkChangeHandlers = () => {
       const isCustomNetwork =
         !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
 
-      trackEvent({
-        event: MetaMetricsEventName.NavNetworkSwitched,
-        category: MetaMetricsEventCategory.Network,
-        properties: {
-          location: 'Network Menu',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: currentChainIdToTrack,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          from_network: currentChainIdToTrack,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          to_network: chainIdToTrack,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          custom_network: isCustomNetwork,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            location: 'Network Menu',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: currentChainIdToTrack,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            from_network: currentChainIdToTrack,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            to_network: chainIdToTrack,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            custom_network: isCustomNetwork,
+          })
+          .build(),
+      );
     },
     [
       getMultichainNetworkConfigurationOrThrow,
@@ -196,6 +225,8 @@ export const useNetworkChangeHandlers = () => {
       handleEvmNetworkChange,
       handleNonEvmNetworkChange,
       trackEvent,
+      createEventBuilder,
+      isPending,
     ],
   );
 
@@ -209,5 +240,7 @@ export const useNetworkChangeHandlers = () => {
     actionMode,
     setActionMode,
     ACTION_MODE,
+    isPending,
+    startTransition,
   };
 };

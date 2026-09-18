@@ -4,17 +4,16 @@ import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
-import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { WALLET_PASSWORD } from '../../../constants';
+import { E2E_SRP, WALLET_PASSWORD } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { skipOnFirefox } from '../helpers';

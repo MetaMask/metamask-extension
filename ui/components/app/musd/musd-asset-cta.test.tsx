@@ -20,49 +20,25 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   },
 }));
 
-// Mock MetaMetricsContext with a real React context so useContext works,
-// but replace Provider with Fragment so the createContext default value is used
-jest.mock('../../../contexts/metametrics', () => {
-  const ReactActual = jest.requireActual<typeof import('react')>('react');
-  const _trackEvent = jest.fn();
-  const MetaMetricsContext = ReactActual.createContext({
-    trackEvent: _trackEvent,
-    bufferedTrace: jest.fn().mockResolvedValue(undefined),
-    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-    onboardingParentContext: { current: null },
-  });
-  MetaMetricsContext.Provider = (({
-    children,
-  }: {
-    children: React.ReactNode;
-  }) =>
-    ReactActual.createElement(
-      ReactActual.Fragment,
-      null,
-      children,
-    )) as unknown as typeof MetaMetricsContext.Provider;
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
   return {
-    MetaMetricsContext,
-    LegacyMetaMetricsProvider: ({ children }: { children: React.ReactNode }) =>
-      ReactActual.createElement(ReactActual.Fragment, null, children),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __mockTrackEvent: _trackEvent,
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
   };
 });
-const { __mockTrackEvent: mockTrackEvent } = jest.requireMock<{
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __mockTrackEvent: jest.Mock;
-}>('../../../contexts/metametrics');
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
-let mockEducationSeen = false;
 jest.mock('../../../hooks/musd', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
-    get educationSeen() {
-      return mockEducationSeen;
-    },
   }),
   useMusdGeoBlocking: () => ({
     isBlocked: false,
@@ -113,7 +89,6 @@ const mockToken = {
 describe('MusdAssetCta', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockEducationSeen = false;
   });
 
   describe('card variant', () => {
@@ -181,7 +156,7 @@ describe('MusdAssetCta', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             cta_type: 'musd_conversion_tertiary_cta',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            redirects_to: 'conversion_education_screen',
+            redirects_to: 'custom_amount_screen',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             network_chain_id: '0x1',
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -190,26 +165,6 @@ describe('MusdAssetCta', () => {
             asset_symbol: 'USDC',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             cta_click_target: 'cta_button',
-          }),
-        }),
-      );
-    });
-
-    it('tracks redirects_to custom_amount_screen when conversion education was seen', () => {
-      mockEducationSeen = true;
-      const store = createMockStore();
-      renderWithProvider(
-        <MusdAssetCta token={mockToken} variant="card" />,
-        store,
-      );
-
-      fireEvent.click(screen.getByTestId('musd-asset-cta'));
-
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            redirects_to: 'custom_amount_screen',
           }),
         }),
       );

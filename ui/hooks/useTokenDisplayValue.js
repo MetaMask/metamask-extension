@@ -38,15 +38,15 @@ export function useTokenDisplayValue(
   const shouldCalculateTokenValue = Boolean(
     // If we are currently processing a token transaction
     isTokenTransaction &&
-      // and raw transaction data string is provided
-      transactionData &&
-      // and a token object has been provided
-      token &&
-      // and the provided token object contains a defined decimal value we need to calculate amount
-      token.decimals !== null &&
-      token.decimals !== undefined &&
-      // and we are able to parse the token detail we to calculate amount from the raw data
-      tokenValue,
+    // and raw transaction data string is provided
+    transactionData &&
+    // and a token object has been provided
+    token &&
+    // and the provided token object contains a defined decimal value we need to calculate amount
+    token.decimals !== null &&
+    token.decimals !== undefined &&
+    // and we are able to parse the token detail we to calculate amount from the raw data
+    tokenValue,
   );
 
   const displayValue = useMemo(() => {

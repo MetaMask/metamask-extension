@@ -1,4 +1,6 @@
+import { ApprovalRequest } from '@metamask/approval-controller';
 import { providerErrors } from '@metamask/rpc-errors';
+import { Json } from '@metamask/utils';
 import {
   AlignItems,
   Display,
@@ -7,7 +9,24 @@ import {
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
-function getValues(pendingApproval, t, actions) {
+type StateLogExportActions = {
+  resolvePendingApproval: (id: string, value: boolean) => void;
+  rejectPendingApproval: (id: string, error: Json) => void;
+};
+
+/**
+ * Returns the templated values to be consumed in the confirmation page.
+ *
+ * @param pendingApproval - The pending confirmation object.
+ * @param t - Translation function.
+ * @param actions - Object containing safe actions that the template can invoke.
+ * @returns An object containing templated values for the confirmation page.
+ */
+function getValues(
+  pendingApproval: ApprovalRequest<Record<string, Json>>,
+  t: (key: string) => string,
+  actions: StateLogExportActions,
+) {
   return {
     content: [
       {
@@ -84,8 +103,7 @@ function getValues(pendingApproval, t, actions) {
     ],
     submitText: t('stateLogExportApprovalConfirm'),
     cancelText: t('cancel'),
-    onSubmit: () =>
-      actions.resolvePendingApproval(pendingApproval.id, true),
+    onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, true),
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,

@@ -1,7 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { MetaMetricsEventLocation } from '../../../../shared/constants/metametrics';
@@ -13,15 +12,15 @@ import {
   updateCustomNonce,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
-import { useConfirmationNavigationOptions } from './useConfirmationNavigation';
+import { useDispatch } from '../../../store/hooks';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, goBackTo, suppressAutoExit } =
+    useConfirmContext<TransactionMeta>();
   const { navigateBackIfSend } = useConfirmSendNavigation();
-  const { returnTo } = useConfirmationNavigationOptions();
   const { id: currentConfirmationId } = currentConfirmation || {};
 
   const rejectApproval = useCallback(
@@ -61,12 +60,20 @@ export const useConfirmActions = () => {
         return;
       }
       if (navigateBackForSend) {
+        suppressAutoExit();
         navigateBackIfSend();
       }
       await rejectApproval({ location });
       resetTransactionState();
       if (navigateBackToPreviousPage) {
-        navigate(returnTo || DEFAULT_ROUTE);
+        // Replace (not push) so the transient wallet-initiated confirmation
+        // (perpsDeposit / perpsWithdraw / musdClaim) does not linger in history.
+        // Pushing here left a phantom confirm-transaction entry between the
+        // origin and the page returned to, which broke back navigation
+        // (double-tap) and post-trade navigation on the Perps order screen
+        // (TAT-3131). This matches the auto-exit path in the confirm context,
+        // which already returns with { replace: true }.
+        navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
       }
     },
     [
@@ -75,7 +82,8 @@ export const useConfirmActions = () => {
       navigateBackIfSend,
       rejectApproval,
       resetTransactionState,
-      returnTo,
+      goBackTo,
+      suppressAutoExit,
     ],
   );
 

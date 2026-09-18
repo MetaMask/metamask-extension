@@ -4,31 +4,29 @@ import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
-} from '@metamask/design-system-react';
-import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  Box as BoxDeprecated,
+  ButtonIcon,
+  ButtonIconSize,
+  FontWeight,
+  IconColor,
+  IconName,
+  IconSize,
   SensitiveText,
-  Text as TextDeprecated,
-} from '../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  TextColor as TextColorDeprecated,
-  TextVariant as TextVariantDeprecated,
-} from '../../../helpers/constants/design-system';
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { ConnectedStatus } from '../../multichain/connected-status/connected-status';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
-import { MultichainHoveredAddressRowsList } from '../multichain-address-rows-hovered-list';
-import { MultichainAccountNetworkGroupWithCopyIcon } from '../multichain-account-network-group-with-copy-icon';
+import { MultichainAccountCellDefaultAddress } from '../multichain-account-cell-default-address';
 
 type AccountCellAvatarProps = {
   seedAddress: string;
@@ -63,12 +61,108 @@ const AccountCellAvatar = ({
   );
 };
 
+type BalanceDisplayProps = {
+  balance?: string;
+  isSubtitle?: boolean;
+  isHidden?: boolean;
+};
+
+const BalanceDisplay = ({
+  balance,
+  isSubtitle = false,
+  isHidden = false,
+}: BalanceDisplayProps) => {
+  // Account group balances are fetched lazily, so a cell may have no balance to
+  // show yet. Render nothing rather than a placeholder that reads as "no funds".
+  if (!balance) {
+    return null;
+  }
+
+  return (
+    <SensitiveText
+      className="multichain-account-cell__account-balance"
+      data-testid={isSubtitle ? 'balance-display-subtitle' : 'balance-display'}
+      variant={isSubtitle ? TextVariant.BodySm : TextVariant.BodyMd}
+      color={isSubtitle ? TextColor.TextAlternative : undefined}
+      fontWeight={isSubtitle ? undefined : FontWeight.Medium}
+      style={isSubtitle ? undefined : { marginRight: 8 }}
+      ellipsis
+      isHidden={isHidden}
+    >
+      {balance}
+    </SensitiveText>
+  );
+};
+
+type EditModeVisibilityIconProps = {
+  isHidden: boolean;
+  ariaLabel: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+};
+
+const EditModeVisibilityIcon = ({
+  isHidden,
+  ariaLabel,
+  onClick,
+  disabled = false,
+}: EditModeVisibilityIconProps) => (
+  <ButtonIcon
+    iconName={isHidden ? IconName.EyeSlash : IconName.Eye}
+    size={ButtonIconSize.Md}
+    ariaLabel={ariaLabel}
+    onClick={onClick}
+    isDisabled={disabled}
+    className="multichain-account-cell__edit-mode-action-icon flex-shrink-0"
+    data-testid={
+      isHidden
+        ? 'multichain-account-cell-edit-mode-hidden-icon'
+        : 'multichain-account-cell-edit-mode-visible-icon'
+    }
+    iconProps={{
+      size: IconSize.Md,
+      color: IconColor.IconAlternative,
+    }}
+  />
+);
+
+type EditModeDeleteIconProps = {
+  ariaLabel: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+};
+
+const EditModeDeleteIcon = ({
+  ariaLabel,
+  onClick,
+  disabled = false,
+}: EditModeDeleteIconProps) => (
+  <ButtonIcon
+    iconName={IconName.RemoveMinus}
+    size={ButtonIconSize.Md}
+    ariaLabel={ariaLabel}
+    onClick={onClick}
+    isDisabled={disabled}
+    className="multichain-account-cell__edit-mode-action-icon flex-shrink-0"
+    data-testid="multichain-account-cell-edit-mode-delete-icon"
+    iconProps={{
+      size: IconSize.Md,
+      className: IconColor.ErrorDefault,
+    }}
+  />
+);
+
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
   accountName: string | React.ReactNode;
   accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
-  balance: string;
+  /**
+   * Formatted balance to display. Omit (or pass an empty string) when no
+   * balance is known yet so that nothing is rendered in its place.
+   */
+  balance?: string;
+  balancePosition?: 'end' | 'subtitle';
   startAccessory?: React.ReactNode;
   endAccessory?: React.ReactNode;
   selected?: boolean;
@@ -78,7 +172,38 @@ export type MultichainAccountCellProps = {
     | typeof STATUS_CONNECTED
     | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
-  showHoverableNetworkGroup?: boolean;
+  showDefaultAddress?: boolean;
+  /**
+   * When true, the cell ignores clicks and shows reduced opacity so the user
+   * sees that an account switch is in progress (React useTransition pending).
+   */
+  pending?: boolean;
+  /**
+   * When true, renders the cell in hidden-account mode with muted styling.
+   * @default false
+   */
+  isHidden?: boolean;
+  /**
+   * When true, renders the cell in edit mode. Suppresses non-edit affordances
+   * such as the end accessory menu.
+   * @default false
+   */
+  isEditMode?: boolean;
+  /**
+   * When true (and in edit mode), replaces the visibility icon with a delete
+   * icon. Mutually exclusive with {@link isHidden} — delete mode wins if both
+   * are set.
+   * @default false
+   */
+  isDeleteMode?: boolean;
+  /**
+   * Called when the edit-mode visibility icon is clicked.
+   */
+  onVisibilityIconClick?: (accountGroupId: AccountGroupId) => void;
+  /**
+   * Called when the edit-mode delete icon is clicked.
+   */
+  onDeleteIconClick?: (accountGroupId: AccountGroupId) => void;
 };
 
 export const MultichainAccountCell = ({
@@ -87,6 +212,7 @@ export const MultichainAccountCell = ({
   accountNameString,
   onClick,
   balance,
+  balancePosition = 'end',
   startAccessory,
   endAccessory,
   selected = false,
@@ -94,9 +220,38 @@ export const MultichainAccountCell = ({
   disableHoverEffect = false,
   connectionStatus,
   privacyMode = false,
-  showHoverableNetworkGroup = false,
+  showDefaultAddress = false,
+  pending = false,
+  isHidden = false,
+  isEditMode = false,
+  isDeleteMode = false,
+  onVisibilityIconClick,
+  onDeleteIconClick,
 }: MultichainAccountCellProps) => {
-  const handleClick = () => onClick?.(accountId);
+  const t = useI18nContext();
+
+  // Delete mode and hidden mode are mutually exclusive; delete mode takes
+  // precedence when both are incorrectly set.
+  const showDeleteIcon = isEditMode && isDeleteMode;
+  const effectiveIsHidden = isHidden && !isDeleteMode;
+
+  // Edit mode replaces row selection with the hide/delete affordances, so the
+  // row itself must not switch accounts while those icons are showing.
+  const isRowClickable = Boolean(onClick) && !isEditMode;
+
+  const handleClick = () => {
+    if (pending || !isRowClickable) {
+      return;
+    }
+    onClick?.(accountId);
+  };
+
+  let cursor: React.CSSProperties['cursor'] = 'default';
+  if (pending) {
+    cursor = 'wait';
+  } else if (isRowClickable) {
+    cursor = 'pointer';
+  }
 
   // Use accountNameString for aria-label, or fallback to accountName if it's a string
   const ariaLabelName =
@@ -106,107 +261,145 @@ export const MultichainAccountCell = ({
     getIconSeedAddressByAccountGroupId(state, accountId),
   );
 
+  const shouldDisableHoverEffect = disableHoverEffect || isEditMode;
+
+  const handleVisibilityIconClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.stopPropagation();
+    if (pending) {
+      return;
+    }
+    onVisibilityIconClick?.(accountId);
+  };
+
+  const handleDeleteIconClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.stopPropagation();
+    if (pending) {
+      return;
+    }
+    onDeleteIconClick?.(accountId);
+  };
+
   return (
-    <BoxDeprecated
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       style={{
-        cursor: onClick ? 'pointer' : 'default',
+        cursor,
         position: 'relative',
+        opacity: pending ? 0.6 : undefined,
       }}
       padding={4}
       gap={4}
       onClick={handleClick}
-      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected && !startAccessory ? ' is-selected' : ''}`}
+      className={`multichain-account-cell${shouldDisableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected && !startAccessory ? ' is-selected' : ''}${pending ? ' is-pending' : ''}${effectiveIsHidden ? ' multichain-account-cell--hidden' : ''}${isEditMode ? ' multichain-account-cell--edit-mode' : ''}${showDeleteIcon ? ' multichain-account-cell--delete-mode' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
+      data-hidden={effectiveIsHidden ? 'true' : undefined}
+      data-edit-mode={isEditMode ? 'true' : undefined}
+      data-delete-mode={showDeleteIcon ? 'true' : undefined}
+      aria-busy={pending || undefined}
       backgroundColor={
         selected && !startAccessory
-          ? BackgroundColor.backgroundMuted
-          : BackgroundColor.transparent
+          ? BoxBackgroundColor.BackgroundMuted
+          : BoxBackgroundColor.Transparent
       }
     >
-      {startAccessory}
-      <BoxDeprecated
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexStart}
+      {startAccessory && !isEditMode ? startAccessory : null}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Start}
         style={{ minWidth: 0, flex: 1 }}
       >
         <AccountCellAvatar
           seedAddress={seedAddressIcon}
-          connectionStatus={connectionStatus}
+          connectionStatus={isEditMode ? undefined : connectionStatus}
         />
-        <BoxDeprecated style={{ overflow: 'hidden' }}>
+        <Box marginLeft={3} style={{ overflow: 'hidden' }}>
           {/* Prevent overflow of account name by long account names */}
-          <TextDeprecated
+          <Text
             className="multichain-account-cell__account-name"
-            variant={TextVariantDeprecated.bodyMdMedium}
-            marginLeft={3}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={effectiveIsHidden ? TextColor.TextAlternative : undefined}
             ellipsis
+            data-testid={`multichain-account-cell-name-${ariaLabelName}`}
           >
             {accountName}
-          </TextDeprecated>
+          </Text>
+          {balancePosition === 'subtitle' && (
+            <BalanceDisplay
+              balance={balance}
+              isHidden={privacyMode}
+              isSubtitle
+            />
+          )}
           {walletName && (
-            <TextDeprecated
+            <Text
               className="multichain-account-cell__account-name"
-              color={TextColorDeprecated.textAlternative}
-              variant={TextVariantDeprecated.bodySmMedium}
-              marginLeft={3}
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
               ellipsis
             >
               {walletName}
-            </TextDeprecated>
+            </Text>
           )}
-          {showHoverableNetworkGroup && (
+          {showDefaultAddress && (
             <Box
               flexDirection={BoxFlexDirection.Row}
-              marginLeft={3}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
               data-testid="multichain-account-cell-hovered-addresses"
             >
-              <MultichainHoveredAddressRowsList
-                groupId={accountId}
-                showAccountHeaderAndBalance={false}
-                showDefaultAddressSection={false}
-                showViewAllButton={false}
-              >
-                <MultichainAccountNetworkGroupWithCopyIcon
-                  groupId={accountId}
-                />
-              </MultichainHoveredAddressRowsList>
+              <MultichainAccountCellDefaultAddress groupId={accountId} />
             </Box>
           )}
-        </BoxDeprecated>
-      </BoxDeprecated>
-      <BoxDeprecated
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        </Box>
+      </Box>
+      <Box
+        className="multichain-account-cell__trailing"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         style={{ flexShrink: 0 }}
       >
-        <SensitiveText
-          className="multichain-account-cell__account-balance"
-          data-testid="balance-display"
-          variant={TextVariantDeprecated.bodyMdMedium}
-          marginRight={2}
-          isHidden={privacyMode}
-          ellipsis
-        >
-          {balance}
-        </SensitiveText>
-        <BoxDeprecated
+        {balancePosition === 'end' && (
+          <BalanceDisplay balance={balance} isHidden={privacyMode} />
+        )}
+        {showDeleteIcon ? (
+          <EditModeDeleteIcon
+            ariaLabel={t('removeAccount')}
+            onClick={handleDeleteIconClick}
+            disabled={pending}
+          />
+        ) : (
+          isEditMode && (
+            <EditModeVisibilityIcon
+              isHidden={effectiveIsHidden}
+              ariaLabel={
+                effectiveIsHidden ? t('showAccount') : t('hideAccount')
+              }
+              onClick={handleVisibilityIconClick}
+              disabled={pending}
+            />
+          )
+        )}
+        <Box
           className="multichain-account-cell__end_accessory"
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.flexEnd}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.End}
           data-testid="multichain-account-cell-end-accessory"
           aria-label={`${ariaLabelName} options`}
         >
-          {endAccessory}
-        </BoxDeprecated>
-      </BoxDeprecated>
-    </BoxDeprecated>
+          {!isEditMode && endAccessory}
+        </Box>
+      </Box>
+    </Box>
   );
 };

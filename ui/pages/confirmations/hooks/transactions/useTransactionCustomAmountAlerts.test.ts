@@ -3,10 +3,12 @@ import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/co
 import useAlerts from '../../../../hooks/useAlerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { usePendingAmountAlerts } from '../alerts/usePendingAmountAlerts';
 import { AlertsName } from '../alerts/constants';
 import { useTransactionCustomAmountAlerts } from './useTransactionCustomAmountAlerts';
 
 jest.mock('../../../../hooks/useAlerts');
+jest.mock('../alerts/usePendingAmountAlerts');
 
 const createMockAlert = (overrides: Partial<Alert> = {}): Alert =>
   ({
@@ -39,21 +41,23 @@ const createMockUseAlertsReturnValue = (
     ...overrides,
   }) as unknown as ReturnType<typeof useAlerts>;
 
-function runHook() {
+function runHook(pendingFiatAmount?: string) {
   const state = getMockConfirmState();
 
   return renderHookWithConfirmContextProvider(
-    () => useTransactionCustomAmountAlerts(),
+    () => useTransactionCustomAmountAlerts({ pendingFiatAmount }),
     state,
   );
 }
 
 describe('useTransactionCustomAmountAlerts', () => {
   const useAlertsMock = jest.mocked(useAlerts);
+  const usePendingAmountAlertsMock = jest.mocked(usePendingAmountAlerts);
 
   beforeEach(() => {
     jest.resetAllMocks();
     useAlertsMock.mockReturnValue(createMockUseAlertsReturnValue());
+    usePendingAmountAlertsMock.mockReturnValue([]);
   });
 
   it('returns base state when no alerts', () => {
@@ -61,58 +65,7 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       disableUpdate: false,
-      hideResults: false,
-    });
-  });
-
-  it('returns alertMessage from first blocking alert message', () => {
-    useAlertsMock.mockReturnValue(
-      createMockUseAlertsReturnValue({
-        alerts: [
-          createMockAlert({
-            key: 'test-alert',
-            message: 'Test alert message',
-            isBlocking: true,
-            severity: Severity.Danger,
-          }),
-        ],
-        hasDangerAlerts: true,
-        hasAlerts: true,
-        hasUnconfirmedDangerAlerts: true,
-      }),
-    );
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual({
-      alertMessage: 'Test alert message',
-      disableUpdate: false,
-      hideResults: false,
-    });
-  });
-
-  it('returns alertMessage from first blocking alert reason when message is undefined', () => {
-    useAlertsMock.mockReturnValue(
-      createMockUseAlertsReturnValue({
-        alerts: [
-          createMockAlert({
-            key: 'test-alert',
-            reason: 'Test alert reason',
-            isBlocking: true,
-            severity: Severity.Danger,
-          }),
-        ],
-        hasDangerAlerts: true,
-        hasAlerts: true,
-        hasUnconfirmedDangerAlerts: true,
-      }),
-    );
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual({
-      alertMessage: 'Test alert reason',
-      disableUpdate: false,
+      hasAlert: false,
       hideResults: false,
     });
   });
@@ -136,29 +89,19 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       disableUpdate: false,
+      hasAlert: false,
       hideResults: false,
     });
   });
 
-  it('returns first blocking alert when multiple alerts exist', () => {
+  it('sets hideResults to true when DepositLimit alert exists', () => {
     useAlertsMock.mockReturnValue(
       createMockUseAlertsReturnValue({
         alerts: [
           createMockAlert({
-            key: 'non-blocking',
-            message: 'Non-blocking alert',
-            isBlocking: false,
-            severity: Severity.Warning,
-          }),
-          createMockAlert({
-            key: 'blocking-1',
-            message: 'First blocking alert',
-            isBlocking: true,
-            severity: Severity.Danger,
-          }),
-          createMockAlert({
-            key: 'blocking-2',
-            message: 'Second blocking alert',
+            key: AlertsName.DepositLimit,
+            reason: 'Max deposit: $100,000',
+            message: 'Max deposit: $100,000',
             isBlocking: true,
             severity: Severity.Danger,
           }),
@@ -171,11 +114,9 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     const { result } = runHook();
 
-    expect(result.current).toStrictEqual({
-      alertMessage: 'First blocking alert',
-      disableUpdate: false,
-      hideResults: false,
-    });
+    expect(result.current.hideResults).toBe(true);
+    expect(result.current.hasAlert).toBe(true);
+    expect(result.current.alertMessage).toBe('Max deposit: $100,000');
   });
 
   it('sets hideResults to true when InsufficientPayTokenBalance alert exists', () => {
@@ -184,6 +125,7 @@ describe('useTransactionCustomAmountAlerts', () => {
         alerts: [
           createMockAlert({
             key: AlertsName.InsufficientPayTokenBalance,
+            reason: 'Insufficient funds',
             message: 'Insufficient funds',
             isBlocking: true,
             severity: Severity.Danger,
@@ -200,6 +142,87 @@ describe('useTransactionCustomAmountAlerts', () => {
     expect(result.current).toStrictEqual({
       alertMessage: 'Insufficient funds',
       disableUpdate: false,
+      hasAlert: true,
+      hideResults: true,
+    });
+  });
+
+  it('prefers pending amount insufficient-funds alerts while typing', () => {
+    usePendingAmountAlertsMock.mockReturnValue([
+      createMockAlert({
+        key: AlertsName.InsufficientPayTokenBalance,
+        reason: 'Insufficient funds',
+        message: 'Insufficient funds',
+        isBlocking: true,
+        severity: Severity.Danger,
+      }),
+    ]);
+
+    const { result } = runHook('25.00');
+
+    expect(usePendingAmountAlertsMock).toHaveBeenCalledWith({
+      pendingFiatAmount: '25.00',
+    });
+    expect(result.current).toStrictEqual({
+      alertMessage: 'Insufficient funds',
+      disableUpdate: false,
+      hasAlert: true,
+      hideResults: true,
+    });
+  });
+
+  it('sets hideResults to true when AccountNoFunds alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.AccountNoFunds,
+            reason: 'No funds available',
+            message: 'No funds available. Use a different account.',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: 'No funds available. Use a different account.',
+      disableUpdate: true,
+      hasAlert: true,
+      hideResults: true,
+    });
+  });
+
+  it('sets hideResults to true when PerpsWithdrawBalanceUnavailable alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.PerpsWithdrawBalanceUnavailable,
+            reason: "Couldn't check your Perps balance",
+            message: "Couldn't check your Perps balance. Try again.",
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: "Couldn't check your Perps balance. Try again.",
+      disableUpdate: false,
+      hasAlert: true,
       hideResults: true,
     });
   });
@@ -223,10 +246,95 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     const { result } = runHook();
 
+    expect(result.current.hideResults).toBe(true);
+    expect(result.current.disableUpdate).toBe(true);
+    expect(result.current.hasAlert).toBe(true);
+  });
+
+  it('returns alertMessage when alert has both reason and different message', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: 'no-quotes',
+            reason: 'No quotes',
+            message: 'This payment route is not available right now.',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
     expect(result.current).toStrictEqual({
-      alertMessage: 'Transaction in progress',
-      disableUpdate: true,
-      hideResults: true,
+      alertMessage: 'This payment route is not available right now.',
+      disableUpdate: false,
+      hasAlert: true,
+      hideResults: false,
+    });
+  });
+
+  it('returns alertContent when alert has content', () => {
+    const content = 'alert content';
+
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.NoPayTokenQuotes,
+            reason: 'No quotes',
+            message: 'Quote simulation failed',
+            content,
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertContent: content,
+      alertMessage: 'Quote simulation failed',
+      disableUpdate: false,
+      hasAlert: true,
+      hideResults: false,
+    });
+  });
+
+  it('does not return alertMessage when reason and message are the same for other alerts', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: 'test-alert',
+            reason: 'Something went wrong',
+            message: 'Something went wrong',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      disableUpdate: false,
+      hasAlert: true,
+      hideResults: false,
     });
   });
 
@@ -249,10 +357,8 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     const { result } = runHook();
 
-    expect(result.current).toStrictEqual({
-      alertMessage: 'Hardware wallet not supported',
-      disableUpdate: true,
-      hideResults: true,
-    });
+    expect(result.current.disableUpdate).toBe(true);
+    expect(result.current.hasAlert).toBe(true);
+    expect(result.current.hideResults).toBe(true);
   });
 });

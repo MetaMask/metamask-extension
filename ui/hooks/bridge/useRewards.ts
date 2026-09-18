@@ -1,14 +1,13 @@
-'use no memo';
-
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
   formatChainIdToCaip,
   selectBridgeQuotes,
+  type QuoteResponse,
+  type QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import { type CaipAccountId } from '@metamask/utils';
-import log from 'loglevel';
 import { debounce } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -21,15 +20,9 @@ import { usePrevious } from '../usePrevious';
 import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getRewardsHasAccountOptedIn,
-  estimateRewardsPoints,
   rewardsIsOptInSupported,
   getRewardsCandidateSubscriptionId,
 } from '../../store/actions';
-import {
-  EstimateAssetDto,
-  EstimatePointsDto,
-  EstimatedPointsDto,
-} from '../../../shared/types/rewards';
 import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
@@ -37,6 +30,10 @@ import {
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { usePrimaryWalletGroupAccounts } from '../rewards/usePrimaryWalletGroupAccounts';
+import { useDispatch } from '../../store/hooks';
+
+// Set to true when a rewards season is active and points estimation should run.
+const REWARDS_SEASON_ACTIVE = false;
 
 /**
  *
@@ -88,13 +85,96 @@ type UseRewardsParams = {
 };
 
 type UseRewardsWithQuoteParams = {
-  quote: NonNullable<
-    NonNullable<ReturnType<typeof selectBridgeQuotes>['activeQuote']>['quote']
-  > | null;
+  quote: QuoteResponse['quote'] | QuoteResponseV1['quote'] | null;
   fromAddress: string | null | undefined;
   fromAddressAccount?: InternalAccount | null;
   chainId: string | null | undefined;
 };
+
+type RewardsOptInDetectionResult =
+  | { status: 'error' }
+  | {
+      status: 'ok';
+      accountOptedIn: boolean | null;
+      shouldShow: boolean;
+      caipAccount: CaipAccountId | null;
+      shouldEstimate: boolean;
+    };
+
+/**
+ * Extracted so React Compiler can optimize the hook: try/catch with
+ * conditional value blocks inside a component is unsupported.
+ *
+ * @param params
+ * @param params.dispatch
+ * @param params.primaryWalletGroupAccounts
+ * @param params.fromAddress
+ * @param params.chainId
+ * @param params.fromAddressAccount
+ */
+async function detectRewardsOptIn({
+  dispatch,
+  primaryWalletGroupAccounts,
+  fromAddress,
+  chainId,
+  fromAddressAccount,
+}: {
+  dispatch: ReturnType<typeof useDispatch>;
+  primaryWalletGroupAccounts: InternalAccount[];
+  fromAddress: string;
+  chainId: string;
+  fromAddressAccount?: InternalAccount | null;
+}): Promise<RewardsOptInDetectionResult> {
+  try {
+    const candidateSubscriptionId = (await dispatch(
+      getRewardsCandidateSubscriptionId(primaryWalletGroupAccounts),
+    )) as unknown as string | null;
+
+    if (!candidateSubscriptionId) {
+      return {
+        status: 'ok',
+        accountOptedIn: null,
+        shouldShow: false,
+        caipAccount: null,
+        shouldEstimate: false,
+      };
+    }
+
+    const caipAccount = formatAccountToCaipAccountId(fromAddress, chainId);
+
+    if (!caipAccount) {
+      return {
+        status: 'ok',
+        accountOptedIn: null,
+        shouldShow: false,
+        caipAccount: null,
+        shouldEstimate: false,
+      };
+    }
+
+    const hasOptedIn = (await dispatch(
+      getRewardsHasAccountOptedIn(caipAccount),
+    )) as unknown as boolean;
+
+    let shouldShow = hasOptedIn;
+    if (!hasOptedIn && fromAddressAccount) {
+      const isOptInSupported = (await dispatch(
+        rewardsIsOptInSupported({ account: fromAddressAccount }),
+      )) as unknown as boolean;
+      shouldShow = isOptInSupported;
+    }
+
+    return {
+      status: 'ok',
+      accountOptedIn: hasOptedIn,
+      shouldShow,
+      caipAccount,
+      shouldEstimate: shouldShow && hasOptedIn,
+    };
+  } catch {
+    return { status: 'error' };
+  }
+}
 
 /**
  * A hook that accepts quote, fromAddress, and chainId as arguments
@@ -126,111 +206,76 @@ export const useRewardsWithQuote = ({
   );
   const { accounts: primaryWalletGroupAccounts } =
     usePrimaryWalletGroupAccounts();
-  // Track linked timestamp per account address to prevent triggering for accounts that weren't linked
-  const localRewardsAccountLinkedTimestamp = useRef<Map<string, number | null>>(
-    new Map(),
-  );
-  // Track the current account's linked timestamp to trigger useEffect when it changes
+  const accountLinkedTimestampsRef = useRef(new Map<string, number | null>());
   const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
     useState<number | null>(null);
-  const debouncedEstimatePoints = useCallback(
-    // eslint-disable-next-line react-compiler/react-compiler
-    debounce(
-      async (
-        estimationQuoteArg:
-          | NonNullable<
-              ReturnType<typeof selectBridgeQuotes>['activeQuote']
-            >['quote']
-          | null,
-        caipAccountArg: CaipAccountId | null,
-      ) => {
-        // Skip if no active quote or missing required data
-        if (!estimationQuoteArg || !caipAccountArg) {
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      if (!fromAddress) {
+        setCurrentAccountLinkedTimestamp(null);
+        return;
+      }
+
+      if (rewardsAccountLinkedTimestamp !== null) {
+        accountLinkedTimestampsRef.current.set(
+          fromAddress,
+          rewardsAccountLinkedTimestamp,
+        );
+        setCurrentAccountLinkedTimestamp(rewardsAccountLinkedTimestamp);
+        return;
+      }
+
+      setCurrentAccountLinkedTimestamp(
+        accountLinkedTimestampsRef.current.get(fromAddress) ?? null,
+      );
+    });
+  }, [fromAddress, rewardsAccountLinkedTimestamp]);
+
+  // `debounce()` returns a new stateful function on every call, so it has to be
+  // built inside a `useMemo` factory — passing it to `useCallback` would construct
+  // (and discard) a fresh timer-holding instance on every render.
+  const debouncedEstimatePoints = useMemo(
+    () =>
+      debounce(
+        async (
+          _estimationQuoteArg:
+            | QuoteResponse['quote']
+            | QuoteResponseV1['quote']
+            | null,
+          _caipAccountArg: CaipAccountId | null,
+        ) => {
           setEstimatedPoints(null);
           setShouldShowRewardsRow(false);
           setIsLoading(false);
           setHasError(false);
-          return;
-        }
-
-        try {
-          // Convert source amount to atomic unit
-          const atomicSourceAmount = estimationQuoteArg.srcTokenAmount;
-
-          // Get destination amount from quote
-          const atomicDestAmount = estimationQuoteArg.destTokenAmount;
-
-          // Prepare source asset
-          const srcAsset: EstimateAssetDto = {
-            id: estimationQuoteArg.srcAsset.assetId,
-            amount: atomicSourceAmount,
-          };
-
-          // Prepare destination asset
-          const destAsset: EstimateAssetDto = {
-            id: estimationQuoteArg.destAsset.assetId,
-            amount: atomicDestAmount,
-          };
-
-          // Prepare fee asset (using MetaMask fee from quote data)
-          const feeAsset: EstimateAssetDto = {
-            id: estimationQuoteArg.feeData.metabridge.asset.assetId,
-            amount: estimationQuoteArg.feeData.metabridge.amount || '0',
-          };
-
-          const usdPricePerToken = getUsdPricePerToken(
-            estimationQuoteArg.priceData?.totalFeeAmountUsd || '0',
-            feeAsset.amount,
-            estimationQuoteArg.feeData.metabridge.asset.decimals,
-          );
-
-          const feeAssetWithUsdPrice: EstimateAssetDto = {
-            ...feeAsset,
-            ...(usdPricePerToken ? { usdPrice: usdPricePerToken } : {}),
-          };
-
-          // Create estimate request
-          const estimateRequest: EstimatePointsDto = {
-            activityType: 'SWAP',
-            account: caipAccountArg,
-            activityContext: {
-              swapContext: {
-                srcAsset,
-                destAsset,
-                feeAsset: feeAssetWithUsdPrice,
-              },
-            },
-          };
-
-          // Call rewards controller to estimate points
-          const result = (await dispatch(
-            estimateRewardsPoints(estimateRequest),
-          )) as unknown as EstimatedPointsDto;
-
-          setEstimatedPoints(result.pointsEstimate);
-        } catch (error) {
-          log.error('[useRewardsWithQuote] Error estimating points:', error);
-          setEstimatedPoints(null);
-          setHasError(true);
-        } finally {
-          setIsLoading(false);
-        }
-      },
-      750,
-    ),
+        },
+        750,
+      ),
     [dispatch],
   );
+
+  useEffect(() => {
+    return () => {
+      debouncedEstimatePoints.cancel();
+    };
+  }, [debouncedEstimatePoints]);
 
   const estimatePoints = useCallback(
     async (
       estimationQuoteArg:
-        | NonNullable<
-            ReturnType<typeof selectBridgeQuotes>['activeQuote']
-          >['quote']
+        | QuoteResponse['quote']
+        | QuoteResponseV1['quote']
         | null,
     ) => {
-      // Skip if no active quote or missing required data
-      if (!estimationQuoteArg || !fromAddress || !chainId || !rewardsEnabled) {
+      // Skip if no active quote or missing required data, or if no season is active
+      if (
+        !REWARDS_SEASON_ACTIVE ||
+        !estimationQuoteArg ||
+        !fromAddress ||
+        !chainId ||
+        !rewardsEnabled
+      ) {
         setEstimatedPoints(null);
         setShouldShowRewardsRow(false);
         setAccountOptedIn(null);
@@ -242,70 +287,34 @@ export const useRewardsWithQuote = ({
       setIsLoading(true);
       setHasError(false);
 
-      let caipAccount: CaipAccountId | null = null;
+      const detection = await detectRewardsOptIn({
+        dispatch,
+        primaryWalletGroupAccounts,
+        fromAddress,
+        chainId,
+        fromAddressAccount,
+      });
 
-      try {
-        // Check if there's a subscription first
-        const candidateSubscriptionId = (await dispatch(
-          getRewardsCandidateSubscriptionId(primaryWalletGroupAccounts),
-        )) as unknown as string | null;
-
-        if (!candidateSubscriptionId) {
-          setEstimatedPoints(null);
-          setShouldShowRewardsRow(false);
-          setAccountOptedIn(null);
-          setHasError(false);
-          setIsLoading(false);
-          return;
-        }
-
-        // Format account to CAIP-10
-        caipAccount = formatAccountToCaipAccountId(fromAddress, chainId);
-
-        if (!caipAccount) {
-          setEstimatedPoints(null);
-          setHasError(false);
-          setShouldShowRewardsRow(false);
-          setAccountOptedIn(null);
-          setIsLoading(false);
-          return;
-        }
-
-        // Check if account has opted in
-        const hasOptedIn = (await dispatch(
-          getRewardsHasAccountOptedIn(caipAccount),
-        )) as unknown as boolean;
-
-        setAccountOptedIn(hasOptedIn);
-
-        // Determine if we should show the rewards row
-        // Show row if: opted in OR (not opted in AND opt-in is supported)
-        let shouldShow = hasOptedIn;
-        if (!hasOptedIn && fromAddressAccount) {
-          const isOptInSupported = (await dispatch(
-            rewardsIsOptInSupported({ account: fromAddressAccount }),
-          )) as unknown as boolean;
-          shouldShow = isOptInSupported;
-        }
-
-        setShouldShowRewardsRow(shouldShow);
-        setEstimatedPoints(null);
-        setHasError(false);
-
-        if (!shouldShow || !hasOptedIn) {
-          setIsLoading(false);
-          return;
-        }
-
-        await debouncedEstimatePoints(estimationQuoteArg, caipAccount);
-      } catch {
-        // Failed to detect opt in
+      if (detection.status === 'error') {
         setIsLoading(false);
         setShouldShowRewardsRow(false);
         setEstimatedPoints(null);
         setAccountOptedIn(null);
         setHasError(false);
+        return;
       }
+
+      setAccountOptedIn(detection.accountOptedIn);
+      setShouldShowRewardsRow(detection.shouldShow);
+      setEstimatedPoints(null);
+      setHasError(false);
+
+      if (!detection.shouldEstimate || !detection.caipAccount) {
+        setIsLoading(false);
+        return;
+      }
+
+      await debouncedEstimatePoints(estimationQuoteArg, detection.caipAccount);
     },
     [
       fromAddress,
@@ -314,13 +323,17 @@ export const useRewardsWithQuote = ({
       dispatch,
       fromAddressAccount,
       debouncedEstimatePoints,
+      primaryWalletGroupAccounts,
     ],
   );
 
-  // Estimate points when dependencies change
+  // Estimate points when dependencies change.
+  // Defer so setState inside estimatePoints is not synchronous in the effect body.
   useEffect(() => {
     if (prevRequestId !== quote?.requestId) {
-      estimatePoints(quote);
+      queueMicrotask(() => {
+        estimatePoints(quote);
+      });
     }
   }, [
     estimatePoints,
@@ -330,29 +343,13 @@ export const useRewardsWithQuote = ({
     prevRequestId,
   ]);
 
-  // Update the local map when the global timestamp changes for the current account
-  useEffect(() => {
-    if (fromAddress && rewardsAccountLinkedTimestamp !== null) {
-      localRewardsAccountLinkedTimestamp.current.set(
-        fromAddress,
-        rewardsAccountLinkedTimestamp,
-      );
-      setCurrentAccountLinkedTimestamp(rewardsAccountLinkedTimestamp);
-    } else if (fromAddress) {
-      // When account changes, get the stored timestamp for this account
-      const storedTimestamp =
-        localRewardsAccountLinkedTimestamp.current.get(fromAddress);
-      setCurrentAccountLinkedTimestamp(storedTimestamp ?? null);
-    } else {
-      setCurrentAccountLinkedTimestamp(null);
-    }
-  }, [rewardsAccountLinkedTimestamp, fromAddress]);
-
   // Re-estimate points when account linked timestamp changes and account has opted in False
   // Only trigger if the current account has a linked timestamp (was actually linked)
   useEffect(() => {
     if (currentAccountLinkedTimestamp !== null && accountOptedIn === false) {
-      estimatePoints(quote);
+      queueMicrotask(() => {
+        estimatePoints(quote);
+      });
     }
   }, [currentAccountLinkedTimestamp, accountOptedIn, estimatePoints, quote]);
 

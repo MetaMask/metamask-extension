@@ -2,6 +2,18 @@ import { JsonRpcParams } from '@metamask/utils';
 import { Driver } from '../../webdriver/driver';
 import { DAPP_URL } from '../../constants';
 
+/**
+ * Test dapp `/request` page that fires a single JSON-RPC method via query.
+ *
+ * Screen: `DAPP_URL/request?method=...&params=...` from `@metamask/test-dapp`.
+ * Owns: opening the request URL and reading/asserting the rendered
+ * `Response: ...` JSON result in `<main>`.
+ * Boundaries: the individual-request page only. MetaMask confirmations for
+ * the request belong to confirmation page objects.
+ * Related: `TestDapp` (full interactive dapp).
+ *
+ * @see node_modules/@metamask/test-dapp/dist/request.html
+ */
 class TestDappIndividualRequest {
   private readonly driver: Driver;
 
@@ -22,6 +34,24 @@ class TestDappIndividualRequest {
       tag: this.result,
       text: expectedResult,
     });
+  }
+
+  /**
+   * Wait for the request to resolve and return the parsed JSON-RPC result.
+   *
+   * The dapp renders `Response: <JSON.stringify(result)>` to the main element
+   * once the request resolves.
+   */
+  async getResult<Result = unknown>(): Promise<Result> {
+    const element = await this.driver.waitForSelector({
+      tag: this.result,
+      text: 'Response: ',
+    });
+
+    const text = await element.getText();
+    const json = text.replace('Response: ', '');
+
+    return JSON.parse(json) as Result;
   }
 
   /**

@@ -5,10 +5,8 @@ import {
   tokenRatesStartPolling,
   tokenRatesStopPollingByPollingToken,
 } from '../store/actions';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenRatesPolling = () => {
@@ -18,12 +16,14 @@ const useTokenRatesPolling = () => {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const enabledChainIds = useSelector(getEnabledChainIds);
 
-  const enabled = completedOnboarding && isUnlocked && useCurrencyRateCheck;
+  const enabled =
+    completedOnboarding &&
+    isUnlocked &&
+    useCurrencyRateCheck &&
+    enabledChainIds.length > 0;
 
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
     input: enabled ? [enabledChainIds] : [],
   });

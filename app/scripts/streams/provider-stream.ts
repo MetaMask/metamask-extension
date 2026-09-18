@@ -1,11 +1,11 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+// @ts-expect-error @types/readable-stream does not export pipeline or Transform
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
+import { isObject } from '@metamask/utils';
 import {
   CONTENT_SCRIPT,
   LEGACY_CONTENT_SCRIPT,
@@ -21,6 +21,7 @@ import {
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
+import { onRequestOpenSidepanel } from '../sidepanel/content-script';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 
@@ -166,8 +167,6 @@ export const setupExtensionStreams = () => {
   // connect "phishing" channel to warning system
   connectPhishingChannelToWarningSystem(extensionMux);
 
-  // eslint-disable-next-line no-use-before-define
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   extensionPort.onDisconnect.addListener(onDisconnectDestroyStreams);
 };
 
@@ -292,14 +291,17 @@ const destroyLegacyExtensionStreams = () => {
  * @param msg.name - custom property and name to identify the message received
  * @returns
  */
-const onMessageSetUpExtensionStreams = (msg: MessageType) => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
+const onMessageSetUpExtensionStreams = (
+  msg: unknown,
+): Promise<string> | undefined => {
+  if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!extensionStream) {
       setupExtensionStreams();
       setupLegacyExtensionStreams();
     }
     return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
   }
+  // A Promise would claim the response channel from other message listeners.
   return undefined;
 };
 
@@ -361,6 +363,10 @@ export const initStreams = () => {
   setupLegacyExtensionStreams();
 
   browser.runtime.onMessage.addListener(onMessageSetUpExtensionStreams);
+
+  if (!process.env.IN_TEST) {
+    browser.runtime.onMessage.addListener(onRequestOpenSidepanel);
+  }
 };
 
 // TODO:LegacyProvider: Delete

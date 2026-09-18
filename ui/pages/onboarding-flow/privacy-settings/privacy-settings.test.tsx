@@ -11,6 +11,29 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import PrivacySettings from './privacy-settings';
 
+const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
+  () => false,
+);
+
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
+}));
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
   return {
     type: SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
@@ -22,6 +45,21 @@ jest.mock('../../../ducks/app/app.ts', () => {
     openBasicFunctionalityModal: () => {
       return mockOpenBasicFunctionalityModal();
     },
+  };
+});
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
   };
 });
 
@@ -63,6 +101,13 @@ describe('Privacy Settings Onboarding View', () => {
   const toggleExternalServicesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
   const setPreferenceStub = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      false,
+    );
+  });
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -152,6 +197,82 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
   });
 
+  describe('when Basic Functionality consolidation is enabled', () => {
+    beforeEach(() => {
+      mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+        true,
+      );
+    });
+
+    it('hides BFT child toggles and does not persist them on submit', () => {
+      const { container, queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      expect(queryByTestId('category-item-Security')).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('category-item-Assets') as HTMLElement);
+
+      expect(queryByText(messages.turnOnTokenDetection.message)).toBeNull();
+      expect(
+        queryByText(messages.simulationsSettingSubHeader.message),
+      ).toBeNull();
+      expect(queryByText(messages.currencyRateCheckToggle.message)).toBeNull();
+      expect(queryByText(messages.ensDomainsSettingTitle.message)).toBeNull();
+      expect(
+        queryByText(messages.useMultiAccountBalanceChecker.message),
+      ).toBeNull();
+      expect(queryByTestId('ipfs-input')).toBeInTheDocument();
+      expect(container.querySelectorAll('input[type=checkbox]')).toHaveLength(
+        0,
+      );
+
+      fireEvent.click(
+        queryByTestId('privacy-settings-back-button') as HTMLElement,
+      );
+
+      expect(setUseTokenDetectionStub).not.toHaveBeenCalled();
+      expect(setUseTransactionSimulationsStub).not.toHaveBeenCalled();
+      expect(setUseCurrencyRateCheckStub).not.toHaveBeenCalled();
+      expect(setUseAddressBarEnsResolutionStub).not.toHaveBeenCalled();
+      expect(setUseMultiAccountBalanceCheckerStub).not.toHaveBeenCalled();
+      expect(setUse4ByteResolutionStub).not.toHaveBeenCalled();
+    });
+
+    it('keeps the security category for social-login MetaMetrics settings', () => {
+      const updatedMockStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        updatedMockStore,
+      );
+
+      expect(
+        queryByText(messages.securityDefaultSettingsSocialLogin.message),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('renders category rows as keyboard-operable buttons', () => {
+    const { getByRole } = renderWithProvider(<PrivacySettings />, store);
+
+    expect(
+      getByRole('button', { name: messages.general.message }),
+    ).toBeInTheDocument();
+    expect(
+      getByRole('button', { name: messages.assets.message }),
+    ).toBeInTheDocument();
+    expect(
+      getByRole('button', { name: messages.security.message }),
+    ).toBeInTheDocument();
+  });
+
   describe('Social Login Flow', () => {
     it('should update the default settings for social login', async () => {
       const updatedMockStore = configureMockStore([thunk])({
@@ -166,9 +287,9 @@ describe('Privacy Settings Onboarding View', () => {
         updatedMockStore,
       );
 
-      // Default Settings - Security & privacy category
+      // Default Settings - Security & privacy category (social login copy)
       const itemCategorySecurityPrivacy = getByText(
-        messages.securityAndPrivacy.message,
+        messages.securityDefaultSettingsSocialLogin.message,
       );
       expect(itemCategorySecurityPrivacy).toBeInTheDocument();
     });
@@ -217,6 +338,31 @@ describe('Privacy Settings Onboarding View', () => {
       const ipfsEvent = {
         target: {
           value: 'gateway.ipfs.io',
+        },
+      };
+
+      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
+
+      const invalidErrorMsg = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
+      );
+
+      expect(invalidErrorMsg).toBeInTheDocument();
+    });
+
+    it('should error with ipfs.infura.io IPFS input', () => {
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      const itemCategoryAssets = queryByTestId('category-item-Assets');
+      fireEvent.click(itemCategoryAssets as HTMLElement);
+
+      const ipfsInput = queryByTestId('ipfs-input');
+      const ipfsEvent = {
+        target: {
+          value: 'ipfs.infura.io',
         },
       };
 

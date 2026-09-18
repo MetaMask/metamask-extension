@@ -39,5 +39,15 @@
 
   &--disabled {
     opacity: 0.5;
+    cursor: not-allowed;
+
+    // ReactToggleButton renders an `<input>` and inner `<div>`s on top of the
+    // label; their UA cursor overrides our `cursor: not-allowed` on hover.
+    // The toggle is already inert when disabled (the `onToggle` handler is
+    // gated upstream), so we can safely strip pointer handling on children
+    // and let hover events bubble to the label.
+    > * {
+      pointer-events: none;
+    }
   }
 }

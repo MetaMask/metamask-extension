@@ -1,9 +1,17 @@
 import nock from 'nock';
 
 import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MOCK_ANY_NAMESPACE,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import {
   DataDeletionService,
   RETRIES,
   MAX_CONSECUTIVE_FAILURES,
+  DataDeletionServiceMessenger,
 } from './data-deletion-service';
 
 // We're not customizing the default max delay
@@ -13,7 +21,7 @@ const defaultMaxRetryDelay = 30_000;
 // to trigger retries.
 const defaultTimeout = defaultMaxRetryDelay * 2;
 
-const mockMetaMetricsId = 'mockMetaMetricsId';
+const mockAnalyticsId = 'mockAnalyticsId';
 const mockTaskId = 'mockTaskId';
 const mockSourceId = 'mockSourceId';
 const mockAnalyticsDataDeletionOrigin = 'https://metamask.test';
@@ -36,7 +44,7 @@ describe('DataDeletionService', () => {
 
       const response =
         await dataDeletionService.createDataDeletionRegulationTask(
-          mockMetaMetricsId,
+          mockAnalyticsId,
         );
 
       expect(response).toStrictEqual(mockTaskId);
@@ -47,7 +55,7 @@ describe('DataDeletionService', () => {
       const dataDeletionService = new DataDeletionService(getDefaultOptions());
 
       await expect(
-        dataDeletionService.createDataDeletionRegulationTask(mockMetaMetricsId),
+        dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId),
       ).rejects.toThrow('Failed to fetch');
     });
 
@@ -59,7 +67,7 @@ describe('DataDeletionService', () => {
       const dataDeletionService = new DataDeletionService(getDefaultOptions());
 
       await expect(
-        dataDeletionService.createDataDeletionRegulationTask(mockMetaMetricsId),
+        dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId),
       ).rejects.toThrow('Failed to fetch');
     });
 
@@ -80,7 +88,7 @@ describe('DataDeletionService', () => {
 
       const response =
         await dataDeletionService.createDataDeletionRegulationTask(
-          mockMetaMetricsId,
+          mockAnalyticsId,
         );
 
       expect(response).toStrictEqual(mockTaskId);
@@ -116,7 +124,7 @@ describe('DataDeletionService', () => {
           fetchWithFakeTimers({
             fetchOperation: () =>
               dataDeletionService.createDataDeletionRegulationTask(
-                mockMetaMetricsId,
+                mockAnalyticsId,
               ),
             retries,
           }),
@@ -153,7 +161,7 @@ describe('DataDeletionService', () => {
         await fetchWithFakeTimers({
           fetchOperation: () =>
             dataDeletionService.createDataDeletionRegulationTask(
-              mockMetaMetricsId,
+              mockAnalyticsId,
             ),
           retries: 0,
         });
@@ -187,7 +195,7 @@ describe('DataDeletionService', () => {
         await fetchWithFakeTimers({
           fetchOperation: () =>
             dataDeletionService.createDataDeletionRegulationTask(
-              mockMetaMetricsId,
+              mockAnalyticsId,
             ),
           retries: 1,
         });
@@ -209,7 +217,7 @@ describe('DataDeletionService', () => {
           fetchWithFakeTimers({
             fetchOperation: () =>
               dataDeletionService.createDataDeletionRegulationTask(
-                mockMetaMetricsId,
+                mockAnalyticsId,
               ),
             // Advance timers enough to resolve default number of retries
             retries: RETRIES,
@@ -241,7 +249,7 @@ describe('DataDeletionService', () => {
         await fetchWithFakeTimers({
           fetchOperation: () =>
             dataDeletionService.createDataDeletionRegulationTask(
-              mockMetaMetricsId,
+              mockAnalyticsId,
             ),
           retries,
         });
@@ -272,7 +280,7 @@ describe('DataDeletionService', () => {
         await fetchWithFakeTimers({
           fetchOperation: () =>
             dataDeletionService.createDataDeletionRegulationTask(
-              mockMetaMetricsId,
+              mockAnalyticsId,
             ),
           retries: 1,
         });
@@ -316,11 +324,8 @@ describe('DataDeletionService', () => {
           circuitBreakDuration: defaultMaxRetryDelay * 10,
         });
         const fetchOperation = () =>
-          dataDeletionService.createDataDeletionRegulationTask(
-            mockMetaMetricsId,
-          );
+          dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -359,12 +364,9 @@ describe('DataDeletionService', () => {
           onBreak,
         });
         const fetchOperation = () =>
-          dataDeletionService.createDataDeletionRegulationTask(
-            mockMetaMetricsId,
-          );
+          dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
 
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -397,11 +399,8 @@ describe('DataDeletionService', () => {
           onDegraded,
         });
         const fetchOperation = () =>
-          dataDeletionService.createDataDeletionRegulationTask(
-            mockMetaMetricsId,
-          );
+          dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -455,11 +454,8 @@ describe('DataDeletionService', () => {
           circuitBreakDuration,
         });
         const fetchOperation = () =>
-          dataDeletionService.createDataDeletionRegulationTask(
-            mockMetaMetricsId,
-          );
+          dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -527,11 +523,8 @@ describe('DataDeletionService', () => {
           circuitBreakDuration,
         });
         const fetchOperation = () =>
-          dataDeletionService.createDataDeletionRegulationTask(
-            mockMetaMetricsId,
-          );
+          dataDeletionService.createDataDeletionRegulationTask(mockAnalyticsId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() => {
             return fetchWithFakeTimers({
@@ -866,7 +859,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -908,7 +900,6 @@ describe('DataDeletionService', () => {
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
 
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -943,7 +934,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -1000,7 +990,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() =>
             fetchWithFakeTimers({
@@ -1073,7 +1062,6 @@ describe('DataDeletionService', () => {
         const fetchOperation = () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(() => {
             return fetchWithFakeTimers({
@@ -1143,7 +1131,6 @@ async function fetchWithFakeTimers({
 
   // Advance timer enough to exceed max possible retry delay for initial call and all
   // subsequent retries, until request has resolved.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const _ of Array(retries + 1).keys()) {
     if (resolved) {
       break;
@@ -1152,7 +1139,6 @@ async function fetchWithFakeTimers({
     // waiting period, and to prevent unnecessarily long waiting.
     const intervalLength = defaultMaxRetryDelay / 10;
     const numberOfIntervals = defaultMaxRetryDelay / intervalLength;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const _interval of new Array(numberOfIntervals).keys()) {
       if (resolved) {
         break;
@@ -1175,7 +1161,7 @@ function mockDataDeletionInterceptor(): nock.Interceptor {
     {
       regulationType: 'DELETE_ONLY',
       subjectType: 'USER_ID',
-      subjectIds: [mockMetaMetricsId],
+      subjectIds: [mockAnalyticsId],
     },
   );
 }
@@ -1194,6 +1180,22 @@ function mockDataDeletionStatusInterceptor(
   );
 }
 
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<DataDeletionServiceMessenger>,
+  MessengerEvents<DataDeletionServiceMessenger>
+>;
+
+function getMessenger(): DataDeletionServiceMessenger {
+  const rootMessenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
+  return new Messenger({
+    namespace: 'DataDeletionService',
+    parent: rootMessenger,
+  });
+}
+
 /**
  * Get default options for the DataDeletionService.
  *
@@ -1206,5 +1208,6 @@ function getDefaultOptions(): ConstructorParameters<
     analyticsDataDeletionEndpoint: mockAnalyticsDataDeletionEndpoint,
     analyticsDataDeletionSourceId: mockSourceId,
     timeout: defaultTimeout,
+    messenger: getMessenger(),
   };
 }

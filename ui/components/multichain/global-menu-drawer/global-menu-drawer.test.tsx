@@ -5,18 +5,19 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   GATOR_PERMISSIONS,
+  NETWORKS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 
-// eslint-disable-next-line import-x/no-restricted-paths
-const getEnvironmentType = jest.requireMock('../../../../app/scripts/lib/util')
-  .getEnvironmentType as jest.Mock;
+const getEnvironmentType = jest.requireMock(
+  '../../../../shared/lib/environment-type',
+).getEnvironmentType as jest.Mock;
 
-jest.mock('../../../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../../../app/scripts/lib/util'),
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn(),
 }));
 
@@ -54,6 +55,20 @@ jest.mock('../../../pages/notifications/NewFeatureTag', () => ({
 }));
 
 describe('GlobalMenuDrawer', () => {
+  beforeAll(() => {
+    if (!HTMLDialogElement.prototype.showModal) {
+      HTMLDialogElement.prototype.showModal = function showModal() {
+        this.setAttribute('open', '');
+      };
+    }
+    if (!HTMLDialogElement.prototype.close) {
+      HTMLDialogElement.prototype.close = function close() {
+        this.removeAttribute('open');
+        this.dispatchEvent(new Event('close'));
+      };
+    }
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     getEnvironmentType.mockReturnValue('popup');
@@ -102,9 +117,9 @@ describe('GlobalMenuDrawer', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onClose when Escape key is pressed', async () => {
+  it('calls onClose when the dialog is dismissed', async () => {
     const onClose = jest.fn();
-    renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <GlobalMenuDrawer
         isOpen
         onClose={onClose}
@@ -117,18 +132,17 @@ describe('GlobalMenuDrawer', () => {
     );
 
     await waitFor(() => {
-      expect(
-        document.querySelector('[data-testid="global-menu-drawer"]'),
-      ).toBeInTheDocument();
+      expect(getByTestId('global-menu-drawer')).toHaveAttribute('open');
     });
 
-    fireEvent.keyDown(document, { key: 'Escape' });
+    // Native <dialog> closes on Escape and fires the close event
+    (getByTestId('global-menu-drawer') as HTMLDialogElement).close();
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('does not render when isOpen is false', () => {
+  it('keeps the dialog closed when isOpen is false', () => {
     const onClose = jest.fn();
-    const { queryByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <GlobalMenuDrawer
         isOpen={false}
         onClose={onClose}
@@ -140,7 +154,33 @@ describe('GlobalMenuDrawer', () => {
       '/',
     );
 
-    expect(queryByTestId('global-menu-drawer')).not.toBeInTheDocument();
+    expect(getByTestId('global-menu-drawer')).not.toHaveAttribute('open');
+  });
+
+  it('networks item navigates to the dedicated networks page', async () => {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        transactions: [],
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <GlobalMenuDrawerWithList
+        isOpen
+        onClose={() => undefined}
+        data-testid="global-menu-drawer"
+      />,
+      store,
+      '/',
+    );
+
+    await waitFor(() => {
+      const link = getByTestId('global-menu-networks');
+      expect(link).toBeInTheDocument();
+      expect(link.getAttribute('href')).toContain(NETWORKS_ROUTE);
+      expect(link.getAttribute('href')).toContain('drawerOpen=true');
+    });
   });
 });
 

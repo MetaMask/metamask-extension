@@ -7,25 +7,35 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../webdriver/driver';
-import { performanceTracker } from '../../utils/performance-tracker';
-import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { collectTimerResults } from '../../utils/timer-helper';
+import {
+  measureStepWithLongTasks,
+  buildLongTaskTimerResults,
+} from '../../utils/long-task-helper';
 import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
-import { BENCHMARK_TYPE } from '../../utils/constants';
-import type { BenchmarkRunResult } from '../../utils/types';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  type WebVitalsMetrics,
+} from '../../../../../shared/constants/benchmarks';
+import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import { collectWebVitals } from '../../utils';
+import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const testTitle = 'benchmark-asset-details-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
+  const steps: LongTaskStepResult[] = [];
+  let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
       {
@@ -35,7 +45,6 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         ).build(),
         manifestFlags: {
           testing: {
-            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
@@ -45,8 +54,6 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
-        const timer = new TimerHelper('assetClickToPriceChart');
-
         // Login flow
         await login(driver, { validateBalance: false });
 
@@ -54,6 +61,9 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
+
+        // Wait for Account Sync to finish.
+        await accountListPage.waitUntilSyncingIsCompleted();
         await accountListPage.checkNumberOfAvailableAccounts(
           WITH_STATE_POWER_USER.withAccounts,
         );
@@ -63,34 +73,47 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         // Close account menu using the back button
         await accountListPage.closeMultichainAccountsPage();
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenListIsDisplayed();
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenListIsDisplayed();
 
         // Switch to Ethereum Mainnet network
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
 
         // Wait for token list to refresh after network switch
-        await assetListPage.checkTokenListIsDisplayed();
+        await tokensTab.checkTokenListIsDisplayed();
 
-        await assetListPage.clickOnAsset('Ethereum');
+        await tokensTab.clickOnAsset('Ethereum');
 
         // Measure: Asset click to price chart loaded
-        await timer.measure(async () => {
-          await assetListPage.checkPriceChartIsShown();
-          await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
-        });
-        performanceTracker.addTimer(timer);
+        steps.push(
+          await measureStepWithLongTasks(
+            driver,
+            'assetClickToPriceChart',
+            async () => {
+              await tokensTab.checkPriceChartIsShown();
+              await tokensTab.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
+            },
+          ),
+        );
+
+        try {
+          webVitals = await collectWebVitals(driver);
+        } catch (error) {
+          console.error('Error collecting web vitals:', error);
+        }
       },
     );
 
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: collectTimerResults(),
+      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,

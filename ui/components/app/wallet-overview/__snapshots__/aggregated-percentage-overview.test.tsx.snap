@@ -3,7 +3,7 @@
 exports[`AggregatedMultichainPercentageOverview render renders correctly with negative values 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="flex"
   >
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-error-default"
@@ -30,7 +30,7 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with ne
 exports[`AggregatedMultichainPercentageOverview render renders correctly with positive values 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="flex"
   >
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-success-default"
@@ -57,29 +57,39 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with po
 exports[`AggregatedMultichainPercentageOverview render renders correctly with zero values 1`] = `
 <div>
   <div
-    class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+    aria-hidden="true"
+    class="relative overflow-hidden rounded"
   >
     <div
-      class="mm-box mm-box--display-flex"
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+    />
+    <div
+      aria-hidden="true"
+      class="pointer-events-none invisible relative z-10"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
-        data-testid="aggregated-value-change"
-        style="white-space: pre;"
+      <div
+        class="flex"
       >
-        +
-        $0.00
-         
-      </p>
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
-        data-testid="aggregated-percentage-change"
-      >
-        (
-        +
-        0.00%
-        )
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+          data-testid="aggregated-value-change"
+          style="white-space: pre;"
+        >
+          +
+          $0.00
+           
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+          data-testid="aggregated-percentage-change"
+        >
+          (
+          +
+          0.00%
+          )
+        </p>
+      </div>
     </div>
   </div>
 </div>
@@ -88,24 +98,34 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with ze
 exports[`AggregatedPercentageOverview render renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+    aria-hidden="true"
+    class="relative overflow-hidden rounded"
   >
     <div
-      class="mm-box gap-1 mm-box--display-flex"
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+    />
+    <div
+      aria-hidden="true"
+      class="pointer-events-none invisible relative z-10"
     >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
-        data-testid="aggregated-value-change"
-        style="white-space: pre;"
+      <div
+        class="flex gap-1"
       >
-        +$0.00
-      </p>
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
-        data-testid="aggregated-percentage-change"
-      >
-        (+0.00%)
-      </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+          data-testid="aggregated-value-change"
+          style="white-space: pre;"
+        >
+          +$0.00
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+          data-testid="aggregated-percentage-change"
+        >
+          (+0.00%)
+        </p>
+      </div>
     </div>
   </div>
 </div>

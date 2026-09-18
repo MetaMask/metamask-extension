@@ -1,6 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TransactionDetailsProvider } from '../transaction-details-context';
@@ -34,12 +38,17 @@ const mockState = {
   },
 };
 
-function createMockTransactionMeta(chainId?: string, tokenAddress?: string) {
+function createMockTransactionMeta(
+  chainId?: string,
+  tokenAddress?: string,
+  type?: TransactionType,
+) {
   return {
     id: 'test-id',
     chainId: CHAIN_ID,
     status: TransactionStatus.confirmed,
     time: Date.now(),
+    type,
     txParams: {
       from: '0x123',
       to: '0x456',
@@ -49,11 +58,15 @@ function createMockTransactionMeta(chainId?: string, tokenAddress?: string) {
   };
 }
 
-function render(chainId?: string, tokenAddress?: string) {
+function render(
+  chainId?: string,
+  tokenAddress?: string,
+  type?: TransactionType,
+) {
   return renderWithProvider(
     <TransactionDetailsProvider
       transactionMeta={
-        createMockTransactionMeta(chainId, tokenAddress) as never
+        createMockTransactionMeta(chainId, tokenAddress, type) as never
       }
     >
       <TransactionDetailsPaidWithRow />
@@ -111,5 +124,45 @@ describe('TransactionDetailsPaidWithRow', () => {
     });
     const { getByText } = render(CHAIN_ID, TOKEN_ADDRESS);
     expect(getByText(TOKEN_SYMBOL)).toBeInTheDocument();
+  });
+
+  it('renders "Paid with" label for non-perpsWithdraw transactions', () => {
+    useTokenWithBalanceMock.mockReturnValue({
+      address: TOKEN_ADDRESS,
+      symbol: TOKEN_SYMBOL,
+      decimals: 6,
+      chainId: CHAIN_ID,
+      balance: '0',
+      balanceFiat: '$0.00',
+      balanceRaw: '0',
+      tokenFiatAmount: 0,
+    });
+    const { getByText, queryByText } = render(
+      CHAIN_ID,
+      TOKEN_ADDRESS,
+      TransactionType.perpsDeposit,
+    );
+    expect(getByText(messages.paidWith.message)).toBeInTheDocument();
+    expect(queryByText(messages.receiveToken.message)).not.toBeInTheDocument();
+  });
+
+  it('renders "Receive token" label for perpsWithdraw transactions', () => {
+    useTokenWithBalanceMock.mockReturnValue({
+      address: TOKEN_ADDRESS,
+      symbol: TOKEN_SYMBOL,
+      decimals: 6,
+      chainId: CHAIN_ID,
+      balance: '0',
+      balanceFiat: '$0.00',
+      balanceRaw: '0',
+      tokenFiatAmount: 0,
+    });
+    const { getByText, queryByText } = render(
+      CHAIN_ID,
+      TOKEN_ADDRESS,
+      TransactionType.perpsWithdraw,
+    );
+    expect(getByText(messages.receiveToken.message)).toBeInTheDocument();
+    expect(queryByText(messages.paidWith.message)).not.toBeInTheDocument();
   });
 });

@@ -6,6 +6,8 @@ import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
+import { buildEvmCaip19AssetId } from '../../shared/lib/multichain/buildEvmCaip19AssetId';
+import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 import mockState from '../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getDomainResolutions } from '../ducks/domains';
@@ -15,9 +17,11 @@ import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useTrustSignals, TrustSignalDisplayState } from './useTrustSignals';
+import { useTokensData, type TokenAsset } from './useTokensData';
 
 jest.mock('./useName');
 jest.mock('./useTrustSignals');
+jest.mock('./useTokensData');
 jest.mock('../ducks/domains', () => ({
   getDomainResolutions: jest.fn(),
 }));
@@ -40,6 +44,7 @@ const GROUP_NAME_MOCK = 'My Account Group';
 describe('useDisplayName', () => {
   const useNamesMock = jest.mocked(useNames);
   const useTrustSignalsMock = jest.mocked(useTrustSignals);
+  const useTokensDataMock = jest.mocked(useTokensData);
   const domainResolutionsMock = jest.mocked(getDomainResolutions);
   const selectAccountGroupNameByInternalAccountMock = jest.mocked(
     selectAccountGroupNameByInternalAccount,
@@ -78,17 +83,15 @@ describe('useDisplayName', () => {
     symbol: string,
     image: string,
   ) {
-    state.metamask.tokensChainsCache = {
-      [variation]: {
-        data: {
-          [value]: {
-            name,
-            symbol,
-            iconUrl: image,
-          },
-        },
-      },
-    };
+    const assetId = buildEvmCaip19AssetId(value, variation as Hex);
+    useTokensDataMock.mockReturnValue({
+      [assetId]: {
+        assetId,
+        name,
+        symbol,
+        iconUrl: image,
+      } as TokenAsset,
+    });
   }
 
   function mockWatchedNFTName(value: string, variation: string, name: string) {
@@ -141,6 +144,8 @@ describe('useDisplayName', () => {
         label: null,
       },
     ]);
+
+    useTokensDataMock.mockReturnValue({});
 
     state = cloneDeep(mockState);
 
@@ -232,6 +237,28 @@ describe('useDisplayName', () => {
         icon: null,
         subtitle: null,
       });
+    });
+
+    it('derives the token icon URL when the API omits iconUrl', () => {
+      const ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+      const CHAIN_ID = CHAIN_IDS.MAINNET;
+
+      mockERC20Token(ADDRESS, CHAIN_ID, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK, '');
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: ADDRESS,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: CHAIN_ID,
+          }),
+        state,
+      );
+
+      expect(result.current.image).toBe(getAssetImageUrl(ADDRESS, CHAIN_ID));
+      expect(result.current.image).toBe(
+        `https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/${ADDRESS}.png`,
+      );
     });
 
     it('returns ERC-20 token symbol', () => {

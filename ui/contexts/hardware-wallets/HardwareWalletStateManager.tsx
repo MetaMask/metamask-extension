@@ -1,10 +1,10 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
-  AccountsState,
+  type AccountsState,
   getMaybeSelectedInternalAccount,
-} from '../../selectors';
+} from '../../../shared/lib/selectors/accounts';
 import {
   HardwareConnectionPermissionState,
   HardwareWalletType,
@@ -39,12 +39,13 @@ export type HardwareWalletRefs = {
    */
   connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
   /**
-   * Stores pending ensureDeviceReady promises keyed by requireBlindSigning.
-   * This prevents duplicate checks for the same option while allowing different
-   * option sets to run independently.
+   * Stores pending ensureDeviceReady promises keyed by a dedup key derived
+   * from requireBlindSigning and preflightMessageBytes. This prevents duplicate
+   * checks for the same option combination while allowing different option
+   * sets to run independently.
    */
   ensureDeviceReadyPromiseRef: React.MutableRefObject<
-    Map<boolean, Promise<boolean>>
+    Map<string, Promise<boolean>>
   >;
   /**
    * Flag to prevent concurrent connection attempts.
@@ -53,10 +54,35 @@ export type HardwareWalletRefs = {
   isConnectingRef: React.MutableRefObject<boolean>;
   hasAutoConnectedRef: React.MutableRefObject<boolean>;
   lastConnectedAccountRef: React.MutableRefObject<string | null>;
+  isEnsuringDeviceReadyRef: React.MutableRefObject<boolean>;
   currentConnectionIdRef: React.MutableRefObject<number | null>;
   connectRef: React.MutableRefObject<(() => Promise<void>) | null>;
   walletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
   previousWalletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
+  /**
+   * WORKAROUND: Trezor-specific flag indicating that a hardware wallet signing
+   * operation is in flight.
+   *
+   * The Trezor Connect SDK (running in the offscreen document) closes its
+   * WebUSB transport after signing, which fires a native `navigator.usb`
+   * disconnect event. This event is structurally identical to a physical
+   * unplug — `navigator.usb.getDevices()` already reflects the device as
+   * gone, so re-enumeration cannot distinguish the two cases.
+   *
+   * When this flag is true, the native WebUSB disconnect handler in
+   * `useHardwareWalletAutoConnect` skips teardown. Real physical disconnects
+   * during signing will cause the signing operation itself to fail, which
+   * the tracker (`useHwSignTracker` in batch mode) handles via
+   * `TransactionFailed`.
+   *
+   * This flag is set by the bridge signing page
+   * (`hardware-wallet-signatures.tsx`) for the duration between submission
+   * and the state machine reaching a terminal state.
+   *
+   * TODO: Remove if the Trezor Connect SDK adds a way to suppress or
+   * differentiate its session-close disconnect from physical unplug.
+   */
+  isSigningInProgressRef: React.MutableRefObject<boolean>;
 };
 
 /**
@@ -91,22 +117,24 @@ export const useHardwareWalletStateManager = () => {
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const connectingPromiseRef = useRef<Promise<void> | null>(null);
-  const ensureDeviceReadyPromiseRef = useRef<Map<boolean, Promise<boolean>>>(
+  const ensureDeviceReadyPromiseRef = useRef<Map<string, Promise<boolean>>>(
     new Map(),
   );
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
+  const isEnsuringDeviceReadyRef = useRef(false);
   const currentConnectionIdRef = useRef<number | null>(null);
   const connectRef = useRef<(() => Promise<void>) | null>(null);
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
   const previousWalletTypeRef = useRef<HardwareWalletType | null>(null);
+  const isSigningInProgressRef = useRef(false);
 
   // Track previous wallet type for detecting wallet type changes (e.g., Trezor -> Ledger)
-  if (walletTypeRef.current !== walletType) {
+  useEffect(() => {
     previousWalletTypeRef.current = walletTypeRef.current;
     walletTypeRef.current = walletType;
-  }
+  }, [walletType]);
 
   const state: HardwareWalletState = {
     hardwareConnectionPermissionState,
@@ -125,10 +153,12 @@ export const useHardwareWalletStateManager = () => {
       isConnectingRef,
       hasAutoConnectedRef,
       lastConnectedAccountRef,
+      isEnsuringDeviceReadyRef,
       currentConnectionIdRef,
       connectRef,
       walletTypeRef,
       previousWalletTypeRef,
+      isSigningInProgressRef,
     }),
     [],
   );
@@ -165,6 +195,7 @@ export const useHardwareWalletStateManager = () => {
         ensureDeviceReadyPromiseRef.current.clear();
         currentConnectionIdRef.current = null;
         isConnectingRef.current = false;
+        isSigningInProgressRef.current = false;
       },
       /**
        * Resets auto-connect state, allowing auto-connect to run again

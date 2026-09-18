@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Modal,
   ModalContent,
@@ -9,6 +9,12 @@ import {
   ModalFooter,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
 import type { Position } from '../types';
 import {
   UpdateTPSLModalContent,
@@ -31,16 +37,32 @@ export type UpdateTPSLModalProps = {
  * @param options0.position
  * @param options0.currentPrice
  */
-export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
+export const UpdateTPSLModal = ({
   isOpen,
   onClose,
   position,
   currentPrice,
-}) => {
+}: UpdateTPSLModalProps) => {
   const t = useI18nContext();
   const [submitState, setSubmitState] = useState<UpdateTPSLSubmitState | null>(
     null,
   );
+
+  const hasExistingTpsl = Boolean(
+    position.takeProfitPrice || position.stopLossPrice,
+  );
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: isOpen,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: hasExistingTpsl
+        ? PERPS_EVENT_VALUE.SCREEN_TYPE.UPDATE_TP_SL
+        : PERPS_EVENT_VALUE.SCREEN_TYPE.CREATE_TP_SL,
+      [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+      [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
+    },
+    resetKey: position.symbol,
+  });
 
   const handleSubmitStateChange = useCallback(
     (state: UpdateTPSLSubmitState) => {
@@ -49,11 +71,13 @@ export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
     [],
   );
 
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (!isOpen) {
       setSubmitState(null);
     }
-  }, [isOpen]);
+  }
 
   return (
     <Modal

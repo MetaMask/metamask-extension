@@ -2,6 +2,7 @@
 import { WebSocket } from 'ws';
 import {
   DEFAULT_HYPERLIQUID_WS_MOCKS,
+  clearPendingUserFills,
   getResponsePayload,
 } from '../tests/perps/mocks/websocketDefaultMocks';
 import type { WebSocketMessageMock } from './types';
@@ -34,6 +35,7 @@ async function setupPerpsWebsocketMocks(
   server: LocalWebSocketServer,
   mocks: WebSocketMessageMock[] = [],
 ): Promise<void> {
+  clearPendingUserFills();
   const wsServer = server.getServer();
 
   const mergedMocks = [...mocks, ...DEFAULT_HYPERLIQUID_WS_MOCKS];
@@ -61,11 +63,29 @@ async function setupPerpsWebsocketMocks(
 
           const delay = mock.delay || 100;
           setTimeout(() => {
-            const payload = getResponsePayload(mock);
-            socket.send(JSON.stringify(payload));
-            console.log(
-              `[Perps] Simulated message sent to the client for: ${includes.join(' + ')}`,
-            );
+            const payload = mock.dynamicResponse
+              ? mock.dynamicResponse(message)
+              : getResponsePayload(mock);
+
+            if (payload) {
+              socket.send(JSON.stringify(payload));
+              console.log(
+                `[Perps] Simulated message sent to the client for: ${includes.join(' + ')}`,
+              );
+            }
+
+            const followUp = mock.dynamicFollowUp
+              ? mock.dynamicFollowUp(message)
+              : mock.followUpResponse;
+            if (followUp) {
+              const followUpDelay = mock.followUpDelay ?? 50;
+              setTimeout(() => {
+                socket.send(JSON.stringify(followUp));
+                console.log(
+                  `[Perps] Follow-up message sent for: ${includes.join(' + ')}`,
+                );
+              }, followUpDelay);
+            }
           }, delay);
           break;
         }

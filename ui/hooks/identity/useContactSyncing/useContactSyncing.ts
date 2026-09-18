@@ -1,17 +1,16 @@
 import log from 'loglevel';
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { syncContactsWithUserStorage } from '../../../store/actions';
 import {
   selectIsContactSyncingEnabled,
   selectIsBackupAndSyncEnabled,
 } from '../../../selectors/identity/backup-and-sync';
 import { getUseExternalServices } from '../../../selectors';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
+import { useDispatch } from '../../../store/hooks';
 
 /**
  * A utility used internally to decide if contact syncing should be dispatched
@@ -33,11 +32,11 @@ export const useShouldDispatchContactSyncing = () => {
 
   const shouldDispatchContactSyncing: boolean = Boolean(
     basicFunctionality &&
-      isBackupAndSyncEnabled &&
-      isContactSyncingEnabled &&
-      isUnlocked &&
-      isSignedIn &&
-      completedOnboarding,
+    isBackupAndSyncEnabled &&
+    isContactSyncingEnabled &&
+    isUnlocked &&
+    isSignedIn &&
+    completedOnboarding,
   );
 
   return shouldDispatchContactSyncing;

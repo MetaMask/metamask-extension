@@ -2,11 +2,12 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { login } from '../../page-objects/flows/login.flow';
 import { withFixtures, getEventPayloads } from '../../helpers';
-import { MOCK_META_METRICS_ID, NETWORK_CLIENT_ID } from '../../constants';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { MOCK_ANALYTICS_ID, NETWORK_CLIENT_ID } from '../../constants';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import TransactionsSettingsPage from '../../page-objects/pages/settings/transactions-settings';
 
 async function mockServerCalls(mockServer: Mockttp) {
   return [
@@ -70,9 +71,11 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             chainIds: [1],
           })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
+          .withBasicFunctionalityConsolidationDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockServerCalls,
@@ -80,24 +83,24 @@ describe('PPOM Blockaid Alert - Metrics', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
 
-        // toggle on
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
 
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToTransactionsSettings();
+
+        const transactionsSettingsPage = new TransactionsSettingsPage(driver);
+        await transactionsSettingsPage.waitForSecurityAlertsSection();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-
-        // toggle off
+        // Default fixture has security alerts enabled; first click turns them off.
         await privacySettings.toggleBlockaidAlerts();
 
         // wait for state to update
         await driver.delay(1000);
 
-        // toggle back ON
+        // Second click turns security alerts back on.
         await privacySettings.toggleBlockaidAlerts();
 
         await driver.delay(1000);
@@ -111,7 +114,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             blockaid_alerts_enabled: true,
             category: 'Settings',
           },
-          userId: MOCK_META_METRICS_ID,
+          userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
         const matchToggleOnEvent = {
@@ -133,7 +136,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             blockaid_alerts_enabled: false,
             category: 'Settings',
           },
-          userId: MOCK_META_METRICS_ID,
+          userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
         const matchToggleOffEvent = {

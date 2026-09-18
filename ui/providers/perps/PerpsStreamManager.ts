@@ -37,8 +37,22 @@ import type {
   CandlePeriod,
 } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { clearAllCoalescedRequests } from '../../hooks/perps/coalesceBackgroundRequest';
+import {
+  clearPerpsMarketFillsModuleCache,
+  clearPerpsMarketInfoModuleCache,
+} from './perps-cache';
 import { CandleStreamChannel } from './CandleStreamChannel';
 import { PerpsDataChannel } from './PerpsDataChannel';
+
+/**
+ * Health of the dedicated order-book aggregated socket, pushed from the
+ * background bridge on the `orderBookAggregatedStatus` channel.
+ * - `connecting`: opening or transiently reconnecting.
+ * - `connected`: subscription is live.
+ * - `error`: dropped and auto-reconnection exhausted; needs a manual reconnect.
+ */
+export type OrderBookConnectionStatus = 'connecting' | 'connected' | 'error';
 
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
@@ -51,7 +65,7 @@ const EMPTY_PRICES: PriceUpdate[] = [];
  * Placeholder noop function for channel initialization.
  * Actual connect functions are set when init() is called.
  */
-// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+// eslint-disable-next-line no-empty-function
 const placeholderConnectFn = () => () => {};
 
 /**
@@ -63,6 +77,12 @@ type OptimisticTPSLOverride = {
   stopLossPrice?: string;
   expiresAt: number;
 };
+
+// Grace period before falling back to REST.
+// Gives the WebSocket time to deliver fresh data on reload, avoiding
+// redundant REST calls that contribute to 429 rate-limit errors.
+// If no WS data arrives within this window, the REST fallback fires.
+const WS_GRACE_PERIOD_MS = 3000;
 
 // Grace period for optimistic overrides (30 seconds)
 // HyperLiquid's WebSocket can take >10s to reflect new TP/SL trigger orders
@@ -89,6 +109,21 @@ class PerpsStreamManager {
 
   orderBook: PerpsDataChannel<OrderBookData | null>;
 
+  /**
+   * Server-aggregated order book, fed by a second, independent subscription
+   * that uses `nSigFigs`/`mantissa`. Kept separate from `orderBook` so the raw,
+   * full-precision channel (top-of-book mid, slippage) is never coarsened by
+   * the order-book panel's grouping.
+   */
+  orderBookAggregated: PerpsDataChannel<OrderBookData | null>;
+
+  /**
+   * Health of the dedicated aggregated order-book socket. Lets the order-book
+   * panel surface a reconnect affordance when its connection drops without
+   * disturbing the raw channel or the rest of the perps UI.
+   */
+  orderBookAggregatedStatus: PerpsDataChannel<OrderBookConnectionStatus>;
+
   // Candle stream channel (multiplexed by symbol+interval)
   candles: CandleStreamChannel;
 
@@ -97,6 +132,17 @@ class PerpsStreamManager {
 
   // Tracks which address this manager is initialized for
   private initializedAddress: string | null = null;
+
+  // Timestamp of the most recent background stream update (any channel).
+  private _lastStreamUpdateAt = 0;
+
+  /**
+   * UI-owned identity for the active aggregated order-book subscription.
+   * Background emissions whose `subscriptionId` does not match are discarded so
+   * a stale packet from a prior grouping cannot repopulate the cleared channel
+   * during the async deactivate/activate IPC gap.
+   */
+  private activeOrderBookAggregatedSubscriptionId: string | null = null;
 
   // Deduplicates concurrent initForAddress calls
   private pendingInit: { address: string; promise: Promise<void> } | null =
@@ -111,22 +157,37 @@ class PerpsStreamManager {
   // When we last set an optimistic update - used to block WebSocket overwrites
   private lastOptimisticUpdateTime = 0;
 
+  private _useTerminalApi = false;
+
   constructor() {
     this.positions = new PerpsDataChannel<Position[]>({
       connectFn: (push) => {
-        submitRequestToBackground<Position[]>('perpsGetPositions', [])
-          .then((data) => {
-            push(data ?? EMPTY_POSITIONS);
-          })
-          .catch((err) => {
-            console.error(
-              '[PerpsStreamManager] Failed to fetch positions',
-              err,
-            );
-            push(EMPTY_POSITIONS);
-          });
-        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-        return () => {};
+        let cancelled = false;
+        const timer = setTimeout(() => {
+          if (cancelled || this.positions.hasCachedData()) {
+            return;
+          }
+          submitRequestToBackground<Position[]>('perpsGetPositions', [])
+            .then((data) => {
+              if (!cancelled && !this.positions.hasCachedData()) {
+                push(data ?? EMPTY_POSITIONS);
+              }
+            })
+            .catch((err) => {
+              console.error(
+                '[PerpsStreamManager] Failed to fetch positions',
+                err,
+              );
+              if (!cancelled && !this.positions.hasCachedData()) {
+                push(EMPTY_POSITIONS);
+              }
+            });
+        }, WS_GRACE_PERIOD_MS);
+
+        return () => {
+          cancelled = true;
+          clearTimeout(timer);
+        };
       },
       initialValue: EMPTY_POSITIONS,
       name: 'positions',
@@ -134,16 +195,29 @@ class PerpsStreamManager {
 
     this.orders = new PerpsDataChannel<Order[]>({
       connectFn: (push) => {
-        submitRequestToBackground<Order[]>('perpsGetOpenOrders', [])
-          .then((data) => {
-            push(data ?? EMPTY_ORDERS);
-          })
-          .catch((err) => {
-            console.error('[PerpsStreamManager] Failed to fetch orders', err);
-            push(EMPTY_ORDERS);
-          });
-        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-        return () => {};
+        let cancelled = false;
+        const timer = setTimeout(() => {
+          if (cancelled || this.orders.hasCachedData()) {
+            return;
+          }
+          submitRequestToBackground<Order[]>('perpsGetOpenOrders', [])
+            .then((data) => {
+              if (!cancelled && !this.orders.hasCachedData()) {
+                push(data ?? EMPTY_ORDERS);
+              }
+            })
+            .catch((err) => {
+              console.error('[PerpsStreamManager] Failed to fetch orders', err);
+              if (!cancelled && !this.orders.hasCachedData()) {
+                push(EMPTY_ORDERS);
+              }
+            });
+        }, WS_GRACE_PERIOD_MS);
+
+        return () => {
+          cancelled = true;
+          clearTimeout(timer);
+        };
       },
       initialValue: EMPTY_ORDERS,
       name: 'orders',
@@ -151,16 +225,40 @@ class PerpsStreamManager {
 
     this.account = new PerpsDataChannel<AccountState | null>({
       connectFn: (push) => {
-        submitRequestToBackground<AccountState>('perpsGetAccountState', [])
-          .then((data) => {
-            push(data ?? null);
-          })
-          .catch((err) => {
-            console.error('[PerpsStreamManager] Failed to fetch account', err);
-            push(null);
-          });
-        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-        return () => {};
+        let cancelled = false;
+        const timer = setTimeout(() => {
+          if (cancelled || this.account.hasCachedData()) {
+            return;
+          }
+          submitRequestToBackground<AccountState>('perpsGetAccountState', [])
+            .then((data) => {
+              // An empty resolution is not account data either — pushing the
+              // channel's own `null` initialValue notifies subscribers without
+              // setting a cache, which is the same fabricated `$0.00` as the
+              // rejection path below.
+              if (!cancelled && data && !this.account.hasCachedData()) {
+                push(data);
+              }
+            })
+            .catch((err) => {
+              console.error(
+                '[PerpsStreamManager] Failed to fetch account',
+                err,
+              );
+              // Deliberately do NOT push here. `null` is this channel's own
+              // initialValue, so pushing it leaves hasCachedData() false while
+              // still notifying subscribers — usePerpsChannel then clears
+              // isInitialLoading and the balance header renders the failure as
+              // a settled `$0.00`, hiding Withdraw on a funded account. Staying
+              // silent keeps the skeleton up until real data arrives from the
+              // WebSocket or a later fetch.
+            });
+        }, WS_GRACE_PERIOD_MS);
+
+        return () => {
+          cancelled = true;
+          clearTimeout(timer);
+        };
       },
       initialValue: null,
       name: 'account',
@@ -168,19 +266,38 @@ class PerpsStreamManager {
 
     this.markets = new PerpsDataChannel<PerpsMarketData[]>({
       connectFn: (push) => {
-        submitRequestToBackground<PerpsMarketData[]>(
-          'perpsGetMarketDataWithPrices',
-          [],
-        )
-          .then((data) => {
-            push(data ?? EMPTY_MARKETS);
-          })
-          .catch((err) => {
-            console.error('[PerpsStreamManager] Failed to fetch markets', err);
-            push(EMPTY_MARKETS);
-          });
-        // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-        return () => {};
+        let cancelled = false;
+        const timer = setTimeout(() => {
+          if (cancelled || this.markets.hasCachedData()) {
+            return;
+          }
+          submitRequestToBackground<PerpsMarketData[]>(
+            'perpsGetMarketDataWithPrices',
+            [{ useTerminalApi: this._useTerminalApi }],
+          )
+            .then((data) => {
+              if (!cancelled && !this.markets.hasCachedData()) {
+                push(data ?? EMPTY_MARKETS);
+              }
+            })
+            .catch((err) => {
+              if (cancelled) {
+                return;
+              }
+              console.error(
+                '[PerpsStreamManager] Failed to fetch markets',
+                err,
+              );
+              if (!this.markets.hasCachedData()) {
+                push(EMPTY_MARKETS);
+              }
+            });
+        }, WS_GRACE_PERIOD_MS);
+
+        return () => {
+          cancelled = true;
+          clearTimeout(timer);
+        };
       },
       initialValue: EMPTY_MARKETS,
       name: 'markets',
@@ -198,6 +315,19 @@ class PerpsStreamManager {
       name: 'orderBook',
     });
 
+    this.orderBookAggregated = new PerpsDataChannel<OrderBookData | null>({
+      connectFn: placeholderConnectFn,
+      initialValue: null,
+      name: 'orderBookAggregated',
+    });
+
+    this.orderBookAggregatedStatus =
+      new PerpsDataChannel<OrderBookConnectionStatus>({
+        connectFn: placeholderConnectFn,
+        initialValue: 'connecting',
+        name: 'orderBookAggregatedStatus',
+      });
+
     this.fills = new PerpsDataChannel<OrderFill[]>({
       connectFn: placeholderConnectFn,
       initialValue: EMPTY_FILLS,
@@ -205,6 +335,48 @@ class PerpsStreamManager {
     });
 
     this.candles = new CandleStreamChannel();
+  }
+
+  /**
+   * Returns the timestamp of the last background stream update.
+   * Returns 0 if no update has been received yet.
+   */
+  getLastStreamUpdateAt(): number {
+    return this._lastStreamUpdateAt;
+  }
+
+  /**
+   * Register the UI identity for the active aggregated order-book stream.
+   * Call synchronously when a subscription instance starts, and pass `null` on
+   * unmount / teardown so late packets are rejected until the next activation.
+   *
+   * @param subscriptionId - Active instance identity, or `null` when no
+   * aggregated subscription is live.
+   */
+  setActiveOrderBookAggregatedSubscriptionId(
+    subscriptionId: string | null,
+  ): void {
+    this.activeOrderBookAggregatedSubscriptionId = subscriptionId;
+  }
+
+  /**
+   * Update whether REST fallback calls for market data should route through
+   * the MetaMask Terminal API.  Called from the UI layer whenever the
+   * `perpsTerminalBackendEnabled` remote feature flag changes.
+   *
+   * @param enabled - true to pass `useTerminalApi: true` on market REST calls
+   */
+  setUseTerminalApi(enabled: boolean): void {
+    if (this._useTerminalApi === enabled) {
+      return;
+    }
+    this._useTerminalApi = enabled;
+    // The markets channel may already hold data fetched under the previous
+    // mode (direct-provider vs Terminal-enriched). Drop it so the next
+    // subscribe re-fetches through the correct backend instead of serving
+    // stale-mode data — otherwise a false→true flip could leave un-enriched
+    // direct markets cached and suppress the Terminal REST fallback.
+    this.markets.clearCache();
   }
 
   /**
@@ -235,6 +407,13 @@ class PerpsStreamManager {
    */
   clearOptimisticTPSL(symbol: string): void {
     this.optimisticTPSLOverrides.delete(symbol);
+  }
+
+  /**
+   * Clears all optimistic TP/SL overrides (e.g. after closing every position).
+   */
+  clearAllOptimisticTPSL(): void {
+    this.optimisticTPSLOverrides.clear();
   }
 
   /**
@@ -351,8 +530,14 @@ class PerpsStreamManager {
       this.markets.reset();
       this.prices.reset();
       this.orderBook.reset();
+      this.orderBookAggregated.reset();
+      this.orderBookAggregatedStatus.reset();
       this.candles.clearAll();
       this.optimisticTPSLOverrides.clear();
+      this._lastStreamUpdateAt = 0;
+      clearPerpsMarketInfoModuleCache();
+      clearPerpsMarketFillsModuleCache();
+      clearAllCoalescedRequests();
     }
 
     this.initializedAddress = address;
@@ -426,13 +611,16 @@ class PerpsStreamManager {
    * @param payload.data - The raw data payload
    * @param payload.symbol - For candles: the asset symbol
    * @param payload.interval - For candles: the candle period
+   * @param payload.subscriptionId - For aggregated order book: UI identity
    */
   handleBackgroundUpdate(payload: {
     channel: string;
     data: unknown;
     symbol?: string;
     interval?: CandlePeriod;
+    subscriptionId?: string;
   }): void {
+    this._lastStreamUpdateAt = Date.now();
     const { channel, data } = payload;
     switch (channel) {
       case 'positions': {
@@ -464,6 +652,24 @@ class PerpsStreamManager {
       case 'orderBook':
         this.orderBook.pushData(data as OrderBookData);
         break;
+      case 'orderBookAggregated':
+        if (
+          !this.isActiveOrderBookAggregatedSubscription(payload.subscriptionId)
+        ) {
+          return;
+        }
+        this.orderBookAggregated.pushData(data as OrderBookData);
+        break;
+      case 'orderBookAggregatedStatus':
+        if (
+          !this.isActiveOrderBookAggregatedSubscription(payload.subscriptionId)
+        ) {
+          return;
+        }
+        this.orderBookAggregatedStatus.pushData(
+          data as OrderBookConnectionStatus,
+        );
+        break;
       case 'candles': {
         const { symbol, interval } = payload;
         if (symbol && interval) {
@@ -475,9 +681,34 @@ class PerpsStreamManager {
         }
         break;
       }
+      case 'markets':
+        this.markets.pushData(data as PerpsMarketData[]);
+        break;
+      case 'connectionState':
+        break;
       default:
         console.warn('[PerpsStreamManager] Unknown channel:', channel);
     }
+  }
+
+  /**
+   * Whether an aggregated order-book emission matches the UI's active identity.
+   * When no active identity is registered (panel closed / between activations),
+   * every aggregated packet is rejected so a late emission cannot refill the
+   * cache. While a subscription is active, only matching `subscriptionId`s
+   * are accepted.
+   *
+   * @param subscriptionId - Identity tagged on the background emission.
+   * @returns True when the packet may update the aggregated channels.
+   */
+  private isActiveOrderBookAggregatedSubscription(
+    subscriptionId: string | undefined,
+  ): boolean {
+    const activeId = this.activeOrderBookAggregatedSubscriptionId;
+    if (activeId === null) {
+      return false;
+    }
+    return subscriptionId === activeId;
   }
 
   /**
@@ -552,7 +783,14 @@ class PerpsStreamManager {
     this.markets.clearCache();
     this.prices.clearCache();
     this.orderBook.clearCache();
+    this.orderBookAggregated.clearCache();
+    this.orderBookAggregatedStatus.clearCache();
+    this.activeOrderBookAggregatedSubscriptionId = null;
     this.candles.clearAll();
+    this._lastStreamUpdateAt = 0;
+    clearPerpsMarketInfoModuleCache();
+    clearPerpsMarketFillsModuleCache();
+    clearAllCoalescedRequests();
   }
 
   /**
@@ -569,9 +807,73 @@ class PerpsStreamManager {
     this.markets.reset();
     this.prices.reset();
     this.orderBook.reset();
+    this.orderBookAggregated.reset();
+    this.orderBookAggregatedStatus.reset();
     this.candles.clearAll();
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;
+    this._lastStreamUpdateAt = 0;
+    clearPerpsMarketInfoModuleCache();
+    clearPerpsMarketFillsModuleCache();
+    clearAllCoalescedRequests();
+  }
+
+  /**
+   * Seed the per-channel caches from the background controller's persisted
+   * snapshots so a fresh popup mount renders real data on its first frame
+   * instead of a skeleton. Existing cache is left untouched — the first
+   * push from the live stream wins over the persisted snapshot.
+   *
+   * User-scoped channels (positions/orders/account) are only hydrated when
+   * the snapshot's owning address matches the account the manager is being
+   * initialised for, so an account switch while the popup is closed does
+   * not paint the old account's data under the new account's identity.
+   *
+   * Empty arrays intentionally no-op: pushing an empty array would flip
+   * `hasCachedData()` to true (since the pushed reference differs from
+   * `initialValue`) and suppress the WS-grace REST fallback in each
+   * channel's `connectFn`.
+   *
+   * @param snapshot - Controller caches for the active provider + network.
+   * @param snapshot.markets - Cached `PerpsMarketData[]` (provider-scoped).
+   * @param snapshot.positions - Cached positions for `snapshot.address`.
+   * @param snapshot.orders - Cached orders for `snapshot.address`.
+   * @param snapshot.account - Cached `AccountState` for `snapshot.address`.
+   * @param snapshot.address - Address that owns the user-scoped entries. User channels are skipped unless this matches the currently selected address. Pass `null` to hydrate nothing user-scoped.
+   * @param selectedAddress - Address the caller considers active; must equal `snapshot.address` for user channels to hydrate.
+   */
+  hydrateFromControllerCache(
+    snapshot: {
+      markets?: PerpsMarketData[] | null;
+      positions?: Position[] | null;
+      orders?: Order[] | null;
+      account?: AccountState | null;
+      address?: string | null;
+    },
+    selectedAddress?: string | null,
+  ): void {
+    if (snapshot.markets?.length && !this.markets.hasCachedData()) {
+      this.markets.pushData(snapshot.markets);
+    }
+
+    const snapshotAddress = snapshot.address;
+    if (
+      !selectedAddress ||
+      !snapshotAddress ||
+      snapshotAddress.toLowerCase() !== selectedAddress.toLowerCase()
+    ) {
+      return;
+    }
+
+    if (snapshot.positions?.length && !this.positions.hasCachedData()) {
+      this.positions.pushData(snapshot.positions);
+    }
+    if (snapshot.orders?.length && !this.orders.hasCachedData()) {
+      this.orders.pushData(snapshot.orders);
+    }
+    if (snapshot.account && !this.account.hasCachedData()) {
+      this.account.pushData(snapshot.account);
+    }
   }
 }
 

@@ -4,12 +4,12 @@ import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { login } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import DevelopOptions from '../../page-objects/pages/developer-options-page';
+import DeveloperOptionsPage from '../../page-objects/pages/settings/debug-page';
 import {
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
-  MOCK_META_METRICS_ID,
+  MOCK_ANALYTICS_ID,
   MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
 } from '../../constants';
 import { type MockedEndpoint, Mockttp } from '../../mock-e2e';
@@ -60,8 +60,9 @@ describe('Remote feature flag', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -89,7 +90,7 @@ describe('Remote feature flag', function (this: Suite) {
       },
 
       async ({ driver, mockedEndpoint }: TestSuiteArguments) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         // Intended delay to wait for any potential requests to be made
         await driver.delay(5_000);
@@ -110,8 +111,9 @@ describe('Remote feature flag', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         manifestFlags: {
@@ -126,11 +128,12 @@ describe('Remote feature flag', function (this: Suite) {
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToDeveloperOptions();
+        await settingsPage.goToDebugSettings();
 
-        const developOptionsPage = new DevelopOptions(driver);
-        await developOptionsPage.checkPageIsLoaded();
-        await developOptionsPage.validateRemoteFeatureFlagState();
+        // Debug tab embeds the legacy developer-options UI (remote flags, crash, etc.).
+        const developerOptionsPage = new DeveloperOptionsPage(driver);
+        await developerOptionsPage.checkPageIsLoaded();
+        await developerOptionsPage.validateRemoteFeatureFlagState();
       },
     );
   });

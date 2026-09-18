@@ -9,7 +9,7 @@
 }
 
 .bridge-asset {
-  &:hover:not(&--selected) {
+  &:hover:not(&--selected):not(:has(.bridge-asset-info-icon:hover)) {
     background: var(--color-background-default-hover);
   }
 }

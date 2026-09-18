@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -10,6 +10,7 @@ import {
   Display,
   IconColor,
 } from '../../../../../helpers/constants/design-system';
+import { useBoolean } from '../../../../../hooks/useBoolean';
 import { ConfirmInfoRow, ConfirmInfoRowProps } from './row';
 
 export type ConfirmInfoExpandableRowProps = ConfirmInfoRowProps & {
@@ -24,12 +25,8 @@ export const ConfirmInfoExpandableRow = (
 
   const ref = useRef() as React.MutableRefObject<HTMLSpanElement | null>;
 
-  const [expanded, setExpanded] = useState<boolean>(Boolean(startExpanded));
+  const { value: expanded, toggle } = useBoolean(startExpanded);
   const [, setLoaded] = useState<boolean>(false);
-
-  const handleClick = useCallback(() => {
-    setExpanded(!expanded);
-  }, [expanded]);
 
   // Required to force a re-render so the content height can be calculated.
   useEffect(() => {
@@ -49,7 +46,7 @@ export const ConfirmInfoExpandableRow = (
             iconName={IconName.ArrowDown}
             color={IconColor.primaryDefault}
             size={ButtonIconSize.Sm}
-            onClick={handleClick}
+            onClick={toggle}
             ariaLabel="expand"
           />
           {children}

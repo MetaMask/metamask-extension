@@ -1,7 +1,7 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import type { UserHistoryItem } from '@metamask/perps-controller';
 import { useUserHistory } from './useUserHistory';
+import { resetCoalesceCacheForTests } from './coalesceBackgroundRequest';
 
 const mockSubmitRequestToBackground = jest.fn();
 
@@ -10,9 +10,14 @@ jest.mock('../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('./usePerpsCacheKey', () => ({
+  usePerpsCacheKey: () => 'test-scope',
+}));
+
 describe('useUserHistory', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetCoalesceCacheForTests();
     mockSubmitRequestToBackground.mockResolvedValue([]);
   });
 

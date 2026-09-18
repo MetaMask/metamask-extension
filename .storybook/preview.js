@@ -9,7 +9,7 @@ import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
-import { I18nProvider, LegacyI18nProvider } from './i18n';
+import { I18nProvider } from './i18n';
 import testData from './test-data.js';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { setBackgroundConnection } from '../ui/store/background-connection';
@@ -21,17 +21,15 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 });
 
-// eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 
 export const parameters = {
   backgrounds: {
-    default: 'default',
-    values: [
-      { name: 'default', value: 'var(--color-background-default)' },
-      { name: 'alternative', value: 'var(--color-background-alternative)' },
-    ],
+    options: {
+      default: { name: 'default', value: 'var(--color-background-default)' },
+      alternative: { name: 'alternative', value: 'var(--color-background-alternative)' }
+    }
   },
   options: {
     storySort: {
@@ -142,11 +140,9 @@ const metamaskDecorator = (story, context) => {
               current={current}
               en={allLocales.en}
             >
-              <LegacyI18nProvider>
-                <Routes>
-                  <Route path={path} element={<StoryComponent />} />
-                </Routes>
-              </LegacyI18nProvider>
+              <Routes>
+                <Route path={path} element={<StoryComponent />} />
+              </Routes>
             </I18nProvider>
           </AlertMetricsProvider>
         </MemoryRouter>
@@ -206,3 +202,9 @@ const withColorScheme = (Story, context) => {
 };
 
 export const decorators = [metamaskDecorator, withColorScheme];
+
+export const initialGlobals = {
+  backgrounds: {
+    value: 'default',
+  },
+};

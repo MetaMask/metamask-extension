@@ -11,8 +11,8 @@ import {
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
-import { completeOnboardFlowIdentity } from '../flows';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import { completeOnboardFlowIdentity } from '../../../page-objects/flows/identity.flow';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 
 import { skipOnFirefox } from '../helpers';

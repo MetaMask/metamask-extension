@@ -9,18 +9,6 @@ export class HomePage {
 
   private readonly sendButton: Locator;
 
-  private readonly networkPicker: Locator;
-
-  private readonly networkPickerLabel: Locator;
-
-  private readonly networkSubtitle: Locator;
-
-  private readonly networkDisplay: Locator;
-
-  private readonly addressCopyButton: Locator;
-
-  private readonly selectedAccountAddress: Locator;
-
   private readonly ethPrimaryCurrency: Locator;
 
   private readonly ethSecondaryCurrency: Locator;
@@ -37,22 +25,6 @@ export class HomePage {
       '[data-testid="account-options-menu-button"]',
     );
     this.sendButton = page.locator('[data-testid="coin-overview-send"]');
-
-    this.networkPicker = page.locator('.mm-picker-network');
-    this.networkPickerLabel = page.locator(
-      '[data-testid="picker-network-label"]',
-    );
-    this.networkSubtitle = page.locator(
-      '[data-testid="networks-subtitle-test-id"]',
-    );
-    this.networkDisplay = page.locator('[data-testid="network-display"]');
-
-    this.addressCopyButton = page.locator(
-      '[data-testid="address-copy-button-text"]',
-    );
-    this.selectedAccountAddress = page.locator(
-      '[data-testid="selected-account-address"]',
-    );
 
     this.ethPrimaryCurrency = page.locator(
       '[data-testid="eth-overview__primary-currency"]',
@@ -116,110 +88,6 @@ export class HomePage {
       }
       if (coinPrimary) {
         return coinPrimary.trim();
-      }
-
-      return '';
-    } catch {
-      return '';
-    }
-  }
-
-  /**
-   * Returns network name using fallback chain:
-   * networkPickerLabel → networkSubtitle → networkDisplay → networkPicker aria-label
-   */
-  async getNetworkName(): Promise<string> {
-    try {
-      if (
-        await this.networkPickerLabel
-          .isVisible({ timeout: 1500 })
-          .catch(() => false)
-      ) {
-        const text = await this.networkPickerLabel.textContent();
-        if (text?.trim()) {
-          return text.trim();
-        }
-      }
-
-      if (
-        await this.networkSubtitle
-          .isVisible({ timeout: 1500 })
-          .catch(() => false)
-      ) {
-        const text = await this.networkSubtitle.textContent();
-        if (text?.trim()) {
-          return text.trim();
-        }
-      }
-
-      if (
-        await this.networkDisplay
-          .isVisible({ timeout: 1500 })
-          .catch(() => false)
-      ) {
-        const text = await this.networkDisplay.textContent();
-        if (text?.trim()) {
-          return text.trim();
-        }
-      }
-
-      if (
-        await this.networkPicker.isVisible({ timeout: 1500 }).catch(() => false)
-      ) {
-        const ariaLabel = await this.networkPicker.getAttribute('aria-label');
-        if (ariaLabel?.trim()) {
-          return ariaLabel.trim();
-        }
-
-        const innerText = await this.networkPicker.innerText();
-        if (innerText?.trim()) {
-          return innerText.trim();
-        }
-      }
-
-      return '';
-    } catch {
-      return '';
-    }
-  }
-
-  /**
-   * Returns account address. May return shortened address depending on UI state.
-   * Falls back: addressCopyButton (title/data-address/text) → selectedAccountAddress
-   */
-  async getAccountAddress(): Promise<string> {
-    try {
-      if (
-        await this.addressCopyButton
-          .isVisible({ timeout: 2000 })
-          .catch(() => false)
-      ) {
-        const title = await this.addressCopyButton.getAttribute('title');
-        if (title?.startsWith('0x')) {
-          return title;
-        }
-
-        const dataAddress =
-          await this.addressCopyButton.getAttribute('data-address');
-        if (dataAddress?.startsWith('0x')) {
-          return dataAddress;
-        }
-
-        const text = await this.addressCopyButton.textContent();
-        if (text?.trim()) {
-          return text.trim();
-        }
-      }
-
-      if (
-        await this.selectedAccountAddress
-          .isVisible({ timeout: 2000 })
-          .catch(() => false)
-      ) {
-        const text = await this.selectedAccountAddress.textContent();
-        if (text?.trim()) {
-          return text.trim();
-        }
       }
 
       return '';

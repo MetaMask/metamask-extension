@@ -1,19 +1,19 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import ActivityList from '../../page-objects/pages/home/activity-list';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 describe('Clear account activity', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // When user get stuck with pending transactions, one can reset the account by clicking the 'Clear activity tab data' //
-  // button in settings, advanced tab. This functionality will clear all the transactions history.                      //
+  // button in settings, developer tools tab. This functionality will clear all the transactions history.               //
   // Note that it only only affects the current network.                                                                //
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  it('User can clear account activity via the advanced setting tab, ', async function () {
+  it('User can clear account activity via the developer tools tab, ', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -27,23 +27,24 @@ describe('Clear account activity', function (this: Suite) {
         // Check local "Sent" transaction history is displayed
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityList = new ActivityList(driver);
-        await activityList.checkTxAction({
-          action: 'Sent',
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAction({
+          action: 'Sent ETH',
           confirmedTx: 1,
         });
 
         // Clear activity and nonce data
+        await homePage.goToHomePage();
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettings = new AdvancedSettings(driver);
-        await advancedSettings.checkPageIsLoaded();
-        await advancedSettings.clearActivityTabData();
-        await settingsPage.closeSettingsPage();
+        await settingsPage.goToDeveloperOptions();
+        await settingsPage.clickDeveloperOptionsDeleteActivityAndNonceData();
+        await settingsPage.confirmDeleteActivityAndNonceModal();
+        await closeSettings(driver);
 
-        await activityList.checkNoTxInActivity();
+        await homePage.goToActivityList();
+        await activityTab.checkNoTxInActivity();
       },
     );
   });

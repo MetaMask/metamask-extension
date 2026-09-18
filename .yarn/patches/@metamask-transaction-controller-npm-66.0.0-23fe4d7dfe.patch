@@ -1,0 +1,24 @@
+diff --git a/dist/hooks/ExtraTransactionsPublishHook.cjs b/dist/hooks/ExtraTransactionsPublishHook.cjs
+index e182a81d3096512ec8726e31dea9465fca60f861..0e0301e037d9fc7ccf1cf9c2b0404e8c7327d62d 100644
+--- a/dist/hooks/ExtraTransactionsPublishHook.cjs
++++ b/dist/hooks/ExtraTransactionsPublishHook.cjs
+@@ -115,6 +115,7 @@ _ExtraTransactionsPublishHook_addTransactionBatch = new WeakMap(), _ExtraTransac
+     };
+     await __classPrivateFieldGet(this, _ExtraTransactionsPublishHook_addTransactionBatch, "f").call(this, {
+         from,
++        isInternal: true,
+         networkClientId,
+         requireApproval: false,
+         transactions,
+diff --git a/dist/hooks/ExtraTransactionsPublishHook.mjs b/dist/hooks/ExtraTransactionsPublishHook.mjs
+index 67d39aa5786e0d89ca851e07f30c8eeefe556724..3b0927b1eb0f634bf780bc221fd0ff8c5768c51e 100644
+--- a/dist/hooks/ExtraTransactionsPublishHook.mjs
++++ b/dist/hooks/ExtraTransactionsPublishHook.mjs
+@@ -111,6 +111,7 @@ _ExtraTransactionsPublishHook_addTransactionBatch = new WeakMap(), _ExtraTransac
+     };
+     await __classPrivateFieldGet(this, _ExtraTransactionsPublishHook_addTransactionBatch, "f").call(this, {
+         from,
++        isInternal: true,
+         networkClientId,
+         requireApproval: false,
+         transactions,

@@ -1,23 +1,20 @@
-import React, { useCallback, useRef, useState, type ReactNode } from 'react';
+import React, { useCallback, useState, type ReactNode } from 'react';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconColor,
   IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
-  Icon,
-  IconName as LegacyIconName,
-  IconSize,
   Popover,
   PopoverPosition,
 } from '../../../../components/component-library';
-import { IconColor as LegacyIconColor } from '../../../../helpers/constants/design-system';
 
 const POPOVER_STYLE = {
   zIndex: 3,
-  backgroundColor: 'var(--color-text-default)',
   paddingTop: '6px',
   paddingBottom: '6px',
   paddingLeft: '16px',
@@ -28,9 +25,10 @@ const POPOVER_STYLE = {
 type InfoPopoverTooltipProps = {
   children: ReactNode;
   position?: PopoverPosition;
+  offset?: [number, number];
   iconName?: IconName;
   iconSize?: ButtonIconSize;
-  iconColor?: IconColor | LegacyIconColor | string;
+  iconColor?: IconColor | string;
   iconMarginLeft?: number;
   /**
    * When true, renders a plain Icon instead of a ButtonIcon so the trigger
@@ -46,6 +44,7 @@ type InfoPopoverTooltipProps = {
 export function InfoPopoverTooltip({
   children,
   position = PopoverPosition.BottomEnd,
+  offset,
   iconName = IconName.Info,
   iconSize = ButtonIconSize.Md,
   iconColor,
@@ -55,7 +54,16 @@ export function InfoPopoverTooltip({
   'data-testid': dataTestId,
 }: Readonly<InfoPopoverTooltipProps>) {
   const [isOpen, setIsOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement & HTMLDivElement>(null);
+  const [referenceElement, setReferenceElement] = useState<
+    (HTMLButtonElement & HTMLDivElement) | null
+  >(null);
+
+  const setTriggerRef = useCallback(
+    (node: (HTMLButtonElement & HTMLDivElement) | null) => {
+      setReferenceElement(node);
+    },
+    [],
+  );
 
   const handleToggle = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -73,7 +81,7 @@ export function InfoPopoverTooltip({
     <Box>
       {plainIcon ? (
         <button
-          ref={triggerRef as React.Ref<HTMLButtonElement>}
+          ref={setTriggerRef}
           type="button"
           aria-label={ariaLabel ?? 'info'}
           onClick={handleToggle}
@@ -88,14 +96,14 @@ export function InfoPopoverTooltip({
           }}
         >
           <Icon
-            name={iconName as unknown as LegacyIconName}
+            name={iconName}
             size={IconSize.Sm}
-            color={iconColor as LegacyIconColor}
+            color={iconColor as IconColor}
           />
         </button>
       ) : (
         <ButtonIcon
-          ref={triggerRef as React.Ref<HTMLButtonElement>}
+          ref={setTriggerRef}
           ariaLabel={ariaLabel ?? 'info'}
           iconName={iconName}
           size={iconSize}
@@ -108,8 +116,11 @@ export function InfoPopoverTooltip({
       <Popover
         isOpen={isOpen}
         position={position}
-        referenceElement={triggerRef.current}
+        referenceElement={referenceElement}
         hasArrow
+        flip
+        preventOverflow
+        offset={offset}
         onPressEscKey={handleClose}
         onClickOutside={handleClose}
         isPortal

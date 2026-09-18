@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RampsQuoteDisplay matches snapshot when empty 1`] = `<div />`;
+
+exports[`RampsQuoteDisplay matches snapshot while loading 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-1 items-end"
+    data-testid="ramps-quote-display-loading"
+  >
+    <div
+      aria-hidden="true"
+      class="relative overflow-hidden rounded"
+      style="height: 16px; width: 80px;"
+    >
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+      />
+    </div>
+    <div
+      aria-hidden="true"
+      class="relative overflow-hidden rounded"
+      style="height: 16px; width: 60px;"
+    >
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 rounded bg-icon-alternative motion-safe:animate-skeleton-pulse"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsQuoteDisplay matches snapshot with crypto and fiat amounts 1`] = `
+<div>
+  <div
+    class="flex flex-col items-end"
+    data-testid="ramps-quote-display"
+  >
+    <p
+      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+    >
+      0.10596 ETH
+    </p>
+    <p
+      class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+    >
+      $499.97
+    </p>
+  </div>
+</div>
+`;
+
+exports[`RampsQuoteDisplay matches snapshot with warning icon 1`] = `
+<div>
+  <div
+    class="flex flex-col items-end justify-center"
+    data-testid="ramps-quote-display-warning"
+  >
+    <svg
+      class="inline-block w-4 h-4 text-warning-default"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m-.75-7.5V7.5a.75.75 0 0 1 1.5 0v5.25a.75.75 0 0 1-1.5 0m1.875 3.375A1.125 1.125 0 1 1 12 15a1.125 1.125 0 0 1 1.125 1.125"
+      />
+    </svg>
+  </div>
+</div>
+`;

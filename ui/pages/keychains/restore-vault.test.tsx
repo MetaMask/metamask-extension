@@ -2,12 +2,31 @@ import React from 'react';
 import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { userEvent } from '@testing-library/user-event';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
 import * as actions from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  getIsPasskeyFeatureAvailable,
+  getIsSocialLoginFlow,
+} from '../../selectors';
 import RestoreVaultPage from './restore-vault';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 
@@ -16,14 +35,59 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
+jest.mock('../../selectors', () => ({
+  ...jest.requireActual('../../selectors'),
+  getIsPasskeyFeatureAvailable: jest.fn(),
+  getIsSocialLoginFlow: jest.fn(),
+}));
+
+jest.mock('../../../shared/lib/passkey', () => ({
+  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
+    '../../../shared/lib/passkey',
+  ),
+  isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
+}));
+
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+
+async function enterSrpAndContinue(
+  queryByTestId: (id: string) => HTMLElement | null,
+) {
+  const srpNote = queryByTestId('srp-input-import__srp-note');
+  expect(srpNote).toBeInTheDocument();
+
+  await act(async () => {
+    fireEvent.paste(srpNote as HTMLElement, {
+      clipboardData: { getData: () => TEST_SEED },
+    });
+  });
+
+  const confirmSrpButton = queryByTestId('import-srp-confirm');
+  expect(confirmSrpButton).not.toBeDisabled();
+
+  await act(async () => {
+    fireEvent.click(confirmSrpButton as HTMLElement);
+  });
+
+  await waitFor(() => {
+    expect(
+      queryByTestId('parent-selector-onboarding-password'),
+    ).toBeInTheDocument();
+  });
+}
 
 describe('Restore vault Component', () => {
   const mockStore = configureMockStore([thunk]);
 
   beforeEach(() => {
     mockUseNavigate.mockClear();
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(false);
+    jest.mocked(getIsSocialLoginFlow).mockReturnValue(false);
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   it('renders match snapshot', () => {
@@ -47,20 +111,7 @@ describe('Restore vault Component', () => {
       }) as ReturnType<typeof mockStore>,
     );
 
-    const srpNote = queryByTestId('srp-input-import__srp-note');
-    expect(srpNote).toBeInTheDocument();
-
-    (srpNote as HTMLElement).focus();
-
-    await userEvent.paste(TEST_SEED);
-
-    const confirmSrpButton = queryByTestId('import-srp-confirm');
-
-    expect(confirmSrpButton).not.toBeDisabled();
-
-    fireEvent.click(confirmSrpButton as HTMLElement);
-
-    expect(queryByTestId('create-password')).toBeInTheDocument();
+    await enterSrpAndContinue(queryByTestId);
   });
 
   it('should call handleImport when password is submitted', async () => {
@@ -109,23 +160,7 @@ describe('Restore vault Component', () => {
       testStore,
     );
 
-    const srpNote = queryByTestId('srp-input-import__srp-note');
-    expect(srpNote).toBeInTheDocument();
-
-    (srpNote as HTMLElement).focus();
-
-    await userEvent.paste(TEST_SEED);
-
-    const confirmSrpButton = queryByTestId('import-srp-confirm');
-
-    expect(confirmSrpButton).not.toBeDisabled();
-
-    fireEvent.click(confirmSrpButton as HTMLElement);
-
-    // Wait for the password form to appear
-    await waitFor(() => {
-      expect(queryByTestId('create-password')).toBeInTheDocument();
-    });
+    await enterSrpAndContinue(queryByTestId);
 
     const createPasswordInput = queryByTestId('create-password-new-input');
     const confirmPasswordInput = queryByTestId('create-password-confirm-input');
@@ -152,7 +187,9 @@ describe('Restore vault Component', () => {
     const terms = queryByTestId('create-password-terms');
     fireEvent.click(terms as HTMLElement);
 
-    const createPasswordForm = queryByTestId('create-password');
+    const createPasswordForm = queryByTestId(
+      'parent-selector-onboarding-password',
+    );
     const createNewWalletButton = queryByTestId('create-password-submit');
 
     // Wait for the button to be enabled (password validation is async)
@@ -160,8 +197,9 @@ describe('Restore vault Component', () => {
       expect(createNewWalletButton).not.toBeDisabled();
     });
 
-    // Submit the form directly
-    fireEvent.submit(createPasswordForm as HTMLElement);
+    await act(async () => {
+      fireEvent.submit(createPasswordForm as HTMLElement);
+    });
 
     // Wait for the async action to be called
     await waitFor(() => {
@@ -174,13 +212,99 @@ describe('Restore vault Component', () => {
       true,
     );
 
-    // Restore the stubs
-    (actions.unMarkPasswordForgotten as sinon.SinonStub).restore();
-    (actions.createNewVaultAndRestore as sinon.SinonStub).restore();
-    (actions.setFirstTimeFlowType as sinon.SinonStub).restore();
-    (actions.resetWallet as sinon.SinonStub).restore();
-
     // Verify navigation to default route
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
+  });
+
+  it('renders passkey setup inline after restoring when passkeys are available', async () => {
+    jest.mocked(getIsPasskeyFeatureAvailable).mockReturnValue(true);
+
+    const mockCreateNewVaultAndRestore = sinon.stub().resolves();
+    const mockSetFirstTimeFlowType = sinon.stub().resolves();
+    const mockUnMarkPasswordForgotten = sinon.stub().returns({ type: 'MOCK' });
+    const mockResetWallet = sinon.stub().resolves();
+
+    const testStore = mockStore({
+      metamask: { currentLocale: 'en' },
+      appState: { isLoading: false },
+    });
+
+    sinon
+      .stub(actions, 'unMarkPasswordForgotten')
+      .returns(
+        mockUnMarkPasswordForgotten as ReturnType<
+          typeof actions.unMarkPasswordForgotten
+        >,
+      );
+    sinon.stub(actions, 'createNewVaultAndRestore').callsFake(((
+      pw: string,
+      seed: string,
+    ) => {
+      return () => {
+        mockCreateNewVaultAndRestore(pw, seed);
+        return Promise.resolve();
+      };
+    }) as typeof actions.createNewVaultAndRestore);
+    sinon.stub(actions, 'setFirstTimeFlowType').callsFake(((type) => {
+      return () => {
+        mockSetFirstTimeFlowType(type);
+        return Promise.resolve();
+      };
+    }) as typeof actions.setFirstTimeFlowType);
+    sinon.stub(actions, 'resetWallet').callsFake(((restoreOnly?: boolean) => {
+      return () => {
+        mockResetWallet(restoreOnly);
+        return Promise.resolve();
+      };
+    }) as typeof actions.resetWallet);
+
+    const messenger = createMockRouteMessenger();
+    const { queryByTestId } = renderWithProvider(
+      <RestoreVaultPage />,
+      testStore,
+      '/',
+      undefined,
+      undefined,
+      undefined,
+      messenger,
+    );
+
+    await enterSrpAndContinue(queryByTestId);
+
+    fireEvent.change(
+      queryByTestId('create-password-new-input') as HTMLElement,
+      {
+        target: { value: '12345678' },
+      },
+    );
+    fireEvent.change(
+      queryByTestId('create-password-confirm-input') as HTMLElement,
+      {
+        target: { value: '12345678' },
+      },
+    );
+
+    fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+    await act(async () => {
+      fireEvent.submit(
+        queryByTestId('parent-selector-onboarding-password') as HTMLElement,
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockCreateNewVaultAndRestore.calledOnce).toBe(true);
+    });
+
+    await waitFor(() => {
+      expect(queryByTestId('passkey-set-up-button')).toBeInTheDocument();
+    });
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+
+    fireEvent.click(queryByTestId('passkey-maybe-later-button') as HTMLElement);
+
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
       replace: true,
     });

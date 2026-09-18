@@ -34,11 +34,14 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
-  updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   createTransactionEventFragment: jest.fn(),
   createSpeedUpTransaction: jest.fn(() => ({ type: 'SPEED_UP_TRANSACTION' })),
   createCancelTransaction: jest.fn(() => ({ type: 'CANCEL_TRANSACTION' })),
+}));
+
+jest.mock('../../../store/actions/update-transaction-gas-fees', () => ({
+  updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
 }));
 
 jest.mock('../../../contexts/transaction-modal', () => ({
@@ -124,7 +127,10 @@ describe('CancelSpeedup Component', () => {
     gas?: string;
     gasLimitNoBuffer?: string;
     gasFeeEstimates?: (typeof mockEstimates)[GasEstimateTypes.feeMarket]['gasFeeEstimates'];
+    balance?: string;
   };
+
+  const BALANCE_ONE_ETH = '0xDE0B6B3A7640000';
 
   const render = (
     props: Partial<React.ComponentProps<typeof CancelSpeedup>> = {},
@@ -141,6 +147,7 @@ describe('CancelSpeedup Component', () => {
       gasLimitNoBuffer,
       gasFeeEstimates = mockEstimates[GasEstimateTypes.feeMarket]
         .gasFeeEstimates,
+      balance = BALANCE_ONE_ETH,
     } = opts;
 
     const store = configureStore({
@@ -153,7 +160,14 @@ describe('CancelSpeedup Component', () => {
         accounts: {
           [mockSelectedInternalAccount.address]: {
             address: mockSelectedInternalAccount.address,
-            balance: '0x1F4',
+            balance,
+          },
+        },
+        accountsByChainId: {
+          ...mockState.metamask.accountsByChainId,
+          '0x5': {
+            ...mockState.metamask.accountsByChainId['0x5'],
+            [mockSelectedInternalAccount.address]: { balance },
           },
         },
         preferences: {
@@ -204,6 +218,60 @@ describe('CancelSpeedup Component', () => {
 
     const { container } = render();
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders loading skeleton when previousGas is not set', async () => {
+    const transactionWithoutPreviousGas = {
+      ...mockTransaction,
+      previousGas: undefined,
+    } as unknown as TransactionMeta;
+
+    const store = configureStore({
+      appState: { isLoading: false },
+      metamask: {
+        ...mockState.metamask,
+        isInitialized: true,
+        accounts: {
+          [mockSelectedInternalAccount.address]: {
+            address: mockSelectedInternalAccount.address,
+            balance: BALANCE_ONE_ETH,
+          },
+        },
+        preferences: { showFiatInTestnets: true },
+        featureFlags: { advancedInlineGas: true },
+        gasFeeEstimates:
+          mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        gasFeeEstimatesByChainId: {
+          ...mockState.metamask.gasFeeEstimatesByChainId,
+          '0x5': {
+            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+            gasFeeEstimates:
+              mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+          },
+        },
+      },
+    });
+
+    renderWithProvider(
+      <CancelSpeedup
+        transaction={transactionWithoutPreviousGas}
+        editGasMode={EditGasModes.cancel}
+      />,
+      store,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-section-loading'),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByTestId('cancel-speedup-section'),
+    ).not.toBeInTheDocument();
+
+    const confirmButton = screen.getByTestId('cancel-speedup-confirm-button');
+    expect(confirmButton).toBeDisabled();
   });
 
   it('renders correctly in Speed Up mode', async () => {
@@ -274,6 +342,77 @@ describe('CancelSpeedup Component', () => {
     });
   });
 
+  it('renders error toast when cancelTransaction rejects', async () => {
+    (createCancelTransaction as jest.Mock).mockImplementation(
+      () => () =>
+        Promise.reject(new Error('Previous transaction is already confirmed')),
+    );
+
+    render({ editGasMode: EditGasModes.cancel });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
+
+    (useTransactionModalContext as jest.Mock).mockReturnValue({
+      currentModal: 'none',
+      closeModal: mockCloseModal,
+      openModal: mockOpenModal,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-error-toast'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelTransactionFailed') as string),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          tEn('cancelSpeedupAlreadyConfirmedDescription') as string,
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('renders error toast when speedUpTransaction rejects', async () => {
+    (createSpeedUpTransaction as jest.Mock).mockImplementation(
+      () => () => Promise.reject(new Error('gas estimation failed')),
+    );
+
+    render({ editGasMode: EditGasModes.speedUp });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
+
+    (useTransactionModalContext as jest.Mock).mockReturnValue({
+      currentModal: 'none',
+      closeModal: mockCloseModal,
+      openModal: mockOpenModal,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-error-toast'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('speedUpTransactionFailed') as string),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelSpeedupFailedDescription') as string),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('opens the edit gas modal when the edit icon is clicked', async () => {
     render({ editGasMode: EditGasModes.speedUp });
 
@@ -321,6 +460,42 @@ describe('CancelSpeedup Component', () => {
       const row = screen.getByTestId('edit-gas-fees-row');
       expect(row).toHaveTextContent('ETH');
       expect(row).toHaveTextContent(EXPECTED_ETH_FEE_MEDIUM);
+    });
+  });
+
+  describe('insufficient balance validation', () => {
+    it('disables the confirm button and relabels it to insufficient funds when the balance cannot cover the gas fee in cancel mode', async () => {
+      render({ editGasMode: EditGasModes.cancel }, { balance: '0x1F4' });
+
+      const confirmButton = await screen.findByTestId(
+        'cancel-speedup-confirm-button',
+      );
+      expect(confirmButton).toBeDisabled();
+      expect(confirmButton).toHaveTextContent(
+        tEn('insufficientFundsSend') as string,
+      );
+    });
+
+    it('keeps the confirm button enabled and labelled "Confirm" when the balance covers the gas fee', async () => {
+      render({ editGasMode: EditGasModes.cancel });
+
+      const confirmButton = await screen.findByTestId(
+        'cancel-speedup-confirm-button',
+      );
+      expect(confirmButton).not.toBeDisabled();
+      expect(confirmButton).toHaveTextContent(tEn('confirm') as string);
+    });
+
+    it('disables the confirm button and relabels it to insufficient funds in speed up mode too when the balance is insufficient', async () => {
+      render({ editGasMode: EditGasModes.speedUp }, { balance: '0x1F4' });
+
+      const confirmButton = await screen.findByTestId(
+        'cancel-speedup-confirm-button',
+      );
+      expect(confirmButton).toBeDisabled();
+      expect(confirmButton).toHaveTextContent(
+        tEn('insufficientFundsSend') as string,
+      );
     });
   });
 });

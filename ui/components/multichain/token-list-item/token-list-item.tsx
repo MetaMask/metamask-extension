@@ -1,10 +1,29 @@
-import React, { useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import { type KeyringAccountType } from '@metamask/keyring-api';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  Button,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonVariant,
+  IconColor,
+  IconName,
+  Tag,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  ModalContent,
+} from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   AlignItems,
   BackgroundColor,
@@ -12,7 +31,6 @@ import {
   Display,
   FlexDirection,
   FontWeight,
-  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -21,24 +39,10 @@ import {
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
   BadgeWrapper,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonSecondary,
-  IconName,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   SensitiveText,
   SensitiveTextLength,
-  Tag,
   Text,
 } from '../../component-library';
 import { MarketClosedModal } from '../../app/assets/market-closed-modal';
@@ -48,7 +52,6 @@ import { getMarketData, getCurrencyRates } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -64,8 +67,33 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/select
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
 import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { TokenWithFiatAmount } from '../../app/assets/types';
+import { useDispatch } from '../../../store/hooks';
+import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
+
+type MarketDataMap = ReturnType<typeof getMarketData>;
+type CurrencyRatesMap = ReturnType<typeof getCurrencyRates>;
+type NetworkConfigurationsMap = ReturnType<
+  typeof getNetworkConfigurationsByChainId
+>;
+
+// Stable empty fallback objects returned by the "no-op" selectors below so
+// that useSelector never triggers a re-render when the value has not changed.
+const EMPTY_MARKET_DATA: MarketDataMap = {};
+const EMPTY_CURRENCY_RATES: CurrencyRatesMap = {};
+const EMPTY_NETWORK_CONFIGURATIONS: NetworkConfigurationsMap = {};
+
+// Stable selector references for when the parent already provides the data as
+// props. Using these instead of the real selectors prevents the component from
+// subscribing to those Redux slices, eliminating redundant per-row subscriptions.
+// They are typed as the same selector type so useMemo can return a single type
+// that useSelector can infer without unsafe casts.
+const selectEmptyMarketData: typeof getMarketData = () => EMPTY_MARKET_DATA;
+const selectEmptyCurrencyRates: typeof getCurrencyRates = () =>
+  EMPTY_CURRENCY_RATES;
+const selectEmptyNetworkConfigurations: typeof getNetworkConfigurationsByChainId =
+  () => EMPTY_NETWORK_CONFIGURATIONS;
 
 type TokenListItemProps = {
   className?: string;
@@ -89,6 +117,21 @@ type TokenListItemProps = {
   isDestinationToken?: boolean;
   accountType?: KeyringAccountType;
   rwaData?: TokenWithFiatAmount['rwaData'];
+  /**
+   * Pre-fetched market data from parent. When provided, avoids a per-row
+   * Redux subscription to `getMarketData`.
+   */
+  marketData?: MarketDataMap;
+  /**
+   * Pre-fetched currency rates from parent. When provided, avoids a per-row
+   * Redux subscription to `getCurrencyRates`.
+   */
+  currencyRates?: CurrencyRatesMap;
+  /**
+   * Pre-fetched network configurations from parent. When provided, avoids a
+   * per-row Redux subscription to `getNetworkConfigurationsByChainId`.
+   */
+  networkConfigurations?: NetworkConfigurationsMap;
 };
 
 export const TokenListItemComponent = ({
@@ -113,12 +156,61 @@ export const TokenListItemComponent = ({
   nativeCurrencySymbol,
   isDestinationToken = false,
   rwaData,
+  marketData: marketDataProp,
+  currencyRates: currencyRatesProp,
+  networkConfigurations: networkConfigurationsProp,
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const currencyRates = useSelector(getCurrencyRates);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const noFeeAssets = useSelector((state) => selectNoFeeAssets(state, chainId));
+
+  // When the parent passes these props it has already read the selectors once
+  // for the whole list. Switch to a no-op selector so this row does not create
+  // an independent Redux subscription for shared global data.
+  //
+  // Why boolean flags instead of listing the props as useMemo deps directly:
+  // The props are object references that change on every render of the parent,
+  // so including them in the dep array would defeat the purpose. We only want
+  // to recompute when the prop transitions between defined and undefined.
+  // A boolean flag captures exactly that signal without referencing the prop
+  // object, satisfying react-hooks/exhaustive-deps without needing an eslint-
+  // disable comment (which would prevent React Compiler from optimising this
+  // component).
+  const isMarketDataPropProvided = marketDataProp !== undefined;
+  const isCurrencyRatesPropProvided = currencyRatesProp !== undefined;
+  const isNetworkConfigurationsPropProvided =
+    networkConfigurationsProp !== undefined;
+
+  const marketDataSelector = useMemo(
+    () => (isMarketDataPropProvided ? selectEmptyMarketData : getMarketData),
+    [isMarketDataPropProvided],
+  );
+  const currencyRatesSelector = useMemo(
+    () =>
+      isCurrencyRatesPropProvided ? selectEmptyCurrencyRates : getCurrencyRates,
+    [isCurrencyRatesPropProvided],
+  );
+  const networkConfigurationsSelector = useMemo(
+    () =>
+      isNetworkConfigurationsPropProvided
+        ? selectEmptyNetworkConfigurations
+        : getNetworkConfigurationsByChainId,
+    [isNetworkConfigurationsPropProvided],
+  );
+
+  const marketDataFromStore = useSelector(marketDataSelector);
+  const currencyRatesFromStore = useSelector(currencyRatesSelector);
+  const networkConfigurationsFromStore = useSelector(
+    networkConfigurationsSelector,
+  );
+
+  // Prefer lifted props; fall back to store values for callers that have not
+  // been updated to pass these props.
+  const multiChainMarketData = marketDataProp ?? marketDataFromStore;
+  const currencyRates = currencyRatesProp ?? currencyRatesFromStore;
+  const allNetworks =
+    networkConfigurationsProp ?? networkConfigurationsFromStore;
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
@@ -157,8 +249,6 @@ export const TokenListItemComponent = ({
     }
   };
 
-  const multiChainMarketData = useSelector(getMarketData);
-
   const tokenPercentageChange = address
     ? multiChainMarketData?.[chainId as Hex]?.[address as Hex]
         ?.pricePercentChange1d
@@ -176,13 +266,10 @@ export const TokenListItemComponent = ({
   const rwaToken = { rwaData };
   const isRWAToken = checkIsStockToken(rwaToken);
 
-  // Used for badge icon
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  // Used for badge icon (resolved from props or Redux store above)
 
   return (
     <Box
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       className={classnames('multichain-token-list-item', className || {})}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -222,20 +309,21 @@ export const TokenListItemComponent = ({
             }
 
             onClick();
-            trackEvent({
-              category: MetaMetricsEventCategory.Tokens,
-              event: MetaMetricsEventName.TokenDetailsOpened,
-              properties: {
-                location: 'Home',
-                // FIXME: This might not be a number for non-EVM accounts
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id: chainId,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                token_symbol: tokenSymbol,
-              },
-            });
+            trackEvent(
+              createEventBuilder(MetaMetricsEventName.TokenDetailsOpened)
+                .addCategory(MetaMetricsEventCategory.Tokens)
+                .addProperties({
+                  location: 'Home',
+                  // FIXME: This might not be a number for non-EVM accounts
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: chainId,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_symbol: tokenSymbol,
+                })
+                .build(),
+            );
           },
         })}
       >
@@ -244,12 +332,9 @@ export const TokenListItemComponent = ({
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               src={tokenChainImage || undefined}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              borderWidth={2}
-              className="multichain-token-list-item__badge__avatar-network"
+              className="multichain-token-list-item__badge__avatar-network rounded-md bg-background-default border-2 border-background-default"
+              style={getAvatarNetworkStyle(allNetworks?.[chainId as Hex]?.name)}
             />
           }
           marginRight={4}
@@ -303,12 +388,12 @@ export const TokenListItemComponent = ({
                 </Text>
               )}
               {accountType && ACCOUNT_TYPE_LABELS[accountType] && (
-                <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
+                <Tag>{ACCOUNT_TYPE_LABELS[accountType]}</Tag>
               )}
               {isRWAToken ? (
                 <StockBadge isMarketClosed={!isTokenTradingOpen(rwaToken)} />
               ) : null}
-              {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
+              {isNoFeeAsset && <Tag>{t('bridgeNoMMFee')}</Tag>}
             </Box>
 
             {showScamWarning ? (
@@ -321,9 +406,8 @@ export const TokenListItemComponent = ({
                   e.stopPropagation();
                   setShowScamWarningModal(true);
                 }}
-                color={IconColor.errorDefault}
+                iconProps={{ className: IconColor.ErrorDefault }}
                 size={ButtonIconSize.Md}
-                backgroundColor={BackgroundColor.transparent}
                 data-testid="scam-warning"
                 ariaLabel=""
               />
@@ -409,7 +493,7 @@ export const TokenListItemComponent = ({
               setShowTokenInsights(true);
             }}
             className="multichain-token-list-item__info-icon"
-            color={IconColor.iconAlternative}
+            iconProps={{ className: IconColor.IconAlternative }}
             ariaLabel={t('viewTokenDetails')}
           />
         )}
@@ -418,28 +502,30 @@ export const TokenListItemComponent = ({
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+            <ModalHeader
+              onClose={() => setShowScamWarningModal(false)}
+              closeButtonProps={{ ariaLabel: t('close') }}
+            >
               {t('nativeTokenScamWarningTitle')}
             </ModalHeader>
-            <ModalBody marginTop={4} marginBottom={4}>
+            <ModalBody className="my-4">
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 nativeCurrencySymbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
             </ModalBody>
             <ModalFooter>
-              <ButtonSecondary
+              <Button
+                variant={ButtonVariant.Secondary}
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId }));
                   navigate(NETWORKS_ROUTE);
                 }}
-                block
+                isFullWidth
               >
                 {t('nativeTokenScamWarningConversion')}
-              </ButtonSecondary>
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

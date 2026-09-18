@@ -1,12 +1,16 @@
 import { Messenger } from '@metamask/messenger';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
-import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-controller';
+import type {
+  KeyringControllerGetAccountsAction,
+  KeyringControllerPersistAllKeyringsAction,
+} from '@metamask/keyring-controller';
 import { GetSubjectMetadata } from '@metamask/permission-controller';
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
+  AccountsControllerUpdateAccountsAction,
 } from '@metamask/accounts-controller';
 import type {
   ApprovalControllerAcceptRequestAction,
@@ -18,15 +22,15 @@ import type {
   ApprovalControllerStartFlowAction,
 } from '@metamask/approval-controller';
 import {
-  GetSnap,
-  HandleSnapRequest,
-  IsMinimumPlatformVersion,
+  SnapControllerGetSnapAction,
+  SnapControllerHandleRequestAction,
+  SnapControllerIsMinimumPlatformVersionAction,
 } from '@metamask/snaps-controllers';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { LegacyBackgroundApiServiceRemoveAccountAction } from '../../services/legacy-background-api-service-method-action-types';
 
-export type SnapKeyringBuilderAllowActions =
+export type SnapKeyringBuilderAllowedActions =
   | ApprovalControllerStartFlowAction
   | ApprovalControllerEndFlowAction
   | ApprovalControllerShowSuccessAction
@@ -42,20 +46,18 @@ export type SnapKeyringBuilderAllowActions =
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerListMultichainAccountsAction
-  | HandleSnapRequest
-  | GetSnap
+  | AccountsControllerUpdateAccountsAction
+  | SnapControllerHandleRequestAction
+  | SnapControllerGetSnapAction
   | PreferencesControllerGetStateAction
-  | IsMinimumPlatformVersion
-  | RemoteFeatureFlagControllerGetStateAction;
+  | SnapControllerIsMinimumPlatformVersionAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | KeyringControllerPersistAllKeyringsAction
+  | LegacyBackgroundApiServiceRemoveAccountAction;
 
 export type SnapKeyringBuilderMessenger = Messenger<
   'SnapKeyring',
-  SnapKeyringBuilderAllowActions,
-  never
+  SnapKeyringBuilderAllowedActions
 >;
 
-/**
- * Interface for the MetaMask Controller used by the snap keyring.
- * This interface defines only the methods needed from the controller.
- */
-export type GetSnapKeyring = () => Promise<SnapKeyring>;
+export type SnapKeyringV2BuilderMessenger = SnapKeyringBuilderMessenger;

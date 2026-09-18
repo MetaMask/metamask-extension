@@ -1,11 +1,15 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { CaipAssetId } from '@metamask/keyring-api';
-import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
+import { Balance, CaipAssetId } from '@metamask/keyring-api';
+import type { Asset } from '@metamask/assets-controllers';
 import { isTronSpecialAsset } from '../../../../shared/lib/asset-utils';
-import { getAssetsBySelectedAccountGroupWithTronSpecialAssets } from '../../../selectors/assets';
+import {
+  getAssetsBalance,
+  getAssetsBySelectedAccountGroupWithTronSpecialAssets,
+} from '../../../selectors/assets';
 import { getMultichainBalances } from '../../../selectors/multichain';
+import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state';
 import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 
 const TronResourceType = {
@@ -23,12 +27,62 @@ export type TronResource = {
   percentage: number;
 };
 
-const getAssetCaipType = (assetId: string): string | undefined => {
-  if (!isCaipAssetType(assetId)) {
-    return undefined;
-  }
-  const { assetNamespace, assetReference } = parseCaipAssetType(assetId);
-  return `${assetNamespace}:${assetReference}`;
+/**
+ * Internal hook that reads Tron resource balances from state.
+ * This is the legacy data path, used when the unified AssetsController
+ * feature flag is disabled.
+ * @param account
+ * @param chainId
+ */
+const useMultichainStateTronBalances = (
+  account: InternalAccount | undefined,
+  chainId: string,
+): Record<CaipAssetId, Balance> => {
+  const accountGroupAssets = useSelector(
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets,
+  );
+  const multichainBalances = useSelector(getMultichainBalances);
+
+  return useMemo(() => {
+    if (!account || !chainId) {
+      return {} as Record<CaipAssetId, Balance>;
+    }
+
+    const assets = accountGroupAssets[chainId] || [];
+    const accountBalances = multichainBalances?.[account.id];
+    const tronSpecialAssets = assets.filter((asset: Asset) =>
+      isTronSpecialAsset(asset.assetId),
+    );
+
+    return Object.fromEntries(
+      tronSpecialAssets.map((asset: Asset) => [
+        asset.assetId,
+        accountBalances?.[asset.assetId as CaipAssetId] ?? {
+          amount: '0',
+          unit: '',
+        },
+      ]),
+    ) as Record<CaipAssetId, Balance>;
+  }, [account, chainId, accountGroupAssets, multichainBalances]);
+};
+
+/**
+ * Internal hook that reads Tron resource balances from the unified
+ * AssetsController state.
+ * @param account
+ */
+const useAssetsControllerTronBalances = (
+  account: InternalAccount | undefined,
+): Record<CaipAssetId, Balance> => {
+  const assetsBalance = useSelector(getAssetsBalance);
+
+  return useMemo(() => {
+    if (!account) {
+      return {} as Record<CaipAssetId, Balance>;
+    }
+
+    return (assetsBalance[account.id] ?? {}) as Record<CaipAssetId, Balance>;
+  }, [account, assetsBalance]);
 };
 
 /**
@@ -45,58 +99,52 @@ export const useTronResources = (
   energy: TronResource;
   bandwidth: TronResource;
 } => {
-  const accountGroupAssets = useSelector(
-    getAssetsBySelectedAccountGroupWithTronSpecialAssets,
+  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+
+  const multichainStateBalances = useMultichainStateTronBalances(
+    account,
+    chainId,
   );
-  const multichainBalances = useSelector(getMultichainBalances);
+  const assetsControllerBalances = useAssetsControllerTronBalances(account);
 
   return useMemo(() => {
+    const defaultResources = {
+      energy: {
+        type: TronResourceType.ENERGY,
+        current: 0,
+        max: 0,
+        percentage: 0,
+      },
+      bandwidth: {
+        type: TronResourceType.BANDWIDTH,
+        current: 0,
+        max: 0,
+        percentage: 0,
+      },
+    };
+
     if (!account || !chainId) {
-      return {
-        energy: {
-          type: TronResourceType.ENERGY,
-          current: 0,
-          max: 0,
-          percentage: 0,
-        },
-        bandwidth: {
-          type: TronResourceType.BANDWIDTH,
-          current: 0,
-          max: 0,
-          percentage: 0,
-        },
-      };
+      return defaultResources;
     }
 
-    const assets = accountGroupAssets[chainId] || [];
-    const balances = multichainBalances?.[account.id];
-    const tronSpecialAssets = assets.filter((asset) =>
-      isTronSpecialAsset(asset.assetId),
-    );
+    const balances = isAssetsUnifyStateEnabled
+      ? assetsControllerBalances
+      : multichainStateBalances;
 
-    const findByCaipType = (caipType: string) =>
-      tronSpecialAssets.find(
-        (asset) => getAssetCaipType(asset.assetId) === caipType,
-      );
-
-    const getBalance = (asset: (typeof tronSpecialAssets)[0] | undefined) =>
-      asset
-        ? parseFloat(balances?.[asset.assetId as CaipAssetId]?.amount || '0')
-        : 0;
+    const getBalanceForCaipType = (caipType: string): number => {
+      const assetId = `${chainId}/${caipType}` as CaipAssetId;
+      return Number.parseFloat(balances?.[assetId]?.amount || '0');
+    };
 
     const energyData = {
-      current: getBalance(findByCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY)),
-      max: getBalance(
-        findByCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY),
-      ),
+      current: getBalanceForCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY),
+      max: getBalanceForCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY),
     };
 
     const bandwidthData = {
-      current: getBalance(
-        findByCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH),
-      ),
-      max: getBalance(
-        findByCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH),
+      current: getBalanceForCaipType(TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH),
+      max: getBalanceForCaipType(
+        TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH,
       ),
     };
 
@@ -117,5 +165,11 @@ export const useTronResources = (
       energy: createResource(TronResourceType.ENERGY, energyData),
       bandwidth: createResource(TronResourceType.BANDWIDTH, bandwidthData),
     };
-  }, [account, chainId, accountGroupAssets, multichainBalances]);
+  }, [
+    account,
+    chainId,
+    isAssetsUnifyStateEnabled,
+    multichainStateBalances,
+    assetsControllerBalances,
+  ]);
 };

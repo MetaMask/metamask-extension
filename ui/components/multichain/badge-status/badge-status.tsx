@@ -16,7 +16,7 @@ import { BadgeStatusProps } from './badge-status.types';
 
 const TooltipStyle = { display: 'flex' };
 
-export const BadgeStatus: React.FC<BadgeStatusProps> = ({
+export const BadgeStatus = ({
   className = '',
   hideTooltip = false,
   badgeBackgroundColor = BackgroundColor.backgroundAlternative,
@@ -26,7 +26,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   showConnectedStatus = true,
   text,
   ...props
-}): JSX.Element => {
+}: BadgeStatusProps): JSX.Element => {
   const tooltipContents = useMemo(() => {
     let positionObj;
     if (showConnectedStatus) {

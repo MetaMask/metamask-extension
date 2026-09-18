@@ -26,7 +26,8 @@ import type { PerpsTransaction } from './types';
  */
 export const mockAccountState: AccountState = {
   totalBalance: '15250.00',
-  availableBalance: '10125.00',
+  spendableBalance: '10125.00',
+  withdrawableBalance: '10125.00',
   marginUsed: '5125.00',
   unrealizedPnl: '375.00',
   returnOnEquity: '7.32',
@@ -51,7 +52,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '2400.00',
     maxLeverage: 20,
-    returnOnEquity: '15.79',
+    returnOnEquity: '0.1579',
     cumulativeFunding: {
       allTime: '12.50',
       sinceOpen: '8.30',
@@ -75,7 +76,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '48000.00',
     maxLeverage: 20,
-    returnOnEquity: '-16.67',
+    returnOnEquity: '-0.1667',
     cumulativeFunding: {
       allTime: '-5.20',
       sinceOpen: '-3.10',
@@ -100,7 +101,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '85.00',
     maxLeverage: 20,
-    returnOnEquity: '26.32',
+    returnOnEquity: '0.2632',
     cumulativeFunding: {
       allTime: '2.50',
       sinceOpen: '1.80',
@@ -124,7 +125,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '1.08',
     maxLeverage: 20,
-    returnOnEquity: '-41.67',
+    returnOnEquity: '-0.4167',
     cumulativeFunding: {
       allTime: '-1.20',
       sinceOpen: '-0.80',
@@ -149,7 +150,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '0.80',
     maxLeverage: 20,
-    returnOnEquity: '26.67',
+    returnOnEquity: '0.2667',
     cumulativeFunding: {
       allTime: '3.50',
       sinceOpen: '2.20',
@@ -160,7 +161,7 @@ export const mockPositions: Position[] = [
     takeProfitCount: 0,
     stopLossCount: 0,
   },
-  // HIP-3 Equity positions (stocks)
+  // HIP-3 stock positions
   {
     symbol: 'xyz:TSLA',
     size: '10.0',
@@ -175,7 +176,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '216.00',
     maxLeverage: 10,
-    returnOnEquity: '22.92',
+    returnOnEquity: '0.2292',
     cumulativeFunding: {
       allTime: '4.80',
       sinceOpen: '2.40',
@@ -199,7 +200,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '528.00',
     maxLeverage: 10,
-    returnOnEquity: '-10.42',
+    returnOnEquity: '-0.1042',
     cumulativeFunding: {
       allTime: '-2.10',
       sinceOpen: '-1.50',
@@ -225,7 +226,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '1930.00',
     maxLeverage: 20,
-    returnOnEquity: '15.27',
+    returnOnEquity: '0.1527',
     cumulativeFunding: {
       allTime: '1.20',
       sinceOpen: '0.80',
@@ -250,7 +251,7 @@ export const mockPositions: Position[] = [
     },
     liquidationPrice: '1.0600',
     maxLeverage: 20,
-    returnOnEquity: '13.86',
+    returnOnEquity: '0.1386',
     cumulativeFunding: {
       allTime: '8.50',
       sinceOpen: '5.20',
@@ -362,7 +363,7 @@ export const mockOrders: Order[] = [
     timestamp: Date.now() - 10800000, // 3 hours ago
     lastUpdated: Date.now() - 10800000,
   },
-  // HIP-3 Equity orders (stocks)
+  // HIP-3 stock orders
   {
     orderId: 'order-007',
     symbol: 'xyz:AAPL',
@@ -540,10 +541,10 @@ export const mockCryptoMarkets: PerpsMarketData[] = [
 
 /**
  * Mock HIP-3 markets data
- * Includes equity (stocks), commodity, and forex markets from HIP-3 DEXs
+ * Includes stock, commodity, and forex markets from HIP-3 DEXs
  */
 export const mockHip3Markets: PerpsMarketData[] = [
-  // Equity markets (stocks)
+  // Stock markets
   {
     symbol: 'xyz:TSLA',
     name: 'Tesla',
@@ -557,7 +558,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00015,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:AAPL',
@@ -572,7 +573,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00012,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:MSFT',
@@ -587,7 +588,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.0001,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:NVDA',
@@ -602,7 +603,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00018,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:AMZN',
@@ -617,7 +618,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00011,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   {
     symbol: 'xyz:GOOGL',
@@ -632,7 +633,7 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingIntervalHours: 8,
     fundingRate: 0.00009,
     marketSource: 'xyz',
-    marketType: 'equity',
+    marketType: 'stock',
   },
   // Commodity markets
   {
@@ -781,6 +782,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '25 SOL @ $95.00',
     timestamp: Date.now() - 14400000, // 4 hours ago
     order: {
+      orderId: 'order-004',
       text: PerpsOrderTransactionStatus.Open,
       statusType: PerpsOrderTransactionStatusType.Pending,
       type: 'limit',
@@ -798,6 +800,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '0.1 BTC @ $45,000.00',
     timestamp: Date.now() - 16200000, // 4.5 hours ago
     order: {
+      orderId: 'order-004b',
       text: PerpsOrderTransactionStatus.Filled,
       statusType: PerpsOrderTransactionStatusType.Filled,
       type: 'market',
@@ -815,6 +818,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '500 ARB @ $1.10',
     timestamp: Date.now() - 18000000, // 5 hours ago
     order: {
+      orderId: 'order-004c',
       text: PerpsOrderTransactionStatus.Canceled,
       statusType: PerpsOrderTransactionStatusType.Canceled,
       type: 'market',

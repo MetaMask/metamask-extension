@@ -1,12 +1,9 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import React from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import {
-  MetaMetricsEventName,
-  MetaMetricsUserTrait,
-} from '../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 import { useOptIn } from './useOptIn';
 
 // Mock usePrimaryWalletGroupAccounts hook
@@ -27,9 +24,6 @@ jest.mock('../../store/actions', () => ({
   rewardsLinkAccountsToSubscriptionCandidate: jest.fn(() => async () => [
     { account: {} as InternalAccount, success: true },
   ]),
-  updateMetaMetricsTraits: jest.fn(() => async () => {
-    // noop
-  }),
   linkRewardToShieldSubscription: jest.fn(() => async () => {
     // noop
   }),
@@ -79,6 +73,9 @@ jest.mock('../../selectors/multichain-accounts/account-tree', () => {
   const actual = jest.requireActual(
     '../../selectors/multichain-accounts/account-tree',
   );
+  const { EMPTY_ARRAY: emptyAccounts } = jest.requireActual(
+    '../../selectors/shared',
+  );
   return {
     ...actual,
     getSelectedAccountGroup: jest.fn(() => 'entropy:test/0'),
@@ -95,6 +92,7 @@ jest.mock('../../selectors/multichain-accounts/account-tree', () => {
           pinned: false,
           hidden: false,
           entropy: { groupIndex: 1 },
+          lastSelected: 0,
         },
         accounts: ['acc-1'],
       },
@@ -106,6 +104,7 @@ jest.mock('../../selectors/multichain-accounts/account-tree', () => {
           pinned: false,
           hidden: false,
           entropy: { groupIndex: 0 },
+          lastSelected: 0,
         },
         accounts: ['acc-0'],
       },
@@ -117,7 +116,7 @@ jest.mock('../../selectors/multichain-accounts/account-tree', () => {
       if (groupId === 'entropy:test/0') {
         return mockActiveGroupAccounts;
       }
-      return [];
+      return emptyAccounts;
     }),
   };
 });
@@ -148,9 +147,6 @@ const { rewardsOptIn } = jest.requireMock('../../store/actions') as {
 const { rewardsLinkAccountsToSubscriptionCandidate } = jest.requireMock(
   '../../store/actions',
 ) as { rewardsLinkAccountsToSubscriptionCandidate: jest.Mock };
-const { updateMetaMetricsTraits } = jest.requireMock('../../store/actions') as {
-  updateMetaMetricsTraits: jest.Mock;
-};
 const { linkRewardToShieldSubscription } = jest.requireMock(
   '../../store/actions',
 ) as { linkRewardToShieldSubscription: jest.Mock };
@@ -160,23 +156,24 @@ const { setCandidateSubscriptionId } = jest.requireMock(
 const { getSelectedAccountGroup } = jest.requireMock(
   '../../selectors/multichain-accounts/account-tree',
 ) as { getSelectedAccountGroup: jest.Mock };
+const mockTrackEvent = jest.fn();
+
+jest.mock('../useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
+
 const { getInternalAccountsFromGroupById } = jest.requireMock(
   '../../selectors/multichain-accounts/account-tree',
 ) as { getInternalAccountsFromGroupById: jest.Mock };
-
-// MetaMetrics provider container
-const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
-const Container = ({ children }: { children: React.ReactNode }) => (
-  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-    {children}
-  </MetaMetricsContext.Provider>
-);
 
 describe('useOptIn', () => {
   beforeEach(() => {
@@ -194,11 +191,6 @@ describe('useOptIn', () => {
     ).mockImplementation(() => async () => [
       { account: {} as InternalAccount, success: true },
     ]);
-    (updateMetaMetricsTraits as jest.Mock).mockImplementation(
-      () => async () => {
-        // noop
-      },
-    );
     (linkRewardToShieldSubscription as jest.Mock).mockImplementation(
       () => async () => {
         // noop
@@ -213,7 +205,7 @@ describe('useOptIn', () => {
         if (groupId === 'entropy:test/0') {
           return mockActiveGroupAccounts;
         }
-        return [];
+        return EMPTY_ARRAY;
       },
     );
   });
@@ -224,7 +216,7 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       expect(result.current.optinLoading).toBe(false);
@@ -240,7 +232,7 @@ describe('useOptIn', () => {
   });
 
   describe('Successful opt-in', () => {
-    it('tracks started/completed, dispatches candidate SID, updates traits, and toggles loading', async () => {
+    it('tracks started/completed, dispatches candidate SID, and toggles loading', async () => {
       (rewardsOptIn as jest.Mock).mockImplementation(
         () => async () => 'sub-abc',
       );
@@ -249,31 +241,28 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
         await result.current.optin();
       });
 
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).toContain(MetaMetricsEventName.RewardsOptInStarted);
       expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
 
       expect(setCandidateSubscriptionId).toHaveBeenCalledWith('sub-abc');
-      expect(updateMetaMetricsTraits).toHaveBeenCalledWith({
-        [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
-      });
       expect(result.current.optinLoading).toBe(false);
       expect(result.current.optinError).toBeNull();
     });
 
-    it('includes referral metrics properties and traits when referralCode is provided', async () => {
+    it('includes referral metrics properties when referralCode is provided', async () => {
       const { result } = renderHookWithProvider(
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -282,17 +271,11 @@ describe('useOptIn', () => {
 
       const calls = mockTrackEvent.mock.calls.map((args) => args[0]);
       const started = calls.find(
-        (c: { event: MetaMetricsEventName }) =>
-          c.event === MetaMetricsEventName.RewardsOptInStarted,
+        (c: { name: MetaMetricsEventName }) =>
+          c.name === MetaMetricsEventName.RewardsOptInStarted,
       );
       expect(started?.properties?.referred).toBe(true);
       expect(started?.properties?.referral_code_used).toBe('REF-CODE');
-
-      expect(updateMetaMetricsTraits).toHaveBeenCalledWith({
-        [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
-        [MetaMetricsUserTrait.RewardsReferred]: true,
-        [MetaMetricsUserTrait.RewardsReferralCodeUsed]: 'REF-CODE',
-      });
     });
 
     it('uses primary wallet group accounts for opt-in when available and links active group accounts', async () => {
@@ -304,7 +287,7 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -339,7 +322,7 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -364,9 +347,9 @@ describe('useOptIn', () => {
             return mockSideEffectAccounts;
           }
           if (groupId === 'entropy:test/0') {
-            return [];
+            return EMPTY_ARRAY;
           }
-          return [];
+          return EMPTY_ARRAY;
         },
       );
 
@@ -378,7 +361,7 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -401,7 +384,7 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -420,7 +403,7 @@ describe('useOptIn', () => {
       expect(setCandidateSubscriptionId).toHaveBeenCalledWith(
         'sub-hw-skip-link',
       );
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
     });
 
@@ -438,7 +421,7 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -448,37 +431,7 @@ describe('useOptIn', () => {
       expect(result.current.optinError).toBeNull();
       expect(result.current.optinLoading).toBe(false);
       expect(setCandidateSubscriptionId).toHaveBeenCalledWith('sub-link-error');
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
-      expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
-    });
-
-    it('swallows traits update errors without affecting final state', async () => {
-      (rewardsOptIn as jest.Mock).mockImplementation(
-        () => async () => 'sub-traits-error',
-      );
-      (updateMetaMetricsTraits as jest.Mock).mockImplementation(
-        () => async () => {
-          throw new Error('traits fail');
-        },
-      );
-
-      const { result } = renderHookWithProvider(
-        () => useOptIn(),
-        {},
-        undefined,
-        Container,
-      );
-
-      await act(async () => {
-        await result.current.optin();
-      });
-
-      expect(result.current.optinError).toBeNull();
-      expect(result.current.optinLoading).toBe(false);
-      expect(setCandidateSubscriptionId).toHaveBeenCalledWith(
-        'sub-traits-error',
-      );
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
     });
   });
@@ -493,19 +446,18 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
         await result.current.optin();
       });
 
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).toContain(MetaMetricsEventName.RewardsOptInFailed);
       expect(result.current.optinLoading).toBe(false);
       expect(result.current.optinError).toBe('mock error');
       expect(setCandidateSubscriptionId).not.toHaveBeenCalled();
-      expect(updateMetaMetricsTraits).not.toHaveBeenCalled();
     });
 
     it('does not dispatch candidate SID when subscriptionId is null', async () => {
@@ -515,7 +467,7 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -523,8 +475,7 @@ describe('useOptIn', () => {
       });
 
       expect(setCandidateSubscriptionId).not.toHaveBeenCalled();
-      expect(updateMetaMetricsTraits).not.toHaveBeenCalled();
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).not.toContain(MetaMetricsEventName.RewardsOptInCompleted);
     });
   });
@@ -543,7 +494,7 @@ describe('useOptIn', () => {
           }),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -565,7 +516,7 @@ describe('useOptIn', () => {
         () => useOptIn(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -584,7 +535,7 @@ describe('useOptIn', () => {
         () => useOptIn({ rewardPoints: 100 }),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -603,7 +554,7 @@ describe('useOptIn', () => {
         () => useOptIn({ shieldSubscriptionId: 'shield-sub-456' }),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -631,7 +582,7 @@ describe('useOptIn', () => {
           }),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -643,7 +594,7 @@ describe('useOptIn', () => {
       expect(setCandidateSubscriptionId).toHaveBeenCalledWith(
         'sub-shield-error',
       );
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).toContain(MetaMetricsEventName.RewardsOptInCompleted);
     });
 
@@ -658,7 +609,7 @@ describe('useOptIn', () => {
           }),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {

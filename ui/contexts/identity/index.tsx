@@ -1,16 +1,21 @@
 import React, { useEffect } from 'react';
 import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
 import { useContactSyncing } from '../../hooks/identity/useContactSyncing';
+import { useRampsOrderSyncing } from '../../hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing';
 import {
   useAutoSignIn,
   useAutoSignOut,
 } from '../../hooks/identity/useAuthentication';
 
-export const MetamaskIdentityProvider: React.FC = ({ children }) => {
+export const MetamaskIdentityProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const { dispatchAccountSyncing, shouldDispatchAccountSyncing } =
     useAccountSyncing();
   const { dispatchContactSyncing, shouldDispatchContactSyncing } =
     useContactSyncing();
+  const { dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing } =
+    useRampsOrderSyncing();
   const { autoSignIn, shouldAutoSignIn } = useAutoSignIn();
   const { autoSignOut, shouldAutoSignOut } = useAutoSignOut();
 
@@ -29,6 +34,12 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
     }
   }, [shouldDispatchContactSyncing, dispatchContactSyncing]);
 
+  useEffect(() => {
+    if (shouldDispatchRampsOrderSyncing) {
+      dispatchRampsOrderSyncing();
+    }
+  }, [shouldDispatchRampsOrderSyncing, dispatchRampsOrderSyncing]);
+
   /**
    * Authentication effects
    *
@@ -36,15 +47,37 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
    * - Users should be signed out if basic functionality is disabled. (see `useAutoSignOut`)
    */
   useEffect(() => {
-    if (shouldAutoSignIn) {
-      autoSignIn();
-    }
+    let cancelled = false;
+
+    const run = async () => {
+      if (!shouldAutoSignIn || cancelled) {
+        return;
+      }
+      await autoSignIn();
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [shouldAutoSignIn, autoSignIn]);
 
   useEffect(() => {
-    if (shouldAutoSignOut) {
-      autoSignOut();
-    }
+    let cancelled = false;
+
+    const run = async () => {
+      if (!shouldAutoSignOut || cancelled) {
+        return;
+      }
+      await autoSignOut();
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+    };
   }, [shouldAutoSignOut, autoSignOut]);
 
   return <>{children}</>;

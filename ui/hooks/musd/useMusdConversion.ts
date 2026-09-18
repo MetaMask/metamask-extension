@@ -7,13 +7,13 @@
  * The actual amount entry and relay quoting are handled on the
  * confirmation screen by useTransactionCustomAmount and TransactionPayController.
  * This hook is only responsible for:
- * - Starting the flow (education -> placeholder tx -> confirm screen)
+ * - Starting the flow (placeholder tx -> confirm screen)
  * - Duplicate-preventing transaction creation
  * - Cancelling (navigate back)
  */
 
 import { useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
@@ -22,22 +22,27 @@ import {
   selectIsMusdConversionFlowEnabled,
   selectMusdConversionEducationSeen,
 } from '../../selectors/musd';
-import { getSelectedInternalAccount } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getUnapprovedTransactions } from '../../selectors/transactions';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
   setMusdConversionEducationSeen,
 } from '../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   buildMusdConversionTx,
+  ensureMusdTokenImportedForChain,
   isMatchingMusdConversion,
 } from '../../components/app/musd/utils';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
-import { MUSD_CONVERSION_EDUCATION_ROUTE } from '../../pages/musd/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../components/app/musd/constants';
 import { updateTransactionPaymentToken } from '../../store/controller-actions/transaction-pay-controller';
+import { useDispatch } from '../../store/hooks';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 
 // ============================================================================
@@ -62,8 +67,6 @@ export type UseMusdConversionResult = {
 export type StartConversionOptions = {
   /** Preferred payment token to pre-select */
   preferredToken: { address: string; chainId: Hex };
-  /** Skip education screen even if not seen */
-  skipEducation?: boolean;
   /** Entry point for analytics */
   entryPoint?: 'home' | 'token_list' | 'asset_overview' | 'deeplink';
 };
@@ -167,14 +170,12 @@ export function useMusdConversion(): UseMusdConversionResult {
   /**
    * Start the mUSD conversion flow.
    *
-   * If education has been seen (or skipEducation is true), creates a
-   * musdConversion transaction with a placeholder amount and navigates
-   * directly to the pay-with confirmation screen. Otherwise, navigates
-   * to the education screen first.
+   * Creates a musdConversion transaction with a placeholder amount and
+   * navigates directly to the pay-with confirmation screen.
    */
   const startConversionFlow = useCallback(
     async (options: StartConversionOptions): Promise<void> => {
-      const { preferredToken, skipEducation } = options;
+      const { preferredToken } = options;
 
       if (!isFeatureEnabled) {
         console.warn('[MUSD] Conversion flow not enabled');
@@ -183,11 +184,6 @@ export function useMusdConversion(): UseMusdConversionResult {
 
       if (isUserGeoBlocked) {
         console.warn('[MUSD] User is geo-blocked');
-        return;
-      }
-
-      if (!educationSeen && !skipEducation) {
-        navigate(MUSD_CONVERSION_EDUCATION_ROUTE);
         return;
       }
 
@@ -200,6 +196,11 @@ export function useMusdConversion(): UseMusdConversionResult {
 
       try {
         setError(null);
+
+        const ensureMusdTokenPromise = ensureMusdTokenImportedForChain(
+          chainId,
+          dispatch,
+        );
 
         const existing = findExistingPendingMusdConversion({
           unapprovedTransactions: unapprovedTransactions as Record<
@@ -268,16 +269,21 @@ export function useMusdConversion(): UseMusdConversionResult {
           tags: navTraceTags,
         });
 
-        navigate({
-          pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
-          search: new URLSearchParams({
-            loader: ConfirmationLoader.CustomAmount,
-            returnTo: location.pathname + location.search,
-          }).toString(),
-        });
+        await ensureMusdTokenPromise;
+
+        navigate(
+          {
+            pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
+            search: new URLSearchParams({
+              loader: ConfirmationLoader.CustomAmount,
+              goBackTo: location.pathname + location.search,
+            }).toString(),
+          },
+          { replace: true },
+        );
 
         if (preferredToken?.address) {
-          updateTransactionPaymentToken({
+          await updateTransactionPaymentToken({
             transactionId: txId,
             tokenAddress: preferredToken.address as `0x${string}`,
             chainId,
@@ -298,9 +304,9 @@ export function useMusdConversion(): UseMusdConversionResult {
       }
     },
     [
+      dispatch,
       isFeatureEnabled,
       isUserGeoBlocked,
-      educationSeen,
       selectedAddress,
       unapprovedTransactions,
       createConversionTransaction,
@@ -311,7 +317,7 @@ export function useMusdConversion(): UseMusdConversionResult {
   );
 
   const cancelConversion = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const markEducationSeen = useCallback(() => {

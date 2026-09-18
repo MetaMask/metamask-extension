@@ -17,6 +17,7 @@ const mockUseOriginTrustSignals = useOriginTrustSignals as jest.Mock;
 describe('ConnectionTrustSignalGate', () => {
   const defaultProps = {
     origin: 'https://example.com',
+    onCancel: jest.fn(),
   };
 
   beforeEach(() => {
@@ -70,20 +71,20 @@ describe('ConnectionTrustSignalGate', () => {
     expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
   });
 
-  it('renders block modal when trust state is Malicious', () => {
+  it('renders block modal on top of children when trust state is Malicious', () => {
     mockUseOriginTrustSignals.mockReturnValue({
       state: TrustSignalDisplayState.Malicious,
       label: null,
     });
 
-    const { getByTestId, queryByText } = render(
+    const { getByTestId, getByText } = render(
       <ConnectionTrustSignalGate {...defaultProps}>
         <div>Child content</div>
       </ConnectionTrustSignalGate>,
     );
 
     expect(getByTestId('trust-signal-block-modal')).toBeInTheDocument();
-    expect(queryByText('Child content')).not.toBeInTheDocument();
+    expect(getByText('Child content')).toBeInTheDocument();
   });
 
   it('shows children after dismissing block modal', () => {
@@ -101,5 +102,23 @@ describe('ConnectionTrustSignalGate', () => {
     fireEvent.click(getByTestId('trust-signal-block-modal-continue'));
     expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
     expect(getByText('Child content')).toBeInTheDocument();
+  });
+
+  it('calls onCancel when cancel button is clicked in block modal', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Malicious,
+      label: null,
+    });
+
+    const onCancel = jest.fn();
+
+    const { getByTestId } = render(
+      <ConnectionTrustSignalGate {...defaultProps} onCancel={onCancel}>
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    fireEvent.click(getByTestId('trust-signal-block-modal-cancel'));
+    expect(onCancel).toHaveBeenCalledTimes(1);
   });
 });

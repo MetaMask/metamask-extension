@@ -2,13 +2,14 @@ import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
-import NFTDetailsPage from '../../page-objects/pages/nft-details-page';
-import NftListPage from '../../page-objects/pages/home/nft-list';
+import NFTDetailsPage from '../../page-objects/pages/asset/nft-details-page';
+import NftsTab from '../../page-objects/pages/home/nfts-tab';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -41,14 +42,14 @@ describe('Settings', function () {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
-        await settingsPage.closeSettingsPage();
+        await closeSettings(driver);
         const homePage = new Homepage(driver);
         await homePage.checkPageIsLoaded();
 
         await homePage.goToNftTab();
-        const nftListPage = new NftListPage(driver);
-        await nftListPage.checkPageIsLoaded();
-        await nftListPage.clickNFTIconOnActivityList();
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.checkPageIsLoaded();
+        await nftsTab.clickNFTIconOnActivityList();
         const nftDetailsPage = new NFTDetailsPage(driver);
         await nftDetailsPage.checkPageIsLoaded();
 

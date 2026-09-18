@@ -6,19 +6,22 @@ import {
   type GasFeeEstimates as TransactionGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
-import { updateTransactionGasFees } from '../../../../store/actions';
+import { updateTransactionGasFees } from '../../../../store/actions/update-transaction-gas-fees';
 import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 import { CURRENCY_SYMBOLS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { useDispatch } from '../../../../store/hooks';
+import { usePersistGasFeePreference } from './usePersistGasFeePreference';
+import { useTransactionGasLimit } from './useTransactionGasLimit';
 
 const HEX_ZERO = '0x0';
 
@@ -40,6 +43,7 @@ export const useGasFeeEstimateLevelOptions = ({
 }): GasOption[] => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const persistGasFeePreference = usePersistGasFeePreference();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const effectiveTransactionMeta = transactionMeta ?? DUMMY_TRANSACTION_META;
@@ -51,6 +55,9 @@ export const useGasFeeEstimateLevelOptions = ({
           ?.nativeCurrency,
     ) ?? CURRENCY_SYMBOLS.ETH;
   const { calculateGasEstimate } = useFeeCalculations(effectiveTransactionMeta);
+  const { gasLimit: displayGas } = useTransactionGasLimit(
+    effectiveTransactionMeta,
+  );
   const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates(
     transactionMeta?.networkClientId,
   ) as {
@@ -79,9 +86,12 @@ export const useGasFeeEstimateLevelOptions = ({
           userFeeLevel: level,
         }),
       );
+      await persistGasFeePreference(transactionMeta, {
+        userFeeLevel: level,
+      });
       handleCloseModals();
     },
-    [id, handleCloseModals, dispatch],
+    [id, handleCloseModals, dispatch, persistGasFeePreference, transactionMeta],
   );
 
   if (!transactionMeta) {
@@ -119,7 +129,7 @@ export const useGasFeeEstimateLevelOptions = ({
 
       let feePerGas = HEX_ZERO;
       let gasPrice = HEX_ZERO;
-      const gas = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
+      const gas = displayGas || HEX_ZERO;
       let shouldUseEIP1559FeeLogic = true;
       let priorityFeePerGas = HEX_ZERO;
 

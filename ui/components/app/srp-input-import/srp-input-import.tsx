@@ -3,37 +3,28 @@ import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import browser from 'webextension-polyfill';
-
-import { Textarea, TextareaResize } from '../../component-library/textarea';
 import {
   Box,
   Button,
   ButtonVariant,
+  ButtonSize,
   Text,
-  TextField,
-  TextFieldType,
-} from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import { TextField, TextFieldType } from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const SRP_LENGTHS = [12, 15, 18, 21, 24];
@@ -54,8 +45,6 @@ type SrpInputImportProps = {
   onClearCallback?: () => void;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SrpInputImport({
   onChange,
   onClearCallback,
@@ -168,11 +157,7 @@ export default function SrpInputImport({
         checkForInvalidWords();
       }
 
-      if (
-        (SRP_LENGTHS.includes(draftSrp.length) &&
-          isValidMnemonic(draftSrp.map((word) => word.word).join(' '))) ||
-        draftSrp.length === MAX_SRP_LENGTH
-      ) {
+      if (draftSrp.length === MAX_SRP_LENGTH) {
         return;
       }
 
@@ -366,21 +351,17 @@ export default function SrpInputImport({
 
   return (
     <>
-      <Box>
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.LG}
-          className="srp-input-import__container"
+          flexDirection={BoxFlexDirection.Column}
+          backgroundColor={
+            draftSrp.length > 0 ? undefined : BoxBackgroundColor.BackgroundMuted
+          }
+          className="srp-input-import__container rounded-lg"
         >
           {draftSrp.length > 0 ? (
-            <Box padding={4} style={{ flex: 1 }}>
-              <Box
-                display={Display.Grid}
-                className="srp-input-import__words-list"
-                gap={2}
-              >
+            <Box style={{ flex: 1 }}>
+              <Box className="srp-input-import__words-list grid" gap={2}>
                 {draftSrp.map((word, index) => {
                   return (
                     <TextField
@@ -391,6 +372,7 @@ export default function SrpInputImport({
                           }
                         },
                       }}
+                      backgroundColor={BackgroundColor.backgroundMuted}
                       testId={`import-srp__srp-word-${index}`}
                       key={word.id}
                       error={
@@ -405,7 +387,7 @@ export default function SrpInputImport({
                       }
                       startAccessory={
                         <Text
-                          color={TextColor.textAlternative}
+                          color={TextColor.TextAlternative}
                           textAlign={TextAlign.Left}
                           className="srp-input-import__word-index"
                         >
@@ -444,24 +426,17 @@ export default function SrpInputImport({
           ) : (
             <Box
               padding={4}
-              className="srp-input-import__srp-note"
+              className="srp-input-import__srp-note rounded-lg"
               style={{ flex: 1 }}
-              borderRadius={BorderRadius.LG}
             >
-              <Textarea
+              <textarea
+                id="first-word-input-text-area"
                 ref={textareaRef}
                 data-testid="srp-input-import__srp-note"
-                borderColor={BorderColor.transparent}
-                backgroundColor={BackgroundColor.transparent}
-                width={BlockSize.Full}
+                className="srp-input-import__initial-input"
                 placeholder={t('onboardingSrpInputPlaceholder')}
-                rows={7}
-                resize={TextareaResize.None}
+                rows={5}
                 value={firstWord}
-                paddingTop={0}
-                paddingBottom={0}
-                paddingLeft={0}
-                paddingRight={0}
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}
                 onPaste={handleOnPaste}
@@ -471,28 +446,29 @@ export default function SrpInputImport({
           )}
         </Box>
         <Box
-          display={Display.Flex}
           className="srp-input-import__actions"
-          justifyContent={JustifyContent.flexEnd}
-          paddingRight={2}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.End}
         >
           {draftSrp.length > 0 ? (
             <Button
-              variant={ButtonVariant.Link}
+              variant={ButtonVariant.Tertiary}
               onClick={async () => {
                 setDraftSrp([]);
                 setMisSpelledWords([]);
                 setHasInvalidChecksum(false);
                 onClearCallback?.();
               }}
+              size={ButtonSize.Md}
             >
               {t('onboardingSrpInputClearAll')}
             </Button>
           ) : (
             <Button
               data-testid="srp-input-import__paste-button"
-              variant={ButtonVariant.Link}
+              variant={ButtonVariant.Tertiary}
               onClick={onTriggerPaste}
+              size={ButtonSize.Md}
             >
               {t('paste')}
             </Button>
@@ -501,7 +477,7 @@ export default function SrpInputImport({
       </Box>
       {misSpelledWords.length > 0 && (
         <Box marginTop={2}>
-          <Text color={TextColor.errorDefault} variant={TextVariant.bodySm}>
+          <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
             {t('onboardingSrpImportError')}
           </Text>
         </Box>
@@ -509,8 +485,8 @@ export default function SrpInputImport({
       {hasInvalidChecksum && misSpelledWords.length === 0 && (
         <Box marginTop={2}>
           <Text
-            color={TextColor.errorDefault}
-            variant={TextVariant.bodySm}
+            color={TextColor.ErrorDefault}
+            variant={TextVariant.BodySm}
             data-testid="srp-input-import__invalid-checksum-error"
           >
             {t('invalidSeedPhraseNotFound')}

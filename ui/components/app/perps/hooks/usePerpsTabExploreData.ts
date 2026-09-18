@@ -1,0 +1,76 @@
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import type { PerpsMarketData } from '@metamask/perps-controller';
+import { usePerpsLiveMarketListData } from '../../../../hooks/perps/stream';
+import {
+  selectPerpsIsTestnet,
+  selectPerpsWatchlistMarkets,
+} from '../../../../selectors/perps-controller';
+import { PERPS_CONSTANTS } from '../constants';
+
+export type UsePerpsTabExploreDataOptions = {
+  refreshIntervalMs?: number;
+};
+
+export type UsePerpsTabExploreDataReturn = {
+  /**
+   * Every live market, unsliced. The Perps tab owns the single market-list
+   * stream subscription, so sections that need a different view of the same
+   * data (e.g. Top movers ranking by price change) read it from here rather
+   * than opening a second subscription.
+   */
+  allMarkets: PerpsMarketData[];
+  exploreMarkets: PerpsMarketData[];
+  watchlistMarkets: PerpsMarketData[];
+  /**
+   * How many markets the user has starred, read from persisted controller state
+   * rather than from the live list. Available before the markets arrive, so the
+   * loading tree can reserve the watchlist's slot instead of letting it push the
+   * sections below it down once it appears.
+   */
+  watchlistCount: number;
+  isInitialLoading: boolean;
+};
+
+export function usePerpsTabExploreData(
+  options: UsePerpsTabExploreDataOptions = {},
+): UsePerpsTabExploreDataReturn {
+  const { refreshIntervalMs } = options;
+  const { markets: liveMarkets, isInitialLoading } = usePerpsLiveMarketListData(
+    { refreshIntervalMs },
+  );
+  const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
+  const watchlistSymbols = isTestnet
+    ? watchlistMarketsState.testnet
+    : watchlistMarketsState.mainnet;
+
+  const liveMarketMap = useMemo(
+    () =>
+      new Map(
+        liveMarkets.map((market) => [market.symbol.toUpperCase(), market]),
+      ),
+    [liveMarkets],
+  );
+
+  const exploreMarkets = useMemo(
+    () => liveMarkets.slice(0, PERPS_CONSTANTS.EXPLORE_MARKETS_LIMIT),
+    [liveMarkets],
+  );
+
+  const filteredWatchlistMarkets = useMemo(
+    () =>
+      watchlistSymbols
+        .map((symbol) => liveMarketMap.get(symbol.toUpperCase()))
+        .filter((market): market is PerpsMarketData => Boolean(market)),
+    [liveMarketMap, watchlistSymbols],
+  );
+
+  return {
+    allMarkets: liveMarkets,
+    exploreMarkets,
+    watchlistMarkets: filteredWatchlistMarkets,
+    watchlistCount: watchlistSymbols.length,
+    isInitialLoading,
+  };
+}

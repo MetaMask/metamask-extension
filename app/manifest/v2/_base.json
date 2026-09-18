@@ -31,6 +31,7 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "exclude_matches": ["*://connect.trezor.io/*"],
       "js": ["scripts/contentscript.js", "scripts/inpage.js"],
       "run_at": "document_start",
       "all_frames": true

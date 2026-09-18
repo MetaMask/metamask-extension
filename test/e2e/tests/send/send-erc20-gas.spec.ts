@@ -14,8 +14,8 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { login } from '../../page-objects/flows/login.flow';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
@@ -40,28 +40,33 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: true,
+          },
+        },
       },
       async ({ driver }) => {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         const sendPage = new SendPage(driver);
         const tokenTransferRedesignedConfirmPage =
           new TokenTransferTransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         );
         // go to custom tokens view on extension, perform send tokens
-        await assetListPage.openTokenDetails(symbol);
-        await assetListPage.clickSendButton();
+        await tokensTab.openTokenDetails(symbol);
+        await tokensTab.startSendFlow();
 
-        await sendPage.fillRecipient(recipientAddress);
+        await sendPage.fillRecipient({ recipientAddress });
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
 
@@ -84,8 +89,16 @@ describe('Send ERC20 - Gas Customization', function () {
         await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
         // check that transaction has completed correctly and is displayed in the activity list
-        await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
-        await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1'));
+        await homePage.goToActivityList();
+        await activityTab.checkTxAction({ action: `Sent ${symbol}` });
+        await activityTab.checkTxAmountInActivity(valueWithSymbol('-1'));
+
+        // check token amount is correct after transaction
+        await homePage.goToTokensTab();
+        await tokensTab.refreshErc20TokenList();
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('9'), {
+          amountTimeout: 20000,
+        });
       },
     );
   });
@@ -101,6 +114,11 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: true,
+          },
+        },
       },
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
@@ -109,14 +127,14 @@ describe('Send ERC20 - Gas Customization', function () {
 
         const testDapp = new TestDapp(driver);
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         const tokenTransferRedesignedConfirmPage =
           new TokenTransferTransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         );
@@ -149,15 +167,17 @@ describe('Send ERC20 - Gas Customization', function () {
         );
 
         await homePage.goToActivityList();
-        await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
-        await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1.5'));
+        await activityTab.checkTxAction({ action: `Sent ${symbol}` });
+        await activityTab.checkTxAmountInActivity(valueWithSymbol('-1.5'));
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
-        await assetListPage.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('8.5'),
-        );
+        // dApp transfers do not always update AssetsController balances until
+        // the ERC-20 list is refreshed (AC 15 polls Accounts API / RPC on demand).
+        await tokensTab.refreshErc20TokenList();
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'), {
+          amountTimeout: 20000,
+        });
       },
     );
   });
@@ -172,6 +192,11 @@ describe('Send ERC20 - Gas Customization', function () {
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: true,
+          },
+        },
       },
       async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress =
@@ -180,13 +205,13 @@ describe('Send ERC20 - Gas Customization', function () {
 
         const testDapp = new TestDapp(driver);
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
         const tokenTransferRedesignedConfirmPage =
           new TokenTransferTransactionConfirmation(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
+        await tokensTab.importCustomTokenByChain(
           '0x539',
           '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
         );
@@ -213,20 +238,123 @@ describe('Send ERC20 - Gas Customization', function () {
         );
 
         await homePage.goToActivityList();
-        await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
-        await activityListPage.checkTxAmountInActivity(valueWithSymbol('-1.5'));
+        await activityTab.checkTxAction({ action: `Sent ${symbol}` });
+        await activityTab.checkTxAmountInActivity(valueWithSymbol('-1.5'));
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
-        await assetListPage.checkTokenExistsInList(
-          symbol,
-          valueWithSymbol('8.5'),
-        );
+        await tokensTab.refreshErc20TokenList();
+        await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('8.5'), {
+          amountTimeout: 20000,
+        });
       },
     );
   });
 
   async function mocks(server: Mockttp) {
-    return [await mockedSourcifyTokenSend(server)];
+    return [
+      await mockedSourcifyTokenSend(server),
+      await server
+        .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+        .always()
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            // Localhost chain 1337 native token uses slip44:1
+            'eip155:1337/slip44:1': {
+              id: 'ethereum',
+              price: 3401,
+              marketCap: 0,
+              pricePercentChange1d: 0,
+            },
+            // TST token on localhost chain 1337
+            'eip155:1337/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947': {
+              price: 0.5,
+              marketCap: 0,
+              pricePercentChange1d: 0,
+            },
+          },
+        })),
+      await server
+        .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+        .always()
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: {
+            usd: {
+              name: 'US Dollar',
+              ticker: 'usd',
+              value: 1,
+              currencyType: 'fiat',
+            },
+            eth: {
+              name: 'Ether',
+              ticker: 'eth',
+              value: 1 / 3401,
+              currencyType: 'crypto',
+            },
+          },
+        })),
+      await server
+        .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+        .always()
+        .thenJson(200, {
+          fullSupport: [],
+          partialSupport: [],
+        }),
+      // Browse list on the token management page. Without this the catch-all
+      // answers with an empty body, which `browseTokens` fails to parse.
+      await server
+        .forGet(
+          /https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/chains\/.+\/assets/u,
+        )
+        .always()
+        .thenJson(200, {
+          data: [],
+          count: 0,
+          totalCount: 0,
+          pageInfo: { hasNextPage: false, endCursor: '' },
+        }),
+      await server
+        .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+        .always()
+        .thenCallback((request) => {
+          const url = new URL(request.url);
+          const assetIds = url.searchParams.getAll('assetIds').join(',');
+          const results = [];
+
+          if (assetIds.includes('eip155:1337')) {
+            results.push({
+              assetId: 'eip155:1337/slip44:1',
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            });
+          }
+
+          if (
+            assetIds.includes(
+              'eip155:1337/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
+            ) ||
+            assetIds.includes(
+              'eip155:1337/erc20:0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+            )
+          ) {
+            results.push({
+              assetId:
+                'eip155:1337/erc20:0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
+              // HST fixture / `withTokensControllerERC20` uses 4 decimals.
+              // TokenDataSource overwrites assetsInfo from this payload, so 18
+              // would display 1.5 TST as `-<0.00001 TST`.
+              name: 'TST',
+              symbol: 'TST',
+              decimals: 4,
+              occurrences: 100,
+            });
+          }
+
+          return { statusCode: 200, json: results };
+        }),
+    ];
   }
 });

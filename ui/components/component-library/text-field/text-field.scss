@@ -14,11 +14,10 @@
   }
 
   height: var(--text-field-height);
-  border-color: var(--color-border-default);
+  border-color: var(--color-border-muted);
 
   &--focused {
-    outline: 5px auto Highlight; // firefox
-    outline: 5px auto -webkit-focus-ring-color; // chrome
+    border-color: var(--color-border-default);
   }
 
   &--error {
@@ -39,6 +38,7 @@
 
   &__input {
     width: 100%;
+    height: 100%;
     flex-grow: 1;
   }
 }

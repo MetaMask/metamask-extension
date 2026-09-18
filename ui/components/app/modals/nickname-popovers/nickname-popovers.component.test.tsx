@@ -10,9 +10,7 @@ import {
   MultichainNetworks,
 } from '../../../../../shared/constants/multichain/networks';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { normalizeSafeAddress } from '../../../../../shared/lib/multichain/address';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../../shared/lib/multichain/networks';
 import NicknamePopover from './nickname-popovers.component';

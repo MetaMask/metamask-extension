@@ -97,7 +97,7 @@ describe('PickerNetwork', () => {
           avatarType: AvatarType.NETWORK,
         }}
       />,
-      configureStore({ metamask: { useBlockie: false } }),
+      configureStore({ metamask: {} }),
     );
     expect(container).toMatchSnapshot();
   });
@@ -118,7 +118,7 @@ describe('PickerNetwork', () => {
           avatarType: AvatarType.NETWORK,
         }}
       />,
-      configureStore({ metamask: { useBlockie: true } }),
+      configureStore({ metamask: {} }),
     );
     expect(container).toMatchSnapshot();
   });

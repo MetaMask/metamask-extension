@@ -3,7 +3,6 @@
  * metrics system. This file implements Segment analytics tracking.
  */
 import React, {
-  Component,
   createContext,
   useEffect,
   useRef,
@@ -20,12 +19,10 @@ import type { Span } from '@sentry/types';
 import { omit } from 'lodash';
 
 import { captureException, captureMessage } from '../../shared/lib/sentry';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   PATH_NAME_MAP,
-  getPaths,
+  ROUTES,
   DEFAULT_ROUTE,
   type AppRoutes,
 } from '../helpers/constants/routes';
@@ -34,22 +31,28 @@ import {
   MetaMetricsEventName,
   type UnsanitizedMetaMetricsEventPayload,
   type MetaMetricsEventOptions,
-  type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
+import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-import { getParticipateInMetaMetrics } from '../selectors';
 import {
-  generateActionId,
-  submitRequestToBackground,
-} from '../store/background-connection';
-import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
+  getAnalyticsId,
+  getConsentDecisionMade,
+  getOptedIn,
+} from '../selectors';
+import { submitRequestToBackground } from '../store/background-connection';
+import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
 import type {
   TraceName,
   TraceRequest,
   EndTraceRequest,
-  TraceCallback,
 } from '../../shared/lib/trace';
 import { EnvironmentType } from '../../shared/constants/app';
+
+let previousTrackedPagePath: string | undefined;
+
+export function resetPreviousTrackedPagePathForTesting(): void {
+  previousTrackedPagePath = undefined;
+}
 
 /**
  * UI-specific event payload that omits fields added by the provider
@@ -68,12 +71,11 @@ export type UITrackEventMethod = (
 ) => Promise<void>;
 
 /**
- * Method signature for starting a buffered trace
+ * Method signature for starting a buffered trace.
+ * There is no callback variant here: the trace runs in the background, and a
+ * callback cannot cross the JSON-RPC boundary.
  */
-export type UITraceMethod = <Result>(
-  request: TraceRequest,
-  fn?: TraceCallback<Result>,
-) => Promise<Result | undefined>;
+export type UITraceMethod = (request: TraceRequest) => Promise<void>;
 
 /**
  * Method signature for ending a buffered trace
@@ -85,9 +87,7 @@ export type UIEndTraceMethod = (request: EndTraceRequest) => void;
  * Used when passing trace context across process boundaries.
  */
 export type SerializedTraceParentContext = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   _name: TraceName;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   _id?: string;
 };
 
@@ -140,11 +140,17 @@ type MetaMetricsProviderProps = {
   children: ReactNode;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
-  const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
+  const isOptedIn = useSelector(getOptedIn);
+  const analyticsId = useSelector(getAnalyticsId);
+  const isMetricsEnabled = consentDecisionMade && isOptedIn;
+  const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
+  // Buffer events until we know whether or not we can submit them.
+  const canMaybeTrackLater =
+    !consentDecisionMade || (isMetricsEnabled && !analyticsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
@@ -177,32 +183,56 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       };
 
       if (
-        isMetricsEnabled ||
+        canTrackImmediately ||
+        canMaybeTrackLater ||
         payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
       ) {
-        // If metrics are enabled, track immediately
-        trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
-      } else {
-        // If metrics are not enabled, buffer the event
-        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          { ...fullPayload, actionId: generateActionId() },
-        ]);
+        let builder = createEventBuilder(fullPayload.event);
+        if (fullPayload.category) {
+          builder = builder.addCategory(fullPayload.category);
+        }
+        if (fullPayload.properties) {
+          builder = builder.addProperties(fullPayload.properties);
+        }
+        if (fullPayload.sensitiveProperties) {
+          builder = builder.addSensitiveProperties(
+            fullPayload.sensitiveProperties,
+          );
+        }
+
+        const trackOptions = {
+          environmentType: fullPayload.environmentType,
+          page: fullPayload.page,
+          referrer: fullPayload.referrer,
+          excludeMetaMetricsId: options?.excludeMetaMetricsId,
+          matomoEvent: options?.matomoEvent,
+        } satisfies Parameters<typeof trackAnalyticsEvent>[1];
+
+        trackAnalyticsEvent(builder.build(), trackOptions);
       }
     },
-    [addContextPropsIntoEventProperties, context, isMetricsEnabled],
+    [
+      addContextPropsIntoEventProperties,
+      canMaybeTrackLater,
+      canTrackImmediately,
+      context,
+    ],
   );
 
-  const bufferedTrace: UITraceMethod = useCallback((request, fn) => {
-    return submitRequestToBackground('bufferedTrace', [request, fn]);
+  // **IMPORTANT**: Keep buffered traces on the background connection. Calling the shared
+  // methods directly here would create a queue local to this UI page. Consent is
+  // resolved in the background, so these must not depend on the Redux copy of it:
+  // that copy lags the background state, and a changing identity here would
+  // restart the onboarding spans that consumers key effects off of.
+  const bufferedTrace: UITraceMethod = useCallback((request) => {
+    return submitRequestToBackground('bufferedTrace', [request]);
   }, []);
 
   const bufferedEndTrace: UIEndTraceMethod = useCallback((request) => {
     submitRequestToBackground('bufferedEndTrace', [request]);
   }, []);
 
-  // Used to prevent double tracking page calls
-  const previousMatch = useRef<string | undefined>();
-
+  // Used to prevent double tracking page calls across StrictMode remounts.
   /**
    * Anytime the location changes, track a page change with segment.
    * Previously we would manually track changes to history and keep a
@@ -211,12 +241,13 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType();
-    // v6 matchPath doesn't support array of paths, so we loop to find first match
-    const paths = getPaths();
+    // Match against all known app routes (tracked and intentionally untracked).
+    // v6 matchPath doesn't support array of paths, so we loop to find first match.
     let match: ReturnType<typeof matchPath> = null;
-    for (const path of paths) {
+    let matchedRoute: AppRoutes | null = null;
+    for (const route of ROUTES) {
       // Normalize empty string paths to '/' - they're aliases for the Home route
-      const normalizedPath = path === '' ? DEFAULT_ROUTE : path;
+      const normalizedPath = route.path === '' ? DEFAULT_ROUTE : route.path;
       match = matchPath(
         {
           path: normalizedPath,
@@ -226,24 +257,26 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         location.pathname,
       );
       if (match) {
+        matchedRoute = route;
         break;
       }
     }
-    // Start by checking for a missing match route. If this falls through to
-    // the else if, then we know we have a matched route for tracking.
+    // Only report truly unknown paths. Known routes with trackInAnalytics:false
+    // are intentional and must not create Sentry noise.
     if (!match) {
       captureMessage(`Segment page tracking found unmatched route`, {
         extra: {
-          previousMatch,
+          previousMatch: previousTrackedPagePath,
           currentPath: location.pathname,
         },
       });
     } else if (
-      previousMatch.current !== match.pattern.path &&
+      matchedRoute?.trackInAnalytics &&
+      previousTrackedPagePath !== match.pattern.path &&
       !(
         environmentType === 'notification' &&
         match.pattern.path === '/' &&
-        previousMatch.current === undefined
+        previousTrackedPagePath === undefined
       )
     ) {
       // When a notification window is open by a Dapp we do not want to track
@@ -254,25 +287,22 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       const { pattern, params } = match;
       const { path } = pattern;
       const name = PATH_NAME_MAP.get(path as AppRoutes['path']);
-      trackMetaMetricsPage(
-        {
-          name,
-          // We do not want to send addresses or accounts in any events
-          // Some routes include these as params.
-          params: omit(params, ['account', 'address']) as Record<
-            string,
-            string
-          >,
-          environmentType: environmentType as EnvironmentType,
-          page: context.page,
-          referrer: context.referrer,
-        },
-        {
-          isOptInPath: location.pathname.startsWith('/initialize'),
-        },
-      );
+      trackMetaMetricsPage({
+        name,
+        // We do not want to send addresses or accounts in any events
+        // Some routes include these as params.
+        params: omit(params, ['account', 'address']) as Record<string, string>,
+        environmentType: environmentType as EnvironmentType,
+        page: context.page,
+        referrer: context.referrer,
+      });
     }
-    previousMatch.current = match?.pattern?.path;
+    // Only remember analytics-tracked pages. Untracked matches must leave this
+    // undefined so the notification-window skip for the initial `/` load still works
+    // (module-scoped across popup, notification, and fullscreen providers).
+    previousTrackedPagePath = matchedRoute?.trackInAnalytics
+      ? match?.pattern.path
+      : undefined;
   }, [
     location.pathname,
     location.search,
@@ -298,48 +328,6 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   );
 }
 
-type LegacyChildContext = {
-  trackEvent: UITrackEventMethod;
-  bufferedTrace: UITraceMethod;
-  bufferedEndTrace: UIEndTraceMethod;
-};
-
-type LegacyMetaMetricsProviderProps = {
-  children?: ReactNode;
-};
-
-/**
- * Legacy context provider for class components using the old context API
- *
- * @deprecated Use MetaMetricsContext with useContext hook instead
- */
-export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProviderProps> {
-  static contextType = MetaMetricsContext;
-
-  // eslint-disable-next-line react/static-property-placement
-  static childContextTypes = {
-    // This has to be different than the type name for the old metametrics file
-    // using the same name would result in whichever was lower in the tree to be
-    // used.
-    trackEvent: (): null => null,
-    bufferedTrace: (): null => null,
-    bufferedEndTrace: (): null => null,
-  };
-
-  getChildContext(): LegacyChildContext {
-    const context = this.context as MetaMetricsContextValue;
-    return {
-      trackEvent: context.trackEvent,
-      bufferedTrace: context.bufferedTrace,
-      bufferedEndTrace: context.bufferedEndTrace,
-    };
-  }
-
-  render() {
-    return this.props.children;
-  }
-}
-
 /**
  * Props injected by withMetaMetrics HOC
  */
@@ -352,8 +340,10 @@ export type WithMetaMetricsProps = MetaMetricsContextValue;
  * @returns Wrapped component with MetaMetrics context
  */
 export function withMetaMetrics<Props extends Record<string, unknown>>(
-  WrappedComponent: ComponentType<Props>,
-): ComponentType<Omit<Props, keyof WithMetaMetricsProps>> {
+  WrappedComponent: ComponentType<React.PropsWithChildren<Props>>,
+): ComponentType<
+  React.PropsWithChildren<Omit<Props, keyof WithMetaMetricsProps>>
+> {
   const WithMetaMetrics = (props: Omit<Props, keyof WithMetaMetricsProps>) => {
     const {
       trackEvent,

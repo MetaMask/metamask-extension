@@ -1,11 +1,16 @@
 import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { getSelectedInternalAccount } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
-import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import {
+  ConfirmationLoader,
+  PayWithOption,
+} from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import { setLastPerpsDepositEntryPoint } from '../../../../store/actions';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
+import { usePerpsNetworkManagement } from './usePerpsNetworkManagement';
 
 export type PerpsDepositConfirmationResponse = {
   transactionId: string;
@@ -14,6 +19,8 @@ export type PerpsDepositConfirmationResponse = {
 export type PerpsDepositConfirmationOptions = {
   onCreated?: (transactionId: string) => void;
   navigateOnCreate?: boolean;
+  payWithOption?: PayWithOption;
+  entryPoint?: string;
 };
 
 export type PerpsDepositConfirmationResult = {
@@ -33,9 +40,16 @@ export type PerpsDepositConfirmationResult = {
 export function usePerpsDepositConfirmation(
   options: PerpsDepositConfirmationOptions = {},
 ): PerpsDepositConfirmationResult {
-  const { onCreated, navigateOnCreate = true } = options;
+  const {
+    onCreated,
+    navigateOnCreate = true,
+    payWithOption,
+    entryPoint,
+  } = options;
   const navigate = useNavigate();
+  const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { ensureArbitrumNetworkExists } = usePerpsNetworkManagement();
   const [isLoading, setIsLoading] = useState(false);
 
   // Guard against accidental double-trigger in the same tick
@@ -55,17 +69,38 @@ export function usePerpsDepositConfirmation(
     setIsLoading(true);
 
     try {
+      // Hyperliquid deposits settle USDC on Arbitrum; the controller resolves
+      // the deposit tx against that network client and throws if it is missing.
+      // Add it first (no-op when already present) so the deposit can start.
+      await ensureArbitrumNetworkExists();
+
+      // Set or clear the entry point (currently required for
+      // hyperliquid-prompted deposits to show a custom toast message).
+      setLastPerpsDepositEntryPoint(entryPoint ?? null);
+
       const { transactionId } = await createPerpsDepositTransaction({});
 
       if (navigateOnCreate) {
-        const search = new URLSearchParams({
+        const params = new URLSearchParams({
           loader: ConfirmationLoader.CustomAmount,
-        }).toString();
-
-        navigate({
-          pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-          search,
         });
+
+        if (payWithOption) {
+          params.set('payWithOption', payWithOption);
+        }
+
+        const goBackTo = location.pathname + location.search;
+        if (goBackTo && goBackTo !== '/') {
+          params.set('goBackTo', goBackTo);
+        }
+
+        navigate(
+          {
+            pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
+            search: params.toString(),
+          },
+          { replace: true },
+        );
       }
 
       onCreated?.(transactionId);
@@ -79,10 +114,15 @@ export function usePerpsDepositConfirmation(
       setIsLoading(false);
     }
   }, [
+    ensureArbitrumNetworkExists,
+    entryPoint,
     isLoading,
+    location.pathname,
+    location.search,
     navigate,
     navigateOnCreate,
     onCreated,
+    payWithOption,
     selectedAccount?.address,
   ]);
 

@@ -18,7 +18,6 @@ import {
 import {
   getConnectedLedgerDevices,
   isWebHidAvailable,
-  subscribeToWebHidEvents,
 } from '../webConnectionUtils';
 
 /**
@@ -35,37 +34,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
   private pendingConnection: Promise<void> | null = null;
 
-  private unsubscribeHidEvents: (() => void) | null = null;
-
   constructor(options: HardwareWalletAdapterOptions) {
     this.options = options;
-    this.setupHidEventListeners();
-  }
-
-  /**
-   * Set up WebHID event listeners for proactive disconnect detection.
-   * This allows the UI to immediately reflect when the device is unplugged,
-   * rather than waiting until the next operation attempt.
-   */
-  private setupHidEventListeners(): void {
-    this.unsubscribeHidEvents = subscribeToWebHidEvents(
-      HardwareWalletType.Ledger,
-      // onConnect - device plugged in (could be used for auto-reconnect in the future)
-      () => {
-        // Currently no-op: we don't auto-reconnect when device is plugged in
-        // The user will trigger connect through UI action
-      },
-      // onDisconnect - device unplugged
-      () => {
-        // Only emit disconnect if we were tracking a connection
-        if (this.connected) {
-          this.connected = false;
-          this.options.onDeviceEvent({
-            event: DeviceEvent.Disconnected,
-          });
-        }
-      },
-    );
   }
 
   /**
@@ -195,10 +165,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
-    // Unsubscribe from WebHID events
-    this.unsubscribeHidEvents?.();
-    this.unsubscribeHidEvents = null;
-
     // The offscreen ledger script cleans up the transport after each action.
     // See closeTransport() in app/offscreen/ledger.ts
     this.connected = false;

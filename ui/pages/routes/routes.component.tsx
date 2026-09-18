@@ -1,31 +1,25 @@
-/* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
-import React, { Suspense, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  useLocation,
-  useNavigationType,
-  Navigate,
-  Outlet,
-} from 'react-router-dom';
-import IdleTimer from 'react-idle-timer';
-import type { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import React, { Suspense, useCallback, useEffect } from 'react';
+import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useIdleTimer } from 'react-idle-timer';
 
-import { useAppSelector } from '../../store/store';
+import type { ApprovalRequest } from '@metamask/approval-controller';
+import type { Json } from '@metamask/utils';
+
+import { MainLayout } from '#ui/layouts/main-layout';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import {
-  ImportNftsModal,
-  ImportTokensModal,
-} from '../../components/multichain';
+import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
-  ASSET_ROUTE,
+  ASSET_DETAILS_ROUTE,
+  ASSET_SECURITY_TRUST_ROUTE,
+  ASSET_IMAGE_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -35,7 +29,8 @@ import {
   NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
-  SEND_ROUTE,
+  SEND_PAGE_ROUTE,
+  LEGACY_SETTINGS_V2_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
@@ -47,23 +42,32 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
+  TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
   DEFI_ROUTE,
+  RAMPS_BUILD_QUOTE_ROUTE,
+  RAMPS_TOKEN_SELECTION_ROUTE,
+  RAMPS_PAYMENT_METHOD_ROUTE,
+  RAMPS_COMPLETE_BUY_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
+  CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
-  NONEVM_BALANCE_CHECK_ROUTE,
+  NETWORKS_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
+  CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
-  TOKEN_TRANSFER_ROUTE,
-  REVIEW_GATOR_PERMISSIONS_ROUTE,
+  TOKEN_TRANSFER_DETAILS_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
   REWARDS_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
@@ -71,71 +75,75 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
+  ACTIVITY_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
+  MONEY_HOME_ROUTE,
+  MONEY_ACTIVITY_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
+  MONEY_TRANSACTION_DETAILS_ROUTE,
+  MONEY_EARN_ROUTE,
   CONTACTS_ROUTE,
-  SETTINGS_V2_ROUTE,
+  HARDWARE_WALLET_REPAIR_ROUTE,
+  BATCH_SELL_ROOT_ROUTE,
+  SYNC_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
+import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
-  getPreferences,
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
-  getNetworkToAutomaticallySwitchTo,
-  getNumberOfAllUnapprovedTransactionsAndMessages,
-  oldestPendingConfirmationSelector,
-  getUnapprovedTransactions,
-  getPendingApprovals,
 } from '../../selectors';
+import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
+import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
   hideImportNftsModal,
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
-  hideImportTokensModal,
   hideDeprecatedNetworkModal,
-  automaticallySwitchNetwork,
   hideKeyringRemovalResultModal,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
+import Home from '../home/home.tsx';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
+import { BasicFunctionalityMigrationModal } from '../../components/app/basic-functionality-migration-modal';
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
-import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
+import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
-import {
-  isCorrectDeveloperTransactionType,
-  isCorrectSignatureApprovalType,
-} from '../../../shared/lib/confirmation.utils';
-import { type Confirmation } from '../confirmations/types/confirm';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
+import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
+import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
+import { useSpinDelay } from '../../hooks/useSpinDelay';
+import { useBasicFunctionalityConsolidation } from '../../hooks/useBasicFunctionalityConsolidation';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
+import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { LegacyLayout } from '../../layouts/legacy-layout';
@@ -144,9 +152,23 @@ import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import { Toaster } from '../../components/ui/toast/toast';
+import { ToastListener } from '../../components/app/toast-listener/toast-listener';
+import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
+import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
+import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
+import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
+import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
+import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
+import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
+import BatchSell from '../batch-sell/batch-sell-page';
+import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
 import { getConnectingLabel, setTheme } from './utils';
-import { ConfirmationHandler } from './confirmation-handler';
+import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
+import { NetworkHandler } from './network-handler';
+import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -157,8 +179,16 @@ const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
-const Settings = mmLazy(() => import('../settings/index.js'));
-const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const Settings = mmLazy(() => import('../settings/index.ts'));
+const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
+const NetworksPage = mmLazy(() => import('../networks/index.ts'));
+const TokenManagementPage = mmLazy(
+  () => import('../token-management/index.ts'),
+);
+const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
+const CustomTokenImportPage = mmLazy(
+  () => import('../custom-token-import/index.ts'),
+);
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -174,6 +204,9 @@ const ConfirmDecryptMessage = mmLazy(
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const HardwareWalletSignaturesPage = mmLazy(
+  () => import('../hardware-wallets/swap/hardware-wallet-signatures-page.tsx'),
+);
 const PermissionsConnect = mmLazy(
   () => import('../permissions-connect/index.js'),
 );
@@ -194,32 +227,36 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
-const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const SecurityTrustPage = mmLazy(
+  () => import('../asset/security-trust/index.ts'),
+);
+const DeFiPage = mmLazy(
+  () => import('../defi/components/defi-details-page.tsx'),
+);
+const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
+const RampsTokenSelection = mmLazy(
+  () => import('../ramps/token-selection/index.ts'),
+);
+const RampsPaymentMethod = mmLazy(
+  () => import('../ramps/payment-method/index.ts'),
+);
+const RampsCompleteBuy = mmLazy(() => import('../ramps/complete-buy/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/permissions-page/permissions-page.js'
-    ),
+    import('../../components/multichain/pages/permissions-page/permissions-page.js'),
 );
 const GatorPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'),
 );
 const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'),
 );
 const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
-    import(
-      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
-    ),
+    import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.js'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
@@ -232,10 +269,7 @@ const MultichainAccountDetailsPage = mmLazy(
 const SmartAccountPage = mmLazy(
   () => import('../multichain-accounts/smart-account-page/index.ts'),
 );
-const NonEvmBalanceCheck = mmLazy(
-  () => import('../nonevm-balance-check/index.tsx'),
-);
-const ShieldPlan = mmLazy(() => import('../shield-plan/index.ts'));
+const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
   () => import('../perps/perps-market-detail-page.tsx'),
 );
@@ -243,12 +277,65 @@ const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
 );
+const PerpsTransactionDetailsPage = mmLazy(
+  () => import('../perps/perps-transaction-details-page.tsx'),
+);
+const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
+const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
+const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
+const MoneyActivityPage = mmLazy(
+  () => import('../money/money-activity-page.tsx'),
+);
+const MoneyHowItWorksPage = mmLazy(
+  () => import('../money/money-how-it-works-page.tsx'),
+);
+const MoneyTransactionDetailsPage = mmLazy(
+  () => import('../money/money-transaction-details-page.tsx'),
+);
+const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
+const PerpsWithdrawPage = mmLazy(
+  () => import('../perps/perps-withdraw-page.tsx'),
+);
 const PerpsOrderEntryPage = mmLazy(
   () => import('../perps/perps-order-entry-page.tsx'),
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
+const HardwareWalletRepair = mmLazy(
+  () => import('../hardware-wallet-repair/index.ts'),
+);
+const TransactionDetailsRoute = mmLazy(
+  () => import('../details/transaction-details-route.tsx'),
+);
 // End Lazy Routes
+
+const SettingsV2LegacyRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  const canonicalPath = pathname.replace(
+    LEGACY_SETTINGS_V2_ROUTE,
+    SETTINGS_ROUTE,
+  );
+
+  return <Navigate to={`${canonicalPath}${search}${hash}`} replace />;
+};
+
+export const TokenManagementFeatureRoute = () => {
+  return <TokenManagementPage />;
+};
+
+export const DiscoverSearchFeatureRoute = () => {
+  const isDiscoverSearchEnabled = useAppSelector(getIsDiscoverSearchEnabled);
+
+  if (!isDiscoverSearchEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <DiscoverSearchPage />;
+};
+
+export const CustomTokenImportFeatureRoute = () => {
+  return <CustomTokenImportPage />;
+};
 
 export const routeConfig = [
   {
@@ -265,10 +352,11 @@ export const routeConfig = [
       {
         element: <RequireOnboarded />,
         children: [
-          {
+          createRouteWithMessenger({
             path: UNLOCK_ROUTE,
             element: <UnlockPage />,
-          },
+            capabilities: UNLOCK_ROUTE_CAPABILITIES,
+          }),
         ],
       },
       {
@@ -279,33 +367,79 @@ export const routeConfig = [
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
         element: <BasicFunctionalityOff />,
       },
-      {
+      createRouteWithMessenger({
         path: RESTORE_VAULT_ROUTE,
         element: <RestoreVaultPage />,
-      },
+        capabilities: RESTORE_VAULT_ROUTE_CAPABILITIES,
+      }),
     ],
   },
   {
     element: <RequireAuthenticated />,
     children: [
-      {
+      createRouteWithMessenger({
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
         element: <RevealSeedConfirmation />,
+        capabilities: REVEAL_SEED_ROUTE_CAPABILITIES,
+      }),
+      {
+        path: HARDWARE_WALLET_REPAIR_ROUTE,
+        element: <HardwareWalletRepair />,
       },
       {
         path: IMPORT_SRP_ROUTE,
         element: <ImportSrpPage />,
       },
       {
+        path: NETWORKS_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <NetworksPage />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      {
+        path: TOKEN_MANAGEMENT_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <TokenManagementFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      {
+        path: DISCOVER_SEARCH_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <DiscoverSearchFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      {
+        path: CUSTOM_TOKEN_IMPORT_ROUTE,
+        element: <CustomTokenImportFeatureRoute />,
+      },
+      {
         path: `${SETTINGS_ROUTE}/*`,
-        element: <Settings />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Settings />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      ...(getIsQrSyncEnabled()
+        ? [
+            {
+              path: SYNC_ACCOUNTS_ROUTE,
+              element: <SyncAccounts />,
+            },
+          ]
+        : []),
+      {
+        path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
+        element: <SettingsV2LegacyRedirect />,
       },
       {
-        path: `${SETTINGS_V2_ROUTE}/*`,
-        element: <SettingsV2 />,
-      },
-      {
-        path: `${SEND_ROUTE}/:page?`,
+        path: SEND_PAGE_ROUTE,
         element: <SendPage />,
       },
       {
@@ -319,6 +453,10 @@ export const routeConfig = [
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         element: <Confirm />,
+      },
+      {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        element: <HardwareWalletSignaturesPage />,
       },
       {
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -341,27 +479,39 @@ export const routeConfig = [
         element: <PermissionsConnect />,
       },
       {
-        path: `${ASSET_ROUTE}/image/:asset/:id`,
+        path: ASSET_IMAGE_ROUTE,
         element: <NftFullImage />,
       },
       {
-        path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
+        path: ASSET_SECURITY_TRUST_ROUTE,
+        element: <SecurityTrustPage />,
+      },
+      {
+        path: ASSET_DETAILS_ROUTE,
         element: <Asset />,
       },
       {
         path: PERMISSIONS,
-        element: <PermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <PermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
         path: GATOR_PERMISSIONS,
-        element: <GatorPermissionsPage />,
+        element: (
+          <GlobalMenuRouteTransition>
+            <GatorPermissionsPage />
+          </GlobalMenuRouteTransition>
+        ),
       },
       {
-        path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
+        path: TOKEN_TRANSFER_DETAILS_ROUTE,
         element: <GatorPermissionsTokenTransferPermissionsPage />,
       },
       {
-        path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?`,
+        path: REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
         element: <GatorPermissionsReviewPermissionsPage />,
       },
       {
@@ -376,13 +526,18 @@ export const routeConfig = [
         path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
         element: <MultichainAccountAddressListPage />,
       },
-      {
+      createRouteWithMessenger({
         path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
         element: <MultichainAccountPrivateKeyListPage />,
-      },
+        capabilities: PRIVATE_KEY_LIST_ROUTE_CAPABILITIES,
+      }),
       {
         path: ADD_WALLET_PAGE_ROUTE,
         element: <AddWalletPage />,
+      },
+      {
+        path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+        element: <ChooseNewWalletTypePage />,
       },
       {
         path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
@@ -398,11 +553,16 @@ export const routeConfig = [
       },
       {
         path: CONTACTS_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <Outlet />
+          </GlobalMenuRouteTransition>
+        ),
         children: contactsRoutes,
       },
       {
-        path: DEFAULT_ROUTE,
-        element: <Home />,
+        path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
+        element: <TransactionDetailsRoute />,
       },
       {
         element: <RequireBasicFunctionality />,
@@ -417,35 +577,57 @@ export const routeConfig = [
           },
           {
             path: NOTIFICATIONS_ROUTE,
-            element: <Notifications />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <Notifications />
+              </GlobalMenuRouteTransition>
+            ),
           },
           {
             path: SNAPS_ROUTE,
-            element: <SnapList />,
+            element: (
+              <GlobalMenuRouteTransition>
+                <SnapList />
+              </GlobalMenuRouteTransition>
+            ),
           },
-          {
+          createRouteWithMessenger({
             path: SNAPS_VIEW_ROUTE,
+            capabilities: SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES,
             element: <SnapView />,
-          },
+          }),
           {
-            path: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:txHash`,
-            element: <CrossChainSwapTxDetails />,
-          },
-          {
-            path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-            element: <CrossChainSwap />,
+            path: `${BATCH_SELL_ROOT_ROUTE}/*`,
+            element: <BatchSell />,
           },
           {
             path: `${DEFI_ROUTE}/:chainId/:protocolId`,
             element: <DeFiPage />,
           },
           {
-            path: `${MUSD_CONVERSION_ROUTE}/*`,
-            element: <MusdConversionPage />,
+            element: <RampsFlowLayout />,
+            children: [
+              {
+                path: RAMPS_BUILD_QUOTE_ROUTE,
+                element: <RampsBuildQuote />,
+              },
+              {
+                path: RAMPS_TOKEN_SELECTION_ROUTE,
+                element: <RampsTokenSelection />,
+              },
+              {
+                path: RAMPS_PAYMENT_METHOD_ROUTE,
+                element: <RampsPaymentMethod />,
+              },
+            ],
           },
           {
-            path: NONEVM_BALANCE_CHECK_ROUTE,
-            element: <NonEvmBalanceCheck />,
+            path: RAMPS_COMPLETE_BUY_ROUTE,
+            element: <RampsCompleteBuy />,
+          },
+          {
+            path: `${MUSD_CONVERSION_ROUTE}/*`,
+            element: <MusdConversionPage />,
           },
           {
             path: SHIELD_PLAN_ROUTE,
@@ -471,9 +653,69 @@ export const routeConfig = [
                 element: <PerpsActivityPage />,
               },
               {
+                path: PERPS_TRANSACTION_DETAILS_ROUTE,
+                element: <PerpsTransactionDetailsPage />,
+              },
+              {
                 path: PERPS_MARKET_LIST_ROUTE,
                 element: <MarketListView />,
               },
+              {
+                path: PERPS_WITHDRAW_ROUTE,
+                element: <PerpsWithdrawPage />,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        element: <MainLayout />,
+        children: [
+          createRouteWithMessenger({
+            path: DEFAULT_ROUTE,
+            capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <Home />,
+          }),
+          {
+            element: <RequireBasicFunctionality />,
+            children: [
+              {
+                path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
+                element: <CrossChainSwap />,
+              },
+              {
+                path: ACTIVITY_ROUTE,
+                element: <ActivityPage />,
+              },
+              {
+                path: PERPS_HOME_PAGE_ROUTE,
+                element: <PerpsPage />,
+              },
+              createRouteWithMessenger({
+                path: MONEY_HOME_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHomePage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_ACTIVITY_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyActivityPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_HOW_IT_WORKS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHowItWorksPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_TRANSACTION_DETAILS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyTransactionDetailsPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_EARN_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyEarnPage />,
+              }),
             ],
           },
         ],
@@ -482,32 +724,20 @@ export const routeConfig = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navType = useNavigationType();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
   const isLoading = useAppSelector((state) => state.appState.isLoading);
+  const showLoadingOverlay = useSpinDelay(isLoading);
   const loadingMessage = useAppSelector(
     (state) => state.appState.loadingMessage,
   );
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     useAppSelector(getPreferences);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
-
-  const networkToAutomaticallySwitchTo = useAppSelector(
-    getNetworkToAutomaticallySwitchTo,
-  );
-  const oldestPendingApproval = useAppSelector(
-    oldestPendingConfirmationSelector,
-  );
-  const pendingApprovals = useAppSelector(getPendingApprovals);
-  const transactionsMetadata = useAppSelector(
-    getUnapprovedTransactions,
-  ) as Record<string, TransactionMeta>;
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -525,9 +755,6 @@ export default function Routes() {
     getShowExtensionInFullSizeView,
   );
 
-  const isImportTokensModalOpen = useAppSelector(
-    (state) => state.appState.importTokensModalOpen,
-  );
   const isBasicConfigurationModalOpen = useAppSelector(
     (state) => state.appState.showBasicFunctionalityModal,
   );
@@ -540,9 +767,6 @@ export default function Routes() {
   const isIpfsModalOpen = useAppSelector(
     (state) => state.appState.showIpfsModalOpen,
   );
-  const totalUnapprovedConfirmationCount = useAppSelector(
-    getNumberOfAllUnapprovedTransactionsAndMessages,
-  );
   const currentExtensionPopupId = useAppSelector(
     (state) => state.metamask.currentExtensionPopupId,
   );
@@ -550,7 +774,9 @@ export default function Routes() {
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
     (state) => state.appState.showKeyringRemovalSnapModal,
   );
-  const pendingConfirmations = useAppSelector(getUnapprovedConfirmations);
+  const pendingConfirmations = useAppSelector(
+    getUnapprovedConfirmations,
+  ) as ApprovalRequest<Record<string, Json>>[];
   const hideShowKeyringSnapRemovalResultModal = () =>
     dispatch(hideKeyringRemovalResultModal());
 
@@ -558,37 +784,16 @@ export default function Routes() {
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
     useMultichainAccountsIntroModal(isUnlocked, location);
 
-  const prevPropsRef = useRef({
-    isUnlocked,
-    totalUnapprovedConfirmationCount,
-  });
+  // Close the side panel when a wallet reset is in progress and the wallet
+  // becomes unlocked on another MetaMask surface. The side panel keeps its own
+  // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
+  // onboarding and trigger the onboarding lock trap.
+  useCloseSidePanelOnWalletReset();
 
-  useEffect(() => {
-    const prevProps = prevPropsRef.current;
+  useNavigateRouteListener();
+  useBasicFunctionalityConsolidation();
 
-    // Automatically switch the network if the user
-    // no longer has unapproved transactions and they
-    // should be on a different network for the
-    // currently active tab's dapp
-    if (
-      networkToAutomaticallySwitchTo &&
-      totalUnapprovedConfirmationCount === 0 &&
-      (prevProps.totalUnapprovedConfirmationCount > 0 ||
-        (prevProps.isUnlocked === false && isUnlocked))
-    ) {
-      dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
-    }
-
-    prevPropsRef.current = {
-      isUnlocked,
-      totalUnapprovedConfirmationCount,
-    };
-  }, [
-    networkToAutomaticallySwitchTo,
-    isUnlocked,
-    totalUnapprovedConfirmationCount,
-    dispatch,
-  ]);
+  const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
   useEffect(() => {
     // Terminate the popup when another popup is opened
@@ -619,10 +824,8 @@ export default function Routes() {
 
   // Track location changes for metrics
   useEffect(() => {
-    if (navType === 'PUSH') {
-      dispatch(pageChanged(location.pathname));
-    }
-  }, [location.pathname, navType, dispatch]);
+    dispatch(pageChanged(location.pathname));
+  }, [location.pathname, dispatch]);
 
   useEffect(() => {
     setTheme(theme);
@@ -634,26 +837,35 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  const renderRoutes = () => {
-    const routes = (
-      <Suspense fallback={null}>
-        <Outlet />
-      </Suspense>
-    );
+  const handleIdleAction = useCallback(() => {
+    dispatch(setLastActiveTime());
+  }, [dispatch]);
 
+  const { reset: resetIdleTimer, pause: pauseIdleTimer } = useIdleTimer({
+    onAction: autoLockTimeLimit > 0 ? handleIdleAction : undefined,
+    throttle: 1000,
+    // Never auto-start on mount; the effect below drives the timer so it
+    // correctly starts or stops whenever autoLockTimeLimit changes at runtime.
+    startOnMount: false,
+  });
+
+  // Start the idle timer whenever auto-lock is enabled, and stop it when the
+  // user sets the timeout to "Never" (0). Using reset() instead of relying on
+  // startOnMount means the timer also starts correctly when the user switches
+  // from "Never" to a positive timeout after the component has already mounted.
+  useEffect(() => {
     if (autoLockTimeLimit > 0) {
-      return (
-        <IdleTimer
-          onAction={() => dispatch(setLastActiveTime())}
-          throttle={1000}
-        >
-          {routes}
-        </IdleTimer>
-      );
+      resetIdleTimer();
+    } else {
+      pauseIdleTimer();
     }
+  }, [autoLockTimeLimit, resetIdleTimer, pauseIdleTimer]);
 
-    return routes;
-  };
+  const renderRoutes = () => (
+    <Suspense fallback={null}>
+      <Outlet />
+    </Suspense>
+  );
 
   const t = useI18nContext();
 
@@ -661,39 +873,25 @@ export default function Routes() {
     ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
     : null;
 
-  const paramsConfirmationId: string = location.pathname.split(
-    '/confirm-transaction/',
-  )[1];
-  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
-  const pendingApproval = pendingApprovals.find(
-    (approval) => approval.id === confirmationId,
-  );
-  const isCorrectApprovalType = isCorrectSignatureApprovalType(
-    pendingApproval?.type as ApprovalType | undefined,
-  );
-  const isCorrectTransactionType = isCorrectDeveloperTransactionType(
-    transactionsMetadata[confirmationId]?.type,
-  );
-
   const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
 
   const isLoadingShown =
-    isLoading &&
+    showLoadingOverlay &&
     completedOnboarding &&
     !pendingConfirmations.some(
-      (confirmation: Confirmation) =>
+      (confirmation) =>
         confirmation.type ===
         SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ) &&
     // In the redesigned screens, we hide the general loading spinner and the
     // loading states are on a component by component basis.
-    !isCorrectApprovalType &&
-    !isCorrectTransactionType &&
+    !isUsingRedesignedConfirmationType &&
     // We don't want to show the loading screen on the deep link route, as it
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const environmentType = getEnvironmentType();
+  const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   return (
     <div
@@ -704,9 +902,12 @@ export default function Routes() {
       })}
       dir={textDirection}
     >
-      <ConfirmationHandler />
+      <ConfirmationRouter />
+      <NetworkHandler />
+      <ToastListener />
+
       <QRHardwarePopover />
-      <Modal />
+      {isUnlocked ? <Modal /> : null}
       <Alert visible={alertOpen} msg={alertMessage} />
 
       <NetworkConfirmationPopover />
@@ -718,9 +919,7 @@ export default function Routes() {
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}
       {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
-      {isImportTokensModalOpen ? (
-        <ImportTokensModal onClose={() => dispatch(hideImportTokensModal())} />
-      ) : null}
+      {isUnlocked ? <BasicFunctionalityMigrationModal /> : null}
       {isDeprecatedNetworkModalOpen ? (
         <DeprecatedNetworkModal
           onClose={() => dispatch(hideDeprecatedNetworkModal())}
@@ -745,7 +944,9 @@ export default function Routes() {
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
-      <Modals />
+
+      {isUnlocked ? <Toaster /> : null}
+      {isUnlocked ? <Modals /> : null}
     </div>
   );
 }

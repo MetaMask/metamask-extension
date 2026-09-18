@@ -10,7 +10,10 @@ const mockStoreWithBlockies = configureMockStore([])({
   ...mockState,
   metamask: {
     ...mockState.metamask,
-    useBlockie: true,
+    preferences: {
+      ...mockState.metamask.preferences,
+      avatarType: 'blockies',
+    },
   },
 });
 

@@ -1,19 +1,21 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
-import { IconSize } from '@metamask/design-system-react';
-import { Box, Icon, IconName, Text } from '../../component-library';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
+  FontWeight,
   IconColor,
-  JustifyContent,
-  TextAlign,
+  IconName,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_REVIEW_SRP_ROUTE,
@@ -24,26 +26,31 @@ export type MultichainSrpBackupProps = {
   shouldShowBackupReminder?: boolean;
   className?: string | Record<string, boolean>;
   keyringId?: string;
+  backupFlowReturnRoute?: string;
 };
 
-export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
+export const MultichainSrpBackup = ({
   shouldShowBackupReminder = false,
   className = '',
   keyringId,
-}) => {
+  backupFlowReturnRoute,
+}: MultichainSrpBackupProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
   const handleSrpBackupClick = useCallback(() => {
     if (shouldShowBackupReminder) {
-      const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-      navigate(backUpSRPRoute);
+      const backUpSRPParams = new URLSearchParams({ isFromReminder: 'true' });
+      if (backupFlowReturnRoute) {
+        backUpSRPParams.set('previousPage', backupFlowReturnRoute);
+      }
+      navigate(`${ONBOARDING_REVIEW_SRP_ROUTE}/?${backUpSRPParams.toString()}`);
     } else {
       navigate(
         keyringId ? `${REVEAL_SEED_ROUTE}/${keyringId}` : REVEAL_SEED_ROUTE,
       );
     }
-  }, [shouldShowBackupReminder, navigate, keyringId]);
+  }, [shouldShowBackupReminder, backupFlowReturnRoute, navigate, keyringId]);
 
   const finalClassName = classnames('multichain-srp-backup', className);
 
@@ -52,37 +59,43 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
       <Box
         className={finalClassName}
         padding={4}
-        width={BlockSize.Full}
-        textAlign={TextAlign.Left}
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundMuted}
         onClick={handleSrpBackupClick}
         data-testid="multichain-srp-backup"
       >
         <Box>
           <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
           >
             {t('secretRecoveryPhrase')}
           </Text>
         </Box>
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+        >
           <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
           >
             {shouldShowBackupReminder
               ? t('accountDetailsSrpBackUpMessage')
               : t('srpListStateBackedUp')}
           </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.iconAlternative}
-          />
+          <Box className="ml-2">
+            <ButtonIcon
+              iconName={IconName.ArrowRight}
+              iconProps={{ color: IconColor.IconAlternative }}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('secretRecoveryPhrase')}
+            />
+          </Box>
         </Box>
       </Box>
     </>

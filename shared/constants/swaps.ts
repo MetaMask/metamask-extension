@@ -9,7 +9,7 @@ import {
   BNB_TOKEN_IMAGE_URL,
   POL_TOKEN_IMAGE_URL,
   AVAX_TOKEN_IMAGE_URL,
-  SEI_IMAGE_URL,
+  SEI_NATIVE_TOKEN_IMAGE_URL,
   MONAD_IMAGE_URL,
   HYPEREVM_IMAGE_URL,
   CURRENCY_SYMBOLS,
@@ -143,8 +143,7 @@ export const SEI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   name: 'Sei',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  // SEI using the same icon as Sei Mainnet
-  iconUrl: SEI_IMAGE_URL,
+  iconUrl: SEI_NATIVE_TOKEN_IMAGE_URL,
 } as const;
 
 export const MONAD_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
@@ -169,6 +168,14 @@ const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   address: MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL,
   decimals: 9,
   iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
+};
+
+const STELLAR_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  symbol: 'XLM',
+  name: 'Stellar Lumens',
+  address: MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.XLM,
+  decimals: 7,
+  iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.STELLAR],
 };
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
@@ -245,6 +252,7 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.HYPE,
   CHAIN_IDS.MEGAETH_MAINNET,
   MultichainNetworks.SOLANA,
+  MultichainNetworks.STELLAR,
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
@@ -374,6 +382,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.HYPE]: HYPE_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_SWAPS_TOKEN_OBJECT,
   [MultichainNetworks.SOLANA]: SOLANA_SWAPS_TOKEN_OBJECT,
+  [MultichainNetworks.STELLAR]: STELLAR_SWAPS_TOKEN_OBJECT,
 } as const;
 
 export const ETHEREUM = 'ethereum';

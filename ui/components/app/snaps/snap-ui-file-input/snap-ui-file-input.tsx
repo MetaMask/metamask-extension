@@ -2,7 +2,6 @@ import React, {
   ChangeEvent,
   // eslint-disable-next-line @typescript-eslint/no-shadow
   DragEvent,
-  FunctionComponent,
   useRef,
   useState,
 } from 'react';
@@ -69,7 +68,7 @@ export type SnapUIFileInputProps = {
  * @param props.disabled - Whether the file input is disabled.
  * @returns A file input element.
  */
-export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
+export const SnapUIFileInput = ({
   name,
   label,
   form,
@@ -78,7 +77,7 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
   error,
   helpText,
   disabled,
-}) => {
+}: SnapUIFileInputProps) => {
   const t = useI18nContext();
   const { handleFileChange } = useSnapInterfaceContext();
   const ref = useRef<HTMLInputElement>(null);

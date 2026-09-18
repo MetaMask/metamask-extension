@@ -14,6 +14,10 @@ import type {
   CaipAssetId,
   Hex,
 } from '@metamask/utils';
+import {
+  SUPPORT_CONFIG as SUPPORT_CONFIG_BASE,
+  FEEDBACK_CONFIG as FEEDBACK_CONFIG_BASE,
+} from '../../../../shared/constants/perps';
 
 /**
  * Perps feature constants
@@ -491,21 +495,17 @@ export const LEARN_MORE_CONFIG = {
 } as const;
 
 /**
- * Support configuration
- * Contact support button configuration (matches Settings behavior)
+ * Support and feedback configuration
+ * Extends the real constants with mock-specific properties for testing
  */
 export const SUPPORT_CONFIG = {
-  Url: 'https://support.metamask.io',
+  ...SUPPORT_CONFIG_BASE,
   TitleKey: 'perps.support.title',
   DescriptionKey: 'perps.support.description',
 } as const;
 
-/**
- * Feedback survey configuration
- * External survey for collecting user feedback on Perps trading experience
- */
 export const FEEDBACK_CONFIG = {
-  Url: 'https://survey.alchemer.com/s3/8649911/MetaMask-Perps-Trading-Feedback',
+  ...FEEDBACK_CONFIG_BASE,
   TitleKey: 'perps.feedback.title',
 } as const;
 
@@ -515,7 +515,7 @@ export const FEEDBACK_CONFIG = {
  */
 export const PERPS_SUPPORT_ARTICLES_URLS = {
   AdlUrl:
-    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/#what-is-auto-deleveraging-adl',
+    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
 } as const;
 
 /**
@@ -563,9 +563,6 @@ export const PERPS_TRANSACTIONS_HISTORY_CONSTANTS = {
    */
   DefaultFundingHistoryDays: 365,
 } as const;
-
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-// ESLint override: BaseController requires 'type' for Json compatibility, not 'interface'
 
 /**
  * Market data with prices for UI display
@@ -765,10 +762,72 @@ export type TradeConfiguration = {
 export type OrderType = 'market' | 'limit';
 
 // Market asset type classification (reusable across components)
-export type MarketType = 'crypto' | 'equity' | 'commodity' | 'forex';
+export type MarketType =
+  | 'crypto'
+  | 'stock'
+  | 'pre-ipo'
+  | 'index'
+  | 'etf'
+  | 'commodity'
+  | 'forex';
 
-// Market type filter including 'all' option and combined 'stocks_and_commodities' for UI filtering
-export type MarketTypeFilter = MarketType | 'all' | 'stocks_and_commodities';
+export type MarketTypeFilter = MarketType | 'all' | 'new' | 'memecoin';
+
+export const MARKET_CATEGORIES = [
+  'crypto',
+  'memecoin',
+  'stock',
+  'pre-ipo',
+  'index',
+  'etf',
+  'commodity',
+  'forex',
+] as const satisfies readonly MarketTypeFilter[];
+
+export function isHip3Market(
+  market: Pick<PerpsMarketData, 'isHip3' | 'marketSource'>,
+): boolean {
+  return Boolean(market.isHip3) || Boolean(market.marketSource);
+}
+
+export function getMarketTypeFilter(
+  market: Pick<PerpsMarketData, 'isHip3' | 'marketSource' | 'marketType'>,
+): MarketTypeFilter {
+  if (market.marketType) {
+    return market.marketType;
+  }
+
+  return isHip3Market(market) ? 'new' : 'crypto';
+}
+
+export function matchesCategory(
+  market: Pick<
+    PerpsMarketData,
+    'isHip3' | 'marketSource' | 'marketType' | 'tags'
+  >,
+  category: MarketTypeFilter,
+): boolean {
+  switch (category) {
+    case 'all': {
+      return true;
+    }
+    case 'crypto': {
+      return !isHip3Market(market) || market.marketType === 'crypto';
+    }
+    case 'memecoin': {
+      return (
+        (!isHip3Market(market) || market.marketType === 'crypto') &&
+        (market.tags?.includes('memecoin') ?? false)
+      );
+    }
+    case 'new': {
+      return isHip3Market(market) && market.marketType === undefined;
+    }
+    default: {
+      return market.marketType !== undefined && market.marketType === category;
+    }
+  }
+}
 
 // Badge type for market badges in UI (used by marketUtils)
 export type BadgeType = MarketType | 'experimental' | 'dex';
@@ -806,6 +865,10 @@ export type TrackingData = {
 
   // Entry source for analytics (e.g., 'trending' for Trending page discovery)
   source?: string;
+
+  // VIP program context (used by TradingService analytics events)
+  vipTier?: number;
+  vipDiscount?: number;
 };
 
 // TP/SL-specific tracking data for analytics events
@@ -875,7 +938,7 @@ export type Position = {
   };
   liquidationPrice: string | null; // Liquidation price (null if no risk)
   maxLeverage: number; // Maximum allowed leverage for this asset
-  returnOnEquity: string; // ROE percentage
+  returnOnEquity: string; // ROE as decimal ratio (e.g. 0.1579 for 15.79%)
   cumulativeFunding: {
     // Funding payments history
     allTime: string; // Total funding since account opening
@@ -891,7 +954,8 @@ export type Position = {
 
 // Using 'type' instead of 'interface' for BaseController Json compatibility
 export type AccountState = {
-  availableBalance: string; // Based on HyperLiquid: withdrawable
+  spendableBalance: string; // Max collateral available for a new position (provider-normalised)
+  withdrawableBalance: string; // Max collateral that can leave the venue (provider-normalised)
   totalBalance: string; // Based on HyperLiquid: accountValue
   marginUsed: string; // Based on HyperLiquid: marginUsed
   unrealizedPnl: string; // Based on HyperLiquid: unrealizedPnl
@@ -911,7 +975,7 @@ export type AccountState = {
   subAccountBreakdown?: Record<
     string,
     {
-      availableBalance: string;
+      spendableBalance: string;
       totalBalance: string;
     }
   >;
@@ -967,6 +1031,7 @@ export type MarginResult = {
 export type FlipPositionParams = {
   symbol: string; // Asset identifier to flip (e.g., 'BTC', 'ETH', 'xyz:TSLA')
   position: Position; // Current position to flip
+  trackingData?: TrackingData;
 };
 
 export type InitializeResult = {
@@ -1054,13 +1119,24 @@ export type PerpsMarketData = {
    */
   marketSource?: string | null;
   /**
+   * Whether this is a HIP-3 market.
+   */
+  isHip3?: boolean;
+  /**
    * Market asset type classification (optional)
    * - crypto: Cryptocurrency (default for most markets)
-   * - equity: Stock/equity markets (HIP-3)
+   * - stock: Individual stocks (HIP-3)
+   * - pre-ipo: Pre-IPO assets (HIP-3)
+   * - index: Indices (HIP-3)
+   * - etf: Exchange-traded funds (HIP-3)
    * - commodity: Commodity markets (HIP-3)
    * - forex: Foreign exchange pairs (HIP-3)
    */
   marketType?: MarketType;
+  /**
+   * Terminal backend tags (e.g. `'memecoin'`). Used for derived categories.
+   */
+  tags?: string[];
   /**
    * Multi-provider: which provider this market data comes from (injected by aggregator)
    */
@@ -1223,7 +1299,7 @@ export type PerpsControllerConfig = {
    */
   fallbackBlockedRegions?: string[];
   /**
-   * Fallback HIP-3 equity perps master switch to use when RemoteFeatureFlagController fails to fetch.
+   * Fallback HIP-3 perps master switch to use when RemoteFeatureFlagController fails to fetch.
    * Controls whether HIP-3 (builder-deployed) DEXs are enabled.
    * The fallback is set by default if defined and replaced with remote feature flag once available.
    */
@@ -1678,11 +1754,11 @@ export type PerpsProvider = {
  * Provider identifier type for multi-provider support.
  * Add new providers here as they are implemented.
  */
-export type PerpsProviderType = 'hyperliquid' | 'myx';
+export type PerpsProviderType = 'hyperliquid' | 'lighter';
 
 /**
  * Active provider mode for PerpsController state.
- * - Direct providers: 'hyperliquid', 'myx'
+ * - Direct providers: 'hyperliquid', 'lighter'
  * - 'aggregated': Multi-provider aggregation mode
  */
 export type PerpsActiveProviderMode = PerpsProviderType | 'aggregated';
@@ -1853,6 +1929,8 @@ export enum PerpsAnalyticsEvent {
   UiInteraction = 'Perp UI Interaction',
   RiskManagement = 'Perp Risk Management',
   PerpsError = 'Perp Error',
+  TransactionConsidered = 'Perp Transaction Considered',
+  TradeQuoteReceived = 'Perp Trade Quote Received',
 }
 
 /**

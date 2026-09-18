@@ -7,6 +7,37 @@ import {
   maybeGetLocaleContext,
 } from '../../../shared/lib/error-utils';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import {
+  CriticalErrorType,
+  METHOD_REPAIR_DATABASE_TIMEOUT,
+} from '../../../shared/constants/state-corruption';
+import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
+import {
+  hasVault,
+  type Backup,
+} from '../../../shared/lib/stores/persistence-manager';
+
+const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
+
+/**
+ * Reads backup with a timeout so a hanging IndexedDB cannot block the critical error UI.
+ *
+ * @param timeoutMs - Max wait in milliseconds.
+ * @returns Backup or null on timeout, missing hook, or error.
+ */
+async function safeGetVaultBackup(
+  timeoutMs: number = SAFE_GET_VAULT_BACKUP_TIMEOUT_MS,
+): Promise<Backup | null> {
+  const getBackupState = globalThis.stateHooks?.getBackupState;
+  if (!getBackupState) {
+    return null;
+  }
+  const timeoutPromise = new Promise<Backup | null>((resolve) => {
+    setTimeout(() => resolve(null), timeoutMs);
+  });
+  const backupPromise = getBackupState().catch(() => null);
+  return Promise.race([backupPromise, timeoutPromise]);
+}
 
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.
@@ -45,6 +76,13 @@ function getSentryTarget() {
   return process.env.SENTRY_DSN;
 }
 
+function getBuildSentryTags(): Record<string, string> {
+  return {
+    'metamask.environment': process.env.METAMASK_ENVIRONMENT ?? 'unknown',
+    'metamask.build_type': process.env.METAMASK_BUILD_TYPE ?? 'unknown',
+  };
+}
+
 export enum CriticalErrorTranslationKey {
   TroubleStarting = 'troubleStarting',
   SomethingIsWrong = 'somethingIsWrong',
@@ -70,10 +108,14 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     // Extract sentryTags from error object (if present)
     // Any error can define error.sentryTags to add searchable tags to Sentry
     const errorObj = error as Record<string, unknown>;
-    const sentryTags =
+    const errorSentryTags =
       errorObj?.sentryTags && typeof errorObj.sentryTags === 'object'
         ? (errorObj.sentryTags as Record<string, string>)
         : {};
+    const sentryTags = {
+      ...getBuildSentryTags(),
+      ...errorSentryTags,
+    };
 
     // Create error_details without sentryTags to avoid duplication
     // (sentryTags are sent as top-level tags)
@@ -164,6 +206,8 @@ async function handleRestartAction(
  * @param errorKey - The key for the error message to display.
  * @param error - The error object to log.
  * @param currentLocale - Optional locale context for translations.
+ * @param port - Optional port for background communication (needed for vault recovery functionality).
+ * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -172,9 +216,35 @@ export async function displayCriticalErrorMessage(
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
   currentLocale?: string,
+  port?: browser.Runtime.Port,
+  criticalErrorType?: CriticalErrorType,
 ): Promise<never> {
+  const backup = port ? await safeGetVaultBackup() : null;
+  const canTriggerRestore = port && hasVault(backup);
+
+  try {
+    port?.postMessage({
+      data: {
+        method: CRITICAL_ERROR_SCREEN_VIEWED,
+        params: {
+          backup,
+          canTriggerRestore,
+          criticalErrorType,
+        },
+      },
+    });
+  } catch (e) {
+    log.warn('Failed to notify background of critical error screen view', e);
+  }
+
   const localeContext = await maybeGetLocaleContext(currentLocale);
-  const html = getErrorHtml(errorKey, error, localeContext, SUPPORT_LINK);
+  const html = getErrorHtml(
+    errorKey,
+    error,
+    localeContext,
+    SUPPORT_LINK,
+    canTriggerRestore,
+  );
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
   if (criticalErrorContainer) {
@@ -192,6 +262,30 @@ export async function displayCriticalErrorMessage(
       const shouldReport = reportCheckbox?.checked ?? false;
       await handleRestartAction(error, shouldReport);
     });
+
+    // Attempt recovery button: trigger vault recovery flow.
+    if (canTriggerRestore) {
+      const restoreButton =
+        criticalErrorContainer.querySelector<HTMLButtonElement>(
+          '#critical-error-restore-link',
+        );
+
+      restoreButton?.addEventListener('click', (event: Event) => {
+        event.preventDefault();
+        // eslint-disable-next-line no-alert
+        const confirmed = confirm(
+          localeContext.t('stateCorruptionAreYouSure') ?? '',
+        );
+        if (confirmed) {
+          port.postMessage({
+            data: {
+              method: METHOD_REPAIR_DATABASE_TIMEOUT,
+              params: { criticalErrorType, backup },
+            },
+          });
+        }
+      });
+    }
   }
 
   log.error(error.stack);
@@ -218,6 +312,7 @@ export function displayCriticalErrorPage(
 
   const criticalErrorContainer = document.createElement('div');
   criticalErrorContainer.setAttribute('id', 'critical-error-content');
+  criticalErrorContainer.dataset.testid = 'critical-error-content';
   criticalErrorContainer.innerHTML = html;
 
   // Prevent app contents from writing over critical error by removing application root.

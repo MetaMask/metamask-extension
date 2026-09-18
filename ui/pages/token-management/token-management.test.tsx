@@ -1,0 +1,2051 @@
+import React from 'react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../test/lib/render-helpers-navigate';
+import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
+import {
+  CUSTOM_TOKEN_IMPORT_ROUTE,
+  NETWORKS_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
+} from '../../helpers/constants/routes';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../shared/constants/metametrics';
+import { setBackgroundConnection } from '../../store/background-connection';
+import { AssetType } from '../../../shared/constants/transaction';
+import { TokenManagementPage } from './token-management';
+
+const METRICS_PROPERTIES = {
+  assetType: 'asset_type',
+  chainId: 'chain_id',
+  tokenContractAddress: 'token_contract_address',
+  tokenDecimalPrecision: 'token_decimal_precision',
+  tokenStandard: 'token_standard',
+  tokenSymbol: 'token_symbol',
+  sourceConnectionMethod: 'source_connection_method',
+  viewState: 'view_state',
+} as const;
+
+jest.mock('../../hooks/useSegmentContext', () => ({
+  useSegmentContext: jest.fn(() => ({})),
+}));
+
+const trackAnalyticsEventMock = jest.fn().mockResolvedValue(undefined);
+const backgroundConnectionMock = new Proxy(
+  {
+    trackAnalyticsEvent: trackAnalyticsEventMock,
+  },
+  {
+    get: (target, prop) =>
+      prop in target
+        ? target[prop as keyof typeof target]
+        : jest.fn().mockResolvedValue(undefined),
+  },
+);
+
+const mockTokenManagementLocationState = {
+  current: null as unknown,
+};
+const mockUseNavigate = jest.fn();
+const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => ({
+      pathname: '/token-management',
+      search: '',
+      hash: '',
+      state: mockTokenManagementLocationState.current,
+      key: 'token-management-test',
+    }),
+  };
+});
+
+jest.mock('../../components/ui/toast/toast', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+  },
+  ToastContent: ({
+    title,
+    dataTestId,
+  }: {
+    title: string;
+    dataTestId?: string;
+  }) => <div data-testid={dataTestId}>{title}</div>,
+}));
+
+jest.mock('../../selectors/assets', () => ({
+  ...jest.requireActual('../../selectors/assets'),
+  getAssetsBySelectedAccountGroup: (state: {
+    metamask?: {
+      accountGroupAssets?: Record<string, unknown[]>;
+    };
+  }) => state.metamask?.accountGroupAssets ?? {},
+}));
+
+jest.mock('../../store/actions', () => {
+  const actual = jest.requireActual('../../store/actions');
+  return {
+    ...actual,
+    addNetwork: jest.fn(
+      () => () =>
+        Promise.resolve({
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [],
+        }),
+    ),
+    addCustomAsset: jest.fn(() => () => Promise.resolve()),
+    addImportedTokens: jest.fn(() => () => Promise.resolve()),
+    hideAsset: jest.fn(() => () => Promise.resolve()),
+    ignoreTokens: jest.fn(() => () => Promise.resolve()),
+    importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
+    multichainAddAssets: jest.fn(() => () => Promise.resolve()),
+    multichainIgnoreAssets: jest.fn(() => () => Promise.resolve()),
+  };
+});
+
+type MockedTokenManagementActions = {
+  addNetwork: jest.Mock;
+  addCustomAsset: jest.Mock;
+  addImportedTokens: jest.Mock;
+  hideAsset: jest.Mock;
+  ignoreTokens: jest.Mock;
+  importCustomAssetsBatch: jest.Mock;
+  multichainAddAssets: jest.Mock;
+  multichainIgnoreAssets: jest.Mock;
+};
+
+const getMockedActions = () =>
+  jest.requireMock('../../store/actions') as MockedTokenManagementActions;
+
+type MockSearchResult = {
+  assetId?: string | null;
+  symbol: string;
+  decimals: number;
+  name: string;
+};
+
+type MockSearchState = {
+  results: MockSearchResult[];
+  isLoading: boolean;
+  isFetchingNextPage: boolean;
+  error: Error | null;
+  hasNextPage: boolean;
+  fetchNextPage: jest.Mock;
+};
+
+const mockTokenSearch = {
+  state: {
+    results: [],
+    isLoading: false,
+    isFetchingNextPage: false,
+    error: null,
+    hasNextPage: false,
+    fetchNextPage: jest.fn(),
+  } as MockSearchState,
+  spy: jest.fn(),
+};
+
+jest.mock('../../hooks/useTokenSearch', () => ({
+  useTokenSearch: (options: {
+    query: string;
+    networks?: string[];
+    enableTokenBrowse?: boolean;
+  }) => {
+    mockTokenSearch.spy(options);
+    const trimmed = options.query.trim();
+    const {
+      results,
+      isLoading,
+      isFetchingNextPage,
+      error,
+      hasNextPage,
+      fetchNextPage,
+    } = mockTokenSearch.state;
+    return {
+      data:
+        trimmed.length > 0 || options.enableTokenBrowse
+          ? {
+              data: results,
+              count: results.length,
+              totalCount: results.length,
+              pageInfo: { hasNextPage, endCursor: '' },
+            }
+          : undefined,
+      isFetching: isLoading,
+      isLoading,
+      isFetchingNextPage,
+      hasNextPage,
+      fetchNextPage,
+      error,
+    };
+  },
+}));
+
+const setTokenSearchState = (next: Partial<MockSearchState>): void => {
+  Object.assign(mockTokenSearch.state, next);
+};
+const resetTokenSearchState = (): void => {
+  setTokenSearchState({
+    results: [],
+    isLoading: false,
+    isFetchingNextPage: false,
+    error: null,
+    hasNextPage: false,
+    fetchNextPage: jest.fn(),
+  });
+  mockTokenSearch.spy.mockClear();
+};
+
+const expectEvmApiResultImport = async ({
+  accountId,
+  actions,
+  address,
+  assetId,
+  decimals,
+  name,
+  symbol,
+}: {
+  accountId: string;
+  actions: MockedTokenManagementActions;
+  address: string;
+  assetId: string;
+  decimals: number;
+  name: string;
+  symbol: string;
+}) => {
+  await waitFor(() =>
+    expect(actions.addImportedTokens).toHaveBeenCalledWith(
+      [
+        expect.objectContaining({
+          address,
+          symbol,
+          decimals,
+          isERC721: false,
+          name,
+        }),
+      ],
+      'mainnet',
+    ),
+  );
+  await waitFor(() =>
+    expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+      accountId,
+      [{ assetId, isHidden: false }],
+      {
+        [assetId]: {
+          address,
+          symbol,
+          name,
+          decimals,
+        },
+      },
+    ),
+  );
+};
+
+const expectNonEvmApiResultImport = async ({
+  accountId,
+  actions,
+  address,
+  assetId,
+  decimals,
+  name,
+  symbol,
+}: {
+  accountId: string;
+  actions: MockedTokenManagementActions;
+  address: string;
+  assetId: string;
+  decimals: number;
+  name: string;
+  symbol: string;
+}) => {
+  await waitFor(() =>
+    expect(actions.multichainAddAssets).toHaveBeenCalledWith(
+      [assetId],
+      accountId,
+    ),
+  );
+  await waitFor(() =>
+    expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+      accountId,
+      [{ assetId, isHidden: false }],
+      {
+        [assetId]: {
+          address,
+          symbol,
+          name,
+          decimals,
+        },
+      },
+    ),
+  );
+  expect(actions.addCustomAsset).not.toHaveBeenCalled();
+};
+
+describe('TokenManagementPage', () => {
+  let consoleWarnSpy: jest.SpyInstance;
+  const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+  const solanaTokenAssetId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
+
+  const mainnetToken = {
+    accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    accountType: 'eip155:eoa',
+    assetId: '0x0000000000000000000000000000000000000001',
+    address: '0x0000000000000000000000000000000000000001',
+    chainId: '0x1',
+    image: '',
+    name: 'Alpha Token',
+    symbol: 'AAA',
+    decimals: 18,
+    isNative: false,
+    rawBalance: '0x1',
+    balance: '1.23',
+    fiat: {
+      balance: 1.23,
+      currency: 'usd',
+      conversionRate: 1,
+    },
+  };
+
+  const goerliToken = {
+    accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    accountType: 'eip155:eoa',
+    assetId: '0x0000000000000000000000000000000000000002',
+    address: '0x0000000000000000000000000000000000000002',
+    chainId: '0x5',
+    image: '',
+    name: 'Beta Token',
+    symbol: 'BBB',
+    decimals: 6,
+    isNative: false,
+    rawBalance: '0x1',
+    balance: '4.56',
+    fiat: {
+      balance: 4.56,
+      currency: 'usd',
+      conversionRate: 1,
+    },
+  };
+
+  const nativeToken = {
+    accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    accountType: 'eip155:eoa',
+    assetId: '0x0000000000000000000000000000000000000000',
+    address: '0x0000000000000000000000000000000000000000',
+    chainId: '0x1',
+    image: '',
+    name: 'Ethereum',
+    symbol: 'ETH',
+    decimals: 18,
+    isNative: true,
+    rawBalance: '0x1',
+    balance: '0.001',
+    fiat: {
+      balance: 10,
+      currency: 'usd',
+      conversionRate: 10000,
+    },
+  };
+
+  const solanaToken = {
+    accountId: 'solana-account-id',
+    accountType: 'solana:data-account',
+    assetId: solanaTokenAssetId,
+    chainId: solanaChainId,
+    image: '',
+    name: 'Solana Token',
+    symbol: 'SLT',
+    decimals: 6,
+    isNative: false,
+    rawBalance: '0x1',
+    balance: '2.5',
+    fiat: {
+      balance: 2.5,
+      currency: 'usd',
+      conversionRate: 1,
+    },
+  };
+
+  beforeEach(() => {
+    mockTokenManagementLocationState.current = null;
+    mockUseNavigate.mockClear();
+    mockToastSuccess.mockClear();
+    trackAnalyticsEventMock.mockClear();
+    setBackgroundConnection(backgroundConnectionMock as never);
+    resetTokenSearchState();
+    const actions = getMockedActions();
+    actions.addNetwork.mockClear();
+    actions.addCustomAsset.mockClear();
+    actions.addImportedTokens.mockClear();
+    actions.hideAsset.mockClear();
+    actions.ignoreTokens.mockClear();
+    actions.importCustomAssetsBatch.mockClear();
+    actions.multichainAddAssets.mockClear();
+    actions.multichainIgnoreAssets.mockClear();
+    mockToastError.mockClear();
+    const originalWarn = console.warn;
+    consoleWarnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation((message?: unknown, ...args: unknown[]) => {
+        if (typeof message === 'string' && message.includes('componentWill')) {
+          return;
+        }
+        originalWarn(message, ...args);
+      });
+  });
+
+  afterEach(() => {
+    consoleWarnSpy.mockRestore();
+  });
+
+  const createState = ({
+    enabledNetworks = { '0x1': true },
+    enabledNetworkMap = { eip155: enabledNetworks },
+    accountGroupAssets = {
+      '0x1': [mainnetToken, nativeToken],
+      '0x5': [goerliToken],
+    },
+    selectedMultichainNetworkChainId = 'eip155:1',
+  }: {
+    enabledNetworks?: Record<string, boolean>;
+    enabledNetworkMap?: Record<string, Record<string, boolean>>;
+    accountGroupAssets?: Record<string, unknown[]>;
+    selectedMultichainNetworkChainId?: string;
+  } = {}) => ({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      analyticsId: 'test-analytics-id',
+      consentDecisionMade: true,
+      optedIn: true,
+      selectedMultichainNetworkChainId,
+      useExternalServices: true,
+      preferences: {
+        ...mockState.metamask.preferences,
+        tokenSortConfig: {
+          key: 'name',
+          order: 'asc',
+          sortCallback: 'alphaNumeric',
+        },
+      },
+      enabledNetworkMap,
+      networkConfigurationsByChainId: {
+        ...mockState.metamask.networkConfigurationsByChainId,
+        '0x1': {
+          chainId: '0x1',
+          name: 'Ethereum Mainnet',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'mainnet',
+            },
+          ],
+        },
+        '0x5': {
+          chainId: '0x5',
+          name: 'Goerli',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'goerli',
+            },
+          ],
+        },
+      },
+      accountGroupAssets,
+    },
+  });
+
+  const renderPage = (state = createState(), routeState?: unknown) => {
+    mockTokenManagementLocationState.current = routeState ?? null;
+    const store = configureStore({
+      ...state,
+    });
+    return {
+      store,
+      ...renderWithProvider(
+        <TokenManagementPage />,
+        store,
+        TOKEN_MANAGEMENT_ROUTE,
+      ),
+    };
+  };
+
+  const solanaAccountId = 'solana-internal-account';
+
+  const createStateWithSolanaAccount = (
+    overrides: Parameters<typeof createState>[0] = {},
+  ) => {
+    const baseState = createState({
+      enabledNetworkMap: {
+        eip155: { '0x1': true },
+        solana: { [solanaChainId]: true },
+      },
+      accountGroupAssets: {
+        [solanaChainId]: [],
+      },
+      ...overrides,
+    });
+    const selectedWallet =
+      baseState.metamask.accountTree.wallets[
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+      ];
+    const selectedGroup =
+      selectedWallet.groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'];
+
+    return {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        internalAccounts: {
+          ...baseState.metamask.internalAccounts,
+          accounts: {
+            ...baseState.metamask.internalAccounts.accounts,
+            [solanaAccountId]: {
+              id: solanaAccountId,
+              address: 'SolanaAddress',
+              type: 'solana:data-account',
+              scopes: [solanaChainId],
+              options: {},
+              methods: [],
+              metadata: { name: 'Solana 1', keyring: { type: 'Snap Keyring' } },
+            },
+          },
+        },
+        accountTree: {
+          ...baseState.metamask.accountTree,
+          wallets: {
+            ...baseState.metamask.accountTree.wallets,
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+              ...selectedWallet,
+              groups: {
+                ...selectedWallet.groups,
+                'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+                  ...selectedGroup,
+                  accounts: [...selectedGroup.accounts, solanaAccountId],
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+  };
+
+  it('renders without crashing', () => {
+    renderPage();
+    expect(
+      screen.getByTestId('parent-selector-token-management-page'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('token-management-header-back-button'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(
+        messages.enterTokenNameOrAddressManageTokens.message,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('token-management-add-custom-token-button'),
+    ).toHaveTextContent('Add a custom token');
+    expect(
+      screen.queryByTestId('settings-v2-header-close-button'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('tracks the manage tokens screen opening with the default view state', async () => {
+    renderPage(createState());
+
+    await waitFor(() =>
+      expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.TokenScreenViewed,
+          properties: {
+            category: MetaMetricsEventCategory.Home,
+            screen: 'manage_tokens',
+            [METRICS_PROPERTIES.viewState]: 'default',
+          },
+          sensitiveProperties: {},
+        }),
+        expect.anything(),
+      ),
+    );
+  });
+
+  it('tracks the manage tokens screen opening with the no-results view state', async () => {
+    renderPage(
+      createState({
+        accountGroupAssets: {
+          '0x1': [],
+        },
+      }),
+    );
+
+    await waitFor(() =>
+      expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.TokenScreenViewed,
+          properties: {
+            category: MetaMetricsEventCategory.Home,
+            screen: 'manage_tokens',
+            [METRICS_PROPERTIES.viewState]: 'no_results',
+          },
+          sensitiveProperties: {},
+        }),
+        expect.anything(),
+      ),
+    );
+  });
+
+  it('navigates to the custom token import page from the sticky add custom token button', () => {
+    renderPage(createState());
+
+    const addCustomTokenButton = screen.getByTestId(
+      'token-management-add-custom-token-button',
+    );
+
+    expect(addCustomTokenButton.parentElement?.className).toMatch(/sticky/u);
+    expect(addCustomTokenButton.parentElement?.className).toMatch(/bottom-0/u);
+
+    fireEvent.click(addCustomTokenButton);
+
+    expect(CUSTOM_TOKEN_IMPORT_ROUTE).toBe('/custom-token-import');
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenImportButtonClicked,
+        properties: {
+          category: MetaMetricsEventCategory.Navigation,
+          location: 'MANAGE_TOKENS_CUSTOM_CTA',
+        },
+        sensitiveProperties: {},
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('shows an animated custom token success toast from route state', async () => {
+    renderPage(createState(), {
+      tokenManagementToast: {
+        type: 'customTokenAdded',
+        symbol: 'APE',
+      },
+    });
+
+    await waitFor(() =>
+      expect(mockToastSuccess).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            dataTestId: 'token-management-custom-token-success-toast',
+            title: expect.stringContaining('APE'),
+          }),
+        }),
+      ),
+    );
+  });
+
+  it('shows tokens from the enabled home-page network filter', () => {
+    renderPage();
+
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Beta Token')).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId(
+        'token-management-cell-0x1:0x0000000000000000000000000000000000000001-network-badge',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('opens the shared home network filter modal from the network filter button', async () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('token-management-network-filter'));
+
+    expect(
+      await screen.findByTestId('home-network-filter-manage-networks'),
+    ).toBeInTheDocument();
+  });
+
+  it('navigates to the dedicated networks page from manage networks in the shared modal', async () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('token-management-network-filter'));
+    fireEvent.click(
+      await screen.findByTestId('home-network-filter-manage-networks'),
+    );
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
+  });
+
+  it('shows tokens from all enabled networks when the home page filter is all networks', () => {
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x1': true,
+          '0x5': true,
+        },
+      }),
+    );
+
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Beta Token')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.allDefaultNetworks.message),
+    ).toBeInTheDocument();
+  });
+
+  it('shows all default networks in the filter label when Solana is active but multiple namespaces are enabled', () => {
+    renderPage(
+      createState({
+        selectedMultichainNetworkChainId: solanaChainId,
+        enabledNetworkMap: {
+          eip155: { '0x1': true, '0x5': true },
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          '0x1': [mainnetToken],
+          '0x5': [goerliToken],
+          [solanaChainId]: [solanaToken],
+        },
+      }),
+    );
+
+    expect(
+      screen.getByText(messages.allDefaultNetworks.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(messages.networkNameSolana.message)).toBeNull();
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(screen.getByText('Beta Token')).toBeInTheDocument();
+    expect(screen.getByText('Solana Token')).toBeInTheDocument();
+  });
+
+  it('hides the Arc USDC ERC20 from the token list while keeping the native token', () => {
+    const arcNativeToken = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: '0x0000000000000000000000000000000000000000',
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: '0x13b2',
+      image: '',
+      name: 'Arc Native USDC',
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: true,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+    const arcUsdcErc20Token = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: '0x3600000000000000000000000000000000000000',
+      address: '0x3600000000000000000000000000000000000000',
+      chainId: '0x13b2',
+      image: '',
+      name: 'Arc USDC ERC20',
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: false,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x13b2': true,
+        },
+        accountGroupAssets: {
+          '0x13b2': [arcNativeToken, arcUsdcErc20Token],
+        },
+      }),
+    );
+
+    expect(screen.getByText('Arc Native USDC')).toBeInTheDocument();
+    expect(screen.queryByText('Arc USDC ERC20')).not.toBeInTheDocument();
+  });
+
+  it('hides the Arc USDC ERC20 when stored with a CAIP chain id and address only in the assetId', () => {
+    const arcNativeToken = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: 'eip155:5042/slip44:60',
+      chainId: 'eip155:5042',
+      image: '',
+      name: 'Arc Native USDC',
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: true,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+    const arcUsdcErc20Token = {
+      accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      accountType: 'eip155:eoa',
+      assetId: 'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
+      chainId: 'eip155:5042',
+      image: '',
+      name: 'Arc USDC ERC20',
+      symbol: 'USDC',
+      decimals: 6,
+      isNative: false,
+      rawBalance: '0x1',
+      balance: '1.0',
+    };
+
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x13b2': true,
+        },
+        accountGroupAssets: {
+          '0x13b2': [arcNativeToken, arcUsdcErc20Token],
+        },
+      }),
+    );
+
+    expect(screen.getByText('Arc Native USDC')).toBeInTheDocument();
+    expect(screen.queryByText('Arc USDC ERC20')).not.toBeInTheDocument();
+  });
+
+  it('hides the Arc USDC ERC20 from API browse results', () => {
+    const arcUsdcErc20AssetId =
+      'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+    const otherArcTokenAssetId =
+      'eip155:5042/erc20:0x0000000000000000000000000000000000000abc';
+    setTokenSearchState({
+      results: [
+        {
+          assetId: arcUsdcErc20AssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'Arc USDC ERC20',
+        },
+        {
+          assetId: otherArcTokenAssetId,
+          symbol: 'ARC',
+          decimals: 18,
+          name: 'Arc Other Token',
+        },
+      ],
+    });
+
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x13b2': true,
+        },
+      }),
+    );
+
+    expect(
+      screen.queryByTestId(
+        `token-management-cell-search-${arcUsdcErc20AssetId}`,
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId(
+        `token-management-cell-search-${otherArcTokenAssetId}`,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('enables API browse results for EVM and non-EVM networks when the page opens', () => {
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          eip155: { '0x1': true },
+          solana: { [solanaChainId]: true },
+        },
+      }),
+    );
+
+    expect(mockTokenSearch.spy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        query: '',
+        enableTokenBrowse: true,
+        networks: ['eip155:1', solanaChainId],
+      }),
+    );
+  });
+
+  it('uses enabled CAIP chain ids directly for empty-query browse', () => {
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          eip155: { '0x1': true, '0x89': true, '0x5': true },
+        },
+      }),
+    );
+
+    const { calls } = mockTokenSearch.spy.mock;
+    expect(calls[calls.length - 1][0]).toEqual(
+      expect.objectContaining({
+        query: '',
+        enableTokenBrowse: true,
+        networks: ['eip155:1', 'eip155:137', 'eip155:5'],
+      }),
+    );
+  });
+
+  it('drives the search hook with the user query and the enabled networks as CAIP-2 ids', () => {
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x1': true,
+          '0x5': true,
+        },
+      }),
+    );
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'Beta' },
+    });
+
+    const { calls } = mockTokenSearch.spy.mock;
+    expect(calls[calls.length - 1][0]).toEqual(
+      expect.objectContaining({
+        query: 'Beta',
+        networks: ['eip155:1', 'eip155:5'],
+      }),
+    );
+  });
+
+  it('searches featured EVM networks for an address query', () => {
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: '0x0000000000000000000000000000000000000001' },
+    });
+
+    const { calls } = mockTokenSearch.spy.mock;
+    expect(calls[calls.length - 1][0]).toEqual(
+      expect.objectContaining({
+        query: '0x0000000000000000000000000000000000000001',
+        networks: expect.arrayContaining(['eip155:1', 'eip155:8453']),
+      }),
+    );
+  });
+
+  it('renders API-backed results in place of the home-page list while a query is active', () => {
+    setTokenSearchState({
+      results: [
+        {
+          assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    expect(screen.queryByText('Alpha Token')).not.toBeInTheDocument();
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+  });
+
+  it('ignores API-backed results with missing asset IDs', () => {
+    const badTokenName = 'Bad Token';
+    const missingAssetIdTokenName = 'Missing Asset ID Token';
+    const validTokenName = 'USD Coin';
+
+    setTokenSearchState({
+      results: [
+        {
+          assetId: null,
+          symbol: 'BAD',
+          decimals: 18,
+          name: badTokenName,
+        },
+        {
+          symbol: 'MISSING',
+          decimals: 18,
+          name: missingAssetIdTokenName,
+        },
+        {
+          assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          symbol: 'USDC',
+          decimals: 6,
+          name: validTokenName,
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usd' },
+    });
+
+    expect(screen.queryByText(badTokenName)).not.toBeInTheDocument();
+    expect(screen.queryByText(missingAssetIdTokenName)).not.toBeInTheDocument();
+    expect(screen.getByText(validTokenName)).toBeInTheDocument();
+  });
+
+  it('renders imported tokens first and non-imported API browse results below as OFF', () => {
+    const apiTokenAssetId =
+      'eip155:1/erc20:0x0000000000000000000000000000000000000abc';
+    setTokenSearchState({
+      results: [
+        {
+          assetId: apiTokenAssetId,
+          symbol: 'CCC',
+          decimals: 18,
+          name: 'Charlie Token',
+        },
+      ],
+    });
+
+    renderPage();
+
+    const importedRow = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}`,
+    );
+    const apiRow = screen.getByTestId(
+      `token-management-cell-search-${apiTokenAssetId}`,
+    );
+    const rows = Array.from(document.querySelectorAll('[data-testid]')).filter(
+      (node) => {
+        const testId = node.getAttribute('data-testid') ?? '';
+        return (
+          testId.startsWith('token-management-cell-') &&
+          !testId.endsWith('-network-badge') &&
+          !testId.endsWith('-toggle')
+        );
+      },
+    );
+
+    expect(rows.indexOf(importedRow)).toBeLessThan(rows.indexOf(apiRow));
+    expect(
+      (
+        screen.getByTestId(
+          `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+        ) as HTMLInputElement
+      ).value,
+    ).toBe('true');
+    expect(
+      (
+        screen.getByTestId(
+          `token-management-cell-search-${apiTokenAssetId}-toggle`,
+        ) as HTMLInputElement
+      ).value,
+    ).toBe('false');
+  });
+
+  it('renders hidden API-backed tokens in the unsearched list as OFF', () => {
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts
+          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+      ]?.address;
+    if (!selectedAddress) {
+      throw new Error('Expected selected account address');
+    }
+
+    const baseState = createState({
+      accountGroupAssets: {
+        '0x1': [nativeToken],
+      },
+    });
+    const stateWithIgnoredToken = {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        allIgnoredTokens: {
+          '0x1': {
+            [selectedAddress]: [mainnetToken.address],
+          },
+        },
+      },
+    };
+
+    renderPage(stateWithIgnoredToken);
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(toggle.value).toBe('false');
+  });
+
+  it('renders non-EVM API browse results in the unsearched list as OFF', () => {
+    const browseAssetId = `${solanaChainId}/token:So11111111111111111111111111111111111111112`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: browseAssetId,
+          symbol: 'WSOL',
+          decimals: 9,
+          name: 'Wrapped SOL',
+        },
+      ],
+    });
+
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          [solanaChainId]: [],
+        },
+      }),
+    );
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${browseAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(screen.getByText('Wrapped SOL')).toBeInTheDocument();
+    expect(toggle.value).toBe('false');
+  });
+
+  it('fetches the next API page when the token list is scrolled near the bottom', () => {
+    const fetchNextPage = jest.fn().mockResolvedValue(undefined);
+    setTokenSearchState({
+      results: Array.from({ length: 12 }, (_, index) => ({
+        assetId: `eip155:1/erc20:0x${String(index + 100).padStart(40, '0')}`,
+        symbol: `T${index}`,
+        decimals: 18,
+        name: `Token ${index}`,
+      })),
+      hasNextPage: true,
+      fetchNextPage,
+    });
+
+    renderPage();
+
+    const list = screen.getByTestId('token-management-page-list');
+    Object.defineProperty(list, 'scrollHeight', {
+      configurable: true,
+      value: 1000,
+    });
+    Object.defineProperty(list, 'clientHeight', {
+      configurable: true,
+      value: 500,
+    });
+    Object.defineProperty(list, 'scrollTop', {
+      configurable: true,
+      value: 450,
+    });
+
+    fireEvent.scroll(list);
+
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
+  });
+
+  it('toggling ON a not-yet-imported search result imports the token and seeds unified assets', async () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await expectEvmApiResultImport({
+      accountId: mainnetToken.accountId,
+      actions,
+      address: usdcAddress,
+      assetId: usdcAssetId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenAdded,
+        sensitiveProperties: expect.objectContaining({
+          [METRICS_PROPERTIES.sourceConnectionMethod]:
+            MetaMetricsTokenEventSource.ManageTokens,
+          [METRICS_PROPERTIES.tokenContractAddress]: usdcAddress,
+          [METRICS_PROPERTIES.tokenSymbol]: 'USDC',
+        }),
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('adds a featured network and shows its success toast when toggling on an address search result', async () => {
+    const baseTokenAddress = '0x0000000000000000000000000000000000000abc';
+    const baseTokenAssetId = `eip155:8453/erc20:${baseTokenAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: baseTokenAssetId,
+          symbol: 'BASE',
+          decimals: 18,
+          name: 'Base Token',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+    actions.addNetwork.mockReturnValueOnce(() =>
+      Promise.resolve({
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'base' }],
+      }),
+    );
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: baseTokenAddress },
+    });
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${baseTokenAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await waitFor(() =>
+      expect(actions.addNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x2105',
+          name: 'Base',
+        }),
+        { setActive: false },
+      ),
+    );
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          dataTestId: 'token-management-custom-token-success-toast',
+          title: '“Base” was successfully added!',
+        }),
+      }),
+    );
+  });
+
+  it('shows an error toast when no network client is available for import', async () => {
+    const baseTokenAddress = '0x0000000000000000000000000000000000000abc';
+    const baseTokenAssetId = `eip155:8453/erc20:${baseTokenAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: baseTokenAssetId,
+          symbol: 'BASE',
+          decimals: 18,
+          name: 'Base Token',
+        },
+      ],
+    });
+    const actions = getMockedActions();
+    actions.addNetwork.mockReturnValueOnce(() =>
+      Promise.resolve({
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [],
+      }),
+    );
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: baseTokenAddress },
+    });
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${baseTokenAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await waitFor(() =>
+      expect(mockToastError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            title: messages.importTokensError.message,
+          }),
+        }),
+      ),
+    );
+    expect(actions.addImportedTokens).not.toHaveBeenCalled();
+  });
+
+  it('toggling ON a not-yet-imported browse result imports the token and seeds unified assets', async () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+
+    renderPage();
+
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await expectEvmApiResultImport({
+      accountId: mainnetToken.accountId,
+      actions,
+      address: usdcAddress,
+      assetId: usdcAssetId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
+  });
+
+  it('keeps a browse result in place when it becomes imported while the view is open', async () => {
+    const aadTokenAddress = '0x00000000000000000000000000000000000000aa';
+    const aadTokenAssetId = `eip155:1/erc20:${aadTokenAddress}`;
+    const aadToken = {
+      accountId: mainnetToken.accountId,
+      accountType: 'eip155:eoa',
+      assetId: aadTokenAssetId,
+      address: aadTokenAddress,
+      chainId: '0x1',
+      image: '',
+      name: 'Aardvark Token',
+      symbol: 'AAD',
+      decimals: 18,
+      isNative: false,
+      rawBalance: '0x0',
+      balance: '0',
+      fiat: {
+        balance: 0,
+        currency: 'usd',
+        conversionRate: 0,
+      },
+    };
+
+    setTokenSearchState({
+      results: [
+        {
+          assetId: aadTokenAssetId,
+          symbol: 'AAD',
+          decimals: 18,
+          name: 'Aardvark Token',
+        },
+      ],
+    });
+
+    const initialState = createState();
+    const { store } = renderPage(initialState);
+
+    const getRows = () =>
+      Array.from(document.querySelectorAll('[data-testid]')).filter((node) => {
+        const testId = node.getAttribute('data-testid') ?? '';
+        return (
+          testId.startsWith('token-management-cell-') &&
+          !testId.endsWith('-network-badge') &&
+          !testId.endsWith('-toggle')
+        );
+      });
+
+    const importedRow = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}`,
+    );
+    const browseRow = screen.getByTestId(
+      `token-management-cell-search-${aadTokenAssetId.toLowerCase()}`,
+    );
+    const initialRows = getRows();
+
+    expect(initialRows.indexOf(browseRow)).toBeGreaterThan(
+      initialRows.indexOf(importedRow),
+    );
+
+    const nextState = createState({
+      accountGroupAssets: {
+        '0x1': [aadToken, mainnetToken, nativeToken],
+      },
+    });
+
+    await act(async () => {
+      store.replaceReducer((() => nextState) as never);
+      store.dispatch({ type: 'TEST_TOKEN_IMPORTED' });
+    });
+
+    const importedAadRow = await screen.findByTestId(
+      `token-management-cell-0x1:${aadTokenAddress}`,
+    );
+    const updatedRows = getRows();
+
+    expect(importedAadRow).toBe(browseRow);
+    expect(updatedRows.indexOf(importedAadRow)).toBe(
+      initialRows.indexOf(browseRow),
+    );
+  });
+
+  it('toggling ON a not-yet-imported non-EVM browse result imports via multichainAddAssets and seeds unified assets', async () => {
+    const solanaResultId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
+    const solanaTokenReference = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+    setTokenSearchState({
+      results: [
+        {
+          assetId: solanaResultId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const actions = getMockedActions();
+
+    renderPage(createStateWithSolanaAccount());
+
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${solanaResultId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    await expectNonEvmApiResultImport({
+      accountId: solanaAccountId,
+      actions,
+      address: solanaTokenReference,
+      assetId: solanaResultId,
+      decimals: 6,
+      name: 'USD Coin',
+      symbol: 'USDC',
+    });
+  });
+
+  it('toggling OFF an EVM token defers the hide and keeps the row visible until unmount', async () => {
+    const actions = getMockedActions();
+
+    const { unmount } = renderPage(createState());
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(toggle);
+
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(toggle.value).toBe('false');
+    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+    expect(actions.hideAsset).not.toHaveBeenCalled();
+    expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenHidden,
+        properties: {
+          category: MetaMetricsEventCategory.Wallet,
+        },
+        sensitiveProperties: expect.objectContaining({
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.chainId]: '0x1',
+          location: 'MANAGE_TOKENS',
+          [METRICS_PROPERTIES.tokenContractAddress]: mainnetToken.address,
+          [METRICS_PROPERTIES.tokenDecimalPrecision]: mainnetToken.decimals,
+          [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
+          [METRICS_PROPERTIES.tokenSymbol]: mainnetToken.symbol,
+        }),
+      }),
+      expect.anything(),
+    );
+
+    unmount();
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+    await waitFor(() =>
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
+    );
+  });
+
+  it('commits the staged hide when the user starts typing in the search field', async () => {
+    const actions = getMockedActions();
+
+    renderPage();
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(toggle);
+    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+  });
+
+  it('shows a token hidden by a committed staged hide as OFF in search results', async () => {
+    const actions = getMockedActions();
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    renderPage();
+
+    const visibleListToggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(visibleListToggle);
+    expect(visibleListToggle.value).toBe('false');
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: mainnetToken.name },
+    });
+
+    const searchResultToggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(searchResultToggle.value).toBe('false');
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+  });
+
+  it('keeps a hidden search result OFF after the user clears and repeats the search', async () => {
+    const actions = getMockedActions();
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    renderPage();
+
+    const searchInput = screen.getByTestId('token-management-search-input');
+    fireEvent.change(searchInput, {
+      target: { value: mainnetToken.name },
+    });
+
+    const firstSearchResultToggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(firstSearchResultToggle);
+    expect(firstSearchResultToggle.value).toBe('false');
+
+    fireEvent.change(searchInput, { target: { value: '' } });
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+
+    fireEvent.change(searchInput, {
+      target: { value: mainnetToken.name },
+    });
+
+    const secondSearchResultToggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(secondSearchResultToggle.value).toBe('false');
+  });
+
+  it('commits the staged hide before navigating back', async () => {
+    const actions = getMockedActions();
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: mainnetToken.name },
+    });
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId('token-management-header-back-button'));
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+  });
+
+  it('commits the staged hide when the user clicks the Add custom token CTA', async () => {
+    const actions = getMockedActions();
+
+    renderPage();
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(toggle);
+    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+
+    fireEvent.click(
+      screen.getByTestId('token-management-add-custom-token-button'),
+    );
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+  });
+
+  it('toggling an EVM token OFF and back ON restores it without dispatching a hide', async () => {
+    const actions = getMockedActions();
+
+    const { unmount } = renderPage();
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+
+    fireEvent.click(toggle);
+    expect(toggle.value).toBe('false');
+
+    fireEvent.click(toggle);
+    expect(toggle.value).toBe('true');
+
+    unmount();
+
+    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+    expect(actions.hideAsset).not.toHaveBeenCalled();
+    expect(actions.multichainIgnoreAssets).not.toHaveBeenCalled();
+  });
+
+  it('shows imported EVM tokens from TokensController before balances exist', () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts
+          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+      ]?.address;
+    if (!selectedAddress) {
+      throw new Error('Expected selected account address');
+    }
+
+    const baseState = createState({
+      accountGroupAssets: {
+        '0x1': [nativeToken],
+      },
+    });
+    const stateWithImportedToken = {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        allTokens: {
+          '0x1': {
+            [selectedAddress]: [
+              {
+                address: usdcAddress,
+                symbol: 'USDC',
+                decimals: 6,
+                name: 'USD Coin',
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    renderPage(stateWithImportedToken);
+
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+    expect(screen.getByText('0 USDC')).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`token-management-cell-0x1:${usdcAddress}-toggle`),
+    ).toBeInTheDocument();
+  });
+
+  it('shows a search result as ON when TokensController already holds the imported address (no balance yet)', () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts
+          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+      ]?.address;
+
+    const stateWithImportedToken = createState();
+    stateWithImportedToken.metamask = {
+      ...stateWithImportedToken.metamask,
+      allTokens: {
+        '0x1': {
+          [selectedAddress as string]: [
+            { address: usdcAddress, symbol: 'USDC', decimals: 6 },
+          ],
+        },
+      },
+    };
+
+    renderPage(stateWithImportedToken);
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(toggle.value).toBe('true');
+  });
+
+  it('shows an ignored EVM search result as OFF after reopening token management', () => {
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts
+          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+      ]?.address;
+    if (!selectedAddress) {
+      throw new Error('Expected selected account address');
+    }
+
+    const baseState = createState();
+    const stateWithIgnoredToken = {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        allTokens: {
+          '0x1': {
+            [selectedAddress]: [
+              {
+                address: mainnetToken.address,
+                symbol: mainnetToken.symbol,
+                decimals: mainnetToken.decimals,
+              },
+            ],
+          },
+        },
+        allIgnoredTokens: {
+          '0x1': {
+            [selectedAddress]: [mainnetToken.address],
+          },
+        },
+      },
+    };
+
+    renderPage(stateWithIgnoredToken);
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: mainnetToken.name },
+    });
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(toggle.value).toBe('false');
+  });
+
+  it('keeps stale results visible while the next query is being fetched', () => {
+    const initial = [
+      {
+        assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USD Coin',
+      },
+    ];
+    setTokenSearchState({ results: initial });
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+
+    setTokenSearchState({ results: initial, isLoading: true });
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdcc' },
+    });
+
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('token-management-search-loading'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the empty-state copy when the API returns no matches', () => {
+    setTokenSearchState({ results: [] });
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'unknown' },
+    });
+
+    expect(
+      screen.getByTestId('token-management-empty-state'),
+    ).toHaveTextContent(messages.noTokensMatchSearch.message);
+  });
+
+  it('shows the multichain network name for a non-EVM search result', () => {
+    const solanaResultId = `${solanaChainId}/token:So11111111111111111111111111111111111111112`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: solanaResultId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const baseState = createState({
+      enabledNetworkMap: {
+        eip155: { '0x1': true },
+        solana: { [solanaChainId]: true },
+      },
+      accountGroupAssets: {
+        [solanaChainId]: [solanaToken],
+      },
+    });
+    const stateWithSolanaAccount = {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        internalAccounts: {
+          ...baseState.metamask.internalAccounts,
+          accounts: {
+            ...baseState.metamask.internalAccounts.accounts,
+            'solana-internal-account': {
+              id: 'solana-internal-account',
+              address: 'SolanaAddress',
+              type: 'solana:data-account',
+              scopes: [solanaChainId],
+              options: {},
+              methods: [],
+              metadata: { name: 'Solana 1', keyring: { type: 'Snap Keyring' } },
+            },
+          },
+        },
+      },
+    };
+    renderPage(
+      stateWithSolanaAccount as unknown as ReturnType<typeof createState>,
+    );
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    const row = screen.getByTestId(
+      `token-management-cell-search-${solanaResultId.toLowerCase()}`,
+    );
+    expect(row.textContent ?? '').not.toContain(solanaChainId);
+    expect(row.textContent ?? '').toContain(messages.networkNameSolana.message);
+  });
+
+  it('surfaces a friendly error message when the search request fails', () => {
+    setTokenSearchState({ error: new Error('boom') });
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    expect(
+      screen.getByTestId('token-management-search-error'),
+    ).toBeInTheDocument();
+  });
+
+  it('surfaces a friendly error message when the browse request fails and there are no local tokens', () => {
+    setTokenSearchState({ error: new Error('boom') });
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x1': true,
+        },
+        accountGroupAssets: {
+          '0x1': [],
+        },
+      }),
+    );
+
+    expect(
+      screen.getByTestId('token-management-search-error'),
+    ).toBeInTheDocument();
+  });
+
+  it('hides the Add a custom token CTA when only a non-EVM network is enabled', () => {
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          [solanaChainId]: [solanaToken],
+        },
+      }),
+    );
+
+    expect(
+      screen.queryByTestId('token-management-add-custom-token-button'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders an enabled toggle for non-native Solana tokens', () => {
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          eip155: { '0x1': true },
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          '0x1': [mainnetToken],
+          [solanaChainId]: [solanaToken],
+        },
+      }),
+    );
+
+    const solanaToggle = screen.getByTestId(
+      `token-management-cell-${solanaChainId}:${solanaTokenAssetId.toLowerCase()}-toggle`,
+    );
+
+    expect(screen.getByText('Solana Token')).toBeInTheDocument();
+    expect(
+      screen.getByTestId(
+        `token-management-cell-${solanaChainId}:${solanaTokenAssetId.toLowerCase()}-network-badge`,
+      ),
+    ).toBeInTheDocument();
+    expect(solanaToggle).toBeInTheDocument();
+    expect(solanaToggle.closest('.toggle-button')).toHaveClass(
+      'toggle-button--on',
+    );
+    expect(solanaToggle.closest('.toggle-button')).not.toHaveClass(
+      'toggle-button--disabled',
+    );
+  });
+
+  it('renders a disabled on toggle for native tokens', () => {
+    renderPage();
+
+    const nativeToggle = screen.getByTestId(
+      'token-management-cell-0x1:0x0000000000000000000000000000000000000000-toggle',
+    );
+
+    expect(nativeToggle).toBeInTheDocument();
+    expect(nativeToggle.closest('.toggle-button')).toHaveClass(
+      'toggle-button--on',
+      'toggle-button--disabled',
+    );
+    expect(
+      screen.getByTestId(
+        'token-management-cell-0x1:0x0000000000000000000000000000000000000001-toggle',
+      ),
+    ).toBeInTheDocument();
+  });
+});

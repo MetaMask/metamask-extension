@@ -36,6 +36,44 @@ describe('Gas utils', () => {
       });
       expect(result).toStrictEqual(false);
     });
+
+    it('returns false when txParams has no maxFeePerGas and no gasPrice', () => {
+      const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+        { gas: '0x5208' },
+        { medium: { suggestedMaxFeePerGas: '70' } },
+        PriorityLevels.medium,
+      );
+      expect(result).toBe(false);
+    });
+
+    describe('legacy (gasPrice) txParams', () => {
+      it('returns true when medium estimate > gasPrice + 10%', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: '70' },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(true);
+      });
+
+      it('returns false when medium estimate < gasPrice + 10%', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: '1' },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(false);
+      });
+
+      it('handles fee-market estimates with legacy txParams', () => {
+        const result = gasEstimateGreaterThanGasUsedPlusTenPercent(
+          { gasPrice: '0x59682f10' },
+          { medium: { suggestedMaxFeePerGas: '70' } },
+          PriorityLevels.medium,
+        );
+        expect(result).toStrictEqual(true);
+      });
+    });
   });
 
   describe('formatGasFeeOrFeeRange', () => {
@@ -219,6 +257,60 @@ describe('Gas utils', () => {
       const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
       expect(result.gas).toBe(result.gasLimit);
       expect(result.gas).toBe('0x5208');
+    });
+
+    describe('legacy flow', () => {
+      it('returns min gasPrice when txParams gasPrice is lower than previousGas × rate', () => {
+        const txParams = { gasPrice: '0x5', gas: '0x5208' };
+        const previousGas = { gasPrice: '0x10', gasLimit: '0x5208' };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        const minExpected = Math.ceil(0x10 * 1.1);
+        expect(Number(result.gasPrice)).toBeGreaterThanOrEqual(minExpected);
+        expect(result.gas).toBe('0x5208');
+        expect(result.gasLimit).toBe('0x5208');
+      });
+
+      it('keeps txParams gasPrice when higher than previousGas × rate', () => {
+        const txParams = { gasPrice: '0x100', gas: '0x5208' };
+        const previousGas = { gasPrice: '0x10', gasLimit: '0x5208' };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        expect(result.gasPrice).toBe('0x100');
+      });
+
+      it('returns gasPrice path even with 0x-prefixed large hex values', () => {
+        const seventyGweiHex = '0x104c533c00';
+        const txParams = { gasPrice: seventyGweiHex, gas: '0x5208' };
+        const previousGas = { gasPrice: seventyGweiHex, gasLimit: '0x5208' };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        const minGasPrice = 70 * 1e9 * 1.1;
+        expect(Number(result.gasPrice)).toBeGreaterThanOrEqual(minGasPrice);
+      });
+
+      it('does not enter legacy path when previousGas has maxFeePerGas (EIP-1559)', () => {
+        const txParams = {
+          gasPrice: '0x10',
+          maxFeePerGas: '0x10',
+          maxPriorityFeePerGas: '0x10',
+          gas: '0x5208',
+        };
+        const previousGas = {
+          gasPrice: '0x10',
+          maxFeePerGas: '0x10',
+          maxPriorityFeePerGas: '0x10',
+          gasLimit: '0x5208',
+        };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        expect(result.maxFeePerGas).toBeDefined();
+        expect(result.maxPriorityFeePerGas).toBeDefined();
+      });
+
+      it('returns gas and gasLimit from txParams when available', () => {
+        const txParams = { gasPrice: '0x100', gas: '0xAAAA' };
+        const previousGas = { gasPrice: '0x10', gasLimit: '0xBBBB' };
+        const result = getGasValuesForReplacement(txParams, previousGas, 1.1);
+        expect(result.gas).toBe('0xAAAA');
+        expect(result.gasLimit).toBe('0xAAAA');
+      });
     });
   });
 });

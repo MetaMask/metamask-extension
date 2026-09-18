@@ -1,5 +1,4 @@
 import {
-  ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS,
   MUSD_EVENTS_CONSTANTS,
   musdConversionFlowEntryPointToCtaEventLocation,
   resolveMusdConversionCtaRedirectsTo,
@@ -13,22 +12,10 @@ describe('resolveMusdConversionCtaRedirectsTo', () => {
     );
   });
 
-  it('returns conversion_education_screen when conversion and education not seen', () => {
+  it('returns custom_amount_screen for conversion intent', () => {
     expect(
       resolveMusdConversionCtaRedirectsTo({
         intent: 'conversion',
-        educationSeen: false,
-      }),
-    ).toBe(
-      MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CONVERSION_EDUCATION_SCREEN,
-    );
-  });
-
-  it('returns custom_amount_screen when conversion and education seen', () => {
-    expect(
-      resolveMusdConversionCtaRedirectsTo({
-        intent: 'conversion',
-        educationSeen: true,
       }),
     ).toBe(MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN);
   });
@@ -57,14 +44,7 @@ describe('musdConversionFlowEntryPointToCtaEventLocation', () => {
 describe('TokenCell musd presets', () => {
   it('TOKEN_LIST_CELL_MUSD_OPTIONS matches home token list surfaces', () => {
     expect(TOKEN_LIST_CELL_MUSD_OPTIONS).toStrictEqual({
-      merklClaimBonus: { location: 'token_list_item' },
       convert: { entryPoint: 'token_list' },
-    });
-  });
-
-  it('ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS matches asset overview Merkl surface', () => {
-    expect(ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS).toStrictEqual({
-      merklClaimBonus: { location: 'asset_overview' },
     });
   });
 });

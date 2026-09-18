@@ -11,6 +11,9 @@ import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransacti
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
+import * as useIsPaidByMetaMaskModule from '../../../hooks/pay/useIsPaidByMetaMask';
+import * as useMusdConversionTokensModule from '../../../../../hooks/musd';
+import * as confirmationsFeatureFlagsModule from '../../../selectors/feature-flags';
 import { MusdConversionInfo } from './musd-conversion-info';
 
 const mockEndTrace = jest.fn();
@@ -26,6 +29,11 @@ jest.mock('../../../../../../shared/lib/trace', () => ({
   },
 }));
 
+jest.mock('../../../selectors/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/feature-flags'),
+  selectIsPayAmountPrefillEnabled: jest.fn(),
+}));
+
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
 jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
@@ -33,6 +41,13 @@ jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
+jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
+jest.mock('../../../hooks/musd/useMusdConversionQuoteTrace', () => ({
+  useMusdConversionQuoteTrace: jest.fn(),
+}));
+jest.mock('../../../../../hooks/musd', () => ({
+  useMusdConversionTokens: jest.fn(),
+}));
 
 jest.mock('./musd-override-content', () => ({
   MusdOverrideContent: ({ amountHuman }: { amountHuman: string }) => (
@@ -65,12 +80,19 @@ jest.mock('../../rows/bridge-time-row/bridge-time-row', () => ({
 jest.mock('../../rows/total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row" />,
 }));
-jest.mock('../../rows/claimable-bonus-row/claimable-bonus-row', () => ({
-  ClaimableBonusRow: () => <div data-testid="claimable-bonus-row" />,
-}));
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+
+const PERSISTED_PAYMENT_TOKEN = {
+  address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  chainId: '0x14a33' as const,
+};
+
+const DEFAULT_HOOK_PAYMENT_TOKEN = {
+  address: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+  chainId: '0x1' as const,
+};
 
 const MOCK_AVAILABLE_TOKEN = {
   address: '0x123' as const,
@@ -89,19 +111,45 @@ function setupDefaultMocks({
   isQuotesLoading = false,
   hasQuotes = false,
   hideResults = false,
+  isPaidByMetaMask = false,
+  prefillMax = false,
+  hasAmount = true,
+  hasInput = false,
+  payToken = undefined as
+    | { address: string; chainId: `0x${string}` }
+    | undefined,
+  defaultPaymentToken = null as {
+    address: string;
+    chainId: `0x${string}`;
+  } | null,
 }: {
   isQuotesLoading?: boolean;
   hasQuotes?: boolean;
   hideResults?: boolean;
+  isPaidByMetaMask?: boolean;
+  prefillMax?: boolean;
+  hasAmount?: boolean;
+  hasInput?: boolean;
+  payToken?: { address: string; chainId: `0x${string}` } | undefined;
+  defaultPaymentToken?: { address: string; chainId: `0x${string}` } | null;
 } = {}) {
+  jest
+    .mocked(confirmationsFeatureFlagsModule.selectIsPayAmountPrefillEnabled)
+    .mockReturnValue(prefillMax);
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
     .mockReturnValue({
       amountFiat: '100',
       amountHuman: '50',
       amountHumanDebounced: '50',
-      hasInput: false,
+      hasAmount,
+      hasInput,
+      isDepositPrefillEnabled: false,
+      isDepositPrefillLoading: false,
+      isDepositPrefilled: false,
+      isDepositPrefillSkipped: false,
       isInputChanged: false,
+      isQuoteDerivedAmountLoading: false,
       updatePendingAmount: jest.fn(),
       updatePendingAmountPercentage: jest.fn(),
     });
@@ -110,7 +158,7 @@ function setupDefaultMocks({
       useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
     )
     .mockReturnValue({
-      alertMessage: undefined,
+      hasAlert: false,
       hideResults,
       disableUpdate: false,
     });
@@ -142,18 +190,52 @@ function setupDefaultMocks({
     .mocked(useTransactionPayDataModule.useTransactionPaySourceAmounts)
     .mockReturnValue([]);
   jest
+    .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+    .mockReturnValue({
+      address: '0xrequired',
+      skipIfBalance: false,
+      decimals: 18,
+    } as unknown as ReturnType<
+      typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+    >);
+  jest
     .mocked(useTransactionPayTokenModule.useTransactionPayToken)
     .mockReturnValue({
       isNative: false,
-      payToken: undefined,
+      payToken: payToken as ReturnType<
+        typeof useTransactionPayTokenModule.useTransactionPayToken
+      >['payToken'],
       setPayToken: jest.fn(),
+    });
+  jest
+    .mocked(useIsPaidByMetaMaskModule.useIsPaidByMetaMask)
+    .mockReturnValue(isPaidByMetaMask);
+  jest
+    .mocked(useMusdConversionTokensModule.useMusdConversionTokens)
+    .mockReturnValue({
+      filterAllowedTokens: (tokens) => tokens,
+      filterTokens: (tokens) => tokens,
+      isConversionToken: () => false,
+      isMusdSupportedOnChain: () => false,
+      hasConvertibleTokensByChainId: () => false,
+      tokens: [],
+      defaultPaymentToken,
     });
 }
 
-function render(mockOptions: Parameters<typeof setupDefaultMocks>[0] = {}) {
+type MockConfirmStateArgs = NonNullable<
+  Parameters<typeof getMockConfirmStateForTransaction>[1]
+>;
+
+function render(
+  mockOptions: Parameters<typeof setupDefaultMocks>[0] = {},
+  stateArgs?: MockConfirmStateArgs,
+) {
   setupDefaultMocks(mockOptions);
 
-  const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
+  const state = stateArgs
+    ? getMockConfirmStateForTransaction(MOCK_TRANSACTION_META, stateArgs)
+    : getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
   return renderWithConfirmContextProvider(
     <MusdConversionInfo />,
@@ -167,24 +249,76 @@ describe('MusdConversionInfo', () => {
     mockEndTrace.mockClear();
   });
 
-  it('ends navigation trace with paymentTokenChainId and paymentTokenAddress on mount', () => {
+  it('ends navigation trace with unknown payment token when none is persisted', () => {
     render();
 
     expect(mockEndTrace).toHaveBeenCalledWith(
       expect.objectContaining({
         name: 'MusdConversionNavigation',
-        data: expect.objectContaining({
-          paymentTokenChainId: expect.any(String),
-          paymentTokenAddress: expect.any(String),
-        }),
+        data: {
+          paymentTokenChainId: 'unknown',
+          paymentTokenAddress: 'unknown',
+        },
       }),
     );
+  });
+
+  it('ends navigation trace with persisted payment token from TransactionPay state', () => {
+    render(undefined, {
+      metamask: {
+        transactionData: {
+          [MOCK_TRANSACTION_META.id]: {
+            paymentToken: PERSISTED_PAYMENT_TOKEN,
+          },
+        },
+      },
+    });
+
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'MusdConversionNavigation',
+        data: {
+          paymentTokenChainId: PERSISTED_PAYMENT_TOKEN.chainId,
+          paymentTokenAddress: PERSISTED_PAYMENT_TOKEN.address,
+        },
+      }),
+    );
+  });
+
+  it('passes usd as currency to CustomAmountInfo so the hero symbol is always $', () => {
+    render();
+
+    expect(
+      useTransactionCustomAmountModule.useTransactionCustomAmount,
+    ).toHaveBeenCalledWith(expect.objectContaining({ currency: 'usd' }));
   });
 
   it('renders the custom amount input', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('custom-amount')).toBeInTheDocument();
+  });
+
+  describe('pre-filled max amount', () => {
+    it('does not pre-fill the amount when the flag is disabled', () => {
+      render();
+
+      expect(
+        useTransactionCustomAmountModule.useTransactionCustomAmount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ prefillMaxOnLoad: false }),
+      );
+    });
+
+    it('pre-fills the max amount when the flag is enabled', () => {
+      render({ prefillMax: true });
+
+      expect(
+        useTransactionCustomAmountModule.useTransactionCustomAmount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ prefillMaxOnLoad: true }),
+      );
+    });
   });
 
   it('renders the override content with amountHuman', () => {
@@ -194,12 +328,68 @@ describe('MusdConversionInfo', () => {
     expect(getByTestId('musd-override-content')).toHaveTextContent('50');
   });
 
+  describe('preferredToken and automatic transaction pay token', () => {
+    it('calls useAutomaticTransactionPayToken with disable true when no preferred token', () => {
+      render();
+
+      expect(
+        useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          disable: true,
+          preferredToken: undefined,
+        }),
+      );
+    });
+
+    it('calls useAutomaticTransactionPayToken with disable true and token from TransactionPay state', () => {
+      render(undefined, {
+        metamask: {
+          transactionData: {
+            [MOCK_TRANSACTION_META.id]: {
+              paymentToken: PERSISTED_PAYMENT_TOKEN,
+            },
+          },
+        },
+      });
+
+      expect(
+        useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          disable: true,
+          preferredToken: {
+            address: PERSISTED_PAYMENT_TOKEN.address,
+            chainId: PERSISTED_PAYMENT_TOKEN.chainId,
+          },
+        }),
+      );
+    });
+
+    it('calls useAutomaticTransactionPayToken with disable true and default payment token when not persisted', () => {
+      render({
+        defaultPaymentToken: DEFAULT_HOOK_PAYMENT_TOKEN,
+      });
+
+      expect(
+        useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          disable: true,
+          preferredToken: {
+            address: DEFAULT_HOOK_PAYMENT_TOKEN.address as `0x${string}`,
+            chainId: DEFAULT_HOOK_PAYMENT_TOKEN.chainId,
+          },
+        }),
+      );
+    });
+  });
+
   describe('MusdBottomContent', () => {
     it('renders bottom content rows when quotes are loading', () => {
       const { getByTestId } = render({ isQuotesLoading: true });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
@@ -207,7 +397,6 @@ describe('MusdConversionInfo', () => {
       const { getByTestId } = render({ hasQuotes: true });
 
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
-      expect(getByTestId('claimable-bonus-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
@@ -218,7 +407,6 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
-      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
@@ -229,8 +417,75 @@ describe('MusdConversionInfo', () => {
       });
 
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('hides total row when paid by MetaMask', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        isPaidByMetaMask: true,
+      });
+
+      expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('shows total row when not paid by MetaMask', () => {
+      const { getByTestId } = render({
+        hasQuotes: true,
+        isPaidByMetaMask: false,
+      });
+
+      expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
+      expect(getByTestId('total-row')).toBeInTheDocument();
+    });
+
+    it('does not render bottom content rows before an amount is entered', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        hasQuotes: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
       expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('does not render bottom content rows before an amount is entered while quotes load', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        isQuotesLoading: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('hides bottom content rows again when the amount is reset to zero with a stale quote', () => {
+      const { queryByTestId } = render({
+        hasAmount: false,
+        hasQuotes: true,
+        isPaidByMetaMask: true,
+      });
+
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+      expect(queryByTestId('claimable-bonus-row')).not.toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('bottom pay with row', () => {
+    it('renders the bottom pay with row in the empty state', () => {
+      const { getByTestId } = render({ hasInput: false });
+
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
+    });
+
+    it('keeps the bottom pay with row once an amount is entered', () => {
+      const { getByTestId } = render({ hasInput: true });
+
+      expect(getByTestId('pay-with-row')).toBeInTheDocument();
     });
   });
 });

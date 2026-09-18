@@ -1,12 +1,18 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { MarketListView } from '.';
 
 const mockNavigate = jest.fn();
@@ -16,10 +22,23 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock usePerpsLiveMarketData hook to avoid controller dependency
-const mockUsePerpsLiveMarketData = jest.fn();
+// Capture imperative track() calls; declarative ScreenViewed is a no-op here.
+const mockTrack = jest.fn();
+jest.mock('../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: (options?: unknown) =>
+    options ? undefined : { track: mockTrack },
+}));
+
+const mockUsePerpsLiveMarketListData = jest.fn();
+const mockSetFlowAttribution = jest.fn();
+jest.mock('../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    setFlowAttribution: mockSetFlowAttribution,
+  }),
+}));
 jest.mock('../../../hooks/perps/stream', () => ({
-  usePerpsLiveMarketData: () => mockUsePerpsLiveMarketData(),
+  usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
+  usePerpsLiveAccount: () => ({ account: null }),
 }));
 
 const mockStore = configureStore({
@@ -31,13 +50,26 @@ const mockStore = configureStore({
   },
 });
 
+/**
+ * The search box is behind the header's search icon now, so every search test
+ * has to open it the way a user does before it can type into it.
+ */
+const openSearch = () => {
+  fireEvent.click(screen.getByTestId('market-list-search-toggle'));
+  return screen.getByTestId('search-input');
+};
+
 describe('MarketListView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Default mock returns loaded state with markets
-    mockUsePerpsLiveMarketData.mockReturnValue({
+    mockUsePerpsLiveMarketListData.mockReturnValue({
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
+      cryptoMarkets: mockCryptoMarkets,
+      hip3Markets: mockHip3Markets,
       isInitialLoading: false,
+      error: null,
+      refresh: jest.fn(),
     });
   });
 
@@ -45,19 +77,73 @@ describe('MarketListView', () => {
     it('renders the market list view', () => {
       renderWithProvider(<MarketListView />, mockStore);
 
-      expect(screen.getByTestId('market-list-view')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-market-list'),
+      ).toBeInTheDocument();
     });
 
-    it('displays search input', () => {
+    it('reveals the search input from the header icon', () => {
       renderWithProvider(<MarketListView />, mockStore);
 
-      expect(screen.getByTestId('search-input')).toBeInTheDocument();
+      // The design keeps the market list's first screenful for categories and
+      // markets; search is an icon that opens the box on demand.
+      expect(screen.queryByTestId('search-input')).not.toBeInTheDocument();
+
+      expect(openSearch()).toBeInTheDocument();
     });
 
-    it('displays filter dropdown', () => {
+    it('displays the category rail', () => {
       renderWithProvider(<MarketListView />, mockStore);
 
-      expect(screen.getByTestId('filter-select-button')).toBeInTheDocument();
+      expect(screen.getByTestId('market-list-categories')).toBeInTheDocument();
+    });
+
+    it('shows how many markets the current filter leaves', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-list-count')).toHaveTextContent(
+          /\d+ markets/u,
+        );
+      });
+    });
+
+    it('drops the plural when the filter leaves a single market', async () => {
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
+        cryptoMarkets: [mockCryptoMarkets[0]],
+        hip3Markets: [],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-list-count')).toHaveTextContent(
+          '1 market',
+        );
+      });
+      expect(screen.getByTestId('market-list-count')).not.toHaveTextContent(
+        '1 markets',
+      );
+    });
+
+    it('closes the search box and drops the query when the icon is pressed again', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.change(openSearch(), { target: { value: 'BTC' } });
+      await waitFor(() => {
+        expect(screen.getByTestId('search-input')).toHaveValue('BTC');
+      });
+
+      fireEvent.click(screen.getByTestId('market-list-search-toggle'));
+
+      // A query left behind a closed box would keep narrowing a list the user
+      // can no longer see it narrowing.
+      expect(screen.queryByTestId('search-input')).not.toBeInTheDocument();
+      expect(screen.getByTestId('market-list-categories')).toBeInTheDocument();
     });
 
     it('displays sort dropdown', () => {
@@ -71,14 +157,45 @@ describe('MarketListView', () => {
 
       expect(screen.getByTestId('back-button')).toBeInTheDocument();
     });
+
+    it('renders live price and change values from the list hook', async () => {
+      const [firstMarket] = mockCryptoMarkets;
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: [
+          {
+            ...firstMarket,
+            price: '$99,999',
+            change24hPercent: '+9.9%',
+          },
+          ...mockCryptoMarkets.slice(1),
+          ...mockHip3Markets,
+        ],
+        cryptoMarkets: mockCryptoMarkets,
+        hip3Markets: mockHip3Markets,
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByText('$99,999')).toBeInTheDocument();
+        expect(screen.getByText('+9.9%')).toBeInTheDocument();
+      });
+    });
   });
 
   describe('loading state', () => {
     it('shows loading skeletons initially', () => {
       // Override mock to return loading state
-      mockUsePerpsLiveMarketData.mockReturnValue({
+      mockUsePerpsLiveMarketListData.mockReturnValue({
         markets: [],
+        cryptoMarkets: [],
+        hip3Markets: [],
         isInitialLoading: true,
+        error: null,
+        refresh: jest.fn(),
       });
 
       renderWithProvider(<MarketListView />, mockStore);
@@ -106,7 +223,7 @@ describe('MarketListView', () => {
       const backButton = screen.getByTestId('back-button');
       fireEvent.click(backButton);
 
-      expect(mockNavigate).toHaveBeenCalledWith(-1);
+      expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
 
     it('renders market rows that are clickable', async () => {
@@ -142,7 +259,7 @@ describe('MarketListView', () => {
         expect(marketRows.length).toBeGreaterThan(0);
       });
 
-      const searchInput = screen.getByTestId('search-input');
+      const searchInput = openSearch();
       fireEvent.change(searchInput, { target: { value: 'BTC' } });
 
       await waitFor(() => {
@@ -160,11 +277,13 @@ describe('MarketListView', () => {
         expect(marketRows.length).toBeGreaterThan(0);
       });
 
-      const searchInput = screen.getByTestId('search-input');
+      const searchInput = openSearch();
       fireEvent.change(searchInput, { target: { value: 'xyznomatch123' } });
 
       await waitFor(() => {
-        expect(screen.getByText(/no markets found/iu)).toBeInTheDocument();
+        expect(
+          screen.getByTestId('perps-market-list-no-results'),
+        ).toBeInTheDocument();
       });
     });
 
@@ -177,7 +296,7 @@ describe('MarketListView', () => {
         ).toBeInTheDocument();
       });
 
-      const searchInput = screen.getByTestId('search-input');
+      const searchInput = openSearch();
       fireEvent.change(searchInput, { target: { value: 'BTC' } });
 
       await waitFor(() => {
@@ -189,15 +308,402 @@ describe('MarketListView', () => {
   });
 
   describe('filter functionality', () => {
-    it('opens filter dropdown on click', async () => {
+    it('offers every market category as a pill', async () => {
       renderWithProvider(<MarketListView />, mockStore);
 
-      const filterButton = screen.getByTestId('filter-select-button');
-      fireEvent.click(filterButton);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('market-list-categories-pill-crypto'),
+        ).toBeInTheDocument();
+      });
+      expect(
+        screen.getByTestId('market-list-categories-pill-memecoin'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('market-list-categories-pill-stock'),
+      ).toBeInTheDocument();
+      // `all` is expressed as no selection, never as its own pill.
+      expect(
+        screen.queryByTestId('market-list-categories-pill-all'),
+      ).not.toBeInTheDocument();
+    });
+
+    const filterLabelCases: [filter: string, expectedLabel: string][] = [
+      ['memecoin', messages.perpsFilterMemecoins.message],
+      ['pre-ipo', messages.perpsFilterPreIpo.message],
+      ['index', messages.perpsFilterIndex.message],
+      ['etf', messages.perpsFilterEtf.message],
+    ];
+
+    filterLabelCases.forEach(([filter, expectedLabel]) => {
+      it(`shows a visible label for the ${filter} filter query param`, async () => {
+        renderWithProvider(
+          <MarketListView />,
+          mockStore,
+          `/perps/market-list?filter=${filter}`,
+        );
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(`market-list-categories-pill-${filter}`),
+          ).toHaveAttribute('aria-pressed', 'true');
+          expect(
+            screen.getByTestId(`market-list-categories-pill-${filter}`),
+          ).toHaveTextContent(expectedLabel);
+        });
+      });
+    });
+
+    it('keeps a pill for an active category the data no longer offers', async () => {
+      // No uncategorized HIP-3 markets, so `new` is not one of the rail's own
+      // categories. A `?filter=new` link still narrows the list, and clearing
+      // lives on the active pill — without a pill the list would be stuck
+      // filtered with no control that returns it to every market.
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: mockCryptoMarkets,
+        cryptoMarkets: mockCryptoMarkets,
+        hip3Markets: [],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(
+        <MarketListView />,
+        mockStore,
+        '/perps/market-list?filter=new',
+      );
+
+      const newPill = await waitFor(() =>
+        screen.getByTestId('market-list-categories-pill-new'),
+      );
+      expect(newPill).toHaveAttribute('aria-pressed', 'true');
+
+      fireEvent.click(newPill);
 
       await waitFor(() => {
-        expect(screen.getByTestId('filter-select-menu')).toBeInTheDocument();
+        expect(
+          screen.queryByTestId('market-list-categories-pill-new'),
+        ).not.toBeInTheDocument();
       });
+    });
+
+    describe('watchlist filter', () => {
+      // Needs watchlist state, which the shared store does not carry.
+      const watchlistStore = configureStore({
+        metamask: {
+          ...mockState.metamask,
+          remoteFeatureFlags: {
+            perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+          },
+          isTestnet: false,
+          watchlistMarkets: { testnet: [], mainnet: ['BTC', 'SOL'] },
+        },
+      });
+
+      it('shows only watchlisted markets for the watchlist query param', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          watchlistStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId('market-list-watchlist-toggle'),
+          ).toHaveAttribute('aria-pressed', 'true');
+        });
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-SOL')).toBeInTheDocument();
+        // ETH is a market the user has not watchlisted.
+        expect(screen.queryByTestId('market-row-ETH')).not.toBeInTheDocument();
+      });
+
+      it('reads the watchlist for the active network', async () => {
+        const testnetStore = configureStore({
+          metamask: {
+            ...mockState.metamask,
+            remoteFeatureFlags: {
+              perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+            },
+            isTestnet: true,
+            watchlistMarkets: { testnet: ['ETH'], mainnet: ['BTC', 'SOL'] },
+          },
+        });
+
+        renderWithProvider(
+          <MarketListView />,
+          testnetStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('market-row-ETH')).toBeInTheDocument();
+        });
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+
+      it('clears the watchlist filter when a category is chosen', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          watchlistStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        await waitFor(() => screen.getByTestId('market-row-BTC'));
+
+        fireEvent.click(
+          screen.getByTestId('market-list-categories-pill-crypto'),
+        );
+
+        await waitFor(() => {
+          // ETH is crypto but not watchlisted: proves replace, not combine.
+          expect(screen.getByTestId('market-row-ETH')).toBeInTheDocument();
+        });
+      });
+
+      it('leaves the rail unselected while the watchlist filter is on', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          watchlistStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        await waitFor(() => screen.getByTestId('market-row-BTC'));
+
+        // Watchlist is the header star's state, not a category, so no pill
+        // reports itself pressed while it is in force.
+        const rail = screen.getByTestId('market-list-categories');
+        expect(rail.querySelectorAll('[aria-pressed="true"]')).toHaveLength(0);
+      });
+
+      it('hides the watchlist toggle while the watchlist is empty', async () => {
+        renderWithProvider(<MarketListView />, mockStore);
+
+        await waitFor(() => screen.getByTestId('market-list-categories'));
+
+        expect(
+          screen.queryByTestId('market-list-watchlist-toggle'),
+        ).not.toBeInTheDocument();
+      });
+
+      it('falls back to all markets for a stale watchlist link', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          mockStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        // The watchlist is empty here, so its toggle is not offered at all and
+        // the stale link has to fall back to the unfiltered list.
+        await waitFor(() => {
+          expect(
+            screen.getByTestId('market-list-categories'),
+          ).toBeInTheDocument();
+        });
+        expect(
+          screen.queryByTestId('market-list-watchlist-toggle'),
+        ).not.toBeInTheDocument();
+        expect(screen.getByTestId('market-row-ETH')).toBeInTheDocument();
+      });
+
+      it('clears a category when the watchlist option is chosen', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          watchlistStore,
+          '/perps/market-list?filter=crypto',
+        );
+
+        await waitFor(() => screen.getByTestId('market-row-ETH'));
+
+        fireEvent.click(screen.getByTestId('market-list-watchlist-toggle'));
+
+        await waitFor(() => {
+          expect(
+            screen.queryByTestId('market-row-ETH'),
+          ).not.toBeInTheDocument();
+        });
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+      });
+    });
+
+    const priceChangeSortCases: [
+      queryDirection: 'asc' | 'desc',
+      expectedOrder: string[],
+    ][] = [
+      ['asc', ['SOL', 'BTC', 'ETH']],
+      ['desc', ['ETH', 'BTC', 'SOL']],
+    ];
+
+    priceChangeSortCases.forEach(([queryDirection, expectedOrder]) => {
+      it(`ranks the list by ${queryDirection} price change from the query params`, async () => {
+        mockUsePerpsLiveMarketListData.mockReturnValue({
+          markets: [
+            {
+              ...mockCryptoMarkets[0],
+              symbol: 'BTC',
+              change24hPercent: '+1.00%',
+            },
+            {
+              ...mockCryptoMarkets[1],
+              symbol: 'ETH',
+              change24hPercent: '+9.00%',
+            },
+            {
+              ...mockCryptoMarkets[2],
+              symbol: 'SOL',
+              change24hPercent: '-4.00%',
+            },
+          ],
+          isInitialLoading: false,
+          error: null,
+          refresh: jest.fn(),
+        });
+
+        renderWithProvider(
+          <MarketListView />,
+          mockStore,
+          `/perps/market-list?sort=priceChange&direction=${queryDirection}`,
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('sort-dropdown-button')).toHaveTextContent(
+            messages.perpsSortByPriceChange.message,
+          );
+        });
+        expect(
+          screen
+            .getAllByTestId(/^market-row-/u)
+            .map((row) => row.dataset.testid?.replace('market-row-', '')),
+        ).toStrictEqual(expectedOrder);
+      });
+    });
+
+    it('falls back to the volume sort when the query params are unknown', async () => {
+      renderWithProvider(
+        <MarketListView />,
+        mockStore,
+        '/perps/market-list?sort=bogus&direction=sideways',
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-dropdown-button')).toHaveTextContent(
+          messages.perpsSortByVolume.message,
+        );
+      });
+    });
+
+    it('shows stock markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
+      // mockStore has no perpsHip3AllowlistMarkets flag → allowedHip3Sources defaults to Set()
+      renderWithProvider(<MarketListView />, mockStore);
+
+      // Open filter dropdown and click Stocks
+      fireEvent.click(screen.getByTestId('market-list-categories-pill-stock'));
+
+      await waitFor(() => {
+        // TSLA and AAPL are stock markets in mockHip3Markets
+        expect(screen.getByTestId('market-row-xyz-TSLA')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-AAPL')).toBeInTheDocument();
+        // BTC is a crypto market and should be absent
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows commodity markets on Commodities tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(
+        screen.getByTestId('market-list-categories-pill-commodity'),
+      );
+
+      await waitFor(() => {
+        // GOLD and SILVER are commodity markets in mockHip3Markets
+        expect(screen.getByTestId('market-row-xyz-GOLD')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-xyz-SILVER')).toBeInTheDocument();
+        // BTC is crypto and should be absent
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows only crypto markets on Crypto tab regardless of allowedHip3Sources', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('market-list-categories-pill-crypto'));
+
+      await waitFor(() => {
+        const btcRow = screen.queryByTestId('market-row-BTC');
+        expect(btcRow).toBeInTheDocument();
+        // HIP-3 stock market should not appear under Crypto
+        expect(
+          screen.queryByTestId('market-row-xyz-TSLA'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('shows only tagged main-DEX markets on Memecoins and still lists them under Crypto', async () => {
+      const dogeMarket = {
+        ...mockCryptoMarkets[0],
+        symbol: 'DOGE',
+        name: 'Dogecoin',
+        tags: ['memecoin'],
+      };
+      const taggedHip3StockMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:FAKE',
+        name: 'Fake',
+        tags: ['memecoin'],
+      };
+      const taggedHip3CryptoMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:PEPE',
+        name: 'PEPE',
+        marketType: 'crypto' as const,
+        tags: ['memecoin'],
+      };
+
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: [
+          mockCryptoMarkets[0],
+          dogeMarket,
+          taggedHip3StockMarket,
+          taggedHip3CryptoMarket,
+        ],
+        cryptoMarkets: [mockCryptoMarkets[0], dogeMarket],
+        hip3Markets: [taggedHip3StockMarket, taggedHip3CryptoMarket],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(
+        screen.getByTestId('market-list-categories-pill-memecoin'),
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-DOGE')).toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+      expect(
+        screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('market-list-categories-pill-crypto'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-DOGE')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+      });
+      expect(
+        screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -209,8 +715,307 @@ describe('MarketListView', () => {
       fireEvent.click(sortButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId('sort-dropdown-menu')).toBeInTheDocument();
+        expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('sort/filter analytics', () => {
+    it('fires sort_applied with sort_field and sort_direction on sort apply', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('sort-dropdown-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
+      });
+      // The direction lives on the selected field: pressing it once selects
+      // the field, pressing it again reverses the direction.
+      fireEvent.click(screen.getByTestId('sort-field-option-priceChange'));
+      fireEvent.click(screen.getByTestId('sort-field-option-priceChange'));
+      fireEvent.click(screen.getByTestId('sort-modal-apply'));
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'sort_applied',
+          sort_field: 'priceChange',
+          sort_direction: 'asc',
+        }),
+      );
+    });
+
+    it('fires filter_applied with filter_category on category select', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('market-list-categories-pill-crypto'));
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'filter_applied',
+          filter_category: 'crypto',
+        }),
+      );
+    });
+  });
+
+  describe('search funnel analytics', () => {
+    const typeSearch = (value: string) => {
+      const input = screen.queryByTestId('search-input') ?? openSearch();
+      fireEvent.change(input, {
+        target: { value },
+      });
+    };
+
+    const eventsNamed = (name: MetaMetricsEventName) =>
+      mockTrack.mock.calls.filter(([eventName]) => eventName === name);
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    });
+
+    it('emits a debounced search query with the settled result count', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      // Nothing before the debounce elapses — mid-typing is not a search.
+      expect(eventsNamed(MetaMetricsEventName.PerpsSearchQuery)).toHaveLength(
+        0,
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      const [queryCall] = eventsNamed(MetaMetricsEventName.PerpsSearchQuery);
+      expect(queryCall[1]).toEqual(
+        expect.objectContaining({
+          search_query: 'btc',
+          mode: 'intent',
+          source: 'perp_market_search',
+        }),
+      );
+      expect(queryCall[1].results_count).toBeGreaterThan(0);
+      // The matching results screen view rides along with the query event.
+      expect(
+        mockTrack.mock.calls.filter(
+          ([name, props]) =>
+            name === MetaMetricsEventName.PerpsScreenViewed &&
+            props?.screen_type === 'search_results_shown',
+        ),
+      ).toHaveLength(1);
+    });
+
+    it('reports a no-results screen view when nothing matches', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('xyznomatch123');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(
+        mockTrack.mock.calls.filter(
+          ([name, props]) =>
+            name === MetaMetricsEventName.PerpsScreenViewed &&
+            props?.screen_type === 'search_no_results',
+        ),
+      ).toHaveLength(1);
+    });
+
+    it('emits search_result_tapped with the picked rank and no abandonment', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      const [tapCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchResultTapped,
+      );
+      expect(tapCall[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', result_rank: 1 }),
+      );
+      // A tapped result resolves the search: it was not abandoned.
+      expect(
+        eventsNamed(MetaMetricsEventName.PerpsSearchAbandoned),
+      ).toHaveLength(0);
+    });
+
+    it('emits search_abandoned when the query is cleared without a tap', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      // Escape clears the box through the same onClear path as the clear button.
+      fireEvent.keyDown(screen.getByTestId('search-input'), {
+        key: 'Escape',
+      });
+
+      const [abandonCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchAbandoned,
+      );
+      expect(abandonCall[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', query_count: 1 }),
+      );
+    });
+
+    it('attributes discovery to search when the tap came from a query', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      // The query funnel reports perp_market_search as its source, so the trade
+      // that follows must not claim market-list discovery.
+      expect(mockSetFlowAttribution).toHaveBeenCalledWith(
+        expect.objectContaining({ discoverySource: 'perp_market_search' }),
+      );
+    });
+
+    it('keeps market-list discovery for a tap with no active query', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      expect(mockSetFlowAttribution).toHaveBeenCalledWith(
+        expect.objectContaining({
+          discoverySource: 'perps_market_list_all',
+        }),
+      );
+    });
+
+    it('reports the searched result count when a no-match query is cleared mid-debounce', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('xyznomatch123');
+      act(() => {
+        jest.advanceTimersByTime(200);
+      });
+      // Clearing re-renders with the FULL market list before the flush runs, so
+      // the flushed query must use the count it had while it was on screen.
+      typeSearch('');
+
+      const [queryCall] = eventsNamed(MetaMetricsEventName.PerpsSearchQuery);
+      expect(queryCall?.[1]).toEqual(
+        expect.objectContaining({
+          search_query: 'xyznomatch123',
+          results_count: 0,
+          has_results: false,
+        }),
+      );
+    });
+
+    it('emits the query then the tap when a result is picked inside the debounce window', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      // A fast tap flushes the pending query first, so the funnel is never a
+      // tap with no preceding search.
+      expect(eventsNamed(MetaMetricsEventName.PerpsSearchQuery)).toHaveLength(
+        1,
+      );
+      const [tapCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchResultTapped,
+      );
+      expect(tapCall[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', result_rank: 1 }),
+      );
+      expect(
+        eventsNamed(MetaMetricsEventName.PerpsSearchAbandoned),
+      ).toHaveLength(0);
+    });
+
+    it('reports the search funnel when the popup is dismissed without unmounting', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      // Dismissing the extension popup hides the page without unmounting React,
+      // so effect teardown never runs — the funnel has to close on `pagehide`,
+      // the same lifecycle the abandon-order hook already handles.
+      act(() => {
+        window.dispatchEvent(new Event('pagehide'));
+      });
+
+      const [abandonCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchAbandoned,
+      );
+      expect(abandonCall?.[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', query_count: 1 }),
+      );
+    });
+
+    it('flushes a pending query when the box is cleared inside the debounce window', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(200);
+      });
+      // Cleared before the 500ms debounce fires. The query was still typed and
+      // the results were shown, so the funnel must record it rather than drop
+      // it — the fast-tap and unmount paths already flush.
+      typeSearch('');
+
+      const [queryCall] = eventsNamed(MetaMetricsEventName.PerpsSearchQuery);
+      expect(queryCall?.[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc' }),
+      );
+      const [abandonCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchAbandoned,
+      );
+      expect(abandonCall?.[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', query_count: 1 }),
+      );
+    });
+
+    it('abandons and resets the session when the query is backspaced to empty', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      typeSearch('BTC');
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      typeSearch('');
+
+      const [abandonCall] = eventsNamed(
+        MetaMetricsEventName.PerpsSearchAbandoned,
+      );
+      expect(abandonCall[1]).toEqual(
+        expect.objectContaining({ search_query: 'btc', query_count: 1 }),
+      );
+
+      // Session is fully reset: tapping a row from the now-unfiltered list must
+      // not report a tap against the previous query.
+      const [firstRow] = screen.queryAllByTestId(/^market-row-/u);
+      fireEvent.click(firstRow);
+
+      expect(
+        eventsNamed(MetaMetricsEventName.PerpsSearchResultTapped),
+      ).toHaveLength(0);
     });
   });
 });

@@ -8,16 +8,21 @@
  * - Sanity checks for metric validation
  */
 
-import { ThresholdSeverity } from '../../../../shared/constants/benchmarks';
+import { THRESHOLD_SEVERITY } from '../../../../shared/constants/benchmarks';
 import type {
   BenchmarkResults,
   PercentileKey,
   PercentileThreshold,
+  RatingDistribution,
   StatisticalResult,
   ThresholdConfig,
+  ThresholdSeverity,
   ThresholdViolation,
+  TimerStatistics,
+  WebVitalsAggregated,
+  WebVitalsMetrics,
+  WebVitalsRating,
 } from '../../../../shared/constants/benchmarks';
-import type { TimerStatistics } from './types';
 
 /**
  * CV (Coefficient of Variation) thresholds for data quality assessment
@@ -164,7 +169,7 @@ export const detectOutliersZScore = (
   threshold: number = Z_SCORE_THRESHOLD,
 ): { filtered: number[]; outlierCount: number; outliers: number[] } => {
   if (values.length < 3) {
-    return { filtered: values, outlierCount: 0, outliers: [] };
+    return { filtered: [...values], outlierCount: 0, outliers: [] };
   }
 
   const mean = calculateMean(values);
@@ -193,7 +198,7 @@ export const detectOutliersIQR = (
   values: number[],
 ): { filtered: number[]; outlierCount: number; outliers: number[] } => {
   if (values.length < 4) {
-    return { filtered: values, outlierCount: 0, outliers: [] };
+    return { filtered: [...values], outlierCount: 0, outliers: [] };
   }
 
   const sorted = [...values].sort((a, b) => a - b);
@@ -270,13 +275,18 @@ export const validateMetricValue = (
   maxDuration: number = MAX_METRIC_DURATION_MS,
   minDuration: number = MIN_METRIC_DURATION_MS,
 ): SanityCheckResult => {
-  // Check for zero or negative values
-  if (value <= 0) {
-    return { valid: false, reason: 'Metric is zero or negative' };
+  // Check for negative values (always invalid)
+  if (value < 0) {
+    return { valid: false, reason: 'Metric is negative' };
+  }
+
+  // Check for zero values (invalid unless minDuration allows it)
+  if (value === 0 && minDuration > 0) {
+    return { valid: false, reason: 'Metric is zero' };
   }
 
   // Check for suspiciously small values
-  if (value < minDuration) {
+  if (value > 0 && value < minDuration) {
     return {
       valid: false,
       reason: `Metric below minimum threshold (${minDuration}ms)`,
@@ -328,6 +338,8 @@ export const filterBySanityChecks = (
 export type TimerStatisticsOptions = {
   /** Override max duration (ms) for sanity check; used for per-run totals. */
   maxDurationMs?: number;
+  /** Override min duration (ms) for sanity check. Set to 0 for metrics that are legitimately zero (e.g. long task counts, TBT). */
+  minDurationMs?: number;
 };
 
 export const calculateTimerStatistics = (
@@ -336,14 +348,23 @@ export const calculateTimerStatistics = (
   options?: TimerStatisticsOptions,
 ): TimerStatistics => {
   const maxDuration = options?.maxDurationMs ?? MAX_METRIC_DURATION_MS;
-  const sanityResult = filterBySanityChecks(durations, maxDuration);
-  const { filtered, outlierCount } = detectOutliers(sanityResult.filtered);
+  const minDuration = options?.minDurationMs ?? MIN_METRIC_DURATION_MS;
+  const sanityResult = filterBySanityChecks(
+    durations,
+    maxDuration,
+    minDuration,
+  );
+  const iqrResult = detectOutliersIQR(sanityResult.filtered);
+  const zScoreResult = detectOutliersZScore(iqrResult.filtered);
+  const { filtered } = zScoreResult;
+  const totalExcluded =
+    sanityResult.excludedCount +
+    iqrResult.outlierCount +
+    zScoreResult.outlierCount;
   const sorted = [...filtered].sort((a, b) => a - b);
   const mean = calculateMean(filtered);
   const stdDev = calculateStdDev(filtered);
   const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
-
-  const totalExcluded = sanityResult.excludedCount + outlierCount;
 
   return {
     id: timerId,
@@ -358,6 +379,7 @@ export const calculateTimerStatistics = (
     p99: calculatePercentile(sorted, 99),
     samples: filtered.length,
     outliers: totalExcluded,
+    trimmedCount: iqrResult.outlierCount,
     dataQuality: assessDataQuality(cv),
   };
 };
@@ -391,19 +413,54 @@ export const isCI = (): boolean => {
 };
 
 /**
- * Get the effective threshold value, applying CI multiplier if in CI environment
+ * CV range in which adaptive threshold widening applies.
+ * Below 25% the metric is already stable enough that widening would mask real
+ * regressions. Above 50% the metric is classified "unreliable" and excluded
+ * from gating entirely (widening would make its threshold meaningless).
+ */
+export const CV_ADAPTIVE_MIN = 25;
+export const CV_ADAPTIVE_MAX = 50;
+
+/**
+ * Compute the CV-based threshold multiplier for a given observed CV.
+ * Returns `undefined` when `cv` is outside the adaptive window, so callers
+ * can distinguish "no adjustment applied" from "adjustment of 1.0×".
+ *
+ * Formula: `1 + CV/200` — produces 1.125× at CV=25, 1.25× at CV=50.
+ * Self-correcting: as harness improvements drop CV, thresholds tighten.
+ *
+ * @param cv - Observed coefficient of variation, as a percentage.
+ */
+export const computeCvAdjustment = (cv?: number): number | undefined => {
+  if (cv === undefined || cv < CV_ADAPTIVE_MIN || cv > CV_ADAPTIVE_MAX) {
+    return undefined;
+  }
+  return 1 + cv / 200;
+};
+
+/**
+ * Get the effective threshold value, applying CI multiplier if in CI
+ * environment and CV-adaptive widening if the observed CV falls in the
+ * adaptive band (see `computeCvAdjustment`).
  *
  * @param baseThreshold - The base threshold value in milliseconds
  * @param ciMultiplier - Optional multiplier for CI environments (default: 1.0)
+ * @param cv - Optional observed CV (percent). Triggers adaptive widening.
  */
 export const getEffectiveThreshold = (
   baseThreshold: number,
   ciMultiplier?: number,
+  cv?: number,
 ): number => {
+  let effective = baseThreshold;
   if (isCI() && ciMultiplier && ciMultiplier > 0) {
-    return baseThreshold * ciMultiplier;
+    effective *= ciMultiplier;
   }
-  return baseThreshold;
+  const cvAdjustment = computeCvAdjustment(cv);
+  if (cvAdjustment !== undefined) {
+    effective *= cvAdjustment;
+  }
+  return effective;
 };
 
 /**
@@ -414,6 +471,7 @@ export const getEffectiveThreshold = (
  * @param value - The actual percentile value
  * @param thresholds - The threshold configuration for this percentile
  * @param ciMultiplier - Optional CI multiplier
+ * @param cv - Optional observed CV (percent). Triggers adaptive widening.
  */
 const validatePercentile = (
   metricId: string,
@@ -421,28 +479,43 @@ const validatePercentile = (
   value: number,
   thresholds: PercentileThreshold,
   ciMultiplier?: number,
+  cv?: number,
 ): ThresholdViolation | null => {
-  const warnThreshold = getEffectiveThreshold(thresholds.warn, ciMultiplier);
-  const failThreshold = getEffectiveThreshold(thresholds.fail, ciMultiplier);
+  const warnThreshold = getEffectiveThreshold(
+    thresholds.warn,
+    ciMultiplier,
+    cv,
+  );
+  const failThreshold = getEffectiveThreshold(
+    thresholds.fail,
+    ciMultiplier,
+    cv,
+  );
+  const cvAdjustment = computeCvAdjustment(cv);
 
-  if (value > failThreshold) {
-    return {
+  const buildViolation = (
+    severity: ThresholdSeverity,
+    threshold: number,
+  ): ThresholdViolation => {
+    const base: ThresholdViolation = {
       metricId,
       percentile,
       value,
-      threshold: failThreshold,
-      severity: ThresholdSeverity.Fail,
+      threshold,
+      severity,
     };
+    if (cvAdjustment !== undefined) {
+      base.cvAdjustment = cvAdjustment;
+    }
+    return base;
+  };
+
+  if (value > failThreshold) {
+    return buildViolation(THRESHOLD_SEVERITY.Fail, failThreshold);
   }
 
   if (value > warnThreshold) {
-    return {
-      metricId,
-      percentile,
-      value,
-      threshold: warnThreshold,
-      severity: ThresholdSeverity.Warn,
-    };
+    return buildViolation(THRESHOLD_SEVERITY.Warn, warnThreshold);
   }
 
   return null;
@@ -469,6 +542,7 @@ export const validateTimerThreshold = (
       stats.p75,
       thresholds.p75,
       thresholds.ciMultiplier,
+      stats.cv,
     );
     if (violation) {
       violations.push(violation);
@@ -483,6 +557,7 @@ export const validateTimerThreshold = (
       stats.p95,
       thresholds.p95,
       thresholds.ciMultiplier,
+      stats.cv,
     );
     if (violation) {
       violations.push(violation);
@@ -522,7 +597,9 @@ export const validateThresholds = (
     violations.push(...timerViolations);
   }
 
-  const passed = !violations.some((v) => v.severity === ThresholdSeverity.Fail);
+  const passed = !violations.some(
+    (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+  );
 
   return { violations, passed };
 };
@@ -543,6 +620,24 @@ export const validateResultThresholds = (
   const violations: ThresholdViolation[] = [];
 
   for (const [metricId, thresholds] of Object.entries(thresholdConfig)) {
+    // Derive CV from the BenchmarkResults JSON shape (no `cv` field is stored;
+    // mean and stdDev are). Guard against zero mean so division stays defined.
+    const mean = results.mean?.[metricId];
+    const stdDev = results.stdDev?.[metricId];
+    const cv =
+      mean !== undefined && stdDev !== undefined && mean > 0
+        ? (stdDev / mean) * 100
+        : undefined;
+
+    // Skip metrics where CV exceeds the adaptive window ceiling (CV_ADAPTIVE_MAX
+    // = CV_THRESHOLDS.POOR = 50). Uses strict > to match computeCvAdjustment,
+    // which treats cv === CV_ADAPTIVE_MAX as the top of the in-band range
+    // (returns 1.25×). Metrics at exactly cv=50 still receive widening; only
+    // cv > 50 is fundamentally unstable and excluded from gating.
+    if (cv !== undefined && cv > CV_THRESHOLDS.POOR) {
+      continue;
+    }
+
     if (thresholds.p75 && results.p75[metricId] !== undefined) {
       const violation = validatePercentile(
         metricId,
@@ -550,6 +645,7 @@ export const validateResultThresholds = (
         results.p75[metricId],
         thresholds.p75,
         thresholds.ciMultiplier,
+        cv,
       );
       if (violation) {
         violations.push(violation);
@@ -563,6 +659,7 @@ export const validateResultThresholds = (
         results.p95[metricId],
         thresholds.p95,
         thresholds.ciMultiplier,
+        cv,
       );
       if (violation) {
         violations.push(violation);
@@ -570,9 +667,144 @@ export const validateResultThresholds = (
     }
   }
 
-  const passed = !violations.some((v) => v.severity === ThresholdSeverity.Fail);
+  const passed = !violations.some(
+    (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+  );
   return { violations, passed };
 };
+
+export const WEB_VITALS_NUMERIC_KEYS = ['inp', 'fcp', 'lcp', 'cls'] as const;
+
+type WebVitalsNumericKey = (typeof WEB_VITALS_NUMERIC_KEYS)[number];
+
+/**
+ * Per-metric sanity bounds for web vitals.
+ *
+ * These differ from timer bounds because:
+ * - CLS is unitless (0-10 range in practice), not milliseconds
+ * - CLS of 0 is valid (perfect visual stability)
+ * - INP/LCP have different reasonable ceilings than arbitrary timer durations
+ */
+const WEB_VITALS_BOUNDS: Record<
+  WebVitalsNumericKey,
+  { min: number; max: number }
+> = {
+  /** INP: interaction responsiveness. Google "poor" starts at 500ms. 0ms means sub-frame. */
+  inp: { min: 0, max: 30_000 },
+  /** FCP: first content paint. Google "poor" starts at 3s. 0ms is invalid. */
+  fcp: { min: 1, max: 60_000 },
+  /** LCP: perceived load time. Google "poor" starts at 4s. 0ms is invalid. */
+  lcp: { min: 1, max: 60_000 },
+  /** CLS: layout shift score (unitless). 0 is perfect stability; >1 is extremely poor. */
+  cls: { min: 0, max: 10 },
+};
+
+/**
+ * Calculate statistics for a single web vitals metric.
+ *
+ * Uses metric-specific sanity bounds, then the same IQR+z-score outlier
+ * detection and percentile analysis as timer statistics.
+ *
+ * @param metricId - The metric name ('inp', 'lcp', or 'cls')
+ * @param values - Raw metric values across benchmark iterations
+ */
+export const calculateWebVitalsStatistics = (
+  metricId: WebVitalsNumericKey,
+  values: number[],
+): TimerStatistics => {
+  const bounds = WEB_VITALS_BOUNDS[metricId];
+
+  // Metric-specific sanity filtering: exclude values outside [min, max]
+  const filtered: number[] = [];
+  let excludedCount = 0;
+  for (const value of values) {
+    if (value < bounds.min || value > bounds.max) {
+      excludedCount += 1;
+    } else {
+      filtered.push(value);
+    }
+  }
+
+  // Standard outlier detection on surviving values
+  const outlierResult = detectOutliers(filtered);
+  const sorted = [...outlierResult.filtered].sort((a, b) => a - b);
+  const mean = calculateMean(outlierResult.filtered);
+  const stdDev = calculateStdDev(outlierResult.filtered);
+  const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
+
+  const totalExcluded = excludedCount + outlierResult.outlierCount;
+
+  return {
+    id: metricId,
+    mean,
+    min: sorted.length > 0 ? sorted[0] : 0,
+    max: sorted.length > 0 ? sorted[sorted.length - 1] : 0,
+    stdDev,
+    cv,
+    p50: calculatePercentile(sorted, 50),
+    p75: calculatePercentile(sorted, 75),
+    p95: calculatePercentile(sorted, 95),
+    p99: calculatePercentile(sorted, 99),
+    samples: outlierResult.filtered.length,
+    outliers: totalExcluded,
+    dataQuality: assessDataQuality(cv),
+  };
+};
+
+function createEmptyRatingDistribution(): RatingDistribution {
+  return { good: 0, 'needs-improvement': 0, poor: 0, null: 0 };
+}
+
+/**
+ * Aggregate per-run web vitals into statistical summaries.
+ *
+ * Uses metric-specific sanity bounds (CLS is unitless, INP/LCP have different
+ * ceilings than generic timer durations), then standard outlier detection and
+ * percentile analysis. Preserves rating distributions for categorical analysis.
+ *
+ * @param runs - Array of per-run web vitals snapshots
+ * @returns Aggregated statistics per metric + rating distributions
+ */
+export function aggregateWebVitals(
+  runs: WebVitalsMetrics[],
+): WebVitalsAggregated {
+  const result: WebVitalsAggregated = {
+    inp: null,
+    fcp: null,
+    lcp: null,
+    cls: null,
+    ratings: {
+      inp: createEmptyRatingDistribution(),
+      fcp: createEmptyRatingDistribution(),
+      lcp: createEmptyRatingDistribution(),
+      cls: createEmptyRatingDistribution(),
+    },
+  };
+
+  for (const metric of WEB_VITALS_NUMERIC_KEYS) {
+    // Extract non-null numeric values for statistical analysis
+    const values = runs
+      .map((r) => r[metric])
+      .filter((v): v is number => v !== null);
+
+    if (values.length > 0) {
+      result[metric] = calculateWebVitalsStatistics(metric, values);
+    }
+
+    // Tally rating distribution across all runs
+    const ratingKey = `${metric}Rating` as const;
+    for (const run of runs) {
+      const rating: WebVitalsRating | null = run[ratingKey];
+      if (rating === null) {
+        result.ratings[metric].null += 1;
+      } else {
+        result.ratings[metric][rating] += 1;
+      }
+    }
+  }
+
+  return result;
+}
 
 /**
  * Log threshold validation results to the console.
@@ -583,9 +815,10 @@ export function logThresholdResult(violations: ThresholdViolation[]): void {
   if (violations.length > 0) {
     console.log('\n  Threshold Violations:');
     violations.forEach((v) => {
-      const icon = v.severity === ThresholdSeverity.Fail ? '🔺' : '🔼';
+      const icon = v.severity === THRESHOLD_SEVERITY.Fail ? '🔺' : '🔼';
+      const unit = v.metricId === 'cls' ? '' : 'ms';
       console.log(
-        `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
+        `    ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}${unit} > ${v.threshold}${unit}`,
       );
     });
   } else {

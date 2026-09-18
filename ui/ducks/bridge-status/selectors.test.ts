@@ -1,9 +1,59 @@
+import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
+import type { TransactionControllerState } from '@metamask/transaction-controller';
 import {
   selectBridgeHistoryForApprovalTxId,
   selectBridgeHistoryForOriginalTxMetaId,
+  selectNonEvmBridgeSourceTxIds,
 } from './selectors';
 
+type BridgeStatusAppState = {
+  metamask: BridgeStatusControllerState & TransactionControllerState;
+};
+
+const EMPTY: never[] = [];
+
+jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
+  getSelectedAccountGroup: () => undefined,
+  getInternalAccountsFromGroupById: () => EMPTY,
+}));
+
+jest.mock('../../selectors/multichain-transactions', () => ({
+  selectCurrentAccountNonEvmTransactions: () => EMPTY,
+}));
+
 describe('bridge-status selectors', () => {
+  describe('selectNonEvmBridgeSourceTxIds', () => {
+    it('returns ids for cross-chain non-EVM source entries', () => {
+      const solChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+      const state = {
+        metamask: {
+          txHistory: {
+            // cross-chain, non-EVM source ✅
+            'sol-tx': {
+              quote: { srcChainId: solChainId, destChainId: 10 },
+              originalTransactionId: 'orig-1',
+            },
+            // same-chain, EVM source
+            'evm-tx': { quote: { srcChainId: 1, destChainId: 10 } },
+            // same-chain, non-EVM source
+            'same-chain': {
+              quote: {
+                srcChainId: solChainId,
+                destChainId: solChainId,
+              },
+            },
+          },
+          transactions: [],
+        },
+      };
+
+      const result = selectNonEvmBridgeSourceTxIds(
+        state as unknown as BridgeStatusAppState,
+      );
+      expect(result).toStrictEqual(new Set(['sol-tx', 'orig-1']));
+    });
+  });
+
   describe('selectBridgeHistoryForOriginalTxMetaId', () => {
     it('returns the history item that matches the original transaction id', () => {
       const matchingBridgeHistoryItem = {

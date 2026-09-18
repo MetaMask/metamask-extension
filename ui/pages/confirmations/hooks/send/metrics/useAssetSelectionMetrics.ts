@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { useCallback, useContext } from 'react';
+import { useCallback } from 'react';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   AssetFilterMethod,
   useSendMetricsContext,
@@ -21,7 +21,7 @@ const ASSET_TYPE = {
 };
 
 export const useAssetSelectionMetrics = () => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { tokens, nfts } = useSendAssets();
   const {
     accountType,
@@ -94,10 +94,9 @@ export const useAssetSelectionMetrics = () => {
         }) + 1;
 
       trackEvent(
-        {
-          event: MetaMetricsEventName.SendAssetSelected,
-          category: MetaMetricsEventCategory.Send,
-          properties: {
+        createEventBuilder(MetaMetricsEventName.SendAssetSelected)
+          .addCategory(MetaMetricsEventCategory.Send)
+          .addProperties({
             account_type: accountType,
             asset_type: assetType,
             asset_list_position: position,
@@ -107,14 +106,19 @@ export const useAssetSelectionMetrics = () => {
               ? `eip155:${parseInt(sendAsset?.chainId as string, 16)}`
               : sendAsset?.chainId,
             filter_method: assetFilterMethod,
-          },
-        },
-        {
-          excludeMetaMetricsId: false,
-        },
+          })
+          .build({ excludeMetaMetricsId: false }),
       );
     },
-    [accountType, assetFilterMethod, assetListSize, trackEvent, tokens, nfts],
+    [
+      accountType,
+      assetFilterMethod,
+      assetListSize,
+      createEventBuilder,
+      nfts,
+      tokens,
+      trackEvent,
+    ],
   );
 
   return {

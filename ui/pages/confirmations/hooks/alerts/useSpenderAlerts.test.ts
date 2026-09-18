@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 
@@ -18,6 +18,7 @@ import {
   buildPermit2ApproveTransactionData,
 } from '../../../../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../../../../test/data/confirmations/set-approval-for-all';
+import { permitSignatureMsgWithUnsignedFields } from '../../../../../test/data/confirmations/typed_sign';
 import { useSpenderAlerts } from './useSpenderAlerts';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -115,7 +116,7 @@ const expectedWarningAlert = {
   isBlocking: false,
   key: 'spenderTrustSignalWarning',
   message: 'alertMessageAddressTrustSignal',
-  reason: 'nameModalTitleWarning',
+  reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
 
@@ -125,7 +126,7 @@ const expectedMaliciousAlert = {
   isBlocking: false,
   key: 'spenderTrustSignalMalicious',
   message: 'alertMessageAddressTrustSignalMalicious',
-  reason: 'nameModalTitleMalicious',
+  reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
 
@@ -164,7 +165,17 @@ function buildPermitSignatureRequest({
     primaryType: 'Permit',
     domain,
     message: { spender, value },
-    types: {},
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Permit: [
+        { name: 'spender', type: 'address' },
+        { name: 'value', type: 'uint256' },
+      ],
+    },
   });
 
   return {
@@ -283,6 +294,66 @@ describe('useSpenderAlerts', () => {
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
     });
 
+    it('does not let unsigned fields suppress a spender alert', () => {
+      setupDefaultMocks();
+      setupConfirmContext(permitSignatureMsgWithUnsignedFields);
+      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Phishing address');
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toEqual(expectedMaliciousAlert);
+    });
+
+    it('ignores an unsigned spender field', () => {
+      setupDefaultMocks();
+      setupConfirmContext({
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: JSON.stringify({
+            primaryType: 'Permit',
+            domain: {},
+            message: { spender: MOCK_SPENDER_ADDRESS, value: '1' },
+            types: {
+              Permit: [{ name: 'value', type: 'uint256' }],
+            },
+          }),
+        },
+      });
+      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Phishing address');
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
+    });
+
+    it('ignores a missing schema-declared spender field', () => {
+      setupDefaultMocks();
+      setupConfirmContext({
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: JSON.stringify({
+            primaryType: 'Permit',
+            domain: {},
+            message: { value: '1' },
+            types: {
+              Permit: [
+                { name: 'spender', type: 'address' },
+                { name: 'value', type: 'uint256' },
+              ],
+            },
+          }),
+        },
+      });
+      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Phishing address');
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
+    });
+
     it('returns warning alert for warning spender in permit signature', () => {
       setupDefaultMocks();
       const mockSignatureRequest = buildPermitSignatureRequest();
@@ -386,7 +457,17 @@ describe('useSpenderAlerts', () => {
           verifyingContract: DAI_CONTRACT_ADDRESS,
         },
         message: { spender: MOCK_SPENDER_ADDRESS, allowed: false },
-        types: {},
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          Permit: [
+            { name: 'spender', type: 'address' },
+            { name: 'allowed', type: 'bool' },
+          ],
+        },
       });
       const mockSignatureRequest = {
         id: MOCK_TRANSACTION_ID,

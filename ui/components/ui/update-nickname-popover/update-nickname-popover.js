@@ -112,6 +112,7 @@ export default function UpdateNicknamePopover({
           {t('memo')}
         </div>
         <TextField
+          className="update-nickname__content__memo-field"
           type="text"
           id="memo"
           value={memoInput}
@@ -121,10 +122,6 @@ export default function UpdateNicknamePopover({
           margin="dense"
           multiline
           rows={3}
-          classes={{
-            inputMultiline: 'update-nickname__content__text-area',
-            inputRoot: 'update-nickname__content__text-area-wrapper',
-          }}
         />
       </div>
     </Popover>

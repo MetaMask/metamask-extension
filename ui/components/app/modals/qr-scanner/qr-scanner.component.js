@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import log from 'loglevel';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { getURL } from '../../../../helpers/utils/util';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
@@ -59,7 +57,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
   const previousIsReady = usePrevious(isReady);
 
   const [errorData, setErrorData] = useState(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMountedRef = useRef(false);
   const [codeReader, setCodeReader] = useState(null);
   const [permissionChecker, setPermissionChecker] = useState(null);
 
@@ -69,20 +67,20 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
       if (permissions) {
         // Let the video stream load first...
         await new Promise((resolve) => setTimeout(resolve, SECOND * 2));
-        if (!isMounted) {
+        if (!isMountedRef.current) {
           return;
         }
         setIsReady(READY_STATE.READY);
-      } else if (isMounted) {
+      } else if (isMountedRef.current) {
         // Keep checking for permissions
-        setPermissionChecker(setTimeout(this.checkPermissions, SECOND));
+        setPermissionChecker(setTimeout(() => checkPermissions(), SECOND));
       }
     } catch (error) {
-      if (isMounted) {
+      if (isMountedRef.current) {
         setErrorData({ error });
       }
     }
-  }, [isMounted]);
+  }, []);
 
   const teardownCodeReader = useCallback(() => {
     if (codeReader) {
@@ -121,7 +119,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
             'video',
           );
           const result = parseContent(content.text);
-          if (isMounted) {
+          if (isMountedRef.current) {
             if (result.type === 'unknown') {
               setErrorData(new Error(t('unknownQrCode')));
             } else {
@@ -130,7 +128,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
             }
           }
         } catch (error) {
-          if (isMounted) {
+          if (!isMountedRef.current) {
             return;
           }
           if (error.name === 'NotAllowedError') {
@@ -142,14 +140,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
         }
       }
     })();
-  }, [
-    checkPermissions,
-    codeReader,
-    isMounted,
-    qrCodeDetected,
-    stopAndClose,
-    t,
-  ]);
+  }, [checkPermissions, codeReader, qrCodeDetected, stopAndClose, t]);
 
   const checkEnvironment = async () => {
     try {
@@ -164,7 +155,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
         global.platform.openExtensionInBrowser(currentRoute);
       }
     } catch (error) {
-      if (isMounted) {
+      if (isMountedRef.current) {
         setErrorData({ error });
       }
     }
@@ -173,12 +164,14 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
   };
 
   useEffect(() => {
-    // Anything in here is fired on component mount.
-    setIsMounted(true);
+    isMountedRef.current = true;
     (async () => {
       await checkEnvironment();
     })();
-    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps -- only runs on component mount and unmount
+    return () => {
+      isMountedRef.current = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only runs on component mount and unmount
   }, []);
 
   useEffect(() => {

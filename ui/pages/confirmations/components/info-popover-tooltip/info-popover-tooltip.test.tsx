@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { act, render, fireEvent } from '@testing-library/react';
 import {
   ButtonIconSize,
   IconColor,
@@ -91,6 +91,33 @@ describe('InfoPopoverTooltip', () => {
     fireEvent.click(button);
     expect(getByTestId('question-tooltip')).toHaveTextContent(
       'Question content',
+    );
+  });
+
+  it('renders a plain icon with the correct icon name when plainIcon is true', async () => {
+    const { getByTestId, getByRole } = render(
+      <InfoPopoverTooltip
+        data-testid="plain-tooltip"
+        iconName={IconName.Question}
+        iconColor={IconColor.IconAlternative}
+        plainIcon
+        ariaLabel="bonus info"
+      >
+        <span>Plain icon content</span>
+      </InfoPopoverTooltip>,
+    );
+
+    const button = getByRole('button', { name: 'bonus info' });
+    expect(button).toBeInTheDocument();
+
+    const svg = button.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(getByTestId('plain-tooltip-button'));
+    });
+    expect(getByTestId('plain-tooltip')).toHaveTextContent(
+      'Plain icon content',
     );
   });
 });

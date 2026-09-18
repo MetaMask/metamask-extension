@@ -6,10 +6,10 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 
 import { login } from '../../../page-objects/flows/login.flow';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -21,7 +21,10 @@ describe('Ledger Hardware', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, {
+          validateBalance: false,
+          waitForNonEvmAccounts: false,
+        });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const headerNavbar = new HeaderNavbar(driver);
@@ -40,9 +43,6 @@ describe('Ledger Hardware', function (this: Suite) {
           return;
         }
 
-        await connectHardwareWalletPage.checkPageIsLoaded();
-        await connectHardwareWalletPage.clickContinueButton();
-
         const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
           driver,
         );
@@ -53,8 +53,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.clickCloseButton();
 
-        await homePage.checkPageIsLoaded();
-        await headerNavbar.openAccountMenu();
+        await accountListPage.closeChooseWalletTypePage();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
           'Ledger Account 1',

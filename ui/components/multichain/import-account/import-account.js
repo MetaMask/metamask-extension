@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { TextButton } from '@metamask/design-system-react';
 import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -8,19 +9,19 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, ButtonLink, Label, Text } from '../../component-library';
+import { Box, Label, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   BlockSize,
   FontWeight,
   JustifyContent,
-  Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getIsSocialLoginFlow } from '../../../selectors';
 
@@ -31,7 +32,7 @@ import PrivateKeyImportView from './private-key';
 export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
@@ -68,7 +69,7 @@ export const ImportAccount = ({ onActionComplete }) => {
       }
     } catch (error) {
       const message = getErrorMessage(error);
-      trackImportEvent(strategy, message);
+      trackImportEvent(strategy, false);
 
       if (handleKeyringControllerError(error)) {
         return false;
@@ -83,7 +84,7 @@ export const ImportAccount = ({ onActionComplete }) => {
 
   function trackImportEvent(strategy, wasSuccessful) {
     const accountImportType =
-      strategy === 'Private Key'
+      strategy === 'privateKey'
         ? MetaMetricsEventAccountImportType.PrivateKey
         : MetaMetricsEventAccountImportType.Json;
 
@@ -91,16 +92,17 @@ export const ImportAccount = ({ onActionComplete }) => {
       ? MetaMetricsEventName.AccountAdded
       : MetaMetricsEventName.AccountAddFailed;
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Accounts,
-      event,
-      properties: {
-        account_type: MetaMetricsEventAccountType.Imported,
-        account_import_type: accountImportType,
-        hd_entropy_index: hdEntropyIndex,
-        is_suggested_name: true,
-      },
-    });
+    trackEvent(
+      createEventBuilder(event)
+        .addCategory(MetaMetricsEventCategory.Accounts)
+        .addProperties({
+          account_type: MetaMetricsEventAccountType.Imported,
+          account_import_type: accountImportType,
+          hd_entropy_index: hdEntropyIndex,
+          is_suggested_name: true,
+        })
+        .build(),
+    );
   }
 
   function getLoadingMessage(strategy) {
@@ -165,29 +167,35 @@ export const ImportAccount = ({ onActionComplete }) => {
           </Text>
           <Text variant={TextVariant.bodySm}>
             {t('importAccountWithSocialMsgLearnMore', [
-              <ButtonLink
-                size={Size.inherit}
-                href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
-                target="_blank"
-                rel="noopener noreferrer"
+              <TextButton
+                size="body-sm"
+                asChild
+                className="inline"
                 key="importAccountWithSocialMsgLearnMore"
               >
-                {t('learnMoreUpperCase')}
-              </ButtonLink>,
+                <a
+                  href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('learnMoreUpperCase')}
+                </a>
+              </TextButton>,
             ])}
           </Text>
         </>
       ) : (
         <Text variant={TextVariant.bodySm} marginTop={2}>
           {t('importAccountMsg')}{' '}
-          <ButtonLink
-            size={Size.inherit}
-            href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('here')}
-          </ButtonLink>
+          <TextButton size="body-sm" asChild className="inline">
+            <a
+              href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('here')}
+            </a>
+          </TextButton>
         </Text>
       )}
       <Box paddingTop={4} paddingBottom={8}>

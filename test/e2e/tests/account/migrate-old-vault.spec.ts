@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import {
   lockAndWaitForLoginPage,
   login,
@@ -15,8 +15,6 @@ describe('Migrate vault with old encryption', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withKeyringControllerOldVault()
           .build(),
-        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

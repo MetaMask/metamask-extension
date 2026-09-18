@@ -2,8 +2,8 @@ import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
+import NFTDetailsPage from '../../../page-objects/pages/asset/nft-details-page';
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 
 describe('Remove NFT', function () {
@@ -22,16 +22,16 @@ describe('Remove NFT', function () {
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();
-        const nftListPage = new NftListPage(driver);
-        await nftListPage.clickNFTIconOnActivityList();
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.clickNFTIconOnActivityList();
 
         const nftDetailsPage = new NFTDetailsPage(driver);
         await nftDetailsPage.checkPageIsLoaded();
         await nftDetailsPage.removeNFT();
 
         // Check the success remove NFT toaster is displayed and the NFT is removed from the NFT tab
-        await nftListPage.checkSuccessRemoveNftMessageIsDisplayed();
-        await nftListPage.checkNoNftInfoIsDisplayed();
+        await nftsTab.checkSuccessRemoveNftMessageIsDisplayed();
+        await nftsTab.checkNoNftInfoIsDisplayed();
       },
     );
   });

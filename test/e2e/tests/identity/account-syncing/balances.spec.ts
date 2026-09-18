@@ -1,17 +1,15 @@
 import { Mockttp } from 'mockttp';
-
-import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { login } from '../../../page-objects/flows/login.flow';
 import { withFixtures } from '../../../helpers';
-import { WALLET_PASSWORD } from '../../../constants';
+import { E2E_SRP, WALLET_PASSWORD } from '../../../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { skipOnFirefox } from '../helpers';
 import { mockInfuraAndAccountSync } from '../mocks';

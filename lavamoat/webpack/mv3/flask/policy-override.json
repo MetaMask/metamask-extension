@@ -25,6 +25,37 @@
         "Weakmap": true
       }
     },
+    "@ledgerhq/device-management-kit": {
+      "globals": {
+        "Blob": false,
+        "FormData": false,
+        "ReadableStream": false,
+        "URL.createObjectURL": false,
+        "URLSearchParams": false,
+        "document": false,
+        "document.createElement": false,
+        "fetch": false,
+        "fetch.bind": false,
+        "vi.fn": false
+      }
+    },
+    "@ledgerhq/device-management-kit>isomorphic-ws": {
+      "globals": {
+        "MozWebSocket": false,
+        "WebSocket": false
+      }
+    },
+    "@ledgerhq/device-management-kit>reflect-metadata": {
+      "globals": {
+        "crypto": false,
+        "msCrypto": false
+      }
+    },
+    "@ledgerhq/device-transport-kit-web-hid": {
+      "globals": {
+        "event": false
+      }
+    },
     "@metamask/keyring-controller>ulid": {
       "globals": {
         "crypto": true
@@ -60,7 +91,7 @@
       }
     },
     "^ background; v popup": {},
-    "axios": {
+    "wait-on>axios": {
       "globals": {
         "postMessage": true,
         "fetch": true,
@@ -77,13 +108,6 @@
     "buffer": {
       "globals": {
         "SharedArrayBuffer": true
-      }
-    },
-    "core-js-pure": {
-      "globals": {
-        "navigator.userAgent": true,
-        "MessageChannel": true,
-        "location": true
       }
     },
     "ethers>@ethersproject/random": {
@@ -140,13 +164,19 @@
         "fetch": true
       }
     },
-    "react-beautiful-dnd": {
+    "@hello-pangea/dnd": {
       "globals": {
         "addEventListener": true,
         "removeEventListener": true
       }
     },
     "@metamask/network-controller": {
+      "globals": {
+        "btoa": true,
+        "btoa.bind": false,
+        "fetch": true,
+        "fetch.bind": false
+      },
       "packages": {
         "cockatiel": true
       }
@@ -234,7 +264,28 @@
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "document": false,
-        "document.visibilityState": true,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
+    "@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
         "addEventListener": false
       }
     },
@@ -249,6 +300,44 @@
         "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
         "document": false,
         "document.createElement": true
+      }
+    },
+    "@segment/analytics-node": {
+      "globals": {
+        "EdgeRuntime": false,
+        "WebSocketPair": false,
+        "WorkerGlobalScope": false,
+        "importScripts": false
+      }
+    },
+    "@metamask/mobile-wallet-protocol-core>centrifuge": {
+      "globals": {
+        "AbortController": false,
+        "Event": false,
+        "EventSource": false,
+        "EventTarget": false,
+        "MessageEvent": false,
+        "ReadableStream": false,
+        "SockJS": false,
+        "SuppressedError": false,
+        "URL": false,
+        "WebTransport": false,
+        "console": false,
+        "console.warn": true,
+        "document": false,
+        "fetch": false,
+        "localStorage": false
+      }
+    },
+    "openai>zod": {
+      "globals": {
+        "__zod_globalRegistry": "write",
+        "__zod_globalConfig": "write"
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/messaging": {
+      "globals": {
+        "PushManager": true
       }
     }
   }

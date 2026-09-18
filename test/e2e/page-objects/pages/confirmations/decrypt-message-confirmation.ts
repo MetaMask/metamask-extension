@@ -1,8 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Decrypt-message request confirmation (`eth_decrypt`).
+ *
+ * Screen: `#/confirm-transaction/:id/decrypt-message` (legacy decrypt page,
+ * not redesigned `#/confirmation`).
+ * Owns: decrypt request title, account balance, decrypt-message CTA,
+ * decrypted message text, and final Decrypt confirm.
+ * Boundaries: encryption public key requests are
+ * `GetEncryptionKeyConfirmation`. Signature confirms are separate classes.
+ * Related: `GetEncryptionKeyConfirmation`.
+ *
+ * @see ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.js
+ */
 class DecryptMessageConfirmation {
-  driver: Driver;
-
   private readonly accountBalanceValue =
     '.request-decrypt-message__balance-value';
 
@@ -23,38 +34,14 @@ class DecryptMessageConfirmation {
     css: '.request-decrypt-message__header__text',
   };
 
+  driver: Driver;
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-decrypt-message-confirmation',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.decryptMessageConfirmationTitle,
-        this.decryptMessageButton,
-      ]);
-    } catch (e) {
-      console.log(
-        `Timeout while waiting for decrypt message confirmation page to be loaded`,
-        e,
-      );
-      throw e;
-    }
-    console.log(`Decrypt message confirmation page is loaded`);
-  }
-
-  async clickDecryptMessageButton(): Promise<void> {
-    console.log(
-      'Click decrypt message button on decrypt message confirmation page',
-    );
-    await this.driver.clickElement(this.decryptMessageButton);
-  }
-
-  async clickToConfirmDecryptMessage(): Promise<void> {
-    console.log(
-      'Click to confirm decrypt message on decrypt message confirmation page',
-    );
-    await this.driver.clickElement(this.confirmDecryptMessageButton);
   }
 
   /**
@@ -84,6 +71,37 @@ class DecryptMessageConfirmation {
       css: this.decryptedMessage,
       text: message,
     });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        this.decryptMessageConfirmationTitle,
+        this.decryptMessageButton,
+      ]);
+    } catch (e) {
+      console.log(
+        `Timeout while waiting for decrypt message confirmation page to be loaded`,
+        e,
+      );
+      throw e;
+    }
+    console.log(`Decrypt message confirmation page is loaded`);
+  }
+
+  async clickDecryptMessageButton(): Promise<void> {
+    console.log(
+      'Click decrypt message button on decrypt message confirmation page',
+    );
+    await this.driver.clickElement(this.decryptMessageButton);
+  }
+
+  async clickToConfirmDecryptMessage(): Promise<void> {
+    console.log(
+      'Click to confirm decrypt message on decrypt message confirmation page',
+    );
+    await this.driver.clickElement(this.confirmDecryptMessageButton);
   }
 }
 

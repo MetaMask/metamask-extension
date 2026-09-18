@@ -4,13 +4,14 @@ import { NETWORK_CLIENT_ID } from '../constants';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import MultichainAccountDetailsPage from '../page-objects/pages/multichain/multichain-account-details-page';
-import AccountListPage from '../page-objects/pages/account-list-page';
+import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
+import AccountListPage from '../page-objects/pages/accounts/list-page';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import { login } from '../page-objects/flows/login.flow';
+import { closeSettings } from '../page-objects/flows/settings.flow';
 import { watchEoaAddress } from '../page-objects/flows/watch-account.flow';
 
 const ACCOUNT_1 = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
@@ -77,10 +78,10 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           );
 
           // 'Send' button should be disabled
-          assert.equal(await homePage.checkIfSendButtonIsClickable(), false);
+          await homePage.checkSendButtonIsClickable(false);
 
           // 'Swap' button should be disabled
-          assert.equal(await homePage.checkIfSwapButtonIsClickable(), false);
+          await homePage.checkSwapButtonIsClickable(false);
         },
       );
     });
@@ -214,7 +215,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           await headerNavbar.openAccountDetailsModalDetailsTab();
 
           // check 'Show private key' button should not be displayed
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          const accountDetailsPage = new AccountDetailsPage(driver);
           await accountDetailsPage.checkPageIsLoaded();
           await accountDetailsPage.checkShowPrivateKeyButtonIsNotDisplayed();
         },
@@ -303,7 +304,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
             'Toggle should be off by default',
           );
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await closeSettings(driver);
 
           // verify the 'Watch and Ethereum account (Beta)' option is available
           await homePage.checkPageIsLoaded();
@@ -336,7 +337,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           const experimentalSettings = new ExperimentalSettings(driver);
           await experimentalSettings.checkPageIsLoaded();
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await closeSettings(driver);
 
           // verify the 'Watch and Ethereum account (Beta)' option is available
           await homePage.checkPageIsLoaded();
@@ -355,7 +356,7 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           await settingsPage.goToExperimentalSettings();
           await experimentalSettings.checkPageIsLoaded();
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await closeSettings(driver);
 
           // verify the 'Watch and Ethereum account (Beta)' option is not available
           await homePage.checkPageIsLoaded();

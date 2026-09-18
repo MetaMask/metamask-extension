@@ -17,15 +17,18 @@ import {
 } from '../../../../shared/lib/transactions-controller-utils';
 import { MetaMaskReduxState } from '../../../store/store';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
+import { isTransactionGasFeeSponsored } from '../../../../shared/lib/transaction-gas-fee.utils';
 
 export const getTransactionBreakdownData = ({
   state,
   transaction,
   isTokenApprove,
+  isHardwareWalletAccount,
 }: {
   state: MetaMaskReduxState;
   transaction: TransactionMeta;
   isTokenApprove: boolean;
+  isHardwareWalletAccount: boolean;
 }) => {
   const {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
@@ -40,7 +43,6 @@ export const getTransactionBreakdownData = ({
     destinationTokenSymbol,
     status,
     type,
-    isGasFeeSponsored,
   } = transaction;
 
   const sourceTokenAmount =
@@ -66,7 +68,6 @@ export const getTransactionBreakdownData = ({
         destinationTokenDecimals,
         undefined,
         undefined,
-        // @ts-expect-error TODO: fix this, ported directly from original code
         null,
       );
 
@@ -122,7 +123,10 @@ export const getTransactionBreakdownData = ({
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
-    isGasFeeSponsored,
+    isGasFeeSponsored: isTransactionGasFeeSponsored({
+      transaction,
+      isHardwareWalletAccount,
+    }),
     l1HexGasTotal,
     sourceAmountFormatted,
     destinationAmountFormatted,

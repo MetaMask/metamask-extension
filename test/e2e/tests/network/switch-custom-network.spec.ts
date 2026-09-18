@@ -6,7 +6,7 @@ import { regularDelayMs, withFixtures } from '../../helpers';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import { getPermittedChains } from './common';
 
 describe('Switch ethereum chain', function (this: Suite) {
@@ -46,8 +46,8 @@ describe('Switch ethereum chain', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const assetList = new AssetListPage(driver);
-        await assetList.checkNetworkFilterText('Localhost 8546');
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.checkLabelIs('Localhost 8546');
       },
     );
   });

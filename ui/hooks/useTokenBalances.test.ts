@@ -1,17 +1,19 @@
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { BtcScope } from '@metamask/keyring-api';
-import { waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
-import {
-  tokenBalancesStartPolling,
-  tokenBalancesStopPollingByPollingToken,
-} from '../store/actions';
-import { ASSETS_UNIFY_STATE_FLAG } from '../../shared/lib/assets-unify-state/remote-feature-flag';
+import { tokenBalancesStartPolling } from '../store/actions';
 import {
   useTokenBalances,
   useTokenTracker,
   stringifyBalance,
 } from './useTokenBalances';
+
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: jest.fn(() => true),
+}));
 
 jest.mock('../store/actions', () => ({
   tokenBalancesStartPolling: jest
@@ -23,9 +25,6 @@ jest.mock('../store/actions', () => ({
 }));
 
 const mockTokenBalancesStartPolling = jest.mocked(tokenBalancesStartPolling);
-const mockTokenBalancesStopPollingByPollingToken = jest.mocked(
-  tokenBalancesStopPollingByPollingToken,
-);
 
 const BASE_STATE = {
   metamask: {
@@ -67,70 +66,10 @@ describe('useTokenBalances', () => {
     jest.clearAllMocks();
   });
 
-  it('returns token balances from state', () => {
-    const { result } = renderHookWithProvider(
-      () => useTokenBalances(),
-      BASE_STATE,
-    );
-
-    expect(result.current.tokenBalances).toEqual(
-      BASE_STATE.metamask.tokenBalances,
-    );
-  });
-
-  it('starts polling for enabled chain ids when no chainIds are provided', async () => {
+  it('does not start polling when assets-unify-state is enabled', () => {
     renderHookWithProvider(() => useTokenBalances(), BASE_STATE);
 
-    await waitFor(() => {
-      expect(mockTokenBalancesStartPolling).toHaveBeenCalled();
-    });
-  });
-
-  it('starts polling for specified chain ids when provided', async () => {
-    renderHookWithProvider(
-      () => useTokenBalances({ chainIds: ['0x89'] }),
-      BASE_STATE,
-    );
-
-    await waitFor(() => {
-      expect(mockTokenBalancesStartPolling).toHaveBeenCalledWith(['0x89']);
-    });
-  });
-
-  it('does not start polling when assets-unify-state is enabled', () => {
-    const state = {
-      ...BASE_STATE,
-      metamask: {
-        ...BASE_STATE.metamask,
-        remoteFeatureFlags: {
-          [ASSETS_UNIFY_STATE_FLAG]: {
-            enabled: true,
-            featureVersion: '1',
-            minimumVersion: '1.0.0',
-          },
-        },
-      },
-    };
-
-    const { result } = renderHookWithProvider(() => useTokenBalances(), state);
-
-    // Does not start polling (empty input array)
     expect(mockTokenBalancesStartPolling).not.toHaveBeenCalled();
-  });
-
-  it('stops polling on unmount', async () => {
-    const { unmount } = renderHookWithProvider(
-      () => useTokenBalances(),
-      BASE_STATE,
-    );
-
-    await waitFor(() => {
-      expect(mockTokenBalancesStartPolling).toHaveBeenCalled();
-    });
-
-    unmount();
-
-    expect(mockTokenBalancesStopPollingByPollingToken).toHaveBeenCalled();
   });
 });
 
@@ -144,56 +83,7 @@ describe('useTokenTracker', () => {
     { address: '0xToken2', symbol: 'TK2', decimals: 6 },
   ];
 
-  it('returns tokens with balances from state', () => {
-    const { result } = renderHookWithProvider(
-      () =>
-        useTokenTracker({
-          chainId: '0x1',
-          tokens,
-          address: '0xAddress',
-        }),
-      BASE_STATE,
-    );
-
-    expect(result.current.tokensWithBalances).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ address: '0xToken1', balance: '100' }),
-        expect.objectContaining({ address: '0xToken2', balance: '0' }),
-      ]),
-    );
-  });
-
-  it('filters zero-balance tokens when hideZeroBalanceTokens is true', () => {
-    const { result } = renderHookWithProvider(
-      () =>
-        useTokenTracker({
-          chainId: '0x1',
-          tokens,
-          address: '0xAddress',
-          hideZeroBalanceTokens: true,
-        }),
-      BASE_STATE,
-    );
-
-    expect(result.current.tokensWithBalances).toHaveLength(1);
-    expect(result.current.tokensWithBalances[0].address).toBe('0xToken1');
-  });
-
   it('returns placeholder balances when assets-unify-state is enabled', () => {
-    const state = {
-      ...BASE_STATE,
-      metamask: {
-        ...BASE_STATE.metamask,
-        remoteFeatureFlags: {
-          [ASSETS_UNIFY_STATE_FLAG]: {
-            enabled: true,
-            featureVersion: '1',
-            minimumVersion: '1.0.0',
-          },
-        },
-      },
-    };
-
     const { result } = renderHookWithProvider(
       () =>
         useTokenTracker({
@@ -201,7 +91,7 @@ describe('useTokenTracker', () => {
           tokens,
           address: '0xAddress',
         }),
-      state,
+      BASE_STATE,
     );
 
     expect(result.current.tokensWithBalances).toEqual(

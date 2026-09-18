@@ -1,36 +1,40 @@
-import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../app/scripts/lib/util';
+import { getEnvironmentType } from '../shared/lib/environment-type';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
+// TODO: Remove restricted import
+// eslint-disable-next-line import-x/no-restricted-paths
+import { sanitizeStateLogs } from '../app/scripts/lib/state-utils';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
 import { getBrowserName } from '../shared/lib/browser-runtime.utils';
-import { COPY_OPTIONS } from '../shared/constants/copy';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
+import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
+import {
+  setupLongTaskObserver,
+  setupLongTaskSentryReporting,
+  exposeLongTaskMetricsForTesting,
+} from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
@@ -39,16 +43,21 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
-  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
+import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { setBackgroundConnection } from './store/background-connection';
+import {
+  setBackgroundConnection,
+  submitRequestToBackground,
+} from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { initWebVitals } from './helpers/utils/web-vitals';
 import { getPerpsStreamManager } from './providers/perps';
+import { createUIMessenger } from './messengers/ui-messenger';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -57,6 +66,17 @@ export {
 } from './helpers/utils/display-critical-error';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+const reactRoots = new WeakMap();
+
+function renderUi(element, container) {
+  let root = reactRoots.get(container);
+  if (!root) {
+    root = createRoot(container);
+    reactRoots.set(container, root);
+  }
+  root.render(element);
+}
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -85,9 +105,7 @@ export const connectToBackground = (
       getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
     } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
-        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-          data,
-        )}`,
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(data)}`,
       );
     }
   });
@@ -207,6 +225,9 @@ export async function setupInitialStore(metamaskState, activeTab) {
 async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
 
+  // Initialize Core Web Vitals (INP, LCP, CLS) measurement
+  initWebVitals();
+
   const tags = getStartupTraceTags({ metamask: metamaskState });
 
   const store = await trace(
@@ -233,8 +254,13 @@ async function startApp(metamaskState, opts) {
     () => runInitialActions(store),
   );
 
+  // UI messenger is created here in preparation for completely replacing
+  // `submitRequestToBackground` with it.
+  const uiMessenger = createUIMessenger();
+  // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
+  // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} />, opts.container),
+    renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
 
   return store;
@@ -315,10 +341,10 @@ export async function getCleanAppState(store) {
   state.browser = window.navigator.userAgent;
 
   // when JSON.stringiy, `undefined` value will be left out.
-  state.metamask = {
+  state.metamask = sanitizeStateLogs({
     ...state.metamask,
     socialLoginEmail: undefined,
-  };
+  });
 
   return state;
 }
@@ -396,7 +422,13 @@ function setupStateHooks(store) {
   };
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
-    return maskObject(reduxState, SENTRY_UI_STATE);
+    return maskObject(
+      {
+        ...reduxState,
+        metamask: sanitizeStateLogs(reduxState.metamask),
+      },
+      SENTRY_UI_STATE,
+    );
   };
   window.stateHooks.getLogs = function () {
     // These logs are logged by LoggingController
@@ -409,6 +441,37 @@ function setupStateHooks(store) {
 
     return logsArray;
   };
+
+  // Long Task observer: 100% in test/debug, 10% sampled in production
+  const longTaskSampleRate =
+    process.env.IN_TEST || process.env.METAMASK_DEBUG ? 1 : 0.1;
+  setupLongTaskObserver(longTaskSampleRate);
+
+  // Report TBT to Sentry when popup becomes hidden (production + debug).
+  // Sentry's browserTracingIntegration already creates per-task ui.long-task
+  // spans; this adds aggregate TBT as a custom measurement alongside them.
+  if (!process.env.IN_TEST) {
+    setupLongTaskSentryReporting();
+  }
+
+  // Expose metrics APIs for E2E benchmark harness
+  if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
+    exposeLongTaskMetricsForTesting();
+  }
+
+  // Agentic dev hooks — expose internals for CDP automation
+  if (process.env.METAMASK_DEBUG) {
+    globalThis.stateHooks.store = store;
+    globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
+    globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
+  }
+
+  if (process.env.IN_TEST) {
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    window.stateHooks.hasConsoleAccess = () =>
+      // eslint-disable-next-line n/global-require
+      require('@metamask/dummy-package').hasConsoleAccess();
+  }
 }
 
 /**
@@ -428,7 +491,7 @@ window.logState = async function (toClipboard) {
   try {
     const result = await window.logStateString();
     if (toClipboard) {
-      copyToClipboard(result, COPY_OPTIONS);
+      await navigator.clipboard.writeText(result);
       console.log('State log copied');
     } else {
       console.log(result);

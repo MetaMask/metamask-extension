@@ -1,26 +1,27 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
-import {
-  BridgeBackgroundAction,
-  BridgeUserAction,
-  RequestStatus,
-} from '@metamask/bridge-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { FeatureId, RequestStatus } from '@metamask/bridge-controller';
+import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
+import * as networkConstants from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
-import bridgeReducer, { initialState } from './bridge';
+import * as cacheUtils from '../../pages/bridge/utils/cache';
+import * as storeActions from '../../store/actions';
+import * as sentry from '../../../shared/lib/sentry';
+import bridgeReducer, { bridgeSlice, initialState } from './bridge';
+import { BridgeMissingNetworkConfigError } from './errors';
 import {
   setFromToken,
   setFromTokenInputValue,
   setToToken,
-  resetInputFields,
   updateQuoteRequestParams,
-  resetBridgeControllerAndCache,
   setWasTxDeclined,
   setSlippage,
+  setSlippageUserOverride,
+  resetBridgeController,
+  resetInputFields,
 } from './actions';
 
 const middleware = [thunk];
@@ -50,12 +51,15 @@ describe('Ducks - Bridge', () => {
   });
 
   describe('setFromToken', () => {
-    it('calls the "bridge/setFromToken" action', () => {
+    beforeEach(() => {
       setBackgroundConnection({
         setActiveNetwork: jest.fn(),
         setEnabledAllPopularNetworks: jest.fn(),
         getStatePatches: jest.fn(),
       } as never);
+    });
+
+    it('dispatches the action for a supported non-EVM chain (Solana)', () => {
       const state = store.getState().bridge;
       const actionPayload = {
         symbol: 'SYMBOL',
@@ -79,10 +83,102 @@ describe('Ducks - Bridge', () => {
           "isVerified": undefined,
           "name": "SYMBOL",
           "rwaData": undefined,
+          "securityData": undefined,
           "symbol": "SYMBOL",
           "tokenFiatAmount": undefined,
         }
       `);
+    });
+
+    it('dispatches the action for a supported EVM chain that is in the user network configs', () => {
+      // The default mock store includes Mainnet — this should succeed.
+      const actionPayload = {
+        symbol: 'ETH',
+        chainId: 'eip155:1',
+        assetId: 'eip155:1/slip44:60',
+        decimals: 18,
+        name: 'Ethereum',
+      };
+      store.dispatch(setFromToken(actionPayload as never) as never);
+      const actions = store.getActions();
+      expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(true);
+    });
+
+    it('does not dispatch the action for an unsupported chain', () => {
+      // eip155:99999 is not in ALL_ALLOWED_BRIDGE_CHAIN_IDS
+      const actionPayload = {
+        symbol: 'UNKNOWN',
+        chainId: 'eip155:99999',
+        assetId: 'eip155:99999/slip44:60',
+        decimals: 18,
+        name: 'Unknown',
+      };
+      store.dispatch(setFromToken(actionPayload as never) as never);
+      const actions = store.getActions();
+      expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(false);
+    });
+
+    it('dispatches addNetwork then sets fromToken for a supported EVM chain not yet in user configs', async () => {
+      // Arbitrum is a supported bridge chain but the default mock store only has
+      // Mainnet, Linea, and Optimism. setFromToken should auto-enable it via
+      // addNetwork and then fall through to dispatch bridge/setFromToken in the
+      // same thunk invocation — no external retry needed.
+      const arbitrum = FEATURED_RPCS.find(
+        (rpc) => rpc.chainId === CHAIN_IDS.ARBITRUM,
+      );
+      expect(arbitrum).toBeDefined();
+
+      const addNetworkSpy = jest
+        .spyOn(storeActions, 'addNetwork')
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+
+      const actionPayload = {
+        symbol: 'ETH',
+        chainId: 'eip155:42161',
+        assetId: 'eip155:42161/slip44:60',
+        decimals: 18,
+        name: 'Ethereum',
+      };
+      await store.dispatch(setFromToken(actionPayload as never) as never);
+      const actions = store.getActions();
+
+      expect(addNetworkSpy).toHaveBeenCalledTimes(1);
+      expect(addNetworkSpy).toHaveBeenCalledWith(arbitrum);
+      expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(true);
+    });
+
+    it('captures a Sentry exception when chain is supported but absent from both user configs and FEATURED_RPCS', () => {
+      const captureExceptionSpy = jest
+        .spyOn(sentry, 'captureException')
+        .mockImplementation(jest.fn());
+
+      const featuredRpcsHandle = jest.replaceProperty(
+        networkConstants,
+        'FEATURED_RPCS',
+        [] as never,
+      );
+
+      try {
+        const actionPayload = {
+          symbol: 'ETH',
+          chainId: 'eip155:42161',
+          assetId: 'eip155:42161/slip44:60',
+          decimals: 18,
+          name: 'Ethereum',
+        };
+        store.dispatch(setFromToken(actionPayload as never) as never);
+        const actions = store.getActions();
+
+        expect(actions.some((a) => a.type === 'bridge/setFromToken')).toBe(
+          false,
+        );
+        expect(captureExceptionSpy).toHaveBeenCalledTimes(1);
+        expect(captureExceptionSpy.mock.calls[0][0]).toBeInstanceOf(
+          BridgeMissingNetworkConfigError,
+        );
+      } finally {
+        featuredRpcsHandle.restore();
+      }
     });
   });
 
@@ -111,6 +207,7 @@ describe('Ducks - Bridge', () => {
         chainId: 'eip155:10',
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
         iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
       });
@@ -133,7 +230,7 @@ describe('Ducks - Bridge', () => {
   describe('resetInputFields', () => {
     it('resets to initalState', async () => {
       const state = store.getState().bridge;
-      store.dispatch(resetInputFields());
+      store.dispatch(resetInputFields() as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
@@ -145,7 +242,7 @@ describe('Ducks - Bridge', () => {
     it('dispatches quote params to the bridge controller', () => {
       const mockUpdateParams = jest.fn();
       setBackgroundConnection({
-        [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
+        updateBridgeQuoteRequestParams: mockUpdateParams,
         getStatePatches: jest.fn(),
       } as never);
 
@@ -169,10 +266,15 @@ describe('Ducks - Bridge', () => {
             token_symbol_destination: 'ETH',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_security_type_destination: null,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_warnings: [],
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_amount_source: 1000,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
           },
         ) as never,
       );
@@ -197,17 +299,24 @@ describe('Ducks - Bridge', () => {
           token_symbol_destination: 'ETH',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_security_type_destination: null,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_warnings: [],
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source: 1000,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
         },
+        0,
+        1,
       );
     });
   });
 
-  describe('resetBridgeState', () => {
-    it('dispatches action to the bridge controller', () => {
+  describe('resetBridgeController', () => {
+    it('dispatches action to the bridge controller', async () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
@@ -216,19 +325,23 @@ describe('Ducks - Bridge', () => {
         }),
       );
       const mockResetBridgeState = jest.fn();
+      const mockClearAllBridgeCacheItems = jest.spyOn(
+        cacheUtils,
+        'clearAllBridgeCacheItems',
+      );
       setBackgroundConnection({
-        [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
+        resetState: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 
-      mockStore.dispatch(resetBridgeControllerAndCache() as never);
+      await mockStore.dispatch((await resetBridgeController()) as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith();
       const actions = mockStore.getActions();
       expect(actions.map((action) => action.type)).not.toContain(
         'bridge/resetInputFields',
       );
+      expect(mockClearAllBridgeCacheItems).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -253,7 +366,8 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        slippage: SlippageValue.BridgeDefault,
+        slippage: undefined,
+        isSlippageUserOverride: false,
         isDestAssetPickerOpen: false,
         isSrcAssetPickerOpen: false,
         sortOrder: 'cost_ascending',
@@ -265,6 +379,23 @@ describe('Ducks - Bridge', () => {
         fromNativeBalance: null,
       });
     });
+  });
+
+  it('clears user slippage when an asset changes', () => {
+    let state = bridgeReducer(initialState, setSlippageUserOverride(undefined));
+
+    state = bridgeReducer(
+      state,
+      bridgeSlice.actions.setToToken({
+        assetId: 'eip155:1/erc20:0xabc',
+        symbol: 'TEST',
+        name: 'Test',
+        decimals: 18,
+      }),
+    );
+
+    expect(state.slippage).toBeUndefined();
+    expect(state.isSlippageUserOverride).toBe(false);
   });
 
   describe('setWasTxDeclined', () => {

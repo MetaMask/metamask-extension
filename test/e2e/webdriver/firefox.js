@@ -1,6 +1,5 @@
-const nodeCrypto = require('crypto');
-const fs = require('fs');
 const { execFileSync } = require('child_process');
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const {
@@ -9,9 +8,81 @@ const {
   until,
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
+const { UserPromptHandler } = require('selenium-webdriver/lib/capabilities');
 const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
+const { getOrBuildXpi } = require('../helpers/xpi');
+
+// geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
+// We pin the version as a temporary patch until migration to Playwright (in progress)
+// See: https://github.com/mozilla/geckodriver/releases/tag/v0.37.0
+const PINNED_GECKODRIVER_VERSION = '0.36.0';
+
+/**
+ * Resolve the geckodriver binary to use.
+ *
+ * Resolution order:
+ * 1. `GECKODRIVER_PATH` env var, if set. CI sets this via
+ *    `.github/scripts/pin-geckodriver.sh` (also usable as a manual override to
+ *    test a different driver version).
+ * 2. The pinned {@link PINNED_GECKODRIVER_VERSION}, resolved (and downloaded +
+ *    cached cross-platform) via the `selenium-manager` binary that ships with
+ *    `selenium-webdriver`. This is the fallback that fixes local runs without
+ *    requiring any env var.
+ * 3. `undefined` on failure, so Selenium Manager falls back to its default
+ *    auto-resolution rather than hard-failing.
+ *
+ * @returns {string|undefined} Absolute path to the geckodriver binary, or
+ * `undefined` to defer to Selenium Manager's default resolution.
+ */
+function resolveGeckodriverPath() {
+  if (process.env.GECKODRIVER_PATH) {
+    return process.env.GECKODRIVER_PATH;
+  }
+
+  try {
+    const platform =
+      // eslint-disable-next-line no-nested-ternary
+      process.platform === 'darwin'
+        ? 'macos'
+        : process.platform === 'win32'
+          ? 'windows'
+          : 'linux';
+    const binName =
+      process.platform === 'win32'
+        ? 'selenium-manager.exe'
+        : 'selenium-manager';
+    const seleniumManager = path.join(
+      path.dirname(require.resolve('selenium-webdriver')),
+      'bin',
+      platform,
+      binName,
+    );
+
+    const output = execFileSync(
+      seleniumManager,
+      [
+        '--driver',
+        'geckodriver',
+        '--driver-version',
+        PINNED_GECKODRIVER_VERSION,
+        '--output',
+        'json',
+      ],
+      { encoding: 'utf8' },
+    );
+
+    const { result } = JSON.parse(output);
+    return result?.driver_path || undefined;
+  } catch (error) {
+    console.warn(
+      `Could not resolve pinned geckodriver ${PINNED_GECKODRIVER_VERSION}; ` +
+        `falling back to Selenium Manager's default driver resolution. ${error}`,
+    );
+    return undefined;
+  }
+}
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -66,6 +137,8 @@ class FirefoxDriver {
     );
 
     options.setAcceptInsecureCerts(true);
+    // Leave alerts open so tests can read text and click OK.
+    options.setAlertBehavior(UserPromptHandler.IGNORE);
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
       'browser.download.dir',
@@ -87,7 +160,16 @@ class FirefoxDriver {
     const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
     const service = process.env.FIREFOX_SNAP
       ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
-      : new firefox.ServiceBuilder();
+      : new firefox.ServiceBuilder(resolveGeckodriverPath());
+
+    // Firefox 153 restricts WebDriver navigation to privileged pages (most
+    // `about:` pages, `chrome://`, `resource://`) unless system access is
+    // allowed. `getInternalId` reads the extension UUID from
+    // `about:debugging#addons`, so without this the session cannot start.
+    // Newer geckodriver rejects `--remote-allow-system-access` via Firefox
+    // capabilities; pass `--allow-system-access` to geckodriver instead.
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=1579790
+    service.addArguments('--allow-system-access');
 
     if (port) {
       service.setPort(port);
@@ -95,168 +177,37 @@ class FirefoxDriver {
 
     builder.setFirefoxService(service);
     const driver = builder.build();
-    const fxDriver = new FirefoxDriver(driver);
 
-    // Pre-build a compressed XPI and cache it across test runs.
-    // Without this, installAddon() zips the 348MB unpacked dir on every call,
-    // adding ~10s of overhead per test.
-    const xpiPath = FirefoxDriver._getOrBuildXpi('dist/firefox');
-    const installedExtensionId = await fxDriver.installExtension(xpiPath);
-    const internalExtensionId = await fxDriver.getInternalId();
-
-    if (responsive || constrainWindowSize) {
-      await driver.manage().window().setRect({ width: 320, height: 600 });
-    }
-
-    return {
-      driver,
-      extensionId: installedExtensionId,
-      extensionUrl: `moz-extension://${internalExtensionId}`,
-    };
-  }
-
-  /**
-   * Returns the SHA-256 hash of manifest.json content for cache invalidation.
-   *
-   * @param {string} absDir - Absolute path to the unpacked extension directory
-   * @returns {string} Hex-encoded SHA-256 hash
-   */
-  static _getManifestSha256(absDir) {
-    const manifestContent = fs.readFileSync(path.join(absDir, 'manifest.json'));
-    return nodeCrypto
-      .createHash('sha256')
-      .update(manifestContent)
-      .digest('hex');
-  }
-
-  /**
-   * Returns the path to a cached XPI for the given unpacked extension directory.
-   * Builds the XPI on first call; reuses it as long as no file in the directory
-   * is newer than the cached XPI. The cache filename is derived from the
-   * directory path so different addon dirs get independent caches.
-   *
-   * @param {string} addonDir - Path to the unpacked extension directory
-   * @returns {string} Path to the XPI file
-   */
-  static _getOrBuildXpi(addonDir) {
-    const absDir = path.resolve(addonDir);
-    const dirHash = nodeCrypto
-      .createHash('sha256')
-      .update(absDir)
-      .digest('hex')
-      .slice(0, 12);
-    const xpiPath = path.join(os.tmpdir(), `metamask-e2e-${dirHash}.xpi`);
-    const manifestHashPath = `${xpiPath}.manifest-sha256`;
-
-    let needsRebuild = true;
-    let manifestHashForStorage = null;
-
+    // Ensure Firefox is cleaned up if anything below fails (XPI build,
+    // extension install, etc.).  Without this, a partial failure orphans
+    // the browser.
     try {
-      const xpiMtime = fs.statSync(xpiPath).mtimeMs;
+      const fxDriver = new FirefoxDriver(driver);
 
-      // manifest.json is excluded from mtime checks because setManifestFlags()
-      // rewrites it before every test even when content is identical. Instead
-      // we compare its content hash to detect real changes.
-      const manifestHash = FirefoxDriver._getManifestSha256(absDir);
-      manifestHashForStorage = manifestHash;
+      // Pre-build an XPI and cache it across test runs.
+      // Without this, installAddon() zips the 348MB unpacked dir on every call,
+      // adding ~10s of overhead per test.
+      const xpiPath = await getOrBuildXpi('dist/firefox');
+      const installedExtensionId = await fxDriver.installExtension(xpiPath);
+      const internalExtensionId = await fxDriver.getInternalId();
 
-      const cachedManifestHash = fs
-        .readFileSync(manifestHashPath, 'utf8')
-        .trim();
-
-      const manifestChanged = manifestHash !== cachedManifestHash;
-      const filesChanged = FirefoxDriver._hasNewerFile(
-        absDir,
-        xpiMtime,
-        'manifest.json',
-      );
-
-      needsRebuild = manifestChanged || filesChanged;
-    } catch {
-      // XPI or hash file doesn't exist yet — first run or cache invalid
-      console.log('[Firefox E2E] Cache cold, building XPI');
-    }
-
-    if (needsRebuild) {
-      try {
-        fs.unlinkSync(xpiPath);
-      } catch (err) {
-        console.warn(
-          '[Firefox E2E] Pre-rebuild unlink of XPI failed:',
-          err.message,
-        );
+      if (responsive || constrainWindowSize) {
+        await driver.manage().window().setRect({ width: 320, height: 600 });
       }
+
+      return {
+        driver,
+        extensionId: installedExtensionId,
+        extensionUrl: `moz-extension://${internalExtensionId}`,
+      };
+    } catch (error) {
       try {
-        execFileSync('zip', ['-r', '-1', '-q', xpiPath, '.'], { cwd: absDir });
+        await driver.quit();
       } catch {
-        // `zip` failed or not installed — fall back to unpacked directory.
-        // Clean up any partial/corrupted XPI and stale hash so we don't reuse
-        // them on the next run (which would cause hard-to-diagnose install failures).
-        try {
-          fs.unlinkSync(xpiPath);
-        } catch (err) {
-          console.warn(
-            '[Firefox E2E] Cleanup of partial XPI failed:',
-            err.message,
-          );
-        }
-        try {
-          fs.unlinkSync(manifestHashPath);
-        } catch (err) {
-          console.warn(
-            '[Firefox E2E] Cleanup of manifest hash failed:',
-            err.message,
-          );
-        }
-        // If unlink failed, overwrite with sentinel so next run won't treat
-        // a corrupted XPI as valid (manifestHash will never match '').
-        try {
-          fs.writeFileSync(manifestHashPath, '');
-        } catch (err) {
-          console.warn(
-            '[Firefox E2E] Failed to invalidate manifest hash:',
-            err.message,
-          );
-        }
-        console.warn(
-          '[Firefox E2E] zip not installed or failed, using unpacked directory (slower)',
-        );
-        return addonDir;
+        // best-effort cleanup
       }
-      console.log('[Firefox E2E] Built cached XPI');
-
-      const hashToStore =
-        manifestHashForStorage ?? FirefoxDriver._getManifestSha256(absDir);
-      fs.writeFileSync(manifestHashPath, hashToStore);
+      throw error;
     }
-
-    return xpiPath;
-  }
-
-  /**
-   * Checks whether any file inside `dir` has an mtime newer than `thresholdMs`.
-   * Returns early on the first match for speed.
-   *
-   * @param {string} dir - Directory to scan
-   * @param {number} thresholdMs - mtime threshold in milliseconds
-   * @param {string} [skipFile] - Filename to skip (checked at top-level only)
-   * @returns {boolean} true if at least one file is newer
-   */
-  static _hasNewerFile(dir, thresholdMs, skipFile) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (skipFile && entry.name === skipFile) {
-        continue;
-      }
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (FirefoxDriver._hasNewerFile(fullPath, thresholdMs)) {
-          return true;
-        }
-      } else if (fs.statSync(fullPath).mtimeMs > thresholdMs) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**

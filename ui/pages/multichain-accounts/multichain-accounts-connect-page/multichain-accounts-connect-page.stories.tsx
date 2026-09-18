@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import {
   Caip25CaveatType,
@@ -23,6 +23,9 @@ const mockTargetSubjectMetadata = {
   subjectType: 'website' as const,
 };
 
+const mockSelectedAccountGroup =
+  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
+
 const mockAccountTreeState = {
   wallets: {
     'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
@@ -39,6 +42,7 @@ const mockAccountTreeState = {
             entropy: { groupIndex: 0 },
             pinned: false,
             hidden: false,
+            lastSelected: 0,
           },
         },
         'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/1': {
@@ -50,6 +54,7 @@ const mockAccountTreeState = {
             entropy: { groupIndex: 1 },
             pinned: false,
             hidden: false,
+            lastSelected: 0,
           },
         },
       },
@@ -59,8 +64,6 @@ const mockAccountTreeState = {
       },
     },
   },
-  selectedAccountGroup:
-    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId,
 };
 
 const mockInternalAccountsState = {
@@ -114,6 +117,7 @@ const mockMultichainState = createMockMultichainAccountsState(
   mockAccountTreeState,
   mockInternalAccountsState,
   mockNetworkConfigurations,
+  mockSelectedAccountGroup,
 );
 
 const store = configureStore({
@@ -128,7 +132,6 @@ const store = configureStore({
       mockState.metamask.networkConfigurationsByChainId,
     permissionHistory: {
       'https://test.dapp': {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_accounts: {
           accounts: {
             '0x123': 1709225290848,

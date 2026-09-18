@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import {
@@ -10,16 +12,24 @@ import {
 } from 'webpack';
 import { validate } from 'schema-utils';
 import {
-  type DeflateOptions,
-  Zip,
-  AsyncZipDeflate,
-  ZipPassThrough,
-} from 'fflate';
-import { noop, extensionToJs, type Manifest, Browser } from '../../helpers';
+  noop,
+  extensionToJs,
+  type Manifest,
+  type Browser,
+} from '../../helpers';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from '../../dev-server/protocol';
+import {
+  createBundleSizeCategoryAssets,
+  createBundleSizeSummary,
+  getBundlePartSizes,
+  type BundleSizeAssetStat,
+  type BundleSizeDebugEntrypoint,
+} from './stats';
 import { schema } from './schema';
-import type { ManifestPluginOptions } from './types';
+import type { BundleSizeCategory, ManifestPluginOptions } from './types';
+import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
 
-const { RawSource, ConcatSource } = sources;
+const { CachedSource, RawSource } = sources;
 
 type Assets = Compilation['assets'];
 
@@ -27,47 +37,56 @@ export type EntryDescriptionNormalized = { import?: string[] } & Omit<
   EntryOptions,
   'name'
 >;
+type CollectedBundleSizeStats = {
+  partSizes: ReturnType<typeof getBundlePartSizes>;
+  debugEntrypoints?: Record<string, BundleSizeDebugEntrypoint>;
+  timestamp: number;
+};
 
 const NAME = 'ManifestPlugin';
-const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
 
-/**
- * Adds the given asset to the zip file
- *
- * @param asset - The asset to add
- * @param assetName - The name of the asset
- * @param compress - Whether to compress the asset
- * @param compressionOptions - The options to use for compression
- * @param mtime - The modification time of the asset
- * @param zip - The zip file to add the asset to
- */
-function addAssetToZip(
-  asset: Buffer,
-  assetName: string,
-  compress: boolean,
-  compressionOptions: DeflateOptions | undefined,
-  mtime: number,
-  zip: Zip,
+function isJavaScriptAsset(assetName: string): boolean {
+  return (
+    assetName.endsWith('.js') ||
+    assetName.endsWith('.mjs') ||
+    assetName.endsWith('.cjs')
+  );
+}
+
+function getAssetStats(compilation: Compilation, assetNames: Iterable<string>) {
+  const stats: BundleSizeAssetStat[] = [];
+  for (const assetName of assetNames) {
+    if (!isJavaScriptAsset(assetName)) continue;
+    const asset = compilation.getAsset(assetName)!;
+    stats.push({ name: assetName, size: asset.source.size() });
+  }
+  return stats;
+}
+
+function emitJsonAsset(
+  compilation: Compilation,
+  assetPath: string,
+  value: unknown,
 ): void {
-  const zipFile = compress
-    ? // AsyncZipDeflate uses workers
-      new AsyncZipDeflate(assetName, compressionOptions)
-    : // ZipPassThrough doesn't use workers
-      new ZipPassThrough(assetName);
-  zipFile.mtime = mtime;
-  zip.add(zipFile);
-  // Use a copy of the Buffer via `Buffer.from(asset)`, as Zip will *consume*
-  // it, which breaks things if we are compiling for multiple browsers at once.
-  // `Buffer.from` uses the internal pool, so it's superior to `new Uint8Array`
-  // if we don't need to pass it off to a worker thread.
-  //
-  // Additionally, in Node.js 22+ a Buffer marked as "Untransferable" (like
-  // ours) can't be passed to a worker, which `AsyncZipDeflate` uses.
-  // See: https://github.com/101arrowz/fflate/issues/227#issuecomment-2540024304
-  // this can probably be simplified to `zipFile.push(Buffer.from(asset), true);`
-  // if the above issue is resolved.
-  zipFile.push(compress ? new Uint8Array(asset) : Buffer.from(asset), true);
+  const source = new RawSource(JSON.stringify(value, null, 2));
+  compilation.emitAsset(assetPath, source, {
+    javascriptModule: false,
+    contentType: 'application/json',
+  });
+}
+
+function addToSetMap<TKey, TValue>(
+  map: Map<TKey, Set<TValue>>,
+  key: TKey,
+  value: TValue,
+): void {
+  const values = map.get(key);
+  if (values) {
+    values.add(value);
+    return;
+  }
+  map.set(key, new Set([value]));
 }
 
 /**
@@ -76,31 +95,6 @@ function addAssetToZip(
  *
  */
 export class ManifestPlugin<Z extends boolean> {
-  /**
-   * File types that can be compressed well using DEFLATE compression, used when
-   * zipping assets.
-   */
-  static compressibleFileTypes = new Set([
-    '.bmp',
-    '.cjs',
-    '.css',
-    '.csv',
-    '.eot',
-    '.html',
-    '.js',
-    '.json',
-    '.log',
-    '.map',
-    '.md',
-    '.mjs',
-    '.svg',
-    '.txt',
-    '.wasm',
-    '.vtt', // very slow to process?
-    '.wav',
-    '.xml',
-  ]);
-
   options: ManifestPluginOptions<Z>;
 
   manifests: Map<Browser, Manifest> = new Map();
@@ -109,13 +103,24 @@ export class ManifestPlugin<Z extends boolean> {
 
   private watchedFiles: string[] = [];
 
-  private addedScripts: Set<string> = new Set();
+  addedScripts: Set<string> = new Set();
 
   private selfContainedScripts: Set<string> = new Set([
     'snow.prod',
     'use-snow',
     'bootstrap',
+    BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
+
+  private bundleSizeCategoriesByEntrypoint: Map<
+    string,
+    Set<BundleSizeCategory>
+  > = new Map();
+
+  private bundleSizeCategoriesByHtmlResource: Map<
+    string,
+    Set<BundleSizeCategory>
+  > = new Map();
 
   /**
    * Returns `true` if the given entrypoint can be split into chunks.
@@ -159,88 +164,283 @@ export class ManifestPlugin<Z extends boolean> {
     });
   }
 
-  private async zipAssets(
+  /**
+   * Emits each browser-specific manifest into its final output location.
+   *
+   * @param compilation - The active compilation.
+   * @param browsers - The browsers being built.
+   */
+  private emitManifestAssets(
     compilation: Compilation,
-    assets: Assets, // an object of asset names to assets
-    options: ManifestPluginOptions<true>,
-  ): Promise<void> {
-    // TODO(perf): this zips (and compresses) every file individually for each
-    // browser. Can we share the compression and crc steps to save time?
-    const { browsers, zipOptions } = options;
-    const { excludeExtensions, level, outFilePath, mtime } = zipOptions;
-    const compressionOptions: DeflateOptions = { level };
-    const assetsArray = Object.entries(assets);
-
-    let filesProcessed = 0;
-    const numAssetsPerBrowser = assetsArray.length + 1;
-    const totalWork = numAssetsPerBrowser * browsers.length; // +1 for each browser's manifest.json
-    const reportProgress =
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      ProgressPlugin.getReporter(compilation.compiler) || noop;
-    // TODO(perf): run this in parallel. If you try without carefully optimizing the
-    // process will run out of memory pretty quickly, and crash. Fun!
-    for (const browser of browsers) {
+    browsers: readonly Browser[],
+  ): void {
+    browsers.forEach((browser) => {
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
-      const source = await new Promise<sources.Source>((resolve, reject) => {
-        // since Zipping is async, a past chunk could cause an error after we've
-        // started processing additional chunks. We'll use this errored flag to
-        // short-circuit the rest of the processing if that happens.
-        let errored = false;
-        const zipSource = new ConcatSource();
-        const zip = new Zip((error, data, final) => {
-          if (errored) return; // ignore additional errors
-          if (error) {
-            // set error flag to prevent additional processing
-            errored = true;
-            reject(error);
-          } else {
-            zipSource.add(new RawSource(Buffer.from(data)));
-            // we've received our final bit of data, return the zipSource
-            if (final) resolve(zipSource);
-          }
-        });
+      compilation.emitAsset(
+        path.posix.join(browser, 'manifest.json'),
+        manifest,
+        {
+          javascriptModule: false,
+          contentType: 'application/json',
+        },
+      );
+    });
+  }
 
-        // add the browser's manifest.json file to the zip
-        addAssetToZip(
-          manifest.buffer(),
-          'manifest.json',
-          true,
-          compressionOptions,
-          mtime,
-          zip,
-        );
+  /**
+   * Returns the emitted zip size for a browser build.
+   *
+   * @param compilation - The active compilation.
+   * @param browser - The browser whose zip asset should be measured.
+   * @returns The emitted zip size, if zip output is enabled.
+   */
+  private getBundleZipSize(
+    compilation: Compilation,
+    browser: Browser,
+  ): number | undefined {
+    if (this.options.zip !== true) {
+      return undefined;
+    }
 
-        const message = `${++filesProcessed}/${totalWork} assets zipped for ${browser}`;
-        reportProgress(0, message, 'manifest.json');
+    const { outFilePath } = (this.options as ManifestPluginOptions<true>)
+      .zipOptions;
+    const zipAssetPath = outFilePath.replaceAll('[browser]', browser);
+    return compilation.getAsset(zipAssetPath)!.source.size();
+  }
 
-        for (const [assetName, asset] of assetsArray) {
-          if (errored) return;
+  private getBundleSizeCategories(
+    compilation: Compilation,
+    entrypointName: string,
+  ): Set<BundleSizeCategory> {
+    const categories = new Set(
+      this.bundleSizeCategoriesByEntrypoint.get(entrypointName),
+    );
 
-          const extName = path.extname(assetName);
-          if (excludeExtensions.includes(extName)) continue;
+    const entryData = compilation.entries.get(entrypointName);
+    for (const dependency of entryData?.dependencies ?? []) {
+      const module = compilation.moduleGraph.getModule(dependency);
+      if (!module) {
+        continue;
+      }
 
-          addAssetToZip(
-            asset.buffer(),
-            assetName,
-            ManifestPlugin.compressibleFileTypes.has(extName),
-            compressionOptions,
-            mtime,
-            zip,
-          );
-          reportProgress(
-            0,
-            `${++filesProcessed}/${totalWork} assets zipped for ${browser}`,
-            assetName,
-          );
+      for (const {
+        originModule,
+      } of compilation.moduleGraph.getIncomingConnections(module)) {
+        const originResource = originModule?.nameForCondition();
+        if (!originResource) {
+          continue;
         }
 
-        zip.end();
-      });
+        for (const category of this.bundleSizeCategoriesByHtmlResource.get(
+          originResource,
+        ) ?? []) {
+          categories.add(category);
+        }
+      }
+    }
 
-      // add the zip file to webpack's assets.
-      const zipFilePath = outFilePath.replace(BROWSER_TEMPLATE_RE, browser);
-      compilation.emitAsset(zipFilePath, source, {
+    return categories;
+  }
+
+  /**
+   * Collects bundle-size stats from the pre-fanout compilation assets.
+   *
+   * @param compilation - The active compilation.
+   * @returns The collected bundle-size stats when reporting is enabled.
+   */
+  private collectBundleSizeStats(
+    compilation: Compilation,
+  ): CollectedBundleSizeStats | undefined {
+    const statsOptions = this.options.stats;
+
+    if (!statsOptions) {
+      return;
+    }
+
+    const categoryAssets = createBundleSizeCategoryAssets();
+    const assetSizes = new Map<string, number>();
+    const debugEntrypoints:
+      | Record<string, BundleSizeDebugEntrypoint>
+      | undefined = statsOptions.debug ? {} : undefined;
+
+    for (const [name, entry] of compilation.entrypoints) {
+      const categories = this.getBundleSizeCategories(compilation, name);
+
+      if (categories.size === 0) {
+        continue;
+      }
+
+      const initialFiles = getAssetStats(compilation, entry.getFiles());
+      const asyncFiles = [
+        ...entry.getEntrypointChunk().getAllAsyncChunks(),
+      ].flatMap((chunk) => getAssetStats(compilation, chunk.files));
+
+      if (debugEntrypoints) {
+        debugEntrypoints[name] = {
+          categories: [...categories],
+          initialFiles,
+          asyncFiles,
+        };
+      }
+
+      for (const file of [...initialFiles, ...asyncFiles]) {
+        for (const category of categories) {
+          categoryAssets[category].add(file.name);
+          assetSizes.set(file.name, file.size);
+        }
+      }
+    }
+
+    return {
+      partSizes: getBundlePartSizes(categoryAssets, assetSizes),
+      debugEntrypoints,
+      timestamp: Date.now(),
+    };
+  }
+
+  /**
+   * Emits browser-scoped bundle-size summary and debug assets.
+   *
+   * @param compilation - The active compilation.
+   * @param bundleSizeStats - The collected bundle-size stats to emit.
+   */
+  private emitBundleSizeStatsAssets(
+    compilation: Compilation,
+    bundleSizeStats: CollectedBundleSizeStats | undefined,
+  ): void {
+    if (this.options.stats && bundleSizeStats) {
+      const { outFile } = this.options.stats;
+      for (const browser of this.options.browsers) {
+        const statsFile = outFile.replaceAll('[browser]', browser);
+        const zip = this.getBundleZipSize(compilation, browser);
+        const { partSizes, timestamp, debugEntrypoints } = bundleSizeStats;
+        const summary = createBundleSizeSummary(partSizes, { zip, timestamp });
+        emitJsonAsset(compilation, statsFile, summary);
+
+        if (debugEntrypoints) {
+          emitJsonAsset(
+            compilation,
+            statsFile.replace(/\.json$/u, '.debug.json'),
+            { entrypoints: debugEntrypoints },
+          );
+        }
+      }
+    }
+  }
+
+  /**
+   * Zips the assets for each browser into separate zip files and moves all
+   * assets into browser-specific directories. Source map assets may be moved to
+   * a dedicated `sourcemaps` directory if `devtool` is set to
+   * `hidden-source-map` to avoid exposing them in production builds.
+   *
+   * It uses a single-pass algorithm that iterates through the assets once, adding
+   * them to the appropriate zip builders and moving them to the correct
+   * location in the browser-specific directories.
+   *
+   * Note: This method uses `path.posix.join`, for the same reason
+   * {@link moveAssets} does.
+   *
+   * @param compilation - The active compilation.
+   * @param assets - The current asset map.
+   * @param options - The zip-enabled plugin options.
+   */
+  private async zipAndMoveAssets(
+    compilation: Compilation,
+    assets: Assets,
+    options: ManifestPluginOptions<true>,
+  ): Promise<void> {
+    const { browsers, zipOptions } = options;
+    const { excludeExtensions, level, outFilePath, mtime } = zipOptions;
+    const compressionOptions: ZipCompressionOptions = { level };
+    const moveSourceMapsToDedicatedDirectory =
+      compilation.options.devtool === 'hidden-source-map';
+    const [primaryBrowser, ...additionalBrowsers] = browsers;
+    const assetNames = Object.keys(assets);
+    const zipEligibleAssetCount = assetNames.filter(
+      (assetName) => !excludeExtensions.includes(path.extname(assetName)),
+    ).length;
+
+    let filesProcessed = 0;
+    const totalWork = browsers.length * (zipEligibleAssetCount + 1);
+    const reportProgress =
+      ProgressPlugin.getReporter(compilation.compiler) ?? noop;
+    const zipBuilders = browsers.map((browser) => {
+      const manifest = this.manifestSources.get(browser) as sources.RawSource;
+      const onAssetAdded = (assetName: string) => {
+        reportProgress(
+          0,
+          `${++filesProcessed}/${totalWork} assets zipped for ${browser}`,
+          assetName,
+        );
+      };
+
+      return {
+        browser,
+        builder: createBrowserZipBuilder({
+          compressionOptions,
+          excludeExtensions,
+          manifest,
+          mtime,
+          onAssetAdded,
+        }),
+      };
+    });
+
+    for (const assetName of assetNames) {
+      const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
+      const extName = path.extname(assetName);
+      const isSourceMapAsset =
+        moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
+      const shouldZip = !excludeExtensions.includes(extName);
+      const shouldCache =
+        shouldZip || (additionalBrowsers.length > 0 && !isSourceMapAsset);
+      let { source } = assetDetails;
+
+      if (shouldCache && !(source instanceof CachedSource)) {
+        compilation.updateAsset(assetName, (currentSource) => {
+          source =
+            currentSource instanceof CachedSource
+              ? currentSource
+              : new CachedSource(currentSource);
+          return source;
+        });
+      }
+
+      if (shouldZip) {
+        zipBuilders.forEach(({ builder }) =>
+          builder.addAsset(assetName, source),
+        );
+      }
+
+      if (isSourceMapAsset) {
+        compilation.renameAsset(
+          assetName,
+          path.posix.join(SOURCEMAPS_DIRECTORY, assetName),
+        );
+        continue;
+      }
+
+      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
+      if (assetName !== primaryAssetPath) {
+        compilation.renameAsset(assetName, primaryAssetPath);
+      }
+
+      additionalBrowsers.forEach((browser) => {
+        compilation.emitAsset(
+          path.posix.join(browser, assetName),
+          source,
+          assetDetails.info,
+        );
+      });
+    }
+
+    this.emitManifestAssets(compilation, browsers);
+
+    for (const { browser, builder } of zipBuilders) {
+      const data = await builder.finalize();
+      const filePath = outFilePath.replaceAll('[browser]', browser);
+      compilation.emitAsset(filePath, data, {
         javascriptModule: false,
         compressed: true,
         contentType: 'application/zip',
@@ -267,53 +467,55 @@ export class ManifestPlugin<Z extends boolean> {
     assets: Assets,
     options: ManifestPluginOptions<false>,
   ): void {
-    // we need to wait to delete assets until after we've zipped them all
-    const assetDeletions = new Set<string>();
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
-    const assetEntries = Object.entries(assets);
+    const [primaryBrowser, ...additionalBrowsers] = browsers;
 
-    browsers.forEach((browser) => {
-      const manifest = this.manifestSources.get(browser) as sources.RawSource;
-      compilation.emitAsset(
-        path.posix.join(browser, 'manifest.json'),
-        manifest,
-        {
-          javascriptModule: false,
-          contentType: 'application/json',
-        },
-      );
-    });
+    for (const assetName of Object.keys(assets)) {
+      const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
 
-    for (const [name, asset] of assetEntries) {
-      // move the assets to their final browser-relative locations
-      const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
       const isSourceMapAsset =
-        moveSourceMapsToDedicatedDirectory && name.endsWith('.map');
+        moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
+      let { source } = assetDetails;
+
+      if (
+        additionalBrowsers.length > 0 &&
+        !isSourceMapAsset &&
+        !(source instanceof CachedSource)
+      ) {
+        compilation.updateAsset(assetName, (currentSource) => {
+          source =
+            currentSource instanceof CachedSource
+              ? currentSource
+              : new CachedSource(currentSource);
+          return source;
+        });
+      }
 
       if (isSourceMapAsset) {
-        compilation.emitAsset(
-          path.posix.join(SOURCEMAPS_DIRECTORY, name),
-          asset,
-          assetDetails.info,
+        compilation.renameAsset(
+          assetName,
+          path.posix.join(SOURCEMAPS_DIRECTORY, assetName),
         );
-        assetDeletions.add(name);
         continue;
       }
 
-      browsers.forEach((browser) => {
+      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
+      if (assetName !== primaryAssetPath) {
+        compilation.renameAsset(assetName, primaryAssetPath);
+      }
+
+      additionalBrowsers.forEach((browser) => {
         compilation.emitAsset(
-          path.posix.join(browser, name),
-          asset,
+          path.posix.join(browser, assetName),
+          source,
           assetDetails.info,
         );
       });
-      assetDeletions.add(name);
     }
 
-    // delete the assets after we've zipped them all
-    assetDeletions.forEach((assetName) => compilation.deleteAsset(assetName));
+    this.emitManifestAssets(compilation, browsers);
   }
 
   /**
@@ -417,11 +619,9 @@ export class ManifestPlugin<Z extends boolean> {
       if (resources && resources.length > 0) {
         if (manifest.manifest_version === 3) {
           manifest.web_accessible_resources =
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             manifest.web_accessible_resources || [];
           const war = manifest.web_accessible_resources.find((resource) =>
-            resource.matches.includes('<all_urls>'),
+            resource.matches?.includes('<all_urls>'),
           );
           if (war) {
             // merge the resources into the existing <all_urls> resource, ensure uniqueness using `Set`
@@ -435,8 +635,6 @@ export class ManifestPlugin<Z extends boolean> {
           }
         } else {
           manifest.web_accessible_resources = [
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ...(manifest.web_accessible_resources || []),
             ...resources,
           ];
@@ -453,17 +651,26 @@ export class ManifestPlugin<Z extends boolean> {
     });
   }
 
+  private resetBundleSizeEntrypointMetadata(): void {
+    this.bundleSizeCategoriesByEntrypoint = new Map();
+    this.bundleSizeCategoriesByHtmlResource = new Map();
+  }
+
   private addManifestScript = ({
     compiler,
     entries,
     filename,
     opts,
+    category,
   }: {
     compiler: Compiler;
     entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
     opts?: EntryDescriptionNormalized;
+    category: BundleSizeCategory;
   }) => {
+    addToSetMap(this.bundleSizeCategoriesByEntrypoint, filename, category);
+
     if (this.addedScripts.has(filename)) return;
     this.addedScripts.add(filename);
     this.selfContainedScripts.add(filename);
@@ -480,15 +687,25 @@ export class ManifestPlugin<Z extends boolean> {
     compiler,
     entries,
     filename,
+    directory,
+    category,
     opts,
   }: {
     compiler: Compiler;
     entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
+    directory: string;
+    category: BundleSizeCategory;
     opts?: EntryDescriptionNormalized;
   }) => {
     const parsedFileName = path.parse(filename).name;
-    const filePath = path.join(compiler.context, 'html', 'pages', filename);
+    const filePath = path.join(compiler.context, directory, filename);
+    addToSetMap(
+      this.bundleSizeCategoriesByEntrypoint,
+      parsedFileName,
+      category,
+    );
+    addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
   };
 
@@ -496,23 +713,40 @@ export class ManifestPlugin<Z extends boolean> {
     compiler: Compiler,
     entries: Record<string, EntryDescriptionNormalized>,
   ): void {
+    this.resetBundleSizeEntrypointMetadata();
+
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
         for (const script of contentScript.js ?? []) {
-          this.addManifestScript({ compiler, entries, filename: script });
+          this.addManifestScript({
+            compiler,
+            entries,
+            filename: script,
+            category: 'contentScripts',
+          });
         }
       }
 
       if (manifest.manifest_version === 2) {
         // collect MV2 background scripts
         for (const script of manifest.background?.scripts ?? []) {
-          this.addManifestScript({ compiler, entries, filename: script });
+          this.addManifestScript({
+            compiler,
+            entries,
+            filename: script,
+            category: 'background',
+          });
         }
         // collect MV2 web accessible resources
         for (const resource of manifest.web_accessible_resources ?? []) {
           if (resource.endsWith('.js')) {
-            this.addManifestScript({ compiler, entries, filename: resource });
+            this.addManifestScript({
+              compiler,
+              entries,
+              filename: resource,
+              category: 'other',
+            });
           }
         }
       } else if (manifest.manifest_version === 3) {
@@ -523,44 +757,52 @@ export class ManifestPlugin<Z extends boolean> {
             entries,
             filename: manifest.background.service_worker,
             opts: { chunkLoading: 'import-scripts' },
+            category: 'background',
           });
         }
         // collect MV3 web accessible resources
         for (const resource of manifest.web_accessible_resources ?? []) {
           for (const filename of resource.resources) {
             if (filename.endsWith('.js')) {
-              this.addManifestScript({ compiler, entries, filename });
+              this.addManifestScript({
+                compiler,
+                entries,
+                filename,
+                category: 'other',
+              });
             }
           }
         }
       }
     }
 
-    let htmlFiles: string[] = [];
-    try {
-      htmlFiles = readdirSync(path.join(compiler.context, 'html', 'pages'));
-    } catch {
-      // directory doesn't exist, no HTML pages to add
-    }
+    for (const { directory, category } of this.options.html ?? []) {
+      let htmlFiles: string[] = [];
+      try {
+        htmlFiles = readdirSync(path.join(compiler.context, directory));
+      } catch {
+        // directory doesn't exist, no HTML pages to add
+      }
 
-    for (const filename of htmlFiles) {
-      // ignore non-htm/html files
-      if (/\.html?$/iu.test(filename)) {
-        // ignore background.html for MV3 extensions.
-        if (
-          this.options.manifest_version === 3 &&
-          filename === 'background.html'
-        ) {
-          continue;
+      for (const filename of htmlFiles) {
+        // ignore non-htm/html files
+        if (/\.html?$/iu.test(filename)) {
+          // ignore background.html for MV3 extensions.
+          if (
+            this.options.manifest_version === 3 &&
+            filename === 'background.html'
+          ) {
+            continue;
+          }
+          // ignore offscreen.html for MV2 extensions.
+          if (
+            this.options.manifest_version === 2 &&
+            filename === 'offscreen.html'
+          ) {
+            continue;
+          }
+          this.addHtml({ compiler, entries, directory, filename, category });
         }
-        // ignore offscreen.html for MV2 extensions.
-        if (
-          this.options.manifest_version === 2 &&
-          filename === 'offscreen.html'
-        ) {
-          continue;
-        }
-        this.addHtml({ compiler, entries, filename });
       }
     }
   }
@@ -640,10 +882,15 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
+      // if we edit the real `manifest` we change the compilation hash
+      const manifestForEmit = this.options.setBuildId
+        ? { ...manifest, build_id: compilation.fullHash }
+        : manifest;
+
       // cache the resolved manifests as RawSource
       this.manifestSources.set(
         browser,
-        new RawSource(JSON.stringify(manifest, null, 2)),
+        new RawSource(JSON.stringify(manifestForEmit, null, 2)),
       );
     }
   }
@@ -657,19 +904,18 @@ export class ManifestPlugin<Z extends boolean> {
         tapOptions,
         async (assets: Assets) => {
           this.resolveEntrypoints(compilation);
-          await this.zipAssets(compilation, assets, options);
-          this.moveAssets(
-            compilation,
-            assets,
-            this.options as ManifestPluginOptions<false>,
-          );
+          const bundleSizeStats = this.collectBundleSizeStats(compilation);
+          await this.zipAndMoveAssets(compilation, assets, options);
+          this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
         },
       );
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
         this.resolveEntrypoints(compilation);
+        const bundleSizeStats = this.collectBundleSizeStats(compilation);
         this.moveAssets(compilation, assets, options);
+        this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
       });
     }
   }

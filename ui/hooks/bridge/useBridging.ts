@@ -1,17 +1,19 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
+  FeatureId,
   formatChainIdToCaip,
   GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
+  MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
 import { parseCaipChainId } from '@metamask/utils';
-import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { MetaMetricsSwapsEventSource as ExtendedMetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   getBip44DefaultPairsConfig,
   getFromChain,
@@ -19,11 +21,14 @@ import {
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
 import {
-  resetBridgeControllerAndCache,
   resetInputFields,
+  setBridgeLocation,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
+import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import { useDispatch } from '../../store/hooks';
+
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
@@ -43,12 +48,9 @@ const useBridging = () => {
   const fromChains = useSelector(getFromChains);
   const bip44DefaultPairsConfig = useSelector(getBip44DefaultPairsConfig);
 
-  const isChainIdSupportedForBridging = (chainId: string | number) =>
-    ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
-
   const isChainIdEnabledForBridging = useCallback(
     (chainId: string | number) =>
-      isChainIdSupportedForBridging(chainId) &&
+      isSupportedBridgeChain(chainId) &&
       fromChains.some(
         (chain) =>
           formatChainIdToCaip(chain.chainId) === formatChainIdToCaip(chainId),
@@ -60,34 +62,44 @@ const useBridging = () => {
    * Navigates to the bridge page
    *
    * @param location - the entrypoint from which the bridge experience was triggered
-   * @param token - the token to set as the source token for the bridge experience
+   * @param sourceToken - the token to set as the source token for the bridge experience
+   * @param destTokenAssetId - the destination token asset id to set for the bridge experience
    */
   const openBridgeExperience = useCallback(
     (
-      location: MetaMetricsSwapsEventSource | 'Carousel',
-      token?: {
+      location:
+        | MetaMetricsSwapsEventSource
+        | ExtendedMetaMetricsSwapsEventSource,
+      sourceToken?: {
         symbol: string;
         address: string;
         decimals?: number;
         name?: string;
         chainId: GenericQuoteRequest['srcChainId'];
       },
+      destTokenAssetId?: string,
     ) => {
-      dispatch(resetInputFields());
-      dispatch(resetBridgeControllerAndCache());
+      !bridgeState && dispatch(resetInputFields());
       trace({
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
+      // TODO: pick the correct location type
+      dispatch(setBridgeLocation(location as MetaMetricsSwapsEventSource));
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: token?.symbol ?? 'ETH',
+          token_symbol_source: sourceToken?.symbol ?? 'ETH',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
         }),
       );
 
@@ -98,21 +110,27 @@ const useBridging = () => {
        * Defined if the token is a valid src or dest token
        */
       const assetId =
-        token?.chainId && isChainIdSupportedForBridging(token.chainId)
-          ? toAssetId(token.address, formatChainIdToCaip(token.chainId))
+        sourceToken?.chainId && isSupportedBridgeChain(sourceToken.chainId)
+          ? toAssetId(
+              sourceToken.address,
+              formatChainIdToCaip(sourceToken.chainId),
+            )
           : undefined;
 
-      if (token && assetId) {
+      if (sourceToken && assetId) {
         // If token is supported for bridging, propagate it to the bridge experience
         const tokenWithAssetId = {
-          ...token,
+          ...sourceToken,
           assetId,
-          name: token.name ?? token.symbol,
-          chainId: formatChainIdToCaip(token.chainId),
+          name: sourceToken.name ?? sourceToken.symbol,
+          chainId: formatChainIdToCaip(sourceToken.chainId),
         };
         if (validateMinimalAssetObject(tokenWithAssetId)) {
           tokenToUse = tokenWithAssetId;
-        } else if (!bridgeState && isChainIdEnabledForBridging(token.chainId)) {
+        } else if (
+          !bridgeState &&
+          isChainIdEnabledForBridging(sourceToken.chainId)
+        ) {
           // If bridgeState is defined, it means the user is returning to the bridge page
           // If the token is not in an enabled chain then it can't be used as the source token
           // Otherwise, set the `from` query param to use the bridge page's deep linking logic
@@ -130,6 +148,10 @@ const useBridging = () => {
         const defaultAssetId =
           bip44AssetId ?? getNativeAssetForChainId(fallbackChainId)?.assetId;
         search.set(BridgeQueryParams.From, defaultAssetId);
+      }
+
+      if (destTokenAssetId) {
+        search.set(BridgeQueryParams.To, destTokenAssetId);
       }
 
       if (location === MetaMetricsSwapsEventSource.TransactionShield) {

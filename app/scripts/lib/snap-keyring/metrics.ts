@@ -4,12 +4,12 @@ import {
   KeyringControllerGetStateAction,
 } from '@metamask/keyring-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
-import { GetSnap } from '@metamask/snaps-controllers';
+import { SnapControllerGetSnapAction } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 
 type AllowedActions =
-  | GetSnap
+  | SnapControllerGetSnapAction
   | KeyringControllerGetKeyringForAccountAction
   | AccountsControllerGetSelectedAccountAction
   | KeyringControllerGetStateAction;
@@ -38,7 +38,7 @@ export async function getSnapAndHardwareInfoForMetrics(
   let snap;
   if (account.metadata.snap?.id) {
     snap = messenger.call(
-      'SnapController:get',
+      'SnapController:getSnap',
       account.metadata.snap?.id,
     ) as Snap;
   }

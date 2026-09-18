@@ -79,11 +79,7 @@ async function writeBaseline({
       filepath: baselinePath,
     },
   );
-  await fs.writeFile(
-    baselinePath,
-    formatted,
-    { encoding: 'utf8' },
-  );
+  await fs.writeFile(baselinePath, formatted, { encoding: 'utf8' });
 }
 
 /**

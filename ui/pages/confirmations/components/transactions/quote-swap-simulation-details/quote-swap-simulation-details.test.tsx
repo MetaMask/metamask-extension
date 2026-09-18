@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
@@ -63,7 +63,7 @@ function render(args: Record<string, string> = {}) {
         '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913': 0.999877,
         '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2': 0.999578,
       }}
-      quote={quote as unknown as QuoteResponse}
+      quote={quote as unknown as QuoteResponseV1}
       sourceTokenAmount={'0x186a0'}
       tokenDetails={{
         '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2': {

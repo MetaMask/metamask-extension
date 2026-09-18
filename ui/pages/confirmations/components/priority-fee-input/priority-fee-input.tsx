@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
@@ -38,43 +38,34 @@ export const PriorityFeeInput = ({
     currentConfirmation?.txParams?.maxPriorityFeePerGas as string,
   ).toString();
   const [value, setValue] = useState(initialPriorityFee);
-  const [error, setError] = useState<string | undefined>(undefined);
 
   const { gasFeeEstimates } = useGasFeeEstimates(
     currentConfirmation?.networkClientId,
   );
 
-  const validatePriorityFeeCallback = useCallback(
-    (valueToBeValidated: string): string | undefined => {
-      const maxFeePerGasInDec = hexWEIToDecGWEI(maxFeePerGas).toString();
+  const maxFeePerGasInDec = hexWEIToDecGWEI(maxFeePerGas).toString();
 
-      const validationError = validatePriorityFee(
-        valueToBeValidated,
-        maxFeePerGasInDec,
-        t,
-      );
-      setError(validationError);
-      return validationError;
-    },
-    [maxFeePerGas, t],
+  const error = useMemo(
+    () => validatePriorityFee(value, maxFeePerGasInDec, t),
+    [maxFeePerGasInDec, t, value],
   );
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
-      const validationError = validatePriorityFeeCallback(newValue);
+      const validationError = validatePriorityFee(
+        newValue,
+        maxFeePerGasInDec,
+        t,
+      );
       setValue(newValue);
       if (!validationError) {
         const updatedPriorityFee = decGWEIToHexWEI(newValue) as Hex;
         onChange(updatedPriorityFee);
       }
     },
-    [onChange, validatePriorityFeeCallback],
+    [maxFeePerGasInDec, onChange, t],
   );
-
-  useEffect(() => {
-    validatePriorityFeeCallback(value);
-  }, [validatePriorityFeeCallback, value]);
 
   useEffect(() => {
     onErrorChange(error);

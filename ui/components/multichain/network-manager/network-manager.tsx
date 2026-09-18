@@ -1,29 +1,29 @@
 import {
+  ModalContentSize,
+  ModalContent,
+  Modal,
+  ModalHeader,
+} from '@metamask/design-system-react';
+import {
   type NetworkConfiguration,
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
-import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useCallback, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { useNetworkFormState } from '../networks-form/networks-form-state';
 import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import { hideModal, setEditedNetwork } from '../../../store/actions';
-import {
-  Modal,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-} from '../../component-library';
 import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
@@ -31,9 +31,10 @@ import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
 export const NetworkManager = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') ?? '';
+  const viewRef = useRef(view);
+  viewRef.current = view;
 
   const { initialTab } = useNetworkManagerInitialTab();
   const handleNewNetwork = () => {
@@ -117,11 +118,13 @@ export const NetworkManager = () => {
     [networkFormState, setSearchParams, view],
   );
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     dispatch(hideModal());
     dispatch(setEditedNetwork());
-    navigate(DEFAULT_ROUTE);
-  };
+    if (viewRef.current) {
+      setSearchParams({});
+    }
+  }, [dispatch, setSearchParams]);
 
   const handleGoHome = () => {
     setSearchParams({});
@@ -150,8 +153,10 @@ export const NetworkManager = () => {
               onClose={handleClose}
               onBack={handleGoHome}
               closeButtonProps={{
+                ariaLabel: t('close'),
                 'data-testid': 'modal-header-close-button',
               }}
+              backButtonProps={{ ariaLabel: t('back') }}
             >
               {t('addNetwork')}
             </ModalHeader>
@@ -167,8 +172,10 @@ export const NetworkManager = () => {
               onClose={handleClose}
               onBack={handleNewNetwork}
               closeButtonProps={{
+                ariaLabel: t('close'),
                 'data-testid': 'modal-header-close-button',
               }}
+              backButtonProps={{ ariaLabel: t('back') }}
             >
               {t('addRpcUrl')}
             </ModalHeader>
@@ -181,8 +188,10 @@ export const NetworkManager = () => {
               onClose={handleClose}
               onBack={handleEditOnComplete}
               closeButtonProps={{
+                ariaLabel: t('close'),
                 'data-testid': 'modal-header-close-button',
               }}
+              backButtonProps={{ ariaLabel: t('back') }}
             >
               {t('addRpcUrl')}
             </ModalHeader>
@@ -195,8 +204,10 @@ export const NetworkManager = () => {
               onClose={handleClose}
               onBack={handleNewNetwork}
               closeButtonProps={{
+                ariaLabel: t('close'),
                 'data-testid': 'modal-header-close-button',
               }}
+              backButtonProps={{ ariaLabel: t('back') }}
             >
               {t('addBlockExplorerUrl')}
             </ModalHeader>
@@ -211,8 +222,10 @@ export const NetworkManager = () => {
               onClose={handleClose}
               onBack={handleNewNetwork}
               closeButtonProps={{
+                ariaLabel: t('close'),
                 'data-testid': 'modal-header-close-button',
               }}
+              backButtonProps={{ ariaLabel: t('back') }}
             >
               {t('addBlockExplorerUrl')}
             </ModalHeader>
@@ -227,8 +240,10 @@ export const NetworkManager = () => {
               onClose={handleClose}
               onBack={handleGoHome}
               closeButtonProps={{
+                ariaLabel: t('close'),
                 'data-testid': 'modal-header-close-button',
               }}
+              backButtonProps={{ ariaLabel: t('back') }}
             >
               {t('editNetwork')}
             </ModalHeader>
@@ -245,8 +260,10 @@ export const NetworkManager = () => {
               onClose={handleClose}
               onBack={handleGoHome}
               closeButtonProps={{
+                ariaLabel: t('close'),
                 'data-testid': 'modal-header-close-button',
               }}
+              backButtonProps={{ ariaLabel: t('back') }}
             >
               {t('selectRpcUrl')}
             </ModalHeader>

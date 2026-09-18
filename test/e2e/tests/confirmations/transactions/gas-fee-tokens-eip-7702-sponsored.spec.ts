@@ -1,15 +1,18 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
-import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  WINDOW_TITLES,
+} from '../../../constants';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
@@ -17,22 +20,31 @@ import { mockSpotPrices } from '../../tokens/utils/mocks';
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
+const MAINNET_NATIVE_ETH_BALANCE = '1';
 
 describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
   it('confirms transaction if successful', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedOut()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withSmartTransactionsOptedOut()
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1/slip44:60': { amount: MAINNET_NATIVE_ETH_BALANCE },
+              },
+            },
+          })
           .build(),
-        manifestFlags: {
-          testing: { disableSmartTransactionsOverride: true },
-        },
         localNodeOptions: {
           loadState:
             './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
+        },
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: MAINNET_NATIVE_ETH_BALANCE,
         },
         testSpecificMock: (mockServer: MockttpServer) => {
           mockSimulationResponse(mockServer);
@@ -56,7 +68,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           DEFAULT_FIXTURE_ACCOUNT,
           convertETHToHexGwei(1),
         );
-        await login(driver, { localNode: localNodes?.[0] });
+        await login(driver, { expectedBalance: MAINNET_NATIVE_ETH_BALANCE });
 
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -67,7 +79,10 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
         await transactionConfirmation.clickAdvancedDetailsButton();
 
         await transactionConfirmation.checkPaidByMetaMask();
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -76,8 +91,8 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -86,13 +101,23 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
-          .withPermissionControllerConnectedToTestDapp()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1/slip44:60': { amount: MAINNET_NATIVE_ETH_BALANCE },
+              },
+            },
+          })
           .build(),
         localNodeOptions: {
           loadState:
             './test/e2e/seeder/network-states/eip7702-state/withUpgradedAccount.json',
+        },
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: MAINNET_NATIVE_ETH_BALANCE,
         },
         testSpecificMock: (mockServer: MockttpServer) => {
           mockSimulationResponse(mockServer);
@@ -116,13 +141,16 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           DEFAULT_FIXTURE_ACCOUNT,
           convertETHToHexGwei(1),
         );
-        await login(driver, { localNode: localNodes?.[0] });
+        await login(driver, { expectedBalance: MAINNET_NATIVE_ETH_BALANCE });
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
 
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -131,8 +159,8 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });

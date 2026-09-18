@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { BorderColor } from '../../../helpers/constants/design-system';
 
 import {
@@ -9,17 +9,23 @@ import {
 
 import { BadgeWrapper } from './badge-wrapper';
 import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
-import { AvatarAccount } from '@metamask/design-system-react';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
+
+type BadgeWrapperProps = React.ComponentProps<typeof BadgeWrapper>;
 
 export default {
   title: 'Components/ComponentLibrary/BadgeWrapper (deprecated)',
   component: BadgeWrapper,
   tags: ['autodocs'],
   parameters: {
+    layout: 'centered',
     docs: {
       description: {
         component:
-          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use [`BadgeWrapper` from `@metamask/design-system-react`](https://metamask.github.io/metamask-design-system/?path=/docs/react-components-badgewrapper--docs) instead. See the [Migration Guide](https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#from-extension-component-library) for extension migration guidance.',
       },
     },
   },
@@ -45,28 +51,30 @@ export default {
       control: 'text',
     },
   },
-} as ComponentMeta<typeof BadgeWrapper>;
+} satisfies Meta<typeof BadgeWrapper>;
 
-const Template: ComponentStory<typeof BadgeWrapper> = (args) => (
-  <BadgeWrapper
-    badge={
-      <AvatarNetwork
-        size={AvatarNetworkSize.Xs}
-        name="Avalanche"
-        src="./images/avax-token.svg"
-        borderColor={BorderColor.borderMuted}
-      />
-    }
-    {...args}
-  >
-    {args.children ? (
-      args.children
-    ) : (
-      <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
-    )}
-  </BadgeWrapper>
-);
-
-export const DefaultStory = Template.bind({});
-
-DefaultStory.storyName = 'Default';
+export const DefaultStory: StoryObj<typeof BadgeWrapper> = {
+  render: (args: BadgeWrapperProps) => (
+    <BadgeWrapper
+      badge={
+        <AvatarNetwork
+          size={AvatarNetworkSize.Xs}
+          name="Avalanche"
+          src="./images/avax-token.svg"
+          borderColor={BorderColor.borderMuted}
+        />
+      }
+      {...args}
+    >
+      {args.children ? (
+        args.children
+      ) : (
+        <AvatarAccount
+          address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+          size={AvatarAccountSize.Lg}
+        />
+      )}
+    </BadgeWrapper>
+  ),
+  name: 'Default',
+};

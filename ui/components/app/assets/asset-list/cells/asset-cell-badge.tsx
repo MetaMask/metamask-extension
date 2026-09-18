@@ -22,6 +22,7 @@ type AssetCellBadgeProps = {
   tokenImage: string;
   symbol: string;
   assetId?: CaipAssetType | Hex;
+  networkBadgeTestId?: string;
 };
 
 export const getAvatarTokenSrc = (
@@ -33,10 +34,12 @@ export const getAvatarTokenSrc = (
   try {
     const isEvm = isEvmChainId(opts.chainId);
     if (isEvm && opts.isNative) {
-      return getNativeCurrencyForChain(opts.chainId);
+      return getNativeCurrencyForChain(opts.chainId) ?? opts.tokenImage ?? '';
     }
 
-    if (!opts.tokenImage && opts.assetId && !opts.isNative) {
+    // Fall back to the static CDN icon for any asset (including non-EVM natives
+    // like BTC) when the API/search payload omits an image URL.
+    if (!opts.tokenImage && opts.assetId) {
       return getAssetImageUrl(opts.assetId, opts.chainId) ?? '';
     }
 
@@ -49,7 +52,14 @@ export const getAvatarTokenSrc = (
 };
 
 export const AssetCellBadge = React.memo(
-  ({ chainId, isNative, tokenImage, symbol, assetId }: AssetCellBadgeProps) => {
+  ({
+    chainId,
+    isNative,
+    tokenImage,
+    symbol,
+    assetId,
+    networkBadgeTestId,
+  }: AssetCellBadgeProps) => {
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
     const avatarTokenSrc = getAvatarTokenSrc({
@@ -71,6 +81,9 @@ export const AssetCellBadge = React.memo(
             borderWidth={2}
           />
         }
+        badgeContainerProps={{
+          'data-testid': networkBadgeTestId,
+        }}
         marginRight={4}
         style={{ alignSelf: 'center' }}
       >
@@ -82,5 +95,11 @@ export const AssetCellBadge = React.memo(
       </BadgeWrapper>
     );
   },
-  (prevProps, nextProps) => prevProps.chainId === nextProps.chainId,
+  (prevProps, nextProps) =>
+    prevProps.chainId === nextProps.chainId &&
+    prevProps.isNative === nextProps.isNative &&
+    prevProps.tokenImage === nextProps.tokenImage &&
+    prevProps.symbol === nextProps.symbol &&
+    prevProps.assetId === nextProps.assetId &&
+    prevProps.networkBadgeTestId === nextProps.networkBadgeTestId,
 );

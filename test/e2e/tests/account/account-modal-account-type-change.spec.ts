@@ -1,12 +1,12 @@
 import { Suite } from 'mocha';
 import { Anvil } from '@viem/anvil';
 
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/batch-confirmation';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -54,15 +54,17 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
 
         // There is apparently an issue with Anvil network that prevents correct estimation of gas limit for upgrade.
         await upgradeAndBatchTxConfirmation.editGasLimitLondon('50000');
-        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        let activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        let activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
 
         // Downgrade Account
         await headerNavbar.openAccountDetailsModal();
@@ -72,15 +74,17 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
         await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           "You're switching back to a standard account (EOA).",
         );
-        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
         await homePage.goToActivityList();
-        activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
+        activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(2);
       },
     );
   });

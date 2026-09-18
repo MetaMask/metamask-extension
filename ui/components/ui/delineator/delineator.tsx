@@ -136,7 +136,7 @@ const Container = ({
   );
 };
 
-export const Delineator: React.FC<DelineatorProps> = ({
+export const Delineator = ({
   children,
   headerComponent,
   iconName,
@@ -148,9 +148,7 @@ export const Delineator: React.FC<DelineatorProps> = ({
   type,
   wrapperBoxProps,
   contentBoxProps,
-}) => {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+}: React.PropsWithChildren<DelineatorProps>) => {
   const [isExpanded, setIsExpanded] = useState(isExpandedProp || false);
   const shouldShowContent = !isCollapsible || (isCollapsible && isExpanded);
 

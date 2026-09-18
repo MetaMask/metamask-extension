@@ -39,7 +39,7 @@ async function main() {
           .option('leave-running', {
             default: false,
             description:
-              'Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.)',
+              'Leaves the browser running after a test fails, along with anything else that the test used (the local node, the test dapp, etc.)',
             type: 'boolean',
           })
           .option('update-snapshot', {
@@ -106,7 +106,7 @@ async function main() {
       process.env.E2E_DEBUG = 'true';
     }
 
-    let testTimeoutInMilliseconds = 80 * 1000;
+    let testTimeoutInMilliseconds = 85 * 1000;
     let exit = '--exit';
 
     if (leaveRunning) {
@@ -150,6 +150,10 @@ async function main() {
       );
     }
 
+    // Used by withFixtures to set an internal deadline before Mocha's timeout.
+    // The beforeEach hook in manifest-flag-mocha-hooks.ts updates this per-test.
+    process.env.MOCHA_TIMEOUT = String(testTimeoutInMilliseconds);
+
     try {
       await retry({ retries, stopAfterOneFailure }, async () => {
         const mochaArgs = [
@@ -183,7 +187,6 @@ async function main() {
   const allBrowsers = ['chrome', 'firefox'];
   if (browser === 'all') {
     for (const currentBrowser of allBrowsers) {
-      console.log(`Running tests on ${currentBrowser}`);
       try {
         await runTestsOnSingleBrowser(currentBrowser);
       } catch (error) {
@@ -193,7 +196,6 @@ async function main() {
       }
     }
   } else {
-    console.log(`Running tests on ${browser}`);
     try {
       await runTestsOnSingleBrowser(browser);
     } catch (error) {

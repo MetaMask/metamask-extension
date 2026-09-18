@@ -1,10 +1,15 @@
 import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   selectPerpsIsEligible,
   selectPerpsInitializationState,
   selectPerpsInitializationError,
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
-  selectPerpsDepositInProgress,
+  selectPerpsDepositPending,
+  selectPerpsLastDepositEntryPoint,
   selectPerpsLastDepositTransactionId,
   selectPerpsLastDepositResult,
   selectPerpsWithdrawInProgress,
@@ -22,8 +27,19 @@ import {
   selectPerpsCachedPositions,
   selectPerpsCachedOrders,
   selectPerpsCachedAccountState,
+  selectPerpsCachedUserData,
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
+  selectPerpsShouldShowDepositToast,
+  selectProLayoutPreferences,
+  selectOrderBookPosition,
+  selectOrderBookExpanded,
+  selectChartExpanded,
+  selectPerpsPendingTradeConfiguration,
+  selectPerpsSelectedOrderType,
+  selectPerpsOrderBookPreferences,
+  selectPerpsOrderBookGrouping,
+  selectPerpsVisibleCandleCount,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -86,8 +102,8 @@ describe('perps-controller selectors', () => {
   describe('selectPerpsActiveProvider', () => {
     it('returns value from state', () => {
       expect(
-        selectPerpsActiveProvider(buildState({ activeProvider: 'myx' })),
-      ).toBe('myx');
+        selectPerpsActiveProvider(buildState({ activeProvider: 'lighter' })),
+      ).toBe('lighter');
     });
 
     it('defaults to hyperliquid', () => {
@@ -95,15 +111,270 @@ describe('perps-controller selectors', () => {
     });
   });
 
-  describe('selectPerpsDepositInProgress', () => {
-    it('returns value from state', () => {
+  describe('selectPerpsDepositPending', () => {
+    const activeDepositId = 'tx-1';
+
+    function buildTx(
+      overrides: Partial<{
+        id: string;
+        type: TransactionType | string;
+        status: TransactionStatus | string;
+      }> = {},
+    ) {
+      return {
+        id: overrides.id ?? activeDepositId,
+        type: overrides.type ?? TransactionType.perpsDeposit,
+        status: overrides.status ?? TransactionStatus.approved,
+      };
+    }
+
+    function buildStateWithActiveDeposit(
+      overrides: Record<string, unknown> = {},
+    ) {
+      return buildState({
+        lastDepositTransactionId: activeDepositId,
+        ...overrides,
+      });
+    }
+
+    it('returns true when a perpsDeposit transaction is approved', () => {
       expect(
-        selectPerpsDepositInProgress(buildState({ depositInProgress: true })),
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({ transactions: [buildTx()] }),
+        ),
       ).toBe(true);
     });
 
-    it('defaults to false', () => {
-      expect(selectPerpsDepositInProgress(buildState())).toBe(false);
+    it('returns true when a perpsDepositAndOrder transaction is approved', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [
+              buildTx({ type: TransactionType.perpsDepositAndOrder }),
+            ],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      TransactionStatus.approved,
+      TransactionStatus.signed,
+      TransactionStatus.submitted,
+    ])('returns true when status is %s', (status: TransactionStatus) => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx({ status })],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      TransactionStatus.unapproved,
+      TransactionStatus.confirmed,
+      TransactionStatus.failed,
+      TransactionStatus.dropped,
+      TransactionStatus.rejected,
+    ])('returns false when status is %s', (status: TransactionStatus) => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx({ status })],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for unrelated transaction types in a pending status', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx({ type: TransactionType.bridge })],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when there are no transactions', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({ transactions: [] }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when the transactions slice is missing', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({ lastDepositTransactionId: activeDepositId }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when lastDepositTransactionId is null despite a pending perps tx', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            transactions: [
+              buildTx({ id: 'orphan', status: TransactionStatus.submitted }),
+            ],
+            lastDepositTransactionId: null,
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when lastDepositTransactionId is absent despite a pending perps tx', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            transactions: [
+              buildTx({ id: 'orphan', status: TransactionStatus.submitted }),
+            ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when active id points to a confirmed tx while another perps tx is stuck submitted', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            lastDepositTransactionId: 'current-deposit',
+            transactions: [
+              buildTx({
+                id: 'stale-deposit',
+                status: TransactionStatus.submitted,
+              }),
+              buildTx({
+                id: 'current-deposit',
+                status: TransactionStatus.confirmed,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true only for the transaction matching lastDepositTransactionId', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildState({
+            lastDepositTransactionId: 'tx-b',
+            transactions: [
+              buildTx({
+                id: 'tx-a',
+                type: TransactionType.simpleSend,
+                status: TransactionStatus.submitted,
+              }),
+              buildTx({
+                id: 'tx-b',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.submitted,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when lastDepositTransactionId does not match any transaction', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [
+              buildTx({
+                id: 'other-id',
+                status: TransactionStatus.approved,
+              }),
+            ],
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true for token-funded deposits with a non-native pay token', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx()],
+            transactionData: {
+              [activeDepositId]: {
+                paymentToken: {
+                  address: '0x00000000000000000000000000000000000000dA',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true for native-token-funded deposits', () => {
+      expect(
+        selectPerpsDepositPending(
+          buildStateWithActiveDeposit({
+            transactions: [buildTx()],
+            transactionData: {
+              [activeDepositId]: {
+                paymentToken: {
+                  address: '0x0000000000000000000000000000000000000000',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
+          }),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('selectPerpsShouldShowDepositToast', () => {
+    it('returns true for a direct deposit transaction', () => {
+      expect(
+        selectPerpsShouldShowDepositToast(
+          buildState({
+            lastDepositTransactionId: 'tx-1',
+            transactions: [
+              {
+                id: 'tx-1',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.approved,
+              },
+            ],
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true for a token-funded deposit transaction', () => {
+      expect(
+        selectPerpsShouldShowDepositToast(
+          buildState({
+            lastDepositTransactionId: 'tx-1',
+            transactions: [
+              {
+                id: 'tx-1',
+                type: TransactionType.perpsDeposit,
+                status: TransactionStatus.approved,
+              },
+            ],
+            transactionData: {
+              'tx-1': {
+                paymentToken: {
+                  address: '0x00000000000000000000000000000000000000dA',
+                  chainId: '0xa4b1',
+                },
+              },
+            },
+          }),
+        ),
+      ).toBe(true);
     });
   });
 
@@ -131,6 +402,28 @@ describe('perps-controller selectors', () => {
 
     it('defaults to null', () => {
       expect(selectPerpsLastDepositResult(buildState())).toBeNull();
+    });
+  });
+
+  describe('selectPerpsLastDepositEntryPoint', () => {
+    it('returns entry point from persisted state when present', () => {
+      expect(
+        selectPerpsLastDepositEntryPoint(
+          buildState({
+            lastPerpsDepositEntryPoint: 'hyperliquid_deposit_prompt',
+          }),
+        ),
+      ).toBe('hyperliquid_deposit_prompt');
+    });
+
+    it('returns null when no entry point is set', () => {
+      expect(
+        selectPerpsLastDepositEntryPoint(
+          buildState({
+            lastPerpsDepositEntryPoint: null,
+          }),
+        ),
+      ).toBeNull();
     });
   });
 
@@ -228,11 +521,8 @@ describe('perps-controller selectors', () => {
       ).toBe(value);
     });
 
-    it('defaults to both true', () => {
-      expect(selectPerpsIsFirstTimeUser(buildState())).toEqual({
-        testnet: true,
-        mainnet: true,
-      });
+    it('returns undefined when absent', () => {
+      expect(selectPerpsIsFirstTimeUser(buildState())).toBeUndefined();
     });
   });
 
@@ -339,7 +629,27 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const data = [{ market: 'ETH' }];
       expect(
-        selectPerpsCachedMarketData(buildState({ cachedMarketData: data })),
+        selectPerpsCachedMarketData(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedMarketDataByProvider: {
+              hyperliquid: { data, timestamp: 0 },
+            },
+          }),
+        ),
+      ).toBe(data);
+    });
+
+    it('falls back to hyperliquid data when activeProvider is absent', () => {
+      const data = [{ market: 'ETH' }];
+      expect(
+        selectPerpsCachedMarketData(
+          buildState({
+            cachedMarketDataByProvider: {
+              hyperliquid: { data, timestamp: 0 },
+            },
+          }),
+        ),
       ).toBe(data);
     });
 
@@ -352,7 +662,39 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const positions = [{ market: 'ETH', size: 1 }];
       expect(
-        selectPerpsCachedPositions(buildState({ cachedPositions: positions })),
+        selectPerpsCachedPositions(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions,
+                orders: [],
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(positions);
+    });
+
+    it('falls back to hyperliquid positions when activeProvider is absent', () => {
+      const positions = [{ market: 'ETH', size: 1 }];
+      expect(
+        selectPerpsCachedPositions(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions,
+                orders: [],
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(positions);
     });
 
@@ -365,7 +707,39 @@ describe('perps-controller selectors', () => {
     it('returns value from state', () => {
       const orders = [{ id: 'o1' }];
       expect(
-        selectPerpsCachedOrders(buildState({ cachedOrders: orders })),
+        selectPerpsCachedOrders(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders,
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(orders);
+    });
+
+    it('falls back to hyperliquid orders when activeProvider is absent', () => {
+      const orders = [{ id: 'o1' }];
+      expect(
+        selectPerpsCachedOrders(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders,
+                accountState: null,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
       ).toBe(orders);
     });
 
@@ -379,13 +753,68 @@ describe('perps-controller selectors', () => {
       const account = { balance: '100' };
       expect(
         selectPerpsCachedAccountState(
-          buildState({ cachedAccountState: account }),
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders: [],
+                accountState: account,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
+        ),
+      ).toBe(account);
+    });
+
+    it('falls back to hyperliquid account state when activeProvider is absent', () => {
+      const account = { balance: '100' };
+      expect(
+        selectPerpsCachedAccountState(
+          buildState({
+            cachedUserDataByProvider: {
+              hyperliquid: {
+                positions: [],
+                orders: [],
+                accountState: account,
+                timestamp: 0,
+                address: '',
+              },
+            },
+          }),
         ),
       ).toBe(account);
     });
 
     it('defaults to null', () => {
       expect(selectPerpsCachedAccountState(buildState())).toBeNull();
+    });
+  });
+
+  describe('selectPerpsCachedUserData', () => {
+    it('returns the full cache entry for the active provider', () => {
+      const entry = {
+        positions: [],
+        orders: [],
+        accountState: { totalBalance: '100' },
+        timestamp: 1,
+        address: '0xabc',
+      };
+
+      expect(
+        selectPerpsCachedUserData(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: { hyperliquid: entry },
+          }),
+        ),
+      ).toBe(entry);
+    });
+
+    it('defaults to null', () => {
+      expect(selectPerpsCachedUserData(buildState())).toBeNull();
     });
   });
 
@@ -414,6 +843,243 @@ describe('perps-controller selectors', () => {
 
     it('defaults to null', () => {
       expect(selectPerpsMarketFilterPreferences(buildState())).toBeNull();
+    });
+  });
+
+  describe('selectProLayoutPreferences', () => {
+    it('fills missing fields from the controller defaults', () => {
+      expect(
+        selectProLayoutPreferences(
+          buildState({ proLayoutPreferences: { orderBookPosition: 'right' } }),
+        ),
+      ).toStrictEqual({
+        orderBookExpanded: false,
+        chartExpanded: true,
+        orderBookPosition: 'right',
+        orderFormPosition: 'right',
+        positionsSideFilter: 'all',
+        positionsSortField: 'positionValue',
+        positionsSortDirection: 'desc',
+        ordersSideFilter: 'all',
+        ordersSortField: 'time',
+        ordersSortDirection: 'desc',
+      });
+    });
+
+    it('returns the defaults when nothing is persisted', () => {
+      expect(selectProLayoutPreferences(buildState())).toStrictEqual({
+        orderBookExpanded: false,
+        chartExpanded: true,
+        orderBookPosition: 'left',
+        orderFormPosition: 'right',
+        positionsSideFilter: 'all',
+        positionsSortField: 'positionValue',
+        positionsSortDirection: 'desc',
+        ordersSideFilter: 'all',
+        ordersSortField: 'time',
+        ordersSortDirection: 'desc',
+      });
+    });
+
+    it('returns a stable reference for unrelated state changes', () => {
+      // Unmemoized, the fresh merge object would fail useSelector's check.
+      const preferences = { orderBookPosition: 'right' as const };
+      const first = selectProLayoutPreferences(
+        buildState({ proLayoutPreferences: preferences, isEligible: true }),
+      );
+      const second = selectProLayoutPreferences(
+        buildState({ proLayoutPreferences: preferences, isEligible: false }),
+      );
+
+      expect(second).toBe(first);
+    });
+  });
+
+  describe('selectOrderBookPosition', () => {
+    it('returns the persisted position', () => {
+      expect(
+        selectOrderBookPosition(
+          buildState({ proLayoutPreferences: { orderBookPosition: 'right' } }),
+        ),
+      ).toBe('right');
+    });
+
+    it("defaults to 'left'", () => {
+      expect(selectOrderBookPosition(buildState())).toBe('left');
+      expect(
+        selectOrderBookPosition(buildState({ proLayoutPreferences: {} })),
+      ).toBe('left');
+    });
+  });
+
+  describe('selectOrderBookExpanded', () => {
+    it('returns the persisted open state', () => {
+      expect(
+        selectOrderBookExpanded(
+          buildState({ proLayoutPreferences: { orderBookExpanded: true } }),
+        ),
+      ).toBe(true);
+    });
+
+    it('defaults to closed', () => {
+      expect(selectOrderBookExpanded(buildState())).toBe(false);
+      expect(
+        selectOrderBookExpanded(buildState({ proLayoutPreferences: {} })),
+      ).toBe(false);
+    });
+  });
+
+  describe('selectChartExpanded', () => {
+    it('returns the persisted open state', () => {
+      expect(
+        selectChartExpanded(
+          buildState({ proLayoutPreferences: { chartExpanded: true } }),
+        ),
+      ).toBe(true);
+    });
+
+    it('uses the controller default when nothing is persisted', () => {
+      expect(selectChartExpanded(buildState())).toBe(
+        selectProLayoutPreferences(buildState()).chartExpanded,
+      );
+    });
+  });
+
+  describe('selectPerpsPendingTradeConfiguration', () => {
+    it('returns an unexpired draft for the active environment', () => {
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_000);
+
+      expect(
+        selectPerpsPendingTradeConfiguration(
+          buildState({
+            isTestnet: false,
+            tradeConfigurations: {
+              mainnet: {
+                ETH: {
+                  pendingConfig: {
+                    amount: '25',
+                    direction: 'long',
+                    timestamp: 10_000,
+                  },
+                },
+              },
+              testnet: {},
+            },
+          }),
+          'ETH',
+        ),
+      ).toEqual({
+        amount: '25',
+        direction: 'long',
+      });
+      dateNowSpy.mockRestore();
+    });
+
+    it('keeps a draft at the controller TTL boundary', () => {
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_000);
+
+      expect(
+        selectPerpsPendingTradeConfiguration(
+          buildState({
+            isTestnet: false,
+            tradeConfigurations: {
+              mainnet: {
+                ETH: {
+                  pendingConfig: {
+                    amount: '25',
+                    timestamp: 10_000,
+                  },
+                },
+              },
+              testnet: {},
+            },
+          }),
+          'ETH',
+        ),
+      ).toEqual({ amount: '25' });
+      dateNowSpy.mockRestore();
+    });
+
+    it('returns undefined when the draft has expired', () => {
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_001);
+
+      expect(
+        selectPerpsPendingTradeConfiguration(
+          buildState({
+            isTestnet: false,
+            tradeConfigurations: {
+              mainnet: {
+                ETH: {
+                  pendingConfig: {
+                    amount: '25',
+                    timestamp: 10_000,
+                  },
+                },
+              },
+              testnet: {},
+            },
+          }),
+          'ETH',
+        ),
+      ).toBeUndefined();
+      dateNowSpy.mockRestore();
+    });
+  });
+
+  describe('selectPerpsSelectedOrderType', () => {
+    it('returns a persisted limit order type', () => {
+      expect(
+        selectPerpsSelectedOrderType(
+          buildState({ selectedOrderType: 'limit' }),
+        ),
+      ).toBe('limit');
+    });
+
+    it('defaults unsupported controller order types to market', () => {
+      expect(
+        selectPerpsSelectedOrderType(
+          buildState({ selectedOrderType: 'stop_limit' }),
+        ),
+      ).toBe('market');
+    });
+  });
+
+  describe('selectPerpsOrderBookPreferences', () => {
+    it('merges persisted values with controller defaults', () => {
+      expect(
+        selectPerpsOrderBookPreferences(
+          buildState({ orderBookPreferences: { currency: 'base' } }),
+        ),
+      ).toEqual({ currency: 'base', metric: 'total' });
+    });
+  });
+
+  describe('selectPerpsOrderBookGrouping', () => {
+    it('returns the grouping for the active market and environment', () => {
+      expect(
+        selectPerpsOrderBookGrouping(
+          buildState({
+            isTestnet: true,
+            tradeConfigurations: {
+              mainnet: {},
+              testnet: { ETH: { orderBookGrouping: 5 } },
+            },
+          }),
+          'ETH',
+        ),
+      ).toBe(5);
+    });
+  });
+
+  describe('selectPerpsVisibleCandleCount', () => {
+    it('returns the persisted count', () => {
+      expect(
+        selectPerpsVisibleCandleCount(buildState({ visibleCandleCount: 75 })),
+      ).toBe(75);
+    });
+
+    it('returns the controller default when not persisted', () => {
+      expect(selectPerpsVisibleCandleCount(buildState())).toBe(30);
     });
   });
 });

@@ -6,19 +6,32 @@
  * - Legacy and EIP1559 gas editing
  */
 
+import { MockttpServer } from 'mockttp';
 import { login } from '../../page-objects/flows/login.flow';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
-import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import SendPage from '../../page-objects/pages/send/send-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import { mockEthPrices } from '../tokens/utils/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
     showFiatInTestnets: true,
   },
+};
+
+const ETH_USD_PRICE = 1700;
+
+const E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700 = {
+  assetPriceType: 'fungible' as const,
+  id: 'ethereum',
+  lastUpdated: 0,
+  price: ETH_USD_PRICE,
+  usdPrice: ETH_USD_PRICE,
 };
 
 describe('Send - Edit Transaction', function () {
@@ -27,47 +40,65 @@ describe('Send - Edit Transaction', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController({
+            assetsPrice: {
+              'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+              'eip155:1337/slip44:1': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+            },
+          })
           .build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockEthPrices(mockServer, ETH_USD_PRICE, [
+            CHAIN_IDS.MAINNET,
+            CHAIN_IDS.LOCALHOST,
+          ]);
+        },
       },
       async ({ driver }) => {
         await login(driver);
 
         await createInternalTransaction({ driver });
 
-        const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+        const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
         const sendPage = new SendPage(driver);
 
-        await sendTokenConfirmPage.checkTransactionAmount('1 ETH');
+        await transactionConfirmation.checkSendAmount('1 ETH');
 
-        await sendTokenConfirmPage.checkNativeCurrency('$0.07');
+        await transactionConfirmation.checkGasFeeFiat('$0.07');
 
-        await sendTokenConfirmPage.clickBackButton();
+        await transactionConfirmation.clickBackButton();
 
         await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
 
         await sendPage.pressContinueButton();
 
+        // Wait for the gas fee to load before opening the gas fee modal
+        await transactionConfirmation.checkGasFeeFiat('$0.07');
+
         // Open gas fee modal and set custom legacy gas values
-        await sendTokenConfirmPage.clickEditGasFeeIcon();
+        await transactionConfirmation.openGasFeeModal();
         await gasFeeModal.setCustomLegacyGasFee({
           gasPrice: '8',
           gasLimit: '100000',
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmPage.checkNativeCurrency('$0.29');
+        await transactionConfirmation.checkGasFeeFiat('$0.29');
 
         // confirms the transaction
-        await sendTokenConfirmPage.clickOnConfirm();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
-        await activityListPage.openActivityTab();
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.goToActivityList();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
 
-        await activityListPage.checkTxAmountInActivity('-2.2 ETH');
+        await activityTab.checkTxAmountInActivity('-2.2 ETH');
       },
     );
   });
@@ -77,31 +108,46 @@ describe('Send - Edit Transaction', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController({
+            assetsPrice: {
+              'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+              'eip155:1337/slip44:1': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockEthPrices(mockServer, ETH_USD_PRICE, [
+            CHAIN_IDS.MAINNET,
+            CHAIN_IDS.LOCALHOST,
+          ]);
+        },
       },
       async ({ driver }) => {
         await login(driver);
 
         await createInternalTransaction({ driver });
 
-        const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+        const transactionConfirmation = new TransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
         const sendPage = new SendPage(driver);
 
-        await sendTokenConfirmPage.checkTransactionAmount('1 ETH');
+        await transactionConfirmation.checkSendAmount('1 ETH');
 
-        await sendTokenConfirmPage.checkNativeCurrency('$0.75');
+        await transactionConfirmation.checkGasFeeFiat('$0.75');
 
-        await sendTokenConfirmPage.clickBackButton();
+        await transactionConfirmation.clickBackButton();
 
         await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
 
         await sendPage.pressContinueButton();
 
+        // Wait for the gas fee to load before opening the gas fee modal
+        await transactionConfirmation.checkGasFeeFiat('$0.75');
+
         // Open gas fee modal and set custom EIP-1559 gas values
-        await sendTokenConfirmPage.clickEditGasFeeIcon();
+        await transactionConfirmation.openGasFeeModal();
         await gasFeeModal.setCustomEIP1559GasFee({
           maxBaseFee: '8',
           priorityFee: '8',
@@ -109,15 +155,18 @@ describe('Send - Edit Transaction', function () {
         });
 
         // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmPage.checkNativeCurrency('$0.29');
+        await transactionConfirmation.checkGasFeeFiat('$0.29');
 
         // confirms the transaction
-        await sendTokenConfirmPage.clickOnConfirm();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
-        await activityListPage.openActivityTab();
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.goToActivityList();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
 
-        await activityListPage.checkTxAmountInActivity('-2.2 ETH');
+        await activityTab.checkTxAmountInActivity('-2.2 ETH');
       },
     );
   });

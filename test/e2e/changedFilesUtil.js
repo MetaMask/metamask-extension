@@ -30,23 +30,41 @@ function readChangedAndNewFilesWithStatus() {
  * Filters the list of changed files to include only E2E test files within the 'test/e2e/' directory.
  *
  * @param {string[]} changedFilesPaths - An array of changed file paths to filter.
+ * @param {object} [options] - Filtering options.
+ * @param {boolean} [options.playwrightOnly] - When `true`, return only Playwright
+ * specs (`*.pw.spec.ts`). When `false` (default), return only Selenium specs
+ * (`*.spec.js` / `*.spec.ts`), excluding Playwright specs.
  * @returns {string[]} An array of filtered E2E test file paths.
  */
-function filterE2eChangedFiles(changedFilesPaths) {
-  const e2eChangedFiles = changedFilesPaths.filter(
-    (file) =>
-      file.startsWith('test/e2e/') &&
-      (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
-  );
-  return e2eChangedFiles;
+function filterE2eChangedFiles(
+  changedFilesPaths,
+  { playwrightOnly = false } = {},
+) {
+  return changedFilesPaths.filter((file) => {
+    if (!file.startsWith('test/e2e/')) {
+      return false;
+    }
+    if (playwrightOnly) {
+      return file.endsWith('.pw.spec.ts');
+    }
+    return (
+      (file.endsWith('.spec.js') || file.endsWith('.spec.ts')) &&
+      !file.endsWith('.pw.spec.ts')
+    );
+  });
 }
 
-function readChangedAndFilterE2eChangedFiles() {
+/**
+ * @param {object} [options] - Filtering options.
+ * @param {boolean} [options.playwrightOnly] - See {@link filterE2eChangedFiles}.
+ * @returns {string[]} An array of filtered E2E test file paths.
+ */
+function readChangedAndFilterE2eChangedFiles({ playwrightOnly = false } = {}) {
   const changedAndNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
   const changedAndNewFilesPaths = getChangedAndNewFiles(
     changedAndNewFilesPathsWithStatus,
   );
-  return filterE2eChangedFiles(changedAndNewFilesPaths);
+  return filterE2eChangedFiles(changedAndNewFilesPaths, { playwrightOnly });
 }
 
 /**

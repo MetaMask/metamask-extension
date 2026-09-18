@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef } from 'react';
 import log from 'loglevel';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getRewardsCandidateSubscriptionId } from '../../store/actions';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   selectCandidateSubscriptionId,
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type UseCandidateSubscriptionIdReturn = {

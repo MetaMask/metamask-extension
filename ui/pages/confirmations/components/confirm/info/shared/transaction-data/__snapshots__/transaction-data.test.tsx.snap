@@ -12,11 +12,11 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
         />
       </button>
@@ -364,11 +364,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
         />
       </button>
@@ -415,10 +415,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <button
           aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-down.svg');"
           />
         </button>
@@ -437,6 +437,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box expandable"
+      style="height: 0px;"
     >
       <div
         class="mm-box"
@@ -585,10 +586,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <button
           aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-down.svg');"
           />
         </button>
@@ -607,6 +608,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box expandable"
+      style="height: 0px;"
     >
       <div
         class="mm-box"
@@ -973,10 +975,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <button
           aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-down.svg');"
           />
         </button>
@@ -995,6 +997,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box expandable"
+      style="height: 0px;"
     >
       <div
         class="mm-box"
@@ -1201,10 +1204,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       >
         <button
           aria-label="expand"
-          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm expandIcon expanded mm-box--margin-left-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill"
         >
           <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-down.svg');"
           />
         </button>
@@ -1223,6 +1226,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
     </div>
     <div
       class="mm-box expandable"
+      style="height: 0px;"
     >
       <div
         class="mm-box"
@@ -1414,11 +1418,11 @@ exports[`TransactionData renders decoded data with no names 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
         />
       </button>
@@ -1645,11 +1649,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
         />
       </button>
@@ -2754,11 +2758,11 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/copy.svg');"
         />
       </button>

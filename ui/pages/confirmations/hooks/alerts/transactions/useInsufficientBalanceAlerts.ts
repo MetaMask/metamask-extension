@@ -1,6 +1,7 @@
-'use no memo';
-
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -11,12 +12,14 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseTransactionSimulations } from '../../../../../selectors';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -25,8 +28,16 @@ export function useInsufficientBalanceAlerts({
 } = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { selectedGasFeeToken, gasFeeTokens } = currentConfirmation ?? {};
-  const { hasInsufficientBalance, nativeCurrency } =
+  const { selectedGasFeeToken, gasFeeTokens, excludeNativeTokenForFee } =
+    currentConfirmation ?? {};
+  // Post-quote withdraw flows don't use the user's native balance for gas the
+  // same way as standard txs, so suppress the "insufficient balance" alert
+  // even when native balance is low. Gate on the post-quote flag rather than
+  // the transaction type: with post-quote disabled the withdraw falls back to
+  // a direct transfer, which does spend native balance on gas.
+  const { canSelectWithdrawToken: isPostQuoteWithdraw } =
+    useTransactionPayWithdraw();
+  const { hasInsufficientBalance, isNativeBalanceKnown, nativeCurrency } =
     useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
   const isSponsored = currentConfirmation?.isGasFeeSponsored;
@@ -42,6 +53,15 @@ export function useInsufficientBalanceAlerts({
   const isPayPendingInput =
     Boolean(payToken) && primaryRequiredToken?.amountRaw === '0';
 
+  // Money-account batches execute from the money account, which has no native
+  // MON. Gas is sponsored, so the EOA native-balance check is wrong. Direct
+  // withdraws also skip initial gas estimate, so this alert otherwise blocks
+  // Send after the user types an amount.
+  const isMoneyAccountTransaction = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.moneyAccountWithdraw,
+  ]);
+
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 
   // Check if gasless check has completed (regardless of result)
@@ -54,7 +74,14 @@ export function useInsufficientBalanceAlerts({
   const isSimulationComplete = !isSimulationEnabled || Boolean(gasFeeTokens);
 
   // Check if user has selected a gas fee token (or we're ignoring that check)
-  const hasNoGasFeeTokenSelected = ignoreGasFeeToken || !selectedGasFeeToken;
+  // Note: In the case of chains with no native token (ex: Tempo), `selectedGasFeeToken`
+  // may be populated despite no gas token being available.
+  // For those chains, `excludeNativeTokenForFee` will always be `true`, hence we can
+  // rely on the combination of `excludeNativeTokenForFee` and `isGasFeeTokensEmpty`.
+  const hasNoGasFeeTokenSelected =
+    ignoreGasFeeToken ||
+    !selectedGasFeeToken ||
+    (excludeNativeTokenForFee && isGasFeeTokensEmpty);
 
   // Gasless check is complete AND one of:
   //  - Gasless is NOT supported (native currency needed for gas)
@@ -68,12 +95,15 @@ export function useInsufficientBalanceAlerts({
 
   const showAlert =
     hasInsufficientBalance &&
+    isNativeBalanceKnown &&
     !isUsingPay &&
     !isPayPendingInput &&
     isSimulationComplete &&
     hasNoGasFeeTokenSelected &&
     shouldCheckGaslessConditions &&
-    !isSponsoredTransaction;
+    !isSponsoredTransaction &&
+    !isPostQuoteWithdraw &&
+    !isMoneyAccountTransaction;
 
   return useMemo(() => {
     if (!showAlert) {

@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../component-library';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import {
   getSnapMetadata,
-  getMemoizedUnapprovedConfirmations,
-  getMemoizedUnapprovedTemplatedConfirmations,
+  getUnapprovedConfirmations,
+  getUnapprovedTemplatedConfirmations,
 } from '../../../../selectors';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -23,6 +23,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { useDispatch } from '../../../../store/hooks';
 import { useSnapHome } from './useSnapHome';
 
 export const SnapHomeRenderer = ({ snapId }) => {
@@ -33,11 +34,9 @@ export const SnapHomeRenderer = ({ snapId }) => {
   );
 
   const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
+    getUnapprovedTemplatedConfirmations,
   );
-  const unapprovedConfirmations = useSelector(
-    getMemoizedUnapprovedConfirmations,
-  );
+  const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
   const navigate = useNavigate();
 
   const { data, error, loading } = useSnapHome({ snapId });

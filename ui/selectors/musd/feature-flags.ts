@@ -18,7 +18,7 @@ import type {
   WildcardTokenList,
   GeoBlockingConfig,
 } from '../../pages/musd/types';
-import { getRemoteFeatureFlags } from '../remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   DEFAULT_MUSD_BOOLEAN_FLAG,
   DEFAULT_MUSD_WILDCARD_TOKEN_LIST,
@@ -107,19 +107,6 @@ export const selectIsMusdRewardsUiEnabled = createSelector(
   (flags): boolean =>
     getBooleanFeatureFlag(
       flags.earnMusdConversionRewardsUiEnabled,
-      DEFAULT_MUSD_BOOLEAN_FLAG,
-    ),
-);
-
-/**
- * Select whether Merkl campaign claiming is enabled
- * Supports version-gated and progressive rollout flag formats
- */
-export const selectIsMerklClaimingEnabled = createSelector(
-  selectMusdRemoteFeatureFlags,
-  (flags): boolean =>
-    getBooleanFeatureFlag(
-      flags.earnMerklCampaignClaiming,
       DEFAULT_MUSD_BOOLEAN_FLAG,
     ),
 );

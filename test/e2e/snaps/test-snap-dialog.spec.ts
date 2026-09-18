@@ -98,7 +98,7 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickDialogButtonAndWaitForClose({
           text: 'Cancel',
-          tag: 'span',
+          tag: 'button',
         });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkMessageResultSpan('dialogResultSpan', 'null');
@@ -109,7 +109,7 @@ describe('Test Snap Dialog', function () {
         await snapInstall.pasteIntoCustomDialogInput('2323');
         await snapInstall.clickDialogButtonAndWaitForClose({
           text: 'Confirm',
-          tag: 'span',
+          tag: 'button',
         });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkMessageResultSpan('dialogResultSpan', '"2323"');

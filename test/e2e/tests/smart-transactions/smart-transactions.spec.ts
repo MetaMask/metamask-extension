@@ -1,20 +1,28 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   createDappTransaction,
   createInternalTransaction,
-} from '../../page-objects/flows/transaction';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+} from '../../page-objects/flows/transaction.flow';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 import { mockGetTxStatus } from '../bridge/bridge-test-utils';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import {
+  mockSpotPrices,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
@@ -48,22 +56,44 @@ async function withFixturesForSmartTransactions(
             '0x1': true,
           },
         })
+        .withAssetsController(
+          getMainnet25EthAssetsControllerPatch(
+            1700,
+            DEFAULT_FIXTURE_ACCOUNT_ID,
+            '20',
+          ),
+        )
         .build(),
       title,
       localNodeOptions: {
         hardfork: 'london',
         chainId: '1',
       },
+      unifiedEvmAccountsApiBalances: {
+        mainnetNativeEthHuman: '20',
+      },
       manifestFlags: {
         remoteFeatureFlags: {
           bridgeConfig: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         },
       },
-      testSpecificMock,
+      testSpecificMock: async (mockServer: MockttpServer) => {
+        await mockSpotPrices(mockServer, {
+          'eip155:1/slip44:60': {
+            price: 1700,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        });
+        await testSpecificMock(mockServer);
+      },
       ignoredConsoleErrors,
     },
     async ({ driver }) => {
-      await login(driver, { expectedBalance });
+      await login(driver, {
+        expectedBalance,
+        waitForNonEvmAccounts: false,
+      });
       await runTestWithFixtures({ driver });
     },
   );
@@ -75,13 +105,6 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
           await mockChooseGasFeeTokenRequests(mockServer);
           await mockSentinelNetworks(mockServer);
         },
@@ -93,6 +116,10 @@ describe('Smart Transactions', function () {
       async ({ driver }) => {
         // fill ens address as recipient when user lands on send token screen
         const transactionConfirmation = new TransactionConfirmation(driver);
+        const homePage = new HomePage(driver);
+        const activityTab = new ActivityTab(driver);
+        const txToastNotification = new TxToastNotification(driver);
+
         await createInternalTransaction({
           driver,
           chainId: '0x1',
@@ -101,13 +128,21 @@ describe('Smart Transactions', function () {
         });
 
         await transactionConfirmation.selectTokenFee('USDC');
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedTxNumberDisplayedInActivity(1);
-        await activityList.checkNoFailedTransactions();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
+        // 2 toast notifications appear, one for the gas payment and one for the main transaction.
+        // The 2nd toast obfuscates the Activity tab, so we need to actively close one to be able to click on the Activity tab without error.
+        await txToastNotification.checkTxConfirmedToast();
+        await txToastNotification.closeToastNotification();
+
+        await homePage.goToActivityList();
+        await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
     );
   });
@@ -117,13 +152,6 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
           await mockSmartTransactionRequests(mockServer);
           await mockSwapTokensMockApis(mockServer);
           await mockGetTxStatus(mockServer);
@@ -131,7 +159,6 @@ describe('Smart Transactions', function () {
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
-        await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
@@ -147,12 +174,12 @@ describe('Smart Transactions', function () {
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedTxNumberDisplayedInActivity();
-        await activityList.checkNoFailedTransactions();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAction({ action: 'Swap ETH to DAI' });
-        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAction({ action: 'Swapped' });
+        await activityTab.checkTxAmountInActivity(`+4,625.9799 DAI`, 1);
       },
     );
   });
@@ -165,7 +192,6 @@ describe('Smart Transactions', function () {
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);
-        await homePage.checkIfSwapButtonIsClickable();
         await homePage.startSwapFlow();
 
         const swapPage = new SwapPage(driver);
@@ -181,10 +207,10 @@ describe('Smart Transactions', function () {
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedTxNumberDisplayedInActivity();
-        await activityList.checkNoFailedTransactions();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
       },
     );
   });
@@ -200,7 +226,7 @@ describe('Smart Transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const confirmation = new TransactionConfirmation(driver);
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterButton({ button: 'confirm' });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -208,10 +234,10 @@ describe('Smart Transactions', function () {
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkCompletedTxNumberDisplayedInActivity();
-        await activityList.checkNoFailedTransactions();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
       },
     );
   });

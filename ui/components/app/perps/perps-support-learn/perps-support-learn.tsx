@@ -12,9 +12,24 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../../hooks/useSegmentContext';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import {
+  FEEDBACK_CONFIG,
+  SUPPORT_CONFIG,
+} from '../../../../../shared/constants/perps';
 import { setTutorialModalOpen } from '../../../../ducks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { useDispatch } from '../../../../store/hooks';
 
 const LIST_ITEM_BASE =
   'flex items-center gap-3 px-4 py-3 bg-background-muted cursor-pointer hover:bg-hover active:bg-pressed';
@@ -26,12 +41,12 @@ type SupportListItemProps = {
   'data-testid'?: string;
 };
 
-const SupportListItem: React.FC<SupportListItemProps> = ({
+const SupportListItem = ({
   label,
   onClick,
   className,
   'data-testid': testId,
-}) => (
+}: SupportListItemProps) => (
   <Box
     className={`${LIST_ITEM_BASE} ${className ?? ''}`}
     role="button"
@@ -59,29 +74,81 @@ const SupportListItem: React.FC<SupportListItemProps> = ({
   </Box>
 );
 
-export const PerpsSupportLearn: React.FC = () => {
+export const PerpsSupportLearn = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
+  const { track } = usePerpsEventTracking();
 
   const handleLearnPerps = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
+    });
     dispatch(setTutorialModalOpen(true));
-  }, [dispatch]);
+  }, [dispatch, track]);
+
+  const handleContactSupport = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.SUPPORT,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
+    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          url: SUPPORT_CONFIG.Url,
+          location: segmentContext.page?.title,
+        })
+        .build(),
+    );
+    globalThis.platform.openTab({ url: SUPPORT_CONFIG.Url });
+  }, [createEventBuilder, segmentContext.page?.title, track, trackEvent]);
+
+  const handleFeedback = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.FEEDBACK,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
+    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Feedback)
+        .addProperties({
+          url: FEEDBACK_CONFIG.Url,
+          location: segmentContext.page?.title,
+          text: 'perps_feedback_survey',
+        })
+        .build(),
+    );
+    globalThis.platform.openTab({ url: FEEDBACK_CONFIG.Url });
+  }, [createEventBuilder, segmentContext.page?.title, track, trackEvent]);
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
       <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
         <SupportListItem
           label={t('perpsContactSupport')}
-          onClick={() => {
-            // TODO: Navigate to support
-          }}
+          onClick={handleContactSupport}
           className="rounded-t-xl"
+          data-testid="perps-contact-support"
         />
         <SupportListItem
           label={t('perpsGiveFeedback')}
-          onClick={() => {
-            // TODO: Navigate to feedback page
-          }}
+          onClick={handleFeedback}
+          data-testid="perps-give-feedback"
         />
         <SupportListItem
           label={t('perpsLearnBasics')}

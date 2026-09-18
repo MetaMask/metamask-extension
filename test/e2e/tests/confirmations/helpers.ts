@@ -1,11 +1,15 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  MOCK_ANALYTICS_ID,
+} from '../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =
@@ -14,7 +18,7 @@ export const DECODING_E2E_API_URL =
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   const confirmation = new Confirmation(driver);
   await confirmation.clickScrollToBottomButton();
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterButton({ button: 'confirm' });
 }
 
 export function withTransactionEnvelopeTypeFixtures(
@@ -39,11 +43,12 @@ export function withTransactionEnvelopeTypeFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
-          metaMetricsId: MOCK_META_METRICS_ID,
-          participateInMetaMetrics: true,
+          analyticsId: MOCK_ANALYTICS_ID,
+          consentDecisionMade: true,
+          optedIn: true,
         })
         .build(),
       localNodeOptions:
@@ -52,6 +57,11 @@ export function withTransactionEnvelopeTypeFixtures(
           : {},
       ...(smartContract && { smartContract }),
       testSpecificMock: combinedMocks,
+      manifestFlags: {
+        remoteFeatureFlags: {
+          extensionUxTokenManagementFilter: true,
+        },
+      },
       title,
     },
     testFunction,
@@ -71,14 +81,14 @@ export function withSignatureFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
-      fixtures: new FixtureBuilder()
+      fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
-          metaMetricsId: MOCK_META_METRICS_ID,
-          participateInMetaMetrics: true,
+          analyticsId: MOCK_ANALYTICS_ID,
+          consentDecisionMade: true,
+          optedIn: true,
         })
         .build(),
-      localNodeOptions: {},
       testSpecificMock: mocks,
       title,
     },
@@ -228,6 +238,7 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -257,14 +268,349 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 },
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_enforced_simulations: {
+                enabled: true,
+              },
             },
           ],
         };
       }),
   ];
 }
+const ACCOUNTS_API_V6_MULTIACCOUNT_BALANCES_URL =
+  'https://accounts.api.cx.metamask.io/v6/multiaccount/balances';
+
+type MockedV6DefiBalance = {
+  object: 'defi';
+  type: 'erc20';
+  accountId: string;
+  assetId: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  balance: string;
+  price: string;
+  metadata: {
+    protocolId: string;
+    productName: string;
+    description: string;
+    protocolUrl: string;
+    protocolIconUrl: string;
+    positionType: 'deposit' | 'reward';
+    poolAddress: string;
+    groupId: string;
+  };
+};
+
+function buildV6DefiBalance({
+  chainId,
+  assetAddress,
+  name,
+  symbol,
+  decimals,
+  balance,
+  price,
+  protocolId,
+  productName,
+  protocolUrl,
+  protocolIconUrl = '',
+  positionType = 'deposit',
+  poolAddress,
+  groupId,
+}: {
+  chainId: string;
+  assetAddress: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  balance: number;
+  price: number;
+  protocolId: string;
+  productName: string;
+  protocolUrl: string;
+  protocolIconUrl?: string;
+  positionType?: 'deposit' | 'reward';
+  poolAddress: string;
+  groupId: string;
+}): MockedV6DefiBalance {
+  return {
+    object: 'defi',
+    type: 'erc20',
+    accountId: `${chainId}:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`,
+    assetId: `${chainId}/erc20:${assetAddress}`,
+    name,
+    symbol,
+    decimals,
+    balance: String(balance),
+    price: String(price),
+    metadata: {
+      protocolId,
+      productName,
+      description: '',
+      protocolUrl,
+      protocolIconUrl,
+      positionType,
+      poolAddress,
+      groupId,
+    },
+  };
+}
+
+function getMockedV6DefiBalances(): MockedV6DefiBalance[] {
+  return [
+    buildV6DefiBalance({
+      chainId: 'eip155:1',
+      assetAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      name: 'Tether USD',
+      symbol: 'USDT',
+      decimals: 6,
+      balance: 0.300106,
+      price: 0.99994,
+      protocolId: 'Aave V2',
+      productName: 'a-token',
+      protocolUrl: 'https://aave.com/',
+      poolAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+      groupId: 'aave-v2:a-token',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:1',
+      assetAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+      balance: 0.000020000539486338,
+      price: 1599.45,
+      protocolId: 'Aave V2',
+      productName: 'a-token',
+      protocolUrl: 'https://aave.com/',
+      poolAddress: '0x030bA81f1c18d280636F32af80b9AAd02Cf0854e',
+      groupId: 'aave-v2:a-token',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:1',
+      assetAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      name: 'Tether USD',
+      symbol: 'USDT',
+      decimals: 6,
+      balance: 0.300112,
+      price: 0.99994,
+      protocolId: 'Aave V3',
+      productName: 'a-token',
+      protocolUrl: 'https://aave.com/',
+      poolAddress: '0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a',
+      groupId: 'aave-v3:a-token',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:1',
+      assetAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+      balance: 0.00903090276726317,
+      price: 1599.45,
+      protocolId: 'Aave V3',
+      productName: 'a-token',
+      protocolUrl: 'https://aave.com/',
+      poolAddress: '0xfA1fDbBD71B0aA16162D76914d69cD8CB3Ef92da',
+      groupId: 'aave-v3:a-token',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+      balance: 0.0013286823291999,
+      price: 1596.15,
+      protocolId: 'UniswapV2',
+      productName: 'pool',
+      protocolUrl: 'https://v2.info.uniswap.org/home',
+      poolAddress: '0xF64Dfe17C8b87F012FCf50FbDA1D62bfA148366a',
+      groupId: 'uniswap-v2:pool',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      balance: 2.121732,
+      price: 0.999931,
+      protocolId: 'UniswapV2',
+      productName: 'pool',
+      protocolUrl: 'https://v2.info.uniswap.org/home',
+      poolAddress: '0xF64Dfe17C8b87F012FCf50FbDA1D62bfA148366a',
+      groupId: 'uniswap-v2:pool',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+      balance: 0.00129788571268962,
+      price: 1596.15,
+      protocolId: 'UniswapV3',
+      productName: 'pool',
+      protocolUrl: 'https://uniswap.org/',
+      protocolIconUrl:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+      poolAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+      groupId: 'uniswap-v3:pool:4198285',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+      balance: 0.000059946788255878,
+      price: 1596.15,
+      protocolId: 'UniswapV3',
+      productName: 'pool',
+      protocolUrl: 'https://uniswap.org/',
+      protocolIconUrl:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+      positionType: 'reward',
+      poolAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+      groupId: 'uniswap-v3:pool:4198285',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      balance: 2.068988,
+      price: 0.999931,
+      protocolId: 'UniswapV3',
+      productName: 'pool',
+      protocolUrl: 'https://uniswap.org/',
+      protocolIconUrl:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+      poolAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+      groupId: 'uniswap-v3:pool:4198285',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      balance: 0.039876,
+      price: 0.999931,
+      protocolId: 'UniswapV3',
+      productName: 'pool',
+      protocolUrl: 'https://uniswap.org/',
+      protocolIconUrl:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+      positionType: 'reward',
+      poolAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+      groupId: 'uniswap-v3:pool:4198285',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+      balance: 0.0013048302662551,
+      price: 1596.15,
+      protocolId: 'UniswapV3',
+      productName: 'pool',
+      protocolUrl: 'https://uniswap.org/',
+      protocolIconUrl:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+      poolAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+      groupId: 'uniswap-v3:pool:4218057',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+      balance: 0.000012367250795581,
+      price: 1596.15,
+      protocolId: 'UniswapV3',
+      productName: 'pool',
+      protocolUrl: 'https://uniswap.org/',
+      protocolIconUrl:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+      positionType: 'reward',
+      poolAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+      groupId: 'uniswap-v3:pool:4218057',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      balance: 2.079837,
+      price: 0.999931,
+      protocolId: 'UniswapV3',
+      productName: 'pool',
+      protocolUrl: 'https://uniswap.org/',
+      protocolIconUrl:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+      poolAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+      groupId: 'uniswap-v3:pool:4218057',
+    }),
+    buildV6DefiBalance({
+      chainId: 'eip155:59144',
+      assetAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      balance: 0.025065,
+      price: 0.999931,
+      protocolId: 'UniswapV3',
+      productName: 'pool',
+      protocolUrl: 'https://uniswap.org/',
+      protocolIconUrl:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+      positionType: 'reward',
+      poolAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+      groupId: 'uniswap-v3:pool:4218057',
+    }),
+  ];
+}
+
+async function mockAccountsApiV6DeFiBalances(
+  mockServer: Mockttp,
+  json: Record<string, unknown>,
+  statusCode = 200,
+) {
+  return mockServer
+    .forGet(ACCOUNTS_API_V6_MULTIACCOUNT_BALANCES_URL)
+    .matching((request) => {
+      try {
+        return (
+          new URL(request.url).searchParams.get('includeDeFiBalances') ===
+          'true'
+        );
+      } catch {
+        return false;
+      }
+    })
+    .asPriority(99)
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode,
+        json,
+      };
+    });
+}
+
 export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
   return [
+    await mockAccountsApiV6DeFiBalances(mockServer, {
+      balances: getMockedV6DefiBalances(),
+    }),
     await mockServer
       .forGet(
         'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
@@ -600,6 +946,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },
@@ -624,6 +971,9 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
 }
 export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
   return [
+    await mockAccountsApiV6DeFiBalances(mockServer, {
+      balances: [],
+    }),
     await mockServer
       .forGet(
         'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
@@ -642,6 +992,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },
@@ -653,6 +1004,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
 
 export async function mockDefiPositionsFailure(mockServer: Mockttp) {
   return [
+    await mockAccountsApiV6DeFiBalances(mockServer, {}),
     await mockServer
       .forGet(
         'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
@@ -670,6 +1022,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
           ok: true,
           statusCode: 200,
           json: [
+            ...getProductionRemoteFlagApiResponse(),
             {
               assetsDefiPositionsEnabled: true,
             },

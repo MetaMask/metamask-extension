@@ -1,4 +1,9 @@
-import { selectIsSignedIn, selectSessionData } from './authentication';
+import {
+  selectIsSignedIn,
+  selectNeedsProfilePairing,
+  selectNeedsSocialPairing,
+  selectSessionData,
+} from './authentication';
 
 describe('Authentication Selectors', () => {
   const mockState = {
@@ -14,6 +19,7 @@ describe('Authentication Selectors', () => {
           profile: {
             identifierId: 'identifierId',
             profileId: 'profileId',
+            canonicalProfileId: 'profileId',
             metaMetricsId: 'metaMetricsId',
           },
         },
@@ -26,6 +32,7 @@ describe('Authentication Selectors', () => {
           profile: {
             identifierId: 'identifierId2',
             profileId: 'profileId2',
+            canonicalProfileId: 'profileId2',
             metaMetricsId: 'metaMetricsId2',
           },
         },
@@ -41,5 +48,29 @@ describe('Authentication Selectors', () => {
     expect(selectSessionData(mockState)).toEqual(
       mockState.metamask.srpSessionData.entropySourceId1,
     );
+  });
+
+  it('selectNeedsProfilePairing returns the persisted value when present', () => {
+    expect(
+      selectNeedsProfilePairing({
+        metamask: { ...mockState.metamask, needsProfilePairing: false },
+      }),
+    ).toBe(false);
+  });
+
+  it('selectNeedsProfilePairing defaults to true when the field is absent', () => {
+    expect(selectNeedsProfilePairing(mockState)).toBe(true);
+  });
+
+  it('selectNeedsSocialPairing returns the persisted value when present', () => {
+    expect(
+      selectNeedsSocialPairing({
+        metamask: { ...mockState.metamask, needsSocialPairing: false },
+      }),
+    ).toBe(false);
+  });
+
+  it('selectNeedsSocialPairing defaults to true when the field is absent', () => {
+    expect(selectNeedsSocialPairing(mockState)).toBe(true);
   });
 });

@@ -8,7 +8,7 @@ import {
 } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { TokenStandAndDetails } from '../../../../../store/actions';
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import * as Utils from '../../../../../helpers/utils/util';
 import * as TokenUtils from '../../../utils/token';
 import { Confirmation } from '../../../types/confirm';
@@ -30,7 +30,7 @@ jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
   fetchQuotes: jest.fn(),
 }));
 
-jest.mock('../../../../../selectors/remote-feature-flags');
+jest.mock('../../../../../../shared/lib/selectors/remote-feature-flags');
 
 const mockUseDappSwapComparisonLatencyMetricsResponse = {
   requestDetectionLatency: '1200',
@@ -132,12 +132,7 @@ describe('useDappSwapComparisonInfo', () => {
           swap_mm_quote_response_latency_ms: '3600',
           swap_mm_slippage: 2,
           swap_mm_to_token_simulated_value_usd: '0.000000000001003803216',
-        },
-        sensitiveProperties: {
-          swap_from_token_contract:
-            '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
           swap_from_token_symbol: 'N/A',
-          swap_to_token_contract: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
           swap_to_token_symbol: 'N/A',
         },
       },

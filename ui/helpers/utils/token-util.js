@@ -154,19 +154,6 @@ export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
   };
 }
 
-export function tokenInfoGetter() {
-  const tokens = {};
-
-  return async (address, tokenList) => {
-    if (tokens[address.toLowerCase()]) {
-      return tokens[address.toLowerCase()];
-    }
-
-    tokens[address] = await getSymbolAndDecimalsAndName(address, tokenList);
-    return tokens[address];
-  };
-}
-
 /**
  * Attempts to get the address parameter of the given token transaction data
  * (i.e. function call) per the Human Standard Token ABI, in the following

@@ -1,9 +1,9 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
-  oldestPendingConfirmationSelector,
+  firstPendingConfirmationSelector,
   pendingConfirmationsSortedSelector,
   selectDappSwapComparisonData,
 } from './confirm';
@@ -43,7 +43,7 @@ describe('confirm selectors', () => {
       approvalFlows: [],
       dappSwapComparisonData: {
         '1': {
-          quotes: [{ test: 'dummyQuote' } as unknown as QuoteResponse],
+          quotes: [{ test: 'dummyQuote' } as unknown as QuoteResponseV1],
           latency: 100,
         },
       },
@@ -108,9 +108,9 @@ describe('confirm selectors', () => {
     });
   });
 
-  describe('oldestPendingConfirmationSelector', () => {
-    it('should return oldest pending confirmation from state', () => {
-      const result = oldestPendingConfirmationSelector(mockedState);
+  describe('firstPendingConfirmationSelector', () => {
+    it('should return first pending confirmation from state', () => {
+      const result = firstPendingConfirmationSelector(mockedState);
 
       expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[3]);
     });
@@ -121,7 +121,7 @@ describe('confirm selectors', () => {
       const result = selectDappSwapComparisonData(mockedState, '1');
 
       expect(result).toStrictEqual({
-        quotes: [{ test: 'dummyQuote' } as unknown as QuoteResponse],
+        quotes: [{ test: 'dummyQuote' } as unknown as QuoteResponseV1],
         latency: 100,
       });
     });

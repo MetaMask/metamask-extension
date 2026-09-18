@@ -7,11 +7,11 @@ exports[`NetworkListItem renders properly 1`] = `
     data-testid="network-list-item-0x1"
   >
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
     >
       <img
-        alt="Polygon logo"
-        class="mm-avatar-network__network-image"
+        alt="Polygon"
+        class="size-full object-contain"
         src="./images/pol-token.svg"
       />
     </div>
@@ -44,13 +44,19 @@ exports[`NetworkListItem renders properly 1`] = `
     </div>
     <button
       aria-label="[networkOptions]"
-      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+      class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
       data-testid="network-list-item-options-button-0x1"
     >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/more-vertical.svg');"
-      />
+      <svg
+        class="inline-block w-6 h-6 text-inherit"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M13.125 12A1.125 1.125 0 1 1 12 10.875 1.125 1.125 0 0 1 13.125 12M12 6.75a1.125 1.125 0 1 0-1.125-1.125A1.125 1.125 0 0 0 12 6.75m0 10.5a1.125 1.125 0 1 0 1.125 1.125A1.125 1.125 0 0 0 12 17.25"
+        />
+      </svg>
     </button>
   </div>
 </div>

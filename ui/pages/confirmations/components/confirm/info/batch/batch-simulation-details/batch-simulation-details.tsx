@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
+  TransactionContainerType,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -19,8 +20,6 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BatchSimulationDetails() {
   const t = useI18nContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
@@ -73,7 +72,7 @@ export function BatchSimulationDetails() {
         balanceChanges: finalBalanceChanges ?? [],
       },
     ];
-  }, [approveBalanceChanges, handleEdit]);
+  }, [approveBalanceChanges, handleEdit, t]);
 
   if (
     transactionMeta?.type === TransactionType.revokeDelegation ||
@@ -87,6 +86,9 @@ export function BatchSimulationDetails() {
     nestedTransactionIndexToEdit === undefined
       ? undefined
       : nestedTransactions?.[nestedTransactionIndexToEdit];
+  const isEnforcedSimulationsEnabled = transactionMeta.containerTypes?.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
 
   return (
     <>
@@ -96,8 +98,6 @@ export function BatchSimulationDetails() {
             <EditSpendingCapModal
               data={nestedTransactionToEdit?.data}
               isOpenEditSpendingCapModal={true}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onSubmit={handleEditSubmit}
               setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
               to={nestedTransactionToEdit?.to}
@@ -107,6 +107,7 @@ export function BatchSimulationDetails() {
             transaction={transactionMeta}
             staticRows={approveRows}
             isTransactionsRedesign
+            sectionMarginBottom={isEnforcedSimulationsEnabled ? 2 : undefined}
             enableMetrics
           />
         </>

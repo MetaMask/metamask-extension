@@ -1,0 +1,1 @@
+export { useDefaultAddress } from './useDefaultAddress';

@@ -9,6 +9,7 @@ import { ChainId } from '@metamask/controller-utils';
 import type {
   AddNetworkFields,
   NetworkConfiguration,
+  NetworkState,
 } from '@metamask/network-controller';
 import {
   AVALANCHE_DISPLAY_NAME,
@@ -22,13 +23,13 @@ import {
 import {
   isSafeChainId,
   isPrefixedFormattedHexString,
-  isTokenDetectionEnabledForNetwork,
   convertNetworkId,
   convertCaipToHexChainId,
   sortNetworks,
   getRpcDataByChainId,
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
+  getAllEnabledNetworkClientIds,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -79,34 +80,6 @@ describe('network utils', () => {
 
     it('returns false if given something other than a string', () => {
       expect(isPrefixedFormattedHexString({ something: 'else' })).toBe(false);
-    });
-  });
-
-  describe('isTokenDetectionEnabledForNetwork', () => {
-    it('returns true given the chain ID for Mainnet', () => {
-      expect(isTokenDetectionEnabledForNetwork('0x1')).toBe(true);
-    });
-
-    it('returns true given the chain ID for BSC', () => {
-      expect(isTokenDetectionEnabledForNetwork('0x38')).toBe(true);
-    });
-
-    it('returns true given the chain ID for Polygon', () => {
-      expect(isTokenDetectionEnabledForNetwork('0x89')).toBe(true);
-    });
-
-    it('returns true given the chain ID for Avalanche', () => {
-      expect(isTokenDetectionEnabledForNetwork('0xa86a')).toBe(true);
-    });
-
-    it('returns false given a string that is not the chain ID for Mainnet, BSC, Polygon, or Avalanche', () => {
-      expect(isTokenDetectionEnabledForNetwork('some other chain ID')).toBe(
-        false,
-      );
-    });
-
-    it('returns false given undefined', () => {
-      expect(isTokenDetectionEnabledForNetwork(undefined)).toBe(false);
     });
   });
 
@@ -546,6 +519,60 @@ describe('network utils', () => {
       expect(result).not.toContainEqual(
         expect.objectContaining({ chainId: '0xa86a' }),
       );
+    });
+  });
+
+  describe('getAllEnabledNetworkClientIds', () => {
+    const networkConfigurationsByChainId = {
+      '0x1': {
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      '0xe708': {
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+    } as unknown as NetworkState['networkConfigurationsByChainId'];
+
+    it('returns client IDs for enabled EIP-155 networks only', () => {
+      const result = getAllEnabledNetworkClientIds(
+        {
+          eip155: {
+            '0x1': true,
+            '0xe708': false,
+          },
+        },
+        networkConfigurationsByChainId,
+      );
+
+      expect(result).toStrictEqual(['mainnet']);
+    });
+
+    it('returns an empty array when no EIP-155 networks are enabled', () => {
+      const result = getAllEnabledNetworkClientIds(
+        {
+          eip155: {
+            '0x1': false,
+          },
+        },
+        networkConfigurationsByChainId,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('skips enabled chain IDs that have no network configuration', () => {
+      const result = getAllEnabledNetworkClientIds(
+        {
+          eip155: {
+            '0x1': true,
+            '0x89': true,
+          },
+        },
+        networkConfigurationsByChainId,
+      );
+
+      expect(result).toStrictEqual(['mainnet']);
     });
   });
 });

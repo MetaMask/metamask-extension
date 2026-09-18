@@ -1,0 +1,42 @@
+.settings-page-developer-options {
+  &__icon-check {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+
+    &:not([hidden]) {
+      opacity: 1;
+    }
+  }
+}
+
+// Collapsible feature flags viewer
+.remote-feature-flags-details {
+  width: 100%;
+
+  summary {
+    cursor: pointer;
+    color: var(--color-primary-default);
+    font-size: 14px;
+    padding: 8px 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.remote-feature-flags-json {
+  max-height: 300px;
+  overflow: auto;
+  background: var(--color-background-alternative);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+
+  code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}

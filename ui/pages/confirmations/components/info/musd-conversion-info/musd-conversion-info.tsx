@@ -1,5 +1,8 @@
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useRef } from 'react';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
@@ -8,6 +11,7 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
+import { selectIsPayAmountPrefillEnabled } from '../../../selectors/feature-flags';
 import { useConfirmContext } from '../../../context/confirm';
 import { CustomAmountInfo } from '../custom-amount-info';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
@@ -15,28 +19,43 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { useMusdConversionTokens } from '../../../../../hooks/musd';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
-import { ClaimableBonusRow } from '../../rows/claimable-bonus-row/claimable-bonus-row';
 import { TotalRow } from '../../rows/total-row/total-row';
+import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
 import { useMusdConversionQuoteTrace } from '../../../hooks/musd/useMusdConversionQuoteTrace';
 import { MusdOverrideContent } from './musd-override-content';
 
-const MusdBottomContent = () => {
+const MusdBottomContent = ({ hasAmount }: { hasAmount: boolean }) => {
+  const t = useI18nContext();
   const quotes = useTransactionPayQuotes();
   const isQuotesLoading = useIsTransactionPayLoading();
   const { hideResults } = useTransactionCustomAmountAlerts();
+  const isPaidByMetaMask = useIsPaidByMetaMask();
 
-  const isResultReady = isQuotesLoading || Boolean(quotes?.length);
-
-  if (!isResultReady || hideResults) {
-    return null;
-  }
+  // The fee, bonus and total rows describe a conversion that has not been
+  // specified yet while the amount is empty or zero, so they stay hidden until
+  // the user enters an amount. Gating on `hasAmount` also clears them
+  // immediately when the amount is reset, rather than leaving the previous
+  // quote's numbers on screen.
+  const isResultReady =
+    hasAmount && (isQuotesLoading || Boolean(quotes?.length));
+  const showResults = isResultReady && !hideResults;
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingBottom={4}>
-      <BridgeFeeRow variant={ConfirmInfoRowSize.Small} />
-      <ClaimableBonusRow rowVariant={ConfirmInfoRowSize.Small} />
-      <TotalRow variant={ConfirmInfoRowSize.Small} />
+      <PayWithRow />
+      {showResults && (
+        <>
+          <BridgeFeeRow
+            variant={ConfirmInfoRowSize.Small}
+            tooltipDescription={t('musdConversionFeeTooltipDescription')}
+          />
+          {!isPaidByMetaMask && <TotalRow variant={ConfirmInfoRowSize.Small} />}
+        </>
+      )}
     </Box>
   );
 };
@@ -48,8 +67,8 @@ const MusdBottomContent = () => {
  * Displays the amount input interface for conversion with custom override content
  * that shows the expected mUSD output amount.
  *
- * The heading with "Convert and get 3%" and info tooltip is rendered
- * by the MusdConversionHeader in the confirmation header area.
+ * The heading with "Convert" is rendered by the MusdConversionHeader
+ * in the confirmation header area.
  *
  * Token filtering is handled by the PayWithModal component which detects
  * mUSD conversion transactions and applies the appropriate filter.
@@ -64,6 +83,14 @@ export const MusdConversionInfo = () => {
 
   const existingPayToken = useSelector((state: TransactionPayState) =>
     selectTransactionPaymentTokenByTransactionId(state, transactionId),
+  );
+
+  // Treatment (max pre-filled) vs control (empty field) is configured under
+  // confirmations_pay_extended and split via LD targeting. The matching
+  // mm_pay_prefilled_amount metric is emitted from the MetaMask Pay metrics
+  // builder so it reaches the executed transactions' events.
+  const prefillMaxOnLoad = useSelector((state) =>
+    selectIsPayAmountPrefillEnabled(state, TransactionType.musdConversion),
   );
 
   // Track quote fetch time via Sentry trace
@@ -86,21 +113,45 @@ export const MusdConversionInfo = () => {
     }
   }, [existingPayToken?.chainId, existingPayToken?.address, transactionId]);
 
-  const preferredToken = existingPayToken
-    ? { address: existingPayToken.address, chainId: existingPayToken.chainId }
-    : undefined;
+  const { defaultPaymentToken } = useMusdConversionTokens({
+    transactionType: TransactionType.musdConversion,
+  });
+
+  const preferredToken = useMemo(() => {
+    if (existingPayToken) {
+      return {
+        address: existingPayToken.address,
+        chainId: existingPayToken.chainId,
+      };
+    }
+    if (defaultPaymentToken) {
+      return {
+        address: defaultPaymentToken.address as `0x${string}`,
+        chainId: defaultPaymentToken.chainId,
+      };
+    }
+    return undefined;
+  }, [defaultPaymentToken, existingPayToken]);
 
   const renderOverrideContent = useCallback(
     (amountHuman: string) => <MusdOverrideContent amountHuman={amountHuman} />,
     [],
   );
 
+  const renderBottomContent = useCallback(
+    (hasAmount: boolean) => <MusdBottomContent hasAmount={hasAmount} />,
+    [],
+  );
+
   return (
     <CustomAmountInfo
-      disablePay={Boolean(existingPayToken)}
+      autoFocusAmount
+      currency="usd"
+      disableAutomaticToken={true}
       preferredToken={preferredToken}
+      prefillMaxOnLoad={prefillMaxOnLoad}
       overrideCenterContent={renderOverrideContent}
-      overrideBottomContent={<MusdBottomContent />}
+      overrideBottomContent={renderBottomContent}
     />
   );
 };

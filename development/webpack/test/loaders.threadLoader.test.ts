@@ -1,9 +1,9 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import {
-  DEFAULT_JOBS_PER_THREAD,
   getThreadLoader,
   resolveAutoThreads,
+  resolveAutoJobs,
 } from '../utils/loaders/threadLoader';
 
 describe('resolveAutoThreads', () => {
@@ -48,6 +48,18 @@ describe('resolveAutoThreads', () => {
     const result = resolveAutoThreads();
     assert.strictEqual(result, 1);
     mock.restoreAll();
+  });
+});
+
+describe('resolveAutoJobs', () => {
+  it('returns 10 for zero or single thread', () => {
+    assert.strictEqual(resolveAutoJobs(0), 10);
+    assert.strictEqual(resolveAutoJobs(1), 10);
+  });
+
+  it('returns 15 for multiple threads', () => {
+    assert.strictEqual(resolveAutoJobs(2), 15);
+    assert.strictEqual(resolveAutoJobs(8), 15);
   });
 });
 
@@ -115,17 +127,29 @@ describe('getThreadLoader', () => {
     assert.strictEqual(opts.poolTimeout, 2000);
   });
 
-  it('uses DEFAULT_JOBS_PER_THREAD when jobsPerThread is auto', () => {
-    const result = getThreadLoader({
+  it('auto-resolves jobs based on thread count', () => {
+    const singleThread = getThreadLoader({
+      threads: 1,
+      jobsPerThread: 'auto',
+      watch: false,
+    });
+    assert.ok(singleThread);
+    assert.strictEqual(
+      (singleThread as { options: { workerParallelJobs: number } }).options
+        .workerParallelJobs,
+      10,
+    );
+
+    const multiThread = getThreadLoader({
       threads: 4,
       jobsPerThread: 'auto',
       watch: false,
     });
-    assert.ok(result);
+    assert.ok(multiThread);
     assert.strictEqual(
-      (result as { options: { workerParallelJobs: number } }).options
+      (multiThread as { options: { workerParallelJobs: number } }).options
         .workerParallelJobs,
-      DEFAULT_JOBS_PER_THREAD,
+      15,
     );
   });
 });

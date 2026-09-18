@@ -1,14 +1,8 @@
 import { Token } from '@metamask/assets-controllers';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { NetworkConfiguration } from '@metamask/network-controller';
-import {
-  CaipAssetType,
-  Hex,
-  isCaipChainId,
-  parseCaipAssetType,
-} from '@metamask/utils';
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { CaipAssetType, Hex, isCaipChainId } from '@metamask/utils';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
@@ -16,36 +10,40 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getURLHostName,
-  roundToDecimalPlacesRemovingExtraZeroes,
-} from '../../../helpers/utils/util';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { getURLHostName } from '../../../helpers/utils/util';
+import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
 import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
+import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import { showModal } from '../../../store/actions';
-import { getAssetDetailsAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { useDispatch } from '../../../store/hooks';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
-const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
-  const { address, symbol, decimals, isERC721, image } = token;
+type TokenWithAssetId = Token & {
+  assetId?: string;
+};
+
+const TokenAsset = ({
+  token,
+  chainId,
+}: {
+  token: TokenWithAssetId;
+  chainId: Hex;
+}) => {
+  const { address: hexOrCaipAddress, assetId, symbol, isERC721, image } = token;
+
+  // TODO: refactor AssetPage to be CAIP compliant by default.
+  const address = hexOrCaipAddress || assetId;
 
   const tokenList = useSelector(getTokenList);
   const allNetworks: {
     [key: `0x${string}`]: NetworkConfiguration;
   } = useSelector(getNetworkConfigurationsByChainId);
-  // get the correct rpc url for the current token
-  const defaultIdx = allNetworks[chainId]?.defaultBlockExplorerUrlIndex;
-  const currentTokenBlockExplorer =
-    defaultIdx === undefined
-      ? null
-      : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
+  const allMultichainNetworkConfigurations = useSelector(
+    getAllMultichainNetworkConfigurations,
+  );
 
   const caipChainId = isCaipChainId(chainId)
     ? chainId
@@ -58,26 +56,20 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
-  const multichainNetwork = useMultichainSelector(
-    getMultichainNetwork,
-    selectedAccount,
-  );
-  const isEvm = isEvmChainId(chainId);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   // Fetch token data from tokenList
   const tokenData = Object.values(tokenList).find(
     (t) =>
       isEqualCaseInsensitive(t.symbol, symbol) &&
-      isEqualCaseInsensitive(t.address, address),
+      isEqualCaseInsensitive(t.address, address ?? ''),
   );
 
   // If not found in tokenList, try erc20TokensByChain
   const tokenDataFromChain =
-    erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
+    address && erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
 
   const name = tokenData?.name || tokenDataFromChain?.name || symbol;
   const iconUrl =
@@ -85,57 +77,28 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const aggregators = tokenData?.aggregators;
 
-  const {
-    tokensWithBalances,
-  }: { tokensWithBalances: { string: string; balance: string }[] } =
-    useTokenTracker({
-      tokens: [
-        {
-          address,
-          symbol,
-          decimals,
-        },
-      ],
-      address: undefined,
-    });
-
-  const balance = tokensWithBalances?.[0];
-  const fiat = useTokenFiatAmount(address, balance?.string, symbol, {}, false);
-
-  const tokenTrackerLink = getTokenTrackerLink(
-    token.address,
-    chainId,
-    '',
-    walletAddress,
-    { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
-  );
-
-  const blockExplorerLink = isEvm
-    ? tokenTrackerLink
-    : getAssetDetailsAccountUrl(
-        parseCaipAssetType(address as CaipAssetType).assetReference,
-        multichainNetwork,
-      );
+  const blockExplorerLink =
+    getFungibleAssetBlockExplorerLink({
+      caipChainId,
+      tokenAddress: address as CaipAssetType | string,
+      isNative: false,
+      evmNetworkConfigurations: allNetworks,
+      multichainNetworkConfigurations: allMultichainNetworkConfigurations,
+      fallbackExplorerLabel: 'Block Explorer',
+      walletAddress,
+    })?.url ?? '';
 
   return (
     <AssetPage
       asset={{
         chainId,
         type: AssetType.token,
-        address,
+        address: address ?? '',
         symbol,
         name,
         decimals: token.decimals,
         image: iconUrl,
         aggregators,
-        balance: {
-          value: balance?.balance,
-          display: `${roundToDecimalPlacesRemovingExtraZeroes(
-            balance?.string,
-            5,
-          )}`,
-          fiat,
-        },
         isERC721,
       }}
       optionsButton={
@@ -147,19 +110,20 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
             )
           }
           onClickBlockExplorer={() => {
-            trackEvent({
-              event: 'Clicked Block Explorer Link',
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                link_type: 'Token Tracker',
-                action: 'Token Options',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                block_explorer_domain: getURLHostName(tokenTrackerLink),
-              },
-            });
+            trackEvent(
+              createEventBuilder('Clicked Block Explorer Link')
+                .addCategory(MetaMetricsEventCategory.Navigation)
+                .addProperties({
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  link_type: 'Token Tracker',
+                  action: 'Token Options',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  block_explorer_domain: getURLHostName(blockExplorerLink),
+                })
+                .build(),
+            );
             global.platform.openTab({ url: blockExplorerLink });
           }}
           token={token}

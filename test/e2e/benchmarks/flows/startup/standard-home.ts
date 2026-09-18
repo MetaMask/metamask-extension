@@ -3,26 +3,39 @@
  * Measures home page load time with standard wallet state
  */
 
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import type { BenchmarkResults } from '../../../../../shared/constants/benchmarks';
-import type { Metrics, PageLoadBenchmarkOptions } from '../../utils/types';
-import { BENCHMARK_PERSONA } from '../../utils/constants';
-import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
+import {
+  BENCHMARK_PERSONA,
+  type BenchmarkResults,
+  type WebVitalsMetrics,
+} from '../../../../../shared/constants/benchmarks';
+import {
+  runPageLoadBenchmark,
+  collectWebVitals,
+  collectGarbageBetweenIterations,
+} from '../../utils';
+import type {
+  Metrics,
+  PageLoadBenchmarkOptions,
+  MeasurePageResult,
+} from '../../utils/types';
 
 async function measurePageStandard(
   pageName: string,
   pageLoads: number,
 ): Promise<MeasurePageResult> {
   const metrics: Metrics[] = [];
+  const webVitalsRuns: WebVitalsMetrics[] = [];
   const title = 'measurePageStandard';
   const persona = BENCHMARK_PERSONA.STANDARD;
   await withFixtures(
     {
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       disableServerMochaToBackground: true,
       title,
+      isBenchmark: true,
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await login(driver, { validateBalance: false });
@@ -35,10 +48,20 @@ async function measurePageStandard(
         const metricsThisLoad = await driver.collectMetrics();
         metricsThisLoad.numNetworkReqs = getNetworkReport().numNetworkReqs;
         metrics.push(metricsThisLoad);
+
+        try {
+          webVitalsRuns.push(await collectWebVitals(driver));
+        } catch (error) {
+          console.error(`Error collecting web vitals for ${pageName}:`, error);
+        }
+
+        if (i < pageLoads - 1) {
+          await collectGarbageBetweenIterations(driver);
+        }
       }
     },
   );
-  return { metrics, title, persona };
+  return { metrics, title, persona, webVitalsRuns };
 }
 
 export async function run(

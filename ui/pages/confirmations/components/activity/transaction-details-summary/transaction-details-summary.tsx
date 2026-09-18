@@ -22,11 +22,20 @@ import { useTransactionDetails } from '../transaction-details-context';
 import { formatTransactionDateTime } from '../utils';
 import { getTransactions } from '../../../../../selectors/transactions';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
-import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
+import {
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../shared/lib/selectors/networks';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+
+const RELAY_DEPOSIT_TYPES = [
+  TransactionType.relayDeposit,
+  TransactionType.perpsRelayDeposit,
+  TransactionType.predictRelayDeposit,
+];
 
 type TranslateFunction = (key: string, args?: string[]) => string;
 
@@ -101,7 +110,7 @@ function TransactionSummaryLine({
 }) {
   const { type } = transactionMeta;
 
-  if (hasTransactionType(transactionMeta, [TransactionType.relayDeposit])) {
+  if (hasTransactionType(transactionMeta, RELAY_DEPOSIT_TYPES)) {
     return (
       <RelayDepositSummaryLine
         transactionMeta={transactionMeta}
@@ -120,7 +129,8 @@ function TransactionSummaryLine({
   if (
     type === TransactionType.musdClaim ||
     type === TransactionType.musdConversion ||
-    type === TransactionType.perpsDeposit
+    type === TransactionType.perpsDeposit ||
+    type === TransactionType.perpsWithdraw
   ) {
     return (
       <ReceiveSummaryLine
@@ -153,8 +163,9 @@ function RelayDepositSummaryLine({
     tokenChainId ?? chainId,
   );
 
-  const networkConfig = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfig = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const tokenSymbol = token?.symbol;
@@ -238,8 +249,9 @@ function ReceiveSummaryLine({
       : null,
   );
 
-  const networkConfig = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfig = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const tokenSymbol = token?.symbol;

@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/lib/conversion.utils';
 import { login } from '../../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import SpeedUpAndCancelModal from '../../../page-objects/pages/confirmations/speed-up-and-cancel-modal';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';
 
@@ -44,7 +43,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const confirmationPage = new Confirmation(driver);
-          await confirmationPage.clickFooterConfirmButton();
+          await confirmationPage.clickFooterButton({ button: 'confirm' });
 
           // Switch to extension and handle transaction
           await driver.switchToWindowWithTitle(
@@ -54,24 +53,23 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const homePage = new HomePage(driver);
           await homePage.goToActivityList();
 
-          const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
+          const activityTab = new ActivityTab(driver);
+          await activityTab.checkPendingTxNumberDisplayedInActivity(1);
 
-          await activityListPage.checkSpeedUpInlineButtonIsPresent();
-          await activityListPage.clickTransactionListItem();
-          await activityListPage.clickSpeedUpTransaction();
+          await activityTab.checkSpeedUpInlineButtonIsPresent();
+          await activityTab.clickSpeedUpTransaction();
 
           const speedUpCancelModal = new SpeedUpAndCancelModal(driver);
           await speedUpCancelModal.waitForModal();
           await speedUpCancelModal.checkSpeedUpTitleVisible();
-          await speedUpCancelModal.checkSpeedRowShowsSiteSuggested();
+          await speedUpCancelModal.checkSpeedRowShowsTenPercentIncreased();
           await speedUpCancelModal.waitForConfirmEnabled();
           await speedUpCancelModal.clickConfirm();
           await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
 
-          await activityListPage.checkWaitForTransactionStatus('confirmed');
+          await activityTab.checkWaitForTransactionStatus('confirmed');
         },
       );
     });
@@ -105,7 +103,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const confirmationPage = new Confirmation(driver);
-          await confirmationPage.clickFooterConfirmButton();
+          await confirmationPage.clickFooterButton({ button: 'confirm' });
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
@@ -113,21 +111,21 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const homePage = new HomePage(driver);
           await homePage.goToActivityList();
 
-          const activityListPage = new ActivityListPage(driver);
-          await activityListPage.checkPendingTxNumberDisplayedInActivity(1);
+          const activityTab = new ActivityTab(driver);
+          await activityTab.checkPendingTxNumberDisplayedInActivity(1);
 
-          await activityListPage.clickCancelTransaction();
+          await activityTab.clickCancelTransaction();
 
           const speedUpCancelModal = new SpeedUpAndCancelModal(driver);
           await speedUpCancelModal.waitForModal();
           await speedUpCancelModal.checkCancelTitleVisible();
-          await speedUpCancelModal.checkSpeedRowShowsSiteSuggested();
+          await speedUpCancelModal.checkSpeedRowShowsTenPercentIncreased();
           await speedUpCancelModal.waitForConfirmEnabled();
           await speedUpCancelModal.clickConfirm();
           await driver.delay(3000); // Delay needed to ensure the transaction updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
-          await activityListPage.checkWaitForTransactionStatus('cancelled');
+          await activityTab.checkWaitForTransactionStatus('cancelled');
         },
       );
     });

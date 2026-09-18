@@ -19,12 +19,8 @@ export {
   useMusdCtaVisibility,
   isTokenInWildcardList,
   checkTokenAllowed,
-  BuyGetMusdCtaVariant,
   type UseMusdCtaVisibilityResult,
-  type BuyGetMusdCtaState,
   type TokenForCta,
-  type BuyGetCtaOptions,
-  type TokenListItemCtaOptions,
 } from './useMusdCtaVisibility';
 
 export { useMusdBalance, type UseMusdBalanceResult } from './useMusdBalance';
@@ -60,5 +56,3 @@ export {
   useMusdPaymentToken,
   type UseMusdPaymentTokenResult,
 } from './useMusdPaymentToken';
-
-export { isMerklClaimTransaction } from './useMerklClaimStatus';

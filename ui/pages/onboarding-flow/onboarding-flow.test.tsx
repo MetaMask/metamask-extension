@@ -19,15 +19,37 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   createNewVaultAndGetSeedPhrase,
+  restoreSocialBackupAndGetSeedPhrase,
+  setCompletedOnboarding,
+  setCompletedOnboardingWithSidepanel,
+  setUseSidePanelAsDefault,
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
+import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import OnboardingFlow from './onboarding-flow';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
 
 // Mock mmLazy to return a synchronous component instead of React.lazy.
 // React 17's lazy resolution fires a state update after test cleanup unmounts
@@ -48,6 +70,39 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
 }));
+
+jest.mock('../unlock-page', () => {
+  const reactModule = jest.requireActual('react');
+
+  return function mockUnlock({
+    onSubmit,
+    navigateAfterUnlock,
+  }: {
+    onSubmit: (password: string) => Promise<void>;
+    navigateAfterUnlock?: () => Promise<void>;
+  }) {
+    const [password, setPassword] = reactModule.useState('');
+
+    return (
+      <div data-testid="unlock-page">
+        <input
+          data-testid="unlock-password-input"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+        <button
+          data-testid="unlock-submit"
+          onClick={async () => {
+            await onSubmit(password);
+            await navigateAfterUnlock?.();
+          }}
+        >
+          Unlock
+        </button>
+      </div>
+    );
+  };
+});
 
 // Wrapper component that provides proper route context for nested Routes
 // OnboardingFlow uses relative paths expecting to be mounted at /onboarding/*
@@ -84,6 +139,17 @@ jest.mock('./creation-successful/wallet-ready-animation', () => ({
   default: () => <div data-testid="wallet-ready-animation" />,
 }));
 
+const mockCompleteOnboarding = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('./hooks/useOnboardingCompletion', () => ({
+  useOnboardingCompletion: () => ({
+    completeOnboarding: mockCompleteOnboarding,
+    markCompletionPageSeen: jest.fn(),
+    isSidePanelOpen: false,
+    setIsSidePanelOpen: jest.fn(),
+  }),
+}));
+
 // Mock the useBackupAndSync hook to avoid thunk dispatch issues
 jest.mock('../../hooks/identity/useBackupAndSync', () => ({
   useBackupAndSync: () => ({
@@ -92,9 +158,17 @@ jest.mock('../../hooks/identity/useBackupAndSync', () => ({
   }),
 }));
 
+jest.mock('../../components/app/toast-master/utils', () => ({
+  submitRequestToBackgroundAndCatch: jest.fn(),
+}));
+
 jest.mock('../../store/actions', () => ({
-  createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
-  unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
+  createNewVaultAndGetSeedPhrase: jest.fn(() => async () => null),
+  restoreSocialBackupAndGetSeedPhrase: jest.fn(() => async () => null),
+  setCompletedOnboarding: jest.fn(() => async () => null),
+  setCompletedOnboardingWithSidepanel: jest.fn(() => async () => null),
+  setUseSidePanelAsDefault: jest.fn(() => async () => null),
+  unlockAndGetSeedPhrase: jest.fn(() => async () => null),
   createNewVaultAndRestore: jest.fn(),
   setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
   hideLoadingIndication: jest.fn(() => async () => ({
@@ -103,9 +177,32 @@ jest.mock('../../store/actions', () => ({
   setIsBackupAndSyncFeatureEnabled: jest.fn(
     () => async () => Promise.resolve(),
   ),
-  checkIsSeedlessPasswordOutdated: jest.fn(() => Promise.resolve()),
-  getIsSeedlessOnboardingUserAuthenticated: jest.fn(() => Promise.resolve()),
+  checkIsSeedlessPasswordOutdated: jest.fn(() => async () => Promise.resolve()),
+  getIsSeedlessOnboardingUserAuthenticated: jest.fn(
+    () => async () => Promise.resolve(false),
+  ),
 }));
+
+jest.mock('../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../shared/lib/environment'),
+  getIsSeedlessOnboardingFeatureEnabled: jest.fn(() => false),
+}));
+
+jest.mock('../../hooks/useSidePanelEnabled', () => ({
+  useSidePanelEnabled: jest.fn(() => false),
+}));
+
+function createDeferred<ResolvedValue = void>() {
+  let resolvePromise: (
+    value: ResolvedValue | PromiseLike<ResolvedValue>,
+  ) => void = () => undefined;
+
+  const promise = new Promise<ResolvedValue>((resolvedValue) => {
+    resolvePromise = resolvedValue;
+  });
+
+  return { promise, resolve: resolvePromise };
+}
 
 describe('Onboarding Flow', () => {
   const mockState = {
@@ -146,11 +243,45 @@ describe('Onboarding Flow', () => {
 
   const store = configureMockStore([thunk])(mockState);
 
-  afterEach(() => {
-    jest.resetAllMocks();
+  const createStore = (metamaskState = {}) =>
+    configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        ...metamaskState,
+      },
+    });
+
+  const renderUnlockPage = (metamaskState = {}) =>
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      createStore(metamaskState),
+      ONBOARDING_UNLOCK_ROUTE,
+    );
+
+  const submitUnlock = (getByTestId: (testId: string) => HTMLElement) => {
+    fireEvent.change(getByTestId('unlock-password-input'), {
+      target: { value: 'a-new-password' },
+    });
+    fireEvent.click(getByTestId('unlock-submit'));
+  };
+
+  beforeEach(() => {
+    (
+      getIsSeedlessOnboardingFeatureEnabled as jest.MockedFunction<
+        typeof getIsSeedlessOnboardingFeatureEnabled
+      >
+    ).mockReturnValue(false);
+    (
+      useSidePanelEnabled as jest.MockedFunction<typeof useSidePanelEnabled>
+    ).mockReturnValue(false);
   });
 
-  it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', async () => {
     const completedOnboardingState = {
       metamask: {
         completedOnboarding: true,
@@ -188,8 +319,10 @@ describe('Onboarding Flow', () => {
       ONBOARDING_ROUTE,
     );
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-      replace: true,
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
     });
   });
 
@@ -201,7 +334,9 @@ describe('Onboarding Flow', () => {
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
-      const createPassword = queryByTestId('create-password');
+      const createPassword = queryByTestId(
+        'parent-selector-onboarding-password',
+      );
       expect(createPassword).toBeInTheDocument();
     });
 
@@ -271,6 +406,22 @@ describe('Onboarding Flow', () => {
     );
   });
 
+  it('should redirect setup passkey to onboarding unlock when unlocked without srp', () => {
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      createStore({
+        isUnlocked: true,
+        completedOnboarding: false,
+        secretRecoveryPhrase: '',
+      }),
+      ONBOARDING_SETUP_PASSKEY_ROUTE,
+    );
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE, {
+      replace: true,
+    });
+  });
+
   it('should render import seed phrase', () => {
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlowWithRouteContext />,
@@ -278,7 +429,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_IMPORT_WITH_SRP_ROUTE,
     );
 
-    const importSrp = queryByTestId('import-srp');
+    const importSrp = queryByTestId('parent-selector-onboarding-srp');
     expect(importSrp).toBeInTheDocument();
   });
 
@@ -295,25 +446,112 @@ describe('Onboarding Flow', () => {
     });
 
     it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
-      const { getByLabelText, getByText } = renderWithProvider(
-        <OnboardingFlowWithRouteContext />,
-        configureMockStore([thunk])({
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            firstTimeFlowType: FirstTimeFlowType.import,
-          },
-        }),
-        ONBOARDING_UNLOCK_ROUTE,
+      const { getByTestId } = renderUnlockPage({
+        firstTimeFlowType: FirstTimeFlowType.import,
+      });
+
+      submitUnlock(getByTestId);
+
+      await waitFor(() => expect(unlockAndGetSeedPhrase).toHaveBeenCalled());
+    });
+
+    it('keeps the loading overlay visible until social import sidepanel rehydration completes', async () => {
+      const sidepanelCompletion = createDeferred<void>();
+
+      (
+        getIsSeedlessOnboardingFeatureEnabled as jest.MockedFunction<
+          typeof getIsSeedlessOnboardingFeatureEnabled
+        >
+      ).mockReturnValue(true);
+      (
+        useSidePanelEnabled as jest.MockedFunction<typeof useSidePanelEnabled>
+      ).mockReturnValue(true);
+      (
+        restoreSocialBackupAndGetSeedPhrase as jest.MockedFunction<
+          typeof restoreSocialBackupAndGetSeedPhrase
+        >
+      ).mockImplementation(() => async () => 'seed phrase');
+      (
+        setUseSidePanelAsDefault as jest.MockedFunction<
+          typeof setUseSidePanelAsDefault
+        >
+      ).mockImplementation(() => async () => ({ useSidePanelAsDefault: true }));
+      (
+        setCompletedOnboardingWithSidepanel as jest.MockedFunction<
+          typeof setCompletedOnboardingWithSidepanel
+        >
+      ).mockImplementation(() => async () => await sidepanelCompletion.promise);
+
+      const { container, getByTestId } = renderUnlockPage({
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
+      });
+
+      submitUnlock(getByTestId);
+
+      await waitFor(() => {
+        expect(restoreSocialBackupAndGetSeedPhrase).toHaveBeenCalled();
+        expect(setUseSidePanelAsDefault).toHaveBeenCalledWith(true);
+        expect(setCompletedOnboardingWithSidepanel).toHaveBeenCalled();
+      });
+
+      expect(
+        container.querySelector('.loading-overlay'),
+      ).not.toBeInTheDocument();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+
+      sidepanelCompletion.resolve();
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+        });
+      });
+    });
+
+    it('keeps the loading overlay visible until social import rehydration completes without sidepanel', async () => {
+      const onboardingCompletion = createDeferred<void>();
+
+      (
+        getIsSeedlessOnboardingFeatureEnabled as jest.MockedFunction<
+          typeof getIsSeedlessOnboardingFeatureEnabled
+        >
+      ).mockReturnValue(true);
+      (
+        restoreSocialBackupAndGetSeedPhrase as jest.MockedFunction<
+          typeof restoreSocialBackupAndGetSeedPhrase
+        >
+      ).mockImplementation(() => async () => 'seed phrase');
+      (
+        setCompletedOnboarding as jest.MockedFunction<
+          typeof setCompletedOnboarding
+        >
+      ).mockImplementation(
+        () => async () => await onboardingCompletion.promise,
       );
 
-      const password = 'a-new-password';
-      const inputPassword = getByLabelText(messages.password.message);
-      const unlockButton = getByText(messages.unlock.message);
+      const { container, getByTestId } = renderUnlockPage({
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
+      });
 
-      fireEvent.change(inputPassword, { target: { value: password } });
-      fireEvent.click(unlockButton);
-      await waitFor(() => expect(unlockAndGetSeedPhrase).toHaveBeenCalled());
+      submitUnlock(getByTestId);
+
+      await waitFor(() => {
+        expect(restoreSocialBackupAndGetSeedPhrase).toHaveBeenCalled();
+        expect(setCompletedOnboarding).toHaveBeenCalled();
+      });
+
+      expect(
+        container.querySelector('.loading-overlay'),
+      ).not.toBeInTheDocument();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+
+      onboardingCompletion.resolve();
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+        });
+      });
     });
   });
 
@@ -324,7 +562,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
     );
 
-    const privacySettings = queryByTestId('privacy-settings');
+    const privacySettings = queryByTestId(
+      'parent-selector-onboarding-privacy-settings',
+    );
     expect(privacySettings).toBeInTheDocument();
   });
 
@@ -336,9 +576,50 @@ describe('Onboarding Flow', () => {
     );
 
     await waitFor(() => {
-      const creationSuccessful = queryByTestId('wallet-ready');
+      const creationSuccessful = queryByTestId(
+        'parent-selector-onboarding-complete',
+      );
       expect(creationSuccessful).toBeInTheDocument();
     });
+  });
+
+  it('redirects locked return visits on the completion route to unlock', async () => {
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      createStore({
+        hasSeenOnboardingCompletionPage: true,
+        completedOnboarding: false,
+        isInitialized: true,
+        isUnlocked: false,
+      }),
+      ONBOARDING_COMPLETION_ROUTE,
+    );
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE, {
+        replace: true,
+      });
+    });
+  });
+
+  it('auto-completes onboarding after unlock when the completion page was seen', async () => {
+    const { getByTestId } = renderUnlockPage({
+      hasSeenOnboardingCompletionPage: true,
+      completedOnboarding: false,
+      isInitialized: true,
+      isUnlocked: true,
+      firstTimeFlowType: FirstTimeFlowType.create,
+    });
+
+    fireEvent.click(getByTestId('unlock-submit'));
+
+    await waitFor(() => {
+      expect(mockCompleteOnboarding).toHaveBeenCalledWith(true);
+    });
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(
+      ONBOARDING_COMPLETION_ROUTE,
+      expect.anything(),
+    );
   });
 
   it('should render onboarding Login page screen', async () => {
@@ -360,7 +641,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_METAMETRICS,
     );
 
-    const onboardingMetametrics = queryByTestId('onboarding-metametrics');
+    const onboardingMetametrics = queryByTestId(
+      'parent-selector-onboarding-metrics',
+    );
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 

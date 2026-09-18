@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
 import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
@@ -10,7 +11,6 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { AvatarGroup } from '../../multichain/avatar-group';
-import { AvatarTokenSize } from '../../component-library';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 
 export type MultichainAccountNetworkGroupProps = {
@@ -53,21 +53,26 @@ export type MultichainAccountNetworkGroupProps = {
  * @param props.className - Optional CSS class name for additional styling
  * @returns A React component displaying network avatars in a group
  */
-export const MultichainAccountNetworkGroup: React.FC<
-  MultichainAccountNetworkGroupProps
-> = ({
+export const MultichainAccountNetworkGroup = ({
   groupId,
   chainIds,
   excludeTestNetworks = true,
   limit = 4,
   className,
-}) => {
+}: MultichainAccountNetworkGroupProps) => {
   // Fetch chain IDs from account group if groupId is provided
-  const accountGroupScopes = useSelector((state) =>
-    groupId
-      ? getInternalAccountListSpreadByScopesByGroupId(state, groupId)
-      : [],
+  const selectAccountGroupScopes = useCallback(
+    (
+      state: Parameters<
+        typeof getInternalAccountListSpreadByScopesByGroupId
+      >[0],
+    ) =>
+      groupId
+        ? getInternalAccountListSpreadByScopesByGroupId(state, groupId)
+        : [],
+    [groupId],
   );
+  const accountGroupScopes = useSelector(selectAccountGroupScopes, isEqual);
 
   const filteredChainIds = useMemo(() => {
     // If only filterChainIds is provided (no groupId), show those chains
@@ -161,7 +166,6 @@ export const MultichainAccountNetworkGroup: React.FC<
     >
       <AvatarGroup
         limit={limit}
-        size={AvatarTokenSize.Xs}
         members={networkData}
         avatarType={AvatarType.NETWORK}
         className={className}

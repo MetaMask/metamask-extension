@@ -8,6 +8,7 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import {
   buildApproveTransactionData,
   buildIncreaseAllowanceTransactionData,
+  buildIncreaseApprovalTransactionData,
   buildPermit2ApproveTransactionData,
 } from '../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
@@ -63,6 +64,21 @@ describe('Transaction.utils', function () {
       expect(result.args.spender).toBe(ADDRESS_2_MOCK);
       expect(result.args.expiration).toBe(EXPIRATION_MOCK);
       expect(result.args.amount.toString()).toBe(AMOUNT_MOCK.toString());
+    });
+
+    it('decodes legacy increaseApproval function with no external fallback', () => {
+      const data = buildIncreaseApprovalTransactionData(
+        ADDRESS_MOCK,
+        AMOUNT_MOCK,
+      );
+
+      expect(data.startsWith('0xd73dd623')).toBe(true);
+
+      const result = parseStandardTokenTransactionData(data);
+
+      expect(result.name).toBe('increaseApproval');
+      expect(result.args._spender).toBe(ADDRESS_MOCK);
+      expect(result.args._addedValue.toString()).toBe(AMOUNT_MOCK.toString());
     });
   });
 
@@ -517,7 +533,35 @@ describe('Transaction.utils', function () {
         });
       });
 
-      describe('nested value spoofing protection', () => {
+      describe('value spoofing protection', () => {
+        it('uses the last message object when duplicate sibling message keys are present', () => {
+          const realValue = '100000000000000000000000000000';
+          const maliciousData = `{"message":{"value":100000000000000},"message":{"value":"${realValue}"}}`;
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe(realValue);
+        });
+
+        it('uses JSON key decoding when duplicate sibling message keys are escaped', () => {
+          const realValue = '100000000000000000000000000000';
+          const maliciousData = `{"message":{"value":100000000000000},"messag\\u0065":{"value":"${realValue}"}}`;
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe(realValue);
+        });
+
+        it('uses the last message.value when duplicate sibling value keys are present', () => {
+          const realValue = '100000000000000000000000000000';
+          const maliciousData = `{"message":{"value":100000000000000,"value":"${realValue}"}}`;
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe(realValue);
+        });
+
+        it('uses JSON key decoding when duplicate sibling value keys are escaped', () => {
+          const realValue = '100000000000000000000000000000';
+          const maliciousData = `{"message":{"value":100000000000000,"valu\\u0065":"${realValue}"}}`;
+          const result = parse(maliciousData);
+          expect(result.message.value).toBe(realValue);
+        });
+
         it('ignores nested value fields and uses actual message.value (spoofing attack prevention)', () => {
           const maliciousData = JSON.stringify({
             message: {
@@ -587,6 +631,14 @@ describe('Transaction.utils', function () {
           const result = parse(data);
           expect(result.message.value).toBe('123');
         });
+
+        it('preserves bare large integers outside message.value', () => {
+          const largeAmount =
+            '1461501637330902918203684832716283019655932542975';
+          const data = `{"message":{"details":{"amount":${largeAmount}},"value":1}}`;
+          const result = parse(data);
+          expect(result.message.details.amount).toBe(largeAmount);
+        });
       });
     });
   });
@@ -637,6 +689,21 @@ describe('Transaction.utils', function () {
         isApproveAll: false,
         isRevokeAll: false,
         name: 'increaseAllowance',
+        spender: ADDRESS_MOCK,
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data with spender if legacy increaseApproval', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildIncreaseApprovalTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'increaseApproval',
         spender: ADDRESS_MOCK,
         tokenAddress: undefined,
       });

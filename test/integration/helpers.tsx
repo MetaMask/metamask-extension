@@ -30,6 +30,12 @@ export const createMockImplementation = <T,>(requests: Record<string, T>) => {
     if (method === 'getBearerToken') {
       return Promise.resolve('mock-bearer-token-for-tests');
     }
+    if (
+      method === 'trackAnalyticsEvent' ||
+      method === 'addEventBeforeMetricsOptIn'
+    ) {
+      return Promise.resolve(undefined);
+    }
     if (method in requests) {
       return Promise.resolve(requests[method]);
     }
@@ -73,10 +79,10 @@ export const getSelectedAccountGroup = <
 >(
   state: State,
 ) => {
-  const groupId = state.accountTree.selectedAccountGroup;
+  const groupId = state.selectedAccountGroup;
   const {
     wallet: { id: walletId },
-  } = parseAccountGroupId(state.accountTree.selectedAccountGroup);
+  } = parseAccountGroupId(state.selectedAccountGroup);
   const wallet =
     state.accountTree.wallets[
       walletId as keyof typeof state.accountTree.wallets

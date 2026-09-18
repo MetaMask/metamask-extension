@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   HardwareTransportStates,
@@ -16,10 +16,12 @@ import {
 import {
   getLedgerTransportType,
   isAddressLedger,
-} from '../../../ducks/metamask/metamask';
+} from '../../../ducks/metamask/base-selectors';
+import type { MetaMaskSlice } from '../../../ducks/metamask/types';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
 
 const useLedgerConnection = () => {
   const dispatch = useDispatch();
@@ -34,7 +36,7 @@ const useLedgerConnection = () => {
     currentConfirmation?.msgParams?.from ?? currentConfirmation?.txParams?.from;
 
   const isLedgerWallet = useSelector(
-    (state) => from && isAddressLedger(state, from),
+    (state: MetaMaskSlice) => from && isAddressLedger(state, from),
   );
 
   useEffect(() => {

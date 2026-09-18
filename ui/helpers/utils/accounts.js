@@ -1,6 +1,8 @@
-import { IconName } from '@metamask/snaps-sdk/jsx';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { InvisibleCharacter } from '../../components/component-library';
+import {
+  IconName,
+  InvisibleCharacter,
+} from '../../components/component-library';
 import {
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
@@ -73,6 +75,38 @@ export function getAvatarNetworkColor(name) {
     default:
       return undefined;
   }
+}
+
+const TESTNET_BACKGROUND_CSS_VARS = {
+  [BackgroundColor.goerli]: 'var(--color-network-goerli-default)',
+  [BackgroundColor.sepolia]: 'var(--color-network-sepolia-default)',
+  [BackgroundColor.lineaGoerli]: 'var(--color-network-linea-goerli-default)',
+  [BackgroundColor.lineaSepolia]: 'var(--color-network-linea-sepolia-default)',
+};
+
+/**
+ * Maps a testnet BackgroundColor token to an inline style for MMDS AvatarNetwork.
+ *
+ * @param {BackgroundColor | undefined} backgroundColor - Testnet background color token.
+ * @returns {import('react').CSSProperties} Inline style object for AvatarNetwork.
+ */
+export function getAvatarNetworkStyleFromBackgroundColor(backgroundColor) {
+  if (!backgroundColor) {
+    return {};
+  }
+
+  const cssVar = TESTNET_BACKGROUND_CSS_VARS[backgroundColor];
+  return cssVar ? { backgroundColor: cssVar } : {};
+}
+
+/**
+ * Returns testnet-specific AvatarNetwork inline styles from a network display name.
+ *
+ * @param {string | undefined} name - Network display name.
+ * @returns {import('react').CSSProperties} Inline style object for AvatarNetwork.
+ */
+export function getAvatarNetworkStyle(name) {
+  return getAvatarNetworkStyleFromBackgroundColor(getAvatarNetworkColor(name));
 }
 
 const toSrpLabel = (index) =>

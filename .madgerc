@@ -22,11 +22,5 @@
       "skipAsyncImports": true
     }
   },
-  "allowedCircularGlob": [
-    "ui/ducks/**",
-    "ui/selectors/**",
-    "ui/store/**",
-    "ui/components/app/**",
-    "shared/lib/selectors/**"
-  ]
+  "allowedCircularGlob": []
 }

@@ -3,12 +3,20 @@ import {
   NotificationsList,
   type NotificationsListProps,
 } from './notifications-list';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { TAB_KEYS } from './notifications-list';
+import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 
 export default {
   title: 'Pages/Notifications/NotificationsListStates',
   component: NotificationsList,
+  decorators: [
+    (Story: React.FC) => (
+      <MetamaskNotificationsProvider>
+        <Story />
+      </MetamaskNotificationsProvider>
+    ),
+  ],
   argTypes: {
     notifications: { table: { disable: true } },
     activeTab: { table: { disable: true } },

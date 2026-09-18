@@ -6,13 +6,14 @@ import {
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Permissions Page', function () {
@@ -68,7 +69,7 @@ describe('Permissions Page', function () {
 
         const experimentalSettings = new ExperimentalSettings(driver);
         await experimentalSettings.checkPageIsLoaded();
-        await settingsPage.closeSettingsPage();
+        await closeSettings(driver);
 
         // go to homepage and check site permissions
         await new Homepage(driver).checkPageIsLoaded();

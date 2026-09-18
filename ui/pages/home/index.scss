@@ -142,25 +142,6 @@
     left: 8px;
   }
 
-  &__new-nft-notification {
-    margin-bottom: 24px;
-    margin-right: 8px;
-
-    &-icon {
-      display: flex;
-      align-items: center;
-      font-size: 16px;
-      margin-right: 8px;
-      color: var(--color-success-default);
-    }
-
-    &-close {
-      color: var(--color-icon-default);
-      background: none;
-      margin-left: 44px;
-    }
-  }
-
   &__new-tokens-imported-notification {
     padding: 8px;
     bottom: 16px !important; //Adding important here else it will take bottom:8px in home-notification-wrapper--show-first> div

@@ -1,10 +1,17 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
+import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../../../shared/constants/metametrics';
+import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
+import {
+  BlockaidResultType,
+  SecurityProvider,
+} from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { genUnapprovedTokenTransferConfirmation } from '../../../../../../test/data/confirmations/token-transfer';
 import {
   addEthereumChainApproval,
+  getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
@@ -12,6 +19,7 @@ import {
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
 import {
+  PERSONAL_SIGN_SENDER_ADDRESS,
   signatureRequestSIWE,
   unapprovedPersonalSignMsg,
 } from '../../../../../../test/data/confirmations/personal_sign';
@@ -32,26 +40,55 @@ import {
   HardwareWalletType,
 } from '../../../../../contexts/hardware-wallets';
 import * as confirmContext from '../../../context/confirm';
-import { SignatureRequestType } from '../../../types/confirm';
+import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
-import {
-  useConfirmationNavigation,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useAddEthereumChain } from '../../../hooks/useAddEthereumChain';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
 jest.mock('../../../hooks/alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../hooks/gas/useIsGaslessSupported');
 jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useIsTransactionPayLoading: jest.fn(() => false),
+  useIsTransactionPayQuotePending: jest.fn(() => false),
+  useTransactionPayHasExecutableQuote: jest.fn(() => false),
+  useTransactionPayHasPositiveRequiredAmount: jest.fn(() => false),
+  useTransactionPayIsPostQuote: jest.fn(() => false),
+  useTransactionPayPrimaryRequiredToken: jest.fn(() => undefined),
+  useTransactionPayQuotes: jest.fn(() => undefined),
   useTransactionPayRequiredTokens: jest.fn(() => []),
+  useTransactionPayTotals: jest.fn(() => undefined),
 }));
+jest.mock(
+  '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaireMetrics',
+  () => ({
+    useScamQuestionnaireMetrics: () => ({
+      trackViewed: jest.fn(),
+      trackContactSupport: jest.fn(),
+      trackCompleted: jest.fn(),
+    }),
+  }),
+);
 
 const mockOnTransactionConfirm = jest.fn();
 const ensureDeviceReadyMock = jest.fn();
@@ -67,6 +104,12 @@ const mockIsUserRejectedHardwareWalletError = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 const mockNavigateNext = jest.fn();
 const mockNavigateToId = jest.fn();
+const HARDWARE_CONFIRMATION_SENDER =
+  '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+
+const mockTrackHardwareWalletRecoveryConnectCtaClicked = jest.mocked(
+  trackHardwareWalletRecoveryConnectCtaClicked,
+);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
@@ -85,7 +128,8 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
 }));
-jest.mock('../../../../../../app/scripts/lib/util', () => ({
+jest.mock('../../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../../../shared/lib/environment-type'),
   getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
 }));
 jest.mock('../../../../../store/background-connection', () => ({
@@ -93,13 +137,10 @@ jest.mock('../../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(() => Promise.resolve()),
 }));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  ...jest.requireActual('../../../hooks/useConfirmationNavigation'),
   useConfirmationNavigation: jest.fn(() => ({
     navigateNext: mockNavigateNext,
     navigateToId: mockNavigateToId,
-  })),
-  useConfirmationNavigationOptions: jest.fn(() => ({
-    loader: 'default',
-    returnTo: undefined,
   })),
 }));
 jest.mock(
@@ -114,7 +155,9 @@ jest.mock(
 );
 
 jest.mock('../../../hooks/useOriginThrottling');
-
+jest.mock(
+  '../../../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked',
+);
 jest.mock('../../../../../hooks/subscription/useSubscription');
 jest.mock(
   '../../../../../contexts/hardware-wallets/HardwareWalletContext',
@@ -176,7 +219,18 @@ jest.mock('../../../hooks/useConfirmSendNavigation', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-const mockUseLocation = jest.fn();
+
+/** Default `useLocation()` shape for `useHardwareWalletRecoveryLocation` */
+function getDefaultFooterTestLocation() {
+  return {
+    pathname: '/confirm-transaction',
+    search: '',
+    hash: '',
+    state: null,
+  };
+}
+
+const mockUseLocation = jest.fn(getDefaultFooterTestLocation);
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
@@ -185,11 +239,24 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const render = (args?: Record<string, unknown>) => {
+const render = (
+  args?: Record<string, unknown>,
+  options?: {
+    pathname?: string;
+    confirmationId?: string;
+    getMockTrackEvent?: () => jest.Mock;
+  },
+) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
   mockStore = store;
 
-  return renderWithConfirmContextProvider(<Footer />, store);
+  return renderWithConfirmContextProvider(
+    <Footer />,
+    store,
+    options?.pathname ?? DEFAULT_ROUTE,
+    options?.confirmationId,
+    options?.getMockTrackEvent,
+  );
 };
 
 const ALERT_MOCK = [
@@ -229,6 +296,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletError.mockReset();
     mockIsHardwareWalletError.mockReset();
     mockIsUserRejectedHardwareWalletError.mockReset();
+    mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
 
     mockOnTransactionConfirm.mockResolvedValue(undefined);
     ensureDeviceReadyMock.mockResolvedValue(true);
@@ -239,6 +307,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: false,
       walletType: null,
+      accountAddress: null,
     });
     mockUseHardwareWalletActions.mockReturnValue({
       ensureDeviceReady: ensureDeviceReadyMock,
@@ -265,17 +334,14 @@ describe('ConfirmFooter', () => {
       isGaslessLoading: false,
     });
 
-    mockUseLocation.mockReturnValue({
-      pathname: '/confirm-transaction',
-      search: '',
-      hash: '',
-      state: null,
-    });
+    mockUseLocation.mockImplementation(getDefaultFooterTestLocation);
     useUserSubscriptionsMock.mockReturnValue({
       trialedProducts: [],
       loading: false,
       subscriptions: [],
       error: undefined,
+      customerId: undefined,
+      lastSubscription: undefined,
     });
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
   });
@@ -533,10 +599,55 @@ describe('ConfirmFooter', () => {
     expect(submitButton).toHaveClass('mm-button-primary--type-danger');
   });
 
+  it('opens the scam questionnaire instead of the alert modal for a malicious wallet-initiated send', () => {
+    const transaction = {
+      ...genUnapprovedTokenTransferConfirmation({
+        isWalletInitiatedConfirmation: true,
+      }),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      securityAlertResponse: { result_type: BlockaidResultType.Malicious },
+    } as unknown as Confirmation;
+
+    const { getByTestId, getByText, queryByTestId } = render(
+      getMockConfirmStateForTransaction(transaction, {
+        metamask: {
+          remoteFeatureFlags: {
+            productSafetyScamQuestionnaireEnabled: 'treatment',
+          },
+        },
+        confirmAlerts: {
+          alerts: {
+            [transaction.id]: [
+              {
+                key: 'blockaid',
+                severity: Severity.Danger,
+                message: 'Malicious',
+                provider: SecurityProvider.Blockaid,
+              },
+            ],
+          },
+          confirmed: { [transaction.id]: { blockaid: false } },
+        },
+      }),
+    );
+
+    fireEvent.click(getByTestId('confirm-footer-button'));
+
+    // Questionnaire opens (its back control + first question are shown)...
+    expect(getByTestId('scam-questionnaire-back')).toBeInTheDocument();
+    expect(
+      getByText(messages.scamQuestionnaireQ1Title.message),
+    ).toBeInTheDocument();
+    // ...and the standard danger-alert modal is not shown instead.
+    expect(queryByTestId('confirm-alert-modal')).not.toBeInTheDocument();
+  });
+
   it('suppresses hardware wallet error modal while danger alerts are unconfirmed and hardware wallet is ready', async () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Ready },
@@ -570,6 +681,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
@@ -603,6 +715,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Ready },
@@ -617,6 +730,7 @@ describe('ConfirmFooter', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: true,
       walletType: HardwareWalletType.Ledger,
+      accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Ready },
@@ -663,10 +777,32 @@ describe('ConfirmFooter', () => {
   });
 
   describe('hardware wallet handling', () => {
+    it('renders confirm button when hardware wallet transport is connected', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Connected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: true,
+      });
+
+      const { getByTestId, queryByTestId } = render();
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
     it('renders confirm button when hardware wallet is ready', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -687,6 +823,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Disconnected },
@@ -706,11 +843,63 @@ describe('ConfirmFooter', () => {
       expect(queryByTestId('confirm-footer-button')).not.toBeInTheDocument();
     });
 
+    it('renders confirm button when selected hardware wallet does not match confirmation sender', () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+
+      const { getByTestId, queryByTestId } = render();
+
+      expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+    });
+
+    it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
+      const connectionState = {
+        status: ConnectionStatus.Disconnected as const,
+      };
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState,
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: false,
+      });
+
+      const { getByTestId } = render();
+
+      fireEvent.click(getByTestId('reconnect-hardware-wallet-button'));
+
+      await waitFor(() => {
+        expect(
+          mockTrackHardwareWalletRecoveryConnectCtaClicked,
+        ).toHaveBeenCalledWith(mockTrackEvent, {
+          location: MetaMetricsHardwareWalletRecoveryLocation.Send,
+          walletType: HardwareWalletType.Ledger,
+          connectionState,
+        });
+      });
+      expect(ensureDeviceReadyMock).toHaveBeenCalled();
+    });
+
     it('does not confirm when hardware wallet preflight fails', async () => {
       ensureDeviceReadyMock.mockResolvedValue(false);
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -739,6 +928,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Disconnected },
@@ -788,6 +978,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: PERSONAL_SIGN_SENDER_ADDRESS,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Disconnected },
@@ -810,6 +1001,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -826,7 +1018,7 @@ describe('ConfirmFooter', () => {
         getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
           msgParams: {
-            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            from: HARDWARE_CONFIRMATION_SENDER,
           },
         } as SignatureRequestType),
       );
@@ -838,7 +1030,7 @@ describe('ConfirmFooter', () => {
       });
 
       expect(resolveSpy).toHaveBeenCalledWith(expect.any(String), undefined, {
-        fromAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        fromAddress: HARDWARE_CONFIRMATION_SENDER,
         waitForResult: true,
         walletType: HardwareWalletType.Ledger,
       });
@@ -853,6 +1045,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -869,7 +1062,7 @@ describe('ConfirmFooter', () => {
         getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
           msgParams: {
-            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            from: HARDWARE_CONFIRMATION_SENDER,
           },
         } as SignatureRequestType),
       );
@@ -894,6 +1087,7 @@ describe('ConfirmFooter', () => {
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
       });
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.Ready },
@@ -910,7 +1104,7 @@ describe('ConfirmFooter', () => {
         getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
           msgParams: {
-            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            from: HARDWARE_CONFIRMATION_SENDER,
           },
         } as SignatureRequestType),
       );
@@ -1146,22 +1340,154 @@ describe('ConfirmFooter', () => {
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
-  describe('returnTo navigation', () => {
-    const useConfirmationNavigationOptionsMock = jest.mocked(
-      useConfirmationNavigationOptions,
+  it('renders SingleActionFooter for perpsDeposit transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsDeposit,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
     );
 
-    it('does not call navigateNext when cancel is clicked and returnTo is defined', async () => {
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('renders SingleActionFooter for perpsWithdraw transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.perpsWithdraw,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.perpsWithdraw.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('renders SingleActionFooter for moneyAccountDeposit transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.moneyAccountDeposit,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('renders SingleActionFooter for moneyAccountWithdraw transaction type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.moneyAccountWithdraw,
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.send.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('renders SingleActionFooter for moneyAccountDeposit batch with approve companion', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+    expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
+  });
+
+  it('falls through to the two-button footer when a batch mixes moneyAccountDeposit with an unrelated nested type', () => {
+    jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+      currentConfirmation: {
+        ...genUnapprovedContractInteractionConfirmation(),
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.moneyAccountDeposit },
+          { type: TransactionType.simpleSend },
+        ],
+      },
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: () => undefined,
+    } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+
+    const { getByTestId, queryByText } = render(
+      getMockContractInteractionConfirmState(),
+    );
+
+    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.confirm.message,
+    );
+    expect(queryByText(messages.cancel.message)).toBeInTheDocument();
+  });
+
+  describe('goBackTo navigation', () => {
+    it('does not call navigateNext when cancel is clicked and goBackTo is defined', async () => {
       const navigateNextMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({
         navigateNext: navigateNextMock,
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
-      useConfirmationNavigationOptionsMock.mockReturnValue({
-        loader: undefined,
-        returnTo: '/asset/0x123',
-      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo: '/asset/0x123',
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();
       const cancelButton = getAllByRole('button')[0];
@@ -1178,21 +1504,23 @@ describe('ConfirmFooter', () => {
         expect(rejectSpy).toHaveBeenCalled();
       });
 
-      // Should NOT call navigateNext when returnTo is defined (early return)
+      // Should NOT call navigateNext when goBackTo is defined (early return)
       expect(navigateNextMock).not.toHaveBeenCalled();
     });
 
-    it('calls navigateNext when cancel is clicked and returnTo is undefined', async () => {
+    it('calls navigateNext when cancel is clicked and goBackTo is undefined', async () => {
       const navigateNextMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({
         navigateNext: navigateNextMock,
         navigateToId: jest.fn(),
       } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
-      useConfirmationNavigationOptionsMock.mockReturnValue({
-        loader: undefined,
-        returnTo: undefined,
-      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+        goBackTo: undefined,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();
       const cancelButton = getAllByRole('button')[0];
@@ -1209,7 +1537,7 @@ describe('ConfirmFooter', () => {
         expect(rejectSpy).toHaveBeenCalled();
       });
 
-      // Should call navigateNext when returnTo is undefined
+      // Should call navigateNext when goBackTo is undefined
       await waitFor(() => {
         expect(navigateNextMock).toHaveBeenCalled();
       });

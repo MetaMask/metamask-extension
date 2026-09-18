@@ -1,19 +1,26 @@
+import { BigNumber } from 'bignumber.js';
+import { formatCurrencyAmount } from './quote';
+
 /**
  * Formats price impact percentage for display.
  *
  * @param priceImpact - The price impact value from the API (in decimal form, e.g., 0.87 = 87%).
  * @returns Formatted price impact string.
  */
-export function formatPriceImpact(
+export function formatPriceImpactPercentage(
   priceImpact: string | number | undefined | null,
-): string {
+): string | null {
   if (priceImpact === undefined || priceImpact === null) {
-    return '0%';
+    return null;
   }
 
   const impact = Number(priceImpact);
 
-  if (isNaN(impact) || !impact || impact < 0) {
+  if (isNaN(impact)) {
+    return null;
+  }
+
+  if (impact <= 0) {
     return '0%';
   }
 
@@ -37,4 +44,23 @@ export function formatPriceImpact(
 
   // For values 10% and above, show with no decimal places
   return `${Math.round(percentageImpact)}%`;
+}
+
+/**
+ * Returns the fiat price impact for a bridge quote — the difference between
+ * the source input fiat amount and the destination output fiat amount,
+ * formatted in the user's current currency (e.g. "$4.23", "€3.90").
+ *
+ * @param priceImpact - The price impact in the current currency
+ * @param currentCurrency - The user's current display currency (e.g. "usd").
+ * @returns Formatted fiat impact string, or `undefined` when either fiat value is unavailable.
+ */
+export function formatPriceImpactFiat(
+  priceImpact: string | null | undefined,
+  currentCurrency: string,
+): string | undefined {
+  if (!priceImpact) {
+    return undefined;
+  }
+  return formatCurrencyAmount(priceImpact, currentCurrency, 2);
 }

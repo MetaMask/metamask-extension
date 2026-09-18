@@ -7,16 +7,161 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockPositions } from '../mocks';
 import { ReversePositionModal } from './reverse-position-modal';
 
+// Mobile test convention: mock the Compliance barrel so the gate hook never runs
+// (and never reaches the now-strict AccessRestrictedProvider context throw). The
+// default gate is a passthrough; the blocked case is simulated per-test below.
+const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
+jest.mock('../../compliance', () => ({
+  useComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+  useSelectedAccountComplianceGate: () => ({
+    gate: mockComplianceGate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  }),
+}));
+
+const mockUsePerpsOrderFees = jest.fn();
+const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockTrack = jest.fn();
+
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => mockUsePerpsOrderFees(),
+}));
+
+jest.mock('../../../../hooks/perps', () => ({
+  usePerpsEligibility: () => mockUsePerpsEligibility(),
+  usePerpsEventTracking: () => ({ track: mockTrack }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => input,
+  }),
+}));
+
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
+      `$${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+  }),
+}));
+
+jest.mock('../../../../../shared/lib/perps-formatters', () => ({
+  formatPerpsFiat: (value: number) =>
+    `$${Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`,
+  PRICE_RANGES_MINIMAL_VIEW: [],
+  formatPositionSize: (value: number, decimals?: number) =>
+    Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals ?? 4,
+    }),
+}));
+
+jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('@metamask/perps-controller'),
+  PERPS_ERROR_CODES: {
+    CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
+    CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
+    PROVIDER_NOT_AVAILABLE: 'PROVIDER_NOT_AVAILABLE',
+    TOKEN_NOT_SUPPORTED: 'TOKEN_NOT_SUPPORTED',
+    BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
+    WITHDRAW_FAILED: 'WITHDRAW_FAILED',
+    POSITIONS_FAILED: 'POSITIONS_FAILED',
+    ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
+    MARKETS_FAILED: 'MARKETS_FAILED',
+    UNKNOWN_ERROR: 'UNKNOWN_ERROR',
+    ORDER_LEVERAGE_REDUCTION_FAILED: 'ORDER_LEVERAGE_REDUCTION_FAILED',
+    IOC_CANCEL: 'IOC_CANCEL',
+    CONNECTION_TIMEOUT: 'CONNECTION_TIMEOUT',
+    WITHDRAW_ASSET_ID_REQUIRED: 'WITHDRAW_ASSET_ID_REQUIRED',
+    WITHDRAW_AMOUNT_REQUIRED: 'WITHDRAW_AMOUNT_REQUIRED',
+    WITHDRAW_AMOUNT_POSITIVE: 'WITHDRAW_AMOUNT_POSITIVE',
+    WITHDRAW_INVALID_DESTINATION: 'WITHDRAW_INVALID_DESTINATION',
+    WITHDRAW_ASSET_NOT_SUPPORTED: 'WITHDRAW_ASSET_NOT_SUPPORTED',
+    WITHDRAW_INSUFFICIENT_BALANCE: 'WITHDRAW_INSUFFICIENT_BALANCE',
+    DEPOSIT_ASSET_ID_REQUIRED: 'DEPOSIT_ASSET_ID_REQUIRED',
+    DEPOSIT_AMOUNT_REQUIRED: 'DEPOSIT_AMOUNT_REQUIRED',
+    DEPOSIT_AMOUNT_POSITIVE: 'DEPOSIT_AMOUNT_POSITIVE',
+    DEPOSIT_MINIMUM_AMOUNT: 'DEPOSIT_MINIMUM_AMOUNT',
+    ORDER_COIN_REQUIRED: 'ORDER_COIN_REQUIRED',
+    ORDER_LIMIT_PRICE_REQUIRED: 'ORDER_LIMIT_PRICE_REQUIRED',
+    ORDER_PRICE_POSITIVE: 'ORDER_PRICE_POSITIVE',
+    ORDER_UNKNOWN_COIN: 'ORDER_UNKNOWN_COIN',
+    ORDER_SIZE_POSITIVE: 'ORDER_SIZE_POSITIVE',
+    ORDER_PRICE_REQUIRED: 'ORDER_PRICE_REQUIRED',
+    ORDER_SIZE_MIN: 'ORDER_SIZE_MIN',
+    ORDER_LEVERAGE_INVALID: 'ORDER_LEVERAGE_INVALID',
+    ORDER_LEVERAGE_BELOW_POSITION: 'ORDER_LEVERAGE_BELOW_POSITION',
+    ORDER_MAX_VALUE_EXCEEDED: 'ORDER_MAX_VALUE_EXCEEDED',
+    EXCHANGE_CLIENT_NOT_AVAILABLE: 'EXCHANGE_CLIENT_NOT_AVAILABLE',
+    INFO_CLIENT_NOT_AVAILABLE: 'INFO_CLIENT_NOT_AVAILABLE',
+    SUBSCRIPTION_CLIENT_NOT_AVAILABLE: 'SUBSCRIPTION_CLIENT_NOT_AVAILABLE',
+    NO_ACCOUNT_SELECTED: 'NO_ACCOUNT_SELECTED',
+    KEYRING_LOCKED: 'KEYRING_LOCKED',
+    INVALID_ADDRESS_FORMAT: 'INVALID_ADDRESS_FORMAT',
+    TRANSFER_FAILED: 'TRANSFER_FAILED',
+    SWAP_FAILED: 'SWAP_FAILED',
+    SPOT_PAIR_NOT_FOUND: 'SPOT_PAIR_NOT_FOUND',
+    PRICE_UNAVAILABLE: 'PRICE_UNAVAILABLE',
+    BATCH_CANCEL_FAILED: 'BATCH_CANCEL_FAILED',
+    BATCH_CLOSE_FAILED: 'BATCH_CLOSE_FAILED',
+    INSUFFICIENT_MARGIN: 'INSUFFICIENT_MARGIN',
+    INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
+    REDUCE_ONLY_VIOLATION: 'REDUCE_ONLY_VIOLATION',
+    POSITION_WOULD_FLIP: 'POSITION_WOULD_FLIP',
+    MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
+    TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
+    ORDER_REJECTED: 'ORDER_REJECTED',
+    SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
+    RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
+    SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
+    NETWORK_ERROR: 'NETWORK_ERROR',
+  },
+}));
+
 const mockSubmitRequestToBackground = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
+const mockReplacePerpsToastByKey = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../rewards/RewardsVipBadge', () => ({
+  RewardsVipBadge: () => null,
+}));
+
+const mockUseVipTier = jest.fn<number | null, []>(() => null);
+jest.mock('../../../../hooks/rewards/useVipTier', () => ({
+  useVipTier: () => mockUseVipTier(),
+}));
+
 jest.mock('../../../../providers/perps', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+}));
+
+jest.mock('../perps-toast', () => ({
+  PERPS_TOAST_KEYS: {
+    REVERSE_FAILED: 'perpsToastReverseFailed',
+    REVERSE_IN_PROGRESS: 'perpsToastReverseInProgress',
+    REVERSE_SUCCESS: 'perpsToastReverseSuccess',
+  },
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
 }));
 
 const mockStore = configureStore({
@@ -24,20 +169,30 @@ const mockStore = configureStore({
     ...mockState.metamask,
   },
 });
-
-const longPosition = mockPositions[0]; // ETH: size=2.5 (long), leverage.value=3
-const shortPosition = mockPositions[1]; // BTC: size=-0.5 (short), leverage.value=15
+const longPosition = mockPositions[0];
+const shortPosition = mockPositions[1];
 
 const defaultProps = {
   isOpen: true,
   onClose: jest.fn(),
   position: longPosition,
   currentPrice: 2900,
+  sizeDecimals: 3,
 };
 
 describe('ReversePositionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUseVipTier.mockReturnValue(null);
+    mockUsePerpsOrderFees.mockReturnValue({
+      feeRate: 0.0001,
+      metamaskFeeRate: 0.00005,
+      protocolFeeRate: 0.00005,
+      undiscountedFeeRate: 0.0001,
+      isLoading: false,
+      hasError: false,
+    });
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
       if (method === 'perpsFlipPosition') {
         return Promise.resolve({ success: true });
@@ -73,21 +228,90 @@ describe('ReversePositionModal', () => {
       expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
     });
 
-    it('shows Cancel and Save buttons', () => {
+    it('shows Cancel and Confirm buttons', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
       expect(
         screen.getByTestId('perps-reverse-position-modal-cancel'),
       ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-reverse-position-modal-save'),
-      ).toBeInTheDocument();
+      const submitButton = screen.getByTestId(
+        'perps-reverse-position-modal-save',
+      );
+      expect(submitButton).toBeInTheDocument();
+      expect(submitButton).toHaveTextContent(messages.confirm.message);
     });
 
-    it('shows fees placeholder as em-dash', () => {
+    it('shows computed estimated fee', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('—')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '$1.45',
+      );
+    });
+
+    it('shows fee placeholder while fees are unavailable', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        undiscountedFeeRate: undefined,
+        isLoading: true,
+        hasError: false,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '--',
+      );
+    });
+
+    it('shows fee placeholder when fee lookup fails', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        undiscountedFeeRate: undefined,
+        isLoading: false,
+        hasError: true,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '--',
+      );
+    });
+
+    it('does not show discounted fee while the fee placeholder is shown', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        undiscountedFeeRate: 0.0002,
+        isLoading: true,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-reverse-fee-value-original'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows strikethrough original and discounted fee when fees are available', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0001,
+        metamaskFeeRate: 0.00005,
+        protocolFeeRate: 0.00005,
+        undiscountedFeeRate: 0.0002,
+        isLoading: false,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(
+        screen.getByTestId('perps-reverse-fee-value-original'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('perps-reverse-fee-value')).toBeInTheDocument();
     });
   });
 
@@ -102,7 +326,21 @@ describe('ReversePositionModal', () => {
     it('displays correct estimated size', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('2.50 ETH')).toBeInTheDocument();
+      expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
+    });
+
+    it('strips the DEX prefix from a HIP-3 market symbol in the estimated size label', () => {
+      const hip3Position = { ...longPosition, symbol: 'xyz:TSLA' };
+
+      renderWithProvider(
+        <ReversePositionModal {...defaultProps} position={hip3Position} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-reverse-est-size-value'),
+      ).toHaveTextContent('2.5 TSLA');
+      expect(screen.queryByText(/xyz:/u)).not.toBeInTheDocument();
     });
   });
 
@@ -131,11 +369,29 @@ describe('ReversePositionModal', () => {
         mockStore,
       );
 
-      expect(screen.getByText('0.50 BTC')).toBeInTheDocument();
+      expect(screen.getByText('0.5 BTC')).toBeInTheDocument();
     });
   });
 
   describe('successful save', () => {
+    it('does not call perpsFlipPosition when the selected wallet is compliance blocked', async () => {
+      // Simulate a blocked wallet: the gate short-circuits and never runs the
+      // wrapped flip action. The real compliance check + access-restricted modal
+      // are covered in useComplianceGate.test.tsx and
+      // access-restricted-context.test.tsx.
+      mockComplianceGate.mockImplementationOnce(async () => undefined);
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsFlipPosition',
+        expect.anything(),
+      );
+    });
+
     it('calls perpsFlipPosition once with symbol and position payload', async () => {
       const onClose = jest.fn();
 
@@ -150,14 +406,20 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'ETH',
               position: expect.objectContaining({
                 symbol: 'ETH',
                 size: '2.5',
                 leverage: expect.objectContaining({ value: 3 }),
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                metamaskFee: 0.7250000000000001,
+                marketPrice: 2900,
+                hlFeeRate: 0.00005,
+              }),
+            }),
           ],
         );
       });
@@ -191,6 +453,39 @@ describe('ReversePositionModal', () => {
       });
     });
 
+    it('includes vipTier and vipDiscount in trackingData when VIP tier is active', async () => {
+      mockUseVipTier.mockReturnValue(2);
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0001,
+        protocolFeeRate: 0.00005,
+        undiscountedFeeRate: 0.0002,
+        isLoading: false,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsFlipPosition',
+          [
+            expect.objectContaining({
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 2900,
+                vipTier: 2,
+                vipDiscount: 50,
+                hlFeeRate: 0.00005,
+              }),
+            }),
+          ],
+        );
+      });
+    });
+
     it('calls flip with short position when reversing a short', async () => {
       renderWithProvider(
         <ReversePositionModal
@@ -207,14 +502,19 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'BTC',
               position: expect.objectContaining({
                 symbol: 'BTC',
                 size: '-0.5',
                 leverage: expect.objectContaining({ value: 15 }),
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: 45000,
+                hlFeeRate: 0.00005,
+              }),
+            }),
           ],
         );
       });
@@ -238,8 +538,14 @@ describe('ReversePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
       await waitFor(() => {
-        expect(screen.getByText('Insufficient margin')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.perpsInsufficientMargin.message),
+        ).toBeInTheDocument();
       });
+      // Controller terminal failure — UI only; no duplicate client PerpsError.
+      expect(
+        mockTrack.mock.calls.some(([event]) => event === 'Perp Error'),
+      ).toBe(false);
     });
 
     it('does not call perpsClosePosition or perpsPlaceOrder when flip fails', async () => {
@@ -255,7 +561,9 @@ describe('ReversePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
       await waitFor(() => {
-        expect(screen.getByText('fail')).toBeInTheDocument();
+        expect(
+          screen.getByText("We couldn't load this page."),
+        ).toBeInTheDocument();
       });
 
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
@@ -285,7 +593,9 @@ describe('ReversePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
       await waitFor(() => {
-        expect(screen.getByText('fail')).toBeInTheDocument();
+        expect(
+          screen.getByText("We couldn't load this page."),
+        ).toBeInTheDocument();
       });
       expect(onClose).not.toHaveBeenCalled();
     });
@@ -305,7 +615,84 @@ describe('ReversePositionModal', () => {
       fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
 
       await waitFor(() => {
-        expect(screen.getByText('Network error')).toBeInTheDocument();
+        expect(
+          screen.getByText(messages.perpsNetworkError.message),
+        ).toBeInTheDocument();
+      });
+      // Transport throws never reach controller pipeline — keep client PerpsError.
+      expect(
+        mockTrack.mock.calls.some(([event]) => event === 'Perp Error'),
+      ).toBe(true);
+    });
+  });
+
+  describe('toast emission', () => {
+    it('emits reverse in-progress toast on submit', () => {
+      mockSubmitRequestToBackground.mockImplementation(
+        () => new Promise(() => undefined),
+      );
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastReverseInProgress',
+      });
+    });
+
+    it('emits reverse success toast after successful flip + refresh', async () => {
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastReverseSuccess',
+        });
+      });
+    });
+
+    it('emits reverse failed toast on returned failure', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsFlipPosition') {
+          return Promise.resolve({
+            success: false,
+            error: 'Insufficient margin',
+          });
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastReverseFailed',
+          description: 'Insufficient margin to place this order.',
+        });
+      });
+    });
+
+    it('emits reverse failed toast on thrown exception', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsFlipPosition') {
+          return Promise.reject(new Error('Network error'));
+        }
+        return Promise.resolve(undefined);
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-reverse-position-modal-save'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastReverseFailed',
+          description: 'A network error occurred. Please try again.',
+        });
       });
     });
   });
@@ -348,15 +735,40 @@ describe('ReversePositionModal', () => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsFlipPosition',
           [
-            {
+            expect.objectContaining({
               symbol: 'ETH',
               position: expect.objectContaining({
                 leverage: { type: 'cross', value: 5 },
               }),
-            },
+              trackingData: expect.objectContaining({
+                totalFee: expect.any(Number),
+                marketPrice: expect.any(Number),
+                hlFeeRate: 0.00005,
+              }),
+            }),
           ],
         );
       });
+    });
+  });
+
+  describe('geo-blocking', () => {
+    it('shows geo-block modal instead of reversing when user is not eligible', async () => {
+      mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      const saveButton = screen.getByTestId(
+        'perps-reverse-position-modal-save',
+      );
+      expect(saveButton).toBeEnabled();
+
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      });
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
   });
 });

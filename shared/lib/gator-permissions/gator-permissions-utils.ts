@@ -42,6 +42,7 @@ export type GatorPermissionData = {
   amountPerSecond?: string;
   periodDuration?: string;
   periodAmount?: string;
+  tokenAllowance?: string;
   [key: string]: unknown;
 };
 
@@ -456,7 +457,18 @@ export function getGatorPermissionDisplayMetadata(
     };
   }
 
-  if (permissionType === 'erc20-token-revocation') {
+  if (
+    permissionType === 'erc20-token-allowance' ||
+    permissionType === 'native-token-allowance'
+  ) {
+    return {
+      displayNameKey: 'tokenAllowance',
+      amount: permissionDataParam.allowanceAmount as string,
+      frequencyKey: '',
+    };
+  }
+
+  if (permissionType === 'token-approval-revocation') {
     return {
       displayNameKey: 'revokeTokenApprovals',
       amount: '',

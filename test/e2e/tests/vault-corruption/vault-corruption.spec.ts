@@ -9,10 +9,12 @@ import {
   completeVaultRecoveryOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import {
+  getBackupVault,
   getFirstAddress,
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
-import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import VaultRecoveryPage from '../../page-objects/pages/vault/recovery-page';
+import { pausePersistence, readStorage } from '../state-persistence/helpers';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 describe('Vault Corruption', function () {
@@ -56,32 +58,6 @@ describe('Vault Corruption', function () {
     reloadAndCallbackScript,
   );
 
-  /**
-   * Script to retrieve the encrypted vault from the backup database.
-   */
-  const getBackupVaultScript = `
-    const callback = arguments[arguments.length - 1];
-    const request = globalThis.indexedDB.open('metamask-backup', 1);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains('store')) {
-        db.createObjectStore('store');
-      }
-    };
-    request.onsuccess = () => {
-      const db = request.result;
-      const transaction = db.transaction('store', 'readonly');
-      const store = transaction.objectStore('store');
-      const getRequest = store.get('KeyringController');
-      getRequest.onsuccess = () => {
-        const keyringController = getRequest.result;
-        callback(keyringController?.vault ?? null);
-      };
-      getRequest.onerror = () => callback(null);
-    };
-    request.onerror = () => callback(null);
-  `;
-
   async function mockSentryMissingVaultError(
     mockServer: MockttpServer,
   ): Promise<MockedEndpoint> {
@@ -98,12 +74,12 @@ describe('Vault Corruption', function () {
   }
 
   /**
-   * Script to break both the primary and backup databases.
+   * Script to break the primary database and delete one backup key.
    *
    * @param backupKeyToDelete - The key to delete from the backup database.
    */
-  const breakAllDatabasesScript = (
-    backupKeyToDelete: 'meta' | 'KeyringController',
+  const breakPrimaryDatabaseAndDeleteBackupKeyScript = (
+    backupKeyToDelete: 'AnalyticsController' | 'KeyringController' | 'meta',
   ) => {
     return createCorruptionScript(`
       // indexedDB is not scuttled in test builds, so we can use it to access the
@@ -125,7 +101,7 @@ describe('Vault Corruption', function () {
       };`);
   };
 
-  it('recovers metamask vault when primary database is broken but backup is intact', async function () {
+  it('preserves primary controller state omitted from the recovery backup', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.title),
@@ -134,8 +110,21 @@ describe('Vault Corruption', function () {
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakPrimaryDatabaseOnlyScript,
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('AnalyticsController'),
         );
+        const backupVault = await getBackupVault(driver);
+        assert.ok(backupVault, 'Expected backup vault to exist');
+
+        // Disable debounced writes so this test verifies that recovery itself
+        // persists the restored vault before initialization completes.
+        await pausePersistence(driver);
+        const storageBeforeRecovery = await readStorage(driver);
+        assert.ok(
+          'AnalyticsController' in storageBeforeRecovery,
+          'AnalyticsController should exist in primary storage before recovery',
+        );
+        const analyticsStateBeforeRecovery =
+          storageBeforeRecovery.AnalyticsController;
 
         // start recovery
         const vaultRecoveryPage = new VaultRecoveryPage(driver);
@@ -146,13 +135,34 @@ describe('Vault Corruption', function () {
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
 
         // make sure the address is the same as before
         assert.equal(
           restoredFirstAddress,
           initialFirstAddress,
           'Addresses should match',
+        );
+        const storageAfterRecovery = await readStorage(driver);
+        assert.ok(
+          'AnalyticsController' in storageAfterRecovery,
+          'AnalyticsController should remain in primary storage after recovery',
+        );
+        assert.deepStrictEqual(
+          storageAfterRecovery.AnalyticsController,
+          analyticsStateBeforeRecovery,
+          'AnalyticsController should remain unchanged after recovery',
+        );
+        assert.equal(
+          (
+            storageAfterRecovery.KeyringController as
+              | { vault?: unknown }
+              | undefined
+          )?.vault,
+          backupVault,
+          'Recovered vault should be persisted to primary storage',
         );
       },
     );
@@ -183,12 +193,12 @@ describe('Vault Corruption', function () {
           driver,
           breakPrimaryDatabaseOnlyScript,
           {
-            participateInMetaMetrics: true,
+            consentDecisionMade: true,
+            optedIn: true,
           },
         );
 
-        const backupVault =
-          await driver.executeAsyncScript(getBackupVaultScript);
+        const backupVault = await getBackupVault(driver);
         assert.ok(backupVault, 'Expected backup vault to exist');
 
         await driver.wait(async () => {
@@ -238,7 +248,7 @@ describe('Vault Corruption', function () {
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakAllDatabasesScript('KeyringController'),
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('KeyringController'),
         );
 
         // start reset
@@ -253,7 +263,9 @@ describe('Vault Corruption', function () {
         });
 
         // make sure the account is different than the first time we onboarded
-        const newFirstAddress = await getFirstAddress(driver);
+        const newFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
         assert.notEqual(
           newFirstAddress,
           initialFirstAddress,
@@ -302,7 +314,9 @@ describe('Vault Corruption', function () {
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
         assert.equal(
           restoredFirstAddress,
           initialFirstAddress,
@@ -322,7 +336,7 @@ describe('Vault Corruption', function () {
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakAllDatabasesScript('meta'),
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('meta'),
         );
 
         // start recovery
@@ -334,7 +348,9 @@ describe('Vault Corruption', function () {
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
 
         // make sure the address is the same as before
         assert.equal(

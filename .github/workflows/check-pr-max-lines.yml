@@ -23,4 +23,4 @@ jobs:
         uses: MetaMask/github-tools/.github/actions/pr-line-check@v1
         with:
           max-lines: '1000'
-          ignore-patterns: '(\.lock|\.snap|lavamoat\/.*policy\.json)$'
+          ignore-patterns: '(\.lock|\.snap|lavamoat\/.*policy\.json)$|\.(agents|claude|cursor)\/'

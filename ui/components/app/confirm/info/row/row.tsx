@@ -1,4 +1,5 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useMemo } from 'react';
+import { Skeleton } from '@metamask/design-system-react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
@@ -9,7 +10,6 @@ import {
   IconSize,
   Text,
 } from '../../../../component-library';
-import { Skeleton } from '../../../../component-library/skeleton';
 import {
   AlignItems,
   BackgroundColor,
@@ -25,6 +25,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { SizeNumber } from '../../../../ui/box/box';
+import { useBoolean } from '../../../../../hooks/useBoolean';
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
@@ -50,12 +51,28 @@ export type ConfirmInfoRowProps = {
   onClick?: () => void;
   rowVariant?: ConfirmInfoRowSize;
   style?: React.CSSProperties;
-  tooltip?: string;
+  tooltip?: string | React.ReactNode;
   tooltipIcon?: IconName;
   tooltipIconColor?: IconColor;
   variant?: ConfirmInfoRowVariant;
   labelChildrenStyleOverride?: React.CSSProperties;
 };
+
+type TooltipDisplayProps = { html?: React.ReactNode; title?: string };
+
+function getConfirmInfoRowTooltipProps(
+  tooltip: string | React.ReactNode,
+): TooltipDisplayProps {
+  if (typeof tooltip !== 'string') {
+    return { html: tooltip };
+  }
+  if (tooltip.includes('\n')) {
+    return {
+      html: <span style={{ whiteSpace: 'pre-line' }}>{tooltip}</span>,
+    };
+  }
+  return { title: tooltip };
+}
 
 const BACKGROUND_COLORS = {
   [ConfirmInfoRowVariant.Default]: undefined,
@@ -85,7 +102,7 @@ export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
 
-export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
+export const ConfirmInfoRow = ({
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
@@ -102,8 +119,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   tooltipIconColor,
   onClick,
   labelChildrenStyleOverride,
-}) => {
-  const [expanded, setExpanded] = useState(!collapsed);
+}: ConfirmInfoRowProps) => {
+  const { value: expanded, toggle } = useBoolean(!collapsed);
 
   const isCollapsible = collapsed !== undefined;
 
@@ -112,8 +129,10 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
 
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
 
+  const contextValue = useMemo(() => ({ variant }), [variant]);
+
   return (
-    <ConfirmInfoRowContext.Provider value={{ variant }}>
+    <ConfirmInfoRowContext.Provider value={contextValue}>
       <Box
         data-testid={dataTestId}
         className="confirm-info-row"
@@ -153,7 +172,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               position: 'absolute',
               right: 8,
             }}
-            onClick={() => setExpanded(!expanded)}
+            onClick={toggle}
             data-testid="sectionCollapseButton"
             ariaLabel="collapse-button"
           />
@@ -193,34 +212,29 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
               </Text>
             )}
             {labelChildren}
-            {!labelChildren && tooltip?.length && (
-              <Tooltip
-                position="bottom"
-                {...(tooltip.includes('\n')
-                  ? {
-                      html: (
-                        <span style={{ whiteSpace: 'pre-line' }}>
-                          {tooltip}
-                        </span>
-                      ),
+            {!labelChildren &&
+              tooltip !== undefined &&
+              tooltip !== null &&
+              (typeof tooltip !== 'string' || tooltip.length > 0) && (
+                <Tooltip
+                  position="bottom"
+                  {...getConfirmInfoRowTooltipProps(tooltip)}
+                  style={{ display: 'flex' }}
+                >
+                  <Icon
+                    name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
+                    marginLeft={1}
+                    color={
+                      tooltipIconColor ??
+                      (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
                     }
-                  : { title: tooltip })}
-                style={{ display: 'flex' }}
-              >
-                <Icon
-                  name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
-                  marginLeft={1}
-                  color={
-                    tooltipIconColor ??
-                    (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
-                  }
-                  size={IconSize.Sm}
-                  {...(dataTestId
-                    ? { 'data-testid': `${dataTestId}-tooltip` }
-                    : {})}
-                />
-              </Tooltip>
-            )}
+                    size={IconSize.Sm}
+                    {...(dataTestId
+                      ? { 'data-testid': `${dataTestId}-tooltip` }
+                      : {})}
+                  />
+                </Tooltip>
+              )}
           </Box>
         </Box>
         {expanded &&
@@ -243,11 +257,11 @@ export type ConfirmInfoRowSkeletonProps = {
   rowVariant?: ConfirmInfoRowSize;
 };
 
-export const ConfirmInfoRowSkeleton: React.FC<ConfirmInfoRowSkeletonProps> = ({
+export const ConfirmInfoRowSkeleton = ({
   'data-testid': dataTestId,
   label,
   rowVariant = ConfirmInfoRowSize.Default,
-}) => {
+}: ConfirmInfoRowSkeletonProps) => {
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
 
   if (isSmall || !label) {

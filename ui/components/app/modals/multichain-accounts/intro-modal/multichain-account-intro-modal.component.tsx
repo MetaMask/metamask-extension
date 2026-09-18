@@ -1,15 +1,15 @@
 import React from 'react';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import {
-  Box,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -53,10 +53,10 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
             </ModalHeader>
             <ModalBody>
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
+                className="flex"
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.Center}
                 marginBottom={4}
               >
                 <MemoizedLottieAnimation
@@ -67,10 +67,9 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
                 />
               </Box>
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.flexStart}
-                width={BlockSize.Full}
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Start}
+                className="flex w-full"
                 gap={3}
               >
                 <Box>
@@ -100,8 +99,8 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
 
             <ModalFooter>
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
+                className="flex"
+                flexDirection={BoxFlexDirection.Column}
                 gap={4}
               >
                 <Button

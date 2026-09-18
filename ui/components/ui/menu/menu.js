@@ -40,7 +40,11 @@ const Menu = ({
         onClick={onHide}
       />
       <div
-        className={classnames('menu__container', className)}
+        className={classnames(
+          'menu__container',
+          className,
+          'bg-elevated2 border border-alternative',
+        )}
         data-testid={className}
         ref={setPopperElement}
         style={styles.popper}
@@ -59,13 +63,7 @@ Menu.propTypes = {
   className: PropTypes.string,
   onHide: PropTypes.func.isRequired,
   popperOptions: PropTypes.object,
-  dataTestId: PropTypes.string,
-};
-
-Menu.defaultProps = {
-  anchorElement: undefined,
-  className: undefined,
-  popperOptions: undefined,
+  'data-testid': PropTypes.string,
 };
 
 export default Menu;

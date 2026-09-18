@@ -20,7 +20,7 @@ import type { Child, PTY, Stdio, StdName } from './types.ts';
 
 const rawArgv = process.argv.slice(2);
 
-const alias = { cache: 'c', help: 'h', watch: 'h' };
+const alias = { cache: 'c', help: 'h', watch: 'w' };
 type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 

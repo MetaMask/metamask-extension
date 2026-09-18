@@ -6,18 +6,21 @@ exports[`NetworkListSearch renders search list component 1`] = `
     class="mm-box mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4"
   >
     <div
-      class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-text-field-search mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-muted mm-box--rounded-pill mm-box--border-width-1 box--border-style-solid"
+      class="inline-flex items-center border transition-colors h-12 pl-4 pr-0 border-default rounded-full bg-muted hover:bg-muted-hover w-full"
       data-testid="search-list"
     >
-      <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-        style="mask-image: url('./images/icons/search.svg');"
-      />
+      <svg
+        class="inline-block w-5 h-5 text-icon-alternative"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="m21.53 20.47-4.693-4.694a8.26 8.26 0 1 0-1.06 1.06l4.692 4.695a.75.75 0 0 0 1.062-1.062M3.75 10.5a6.75 6.75 0 1 1 6.75 6.75 6.76 6.76 0 0 1-6.75-6.75"
+        />
+      </svg>
       <input
-        autocomplete="off"
-        class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-        data-testid="network-redesign-modal-search-input"
-        focused="true"
+        class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-4 truncate [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
         placeholder="search"
         type="search"
         value=""

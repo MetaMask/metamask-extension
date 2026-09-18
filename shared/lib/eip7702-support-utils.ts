@@ -38,8 +38,8 @@ export function checkEip7702Support(
 } {
   const isSupported = Boolean(
     atomicBatchChainSupport &&
-      (!atomicBatchChainSupport.delegationAddress ||
-        atomicBatchChainSupport.isSupported),
+    (!atomicBatchChainSupport.delegationAddress ||
+      atomicBatchChainSupport.isSupported),
   );
 
   return {

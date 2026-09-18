@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { renderHook } from '@testing-library/react-hooks';
+import React from 'react';
+import { renderHook, cleanup } from '@testing-library/react';
 import { CaipAssetId } from '@metamask/keyring-api';
 import { Asset } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -7,12 +7,14 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 import * as assetsSelectors from '../../../selectors/assets';
 import * as multichainSelectors from '../../../selectors/multichain';
+import * as assetsUnifyStateSelectors from '../../../selectors/assets-unify-state';
 import { useTronResources } from './useTronResources';
 
 // Mock the selectors
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
   getAssetsBySelectedAccountGroupWithTronSpecialAssets: jest.fn(),
+  getAssetsBalance: jest.fn(),
 }));
 
 jest.mock('../../../selectors/multichain', () => ({
@@ -20,10 +22,20 @@ jest.mock('../../../selectors/multichain', () => ({
   getMultichainBalances: jest.fn(),
 }));
 
-// Mock react-redux
-jest.mock('react-redux', () => ({
-  useSelector: (selector: any) => selector(),
+jest.mock('../../../selectors/assets-unify-state', () => ({
+  ...jest.requireActual('../../../selectors/assets-unify-state'),
+  getIsAssetsUnifyStateEnabled: jest.fn(),
 }));
+
+jest.mock('react-redux', () => ({
+  useSelector: <State, Result>(selector: (state: State) => Result): Result =>
+    selector({} as State),
+}));
+
+const renderTronResourcesHook = (
+  account: InternalAccount | undefined,
+  chainId: string,
+) => renderHook(() => useTronResources(account, chainId));
 
 describe('useTronResources', () => {
   const mockAccount: InternalAccount = {
@@ -56,6 +68,11 @@ describe('useTronResources', () => {
   const mockSelector = (
     assets: Record<string, Asset[]>,
     balances: Record<string, Record<string, { amount: string; unit: string }>>,
+    assetsControllerBalances: Record<
+      string,
+      Record<string, { amount: string }>
+    > = {},
+    isAssetsUnifyStateEnabled = false,
   ) => {
     (
       assetsSelectors.getAssetsBySelectedAccountGroupWithTronSpecialAssets as unknown as jest.Mock
@@ -64,10 +81,22 @@ describe('useTronResources', () => {
     (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue(
       balances,
     );
+
+    (assetsSelectors.getAssetsBalance as jest.Mock).mockReturnValue(
+      assetsControllerBalances,
+    );
+
+    (
+      assetsUnifyStateSelectors.getIsAssetsUnifyStateEnabled as unknown as jest.Mock
+    ).mockReturnValue(isAssetsUnifyStateEnabled);
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   describe('when account and chainId are provided', () => {
@@ -100,9 +129,7 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -135,9 +162,7 @@ describe('useTronResources', () => {
         { [mockAccount.id]: {} },
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -175,9 +200,7 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -215,9 +238,7 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -262,9 +283,7 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -313,9 +332,7 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       // Staking state assets are included in the special assets filter
       // but should not affect energy/bandwidth output
@@ -337,9 +354,7 @@ describe('useTronResources', () => {
     it('handles empty assets array', () => {
       mockSelector({ [chainId]: [] }, { [mockAccount.id]: {} });
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -359,9 +374,7 @@ describe('useTronResources', () => {
     it('handles chainId with no assets', () => {
       mockSelector({}, { [mockAccount.id]: {} });
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -407,9 +420,7 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy.percentage).toBe(100);
       expect(result.current.bandwidth.percentage).toBe(100);
@@ -420,7 +431,7 @@ describe('useTronResources', () => {
     it('returns default values', () => {
       mockSelector({}, {});
 
-      const { result } = renderHook(() => useTronResources(undefined, chainId));
+      const { result } = renderTronResourcesHook(undefined, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -442,7 +453,7 @@ describe('useTronResources', () => {
     it('returns default values', () => {
       mockSelector({}, { [mockAccount.id]: {} });
 
-      const { result } = renderHook(() => useTronResources(mockAccount, ''));
+      const { result } = renderTronResourcesHook(mockAccount, '');
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -477,9 +488,7 @@ describe('useTronResources', () => {
         {},
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -513,12 +522,64 @@ describe('useTronResources', () => {
         },
       );
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy.current).toBeNaN();
       expect(result.current.energy.percentage).toBeNaN();
+    });
+  });
+
+  describe('when the unified AssetsController state is enabled', () => {
+    const energyAssetId =
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetId;
+    const maxEnergyAssetId =
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY}` as CaipAssetId;
+    const bandwidthAssetId =
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH}` as CaipAssetId;
+    const maxBandwidthAssetId =
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH}` as CaipAssetId;
+
+    it('reads resource balances from the AssetsController state', () => {
+      mockSelector(
+        {},
+        {},
+        {
+          [mockAccount.id]: {
+            [energyAssetId]: { amount: '500' },
+            [maxEnergyAssetId]: { amount: '1000' },
+            [bandwidthAssetId]: { amount: '300' },
+            [maxBandwidthAssetId]: { amount: '600' },
+          },
+        },
+        true,
+      );
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.energy).toEqual({
+        type: 'energy',
+        current: 500,
+        max: 1000,
+        percentage: 50,
+      });
+
+      expect(result.current.bandwidth).toEqual({
+        type: 'bandwidth',
+        current: 300,
+        max: 600,
+        percentage: 50,
+      });
+    });
+
+    it('returns zero values when resource balances are absent', () => {
+      mockSelector({}, {}, {}, true);
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.energy.current).toBe(0);
+      expect(result.current.energy.max).toBe(0);
+      expect(result.current.bandwidth.current).toBe(0);
+      expect(result.current.bandwidth.max).toBe(0);
     });
   });
 });

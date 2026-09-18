@@ -1,25 +1,70 @@
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import React, { useMemo } from 'react';
+import {
+  Box,
+  BoxFlexDirection,
+  FontWeight,
+  Text,
+  TextVariant,
+  TextColor,
+} from '@metamask/design-system-react';
+import type { Order, Position } from '@metamask/perps-controller';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
-  usePerpsLiveMarketData,
+  usePerpsLiveAccount,
 } from '../../../hooks/perps/stream';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { getPerpsStreamManager } from '../../../providers/perps';
+import {
+  selectPerpsIsFirstTimeUser,
+  selectPerpsIsTestnet,
+} from '../../../selectors/perps-controller';
+import {
+  selectTutorialCompleted,
+  setTutorialModalOpen,
+} from '../../../ducks/perps';
 
+import { usePerpsEligibility } from '../../../hooks/perps';
+import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
+import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
+import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
+import { usePerpsBottomNavSource } from '../../../hooks/perps/usePerpsBottomNavSource';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { captureException } from '../../../../shared/lib/sentry';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
+import { useSelectedAccountComplianceGate } from '../compliance';
+import { PERPS_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
+import type { PerpsTransaction } from './types';
+import { getPerpsTransactionDestination } from './utils/getPerpsTransactionDestination';
+import { trackPerpsErrorScreenViewed } from './utils/track-perps-error-screen';
+import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
-import { PerpsBalanceDropdown } from './perps-balance-dropdown';
+import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
+import { PerpsMarketBalanceActions } from './perps-market-balance-actions';
+import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
 import { PerpsExploreMarkets } from './perps-explore-markets';
+import { PerpsProducts } from './perps-products';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
+import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
 import {
-  PerpsControlBarSkeleton,
+  PerpsBalanceActionsSkeleton,
   PerpsSectionSkeleton,
 } from './perps-skeletons';
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsTopMovers } from './perps-top-movers';
 import { PerpsWatchlist } from './perps-watchlist';
+import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 /**
  * PerpsView component displays the perpetuals trading view
@@ -28,8 +73,31 @@ import { PerpsWatchlist } from './perps-watchlist';
  * Uses PerpsStreamManager for cached data, enabling smooth navigation
  * without loading skeletons when switching between views.
  */
-export const PerpsView: React.FC = () => {
+type BatchCloseResult = {
+  success: boolean;
+  successCount?: number;
+  failureCount?: number;
+};
+
+export const PerpsView = () => {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const bottomNavSource = usePerpsBottomNavSource();
+  const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
+  const tutorialCompleted = useSelector(selectTutorialCompleted);
+  const { isEligible } = usePerpsEligibility();
+  const { gate } = useSelectedAccountComplianceGate();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
+  const { track } = usePerpsEventTracking();
+  const { replacePerpsToastByKey } = usePerpsToast();
+  const [isCloseAllPending, setIsCloseAllPending] = useState(false);
+  const [isCloseAllModalOpen, setIsCloseAllModalOpen] = useState(false);
+  const [isCancelAllPending, setIsCancelAllPending] = useState(false);
+  const [batchActionError, setBatchActionError] = useState<string | null>(null);
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
@@ -39,39 +107,335 @@ export const PerpsView: React.FC = () => {
     usePerpsLivePositions();
   const { orders: allOrders, isInitialLoading: ordersLoading } =
     usePerpsLiveOrders();
+  const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
-    cryptoMarkets: allCryptoMarkets,
-    hip3Markets: allHip3Markets,
+    allMarkets,
+    exploreMarkets,
+    watchlistMarkets,
+    watchlistCount,
     isInitialLoading: marketsLoading,
-  } = usePerpsLiveMarketData();
+  } = usePerpsTabExploreData();
 
   const {
-    transactions: recentActivityTransactions,
+    transactions: allRecentActivityTransactions,
     isLoading: recentActivityLoading,
     error: recentActivityError,
   } = usePerpsTransactionHistory();
 
-  // Show only user-placed limit orders resting on the orderbook.
-  // Excludes all position-attached orders:
-  // - isTrigger: TP/SL trigger orders
-  // - reduceOnly: close/reduce orders tied to positions
-  // - triggerPrice: any order with a trigger condition (TP/SL variant)
-  // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
+  // Recent Activity shows only trade executions, deposits, and withdrawals.
+  // Open limit/market orders (excluding TP/SL triggers) are in PerpsPositionsOrders;
+  // TP/SL trigger rows are listed on the per-asset market detail page only.
+  // Funding payments belong on the full activity page.
+  const recentActivityTransactions = useMemo(
+    () =>
+      allRecentActivityTransactions.filter(
+        (tx) =>
+          tx.type === 'trade' ||
+          tx.type === 'deposit' ||
+          tx.type === 'withdrawal',
+      ),
+    [allRecentActivityTransactions],
+  );
+
+  // Open orders on the Perps tab: user-placed limits/markets on the book only.
+  // Excludes TP/SL (isTrigger / isPositionTpsl — those list on market detail) and synthetics.
   const orders = useMemo(() => {
-    return allOrders.filter((order) => order.status === 'open');
+    return allOrders.filter(
+      (order) =>
+        order.status === 'open' &&
+        !order.isTrigger &&
+        order.isPositionTpsl !== true &&
+        !order.isSynthetic,
+    );
   }, [allOrders]);
 
-  const hasPositions = positions.length > 0;
-  const isLoading = positionsLoading || ordersLoading || marketsLoading;
+  const applyPositionsSnapshot = useCallback((next: Position[]) => {
+    const streamManager = getPerpsStreamManager();
+    streamManager.clearAllOptimisticTPSL();
+    streamManager.pushPositionsWithOverrides(next);
+  }, []);
 
-  // Limit markets to 5 for explore sections
-  const cryptoMarkets = useMemo(() => {
-    return allCryptoMarkets.slice(0, 5);
-  }, [allCryptoMarkets]);
+  const applyOrdersSnapshot = useCallback((next: Order[]) => {
+    getPerpsStreamManager().orders.pushData(next);
+  }, []);
 
-  const hip3Markets = useMemo(() => {
-    return allHip3Markets.slice(0, 5);
-  }, [allHip3Markets]);
+  // Navigate to the transaction's details view instead of falling back to
+  // the general activity list (see `getPerpsTransactionDestination`).
+  const handleRecentActivityTransactionClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      const destination = getPerpsTransactionDestination(transaction);
+      if (destination) {
+        navigate(destination.pathname, { state: destination.state });
+      } else {
+        navigate(PERPS_ACTIVITY_ROUTE);
+      }
+    },
+    [navigate],
+  );
+
+  // Compliance gate wraps only the entry point: when the wallet is blocked the
+  // access-restricted modal shows and the confirmation flow never opens. When
+  // it's clear, we keep the pre-existing two-step confirmation (tap -> confirm)
+  // and its analytics. The gate is effectively instant (it reads the prefetched
+  // compliance result), so it adds no latency to opening the modal.
+  const handleCloseAllPositions = useCallback(async () => {
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (positions.length === 0) {
+        return;
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.CLOSE_ALL_TAPPED,
+        [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+      });
+      setIsCloseAllModalOpen(true);
+    });
+  }, [gate, isEligible, positions.length, track]);
+
+  const handleCloseAllCancel = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.CLOSE_ALL_CANCELLED,
+      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+    });
+    setIsCloseAllModalOpen(false);
+  }, [positions.length, track]);
+
+  const handleCloseAllConfirm = useCallback(async () => {
+    if (positions.length === 0) {
+      return;
+    }
+    const positionCount = positions.length;
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.CLOSE_ALL_CONFIRMED,
+      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positionCount,
+    });
+
+    setBatchActionError(null);
+    setIsCloseAllPending(true);
+    setIsCloseAllModalOpen(false);
+
+    replacePerpsToastByKey({
+      key: PERPS_TOAST_KEYS.CLOSE_ALL_IN_PROGRESS,
+    });
+
+    try {
+      const result = await submitRequestToBackground<BatchCloseResult>(
+        'perpsClosePositions',
+        [{ closeAll: true }],
+      );
+      const successCount = result?.successCount ?? 0;
+      const failureCount = result?.failureCount ?? 0;
+
+      if (successCount > 0 && failureCount > 0) {
+        setBatchActionError(t('somethingWentWrong'));
+        // Client-owned until the controller emits the count: 9.2.1's batch close
+        // event carries status/duration/bulk_action_id but NOT
+        // number_positions_closed.
+        //
+        // This is NOT a temporary bridge: TAT-3150 scopes bulk_action_id per
+        // event only, and the TAT-3463 audit explicitly removed the batch
+        // summary from its scope, so no controller release is scheduled to
+        // publish the count. The client is the source of record until a core
+        // ticket adds it — do not delete this on a routine dependency bump.
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          // EXECUTED, not FAILED: the controller sets `success = successCount >
+          // 0` and emits EXECUTED for a partial batch. Reporting FAILED here
+          // would contradict the controller's own event for the same action.
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.EXECUTED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_PARTIAL,
+          messageParams: [successCount, positionCount],
+        });
+      } else if (!result?.success || failureCount > 0) {
+        setBatchActionError(t('somethingWentWrong'));
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
+        });
+        return;
+      } else {
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          // Same vocabulary as the controller's batch event.
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.EXECUTED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
+            successCount || positionCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
+        });
+      }
+
+      try {
+        const fresh = await submitRequestToBackground<Position[]>(
+          'perpsGetPositions',
+          [],
+        );
+        applyPositionsSnapshot(fresh ?? []);
+      } catch (refreshError) {
+        // Refresh failure is non-critical — the positions were already closed
+        // and the stream reconciles them; capture for visibility, don't swallow.
+        captureException(refreshError);
+      }
+    } catch (error) {
+      // Same reasoning as the cancel path: TradingService.closePositions
+      // rethrows but still emits its terminal PositionCloseTransaction from
+      // `finally`, so a client emit here would double-count. The count is only
+      // reported on the branches where the batch actually returned a result.
+      captureException(error);
+      const errorMessage =
+        error instanceof Error ? error.message : t('somethingWentWrong');
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+      );
+      setBatchActionError(t('somethingWentWrong'));
+      replacePerpsToastByKey({
+        key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
+      });
+    } finally {
+      setIsCloseAllPending(false);
+    }
+  }, [
+    applyPositionsSnapshot,
+    positions.length,
+    t,
+    track,
+    replacePerpsToastByKey,
+  ]);
+
+  const handleCancelAllOrders = useCallback(async () => {
+    if (!isEligible) {
+      setIsGeoBlockModalOpen(true);
+      return;
+    }
+    if (orders.length === 0) {
+      return;
+    }
+    setBatchActionError(null);
+    setIsCancelAllPending(true);
+    let result: BatchCloseResult | undefined;
+    try {
+      result = await submitRequestToBackground<BatchCloseResult>(
+        'perpsCancelOrders',
+        [{ cancelAll: true }],
+      );
+    } catch (error) {
+      // No client cancel TRANSACTION event here. TradingService.cancelOrders
+      // rethrows from its catch but still emits the terminal
+      // OrderCancelTransaction from its `finally`, so any failure that reached
+      // the controller is already reported — a client emit would double-count,
+      // and the UI cannot tell a controller-internal throw from a transport
+      // one. PerpsError and the error screen view are not duplicates: the
+      // controller emits neither.
+      captureException(error);
+      const errorMessage =
+        error instanceof Error ? error.message : t('somethingWentWrong');
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      trackPerpsErrorScreenViewed(
+        track,
+        PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+      );
+      setBatchActionError(t('somethingWentWrong'));
+      setIsCancelAllPending(false);
+      return;
+    }
+
+    try {
+      if (!result?.success) {
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME,
+        );
+        setBatchActionError(t('somethingWentWrong'));
+        return;
+      }
+      const fresh = await submitRequestToBackground<Order[]>(
+        'perpsGetOpenOrders',
+        [],
+      );
+      applyOrdersSnapshot(fresh ?? []);
+    } catch (error) {
+      // Refresh-only failure: the cancel itself reached the controller, which
+      // owns its terminal event, so no client cancel analytics here.
+      captureException(error);
+      setBatchActionError(t('somethingWentWrong'));
+    } finally {
+      setIsCancelAllPending(false);
+    }
+  }, [isEligible, applyOrdersSnapshot, orders.length, t, track]);
+
+  const isLoading =
+    positionsLoading || ordersLoading || marketsLoading || accountLoading;
+  const hasPerpBalance = Boolean(
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
+  );
+
+  usePerpsMeasurement('PerpsTabLoaded', !isLoading);
+
+  usePerpsEventTracking({
+    eventName: MetaMetricsEventName.PerpsScreenViewed,
+    conditions: !isLoading,
+    properties: {
+      [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+        PERPS_EVENT_VALUE.SCREEN_TYPE.WALLET_HOME_PERPS_TAB,
+      [PERPS_EVENT_PROPERTY.OPEN_POSITION]: positions.length,
+      [PERPS_EVENT_PROPERTY.OPEN_ORDER]: orders.length,
+      [PERPS_EVENT_PROPERTY.SOURCE]:
+        bottomNavSource ?? PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+    },
+  });
+
+  // Auto-open tutorial modal the first time a user enters the perps domain.
+  // Guards on both the backend isFirstTimeUser flag (stable once propagated) and
+  // the local tutorialCompleted flag so that a skip/complete before the backend
+  // state propagates doesn't reopen the modal on the next effect run.
+  // Explicitly skips when isFirstTimeUser is undefined so that unhydrated
+  // controller state is never treated as "first-time user = true".
+  useEffect(() => {
+    if (isLoading || tutorialCompleted || isFirstTimeUser === undefined) {
+      return;
+    }
+    const networkKey = isTestnet ? 'testnet' : 'mainnet';
+    if (isFirstTimeUser[networkKey]) {
+      dispatch(setTutorialModalOpen(true));
+    }
+  }, [dispatch, isFirstTimeUser, isLoading, isTestnet, tutorialCompleted]);
+
+  // The "Perps" heading is owned by PerpsView (single source of truth) so it
+  // renders identically from both wrappers (bottom-nav home page and the
+  // account-overview tab), including during the loading skeleton state.
+  const perpsHeading = (
+    <Text
+      variant={TextVariant.HeadingLg}
+      fontWeight={FontWeight.Bold}
+      className="px-4 pt-4"
+      data-testid="perps-view-title"
+    >
+      {t('perps')}
+    </Text>
+  );
 
   // Show loading state while initial stream data is being fetched.
   // Transaction history loads in parallel; Recent Activity skeleton is included here
@@ -81,11 +445,25 @@ export const PerpsView: React.FC = () => {
       <Box
         flexDirection={BoxFlexDirection.Column}
         gap={4}
-        data-testid="perps-tab-view-loading"
+        data-testid="perps-view-loading"
       >
-        <PerpsControlBarSkeleton />
+        {perpsHeading}
+        <Box paddingLeft={4} paddingRight={4}>
+          <PerpsBalanceActionsSkeleton />
+        </Box>
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
+        {/* Watchlist sits above Products once loaded, and is the one section
+            whose presence is known before the markets arrive: the starred
+            symbols are persisted. Reserving its rows here keeps Products in the
+            slot it will occupy instead of letting the watchlist push it down.
+            A user with nothing starred gets no section and no reservation. */}
+        {watchlistCount > 0 && (
+          <PerpsSectionSkeleton cardCount={watchlistCount} />
+        )}
+        {/* Reserves the Products section's height in the same slot it occupies
+            once loaded, so nothing below it shifts when the chips arrive. */}
+        <PerpsProducts isLoading />
         <Box data-testid="perps-recent-activity-skeleton">
           <PerpsSectionSkeleton cardCount={3} showStartTradeCta={false} />
         </Box>
@@ -97,33 +475,55 @@ export const PerpsView: React.FC = () => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       gap={4}
-      data-testid="perps-tab-view"
+      data-testid="parent-selector-perps-tab"
     >
-      {/* Balance header with Add funds / Withdraw dropdown */}
-      <PerpsBalanceDropdown
-        hasPositions={hasPositions}
-        onAddFunds={triggerDeposit}
-        onWithdraw={() => {
-          // TODO: Navigate to withdraw flow
-        }}
-      />
+      {perpsHeading}
+      {/* Balance header with total balance, available balance, and persistent Withdraw / Add funds buttons */}
+      <Box paddingLeft={4} paddingRight={4}>
+        <PerpsMarketBalanceActions
+          onAddFunds={triggerDeposit}
+          onWithdraw={triggerWithdraw}
+          onLearnMore={() => dispatch(setTutorialModalOpen(true))}
+        />
+      </Box>
 
       {/* Positions + Orders sections */}
-      <PerpsPositionsOrders positions={positions} orders={orders} />
+      {batchActionError ? (
+        <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
+          {batchActionError}
+        </Text>
+      ) : null}
+
+      <PerpsPositionsOrders
+        positions={positions}
+        orders={orders}
+        account={account}
+        onCloseAllPositions={handleCloseAllPositions}
+        onCancelAllOrders={handleCancelAllOrders}
+        isCloseAllPending={isCloseAllPending}
+        isCancelAllPending={isCancelAllPending}
+      />
 
       {/* Watchlist */}
-      <PerpsWatchlist />
+      <PerpsWatchlist markets={watchlistMarkets} />
+
+      {/* Products: the tab's shortcut into the full market list, below the
+          user's own watchlist so their own markets come first. Loading is not
+          a live state here: `marketsLoading` is part of the `isLoading` the
+          early return above already took, so it is false by this point. */}
+      <PerpsProducts isLoading={false} />
+
+      {/* Top movers */}
+      <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />
 
       {/* Explore markets */}
-      <PerpsExploreMarkets
-        cryptoMarkets={cryptoMarkets}
-        hip3Markets={hip3Markets}
-      />
+      <PerpsExploreMarkets markets={exploreMarkets} />
 
       {/* Recent Activity */}
       <PerpsRecentActivity
         transactions={recentActivityTransactions}
         maxTransactions={PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS}
+        onTransactionClick={handleRecentActivityTransactionClick}
         isLoading={recentActivityLoading}
         error={recentActivityError}
       />
@@ -132,6 +532,19 @@ export const PerpsView: React.FC = () => {
       <PerpsSupportLearn />
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
+      {isCloseAllModalOpen && (
+        <CloseAllPositionsModal
+          isOpen={isCloseAllModalOpen}
+          onClose={handleCloseAllCancel}
+          onConfirm={handleCloseAllConfirm}
+          positions={positions}
+          isSubmitting={isCloseAllPending}
+        />
+      )}
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
     </Box>
   );
 };

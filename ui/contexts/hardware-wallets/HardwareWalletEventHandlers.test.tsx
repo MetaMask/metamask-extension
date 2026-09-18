@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import {
   HardwareWalletError,
   ErrorCode,
@@ -22,10 +22,12 @@ describe('useDeviceEventHandlers', () => {
     currentConnectionIdRef: { current: number | null };
     hasAutoConnectedRef: { current: boolean };
     lastConnectedAccountRef: { current: string | null };
+    isEnsuringDeviceReadyRef: { current: boolean };
     connectRef: { current: (() => Promise<void>) | null };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
-    ensureDeviceReadyPromiseRef: { current: Map<boolean, Promise<boolean>> };
+    ensureDeviceReadyPromiseRef: { current: Map<string, Promise<boolean>> };
+    isSigningInProgressRef: { current: boolean };
   };
   let mockSetters: {
     setConnectionState: jest.Mock;
@@ -45,10 +47,12 @@ describe('useDeviceEventHandlers', () => {
       currentConnectionIdRef: { current: null },
       hasAutoConnectedRef: { current: false },
       lastConnectedAccountRef: { current: null },
+      isEnsuringDeviceReadyRef: { current: false },
       connectRef: { current: null },
       walletTypeRef: { current: null },
       previousWalletTypeRef: { current: null },
       ensureDeviceReadyPromiseRef: { current: new Map() },
+      isSigningInProgressRef: { current: false },
     };
 
     mockSetters = {

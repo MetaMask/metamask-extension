@@ -2,6 +2,23 @@ import { tEn } from '../../../../lib/i18n-helpers';
 import { RawLocator } from '../../common';
 import TransactionConfirmation from './transaction-confirmation';
 
+/**
+ * ERC-20 approve / spending-cap confirmation on the redesigned confirm
+ * screen.
+ *
+ * Screen: `#/confirmation` for approve / revoke-approve transaction types.
+ * Owns: spending-cap title/sections, edit/custom spending-cap controls,
+ * estimated-changes / simulation rows, and spender/request-from/method
+ * advanced sections.
+ * Boundaries: inherits gas/simulations chrome from
+ * `TransactionConfirmation`. Set-approval-for-all NFT approvals are
+ * `SetApprovalForAllTransactionConfirmation`. Gas overlays remain
+ * `GasFeeModal` / `GasFeeTokenModal`.
+ * Related: `TransactionConfirmation`, `SetApprovalForAllTransactionConfirmation`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/approve/approve.tsx
+ * @see ui/pages/confirmations/components/confirm/info/approve/edit-spending-cap-modal/edit-spending-cap-modal.tsx
+ */
 class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   private readonly customSpendingCapInput: RawLocator =
     '[data-testid="custom-spending-cap-input"]';
@@ -23,6 +40,9 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     css: 'p',
     text: tEn('methodData'),
   };
+
+  private readonly nftTokenValue: RawLocator =
+    '[data-testid="simulation-token-value"]';
 
   private readonly requestFromSection = {
     css: 'p',
@@ -54,6 +74,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     text: tEn('spendingCap'),
   };
 
+  private readonly withdrawSection = {
+    css: 'p',
+    text: tEn('simulationApproveHeading'),
+  };
+
   async checkAdvancedDetailsSections(): Promise<void> {
     console.log('Verify all advanced details sections are displayed');
     await this.checkInteractingWithSection();
@@ -75,6 +100,14 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async checkMethodSection(): Promise<void> {
     console.log('Verify method section is displayed');
     await this.driver.waitForSelector(this.methodSection);
+  }
+
+  async checkNftTokenValue(expectedValue: string): Promise<void> {
+    console.log(`Verify NFT token value ${expectedValue} is displayed`);
+    await this.driver.waitForSelector({
+      css: this.nftTokenValue,
+      text: expectedValue,
+    });
   }
 
   async checkRequestFromSection(): Promise<void> {
@@ -113,6 +146,11 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   async checkSpendingCapSection(): Promise<void> {
     console.log('Verify spending cap section is displayed');
     await this.driver.waitForSelector(this.spendingCapSection);
+  }
+
+  async checkWithdrawSection(): Promise<void> {
+    console.log('Verify withdraw section is displayed');
+    await this.driver.waitForSelector(this.withdrawSection);
   }
 
   /**

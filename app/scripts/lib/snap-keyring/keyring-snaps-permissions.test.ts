@@ -25,6 +25,7 @@ describe('keyringSnapPermissionsBuilder', () => {
     subjectCacheLimit: 100,
     messenger: {
       registerActionHandler: jest.fn(),
+      registerMethodActionHandlers: jest.fn(),
       registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -82,12 +83,16 @@ describe('keyringSnapPermissionsBuilder', () => {
     expect(permissions()).toStrictEqual([
       KeyringRpcMethod.ListAccounts,
       KeyringRpcMethod.GetAccount,
+      KeyringRpcMethod.CreateAccount,
+      KeyringRpcMethod.CreateAccounts,
       KeyringRpcMethod.FilterAccountChains,
       KeyringRpcMethod.DeleteAccount,
       KeyringRpcMethod.ListRequests,
       KeyringRpcMethod.GetRequest,
       KeyringRpcMethod.SubmitRequest,
       KeyringRpcMethod.RejectRequest,
+      KeyringRpcMethod.ResolveAccountAddress,
+      KeyringRpcMethod.SetSelectedAccounts,
     ]);
   });
 

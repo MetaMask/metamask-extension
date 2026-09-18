@@ -2,6 +2,7 @@ import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerSetAccountNameAction,
 } from '@metamask/accounts-controller';
+import type { SeedlessOnboardingControllerGetStateAction } from '@metamask/seedless-onboarding-controller';
 import { Json, Hex } from '@metamask/utils';
 import {
   BaseController,
@@ -17,9 +18,30 @@ import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
 } from '../../../shared/constants/preferences';
+import type {
+  AdvancedGasFeePreferences,
+  AdvancedGasFeePreferencesByChain,
+} from '../../../shared/constants/gas';
 import { type DefaultAddressScope } from '../../../shared/constants/default-address';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import type { Preferences } from '../../../shared/types/preferences';
+import {
+  BFT_CHILD_PREFERENCES,
+  EXTERNAL_SERVICES_OWNED_PREFERENCES,
+  getBasicFunctionalityConsolidationPlan,
+  isBasicFunctionalitySocialLoginUser,
+  type BasicFunctionalityPreferenceState,
+  type ExternalServicesOwnedPreference,
+} from '../../../shared/lib/basic-functionality-consolidation';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import type { LegacyBackgroundApiServiceToggleExternalServicesAction } from '../services/legacy-background-api-service-method-action-types';
+import { createEventBuilder, trackEvent } from './analytics';
+import type { OnboardingControllerGetStateAction } from './onboarding';
+import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
  * Referral status for an account
@@ -43,7 +65,9 @@ export type PreferencesControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link PreferencesController}.
  */
-export type PreferencesControllerActions = PreferencesControllerGetStateAction;
+export type PreferencesControllerActions =
+  | PreferencesControllerGetStateAction
+  | PreferencesControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link PreferencesController} changes.
@@ -63,7 +87,10 @@ export type PreferencesControllerEvents = PreferencesControllerStateChangeEvent;
  */
 export type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetAccountNameAction;
+  | AccountsControllerSetAccountNameAction
+  | LegacyBackgroundApiServiceToggleExternalServicesAction
+  | OnboardingControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 export type PreferencesControllerMessenger = Messenger<
   typeof controllerName,
@@ -74,34 +101,6 @@ export type PreferencesControllerMessenger = Messenger<
 type PreferencesControllerOptions = {
   state?: Partial<PreferencesControllerState>;
   messenger: PreferencesControllerMessenger;
-};
-
-export type Preferences = {
-  autoLockTimeLimit?: number;
-  avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
-  defaultAddressScope: DefaultAddressScope;
-  dismissSmartAccountSuggestionEnabled: boolean;
-  featureNotificationsEnabled: boolean;
-  hideZeroBalanceTokens: boolean;
-  privacyMode: boolean;
-  showConfirmationAdvancedDetails: boolean;
-  showDefaultAddress: boolean;
-  showExtensionInFullSizeView: boolean;
-  showFiatInTestnets: boolean;
-  showMultiRpcModal: boolean;
-  showNativeTokenAsMainBalance: boolean;
-  showTestNetworks: boolean;
-  skipDeepLinkInterstitial: boolean;
-  smartTransactionsOptInStatus: boolean;
-  smartTransactionsMigrationApplied: boolean;
-  tokenNetworkFilter: Record<string, boolean>;
-  tokenSortConfig: {
-    key: string;
-    order: string;
-    sortCallback: string;
-  };
-  useNativeCurrencyAsPrimaryCurrency: boolean;
-  useSidePanelAsDefault?: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -120,10 +119,9 @@ export type PreferencesControllerState = Omit<
   | 'tokenNetworkFilter'
 > & {
   addSnapAccountEnabled?: boolean;
-  advancedGasFee: Record<string, Record<string, string>>;
+  advancedGasFee: AdvancedGasFeePreferencesByChain;
   currentLocale: string;
   dismissSeedBackUpReminder: boolean;
-  enableMV3TimestampSave: boolean;
   forgottenPassword: boolean;
   knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
@@ -138,8 +136,6 @@ export type PreferencesControllerState = Omit<
   theme: ThemeType;
   use4ByteResolution: boolean;
   useAddressBarEnsResolution: boolean;
-  /** @deprecated Use avatarType instead */
-  useBlockie: boolean;
   useCurrencyRateCheck: boolean;
   useExternalNameSources: boolean;
   useExternalServices: boolean;
@@ -147,6 +143,7 @@ export type PreferencesControllerState = Omit<
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: Record<DefiReferralPartner, Record<Hex, ReferralStatus>>;
+  showSidePanelMigrationToast: boolean;
   watchEthereumAccountEnabled: boolean;
 };
 
@@ -159,7 +156,6 @@ export const getDefaultPreferencesControllerState =
     advancedGasFee: {},
     currentLocale: '',
     dismissSeedBackUpReminder: false,
-    enableMV3TimestampSave: true,
     featureFlags: {},
     forgottenPassword: false,
     // ENS decentralized website resolution
@@ -180,12 +176,16 @@ export const getDefaultPreferencesControllerState =
       dismissSmartAccountSuggestionEnabled: false,
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
+      isBasicFunctionalityConsolidatedEnabled: false,
+      basicFunctionalityMigrationNotification: null,
+      basicFunctionalityMigrationNotificationDismissed: false,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: true,
       defaultAddressScope: 'eip155',
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
+      showTickerWidget: true,
       showMultiRpcModal: false,
       showNativeTokenAsMainBalance: false,
       showTestNetworks: false,
@@ -199,15 +199,16 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       useNativeCurrencyAsPrimaryCurrency: true,
-      useSidePanelAsDefault: false,
+      useSidePanelAsDefault: true,
+      gasSponsorshipOptOutByChainId: {},
     },
     securityAlertsEnabled: true,
+    showSidePanelMigrationToast: false,
     snapRegistryList: {},
     snapsAddSnapAccountModalDismissed: false,
     theme: ThemeType.os,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
-    useBlockie: false,
     useCurrencyRateCheck: true,
     useExternalNameSources: true,
     // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
@@ -229,6 +230,7 @@ export const getDefaultPreferencesControllerState =
       [DefiReferralPartner.AsterDEX]: {},
       [DefiReferralPartner.GMX]: {},
       [DefiReferralPartner.Hyperliquid]: {},
+      [DefiReferralPartner.Variational]: {},
     },
   });
 
@@ -259,12 +261,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   dismissSeedBackUpReminder: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  enableMV3TimestampSave: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -336,6 +332,12 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  showSidePanelMigrationToast: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
   snapRegistryList: {
     includeInStateLogs: true,
     persist: true,
@@ -367,13 +369,6 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
     usedInUi: true,
   },
   useAddressBarEnsResolution: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  /** @deprecated Use avatarType instead */
-  useBlockie: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -453,6 +448,53 @@ const controllerMetadata: StateMetadata<PreferencesControllerState> = {
   },
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'setPasswordForgotten',
+  'setUsePhishDetect',
+  'setUseMultiAccountBalanceChecker',
+  'setUseSafeChainsListValidation',
+  'toggleExternalServices',
+  'toggleBasicFunctionality',
+  'setUseTokenDetection',
+  'setUseNftDetection',
+  'setUse4ByteResolution',
+  'setUseCurrencyRateCheck',
+  'setOpenSeaEnabled',
+  'setSecurityAlertsEnabled',
+  'setAddSnapAccountEnabled',
+  'setWatchEthereumAccountEnabled',
+  'setUseExternalNameSources',
+  'setUseTransactionSimulations',
+  'setAdvancedGasFee',
+  'setTheme',
+  'addKnownMethodData',
+  'setCurrentLocale',
+  'setAccountLabel',
+  'setFeatureFlag',
+  'setPreference',
+  'getPreferences',
+  'getIpfsGateway',
+  'setIpfsGateway',
+  'setIsIpfsGatewayEnabled',
+  'setUseAddressBarEnsResolution',
+  'setLedgerTransportPreference',
+  'setDismissSeedBackUpReminder',
+  'setOverrideContentSecurityPolicyHeader',
+  'setManageInstitutionalWallets',
+  'setUseSidePanelAsDefault',
+  'setShowDefaultAddress',
+  'setDefaultAddressScope',
+  'setSnapsAddSnapAccountModalDismissed',
+  'consolidateBasicFunctionality',
+  'dismissBasicFunctionalityMigrationNotification',
+  'resetState',
+  'addReferralApprovedAccount',
+  'addReferralPassedAccount',
+  'addReferralDeclinedAccount',
+  'removeReferralDeclinedAccount',
+  'setAccountsReferralApproved',
+] as const;
+
 export class PreferencesController extends BaseController<
   typeof controllerName,
   PreferencesControllerState,
@@ -496,6 +538,11 @@ export class PreferencesController extends BaseController<
     globalThis.setPreference = (key: keyof Preferences, value: boolean) => {
       return this.setFeatureFlag(key, value);
     };
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
@@ -506,18 +553,6 @@ export class PreferencesController extends BaseController<
   setPasswordForgotten(forgottenPassword: boolean): void {
     this.update((state) => {
       state.forgottenPassword = forgottenPassword;
-    });
-  }
-
-  /**
-   * Setter for the `useBlockie` property
-   *
-   * @deprecated Use setAvatarType instead
-   * @param val - Whether or not the user prefers blockie indicators
-   */
-  setUseBlockie(val: boolean): void {
-    this.update((state) => {
-      state.useBlockie = val;
     });
   }
 
@@ -555,17 +590,129 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  toggleExternalServices(useExternalServices: boolean): void {
+  /**
+   * Turns Basic Functionality on or off along with the preferences it owns.
+   *
+   * The owned preferences are listed in
+   * {@link EXTERNAL_SERVICES_OWNED_PREFERENCES}. When enabling, optional
+   * `ownedPreferences` values are applied in the same state update so callers
+   * such as onboarding completion never overwrite a choice and then restore it.
+   *
+   * @param useExternalServices - Whether external services should be enabled.
+   * @param ownedPreferences - Optional per-preference values to apply when
+   * enabling. Missing keys default to `true`. Ignored when disabling.
+   */
+  toggleExternalServices(
+    useExternalServices: boolean,
+    ownedPreferences?: Partial<
+      Record<ExternalServicesOwnedPreference, boolean>
+    >,
+  ): void {
     this.update((state) => {
       state.useExternalServices = useExternalServices;
+      for (const preference of EXTERNAL_SERVICES_OWNED_PREFERENCES) {
+        state[preference] = useExternalServices
+          ? (ownedPreferences?.[preference] ?? true)
+          : false;
+      }
     });
-    this.setUseTokenDetection(useExternalServices);
-    this.setUseCurrencyRateCheck(useExternalServices);
-    this.setUsePhishDetect(useExternalServices);
-    this.setUseAddressBarEnsResolution(useExternalServices);
-    this.setOpenSeaEnabled(useExternalServices);
-    this.setUseNftDetection(useExternalServices);
-    this.setUseSafeChainsListValidation(useExternalServices);
+  }
+
+  /**
+   * Turns Basic Functionality and every child preference on or off in one
+   * state update, then syncs TokenDetection / GasFee / Shield controllers.
+   *
+   * @param useBasicFunctionality - Whether Basic Functionality should be on.
+   */
+  toggleBasicFunctionality(useBasicFunctionality: boolean): void {
+    this.update((state) => {
+      state.useExternalServices = useBasicFunctionality;
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        state[preference] = useBasicFunctionality;
+      }
+      state.isMultiAccountBalancesEnabled = useBasicFunctionality;
+    });
+
+    this.messenger.call(
+      'LegacyBackgroundApiService:toggleExternalServices',
+      useBasicFunctionality,
+    );
+  }
+
+  /**
+   * One-time Basic Functionality consolidation when the remote FF turns on.
+   * Aligns child preferences, marks the user as consolidated, and schedules
+   * the modal/toast notice when needed, then syncs external-service controllers.
+   * Also repairs previously consolidated social-login wallets that still have
+   * Basic Functionality disabled.
+   */
+  consolidateBasicFunctionality(): void {
+    const hasBftConsolidationMarker =
+      this.state.preferences.isBasicFunctionalityConsolidatedEnabled;
+    if (hasBftConsolidationMarker && this.state.useExternalServices) {
+      return;
+    }
+
+    const { firstTimeFlowType } = this.messenger.call(
+      'OnboardingController:getState',
+    );
+    const { authConnection } = this.messenger.call(
+      'SeedlessOnboardingController:getState',
+    );
+    const isSocialLogin = isBasicFunctionalitySocialLoginUser({
+      firstTimeFlowType: firstTimeFlowType ?? undefined,
+      authConnection,
+    });
+    if (hasBftConsolidationMarker && !isSocialLogin) {
+      return;
+    }
+
+    const preferenceState = {
+      useExternalServices: this.state.useExternalServices,
+    } as BasicFunctionalityPreferenceState;
+    for (const preference of BFT_CHILD_PREFERENCES) {
+      preferenceState[preference] = this.state[preference];
+    }
+
+    const { landingState, notification, isConsistent } =
+      getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
+    const hasDismissedNotice =
+      this.state.preferences
+        .basicFunctionalityMigrationNotificationDismissed === true;
+
+    this.update((state) => {
+      state.useExternalServices = landingState;
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        state[preference] = landingState;
+      }
+      // useMultiAccountBalanceChecker is mirrored onto isMultiAccountBalancesEnabled
+      state.isMultiAccountBalancesEnabled = landingState;
+      state.preferences.isBasicFunctionalityConsolidatedEnabled = true;
+      state.preferences.basicFunctionalityMigrationNotification =
+        hasDismissedNotice ? null : notification;
+    });
+
+    this.messenger.call(
+      'LegacyBackgroundApiService:toggleExternalServices',
+      landingState,
+    );
+
+    // First consolidation rewrite for unaligned wallets only. Aligned users
+    // (including aligned social) are not on Basic Functionality Migrated.
+    // Record after applying landing state so analytics can emit while BFT is on.
+    if (!hasBftConsolidationMarker && !isConsistent) {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.BasicFunctionalityMigrated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: landingState ? 'on' : 'off',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: isSocialLogin,
+          })
+          .build(),
+      );
+    }
   }
 
   /**
@@ -685,20 +832,42 @@ export class PreferencesController extends BaseController<
    *
    * @param options
    * @param options.chainId - The chainId the advancedGasFees should be set on
+   * @param options.account - The account the advancedGasFees should be set for
    * @param options.gasFeePreferences - The advancedGasFee options to set
    */
   setAdvancedGasFee({
+    account,
     chainId,
     gasFeePreferences,
   }: {
+    account: string;
     chainId: string;
-    gasFeePreferences: Record<string, string>;
+    gasFeePreferences?: AdvancedGasFeePreferences;
   }): void {
-    const { advancedGasFee } = this.state;
     this.update((state) => {
+      const normalizedAccount = account.toLowerCase();
+      const chainPreferences = state.advancedGasFee[chainId] ?? {};
+
+      if (!gasFeePreferences) {
+        const {
+          [normalizedAccount]: _removedPreference,
+          ...remainingChainPreferences
+        } = chainPreferences;
+
+        state.advancedGasFee = {
+          ...state.advancedGasFee,
+          [chainId]: remainingChainPreferences,
+        };
+
+        return;
+      }
+
       state.advancedGasFee = {
-        ...advancedGasFee,
-        [chainId]: gasFeePreferences,
+        ...state.advancedGasFee,
+        [chainId]: {
+          ...chainPreferences,
+          [normalizedAccount]: gasFeePreferences,
+        },
       };
     });
   }
@@ -812,10 +981,31 @@ export class PreferencesController extends BaseController<
     value: Preferences[typeof preference],
   ): Preferences {
     const currentPreferences = this.getPreferences();
-    const updatedPreferences = {
+    let updatedPreferences: Preferences = {
       ...currentPreferences,
       [preference]: value,
     };
+
+    // Full-screen and default side panel are mutually exclusive. Disabling
+    // full-screen restores side panel as the default extension entry point.
+    switch (preference) {
+      case 'showExtensionInFullSizeView':
+        updatedPreferences = {
+          ...updatedPreferences,
+          useSidePanelAsDefault: !value,
+        };
+        break;
+      case 'useSidePanelAsDefault':
+        if (value) {
+          updatedPreferences = {
+            ...updatedPreferences,
+            showExtensionInFullSizeView: false,
+          };
+        }
+        break;
+      default:
+        break;
+    }
 
     this.update((state) => {
       state.preferences = updatedPreferences;
@@ -929,16 +1119,8 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  setServiceWorkerKeepAlivePreference(value: boolean): void {
-    this.update((state) => {
-      state.enableMV3TimestampSave = value;
-    });
-  }
-
   setUseSidePanelAsDefault(value: boolean): void {
-    this.update((state) => {
-      state.preferences.useSidePanelAsDefault = value;
-    });
+    this.setPreference('useSidePanelAsDefault', value);
   }
 
   setShowDefaultAddress(value: boolean): void {
@@ -956,6 +1138,22 @@ export class PreferencesController extends BaseController<
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
     this.update((state) => {
       state.snapsAddSnapAccountModalDismissed = value;
+    });
+  }
+
+  dismissSidePanelMigrationToast(): void {
+    this.update((state) => {
+      state.showSidePanelMigrationToast = false;
+    });
+  }
+
+  /**
+   * Dismisses the one-time Basic Functionality migration modal or toast.
+   */
+  dismissBasicFunctionalityMigrationNotification(): void {
+    this.update((state) => {
+      state.preferences.basicFunctionalityMigrationNotification = null;
+      state.preferences.basicFunctionalityMigrationNotificationDismissed = true;
     });
   }
 

@@ -21,12 +21,20 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
+ */
 export const ToastContainer = ({
   children,
 }: {
   children: React.ReactNode | string;
 }) => <Box className="toasts-container">{children}</Box>;
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
+ */
 export const Toast = ({
   startAdornment,
   text,
@@ -45,8 +53,10 @@ export const Toast = ({
   contentProps,
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
-  text: string;
-  description?: string;
+  /** Plain string or rich content (e.g. inline `TextButton` via `t(key, [nodes])`). */
+  text: React.ReactNode;
+  /** Plain string or rich content (e.g. inline link via `t(key, [nodes])`). */
+  description?: React.ReactNode;
   descriptionVariant?: TextVariant;
   actionText?: string;
   onActionClick?: () => void;

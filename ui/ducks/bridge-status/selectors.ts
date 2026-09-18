@@ -1,3 +1,4 @@
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { createSelector } from 'reselect';
 import type {
   BridgeHistoryItem,
@@ -11,6 +12,7 @@ import {
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
+import { EMPTY_OBJECT } from '../../selectors/shared';
 
 type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState & TransactionControllerState;
@@ -29,6 +31,10 @@ const selectBridgeHistory = (state: BridgeStatusAppState) =>
 const selectBridgeHistoryForAccount = createSelector(
   [(_, selectedAddresses?: string[]) => selectedAddresses, selectBridgeHistory],
   (selectedAddresses, txHistory) => {
+    if (!txHistory) {
+      return EMPTY_OBJECT as Record<string, BridgeHistoryItem>;
+    }
+
     if (!selectedAddresses || selectedAddresses.length === 0) {
       return txHistory;
     }
@@ -65,6 +71,36 @@ export const selectBridgeHistoryForAccountGroup = createSelector(
     ).map((internalAccount) => internalAccount.address);
 
     return selectBridgeHistoryForAccount(state, internalAccountAddresses);
+  },
+);
+
+export const selectNonEvmBridgeSourceTxIds = createSelector(
+  [selectBridgeHistoryForAccountGroup],
+  (bridgeHistory) => {
+    const ids = new Set<string>();
+
+    for (const [key, item] of Object.entries(bridgeHistory ?? {})) {
+      if (!item.quote) {
+        continue;
+      }
+      if (!isNonEvmChainId(item.quote.srcChainId)) {
+        continue;
+      }
+      // Same-chain non-EVM swaps are handled by the non-EVM transaction watcher
+      if (item.quote.srcChainId === item.quote.destChainId) {
+        continue;
+      }
+
+      ids.add(key);
+
+      const { originalTransactionId } = item;
+
+      if (originalTransactionId) {
+        ids.add(originalTransactionId);
+      }
+    }
+
+    return ids;
   },
 );
 
@@ -168,7 +204,7 @@ export const selectLocalTxForTxHash = (
  * @param txHash - the tx hash
  * @returns the bridge history item for the given tx hash
  */
-const selectBridgeHistoryItemForTxHash = createSelector(
+export const selectBridgeHistoryItemForTxHash = createSelector(
   [
     selectBridgeHistory,
     selectLocalTxForTxHash,
@@ -178,6 +214,15 @@ const selectBridgeHistoryItemForTxHash = createSelector(
     // Non-EVM transactions use the tx hash as the key
     if (txHash && bridgeHistory[txHash]) {
       return bridgeHistory[txHash];
+    }
+
+    const historyItem = Object.values(bridgeHistory).find(
+      (item) =>
+        txHash &&
+        item.status.srcChain?.txHash?.toLowerCase() === txHash.toLowerCase(),
+    );
+    if (historyItem) {
+      return historyItem;
     }
 
     const txId = tx?.id;

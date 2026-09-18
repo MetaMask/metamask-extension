@@ -14,11 +14,11 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
-import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
@@ -33,7 +33,7 @@ import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { withTransactionEnvelopeTypeFixtures } from '../confirmations/helpers';
 
 const DEFAULT_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
@@ -55,20 +55,24 @@ describe('Send ETH', function () {
 
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);
-          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          const activityTab = new ActivityTab(driver);
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x539', 'ETH');
-          await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+          await sendPage.fillRecipient({ recipientAddress: DEFAULT_RECIPIENT });
           await sendPage.fillAmount('1');
           await sendPage.pressContinueButton();
 
-          await sendTokenConfirmPage.clickOnConfirm();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'disappear',
+          });
 
-          await activityListPage.checkTransactionActivityByText('Sent');
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
-          await activityListPage.checkTxAmountInActivity('-1 ETH');
+          await homePage.goToActivityList();
+          await activityTab.checkTransactionActivityByText('Sent');
+          await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityTab.checkTxAmountInActivity('-1 ETH');
         },
       );
     });
@@ -90,7 +94,7 @@ describe('Send ETH', function () {
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const activityTab = new ActivityTab(driver);
 
           await testDapp.openTestDappPage({
             contractAddress: null,
@@ -106,13 +110,15 @@ describe('Send ETH', function () {
             new TokenTransferTransactionConfirmation(driver);
           await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
           await tokenTransferConfirmation.clickScrollToBottomButton();
-          await tokenTransferConfirmation.clickFooterConfirmButton();
+          await tokenTransferConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           await homePage.goToActivityList();
-          await activityListPage.checkTransactionActivityByText('Sent');
+          await activityTab.checkTransactionActivityByText('Sent');
         },
       );
     });
@@ -142,8 +148,9 @@ describe('Send ETH', function () {
         async ({ driver }) => {
           await login(driver);
 
-          const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
-          const activityListPage = new ActivityListPage(driver);
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          const activityTab = new ActivityTab(driver);
+          const homePage = new HomePage(driver);
 
           await createInternalTransaction({
             driver,
@@ -153,10 +160,14 @@ describe('Send ETH', function () {
             amount: '1',
           });
 
-          await sendTokenConfirmationPage.clickOnConfirm();
-          await activityListPage.checkTransactionActivityByText('Sent');
-          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
-          await activityListPage.checkTxAmountInActivity('-1 ETH');
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'disappear',
+          });
+          await homePage.goToActivityList();
+          await activityTab.checkTransactionActivityByText('Sent');
+          await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
+          await activityTab.checkTxAmountInActivity('-1 ETH');
         },
       );
     });
@@ -171,6 +182,7 @@ describe('Send ETH', function () {
           },
           fixtures: new FixtureBuilderV2()
             .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+            .withEnabledNetworks({ eip155: { '0x1': true } })
             .withSnapsPrivacyWarningAlreadyShown()
             .build(),
           title: this.test?.fullTitle(),
@@ -194,7 +206,7 @@ describe('Send ETH', function () {
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x1', 'ETH');
-          await sendPage.fillRecipient('test.eth');
+          await sendPage.fillRecipient({ recipientAddress: 'test.eth' });
 
           await driver.findElement({ text: '0xc0ffe...54979' });
         },

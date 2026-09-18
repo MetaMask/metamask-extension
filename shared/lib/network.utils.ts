@@ -9,12 +9,14 @@ import {
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import type {
+  NetworkClientId,
   NetworkConfiguration,
+  NetworkState,
   AddNetworkFields,
 } from '@metamask/network-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 
 import {
-  CHAIN_IDS,
   MAX_SAFE_CHAIN_ID,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../constants/network';
@@ -51,38 +53,6 @@ export function isPrefixedFormattedHexString(value: unknown) {
     return false;
   }
   return /^0x[1-9a-f]+[0-9a-f]*$/iu.test(value);
-}
-
-/**
- * Check if token detection is enabled for certain networks
- *
- * @param chainId - ChainID of network
- * @returns Whether the current network supports token detection
- */
-export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
-  switch (chainId) {
-    case CHAIN_IDS.MAINNET:
-    case CHAIN_IDS.BSC:
-    case CHAIN_IDS.POLYGON:
-    case CHAIN_IDS.AVALANCHE:
-    case CHAIN_IDS.LINEA_GOERLI:
-    case CHAIN_IDS.LINEA_SEPOLIA:
-    case CHAIN_IDS.LINEA_MAINNET:
-    case CHAIN_IDS.ARBITRUM:
-    case CHAIN_IDS.OPTIMISM:
-    case CHAIN_IDS.BASE:
-    case CHAIN_IDS.ZKSYNC_ERA:
-    case CHAIN_IDS.CRONOS:
-    case CHAIN_IDS.CELO:
-    case CHAIN_IDS.GNOSIS:
-    case CHAIN_IDS.FANTOM:
-    case CHAIN_IDS.POLYGON_ZKEVM:
-    case CHAIN_IDS.MOONBEAM:
-    case CHAIN_IDS.MOONRIVER:
-      return true;
-    default:
-      return false;
-  }
 }
 
 /**
@@ -257,3 +227,30 @@ export const getFilteredFeaturedNetworks = (
     (network) => !blacklistedChainIds.includes(network.chainId),
   );
 };
+
+/**
+ * Returns default network client IDs for every enabled EIP-155 network.
+ *
+ * @param enabledNetworkMap - Map of enabled networks by CAIP namespace.
+ * @param networkConfigurationsByChainId - NetworkController configs by hex chain ID.
+ * @returns Network client IDs for enabled EVM networks.
+ */
+export function getAllEnabledNetworkClientIds(
+  enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
+  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
+): NetworkClientId[] {
+  const enabledEip155Networks =
+    enabledNetworkMap[KnownCaipNamespace.Eip155] ?? {};
+
+  const chainIds = Object.entries(enabledEip155Networks)
+    .filter(([_chainId, isEnabled]) => isEnabled)
+    .map(([chainId, _isEnabled]) => chainId) as Hex[];
+
+  return chainIds
+    .map((chainId) => networkConfigurationsByChainId[chainId])
+    .filter((config) => config !== undefined)
+    .map(
+      (config) =>
+        config.rpcEndpoints[config.defaultRpcEndpointIndex].networkClientId,
+    );
+}

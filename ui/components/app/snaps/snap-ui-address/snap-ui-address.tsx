@@ -27,13 +27,13 @@ export type SnapUIAddressProps = {
   avatar?: boolean;
 };
 
-export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
+export const SnapUIAddress = ({
   address,
   avatarSize,
   truncate = true,
   displayName = false,
   avatar = true,
-}) => {
+}: SnapUIAddressProps) => {
   const caipIdentifier = useMemo(() => {
     if (isHexString(address)) {
       // For legacy address inputs we assume them to be Ethereum addresses.

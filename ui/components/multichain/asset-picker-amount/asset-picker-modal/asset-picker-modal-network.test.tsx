@@ -14,6 +14,11 @@ const mockOnClose = jest.fn();
 const mockOnNetworkChange = jest.fn();
 const mockOnBack = jest.fn();
 
+const getNetworkDisplayName = (network: { chainId: string; name: string }) =>
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+    network.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+  ] ?? network.name;
+
 describe('AssetPickerModalNetwork', () => {
   const mockStore = configureStore([thunk]);
   const store = mockStore(mockState);
@@ -87,33 +92,32 @@ describe('AssetPickerModalNetwork', () => {
     jest.clearAllMocks();
   });
 
-  it('renders modal with no network list by default', () => {
-    const { baseElement } = renderWithProvider(
-      <AssetPickerModalNetwork {...defaultProps} />,
-      store,
-    );
-
-    expect(baseElement).toMatchSnapshot();
-  });
-
   it('should not show selected network when network prop is not passed in', () => {
-    const { baseElement } = renderWithProvider(
+    renderWithProvider(
       <AssetPickerModalNetwork
         {...defaultProps}
         networks={networkProps.networks}
       />,
       store,
     );
-    expect(baseElement).toMatchSnapshot();
+
+    expect(
+      screen.getByTestId(`network-list-item-${CHAIN_IDS.MAINNET}`),
+    ).toHaveClass('multichain-network-list-item--deselected');
   });
 
   it('should use passed in network as default when network prop is passed in', () => {
-    const { baseElement } = renderWithProvider(
+    renderWithProvider(
       <AssetPickerModalNetwork {...defaultProps} {...networkProps} />,
       store,
     );
 
-    expect(baseElement).toMatchSnapshot();
+    expect(
+      screen.getByTestId(`network-list-item-${CHAIN_IDS.MAINNET}`),
+    ).toHaveClass('multichain-network-list-item--selected');
+    expect(
+      screen.getByTestId(`network-list-item-${CHAIN_IDS.OPTIMISM}`),
+    ).toHaveClass('multichain-network-list-item--deselected');
   });
 
   it('should call onClose and onBack when header buttons are clicked', () => {
@@ -135,9 +139,8 @@ describe('AssetPickerModalNetwork', () => {
       store,
     );
 
-    fireEvent.click(
-      screen.getByText(NETWORK_TO_SHORT_NETWORK_NAME_MAP[CHAIN_IDS.MAINNET]),
-    );
+    const [mainnetNetwork] = networkProps.networks;
+    fireEvent.click(screen.getByText(getNetworkDisplayName(mainnetNetwork)));
     expect(mockOnBack).toHaveBeenCalledTimes(1);
     expect(mockOnNetworkChange).toHaveBeenCalledTimes(1);
   });

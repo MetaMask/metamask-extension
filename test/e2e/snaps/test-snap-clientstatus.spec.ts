@@ -4,7 +4,7 @@ import packageJson from '../../../package.json';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {
   login,
@@ -28,7 +28,7 @@ describe('Test Snap Client Status', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);

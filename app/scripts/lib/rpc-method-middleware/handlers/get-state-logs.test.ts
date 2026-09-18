@@ -1,6 +1,9 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PendingJsonRpcResponse } from '@metamask/utils';
-import getStateLogs, { HandleGetStateLogsRequest } from './get-state-logs';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  getStateLogsHandler,
+  type HandleGetStateLogsRequest,
+} from './get-state-logs';
 
 describe('getStateLogs', () => {
   let mockEnd: JsonRpcEngineEndCallback;
@@ -14,7 +17,7 @@ describe('getStateLogs', () => {
   });
 
   it('calls handleGetStateLogsRequest with origin and returns state logs', async () => {
-    const req = {
+    const req: JsonRpcRequest & { origin: string } = {
       origin: 'https://support.metamask.io',
       id: '22',
       jsonrpc: '2.0',
@@ -27,7 +30,7 @@ describe('getStateLogs', () => {
       result: '',
     };
 
-    await getStateLogs.implementation(req, res, jest.fn(), mockEnd, {
+    await getStateLogsHandler.implementation(req, res, jest.fn(), mockEnd, {
       handleGetStateLogsRequest: mockHandleGetStateLogsRequest,
     });
 

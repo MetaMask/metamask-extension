@@ -26,10 +26,10 @@ exports[`FormComboField renders with no options 1`] = `
             />
             <button
               aria-label="Clear"
-              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>
@@ -82,10 +82,10 @@ exports[`FormComboField renders with options 1`] = `
             />
             <button
               aria-label="Clear"
-              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>
@@ -158,10 +158,10 @@ exports[`FormComboField should not render "no options" if hideDropdownIfNoOption
             />
             <button
               aria-label="Clear"
-              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>

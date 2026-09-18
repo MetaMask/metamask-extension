@@ -1,14 +1,13 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
-import FixtureBuilder from '../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { login } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockLifecycleHooksSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
-import LoginPage from '../page-objects/pages/login-page';
+import LoginPage from '../page-objects/pages/onboarding/login-page';
 
 describe('Test Snap Lifecycle Hooks', function () {
   it('runs the `onInstall` lifecycle hook when the Snap is installed', async function () {
@@ -56,7 +55,8 @@ describe('Test Snap Lifecycle Hooks', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
           .withSnapControllerOnStartLifecycleSnap()
           .build(),
         title: this.test?.fullTitle(),

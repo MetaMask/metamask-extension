@@ -613,3 +613,38 @@ export async function mockInitialFullScan(mockServer: Mockttp) {
   await mockBroadcastTx(mockServer);
   await mockCatchAllBitcoin(mockServer);
 }
+
+const mockEmptyScriptHashTxs = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
+    )
+    .always()
+    .thenJson(200, []);
+
+const mockEmptyScriptHashUtxo = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/utxo$/u,
+    )
+    .always()
+    .thenJson(200, []);
+
+/**
+ * Variant of mockInitialFullScan that returns an empty wallet for the E2E
+ * Bitcoin address (no txs, no UTXOs). Used to exercise the empty-balance flow.
+ *
+ * @param mockServer - The mock server instance
+ */
+export async function mockEmptyInitialFullScan(mockServer: Mockttp) {
+  await mockBlocks(mockServer);
+  await mockBlocksTipHeight(mockServer);
+  await mockBlocksTipHash(mockServer);
+  await mockEmptyScriptHashTxs(mockServer);
+  await mockEmptyScriptHashUtxo(mockServer);
+  await mockBlockDetails(mockServer);
+  await mockBlockHeight(mockServer);
+  await mockFeeEstimates(mockServer);
+  await mockBroadcastTx(mockServer);
+  await mockCatchAllBitcoin(mockServer);
+}

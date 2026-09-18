@@ -1,5 +1,4 @@
 import React, {
-  ReactElement,
   createContext,
   useCallback,
   useContext,
@@ -26,12 +25,16 @@ export const GasFeeModalContext = createContext<
   GasFeeModalContextType | undefined
 >(undefined);
 
-export const GasFeeModalContextProvider: React.FC<{
-  children: ReactElement;
+export const GasFeeModalContextProvider = ({
+  children,
+  transactionMeta,
+  editGasMode,
+}: React.PropsWithChildren<{
+  children: React.ReactNode;
   /** Optional transaction for gas editing when outside confirm flow (e.g. cancel/speedup). */
   transactionMeta?: TransactionMeta;
   editGasMode?: EditGasModes;
-}> = ({ children, transactionMeta, editGasMode }) => {
+}>) => {
   const [isGasFeeModalVisible, setIsGasFeeModalVisible] = useState(false);
   const [initialModalType, setInitialModalType] = useState<GasModalType>(
     GasModalType.EstimatesModal,
@@ -81,15 +84,6 @@ export const useGasFeeModalContext = () => {
   }
   return context;
 };
-
-/**
- * Optional getter for GasFeeModalContext. Returns undefined when outside
- * GasFeeModalContextProvider (e.g. EditGasFeePopover on transaction list).
- * Used by components that support both legacy useGasFeeContext and the
- * GasFeeModalContextProvider flow (e.g. cancel-speedup).
- */
-export const useGasFeeModalContextOptional = () =>
-  useContext(GasFeeModalContext);
 
 export const GasFeeModalWrapper = () => {
   const {

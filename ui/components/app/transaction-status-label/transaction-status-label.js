@@ -6,8 +6,8 @@ import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 
-const QUEUED_PSEUDO_STATUS = 'queued';
-const SIGNING_PSUEDO_STATUS = 'signing';
+export const QUEUED_PSEUDO_STATUS = 'queued';
+export const SIGNING_PSUEDO_STATUS = 'signing';
 
 /**
  * A note about status logic for this component:
@@ -15,9 +15,6 @@ const SIGNING_PSUEDO_STATUS = 'signing';
  * as pending. Transactions are only approved or signed for less than a
  * second, usually, and ultimately should be rendered in the UI no
  * differently than a pending transaction.
- *
- * Confirmed transactions are not especially highlighted except that their
- * status label will be the date the transaction was finalized.
  */
 const pendingStatusHash = {
   [TransactionStatus.submitted]: TransactionGroupStatus.pending,
@@ -35,7 +32,7 @@ const statusToClassNameHash = {
   [TransactionGroupStatus.pending]: 'transaction-status-label--pending',
 };
 
-function getStatusKey(status, isEarliestNonce) {
+export function getStatusKey(status, isEarliestNonce) {
   if (status === TransactionStatus.approved) {
     return SIGNING_PSUEDO_STATUS;
   }
@@ -51,20 +48,16 @@ function getStatusKey(status, isEarliestNonce) {
 
 export default function TransactionStatusLabel({
   status,
-  date,
   error,
   isEarliestNonce,
   className,
-  statusOnly,
+  label,
+  tooltip,
 }) {
   const t = useI18nContext();
   const statusKey = getStatusKey(status, isEarliestNonce);
-  const tooltipText = error?.rpc?.message || error?.message;
-  let statusText = statusKey && t(statusKey);
-
-  if (statusKey === TransactionStatus.confirmed && !statusOnly) {
-    statusText = date;
-  }
+  const tooltipText = tooltip || error?.rpc?.message || error?.message;
+  const statusText = label ?? (statusKey && t(statusKey));
 
   return (
     <Tooltip
@@ -72,9 +65,10 @@ export default function TransactionStatusLabel({
       title={tooltipText}
       wrapperClassName={classnames(
         'transaction-status-label',
-        `transaction-status-label--${statusKey}`,
+        label ? 'transaction-status-label--confirmed' : undefined,
+        !label && `transaction-status-label--${statusKey}`,
         className,
-        statusToClassNameHash[statusKey],
+        !label && statusToClassNameHash[statusKey],
       )}
     >
       {statusText}
@@ -85,8 +79,8 @@ export default function TransactionStatusLabel({
 TransactionStatusLabel.propTypes = {
   status: PropTypes.string,
   className: PropTypes.string,
-  date: PropTypes.string,
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
-  statusOnly: PropTypes.bool,
+  label: PropTypes.string,
+  tooltip: PropTypes.string,
 };

@@ -28,7 +28,15 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+import {
+  createEventBuilder,
+  createEventFragment,
+  finalizeEventFragment,
+  trackEvent,
+  updateEventFragment,
+} from '../controllers/analytics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
+import { getIframeProperties } from './getIframeProperties';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -158,25 +166,19 @@ let globalRateLimitCount = 0;
 /**
  * Create signature request event fragment with an assigned unique identifier
  *
- * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
- * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ * @param {MetaMetricsEventFragmentPayload} fragmentPayload
  * @param {MetaMetricsEventCategory} eventCategory
  */
-function createSignatureFragment(
-  metaMetricsController,
-  req,
-  fragmentPayload,
-  eventCategory,
-) {
-  metaMetricsController.createEventFragment({
+function createSignatureFragment(req, fragmentPayload, eventCategory) {
+  createEventFragment({
     category: eventCategory,
 
     initialEvent: MetaMetricsEventName.SignatureRequested,
     successEvent: MetaMetricsEventName.SignatureApproved,
     failureEvent: MetaMetricsEventName.SignatureRejected,
 
-    uniqueIdentifier: generateSignatureUniqueId(req.id),
+    id: generateSignatureUniqueId(req.id),
     persist: true,
     referrer: {
       url: req.origin,
@@ -188,25 +190,16 @@ function createSignatureFragment(
 /**
  * Updates and finalizes event fragment for signature requests
  *
- * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
- * @param {MetaMetricsFinalizeEventFragmentOptions}  finalizeEventOptions
- * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ * @param {{ abandoned?: boolean }} finalizeEventOptions
+ * @param {MetaMetricsEventFragmentPayload} fragmentPayload
  */
-function finalizeSignatureFragment(
-  metaMetricsController,
-  req,
-  finalizeEventOptions,
-  fragmentPayload,
-) {
+function finalizeSignatureFragment(req, finalizeEventOptions, fragmentPayload) {
   const signatureUniqueId = generateSignatureUniqueId(req.id);
 
-  metaMetricsController.updateEventFragment(signatureUniqueId, fragmentPayload);
+  updateEventFragment(signatureUniqueId, fragmentPayload);
 
-  metaMetricsController.finalizeEventFragment(
-    signatureUniqueId,
-    finalizeEventOptions,
-  );
+  finalizeEventFragment(signatureUniqueId, finalizeEventOptions);
 }
 
 function isMultichainRequestMethod(method) {
@@ -235,7 +228,7 @@ function isMultichainRequestMethod(method) {
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
  * tracked within the globalRateLimitTimeout time window.
  * @param {AppStateController} [opts.appStateController]
- * @param {MetaMetricsController} [opts.metaMetricsController]
+ * @param {AnalyticsController} [opts.analyticsController]
  * @returns {Function}
  */
 
@@ -249,7 +242,7 @@ export default function createRPCMethodTrackingMiddleware({
   getHardwareTypeForMetric,
   snapAndHardwareMessenger,
   appStateController,
-  metaMetricsController,
+  analyticsController,
   getHDEntropyIndex,
 }) {
   return async function rpcMethodTrackingMiddleware(
@@ -257,7 +250,7 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method, params } = req;
+    const { origin, method, params, mainFrameOrigin, frameId } = req;
 
     const isMultichainRequest = isMultichainRequestMethod(method);
     // requestedThrough and eventCategory are currently redundant so we will want to
@@ -302,18 +295,25 @@ export default function createRPCMethodTrackingMiddleware({
       globalRateLimitMaxAmount > 0 &&
       globalRateLimitCount >= globalRateLimitMaxAmount;
 
-    // Get the participateInMetaMetrics state to determine if we should track
+    // Get the optedIn state to determine if we should track
     // anything. This is extra redundancy because this value is checked in
-    // the metametrics controller's trackEvent method as well.
-    const userParticipatingInMetaMetrics =
-      metaMetricsController.state.participateInMetaMetrics === true;
+    // the analytics controller's trackEvent method as well.
+    const { optedIn } = analyticsController.state;
+    const userParticipatingInMetaMetrics = optedIn === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[invokedMethod];
 
+    const iframeProps = getIframeProperties({
+      frameId,
+      origin,
+      mainFrameOrigin,
+    });
+
     const eventProperties = {
       api_source: requestedThrough,
+      ...iframeProps,
     };
 
     if (multichainApiRequestScope) {
@@ -451,21 +451,18 @@ export default function createRPCMethodTrackingMiddleware({
           sensitiveProperties: sensitiveEventProperties,
         };
 
-        createSignatureFragment(
-          metaMetricsController,
-          req,
-          fragmentPayload,
-          eventCategory,
-        );
+        createSignatureFragment(req, fragmentPayload, eventCategory);
       } else {
-        metaMetricsController.trackEvent({
-          event,
-          category: eventCategory,
-          referrer: {
-            url: origin,
-          },
-          properties: eventProperties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(eventProperties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
@@ -564,21 +561,18 @@ export default function createRPCMethodTrackingMiddleware({
           sensitiveProperties: sensitiveEventProperties,
         };
 
-        finalizeSignatureFragment(
-          metaMetricsController,
-          req,
-          finalizeOptions,
-          fragmentPayload,
-        );
+        finalizeSignatureFragment(req, finalizeOptions, fragmentPayload);
       } else {
-        metaMetricsController.trackEvent({
-          event,
-          category: eventCategory,
-          referrer: {
-            url: origin,
-          },
-          properties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(properties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
       return callback();
     });

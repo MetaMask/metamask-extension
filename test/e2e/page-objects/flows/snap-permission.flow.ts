@@ -66,9 +66,11 @@ export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
 export async function approveAccount(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+  // Use `contains(., 'Connect')` (the button's full string value) rather than
+  // `contains(text(), 'Connect')` so the selector still matches design-system
+  // buttons, which render their label inside a nested `<span>`.
   await driver.clickElement({
-    text: 'Connect',
-    tag: 'button',
+    xpath: "//button[contains(., 'Connect')]",
   });
 
   await driver.waitForSelector({

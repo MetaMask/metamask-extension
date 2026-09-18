@@ -8,6 +8,7 @@ import type { Messenger } from '@metamask/messenger';
 import log from 'loglevel';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
+import { OnboardingControllerMethodActions } from './onboarding-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'OnboardingController';
@@ -19,6 +20,7 @@ export type OnboardingControllerState = {
   seedPhraseBackedUp: boolean | null;
   firstTimeFlowType: FirstTimeFlowType | null;
   completedOnboarding: boolean;
+  hasSeenOnboardingCompletionPage: boolean;
   onboardingTabs?: Record<string, string>;
 };
 
@@ -29,6 +31,7 @@ export const getDefaultOnboardingControllerState = () => ({
   seedPhraseBackedUp: null,
   firstTimeFlowType: null,
   completedOnboarding: false,
+  hasSeenOnboardingCompletionPage: false,
 });
 
 const defaultTransientState = {
@@ -61,6 +64,12 @@ const controllerMetadata: StateMetadata<OnboardingControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  hasSeenOnboardingCompletionPage: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   onboardingTabs: {
     includeInStateLogs: true,
     persist: false,
@@ -80,7 +89,9 @@ export type OnboardingControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link OnboardingController}.
  */
-export type OnboardingControllerActions = OnboardingControllerGetStateAction;
+export type OnboardingControllerActions =
+  | OnboardingControllerGetStateAction
+  | OnboardingControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link OnboardingController} changes.
@@ -115,11 +126,21 @@ export type OnboardingControllerMessenger = Messenger<
   OnboardingControllerControllerEvents | AllowedEvents
 >;
 
+const MESSENGER_EXPOSED_METHODS = [
+  'setSeedPhraseBackedUp',
+  'completeOnboarding',
+  'setHasSeenOnboardingCompletionPage',
+  'setFirstTimeFlowType',
+  'registerOnboarding',
+  'getIsSocialLoginFlow',
+  'resetOnboarding',
+] as const;
+
 /**
  * Controller responsible for maintaining
  * state related to onboarding
  */
-export default class OnboardingController extends BaseController<
+export class OnboardingController extends BaseController<
   typeof controllerName,
   OnboardingControllerState,
   OnboardingControllerMessenger
@@ -150,6 +171,11 @@ export default class OnboardingController extends BaseController<
         ...defaultTransientState,
       },
     });
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
@@ -175,6 +201,19 @@ export default class OnboardingController extends BaseController<
   }
 
   /**
+   * Records that the user has been shown the onboarding completion page at least once.
+   *
+   * @param hasSeenOnboardingCompletionPage - Whether the onboarding completion page has been shown.
+   */
+  setHasSeenOnboardingCompletionPage(
+    hasSeenOnboardingCompletionPage: boolean,
+  ): void {
+    this.update((state) => {
+      state.hasSeenOnboardingCompletionPage = hasSeenOnboardingCompletionPage;
+    });
+  }
+
+  /**
    * Setter for the `firstTimeFlowType` property
    *
    * @param type - Indicates the type of first time flow - create or import - the user wishes to follow
@@ -191,10 +230,7 @@ export default class OnboardingController extends BaseController<
    * @param location - The location of the site registering
    * @param tabId - The id of the tab registering
    */
-  registerOnboarding = async (
-    location: string,
-    tabId: string,
-  ): Promise<void> => {
+  async registerOnboarding(location: string, tabId: string): Promise<void> {
     if (this.state.completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
@@ -216,7 +252,7 @@ export default class OnboardingController extends BaseController<
         };
       });
     }
-  };
+  }
 
   /**
    * Check if the user onboarding flow is Social login flow or not.
@@ -242,6 +278,7 @@ export default class OnboardingController extends BaseController<
   resetOnboarding(): void {
     this.update((state) => {
       state.completedOnboarding = false;
+      state.hasSeenOnboardingCompletionPage = false;
       state.firstTimeFlowType = null;
       state.seedPhraseBackedUp = null;
       state.onboardingTabs = {};

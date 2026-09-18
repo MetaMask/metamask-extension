@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
 import {
   checkHardwareWalletPermission,
   getConnectedDevices,
@@ -48,20 +49,23 @@ export const useHardwareWalletAutoConnect = ({
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
   const location = useLocation();
   const isOnAutoConnectRoute = isHardwareWalletRoute(location.pathname);
+  const isOnRepairRoute = location.pathname === HARDWARE_WALLET_REPAIR_ROUTE;
 
   const {
     adapterRef,
     isConnectingRef,
+    isEnsuringDeviceReadyRef,
     connectRef,
     hasAutoConnectedRef,
     lastConnectedAccountRef,
+    isSigningInProgressRef,
   } = refs;
 
   useEffect(
     () => {
       if (
-        !isOnAutoConnectRoute ||
         !isHardwareWalletAccount ||
+        isOnRepairRoute ||
         !walletType ||
         hardwareConnectionPermissionState ===
           HardwareConnectionPermissionState.Denied
@@ -88,61 +92,74 @@ export const useHardwareWalletAutoConnect = ({
       const effectAccountAddress = accountAddress;
 
       const handleNativeConnect = async () => {
-        if (abortSignal.aborted) {
-          return;
-        }
-
-        updateConnectionState(ConnectionState.connected());
-
-        const currentPermissionState =
-          await checkHardwareWalletPermission(walletType);
-
-        // Check abort after async operation
-        if (abortSignal.aborted) {
-          return;
-        }
-
-        setHardwareConnectionPermissionState(currentPermissionState);
-
-        if (
-          currentPermissionState ===
-            HardwareConnectionPermissionState.Granted &&
-          !adapterRef.current?.isConnected()
-        ) {
-          // Synchronous check-and-set to prevent race condition
-          // This must happen atomically before any async work
-          if (isConnectingRef.current) {
+        try {
+          if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
             return;
           }
-          isConnectingRef.current = true;
 
-          const connect = connectRef.current;
-          if (connect) {
-            try {
-              await connect();
-              if (!abortSignal.aborted) {
-                setAutoConnected(effectAccountAddress);
-              }
-            } catch {
-              // Connection failed, don't mark as connected
-              // Error is already handled by connectRef implementation
-            } finally {
-              // Reset connecting state when done (success or failure)
-              isConnectingRef.current = false;
+          const currentPermissionState =
+            await checkHardwareWalletPermission(walletType);
+
+          if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
+            return;
+          }
+
+          setHardwareConnectionPermissionState(currentPermissionState);
+          if (
+            currentPermissionState !== HardwareConnectionPermissionState.Granted
+          ) {
+            return;
+          }
+
+          if (adapterRef.current?.isConnected()) {
+            updateConnectionState(ConnectionState.connected());
+            return;
+          }
+
+          if (isConnectingRef.current || !connectRef.current) {
+            return;
+          }
+
+          isConnectingRef.current = true;
+          try {
+            await connectRef.current();
+            if (!abortSignal.aborted && adapterRef.current?.isConnected()) {
+              updateConnectionState(ConnectionState.connected());
+              setAutoConnected(effectAccountAddress);
+            } else if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+              updateConnectionState(ConnectionState.disconnected());
             }
-          } else {
-            // No connect function available, reset the flag
+          } catch {
+            if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+              updateConnectionState(ConnectionState.disconnected());
+            }
+          } finally {
             isConnectingRef.current = false;
           }
+        } catch {
+          // Swallow errors; auto-connect best-effort only.
         }
       };
 
-      const handleNativeDisconnect = async () => {
-        if (abortSignal.aborted) {
+      const runNativeDisconnect = async () => {
+        if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
           return;
         }
 
         if (!adapterRef.current?.isConnected()) {
+          return;
+        }
+
+        // WORKAROUND: The Trezor Connect SDK (offscreen document) closes its
+        // WebUSB transport after signing, which fires a native disconnect event
+        // indistinguishable from a physical unplug — even
+        // navigator.usb.getDevices() returns empty. Suppress teardown while
+        // signing is in flight. Real physical disconnects during signing will
+        // cause the signing operation to fail, which the tracker
+        // (useHwSignTracker in batch mode) handles via TransactionFailed.
+        //
+        // See isSigningInProgressRef in HardwareWalletStateManager for details.
+        if (isSigningInProgressRef.current) {
           return;
         }
 
@@ -156,6 +173,12 @@ export const useHardwareWalletAutoConnect = ({
         }
 
         setHardwareConnectionPermissionState(currentPermissionState);
+      };
+
+      const handleNativeDisconnect = () => {
+        runNativeDisconnect().catch(() => {
+          // Best-effort; permission refresh after disconnect should not surface as unhandled.
+        });
       };
 
       const getSubscriptionFunction = (type: HardwareWalletType) => {
@@ -181,14 +204,18 @@ export const useHardwareWalletAutoConnect = ({
 
       getConnectedDevices(walletType)
         .then((devices) => {
-          if (abortSignal.aborted || devices.length === 0) {
+          if (
+            abortSignal.aborted ||
+            isEnsuringDeviceReadyRef.current ||
+            devices.length === 0
+          ) {
             return;
           }
 
           handleNativeConnect();
         })
         .catch(() => {
-          // Swallow errors; auto-connect best-effort only.
+          // Swallow errors from getConnectedDevices; connect path uses its own catch.
         });
 
       return () => {
@@ -197,16 +224,16 @@ export const useHardwareWalletAutoConnect = ({
       };
     },
     // Ignore refs in dep array
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      isOnAutoConnectRoute,
       isHardwareWalletAccount,
       walletType,
       hardwareConnectionPermissionState,
       isWebHidAvailable,
       isWebUsbAvailable,
       handleDisconnect,
+      isOnRepairRoute,
+      isOnAutoConnectRoute,
       setHardwareConnectionPermissionState,
       updateConnectionState,
       setAutoConnected,
@@ -217,8 +244,8 @@ export const useHardwareWalletAutoConnect = ({
   useEffect(
     () => {
       if (
-        !isOnAutoConnectRoute ||
         !isHardwareWalletAccount ||
+        isOnRepairRoute ||
         !walletType ||
         hardwareConnectionPermissionState !==
           HardwareConnectionPermissionState.Granted
@@ -243,7 +270,7 @@ export const useHardwareWalletAutoConnect = ({
 
       getConnectedDevices(walletType)
         .then(async (devices) => {
-          if (abortSignal.aborted) {
+          if (abortSignal.aborted || isEnsuringDeviceReadyRef.current) {
             return;
           }
 
@@ -254,20 +281,23 @@ export const useHardwareWalletAutoConnect = ({
             !isConnectingRef.current &&
             !hasAutoConnectedRef.current
           ) {
-            // Synchronous check-and-set to prevent race condition with handleNativeConnect
+            // Synchronous check-and-set to prevent race condition with runNativeConnect
             // This must happen atomically before any async work
             isConnectingRef.current = true;
 
             const connect = connectRef.current;
             try {
               await connect();
-              // Check cancellation again after async connect completes
-              if (!abortSignal.aborted) {
+              if (!abortSignal.aborted && adapterRef.current?.isConnected()) {
+                updateConnectionState(ConnectionState.connected());
                 setAutoConnected(effectAccountAddress ?? null);
+              } else if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+                updateConnectionState(ConnectionState.disconnected());
               }
             } catch {
-              // Connection failed, don't mark as auto-connected
-              // Error is already handled by connectRef implementation
+              if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+                updateConnectionState(ConnectionState.disconnected());
+              }
             } finally {
               // Reset connecting state when done (success or failure)
               isConnectingRef.current = false;
@@ -283,16 +313,17 @@ export const useHardwareWalletAutoConnect = ({
       };
     },
     // Ignore refs in dep array
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      isOnAutoConnectRoute,
       isHardwareWalletAccount,
+      isOnRepairRoute,
       accountAddress,
       walletType,
       hardwareConnectionPermissionState,
+      isOnAutoConnectRoute,
       resetAutoConnectState,
       setAutoConnected,
+      updateConnectionState,
     ],
   );
 };

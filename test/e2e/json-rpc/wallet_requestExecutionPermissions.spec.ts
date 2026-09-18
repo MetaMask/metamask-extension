@@ -65,9 +65,12 @@ describe('wallet_requestExecutionPermissions', function () {
               chainId: '0x539',
               to: '0x1234567890123456789012345678901234567890',
               permission: {
-                type: 'erc20-token-revocation',
+                type: 'native-token-periodic',
                 isAdjustmentAllowed: true,
-                data: {},
+                data: {
+                  periodAmount: '0x100',
+                  periodDuration: 86400,
+                },
               },
               rules: [],
             },

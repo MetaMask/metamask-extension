@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import React from 'react';
 import {
   AccountGroupId,
@@ -9,13 +8,27 @@ import {
 } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { createMockMultichainAccountsState } from '../../selectors/multichain-accounts/test-utils';
 import { AccountTreeWallets } from '../../selectors/multichain-accounts/account-tree.types';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import { useLinkAccountGroup } from './useLinkAccountGroup';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
 
 // Mock store actions used by the hook
 jest.mock('../../store/actions', () => ({
@@ -66,20 +79,6 @@ const {
   setRewardsAccountLinkedTimestamp: jest.Mock;
 };
 
-// Simple container to provide MetaMetrics context
-const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
-const Container = ({ children }: { children: React.ReactNode }) => (
-  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-    {children}
-  </MetaMetricsContext.Provider>
-);
-
 // Helpers to build minimal state with a wallet and group
 const WALLET_ID = 'entropy:test';
 const GROUP_ID = 'entropy:test/0' as AccountGroupId;
@@ -104,6 +103,7 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
             pinned: false,
             hidden: false,
             entropy: { groupIndex: 0 },
+            lastSelected: 0,
           },
           accounts: accounts.map((a) => a.id),
         },
@@ -114,7 +114,6 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
   return createMockMultichainAccountsState(
     {
       wallets,
-      selectedAccountGroup: GROUP_ID,
     },
     {
       accounts: accounts.reduce<Record<string, InternalAccount>>((acc, a) => {
@@ -123,6 +122,8 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
       }, {}),
       selectedAccount: accounts[0]?.id ?? '',
     },
+    undefined,
+    GROUP_ID,
   );
 };
 
@@ -210,7 +211,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       expect(typeof result.current.linkAccountGroup).toBe('function');
@@ -224,7 +225,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(undefined),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -243,7 +244,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -279,7 +280,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -321,7 +322,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -341,7 +342,7 @@ describe('useLinkAccountGroup', () => {
       });
       const calls = mockTrackEvent.mock.calls.map((args) => args[0]);
       const eventNames = calls.map(
-        (c: { event: MetaMetricsEventName }) => c.event,
+        (c: { name: MetaMetricsEventName }) => c.name,
       );
       const startedCount = eventNames.filter(
         (e) => e === MetaMetricsEventName.RewardsAccountLinkingStarted,
@@ -391,7 +392,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -402,7 +403,7 @@ describe('useLinkAccountGroup', () => {
       // Started events for both, then failed for both
       const calls = mockTrackEvent.mock.calls.map((args) => args[0]);
       const eventNames = calls.map(
-        (c: { event: MetaMetricsEventName }) => c.event,
+        (c: { name: MetaMetricsEventName }) => c.name,
       );
       const startedCount = eventNames.filter(
         (e) => e === MetaMetricsEventName.RewardsAccountLinkingStarted,
@@ -450,7 +451,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -470,7 +471,7 @@ describe('useLinkAccountGroup', () => {
       });
       const calls = mockTrackEvent.mock.calls.map((args) => args[0]);
       const eventNames = calls.map(
-        (c: { event: MetaMetricsEventName }) => c.event,
+        (c: { name: MetaMetricsEventName }) => c.name,
       );
       const startedCount = eventNames.filter(
         (e) => e === MetaMetricsEventName.RewardsAccountLinkingStarted,
@@ -512,7 +513,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -558,7 +559,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -599,7 +600,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -640,7 +641,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -679,7 +680,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -689,14 +690,14 @@ describe('useLinkAccountGroup', () => {
       // Verify events were tracked with account_type property
       const startedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].event === MetaMetricsEventName.RewardsAccountLinkingStarted,
+          call[0].name === MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
       expect(startedEvent).toBeDefined();
       expect(startedEvent[0].properties).toHaveProperty('account_type');
 
       const completedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].event === MetaMetricsEventName.RewardsAccountLinkingCompleted,
+          call[0].name === MetaMetricsEventName.RewardsAccountLinkingCompleted,
       );
       expect(completedEvent).toBeDefined();
       expect(completedEvent[0].properties).toHaveProperty('account_type');
@@ -726,7 +727,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -769,7 +770,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -817,7 +818,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -862,7 +863,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -904,7 +905,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -948,7 +949,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -967,7 +968,7 @@ describe('useLinkAccountGroup', () => {
       expect(mockSetRewardsAccountLinkedTimestamp).toHaveBeenCalled();
 
       // Verify metrics
-      const eventNames = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const eventNames = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(eventNames).toContain(
         MetaMetricsEventName.RewardsAccountLinkingCompleted,
       );
@@ -998,7 +999,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -1041,7 +1042,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -1060,7 +1061,7 @@ describe('useLinkAccountGroup', () => {
       });
 
       // Verify correct count of started/completed/failed events
-      const eventNames = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const eventNames = mockTrackEvent.mock.calls.map((args) => args[0].name);
       const startedCount = eventNames.filter(
         (e) => e === MetaMetricsEventName.RewardsAccountLinkingStarted,
       ).length;
@@ -1098,7 +1099,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -1137,7 +1138,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -1152,7 +1153,7 @@ describe('useLinkAccountGroup', () => {
       });
 
       // Verify all failure events are tracked
-      const eventNames = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const eventNames = mockTrackEvent.mock.calls.map((args) => args[0].name);
       const failedCount = eventNames.filter(
         (e) => e === MetaMetricsEventName.RewardsAccountLinkingFailed,
       ).length;
@@ -1180,7 +1181,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let report;
@@ -1227,7 +1228,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -1265,7 +1266,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -1307,7 +1308,7 @@ describe('useLinkAccountGroup', () => {
         () => useLinkAccountGroup(GROUP_ID),
         state,
         undefined,
-        Container,
+        undefined,
       );
 
       let linkPromise: Promise<unknown>;

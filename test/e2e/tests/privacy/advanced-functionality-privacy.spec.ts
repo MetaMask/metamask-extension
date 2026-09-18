@@ -3,8 +3,9 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
-import AccountList from '../../page-objects/pages/account-list-page';
+import AccountList from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import {
@@ -12,24 +13,35 @@ import {
   completeImportSRPOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { getMockAssetsPrice, mockSpotPrices } from '../tokens/utils/mocks';
+
+const MOCK_ETH_PRICE = 1700;
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
+    // Token metadata under unified assets. This endpoint replaced the legacy
+    // token.api.cx.metamask.io/tokens/<chainId> list, and it is gated behind
+    // the advanced assets functionality toggle these tests exercise.
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
-      .thenCallback(() => {
+      .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+      .always()
+      .thenCallback((request) => {
+        const assetIds = new URL(request.url).searchParams
+          .getAll('assetIds')
+          .join(',');
+
         return {
           statusCode: 200,
-          json: [{ fakedata: true }],
-        };
-      }),
-    await mockServer
-      .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [{ fakedata: true }],
+          json: assetIds.includes('eip155:1/slip44:60')
+            ? [
+                {
+                  assetId: 'eip155:1/slip44:60',
+                  name: 'Ethereum',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+              ]
+            : [],
         };
       }),
     await mockServer
@@ -42,7 +54,7 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       }),
     await mockSpotPrices(mockServer, {
       'eip155:1/slip44:60': {
-        price: 1700,
+        price: MOCK_ETH_PRICE,
         marketCap: 382623505141,
         pricePercentChange1d: 0,
       },
@@ -100,7 +112,8 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed();
-        await homePage.refreshErc20TokenList();
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
 
         for (const m of mockedEndpoint) {
@@ -129,6 +142,18 @@ describe('MetaMask onboarding ', function () {
               '0x1': true,
             },
           })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_PRICE,
+                usdConversionRate: MOCK_ETH_PRICE,
+              },
+            },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
@@ -140,8 +165,10 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
-        await homePage.refreshErc20TokenList();
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         await homePage.headerNavbar.openAccountMenu();
         await new AccountList(driver).checkPageIsLoaded();
 
@@ -163,19 +190,30 @@ describe('MetaMask onboarding ', function () {
             continue;
           }
 
-          // Spot-prices endpoint may be called multiple times (initial load + refresh)
+          // spot-prices may be called more than once (initial load + refresh).
           if (mockUrl.includes('spot-prices')) {
             assert.ok(
               requests.length >= 1,
               `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
             );
-          } else {
-            assert.equal(
-              requests.length,
-              1,
-              `${m} should make requests after onboarding`,
-            );
+            continue;
           }
+
+          // Asset metadata is fetched once per batch of asset ids, so several
+          // requests are expected across the enabled networks.
+          if (mockUrl.includes('/v3/assets')) {
+            assert.ok(
+              requests.length >= 1,
+              `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
+            );
+            continue;
+          }
+
+          assert.equal(
+            requests.length,
+            1,
+            `${m} should make requests after onboarding`,
+          );
         }
       },
     );

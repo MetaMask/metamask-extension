@@ -50,12 +50,13 @@ const createDifferenceMessage = (
 };
 
 // Minimal type definition for the specific fields we validate in the State Logs Account spec
-type MinimalStateLogsJson = {
+export type MinimalStateLogsJson = {
   metamask: {
     internalAccounts: {
       selectedAccount: string;
       accounts: {
         [key: string]: {
+          type: string;
           address: string;
         };
       };
@@ -224,6 +225,11 @@ const getIgnoredKeys = (): string[] => [
   'metamask.verifiedSnaps',
   'metamask.networksMetadata',
   'metamask.appActiveTab', // Firefox doesn't support sidepanel and tabs may not be available at startup in E2E tests
+  'metamask.currencyRates.MON',
+  'metamask.enabledNetworkMap.eip155.0x8f',
+  'metamask.nativeAssetIdentifiers.eip155:143',
+  'metamask.accountsByChainId.0x8f',
+  'metamask.marketData.0x8f',
 ];
 
 const findMissingKeys = (

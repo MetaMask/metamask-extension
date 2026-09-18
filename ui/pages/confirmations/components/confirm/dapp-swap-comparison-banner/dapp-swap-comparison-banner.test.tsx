@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { fireEvent } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 import * as DappSwapContext from '../../../context/dapp-swap';
@@ -64,7 +64,7 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../../selectors/remote-feature-flags');
+jest.mock('../../../../../../shared/lib/selectors/remote-feature-flags');
 
 const quote = {
   quote: {
@@ -164,13 +164,13 @@ describe('<DappSwapComparisonBanner />', () => {
   it('call function to update quote swap when user clicks on Metamask Swap button', () => {
     const mockSetQuotedSwapDisplayedInInfo = jest.fn();
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
-      selectedQuote: quote as unknown as QuoteResponse,
+      selectedQuote: quote as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: mockSetQuotedSwapDisplayedInInfo,
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     mockUseDappSwapComparisonInfo.mockReturnValue({
-      selectedQuote: quote as unknown as QuoteResponse,
+      selectedQuote: quote as unknown as QuoteResponseV1,
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,
@@ -206,13 +206,13 @@ describe('<DappSwapComparisonBanner />', () => {
   it('call function to update quote swap clicks on Market rate button', () => {
     const mockSetQuotedSwapDisplayedInInfo = jest.fn();
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
-      selectedQuote: quote as unknown as QuoteResponse,
+      selectedQuote: quote as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: mockSetQuotedSwapDisplayedInInfo,
     } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     mockUseDappSwapComparisonInfo.mockReturnValue({
-      selectedQuote: quote as unknown as QuoteResponse,
+      selectedQuote: quote as unknown as QuoteResponseV1,
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,

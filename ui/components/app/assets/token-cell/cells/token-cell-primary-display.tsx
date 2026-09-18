@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   TextAlign,
   TextColor,
@@ -10,7 +11,6 @@ import {
   SensitiveTextLength,
 } from '../../../../component-library';
 import { TokenFiatDisplayInfo } from '../../types';
-import { Skeleton } from '../../../../component-library/skeleton';
 import { selectAnyEnabledNetworksAreAvailable } from '../../../../../selectors';
 import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
 import { useFormatters } from '../../../../../hooks/useFormatters';
@@ -29,7 +29,7 @@ export const TokenCellPrimaryDisplay = React.memo(
 
     return (
       <Skeleton
-        isLoading={
+        hideChildren={
           !anyEnabledNetworksAreAvailable && isZeroAmount(token.balance)
         }
       >

@@ -1,4 +1,5 @@
 import { TextColor } from '@metamask/design-system-react';
+import { getPerpsDisplaySymbol } from '@metamask/perps-controller';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import type {
   Order,
@@ -6,25 +7,16 @@ import type {
   PerpsTransaction,
   PerpsTransactionFilter,
 } from './types';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import {
+  HYPERLIQUID_ASSET_ICONS_BASE_URL,
+  METAMASK_PERPS_ICONS_BASE_URL,
+  PERPS_CONSTANTS,
+} from './constants';
 
-/**
- * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
- * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
- *
- * @param symbol - The symbol to extract the display name from
- * @returns The display name
- * @example
- * getDisplayName('xyz:TSLA') => 'TSLA'
- * getDisplayName('BTC') => 'BTC'
- */
-export const getDisplayName = (symbol: string): string => {
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-};
+// Re-exported here because callers importing `'../../components/app/perps/utils'`
+// resolve to this file (TypeScript prefers sibling `utils.ts` over the
+// `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
+export { willFlipPosition } from './utils/orderUtils';
 
 /**
  * Determines if a position is long (positive size) or short (negative size)
@@ -98,8 +90,69 @@ export const getStatusColor = (status: Order['status']): TextColor => {
 };
 
 /**
+ * Normalizes a 24h percentage change string to always include the '%' suffix.
+ * The live price stream may omit '%' while market data always includes it.
+ *
+ * Returns the value unchanged if:
+ * - empty / falsy
+ * - already contains '%'
+ * - contains no digits (e.g. a fallback dash "—" or error string)
+ *
+ * @param value - Raw percentage string, with or without '%' (e.g., "+2.84" or "+2.84%")
+ * @returns The normalized percentage string with '%' appended if missing
+ * @example
+ * formatChangePercent('+2.84')  => '+2.84%'
+ * formatChangePercent('+2.84%') => '+2.84%'
+ * formatChangePercent('')       => ''
+ * formatChangePercent('—')      => '—'
+ */
+export const formatChangePercent = (value: string): string => {
+  if (!value || value.includes('%') || !/\d/u.test(value)) {
+    return value;
+  }
+  return `${value}%`;
+};
+
+/**
+ * Normalizes a 24h percentage change string for UI display.
+ * Positive numeric values are always shown with an explicit '+' prefix,
+ * matching mobile behavior. Negative values and zero keep their natural sign.
+ *
+ * Returns the value unchanged if:
+ * - empty / falsy
+ * - contains no digits (e.g. a fallback dash "—" or error string)
+ *
+ * @param value - Raw percentage string, with or without '%' or '+' (e.g., "2.84", "+2.84%", "-1.23%")
+ * @returns The normalized percentage string for display
+ * @example
+ * formatSignedChangePercent('2.84') => '+2.84%'
+ * formatSignedChangePercent('2.84%') => '+2.84%'
+ * formatSignedChangePercent('+2.84%') => '+2.84%'
+ * formatSignedChangePercent('-1.23%') => '-1.23%'
+ * formatSignedChangePercent('0.00%') => '0.00%'
+ */
+export const formatSignedChangePercent = (value: string): string => {
+  const formattedValue = formatChangePercent(value);
+
+  if (!formattedValue || !/\d/u.test(formattedValue)) {
+    return formattedValue;
+  }
+
+  if (
+    formattedValue.startsWith('+') ||
+    formattedValue.startsWith('-') ||
+    Number.parseFloat(formattedValue.replace('%', '')) <= 0
+  ) {
+    return formattedValue;
+  }
+
+  return `+${formattedValue}`;
+};
+
+/**
  * Get the appropriate text color for a percentage change value
- * Non-negative values (≥ 0) → green, negative → red
+ * Non-negative values (≥ 0) → green, negative → red,
+ * non-numeric / fallback values → alternative text color
  *
  * @param percentString - The percentage string (e.g., "+2.84%", "-1.23%", "0.00%", "2.84%")
  * @returns The appropriate text color
@@ -108,9 +161,13 @@ export const getStatusColor = (status: Order['status']): TextColor => {
  * getChangeColor('2.84%') => TextColor.SuccessDefault
  * getChangeColor('0.00%') => TextColor.SuccessDefault
  * getChangeColor('-1.23%') => TextColor.ErrorDefault
+ * getChangeColor('N/A') => TextColor.TextAlternative
  */
 export const getChangeColor = (percentString: string): TextColor => {
-  const value = parseFloat(percentString.replace('%', ''));
+  const value = Number.parseFloat(percentString.replace('%', ''));
+  if (Number.isNaN(value)) {
+    return TextColor.TextAlternative;
+  }
   if (value < 0) {
     return TextColor.ErrorDefault;
   }
@@ -118,50 +175,62 @@ export const getChangeColor = (percentString: string): TextColor => {
 };
 
 /**
- * Extract the display symbol from a full symbol string
- * Strips DEX prefix for HIP-3 markets (e.g., "xyz:TSLA" -> "TSLA")
- * Includes null/type safety checks
+ * Extract the display symbol from a full symbol string.
+ * Strips the DEX prefix for HIP-3 markets (e.g. "xyz:TSLA" -> "TSLA").
+ * Includes null/type safety checks.
  *
- * @param symbol - The symbol to extract the display name from
- * @returns The display name
+ * IMPORTANT: This is for RENDERING ONLY. Always keep the raw, full symbol
+ * (with prefix) when calling background/API methods, building WebSocket
+ * subscriptions, navigating routes, passing to `PerpsTokenLogo`, or setting
+ * analytics properties / `data-testid` / React `key` values. This is the
+ * single canonical helper for stripping the prefix — do not add another one.
+ *
+ * Delegates to `@metamask/perps-controller`'s `getPerpsDisplaySymbol` so the
+ * UI and controller share one implementation instead of maintaining a
+ * parallel copy that could drift. Re-exported under this name since it's
+ * already used across ~20 call sites in the UI layer.
+ *
+ * @param symbol - The symbol to extract the display name from.
+ * @returns The display symbol.
  * @example
  * getDisplaySymbol('xyz:TSLA') => 'TSLA'
  * getDisplaySymbol('BTC') => 'BTC'
  */
-export const getDisplaySymbol = (symbol: string): string => {
-  if (!symbol || typeof symbol !== 'string') {
-    return symbol;
-  }
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
+export const getDisplaySymbol = (symbol: string): string =>
+  getPerpsDisplaySymbol(symbol);
+
+export type AssetIconUrls = {
+  primary: string;
+  fallback: string;
 };
 
 /**
- * Generate the icon URL for an asset symbol
- * Handles both regular assets and HIP-3 assets (dex:symbol format)
- *
- * @param symbol - The symbol to generate the icon URL for
- * @returns The icon URL
- * @example
- * getAssetIconUrl('BTC') => 'https://app.hyperliquid.xyz/coins/BTC.svg'
- * getAssetIconUrl('xyz:TSLA') => 'https://app.hyperliquid.xyz/coins/xyz:TSLA.svg'
+ * Generate primary and fallback icon URLs for an asset symbol.
+ * Primary is the MetaMask-hosted GitHub CDN; fallback is HyperLiquid.
+ * HIP-3 assets use the `hip3:{dex}_{symbol}` filename convention on the
+ * MetaMask CDN (e.g., xyz:NATGAS → hip3:xyz_NATGAS.svg).
+ * @param symbol
  */
-export const getAssetIconUrl = (symbol: string): string => {
+export const getAssetIconUrls = (symbol: string): AssetIconUrls | null => {
   if (!symbol) {
-    return '';
+    return null;
   }
 
-  // Check for HIP-3 asset (contains colon)
   if (symbol.includes(':')) {
     const [dex, assetSymbol] = symbol.split(':');
-    return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${dex.toLowerCase()}:${assetSymbol.toUpperCase()}.svg`;
+    const hyperliquidFormat = `${dex.toLowerCase()}:${assetSymbol.toUpperCase()}`;
+    const metamaskFormat = `hip3:${dex.toLowerCase()}_${assetSymbol.toUpperCase()}`;
+    return {
+      primary: `${METAMASK_PERPS_ICONS_BASE_URL}${metamaskFormat}.svg`,
+      fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${hyperliquidFormat}.svg`,
+    };
   }
 
-  // Regular asset - uppercase the symbol
-  return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${symbol.toUpperCase()}.svg`;
+  const upperSymbol = symbol.toUpperCase();
+  return {
+    primary: `${METAMASK_PERPS_ICONS_BASE_URL}${upperSymbol}.svg`,
+    fallback: `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${upperSymbol}.svg`,
+  };
 };
 
 /**
@@ -180,6 +249,36 @@ export const safeDecodeURIComponent = (value: string): string | undefined => {
   } catch {
     return undefined;
   }
+};
+
+type TpslPriceInput = {
+  takeProfitPrice?: string | null;
+  stopLossPrice?: string | null;
+};
+
+type TpslPriceOutput = {
+  takeProfitPrice?: string;
+  stopLossPrice?: string;
+};
+
+const normalizePriceInput = (value?: string | null): string | undefined => {
+  const cleanedValue = value?.replaceAll(',', '').trim() ?? '';
+  return cleanedValue === '' ? undefined : cleanedValue;
+};
+
+/**
+ * Normalizes TP/SL input strings by removing formatting and mapping empty values to undefined.
+ *
+ * @param prices - The raw TP/SL input strings.
+ * @returns The normalized TP/SL values ready for controller calls.
+ */
+export const normalizeTpslPrices = (
+  prices: TpslPriceInput,
+): TpslPriceOutput => {
+  return {
+    takeProfitPrice: normalizePriceInput(prices.takeProfitPrice),
+    stopLossPrice: normalizePriceInput(prices.stopLossPrice),
+  };
 };
 
 // Transaction history utility types
@@ -351,7 +450,7 @@ export const filterMarketsByQuery = (
 };
 
 /**
- * Check if a market is an allowed HIP-3 market (stocks, commodities, forex)
+ * Check if a market is an allowed HIP-3 market
  *
  * HIP-3 markets are identified by having a marketSource that matches one of
  * the allowed HIP-3 DEX providers from the feature flag.
@@ -385,4 +484,162 @@ export const isHip3Market = (
  */
 export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
+};
+
+export function getPnlDisplayColor(pnl: number): TextColor {
+  if (pnl > 0) {
+    return TextColor.SuccessDefault;
+  }
+  if (pnl < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.TextDefault;
+}
+
+/**
+ * Neutralizes a semantic (success/error) text color when the value it's
+ * applied to is currently masked (e.g. by privacy mode). This prevents the
+ * color itself from leaking whether a P&L/return figure is positive or
+ * negative while the value is hidden behind dots.
+ *
+ * @param color - The color to use when the value is visible
+ * @param isHidden - Whether the value is currently masked
+ * @returns `TextColor.TextDefault` when hidden, otherwise the given color
+ * @example
+ * getPrivacyAwareColor(TextColor.SuccessDefault, true) // → TextColor.TextDefault
+ * getPrivacyAwareColor(TextColor.SuccessDefault, false) // → TextColor.SuccessDefault
+ */
+export function getPrivacyAwareColor(
+  color: TextColor,
+  isHidden: boolean | undefined,
+): TextColor {
+  return isHidden ? TextColor.TextDefault : color;
+}
+
+/**
+ * Format a RoE% value for display in TP/SL inputs.
+ * Always returns the absolute value: integers with no decimal ("25"),
+ * non-integers with 2 decimal places ("25.50").
+ *
+ * @param value - The numeric percentage value to format
+ * @returns The formatted percentage string (sign preserved for negative values)
+ * @example
+ * formatRoePercent(10) => '10'
+ * formatRoePercent(-25.5) => '-25.50'
+ * formatRoePercent(0) => '0'
+ */
+export const formatRoePercent = (value: number): string => {
+  const abs = Math.abs(value);
+  const rounded = Math.round(abs * 100) / 100;
+  const formatted = Number.isInteger(rounded)
+    ? rounded.toFixed(0)
+    : rounded.toFixed(2);
+  return value < 0 && rounded !== 0 ? `-${formatted}` : formatted;
+};
+
+const volumeMultipliers: Record<string, number> = {
+  K: 1e3,
+  M: 1e6,
+  B: 1e9,
+  T: 1e12,
+} as const;
+
+const VOLUME_SUFFIX_REGEX = /\$?([\d.,]+)([KMBT])?/u;
+
+const removeCommas = (str: string): string => {
+  let result = '';
+  for (const char of str) {
+    if (char !== ',') {
+      result += char;
+    }
+  }
+  return result;
+};
+
+/**
+ * Parse volume strings with magnitude suffixes (e.g., '$1.2B', '$850M')
+ * Returns numeric value for sorting
+ *
+ * @param volumeStr - The volume string to parse
+ * @returns Numeric value for sorting
+ */
+export const parseVolume = (volumeStr: string | undefined): number => {
+  if (!volumeStr) {
+    return -1;
+  }
+
+  if (volumeStr === PERPS_CONSTANTS.FALLBACK_PRICE_DISPLAY) {
+    return -1;
+  }
+  if (volumeStr === '$<1') {
+    return 0.5;
+  }
+
+  const suffixMatch = VOLUME_SUFFIX_REGEX.exec(volumeStr);
+  if (suffixMatch) {
+    const [, numberPart, suffix] = suffixMatch;
+    const baseValue = Number.parseFloat(removeCommas(numberPart));
+
+    if (Number.isNaN(baseValue)) {
+      return -1;
+    }
+
+    return suffix ? baseValue * volumeMultipliers[suffix] : baseValue;
+  }
+
+  return -1;
+};
+
+/**
+ * Check if a market has meaningful trading volume (non-zero).
+ * Markets with zero, negative, or missing volume are considered inactive and
+ * should be hidden from market lists.
+ *
+ * @param market - The market data to check
+ * @returns True if the market has non-zero volume
+ * @example
+ * hasVolume({ volume: '$1.2M' }) // → true
+ * hasVolume({ volume: '$0' })    // → false
+ * hasVolume({ volume: '' })      // → false
+ */
+export const hasVolume = (market: PerpsMarketData): boolean => {
+  return parseVolume(market.volume) > 0;
+};
+
+/**
+ * Computes the PnL ratio for a position, returning `undefined` when it
+ * cannot be determined.
+ *
+ * Primary: unrealizedPnl / marginUsed.
+ * Fallback: returnOnEquity, which is already a ratio (e.g. 0.1579 for 15.79%).
+ *
+ * @param position - Position values used to compute the PnL ratio.
+ * @param position.unrealizedPnl - Unrealized profit and loss as a string.
+ * @param position.marginUsed - Margin used as a string.
+ * @param position.returnOnEquity - Return on equity as a decimal ratio string (e.g. "0.1579").
+ * @returns The PnL ratio (e.g. 0.15 for +15 %) or `undefined`.
+ */
+export const getPositionPnlRatio = (position: {
+  unrealizedPnl: string;
+  marginUsed: string;
+  returnOnEquity: string;
+}): number | undefined => {
+  const unrealizedPnl = Number.parseFloat(position.unrealizedPnl);
+  const marginUsed = Number.parseFloat(position.marginUsed);
+
+  if (
+    !Number.isNaN(unrealizedPnl) &&
+    !Number.isNaN(marginUsed) &&
+    marginUsed !== 0
+  ) {
+    return unrealizedPnl / marginUsed;
+  }
+
+  const returnOnEquity = parseFloat(position.returnOnEquity);
+  if (!Number.isNaN(returnOnEquity)) {
+    // position.returnOnEquity is a decimal ratio (e.g. 0.1579); pass directly to formatter.
+    return returnOnEquity;
+  }
+
+  return undefined;
 };

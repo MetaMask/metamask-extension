@@ -1,22 +1,20 @@
 import React, { useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { AddNetworkFields } from '@metamask/network-controller';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   ButtonIcon,
   ButtonIconSize,
   Icon,
   IconName,
   IconSize,
   IconColor,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  ButtonLinkSize,
-  ButtonLink,
   Popover,
   PopoverPosition,
 } from '../../../component-library';
@@ -26,9 +24,7 @@ import {
   toggleNetworkMenu,
   addNetwork,
 } from '../../../../store/actions';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import {
   AlignItems,
   BackgroundColor,
@@ -36,28 +32,22 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { useBoolean } from '../../../../hooks/useBoolean';
+import type { FeaturedNetwork } from '../../../../selectors/config-registry/config-registry';
+import { useDispatch } from '../../../../store/hooks';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
 }: {
-  searchAddNetworkResults: AddNetworkFields[];
+  searchAddNetworkResults: FeaturedNetwork[];
 }) => {
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsOpen(false);
-  };
+  const { value: isOpen, setTrue: open, setFalse: close } = useBoolean();
 
   const [referenceElement, setReferenceElement] = useState();
 
@@ -88,7 +78,7 @@ const PopularNetworkList = ({
           <Box
             display={Display.Flex}
             alignItems={AlignItems.center}
-            onMouseEnter={handleMouseEnter}
+            onMouseEnter={open}
           >
             <Box marginLeft={2} display={Display.Flex}>
               <Icon
@@ -107,7 +97,7 @@ const PopularNetworkList = ({
               isOpen={isOpen}
               flip
               backgroundColor={BackgroundColor.backgroundSection}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={close}
               style={{
                 width: '326px',
               }}
@@ -117,9 +107,8 @@ const PopularNetworkList = ({
                 {t('popularNetworkAddToolTip')}{' '}
               </Text>
               <Box key="learn-more-link">
-                <ButtonLink
-                  size={ButtonLinkSize.Auto}
-                  externalLink
+                <TextButton
+                  size={TextButtonSize.BodyMd}
                   onClick={() => {
                     global.platform.openTab({
                       url: ZENDESK_URLS.UNKNOWN_NETWORK,
@@ -127,7 +116,7 @@ const PopularNetworkList = ({
                   }}
                 >
                   {t('learnMoreUpperCase')}
-                </ButtonLink>
+                </TextButton>
               </Box>
             </Popover>
           </Box>
@@ -156,13 +145,13 @@ const PopularNetworkList = ({
             paddingTop={4}
             className="new-network-list__list-of-networks"
             data-testid={`popular-network-${network.chainId}`}
-            onMouseEnter={handleMouseLeave}
+            onMouseEnter={close}
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
-                borderColor={BorderColor.backgroundDefault}
                 size={AvatarNetworkSize.Sm}
                 src={
+                  network.imageUrl ??
                   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
                     network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
                   ]
@@ -184,8 +173,6 @@ const PopularNetworkList = ({
                 iconName={IconName.Add}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('add')}
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
 
