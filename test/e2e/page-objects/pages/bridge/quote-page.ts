@@ -184,6 +184,13 @@ class BridgeQuotePage {
     console.log(`Expected dest asset ${destToken} is selected`);
   };
 
+  async checkCustomSlippageDisplayedValue(value: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.slippageCustomButton,
+      text: `${value}%`,
+    });
+  }
+
   async checkDestAmount(amount: string) {
     await this.driver.waitForSelector(this.destinationAmount(amount));
   }
@@ -602,17 +609,6 @@ class BridgeQuotePage {
     await input.sendKeys(Key.TAB);
   }
 
-  async checkCustomSlippageDisplayedValue(value: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.slippageCustomButton,
-      text: `${value}%`,
-    });
-  }
-
-  async submitSlippageModal(): Promise<void> {
-    await this.driver.clickElement(this.slippageSubmitButton);
-  }
-
   submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
   };
@@ -635,6 +631,10 @@ class BridgeQuotePage {
     await this.submitQuote();
     await this.driver.waitForSelector(this.warningModal);
   };
+
+  async submitSlippageModal(): Promise<void> {
+    await this.driver.clickElement(this.slippageSubmitButton);
+  }
 
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);

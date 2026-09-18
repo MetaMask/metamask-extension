@@ -314,10 +314,10 @@ describe('BridgeTransactionSettingsModal', () => {
     ) => {
       // @ts-expect-error - each is a valid test function
       it.each([
-        ['1234', '1234'],
+        ['1234', '100'],
         ['12.34', '12.34'],
         ['fas23.43', '23.43'],
-        ['fas23 ,43', '2343'],
+        ['fas23 ,43', '100'],
         ['!23', '23'],
         ['23.4.3', '23.43'],
         ['23.4a,3', '23.43'],
