@@ -245,7 +245,10 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         await submitBridgeTransactionBase(quoteResponse);
       } catch (error) {
         if (!isStaleAttempt(submissionGeneration)) {
-          dispatchSignatureEvent(getHardwareWalletSignatureErrorEvent(error));
+          const event = getHardwareWalletSignatureErrorEvent(error);
+          if (event) {
+            dispatchSignatureEvent(event);
+          }
         }
         throw error;
       }
