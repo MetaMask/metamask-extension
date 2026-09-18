@@ -634,11 +634,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/send/useMaxAmount.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/send/useSendNfts.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
