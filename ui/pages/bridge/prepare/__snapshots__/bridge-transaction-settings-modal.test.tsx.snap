@@ -112,6 +112,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
                 class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                 data-testid="bridge__tx-settings-modal-custom-input"
                 focused="true"
+                inputmode="decimal"
                 type="text"
                 value=""
               />

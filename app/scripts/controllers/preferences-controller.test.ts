@@ -1578,7 +1578,7 @@ describe('preferences controller', () => {
             showDefaultAddress: true,
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
-            isBasicFunctionalityConsolidatedEnabled: true,
+            isBasicFunctionalityConsolidatedEnabled: false,
             basicFunctionalityMigrationNotification: null,
             basicFunctionalityMigrationNotificationDismissed: false,
             skipDeepLinkInterstitial: false,

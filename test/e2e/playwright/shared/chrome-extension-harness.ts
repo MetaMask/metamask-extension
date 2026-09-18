@@ -109,28 +109,13 @@ export async function launchMetaMaskChromeExtension(
     args.push('--headless=new');
   }
 
-  // Route all browser traffic through the e2e mock server (mockttp on
-  // 127.0.0.1:8000 by default). Without this, requests bypass the mock
-  // server entirely, real backends get called, fixtures that depend on
-  // canned responses (e.g. terms-of-use acceptance, account discovery,
-  // price feeds) silently fail, and dependent UI never transitions.
-  // Mirrors `--proxy-server=...` + `acceptInsecureCerts: true` from
-  // `chrome.js`.
-  //
-  // The `bypass` list is critical and easy to miss. Selenium uses
-  // Chromium's `--proxy-server` CLI flag, which has an *implicit*
-  // loopback bypass (per Chromium proxy docs: `localhost`, `*.localhost`,
-  // `127.0.0.1`, `[::1]` are auto-bypassed unless `<-loopback>` is set).
-  // Playwright's `proxy:` option configures the proxy via internal API
-  // and does NOT inherit that implicit bypass — every loopback request
-  // ends up forwarded to mockttp. That breaks at least three things:
-  //   1. the e2e fixture server (`http://localhost:12345/state.json`)
-  //      returns mockttp's default response → the extension thinks it's
-  //      a fresh install → the test lands on onboarding;
-  //   2. the local Anvil RPC (`127.0.0.1:8545`) never reaches Anvil;
-  //   3. the WS servers + test dapp (`localhost:8080-8090`) misbehave.
-  // The bypass list below restores Selenium's behavior exactly.
+  // Route traffic through mockttp with Chromium's `--proxy-server` flag so
+  // MV3 service-worker requests (Segment, Sentry, feature flags) are mocked
+  // the same way as Selenium. Playwright's `proxy:` option only covers pages.
   const proxyServer = resolveMockServerProxy(options.proxyPort);
+
+  args.unshift(`--proxy-server=${proxyServer}`);
+  args.push('--ignore-certificate-errors');
 
   const context = await chromium.launchPersistentContext(userDataDir, {
     headless: false,
@@ -138,10 +123,6 @@ export async function launchMetaMaskChromeExtension(
     acceptDownloads: true,
     downloadsPath: downloadsDir,
     viewport: null,
-    proxy: {
-      server: proxyServer,
-      bypass: 'localhost, 127.0.0.1',
-    },
     ignoreHTTPSErrors: true,
   });
 
