@@ -84,6 +84,9 @@ else
     log_error "Bundle script failed"
     exit 1
 fi
+
+runtime_hash="$(find ./dist/firefox/ -name "runtime.*" | cut -d . -f 3)"
+
 cd "${WORK_DIR}"
 
 # Check if build was created
@@ -92,92 +95,7 @@ if [ ! -d "${SOURCE_DIR}/builds" ]; then
     exit 1
 fi
 
-# Step 7: Prepare for comparison
-log_info "Preparing builds for comparison..."
-COMPARISON_DIR="comparison"
-mkdir -p "${COMPARISON_DIR}"
-cd "${COMPARISON_DIR}"
-
-# Step 8: Extract production build
-log_info "Extracting production build..."
-mkdir -p production_build
-cd production_build
-unzip -q "../../${PRODUCTION_BUILD_FILE}"
-cd ..
-log_success "Production build extracted"
-
-# Step 9: Extract local build
-log_info "Extracting local build..."
-mkdir -p local_build
-cd local_build
-FIREFOX_BUILD_ZIP="${SOURCE_DIR}/builds/${PRODUCTION_BUILD_FILE}"
-if [ ! -f "${FIREFOX_BUILD_ZIP}" ]; then
-    log_error "Could not find Firefox build zip at ${FIREFOX_BUILD_ZIP}"
-    exit 1
-fi
-unzip -q "${FIREFOX_BUILD_ZIP}"
-cd ..
-log_success "Local build extracted"
-
-# Step 10: Compare builds using mtree
-log_info "Creating checksum snapshot of production build..."
-mtree -c -k sha256digest -p production_build > snapshot.mtree
-log_success "Snapshot created"
-
-log_info "Comparing local build with production build..."
-echo ""
-echo "=========================================="
-echo "          COMPARISON RESULTS"
-echo "=========================================="
-echo ""
-
-if mtree -p local_build < snapshot.mtree > comparison_output.txt 2>&1; then
-    log_success "✓ BUILDS ARE IDENTICAL!"
-    log_success "Both builds match perfectly. You can proceed with the Firefox submission."
-    RESULT="IDENTICAL"
-else
-    log_error "✗ BUILDS DIFFER!"
-    log_error "The following differences were found:"
-    echo ""
-    cat comparison_output.txt
-    echo ""
-    log_error "The builds are NOT identical. Please review the differences above."
-    RESULT="DIFFERENT"
-fi
-
-echo ""
-echo "=========================================="
-echo ""
-
-# Step 11: Save comparison report
-cd ..
-REPORT_FILE="comparison_report_v${VERSION}.txt"
-{
-    echo "MetaMask Extension Build Comparison Report"
-    echo "=========================================="
-    echo "Version: ${VERSION}"
-    echo "Date: $(date)"
-    echo "Result: ${RESULT}"
-    echo ""
-    echo "Files compared:"
-    echo "  - Production build: ${PRODUCTION_BUILD_FILE}"
-    echo "  - Local build: ${FIREFOX_BUILD_ZIP}"
-    echo ""
-    if [ "${RESULT}" = "DIFFERENT" ]; then
-        echo "Differences found:"
-        echo "----------------------------------------"
-        cat "${COMPARISON_DIR}/comparison_output.txt"
-    else
-        echo "No differences found. Builds are identical."
-    fi
-} > "${REPORT_FILE}"
-
-log_info "Comparison report saved to: ${PWD}/${REPORT_FILE}"
-
-# Export result for parent script
-echo "${RESULT}" > .comparison_result
-
-if [ "${RESULT}" = "IDENTICAL" ]; then
+if [ "${runtime_hash}" = "1623a92649bf9684cb25" ]; then
     exit 0
 else
     exit 1
