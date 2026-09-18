@@ -501,7 +501,7 @@
     "@metamask/stellar-wallet-snap": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^8.0.1",
-    "@metamask/transaction-controller": "^69.8.0",
+    "@metamask/transaction-controller": "^70.1.0",
     "@metamask/transaction-pay-controller": "^27.1.1",
     "@metamask/tron-wallet-snap": "^3.2.0",
     "@metamask/user-operation-controller": "^41.2.5",
