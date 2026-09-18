@@ -84,7 +84,7 @@ export function useNotificationListPerformance({
         success: false,
         reason: 'error',
         // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
-        notification_count: latestCountRef.current,
+        notification_count: notificationCount,
       });
       return;
     }
@@ -97,9 +97,9 @@ export function useNotificationListPerformance({
       success: true,
       source: sawLoadingRef.current ? 'cold' : 'warm',
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
-      notification_count: latestCountRef.current,
+      notification_count: notificationCount,
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
-      content_state: latestCountRef.current > 0 ? 'filled' : 'empty',
+      content_state: notificationCount > 0 ? 'filled' : 'empty',
     });
   }, [
     enabled,

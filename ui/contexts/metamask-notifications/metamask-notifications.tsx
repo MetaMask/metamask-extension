@@ -178,14 +178,7 @@ export function useFetchInitialNotificationsEffect() {
     return () => {
       cancelled = true;
     };
-  }, [
-    shouldFetchNotifications,
-    isBasicFunctionalityEnabled,
-    isUnlocked,
-    shouldRunInitialFetch,
-    dispatch,
-    enableAndRefresh,
-  ]);
+  }, [dispatch, enableAndRefresh, shouldRunInitialFetch]);
 
   const clearTraceError = useCallback(() => setTraceError(undefined), []);
 
