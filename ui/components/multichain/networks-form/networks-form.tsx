@@ -510,7 +510,7 @@ export const NetworksForm = ({
             startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
-            className="mb-4 rounded-xl"
+            className="mb-4"
             data-testid="network-form-add-from-chainlist"
           >
             {t('addFromChainlist')}
@@ -848,7 +848,7 @@ export const NetworksForm = ({
             size={ButtonSize.Lg}
             isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            className="w-full rounded-xl"
+            className="w-full"
             data-testid="page-container-footer-next"
           >
             {t('save')}
