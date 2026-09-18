@@ -269,6 +269,7 @@ ${Object.entries(env)
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, [
       'scripts/inpage.js.map',
       'scripts/contentscript.js.map',
+      'images/*',
     ]);
     assert.deepStrictEqual(
       manifestPlugin.options.description,
@@ -445,7 +446,9 @@ ${Object.entries(env)
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
     ) as WebpackPluginInstance & ManifestPlugin<true>;
-    assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, []);
+    assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, [
+      'images/*',
+    ]);
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
     assert(manifestPlugin.options.zipOptions, 'Zip options should be present');

@@ -5273,6 +5273,11 @@
         "storybook>recast>tiny-invariant": true
       }
     },
+    "css-loader": {
+      "globals": {
+        "btoa": true
+      }
+    },
     "currency-formatter": {
       "packages": {
         "currency-formatter>accounting": true,
