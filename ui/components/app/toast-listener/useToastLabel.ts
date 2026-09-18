@@ -56,25 +56,6 @@ function useGetToastContent(
   const t = useI18nContext();
 
   switch (item?.type) {
-    case 'convert': {
-      const sourceSymbol = item.data.sourceToken?.symbol;
-
-      if (status === 'pending') {
-        return {
-          title: t('musdConversionToastInProgress', [sourceSymbol ?? 'Token']),
-        };
-      }
-
-      if (status === 'success') {
-        return {
-          title: t('musdConversionToastSuccess'),
-          description: t('musdConversionToastSuccessDescription'),
-        };
-      }
-
-      return { title: t('musdConversionToastFailed') };
-    }
-
     case 'claimMusdBonus': {
       if (status === 'pending') {
         return { title: t('merklRewardsToastInProgress') };
