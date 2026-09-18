@@ -16,6 +16,8 @@ import { ASSETS_UNIFY_STATE_FLAG } from '../../../../shared/lib/assets-unify-sta
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import { AssetsControllerInit } from './assets-controller-init';
 
+const mockAssetsControllerGetAssets = jest.fn();
+
 jest.mock('../../../../shared/lib/trace', () => ({
   traceAsControllerCallback: jest.fn((_req, fn) =>
     Promise.resolve(fn?.('traced-context')),
@@ -25,6 +27,7 @@ jest.mock('../../../../shared/lib/trace', () => ({
 jest.mock('@metamask/assets-controller', () => ({
   AssetsController: jest.fn().mockImplementation(() => ({
     state: {},
+    getAssets: mockAssetsControllerGetAssets,
   })),
 }));
 
@@ -126,6 +129,7 @@ function buildSubscribeTestSetup(
 describe('AssetsControllerInit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockAssetsControllerGetAssets.mockResolvedValue({});
   });
 
   it('initializes the controller', () => {
@@ -582,6 +586,95 @@ describe('AssetsControllerInit', () => {
     });
   });
 
+  describe('Arc transaction confirmed refresh', () => {
+    function initWithCapturedTransactionConfirmedListener() {
+      const requestMock = getInitRequestMock();
+      const listeners: Record<string, (transactionMeta: unknown) => void> = {};
+      const account = {
+        id: 'account-id-1',
+        address: '0x0000000000000000000000000000000000000001',
+      };
+
+      requestMock.controllerMessenger.subscribe = jest
+        .fn()
+        .mockImplementation((event, listener) => {
+          listeners[event as string] = listener;
+        });
+      requestMock.controllerMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (
+            action ===
+            'AccountTreeController:getAccountsFromSelectedAccountGroup'
+          ) {
+            return [account];
+          }
+          throw new Error(`Unexpected action: ${String(action)}`);
+        });
+
+      AssetsControllerInit(requestMock);
+
+      const listener = listeners['TransactionController:transactionConfirmed'];
+      if (!listener) {
+        throw new Error(
+          'Expected TransactionController:transactionConfirmed listener',
+        );
+      }
+
+      return { account, listener };
+    }
+
+    it('forces a full Arc assets refresh for the transaction sender after confirmation', async () => {
+      const { account, listener } =
+        initWithCapturedTransactionConfirmedListener();
+
+      listener({
+        chainId: '0x13b2',
+        txParams: {
+          from: '0x0000000000000000000000000000000000000001',
+        },
+      });
+
+      await Promise.resolve();
+
+      expect(mockAssetsControllerGetAssets).toHaveBeenCalledWith([account], {
+        chainIds: ['eip155:5042'],
+        forceUpdate: true,
+        bypassServerCache: true,
+      });
+    });
+
+    it('does not refresh assets for non-Arc confirmed transactions', async () => {
+      const { listener } = initWithCapturedTransactionConfirmedListener();
+
+      listener({
+        chainId: '0x1',
+        txParams: {
+          from: '0x0000000000000000000000000000000000000001',
+        },
+      });
+
+      await Promise.resolve();
+
+      expect(mockAssetsControllerGetAssets).not.toHaveBeenCalled();
+    });
+
+    it('does not refresh assets when the transaction sender is not in the selected account group', async () => {
+      const { listener } = initWithCapturedTransactionConfirmedListener();
+
+      listener({
+        chainId: '0x13b2',
+        txParams: {
+          from: '0x0000000000000000000000000000000000000002',
+        },
+      });
+
+      await Promise.resolve();
+
+      expect(mockAssetsControllerGetAssets).not.toHaveBeenCalled();
+    });
+  });
+
   describe('queryApiClient', () => {
     it('creates the API client with correct clientProduct', () => {
       // Use jest.isolateModules so assets-controller-init gets a fresh module
@@ -660,6 +753,38 @@ describe('AssetsControllerInit', () => {
         throw new Error('Expected getBearerToken to be defined');
       }
       expect(await getBearerToken()).toBeUndefined();
+    });
+
+    it('getBearerToken returns undefined when backend auth is disabled', async () => {
+      process.env.MM_BACKEND_DISABLE_AUTH = 'true';
+
+      try {
+        const requestMock = getInitRequestMock();
+
+        jest.isolateModules(() => {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+          const freshModule = require('./assets-controller-init') as any;
+          freshModule.AssetsControllerInit(requestMock);
+        });
+
+        const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
+        if (!callArgs) {
+          throw new Error(
+            'Expected createApiPlatformClient to have been called',
+          );
+        }
+        const { getBearerToken } = callArgs[0];
+        if (!getBearerToken) {
+          throw new Error('Expected getBearerToken to be defined');
+        }
+
+        expect(await getBearerToken()).toBeUndefined();
+        expect(requestMock.initMessenger.call).not.toHaveBeenCalledWith(
+          'AuthenticationController:getBearerToken',
+        );
+      } finally {
+        delete process.env.MM_BACKEND_DISABLE_AUTH;
+      }
     });
   });
 

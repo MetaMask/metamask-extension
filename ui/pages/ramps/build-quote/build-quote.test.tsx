@@ -20,6 +20,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
   useLocation: () => ({
     pathname: '/ramps/build-quote',
+    search: '',
     state: mockLocationState,
   }),
 }));
@@ -217,6 +218,24 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('matches snapshot when quote fetch fails with a technical HTTP error', () => {
+    useRampsQuotes.mockReturnValue({
+      data: null,
+      loading: false,
+      error: new Error(
+        "Fetching 'https://on-ramp.dev-api.cx.metamask.io/v2/quotes?action=buy&region=us-ut' failed with status '401'",
+      ),
+    });
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('disables continue until a quote is available', () => {
     useRampsQuotes.mockReturnValue({
       data: { success: [], error: [] },
@@ -236,6 +255,33 @@ describe('RampsBuildQuoteScreen', () => {
     ).toHaveTextContent(
       messages.rampsBuyingViaProvider.message.replace('$1', 'Transak'),
     );
+  });
+
+  it('shows a quote error with a change-provider action when no provider returns a quote', () => {
+    useRampsQuotes.mockReturnValue({
+      data: { success: [], error: [] },
+      loading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsQuoteFetchError.message,
+    );
+    expect(
+      screen.getByTestId('ramps-build-quote-change-provider'),
+    ).toHaveTextContent(messages.rampsChangeProviders.message);
+
+    fireEvent.click(screen.getByTestId('ramps-build-quote-change-provider'));
+
+    expect(
+      screen.getByTestId('ramps-provider-selection-empty'),
+    ).toBeInTheDocument();
   });
 
   it('disables continue while amount debounce has not settled', () => {
@@ -382,6 +428,9 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
       messages.rampsBuyWidgetError.message,
     );
+    expect(
+      screen.getByTestId('ramps-build-quote-change-provider'),
+    ).toHaveTextContent(messages.rampsChangeProvider.message);
   });
 
   it('matches snapshot with provider quote error', () => {

@@ -34,6 +34,7 @@
     "AppMetadataController": {
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -107,9 +108,7 @@
     "LoggingController": { "logs": "object" },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object",
-      "traits": "object"
+      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -244,8 +243,16 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": "boolean"
     },
-    "ProfileMetricsController": "object",
+    "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
+      "initialDelayEndTimestamp": "number",
+      "initialEnqueueCompleted": "boolean",
+      "proofBackfillEnqueued": "boolean",
+      "reportedAccounts": "object",
+      "syncQueue": "object"
+    },
     "RampsController": {
+      "autoramps": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -311,7 +318,8 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": "object"
   }

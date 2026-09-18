@@ -447,6 +447,24 @@ describe('useConfirmationNavigation', () => {
         search: 'loader=customAmount&payWithOption=money_account',
       });
     });
+
+    it('navigates with preferredPaymentToken params when provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-400', {
+        loader: ConfirmationLoader.CustomAmount,
+        preferredPaymentToken: {
+          address: '0xabc',
+          chainId: '0x1',
+        },
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-400`,
+        search:
+          'loader=customAmount&preferredPaymentTokenAddress=0xabc&preferredPaymentTokenChainId=0x1',
+      });
+    });
   });
 });
 
@@ -457,6 +475,14 @@ describe('sanitizeConfirmationSearchParams', () => {
         '?loader=customAmount&payWithOption=money_account&goBackTo=%2Fhome',
       ),
     ).toBe('?loader=customAmount&goBackTo=%2Fhome');
+  });
+
+  it('removes preferredPaymentToken params while retaining other params', () => {
+    expect(
+      sanitizeConfirmationSearchParams(
+        '?loader=customAmount&preferredPaymentTokenAddress=0xabc&preferredPaymentTokenChainId=0x1',
+      ),
+    ).toBe('?loader=customAmount');
   });
 
   it('returns an empty string when only flow-scoped params are present', () => {
@@ -582,5 +608,40 @@ describe('useConfirmationNavigationOptions', () => {
     const result = renderOptionsHook(searchParams);
 
     expect(result.payWithOption).toBeUndefined();
+  });
+
+  it('returns preferredPaymentToken when both hex params are present', () => {
+    const searchParams = new URLSearchParams({
+      preferredPaymentTokenAddress: '0xabc',
+      preferredPaymentTokenChainId: '0x1',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.preferredPaymentToken).toStrictEqual({
+      address: '0xabc',
+      chainId: '0x1',
+    });
+  });
+
+  it('returns undefined preferredPaymentToken when a param is missing', () => {
+    const searchParams = new URLSearchParams({
+      preferredPaymentTokenAddress: '0xabc',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.preferredPaymentToken).toBeUndefined();
+  });
+
+  it('returns undefined preferredPaymentToken when a param is not hex', () => {
+    const searchParams = new URLSearchParams({
+      preferredPaymentTokenAddress: 'not-hex',
+      preferredPaymentTokenChainId: '0x1',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.preferredPaymentToken).toBeUndefined();
   });
 });

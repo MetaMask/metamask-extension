@@ -1217,6 +1217,7 @@
         "css-loader>postcss-modules-scope": true,
         "css-loader>postcss-modules-values": true,
         "stylelint>postcss-value-parser": true,
+        "css-loader>postcss": true,
         "semver": true
       }
     },
@@ -2347,6 +2348,7 @@
       "builtin": {
         "fs.existsSync": true,
         "fs.readFileSync": true,
+        "fs.realpathSync": true,
         "path.dirname": true,
         "path.isAbsolute": true,
         "path.join": true,
@@ -2377,7 +2379,7 @@
       },
       "packages": {
         "tailwindcss>postcss-js>camelcase-css": true,
-        "postcss": true
+        "tailwindcss>postcss": true
       }
     },
     "postcss-loader": {
@@ -2422,8 +2424,8 @@
     },
     "tailwindcss>postcss-nested": {
       "packages": {
-        "postcss": true,
-        "tailwindcss>postcss-selector-parser": true
+        "tailwindcss>postcss-selector-parser": true,
+        "tailwindcss>postcss": true
       }
     },
     "postcss-rtlcss": {
@@ -2442,6 +2444,90 @@
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
         "readable-stream-2>util-deprecate": true
+      }
+    },
+    "css-loader>postcss": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true
+      },
+      "globals": {
+        "Buffer": true,
+        "URL": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "process.env.LANG": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "nanoid": true,
+        "postcss>picocolors": true,
+        "postcss>source-map-js": true
+      }
+    },
+    "postcss-rtlcss>rtlcss>postcss": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true
+      },
+      "globals": {
+        "Buffer": true,
+        "URL": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "process.env.LANG": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "nanoid": true,
+        "postcss>picocolors": true,
+        "postcss>source-map-js": true
+      }
+    },
+    "tailwindcss>postcss": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true
+      },
+      "globals": {
+        "Buffer": true,
+        "URL": true,
+        "atob": true,
+        "btoa": true,
+        "console": true,
+        "process.env.LANG": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "nanoid": true,
+        "postcss>picocolors": true,
+        "postcss>source-map-js": true
       }
     },
     "mockttp>express>proxy-addr": {
@@ -2568,7 +2654,7 @@
     },
     "postcss-rtlcss>rtlcss": {
       "packages": {
-        "postcss": true
+        "postcss-rtlcss>rtlcss>postcss": true
       }
     },
     "fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": {
@@ -2979,10 +3065,10 @@
         "chokidar>normalize-path": true,
         "tailwindcss>object-hash": true,
         "postcss>picocolors": true,
-        "postcss": true,
         "tailwindcss>postcss-js": true,
         "tailwindcss>postcss-nested": true,
         "tailwindcss>postcss-selector-parser": true,
+        "tailwindcss>postcss": true,
         "tailwindcss>sucrase": true
       }
     },

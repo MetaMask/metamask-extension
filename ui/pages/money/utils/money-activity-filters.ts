@@ -7,7 +7,12 @@ import {
   isMoneyDepositTx,
   isMoneyWithdrawTx,
 } from '../../../helpers/money/money-transaction-guards';
-import { type MoneyActivityItem } from '../types/money-activity';
+import {
+  isAccountsApiMoneyActivityItem,
+  isOnchainMoneyActivityItem,
+  type AccountsApiActivity,
+  type MoneyActivityItem,
+} from '../types/money-activity';
 
 /**
  * Filter chips on the Money Activity page. Values match mobile; the
@@ -17,7 +22,14 @@ export enum MoneyActivityFilter {
   All = 'all',
   Deposits = 'deposits',
   Transfers = 'transfers',
+  Card = 'card',
 }
+
+const CARD_ACTIVITY_KINDS: AccountsApiActivity['kind'][] = [
+  'card',
+  'cashback',
+  'refund',
+];
 
 export type MoneyActivityBuckets = Record<
   MoneyActivityFilter,
@@ -65,14 +77,29 @@ export function isMoneyActivityTransfer(tx: TransactionMeta): boolean {
 }
 
 /**
- * Splits on-chain activity into All / Deposits / Sends buckets.
+ * True when the activity row is MetaMask Card activity from the Accounts API
+ * (purchase, cashback, or refund).
+ *
+ * @param item - Activity list item.
+ * @returns Whether the item belongs on the Card filter chip.
+ */
+export function isMoneyCardActivityItem(item: MoneyActivityItem): boolean {
+  return (
+    isAccountsApiMoneyActivityItem(item) &&
+    CARD_ACTIVITY_KINDS.includes(item.tx.kind)
+  );
+}
+
+/**
+ * Splits activity into All / Deposits / Sends / Card buckets.
  *
  * `items` is already visibility-filtered (Money Pay deposits, sends, and
- * incoming mUSD). All keeps that full list. Deposits and Sends are narrower
- * chips; a confirmed Pay tx from the Money Account can be visible without
- * matching either chip type, and must still appear on Home / All.
+ * incoming mUSD, plus any Accounts API rows). All keeps that full list.
+ * Deposits and Sends are on-chain-only chips; Card is Accounts-API-only.
+ * A confirmed Pay tx from the Money Account can be visible without matching
+ * Deposits or Sends, and must still appear on Home / All.
  *
- * @param items - Newest-first on-chain activity items.
+ * @param items - Newest-first activity items.
  * @returns Filter buckets.
  */
 export function buildMoneyActivityBuckets(
@@ -80,12 +107,15 @@ export function buildMoneyActivityBuckets(
 ): MoneyActivityBuckets {
   return {
     [MoneyActivityFilter.All]: items,
-    [MoneyActivityFilter.Deposits]: items.filter((item) =>
-      isMoneyActivityDeposit(item.tx),
+    [MoneyActivityFilter.Deposits]: items.filter(
+      (item) =>
+        isOnchainMoneyActivityItem(item) && isMoneyActivityDeposit(item.tx),
     ),
-    [MoneyActivityFilter.Transfers]: items.filter((item) =>
-      isMoneyActivityTransfer(item.tx),
+    [MoneyActivityFilter.Transfers]: items.filter(
+      (item) =>
+        isOnchainMoneyActivityItem(item) && isMoneyActivityTransfer(item.tx),
     ),
+    [MoneyActivityFilter.Card]: items.filter(isMoneyCardActivityItem),
   };
 }
 
@@ -93,4 +123,5 @@ export const EMPTY_MONEY_ACTIVITY_BUCKETS: MoneyActivityBuckets = {
   [MoneyActivityFilter.All]: [],
   [MoneyActivityFilter.Deposits]: [],
   [MoneyActivityFilter.Transfers]: [],
+  [MoneyActivityFilter.Card]: [],
 };

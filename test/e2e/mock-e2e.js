@@ -12,7 +12,6 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
-const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
@@ -537,6 +536,19 @@ function getWellKnownTokenAssetMetadata(assetIds) {
     });
   }
 
+  // Monad native is slip44:268435779 (not ETH slip44:60).
+  if (
+    assetIds.includes('eip155:143/slip44:268435779') ||
+    assetIds.includes('eip155:143/slip44:60')
+  ) {
+    results.push({
+      assetId: 'eip155:143/slip44:268435779',
+      name: 'Monad',
+      symbol: 'MON',
+      decimals: 18,
+    });
+  }
+
   for (const token of WELL_KNOWN_MAINNET_ERC20_ASSETS) {
     if (includesAssetId(token.assetId)) {
       results.push({
@@ -610,8 +622,14 @@ function buildUnifiedEvmAccountsApiBalances(
       nativeBalance = defaultNativeOverride;
     }
 
-    // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
-    const slip44 = chainRef === '1337' ? '1' : '60';
+    // Native CAIP-19 slip44 must match AssetsController / nativeAssetIdentifiers.
+    // Localhost (1337) uses slip44:1; Monad (143) uses slip44:268435779; others use 60 (ETH).
+    let slip44 = '60';
+    if (chainRef === '1337') {
+      slip44 = '1';
+    } else if (chainRef === '143') {
+      slip44 = '268435779';
+    }
     balances.push({
       accountId: id,
       assetId: `eip155:${chainRef}/slip44:${slip44}`,
@@ -1038,8 +1056,9 @@ async function setupMocking(
       };
     });
 
-  // This endpoint returns metadata for "transaction simulation" supported networks.
-  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+  // STX v26 always routes to per-network tx-sentinel hosts. Default mocks cover
+  // all sentinel subdomains so startup/liveness/polling does not hang in E2E.
+  const txSentinelNetworksRegistry = {
     1: {
       name: 'Mainnet',
       group: 'ethereum',
@@ -1051,18 +1070,13 @@ async function setupMocking(
       smartTransactions: true,
       hidden: false,
     },
-  });
-  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
-    name: 'Mainnet',
-    group: 'ethereum',
-    chainID: 1,
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    network: 'ethereum-mainnet',
-    explorer: 'https://etherscan.io',
-    confirmations: true,
-    smartTransactions: true,
-    hidden: false,
-  });
+  };
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
+    .thenJson(200, txSentinelNetworksRegistry);
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
+    .thenJson(200, txSentinelNetworksRegistry[1]);
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
@@ -1608,6 +1622,143 @@ async function setupMocking(
       },
     }));
 
+  // Monad native — slip44:268435779 (not ETH slip44:60).
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:143/slip44:268435779',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:143/slip44:268435779': {
+          id: 'monad',
+          price: ethConversionInUsd,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .flatMap((value) => value.split(','))
+        .filter(Boolean);
+      return {
+        statusCode: 200,
+        json: Object.fromEntries(
+          assetIds.map((assetId) => [
+            assetId,
+            { price: 0, marketCap: 0, pricePercentChange1d: 0 },
+          ]),
+        ),
+      };
+    });
+
+  // The price API client only caches this response when it contains both
+  // `fullSupport` and `partialSupport`; anything else (such as the empty-200
+  // catch-all this used to land on) makes it silently fall back to its
+  // hardcoded list without caching, so every later price fetch re-requests the
+  // endpoint. The lists below are that same hardcoded fallback
+  // (`SPOT_PRICES_SUPPORT_INFO` in @metamask/assets-controllers), so supported
+  // chains are unchanged and only the repeated requests go away.
+  const spotPricesSupportedChains = [
+    'eip155:1',
+    'eip155:10',
+    'eip155:25',
+    'eip155:30',
+    'eip155:42',
+    'eip155:50',
+    'eip155:56',
+    'eip155:57',
+    'eip155:82',
+    'eip155:88',
+    'eip155:100',
+    'eip155:106',
+    'eip155:122',
+    'eip155:128',
+    'eip155:137',
+    'eip155:143',
+    'eip155:146',
+    'eip155:196',
+    'eip155:232',
+    'eip155:250',
+    'eip155:252',
+    'eip155:288',
+    'eip155:321',
+    'eip155:324',
+    'eip155:336',
+    'eip155:361',
+    'eip155:747',
+    'eip155:988',
+    'eip155:999',
+    'eip155:1088',
+    'eip155:1101',
+    'eip155:1284',
+    'eip155:1285',
+    'eip155:1329',
+    'eip155:1776',
+    'eip155:1868',
+    'eip155:2525',
+    'eip155:2741',
+    'eip155:4217',
+    'eip155:4326',
+    'eip155:5000',
+    'eip155:5031',
+    'eip155:5042',
+    'eip155:7000',
+    'eip155:8453',
+    'eip155:4663',
+    'eip155:9745',
+    'eip155:10000',
+    'eip155:33139',
+    'eip155:41923',
+    'eip155:42161',
+    'eip155:42220',
+    'eip155:42262',
+    'eip155:42431',
+    'eip155:42793',
+    'eip155:43111',
+    'eip155:43114',
+    'eip155:57073',
+    'eip155:59144',
+    'eip155:60808',
+    'eip155:68414',
+    'eip155:73115',
+    'eip155:80094',
+    'eip155:81457',
+    'eip155:88888',
+    'eip155:97741',
+    'eip155:98866',
+    'eip155:167000',
+    'eip155:333999',
+    'eip155:534352',
+    'eip155:747474',
+    'eip155:984122',
+    'eip155:1440000',
+    'eip155:1313161554',
+    'eip155:1666600000',
+    'eip155:16661',
+  ];
+  await server
+    .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenJson(200, {
+      fullSupport: spotPricesSupportedChains.slice(0, 11),
+      partialSupport: {
+        spotPricesV2: spotPricesSupportedChains,
+        spotPricesV3: spotPricesSupportedChains,
+      },
+    });
+
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
   await server
@@ -1965,10 +2116,17 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
-          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
-          partialSupport: {
-            balances: [42220, 43114],
-          },
+          fullSupport: [
+            'eip155:1',
+            'eip155:137',
+            'eip155:56',
+            'eip155:59144',
+            'eip155:8453',
+            'eip155:10',
+            'eip155:42161',
+            'eip155:534352',
+          ],
+          partialSupport: ['eip155:42220', 'eip155:43114'],
         },
       };
     });

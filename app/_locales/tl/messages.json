@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "Identicon ng Account"
   },
+  "accountImported": {
+    "message": "Na-import na account",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "Pangalan ng account"
   },
@@ -167,6 +171,9 @@
   },
   "activity": {
     "message": "Aktibidad"
+  },
+  "activityAndNonceDataDeleted": {
+    "message": "Inalis ang aktibidad at datos ng nonce"
   },
   "activityEmptyDescription": {
     "message": "I-swap ang una mong token ngayon."
@@ -476,6 +483,42 @@
   },
   "activity_marketShort_success_title": {
     "message": "Naisara ang short - market"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Nabigo ang pagdeposito"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Idinideposito"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Naideposito"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Nabigong ipadala"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Ipinapadala"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Ipinadala"
   },
   "activity_nftBuy_failed_title": {
     "message": "Nabigo ang pagbili"
@@ -1438,6 +1481,9 @@
   "alertDisableTooltip": {
     "message": "Puwede itong baguhin sa \"Mga Setting > Mga Alerto\""
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Magdagdag ng mas mababa o gumamit ng ibang paraan ng pagbabayad."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "Hindi sapat ang mga pondo"
   },
@@ -1469,8 +1515,8 @@
   "alertMessageGasFeeLow": {
     "message": "Kapag pumipili ng mababang bayad, asahan ang mas mabagal na mga transaksyon at mas matagal na paghihintay. Para sa mas mabilis na transaksyon, piliin ang Market o Aggressive na mga pagpipilian sa bayad."
   },
-  "alertMessageGasTooLow": {
-    "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 21000 o mas mataas."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 12000 o mas mataas."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga bayarin sa network."
@@ -1688,6 +1734,12 @@
     "message": "Inaprubahan sa $1 para sa $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Welcome sa Arc! Upang mapadali at ma-verify ang paggamit mo ng Arc chain, maaari naming ibahagi ang impormasyon sa team ng Arc."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "Abiso"
+  },
   "areYouSure": {
     "message": "Sigurado ka ba?"
   },
@@ -1886,6 +1938,38 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
+  },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "Napalitan na ang mga setting mo"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "blog post"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "Ina-update namin kung paano gumagana ang MetaMask para sa social login. Para paganahin ang mahusay na karanasan sa MetaMask, ang iyong pagkakakilanlan na social login (email or handle) ay ligtas na ngayon ili-link sa iyong your user profile at nauugnay na mga account addresse. Bilang bahagi ng update na ito, laging pagaganahin ang Basic Functionality at iba pang mga default na setting."
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "Hindi namin ibebenta ang iyong data sa mga third party. Basahin pa ang tungkol sa kung ano ang kinokolekta namin at bakit sa aming $1 at in-update ang $2.",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "Patakaran sa Pagkapribado"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "Mga update sa pagkapribado at produkto"
+  },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "Ang mga Third-party API ay bahagi na ngayon ng Basic Functionality. Batay sa iyong mga kagustuhan sa nakaraan, ang setting na ito ay $1. Baguhin ito anumang oras sa $2",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "i-disable"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "pinagana"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "Mga Setting > Pagkapribado"
   },
   "basicFunctionalityRequired_description": {
     "message": "Hindi available ang feature na ito kapag naka-off ang basic functionality. Gamitin ang toggle sa ibaba para i-on ito."
@@ -2454,7 +2538,7 @@
     "message": "Gamitin ang max na pinapayagan"
   },
   "bridgeValidationInsufficientGasMessage": {
-    "message": "Wala kang sapat na $1 para sa bayad sa gas sa pag-bridge na ito. Maglagay ng mas maliit na halaga o bumili pa ng $1."
+    "message": "Wala kang sapat na $1 para sa bayad sa network sa pag-bridge na ito. Maglagay ng mas maliit na halaga o bumili pa ng $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Kailangan pa ng $1 para sa gas"
@@ -3347,6 +3431,9 @@
   "deepLink_thePredictPage": {
     "message": "ang page ng mga market ng prediksyon"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "ang pahina ng privacy settings"
+  },
   "deepLink_theRewardsPage": {
     "message": "ang page ng Mga Reward sa MetaMask"
   },
@@ -3497,7 +3584,7 @@
     "message": "I-disable"
   },
   "disabledGasOptionToolTipMessage": {
-    "message": "Ang “$1” ay hindi pinagagana dahil hindi nito naabot ang pinakamababang 10% na dagdag mula sa orihinal na bayad sa gas.",
+    "message": "Ang “$1” ay hindi pinagagana dahil hindi nito naabot ang pinakamababang 10% na dagdag mula sa orihinal na bayad sa network.",
     "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
@@ -3670,7 +3757,7 @@
     "message": "I-edit ang kontak"
   },
   "editGasFeeModalTitle": {
-    "message": "I-edit ang bayad sa gas"
+    "message": "I-edit ang bayad sa network"
   },
   "editGasLimitOutOfBounds": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa $1"
@@ -4126,14 +4213,14 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitTooLow": {
-    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 12000"
   },
   "gasPrice": {
     "message": "Presyo ng gas (GWEI)"
   },
   "gasPriceExcessive": {
-    "message": "Masyadong mataas ang iyong itinakdang bayad sa gas. Pag-isipang ibaba ang halaga."
+    "message": "Masyadong mataas ang iyong itinakdang bayad sa network. Pag-isipang ibaba ang halaga."
   },
   "gasPriceFetchFailed": {
     "message": "Ang pagtantya ng presyo ng gas ay nabigo dahil sa network error."
@@ -4400,6 +4487,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Magpatuloy"
   },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "Maaari lamang lagdaan ng $1 ang bersyon 4 (V4) na naka-type na datos. Humiling ang site na ito ng lumang uri ng lagda na hindi na sinusuportahan.",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorReconnectButton": {
     "message": "Ikonekta ulit at muling subukan",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
@@ -4629,6 +4720,22 @@
   },
   "honeypotTitle": {
     "message": "Honey pot"
+  },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Magdeposito ng kahit anong token. Awtomatiko naming isu-swap namin ito at ipapadala ito sa iyong Hyperliquid account —walang bayad sa MetaMask.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "Salamat na lang, manwal na magdedeposito",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "Pondohan ang Hyperliquid gamit ang MetaMask",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Handa nang i-trade ang pondo sa Hyperliquid at MetaMask Perps.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Ilapat ang referral code ng MetaMask sa lahat ng mga susunod na trade kada $1 ng Hyperliquid. Maniningil ng bayarin ang MetaMask.",
@@ -5129,7 +5236,7 @@
     "message": "Mag-log in"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "Nag-expire ang iyong sesyon. Mag-log in muli para magpatuloy."
+    "message": "Mag-log in muli para magpatuloy."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "Nag-expire ang sesyon"
@@ -5157,10 +5264,6 @@
   "lowLowercase": {
     "message": "low"
   },
-  "lowValueAssets": {
-    "message": "Mga token na mababa ang halaga ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
-  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -5178,6 +5281,10 @@
   },
   "manage": {
     "message": "Pamahalaan"
+  },
+  "manageAccounts": {
+    "message": "Pamahalaan ang mga account",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Pamahalaan ang mga konektadong account"
@@ -5342,13 +5449,6 @@
   "money": {
     "message": "Pera"
   },
-  "moneyAccountApyPitch": {
-    "message": "Kumita ng $1% APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Impormasyon ng APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "Ang rate na ipinapakita ay ang tinatayang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng market. Nagbabago ang APY at hindi ito garantisado."
   },
@@ -5359,15 +5459,15 @@
   "moneyAccountProjectedBalance": {
     "message": "Tinatayang balanse sa 1 taon:"
   },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Tinatayang balanse sa 1 taon"
-  },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Ipinagpapalagay sa pagtatantiya na ang $1% Annual Percentage Yield (APY) ay hindi nagbabago sa loob ng isang taon. Nagbabago ang APY at hindi ito garantisado.",
     "description": "$1 is the APY percentage used in the one-year projection"
   },
   "moneyActivity": {
     "message": "Aktibidad"
+  },
+  "moneyActivityCard": {
+    "message": "Card"
   },
   "moneyActivityConversionFailed": {
     "message": "Pumalya ang pag-convert"
@@ -5387,11 +5487,32 @@
   "moneyActivityDepositing": {
     "message": "Idinideposito"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "Ibinayad sa"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "Natanggap mula sa/kay"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "ID ng Transaksyon"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "Kumita ka"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "Gumastos ka ng"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "Nabigyan ka ng refund"
+  },
   "moneyActivityEmpty": {
     "message": "Wala pang aktibidad"
   },
   "moneyActivityFilterAll": {
     "message": "Lahat"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Card"
   },
   "moneyActivityFilterDeposits": {
     "message": "Mga deposito"
@@ -5399,11 +5520,17 @@
   "moneyActivityFilterSends": {
     "message": "Ipinapadala"
   },
+  "moneyActivityLoadError": {
+    "message": "Hindi mai-load ang aktibidad mo"
+  },
+  "moneyActivityMusdBack": {
+    "message": "ibinabalik na mUSD"
+  },
   "moneyActivityPending": {
     "message": "Nakabinbin"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Lilitaw ang aktibidad mo sa Money dito."
+  "moneyActivityPurchase": {
+    "message": "Bumili"
   },
   "moneyActivityReceived": {
     "message": "Natanggap"
@@ -5414,6 +5541,12 @@
   "moneyActivityReceiving": {
     "message": "Pagtanggap"
   },
+  "moneyActivityRefund": {
+    "message": "I-refund"
+  },
+  "moneyActivityRetry": {
+    "message": "Subukang muli"
+  },
   "moneyActivitySendFailed": {
     "message": "Nabigong ipadala"
   },
@@ -5422,6 +5555,10 @@
   },
   "moneyActivitySent": {
     "message": "Ipinadala"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "Kasama sa mga bayarin sa palitan ang mga gastos sa network at maaaring may kasamang bayarin sa provider.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
   },
   "moneyActivityViewAll": {
     "message": "Tingnan lahat"
@@ -5441,17 +5578,17 @@
   "moneyBalanceLastKnown": {
     "message": "Huling kilalang balanse"
   },
-  "moneyBalanceTitle": {
-    "message": "Balanse sa Money"
+  "moneyBalanceRetry": {
+    "message": "Subukang muli"
   },
   "moneyBalanceUnavailable": {
     "message": "Hindi available ang balanse"
   },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "Pansamantalang hindi maipakita ang balanse mo. Ligtas ang pondo mo—pakisubukan ulit sa ilang sandali."
+  },
   "moneyBenefitAutoEarn": {
     "message": "Awtomatikong kumita ng yield sa balanse mo sa Money"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Awtomatikong kumita ng hanggang ~$1 APY"
   },
   "moneyBenefitLiquidity": {
     "message": "Makakuha ng ganap na liquidity nang walang lockup, kaya maaari kang mag-trade o mag-withdraw anumang oras"
@@ -5464,6 +5601,12 @@
   },
   "moneyBenefits": {
     "message": "Mga Benepisyo"
+  },
+  "moneyContactSupport": {
+    "message": "Kontakin ang suporta"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "I-convert ang iyong crypto"
   },
   "moneyEarnApyTitle": {
     "message": "Kumita ng hanggang $1 APY"
@@ -5501,15 +5644,72 @@
   "moneyFundDescriptionWithApy": {
     "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo ng hanggang $1 APY."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Ang rate na ipinapakita ay tinantyang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng merkado. Nag-iiba-iba ang APY at hindi ito garantisado. Napupunta ang pondo sa isang DeFi vault, na pinapangasiwaan ng Veda at sinusubaybayan ng Steakhouse Financial ang panganib, at tumutubo ito sa mga kilalang merkado ng pagpapautang."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Ang Money account ay pinapagana ng Monad."
+  },
   "moneyHowItWorks": {
     "message": "Paano ito gumagana"
   },
   "moneyHowItWorksDescription": {
     "message": "Magdagdag ng mUSD at ang iyong balanse na sinusuportahan ng dolyar ay handa na para gastusin, i-trade, o ipadala anumang oras."
   },
+  "moneyHowItWorksDescription2": {
+    "message": "Ang balanse mo sa Money ang balanseng puwede mong gastusin. I-link ang MetaMask Card mo para magamit ito sa 150M+ merchant sa buong mundo. Patuloy na kikita ang pera mo hanggang sa gastusin mo ito."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Ang Money account ay pinapagana ng Monad."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Magdagdag ng mUSD at kumita ng hanggang $1. Ang iyong balanse ay sinusuportahan ng dolyar at handa na para gastusin, i-trade, o ipadala anumang oras.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Ang Money account ay hindi isang bank account, savings account, o produktong deposito na naka-insure. Ang APY ay variable at hindi iginagarantiya. Ang Money account ay may kaugnay na smart contract, protocol, liquidity, at iba pang panganib, at maaaring mawala sa iyo ang bahagi o ang lahat ng iyong pondo. Sasailalim sa mga paghihigpit ng rehiyon. Nalalapat ang mga tuntunin."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Nagbabago ba ang rate ng APY?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "Ikaw! Ang MetaMask ay isang self-custodial na wallet, ibig sabihin tanging ang mga Private Key ng may hawak ng account ang may kontrol dito. Hindi maaaring i-access, i-freeze, o galawin ng MetaMask ang mga pondo mo. Ito ang ipinagkaiba namin mula sa mga tradisyonal na account sa bangko at mga custodial crypto platform—walang third party na humahawak sa mga pondo mo."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Sino ang kumokontrol sa pera ko?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Walang bayad sa pagbubukas ng Money account at walang bayad sa pagdedeposito ng mga stablecoin. Sisingilin ka ng mga bayarin kapag nagdedeposito ng mga non-stablecoin token. Walang mga nauugnay na mga bayarin sa mga transaksyon sa MetaMask Card, pagwi-withdraw sa ATM, at mga gastos sa local currency offramp. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "Tingnan ang kabuuan ng breakdown ng bayad sa Card dito."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "May mga kailangan bang bayaran?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Oo. Maaari mong i-trade, ipadala, gastusin, o i-withdraw ang buong balanse mo anumang oras nang walang mga abiso sa panahon, walang mga penalty, at walang mga bayarin sa pag-withdraw mula sa MetaMask. Kung hirap sa liquidity, maaaring magkaroon ng pansamantalang mga pagkaantala."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Naka-lock ba ang pera ko? Puwede ba akong mag-withdraw anumang oras?"
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Ano ang Money account?"
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "Ano ang mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Isa ba itong savings account o spending account?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "Mga FAQ"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Kapag nagdeposito ka ng mga pondo, inilalagay ang mga iyon sa mga magagandang DeFi protocol, gaya ng Aave at Morpho, kung saan kumikita sila ng tubo mula sa totoong aktibidad pang-ekonomiya. Ibinibigay sa iyo ang tubo na ito bilang APY.\n\nSinusubaybayan ng third-party service provider na tinatawag na Steakhouse Financial kung paano inilalaan ang mga pondo sa mga protocol. Ang Veda, isang third-party infrastructure provider, ang nagde-deploy at nagpapanatili ng mga vault smart contract na may hawak sa mga pondo mo.\n\nAng kinikita ay hindi interes na binabayaran ng MetaMask o ng nag-issue mUSD. Ang mga ito ay tinubo onchain na nilikha ng mga posisyon sa mga third-party DeFi protocol."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Saan nanggagaling ang yield?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Paano lumalago ang pera mo"
@@ -5520,8 +5720,14 @@
   "moneyLifetime": {
     "message": "Panghabambuhay"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Ang kabuuang kinita mo sa iyong balanse ng Money account sa paglipas ng panahon."
+  },
   "moneyMeetMusd": {
     "message": "Kilalanin ang mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Ang kabuuang kinita mo sa balanse ng iyong Money account sa nakalipas na 30 araw."
   },
   "moneyMoreInformation": {
     "message": "Higit pang impormasyon"
@@ -5534,6 +5740,81 @@
   },
   "moneySend": {
     "message": "Ipadala"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Hindi nakapagdagdag ng mga pondo. Subukan ulit."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Hindi nakapag-convert. Subukan ulit."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Nabigo ang pagdeposito"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Hindi nakapagdagdag ng mga pondo"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Pumalya ang pag-convert"
+  },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Maaaring tumagal ng ilang minuto ang mga order sa card."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Nagdagdag ng pondo"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Idinideposito"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Pag-convert ng crypto"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Naidagdag sa Money account."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Nagdagdag ng mga pondo"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Nakumpleto ang deposito"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Kumpleto na ang pag-convert"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Posibleng magtagal ito nang ilang minuto."
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Hindi makapaglipat ng mga pondo. Subukan ulit."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Pumalya ang paglilipat"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "iyong account"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Isinasagawa ang paglilipat"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Kumpleto na ang paglilipat"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Iba pang account"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Paparating na"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Perps account"
+  },
+  "moneyTransferSendExternal": {
+    "message": "Panlabas na address"
+  },
+  "moneyTransferTitle": {
+    "message": "Magpadala ng mga pondo sa"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Bank account"
   },
   "month": {
     "message": "buwan"
@@ -5873,9 +6154,6 @@
   "networkFeeExplanationTitle": {
     "message": "Bayad sa network"
   },
-  "networkMenu": {
-    "message": "Network Menu"
-  },
   "networkMenuHeading": {
     "message": "Pumili ng network"
   },
@@ -5923,7 +6201,7 @@
     "message": "Range ng bayad sa priyoridad (kilala rin bilang “tip ng minero”). Ito ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong transaksyon."
   },
   "networkStatusStabilityFeeTooltip": {
-    "message": "Ang mga bayad sa gas na $1 ay nauugnay sa huling 72 oras.",
+    "message": "Ang mga bayad sa network na $1 ay nauugnay sa huling 72 oras.",
     "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
@@ -6179,18 +6457,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Handa na ang Pag-withdraw"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Maaari mo ng i-withdraw ang iyong in-unstake na $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Ang iyong hiling na i-unstake ang $1 ay naipadala na"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Nakatanggap ng NFT mula kay/sa"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Ipinadala ang NFT kay/sa"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6199,18 +6465,6 @@
   },
   "notificationItemReceived": {
     "message": "Natanggap"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Natanggap mula kay/sa"
-  },
-  "notificationItemSent": {
-    "message": "Ipinadala"
-  },
-  "notificationItemSentTo": {
-    "message": "Ipinadala kay/sa"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Nakumpleto ang pag-stake"
   },
   "notificationItemStaked": {
     "message": "Naka-stake"
@@ -6224,17 +6478,11 @@
   "notificationItemSwapped": {
     "message": "Nai-swap"
   },
-  "notificationItemSwappedFor": {
-    "message": "sa"
-  },
   "notificationItemTo": {
     "message": "Sa/Kay"
   },
   "notificationItemTransactionId": {
     "message": "ID ng Transaksyon"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Nakumpleto ang pag-unstake"
   },
   "notificationItemUnStaked": {
     "message": "Na-unstake"
@@ -6298,6 +6546,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Hindi ka pa nakatanggap ng anumang notipikasyon."
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "Hindi namin mai-load ang mga setting ng notipikasyon ng account mo. Subukan ulit mamaya."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Mga kahilingan, pag-apruba, at mga update sa sesyon ng koneksyon ng CLI para sa Agent wallet"
@@ -6735,7 +6986,7 @@
     "message": "Ipakita ang password"
   },
   "passwordsDontMatch": {
-    "message": "Hindi magkatugma ang mga password"
+    "message": "Hindi magkatugma ang mga password."
   },
   "paste": {
     "message": "I-paste"
@@ -7195,6 +7446,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "Minuto"
   },
+  "perpsChart": {
+    "message": "Chart ng presyo"
+  },
+  "perpsChartLoadError": {
+    "message": "Bigong makapag-load ng data ng chart"
+  },
   "perpsCloseAll": {
     "message": "Isara lahat"
   },
@@ -7242,6 +7499,9 @@
   },
   "perpsCloseShort": {
     "message": "Isara ang short"
+  },
+  "perpsCollapseChart": {
+    "message": "I-collapse ang tsart"
   },
   "perpsConfirmCloseLong": {
     "message": "Isara ang long"
@@ -7341,6 +7601,9 @@
     "message": "Magdagdag ng mga pondo para simulan ang pagti-trade.",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
+  "perpsExpandChart": {
+    "message": "I-expand ang tsart"
+  },
   "perpsExploreMarkets": {
     "message": "Suriin ang mga market"
   },
@@ -7369,13 +7632,20 @@
     "message": "Crypto"
   },
   "perpsFilterEtf": {
-    "message": "ETF"
+    "message": "Mga ETF"
   },
   "perpsFilterForex": {
     "message": "Forex"
   },
   "perpsFilterIndex": {
-    "message": "Index"
+    "message": "Mga Index"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Mga Memecoin"
+  },
+  "perpsFilterMore": {
+    "message": "Higit pa",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
   },
   "perpsFilterNew": {
     "message": "Bago"
@@ -7659,6 +7929,10 @@
   "perpsPositions": {
     "message": "Mga Posisyon"
   },
+  "perpsProducts": {
+    "message": "Mga Produkto",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "Masyado nang maraming kahilingan. Pakihintayin at subukang muli."
   },
@@ -7773,14 +8047,8 @@
   "perpsSortByPriceChange": {
     "message": "Pagbabago ng presyo"
   },
-  "perpsSortByRank": {
-    "message": "Rank"
-  },
-  "perpsSortBySection": {
-    "message": "I-sort ayon sa"
-  },
   "perpsSortByTitle": {
-    "message": "Filter"
+    "message": "I-sort ayon sa"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -7961,6 +8229,10 @@
     "message": "Isinusumite ang trade mo",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "Hindi makapagbukas ng trade",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "Naisara ang posisyon",
     "description": "Success toast text shown when a perps position is closed"
@@ -7976,6 +8248,18 @@
   "perpsToastUpdateSuccess": {
     "message": "Matagumpay na na-update ang TP/SL",
     "description": "Success toast text shown when TP/SL settings are updated"
+  },
+  "perpsTopMovers": {
+    "message": "Mga nangungunang mover",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
+  },
+  "perpsTopMoversGainers": {
+    "message": "Mga Gainer",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "Mga Loser",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
   "perpsTrades": {
     "message": "Mga Trade"
@@ -8368,6 +8652,10 @@
   "quotedTotalCost": {
     "message": "Kabuuang halaga: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Bumalik sa wallet",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Pinakasulit na rate"
   },
@@ -8385,6 +8673,21 @@
   "rampsChangeProvider": {
     "message": "Magpalit ng provider."
   },
+  "rampsChooseProvider": {
+    "message": "Pumili ng provider"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "Kumpletuhin ang pagbili",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "Kumpletuhin ang pagbili mo sa $1 tab",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "Magpatuloy sa pag-browse",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Pakisubukan muli, o kontakin ang support kung patuloy itong mangyayari."
   },
@@ -8396,6 +8699,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Error ang pag-load sa mga token"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Tinatayang matatanggap",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "Ang pinakamataas na pagbili ay $1",
@@ -8522,12 +8829,20 @@
   "rampsPaymentDelayMinutes": {
     "message": "na min"
   },
+  "rampsPaymentMethod": {
+    "message": "Paraan ng pagbabayad",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "Hanggang $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
   "rampsPaymentMethodMinLimit": {
     "message": "Pinakamababa $1",
     "description": "$1 is the minimum fiat buy amount"
   },
-  "rampsQuoteFetchError": {
-    "message": "Nabigong kunin ang quote."
+  "rampsPreviouslyUsed": {
+    "message": "Huling ginamit"
   },
   "rampsQuoteUnavailable": {
     "message": "Hindi available ang quote."
@@ -8625,11 +8940,22 @@
   "rejected": {
     "message": "Tinanggihan"
   },
+  "relayerFee": {
+    "message": "Bayad sa relayer"
+  },
   "remove": {
     "message": "Alisin"
   },
   "removeAccount": {
     "message": "Alisin ang account"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "Maaari mong i-restore ang account na ito kahit anong oras sa pamamagitan ng pag-import nito gamit ang pribagong key.",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "Alisin ang $1",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "Tiyaking mayroon kang Lihim na Parirala sa Pagbawi o pribadong key para sa account na ito bago alisin.",
@@ -9084,6 +9410,10 @@
   "searchAnAcccountOrContact": {
     "message": "Maghanap ng account o contact"
   },
+  "searchAnAccount": {
+    "message": "Pumili ng isang account",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "Maghanap ng ipapadalang asset"
   },
@@ -9523,6 +9853,9 @@
   "selectPathHelp": {
     "message": "Kung hindi mo makita ang mga account na inaasahan mo, subukang lumipat ng HD path o kasalukuyang piniling network."
   },
+  "selectPerpsAccount": {
+    "message": "Pumili ng perps account"
+  },
   "selectRecipient": {
     "message": "Piliin ang tatanggap"
   },
@@ -9563,6 +9896,9 @@
   },
   "sendSelectSendAsset": {
     "message": "Piliin ang asset na ipapadala"
+  },
+  "sendToPerps": {
+    "message": "Ipadala sa Perps"
   },
   "sendingAsset": {
     "message": "Nagpapadala ng $1"
@@ -10961,7 +11297,7 @@
     "message": "Nabigo sana ang pag-swap kung"
   },
   "stxCancelledDescription": {
-    "message": "Maaaring nabigo at kinansela ang transaksyon para protektahan ka mula sa pagbabayad ng mga hindi kinakailangang bayad sa gas."
+    "message": "Maaaring nabigo at kinansela ang transaksyon para protektahan ka mula sa pagbabayad ng mga hindi kinakailangang bayad sa network."
   },
   "stxCancelledSubDescription": {
     "message": "Subukan muli ang pag-swap. Narito kami para protektahan ka sa mga katulad na panganib sa susunod."
@@ -11006,7 +11342,7 @@
     "message": "Kinansela ang pag-swap"
   },
   "stxUserCancelledDescription": {
-    "message": "Kinansela ang iyong transaksyon at hindi ka nagbayad para sa anumang mga hindi kinakailangang gas."
+    "message": "Kinansela ang iyong transaksyon at hindi ka nagbayad para sa anumang mga hindi kinakailangang network."
   },
   "submit": {
     "message": "Isumite"
@@ -11138,7 +11474,7 @@
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesExplanation": {
-    "message": "Hindi kumikita ang MetaMask mula sa mga bayad sa gas. Ang mga bayarin na ito ay pagtatantiya at maaaring mabago batay sa kung gaano kaabala ang network at kung gaano kakumplikado ang transaksyon. Alamin pa ang $1.",
+    "message": "Hindi kumikita ang MetaMask mula sa mga bayad sa network. Ang mga bayarin na ito ay pagtatantiya at maaaring mabago batay sa kung gaano kaabala ang network at kung gaano kakumplikado ang transaksyon. Alamin pa ang $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -11149,7 +11485,7 @@
     "message": " Kasama na"
   },
   "swapGasFeesSplit": {
-    "message": "Ang mga bayad sa gas sa nakaraang screen ay hinati sa dalawang transaksyon."
+    "message": "Ang mga bayad sa network sa nakaraang screen ay hinati sa dalawang transaksyon."
   },
   "swapGasFeesSponsored": {
     "message": "Binayaran ng MetaMask"
@@ -11285,7 +11621,7 @@
     "message": "Pinagmumulan ng liquidity"
   },
   "swapSuggestedGasSettingToolTipMessage": {
-    "message": "Ang mga swap ay kumplikado at sensitibo sa oras na mga transaksyon. Inirerekomenda namin ang bayad sa gas na ito para sa magandang balanse sa pagitan ng halaga at kumpiyansa ng matagumpay na Swap."
+    "message": "Ang mga swap ay kumplikado at sensitibo sa oras na mga transaksyon. Inirerekomenda namin ang bayad sa network na ito para sa magandang balanse sa pagitan ng halaga at kumpiyansa ng matagumpay na Swap."
   },
   "swapToConfirmWithHwWallet": {
     "message": "para kumpirmahin gamit ang iyong wallet na hardware"
@@ -11310,7 +11646,7 @@
     "message": "Hindi Kilala"
   },
   "swapValidationInsufficientGasMessage": {
-    "message": "Wala kang sapat na $1 para bayaran ang gas sa swap na ito. Maglagay ng mas maliit na halaga o bumili pa ng $1."
+    "message": "Wala kang sapat na $1 para sa bayad sa network sa pag-swap na ito. Maglagay ng mas maliit na halaga o bumili pa ng $1."
   },
   "swapZeroSlippage": {
     "message": "0% Slippage"
@@ -11526,7 +11862,7 @@
     "message": "Tungkulin"
   },
   "transactionDetailGasHeading": {
-    "message": "Tinatayang bayad sa gas"
+    "message": "Tinatayang bayarin sa network"
   },
   "transactionError": {
     "message": "Error sa transaksyon. Nagkaroon ng exception sa code ng kontrata."
@@ -11547,7 +11883,7 @@
     "message": "Batayang bayad (GWEI)"
   },
   "transactionHistoryL1GasLabel": {
-    "message": "Kabuuang L1 na bayad sa gas"
+    "message": "Kabuuang L1 na bayad sa network"
   },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 na limitasyon ng gas"
@@ -11562,7 +11898,7 @@
     "message": "Bayad sa priyoridad (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Kabuuang bayad sa gas"
+    "message": "Kabuuang bayad sa network"
   },
   "transactionIdCopied": {
     "message": "Nakopya ang ID ng transaksyon"
@@ -11765,7 +12101,7 @@
     "message": "I-unlock"
   },
   "unlockPageIncorrectPassword": {
-    "message": "Mali ang password. Pakisubukan muli."
+    "message": "Mali ang password. Subukan muli."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Masyado nang maraming pagtatangka. Subukang muli pagkalipas ng "
@@ -12038,7 +12374,7 @@
     "message": "Ayon sa aming mga rekord, maaaring hindi tumugma ang pangalan ng network sa ID ng chain na ito."
   },
   "wrongPassword": {
-    "message": "Maling password",
+    "message": "Mali ang password. Subukan muli.",
     "description": "Displayed when the user enters an incorrect password"
   },
   "year": {

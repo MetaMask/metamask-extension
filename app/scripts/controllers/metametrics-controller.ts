@@ -11,7 +11,6 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
-import type { Browser } from 'webextension-polyfill';
 import {
   BaseController,
   type ControllerGetStateAction,
@@ -19,15 +18,7 @@ import {
   type StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { Json, Hex } from '@metamask/utils';
-import type { MetaMetricsUserTraits } from '../../../shared/constants/metametrics';
-import {
-  trace,
-  endTrace,
-  type TraceRequest,
-  type EndTraceRequest,
-  type TraceCallback,
-} from '../../../shared/lib/trace';
+import type { Hex } from '@metamask/utils';
 import type { captureException } from '../../../shared/lib/sentry';
 import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
 import { CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/chain-value-order';
@@ -41,7 +32,6 @@ import { MetaMetricsControllerMethodActions } from './metametrics-controller-met
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
 
-const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 const defaultCaptureException = (err: unknown) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
   // but does not interrupt the call stack
@@ -55,16 +45,6 @@ const exceptionsToFilter: Record<string, boolean> = {
 };
 
 /**
- * Represents a buffered trace that is stored before user consent.
- * Simplified for JSON serialization - doesn't include callback functions.
- */
-type BufferedTrace = {
-  type: 'start' | 'end';
-  request: Record<string, Json>;
-  parentTraceName?: string;
-};
-
-/**
  * {@link MetaMetricsController}'s metadata.
  *
  * This allows us to choose if fields of the state should be persisted or not
@@ -72,18 +52,6 @@ type BufferedTrace = {
  * the `anonymous` flag.
  */
 const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
-  tracesBeforeMetricsOptIn: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: false,
-  },
-  traits: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: false,
-  },
   dataCollectionForMarketing: {
     includeInStateLogs: true,
     persist: true,
@@ -101,14 +69,10 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
 /**
  * The state that MetaMetricsController stores.
  *
- * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
- * @property traits - Traits that are not derived from other state keys.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  */
 export type MetaMetricsControllerState = {
-  tracesBeforeMetricsOptIn: BufferedTrace[];
-  traits: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
   marketingCampaignCookieId: string | null;
 };
@@ -170,9 +134,6 @@ type CaptureException = typeof captureException | ((err: unknown) => void);
 export type MetaMetricsControllerOptions = {
   state?: Partial<MetaMetricsControllerState>;
   messenger: MetaMetricsControllerMessenger;
-  version: string;
-  environment: string;
-  extension: Browser;
   captureException?: CaptureException;
 };
 
@@ -183,20 +144,11 @@ export const getDefaultMetaMetricsControllerState =
   (): MetaMetricsControllerState => ({
     dataCollectionForMarketing: null,
     marketingCampaignCookieId: null,
-    tracesBeforeMetricsOptIn: [],
-    traits: {},
   });
 
 const MESSENGER_EXPOSED_METHODS = [
-  'addTraceBeforeMetricsOptIn',
-  'bufferedEndTrace',
-  'bufferedTrace',
-  'clearTracesAfterMetricsOptIn',
   'setDataCollectionForMarketing',
   'setMarketingCampaignCookieId',
-  'trackTracesAfterMetricsOptIn',
-  'updateExtensionUninstallUrl',
-  'updateTraits',
 ] as const;
 
 export class MetaMetricsController extends BaseController<
@@ -210,12 +162,6 @@ export class MetaMetricsController extends BaseController<
 
   locale: string;
 
-  version: MetaMetricsControllerOptions['version'];
-
-  #extension: MetaMetricsControllerOptions['extension'];
-
-  #environment: MetaMetricsControllerOptions['environment'];
-
   #analyticsGetState(): AnalyticsControllerState {
     return this.messenger.call('AnalyticsController:getState');
   }
@@ -224,17 +170,11 @@ export class MetaMetricsController extends BaseController<
    * @param options
    * @param options.state - Initial controller state.
    * @param options.messenger - Messenger used to communicate with BaseV2 controller.
-   * @param options.version - The version of the extension
-   * @param options.environment - The environment the extension is running in
-   * @param options.extension - webextension-polyfill
    * @param options.captureException
    */
   constructor({
     state = {},
     messenger,
-    version,
-    environment,
-    extension,
     captureException = defaultCaptureException,
   }: MetaMetricsControllerOptions) {
     super({
@@ -260,10 +200,6 @@ export class MetaMetricsController extends BaseController<
       'PreferencesController:getState',
     );
     this.locale = preferencesControllerState.currentLocale.replace('_', '-');
-    this.version =
-      environment === 'production' ? version : `${version}-${environment}`;
-    this.#extension = extension;
-    this.#environment = environment;
 
     // Register A/B test analytics mappings so that matching events are
     // enriched with their `active_ab_tests` assignment.
@@ -308,35 +244,6 @@ export class MetaMetricsController extends BaseController<
     return chainId;
   }
 
-  // It sets an uninstall URL ("Sorry to see you go!" page),
-  // which is opened if a user uninstalls the extension.
-  // This method should only be called after the user has made a decision about MetaMetrics participation.
-  updateExtensionUninstallUrl(
-    participateInMetaMetrics: boolean,
-    analyticsId: string,
-  ): void {
-    const query: {
-      mmi?: string;
-      env?: string;
-      av: string;
-    } = {
-      av: this.version,
-    };
-    if (participateInMetaMetrics) {
-      // We only want to track these things if a user opted into metrics.
-      query.mmi = Buffer.from(analyticsId).toString('base64');
-      query.env = this.#environment;
-    }
-    const queryString = new URLSearchParams(query);
-
-    // this.extension not currently defined in tests
-    if (this.#extension && this.#extension.runtime) {
-      this.#extension.runtime.setUninstallURL(
-        `${EXTENSION_UNINSTALL_URL}?${queryString}`,
-      );
-    }
-  }
-
   setDataCollectionForMarketing(dataCollectionForMarketing: boolean): string {
     const { analyticsId } = this.#analyticsGetState();
 
@@ -354,99 +261,6 @@ export class MetaMetricsController extends BaseController<
   setMarketingCampaignCookieId(marketingCampaignCookieId: string | null): void {
     this.update((state) => {
       state.marketingCampaignCookieId = marketingCampaignCookieId;
-    });
-  }
-
-  // Track all queued traces after a user opted into metrics.
-  trackTracesAfterMetricsOptIn(): void {
-    const { tracesBeforeMetricsOptIn } = this.state;
-    tracesBeforeMetricsOptIn.forEach((bufferedTrace) => {
-      if (bufferedTrace.type === 'start') {
-        trace(bufferedTrace.request as TraceRequest);
-      } else if (bufferedTrace.type === 'end') {
-        endTrace(bufferedTrace.request as EndTraceRequest);
-      }
-    });
-  }
-
-  // Once we track queued traces after a user opts into metrics, we want to clear the trace queue.
-  clearTracesAfterMetricsOptIn(): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.tracesBeforeMetricsOptIn = [];
-    });
-  }
-
-  // It adds a trace into a queue, which is only tracked if a user opts into metrics.
-  addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.tracesBeforeMetricsOptIn.push(traceData);
-    });
-  }
-
-  /**
-   * Buffered trace method that checks consent and either buffers or executes immediately
-   *
-   * @param request - The trace request
-   * @param fn - Optional callback function to trace
-   * @returns The result of the trace callback or undefined if buffered
-   */
-  bufferedTrace<TraceResultType>(
-    request: TraceRequest,
-    fn?: TraceCallback<TraceResultType>,
-  ): TraceResultType | undefined {
-    if (this.#analyticsGetState().optedIn) {
-      return fn ? trace(request, fn) : (trace(request) as TraceResultType);
-    }
-
-    // Extract parent trace name if parentContext exists
-    let parentTraceName: string | undefined;
-    if (request.parentContext && typeof request.parentContext === 'object') {
-      const parentSpan = request.parentContext as { _name?: string };
-      parentTraceName = parentSpan?._name;
-    }
-
-    this.addTraceBeforeMetricsOptIn({
-      type: 'start',
-      request: {
-        ...request,
-        parentContext: undefined as unknown as Json, // Remove original parentContext to avoid invalid references
-        // Use Date.now() as performance.timeOrigin is only valid for measuring durations within
-        // the same session; it won't produce valid event times for Sentry if buffered and flushed later
-        startTime: request.startTime ?? Date.now(),
-      },
-      parentTraceName, // Store the parent trace name for later reconnection
-    });
-
-    return undefined;
-  }
-
-  /**
-   * Buffered end trace method that checks consent and either buffers or executes immediately
-   *
-   * @param request - The end trace request
-   */
-  bufferedEndTrace(request: EndTraceRequest): void {
-    if (this.#analyticsGetState().optedIn) {
-      endTrace(request);
-    } else {
-      this.addTraceBeforeMetricsOptIn({
-        type: 'end',
-        request: {
-          ...request,
-          // Use Date.now() as performance.timeOrigin is only valid for measuring durations within
-          // the same session; it won't produce valid event times for Sentry if buffered and flushed later
-          timestamp: request.timestamp ?? Date.now(),
-        },
-      });
-    }
-  }
-
-  // Add or update traits for tracking.
-  updateTraits(newTraits: MetaMetricsUserTraits): void {
-    this.update((state) => {
-      state.traits = { ...state.traits, ...newTraits };
     });
   }
 }
