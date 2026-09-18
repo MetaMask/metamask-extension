@@ -7,11 +7,11 @@ import {
   Icon,
   IconName,
   IconSize,
+  Label,
 } from '@metamask/design-system-react';
 import {
   Box,
   Input,
-  Label,
   Popover,
   PopoverPosition,
   Text,
@@ -225,7 +225,7 @@ export const DropdownEditor = <Item,>({
 
   return (
     <Box paddingTop={4}>
-      <Label variant={TextVariant.bodyMdMedium}>{title}</Label>
+      <Label>{title}</Label>
       {tooltip ? (
         <Tooltip title={tooltip} position="bottom">
           {box}
