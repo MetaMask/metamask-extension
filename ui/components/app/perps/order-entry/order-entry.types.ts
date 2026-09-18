@@ -141,6 +141,8 @@ export type OrderEntryProps = {
   onOrderTypeChange?: (orderType: OrderType) => void;
   /** Callback when add-funds icon is pressed in the amount input */
   onAddFunds?: () => void;
+  /** True while the live perps account stream is still hydrating */
+  isLoadingAccount?: boolean;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
   /** Unexpired same-market draft used to restore a new-order form. */
@@ -215,6 +217,8 @@ export type AmountInputProps = {
   currentPositionSize?: string;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
+  /** True while the live perps account stream is still hydrating */
+  isLoadingAccount?: boolean;
   /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
   autoFocus?: boolean;
   /** Placeholder override for the USD input. Defaults to '0.00'. */

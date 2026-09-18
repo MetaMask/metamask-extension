@@ -7,8 +7,11 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
   IconName,
   IconColor,
 } from '@metamask/design-system-react';
@@ -27,6 +30,7 @@ import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
+import { PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC } from '../../../constants';
 import {
   formatNumberForInput,
   isDigitsOnlyInput,
@@ -61,6 +65,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.currentPrice
  * @param options0.currentPositionSize
  * @param options0.onAddFunds
+ * @param options0.isLoadingAccount
  * @param options0.szDecimals
  * @param options0.autoFocus
  * @param options0.usdPlaceholder
@@ -80,6 +85,7 @@ export const AmountInput = ({
   szDecimals,
   currentPositionSize,
   onAddFunds,
+  isLoadingAccount = false,
   autoFocus = false,
   usdPlaceholder = '0.00',
   usdInputRef,
@@ -405,15 +411,30 @@ export const AmountInput = ({
           <SensitiveText variant={TextVariant.BodySm} isHidden={privacyMode}>
             {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </SensitiveText>
-          <ButtonIcon
-            iconName={IconName.AddCircle}
-            size={ButtonIconSize.Xs}
-            iconProps={{ color: IconColor.IconAlternative }}
-            ariaLabel="Add Funds"
-            type="button"
-            onClick={onAddFunds}
-            data-testid="amount-input-add-funds"
-          />
+          {onAddFunds &&
+          !isLoadingAccount &&
+          availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC ? (
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Sm}
+              type="button"
+              onClick={onAddFunds}
+              data-testid="amount-input-add-funds"
+            >
+              {t('addFunds')}
+            </Button>
+          ) : (
+            <ButtonIcon
+              iconName={IconName.AddCircle}
+              size={ButtonIconSize.Xs}
+              iconProps={{ color: IconColor.IconAlternative }}
+              ariaLabel={t('addFunds')}
+              type="button"
+              onClick={isLoadingAccount ? undefined : onAddFunds}
+              isDisabled={isLoadingAccount}
+              data-testid="amount-input-add-funds"
+            />
+          )}
         </Box>
       </Box>
 
