@@ -99,6 +99,14 @@ export const BridgeTransactionSettingsModal = ({
   };
 
   const getNotificationConfig = () => {
+    if (slippageValue === 100 && Number(inputValue) > 100) {
+      return {
+        severity: BannerAlertSeverity.Warning,
+        text: t('swapSlippageCappedDescription'),
+        title: t('swapSlippageHighTitle'),
+      };
+    }
+
     if (slippageValue === undefined) {
       return null;
     }
@@ -131,12 +139,7 @@ export const BridgeTransactionSettingsModal = ({
   ) => {
     event.preventDefault();
     event.stopPropagation();
-    const sanitizedValue = sanitizeAmountInput(value, false);
-    const clampedValue =
-      sanitizedValue !== '' && Number(sanitizedValue) > 100
-        ? '100'
-        : sanitizedValue;
-    setInputValue(clampedValue);
+    setInputValue(sanitizeAmountInput(value, false));
   };
 
   const isCustomSlippage = !(
@@ -231,6 +234,7 @@ export const BridgeTransactionSettingsModal = ({
                 borderRadius={BorderRadius.XL}
                 type={TextFieldType.Text}
                 value={inputValue}
+                inputProps={{ inputMode: 'decimal' }}
                 onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
                   handleCustomSlippage(e, e.clipboardData.getData('text'));
                 }}
@@ -250,9 +254,12 @@ export const BridgeTransactionSettingsModal = ({
                   setShowCustomInput(false);
                   const newSlippage = Number(inputValue);
                   if (!isNaN(newSlippage) && inputValue.length > 0) {
+                    const isCapped = newSlippage > 100;
                     selectSlippageOption(Math.min(newSlippage, 100));
+                    if (!isCapped) {
+                      setInputValue('');
+                    }
                   }
-                  setInputValue('');
                 }}
                 onFocus={() => {
                   setShowCustomInput(true);

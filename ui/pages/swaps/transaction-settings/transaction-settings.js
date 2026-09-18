@@ -72,8 +72,20 @@ export default function TransactionSettings({
   });
   const [inputRef, setInputRef] = useState(null);
   const [newSlippage, setNewSlippage] = useState(currentSlippage);
+  const [isSlippageCapped, setIsSlippageCapped] = useState(false);
 
   const didFormChange = newSlippage !== currentSlippage;
+
+  const finishEnteringCustomValue = () => {
+    const numericValue = Number(customValue);
+    const isCapped = customValue !== '' && numericValue > 100;
+    if (isCapped) {
+      setCustomValue('100');
+      setNewSlippage(100);
+    }
+    setIsSlippageCapped(isCapped);
+    setEnteringCustomValue(false);
+  };
 
   const updateTransactionSettings = () => {
     if (newSlippage !== currentSlippage) {
@@ -84,7 +96,12 @@ export default function TransactionSettings({
   let notificationText = '';
   let notificationTitle = '';
   let notificationSeverity = SEVERITIES.INFO;
-  if (customValue) {
+  if (isSlippageCapped) {
+    notificationSeverity = SEVERITIES.DANGER;
+    notificationText = t('swapSlippageCappedDescription');
+    notificationTitle = t('swapSlippageOverLimitTitle');
+    dispatch(setSwapsErrorKey(SLIPPAGE_VERY_HIGH_ERROR));
+  } else if (customValue) {
     // customValue is a string, e.g. '0'
     if (Number(customValue) < 0) {
       notificationSeverity = SEVERITIES.DANGER;
@@ -190,6 +207,7 @@ export default function TransactionSettings({
                     <Button
                       onClick={() => {
                         setCustomValue('');
+                        setIsSlippageCapped(false);
                         setEnteringCustomValue(false);
                         setActiveButtonIndex(0);
                         setNewSlippage(
@@ -211,6 +229,7 @@ export default function TransactionSettings({
                     <Button
                       onClick={() => {
                         setCustomValue('');
+                        setIsSlippageCapped(false);
                         setEnteringCustomValue(false);
                         setActiveButtonIndex(1);
                         setNewSlippage(Slippage.high);
@@ -242,25 +261,23 @@ export default function TransactionSettings({
                         >
                           <input
                             data-testid="transaction-settings-custom-slippage"
+                            inputMode="decimal"
                             onChange={(event) => {
                               const { value } = event.target;
                               const isValueNumeric = !isNaN(Number(value));
                               if (isValueNumeric) {
-                                const clampedValue =
-                                  Number(value) > 100 ? '100' : value;
-                                setCustomValue(clampedValue);
-                                setNewSlippage(Number(clampedValue));
+                                setIsSlippageCapped(false);
+                                setCustomValue(value);
+                                setNewSlippage(Number(value));
                               }
                             }}
                             type="text"
                             maxLength="4"
                             ref={setInputRef}
-                            onBlur={() => {
-                              setEnteringCustomValue(false);
-                            }}
+                            onBlur={finishEnteringCustomValue}
                             onKeyDown={(event) => {
                               if (event.key === 'Enter') {
-                                setEnteringCustomValue(false);
+                                finishEnteringCustomValue();
                               }
                             }}
                             value={customValue || ''}

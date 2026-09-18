@@ -84,7 +84,9 @@ const interactWithCustomInput = async (
   if (action) {
     await action(input);
   }
-  fireEvent.blur(input);
+  await act(async () => {
+    fireEvent.blur(input);
+  });
 };
 
 const submitUpdate = async (getByTestId: (id: string) => HTMLElement) => {
@@ -160,6 +162,10 @@ describe('BridgeTransactionSettingsModal', () => {
 
     // Click and blur Custom button
     await interactWithCustomInput(getByTestId, () => {
+      expect(getByTestId(TX_MODAL.customInput)).toHaveAttribute(
+        'inputmode',
+        'decimal',
+      );
       expect(baseElement.childNodes[2]).toMatchSnapshot();
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
@@ -314,20 +320,24 @@ describe('BridgeTransactionSettingsModal', () => {
     ) => {
       // @ts-expect-error - each is a valid test function
       it.each([
-        ['1234', '100'],
-        ['12.34', '12.34'],
-        ['fas23.43', '23.43'],
-        ['fas23 ,43', '100'],
-        ['!23', '23'],
-        ['23.4.3', '23.43'],
-        ['23.4a,3', '23.43'],
-        ['0.', '0.'],
-        ['0.1', '0.1'],
-        ['.0', '.0'],
-        ['.05', '.05'],
+        ['1234', '1234', '100'],
+        ['12.34', '12.34', '12.34'],
+        ['fas23.43', '23.43', '23.43'],
+        ['fas23 ,43', '2343', '100'],
+        ['!23', '23', '23'],
+        ['23.4.3', '23.43', '23.43'],
+        ['23.4a,3', '23.43', '23.43'],
+        ['0.', '0.', '0'],
+        ['0.1', '0.1', '0.1'],
+        ['.0', '.0', '0'],
+        ['.05', '.05', '0.05'],
       ])(
         `should enable submit button: %s`,
-        async (value: string, expectedDisplayValue: string) => {
+        async (
+          value: string,
+          expectedDisplayValue: string,
+          expectedSlippage: string,
+        ) => {
           const initialSlippage = undefined;
           const { getByTestId, store } = renderModal(initialSlippage);
 
@@ -335,15 +345,25 @@ describe('BridgeTransactionSettingsModal', () => {
           expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
           await interactWithCustomInput(getByTestId, async (input) => {
-            await setValue(input, value);
+            await act(async () => {
+              await setValue(input, value);
+            });
             expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
               expectedDisplayValue,
             );
           });
+          if (Number(expectedDisplayValue) > 100) {
+            expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent(
+              '100%',
+            );
+            expect(
+              screen.getByText(messages.swapSlippageCappedDescription.message),
+            ).toBeInTheDocument();
+          }
 
           await submitUpdate(getByTestId);
           expect(store.getState().bridge.slippage).toBe(
-            Number(expectedDisplayValue),
+            Number(expectedSlippage),
           );
         },
       );
