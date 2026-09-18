@@ -143,3 +143,12 @@ export async function watchRampsCheckoutTab(params: {
 }): Promise<void> {
   return submitRequestToBackground('watchRampsCheckoutTab', [params]);
 }
+
+export async function watchRampsProviderOrderTab(params: {
+  url: string;
+  providerCode: string;
+  walletAddress: string;
+  orderCode?: string;
+}): Promise<void> {
+  return submitRequestToBackground('watchRampsProviderOrderTab', [params]);
+}
