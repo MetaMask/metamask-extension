@@ -11,7 +11,11 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 const setup = (
-  options: { localMock?: { get?: unknown; set?: unknown } | false } = {},
+  options: {
+    localMock?:
+      | { get?: unknown; getBytesInUse?: unknown; set?: unknown }
+      | false;
+  } = {},
 ) => {
   if (typeof options.localMock === 'undefined') {
     // @ts-expect-error Mock used just to spy on calls, doesn't implement API
