@@ -81,9 +81,9 @@ export type FeatureFlagRegistryEntry = {
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
 export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
-  automaticReloadAfterUpdate: {
+  extensionAutomaticReloadAfterUpdate: {
     inProd: true,
-    name: 'automaticReloadAfterUpdate',
+    name: 'extensionAutomaticReloadAfterUpdate',
     productionDefault: true,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
