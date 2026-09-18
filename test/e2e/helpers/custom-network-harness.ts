@@ -129,6 +129,11 @@ const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
   },
 };
 
+/**
+ * Networks whose conversion-rate data contract is covered by table-driven
+ * unit tests in `custom-network-harness.test.ts`. Tokens-tab behavior is
+ * exercised once in `conversion-rates-custom-networks.spec.ts`.
+ */
 export const CONVERSION_RATE_NETWORKS: CustomNetworkId[] = [
   'injective',
   'chiliz',
