@@ -255,16 +255,6 @@
       "count": 2
     }
   },
-  "ui/components/ui/mascot/mascot.component.js": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/ui/menu/menu.js": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/components/ui/metafox-logo/horizontal-logo.js": {
     "react-hooks/set-state-in-effect": {
       "count": 1
@@ -312,11 +302,6 @@
   },
   "ui/hooks/accounts/useAccountsOperationsLoadingStates.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/hooks/activity/useActivityCacheInvalidation.ts": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -435,11 +420,6 @@
       "count": 1
     }
   },
-  "ui/hooks/rewards/useValidateReferralCode.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/hooks/rewards/useVipTier.ts": {
     "react-hooks/preserve-manual-memoization": {
       "count": 1
@@ -466,18 +446,7 @@
     }
   },
   "ui/hooks/useCarouselManagement/useCarouselManagement.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 1
-    },
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/hooks/useClickOutside.ts": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -491,28 +460,14 @@
       "count": 1
     }
   },
-  "ui/hooks/useEventListener.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/hooks/useIntersectionObserver.ts": {
-    "react-hooks/immutability": {
-      "count": 3
-    },
-    "react-hooks/refs": {
-      "count": 2
-    },
-    "react-hooks/set-state-in-effect": {
+    "react-hooks/exhaustive-deps": {
       "count": 1
     }
   },
   "ui/hooks/useMultiPolling.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 2
     }
   },
   "ui/hooks/useMultichainAccountsIntroModal.ts": {
@@ -531,11 +486,11 @@
     }
   },
   "ui/hooks/useScrollRequired.js": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
     "react-hooks/refs": {
-      "count": 6
+      "count": 3
+    },
+    "react-hooks/set-state-in-effect": {
+      "count": 2
     }
   },
   "ui/hooks/useShallowEqualityCheck.ts": {
@@ -545,7 +500,7 @@
   },
   "ui/hooks/useShouldAnimateGasEstimations.js": {
     "react-hooks/refs": {
-      "count": 3
+      "count": 2
     }
   },
   "ui/hooks/useShouldShowSpeedUp.js": {
@@ -561,14 +516,6 @@
   "ui/hooks/useSyncEqualityCheck.ts": {
     "react-hooks/refs": {
       "count": 5
-    }
-  },
-  "ui/hooks/useTheme.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/hooks/useTokenFiatAmount.js": {
@@ -697,11 +644,6 @@
   "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
     }
   },
   "ui/pages/confirmations/components/developer/perps-withdraw-button/perps-withdraw-button.tsx": {

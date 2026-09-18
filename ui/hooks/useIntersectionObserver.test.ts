@@ -130,6 +130,30 @@ describe('useIntersectionObserver', () => {
     expect(instances[0].observed).toStrictEqual([target]);
   });
 
+  it('uses rootRef.current after it is populated on a later render', () => {
+    const instances = mockIntersectionObserver();
+    const target = document.createElement('div');
+    const scrollRoot = document.createElement('div');
+    const rootRef: MutableRefObject<Element | null> = { current: null };
+
+    const { result, rerender } = renderHook(() =>
+      useIntersectionObserver({ rootRef }),
+    );
+
+    act(() => {
+      result.current.ref(target);
+    });
+
+    expect(instances[0].options?.root).toBeNull();
+
+    rootRef.current = scrollRoot;
+    rerender();
+
+    expect(instances).toHaveLength(2);
+    expect(instances[1].options?.root).toBe(scrollRoot);
+    expect(instances[1].observed).toStrictEqual([target]);
+  });
+
   it('prefers rootRef.current over root when both are provided', () => {
     const instances = mockIntersectionObserver();
     const target = document.createElement('div');

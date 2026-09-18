@@ -23,19 +23,19 @@ export type RouterHooksProps = {
  * @returns Referentially stable location that only changes when pathname/search/hash/state change
  */
 function useLocationStable(location: RouterLocation): RouterLocation {
-  const ref = useRef<RouterLocation>(location);
+  const stableLocationRef = useRef(location);
 
   const isLocationParamsEqual =
-    ref.current.pathname === location.pathname &&
-    ref.current.search === location.search &&
-    ref.current.hash === location.hash &&
-    shallowEqual(ref.current.state, location.state);
+    stableLocationRef.current.pathname === location.pathname &&
+    stableLocationRef.current.search === location.search &&
+    stableLocationRef.current.hash === location.hash &&
+    shallowEqual(stableLocationRef.current.state, location.state);
 
   if (!isLocationParamsEqual) {
-    ref.current = location;
+    stableLocationRef.current = location;
   }
 
-  return ref.current;
+  return stableLocationRef.current;
 }
 
 function withRouterHooks<Props extends object>(
