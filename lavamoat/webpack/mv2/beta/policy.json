@@ -845,17 +845,16 @@
         "@ethersproject/providers": true,
         "@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
-        "@metamask/client-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/core-backend": true,
+        "@metamask/assets-controller>@metamask/client-controller": true,
+        "@metamask/assets-controller>@metamask/controller-utils": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/assets-controller>@metamask/phishing-controller": true,
-        "@metamask/polling-controller": true,
+        "@metamask/assets-controller>@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
-        "@metamask/utils": true,
+        "@metamask/assets-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
-        "lodash": true,
+        "@metamask/assets-controller>lodash-es": true,
         "@metamask/assets-controller>p-limit": true
       }
     },
@@ -882,26 +881,26 @@
         "@metamask/account-api": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
-        "@metamask/controller-utils": true,
+        "@metamask/assets-controllers>@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/assets-controllers>@metamask/phishing-controller": true,
-        "@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
-        "@metamask/utils": true,
+        "@metamask/assets-controllers>@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
-        "lodash": true,
+        "@metamask/assets-controller>lodash-es": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,
-        "uuid": true
+        "@metamask/assets-controllers>uuid": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
@@ -958,7 +957,7 @@
         "@tanstack/react-query>@tanstack/query-core": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/bridge-controller": {
@@ -983,10 +982,10 @@
         "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-controller>@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
         "buffer": true,
-        "@metamask/base-data-service>lodash-es": true,
+        "@metamask/assets-controller>lodash-es": true,
         "reselect": true,
         "@metamask/bridge-controller>uuid": true
       }
@@ -1008,7 +1007,7 @@
         "@metamask/bridge-status-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "@metamask/bridge-status-controller>uuid": true
       }
@@ -1128,7 +1127,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethersproject/abi": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
@@ -1138,6 +1136,43 @@
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethersproject/abi": true,
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/assets-controller>@metamask/controller-utils>@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/assets-controllers>@metamask/controller-utils>@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/authenticated-user-storage>@metamask/controller-utils": {
@@ -1154,7 +1189,7 @@
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/bridge-controller>@metamask/controller-utils": {
@@ -1166,12 +1201,12 @@
       },
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-controller>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/bridge-status-controller>@metamask/controller-utils": {
@@ -1183,12 +1218,12 @@
       },
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/name-controller>@metamask/controller-utils": {
@@ -1223,7 +1258,7 @@
         "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/perps-controller>@metamask/controller-utils": {
@@ -1240,24 +1275,7 @@
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/ppom-validator>@metamask/controller-utils": {
@@ -1289,13 +1307,13 @@
       },
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
+        "@metamask/profile-metrics-controller>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/ramps-controller>@metamask/controller-utils": {
@@ -1313,7 +1331,7 @@
         "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/base-data-service>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/core-backend": {
@@ -1326,15 +1344,15 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/core-backend>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
+        "@metamask/core-backend>@metamask/controller-utils": true,
+        "@metamask/core-backend>@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
         "cockatiel": true,
-        "uuid": true
+        "@metamask/core-backend>uuid": true
       }
     },
     "@metamask/delegation-controller": {
@@ -1875,10 +1893,10 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "@metamask/base-data-service>lodash-es": true,
+        "@metamask/assets-controller>lodash-es": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
@@ -1892,10 +1910,10 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
+        "@metamask/profile-metrics-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "@metamask/base-data-service>lodash-es": true,
+        "@metamask/assets-controller>lodash-es": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
@@ -1909,10 +1927,10 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
+        "@metamask/profile-sync-controller>@metamask/keyring-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "@metamask/base-data-service>lodash-es": true,
+        "@metamask/assets-controller>lodash-es": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
@@ -2177,7 +2195,7 @@
     },
     "@metamask/bridge-controller>@metamask/multichain-network-controller": {
       "packages": {
-        "@metamask/utils": true
+        "@metamask/bridge-controller>@metamask/utils": true
       }
     },
     "@metamask/multichain-transactions-controller": {
@@ -2290,7 +2308,7 @@
         "@metamask/notification-services-controller>@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
-        "@metamask/base-data-service>lodash-es": true,
+        "@metamask/assets-controller>lodash-es": true,
         "loglevel": true,
         "semver": true,
         "@metamask/notification-services-controller>uuid": true
@@ -2389,8 +2407,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
-        "@metamask/phishing-controller>@metamask/transaction-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/transaction-controller": true,
         "@noble/hashes": true,
         "@metamask/phishing-controller>ethereum-cryptography": true,
         "stylelint>fastest-levenshtein": true,
@@ -2407,6 +2425,30 @@
         "@metamask/base-controller": true,
         "fast-json-stable-stringify": true,
         "uuid": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "@metamask/assets-controllers>@metamask/polling-controller>uuid": true
       }
     },
     "@metamask/bridge-controller>@metamask/polling-controller": {
@@ -2490,7 +2532,7 @@
         "@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/profile-metrics-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/profile-metrics-controller>uuid": true
       }
@@ -2516,7 +2558,7 @@
         "@metamask/base-controller": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/profile-sync-controller>@metamask/keyring-controller": true,
-        "@metamask/utils": true,
+        "@metamask/profile-sync-controller>@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
         "@noble/hashes": true,
@@ -2929,14 +2971,8 @@
       "packages": {
         "@metamask/bridge-status-controller>@metamask/controller-utils": true,
         "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "@metamask/bridge-status-controller>@metamask/transaction-controller>uuid": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/transaction-controller": {
-      "packages": {
-        "@ethersproject/abi": true,
-        "@metamask/metamask-eth-abis": true
+        "@metamask/bridge-status-controller>@metamask/transaction-controller>@metamask/utils": true,
+        "@metamask/bridge-status-controller>uuid": true
       }
     },
     "@metamask/transaction-pay-controller": {
@@ -3049,10 +3085,96 @@
         "semver": true
       }
     },
+    "@metamask/assets-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "nock>debug": true,
+        "lodash": true,
+        "@metamask/utils>pony-cause": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "nock>debug": true,
+        "lodash": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
     "@metamask/notification-services-controller>@metamask/controller-utils>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
+        "lodash": true
+      }
+    },
+    "@metamask/core-backend>@metamask/utils": {
+      "packages": {
+        "nock>debug": true,
+        "@metamask/utils>pony-cause": true
+      }
+    },
+    "@metamask/profile-sync-controller>@metamask/keyring-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
         "lodash": true
       }
     },
@@ -3071,6 +3193,49 @@
     "@metamask/notification-services-controller>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true
+      }
+    },
+    "@metamask/profile-metrics-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
+      }
+    },
+    "@metamask/profile-sync-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/transaction-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "nock>debug": true,
+        "lodash": true
       }
     },
     "@metamask/wallet": {
@@ -3886,7 +4051,7 @@
         "process": true
       }
     },
-    "@metamask/perps-controller>@metamask/controller-utils>@signinwithethereum/siwe-parser": {
+    "@metamask/core-backend>@metamask/controller-utils>@signinwithethereum/siwe-parser": {
       "packages": {
         "@noble/hashes": true,
         "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
@@ -3897,7 +4062,7 @@
         "crypto.getRandomValues": true
       },
       "packages": {
-        "@metamask/perps-controller>@metamask/controller-utils>@signinwithethereum/siwe-parser": true,
+        "@metamask/core-backend>@metamask/controller-utils>@signinwithethereum/siwe-parser": true,
         "ethers": true,
         "viem": true
       }
@@ -5795,7 +5960,7 @@
         "define": true
       }
     },
-    "@metamask/base-data-service>lodash-es": {
+    "@metamask/assets-controller>lodash-es": {
       "globals": {
         "clearTimeout": true,
         "exports": true,
@@ -7259,12 +7424,22 @@
         "msCrypto": true
       }
     },
+    "@metamask/assets-controllers>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@metamask/bridge-controller>uuid": {
       "globals": {
         "crypto": true
       }
     },
     "@metamask/bridge-status-controller>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/core-backend>uuid": {
       "globals": {
         "crypto": true
       }
@@ -7314,6 +7489,12 @@
         "crypto": true
       }
     },
+    "@metamask/assets-controllers>@metamask/polling-controller>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
     "@metamask/bridge-controller>@metamask/polling-controller>uuid": {
       "globals": {
         "crypto": true,
@@ -7335,12 +7516,6 @@
     "@metamask/profile-metrics-controller>uuid": {
       "globals": {
         "crypto": true
-      }
-    },
-    "@metamask/bridge-status-controller>@metamask/transaction-controller>uuid": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
       }
     },
     "remote-redux-devtools>socketcluster-client>uuid": {
