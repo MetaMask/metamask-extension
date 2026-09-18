@@ -61,27 +61,8 @@ else
     exit 1
 fi
 
-# Step 2: Download source code
-log_info "Downloading source code..."
-if curl -L -f -o "source.zip" "${SOURCE_CODE_URL}"; then
-    log_success "Downloaded source code"
-else
-    log_error "Failed to download source code. Please check if version ${VERSION} exists."
-    exit 1
-fi
 
-# Step 3: Extract source code
-log_info "Extracting source code..."
-unzip -q source.zip
-EXTRACT_DIR="metamask-extension-${VERSION}"
-if [ ! -d "${EXTRACT_DIR}" ]; then
-    log_error "Source directory ${SOURCE_EXTRACT_DIRDIR} not found after extraction"
-    exit 1
-fi
-log_success "Source code extracted to ${EXTRACT_DIR}"
-
-SOURCE_DIR="${SCRIPT_DIR}/../../../../../clone-metamask-extension"
-mv "${EXTRACT_DIR}" "${SOURCE_DIR}"
+SOURCE_DIR="${SCRIPT_DIR}/../../../"
 
 # Step 4: Copy bundle script to source directory
 log_info "Copying bundle script to source directory..."
