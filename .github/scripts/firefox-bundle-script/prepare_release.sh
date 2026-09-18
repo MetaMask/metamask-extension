@@ -165,16 +165,6 @@ fi
 
 echo ""
 echo "=========================================="
-echo "  STEP 2: CREATE SUBMISSION PACKAGE"
-echo "=========================================="
-echo ""
-
-# Run submission package creation script (pass absolute path)
-# This script will also generate submission notes and reviewer instructions
-bash "${SCRIPT_DIR}/scripts/create_submission_package.sh" "${VERSION}" "${LAST_VERSION}" "${ABS_WORK_DIR}"
-
-echo ""
-echo "=========================================="
 echo "  RELEASE PREPARATION COMPLETE"
 echo "=========================================="
 echo ""

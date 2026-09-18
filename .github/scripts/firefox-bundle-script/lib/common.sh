@@ -130,7 +130,7 @@ fetch_bundle_sh() {
 
     if [[ -s "${dest_dir}/clone-dir/bundle.sh" ]]; then
         mv "${dest_dir}/clone-dir/bundle.sh" "${dest_path}"
-        trap - RETURN
+        rm -rf "${dest_dir}/clone-dir"
         log_success "Fetched bundle.sh from ${git_ref}"
         return 0
     fi
