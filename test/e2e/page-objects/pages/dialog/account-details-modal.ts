@@ -19,9 +19,6 @@ class AccountDetailsModal {
   private readonly accountAddressText =
     '[data-testid="account-address-shortened"]';
 
-  private readonly accountPrivateKeyText =
-    '[data-testid="multichain-address-row-address"]';
-
   private readonly accountQrCodeImage = '.qr-code__wrapper';
 
   private readonly closeAccountModalButton =
@@ -29,9 +26,6 @@ class AccountDetailsModal {
 
   private readonly copyAddressButton =
     '[data-testid="address-copy-button-text"]';
-
-  private readonly copyPrivateKeyButton =
-    '[data-testid="multichain-address-row-copy-button"]';
 
   private driver: Driver;
 
@@ -85,18 +79,6 @@ class AccountDetailsModal {
     });
   }
 
-  /**
-   * Check that private key has been copied.
-   *
-   */
-  async checkAddressIsCopied(): Promise<void> {
-    console.log(`Check that private key has been copied`);
-    await this.driver.waitForSelector({
-      css: this.accountPrivateKeyText,
-      text: 'Private key copied',
-    });
-  }
-
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -116,15 +98,6 @@ class AccountDetailsModal {
   async checkShowPrivateKeyButtonIsNotDisplayed(): Promise<void> {
     console.log('Check that show private key button is not displayed');
     await this.driver.assertElementNotPresent(this.showPrivateKeyButton);
-  }
-
-  /**
-   * Click on copy private key button.
-   *
-   */
-  async clickCopyPrivateKeyButton(): Promise<void> {
-    console.log(`Click on copy private key button`);
-    await this.driver.clickElement(this.copyPrivateKeyButton);
   }
 
   async closeAccountDetailsModal(): Promise<void> {
