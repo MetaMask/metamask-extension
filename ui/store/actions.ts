@@ -86,6 +86,7 @@ import {
   BalanceCategory,
   CachedLastSelectedPaymentMethod,
 } from '@metamask/subscription-controller';
+import { isNonUISubscriptionError } from '../../shared/lib/shield';
 
 import {
   Claim,
@@ -679,11 +680,19 @@ export function startSubscriptionWithCard(params: {
 
       return subscriptions;
     } catch (err) {
-      log.error('[startSubscriptionWithCard] error', err);
-      const error = new Error(
+      const wrappedError = new Error(
         `Failed to start subscription with card, ${getErrorMessage(err)}`,
       );
-      throw error;
+      // Tab close / Stripe cancel are expected abandon paths - avoid console.error noise.
+      if (isNonUISubscriptionError(wrappedError)) {
+        log.warn(
+          '[startSubscriptionWithCard] abandoned',
+          wrappedError.message,
+        );
+      } else {
+        log.error('[startSubscriptionWithCard] error', err);
+      }
+      throw wrappedError;
     }
   };
 }
