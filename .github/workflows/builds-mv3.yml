@@ -1,0 +1,19 @@
+# Chrome / MV3 builds used by E2E Chrome, bundle-size, and regression validation.
+
+name: Builds MV3
+
+on:
+  workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+
+jobs:
+  run-builds:
+    uses: ./.github/workflows/run-build-group.yml
+    with:
+      group: mv3
+      group-name: Builds MV3
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit

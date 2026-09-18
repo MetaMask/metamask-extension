@@ -1,0 +1,40 @@
+name: Lint
+
+on:
+  workflow_call:
+    inputs:
+      run-workflows:
+        description: Whether to lint GitHub workflow files.
+        required: true
+        type: string
+      run-code:
+        description: Whether to lint application code (needs-lint).
+        required: true
+        type: string
+
+jobs:
+  lint-workflows:
+    name: Workflows
+    if: ${{ inputs.run-workflows == 'true' }}
+    uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
+
+  lint-code:
+    name: Test lint
+    if: ${{ inputs.run-code == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Verify locales
+        run: yarn verify-locales --quiet
+
+      - name: Check circular dependencies
+        run: yarn circular-deps:check

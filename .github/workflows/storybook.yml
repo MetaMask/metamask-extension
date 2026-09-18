@@ -1,11 +1,41 @@
-name: Build storybook
+name: Storybook
 
 on:
   workflow_call:
+    inputs:
+      run-test:
+        description: Whether to run Storybook tests (needs-storybook).
+        required: true
+        type: string
+      run-build:
+        description: Whether to build (and on main, deploy) Storybook.
+        required: true
+        type: string
 
 jobs:
+  test-storybook:
+    name: Test
+    if: ${{ inputs.run-test == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install Playwright browsers
+        uses: ./.github/actions/install-playwright-browsers
+        with:
+          browsers: chromium
+
+      - name: Test Storybook
+        run: yarn test-storybook:ci
+
   build-storybook:
-    name: Build storybook
+    name: Build
+    if: ${{ inputs.run-build == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
@@ -13,7 +43,7 @@ jobs:
       id-token: write
       contents: read
     env:
-      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `pull_request` event, the branch is `github.head_ref`.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
