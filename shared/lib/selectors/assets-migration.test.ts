@@ -67,6 +67,17 @@ const erc20AssetId = `eip155:1/erc20:${erc20AssetAddressLowercase}`;
 const solanaTokenAssetId =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
+const tempoChainId = '0x1079';
+const tempoPathUsdAddressLowercase: Hex =
+  '0x20c0000000000000000000000000000000000000';
+const tempoPathUsdAssetId = `eip155:4217/erc20:${tempoPathUsdAddressLowercase}`;
+const tempoBridgedUsdcAddressLowercase: Hex =
+  '0x20c0000000000000000000000000000000000001';
+const tempoBridgedUsdcAssetId = `eip155:4217/erc20:${tempoBridgedUsdcAddressLowercase}`;
+const tempoNetworkConfigurationsByChainId = {
+  [tempoChainId]: { nativeCurrency: 'USD' },
+};
+
 const nativePolygonAssetId = 'eip155:137/slip44:966';
 const bitcoinNativeAssetId = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 const mockAccountId3 = 'mock-account-id-3';
@@ -1616,8 +1627,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
             },
           },
-          currentCurrency: 'eur',
-          selectedCurrency: 'eur',
           currencyRates: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
@@ -1675,6 +1684,85 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
         },
       });
     });
+
+    it('derives the USD rate from the most recently updated price on a USD-native chain', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          currencyRates: {},
+          assetsInfo: {
+            [tempoPathUsdAssetId]: {
+              type: 'erc20',
+              symbol: 'pathUSD',
+              decimals: 6,
+            },
+            [tempoBridgedUsdcAssetId]: {
+              type: 'erc20',
+              symbol: 'USDC.e',
+              decimals: 6,
+            },
+          },
+          assetsPrice: {
+            [tempoPathUsdAssetId]: makeMockPrice({
+              id: 'pathusd',
+              price: 0.9,
+              usdPrice: 1,
+              lastUpdated: 1700000000000,
+            }),
+            [tempoBridgedUsdcAssetId]: makeMockPrice({
+              id: 'bridged-usdc',
+              price: 0.9108,
+              usdPrice: 0.99,
+              lastUpdated: 1700000001000,
+            }),
+          },
+          networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
+        },
+      };
+
+      const result = getCurrencyRateControllerCurrencyRates(state);
+
+      expect(result.USD?.conversionRate).toBeCloseTo(0.92);
+      expect(result.USD?.usdConversionRate).toBe(1);
+      expect(result.USD?.conversionDate).toBe(1700000001);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      { price: 0, usdPrice: 1 },
+      { price: -1, usdPrice: 1 },
+      { price: 1, usdPrice: 0 },
+      { price: 1, usdPrice: -1 },
+    ])(
+      'does not derive a USD rate from an invalid price (price $price, usdPrice $usdPrice)',
+      ({ price, usdPrice }: { price: number; usdPrice: number }) => {
+        const state = {
+          metamask: {
+            ...enabledFlags,
+            currencyRates: {},
+            assetsInfo: {
+              [tempoPathUsdAssetId]: {
+                type: 'erc20',
+                symbol: 'pathUSD',
+                decimals: 6,
+              },
+            },
+            assetsPrice: {
+              [tempoPathUsdAssetId]: makeMockPrice({
+                id: 'pathusd',
+                price,
+                usdPrice,
+              }),
+            },
+            networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
+          },
+        };
+
+        const result = getCurrencyRateControllerCurrencyRates(state);
+
+        expect(result.USD).toBeUndefined();
+      },
+    );
   });
 });
 
@@ -1806,6 +1894,59 @@ describe('getTokenRatesControllerMarketData', () => {
       expect(marketData.price).toBe(usdcPriceInUsd / ethPriceInUsd);
       expect(marketData.currency).toBe('ETH');
       expect(marketData.tokenAddress).toBe(erc20AssetAddressChecksummed);
+    });
+
+    it('prices tokens on a USD-native chain with no native asset in USD', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          marketData: {},
+          currentCurrency: 'eur',
+          selectedCurrency: 'eur',
+          currencyRates: {},
+          assetsInfo: {
+            [tempoPathUsdAssetId]: {
+              type: 'erc20',
+              symbol: 'pathUSD',
+              decimals: 6,
+            },
+            [tempoBridgedUsdcAssetId]: {
+              type: 'erc20',
+              symbol: 'USDC.e',
+              decimals: 6,
+            },
+          },
+          assetsPrice: {
+            [tempoPathUsdAssetId]: makeMockPrice({
+              id: 'pathusd',
+              price: 0.9,
+              usdPrice: 1,
+              lastUpdated: 1700000000000,
+            }),
+            [tempoBridgedUsdcAssetId]: makeMockPrice({
+              id: 'bridged-usdc',
+              price: 0.9108,
+              usdPrice: 0.99,
+              lastUpdated: 1700000001000,
+            }),
+          },
+          networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
+        },
+      };
+      const result = getTokenRatesControllerMarketData(state);
+
+      const pathUsdMarketData =
+        result[tempoChainId][
+          toChecksumHexAddress(tempoPathUsdAddressLowercase) as Hex
+        ];
+      const bridgedUsdcMarketData =
+        result[tempoChainId][
+          toChecksumHexAddress(tempoBridgedUsdcAddressLowercase) as Hex
+        ];
+      expect(pathUsdMarketData.price).toBeCloseTo(0.9 / 0.92);
+      expect(pathUsdMarketData.currency).toBe('USD');
+      expect(bridgedUsdcMarketData.price).toBeCloseTo(0.99);
+      expect(bridgedUsdcMarketData.currency).toBe('USD');
     });
   });
 

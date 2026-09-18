@@ -77,6 +77,8 @@ import { createDeepEqualSelector } from './selector-creators';
 // TokenListController
 // tokensChainsCache: TODO (There are no plans to port this state)
 
+const USD_CURRENCY = 'USD';
+
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
 type ControllerStateSelector<
@@ -683,8 +685,16 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: AssetsControllerState }) =>
       state.metamask?.assetsPrice ?? {},
+    (state: { metamask: NetworkState }) =>
+      state.metamask?.networkConfigurationsByChainId ?? {},
   ],
-  (isAssetsUnifyStateEnabled, currencyRates, assetsInfo, assetsPrice) => {
+  (
+    isAssetsUnifyStateEnabled,
+    currencyRates,
+    assetsInfo,
+    assetsPrice,
+    networkConfigurationsByChainId,
+  ) => {
     if (!isAssetsUnifyStateEnabled) {
       return currencyRates;
     }
@@ -720,6 +730,32 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
         conversionDate: price.lastUpdated / 1000,
         conversionRate: price.price,
         usdConversionRate: price.usdPrice,
+      };
+    }
+
+    const hasUsdNativeCurrency = Object.values(
+      networkConfigurationsByChainId,
+    ).some(({ nativeCurrency }) => nativeCurrency === USD_CURRENCY);
+    const usdPrice = Object.values(assetsPrice).reduce<
+      FungibleAssetPrice | undefined
+    >(
+      (latest, price) =>
+        price.assetPriceType === 'fungible' &&
+        Number.isFinite(price.price) &&
+        price.price > 0 &&
+        Number.isFinite(price.usdPrice) &&
+        price.usdPrice > 0 &&
+        (!latest || price.lastUpdated > latest.lastUpdated)
+          ? price
+          : latest,
+      undefined,
+    );
+
+    if (hasUsdNativeCurrency && !result[USD_CURRENCY] && usdPrice) {
+      result[USD_CURRENCY] = {
+        conversionDate: usdPrice.lastUpdated / 1000,
+        conversionRate: usdPrice.price / usdPrice.usdPrice,
+        usdConversionRate: 1,
       };
     }
 
