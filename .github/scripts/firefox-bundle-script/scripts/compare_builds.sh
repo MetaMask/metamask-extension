@@ -45,12 +45,6 @@ cd "${SCRIPT_DIR}"
 OUTPUT_DIR=$(dirname "${WORK_DIR}")
 BUNDLE_SH_PATH="${OUTPUT_DIR}/bundle.sh"
 
-# Always fetch at FIREFOX_BUNDLE_SH_GIT_REF (default v${VERSION}) so a prior run cannot
-# reuse output/bundle.sh for a different version.
-if ! fetch_bundle_sh "${BUNDLE_SH_PATH}"; then
-    exit 1
-fi
-
 # Navigate to work directory
 cd "${WORK_DIR}"
 
