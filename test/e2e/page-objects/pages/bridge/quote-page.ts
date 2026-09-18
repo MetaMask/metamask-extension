@@ -196,22 +196,21 @@ class BridgeQuotePage {
   }
 
   async checkExpectedNetworkFeeIsDisplayed(): Promise<void> {
-    try {
-      const balance = await this.driver.waitForSelector(this.networkFees);
-      const currentBalanceText = await balance.getText();
-      // Verify that the text matches the pattern $XXX.XX or $0.00X (for small fees < $0.01)
-      const pricePattern = /^\$\d+\.\d{2,4}$/u;
-      if (!pricePattern.test(currentBalanceText)) {
-        throw new Error(`Price format is not valid: ${currentBalanceText}`);
-      }
-    } catch (e: unknown) {
-      console.log(
-        `Error checking price format: ${
-          e instanceof Error ? e.message : String(e)
-        }`,
-      );
-      throw e;
-    }
+    const pricePattern = /^\$\d+\.\d{2,4}$/u;
+    await this.driver.waitUntil(
+      async () => {
+        const present = await this.driver.isElementPresentAndVisible(
+          this.networkFees,
+          1000,
+        );
+        if (!present) {
+          return false;
+        }
+        const el = await this.driver.findElement(this.networkFees);
+        return pricePattern.test(await el.getText());
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
     console.log('Price matches expected format');
   }
 
