@@ -944,7 +944,7 @@
       "smartTransactionsOptInStatus": "boolean",
       "tdpChartType": "number",
       "tdpChartInterval": "string",
-      "tdpChartIndicators": "object",
+      "tdpChartIndicators": "array",
       "tokenNetworkFilter": {
         "0x539": "boolean"
       },
