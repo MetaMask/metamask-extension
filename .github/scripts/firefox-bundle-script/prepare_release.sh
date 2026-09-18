@@ -89,7 +89,7 @@ else
     fi
 fi
 
-WORK_DIR_PREFIX="comp"
+WORK_DIR_PREFIX="main0_comparison"
 
 # Main-release defaults. These are set unconditionally (not only in the Flask
 # branch below) so that a value left over in the caller's shell environment
@@ -103,7 +103,7 @@ if [ "${RELEASE_TYPE}" = "flask" ]; then
         exit 1
     fi
     FLASK_VERSION="${VERSION}-flask.0"
-    WORK_DIR_PREFIX="fcomp"
+    WORK_DIR_PREFIX="flask_comparison"
     PRODUCTION_BUILD_FILE="metamask-firefox-${FLASK_VERSION}.zip"
     # NOTE: This variable must NOT be named with a `BUNDLE_` prefix. The
     # metamask-extension webpack CLI reads env vars prefixed `BUNDLE_` as CLI
