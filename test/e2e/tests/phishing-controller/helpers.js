@@ -1,9 +1,21 @@
-const {
-  METAMASK_STALELIST_URL,
-  METAMASK_HOTLIST_DIFF_URL,
-  C2_DOMAIN_BLOCKLIST_URL,
-  ListNames,
-} = require('@metamask/phishing-controller');
+// These mirror the constants of the same name in `@metamask/phishing-controller`.
+// They are duplicated rather than imported because that package is ESM-only as
+// of v18, and requiring it from this CommonJS harness fails: its ESM graph does
+// `import { toASCII } from 'punycode/punycode.js'`, and punycode's CommonJS
+// build assigns `module.exports` from a variable, so Node cannot detect the
+// named export when loading ESM synchronously from CJS.
+const PHISHING_CONFIG_BASE_URL =
+  'https://phishing-detection.api.cx.metamask.io';
+const CLIENT_SIDE_DETECTION_BASE_URL =
+  'https://client-side-detection.api.cx.metamask.io';
+
+const METAMASK_STALELIST_URL = `${PHISHING_CONFIG_BASE_URL}/v1/stalelist`;
+const METAMASK_HOTLIST_DIFF_URL = `${PHISHING_CONFIG_BASE_URL}/v2/diffsSince`;
+const C2_DOMAIN_BLOCKLIST_URL = `${CLIENT_SIDE_DETECTION_BASE_URL}/v1/request-blocklist`;
+
+const ListNames = {
+  MetaMask: 'MetaMask',
+};
 
 /**
  * The block provider names.
