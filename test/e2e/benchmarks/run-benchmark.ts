@@ -23,16 +23,9 @@ import {
   DEFAULT_BENCHMARK_ITERATIONS,
   DEFAULT_BENCHMARK_PAGE_LOADS,
 } from '../../../shared/constants/benchmarks';
-import { toCamelCase } from '../../../shared/lib/string-utils';
 import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
-import {
-  STARTUP_PRESETS,
-  INTERACTION_PRESETS,
-  USER_JOURNEY_PRESETS,
-  DAPP_PAGE_LOAD_PRESETS,
-  DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH,
-  DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
-} from './utils/constants';
+import { DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME } from './utils/constants';
+import { buildRegistryKey, PRESET_BENCHMARK_FILES } from './utils/presets';
 import { THRESHOLD_REGISTRY } from './utils/thresholds';
 import {
   validateResultThresholds,
@@ -87,79 +80,7 @@ function extractPlatformBuildType(outputFilename?: string): {
   return {};
 }
 
-/**
- * Builds the registry key for threshold lookup and JSON output.
- *
- * @param fileName - Benchmark flow filename (e.g., 'standard-home', 'load-new-account')
- * @param filePath - Full file path (to detect startup benchmarks)
- * @param preset - Preset name (e.g., 'startupStandardHome', 'interactionUserActions')
- * @returns Registry key (e.g., 'startupStandardHome', 'loadNewAccount', 'onboardingImportWallet')
- */
-function buildRegistryKey(
-  fileName: string,
-  filePath: string,
-  preset?: string,
-): string {
-  const baseName = toCamelCase(fileName);
-  const isStartup =
-    (preset &&
-      Object.values(STARTUP_PRESETS).includes(
-        preset as (typeof STARTUP_PRESETS)[keyof typeof STARTUP_PRESETS],
-      )) ||
-    filePath.includes('/startup/');
-
-  if (isStartup) {
-    return `startup${baseName.charAt(0).toUpperCase()}${baseName.slice(1)}`;
-  }
-
-  return baseName;
-}
-
-const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
-
-/**
- * Preset definitions mapping preset names to benchmark files.
- * Keys reference the shared constants from ./utils/constants.ts.
- */
-const PRESETS: Record<string, string[]> = {
-  // User journey benchmarks - Onboarding
-  [USER_JOURNEY_PRESETS.ONBOARDING_IMPORT]: [
-    `${BENCHMARK_DIR}/user-journey/onboarding-import-wallet.ts`,
-  ],
-  [USER_JOURNEY_PRESETS.ONBOARDING_NEW]: [
-    `${BENCHMARK_DIR}/user-journey/onboarding-new-wallet.ts`,
-  ],
-  // User journey benchmarks - Assets
-  [USER_JOURNEY_PRESETS.ASSETS]: [
-    `${BENCHMARK_DIR}/user-journey/asset-details.ts`,
-    `${BENCHMARK_DIR}/user-journey/solana-asset-details.ts`,
-  ],
-  // User journey benchmarks - Accounts
-  [USER_JOURNEY_PRESETS.ACCOUNT_MANAGEMENT]: [
-    `${BENCHMARK_DIR}/user-journey/import-srp-home.ts`,
-  ],
-  // User journey benchmarks - Transactions
-  [USER_JOURNEY_PRESETS.TRANSACTIONS]: [
-    `${BENCHMARK_DIR}/user-journey/send-transactions.ts`,
-    `${BENCHMARK_DIR}/user-journey/swap.ts`,
-  ],
-  // Startup benchmarks
-  [STARTUP_PRESETS.STANDARD_HOME]: [
-    `${BENCHMARK_DIR}/startup/standard-home.ts`,
-  ],
-  [STARTUP_PRESETS.POWER_USER_HOME]: [
-    `${BENCHMARK_DIR}/startup/power-user-home.ts`,
-  ],
-  // Interaction benchmarks
-  [INTERACTION_PRESETS.USER_ACTIONS]: [
-    `${BENCHMARK_DIR}/interaction/load-new-account.ts`,
-    `${BENCHMARK_DIR}/interaction/confirm-tx.ts`,
-    `${BENCHMARK_DIR}/interaction/bridge-user-actions.ts`,
-  ],
-  // Dapp page-load benchmark (Playwright-based; runs separately in CI)
-  [DAPP_PAGE_LOAD_PRESETS.PAGE_LOAD]: [DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH],
-};
-
+const PRESETS: Record<string, string[]> = { ...PRESET_BENCHMARK_FILES };
 PRESETS.all = Object.values(PRESETS).flat();
 
 async function runBenchmarkFile(
