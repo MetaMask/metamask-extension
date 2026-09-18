@@ -409,6 +409,36 @@ export class PlaywrightDriver {
     if (typeof script === 'function' && source.includes('__name')) {
       source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
     }
+
+    if (this.browser === 'chrome') {
+      const cdp = await this.context.newCDPSession(this.page);
+      try {
+        const expression = `
+          ((source, passedArgs) => {
+            const fn = new Function(
+              'args',
+              \`return (\${source}).apply(null, args);\`,
+            );
+            return fn(passedArgs);
+          })(${JSON.stringify(source)}, ${JSON.stringify(args)})
+        `;
+        const result = await cdp.send('Runtime.evaluate', {
+          expression,
+          awaitPromise: true,
+          returnByValue: true,
+        });
+        if (result.exceptionDetails) {
+          throw new Error(
+            result.exceptionDetails.exception?.description ??
+              result.exceptionDetails.text,
+          );
+        }
+        return result.result.value as TResult;
+      } finally {
+        await cdp.detach();
+      }
+    }
+
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -791,6 +821,25 @@ export class PlaywrightDriver {
     await element.waitForElementState('hidden', timeout);
   }
 
+  async clickElementAndWaitForWindowToClose(
+    rawLocator: RawLocator,
+    retries = 3,
+  ): Promise<void> {
+    const closingPage = this.page;
+    await Promise.all([
+      closingPage.waitForEvent('close', { timeout: this.timeout }),
+      this.clickElement(rawLocator, retries),
+    ]);
+
+    const remainingPage = this.context
+      .pages()
+      .find((candidate) => candidate !== closingPage && !candidate.isClosed());
+    if (remainingPage) {
+      this.currentPage = remainingPage;
+      this.registerPage(remainingPage);
+    }
+  }
+
   async findScrollToAndClickElement(rawLocator: RawLocator): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
     await locator.scrollIntoViewIfNeeded();
@@ -811,11 +860,10 @@ export class PlaywrightDriver {
     );
   }
 
-  async pasteIntoField(
-    _rawLocator: RawLocator,
-    _content: string,
-  ): Promise<void> {
-    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
+  async pasteIntoField(rawLocator: RawLocator, content: string): Promise<void> {
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.click();
+    await locator.fill(content);
   }
 
   async holdMouseDownOnElement(
@@ -867,7 +915,16 @@ export class PlaywrightDriver {
 
   // -- Navigation -----------------------------------------------------------
 
-  async navigate(page: string = PAGES.HOME): Promise<void> {
+  async navigate(
+    page: string = PAGES.HOME,
+    {
+      waitForControllers = true,
+      waitForControllersTimeout = this.timeout,
+    }: {
+      waitForControllers?: boolean;
+      waitForControllersTimeout?: number;
+    } = {},
+  ): Promise<void> {
     const target =
       this.browser === 'firefox' && page === PAGES.SIDEPANEL
         ? PAGES.HOME
@@ -875,6 +932,11 @@ export class PlaywrightDriver {
     await this.page.goto(`${this.extensionUrl}/${target}.html`, {
       waitUntil: 'domcontentloaded',
     });
+    if (waitForControllers) {
+      await this.page
+        .locator('.controller-loaded')
+        .waitFor({ state: 'attached', timeout: waitForControllersTimeout });
+    }
   }
 
   async openNewPage(url: string): Promise<string> {
@@ -903,6 +965,22 @@ export class PlaywrightDriver {
   async delayFirefox(ms: number): Promise<void> {
     if (this.browser === 'firefox') {
       await this.delay(ms);
+    }
+  }
+
+  async getCurrentWindowHandle(): Promise<string> {
+    return this.handleFor(this.page);
+  }
+
+  async getClipboardContent(): Promise<string> {
+    try {
+      return await this.page.evaluate(() => navigator.clipboard.readText());
+    } catch (error) {
+      console.log(
+        'Could not read clipboard - permission denied or not supported',
+        error,
+      );
+      return '';
     }
   }
 
@@ -936,13 +1014,23 @@ export class PlaywrightDriver {
   }
 
   async switchToWindowWithTitle(
-    _title: string,
+    title: string,
     _initialHandles?: string[],
-    _delayStep = 1000,
-    _timeout = this.timeout,
+    delayStep = 1000,
+    timeout = this.timeout,
   ): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.switchToWindowWithTitle is not yet implemented.',
+    await this.waitUntil(
+      async () => {
+        for (const page of this.context.pages()) {
+          if ((await page.title()) === title) {
+            this.currentPage = page;
+            this.registerPage(page);
+            return true;
+          }
+        }
+        return false;
+      },
+      { interval: delayStep, timeout },
     );
   }
 

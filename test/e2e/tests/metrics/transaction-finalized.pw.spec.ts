@@ -1,13 +1,13 @@
 import { strict as assert } from 'assert';
+import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
-import { Suite } from 'mocha';
 import {
   assertInAnyOrder,
   getEventPayloads,
   withFixtures,
 } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { MOCK_ANALYTICS_ID } from '../../constants';
+import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -98,10 +98,11 @@ const eventHasUserIdWithoutAnonymousId = (payload: EventPayload): boolean =>
   typeof payload.userId === 'string' &&
   typeof payload.anonymousId === 'undefined';
 
-describe('Transaction Finalized Event', function (this: Suite) {
-  it('Successfully tracked when sending a transaction', async function () {
+pwTest.describe('Transaction Finalized Event', () => {
+  pwTest('Successfully tracked when sending a transaction', async () => {
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
@@ -112,7 +113,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
             pna25Acknowledged: true,
           })
           .build(),
-        title: this.test?.fullTitle(),
+        title: pwTest.info().titlePath.join(' '),
         testSpecificMock,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

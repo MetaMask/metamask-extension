@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
+import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
-import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { MOCK_ANALYTICS_ID } from '../../constants';
+import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
 
 type PageEvent = {
@@ -16,7 +16,7 @@ type PageEvent = {
   };
 };
 
-describe('Unlock wallet', function (this: Suite) {
+pwTest.describe('Unlock wallet', () => {
   async function mockSegment(mockServer: Mockttp) {
     return [
       await mockServer
@@ -31,30 +31,34 @@ describe('Unlock wallet', function (this: Suite) {
     ];
   }
 
-  it('should send first three Page metric events upon fullscreen page load', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            analyticsId: MOCK_ANALYTICS_ID,
-            consentDecisionMade: true,
-            optedIn: true,
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-      async ({ driver, mockedEndpoint }) => {
-        await login(driver);
-        const events = await getEventPayloads(driver, mockedEndpoint);
-        const sortedEvents = sortEventsByTime(events);
-        await assert.equal(sortedEvents.length, 3);
-        assertBatchValue(sortedEvents[0], 'Home', '/');
-        assertBatchValue(sortedEvents[1], 'Unlock Page', '/unlock');
-        assertBatchValue(sortedEvents[2], 'Home', '/');
-      },
-    );
-  });
+  pwTest(
+    'should send first three Page metric events upon fullscreen page load',
+    async () => {
+      await withFixtures(
+        {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          fixtures: new FixtureBuilderV2()
+            .withMetaMetricsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
+            })
+            .build(),
+          title: pwTest.info().titlePath.join(' '),
+          testSpecificMock: mockSegment,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await login(driver);
+          const events = await getEventPayloads(driver, mockedEndpoint);
+          const sortedEvents = sortEventsByTime(events);
+          await assert.equal(sortedEvents.length, 3);
+          assertBatchValue(sortedEvents[0], 'Home', '/');
+          assertBatchValue(sortedEvents[1], 'Unlock Page', '/unlock');
+          assertBatchValue(sortedEvents[2], 'Home', '/');
+        },
+      );
+    },
+  );
 });
 
 function sortEventsByTime(events: PageEvent[]): PageEvent[] {
