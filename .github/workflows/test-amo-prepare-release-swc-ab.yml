@@ -1,0 +1,301 @@
+name: Test AMO prepare_release SWC A/B
+
+# Temporary experiment workflow (inspired by #46392).
+# Proves prepare_release.sh runtime determinism for:
+#   - stock tagged v13.47.1 (@swc/core 1.13.3)
+#   - same path with surgical SWC 1.16.2 + loader inject (apples-to-apples with
+#     local Docker .cursor/amo-13471-10x-swc-bump.sh: in-place patches only,
+#     no bump-branch webpack/helpers file copies)
+# across main + flask, 100 iterations each (400 jobs total).
+#
+# GitHub limits a single matrix to 256 jobs, so stock/bump × main/flask are
+# four separate jobs each matrixed only on iteration (100 ≤ 256).
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches-ignore:
+      - stable
+  workflow_dispatch:
+    inputs:
+      iterations:
+        description: Number of iterations per variant/source cell
+        required: false
+        default: '100'
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      iterations: ${{ steps.set.outputs.iterations }}
+    steps:
+      - name: Build iteration matrix
+        id: set
+        shell: bash
+        run: |
+          N="${{ github.event.inputs.iterations || '100' }}"
+          python3 - <<PY >> "${GITHUB_OUTPUT}"
+          import json
+          n = int("${N}")
+          if n < 1 or n > 256:
+            raise SystemExit(f"iterations must be 1..256, got {n}")
+          print("iterations=" + json.dumps(list(range(1, n + 1))))
+          PY
+
+  stock-main:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        iteration: ${{ fromJSON(needs.setup.outputs.iterations) }}
+    env:
+      FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
+      AGENT_VERSION: '13.47.1'
+      AGENT_LAST_LISTED: '13.46.1'
+      AGENT_SWC_BUMP_REF: bump/swc-core-amo-determinism
+      VARIANT: main
+      SOURCE_MODE: stock
+    steps:
+      - name: Checkout workflow scripts
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Run prepare_release (main / stock)
+        id: repro
+        shell: bash
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/test-amo-prepare-release-repro.sh" \
+            "${VARIANT}" "${SOURCE_MODE}"
+      - name: Upload result JSON
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: result-${{ env.SOURCE_MODE }}-${{ env.VARIANT }}-${{ matrix.iteration }}
+          path: results/result.json
+          retention-days: 3
+      - name: Upload mismatched runtime
+        if: ${{ steps.repro.outputs.runtime_hash != '' && steps.repro.outputs.runtime_hash != 'b574af00e40dcd7e628a' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mismatch-${{ env.VARIANT }}-${{ matrix.iteration }}-${{ steps.repro.outputs.runtime_hash }}
+          path: results/result.json
+          retention-days: 3
+
+  stock-flask:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        iteration: ${{ fromJSON(needs.setup.outputs.iterations) }}
+    env:
+      FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
+      AGENT_VERSION: '13.47.1'
+      AGENT_LAST_LISTED: '13.46.1'
+      AGENT_SWC_BUMP_REF: bump/swc-core-amo-determinism
+      VARIANT: flask
+      SOURCE_MODE: stock
+    steps:
+      - name: Checkout workflow scripts
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Run prepare_release (flask / stock)
+        id: repro
+        shell: bash
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/test-amo-prepare-release-repro.sh" \
+            "${VARIANT}" "${SOURCE_MODE}"
+      - name: Upload result JSON
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: result-${{ env.SOURCE_MODE }}-${{ env.VARIANT }}-${{ matrix.iteration }}
+          path: results/result.json
+          retention-days: 3
+      - name: Upload mismatched runtime
+        if: ${{ steps.repro.outputs.runtime_hash != '' && steps.repro.outputs.runtime_hash != '0c40264eb2c3354bf635' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mismatch-${{ env.VARIANT }}-${{ matrix.iteration }}-${{ steps.repro.outputs.runtime_hash }}
+          path: results/result.json
+          retention-days: 3
+
+  bump-main:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        iteration: ${{ fromJSON(needs.setup.outputs.iterations) }}
+    env:
+      FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
+      AGENT_VERSION: '13.47.1'
+      AGENT_LAST_LISTED: '13.46.1'
+      AGENT_SWC_BUMP_REF: bump/swc-core-amo-determinism
+      VARIANT: main
+      SOURCE_MODE: bump
+    steps:
+      - name: Checkout workflow scripts
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Run prepare_release (main / bump)
+        id: repro
+        shell: bash
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/test-amo-prepare-release-repro.sh" \
+            "${VARIANT}" "${SOURCE_MODE}"
+      - name: Upload result JSON
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: result-${{ env.SOURCE_MODE }}-${{ env.VARIANT }}-${{ matrix.iteration }}
+          path: results/result.json
+          retention-days: 3
+
+  bump-flask:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        iteration: ${{ fromJSON(needs.setup.outputs.iterations) }}
+    env:
+      FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
+      AGENT_VERSION: '13.47.1'
+      AGENT_LAST_LISTED: '13.46.1'
+      AGENT_SWC_BUMP_REF: bump/swc-core-amo-determinism
+      VARIANT: flask
+      SOURCE_MODE: bump
+    steps:
+      - name: Checkout workflow scripts
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Run prepare_release (flask / bump)
+        id: repro
+        shell: bash
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/test-amo-prepare-release-repro.sh" \
+            "${VARIANT}" "${SOURCE_MODE}"
+      - name: Upload result JSON
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: result-${{ env.SOURCE_MODE }}-${{ env.VARIANT }}-${{ matrix.iteration }}
+          path: results/result.json
+          retention-days: 3
+
+  summarize:
+    needs: [stock-main, stock-flask, bump-main, bump-flask]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all result artifacts
+        uses: actions/download-artifact@v5
+        with:
+          pattern: result-*
+          path: downloaded-results
+          merge-multiple: false
+
+      - name: Aggregate runtime hashes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from collections import Counter, defaultdict
+          from pathlib import Path
+
+          rows = []
+          root = Path("downloaded-results")
+          if root.exists():
+              for path in root.rglob("result.json"):
+                  rows.append(json.loads(path.read_text(encoding="utf-8")))
+
+          if not rows:
+              raise SystemExit(
+                  "No result artifacts found. The matrix jobs likely did not run "
+                  "(check GitHub's 256 jobs-per-matrix limit or earlier job failures)."
+              )
+
+          cells = defaultdict(list)
+          for row in rows:
+              key = (row.get("sourceMode"), row.get("variant"))
+              cells[key].append(row)
+
+          summary = {
+              "totalResults": len(rows),
+              "cells": {},
+              "proofNote": (
+                  "stock = tagged v13.47.1 prepare_release (@swc/core 1.13.3). "
+                  "bump = same path with surgical inject matching local Docker "
+                  "(@swc/core 1.16.2 + in-place ts/tsx loader fixes, stock "
+                  "helpers/mangle ON, no bump-branch file copies). Determinism "
+                  "proof = unique local runtime hashes among successful local builds."
+              ),
+          }
+
+          for source in ("stock", "bump"):
+              for variant in ("main", "flask"):
+                  subset = cells.get((source, variant), [])
+                  successful = [r for r in subset if r.get("runtimeHash")]
+                  hashes = Counter(r.get("runtimeHash") or "none" for r in subset)
+                  shas = Counter(
+                      r.get("runtimeSha256") or "none" for r in successful
+                  )
+                  summary["cells"][f"{source}/{variant}"] = {
+                      "runs": len(subset),
+                      "successfulLocalBuilds": len(successful),
+                      "uniqueRuntimeHashes": dict(hashes),
+                      "uniqueRuntimeHashCount": len(hashes),
+                      "uniqueSha256Count": len([k for k in shas if k != "none"]),
+                      "localDeterministicAmongSuccessful": (
+                          len(successful) > 0
+                          and len({r["runtimeHash"] for r in successful}) == 1
+                          and len({r["runtimeSha256"] for r in successful}) == 1
+                      ),
+                  }
+
+          Path("summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+          print(json.dumps(summary, indent=2))
+
+          bump_main = summary["cells"].get("bump/main", {})
+          bump_flask = summary["cells"].get("bump/flask", {})
+          stock_main = summary["cells"].get("stock/main", {})
+          stock_flask = summary["cells"].get("stock/flask", {})
+
+          if (
+              stock_main.get("uniqueRuntimeHashCount", 0) <= 1
+              and stock_flask.get("uniqueRuntimeHashCount", 0) <= 1
+          ):
+              print(
+                  "::warning::stock did not show multiple runtime hashes; "
+                  "A/B contrast may be weak"
+              )
+
+          hard = []
+          if not bump_main.get("localDeterministicAmongSuccessful", False):
+              hard.append("bump/main was not deterministic among successful builds")
+          if not bump_flask.get("localDeterministicAmongSuccessful", False):
+              hard.append("bump/flask was not deterministic among successful builds")
+          if hard:
+              raise SystemExit("; ".join(hard))
+          print("SUMMARY_OK")
+          PY
+
+      - name: Upload summary
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: amo-prepare-release-swc-ab-summary
+          path: summary.json
+          retention-days: 14
+          if-no-files-found: ignore
