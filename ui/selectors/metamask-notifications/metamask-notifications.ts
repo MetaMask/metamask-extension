@@ -250,29 +250,31 @@ export const selectIsFeatureAnnouncementsEnabled = createSelector(
  * Selector to determine if MetaMask notifications are currently being created.
  *
  * This selector checks the `isUpdatingMetamaskNotifications` property of the `metamask` state to see if the notifications are in the process of being created.
- * It uses the `createSelector` function from 'reselect' for memoization, improving performance by avoiding unnecessary recalculations.
+ * `getMetamask` spreads the defaults into a fresh object on every call, so memoizing this read would recompute anyway and would warn about unstable inputs.
  *
  * @param state - The current state of the Redux store.
  * @returns Returns true if MetaMask notifications are being created, false otherwise.
  */
-export const getIsUpdatingMetamaskNotifications = createSelector(
-  [getMetamask],
-  (metamask): boolean => metamask.isUpdatingMetamaskNotifications,
-);
+export const getIsUpdatingMetamaskNotifications = (
+  state: NotificationAppState,
+): boolean =>
+  state.metamask?.isUpdatingMetamaskNotifications ??
+  defaultState.isUpdatingMetamaskNotifications;
 
 /**
  * Selector to determine if MetaMask notifications are currently being fetched.
  *
  * This selector accesses the `isFetchingMetamaskNotifications` property from the `metamask` state to check if the notifications are currently being fetched.
- * It leverages the `createSelector` function for memoization, which helps in optimizing the performance by caching the result until the input selectors' outputs change.
+ * `getMetamask` spreads the defaults into a fresh object on every call, so memoizing this read would recompute anyway and would warn about unstable inputs.
  *
- * @param {NotificationAppState} state - The current state of the Redux store.
- * @returns {boolean} Returns true if MetaMask notifications are being fetched, false otherwise.
+ * @param state - The current state of the Redux store.
+ * @returns Returns true if MetaMask notifications are being fetched, false otherwise.
  */
-export const isFetchingMetamaskNotifications = createSelector(
-  [getMetamask],
-  (metamask): boolean => metamask.isFetchingMetamaskNotifications,
-);
+export const isFetchingMetamaskNotifications = (
+  state: NotificationAppState,
+): boolean =>
+  state.metamask?.isFetchingMetamaskNotifications ??
+  defaultState.isFetchingMetamaskNotifications;
 
 /**
  * Selector to determine if the MetaMask notifications account is currently being updated.
