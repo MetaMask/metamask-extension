@@ -101,6 +101,7 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: $0.16
@@ -152,6 +153,7 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: $0.34
@@ -279,6 +281,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: $0.16
@@ -330,6 +333,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: $0.34
@@ -457,6 +461,7 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: 0.001 ETH
@@ -506,6 +511,7 @@ exports[`BridgeQuotesModal should render the modal when exchange rates are not a
                 >
                   <p
                     class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                    data-testid="bridge-quote-total-cost"
                     style="white-space: nowrap;"
                   >
                     Total cost: 0.001 ETH
