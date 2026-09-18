@@ -1,13 +1,32 @@
 import * as braze from '@braze/web-sdk';
 import { captureException } from '../../../shared/lib/sentry';
 
+const LOG_PREFIX = '[Braze]';
+
 let hasInitialized = false;
+
+/**
+ * Whether the Web SDK successfully initialized in this UI document.
+ *
+ * @returns True after a successful `initializeBraze` call in this document.
+ */
+export function isBrazeInitialized(): boolean {
+  return hasInitialized;
+}
+
+/**
+ * Clear the initialize latch. Used after `wipeData` so the next identify can
+ * re-initialize, and by tests.
+ */
+export function resetBrazeInitialization(): void {
+  hasInitialized = false;
+}
 
 /**
  * Reset the initialize latch. Tests only.
  */
 export function resetBrazeInitializationForTesting(): void {
-  hasInitialized = false;
+  resetBrazeInitialization();
 }
 
 function readNonEmptyEnv(value: string | undefined): string | undefined {
@@ -36,16 +55,21 @@ function isTestBuild(): boolean {
  */
 export function initializeBraze(): boolean {
   if (hasInitialized) {
+    console.warn(`${LOG_PREFIX} Already initialized`);
     return true;
   }
 
   if (isTestBuild()) {
+    console.warn(`${LOG_PREFIX} Skipping initialize: test build`);
     return false;
   }
 
   const apiKey = readNonEmptyEnv(process.env.BRAZE_WEB_API_KEY);
   const baseUrl = readNonEmptyEnv(process.env.BRAZE_SDK_ENDPOINT);
   if (!apiKey || !baseUrl) {
+    console.warn(
+      `${LOG_PREFIX} Skipping initialize: missing API key or endpoint (set BRAZE_WEB_API_KEY and BRAZE_SDK_ENDPOINT in .metamaskrc and restart yarn start)`,
+    );
     return false;
   }
 
@@ -68,11 +92,15 @@ export function initializeBraze(): boolean {
 
     if (didInitialize) {
       hasInitialized = true;
+      console.warn(`${LOG_PREFIX} SDK initialized`, { baseUrl, appVersion });
+    } else {
+      console.warn(`${LOG_PREFIX} initialize returned false`);
     }
 
     return didInitialize;
   } catch (error) {
     captureException(error);
+    console.warn(`${LOG_PREFIX} initialize threw`, error);
     return false;
   }
 }

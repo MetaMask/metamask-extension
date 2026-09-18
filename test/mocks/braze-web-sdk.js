@@ -5,3 +5,5 @@
  */
 
 export const initialize = jest.fn().mockReturnValue(true);
+export const changeUser = jest.fn();
+export const wipeData = jest.fn();
