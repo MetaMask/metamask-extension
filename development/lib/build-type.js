@@ -149,27 +149,59 @@ const RangeStruct = (min, max) => {
 /**
  * @type {Struct<{
  *   id: number,
+ *   name: string,
  *   extends?: string | undefined,
  *   features?: string[] | undefined,
  *   env?: Record<string, unknown> | undefined,
  *   isPrerelease?: boolean | undefined,
  *   manifestOverrides?: string | false | undefined,
- *   buildNameOverride?: string | false | undefined,
  * }>} BuildTypeStruct
  */
 const BuildTypeStruct = object({
   id: RangeStruct(10, 64),
+  name: string(),
   extends: optional(string()),
   features: optional(unique(array(string()))),
   env: optional(EnvObjectStruct),
   isPrerelease: optional(boolean()),
   manifestOverrides: optional(union([string(), literal(false)])),
-  buildNameOverride: optional(union([string(), literal(false)])),
 });
 
 /**
  * @typedef {Infer<typeof BuildTypeStruct>} BuildType
  */
+
+/**
+ * Ensures a build type property value is unique across all build types.
+ *
+ * @param {Record<string, BuildType>} buildTypes
+ * @param {'id' | 'name'} property
+ * @returns {true | string}
+ */
+function validateUniqueBuildTypeProperty(buildTypes, property) {
+  const seen = new Set();
+  const duplicates = [];
+
+  for (const buildType of Object.values(buildTypes)) {
+    const value = buildType[property];
+    if (seen.has(value)) {
+      duplicates.push(value);
+    } else {
+      seen.add(value);
+    }
+  }
+
+  if (duplicates.length === 0) {
+    return true;
+  }
+
+  const pluralProperty = `${property}s`;
+  return `Build type ${pluralProperty} must be unique. Duplicate ${pluralProperty}: ${JSON.stringify(
+    duplicates,
+    null,
+    2,
+  )}`;
+}
 
 /**
  * @type {Struct<{
@@ -236,16 +268,12 @@ const BuildTypesStruct = refine(
       return `Default build type "${value.default}" does not exist in builds declarations`;
     }
 
-    const buildTypeIds = Object.values(value.buildTypes).map(
-      (buildType) => buildType.id,
-    );
-    const uniqueBuildTypeIds = new Set(buildTypeIds);
-    if (uniqueBuildTypeIds.size !== buildTypeIds.length) {
-      return `Build type ids must be unique. Duplicate ids: ${JSON.stringify(
-        getDuplicates(buildTypeIds, uniqueBuildTypeIds),
-        null,
-        2,
-      )}`;
+    const uniquenessErrors = [
+      validateUniqueBuildTypeProperty(value.buildTypes, 'id'),
+      validateUniqueBuildTypeProperty(value.buildTypes, 'name'),
+    ].filter((result) => result !== true);
+    if (uniquenessErrors.length > 0) {
+      return uniquenessErrors.join('\n');
     }
     return true;
   },
