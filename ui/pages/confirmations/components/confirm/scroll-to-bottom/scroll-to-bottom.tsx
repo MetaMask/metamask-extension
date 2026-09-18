@@ -118,7 +118,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
         height={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
-        onScroll={onScroll}
+        onScroll={onScroll ?? undefined}
         ref={ref}
         style={{ overflow: 'auto' }}
       >

@@ -16,7 +16,18 @@ const mockStore = configureMockStore([])(mockState);
 const mockSetHasScrolledToBottom = jest.fn();
 const mockScrollTo = jest.fn();
 
-const mockUseScrollRequiredResult = {
+type MockScrollRequiredResult = {
+  hasScrolledToBottom: boolean;
+  isScrollable: boolean;
+  isScrolledToBottom: boolean;
+  onScroll: jest.Mock;
+  scrollToBottom: jest.Mock;
+  setHasScrolledToBottom: jest.Mock;
+  scrollElement: { scrollTo: jest.Mock } | null;
+  ref: jest.Mock;
+};
+
+const mockUseScrollRequiredResult: MockScrollRequiredResult = {
   hasScrolledToBottom: false,
   isScrollable: false,
   isScrolledToBottom: false,
@@ -27,10 +38,8 @@ const mockUseScrollRequiredResult = {
   ref: jest.fn(),
 };
 
-const mockedUseScrollRequiredResult = jest.mocked(mockUseScrollRequiredResult);
-
 jest.mock('../../../../../hooks/useScrollRequired', () => ({
-  useScrollRequired: () => mockedUseScrollRequiredResult,
+  useScrollRequired: () => mockUseScrollRequiredResult,
 }));
 
 describe('ScrollToBottom', () => {
@@ -56,8 +65,8 @@ describe('ScrollToBottom', () => {
 
   describe('when content is scrollable', () => {
     beforeEach(() => {
-      mockedUseScrollRequiredResult.isScrollable = true;
-      mockedUseScrollRequiredResult.scrollElement = { scrollTo: mockScrollTo };
+      mockUseScrollRequiredResult.isScrollable = true;
+      mockUseScrollRequiredResult.scrollElement = { scrollTo: mockScrollTo };
     });
 
     it('renders with button', () => {
@@ -104,7 +113,7 @@ describe('ScrollToBottom', () => {
 
     it('scrolls to the top when scrollElement attaches after the first render', () => {
       mockScrollTo.mockClear();
-      mockedUseScrollRequiredResult.scrollElement = null;
+      mockUseScrollRequiredResult.scrollElement = null;
 
       const { rerender } = renderWithConfirmContextProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
@@ -113,7 +122,7 @@ describe('ScrollToBottom', () => {
 
       expect(mockScrollTo).not.toHaveBeenCalled();
 
-      mockedUseScrollRequiredResult.scrollElement = { scrollTo: mockScrollTo };
+      mockUseScrollRequiredResult.scrollElement = { scrollTo: mockScrollTo };
 
       rerender(<ScrollToBottom>foobar</ScrollToBottom>);
 
@@ -141,8 +150,8 @@ describe('ScrollToBottom', () => {
 
     describe('when user has scrolled to the bottom', () => {
       beforeEach(() => {
-        mockedUseScrollRequiredResult.isScrolledToBottom = true;
-        mockedUseScrollRequiredResult.hasScrolledToBottom = true;
+        mockUseScrollRequiredResult.isScrolledToBottom = true;
+        mockUseScrollRequiredResult.hasScrolledToBottom = true;
       });
 
       it('hides the button', () => {
