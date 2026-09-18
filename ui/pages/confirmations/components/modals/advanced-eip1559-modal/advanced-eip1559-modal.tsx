@@ -32,27 +32,38 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
 import { hexWEIToDecGWEI } from '../../../../../../shared/lib/conversion.utils';
 import { usePersistGasFeePreference } from '../../../hooks/gas/usePersistGasFeePreference';
+import {
+  getAdvancedGasLimitTransactionKey,
+  useAdvancedGasLimit,
+} from '../../../hooks/gas/useAdvancedGasLimit';
 import { useDispatch } from '../../../../../store/hooks';
 
-export const AdvancedEIP1559Modal = ({
-  setActiveModal,
-  handleCloseModals,
-}: {
+type AdvancedEIP1559ModalProps = {
   setActiveModal: (modal: GasModalType) => void;
   handleCloseModals: () => void;
+};
+
+const AdvancedEIP1559ModalContent = ({
+  transactionMeta,
+  gasLimit,
+  isGasLimitAvailable,
+  setGasLimit,
+  setActiveModal,
+  handleCloseModals,
+}: AdvancedEIP1559ModalProps & {
+  transactionMeta: TransactionMeta;
+  gasLimit: Hex | undefined;
+  isGasLimitAvailable: boolean;
+  setGasLimit: (gasLimit: Hex) => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const persistGasFeePreference = usePersistGasFeePreference();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
 
   const [gasParams, setGasParams] = useState<{
-    gas: Hex;
     maxFeePerGas: Hex;
     maxPriorityFeePerGas: Hex;
   }>({
-    gas: (transactionMeta?.txParams?.gas as Hex) ?? ('0x5208' as Hex),
     maxFeePerGas:
       (transactionMeta?.txParams?.maxFeePerGas as Hex) ?? ('0x0' as Hex),
     maxPriorityFeePerGas:
@@ -74,12 +85,13 @@ export const AdvancedEIP1559Modal = ({
   );
 
   const handleSaveClick = useCallback(async () => {
-    if (!transactionMeta?.id) {
+    if (!transactionMeta?.id || !isGasLimitAvailable || !gasLimit) {
       return;
     }
     await dispatch(
       updateTransactionGasFees(transactionMeta.id, {
         userFeeLevel: UserFeeLevel.CUSTOM,
+        gas: gasLimit,
         ...pickBy(gasParams, Boolean),
       }),
     );
@@ -91,6 +103,8 @@ export const AdvancedEIP1559Modal = ({
     handleCloseModals();
   }, [
     transactionMeta,
+    gasLimit,
+    isGasLimitAvailable,
     gasParams,
     handleCloseModals,
     dispatch,
@@ -102,13 +116,9 @@ export const AdvancedEIP1559Modal = ({
   }, [setActiveModal]);
 
   const createChangeHandler = useCallback(
-    (key: 'gas' | 'maxFeePerGas' | 'maxPriorityFeePerGas') => (value: Hex) =>
+    (key: 'maxFeePerGas' | 'maxPriorityFeePerGas') => (value: Hex) =>
       setGasParams((prev) => ({ ...prev, [key]: value })),
     [],
-  );
-  const handleGasLimitChange = useMemo(
-    () => createChangeHandler('gas'),
-    [createChangeHandler],
   );
   const handleMaxFeePerGasChange = useMemo(
     () => createChangeHandler('maxFeePerGas'),
@@ -164,7 +174,8 @@ export const AdvancedEIP1559Modal = ({
           />
           <Box marginBottom={4} />
           <GasInput
-            onChange={handleGasLimitChange}
+            gasLimit={gasLimit}
+            onChange={setGasLimit}
             onErrorChange={handleGasError}
           />
         </ModalBody>
@@ -187,7 +198,7 @@ export const AdvancedEIP1559Modal = ({
               data-testid="gas-fee-modal-save-button"
               style={{ flex: 1 }}
               size={ButtonSize.Lg}
-              isDisabled={hasError}
+              isDisabled={hasError || !isGasLimitAvailable}
               onClick={handleSaveClick}
             >
               {t('save')}
@@ -196,5 +207,25 @@ export const AdvancedEIP1559Modal = ({
         </ModalFooter>
       </ModalContent>
     </Modal>
+  );
+};
+
+export const AdvancedEIP1559Modal = (props: AdvancedEIP1559ModalProps) => {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+  const transactionKey = getAdvancedGasLimitTransactionKey(transactionMeta);
+  const modalStateKey = `${transactionKey}:${transactionMeta?.txParams?.maxFeePerGas}:${transactionMeta?.txParams?.maxPriorityFeePerGas}`;
+  const { gasLimit, isGasLimitAvailable, setGasLimit } =
+    useAdvancedGasLimit(transactionMeta);
+
+  return (
+    <AdvancedEIP1559ModalContent
+      key={modalStateKey}
+      transactionMeta={transactionMeta}
+      gasLimit={gasLimit}
+      isGasLimitAvailable={isGasLimitAvailable}
+      setGasLimit={setGasLimit}
+      {...props}
+    />
   );
 };

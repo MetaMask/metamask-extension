@@ -31,26 +31,37 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
 import { hexWEIToDecGWEI } from '../../../../../../shared/lib/conversion.utils';
 import { usePersistGasFeePreference } from '../../../hooks/gas/usePersistGasFeePreference';
+import {
+  getAdvancedGasLimitTransactionKey,
+  useAdvancedGasLimit,
+} from '../../../hooks/gas/useAdvancedGasLimit';
 import { useDispatch } from '../../../../../store/hooks';
 
-export const AdvancedGasPriceModal = ({
-  setActiveModal,
-  handleCloseModals,
-}: {
+type AdvancedGasPriceModalProps = {
   setActiveModal: (modal: GasModalType) => void;
   handleCloseModals: () => void;
+};
+
+const AdvancedGasPriceModalContent = ({
+  transactionMeta,
+  gasLimit,
+  isGasLimitAvailable,
+  setGasLimit,
+  setActiveModal,
+  handleCloseModals,
+}: AdvancedGasPriceModalProps & {
+  transactionMeta: TransactionMeta;
+  gasLimit: Hex | undefined;
+  isGasLimitAvailable: boolean;
+  setGasLimit: (gasLimit: Hex) => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const persistGasFeePreference = usePersistGasFeePreference();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
 
   const [gasParams, setGasParams] = useState<{
-    gas: Hex;
     gasPrice: Hex;
   }>({
-    gas: (transactionMeta?.txParams?.gas as Hex) ?? ('0x5208' as Hex),
     gasPrice: (transactionMeta?.txParams?.gasPrice as Hex) ?? ('0x0' as Hex),
   });
 
@@ -64,12 +75,13 @@ export const AdvancedGasPriceModal = ({
   const hasError = Boolean(errors.gas || errors.gasPrice);
 
   const handleSaveClick = useCallback(async () => {
-    if (!transactionMeta?.id) {
+    if (!transactionMeta?.id || !isGasLimitAvailable || !gasLimit) {
       return;
     }
     await dispatch(
       updateTransactionGasFees(transactionMeta.id, {
         userFeeLevel: UserFeeLevel.CUSTOM,
+        gas: gasLimit,
         ...pickBy(gasParams, Boolean),
       }),
     );
@@ -80,6 +92,8 @@ export const AdvancedGasPriceModal = ({
     handleCloseModals();
   }, [
     transactionMeta,
+    gasLimit,
+    isGasLimitAvailable,
     gasParams,
     handleCloseModals,
     dispatch,
@@ -90,18 +104,9 @@ export const AdvancedGasPriceModal = ({
     setActiveModal(GasModalType.EstimatesModal);
   }, [setActiveModal]);
 
-  const createChangeHandler = useCallback(
-    (key: 'gas' | 'gasPrice') => (value: Hex) =>
-      setGasParams((prev) => ({ ...prev, [key]: value })),
+  const handleGasPriceChange = useCallback(
+    (value: Hex) => setGasParams({ gasPrice: value }),
     [],
-  );
-  const handleGasChange = useMemo(
-    () => createChangeHandler('gas'),
-    [createChangeHandler],
-  );
-  const handleGasPriceChange = useMemo(
-    () => createChangeHandler('gasPrice'),
-    [createChangeHandler],
   );
 
   const createErrorHandler = useCallback(
@@ -136,7 +141,11 @@ export const AdvancedGasPriceModal = ({
             onErrorChange={handleGasPriceError}
           />
           <Box marginBottom={4} />
-          <GasInput onChange={handleGasChange} onErrorChange={handleGasError} />
+          <GasInput
+            gasLimit={gasLimit}
+            onChange={setGasLimit}
+            onErrorChange={handleGasError}
+          />
         </ModalBody>
         <ModalFooter>
           <Box
@@ -157,7 +166,7 @@ export const AdvancedGasPriceModal = ({
               data-testid="gas-fee-modal-save-button"
               style={{ flex: 1 }}
               size={ButtonSize.Lg}
-              isDisabled={hasError}
+              isDisabled={hasError || !isGasLimitAvailable}
               onClick={handleSaveClick}
             >
               {t('save')}
@@ -166,5 +175,25 @@ export const AdvancedGasPriceModal = ({
         </ModalFooter>
       </ModalContent>
     </Modal>
+  );
+};
+
+export const AdvancedGasPriceModal = (props: AdvancedGasPriceModalProps) => {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+  const transactionKey = getAdvancedGasLimitTransactionKey(transactionMeta);
+  const modalStateKey = `${transactionKey}:${transactionMeta?.txParams?.gasPrice}`;
+  const { gasLimit, isGasLimitAvailable, setGasLimit } =
+    useAdvancedGasLimit(transactionMeta);
+
+  return (
+    <AdvancedGasPriceModalContent
+      key={modalStateKey}
+      transactionMeta={transactionMeta}
+      gasLimit={gasLimit}
+      isGasLimitAvailable={isGasLimitAvailable}
+      setGasLimit={setGasLimit}
+      {...props}
+    />
   );
 };
