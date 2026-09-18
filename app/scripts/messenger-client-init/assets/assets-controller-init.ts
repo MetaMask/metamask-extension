@@ -18,6 +18,10 @@ import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import {
+  getBackendApiUrlsOption,
+  isBackendAuthDisabled,
+} from '../../../../shared/lib/core-backend-api-urls';
+import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateTracesEnabled,
@@ -42,6 +46,9 @@ let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
 async function safeGetBearerToken(
   initMessenger: AssetsControllerInitMessenger,
 ): Promise<string | undefined> {
+  if (isBackendAuthDisabled()) {
+    return undefined;
+  }
   try {
     return await initMessenger.call('AuthenticationController:getBearerToken');
   } catch {
@@ -161,6 +168,7 @@ function getApiClient(
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
+      ...getBackendApiUrlsOption(),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;
