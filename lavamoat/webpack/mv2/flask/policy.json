@@ -808,9 +808,9 @@
     "@metamask/analytics-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/utils": true,
-        "lodash": true,
-        "uuid": true
+        "@metamask/analytics-controller>@metamask/utils": true,
+        "@metamask/assets-controller>lodash-es": true,
+        "@metamask/analytics-controller>uuid": true
       }
     },
     "@metamask/announcement-controller": {
@@ -3083,6 +3083,11 @@
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
+      }
+    },
+    "@metamask/analytics-controller>@metamask/utils": {
+      "packages": {
+        "nock>debug": true
       }
     },
     "@metamask/assets-controller>@metamask/utils": {
@@ -7422,6 +7427,11 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "@metamask/analytics-controller>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/assets-controllers>uuid": {
