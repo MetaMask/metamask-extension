@@ -11762,6 +11762,9 @@
   "swapSlippageAutoDescription": {
     "message": "Auto"
   },
+  "swapSlippageCappedDescription": {
+    "message": "Slippage tolerance was capped at 100%."
+  },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
     "description": "$1 is the amount of % for slippage"
