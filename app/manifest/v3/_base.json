@@ -9,6 +9,7 @@
       "128": "images/icon-128.png",
       "512": "images/icon-512.png"
     },
+    "default_state": "disabled",
     "default_title": "MetaMask",
     "default_popup": "popup-init.html"
   },
