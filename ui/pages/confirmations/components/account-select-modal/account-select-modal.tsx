@@ -41,6 +41,11 @@ export type AccountSelectModalProps = {
    * Optional modal title. Defaults to the "Select an account" string.
    */
   title?: string;
+  /**
+   * When true, hardware wallet accounts are omitted from the list. Used by
+   * flows that cannot be funded by a hardware device.
+   */
+  excludeHardwareAccounts?: boolean;
 };
 
 /**
@@ -54,19 +59,21 @@ export type AccountSelectModalProps = {
  * must close the modal after handling selection.
  * @param props.onClose - Called when the modal should close.
  * @param props.title - Optional modal title.
+ * @param props.excludeHardwareAccounts - Whether to omit hardware accounts.
  */
 export function AccountSelectModal({
   selectedAddress = '',
   onSelect,
   onClose,
   title,
+  excludeHardwareAccounts = false,
 }: AccountSelectModalProps) {
   const t = useI18nContext();
   const wallets = useSelector(getWalletsWithAccounts);
 
   const accountsGroupedByWallet = useMemo(
-    () => getEvmAccountsGroupedByWallet(wallets),
-    [wallets],
+    () => getEvmAccountsGroupedByWallet(wallets, { excludeHardwareAccounts }),
+    [wallets, excludeHardwareAccounts],
   );
 
   return (
