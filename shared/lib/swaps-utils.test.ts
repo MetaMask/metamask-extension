@@ -77,16 +77,12 @@ describe('Swaps Utils', () => {
 
       const result = await fetchTradesInfo(
         {
-          TOKENS,
           slippage: '3',
           sourceToken: TOKENS[0].address,
           destinationToken: TOKENS[1].address,
           value: '2000000000000000000',
           fromAddress: '0xmockAddress',
-          sourceSymbol: TOKENS[0].symbol,
           sourceDecimals: TOKENS[0].decimals,
-          sourceTokenInfo: { ...TOKENS[0] },
-          destinationTokenInfo: { ...TOKENS[1] },
           enableGasIncludedQuotes: false,
         },
         { chainId: CHAIN_IDS.MAINNET },
