@@ -132,6 +132,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
   perpsTabBadgeSeen: AppStateControllerState['perpsTabBadgeSeen'];
+  lastPerpsDepositEntryPoint: AppStateControllerState['lastPerpsDepositEntryPoint'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
@@ -189,7 +190,6 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
-  tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
   consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
   preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
   optedIn: AnalyticsControllerState['optedIn'];
@@ -320,6 +320,7 @@ export type ControllerStatePropertiesEnumerated = {
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
   isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
   isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
+  isRampsSyncingEnabled: UserStorageController.UserStorageControllerState['isRampsSyncingEnabled'];
   rewardsActiveAccount: RewardsControllerState['rewardsActiveAccount'];
   rewardsAccounts: RewardsControllerState['rewardsAccounts'];
   rewardsSubscriptions: RewardsControllerState['rewardsSubscriptions'];
