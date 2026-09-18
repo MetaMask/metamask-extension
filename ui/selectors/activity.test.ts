@@ -9,12 +9,14 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import { toAssetId } from '../../shared/lib/asset-utils';
 import type { MetaMaskReduxState } from '../store/store';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import mockState from '../../test/data/mock-state.json';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../test/data/mock-accounts';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 import {
+  selectLocalActivityItems,
   selectLocalTransactions,
   selectNonEvmActivityItems,
   selectNonEvmTransactionsForActivity,
@@ -253,6 +255,87 @@ describe('selectNonEvmActivityItems', () => {
       token: {
         symbol: 'USDC',
         direction: 'out',
+      },
+    });
+  });
+});
+
+describe('selectLocalActivityItems', () => {
+  const selectedAddress =
+    typedMockState.metamask.internalAccounts.accounts[
+      typedMockState.metamask.internalAccounts.selectedAccount
+    ].address;
+  const eurcAddress = '0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1';
+  const usdcAddress = '0x3600000000000000000000000000000000000000';
+  const txHash =
+    '0x33e372dd70212a94910691d07b0acab26dcf1d7e919b8cf42638f025d5abffb9';
+
+  it('normalizes same-chain swap token asset ids from bridge history', () => {
+    const state = structuredClone(
+      typedMockState,
+    ) as unknown as MetaMaskReduxState & MultichainAccountsState;
+
+    state.metamask.transactions = [
+      {
+        id: 'swap-tx',
+        chainId: '0x2105',
+        networkClientId: 'base',
+        status: EvmTransactionStatus.confirmed,
+        time: 1,
+        hash: txHash,
+        type: EvmTransactionType.swap,
+        txParams: {
+          from: selectedAddress,
+          to: '0xrouter',
+          nonce: '0x1',
+          value: '0x0',
+        },
+      } as TransactionMeta,
+    ];
+    (
+      state.metamask as MetaMaskReduxState['metamask'] & {
+        txHistory: Record<string, BridgeHistoryItem>;
+      }
+    ).txHistory = {
+      'swap-tx': {
+        quote: {
+          srcChainId: 8453,
+          destChainId: 8453,
+          srcTokenAmount: '1000000',
+          destTokenAmount: '999000',
+          srcAsset: {
+            address: eurcAddress,
+            chainId: 8453,
+            symbol: 'EURC',
+            assetId: `eip155:8453/token:${eurcAddress}`,
+            decimals: 6,
+          },
+          destAsset: {
+            address: usdcAddress,
+            chainId: 8453,
+            symbol: 'USDC',
+            assetId: `eip155:8453/token:${usdcAddress}`,
+            decimals: 6,
+          },
+        },
+        status: {
+          status: StatusTypes.COMPLETE,
+          srcChain: { txHash },
+          destChain: { amount: '999000' },
+        },
+        startTime: 1,
+      } as unknown as BridgeHistoryItem,
+    };
+
+    const [activity] = selectLocalActivityItems(state);
+
+    expect(activity.type).toBe('swap');
+    expect(activity.data).toMatchObject({
+      sourceToken: {
+        assetId: toAssetId(eurcAddress, 'eip155:8453'),
+      },
+      destinationToken: {
+        assetId: toAssetId(usdcAddress, 'eip155:8453'),
       },
     });
   });
