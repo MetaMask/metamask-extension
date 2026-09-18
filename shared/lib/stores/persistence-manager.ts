@@ -69,12 +69,20 @@ export type WriteRetryRecoveredEvent = {
 };
 
 export type SplitStateWriteEvent = {
+  /**
+   * Per-controller size estimates from `JSON.stringify(value).length`.
+   * Not exact storage byte counts.
+   */
   bytesByController: Record<string, number>;
   coalescedUpdates: number;
   controllerKeys: string[];
   idleStatus: 'active' | 'idle' | 'unknown';
   measurementDurationMs: number;
   sampleRate: number;
+  /**
+   * Sum of {@link bytesByController} values. Approximate write size, not exact
+   * encoded payload bytes.
+   */
   totalBytes: number;
   writeDurationMs: number;
 };
@@ -102,13 +110,6 @@ export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
 
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
-
-function getSerializedByteLength(value: unknown): number {
-  const serializedValue = JSON.stringify(value);
-  return serializedValue === undefined
-    ? 0
-    : new TextEncoder().encode(serializedValue).byteLength;
-}
 
 function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
   return new Promise((resolve) => {
@@ -781,28 +782,41 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     coalescedUpdates: number,
     writeDurationMs: number,
   ): void {
-    const controllerPairs = [...pairs.entries()]
-      .filter(([key]) => key !== 'data' && key !== 'manifest' && key !== 'meta')
-      .toSorted(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
     const sampleRate = this.#getPersistenceWriteSampleRate();
-    if (
-      controllerPairs.length === 0 ||
-      sampleRate <= 0 ||
-      this.#random() >= sampleRate
-    ) {
+    if (sampleRate <= 0 || this.#random() >= sampleRate) {
       return;
     }
 
     const measurementStartedAt = performance.now();
-    const bytesByController = Object.fromEntries(
-      controllerPairs.map(([key, value]) => [
-        key,
-        getSerializedByteLength(value),
-      ]),
-    );
-    const totalBytes = getSerializedByteLength(
-      Object.fromEntries(controllerPairs),
-    );
+    const bytesByController: Record<string, number> = {};
+    const controllerKeys: string[] = [];
+    let totalBytes = 0;
+
+    for (const [key, value] of pairs) {
+      if (key === 'data' || key === 'manifest' || key === 'meta') {
+        continue;
+      }
+
+      // Cheap size estimate for telemetry: `JSON.stringify` string length
+      // (UTF-16 code units), not UTF-8 byte length via `TextEncoder`.
+      const serializedValue = JSON.stringify(value);
+      const serializedLength =
+        serializedValue === undefined ? 0 : serializedValue.length;
+      bytesByController[key] = serializedLength;
+      controllerKeys.push(key);
+      totalBytes += serializedLength;
+    }
+
+    if (controllerKeys.length === 0) {
+      return;
+    }
+
+    controllerKeys.sort((leftKey, rightKey) => leftKey.localeCompare(rightKey));
+    const sortedBytesByController: Record<string, number> = {};
+    for (const key of controllerKeys) {
+      sortedBytesByController[key] = bytesByController[key];
+    }
+
     const isIdle = this.#getIsIdle();
     let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
     if (isIdle === true) {
@@ -812,9 +826,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
 
     this.emit('splitStateWrite', {
-      bytesByController,
+      bytesByController: sortedBytesByController,
       coalescedUpdates,
-      controllerKeys: controllerPairs.map(([key]) => key),
+      controllerKeys,
       idleStatus,
       measurementDurationMs: performance.now() - measurementStartedAt,
       sampleRate,
