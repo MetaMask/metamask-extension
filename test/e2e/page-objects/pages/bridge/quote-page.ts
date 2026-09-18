@@ -109,6 +109,9 @@ class BridgeQuotePage {
 
   private slippageEditButton = '[data-testid="slippage-edit-button"]';
 
+  private slippageSubmitButton =
+    '[data-testid="bridge__tx-settings-modal-submit-button"]';
+
   private sourceAmount = '[data-testid="from-amount"]';
 
   public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
@@ -180,6 +183,13 @@ class BridgeQuotePage {
     });
     console.log(`Expected dest asset ${destToken} is selected`);
   };
+
+  async checkCustomSlippageDisplayedValue(value: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.slippageCustomButton,
+      text: `${value}%`,
+    });
+  }
 
   async checkDestAmount(amount: string) {
     await this.driver.waitForSelector(this.destinationAmount(amount));
@@ -620,6 +630,10 @@ class BridgeQuotePage {
     await this.submitQuote();
     await this.driver.waitForSelector(this.warningModal);
   };
+
+  async submitSlippageModal(): Promise<void> {
+    await this.driver.clickElement(this.slippageSubmitButton);
+  }
 
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
