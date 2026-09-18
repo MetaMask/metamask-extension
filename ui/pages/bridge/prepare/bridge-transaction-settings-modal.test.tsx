@@ -84,9 +84,7 @@ const interactWithCustomInput = async (
   if (action) {
     await action(input);
   }
-  await act(async () => {
-    fireEvent.blur(input);
-  });
+  fireEvent.blur(input);
 };
 
 const submitUpdate = async (getByTestId: (id: string) => HTMLElement) => {
@@ -345,9 +343,7 @@ describe('BridgeTransactionSettingsModal', () => {
           expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
           await interactWithCustomInput(getByTestId, async (input) => {
-            await act(async () => {
-              await setValue(input, value);
-            });
+            await setValue(input, value);
             expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
               expectedDisplayValue,
             );
