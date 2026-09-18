@@ -54,8 +54,18 @@ class ActivityTab extends HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly transactionBaseFeeRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-base-fee"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
+
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
+
+  private readonly transactionBreakdownAmountRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-breakdown-value-amount"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
 
   private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
     css: `[data-testid="transaction-breakdown-row"]:nth-child(${
@@ -89,10 +99,10 @@ class ActivityTab extends HomePage {
     expectedDestToken?: string,
   ): Promise<void> {
     console.log(`Open bridge transaction details`);
-    const [completedTx] = await this.driver.findElements({
+    await this.driver.clickElement({
       text: action,
+      css: this.activityListAction,
     });
-    await completedTx.click();
     await this.driver.waitForSelector({ text: action });
 
     console.log('Checking scanner links');
@@ -106,7 +116,13 @@ class ActivityTab extends HomePage {
       this.transactionStatusLabel(expectedStatus),
     );
 
-    if (!isBridge) {
+    if (isBridge) {
+      console.log('Checking bridge fee and total amount rows are populated');
+      await this.driver.waitForSelector(this.transactionBaseFeeRowValue);
+      await this.driver.waitForSelector(
+        this.transactionBreakdownAmountRowValue,
+      );
+    } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
         await this.driver.waitForSelector({
@@ -294,7 +310,7 @@ class ActivityTab extends HomePage {
    * This function checks the specified number of pending transactions are displayed in the activity list on the homepage.
    * It waits up to 10 seconds for the expected number of pending transactions to be visible.
    *
-   * @param expectedNumber - The number of pending transactions expected to be displayed in the activity list. Defaults to 1.
+   * @param expectedNumber - The number of pending transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of pending transactions is displayed within the timeout period.
    */
   async checkPendingTxNumberDisplayedInActivity(

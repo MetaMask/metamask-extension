@@ -3253,8 +3253,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...HEAD
-[13.49.0]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...v13.49.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...HEAD
 [13.48.0]: https://github.com/MetaMask/metamask-extension/compare/v13.47.1...v13.48.0
 [13.47.1]: https://github.com/MetaMask/metamask-extension/compare/v13.47.0...v13.47.1
 [13.47.0]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...v13.47.0

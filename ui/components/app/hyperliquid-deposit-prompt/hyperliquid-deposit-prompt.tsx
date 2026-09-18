@@ -42,7 +42,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
 import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
-import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
+import { TokenIcon } from '../token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/feature-flags';
@@ -242,7 +242,10 @@ export const HyperliquidDepositPrompt: React.FC<
   // no deposit happens until the user confirms an amount on that screen.
   // Navigation is deferred so the payment token can be pre-selected first.
   const { isLoading: isStartingDeposit, trigger: startPerpsDeposit } =
-    usePerpsDepositConfirmation({ navigateOnCreate: false });
+    usePerpsDepositConfirmation({
+      navigateOnCreate: false,
+      entryPoint: HYPERLIQUID_DEPOSIT_PROMPT,
+    });
 
   const [selectedToken, setSelectedToken] = useState<AssetType>();
   const [isPickerOpen, setIsPickerOpen] = useState(false);

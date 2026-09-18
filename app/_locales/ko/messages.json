@@ -1481,6 +1481,9 @@
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다"
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "더 적은 액수를 추가하거나 다른 결제 수단을 사용하세요."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "자금 부족"
   },
@@ -1511,6 +1514,9 @@
   },
   "alertMessageGasFeeLow": {
     "message": "낮은 수수료를 선택하면 트랜잭션 속도가 느려지고 대기 시간이 길어집니다. 트랜잭션 속도를 높이려면 시장 수수료 또는 공격적 수수료 옵션을 선택하세요."
+  },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "이 트랜잭션을 계속 진행하려면, 가스 한도를 12000 이상으로 늘려야 합니다."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "계정에 네트워크 수수료를 지불할 만큼의 $1(이)가 부족합니다."
@@ -1873,6 +1879,9 @@
   },
   "backupAndSyncFeatureContacts": {
     "message": "연락처"
+  },
+  "backupAndSyncFeatureRamps": {
+    "message": "매수 및 매도 주문"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "동기화할 항목 관리"
@@ -4207,6 +4216,9 @@
   "gasLimit": {
     "message": "가스 한도"
   },
+  "gasLimitBelowMinimum": {
+    "message": "가스 한도는 12000 이상이어야 합니다."
+  },
   "gasPrice": {
     "message": "가스 가격(GWEI)"
   },
@@ -5261,7 +5273,7 @@
   },
   "lowValueAssets": {
     "message": "소액 잔액 토큰($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "이더리움 메인넷"
@@ -5448,13 +5460,6 @@
   "money": {
     "message": "머니"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1% APY 수익 적립",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY 정보"
-  },
   "moneyAccountApyTooltip": {
     "message": "표시된 수익률은 현재 시장 상황에 기반한 예상 연간수익률(APY)입니다. APY는 변동되며 보장되지 않습니다."
   },
@@ -5464,9 +5469,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "1년 후 예상 잔액:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1년 후 예상 잔액"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "이 예상치는 연간수익률(APY) $1%가 1년 동안 변함 없이 유지된다는 가정하에 계산되었습니다. APY는 변동되며 보장되지 않습니다.",
@@ -5496,14 +5498,32 @@
   "moneyActivityDepositing": {
     "message": "예치 중"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "결제 대상:"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "보낸 사람"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "트랜잭션 ID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "수익:"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "지출 금액:"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "환불되었습니다"
   },
   "moneyActivityEmpty": {
     "message": "아직 활동이 없습니다"
   },
   "moneyActivityFilterAll": {
     "message": "모두"
+  },
+  "moneyActivityFilterCard": {
+    "message": "카드"
   },
   "moneyActivityFilterDeposits": {
     "message": "예치"
@@ -5547,6 +5567,10 @@
   "moneyActivitySent": {
     "message": "전송됨"
   },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "전환 수수료에는 네트워크 비용과 제공업체 수수료가 포함될 수 있습니다.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
+  },
   "moneyActivityViewAll": {
     "message": "모두 보기"
   },
@@ -5568,9 +5592,6 @@
   "moneyBalanceRetry": {
     "message": "다시 시도"
   },
-  "moneyBalanceTitle": {
-    "message": "머니 잔액"
-  },
   "moneyBalanceUnavailable": {
     "message": "잔액을 확인할 수 없음"
   },
@@ -5591,6 +5612,12 @@
   },
   "moneyBenefits": {
     "message": "혜택"
+  },
+  "moneyContactSupport": {
+    "message": "지원팀에 문의"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "암호자산 전환"
   },
   "moneyEarnApyTitle": {
     "message": "최대 $1 APY 수익 적립"
@@ -5628,15 +5655,95 @@
   "moneyFundDescriptionWithApy": {
     "message": "머니 계정에 자금을 추가하면 최대 $1 APY로 잔액이 늘어납니다."
   },
+  "moneyHomeApyTooltip": {
+    "message": "표시된 수익률은 현재 시장 상황에 기반한 연간수익률(APY)입니다. APY는 변동될 수 있으며 보장되지 않습니다. 자금은 Veda가 운영하고 Steakhouse Financial이 위험을 관리하는 디파이 볼트에 예치되어 주요 대출 시장에서 수익을 창출합니다."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money Account는 Monad에서 제공합니다."
+  },
   "moneyHowItWorks": {
     "message": "작동 방식"
   },
   "moneyHowItWorksDescription": {
     "message": "mUSD를 추가하면 언제든지 달러 기반 잔액을 결제 또는 거래에 사용하거나 송금할 수 있습니다."
   },
+  "moneyHowItWorksDescription1": {
+    "message": "mUSD를 Money Account에 입금하면 최대 $1 APY(변동형)의 수익을 자동으로 적립할 수 있습니다. 자금은 Veda가 운용하고 Steakhouse Financial이 위험을 모니터링하는 디파이 볼트에 예치됩니다. 수익률은 블록체인 프로토콜에서 자금을 운용하는 제삼자 디파이 플랫폼을 통해 발생합니다. 스테이킹, 수동 수령, 락업은 필요하지 않습니다.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksDescription2": {
+    "message": "Money 잔액은 결제에 사용할 수 있는 잔액입니다. MetaMask 카드를 연결하면 전 세계 1억 5천만 개 이상의 가맹점에서 사용할 수 있습니다. 자금은 사용하는 순간까지 계속 수익을 냅니다."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money Account는 Monad에서 제공합니다."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD를 추가하면 최대 $1의 수익이 적립됩니다. 잔액은 달러 연동 방식으로 유지되며 언제든지 결제 또는 거래에 사용하거나 송금할 수 있습니다.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Account는 은행 계좌, 저축 계좌 또는 보험이 적용되는 예금 상품이 아닙니다. APY는 변동되며 보장되지 않습니다. Money Account에는 스마트 계약, 프로토콜, 유동성 및 기타 위험이 수반되며, 자금의 일부 또는 전부가 손실될 수 있습니다. 지역별 제한이 적용될 수 있으며, 약관이 적용됩니다."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "위험 및 고지 사항"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "최대 $1의 APY를 얻을 수 있습니다. 이 수익률은 변동되며 시장 상황에 따라 달라집니다. 현재 수익률은 언제든지 Money Account에서 확인할 수 있습니다.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "APY 비율은 변경되나요?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "사용자 본인입니다! MetaMask는 셀프 커스터디 지갑이므로, 계정 소유자의 개인 키만이 계정을 제어할 수 있습니다. MetaMask는 머니 계정 잔액에 액세스하거나 이를 동결 또는 이동할 수 없습니다. 이 점이 바로 기존 은행 계좌 및 커스터디형 암호화폐 플랫폼과 MetaMask를 구분하는 차이점입니다. 사용자의 자금을 보관하는 제삼자는 없습니다."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "제 자금은 누가 관리하나요?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Money Account 개설에는 수수료가 없으며, 스테이블코인을 예치하는 데도 수수료가 없습니다. 비스테이블코인 토큰을 예치하는 경우 수수료가 부과됩니다. 또한 MetaMask 카드 거래, ATM 출금, 현지 통화 오프램프 비용과 관련된 수수료가 있습니다. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "전체 카드 수수료 세부 내역은 여기에서 확인하세요."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "수수료가 있나요?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "예. 사전 통지 기간이나 위약금 없이 언제든지 전체 잔액을 거래, 전송, 결제 또는 출금할 수 있으며, MetaMask에서 부과하는 출금 수수료도 없습니다. 유동성이 부족한 경우 일시적으로 지연될 수 있습니다."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "자금은 묶이나요? 언제든지 인출할 수 있나요?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "최대 $1의 변동 APY를 받을 수 있는 계정입니다. 자금을 예치하면 해당 자금은 계정에 mUSD로 보관되며, 최대 $1의 APY가 적용됩니다. mUSD는 MetaMask의 달러 연동 스테이블코인입니다. 자금은 언제든지 위약금 없이 사용하거나 출금할 수 있습니다. 또한 MetaMask Card를 통해 전 세계 1억 5천만 곳 이상의 Mastercard 가맹점에서 자금을 사용할 수 있습니다.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Money 계정이란 무엇인가요?"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD는 미국 달러와 1:1로 연동되는 MetaMask의 달러 기반 스테이블코인입니다. Money 잔액은 mUSD로 보관되며 언제든지 결제, 송금 또는 거래에 사용할 수 있습니다.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "mUSD란 무엇인가요?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Money 잔액은 결제에 사용할 수 있는 잔액으로, 실제로 사용하는 순간까지 계속 수익이 발생합니다. Money 계정은 은행 계좌, 저축 계좌 또는 예금보험이 적용되는 예금 상품이 아닙니다.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "이 계정은 저축 계정인가요, 결제 계정인가요?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "FAQ"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "자금을 예치하면 해당 자금은 Aave, Morpho와 같이 검증된 디파이프로토콜에 투입되어 실제 경제 활동에서 발생하는 수익을 창출합니다. 이렇게 발생한 수익은 APY 형태로 사용자에게 제공됩니다. \n\nSteakhouse Financial이라는 제삼자 서비스 제공업체가 프로토콜 내 자금 배분 방식을 모니터링합니다. 제삼자 인프라 제공업체인 Veda는 사용자의 자금을 보관하는 볼트 스마트 계약을 배포하고 유지 관리합니다.\n\n수익은 MetaMask 또는 mUSD 발행자가 지급하는 이자가 아닙니다. 이는 제삼자 디파이 프로토콜의 포지션에서 발생하는 온체인 수익입니다."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "수익은 어디에서 발생하나요?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "자산이 늘어나는 방식"
@@ -5647,8 +5754,14 @@
   "moneyLifetime": {
     "message": "전체 기간"
   },
+  "moneyLifetimeTooltip": {
+    "message": "지금까지 머니 계정 잔액으로 적립한 총수익입니다."
+  },
   "moneyMeetMusd": {
     "message": "mUSD 소개"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "지난 30일 동안 머니 계정 잔액으로 적립한 총수익입니다."
   },
   "moneyMoreInformation": {
     "message": "더 많은 정보"
@@ -5677,11 +5790,59 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "전환 실패"
   },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "카드 신청에 몇 분 정도 걸릴 수 있습니다."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "자금 추가"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "예치 중"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "암호자산 전환 중"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "Money 계정에 $1 추가됨.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Money Account에 추가됨"
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "자금 추가됨"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "예치 완료"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "전환 완료"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "몇 분 정도 소요될 수 있습니다."
+  },
   "moneyToastWithdrawFailedBody": {
     "message": "자금을 이체할 수 없습니다. 다시 시도하세요."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "이체 실패"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "내 계정"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "전송 중"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$2에 $1 추가됨.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "$1에 추가됨.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "전송 완료"
   },
   "moneyTransferBetweenAccounts": {
     "message": "다른 계정"
@@ -6039,9 +6200,6 @@
   "networkFeeExplanationTitle": {
     "message": "네트워크 수수료"
   },
-  "networkMenu": {
-    "message": "네트워크 메뉴"
-  },
   "networkMenuHeading": {
     "message": "네트워크 선택"
   },
@@ -6345,18 +6503,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "출금 준비 완료"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "이제 언스테이킹한 $1을(를) 출금할 수 있습니다"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1 언스테이킹 요청이 전송되었습니다"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "수취한 NFT 출처:"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "전송한 NFT 수취 대상:"
-  },
   "notificationItemNetwork": {
     "message": "네트워크:"
   },
@@ -6365,18 +6511,6 @@
   },
   "notificationItemReceived": {
     "message": "받음"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "발신처:"
-  },
-  "notificationItemSent": {
-    "message": "전송됨"
-  },
-  "notificationItemSentTo": {
-    "message": "수신처:"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "스테이킹 완료"
   },
   "notificationItemStaked": {
     "message": "스테이킹됨"
@@ -6390,17 +6524,11 @@
   "notificationItemSwapped": {
     "message": "스왑 완료"
   },
-  "notificationItemSwappedFor": {
-    "message": "지금 스와프를 "
-  },
   "notificationItemTo": {
     "message": "수신:"
   },
   "notificationItemTransactionId": {
     "message": "트랜잭션 ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "언스테이킹 완료"
   },
   "notificationItemUnStaked": {
     "message": "언스테이킹됨"
@@ -7543,6 +7671,10 @@
   "perpsFilterAll": {
     "message": "모두"
   },
+  "perpsFilterClear": {
+    "message": "$1, 필터 초기화",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "상품"
   },
@@ -7557,6 +7689,17 @@
   },
   "perpsFilterIndex": {
     "message": "지수"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoin"
+  },
+  "perpsFilterMore": {
+    "message": "더 보기",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "더 보기, $1개 선택됨",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "신규"
@@ -7653,6 +7796,18 @@
   },
   "perpsMarket": {
     "message": "시장"
+  },
+  "perpsMarketCategories": {
+    "message": "시장 카테고리",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1개 시장",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1개 시장",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "시장 찾을 수 없음"
@@ -7840,6 +7995,10 @@
   "perpsPositions": {
     "message": "포지션"
   },
+  "perpsProducts": {
+    "message": "상품",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "요청이 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요."
   },
@@ -7953,12 +8112,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "가격 변동"
-  },
-  "perpsSortByRank": {
-    "message": "순위"
-  },
-  "perpsSortBySection": {
-    "message": "정렬 기준"
   },
   "perpsSortByTitle": {
     "message": "정렬 기준"
@@ -8590,6 +8743,10 @@
   "rampsChangeProvider": {
     "message": "공급자를 변경하세요."
   },
+  "rampsChangeProviders": {
+    "message": "공급업체를 변경하세요",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "공급업체 변경"
   },
@@ -8778,6 +8935,14 @@
   },
   "rampsShowAllTokens": {
     "message": "모든 토큰 표시"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "이 토큰은 현재 지역에서 사용할 수 없습니다.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "토큰 사용 불가",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "사용자 지역에서는 아직 암호화폐를 매수할 수 없습니다."

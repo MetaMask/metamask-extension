@@ -31,12 +31,13 @@ import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
 
 const mockStartPerpsDeposit = jest.fn();
-let mockIsStartingDeposit = false;
+const mockUsePerpsDepositConfirmation = jest.fn().mockReturnValue({
+  isLoading: false,
+  trigger: mockStartPerpsDeposit,
+});
 jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
-  usePerpsDepositConfirmation: () => ({
-    isLoading: mockIsStartingDeposit,
-    trigger: mockStartPerpsDeposit,
-  }),
+  usePerpsDepositConfirmation: (...args: unknown[]) =>
+    mockUsePerpsDepositConfirmation(...args),
 }));
 
 const mockTrackEvent = jest.fn();
@@ -163,7 +164,10 @@ const renderComponent = (
 describe('HyperliquidDepositPrompt', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsStartingDeposit = false;
+    mockUsePerpsDepositConfirmation.mockReturnValue({
+      isLoading: false,
+      trigger: mockStartPerpsDeposit,
+    });
     mockSelectBlockedPayTokens.mockReturnValue({
       chainIds: [],
       tokens: [],
@@ -202,6 +206,15 @@ describe('HyperliquidDepositPrompt', () => {
     expect(
       screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'),
     ).toHaveTextContent(messages.hyperliquidDepositPromptNoThanks.message);
+  });
+
+  it('initializes deposit confirmation hook with hyperliquid entry point', () => {
+    renderComponent();
+
+    expect(mockUsePerpsDepositConfirmation).toHaveBeenCalledWith({
+      navigateOnCreate: false,
+      entryPoint: HYPERLIQUID_DEPOSIT_PROMPT,
+    });
   });
 
   it('tracks Hyperliquid Deposit Prompt Viewed on render', () => {
@@ -253,7 +266,10 @@ describe('HyperliquidDepositPrompt', () => {
   });
 
   it('disables No thanks while a deposit is being started', () => {
-    mockIsStartingDeposit = true;
+    mockUsePerpsDepositConfirmation.mockReturnValue({
+      isLoading: true,
+      trigger: mockStartPerpsDeposit,
+    });
 
     renderComponent();
 

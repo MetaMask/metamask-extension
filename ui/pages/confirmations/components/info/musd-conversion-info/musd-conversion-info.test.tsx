@@ -147,7 +147,9 @@ function setupDefaultMocks({
       isDepositPrefillEnabled: false,
       isDepositPrefillLoading: false,
       isDepositPrefilled: false,
+      isDepositPrefillSkipped: false,
       isInputChanged: false,
+      isQuoteDerivedAmountLoading: false,
       updatePendingAmount: jest.fn(),
       updatePendingAmountPercentage: jest.fn(),
     });

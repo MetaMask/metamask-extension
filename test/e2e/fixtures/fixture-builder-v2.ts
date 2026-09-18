@@ -1449,6 +1449,7 @@ class FixtureBuilderV2 {
       isAccountSyncingEnabled: false,
       isBackupAndSyncEnabled: false,
       isContactSyncingEnabled: false,
+      isRampsSyncingEnabled: false,
     });
   }
 
@@ -1626,6 +1627,19 @@ class FixtureBuilderV2 {
   withUseBasicFunctionalityDisabled(): this {
     return this.withPreferencesController({
       useExternalServices: false,
+    });
+  }
+
+  /**
+   * Uses the pre-consolidation settings layout (Assets autodetect toggles,
+   * Privacy → Third-party APIs, etc.). Required for E2E tests that exercise
+   * those surfaces when `default-fixture.json` marks the wallet consolidated.
+   */
+  withBasicFunctionalityConsolidationDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        isBasicFunctionalityConsolidatedEnabled: false,
+      },
     });
   }
 
