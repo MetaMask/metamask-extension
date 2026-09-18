@@ -1,8 +1,6 @@
 import assert from 'node:assert/strict';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
-import { WINDOW_TITLES } from '../../constants';
-import HomePage from '../../page-objects/pages/home/homepage';
-import { Driver, PAGES } from '../../webdriver/driver';
+import { Driver } from '../../webdriver/driver';
 
 export type DataStorage = {
   meta: {
@@ -67,21 +65,7 @@ export const pausePersistence = async (
  * @param driver - WebDriver instance.
  */
 async function waitForRestart(driver: Driver): Promise<void> {
-  await driver.waitUntil(
-    async () => {
-      await driver.navigate(PAGES.HOME, { waitForControllers: false });
-      const title = await driver.driver.getTitle();
-      // the browser will return an error message for our UI's HOME page until
-      // the extension has restarted
-      return title === WINDOW_TITLES.ExtensionInFullScreenView;
-    },
-    // reload and check title as quickly a possible
-    { interval: 100, timeout: 10000 },
-  );
-
-  await driver.waitForControllersLoaded();
-  const homePage = new HomePage(driver);
-  await homePage.waitForLoadingLogoToDisappear();
+  await driver.waitForExtensionStart();
 }
 
 /**

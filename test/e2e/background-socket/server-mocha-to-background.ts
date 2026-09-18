@@ -6,6 +6,8 @@ import {
   WindowProperties,
 } from './types';
 
+const RESPONSE_TIMEOUT_MS = 30_000;
+
 /**
  * This singleton class runs on the Mocha/Selenium test.
  * It's used to communicate from the Mocha/Selenium test to the Extension background script (service worker in MV3).
@@ -15,9 +17,13 @@ class ServerMochaToBackground {
 
   private ws: WebSocket | null = null;
 
+  private connectionVersion = 0;
+
   private eventEmitter;
 
   constructor() {
+    this.eventEmitter = new events.EventEmitter<ServerMochaEventEmitterType>();
+
     this.server = new WebSocketServer({ port: 8111 });
 
     console.debug('ServerMochaToBackground created');
@@ -32,8 +38,10 @@ class ServerMochaToBackground {
       }
 
       this.ws = ws;
+      this.connectionVersion += 1;
 
       console.debug('ServerMochaToBackground got a client connection');
+      this.eventEmitter.emit('connection');
 
       ws.onmessage = (ev: MessageEvent) => {
         let message: MessageType;
@@ -56,8 +64,6 @@ class ServerMochaToBackground {
         console.debug('ServerMochaToBackground disconnected from client');
       };
     });
-
-    this.eventEmitter = new events.EventEmitter<ServerMochaEventEmitterType>();
   }
 
   // This function is never explicitly called, but in the future it could be
@@ -80,8 +86,17 @@ class ServerMochaToBackground {
 
   // Handle messages received from the Extension background script (service worker in MV3)
   private receivedMessage(message: MessageType) {
-    if (message.command === 'openTabs' && message.tabs) {
-      this.eventEmitter.emit('openTabs', message.tabs);
+    if (message.command === 'openTabs') {
+      this.eventEmitter.emit('openTabs', message.tabs ?? []);
+    } else if (message.command === 'fixtureStateReset') {
+      this.eventEmitter.emit('fixtureStateReset');
+    } else if (message.command === 'fixtureStateResetError') {
+      const error = new Error(message.error);
+      if (this.eventEmitter.listenerCount('error') > 0) {
+        this.eventEmitter.emit('error', error);
+      } else {
+        throw error;
+      }
     } else if (message.command === 'notFound') {
       const error = new Error(
         `No window found by background script with ${message.property}: ${message.value}`,
@@ -97,6 +112,80 @@ class ServerMochaToBackground {
   // This is not used in the current code, but could be used in the future
   queryTabs(tabTitle: string) {
     this.send({ command: 'queryTabs', title: tabTitle });
+  }
+
+  getConnectionVersion() {
+    return this.connectionVersion;
+  }
+
+  async resetFixtureState({
+    reloadServiceWorker = true,
+    waitForReconnect = true,
+  }: { reloadServiceWorker?: boolean; waitForReconnect?: boolean } = {}) {
+    const { connectionVersion } = this;
+
+    this.send({
+      command: 'resetFixtureState',
+      reloadServiceWorker,
+    });
+
+    await this.waitForFixtureStateResetResponse();
+    if (reloadServiceWorker && waitForReconnect) {
+      await this.waitForConnectionAfter(connectionVersion);
+    }
+  }
+
+  async waitForConnectionAfter(connectionVersion: number) {
+    if (this.connectionVersion > connectionVersion) {
+      return;
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      const { eventEmitter } = this;
+      const getConnectionVersion = () => this.connectionVersion;
+      const timeoutRef: { id?: ReturnType<typeof setTimeout> } = {};
+
+      function onConnection() {
+        if (getConnectionVersion() > connectionVersion) {
+          eventEmitter.removeListener('connection', onConnection);
+          clearTimeout(timeoutRef.id);
+          resolve();
+        }
+      }
+
+      timeoutRef.id = setTimeout(() => {
+        eventEmitter.removeListener('connection', onConnection);
+        reject(new Error('Timed out waiting for background socket reconnect'));
+      }, RESPONSE_TIMEOUT_MS);
+
+      eventEmitter.on('connection', onConnection);
+    });
+  }
+
+  async waitForFixtureStateResetResponse() {
+    return new Promise<void>((resolve, reject) => {
+      const { eventEmitter } = this;
+      const timeoutId = setTimeout(() => {
+        eventEmitter.removeListener('error', onError);
+        eventEmitter.removeListener('fixtureStateReset', onResponse);
+        reject(new Error('Timed out waiting for fixture state reset response'));
+      }, RESPONSE_TIMEOUT_MS);
+
+      function onResponse() {
+        eventEmitter.removeListener('error', onError);
+        clearTimeout(timeoutId);
+        resolve();
+      }
+
+      function onError(error: Error) {
+        eventEmitter.removeListener('fixtureStateReset', onResponse);
+        clearTimeout(timeoutId);
+        reject(error);
+      }
+
+      eventEmitter.once('error', onError);
+      eventEmitter.once('fixtureStateReset', onResponse);
+    });
   }
 
   // Sends the message to the Extension, and waits for a response
