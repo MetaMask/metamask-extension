@@ -137,3 +137,6 @@ temp-llm-workflow-*
 .cursor/commands/
 # Carve-outs: IDE/bugbot config that must stay tracked
 !.cursor/BUGBOT.md
+
+# Platform API docs
+.platform-api-docs/
