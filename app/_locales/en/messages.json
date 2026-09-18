@@ -5412,6 +5412,9 @@
   "max": {
     "message": "Max"
   },
+  "maxAmountUnavailable": {
+    "message": "Max is unavailable because the network gas estimate could not be calculated."
+  },
   "maxBaseFee": {
     "message": "Max base fee"
   },
