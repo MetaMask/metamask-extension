@@ -142,39 +142,41 @@ describe('custom-network-harness', () => {
       );
     });
 
-    it.each(NON_ZERO_NATIVE_NETWORK_CASES)(
-      'injects $id with its native asset for native send',
+    NON_ZERO_NATIVE_NETWORK_CASES.forEach(
       ({ id, chainIdHex, clientId, nativeAssetId, nativeCurrency }) => {
-        const { fixtures, network } = prepareCustomNetwork(id, 'nativeSend');
-        const assetsController = fixtures.data.AssetsController as {
-          assetsBalance: Record<string, Record<string, { amount: string }>>;
-        };
-        const networkEnablementController = fixtures.data
-          .NetworkEnablementController as {
-          nativeAssetIdentifiers: Record<string, string>;
-        };
+        it(`injects ${id} with its native asset for native send`, () => {
+          const { fixtures, network } = prepareCustomNetwork(id, 'nativeSend');
+          const assetsController = fixtures.data.AssetsController as {
+            assetsBalance: Record<string, Record<string, { amount: string }>>;
+          };
+          const networkEnablementController = fixtures.data
+            .NetworkEnablementController as {
+            nativeAssetIdentifiers: Record<string, string>;
+          };
 
-        expect(networkController(fixtures).selectedNetworkClientId).toBe(
-          clientId,
-        );
-        expect(
-          networkController(fixtures).networkConfigurationsByChainId[chainIdHex]
-            ?.nativeCurrency,
-        ).toBe(nativeCurrency);
-        expect(enabledEip155(fixtures)).toStrictEqual({
-          [chainIdHex]: true,
+          expect(networkController(fixtures).selectedNetworkClientId).toBe(
+            clientId,
+          );
+          expect(
+            networkController(fixtures).networkConfigurationsByChainId[
+              chainIdHex
+            ]?.nativeCurrency,
+          ).toBe(nativeCurrency);
+          expect(enabledEip155(fixtures)).toStrictEqual({
+            [chainIdHex]: true,
+          });
+          expect(network.nativeAssetId).toBe(nativeAssetId);
+          expect(
+            networkEnablementController.nativeAssetIdentifiers[
+              network.caipChainId
+            ],
+          ).toBe(nativeAssetId);
+          expect(
+            assetsController.assetsBalance[DEFAULT_FIXTURE_ACCOUNT_ID]?.[
+              network.uiNativeAssetId
+            ]?.amount,
+          ).toBe('25');
         });
-        expect(network.nativeAssetId).toBe(nativeAssetId);
-        expect(
-          networkEnablementController.nativeAssetIdentifiers[
-            network.caipChainId
-          ],
-        ).toBe(nativeAssetId);
-        expect(
-          assetsController.assetsBalance[DEFAULT_FIXTURE_ACCOUNT_ID]?.[
-            network.uiNativeAssetId
-          ]?.amount,
-        ).toBe('25');
       },
     );
   });

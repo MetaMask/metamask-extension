@@ -147,9 +147,8 @@ function buildState(network: NonZeroNativeNetwork) {
   };
 }
 
-describe.each(NON_ZERO_NATIVE_NETWORKS)(
-  '$name non-zero native address',
-  (network) => {
+NON_ZERO_NATIVE_NETWORKS.forEach((network) => {
+  describe(`${network.name} non-zero native address`, () => {
     beforeEach(() => {
       process.env.PORTFOLIO_VIEW = 'true';
       window.location.hash = '';
@@ -184,5 +183,5 @@ describe.each(NON_ZERO_NATIVE_NETWORKS)(
         within(rows[0]).getByTestId('multichain-token-list-item-value'),
       ).toHaveTextContent(`25 ${network.symbol}`);
     });
-  },
-);
+  });
+});
