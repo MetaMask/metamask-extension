@@ -1,7 +1,6 @@
 {
   "data": {
     "AccountOrderController": {
-      "hiddenAccountList": [],
       "pinnedAccountList": []
     },
     "AccountTreeController": {
