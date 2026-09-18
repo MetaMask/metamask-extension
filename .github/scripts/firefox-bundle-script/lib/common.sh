@@ -34,7 +34,7 @@ version_gt() {
 # Check for required tools
 check_required_tools() {
     local missing_tools=()
-    
+
     if ! command -v curl &> /dev/null; then
         missing_tools+=("curl")
     fi
@@ -46,15 +46,15 @@ check_required_tools() {
     if ! command -v unzip &> /dev/null; then
         missing_tools+=("unzip")
     fi
-    
+
     if ! command -v zip &> /dev/null; then
         missing_tools+=("zip")
     fi
-    
+
     if ! command -v mtree &> /dev/null; then
         missing_tools+=("mtree")
     fi
-    
+
     if [ ${#missing_tools[@]} -gt 0 ]; then
         log_error "The following required tools are not installed:"
         for tool in "${missing_tools[@]}"; do
@@ -67,7 +67,7 @@ check_required_tools() {
         fi
         return 1
     fi
-    
+
     return 0
 }
 
@@ -75,13 +75,13 @@ check_required_tools() {
 # Usage: validate_required_files "file1" "file2" "file3"
 validate_required_files() {
     local missing_files=()
-    
+
     for file in "$@"; do
         if [ ! -f "$file" ]; then
             missing_files+=("$file")
         fi
     done
-    
+
     if [ ${#missing_files[@]} -gt 0 ]; then
         log_error "Required files are missing:"
         for file in "${missing_files[@]}"; do
@@ -89,7 +89,7 @@ validate_required_files() {
         done
         return 1
     fi
-    
+
     return 0
 }
 
@@ -119,30 +119,17 @@ fetch_bundle_sh() {
     local tmp_path
     git_ref="$(resolve_bundle_sh_git_ref)"
 
-    mkdir -p "$(dirname "${dest_path}")"
-    tmp_path="$(mktemp "$(dirname "${dest_path}")/bundle.sh.XXXXXX")"
+    dest_dir="$(dirname "${dest_path}")"
+    mkdir -p "${dest_dir}"
 
     log_info "Fetching bundle.sh from ref ${git_ref}..."
 
-    cleanup_tmp() {
-        rm -f "${tmp_path}"
-    }
-    trap cleanup_tmp RETURN
+    local repo_url="https://${FIREFOX_BUNDLE_SCRIPT_TOKEN}@github.com/MetaMask/firefox-bundle-script.git"
 
-    if [[ "${git_ref}" == origin/* ]]; then
-        # Best-effort refresh so we read the current remote branch, not a stale
-        # remote-tracking ref left over from an earlier fetch.
-        git fetch origin "${git_ref#origin/}" --depth 1 2>/dev/null || true
-        git show "${git_ref}:bundle.sh" > "${tmp_path}" 2>/dev/null || true
-    else
-        git fetch origin "+refs/tags/${git_ref}:refs/tags/${git_ref}" --depth 1 2>/dev/null \
-            || git fetch origin "${git_ref}" --depth 1 2>/dev/null \
-            || true
-        git show "${git_ref}:bundle.sh" > "${tmp_path}" 2>/dev/null || true
-    fi
+    git clone --depth 1 --branch v13.47.1 "${repo_url}" "${dest_dir}/clone-dir"
 
-    if [[ -s "${tmp_path}" ]]; then
-        mv "${tmp_path}" "${dest_path}"
+    if [[ -s "${dest_dir}/clone-dir/bundle.sh" ]]; then
+        mv "${dest_dir}/clone-dir/bundle.sh" "${dest_path}"
         trap - RETURN
         log_success "Fetched bundle.sh from ${git_ref}"
         return 0
