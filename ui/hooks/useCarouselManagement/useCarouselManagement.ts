@@ -23,7 +23,6 @@ import { useDispatch } from '../../store/hooks';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
-export type CarouselFetchStatus = 'idle' | 'loading' | 'settled' | 'error';
 const ZERO_BALANCE = '0x0';
 
 export function isActive(
@@ -112,49 +111,22 @@ export const useCarouselManagement = ({
   const currentLocale = useSelector(getCurrentLocale);
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
-  const eligibilityNeeded =
-    contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
-  const eligibilityKey = eligibilityNeeded
-    ? `needed:${selectedAccount.address}`
-    : 'not-needed';
 
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
   const [downloadEligibilityReady, setDownloadEligibilityReady] =
-    useState<boolean>(!eligibilityNeeded);
-  const [previousEligibilityKey, setPreviousEligibilityKey] =
-    useState(eligibilityKey);
-
-  // Reset account-specific eligibility before children observe a new cycle.
-  // React applies this guarded previous-value update before rendering children.
-  if (previousEligibilityKey !== eligibilityKey) {
-    setPreviousEligibilityKey(eligibilityKey);
-    if (eligibilityNeeded) {
-      setDownloadEligibilityReady(false);
-    } else {
-      setDownloadEligible(false);
-      setDownloadEligibilityReady(true);
-    }
-  }
-
-  const fetchKey = [
-    enabled,
-    contentfulEnabled,
-    currentLocale,
-    selectedAccount.address,
-    hasZeroBalance,
-    downloadEligibilityReady,
-    downloadEligible,
-    testDate,
-  ].join(':');
-  const [fetchState, setFetchState] = useState<{
-    key: string;
-    status: CarouselFetchStatus;
-  }>({ key: '', status: 'idle' });
+    useState<boolean>(false);
 
   useEffect(() => {
+    const eligibilityNeeded =
+      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
+
     if (!eligibilityNeeded) {
-      return undefined;
+      setDownloadEligible(false);
+      setDownloadEligibilityReady(true);
+      return () => undefined;
     }
+
+    setDownloadEligibilityReady(false);
 
     let cancelled = false;
 
@@ -180,7 +152,12 @@ export const useCarouselManagement = ({
     return () => {
       cancelled = true;
     };
-  }, [eligibilityNeeded, selectedAccount.address]);
+  }, [
+    selectedAccount.address,
+    useExternalServices,
+    showDownloadMobileAppSlide,
+    contentfulEnabled,
+  ]);
 
   useEffect(() => {
     // Wait until eligibility is resolved (or not required) to avoid double fetch
@@ -210,7 +187,6 @@ export const useCarouselManagement = ({
         return;
       }
 
-      setFetchState({ key: fetchKey, status: 'loading' });
       try {
         const { prioritySlides, regularSlides } =
           await fetchCarouselSlidesFromContentful(
@@ -267,15 +243,11 @@ export const useCarouselManagement = ({
           dispatch(updateSlides(mergedSlides));
           prevSlidesRef.current = mergedSlides;
         }
-        setFetchState({ key: fetchKey, status: 'settled' });
       } catch (err) {
         log.warn('Failed to fetch Contentful slides:', err);
         if (!cancelled && !isEqual(prevSlidesRef.current, [])) {
           dispatch(updateSlides([]));
           prevSlidesRef.current = [];
-        }
-        if (!cancelled) {
-          setFetchState({ key: fetchKey, status: 'error' });
         }
       }
     };
@@ -296,13 +268,7 @@ export const useCarouselManagement = ({
     testDate,
     inTest,
     downloadEligibilityReady,
-    fetchKey,
   ]);
 
-  const fetchStatus =
-    enabled && contentfulEnabled && fetchState.key === fetchKey
-      ? fetchState.status
-      : 'idle';
-
-  return { slides, fetchStatus };
+  return { slides };
 };
