@@ -10,6 +10,7 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getConsentDecisionMade,
+  getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
 import { setDataCollectionForMarketing } from '../../../store/actions';
@@ -39,9 +40,7 @@ export function MetaMetricsConsentContainer() {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const dataCollectionForMarketing = useSelector(
-    (state: MetaMaskReduxState) => state.metamask.dataCollectionForMarketing,
-  );
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const isMetaMetricsEnabled = useSelector(
     (state: MetaMaskReduxState) =>
       getConsentDecisionMade(state) && getOptedIn(state),

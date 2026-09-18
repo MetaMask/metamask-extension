@@ -173,7 +173,9 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
-      "optedIn": false
+      "marketingConsentDecisionMade": true,
+      "optedIn": false,
+      "optedInToMarketing": false
     },
     "AnnouncementController": {
       "announcements": {}
@@ -404,7 +406,6 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "dataCollectionForMarketing": false,
       "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
