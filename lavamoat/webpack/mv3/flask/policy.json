@@ -595,6 +595,7 @@
         "getComputedStyle": true,
         "pageXOffset": true,
         "pageYOffset": true,
+        "process.env.NODE_ENV": true,
         "requestAnimationFrame": true,
         "scrollBy": true,
         "setTimeout": true
@@ -641,7 +642,8 @@
     },
     "@keystonehq/bc-ur-registry-eth": {
       "globals": {
-        "Buffer.from": true
+        "Buffer.from": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -653,7 +655,8 @@
     },
     "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": {
       "globals": {
-        "Buffer.from": true
+        "Buffer.from": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util": true,
@@ -3473,6 +3476,7 @@
         "getSelection": true,
         "navigator": true,
         "performance.now": true,
+        "process.env.NODE_ENV": true,
         "removeEventListener": true,
         "requestAnimationFrame": true,
         "setInterval": true,
@@ -3498,7 +3502,8 @@
     },
     "@mui/system>@mui/private-theming": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "@babel/runtime": true,
@@ -3510,7 +3515,8 @@
     "@mui/system>@mui/styled-engine": {
       "globals": {
         "console.error": true,
-        "document": true
+        "document": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "@emotion/react>@emotion/cache": true,
@@ -3527,7 +3533,8 @@
         "console.warn": true,
         "document.createElement": true,
         "document.querySelector": true,
-        "matchMedia": true
+        "matchMedia": true,
+        "process.env.NODE_ENV": true
       },
       "meta": {
         "webpack-optimization": [
@@ -3550,6 +3557,7 @@
         "console.error": true,
         "document": true,
         "innerWidth": true,
+        "process.env.NODE_ENV": true,
         "setTimeout": true
       },
       "packages": {
@@ -3562,7 +3570,8 @@
     "@mui/x-date-pickers>@mui/utils": {
       "globals": {
         "URL": true,
-        "console.error": true
+        "console.error": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "clsx": true,
@@ -3582,6 +3591,7 @@
         "innerHeight": true,
         "navigator": true,
         "orientation": true,
+        "process.env.NODE_ENV": true,
         "removeEventListener": true,
         "screen": true,
         "setTimeout": true
@@ -4326,7 +4336,8 @@
     },
     "@solana/addresses>@solana/errors": {
       "globals": {
-        "btoa": true
+        "btoa": true,
+        "process.env.NODE_ENV": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser": {
@@ -4348,6 +4359,7 @@
         "console.error": true,
         "console.warn": true,
         "document.visibilityState": true,
+        "process.env.NODE_ENV": true,
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
@@ -4355,7 +4367,8 @@
     },
     "@tanstack/react-query": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "@tanstack/react-query>@tanstack/query-core": true,
@@ -4377,6 +4390,7 @@
       "globals": {
         "console.info": true,
         "console.warn": true,
+        "process.env.NODE_ENV": true,
         "requestAnimationFrame": true
       }
     },
@@ -5267,7 +5281,8 @@
       "globals": {
         "getComputedStyle": true,
         "pageXOffset": true,
-        "pageYOffset": true
+        "pageYOffset": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "storybook>recast>tiny-invariant": true
@@ -5981,6 +5996,11 @@
         "eth-ens-namehash>idna-uts46-hx>punycode": true
       }
     },
+    "immer": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
     "string.prototype.matchall>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-errors": true,
@@ -6563,6 +6583,11 @@
         "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": true
       }
     },
+    "prop-types": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
     "react-markdown>property-information": {
       "packages": {
         "browserify>xtend": true
@@ -6646,6 +6671,11 @@
         "mockttp>express>safe-buffer": true
       }
     },
+    "react": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
     "react-chartjs-2": {
       "globals": {
         "setTimeout": true
@@ -6656,6 +6686,9 @@
       }
     },
     "react-focus-lock>react-clientside-effect": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      },
       "packages": {
         "@babel/runtime": true,
         "react": true
@@ -6735,6 +6768,7 @@
         "console.error": true,
         "document": true,
         "event": true,
+        "process.env.NODE_ENV": true,
         "queueMicrotask": true,
         "removeEventListener": true,
         "reportError": true,
@@ -6757,6 +6791,7 @@
         "console.error": true,
         "console.warn": true,
         "document": true,
+        "process.env.NODE_ENV": true,
         "removeEventListener": true,
         "setTimeout": true
       },
@@ -6793,6 +6828,21 @@
         "react": true
       }
     },
+    "react-redux>hoist-non-react-statics>react-is": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
+    "react-markdown>react-is": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
+    "react-redux>react-is": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
     "react-markdown": {
       "globals": {
         "console.warn": true
@@ -6825,7 +6875,8 @@
     "react-redux": {
       "globals": {
         "console.warn": true,
-        "document": true
+        "document": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "@babel/runtime": true,
@@ -6847,6 +6898,7 @@
         "document": true,
         "history.scrollRestoration": true,
         "location.href": true,
+        "process.env.NODE_ENV": true,
         "removeEventListener": true,
         "scrollTo": true,
         "scrollY": true,
@@ -6869,7 +6921,8 @@
     "react-router-dom>react-router": {
       "globals": {
         "console.error": true,
-        "console.warn": true
+        "console.warn": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "react-router-dom>@remix-run/router": true,
@@ -6929,6 +6982,7 @@
     "react-transition-group": {
       "globals": {
         "Element": true,
+        "process.env.NODE_ENV": true,
         "setTimeout": true
       },
       "packages": {
@@ -7163,7 +7217,8 @@
     },
     "redux": {
       "globals": {
-        "console": true
+        "console": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "@babel/runtime": true
@@ -7175,6 +7230,7 @@
         "console": true,
         "devToolsOptions": true,
         "onerror": "write",
+        "process.env.NODE_ENV": true,
         "serializeState": true
       },
       "packages": {
@@ -7229,6 +7285,7 @@
         "console.log": true,
         "console.warn": true,
         "fetch": true,
+        "process.env.NODE_ENV": true,
         "setTimeout": true
       },
       "packages": {
@@ -7247,7 +7304,8 @@
     "reselect": {
       "globals": {
         "WeakRef": true,
-        "console.warn": true
+        "console.warn": true,
+        "process.env.NODE_ENV": true
       }
     },
     "@metamask/snaps-utils>rfdc": {
@@ -7348,6 +7406,7 @@
         "console.error": true,
         "navigator": true,
         "performance": true,
+        "process.env.NODE_ENV": true,
         "setImmediate": true,
         "setTimeout": true
       },
@@ -7581,6 +7640,11 @@
         "@metamask/snaps-controllers>tar-stream>b4a": true
       }
     },
+    "storybook>recast>tiny-invariant": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
     "@ngraveio/bc-ur>sha.js>to-buffer": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
@@ -7693,7 +7757,8 @@
     },
     "react-redux>use-sync-external-store": {
       "globals": {
-        "document": true
+        "document": true,
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "react": true

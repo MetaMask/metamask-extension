@@ -580,10 +580,14 @@ class Driver {
         timeout,
       );
     } else if (state === 'detached') {
-      element = await this.driver.wait(
-        until.stalenessOf(await this.findElement(rawLocator)),
-        timeout,
-      );
+      // If the element is already gone (common when Save closes a modal
+      // faster than the next wait), treat that as success. findElement()
+      // would otherwise hang looking for an element that is already detached.
+      const locator = this.buildLocator(rawLocator);
+      element = await this.driver.wait(async () => {
+        const elements = await this.driver.findElements(locator);
+        return elements.length === 0;
+      }, timeout);
     } else if (state === 'enabled') {
       element = await this.driver.wait(
         until.elementIsEnabled(await this.findElement(rawLocator)),

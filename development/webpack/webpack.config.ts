@@ -26,7 +26,8 @@ import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,
   NODE_MODULES_RE,
-  TYPESCRIPT_FILE_RE,
+  TYPESCRIPT_NON_TSX_FILE_RE,
+  TYPESCRIPT_TSX_FILE_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
@@ -291,10 +292,19 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
+// @swc/core >= 1.16 parses TypeScript generics as JSX when tsx:true, so .ts
+// and .tsx must use separate loaders.
+const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 
 const swcReactRefreshConfig = { ...swcConfig, refresh: true };
+const reactRefreshTsLoader = getSwcLoader(
+  'typescript',
+  false,
+  safeVariables,
+  swcReactRefreshConfig,
+);
 const reactRefreshTsxLoader = getSwcLoader(
   'typescript',
   true,
@@ -308,8 +318,21 @@ const reactRefreshJsxLoader = getSwcLoader(
   swcReactRefreshConfig,
 );
 
-const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
-const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+// npm packages keep runtime `process.env.*` unless SWC inlines them. First-party
+// code gets the full `safeVariables` map, but `@metamask/network-controller`
+// (and similar) only see `process/browser`'s empty `env`, so `IN_TEST` was
+// always falsy there and custom networks kept the 20s block-tracker interval
+// instead of the 1s test interval. Inline only `IN_TEST` for npm/CJS loaders.
+const npmEnvs: Record<string, string> =
+  safeVariables.IN_TEST === undefined ? {} : { IN_TEST: safeVariables.IN_TEST };
+const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
+const cjsLoader = getSwcLoader(
+  'ecmascript',
+  false,
+  npmEnvs,
+  swcConfig,
+  'commonjs',
+);
 
 const isChunkableInitial = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
@@ -436,19 +459,40 @@ const config = {
       ...(isDevelopmentWatchMode
         ? [
             {
-              test: TYPESCRIPT_FILE_RE,
+              // typescript without JSX (UI, react-refresh)
+              test: TYPESCRIPT_NON_TSX_FILE_RE,
+              include: UI_DIR_RE,
+              use: reactRefreshTsLoader,
+            },
+            {
+              // typescript JSX (UI, react-refresh)
+              test: TYPESCRIPT_TSX_FILE_RE,
               include: UI_DIR_RE,
               use: reactRefreshTsxLoader,
             },
             {
-              test: TYPESCRIPT_FILE_RE,
+              // typescript without JSX
+              test: TYPESCRIPT_NON_TSX_FILE_RE,
+              exclude: [NODE_MODULES_RE, UI_DIR_RE],
+              use: tsLoader,
+            },
+            {
+              // typescript JSX
+              test: TYPESCRIPT_TSX_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
               use: tsxLoader,
             },
           ]
         : [
             {
-              test: TYPESCRIPT_FILE_RE,
+              // typescript without JSX
+              test: TYPESCRIPT_NON_TSX_FILE_RE,
+              exclude: NODE_MODULES_RE,
+              use: tsLoader,
+            },
+            {
+              // typescript JSX
+              test: TYPESCRIPT_TSX_FILE_RE,
               exclude: NODE_MODULES_RE,
               use: tsxLoader,
             },
