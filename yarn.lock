@@ -8984,9 +8984,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^70.0.0, @metamask/transaction-controller@npm:^70.0.1":
-  version: 70.0.1
-  resolution: "@metamask/transaction-controller@npm:70.0.1"
+"@metamask/transaction-controller@npm:^70.0.0, @metamask/transaction-controller@npm:^70.0.1, @metamask/transaction-controller@npm:^70.1.0":
+  version: 70.1.0
+  resolution: "@metamask/transaction-controller@npm:70.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/rlp": "npm:^5.0.2"
@@ -9015,11 +9015,11 @@ __metadata:
     ethereum-cryptography: "npm:^2.1.2"
     fast-json-patch: "npm:^3.1.1"
     lodash-es: "npm:^4.17.21"
-    uuid: "npm:^9.0.1"
+    uuid: "npm:^11.1.1"
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/54e1eb360075e14564b9ec4f436ba9baa5ee6277c1cfd8a4226c0506b510dc06cc5a1bbec4c1997f67fd495a7c32e4574e3e9187843b62872a1d79c8b25abf67
+  checksum: 10/bb12db5f7922f6c5f7d36389b10f2847634b43dd2ae84fe3245fed5c886297def59701b6875f115853047afe80327f55684bdc63a7a7075b4286ab096fcb40cf
   languageName: node
   linkType: hard
 
@@ -31832,7 +31832,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.5.2"
-    "@metamask/transaction-controller": "npm:^69.8.0"
+    "@metamask/transaction-controller": "npm:^70.1.0"
     "@metamask/transaction-pay-controller": "npm:^27.1.1"
     "@metamask/tron-wallet-snap": "npm:^3.2.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
