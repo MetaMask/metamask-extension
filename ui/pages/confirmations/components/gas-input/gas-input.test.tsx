@@ -59,6 +59,30 @@ describe('GasInput', () => {
     expect(input.value).toBe('');
   });
 
+  it('updates the displayed value when the gas estimate changes', () => {
+    const { getByTestId, mockOnChange, mockOnErrorChange, rerender } = render({
+      gasLimit: undefined,
+    });
+    const renderGasInput = (gasLimit: Hex | undefined) => (
+      <GasInput
+        gasLimit={gasLimit}
+        onChange={mockOnChange}
+        onErrorChange={mockOnErrorChange}
+      />
+    );
+
+    rerender(renderGasInput('0x7530'));
+
+    const input = getByTestId('gas-input').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    expect(input.value).toBe('30000');
+
+    rerender(renderGasInput(undefined));
+
+    expect(input.value).toBe('');
+  });
+
   it('calls onChange when value changes', () => {
     const { getByTestId, mockOnChange } = render();
 
