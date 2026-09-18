@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { add0x, Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../context/confirm';
 import {
   hexToDecimal,
   decimalToHex,
@@ -13,26 +11,34 @@ import { FormTextField } from '../../../../components/component-library';
 import { validateGas } from '../../utils/gasValidations';
 
 export const GasInput = ({
+  gasLimit,
   onChange,
   onErrorChange,
 }: {
+  gasLimit: Hex | undefined;
   onChange: (value: Hex) => void;
   onErrorChange: (error: string | undefined) => void;
 }) => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  const initialGasLimit = hexToDecimal(
-    currentConfirmation?.txParams?.gas as string,
-  ).toString();
-  const [value, setValue] = useState(initialGasLimit);
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [state, setState] = useState<{
+    error: string | undefined;
+    sourceGasLimit: Hex | undefined;
+    value: string;
+  }>(() => ({
+    error: undefined,
+    sourceGasLimit: gasLimit,
+    value: gasLimit ? hexToDecimal(gasLimit).toString() : '',
+  }));
+  const gasLimitChanged = state.sourceGasLimit !== gasLimit;
+  let { value } = state;
+  if (gasLimitChanged) {
+    value = gasLimit ? hexToDecimal(gasLimit).toString() : '';
+  }
+  const error = gasLimitChanged ? undefined : state.error;
 
   const validateGasCallback = useCallback(
     (valueToBeValidated: string): string | undefined => {
-      const validationError = validateGas(valueToBeValidated, t);
-      setError(validationError);
-      return validationError;
+      return validateGas(valueToBeValidated, t);
     },
     [t],
   );
@@ -41,13 +47,17 @@ export const GasInput = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
       const validationError = validateGasCallback(newValue);
-      setValue(newValue);
+      setState({
+        error: validationError,
+        sourceGasLimit: gasLimit,
+        value: newValue,
+      });
       if (!validationError) {
         const updatedGasLimitHex = add0x(decimalToHex(newValue)) as Hex;
         onChange(updatedGasLimitHex);
       }
     },
-    [onChange, validateGasCallback],
+    [gasLimit, onChange, validateGasCallback],
   );
 
   useEffect(() => {
