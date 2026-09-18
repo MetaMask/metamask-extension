@@ -70,8 +70,9 @@ export type WriteRetryRecoveredEvent = {
 
 export type SplitStateWriteEvent = {
   /**
-   * Per-controller size estimates from `JSON.stringify(value).length`.
-   * Not exact storage byte counts.
+   * Per-controller size measurements. Exact storage bytes when
+   * {@link sizeMeasurementSource} is `storage_get_bytes_in_use`; otherwise
+   * estimates from `JSON.stringify(value).length`.
    */
   bytesByController: Record<string, number>;
   coalescedUpdates: number;
@@ -79,9 +80,11 @@ export type SplitStateWriteEvent = {
   idleStatus: 'active' | 'idle' | 'unknown';
   measurementDurationMs: number;
   sampleRate: number;
+  sizeMeasurementSource:
+    | 'storage_get_bytes_in_use'
+    | 'json_string_length_estimate';
   /**
-   * Sum of {@link bytesByController} values. Approximate write size, not exact
-   * encoded payload bytes.
+   * Sum of {@link bytesByController} values.
    */
   totalBytes: number;
   writeDurationMs: number;
@@ -777,34 +780,71 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#pendingUpdateCount += 1;
   }
 
-  #recordSplitStateWrite(
+  async #getSplitStateWriteSizes(
     pairs: Map<string, unknown>,
-    coalescedUpdates: number,
-    writeDurationMs: number,
-  ): void {
-    const sampleRate = this.#getPersistenceWriteSampleRate();
-    if (sampleRate <= 0 || this.#random() >= sampleRate) {
-      return;
+    controllerKeys: string[],
+  ): Promise<{
+    bytesByController: Record<string, number>;
+    sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'];
+    totalBytes: number;
+  }> {
+    try {
+      const bytesByController =
+        await this.#localStore.getBytesInUseByKey?.(controllerKeys);
+      if (bytesByController) {
+        return {
+          bytesByController,
+          sizeMeasurementSource: 'storage_get_bytes_in_use',
+          totalBytes: Object.values(bytesByController).reduce(
+            (total, bytes) => total + bytes,
+            0,
+          ),
+        };
+      }
+    } catch {
+      // Fall back to a synchronous estimate when exact storage bytes are
+      // unavailable or fail. Telemetry must not fail a successful write.
     }
 
-    const measurementStartedAt = performance.now();
     const bytesByController: Record<string, number> = {};
-    const controllerKeys: string[] = [];
     let totalBytes = 0;
-
-    for (const [key, value] of pairs) {
-      if (key === 'data' || key === 'manifest' || key === 'meta') {
-        continue;
-      }
-
+    for (const key of controllerKeys) {
+      const value = pairs.get(key);
       // Cheap size estimate for telemetry: `JSON.stringify` string length
       // (UTF-16 code units), not UTF-8 byte length via `TextEncoder`.
       const serializedValue = JSON.stringify(value);
       const serializedLength =
         serializedValue === undefined ? 0 : serializedValue.length;
       bytesByController[key] = serializedLength;
-      controllerKeys.push(key);
       totalBytes += serializedLength;
+    }
+
+    return {
+      bytesByController,
+      sizeMeasurementSource: 'json_string_length_estimate',
+      totalBytes,
+    };
+  }
+
+  async #recordSplitStateWrite(
+    pairs: Map<string, unknown>,
+    coalescedUpdates: number,
+    writeDurationMs: number,
+  ): Promise<void> {
+    const sampleRate = this.#getPersistenceWriteSampleRate();
+    if (sampleRate <= 0 || this.#random() >= sampleRate) {
+      return;
+    }
+
+    const measurementStartedAt = performance.now();
+    const controllerKeys: string[] = [];
+
+    for (const key of pairs.keys()) {
+      if (key === 'data' || key === 'manifest' || key === 'meta') {
+        continue;
+      }
+
+      controllerKeys.push(key);
     }
 
     if (controllerKeys.length === 0) {
@@ -812,10 +852,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
 
     controllerKeys.sort((leftKey, rightKey) => leftKey.localeCompare(rightKey));
-    const sortedBytesByController: Record<string, number> = {};
-    for (const key of controllerKeys) {
-      sortedBytesByController[key] = bytesByController[key];
-    }
+    const { bytesByController, sizeMeasurementSource, totalBytes } =
+      await this.#getSplitStateWriteSizes(pairs, controllerKeys);
 
     const isIdle = this.#getIsIdle();
     let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
@@ -826,12 +864,13 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
 
     this.emit('splitStateWrite', {
-      bytesByController: sortedBytesByController,
+      bytesByController,
       coalescedUpdates,
       controllerKeys,
       idleStatus,
       measurementDurationMs: performance.now() - measurementStartedAt,
       sampleRate,
+      sizeMeasurementSource,
       totalBytes,
       writeDurationMs,
     });
@@ -906,7 +945,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           try {
             // Telemetry must not treat a successful write as a failure.
-            this.#recordSplitStateWrite(
+            await this.#recordSplitStateWrite(
               clone,
               coalescedUpdates,
               writeDurationMs,

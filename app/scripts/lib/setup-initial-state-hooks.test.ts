@@ -234,6 +234,7 @@ describe('setup-initial-state-hooks', () => {
         idleStatus: 'unknown',
         measurementDurationMs: 0.2,
         sampleRate: 0,
+        sizeMeasurementSource: 'json_string_length_estimate',
         totalBytes: 31,
         writeDurationMs: 4,
       };
