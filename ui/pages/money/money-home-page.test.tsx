@@ -147,6 +147,11 @@ jest.mock('../../helpers/money/report-money-error', () => ({
   reportMoneyError: jest.fn(),
 }));
 
+const getActionButtons = () =>
+  screen
+    .getAllByRole('button')
+    .filter((button) => !button.hasAttribute('interestfor'));
+
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -280,7 +285,7 @@ describe('MoneyHomePage', () => {
       messages.moneyLearnMore.message,
       messages.moneyMoreOptions.message,
     ];
-    screen.getAllByRole('button').forEach((button) => {
+    getActionButtons().forEach((button) => {
       if (
         activeLabels.includes(
           button.textContent || (button.getAttribute('aria-label') ?? ''),
@@ -573,7 +578,7 @@ describe('MoneyHomePage', () => {
         name: messages.moneyHowYourMoneyGrows.message,
       }),
     ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
-    screen.getAllByRole('button').forEach((button) => {
+    getActionButtons().forEach((button) => {
       if (
         [
           messages.moneyAdd.message,
