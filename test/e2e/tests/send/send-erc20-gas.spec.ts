@@ -300,7 +300,7 @@ describe('Send ERC20 - Gas Customization', function () {
         .always()
         .thenJson(200, {
           fullSupport: [],
-          partialSupport: { balances: [] },
+          partialSupport: [],
         }),
       // Browse list on the token management page. Without this the catch-all
       // answers with an empty body, which `browseTokens` fails to parse.
