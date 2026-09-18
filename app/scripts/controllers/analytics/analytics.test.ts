@@ -380,12 +380,19 @@ describe('analytics', () => {
       expect(analyticsControllerState.consentDecisionMade).toBe(false);
     });
 
-    it('does not nullify the analyticsId when set to false', async () => {
+    it('preserves the analyticsId when opting out and back in', async () => {
       const { analyticsControllerState } = createConfiguredMessenger();
 
-      const analyticsId = await setParticipateInMetaMetrics(false);
+      const analyticsIdAfterOptOut = await setParticipateInMetaMetrics(false);
 
-      expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(analyticsIdAfterOptOut).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(analyticsControllerState.analyticsId).toStrictEqual(
+        TEST_ANALYTICS_ID,
+      );
+
+      const analyticsIdAfterOptIn = await setParticipateInMetaMetrics(true);
+
+      expect(analyticsIdAfterOptIn).toStrictEqual(TEST_ANALYTICS_ID);
       expect(analyticsControllerState.analyticsId).toStrictEqual(
         TEST_ANALYTICS_ID,
       );
