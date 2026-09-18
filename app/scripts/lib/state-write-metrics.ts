@@ -21,6 +21,7 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
     'state.write.idle_status': event.idleStatus,
     'state.write.measurement_duration_ms': event.measurementDurationMs,
     'state.write.sample_rate': event.sampleRate,
+    'state.write.size_measurement_source': event.sizeMeasurementSource,
     'state.write.total_bytes': event.totalBytes,
     'state.write.write_duration_ms': event.writeDurationMs,
   };
