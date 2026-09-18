@@ -7171,12 +7171,13 @@ export function enableAccounts(
 export function fetchAndUpdateMetamaskNotifications(
   previewToken?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
+  return async (dispatch) => {
     try {
       const response = await submitRequestToBackground(
         'fetchAndUpdateMetamaskNotifications',
         [previewToken],
       );
+      await forceUpdateMetamaskState(dispatch);
       return response;
     } catch (error) {
       logErrorWithMessage(error);
