@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
+  assetIdsMatch,
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
@@ -9,6 +10,7 @@ import {
   getFromAmountInCurrency,
   getFromToken,
   getFromTokenBalanceInUsd,
+  getQuoteRequest,
   getIsSlippageUserOverride,
   getSlippage,
   getToToken,
@@ -43,6 +45,7 @@ export const useQuoteFetchEvents = () => {
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
+  const quoteRequest = useSelector(getQuoteRequest);
   const slippage = useSelector(getSlippage);
   const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
 
@@ -89,10 +92,28 @@ export const useQuoteFetchEvents = () => {
   // End the trace as soon as the first quote becomes available, including
   // while the controller is still streaming additional quotes.
   useEffect(() => {
-    if (firstQuoteRequestId) {
-      swapQuoteFetchTrace.finish('success');
+    if (!firstQuoteRequestId || !recommendedQuote) {
+      return;
     }
-  }, [firstQuoteRequestId]);
+
+    // A quote can arrive after the request that produced it was replaced.
+    // Ignore it when the current bridge assets identify a different request.
+    if (
+      quoteRequest?.srcTokenAmount !== undefined &&
+      (!assetIdsMatch(
+        fromToken?.assetId,
+        recommendedQuote.quote.src.asset.assetId,
+      ) ||
+        !assetIdsMatch(
+          toToken?.assetId,
+          recommendedQuote.quote.dest.asset.assetId,
+        ))
+    ) {
+      return;
+    }
+
+    swapQuoteFetchTrace.finish('success');
+  }, [firstQuoteRequestId, fromToken, recommendedQuote, quoteRequest, toToken]);
 
   useEffect(() => {
     if (!quoteFetchError && quoteStreamComplete?.hasQuotes === false) {

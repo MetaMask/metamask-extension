@@ -15,7 +15,6 @@ import {
 } from '@metamask/bridge-controller';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -90,10 +89,6 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getCurrencySymbol } from '../../../helpers/utils/common.util';
 import { useSourceInputAmount } from '../../../hooks/bridge/useSourceInputAmount';
 import { swapQuoteFetchTrace } from '../utils/swap-quote-fetch-trace';
-import {
-  startSwapViewLoadTrace,
-  useBridgeNavigation,
-} from '../../../hooks/bridge/useBridgeNavigation';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -102,30 +97,15 @@ import { BridgeAlertBannerList } from './components/bridge-alert-banner-list';
 
 const PrepareBridgePage = ({
   onOpenSettings,
+  swapViewTrace = { id: '', prefilledAmount: false },
 }: {
   onOpenSettings: () => void;
+  swapViewTrace?: {
+    id: string;
+    prefilledAmount: boolean;
+  };
 }) => {
   const dispatch = useDispatch();
-  const { search, swapViewTraceId, swapViewPrefilledAmount } =
-    useBridgeNavigation();
-  const [swapViewTrace] = useState(() => {
-    if (swapViewTraceId) {
-      return {
-        id: swapViewTraceId,
-        prefilledAmount: Boolean(swapViewPrefilledAmount),
-      };
-    }
-
-    const searchParams = new URLSearchParams(search);
-    return {
-      id: startSwapViewLoadTrace({
-        token: null,
-        search: searchParams,
-        entryPoint: 'deeplink',
-      }),
-      prefilledAmount: Boolean(searchParams.get(BridgeQueryParams.Amount)),
-    };
-  });
 
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
@@ -434,7 +414,6 @@ const PrepareBridgePage = ({
     (!swapViewTrace.prefilledAmount || isQuoteSurfaceReady),
   );
   const hasCompletedPageLoadTraceRef = useRef(false);
-  const isPageLoadTraceMountedRef = useRef(false);
 
   useEffect(() => {
     if (
@@ -461,34 +440,13 @@ const PrepareBridgePage = ({
     hasCompletedPageLoadTraceRef.current = true;
   }, [fromToken, fromTokenBalance, isPageLoadReady, swapViewTrace.id, toToken]);
 
-  useEffect(() => {
-    isPageLoadTraceMountedRef.current = true;
-
-    return () => {
-      isPageLoadTraceMountedRef.current = false;
-      // Defer cancellation so React StrictMode's setup/cleanup/setup probe is
-      // not mistaken for the user leaving the page.
-      queueMicrotask(() => {
-        if (isPageLoadTraceMountedRef.current) {
-          return;
-        }
-
-        if (!hasCompletedPageLoadTraceRef.current) {
-          endTrace({
-            name: TraceName.SwapViewLoaded,
-            id: swapViewTrace.id,
-            timestamp: Date.now(),
-            data: { result: 'cancelled' },
-          });
-          hasCompletedPageLoadTraceRef.current = true;
-        }
-      });
-
+  useEffect(
+    () => () => {
       // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
       debouncedUpdateQuoteRequestInController.current.cancel();
-      swapQuoteFetchTrace.finish('cancelled');
-    };
-  }, [swapViewTrace.id]);
+    },
+    [],
+  );
 
   const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
   const [blockExplorerToken, setBlockExplorerToken] =
