@@ -166,8 +166,15 @@ type RawPayTokensFlag = {
   minimumRequiredTokenBalance?: number;
 };
 
-type HardwareWalletConfig = {
+export type PayHardwareConfig = {
   enabled?: boolean;
+};
+
+type RawPayHardwareFlag = {
+  /** Legacy flat shape; applies to every transaction type. */
+  enabled?: boolean;
+  default?: PayHardwareConfig;
+  overrides?: Record<string, PayHardwareConfig>;
 };
 
 const selectConfirmationsPayDappsFlag = createSelector(
@@ -217,7 +224,7 @@ const selectPayHardwareFlag = createSelector(
   (flags) =>
     (
       flags as unknown as {
-        confirmations_pay_hardware?: HardwareWalletConfig;
+        confirmations_pay_hardware?: RawPayHardwareFlag;
       }
     ).confirmations_pay_hardware,
   /* eslint-enable @typescript-eslint/naming-convention */
@@ -350,9 +357,37 @@ export const selectEnforcedSimulationsSlippage = createSelector(
     getEnforcedSimulationsSlippage({ remoteFeatureFlags }),
 );
 
+/**
+ * Resolves whether hardware wallets may pay for a transaction type from
+ * `confirmations_pay_hardware`. Supports the per-type `default` / `overrides`
+ * shape used by the other confirmations pay flags; the legacy flat
+ * `{ enabled }` shape applies as the default for every type.
+ *
+ * @param _state
+ * @param transactionType
+ */
+export const selectPayHardwareConfig = createSelector(
+  [
+    selectPayHardwareFlag,
+    (_state, transactionType?: string) => transactionType,
+  ],
+  (flag, transactionType): PayHardwareConfig => {
+    const defaultEnabled = flag?.default?.enabled ?? flag?.enabled ?? false;
+    const override = transactionType
+      ? flag?.overrides?.[transactionType]
+      : undefined;
+
+    return { enabled: override?.enabled ?? defaultEnabled };
+  },
+);
+
+/**
+ * @param _state
+ * @param transactionType - Pay transaction type; omit for the default.
+ */
 export const selectIsPayHardwareEnabled = createSelector(
-  selectPayHardwareFlag,
-  (flag): boolean => flag?.enabled ?? false,
+  [selectPayHardwareConfig],
+  (config): boolean => config.enabled === true,
 );
 
 type PayExtendedFlag = {
