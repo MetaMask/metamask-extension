@@ -73,12 +73,15 @@ fi
 # Step 3: Extract source code
 log_info "Extracting source code..."
 unzip -q source.zip
-SOURCE_DIR="metamask-extension-${VERSION}"
-if [ ! -d "${SOURCE_DIR}" ]; then
-    log_error "Source directory ${SOURCE_DIR} not found after extraction"
+EXTRACT_DIR="metamask-extension-${VERSION}"
+if [ ! -d "${EXTRACT_DIR}" ]; then
+    log_error "Source directory ${SOURCE_EXTRACT_DIRDIR} not found after extraction"
     exit 1
 fi
-log_success "Source code extracted to ${SOURCE_DIR}"
+log_success "Source code extracted to ${EXTRACT_DIR}"
+
+SOURCE_DIR="${SCRIPT_DIR}/../../../../../clone-metamask-extension"
+mv "${EXTRACT_DIR}" "${SOURCE_DIR}"
 
 # Step 4: Copy bundle script to source directory
 log_info "Copying bundle script to source directory..."
@@ -100,7 +103,7 @@ else
     log_error "Bundle script failed"
     exit 1
 fi
-cd ..
+cd "${WORK_DIR}"
 
 # Check if build was created
 if [ ! -d "${SOURCE_DIR}/builds" ]; then
@@ -126,7 +129,7 @@ log_success "Production build extracted"
 log_info "Extracting local build..."
 mkdir -p local_build
 cd local_build
-FIREFOX_BUILD_ZIP="../../${SOURCE_DIR}/builds/${PRODUCTION_BUILD_FILE}"
+FIREFOX_BUILD_ZIP="${SOURCE_DIR}/builds/${PRODUCTION_BUILD_FILE}"
 if [ ! -f "${FIREFOX_BUILD_ZIP}" ]; then
     log_error "Could not find Firefox build zip at ${FIREFOX_BUILD_ZIP}"
     exit 1
