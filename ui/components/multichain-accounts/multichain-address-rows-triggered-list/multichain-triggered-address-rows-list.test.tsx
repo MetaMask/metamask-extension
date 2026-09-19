@@ -18,7 +18,49 @@ import {
 import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { installInterestForPolyfill } from '../../../../shared/lib/polyfills/interestfor';
 import { MultichainTriggeredAddressRowsList } from './multichain-triggered-address-rows-list';
+
+// jsdom has no Popover API or interestfor — only this file uses native popovers.
+beforeAll(() => {
+  if (typeof HTMLElement.prototype.showPopover !== 'function') {
+    HTMLElement.prototype.showPopover = function showPopover() {
+      this.setAttribute('data-popover-open', 'true');
+    };
+    HTMLElement.prototype.hidePopover = function hidePopover() {
+      this.removeAttribute('data-popover-open');
+    };
+    HTMLElement.prototype.togglePopover = function togglePopover(force) {
+      if (
+        force === true ||
+        (force !== false && !this.hasAttribute('data-popover-open'))
+      ) {
+        this.showPopover();
+        return;
+      }
+      this.hidePopover();
+    };
+  }
+
+  installInterestForPolyfill();
+
+  document.body.addEventListener(
+    'click',
+    (event) => {
+      const invoker = (event.target as Element | null)?.closest?.(
+        '[commandfor][command="toggle-popover"]',
+      );
+      if (!invoker) {
+        return;
+      }
+
+      const targetId = invoker.getAttribute('commandfor');
+      const target = targetId ? document.getElementById(targetId) : null;
+      target?.togglePopover?.();
+    },
+    { capture: true },
+  );
+});
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -860,87 +902,34 @@ describe('MultichainTriggeredAddressRowsList', () => {
       ).toBeInTheDocument();
     });
 
-    it('hides address list on mouse leave with delay', async () => {
-      jest.useFakeTimers();
+    it('hides address list on mouse leave', () => {
       renderComponent();
 
       const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      const trigger = triggerElement.parentElement as HTMLElement;
 
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-
-      await act(async () => {
-        jest.advanceTimersByTime(500);
-      });
-
+      fireEvent.mouseEnter(trigger);
       expectPopoverOpen();
 
-      fireEvent.mouseLeave(triggerElement.parentElement as HTMLElement);
-
-      expectPopoverOpen();
-
-      await act(async () => {
-        jest.advanceTimersByTime(250);
-      });
-
+      fireEvent.mouseLeave(trigger);
       expectPopoverClosed();
-
-      jest.useRealTimers();
     });
 
-    it('keeps popover open when hovering over it', async () => {
-      jest.useFakeTimers();
+    it('keeps popover open when hovering over it', () => {
       renderComponent();
 
       const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      const trigger = triggerElement.parentElement as HTMLElement;
 
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-
-      await act(async () => {
-        jest.advanceTimersByTime(500);
-      });
-
-      fireEvent.mouseLeave(triggerElement.parentElement as HTMLElement);
-
-      const popoverContent = getPopoverList() as HTMLElement;
-      fireEvent.mouseEnter(popoverContent);
-
-      await act(async () => {
-        jest.advanceTimersByTime(250);
-      });
-
+      fireEvent.mouseEnter(trigger);
       expectPopoverOpen();
 
-      jest.useRealTimers();
-    });
+      const popover = getPopoverList()?.closest('[popover]') as HTMLElement;
+      fireEvent.mouseOut(trigger, { relatedTarget: popover });
+      expectPopoverOpen();
 
-    it('applies hover styles to trigger element', async () => {
-      jest.useFakeTimers();
-      renderComponent();
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      const containerElement = triggerElement.parentElement as HTMLElement;
-
+      fireEvent.mouseOut(popover, { relatedTarget: document.body });
       expectPopoverClosed();
-
-      fireEvent.mouseEnter(containerElement);
-
-      await act(async () => {
-        jest.advanceTimersByTime(500);
-      });
-
-      expectPopoverOpen();
-
-      fireEvent.mouseLeave(containerElement);
-
-      expectPopoverOpen();
-
-      await act(async () => {
-        jest.advanceTimersByTime(250);
-      });
-
-      expectPopoverClosed();
-
-      jest.useRealTimers();
     });
   });
 
@@ -1012,21 +1001,14 @@ describe('MultichainTriggeredAddressRowsList', () => {
       });
     });
 
-    it('does not show address list on hover when triggerMode is click', async () => {
-      jest.useFakeTimers();
+    it('does not show address list on hover when triggerMode is click', () => {
       renderComponent(GROUP_ID_MOCK, undefined, undefined, undefined, 'click');
 
       const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
 
       fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
 
-      await act(async () => {
-        jest.advanceTimersByTime(500);
-      });
-
       expectPopoverClosed();
-
-      jest.useRealTimers();
     });
 
     it('toggles address list visibility on subsequent clicks', async () => {
