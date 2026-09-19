@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import { isMusdOnMoneyAccountChain } from '@metamask/money-account-utils';
 import type { Hex } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { isMusdToken } from '../../components/app/musd/constants';
 import type { MoneyAccountDepositIntent } from './deposit-intent';
 
@@ -78,11 +79,19 @@ export const isMoneyAccountChildTx = (
   transactionMeta: TransactionMeta,
   transactions: TransactionMeta[],
 ): boolean =>
-  transactions.some(
-    (tx) =>
-      tx.requiredTransactionIds?.includes(transactionMeta.id) &&
-      isMoneyAccountTx(tx),
-  );
+  transactions.some((tx) => {
+    if (!isMoneyAccountTx(tx)) {
+      return false;
+    }
+    if (tx.requiredTransactionIds?.includes(transactionMeta.id)) {
+      return true;
+    }
+    return (
+      tx.batchId !== undefined &&
+      transactionMeta.batchId !== undefined &&
+      isEqualCaseInsensitive(tx.batchId, transactionMeta.batchId)
+    );
+  });
 
 /**
  * Perps/Predict deposit parent types (money → service). When funded from the
