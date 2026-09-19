@@ -401,6 +401,36 @@ describe('useTransactionEventToasts', () => {
       expect(mockShowPendingToast).not.toHaveBeenCalled();
     });
 
+    it('does not toast pay funding txs linked only by batchId', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'money-deposit',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.moneyAccountDeposit },
+              ],
+              batchId: 'pay-batch-1',
+            }),
+          ],
+        },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'relay-submitted',
+          status: TransactionStatus.submitted,
+          type: TransactionType.relayDeposit,
+          batchId: 'pay-batch-1',
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
     it('still toasts relay deposits that fund other transactions', () => {
       mockGetState.mockReturnValue({
         metamask: {
