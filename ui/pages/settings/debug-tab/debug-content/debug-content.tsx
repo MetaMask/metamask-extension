@@ -37,6 +37,7 @@ import ToggleRow from './toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
 import MigrateToSplitStateTest from './migrate-to-split-state-test';
+import { InterestforDemo } from './interestfor-demo';
 
 const PAGE_CRASH_ERROR_MESSAGE =
   'Unable to find value of key "debug" for locale "en"';
@@ -267,6 +268,8 @@ const DebugContent = () => {
 
       <BackupAndSyncDevSettings />
       <SentryTest triggerPageCrash={triggerPageCrash} />
+      <hr />
+      <InterestforDemo />
       <hr />
       <MigrateToSplitStateTest />
       <hr />
