@@ -30,15 +30,15 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
     this.driver = driver;
 
     this.setApprovalForAllTitleElement = {
-      css: 'h2',
+      css: '[data-testid="confirm-title-text"]',
       text: tEn('setApprovalForAllRedesignedTitle'),
     };
     this.setApprovalForAllSubHeadingElement = {
-      css: 'p',
+      css: '[data-testid="confirm-title-description"]',
       text: tEn('confirmTitleDescApproveTransaction'),
     };
     this.revokeSetApprovalForAllTitleElement = {
-      css: 'h2',
+      css: '[data-testid="confirm-title-text"]',
       text: tEn('confirmTitleSetApprovalForAllRevokeTransaction'),
     };
   }

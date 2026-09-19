@@ -30,10 +30,8 @@ export default class ChangePasswordPage {
 
   private readonly newPasswordInput = '[data-testid="change-password-input"]';
 
-  private readonly passwordChangedWarning = {
-    text: 'Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password.',
-    css: 'p',
-  };
+  private readonly passwordChangedWarning =
+    '[data-testid="change-password-warning-modal"]';
 
   private readonly passwordTerms = '[data-testid="change-password-terms"]';
 

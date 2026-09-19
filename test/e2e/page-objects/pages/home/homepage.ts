@@ -68,7 +68,7 @@ class HomePage {
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
-  protected readonly buySellButton = { css: 'button', text: 'Buy' };
+  protected readonly buySellButton = '[data-testid$="-overview-buy"]';
 
   private readonly closeSurveyToastBannerButton =
     '.toast-container button[aria-label="Close"]';
@@ -121,11 +121,9 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly receiveButton = { css: 'button', text: 'Receive' };
-
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
-  protected readonly sendButton = { css: 'button', text: 'Send' };
+  protected readonly sendButton = '[data-testid$="-overview-send"]';
 
   private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
 
@@ -148,7 +146,7 @@ class HomePage {
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
-  protected readonly swapButton = { css: 'button', text: 'Swap' };
+  protected readonly swapButton = '[data-testid$="-overview-swap"]';
 
   // The generic toaster close button has no data-testid (ButtonIcon only sets
   // aria-label), so this selector is shared by every toast.
@@ -484,8 +482,39 @@ class HomePage {
   }
 
   async clickOnReceiveButton(): Promise<void> {
-    await this.driver.waitForSelector(this.receiveButton);
-    await this.driver.clickElement(this.receiveButton);
+    const receiveOnRow = '[data-testid$="-overview-receive"]';
+    const moreButton = '[data-testid$="-overview-more"]';
+    const receiveInMore = '[data-testid$="-overview-more-receive"]';
+    const singleActionButton = '[data-testid$="-overview-default"]';
+    const receiveEntryPoints = `${receiveOnRow}, ${singleActionButton}, ${moreButton}`;
+    const receiveInMenu = `${receiveInMore}, ${receiveOnRow}`;
+    const actionProbeTimeoutMs = 250;
+
+    await this.driver.waitForSelector(receiveEntryPoints);
+
+    if (
+      await this.driver.isElementPresentAndVisible(
+        receiveOnRow,
+        actionProbeTimeoutMs,
+      )
+    ) {
+      await this.driver.clickElement(receiveOnRow);
+      return;
+    }
+
+    if (
+      await this.driver.isElementPresentAndVisible(
+        singleActionButton,
+        actionProbeTimeoutMs,
+      )
+    ) {
+      await this.driver.clickElement(singleActionButton);
+      return;
+    }
+
+    await this.driver.clickElement(moreButton);
+    await this.driver.waitForSelector(receiveInMenu);
+    await this.driver.clickElement(receiveInMenu);
   }
 
   async clickOnSendButton(): Promise<void> {
