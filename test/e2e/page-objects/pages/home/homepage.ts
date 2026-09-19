@@ -121,8 +121,6 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly receiveButton = '[data-testid$="-overview-receive"]';
-
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
   protected readonly sendButton = '[data-testid$="-overview-send"]';
