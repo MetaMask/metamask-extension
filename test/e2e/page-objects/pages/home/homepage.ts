@@ -486,32 +486,25 @@ class HomePage {
     const moreButton = '[data-testid$="-overview-more"]';
     const receiveInMore = '[data-testid$="-overview-more-receive"]';
     const singleActionButton = '[data-testid$="-overview-default"]';
+    const receiveEntryPoints = `${receiveOnRow}, ${singleActionButton}, ${moreButton}`;
 
-    const receiveVisible = await this.driver.isElementPresentAndVisible(
-      receiveOnRow,
-      250,
-    );
-    if (receiveVisible) {
+    await this.driver.waitForSelector(receiveEntryPoints);
+
+    if (await this.driver.isElementPresentAndVisible(receiveOnRow)) {
       await this.driver.clickElement(receiveOnRow);
       return;
     }
 
-    const defaultActionVisible = await this.driver.isElementPresentAndVisible(
-      singleActionButton,
-      250,
-    );
-    if (defaultActionVisible) {
+    if (await this.driver.isElementPresentAndVisible(singleActionButton)) {
       await this.driver.clickElement(singleActionButton);
       return;
     }
 
-    await this.driver.waitForSelector(moreButton);
     await this.driver.clickElement(moreButton);
+    await this.driver.waitForSelector(`${receiveInMore}, ${receiveOnRow}`);
 
-    const receiveInMoreVisible = await this.driver.isElementPresentAndVisible(
-      receiveInMore,
-      250,
-    );
+    const receiveInMoreVisible =
+      await this.driver.isElementPresentAndVisible(receiveInMore);
     await this.driver.clickElement(
       receiveInMoreVisible ? receiveInMore : receiveOnRow,
     );
