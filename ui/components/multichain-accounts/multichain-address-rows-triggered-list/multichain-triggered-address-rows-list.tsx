@@ -1,10 +1,4 @@
-import React, {
-  useMemo,
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-} from 'react';
+import React, { useMemo, useCallback, useId } from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -22,7 +16,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
@@ -64,10 +57,6 @@ export type MultichainAddressRowsListProps = {
    * Whether to show the account header and balance.
    */
   showAccountHeaderAndBalance?: boolean;
-  /**
-   * The delay of the hover.
-   */
-  hoverCloseDelay?: number;
   /**
    * Optional callback triggered when the "View All" button is clicked,
    * before navigation occurs. Useful for analytics or tracing.
@@ -131,7 +120,6 @@ const ViewAllButton = ({
 export const MultichainTriggeredAddressRowsList = ({
   children,
   groupId,
-  hoverCloseDelay = 50,
   showAccountHeaderAndBalance = true,
   onViewAllClick,
   showViewAllButton = true,
@@ -139,19 +127,11 @@ export const MultichainTriggeredAddressRowsList = ({
   triggerMode = 'hover',
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
+  const popoverId = useId().replace(/:/gu, '');
 
   // useCopyToClipboard analysis: Copies one of your public addresses
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
-    null,
-  );
-  const [dynamicPosition, setDynamicPosition] = useState<PopoverPosition>(
-    PopoverPosition.BottomStart,
-  );
 
   const allAccountGroups = useSelector(getAllAccountGroups);
   const allBalances = useSelector(selectBalanceForAllWallets);
@@ -179,72 +159,15 @@ export const MultichainTriggeredAddressRowsList = ({
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
   );
 
-  // Calculate whether popover should show above or below
-  const calculatePopoverPosition = useCallback(() => {
-    if (!referenceElement) {
-      return PopoverPosition.BottomStart;
-    }
-
-    const rect = referenceElement.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const popoverEstimatedHeight = POPOVER_CONTENT_MAX_HEIGHT; // Based on the maxHeight set on the popover content
-    const spaceBelow = viewportHeight - rect.bottom;
-
-    // If there's not enough space below, use TopStart
-    if (spaceBelow < popoverEstimatedHeight) {
-      return PopoverPosition.TopStart;
-    }
-
-    // Default to BottomStart
-    return PopoverPosition.BottomStart;
-  }, [referenceElement]);
-
-  const handleMouseEnter = useCallback(() => {
-    if (triggerMode !== 'hover') {
-      return;
-    }
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
-    setDynamicPosition(calculatePopoverPosition());
-    setIsOpen(true);
-  }, [calculatePopoverPosition, triggerMode]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (triggerMode !== 'hover') {
-      return;
-    }
-    hoverTimeoutRef.current = setTimeout(() => {
-      setIsOpen(false);
-    }, hoverCloseDelay);
-  }, [hoverCloseDelay, triggerMode]);
-
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       if (triggerMode !== 'click') {
         return;
       }
       e.stopPropagation();
-      setDynamicPosition(calculatePopoverPosition());
-      setIsOpen((prev) => !prev);
     },
-    [calculatePopoverPosition, triggerMode],
+    [triggerMode],
   );
-
-  const handlePopoverClose = useCallback(() => {
-    if (triggerMode === 'click') {
-      setIsOpen(false);
-    }
-  }, [triggerMode]);
-
-  useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const sortByPriorityNetworks = useCallback(
     (items: typeof getAccountsSpreadByNetworkByGroupId) => {
@@ -383,31 +306,29 @@ export const MultichainTriggeredAddressRowsList = ({
 
   return (
     <>
-      <Box
-        ref={setReferenceElement}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+      <button
+        type="button"
+        className="border-0 bg-transparent p-0 text-inherit"
+        {...(triggerMode === 'click' && {
+          commandfor: popoverId,
+          command: 'toggle-popover',
+        })}
+        {...(triggerMode === 'hover' && {
+          interestfor: popoverId,
+        })}
         onClick={handleClick}
       >
         {children}
-      </Box>
-      <Popover
-        referenceElement={referenceElement}
-        isOpen={isOpen}
-        position={dynamicPosition}
-        hasArrow={true}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClickOutside={handlePopoverClose}
-        preventOverflow
-        isPortal={true}
-        offset={[0, 3]}
-        paddingInline={1}
-        paddingBottom={1}
-        paddingTop={1}
+      </button>
+      <div
+        id={popoverId}
+        popover="auto"
+        className="rounded-lg border border-border-muted bg-background-elevated2 p-2 inset-auto"
         style={{
-          zIndex: 99999,
-          minWidth: '340px',
+          width: '360px',
+          margin: '2px 0 0',
+          top: 'anchor(bottom)',
+          left: 'anchor(left)',
         }}
       >
         <Box
@@ -451,7 +372,7 @@ export const MultichainTriggeredAddressRowsList = ({
             </>
           )}
         </Box>
-      </Popover>
+      </div>
     </>
   );
 };

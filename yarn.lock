@@ -28056,6 +28056,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"interestfor@npm:1.0.8":
+  version: 1.0.8
+  resolution: "interestfor@npm:1.0.8"
+  checksum: 10/71615f566bfde6e17537603c6827d1ee233b6f83ffd1e99d70a9094a323f0b81fc80383dc969044bf96c55e394995327ffb66cb35041a366862a745ec58390c5
+  languageName: node
+  linkType: hard
+
 "internal-ip@npm:^6.2.0":
   version: 6.2.0
   resolution: "internal-ip@npm:6.2.0"
@@ -32009,6 +32016,7 @@ __metadata:
     humanize-duration: "npm:^3.32.1"
     husky: "npm:^8.0.3"
     immer: "npm:^9.0.6"
+    interestfor: "npm:1.0.8"
     ip-regex: "npm:^4.3.0"
     jest: "npm:^29.7.0"
     jest-canvas-mock: "npm:^2.3.1"

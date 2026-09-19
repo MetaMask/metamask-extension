@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -463,28 +463,12 @@ describe('MultichainTriggeredAddressRowsList', () => {
   it('renders the component with aggregated rows', async () => {
     renderComponent();
 
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
-
     const addressRows = screen.getAllByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
     expect(addressRows.length).toBeGreaterThan(0);
   });
 
   it('groups all eip155 scopes together', async () => {
     renderComponent();
-
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
 
     const evmRow = screen
       .getByText(TEST_STRINGS.EVM_NETWORKS)
@@ -499,14 +483,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
   it('displays separate rows for non-eip155 accounts', async () => {
     renderComponent();
 
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
-
     expect(screen.getByText(TEST_STRINGS.BITCOIN_NETWORK)).toBeInTheDocument();
     expect(screen.getByText(TEST_STRINGS.SOLANA_NETWORK)).toBeInTheDocument();
     expect(screen.getByText(TEST_STRINGS.TRON_NETWORK)).toBeInTheDocument();
@@ -514,14 +490,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
   it('applies priority sorting with grouped eip155 first', async () => {
     renderComponent();
-
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
 
     const addressRows = screen.getAllByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
     const rowTexts = addressRows.map((row) => row.textContent);
@@ -534,14 +502,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
   it('handles copy functionality for aggregated rows', async () => {
     renderComponent();
-
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
 
     const evmRow = screen
       .getByText(TEST_STRINGS.EVM_NETWORKS)
@@ -561,14 +521,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
   it('displays truncated addresses', async () => {
     renderComponent();
 
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
-
     const addressElements = screen.getAllByText(/0x\w+\.\.\.\w+/u);
     expect(addressElements.length).toBeGreaterThan(0);
   });
@@ -577,14 +529,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
     mockedGetInternalAccountListSpreadByScopesByGroupId.mockReturnValue([]);
     renderComponent('invalid-group-id' as AccountGroupId);
 
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
-
     expect(
       screen.queryAllByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW),
     ).toHaveLength(0);
@@ -592,14 +536,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
   it('groups eip155 scopes together for each account', async () => {
     renderComponent();
-
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
 
     const evmRow = screen
       .getByText(TEST_STRINGS.EVM_NETWORKS)
@@ -617,14 +553,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
   it('respects priority order when multiple accounts have priority chains', async () => {
     renderComponent();
-
-    const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-    fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-    });
 
     const addressRows = screen.getAllByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
 
@@ -666,14 +594,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
     it('copies address when clicking copy button', async () => {
       renderComponent();
 
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
       const evmRow = screen
         .getByText(TEST_STRINGS.EVM_NETWORKS)
         .closest(`[data-testid="${TEST_IDS.MULTICHAIN_ADDRESS_ROW}"]`);
@@ -692,14 +612,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
     it('copies address when clicking on the row (not button)', async () => {
       renderComponent();
 
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
       const networkNameElement = screen.getByText(TEST_STRINGS.EVM_NETWORKS);
 
       fireEvent.click(networkNameElement);
@@ -715,14 +627,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
     it('renders the View All button', async () => {
       renderComponent();
 
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
       const viewAllButton = screen.getByTestId(
         'multichain-address-rows-view-all-button',
       );
@@ -731,14 +635,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
     it('navigates to the correct route when clicked', async () => {
       renderComponent();
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
 
       const viewAllButton = screen.getByTestId(
         'multichain-address-rows-view-all-button',
@@ -773,14 +669,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
 
       renderComponent(SPECIAL_GROUP_ID);
 
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
       const viewAllButton = screen.getByTestId(
         'multichain-address-rows-view-all-button',
       );
@@ -795,14 +683,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
     it('calls onViewAllClick callback before navigation', async () => {
       const mockOnViewAllClick = jest.fn();
       renderComponent(GROUP_ID_MOCK, mockOnViewAllClick);
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
 
       const viewAllButton = screen.getByTestId(
         'multichain-address-rows-view-all-button',
@@ -819,14 +699,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
     it('does not render the button when showViewAllButton is false', async () => {
       renderComponent(GROUP_ID_MOCK, undefined, false);
 
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
       expect(
         screen.queryByTestId(TEST_IDS.VIEW_ALL_BUTTON),
       ).not.toBeInTheDocument();
@@ -840,167 +712,11 @@ describe('MultichainTriggeredAddressRowsList', () => {
       expect(screen.getByTestId(TEST_IDS.HOVER_TRIGGER)).toBeInTheDocument();
       expect(screen.getByText('Hover Me')).toBeInTheDocument();
     });
-
-    it('shows address list on hover', async () => {
-      renderComponent();
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-
-      // Initially, the address list should not be visible
-      expect(
-        screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).not.toBeInTheDocument();
-
-      // Hover over the trigger element
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-
-      // Wait for the popover to appear
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
-      // Verify content is displayed
-      expect(screen.getByText(TEST_STRINGS.EVM_NETWORKS)).toBeInTheDocument();
-      expect(
-        screen.getByText(TEST_STRINGS.BITCOIN_NETWORK),
-      ).toBeInTheDocument();
-    });
-
-    it('hides address list on mouse leave with delay', async () => {
-      jest.useFakeTimers();
-      renderComponent();
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-
-      // Show the popover
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
-      // Leave hover
-      fireEvent.mouseLeave(triggerElement.parentElement as HTMLElement);
-
-      // Popover should still be visible immediately after mouse leave
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-
-      // Fast forward timers to trigger the hide
-      await act(async () => {
-        jest.advanceTimersByTime(300);
-      });
-
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).not.toBeInTheDocument();
-      });
-
-      jest.useRealTimers();
-    });
-
-    it('keeps popover open when hovering over it', async () => {
-      jest.useFakeTimers();
-      renderComponent();
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-
-      // Show the popover
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
-      // Leave trigger element
-      fireEvent.mouseLeave(triggerElement.parentElement as HTMLElement);
-
-      // Immediately hover over the popover
-      const popoverContent = screen.getByTestId(
-        TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST,
-      );
-      fireEvent.mouseEnter(popoverContent);
-
-      // Fast forward timers
-      await act(async () => {
-        jest.advanceTimersByTime(300);
-      });
-
-      // Popover should still be visible
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-
-      jest.useRealTimers();
-    });
-
-    it('applies hover styles to trigger element', async () => {
-      jest.useFakeTimers();
-      renderComponent();
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      const containerElement = triggerElement.parentElement as HTMLElement;
-
-      // Initially the popover should not be visible
-      expect(
-        screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).not.toBeInTheDocument();
-
-      // Hover over the trigger
-      fireEvent.mouseEnter(containerElement);
-
-      // Wait for popover to appear, which indicates hover state is active
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
-      // The component should have the hover state active
-      // Since we can't directly check the inline styles in test environment,
-      // we verify the behavior by checking that the popover is visible
-
-      // Leave hover
-      fireEvent.mouseLeave(containerElement);
-
-      // Popover should still be visible immediately after mouse leave
-      expect(
-        screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).toBeInTheDocument();
-
-      // Fast forward time to trigger the hide
-      await act(async () => {
-        jest.advanceTimersByTime(300);
-      });
-
-      // Popover should be hidden after delay
-      expect(
-        screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).not.toBeInTheDocument();
-
-      jest.useRealTimers();
-    });
   });
 
   describe('Default address section', () => {
     it('renders the change-in-settings link when popover is open', async () => {
       renderComponent();
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
 
       expect(
         screen.getByTestId(TEST_IDS.CHANGE_IN_SETTINGS_LINK),
@@ -1010,14 +726,6 @@ describe('MultichainTriggeredAddressRowsList', () => {
     it('renders the show-default-address toggle when popover is open', async () => {
       renderComponent();
 
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
       expect(
         screen.getByTestId(TEST_IDS.SHOW_DEFAULT_ADDRESS_TOGGLE),
       ).toBeInTheDocument();
@@ -1026,81 +734,12 @@ describe('MultichainTriggeredAddressRowsList', () => {
     it('does not render the default address section when showDefaultAddressSection is false', async () => {
       renderComponent(GROUP_ID_MOCK, undefined, undefined, false);
 
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
       expect(
         screen.queryByTestId(TEST_IDS.CHANGE_IN_SETTINGS_LINK),
       ).not.toBeInTheDocument();
       expect(
         screen.queryByTestId(TEST_IDS.SHOW_DEFAULT_ADDRESS_TOGGLE),
       ).not.toBeInTheDocument();
-    });
-  });
-
-  describe('Click Trigger Mode', () => {
-    it('shows address list on click when triggerMode is click', async () => {
-      renderComponent(GROUP_ID_MOCK, undefined, undefined, undefined, 'click');
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-
-      expect(
-        screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).not.toBeInTheDocument();
-
-      fireEvent.click(triggerElement.parentElement as HTMLElement);
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-    });
-
-    it('does not show address list on hover when triggerMode is click', async () => {
-      jest.useFakeTimers();
-      renderComponent(GROUP_ID_MOCK, undefined, undefined, undefined, 'click');
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-
-      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
-
-      await act(async () => {
-        jest.advanceTimersByTime(100);
-      });
-
-      expect(
-        screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-      ).not.toBeInTheDocument();
-
-      jest.useRealTimers();
-    });
-
-    it('toggles address list visibility on subsequent clicks', async () => {
-      renderComponent(GROUP_ID_MOCK, undefined, undefined, undefined, 'click');
-
-      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
-
-      fireEvent.click(triggerElement.parentElement as HTMLElement);
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).toBeInTheDocument();
-      });
-
-      fireEvent.click(triggerElement.parentElement as HTMLElement);
-
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
-        ).not.toBeInTheDocument();
-      });
     });
   });
 });
