@@ -624,7 +624,6 @@ IF user specifies Chrome, Edge, or Brave:
 IF user specifies Firefox:
   → Use MV2 (Manifest V2)
   → Commands: yarn start:mv2, yarn dist:mv2, yarn build:test:mv2
-  → Set ENABLE_MV3=false
 
 IF user doesn't specify:
   → Default to Chrome MV3
@@ -895,7 +894,6 @@ yarn start:test  # Test build
 
 | Feature           | MV2 (Firefox)         | MV3 (Chrome/Chromium) |
 | ----------------- | --------------------- | --------------------- |
-| **Build Flag**    | `ENABLE_MV3=false`    | Default               |
 | **Start Command** | `yarn start:mv2`      | `yarn start`          |
 | **Dist Command**  | `yarn dist:mv2`       | `yarn dist`           |
 | **Background**    | Background page       | Service worker        |

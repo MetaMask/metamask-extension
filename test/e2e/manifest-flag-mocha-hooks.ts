@@ -14,7 +14,7 @@
  */
 import fs from 'fs';
 import { hasProperty } from '@metamask/utils';
-import { folder, getManifestVersion } from './set-manifest-flags';
+import { folder } from './set-manifest-flags';
 
 // Override console.log to support color control via boolean parameter
 // Usage: console.log("message", true) - green (default)
@@ -55,8 +55,6 @@ console.log = (...args: unknown[]) => {
     originalConsoleLog(message);
   }
 };
-
-process.env.ENABLE_MV3 = getManifestVersion() === 3 ? 'true' : 'false';
 
 // Global beforeEach hook to backup the manifest.json file
 if (typeof beforeEach === 'function' && process.env.SELENIUM_BROWSER) {

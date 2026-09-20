@@ -12,7 +12,7 @@ import {
 const mockArgs = {
   test: false,
   snow: false,
-  manifestVersion: 3,
+  browser: ['chrome'],
   type: 'main',
   lavamoatDebug: false,
   generatePolicy: false,
@@ -141,7 +141,11 @@ describe('LavamoatPlugin', () => {
     });
 
     it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
-      for (const name of ['scripts/inpage.js', 'bootstrap']) {
+      for (const name of [
+        'scripts/inpage.js',
+        'scripts/inpage-mv2.js',
+        'bootstrap',
+      ]) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(
           result.mode,

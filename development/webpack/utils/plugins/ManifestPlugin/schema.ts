@@ -11,14 +11,7 @@ type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
-  required: [
-    'browsers',
-    'description',
-    'manifest_version',
-    'version',
-    'zip',
-    'buildType',
-  ],
+  required: ['browsers', 'description', 'version', 'zip', 'buildType'],
   properties: {
     browsers: {
       description: 'The browsers to build for.',
@@ -30,6 +23,15 @@ export const schema = {
       minItems: 1,
       maxItems: Browsers.length,
       uniqueItems: true,
+    },
+    browserAssetPaths: {
+      description:
+        'Asset path prefixes that are emitted only for the specified browser.',
+      type: 'object',
+      additionalProperties: {
+        type: 'array',
+        items: { type: 'string' },
+      },
     },
     version: {
       description:
@@ -45,12 +47,6 @@ export const schema = {
       description: 'A plain text string that describes the extension.',
       type: ['string', 'null'],
       maxLength: 132,
-    },
-    manifest_version: {
-      description:
-        'An integer specifying the version of the manifest file format your package requires.',
-      type: 'number',
-      enum: [2, 3],
     },
     web_accessible_resources: {
       description:

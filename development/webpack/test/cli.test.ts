@@ -24,7 +24,6 @@ describe('./utils/cli.ts', () => {
     zip: false,
     minify: false,
     browser: ['chrome'],
-    manifestVersion: 3,
     type: 'main',
     validateEnv: false,
     lavamoat: false,
