@@ -1,5 +1,5 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
-import { providerErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { Json } from '@metamask/utils';
 import {
   AlignItems,
@@ -10,7 +10,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 type StateLogExportActions = {
-  resolvePendingApproval: (id: string, value: boolean) => void;
+  resolvePendingApproval: (id: string, value: string) => void;
   rejectPendingApproval: (id: string, error: Json) => void;
 };
 
@@ -103,7 +103,25 @@ function getValues(
     ],
     submitText: t('stateLogExportApprovalConfirm'),
     cancelText: t('cancel'),
-    onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, true),
+    // Built here rather than in the background so the payload is identical to
+    // the Settings download, which also runs `window.logStateString()`. The
+    // background only sees the flattened controller state, not the UI slices.
+    onSubmit: async () => {
+      try {
+        const stateLogs = await window.logStateString();
+        actions.resolvePendingApproval(pendingApproval.id, stateLogs);
+      } catch (error) {
+        actions.rejectPendingApproval(
+          pendingApproval.id,
+          rpcErrors
+            .internal({
+              message:
+                (error as Error)?.message ?? 'Failed to build state logs',
+            })
+            .serialize(),
+        );
+      }
+    },
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
