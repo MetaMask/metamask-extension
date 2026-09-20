@@ -7,9 +7,12 @@ import {
   ButtonIconSize,
   ButtonSize,
   ButtonVariant,
+  Box,
   Icon,
   IconName,
   IconSize,
+  Popover,
+  PopoverPosition,
   twMerge,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -28,7 +31,6 @@ import {
   selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import { Box, Popover, PopoverPosition } from '../../../../component-library';
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
 import {
   AlignItems,
