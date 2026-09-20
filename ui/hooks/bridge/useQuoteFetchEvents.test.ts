@@ -1,14 +1,17 @@
 import {
+  formatChainIdToCaip,
   QuoteStreamCompleteReason,
   RequestStatus,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
+import { act } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as bridgeActions from '../../ducks/bridge/actions';
+import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
 import { useQuoteFetchEvents } from './useQuoteFetchEvents';
 
@@ -167,8 +170,19 @@ describe('useQuoteFetchEvents', () => {
   });
 
   it('ends the quote fetch trace when the first quote becomes available', () => {
+    const {quote} = mockBridgeQuotesNativeErc20[0];
     renderUseQuoteFetchEvents(
       createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            ...quote.src.asset,
+            chainId: formatChainIdToCaip(10),
+          },
+          toToken: {
+            ...quote.dest.asset,
+            chainId: formatChainIdToCaip(137),
+          },
+        },
         bridgeStateOverrides: {
           quotesRefreshCount: 1,
           quotesLastFetched: Date.now(),
@@ -185,6 +199,51 @@ describe('useQuoteFetchEvents', () => {
     );
 
     expect(mockQuoteTraceFinish).toHaveBeenCalledWith('success');
+  });
+
+  it('does not finish the trace when the quote request changes before a new quote arrives', () => {
+    const {quote} = mockBridgeQuotesNativeErc20[0];
+    const sourceAsset = {
+      ...quote.src.asset,
+      chainId: formatChainIdToCaip(10),
+    };
+    const destinationAsset = {
+      ...quote.dest.asset,
+      chainId: formatChainIdToCaip(137),
+    };
+    const quoteRequest = {
+      srcTokenAddress: sourceAsset.assetId,
+      destTokenAddress: destinationAsset.assetId,
+      srcTokenAmount: quote.src.amount,
+      srcChainId: sourceAsset.chainId,
+      destChainId: destinationAsset.chainId,
+    };
+    const { store } = renderUseQuoteFetchEvents(
+      createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: sourceAsset,
+          toToken: destinationAsset,
+        },
+        bridgeStateOverrides: {
+          quotesLoadingStatus: RequestStatus.LOADING,
+          quotes: mockBridgeQuotesNativeErc20,
+          quoteRequest,
+        },
+      }),
+    );
+
+    mockQuoteTraceFinish.mockClear();
+
+    act(() => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: {
+          quoteRequest: [{ ...quoteRequest, srcTokenAmount: '2' }],
+        },
+      });
+    });
+
+    expect(mockQuoteTraceFinish).not.toHaveBeenCalled();
   });
 
   it('ends the quote fetch trace when a completed request has no quotes', () => {
