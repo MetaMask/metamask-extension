@@ -9,6 +9,7 @@ import {
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
 } from '../../../../selectors/assets';
+import { getShowFiatInTestnets } from '../../../../selectors/selectors';
 import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
 import * as useFiatFormatterModule from '../../../../hooks/useFiatFormatter';
 import { AssetStandard, type Asset } from '../../types/send';
@@ -154,6 +155,9 @@ describe('useSendTokens', () => {
       }
       if (selector === getAssetsBySelectedAccountGroup) {
         return mockAssetsData;
+      }
+      if (selector === getShowFiatInTestnets) {
+        return true;
       }
       return undefined;
     });

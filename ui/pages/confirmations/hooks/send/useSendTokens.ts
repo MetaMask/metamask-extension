@@ -15,6 +15,7 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../../../../shared/constants/network';
+import { isTestNetwork } from '../../../../helpers/utils/network-helper';
 import {
   fetchAssetMetadataForAssetIds,
   getAssetImageUrl,
@@ -26,6 +27,7 @@ import {
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
 } from '../../../../selectors/assets';
+import { getShowFiatInTestnets } from '../../../../selectors/selectors';
 import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import { AssetStandard, type Asset } from '../../types/send';
@@ -56,6 +58,7 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
   } = options;
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
   const includeHiddenTokens = useSelector(getIsTokenManagementFilterEnabled);
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const accountOverride = useTransactionAccountOverride();
   const overrideGroupId = useAccountOverrideGroupId();
   const globalAssets = useSelector(
@@ -174,6 +177,10 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
 
       return {
         ...asset,
+        fiat:
+          !showFiatInTestnets && asset.chainId && isTestNetwork(asset.chainId)
+            ? undefined
+            : asset.fiat,
         image: imageSource,
         networkImage: chainNetworkNameAndImage?.networkImage,
         networkName: chainNetworkNameAndImage?.networkName,
@@ -252,6 +259,7 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
     enrichAssetIds.length,
     enrichTokenRequests,
     enrichedTokensMetadata,
+    showFiatInTestnets,
   ]);
 
   return useMemo(() => {
