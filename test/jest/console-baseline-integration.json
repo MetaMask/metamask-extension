@@ -1,5 +1,9 @@
 {
   "files": {
+    "test/integration/confirmations/send/asset-picker.test.tsx": {
+      "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 1
+    },
     "test/integration/confirmations/signatures/permit-batch.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
