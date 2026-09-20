@@ -7,6 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.49.0]
+
+### Added
+
+- Added MetaMask Card purchases, mUSD back, and refunds to Money Account activity (#46133)
+- Added error toasts for failed Money deposits and withdrawals, and a retry banner when the Money balance cannot be loaded (#46185)
+- Added Long and Short Perps actions on the token detail page for assets with a matching Perps market (#45921)
+- Added custom toast message for deposits initiated from Hyperliquid deposit prompt (#46096)
+- Added live Money Account activity on Home and the full Activity list, including deposits and sends (#46105)
+- Added a searchable Perps destination account picker on Money Account deposits (#45905)
+- Added a Manage accounts mode to the account list for hiding, revealing, and removing accounts (#46041)
+
+### Changed
+
+- Updated Money Account upgrade support for eligible accounts (#45804)
+- Started the Money Account upgrade process when users interact with Money surfaces (#45806)
+- Consolidated Basic Functionality preferences for existing users and showed a one-time notice about the settings change (#45959)
+- Moved tokens without a price into the low-value section of the Tokens list (#45988)
+- Returned users to the homepage after importing an account, selected the imported account, and showed an "Account imported" toast (#46030)
+- Opened the Perps experience after a successful Hyperliquid deposit prompt flow (#46011)
+- Redesigned the Perps tab header with chart time ranges above the chart and a compact price after scrolling (#46191)
+- Updated Hyperliquid deposit prompt UI with a description and dismiss button (#46227)
+- Updated the default UI font from Geist to Inter (#46158)
+- Updated local and design system icons to the Phosphor icon set (#46127, #46161)
+- Updated the “Delete activity and nonce data” settings action to display in red and confirm successful deletion (#46087)
+
+### Fixed
+
+- Fixed small UI issues around the Manage accounts screen (#46324)
+- Fixed a bug that prevented relayer fees from being shown in the selected bridge quote (#46243)
+- Fixed ramps quote errors showing raw HTTP request URLs and status codes instead of a readable message (#46023)
+- Fixed money account deposits so tokens held by a switched funding account load across all networks and the pre-filled amount reliably gets a quote (#46047)
+- Fixed usage of USDC as source and destination token in Swap page (#46152)
+- Fixed money account deposits failing when using Max (#46099)
+- Fixed wallet activity notifications being scoped to shared profile storage instead of the wallet's own accounts, and simplified the Wallet activity settings screen to per-account switches (#45928)
+- Fixed a bug that could fail Money Account deposits after the funding transaction already succeeded (#46140)
+- Fixed blank space below the token list when choosing a token to fund a Hyperliquid deposit (#46134)
+- Fixed ERC-1155 token transfers interpreting the entered amount as hexadecimal, so entering 10 transferred 16 tokens (#46119)
+- Fixed the Secret Recovery Phrase row arrow and back navigation on account details (#46088)
+- Fixed wallet restore and reset so previous account state is cleared before the wallet is rebuilt (#45332)
+- Fixed various design issues related to the money account (#46102)
+- Fixed a bug where hiding a token from the token details page had no effect until the action was repeated (#46064)
+- Fixed token price loading on the asset page for tokens the user does not own (#46036)
+- Fixed the back arrow navigating outside of MetaMask after opening the wallet via a deep link (#46037)
+- Fixed the Money Account APY on the home screen to show the live vault rate instead of a placeholder (#46092)
+- Fixed a network error that occurred when switching to a test network such as Sepolia (#46063)
+- Fixed money account Add funds prefills that failed to fetch quotes or blocked Max deposits on tokens such as aUSDC (#45972)
+- Fixed overlapping token rows in the Pay with asset picker when token names were long (#45998)
+- Fixed onboarding default privacy settings typography, spacing, icon sizing, and button styling (#45942)
+- Fixed the OneKey logo appearing smaller than other hardware wallet logos on the Connect a hardware wallet screen (#46068)
+- Fixed a bug where the Add Token confirmation screen showed an incorrect balance when the dapp's network differed from the wallet's selected network (#46032)
+- Fixed token search showing a hide toggle for tokens you do not own (#46015)
+
+### Security
+
+- Improved advanced-permission handling by requiring eligible accounts to complete EIP-7702 upgrades before permissions are granted (#46082)
+- Fixed address-poisoning detection so token and protocol contract addresses from confirmed approvals and other non-send transactions are not treated as known recipients (#45982)
+
 ## [13.48.0]
 
 ### Added
@@ -3195,7 +3253,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...HEAD
+[13.49.0]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...v13.49.0
 [13.48.0]: https://github.com/MetaMask/metamask-extension/compare/v13.47.1...v13.48.0
 [13.47.1]: https://github.com/MetaMask/metamask-extension/compare/v13.47.0...v13.47.1
 [13.47.0]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...v13.47.0

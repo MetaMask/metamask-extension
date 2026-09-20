@@ -3108,9 +3108,6 @@
   "copyAddressShort": {
     "message": "Adresi kopyala"
   },
-  "copyPrivateKey": {
-    "message": "Özel anahtarı kopyala"
-  },
   "copyToClipboard": {
     "message": "Panoya kopyala"
   },
@@ -5032,9 +5029,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Güvenliğiniz için bu metin şu anda seçilemez."
   },
   "learnHow": {
     "message": "Nasıl olduğunu öğrenin"
@@ -8578,10 +8572,6 @@
     "message": "Özel anahtar",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 için özel anahtar",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Özel anahtar gizli",
     "description": "Explains that the private key input is hidden"
@@ -8593,9 +8583,6 @@
   "privateKeyShown": {
     "message": "Özel anahtar gösteriliyor",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Uyarı: Bu anahtarı kimse ile paylaşmayın. Özel anahtarlarınıza sahip herkes hesaplarınızıdaki tüm varlığınızı çalabilir."
   },
   "privateKeys": {
     "message": "Özel anahtarlar",
@@ -10698,12 +10685,6 @@
   },
   "showPermissions": {
     "message": "İzinleri göster"
-  },
-  "showPrivateKey": {
-    "message": "Özel anahtarı göster"
-  },
-  "showSRP": {
-    "message": "Gizli Kurtarma İfadesini Göster"
   },
   "showTestnetNetworks": {
     "message": "Test ağlarını göster"

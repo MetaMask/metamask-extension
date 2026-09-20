@@ -17,10 +17,18 @@ import { Driver } from '../../../webdriver/driver';
 class PrivateKeyModal {
   private readonly confirmButton = '[data-testid="confirm-button"]';
 
+  private readonly copyPrivateKeyButton =
+    '[data-testid="multichain-address-row-copy-button"]';
+
   private driver: Driver;
 
   private readonly parentSelector =
     '[data-testid="parent-selector-multichain-account-private-key-list-page"]';
+
+  private readonly privateKeyCopiedMessage = {
+    css: '[data-testid="multichain-address-row-address"]',
+    text: 'Private key copied',
+  };
 
   private readonly privateKeyPasswordInput =
     '[data-testid="multichain-private-key-password-input"]';
@@ -49,6 +57,13 @@ class PrivateKeyModal {
   }
 
   /**
+   * Wait for the private-key copied confirmation.
+   */
+  async checkPrivateKeyIsCopied(): Promise<void> {
+    await this.driver.waitForSelector(this.privateKeyCopiedMessage);
+  }
+
+  /**
    * Check wrong password message
    */
   async checkWrongPasswordMsgIsDisplayed(): Promise<void> {
@@ -60,6 +75,13 @@ class PrivateKeyModal {
    */
   async clickConfirm(): Promise<void> {
     await this.driver.clickElement(this.confirmButton);
+  }
+
+  /**
+   * Copy the revealed private key.
+   */
+  async clickCopyPrivateKeyButton(): Promise<void> {
+    await this.driver.clickElement(this.copyPrivateKeyButton);
   }
 
   /**

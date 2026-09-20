@@ -406,9 +406,6 @@
     "message": "Klucz prywatny",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Uwaga: Nie ujawniaj nikomu tego klucza. Ktokolwiek posiadający Twoje prywatne klucze może użyć środków znajdujących się na Twoim koncie."
-  },
   "privateNetwork": {
     "message": "Sieć prywatna"
   },

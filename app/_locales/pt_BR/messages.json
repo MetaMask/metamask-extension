@@ -1051,9 +1051,6 @@
     "message": "Chave privada",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Advertência: jamais revele essa chave. Qualquer pessoa com suas chaves privadas poderá roubar os ativos mantidos na sua conta."
-  },
   "privateNetwork": {
     "message": "Rede privada"
   },
