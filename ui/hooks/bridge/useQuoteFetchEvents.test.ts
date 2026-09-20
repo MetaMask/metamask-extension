@@ -170,7 +170,7 @@ describe('useQuoteFetchEvents', () => {
   });
 
   it('ends the quote fetch trace when the first quote becomes available', () => {
-    const {quote} = mockBridgeQuotesNativeErc20[0];
+    const { quote } = mockBridgeQuotesNativeErc20[0];
     renderUseQuoteFetchEvents(
       createBridgeMockStore({
         bridgeSliceOverrides: {
@@ -202,7 +202,7 @@ describe('useQuoteFetchEvents', () => {
   });
 
   it('does not finish the trace when the quote request changes before a new quote arrives', () => {
-    const {quote} = mockBridgeQuotesNativeErc20[0];
+    const { quote } = mockBridgeQuotesNativeErc20[0];
     const sourceAsset = {
       ...quote.src.asset,
       chainId: formatChainIdToCaip(10),
