@@ -19,7 +19,16 @@ Then load the unpacked extension in Chrome:
 
 ### 2. Open the test page
 
-Open `poc/state-log-export.html` directly in Chrome (File → Open, or drag into browser tab).
+Serve it over http so the provider is guaranteed to be injected:
+
+```bash
+cd poc && python3 -m http.server 8099
+# then open http://localhost:8099/state-log-export.html
+```
+
+Opening the file directly (`file://…/state-log-export.html`) also works, but only if
+"Allow access to file URLs" is enabled for MetaMask on `chrome://extensions`. That
+toggle is off by default and resets whenever the extension is removed and re-added.
 
 ### 3. Click "Download State Logs"
 
@@ -35,21 +44,21 @@ Open `poc/state-log-export.html` directly in Chrome (File → Open, or drag into
 | File | Change |
 |---|---|
 | `app/scripts/lib/rpc-method-middleware/handlers/get-state-logs.ts` | Added `metamask_getStateLogs` handler in the provider RPC pipeline |
-| `app/scripts/metamask-controller.js` | Added `handleGetStateLogsRequest()` — opens approval and returns the state payload |
+| `app/scripts/metamask-controller.js` | Added `handleGetStateLogsRequest()` — opens approval and returns the state payload the confirmation resolves with |
+| `ui/pages/confirmations/confirmation/templates/state-log-export.ts` | Consent confirmation; builds the payload with `window.logStateString()` on submit |
 | `poc/state-log-export.html` | Mock support page — the UI a user would see in the chatbot flow |
 
 ## Security properties
 
 - Request flows through the provider RPC pipeline and native confirmation system
 - Approval is required before any state payload is returned
-- Routes through `controller.getState()` which excludes the encrypted vault; private keys and SRP are never present
+- Routes through the same `logStateString()` path as the Settings download, which excludes the encrypted vault; private keys and SRP are never present
 - No custom content-script or runtime-message bridge remains in the PoC
 
 ## What's different from production MVP
 
 | PoC | Production |
 |---|---|
-| Uses `controller.getState()` | Should use `logStateString()` path to include logs + platform metadata |
 | Local file page for demo/testing | Real chatbot widget on `support.metamask.io` |
-| No i18n | All strings go in `app/_locales/en/messages.json` |
-| No allowlisting on the custom method yet | Add explicit support-surface policy before production rollout |
+| Payload crosses the RPC boundary as one large string | Consider a transfer mechanism that avoids a multi-MB JSON-RPC response |
+| Allowlisted for every origin via `unrestrictedMethods` | Restrict to the support surface before production rollout |

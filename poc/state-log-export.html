@@ -180,13 +180,18 @@
           badgeText.textContent = 'MetaMask detected';
         } else {
           badge.className = 'detection-badge not-found';
-          badgeText.textContent = 'MetaMask not detected — install it to use 1-click export';
+          badgeText.textContent =
+            location.protocol === 'file:'
+              ? 'No provider injected on file:// — enable "Allow access to file URLs" for MetaMask on chrome://extensions, or serve this page over http://localhost'
+              : 'MetaMask not detected — install it to use 1-click export';
         }
-        exportBtn.disabled = !metamaskDetected;
       }
 
-      // Wait a tick for inpage.js to inject window.ethereum
+      // inpage.js may not have injected window.ethereum yet.
+      window.addEventListener('ethereum#initialized', detectMetaMask, { once: true });
       setTimeout(detectMetaMask, 200);
+      setTimeout(detectMetaMask, 1000);
+      exportBtn.disabled = false;
 
       function setStatus(type, message) {
         statusEl.className = `status ${type}`;
@@ -217,7 +222,11 @@
       }
 
       exportBtn.addEventListener('click', async () => {
-        if (!metamaskDetected) return;
+        detectMetaMask();
+        if (!metamaskDetected) {
+          setStatus('error', badgeText.textContent);
+          return;
+        }
 
         exportBtn.disabled = true;
         setStatus('loading', 'MetaMask is asking for your confirmation…');
@@ -229,10 +238,14 @@
           exportBtn.disabled = false;
           return;
         } catch (error) {
+          console.error('metamask_getStateLogs failed', error);
           if (error?.code === 4001) {
             setStatus('', '');
           } else {
-            setStatus('error', `Export failed: ${error?.message ?? 'unknown error'}. Try the manual method below.`);
+            setStatus(
+              'error',
+              `Export failed (code ${error?.code ?? 'none'}): ${error?.message ?? 'unknown error'}`,
+            );
           }
           exportBtn.disabled = false;
         }
