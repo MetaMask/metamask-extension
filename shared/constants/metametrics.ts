@@ -804,6 +804,7 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountPinned = 'Account Pinned',
   AccountHidden = 'Account Hidden',
+  ManageAccountsViewed = 'Manage Accounts Viewed',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
@@ -964,6 +965,7 @@ export enum MetaMetricsEventName {
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
   SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
+  BasicFunctionalityMigrated = 'Basic Functionality Migrated',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
@@ -1253,6 +1255,16 @@ export enum MetaMetricsEventAccountType {
   Hardware = 'hardware',
   Imported = 'imported',
   Snap = 'snap',
+}
+
+/**
+ * Segment `source` for the `Manage Accounts Viewed` event — the entry point
+ * that opened the account management view.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/manage-accounts-viewed.yaml` (`source` enum).
+ */
+export enum MetaMetricsManageAccountsSource {
+  AccountList = 'account_list',
+  AccountMenu = 'account_menu',
 }
 
 export enum QueueType {

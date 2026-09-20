@@ -1572,8 +1572,8 @@
   "alertMessageGasFeeLow": {
     "message": "When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options."
   },
-  "alertMessageGasTooLow": {
-    "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "To continue with this transaction, you’ll need to increase the gas limit to 12000 or higher."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "You do not have enough $1 in your account to pay for network fees."
@@ -3165,9 +3165,6 @@
   "copyAddressShort": {
     "message": "Copy address"
   },
-  "copyPrivateKey": {
-    "message": "Copy private key"
-  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -4273,8 +4270,8 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitTooLow": {
-    "message": "Gas limit must be at least 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Gas limit must be at least 12000"
   },
   "gasPrice": {
     "message": "Gas price"
@@ -5106,9 +5103,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "For your safety, selecting this text is not available right now."
-  },
   "learnHow": {
     "message": "Learn how"
   },
@@ -5533,12 +5527,13 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Earn $1% APY",
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY info"
+  "moneyAccountApyPitchEarn": {
+    "message": "Earn $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed."
@@ -5549,9 +5544,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Projected 1-year balance"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed.",
@@ -5604,6 +5596,9 @@
   },
   "moneyActivityFilterAll": {
     "message": "All"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Card"
   },
   "moneyActivityFilterDeposits": {
     "message": "Deposits"
@@ -5672,9 +5667,6 @@
   "moneyBalanceRetry": {
     "message": "Retry"
   },
-  "moneyBalanceTitle": {
-    "message": "Money balance"
-  },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
   },
@@ -5685,7 +5677,8 @@
     "message": "Auto-earn yield on your Money balance"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Auto-earn up to ~$1 APY"
+    "message": "Auto-earn up to $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"
@@ -5701,6 +5694,9 @@
   },
   "moneyContactSupport": {
     "message": "Contact support"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "Convert your crypto"
   },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
@@ -5723,6 +5719,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "No fee"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed. No guarantee of return.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Earn on your balance"
   },
@@ -5738,15 +5738,99 @@
   "moneyFundDescriptionWithApy": {
     "message": "Fund your Money account and watch your balance grow with up to $1 APY."
   },
+  "moneyHomeApyTooltip": {
+    "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed. Funds go into a DeFi vault, administered by Veda with risk oversight by Steakhouse Financial, that generates returns across established lending markets."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Your Money account earns up to $1 automatically.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money account is powered by Monad."
+  },
   "moneyHowItWorks": {
     "message": "How it works"
   },
   "moneyHowItWorksDescription": {
     "message": "Add mUSD and your dollar-backed balance is ready to spend, trade, or send anytime."
   },
+  "moneyHowItWorksDescription1": {
+    "message": "Add mUSD into your Money account and earn up to $1 APY (variable) automatically. Funds go into a DeFi vault, administered by Veda with risk monitoring by Steakhouse Financial. The rate is generated by third-party DeFi platforms that deploy funds in blockchain protocols. No staking, no claiming, no lock-ups.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksDescription2": {
+    "message": "Your Money balance is your spending balance. Link your MetaMask Card to spend at 150M+ merchants worldwide. Your money keeps earning until the moment you use it."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money account is powered by Monad."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Add mUSD and earn up to $1. Your balance is dollar-backed and ready to spend, trade, or send anytime.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money account is not a bank account, savings account, or insured deposit product. APY is variable and not guaranteed. Money account involves smart contract, protocol, liquidity, and other risks, and you may lose some or all of your funds. Subject to regional restrictions. Terms apply."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Risks and Disclosures"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Up to $1 APY. The rate is variable and fluctuates with market conditions. The current rate is always visible inside the Money account.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Does the APY rate change?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "You! MetaMask is a self-custodial wallet, meaning only the account holder's Private Keys control it. MetaMask can't access, freeze, or move your funds. This is what distinguishes us from traditional bank accounts and custodial crypto platforms—there's no third party holding your funds."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Who controls my money?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "There's no fee to open a Money account and no fee to deposit stablecoins. You will get charged fees when depositing non-stablecoin tokens. There are also fees associated with MetaMask Card transactions, ATM withdrawals, and local currency offramp costs. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "See the full Card fee breakdown here."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Are there any fees?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Yes. You can trade, send, spend, or withdraw your full balance at any time with no notice periods, no penalties, and no withdrawal fees from MetaMask. If liquidity is tight, there may be temporary delays."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Is my money locked? Can I withdraw anytime?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "An account that earns up to $1 variable APY. You deposit funds, which are held in the account as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. You can use or withdraw your funds anytime with no penalties. You can spend your funds via MetaMask Card at 150+ million Mastercard merchants worldwide.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "What is the Money account?"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD is MetaMask's 1:1 dollar-backed stablecoin. Your Money balance is held as mUSD and stays available to spend, send, or trade anytime.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "What is mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Your Money balance is your spending balance — it keeps earning until the moment you use it. Money account is not a bank account, savings account, or insured deposit product.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Is this a savings account or a spending account?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "FAQs"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "When you deposit funds, they're put in established DeFi protocols, like Aave and Morpho, where they earn returns from real economic activity. These returns are then delivered to you in the form of APY.\n\nA third-party service provider called Steakhouse Financial monitors how funds are allocated in the protocols. Veda, a third-party infrastructure provider, deploys and maintains the vault smart contracts that hold your funds.\n\nEarnings are not interest paid by MetaMask or by the issuer of mUSD. They are the onchain returns generated by positions in third-party DeFi protocols."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Where does the yield come from?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "How your money grows"
@@ -5757,8 +5841,14 @@
   "moneyLifetime": {
     "message": "Lifetime"
   },
+  "moneyLifetimeTooltip": {
+    "message": "The total you've earned on your Money account balance over time."
+  },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "The total you've earned on your Money account balance in the last 30 days."
   },
   "moneyMoreInformation": {
     "message": "More information"
@@ -6197,9 +6287,6 @@
   "networkFeeExplanationTitle": {
     "message": "Network fee"
   },
-  "networkMenu": {
-    "message": "Network menu"
-  },
   "networkMenuHeading": {
     "message": "Select a network"
   },
@@ -6503,18 +6590,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal ready"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "You can now withdraw your unstaked $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Your request to unstake $1 has been sent"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Received NFT from"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Sent NFT to"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6523,18 +6598,6 @@
   },
   "notificationItemReceived": {
     "message": "Received"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Received from"
-  },
-  "notificationItemSent": {
-    "message": "Sent"
-  },
-  "notificationItemSentTo": {
-    "message": "Sent to"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake completed"
   },
   "notificationItemStaked": {
     "message": "Staked"
@@ -6548,17 +6611,11 @@
   "notificationItemSwapped": {
     "message": "Swapped"
   },
-  "notificationItemSwappedFor": {
-    "message": "for"
-  },
   "notificationItemTo": {
     "message": "To"
   },
   "notificationItemTransactionId": {
     "message": "Transaction ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "UnStaking complete"
   },
   "notificationItemUnStaked": {
     "message": "Unstaked"
@@ -7726,6 +7783,9 @@
   "perpsFilterIndex": {
     "message": "Indices"
   },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
   "perpsFilterMore": {
     "message": "More",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
@@ -8605,10 +8665,6 @@
     "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Private key for $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "The private key is hidden",
     "description": "Explains that the private key input is hidden"
@@ -8620,9 +8676,6 @@
   "privateKeyShown": {
     "message": "This private key is being shown",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateKeys": {
     "message": "Private keys",
@@ -10726,12 +10779,6 @@
   "showPermissions": {
     "message": "Show permissions"
   },
-  "showPrivateKey": {
-    "message": "Show private key"
-  },
-  "showSRP": {
-    "message": "Show Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -11695,6 +11742,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Auto"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Slippage tolerance was capped at 100%."
   },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",

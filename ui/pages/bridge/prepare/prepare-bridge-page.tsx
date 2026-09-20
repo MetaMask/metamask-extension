@@ -485,7 +485,7 @@ const PrepareBridgePage = ({
       />
 
       <Column
-        className="prepare-bridge-page"
+        className="prepare-bridge-page flex-1"
         gap={4}
         data-testid="parent-selector-bridge-quote"
       >
@@ -710,15 +710,14 @@ const PrepareBridgePage = ({
 
         {!isInitialQuoteLoading && (
           <Column
+            className="sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16"
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
-            height={BlockSize.Full}
             gap={3}
             paddingInline={4}
             paddingTop={4}
             paddingBottom={4}
             backgroundColor={BackgroundColor.backgroundDefault}
-            style={{ position: 'sticky', bottom: 0 }}
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {

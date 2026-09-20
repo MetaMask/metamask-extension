@@ -9,6 +9,8 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
+import { MONEY_HOW_IT_WORKS_ROUTE } from '../../../helpers/constants/routes';
 import {
   Popover,
   PopoverPosition,
@@ -74,6 +76,7 @@ export function MoneyMoreMenu() {
   const { trackBottomSheetViewed, trackSurfaceClicked } = useMoneyAnalytics({
     bottomSheetName: MoneyBottomSheetName.MoreSheet,
   });
+  const navigate = useNavigate();
 
   const handleToggleMenu = useCallback(() => {
     if (!isMenuOpen) {
@@ -106,12 +109,21 @@ export function MoneyMoreMenu() {
     openSupportModal();
   }, [closeMenu, openSupportModal, trackSurfaceClicked]);
 
+  const navigateToHowItWorks = useCallback(() => {
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.MoreSheetHowItWorks,
+      redirectTarget: MoneyScreenName.MoneyHowItWorks,
+    });
+    closeMenu();
+    navigate(MONEY_HOW_IT_WORKS_ROUTE);
+  }, [closeMenu, navigate, trackSurfaceClicked]);
+
   const options: MenuOption[] = [
     {
       key: 'how-it-works',
       icon: IconName.Book,
       label: t('moneyHowItWorks'),
-      disabled: true,
+      onClick: navigateToHowItWorks,
     },
     {
       key: 'benefits',

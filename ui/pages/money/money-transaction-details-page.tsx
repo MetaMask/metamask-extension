@@ -17,8 +17,10 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Icon,
   IconColor,
   IconName,
+  IconSize,
   SensitiveText,
   SensitiveTextLength,
   Skeleton,
@@ -33,7 +35,7 @@ import {
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
-import { InfoPopover } from '../../components/app/musd/info-popover';
+import { TooltipText } from '../../components/app/money/tooltip-text';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../shared/lib/money/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
@@ -137,9 +139,9 @@ export function MoneyTransactionDetailsPage() {
 
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
-  const { feeUsd, totalUsd } = useMoneyTransactionFee(
-    item?.kind === 'onchain' ? item.tx : undefined,
-  );
+  const onchainTx = item?.kind === 'onchain' ? item.tx : undefined;
+  const { feeUsd, totalUsd, isNetworkFeePaidByMetaMask } =
+    useMoneyTransactionFee(onchainTx);
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
@@ -160,12 +162,27 @@ export function MoneyTransactionDetailsPage() {
     totalUsd === undefined
       ? '-'
       : formatCurrencyWithMinThreshold(totalUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
+  const isFullySponsoredFee =
+    isNetworkFeePaidByMetaMask && feeUsd !== undefined && feeUsd === 0;
+  // `networkFeeFiat` is Pay source-network gas. Cross-chain deposits keep that
+  // user-paid; only claim sponsorship in the tooltip when it is absent/zero.
+  const recordedSourceNetworkFee = onchainTx?.metamaskPay?.networkFeeFiat;
+  const hasUserPaidSourceNetworkFee = Boolean(
+    recordedSourceNetworkFee !== undefined &&
+    recordedSourceNetworkFee.trim() !== '' &&
+    Number(recordedSourceNetworkFee) > 0,
+  );
+  const showSponsoredNetworkFeeInTooltip =
+    isNetworkFeePaidByMetaMask &&
+    !hasUserPaidSourceNetworkFee &&
+    feeUsd !== undefined &&
+    feeUsd > 0;
 
   let body: React.ReactNode;
   if (isAvailabilityLoading || isResolvingItem) {
     body = (
       <div
-        className="flex min-h-full flex-col gap-4 bg-background-default p-4"
+        className="flex min-h-full flex-col gap-4 p-4"
         data-testid="money-transaction-details-loading"
       >
         <Skeleton className="h-8 w-8" />
@@ -202,8 +219,8 @@ export function MoneyTransactionDetailsPage() {
     const transactionHash = tx.hash;
 
     body = (
-      <main
-        className="flex min-h-full flex-col bg-background-default"
+      <div
+        className="flex min-h-full flex-col"
         data-testid="money-transaction-details-page"
       >
         <div className="grid grid-cols-[auto_1fr_auto] items-center px-4 py-4">
@@ -257,7 +274,14 @@ export function MoneyTransactionDetailsPage() {
 
         <Box paddingLeft={4} paddingRight={4} className="flex-1">
           <MoneyTransactionDetailsRow
-            label={t('status')}
+            label={
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('status')}
+              </Text>
+            }
             testId="money-transaction-details-status"
             value={
               <Box
@@ -280,23 +304,51 @@ export function MoneyTransactionDetailsPage() {
             }
           />
           <MoneyTransactionDetailsRow
-            label={t('date')}
+            label={
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('date')}
+              </Text>
+            }
             testId="money-transaction-details-date"
             value={formatMoneyActivityDetailsDate(item.time)}
           />
           <MoneyTransactionDetailsRow
-            label={t('paidWith')}
+            label={
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('paidWith')}
+              </Text>
+            }
             testId="money-transaction-details-paid-with"
             value={paidWith}
           />
           <MoneyTransactionDetailsRow
-            label={t('account')}
+            label={
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('account')}
+              </Text>
+            }
             testId="money-transaction-details-account"
             value={accountLabel}
           />
           {transactionHash ? (
             <MoneyTransactionDetailsRow
-              label={t('moneyActivityDetailsTransactionId')}
+              label={
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('moneyActivityDetailsTransactionId')}
+                </Text>
+              }
               testId="money-transaction-details-hash"
               value={
                 <Box
@@ -325,34 +377,67 @@ export function MoneyTransactionDetailsPage() {
           <div className="my-3 h-px w-full bg-border-muted" />
 
           <MoneyTransactionDetailsRow
-            label={t('transactionFee')}
-            labelEnd={
-              <InfoPopover
+            label={
+              <TooltipText
+                text={t('transactionFee')}
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
                 position={PopoverPosition.BottomStart}
-                iconColor={IconColor.IconAlternative}
-                wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
-                ariaLabel={t('transactionFee')}
                 data-testid="money-transaction-details-fee-info"
               >
                 <Text variant={TextVariant.BodyMd}>
                   {t('moneyActivityTransactionFeeTooltip')}
+                  {showSponsoredNetworkFeeInTooltip ? (
+                    <>
+                      <br />
+                      {`${t('networkFee')}: ${t('paidByMetaMask')}`}
+                    </>
+                  ) : null}
                 </Text>
-              </InfoPopover>
+              </TooltipText>
             }
             testId="money-transaction-details-fee"
             value={
-              <SensitiveText
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                isHidden={privacyMode}
-                length={SensitiveTextLength.Short}
-              >
-                {formattedFee}
-              </SensitiveText>
+              isFullySponsoredFee ? (
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                  data-testid="money-transaction-details-fee-sponsored"
+                >
+                  <Icon
+                    name={IconName.Check}
+                    size={IconSize.Sm}
+                    color={IconColor.SuccessDefault}
+                  />
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.SuccessDefault}
+                  >
+                    {t('paidByMetaMask')}
+                  </Text>
+                </Box>
+              ) : (
+                <SensitiveText
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
+                >
+                  {formattedFee}
+                </SensitiveText>
+              )
             }
           />
           <MoneyTransactionDetailsRow
-            label={t('total')}
+            label={
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('total')}
+              </Text>
+            }
             testId="money-transaction-details-total"
             value={
               <SensitiveText
@@ -380,7 +465,7 @@ export function MoneyTransactionDetailsPage() {
             </Button>
           </Box>
         ) : null}
-      </main>
+      </div>
     );
   }
 
