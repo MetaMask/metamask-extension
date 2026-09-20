@@ -3105,9 +3105,6 @@
   "copyAddressShort": {
     "message": "Copier l’adresse"
   },
-  "copyPrivateKey": {
-    "message": "Copier la clé privée"
-  },
   "copyToClipboard": {
     "message": "Copier dans le presse-papiers"
   },
@@ -5025,9 +5022,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Pour votre sécurité, vous ne pouvez pas sélectionner ce texte actuellement."
   },
   "learnHow": {
     "message": "Découvrir comment"
@@ -8561,10 +8555,6 @@
     "message": "Clé privée",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Clé privée pour $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "La clé privée est masquée",
     "description": "Explains that the private key input is hidden"
@@ -8576,9 +8566,6 @@
   "privateKeyShown": {
     "message": "Cette clé privée est affichée",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Avertissement : ne divulguez jamais cette clé, quiconque possède vos clés privées peut voler tous les actifs de votre compte."
   },
   "privateKeys": {
     "message": "Clés privées",
@@ -10681,12 +10668,6 @@
   },
   "showPermissions": {
     "message": "Afficher les autorisations"
-  },
-  "showPrivateKey": {
-    "message": "Afficher la clé privée"
-  },
-  "showSRP": {
-    "message": "Afficher la phrase secrète de récupération"
   },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"

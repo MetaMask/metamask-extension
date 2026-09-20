@@ -3105,9 +3105,6 @@
   "copyAddressShort": {
     "message": "Kopyahin ang address"
   },
-  "copyPrivateKey": {
-    "message": "Kopyahin ang pribadong key"
-  },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
   },
@@ -5025,9 +5022,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Para sa iyong kaligtasan, ang pagpil ng tekstong ito ay hindi available ngayon."
   },
   "learnHow": {
     "message": "Alamin kung paano"
@@ -8502,10 +8496,6 @@
     "message": "Pribadong Key",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Pribadong key para sa $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Ang pribadong key ay nakatago",
     "description": "Explains that the private key input is hidden"
@@ -8517,9 +8507,6 @@
   "privateKeyShown": {
     "message": "Ang pribadong key ay na ito ay ipinapakita",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Babala: Huwag ipaalam ang key na ito. Ang sinumang mayroon ng iyong mga pribadong key ay maaaring magnakaw ng anumang asset sa iyong account."
   },
   "privateKeys": {
     "message": "Mga pribadong key",
@@ -10607,12 +10594,6 @@
   },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
-  },
-  "showPrivateKey": {
-    "message": "Ipakita ang pribadong key"
-  },
-  "showSRP": {
-    "message": "Ipakita ang Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test network"
