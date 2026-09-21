@@ -1788,9 +1788,14 @@ describe('ManifestPlugin', () => {
           'use-snow should not be chunked',
         );
         assert.strictEqual(
-          plugin.canBeChunked({ name: 'bootstrap' }),
+          plugin.canBeChunked({ name: 'init-state-hooks' }),
           false,
-          'bootstrap should not be chunked',
+          'init-state-hooks should not be chunked',
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'bootstrap' }),
+          true,
+          'bootstrap should be chunked with its protected runtime',
         );
       });
 

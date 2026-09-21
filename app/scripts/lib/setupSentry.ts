@@ -1,12 +1,34 @@
 import { createModuleLogger } from '@metamask/utils';
-import * as Sentry from '@sentry/browser';
+import {
+  addBreadcrumb,
+  browserTracingIntegration,
+  captureException,
+  captureFeedback,
+  captureMessage,
+  continueTrace,
+  dedupeIntegration,
+  extraErrorDataIntegration,
+  getActiveSpan,
+  getClient,
+  init,
+  lastEventId,
+  registerSpanErrorInstrumentation,
+  setContext,
+  setMeasurement,
+  setTag,
+  startSpan,
+  startSpanManual,
+  withIsolationScope,
+  withScope,
+} from '@sentry/browser';
+import type * as Sentry from '@sentry/browser';
+import { debug as sentrySdkLogger } from '@sentry/core';
 import type {
   Breadcrumb,
   ErrorEvent as SentryErrorEvent,
   Event as SentryEvent,
   TransactionEvent,
 } from '@sentry/types';
-import { debug as sentrySdkLogger } from '@sentry/core';
 import { cloneDeep, escapeRegExp } from 'lodash';
 import browser from 'webextension-polyfill';
 import { BROWSER_SHUTTING_DOWN_ERROR } from '../../../shared/constants/errors';
@@ -32,7 +54,7 @@ import { createTracesSampler } from './sentry-traces-sampler';
 
 const internalLog = createModuleLogger(log, 'internal');
 
-type SentryClientOptions = NonNullable<Parameters<typeof Sentry.init>[0]>;
+type SentryClientOptions = NonNullable<Parameters<typeof init>[0]>;
 type BeforeBreadcrumbHandler = NonNullable<
   SentryClientOptions['beforeBreadcrumb']
 >;
@@ -149,9 +171,25 @@ export default function setupSentry(): typeof Sentry | undefined {
   integrateLogging();
   setSentryClient();
 
+  // Keep the global surface limited to the APIs MetaMask actually calls. The
+  // LavaMoat policy supports our configured integrations, not every optional
+  // integration and helper re-exported by the full @sentry/browser namespace.
   return {
-    ...Sentry,
-  };
+    addBreadcrumb,
+    captureException,
+    captureFeedback,
+    captureMessage,
+    continueTrace,
+    getActiveSpan,
+    lastEventId,
+    setContext,
+    setMeasurement,
+    setTag,
+    startSpan,
+    startSpanManual,
+    withIsolationScope,
+    withScope,
+  } as typeof Sentry;
 }
 
 /**
@@ -197,9 +235,9 @@ function getClientOptions(): SentryClientOptions {
     dsn: sentryTarget,
     environment,
     integrations: [
-      Sentry.dedupeIntegration(),
-      Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration({
+      dedupeIntegration(),
+      extraErrorDataIntegration(),
+      browserTracingIntegration({
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
@@ -231,6 +269,8 @@ function getClientOptions(): SentryClientOptions {
     // we can safely turn them off by setting the `sendClientReports` option to
     // `false`.
     sendClientReports: false,
+    // Sentry only runs in extension-owned realms, not in content scripts.
+    skipBrowserExtensionCheck: true,
     tracesSampleRate,
     // Per-transaction sampler: caps high-volume custom transactions (seeded with
     // the assets-controller spans that breached quota in 13.32.0 — see #43410)
@@ -293,17 +333,17 @@ function setCITags(): void {
   const { ci } = getManifestFlags();
 
   if (ci?.enabled) {
-    Sentry.setTag('ci.enabled', ci.enabled);
-    Sentry.setTag('ci.branch', ci.branch);
-    Sentry.setTag('ci.commitHash', ci.commitHash);
-    Sentry.setTag('ci.job', ci.job);
-    Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
-    Sentry.setTag('ci.prNumber', ci.prNumber);
+    setTag('ci.enabled', ci.enabled);
+    setTag('ci.branch', ci.branch);
+    setTag('ci.commitHash', ci.commitHash);
+    setTag('ci.job', ci.job);
+    setTag('ci.matrixIndex', ci.matrixIndex);
+    setTag('ci.prNumber', ci.prNumber);
     if (ci.persona) {
-      Sentry.setTag('ci.persona', ci.persona);
+      setTag('ci.persona', ci.persona);
     }
     if (ci.testTitle) {
-      Sentry.setTag('ci.testTitle', ci.testTitle);
+      setTag('ci.testTitle', ci.testTitle);
     }
   }
 }
@@ -360,12 +400,12 @@ function setSentryClient(): true {
     tracesSampleRate,
   });
 
-  Sentry.registerSpanErrorInstrumentation();
-  Sentry.init(clientOptions);
+  registerSpanErrorInstrumentation();
+  init(clientOptions);
 
   // Apply remote-flag sample-rate overrides once, post-init; compile-time
   // rates remain the fallback when the flag is absent or malformed.
-  applySentryRemoteRates(Sentry.getClient()).catch((error) =>
+  applySentryRemoteRates(getClient()).catch((error) =>
     log('Failed to apply remote Sentry sample rates', error),
   );
 
@@ -852,7 +892,7 @@ function addDebugListeners(): void {
     return;
   }
 
-  const client = Sentry.getClient();
+  const client = getClient();
 
   client?.on('beforeEnvelope', (event: unknown) => {
     if (isCompletedSessionEnvelope(event)) {
