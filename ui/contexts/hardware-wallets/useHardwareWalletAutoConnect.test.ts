@@ -1,5 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,

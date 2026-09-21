@@ -1,6 +1,11 @@
 import React from 'react';
-import { render, fireEvent, screen, act } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import {
+  renderHook,
+  render,
+  fireEvent,
+  screen,
+  act,
+} from '@testing-library/react';
 import { TextVariant } from '@metamask/design-system-react';
 import { BatchSellInfoModalProvider } from '../providers/batch-sell-info-modal-provider';
 import { useBatchSellInfoModal } from './useBatchSellInfoModal';

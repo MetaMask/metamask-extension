@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { isHexString } from 'ethereumjs-util';
 import { Hex } from '@metamask/utils';
@@ -12,6 +12,7 @@ import {
 import { setEditedNetwork } from '../../../../store/actions';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useSendContext } from '../../context/send';
+import { useDispatch } from '../../../../store/hooks';
 
 export const useUnreliableNetworkRpc = () => {
   const dispatch = useDispatch();

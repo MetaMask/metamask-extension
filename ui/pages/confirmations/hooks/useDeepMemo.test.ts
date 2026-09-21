@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useDeepMemo } from './useDeepMemo';
 
 const RESULT_MOCK = { a: 1 };

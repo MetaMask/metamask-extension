@@ -24,6 +24,7 @@ import {
   getAvailablePorts,
   isTcpPortAvailable,
 } from '../ports';
+import { stopProcess } from '../stop-process';
 
 export const BITCOIN_LOCAL_NODE_HOST = '127.0.0.1';
 
@@ -500,7 +501,12 @@ export class BitcoinNode {
     }
 
     if (dataDir) {
-      await rm(dataDir, { force: true, recursive: true });
+      await rm(dataDir, {
+        force: true,
+        maxRetries: 5,
+        recursive: true,
+        retryDelay: 200,
+      });
     }
   }
 
@@ -793,52 +799,4 @@ async function resolveNodePorts(
     options.rpcPort ?? (allocatedPorts.shift() as number),
     options.p2pPort ?? (allocatedPorts.shift() as number),
   ];
-}
-
-async function stopProcess(childProcess: ChildProcess): Promise<void> {
-  if (childProcess.exitCode !== null || childProcess.signalCode !== null) {
-    return;
-  }
-
-  const exitPromise = new Promise<void>((resolvePromise) => {
-    childProcess.once('exit', () => resolvePromise());
-  });
-  killProcessTree(childProcess, 'SIGTERM');
-
-  const exitedAfterTerm = await Promise.race([
-    exitPromise,
-    new Promise<boolean>((resolvePromise) => {
-      setTimeout(() => {
-        resolvePromise(false);
-      }, 10_000);
-    }),
-  ]);
-
-  if (exitedAfterTerm !== false) {
-    return;
-  }
-
-  killProcessTree(childProcess, 'SIGKILL');
-  await Promise.race([
-    exitPromise,
-    new Promise<void>((resolvePromise) => setTimeout(resolvePromise, 1_000)),
-  ]);
-}
-
-function killProcessTree(
-  childProcess: ChildProcess,
-  signal: NodeJS.Signals,
-): void {
-  if (process.platform === 'win32') {
-    childProcess.kill(signal);
-    return;
-  }
-
-  if (childProcess.pid) {
-    try {
-      process.kill(-childProcess.pid, signal);
-    } catch {
-      childProcess.kill(signal);
-    }
-  }
 }

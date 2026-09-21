@@ -4,7 +4,8 @@ import { merge } from 'lodash';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -31,11 +32,8 @@ import {
   mockPriceApiSpotPriceSwap,
   mockSendSolanaTransaction,
   mockSolanaBalanceQuote,
-  mockTokenApiAssets,
   simulateSolanaTransaction,
 } from './common-solana';
-
-const isUnifiedAssetsEnabled = true;
 
 const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
@@ -45,7 +43,7 @@ const SOL_PRICE = 168.88;
 const USDC_PRICE = 0.999761;
 const USDC_BALANCE_HUMAN = '8.908267';
 
-// --- Unified-assets-only helpers ---
+// --- Helpers ---
 
 const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
   assetsBalance: {
@@ -167,12 +165,8 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
 const mockSendWithUSDCVisible = async (
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> => [
-  ...(isUnifiedAssetsEnabled
-    ? [
-        await mockAccountsApiV2SupportedNetworks(mockServer),
-        await mockAccountsApiV5MultiaccountBalances(mockServer),
-      ]
-    : []),
+  await mockAccountsApiV2SupportedNetworks(mockServer),
+  await mockAccountsApiV5MultiaccountBalances(mockServer),
   await mockGetTokenAccountsUSDCOnly(mockServer),
   await mockGetTokenAccountBalance(mockServer),
   await simulateSolanaTransaction(mockServer),
@@ -188,22 +182,15 @@ const mockSendWithUSDCVisible = async (
   await mockGetTokenAccountBalance(mockServer),
   await mockGetSuccessSplTokenTransaction(mockServer),
   await mockGetMintAccountInfo(mockServer),
-
-  isUnifiedAssetsEnabled
-    ? await mockSolanaTokenApiAssets(mockServer)
-    : await mockTokenApiAssets(mockServer),
+  await mockSolanaTokenApiAssets(mockServer),
 ];
 
 async function mockSendSPLTokenFailed(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   return [
-    ...(isUnifiedAssetsEnabled
-      ? [
-          await mockAccountsApiV2SupportedNetworks(mockServer),
-          await mockAccountsApiV5MultiaccountBalances(mockServer),
-        ]
-      : []),
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),
@@ -219,9 +206,7 @@ async function mockSendSPLTokenFailed(
     await mockGetFailedSignaturesForAddress(mockServer),
     await mockGetFailedTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
-    isUnifiedAssetsEnabled
-      ? await mockSolanaTokenApiAssets(mockServer)
-      : await mockTokenApiAssets(mockServer),
+    await mockSolanaTokenApiAssets(mockServer),
   ];
 }
 
@@ -230,9 +215,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
     await withFixtures(
       {
         fixtures: (() => {
-          if (!isUnifiedAssetsEnabled) {
-            return new FixtureBuilderV2().build();
-          }
           const fixture = new FixtureBuilderV2()
             .withAssetsController(SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE)
             .build();
@@ -259,14 +241,13 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
+        await homePage.waitForNonEvmAccountsLoaded();
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -289,19 +270,15 @@ describe('Send flow - SPL Token', function (this: Suite) {
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
         await confirmation.checkAccountIsDisplayed('Account 1');
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterButton({ button: 'confirm' });
 
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkTxAction({ action: 'Sent USDC' });
+        await activityTab.checkTxAction({
+          action: 'Sent USDC',
+          confirmedTx: 1,
+        });
 
-        if (isUnifiedAssetsEnabled) {
-          await driver.waitForSelector({
-            css: '[data-testid="transaction-list-item-primary-currency"]',
-            text: '0.1',
-          });
-        } else {
-          await activityTab.checkTxAmountInActivity('-0.1 USDC', 1);
-        }
+        await activityTab.checkTransactionAmount('0.1');
 
         await activityTab.checkNoFailedTransactions();
       },
@@ -312,9 +289,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
     await withFixtures(
       {
         fixtures: (() => {
-          if (!isUnifiedAssetsEnabled) {
-            return new FixtureBuilderV2().build();
-          }
           const fixture = new FixtureBuilderV2()
             .withAssetsController(SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE)
             .build();
@@ -342,14 +316,13 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
+        await homePage.waitForNonEvmAccountsLoaded();
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Solana');
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        const networkFilter = new NetworkFilter(driver);
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+        await selectNetworkModal.selectNetworkByNameWithWait('Solana');
 
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('50');
@@ -372,7 +345,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         const confirmation = new SnapTransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
         await confirmation.checkAccountIsDisplayed('Account 1');
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterButton({ button: 'confirm' });
 
         const activityTab = new ActivityTab(driver);
         await activityTab.checkFailedTxNumberDisplayedInActivity();

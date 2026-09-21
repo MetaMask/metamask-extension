@@ -187,10 +187,10 @@ describe('HardwareWalletRepair', () => {
     expect(mockRequestHardwareWalletPermission).toHaveBeenCalledWith(
       HardwareWalletType.Ledger,
     );
-    expect(mockEnsureDeviceReady).toHaveBeenCalled();
+    expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
     expect(
       hardwareWalletRepairUtils.ensureRepairDeviceReady,
-    ).not.toHaveBeenCalled();
+    ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
     expect(mockSetConnectionReady).toHaveBeenCalled();
   });
 
@@ -250,9 +250,11 @@ describe('HardwareWalletRepair', () => {
     expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
   });
 
-  it('shows error when ensureDeviceReady returns false after permission granted', async () => {
+  it('shows error when ensureRepairDeviceReady returns false after permission granted', async () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(true);
-    mockEnsureDeviceReady.mockResolvedValue(false);
+    jest
+      .spyOn(hardwareWalletRepairUtils, 'ensureRepairDeviceReady')
+      .mockResolvedValue(false);
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     expect(
@@ -271,11 +273,27 @@ describe('HardwareWalletRepair', () => {
     );
   });
 
-  it('shows error when ensureDeviceReady throws', async () => {
+  it('shows blind signing guidance when ensureRepairDeviceReady throws BlindSignNotSupported', async () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(true);
-    mockEnsureDeviceReady.mockRejectedValue(
-      new Error('test error from device'),
-    );
+    const blindSignError = {
+      code: 6001,
+      message: 'Blind signing is not enabled',
+    };
+    jest
+      .spyOn(hardwareWalletRepairUtils, 'ensureRepairDeviceReady')
+      .mockRejectedValue(blindSignError);
+    const { getByTestId, findByText } = renderRepairPage();
+    fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
+    expect(
+      await findByText('hardwareWalletErrorTitleBlindSignNotSupported'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows error when ensureRepairDeviceReady throws', async () => {
+    mockRequestHardwareWalletPermission.mockResolvedValue(true);
+    jest
+      .spyOn(hardwareWalletRepairUtils, 'ensureRepairDeviceReady')
+      .mockRejectedValue(new Error('test error from device'));
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     expect(await findByText('test error from device')).toBeInTheDocument();

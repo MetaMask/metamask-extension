@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -17,6 +17,7 @@ import {
   IconName,
 } from '../../component-library';
 import { SECOND } from '../../../../shared/constants/time';
+import { useDispatch } from '../../../store/hooks';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;
 

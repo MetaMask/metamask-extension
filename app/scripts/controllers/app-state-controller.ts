@@ -24,8 +24,9 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -42,7 +43,6 @@ import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
-  NetworkConnectionBanner,
   StorageWriteErrorType,
 } from '../../../shared/constants/app-state';
 import type {
@@ -63,6 +63,11 @@ import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type { Preferences } from '../../../shared/types/preferences';
+import {
+  createHardwareWalletError,
+  HardwareWalletType,
+  toHardwareWalletError,
+} from '../../../shared/lib/hardware-wallets';
 import { LegacyBackgroundApiServiceSetLockedAction } from '../services/legacy-background-api-service-method-action-types';
 import type {
   PreferencesControllerGetStateAction,
@@ -71,7 +76,7 @@ import type {
 import { AppStateControllerMethodActions } from './app-state-controller-method-action-types';
 
 export type DappSwapComparisonData = {
-  quotes?: QuoteResponse[];
+  quotes?: QuoteResponseV1[];
   latency?: number;
   commands?: string;
   error?: string;
@@ -111,15 +116,14 @@ export type AppStateControllerState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  canTrackWalletFundsObtained: boolean;
   pendingExtensionVersion: string | null;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
   lastUpdatedFromVersion: string | null;
   lastViewedUserSurvey: number | null;
-  networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
+  arcUsageNoticeShown: boolean;
   pna25Acknowledged: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
@@ -189,6 +193,12 @@ export type AppStateControllerState = {
    * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
    */
   passkeyAutoUnlockSuppressed: boolean;
+
+  /**
+   * The entry point that initiated the last Perps deposit flow (e.g.
+   * 'hyperliquid_deposit_prompt'). Currently used to show custom toast UI.
+   */
+  lastPerpsDepositEntryPoint: string | null;
 };
 
 const controllerName = 'AppStateController';
@@ -265,7 +275,6 @@ type AppStateControllerInitState = Partial<
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
-    | 'networkConnectionBanner'
   >
 >;
 
@@ -286,13 +295,13 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  canTrackWalletFundsObtained: true,
   pendingExtensionVersion: null,
   lastUpdatedAt: null,
   lastUpdatedFromVersion: null,
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  arcUsageNoticeShown: false,
   pna25Acknowledged: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
@@ -324,6 +333,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
+  lastPerpsDepositEntryPoint: null,
   ...getInitialStateOverrides(),
 });
 
@@ -340,9 +350,6 @@ function getInitialStateOverrides() {
     currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
-    networkConnectionBanner: {
-      status: 'unknown' as const,
-    },
   };
 }
 
@@ -415,12 +422,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: false,
   },
-  canTrackWalletFundsObtained: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
-  },
   pendingExtensionVersion: {
     includeInStateLogs: true,
     persist: false,
@@ -451,12 +452,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  networkConnectionBanner: {
-    includeInStateLogs: false,
-    persist: false,
-    includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
   newPrivacyPolicyToastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
@@ -464,6 +459,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   newPrivacyPolicyToastShownDate: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  arcUsageNoticeShown: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -703,6 +704,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  lastPerpsDepositEntryPoint: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
 
 const MESSENGER_EXPOSED_METHODS = [
@@ -728,8 +735,8 @@ const MESSENGER_EXPOSED_METHODS = [
   'removeSlide',
   'requestQrCodeScan',
   'setAppActiveTab',
+  'setArcUsageNoticeShown',
   'setBrowserEnvironment',
-  'setCanTrackWalletFundsObtained',
   'setConnectedStatusPopoverHasBeenShown',
   'setCurrentExtensionPopupId',
   'setCurrentPopupId',
@@ -741,6 +748,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setIsWalletResetInProgress',
   'setLastActiveTime',
   'setLastInteractedConfirmationInfo',
+  'setLastPerpsDepositEntryPoint',
   'setLastUpdatedAt',
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
@@ -769,7 +777,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setTermsOfUseLastAgreed',
   'setTrezorModel',
   'setUpdateModalLastDismissedAt',
-  'updateNetworkConnectionBanner',
   'updateNftDropDownState',
   'updateSlides',
   'updateThrottledOriginState',
@@ -965,6 +972,12 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  setArcUsageNoticeShown(): void {
+    this.update((state) => {
+      state.arcUsageNoticeShown = true;
     });
   }
 
@@ -1375,19 +1388,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Updates the network connection banner state
-   *
-   * @param networkConnectionBanner - The new banner state
-   */
-  updateNetworkConnectionBanner(
-    networkConnectionBanner: AppStateControllerState['networkConnectionBanner'],
-  ): void {
-    this.update((state) => {
-      state.networkConnectionBanner = networkConnectionBanner;
-    });
-  }
-
-  /**
    * Sets a unique ID for the current extension popup
    *
    * @param currentExtensionPopupId
@@ -1477,11 +1477,12 @@ export class AppStateController extends BaseController<
   };
 
   /**
-   * A setter for the currentPopupId which indicates the id of popup window that's currently active
+   * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+   * Pass `undefined` to clear when the popup is closed.
    *
    * @param currentPopupId
    */
-  setCurrentPopupId(currentPopupId: number): void {
+  setCurrentPopupId(currentPopupId: number | undefined): void {
     this.update((state) => {
       state.currentPopupId = currentPopupId;
     });
@@ -1506,6 +1507,17 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.lastInteractedConfirmationInfo = lastInteractedConfirmationInfo;
+    });
+  }
+
+  /**
+   * Sets the entry point that initiated the last Perps deposit flow.
+   *
+   * @param entryPoint - The entry point identifier, or undefined to clear.
+   */
+  setLastPerpsDepositEntryPoint(entryPoint: string | null): void {
+    this.update((state) => {
+      state.lastPerpsDepositEntryPoint = entryPoint;
     });
   }
 
@@ -1592,10 +1604,14 @@ export class AppStateController extends BaseController<
    * Cancels the current QR code scan, if one is in progress.
    * This will reject the promise with an error.
    *
-   * @param error - The error to reject the promise with.
+   * @param error - The error (or serialized form) to reject the promise with.
+   * Callers across the extension-port boundary may pass a plain string or a
+   * serialized `HardwareWalletError` JSON shape because `Error` instances do
+   * not survive port serialization. Missing payloads default to
+   * `ErrorCode.UserCancelled`.
    * @throws If no QR code scan is in progress.
    */
-  cancelQrCodeScan(error?: Error): void {
+  cancelQrCodeScan(error?: unknown): void {
     if (!this.#qrCodeScanPromise) {
       throw new Error('No QR code scan is in progress.');
     }
@@ -1605,7 +1621,17 @@ export class AppStateController extends BaseController<
       state.lastQrScanCompletedSuccessfully = false;
     });
 
-    this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
+    this.#qrCodeScanPromise.reject(
+      toHardwareWalletError(
+        error ??
+          createHardwareWalletError(
+            ErrorCode.UserCancelled,
+            HardwareWalletType.Qr,
+            'Scan cancelled',
+          ),
+        HardwareWalletType.Qr,
+      ),
+    );
     this.#qrCodeScanPromise = null;
   }
 
@@ -1703,12 +1729,6 @@ export class AppStateController extends BaseController<
       if (txType !== undefined) {
         state.pendingShieldCohortTxType = txType;
       }
-    });
-  }
-
-  setCanTrackWalletFundsObtained(enabled: boolean): void {
-    this.update((state) => {
-      state.canTrackWalletFundsObtained = enabled;
     });
   }
 

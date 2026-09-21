@@ -229,6 +229,49 @@ export const permitSignatureMsg = {
   },
 } as SignatureRequestType;
 
+export const permitSignatureMsgWithUnsignedFields = {
+  ...permitSignatureMsg,
+  id: 'unsigned-fields-permit',
+  chainId: CHAIN_IDS.MAINNET,
+  msgParams: {
+    ...permitSignatureMsg.msgParams,
+    data: JSON.stringify({
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Permit: [
+          { name: 'owner', type: 'address' },
+          { name: 'spender', type: 'address' },
+          { name: 'value', type: 'uint256' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint256' },
+        ],
+      },
+      primaryType: 'Permit',
+      domain: {
+        name: 'USD Coin',
+        version: '2',
+        chainId: 1,
+        verifyingContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      },
+      message: {
+        owner: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        spender: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+        value:
+          '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+        nonce: '0',
+        deadline: '1893456000',
+        tokenId: '0',
+        allowed: false,
+      },
+    }),
+  },
+} as SignatureRequestType;
+
 export const seaportSignatureMsg = {
   chainId: '0x1',
   id: 'e9297d91-aca0-11ef-9ac4-417a173450d3',
@@ -291,7 +334,7 @@ export const permitNFTSignatureMsg = {
   time: 1728651190529,
   type: 'eth_signTypedData',
   msgParams: {
-    data: '{"domain":{"name":"Uniswap V3 Positions NFT-V1","version":"1","chainId":1,"verifyingContract":"0xC36442b4a4522E871399CD717aBDD847Ab11FE88"},"types":{"Permit":[{"name":"spender","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","message":{"spender":"0x00000000Ede6d8D217c60f93191C060747324bca","tokenId":"3606393","nonce":"0","deadline":"1734995006"}}',
+    data: '{"domain":{"name":"Uniswap V3 Positions NFT-V1","version":"1","chainId":1,"verifyingContract":"0xC36442b4a4522E871399CD717aBDD847Ab11FE88"},"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"spender","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","message":{"spender":"0x00000000Ede6d8D217c60f93191C060747324bca","tokenId":"3606393","nonce":"0","deadline":"1734995006"}}',
     from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
     version: 'V4',
     signatureMethod: 'eth_signTypedData_v4',

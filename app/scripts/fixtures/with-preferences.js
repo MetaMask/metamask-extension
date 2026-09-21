@@ -20,7 +20,7 @@ export const FIXTURES_PREFERENCES = {
   currentLocale: 'en',
   knownMethodData: {},
   use4ByteResolution: true,
-  completedMetaMetricsOnboarding: true,
+  consentDecisionMade: true,
   optedIn: true,
   dataCollectionForMarketing: true,
   useNftDetection: true,

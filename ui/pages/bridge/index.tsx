@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
@@ -18,6 +18,8 @@ import {
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
+import { endTrace, TraceName } from '../../../shared/lib/trace';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -32,26 +34,77 @@ import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { useBottomNavBar } from '../../hooks/useBottomNavBar';
 import { getFromChain } from '../../ducks/bridge/selectors';
-import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
+import {
+  startSwapViewLoadTrace,
+  useBridgeNavigation,
+} from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
-import BridgeAssetPickerPage from './prepare/bridge-asset-picker-page';
+import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
-import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+import AwaitingSignatures from './awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';
+import { swapQuoteFetchTrace } from './utils/swap-quote-fetch-trace';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
   useBridging();
 
-  const { navigateToDefaultRoute } = useBridgeNavigation();
+  const {
+    navigateToDefaultRoute,
+    search,
+    swapViewTraceId,
+    swapViewPrefilledAmount,
+  } = useBridgeNavigation();
+  const [swapViewTrace] = useState(() => {
+    if (swapViewTraceId) {
+      return {
+        id: swapViewTraceId,
+        prefilledAmount: Boolean(swapViewPrefilledAmount),
+      };
+    }
+
+    const searchParams = new URLSearchParams(search);
+    return {
+      id: startSwapViewLoadTrace({
+        token: null,
+        search: searchParams,
+        entryPoint: 'deeplink',
+      }),
+      prefilledAmount: Boolean(searchParams.get(BridgeQueryParams.Amount)),
+    };
+  });
+  const isSwapFlowMountedRef = useRef(false);
+
+  useEffect(() => {
+    isSwapFlowMountedRef.current = true;
+
+    return () => {
+      isSwapFlowMountedRef.current = false;
+      // Defer cancellation so React StrictMode's setup/cleanup/setup probe is
+      // not mistaken for the user leaving the page.
+      queueMicrotask(() => {
+        if (isSwapFlowMountedRef.current) {
+          return;
+        }
+
+        endTrace({
+          name: TraceName.SwapViewLoaded,
+          id: swapViewTrace.id,
+          timestamp: Date.now(),
+          data: { result: 'cancelled' },
+        });
+        swapQuoteFetchTrace.finish('cancelled');
+      });
+    };
+  }, [swapViewTrace.id]);
   // Pre-fill the src chain balances, slippage and other quote params before rendering the bridge page
   // This also resets any search query parameters and navigation states
   usePrefillFromSearchQuery();
@@ -95,6 +148,23 @@ const CrossChainSwap = () => {
   const handleBack = () => {
     transitionBack(() => navigateToDefaultRoute());
   };
+
+  const containerClass = 'flex min-h-full w-full flex-col';
+
+  const prepareBody = (
+    <>
+      <BridgeTransactionSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => {
+          setIsSettingsModalOpen(false);
+        }}
+      />
+      <PrepareBridgePage
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        swapViewTrace={swapViewTrace}
+      />
+    </>
+  );
 
   const swapHeader = showBottomBar ? (
     <div className="flex items-center justify-between p-4 gap-4">
@@ -152,36 +222,43 @@ const CrossChainSwap = () => {
       <Route
         path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
         element={
-          <Page className="bridge__container">
-            {swapHeader}
-            <Content padding={0}>
-              <BridgeTransactionSettingsModal
-                isOpen={isSettingsModalOpen}
-                onClose={() => {
-                  setIsSettingsModalOpen(false);
-                }}
-              />
-              <PrepareBridgePage
-                onOpenSettings={() => setIsSettingsModalOpen(true)}
-              />
-            </Content>
-          </Page>
+          showBottomBar ? (
+            <div className={containerClass}>
+              {swapHeader}
+              {prepareBody}
+            </div>
+          ) : (
+            <Page className="bridge__container">
+              {swapHeader}
+              <Content padding={0}>{prepareBody}</Content>
+            </Page>
+          )
         }
       />
       <Route
         path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
         element={
-          <Page className="bridge__container">
-            {swapHeader}
-            <Content padding={0}>
-              <Content>
-                <AwaitingSignatures />
-              </Content>
+          showBottomBar ? (
+            <div className={containerClass}>
+              {swapHeader}
+              <AwaitingSignatures />
               <Footer>
                 <AwaitingSignaturesCancelButton />
               </Footer>
-            </Content>
-          </Page>
+            </div>
+          ) : (
+            <Page className="bridge__container">
+              {swapHeader}
+              <Content padding={0}>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </Content>
+            </Page>
+          )
         }
       />
     </Routes>

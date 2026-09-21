@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
@@ -25,6 +25,7 @@ import { useSafeChains } from '../networks-form/use-safe-chains';
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
+  getIsDefiPositionsEnabled,
 } from '../../../selectors';
 import {
   getIsPerpsExperienceAvailable,
@@ -35,6 +36,7 @@ import {
   setDefaultHomeActiveTabName,
   setPerpsTabBadgeSeen,
 } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
@@ -55,11 +57,11 @@ import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
-  showTokens: boolean;
   showTokensLinks?: boolean;
-  showNfts: boolean;
-  showActivity: boolean;
+  showTokens?: boolean;
+  showNfts?: boolean;
   showDefi?: boolean;
+  showActivity?: boolean;
 };
 
 /**
@@ -82,11 +84,11 @@ const TokenBalancesPoller = ({ chainIds }: { chainIds: Hex[] }) => {
 };
 
 export const AccountOverviewTabs = ({
-  showTokens,
   showTokensLinks,
-  showNfts,
-  showActivity,
-  showDefi,
+  showTokens = true,
+  showNfts = true,
+  showDefi = true,
+  showActivity = true,
 }: AccountOverviewTabsProps) => {
   const persistedTab = useSelector(getDefaultHomeActiveTabName);
   const [urlTab, setActiveTabKey] = useTabState();
@@ -109,6 +111,7 @@ export const AccountOverviewTabs = ({
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const prefetchTransactions = usePrefetchTransactions();
+  const defiPositionsEnabled = useSelector(getIsDefiPositionsEnabled);
 
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
@@ -140,7 +143,7 @@ export const AccountOverviewTabs = ({
     ...(isPerpsExperienceAvailable && !showBottomNav
       ? [AccountOverviewTabKey.Perps]
       : []),
-    ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
+    ...(showDefi && defiPositionsEnabled ? [AccountOverviewTabKey.DeFi] : []),
     ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
     ...(showActivity && !showBottomNav ? [AccountOverviewTabKey.Activity] : []),
   ]);
@@ -283,7 +286,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {showDefi && (
+        {showDefi && defiPositionsEnabled && (
           <Tab
             name={t('defi')}
             tabKey={AccountOverviewTabKey.DeFi}

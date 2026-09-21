@@ -1,37 +1,17 @@
 import React, { useCallback, useState, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import {
   Box,
   ButtonBase,
   ButtonBaseSize,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalContentSize,
   IconName,
-  IconSize,
-  Text,
-  ButtonIconSize,
-  ButtonIcon,
-} from '../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-  TextColor,
-  BorderColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { NetworkListItem } from '../../../../../components/multichain';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
 import { getNetworkSections } from '../../../../../helpers/utils/network-sections';
-import { getIsNetworkManagementEnabled } from '../../../../../selectors/multichain/feature-flags';
 import {
   NetworkSelectionModal,
   type NetworkSelectionSection,
@@ -102,7 +82,6 @@ export const NetworkFilter = ({
   disableMetrics = false,
 }: NetworkFilterProps) => {
   const t = useI18nContext();
-  const isNetworkManagementEnabled = useSelector(getIsNetworkManagementEnabled);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const {
@@ -169,8 +148,6 @@ export const NetworkFilter = ({
 
     return networkName || `Chain ${selectedChainId}`;
   }, [getChainNetworkDetails, selectedChainId, t]);
-
-  const isSingleNetworkSelected = selectedChainId !== null;
 
   const handleNetworkFilterClick = useCallback(() => {
     setIsNetworkFilterPopoverOpen((isOpen) => !isOpen);
@@ -247,99 +224,26 @@ export const NetworkFilter = ({
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          startIconProps={{ marginInlineEnd: 1, size: IconSize.Md }}
-          className="hover:bg-hover active:bg-pressed"
-          backgroundColor={BackgroundColor.backgroundDefault}
-          borderRadius={BorderRadius.LG}
-          color={
-            isSingleNetworkSelected
-              ? TextColor.primaryDefault
-              : TextColor.textDefault
-          }
-          borderColor={BorderColor.borderMuted}
-          paddingLeft={2}
-          paddingRight={2}
-          marginBottom={2}
-          marginTop={2}
-          ellipsis
+          startIconProps={{ 'data-testid': 'icon-filter' }}
+          className="bg-transparent border border-border-muted hover:bg-hover active:bg-pressed my-2"
         >
-          <Text
-            variant={TextVariant.bodySmMedium}
-            color={
-              isSingleNetworkSelected
-                ? TextColor.primaryDefault
-                : TextColor.textDefault
-            }
-            ellipsis
-          >
-            {displayName}
-          </Text>
+          {displayName}
         </ButtonBase>
       </Box>
-      {isNetworkManagementEnabled ? (
-        <NetworkSelectionModal
-          isOpen={isNetworkFilterPopoverOpen}
-          onClose={closePopover}
-          title={t('bridgeSelectNetwork')}
-          topItem={{
-            key: 'all-networks',
-            name: t('allNetworks'),
-            iconSrc: IconName.Global,
-            selected: selectedChainId === null,
-            onClick: () => handleNetworkSelection(null),
-            testId: 'send-network-filter-all-networks',
-          }}
-          sections={sharedModalSections}
-        />
-      ) : (
-        <Modal
-          isOpen={isNetworkFilterPopoverOpen}
-          onClose={closePopover}
-          isClosedOnOutsideClick={true}
-          isClosedOnEscapeKey={true}
-        >
-          <ModalOverlay />
-          <ModalContent size={ModalContentSize.Md}>
-            <ModalHeader
-              endAccessory={
-                <ButtonIcon
-                  ariaLabel="Close recipient modal"
-                  data-testid="close-recipient-modal-btn"
-                  iconName={IconName.Close}
-                  onClick={closePopover}
-                  size={ButtonIconSize.Sm}
-                />
-              }
-            >
-              {t('selectNetworkToFilter')}
-            </ModalHeader>
-            <ModalBody paddingLeft={0} paddingRight={0}>
-              <NetworkListItem
-                name={t('allNetworks')}
-                iconSrc={IconName.Global}
-                iconSize={IconSize.Xl}
-                selected={selectedChainId === null}
-                onClick={() => handleNetworkSelection(null)}
-                focus={false}
-              />
-              {uniqueChainIds.map((chainId) => {
-                const networkDetails = getChainNetworkDetails(chainId);
-
-                return (
-                  <NetworkListItem
-                    key={chainId}
-                    name={networkDetails?.networkName || `Chain ${chainId}`}
-                    iconSrc={networkDetails?.networkImage || ''}
-                    selected={selectedChainId === chainId}
-                    onClick={() => handleNetworkSelection(chainId)}
-                    focus={false}
-                  />
-                );
-              })}
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      )}
+      <NetworkSelectionModal
+        isOpen={isNetworkFilterPopoverOpen}
+        onClose={closePopover}
+        title={t('bridgeSelectNetwork')}
+        topItem={{
+          key: 'all-networks',
+          name: t('allNetworks'),
+          iconName: IconName.Global,
+          selected: selectedChainId === null,
+          onClick: () => handleNetworkSelection(null),
+          testId: 'send-network-filter-all-networks',
+        }}
+        sections={sharedModalSections}
+      />
     </>
   );
 };

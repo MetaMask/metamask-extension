@@ -33,6 +33,8 @@ export const BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING: ABTestAnalyticsMapping = {
   validVariants: [ABTestVariant.Control, ABTestVariant.Treatment],
   eventNames: [
     MetaMetricsEventName.TokenScreenViewed,
+    MetaMetricsEventName.DeFiScreenViewed,
+    MetaMetricsEventName.NftScreenViewed,
     MetaMetricsEventName.PerpsScreenViewed,
     MetaMetricsEventName.ActivityScreenViewed,
     'Unified SwapBridge Page Viewed',

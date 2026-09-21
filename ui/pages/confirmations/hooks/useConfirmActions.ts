@@ -1,7 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { MetaMetricsEventLocation } from '../../../../shared/constants/metametrics';
@@ -13,12 +12,13 @@ import {
   updateCustomNonce,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { currentConfirmation, goBackTo } =
+  const { currentConfirmation, goBackTo, suppressAutoExit } =
     useConfirmContext<TransactionMeta>();
   const { navigateBackIfSend } = useConfirmSendNavigation();
   const { id: currentConfirmationId } = currentConfirmation || {};
@@ -60,6 +60,7 @@ export const useConfirmActions = () => {
         return;
       }
       if (navigateBackForSend) {
+        suppressAutoExit();
         navigateBackIfSend();
       }
       await rejectApproval({ location });
@@ -82,6 +83,7 @@ export const useConfirmActions = () => {
       rejectApproval,
       resetTransactionState,
       goBackTo,
+      suppressAutoExit,
     ],
   );
 

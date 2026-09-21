@@ -1,22 +1,17 @@
 import { JsonRpcRequest } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import * as networksModule from '../../../../shared/lib/selectors/networks';
-import {
-  SupportedEVMChain,
-  mapChainIdToSupportedEVMChain,
-} from '../../../../shared/lib/trust-signals';
 import {
   isEthSendTransaction,
   hasValidTransactionParams,
   isEthSignTypedData,
   hasValidTypedDataParams,
-  getChainId,
   isConnected,
   connectScreenHasBeenPrompted,
+  getWrappedRequestMethod,
+  isCaipConnected,
+  isWalletSendCalls,
+  hasValidSendCallsParams,
 } from './trust-signals-util';
-
-jest.mock('../../../../shared/lib/selectors/networks');
 
 describe('trust-signals-util', () => {
   describe('isEthSendTransaction', () => {
@@ -248,129 +243,6 @@ describe('trust-signals-util', () => {
     });
   });
 
-  describe('getChainId', () => {
-    const mockedGetProviderConfig = jest.mocked(
-      networksModule.getProviderConfig,
-    );
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should return Ethereum for mainnet chain ID', () => {
-      const mockNetworkController = {
-        state: { providerConfig: { chainId: CHAIN_IDS.MAINNET } },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue({
-        chainId: CHAIN_IDS.MAINNET,
-      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(getChainId(mockNetworkController)).toBe(
-        SupportedEVMChain.Ethereum,
-      );
-    });
-
-    it('should return Polygon for polygon chain ID', () => {
-      const mockNetworkController = {
-        state: { providerConfig: { chainId: CHAIN_IDS.POLYGON } },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue({
-        chainId: CHAIN_IDS.POLYGON,
-      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(getChainId(mockNetworkController)).toBe(SupportedEVMChain.Polygon);
-    });
-
-    it('should return correct chain for various supported chains', () => {
-      const testCases = [
-        { chainId: CHAIN_IDS.ARBITRUM, expected: SupportedEVMChain.Arbitrum },
-        { chainId: CHAIN_IDS.AVALANCHE, expected: SupportedEVMChain.Avalanche },
-        { chainId: CHAIN_IDS.BASE, expected: SupportedEVMChain.Base },
-        { chainId: CHAIN_IDS.BSC, expected: SupportedEVMChain.Bsc },
-        { chainId: CHAIN_IDS.OPTIMISM, expected: SupportedEVMChain.Optimism },
-        {
-          chainId: CHAIN_IDS.SEPOLIA,
-          expected: SupportedEVMChain.EthereumSepolia,
-        },
-      ];
-
-      testCases.forEach(({ chainId, expected }) => {
-        const mockNetworkController = {
-          state: { providerConfig: { chainId } },
-        } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-        mockedGetProviderConfig.mockReturnValue({
-          chainId,
-        } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-        expect(getChainId(mockNetworkController)).toBe(expected);
-      });
-    });
-
-    it('should handle lowercase chain IDs', () => {
-      const mockNetworkController = {
-        state: { providerConfig: { chainId: '0X1' } },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue({
-        chainId: '0X1', // Uppercase
-      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(getChainId(mockNetworkController)).toBe(
-        SupportedEVMChain.Ethereum,
-      );
-    });
-
-    it('should throw error when chain ID is not found', () => {
-      const mockNetworkController = {
-        state: { providerConfig: {} },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(() => getChainId(mockNetworkController)).toThrow(
-        'Chain ID not found',
-      );
-    });
-
-    it('should throw error when provider config is undefined', () => {
-      const mockNetworkController = {
-        state: { providerConfig: {} },
-      } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      mockedGetProviderConfig.mockReturnValue(undefined as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      expect(() => getChainId(mockNetworkController)).toThrow(
-        'Chain ID not found',
-      );
-    });
-
-    it('should handle custom chain IDs', () => {
-      const customChainMappings = [
-        { chainId: '0x76adf1', expected: SupportedEVMChain.Zora },
-        { chainId: '0x27bc86aa', expected: SupportedEVMChain.Degen },
-        { chainId: '0x343b', expected: SupportedEVMChain.ImmutableZkevm },
-        { chainId: '0x1e0', expected: SupportedEVMChain.Worldchain },
-        { chainId: '0x79a', expected: SupportedEVMChain.SoneiumMinato },
-        { chainId: '0x7e4', expected: SupportedEVMChain.Ronin },
-      ];
-
-      customChainMappings.forEach(({ chainId, expected }) => {
-        const mockNetworkController = {
-          state: { providerConfig: { chainId } },
-        } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-        mockedGetProviderConfig.mockReturnValue({
-          chainId,
-        } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-        expect(getChainId(mockNetworkController)).toBe(expected);
-      });
-    });
-  });
-
   describe('isConnected', () => {
     it('returns true when the user is connected', () => {
       const req: JsonRpcRequest & { origin?: string } = {
@@ -445,226 +317,163 @@ describe('trust-signals-util', () => {
     });
   });
 
-  describe('mapChainIdToSupportedEVMChain', () => {
-    describe('supported chain mappings', () => {
-      const supportedChainTestCases = [
-        {
-          chainId: CHAIN_IDS.ARBITRUM,
-          expected: SupportedEVMChain.Arbitrum,
-          description: 'arbitrum',
-        },
-        {
-          chainId: CHAIN_IDS.AVALANCHE,
-          expected: SupportedEVMChain.Avalanche,
-          description: 'avalanche',
-        },
-        {
-          chainId: CHAIN_IDS.BASE,
-          expected: SupportedEVMChain.Base,
-          description: 'base',
-        },
-        {
-          chainId: CHAIN_IDS.BASE_SEPOLIA,
-          expected: SupportedEVMChain.BaseSepolia,
-          description: 'base sepolia',
-        },
-        {
-          chainId: CHAIN_IDS.BSC,
-          expected: SupportedEVMChain.Bsc,
-          description: 'bsc',
-        },
-        {
-          chainId: CHAIN_IDS.MAINNET,
-          expected: SupportedEVMChain.Ethereum,
-          description: 'mainnet',
-        },
-        {
-          chainId: CHAIN_IDS.OPTIMISM,
-          expected: SupportedEVMChain.Optimism,
-          description: 'optimism',
-        },
-        {
-          chainId: CHAIN_IDS.POLYGON,
-          expected: SupportedEVMChain.Polygon,
-          description: 'polygon',
-        },
-        {
-          chainId: CHAIN_IDS.SEPOLIA,
-          expected: SupportedEVMChain.EthereumSepolia,
-          description: 'sepolia',
-        },
-        {
-          chainId: CHAIN_IDS.ZKSYNC_ERA,
-          expected: SupportedEVMChain.Zksync,
-          description: 'zksync era',
-        },
-        {
-          chainId: CHAIN_IDS.ZK_SYNC_ERA_TESTNET,
-          expected: SupportedEVMChain.ZksyncSepolia,
-          description: 'zksync era testnet',
-        },
-        {
-          chainId: '0x76adf1',
-          expected: SupportedEVMChain.Zora,
-          description: 'zora',
-        },
-        {
-          chainId: CHAIN_IDS.LINEA_MAINNET,
-          expected: SupportedEVMChain.Linea,
-          description: 'linea',
-        },
-        {
-          chainId: CHAIN_IDS.BLAST,
-          expected: SupportedEVMChain.Blast,
-          description: 'blast',
-        },
-        {
-          chainId: CHAIN_IDS.SCROLL,
-          expected: SupportedEVMChain.Scroll,
-          description: 'scroll',
-        },
-        {
-          chainId: '0x27bc86aa',
-          expected: SupportedEVMChain.Degen,
-          description: 'degen',
-        },
-        {
-          chainId: CHAIN_IDS.AVALANCHE_TESTNET,
-          expected: SupportedEVMChain.AvalancheFuji,
-          description: 'avalanche testnet',
-        },
-        {
-          chainId: '0x343b',
-          expected: SupportedEVMChain.ImmutableZkevm,
-          description: 'immutable zkevm',
-        },
-        {
-          chainId: '0x34a1',
-          expected: SupportedEVMChain.ImmutableZkevmTestnet,
-          description: 'immutable zkevm testnet',
-        },
-        {
-          chainId: CHAIN_IDS.GNOSIS,
-          expected: SupportedEVMChain.Gnosis,
-          description: 'gnosis',
-        },
-        {
-          chainId: '0x1e0',
-          expected: SupportedEVMChain.Worldchain,
-          description: 'worldchain',
-        },
-        {
-          chainId: '0x79a',
-          expected: SupportedEVMChain.SoneiumMinato,
-          description: 'soneium minato',
-        },
-        {
-          chainId: '0x7e4',
-          expected: SupportedEVMChain.Ronin,
-          description: 'ronin',
-        },
-        {
-          chainId: CHAIN_IDS.APECHAIN_MAINNET,
-          expected: SupportedEVMChain.ApeChain,
-          description: 'apechain',
-        },
-        {
-          chainId: '0x849ea',
-          expected: SupportedEVMChain.ZeroNetwork,
-          description: 'zero network',
-        },
-        {
-          chainId: CHAIN_IDS.BERACHAIN,
-          expected: SupportedEVMChain.Berachain,
-          description: 'berachain',
-        },
-        {
-          chainId: '0x138c5',
-          expected: SupportedEVMChain.BerachainBartio,
-          description: 'berachain bartio',
-        },
-        {
-          chainId: CHAIN_IDS.INK,
-          expected: SupportedEVMChain.Ink,
-          description: 'ink',
-        },
-        {
-          chainId: CHAIN_IDS.INK_SEPOLIA,
-          expected: SupportedEVMChain.InkSepolia,
-          description: 'ink sepolia',
-        },
-        {
-          chainId: '0xab5',
-          expected: SupportedEVMChain.Abstract,
-          description: 'abstract',
-        },
-        {
-          chainId: '0x2b74',
-          expected: SupportedEVMChain.AbstractTestnet,
-          description: 'abstract testnet',
-        },
-        {
-          chainId: '0x74c',
-          expected: SupportedEVMChain.Soneium,
-          description: 'soneium',
-        },
-        {
-          chainId: CHAIN_IDS.UNICHAIN,
-          expected: SupportedEVMChain.Unichain,
-          description: 'unichain',
-        },
-        {
-          chainId: CHAIN_IDS.SEI,
-          expected: SupportedEVMChain.Sei,
-          description: 'sei',
-        },
-        {
-          chainId: CHAIN_IDS.FLOW,
-          expected: SupportedEVMChain.FlowEvm,
-          description: 'flow',
-        },
-      ];
-
-      supportedChainTestCases.forEach(({ chainId, expected, description }) => {
-        it(`should map ${description} chainId (${chainId}) to ${expected}`, () => {
-          expect(mapChainIdToSupportedEVMChain(chainId)).toBe(expected);
-        });
-      });
+  describe('isWalletSendCalls', () => {
+    it('returns true when the method is wallet_sendCalls', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(isWalletSendCalls(req)).toBe(true);
     });
 
-    describe('case insensitive handling', () => {
-      const caseTestCases = [
-        {
-          chainId: '0X1',
-          expected: SupportedEVMChain.Ethereum,
-          description: 'uppercase mainnet',
-        },
-        {
-          chainId: '0xA86A',
-          expected: SupportedEVMChain.Avalanche,
-          description: 'uppercase avalanche',
-        },
-      ];
+    it('returns false for other methods', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(isWalletSendCalls(req)).toBe(false);
+    });
+  });
 
-      caseTestCases.forEach(({ chainId, expected, description }) => {
-        it(`should handle case insensitive chainId: ${description} (${chainId})`, () => {
-          expect(mapChainIdToSupportedEVMChain(chainId)).toBe(expected);
-        });
-      });
+  describe('hasValidSendCallsParams', () => {
+    const createRequest = (params?: unknown): JsonRpcRequest =>
+      ({
+        method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        params,
+        id: 1,
+        jsonrpc: '2.0',
+      }) as JsonRpcRequest;
+
+    it('returns true when params contain a calls array of objects', () => {
+      const req = createRequest([
+        {
+          version: '2.0.0',
+          chainId: '0x1',
+          calls: [{ to: '0x1234', data: '0x' }, { data: '0x' }],
+        },
+      ]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
     });
 
-    describe('unsupported chains', () => {
-      const unsupportedTestCases = [
-        { chainId: '0x999999', description: 'unknown hex chainId' },
-        { chainId: '0xabc123', description: 'invalid hex chainId' },
-        { chainId: '', description: 'empty string' },
-      ];
+    it('returns true when calls is empty', () => {
+      const req = createRequest([{ calls: [] }]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
 
-      unsupportedTestCases.forEach(({ chainId, description }) => {
-        it(`should return undefined for ${description}: ${chainId}`, () => {
-          expect(mapChainIdToSupportedEVMChain(chainId)).toBeUndefined();
-        });
+    it('returns false when params are missing', () => {
+      const req = createRequest(undefined);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when params are an empty array', () => {
+      const req = createRequest([]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when the first param is not an object', () => {
+      const req = createRequest(['not-an-object']);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when calls is missing', () => {
+      const req = createRequest([{ version: '2.0.0' }]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when calls is not an array', () => {
+      const req = createRequest([{ calls: 'not-an-array' }]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns true when a call entry is not an object', () => {
+      // Entry-level validation is the caller's job (per-call skip), so one
+      // malformed entry does not invalidate the batch for scanning purposes.
+      const req = createRequest([{ calls: [{ to: '0x1234' }, null] }]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
+  });
+
+  describe('getWrappedRequestMethod', () => {
+    const createRequest = (method: string, params: unknown) =>
+      ({
+        method,
+        params,
+        id: 1,
+        jsonrpc: '2.0',
+      }) as unknown as JsonRpcRequest;
+
+    it('returns the inner method of a wallet_invokeMethod request', () => {
+      const req = createRequest(MESSAGE_TYPE.WALLET_INVOKE_METHOD, {
+        scope: 'eip155:1',
+        request: { method: MESSAGE_TYPE.ETH_SEND_TRANSACTION, params: [] },
       });
+      expect(getWrappedRequestMethod(req)).toBe(
+        MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+      );
+    });
+
+    it('returns undefined for any other method', () => {
+      const req = createRequest(MESSAGE_TYPE.ETH_SEND_TRANSACTION, []);
+      expect(getWrappedRequestMethod(req)).toBeUndefined();
+    });
+
+    (
+      [
+        ['missing params', undefined],
+        ['missing request', { scope: 'eip155:1' }],
+        ['missing inner method', { scope: 'eip155:1', request: {} }],
+        [
+          'non-string inner method',
+          { scope: 'eip155:1', request: { method: 42 } },
+        ],
+      ] as [string, unknown][]
+    ).forEach(([label, params]) => {
+      it(`returns undefined for a request with ${label}`, () => {
+        const req = createRequest(MESSAGE_TYPE.WALLET_INVOKE_METHOD, params);
+        expect(getWrappedRequestMethod(req)).toBeUndefined();
+      });
+    });
+  });
+
+  describe('isCaipConnected', () => {
+    const createRequest = (method: string, origin?: string) =>
+      ({
+        method,
+        params: [],
+        id: 1,
+        jsonrpc: '2.0',
+        origin,
+      }) as JsonRpcRequest & { origin?: string };
+
+    it('returns true for wallet_getSession when the origin holds a CAIP-25 permission', () => {
+      const req = createRequest(
+        MESSAGE_TYPE.WALLET_GET_SESSION,
+        'https://example.com',
+      );
+      expect(isCaipConnected(req, () => true)).toBe(true);
+    });
+
+    it('returns false for wallet_getSession when the origin holds no CAIP-25 permission', () => {
+      const req = createRequest(
+        MESSAGE_TYPE.WALLET_GET_SESSION,
+        'https://example.com',
+      );
+      expect(isCaipConnected(req, () => false)).toBe(false);
+    });
+
+    it('returns false when the request has no origin', () => {
+      const req = createRequest(MESSAGE_TYPE.WALLET_GET_SESSION);
+      expect(isCaipConnected(req, () => true)).toBe(false);
+    });
+
+    it('returns false for any other method', () => {
+      const req = createRequest(
+        MESSAGE_TYPE.WALLET_CREATE_SESSION,
+        'https://example.com',
+      );
+      expect(isCaipConnected(req, () => true)).toBe(false);
     });
   });
 });

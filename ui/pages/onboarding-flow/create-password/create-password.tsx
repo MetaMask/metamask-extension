@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { Box } from '@metamask/design-system-react';
 import {
@@ -15,7 +15,7 @@ import {
 import {
   getFirstTimeFlowType,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getIsSocialLoginFlow,
   getIsPasskeyFeatureAvailable,
@@ -42,6 +42,7 @@ import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../../create-password-form';
+import { useDispatch } from '../../../store/hooks';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;
@@ -75,14 +76,12 @@ export default function CreatePassword({
   const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
   const isOptedIn = useSelector(getOptedIn);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
   const shouldInjectMetametricsIframe = Boolean(
-    completedMetaMetricsOnboarding && isOptedIn && base64AnalyticsId,
+    consentDecisionMade && isOptedIn && base64AnalyticsId,
   );
   const analyticsIframeQuery = {
     mmi: base64AnalyticsId,
@@ -128,7 +127,7 @@ export default function CreatePassword({
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
           navigate(
-            completedMetaMetricsOnboarding
+            consentDecisionMade
               ? ONBOARDING_COMPLETION_ROUTE
               : ONBOARDING_METAMETRICS,
             { replace: true },
@@ -152,7 +151,7 @@ export default function CreatePassword({
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
-    completedMetaMetricsOnboarding,
+    consentDecisionMade,
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
   ]);

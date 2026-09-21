@@ -1,12 +1,17 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { useDeferredValue } from '../../hooks/useDeferredValue';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
-import { useFormatters } from '../../hooks/useFormatters';
+import { useRelativeMediumDate } from '../../hooks/useRelativeMediumDate';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import { useEventListener } from '../../hooks/useEventListener';
@@ -17,13 +22,15 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { TransactionDetails } from '../details/transaction-details';
+import { useRampsOrderActivity } from '../../hooks/ramps/useRampsOrderActivity';
+import { TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 import { ActivityListSkeleton } from './components/activity-list-skeleton';
 import { ActivityRow } from './rows/activity-row';
 import {
   dedupeItems,
+  getActivityItemIdentifier,
   getLastEvmItemIndex,
   getItemKey,
   groupActivityListItems,
@@ -40,10 +47,13 @@ const headerHeight = 40;
 export function ActivityList({
   filter,
   entryPoint,
-}: { filter?: ActivityListFilter; entryPoint?: ScreenViewedEntryPoint } = {}) {
+}: {
+  filter?: ActivityListFilter;
+  entryPoint?: ScreenViewedEntryPoint;
+} = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { formatMediumDate } = useFormatters();
+  const formatRelativeMediumDate = useRelativeMediumDate();
   const scrollContainerRef = useScrollContainer();
   const dialogRef = useRef<HTMLDialogElement>(null);
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
@@ -52,23 +62,26 @@ export function ActivityList({
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
   );
-  const filters = filter ?? { networks: deferredNetworks ?? [] };
+  const filters: ActivityListFilter = filter ?? {
+    networks: deferredNetworks ?? [],
+  };
 
-  const { data, isInitialLoading, fetchNextVisiblePage } =
+  const { data, isLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
 
   const localItems = useLocalTransactions(filters);
   const nonEvmItems = useNonEvmTransactions(filters);
+  const rampsItems = useRampsOrderActivity(filters);
   const evmItems = useMemo(
     () => data?.pages.flatMap((page) => page.data) ?? [],
     [data],
   );
 
   const groupedItems = useMemo(() => {
-    const items = dedupeItems(localItems, evmItems, nonEvmItems);
-
-    return groupActivityListItems(items);
-  }, [evmItems, localItems, nonEvmItems]);
+    return groupActivityListItems(
+      dedupeItems(localItems, evmItems, nonEvmItems, rampsItems),
+    );
+  }, [evmItems, localItems, nonEvmItems, rampsItems]);
 
   const lastEvmItemIndex = useMemo(
     () => getLastEvmItemIndex(groupedItems, evmItems),
@@ -77,9 +90,9 @@ export function ActivityList({
 
   useActivityScreenViewed({
     filter,
-    isSettled: networks !== null && !isInitialLoading,
+    isSettled: networks !== null && !isLoading,
     isEmpty: groupedItems.length === 0,
-    pendingLength: [...localItems, ...nonEvmItems].filter(
+    pendingLength: [...localItems, ...nonEvmItems, ...rampsItems].filter(
       (item) => item.status === 'pending',
     ).length,
     entryPoint,
@@ -87,16 +100,23 @@ export function ActivityList({
 
   const itemRef = useItemInView({
     targetIndex: lastEvmItemIndex,
-    root: scrollContainerRef?.current ?? null,
+    rootRef: scrollContainerRef ?? undefined,
     onVisible: fetchNextVisiblePage,
   });
 
-  useEventListener('popstate', () => {
+  const handlePopState = useCallback(() => {
     dialogRef.current?.close?.();
-  });
+  }, []);
+
+  useEventListener('popstate', handlePopState);
+
+  const handleDialogBack = useCallback(() => {
+    dialogRef.current?.close?.();
+  }, []);
 
   const handleClick = (item: ActivityListItem) => {
-    if (!item.hash) {
+    const identifier = getActivityItemIdentifier(item);
+    if (!identifier || !item.chainId) {
       return;
     }
 
@@ -116,7 +136,7 @@ export function ActivityList({
       dialogRef.current.showModal?.();
     }
 
-    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${item.hash}`;
+    const detailsHash = `#${TX_DETAILS_ROUTE}/${item.chainId}/${identifier}`;
     const alreadyOnDetails = window.location.hash.includes(
       `${TX_DETAILS_ROUTE}/`,
     );
@@ -159,6 +179,7 @@ export function ActivityList({
           showSortControl={false}
           showImportTokenButton={false}
           onNetworkSelect={setNetworks}
+          data-testid="parent-selector-activity-tab"
         />
       )}
 
@@ -173,7 +194,7 @@ export function ActivityList({
         keyExtractor={getItemKey}
         itemRef={itemRef}
         listEmptyComponent={
-          isInitialLoading ? (
+          isLoading ? (
             <ActivityListSkeleton />
           ) : (
             <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
@@ -186,7 +207,7 @@ export function ActivityList({
           }
 
           if (row.type === 'date-header') {
-            return <SectionHeader label={formatMediumDate(row.date)} />;
+            return <SectionHeader label={formatRelativeMediumDate(row.date)} />;
           }
 
           return (
@@ -200,13 +221,13 @@ export function ActivityList({
 
       <dialog
         ref={dialogRef}
-        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default"
+        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
         onClose={handleClose}
       >
         <TransactionDetails
           chainId={selectedItem?.chainId}
-          txIdentifier={selectedItem?.hash}
-          onBack={() => dialogRef.current?.close?.()}
+          txIdentifier={getActivityItemIdentifier(selectedItem)}
+          onBack={handleDialogBack}
         />
       </dialog>
     </PendingTransactionCancelSpeedUpProvider>

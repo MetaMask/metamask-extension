@@ -35,9 +35,6 @@ const mockSetNetworkClientIdForDomain = jest.fn(
 const mockAddPermittedChain = jest.fn(
   (_origin: string, _chainId: string) => () => Promise.resolve(),
 );
-const mockShowPermittedNetworkToast = jest.fn(() => ({
-  type: 'SHOW_PERMITTED_NETWORK_TOAST',
-}));
 const mockUpdateCustomNonce = jest.fn(() => ({ type: 'UPDATE_CUSTOM_NONCE' }));
 const mockSetNextNonce = jest.fn(() => ({ type: 'SET_NEXT_NONCE' }));
 const mockDetectNfts = jest.fn((_) => () => Promise.resolve());
@@ -52,7 +49,6 @@ jest.mock('../../../store/actions', () => ({
     mockSetNetworkClientIdForDomain(origin, id),
   addPermittedChain: (origin: string, chainId: string) =>
     mockAddPermittedChain(origin, chainId),
-  showPermittedNetworkToast: () => mockShowPermittedNetworkToast(),
   updateCustomNonce: () => mockUpdateCustomNonce(),
   setNextNonce: () => mockSetNextNonce(),
   detectNfts: (chainIds: string[]) => mockDetectNfts(chainIds),
@@ -307,10 +303,6 @@ describe('DappBarNetworkSelectorPopover', () => {
       expect(mockAddPermittedChain).not.toHaveBeenCalled();
     });
 
-    it('does not surface the permitted-network toast', () => {
-      expect(mockShowPermittedNetworkToast).not.toHaveBeenCalled();
-    });
-
     it('activates the selected network client', () => {
       expect(mockSetActiveNetwork).toHaveBeenCalledWith(BNB_CLIENT_ID);
     });
@@ -373,10 +365,6 @@ describe('DappBarNetworkSelectorPopover', () => {
       );
     });
 
-    it('surfaces the permitted-network toast', () => {
-      expect(mockShowPermittedNetworkToast).toHaveBeenCalledTimes(1);
-    });
-
     it('persists the per-origin network client', () => {
       expect(mockSetNetworkClientIdForDomain).toHaveBeenCalledWith(
         DAPP_ORIGIN,
@@ -421,7 +409,6 @@ describe('DappBarNetworkSelectorPopover', () => {
     });
     expect(mockSetNetworkClientIdForDomain).not.toHaveBeenCalled();
     expect(mockAddPermittedChain).not.toHaveBeenCalled();
-    expect(mockShowPermittedNetworkToast).not.toHaveBeenCalled();
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 

@@ -1,113 +1,111 @@
-import { BigNumber } from 'bignumber.js';
-import type { Hex } from '@metamask/utils';
-
-import type {
-  PermissionRenderContext,
-  SchemaElement,
-} from './permission-detail-schema.types';
-import { getPermissionSchemaEntry } from './permission-detail-schemas';
-import { MAX_UINT256 } from './permission-constants';
 import {
-  ALL_METAMASK_FACILITATOR_ADDRESSES,
-  isMetaMaskFacilitatorAddress,
-} from './facilitator-addresses';
-
-type ElementOfType<TType extends SchemaElement['type']> = Extract<
+  getPeriodFrequencyValueTranslationKey,
+  formatPermissionPeriodDuration,
+} from '@metamask/7715-permission-types';
+import type {
   SchemaElement,
-  { type: TType }
->;
+  PermissionRenderContext,
+} from '@metamask/7715-permission-types';
+// eslint-disable-next-line import-x/no-restricted-paths
+import enMessages from '../../../app/_locales/en/messages.json';
+import { captureMessage } from '../sentry';
+import { getPermissionSchemaEntry } from './permission-detail-schemas';
 
-function getJustificationGetValueFromSchema() {
-  return findElementOfType(
-    'native-token-stream',
-    'review-gator-permission-justification',
-    'justification',
-  ).getValue;
-}
+jest.mock('../sentry', () => ({
+  captureMessage: jest.fn(),
+}));
 
-function buildMinimalContext(
-  justification: PermissionRenderContext['permission']['justification'],
-): PermissionRenderContext {
-  return {
-    permission: {
-      type: 'native-token-stream',
-      data: {},
-      justification,
-    },
-    expiry: null,
-    chainId: '0x1' as Hex,
-    origin: 'https://example.com',
-  };
-}
+const KNOWN_PERMISSION_TYPES = [
+  'native-token-periodic',
+  'native-token-stream',
+  'native-token-allowance',
+  'erc20-token-periodic',
+  'erc20-token-stream',
+  'erc20-token-allowance',
+  'token-approval-revocation',
+];
 
-function findElementByTestId(
-  permissionType: string,
-  testId: string,
-): SchemaElement {
-  for (const section of getPermissionSchemaEntry(permissionType).sections) {
-    for (const element of section.elements) {
-      if ('testId' in element && element.testId === testId) {
-        return element;
+const BASE_CONTEXT: PermissionRenderContext = {
+  permission: { type: 'native-token-stream', data: {} },
+  expiry: null,
+  chainId: '0x1',
+};
+
+/**
+ * Collects every locale key an element can reference at render time: its
+ * `labelKey`/`tooltip`, plus any `{ key }` i18n value its `getValue` can
+ * produce, exercised across every context that changes which branch runs.
+ * @param element
+ * @param contexts
+ */
+function collectElementLocaleKeys(
+  element: SchemaElement,
+  contexts: PermissionRenderContext[],
+): string[] {
+  const keys: string[] = [];
+  if ('labelKey' in element) {
+    keys.push(element.labelKey);
+  }
+  if ('tooltip' in element && typeof element.tooltip === 'string') {
+    keys.push(element.tooltip);
+  }
+  if ('getValue' in element) {
+    for (const ctx of contexts) {
+      // Amount/date fields need real permission data to compute a value;
+      // only the `{ key }`-i18n-value and string-list branches matter here,
+      // so fields that need more context than we provide are skipped.
+      let value;
+      try {
+        value = element.getValue(ctx as never);
+      } catch {
+        continue;
+      }
+      if (value && typeof value === 'object' && 'key' in value) {
+        keys.push(value.key);
+      }
+      // Only `list` elements render their array values as i18n keys
+      // (e.g. revocation method names); other array-valued fields
+      // (like `rule-address`) hold raw data, not locale keys.
+      if (element.type === 'list' && Array.isArray(value)) {
+        value.forEach((item) => {
+          if (typeof item === 'string') {
+            keys.push(item);
+          }
+        });
       }
     }
   }
-  throw new Error(`No schema element with testId ${testId}`);
+  return keys;
 }
-
-function findElementOfType<TType extends SchemaElement['type']>(
-  permissionType: string,
-  testId: string,
-  type: TType,
-): ElementOfType<TType> {
-  const element = findElementByTestId(permissionType, testId);
-  if (element.type !== type) {
-    throw new Error(`Expected ${testId} to be ${type}`);
-  }
-  return element as ElementOfType<TType>;
-}
-
-function ctx(
-  type = 'native-token-stream',
-  data: Record<string, unknown> = {},
-  extras: Partial<PermissionRenderContext> = {},
-): PermissionRenderContext {
-  return {
-    permission: { type, data },
-    expiry: null,
-    chainId: '0x1' as Hex,
-    origin: 'https://dapp.example',
-    ...extras,
-  };
-}
-
-describe('justification field getValue', () => {
-  it('returns the no-justification i18n value when justification is an empty string', () => {
-    expect(
-      getJustificationGetValueFromSchema()(buildMinimalContext('')),
-    ).toStrictEqual({
-      key: 'gatorNoJustificationProvided',
-    });
-  });
-
-  it('returns the no-justification i18n value when justification is undefined', () => {
-    expect(
-      getJustificationGetValueFromSchema()(buildMinimalContext(undefined)),
-    ).toStrictEqual({ key: 'gatorNoJustificationProvided' });
-  });
-
-  it('returns the site-provided justification text when non-empty', () => {
-    expect(
-      getJustificationGetValueFromSchema()(
-        buildMinimalContext('Pay subscription'),
-      ),
-    ).toBe('Pay subscription');
-  });
-});
 
 describe('getPermissionSchemaEntry', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('returns the schema for a known permission type', () => {
     const schema = getPermissionSchemaEntry('native-token-stream');
     expect(schema.tokenVariant).toBe('native');
+  });
+
+  it('does not report known permission types to Sentry', () => {
+    getPermissionSchemaEntry('native-token-stream');
+    expect(captureMessage).not.toHaveBeenCalled();
+  });
+
+  it('reports unknown permission types to Sentry', () => {
+    getPermissionSchemaEntry('unregistered-type');
+    expect(captureMessage).toHaveBeenCalledWith(
+      'Unknown advanced permission type encountered',
+      { extra: { permissionType: 'unregistered-type' } },
+    );
+  });
+
+  it('does not report to Sentry when throwIfUnknown is true', () => {
+    expect(() => getPermissionSchemaEntry('unregistered-type', true)).toThrow(
+      'Unknown permission type: unregistered-type',
+    );
+    expect(captureMessage).not.toHaveBeenCalled();
   });
 
   it('falls back to unknown schema when no matching type exists', () => {
@@ -122,323 +120,126 @@ describe('getPermissionSchemaEntry', () => {
 
     expect(unknownTypeElement?.type).toBe('raw-text');
   });
-
-  it('throws for unknown permission type when throwIfUnknown is true', () => {
-    expect(() => getPermissionSchemaEntry('unregistered-type', true)).toThrow(
-      'Unknown permission type: unregistered-type',
-    );
-  });
 });
 
-describe('permissionInfoSection field accessors', () => {
-  const base = ctx(undefined, undefined, { origin: 'https://dapp.example' });
-
-  it('exposes origin and recipient values', () => {
-    const recipient = '0x0000000000000000000000000000000000000002';
-    const originEl = findElementOfType(
-      'native-token-stream',
-      'confirmation-origin',
-      'origin',
-    );
-    const recipientEl = findElementOfType(
-      'native-token-stream',
-      'confirmation-recipient',
-      'address',
-    );
-
-    expect(originEl.getValue(base)).toBe('https://dapp.example');
-    expect(recipientEl.isVisible(base)).toBe(false);
-    expect(recipientEl.isVisible({ ...base, to: recipient })).toBe(true);
-    expect(recipientEl.getValue({ ...base, to: recipient })).toBe(recipient);
-  });
-
-  it('reads redeemer and payee addresses from context', () => {
-    const addresses = ['0x0000000000000000000000000000000000000003'];
-
-    for (const [testId, field] of [
-      ['confirmation-redeemer', 'redeemerAddresses'],
-      ['confirmation-payee', 'payeeAddresses'],
-    ] as const) {
-      const element = findElementOfType(
-        'native-token-stream',
-        testId,
-        'rule-address',
-      );
-      const context = { ...base, [field]: addresses };
-      expect(element.getValue(context)).toStrictEqual(addresses);
-      expect(element.isVisible(context)).toBe(true);
-    }
-  });
-
-  it('shows a MetaMask facilitator redeemer row when all redeemers are facilitator addresses', () => {
-    const namedRedeemerElement = findElementOfType(
-      'native-token-stream',
-      'confirmation-redeemer-metamask-facilitator',
-      'text',
-    );
-    const redeemerAddressElement = findElementOfType(
-      'native-token-stream',
-      'confirmation-redeemer',
-      'rule-address',
-    );
-    const exactFacilitatorContext = {
-      ...base,
-      redeemerAddresses: [...ALL_METAMASK_FACILITATOR_ADDRESSES].reverse(),
-    };
-    const facilitatorSubsetContext = {
-      ...base,
-      redeemerAddresses: [ALL_METAMASK_FACILITATOR_ADDRESSES[0]],
-    };
-    const duplicateFacilitatorContext = {
-      ...base,
-      redeemerAddresses: [
-        ...ALL_METAMASK_FACILITATOR_ADDRESSES,
-        ALL_METAMASK_FACILITATOR_ADDRESSES[0],
-      ],
-    };
-
-    expect(namedRedeemerElement.isVisible(exactFacilitatorContext)).toBe(true);
-    expect(
-      namedRedeemerElement.getValue(exactFacilitatorContext),
-    ).toStrictEqual({ key: 'gatorPermissionsMetaMaskFacilitator' });
-    expect(redeemerAddressElement.isVisible(exactFacilitatorContext)).toBe(
-      false,
-    );
-    expect(namedRedeemerElement.isVisible(facilitatorSubsetContext)).toBe(true);
-    expect(redeemerAddressElement.isVisible(facilitatorSubsetContext)).toBe(
-      false,
-    );
-    expect(namedRedeemerElement.isVisible(duplicateFacilitatorContext)).toBe(
-      true,
-    );
-    expect(redeemerAddressElement.isVisible(duplicateFacilitatorContext)).toBe(
-      false,
-    );
-    expect(
-      namedRedeemerElement.isVisible({ ...base, redeemerAddresses: [] }),
-    ).toBe(false);
-  });
-});
-
-describe('isMetaMaskFacilitatorAddress', () => {
-  it('matches facilitator addresses case-insensitively', () => {
-    expect(
-      isMetaMaskFacilitatorAddress(
-        ALL_METAMASK_FACILITATOR_ADDRESSES[0].toLowerCase(),
-      ),
-    ).toBe(true);
-  });
-
-  it('returns false for unknown addresses', () => {
-    expect(
-      isMetaMaskFacilitatorAddress(
-        '0x0000000000000000000000000000000000000001',
-      ),
-    ).toBe(false);
-  });
-});
-
-describe('stream confirmation total exposure fields', () => {
-  const streamData = {
-    initialAmount: '0x01',
-    maxAmount: MAX_UINT256,
-    amountPerSecond: '0x01',
-    startTime: 1,
-  };
-  const finite = findElementOfType(
-    'native-token-stream',
-    'confirmation-total-exposure',
-    'amount',
-  );
-  const unlimited = findElementOfType(
-    'native-token-stream',
-    'confirmation-total-exposure-unlimited',
-    'text',
-  );
-
-  it('requires streamTotalExposure for stream total exposure amount fields', () => {
-    for (const [permissionType, data] of [
-      ['native-token-stream', streamData],
-      ['erc20-token-stream', { ...streamData, tokenAddress: MAX_UINT256 }],
-    ] as const) {
-      const element = findElementOfType(
-        permissionType,
-        'confirmation-total-exposure',
-        'amount',
-      );
-      expect(() => element.getValue(ctx(permissionType, data))).toThrow(
-        'streamTotalExposure must be set when rendering stream permission fields',
-      );
-    }
-  });
-
-  it('shows unlimited or finite total exposure based on streamTotalExposure', () => {
-    const unlimitedCtx = ctx('native-token-stream', streamData, {
-      streamTotalExposure: null,
-    });
-    const finiteCtx = ctx('native-token-stream', streamData, {
-      streamTotalExposure: new BigNumber(42),
-    });
-
-    expect(finite.isVisible(unlimitedCtx)).toBe(false);
-    expect(unlimited.isVisible(unlimitedCtx)).toBe(true);
-    expect(unlimited.getValue(unlimitedCtx)).toStrictEqual({
-      key: 'unlimited',
-    });
-    expect(finite.isVisible(finiteCtx)).toBe(true);
-    expect(finite.getValue(finiteCtx).toFixed()).toBe('42');
-    expect(unlimited.isVisible(finiteCtx)).toBe(false);
-  });
-});
-
-describe('native-token-stream review fields', () => {
-  const baseData = {
-    initialAmount: '0x1',
-    amountPerSecond: '0x1',
-    startTime: 1,
-  };
-
-  it('toggles max and initial allowance rows from permission data', () => {
-    const maxRow = findElementOfType(
-      'native-token-stream',
-      'review-gator-permission-max-allowance',
-      'amount',
-    );
-    const unlimitedRow = findElementOfType(
-      'native-token-stream',
-      'review-gator-permission-max-allowance-unlimited',
-      'text',
-    );
-    const initialRow = findElementOfType(
-      'native-token-stream',
-      'review-gator-permission-initial-allowance',
-      'amount',
-    );
-    const finiteCtx = ctx('native-token-stream', {
-      ...baseData,
-      maxAmount: '0x10',
-    });
-    const unlimitedCtx = ctx('native-token-stream', {
-      ...baseData,
-      maxAmount: MAX_UINT256,
-    });
-    const noInitialCtx = ctx('native-token-stream', {
-      amountPerSecond: '0x1',
-      startTime: 1,
-      maxAmount: '0xff',
-    });
-
-    expect(maxRow.isVisible(finiteCtx)).toBe(true);
-    expect(unlimitedRow.isVisible(finiteCtx)).toBe(false);
-    expect(maxRow.isVisible(unlimitedCtx)).toBe(false);
-    expect(unlimitedRow.isVisible(unlimitedCtx)).toBe(true);
-    expect(initialRow.isVisible(noInitialCtx)).toBe(false);
-  });
-
-  it('computes weekly summary amount and frequency', () => {
-    const amountEl = findElementOfType(
-      'native-token-stream',
-      'review-gator-permission-amount-label',
-      'amount',
-    );
-    const freqEl = findElementOfType(
-      'native-token-stream',
-      'review-gator-permission-frequency-label',
-      'text',
-    );
-    const context = ctx('native-token-stream', {
-      ...baseData,
-      maxAmount: '0xff',
-    });
-
-    expect(amountEl.getValue(context).toFixed()).not.toBe('0');
-    expect(freqEl.getValue(context)).toStrictEqual({
-      key: 'gatorPermissionWeeklyFrequency',
-    });
-  });
-});
-
-describe('other schema fields', () => {
-  it('maps native periodic and ERC20 revocation summary text', () => {
-    const frequency = findElementOfType(
-      'native-token-periodic',
-      'review-gator-permission-frequency-label',
-      'text',
-    );
-    const revokeAll = findElementOfType(
-      'token-approval-revocation',
-      'review-gator-permission-amount-label',
-      'text',
-    );
-
-    expect(
-      frequency.getValue(
-        ctx('native-token-periodic', {
-          periodAmount: '0x1',
-          periodDuration: 86400,
-          startTime: 1,
-        }),
-      ),
-    ).toStrictEqual({ key: 'gatorPermissionDailyFrequency' });
-    expect(revokeAll.getValue(buildMinimalContext(undefined))).toStrictEqual({
-      key: 'allTokens',
-    });
-  });
-
-  it('includes confirmation-only account and standalone network elements', () => {
-    const accountEl = findElementOfType(
-      'native-token-stream',
-      'review-gator-permission-account-name',
-      'account',
-    );
-    const hasNetwork = getPermissionSchemaEntry(
-      'token-approval-revocation',
-    ).sections.some((section) =>
-      section.elements.some((element) => element.type === 'network'),
-    );
-
-    expect(accountEl.includeInViews).toContain('confirmation');
-    expect(accountEl.getValue(buildMinimalContext(undefined))).toBeUndefined();
-    expect(hasNetwork).toBe(true);
-  });
-});
-
-describe('requireStartTime validation', () => {
-  it('validates required startTime for periodic schemas', () => {
-    expect(() =>
-      getPermissionSchemaEntry('native-token-periodic').validate?.({
-        data: { periodAmount: '0x1', periodDuration: 1 },
-      }),
-    ).toThrow('Start time is required');
-    expect(() =>
-      getPermissionSchemaEntry('erc20-token-periodic').validate?.({
+describe('locale keys referenced by @metamask/7715-permission-types schemas', () => {
+  // Contexts chosen to exercise every branch that changes which locale key
+  // a `getValue()` call returns (e.g. facilitator-only vs. named redeemers,
+  // each individually-enabled token approval revocation method).
+  const revocationContexts: PermissionRenderContext[] = [
+    { ...BASE_CONTEXT, redeemerAddresses: ['0xfacilitator'] },
+    { ...BASE_CONTEXT, redeemerAddresses: ['0xother'] },
+    {
+      ...BASE_CONTEXT,
+      permission: {
+        type: 'token-approval-revocation',
         data: {
-          tokenAddress: '0x0000000000000000000000000000000000000001',
-          periodAmount: '0x1',
-          periodDuration: 1,
-          startTime: 1,
+          erc20Approve: true,
+          erc721Approve: true,
+          erc721SetApprovalForAll: true,
+          permit2Approve: true,
+          permit2Lockdown: true,
+          permit2InvalidateNonces: true,
         },
-      }),
-    ).not.toThrow();
-  });
-});
+      },
+    },
+    {
+      ...BASE_CONTEXT,
+      permission: {
+        type: 'token-approval-revocation',
+        data: { erc20Approve: true },
+      },
+    },
+  ];
 
-describe('unknown permission type schema', () => {
-  it('renders unknown permission type as raw text', () => {
-    const unknownTypeElement = findElementOfType(
-      'some-new-permission',
-      'review-gator-permission-unknown-type',
-      'raw-text',
+  it('all statically and dynamically referenced keys exist in the en locale', () => {
+    const referencedKeys = new Set<string>();
+
+    for (const permissionType of [
+      ...KNOWN_PERMISSION_TYPES,
+      'unregistered-type', // exercises the unknown-permission-type schema
+    ]) {
+      const schema = getPermissionSchemaEntry(permissionType);
+      for (const section of schema.sections) {
+        for (const element of section.elements) {
+          collectElementLocaleKeys(element, [
+            BASE_CONTEXT,
+            ...revocationContexts,
+          ]).forEach((key) => referencedKeys.add(key));
+        }
+      }
+    }
+
+    // Period durations are rendered via standalone helpers rather than an
+    // element's getValue, so they're not reachable via the schema walk above.
+    const secondsPerPeriod = [
+      1, 3600, 86400, 604800, 1209600, 2592000, 31536000,
+    ];
+    secondsPerPeriod.forEach((seconds) => {
+      referencedKeys.add(getPeriodFrequencyValueTranslationKey(seconds));
+      referencedKeys.add(formatPermissionPeriodDuration(seconds).key);
+    });
+
+    expect(referencedKeys.size).toBeGreaterThan(0);
+
+    const missingKeys = [...referencedKeys].filter(
+      (key) => !(key in enMessages),
     );
+    expect(missingKeys).toStrictEqual([]);
 
-    expect(
-      unknownTypeElement.getValue(
-        ctx(
-          'some-new-permission',
-          {},
-          { permission: { type: 'abc.xyz', data: {} } },
-        ),
-      ),
-    ).toBe('abc.xyz');
+    // Written out as literals (not derived from referencedKeys) so
+    // `yarn verify-locales` can see these locale keys are still in use —
+    // it statically scans source text and can't detect keys computed only
+    // at runtime via getValue()/formatPermissionPeriodDuration() above.
+    const expectedKeys = [
+      'account',
+      'allTokens',
+      'amount',
+      'confirmFieldAllowance',
+      'confirmFieldAvailablePerDay',
+      'confirmFieldFrequency',
+      'confirmFieldPeriodDurationBiWeekly',
+      'confirmFieldPeriodDurationDaily',
+      'confirmFieldPeriodDurationHourly',
+      'confirmFieldPeriodDurationMonthly',
+      'confirmFieldPeriodDurationSeconds',
+      'confirmFieldPeriodDurationWeekly',
+      'confirmFieldPeriodDurationYearly',
+      'confirmFieldTotalExposure',
+      'gatorNoJustificationProvided',
+      'gatorPermissionAnnualFrequency',
+      'gatorPermissionCustomFrequency',
+      'gatorPermissionDailyFrequency',
+      'gatorPermissionFortnightlyFrequency',
+      'gatorPermissionMonthlyFrequency',
+      'gatorPermissionTokenPeriodicFrequencyLabel',
+      'gatorPermissionTokenStreamFrequencyLabel',
+      'gatorPermissionWeeklyFrequency',
+      'gatorPermissionsAllTokenApprovalRevocationPrimitives',
+      'gatorPermissionsErc20ApproveRevocation',
+      'gatorPermissionsErc721ApproveRevocation',
+      'gatorPermissionsExpirationDate',
+      'gatorPermissionsInitialAllowance',
+      'gatorPermissionsJustification',
+      'gatorPermissionsMaxAllowance',
+      'gatorPermissionsMetaMaskFacilitator',
+      'gatorPermissionsPermit2ApproveRevocation',
+      'gatorPermissionsPermit2InvalidateNonces',
+      'gatorPermissionsPermit2Lockdown',
+      'gatorPermissionsRevocationMethods',
+      'gatorPermissionsSetApprovalForAllRevocation',
+      'gatorPermissionsStartDate',
+      'gatorPermissionsStreamRate',
+      'gatorPermissionsStreamingAmountLabel',
+      'payee',
+      'recipient',
+      'redeemer',
+      'redeemers',
+      'requestFrom',
+      'revokeTokenApprovals',
+      'unknownPermissionType',
+      'unlimited',
+    ];
+    expect([...referencedKeys].sort()).toStrictEqual([...expectedKeys].sort());
   });
 });

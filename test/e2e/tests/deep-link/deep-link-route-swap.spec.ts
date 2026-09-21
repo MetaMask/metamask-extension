@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
@@ -53,15 +53,16 @@ describe('Deep Link - /swap Route', function () {
             await homePage.checkPageIsLoaded();
           }
 
-          // navigate to the route
+          // navigate to the route and make sure it
+          // redirects to the deep link interstitial page
           const preparedUrl = await prepareDeepLinkUrl({
             route,
             signed,
             privateKey: keyPair.privateKey,
           });
 
-          // Navigate through the deep link flow, complete login if locked,
-          // and verify the swap page has been loaded.
+          // Navigate through deep link interstitial, complete login if locked,
+          // and verify the swap page has been loaded!
           await navigateDeepLinkToDestination(
             driver,
             preparedUrl,

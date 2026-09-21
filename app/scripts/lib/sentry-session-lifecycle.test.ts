@@ -33,9 +33,7 @@ describe('sentry session lifecycle (organic init trigger)', () => {
           AnalyticsController: {
             analyticsId: 'session-lifecycle-test-id',
             optedIn: true,
-          },
-          MetaMetricsController: {
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
           },
         },
       }),

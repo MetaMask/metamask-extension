@@ -3,10 +3,14 @@ import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException, captureMessage } from '../sentry';
-import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import {
+  MISSING_VAULT_ERROR,
+  isBrowserShuttingDownError,
+} from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
+import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -51,15 +55,98 @@ export type SplitStateMigrationFailedEvent = {
   state: MetaMaskStateType;
 };
 
+export type WriteRetryRecoveredPersistenceEvent =
+  | 'set-retry-recovered'
+  | 'set-backup-retry-recovered'
+  | 'persist-retry-recovered'
+  | 'persist-backup-retry-recovered';
+
+export type WriteRetryRecoveredEvent = {
+  event: WriteRetryRecoveredPersistenceEvent;
+  firstErrorMessage: string;
+  firstErrorName: string;
+  retryDelayMs: number;
+};
+
+export type SplitStateWriteEvent = {
+  bytesByController: Record<string, number>;
+  coalescedUpdates: number;
+  controllerKeys: string[];
+  idleStatus: 'active' | 'idle' | 'unknown';
+  measurementDurationMs: number;
+  sampleRate: number;
+  totalBytes: number;
+  writeDurationMs: number;
+};
+
 export type PersistenceManagerEventMap = {
   vaultCorruptionDetected: [VaultCorruptionDetectedEvent];
   splitStateMigrationSucceeded: [SplitStateMigrationSucceededEvent];
   splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
+  splitStateWrite: [SplitStateWriteEvent];
+  writeRetryRecovered: [WriteRetryRecoveredEvent];
 };
 
 export type PersistenceManagerOptions = {
+  getIsIdle?: () => boolean | undefined;
+  getPersistenceWriteSampleRate?: () => number;
   localStore: BaseStore;
+  random?: () => number;
 };
+
+type WriteRetryOptions = {
+  supersedable: boolean;
+};
+
+export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
+
+const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
+  PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
+
+function getSerializedByteLength(value: unknown): number {
+  const serializedValue = JSON.stringify(value);
+  return serializedValue === undefined
+    ? 0
+    : new TextEncoder().encode(serializedValue).byteLength;
+}
+
+function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (signal?.aborted) {
+      resolve(false);
+      return;
+    }
+
+    const timeout = globalThis.setTimeout(() => {
+      signal?.removeEventListener('abort', handleAbort);
+      resolve(true);
+    }, ms);
+
+    function handleAbort() {
+      globalThis.clearTimeout(timeout);
+      signal?.removeEventListener('abort', handleAbort);
+      resolve(false);
+    }
+
+    signal?.addEventListener('abort', handleAbort, { once: true });
+  });
+}
+
+/**
+ * Checks whether IndexedDB mutations are blocked, as can happen for Firefox
+ * extensions in private browsing mode.
+ *
+ * @param error - The error thrown by IndexedDB.
+ * @returns Whether the error represents blocked IndexedDB mutations.
+ */
+export function isIndexedDBMutationBlockedError(error: unknown): boolean {
+  return (
+    error instanceof DOMException &&
+    error.name === 'InvalidStateError' &&
+    error.message ===
+      'A mutation operation was attempted on a database that did not allow mutations.'
+  );
+}
 
 /**
  * This Error represents an error that occurs during persistence operations.
@@ -215,6 +302,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #localStore: BaseStore;
 
+  #currentWriteRetryAbortController: AbortController | null = null;
+
   #backupDb: IndexedDBStore | null = null;
 
   #backup?: string;
@@ -240,9 +329,23 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
-  constructor({ localStore }: PersistenceManagerOptions) {
+  #getIsIdle: () => boolean | undefined;
+
+  #getPersistenceWriteSampleRate: () => number;
+
+  #random: () => number;
+
+  constructor({
+    getIsIdle = () => undefined,
+    getPersistenceWriteSampleRate = getPersistenceWriteTelemetrySampleRate,
+    localStore,
+    random = Math.random,
+  }: PersistenceManagerOptions) {
     super();
+    this.#getIsIdle = getIsIdle;
     this.#localStore = localStore;
+    this.#getPersistenceWriteSampleRate = getPersistenceWriteSampleRate;
+    this.#random = random;
   }
 
   /**
@@ -296,6 +399,70 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return error instanceof Error ? error : new Error(String(error));
   }
 
+  #emitWriteRetryRecovered(
+    event: WriteRetryRecoveredPersistenceEvent,
+    firstError: unknown,
+  ) {
+    const normalizedError = this.#normalizePersistError(firstError);
+    this.emit('writeRetryRecovered', {
+      event,
+      firstErrorMessage: normalizedError.message,
+      firstErrorName: normalizedError.name,
+      retryDelayMs: PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS,
+    });
+  }
+
+  #supersedeWriteRetry() {
+    this.#currentWriteRetryAbortController?.abort();
+    this.#currentWriteRetryAbortController = null;
+  }
+
+  async #waitForWriteRetryDelay({
+    supersedable,
+  }: WriteRetryOptions): Promise<boolean> {
+    if (!supersedable) {
+      // Backup retries intentionally hold the write lock until they finish.
+      // Primary storage has already been updated at this point, and aborting
+      // the backup retry could leave the recovery backup stale. This is
+      // especially risky for split state because the next write may not include
+      // backed-up keys such as KeyringController.
+      return await delay(PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS);
+    }
+
+    const abortController = new AbortController();
+    this.#currentWriteRetryAbortController = abortController;
+    try {
+      return await delay(
+        PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS,
+        abortController.signal,
+      );
+    } finally {
+      if (this.#currentWriteRetryAbortController === abortController) {
+        // `delay` must be this signal's only consumer.
+        // Additional consumers will be orphaned,
+        // unless aborted here or cancelled with `#supersedeWriteRetry`.
+        this.#currentWriteRetryAbortController = null;
+      }
+    }
+  }
+
+  async #retryWrite(
+    write: () => Promise<void>,
+    retryRecoveredEvent: WriteRetryRecoveredPersistenceEvent,
+    options: WriteRetryOptions,
+  ): Promise<void> {
+    try {
+      await write();
+    } catch (firstError) {
+      const shouldRetry = await this.#waitForWriteRetryDelay(options);
+      if (!shouldRetry) {
+        throw firstError;
+      }
+      await write();
+      this.#emitWriteRetryRecovered(retryRecoveredEvent, firstError);
+    }
+  }
+
   async open(): Promise<void> {
     if (this.#open) {
       return;
@@ -314,7 +481,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   async #openBackupDatabase(): Promise<void> {
     try {
-      const db = new IndexedDBStore();
+      // The backup is the recovery path for a corrupted vault, so its writes
+      // request strict durability: they must reach disk before resolving, even
+      // if the browser or the machine goes down immediately afterwards. The
+      // cost is negligible here because the write is skipped unless the
+      // serialized backup actually changed.
+      const db = new IndexedDBStore({ strictDurability: true });
       await db.open('metamask-backup', 1);
       this.#backupDb = db;
     } catch (error) {
@@ -322,13 +494,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // private browsing mode due to this bug:
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
       // cases we just won't have a backup vault.
-      if (
-        isObject(error) &&
-        error instanceof DOMException &&
-        error.name === 'InvalidStateError' &&
-        error.message ===
-          'A mutation operation was attempted on a database that did not allow mutations.'
-      ) {
+      if (isIndexedDBMutationBlockedError(error)) {
         // Custom fingerprint prevents Sentry's deduplication from dropping
         // this event when other persistence errors with the same underlying
         // error message (e.g., "An unexpected error occurred") are reported.
@@ -375,6 +541,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #pendingPairs = new Map<string, unknown>();
 
+  #pendingUpdateCount = 0;
+
+  #hasSimulatedStorageSetFailure = false;
+
   storageKind: StorageKind = PersistenceManager.defaultStorageKind;
 
   /**
@@ -400,23 +570,31 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   /**
    * Checks if storage set operations should be simulated as failing.
-   * When enabled, all set operations will fail immediately.
    *
    * @throws Error if simulating storage failure for testing
    */
   #maybeSimulateSetFailure(): void {
-    if (
-      process.env.IN_TEST &&
-      getManifestFlags().testing?.simulateStorageSetFailure
-    ) {
-      throw new Error('Simulated storage.local.set failure for testing');
+    if (!process.env.IN_TEST) {
+      return;
     }
+
+    const simulation =
+      getManifestFlags().testing?.simulateStorageSetFailure ?? false;
+    if (
+      !simulation ||
+      (simulation === 'once' && this.#hasSimulatedStorageSetFailure)
+    ) {
+      return;
+    }
+
+    this.#hasSimulatedStorageSetFailure = true;
+    throw new Error('Simulated storage.local.set failure for testing');
   }
 
   /**
    * Sets state in the local store, with optional test simulation.
-   * In test mode with simulateStorageSetFailure flag, all set operations
-   * will fail immediately.
+   * In test mode with simulateStorageSetFailure flag, set operations fail
+   * according to the configured simulation mode.
    *
    * @param data - The data to set in the local store
    * @throws Error if simulating storage failure for testing
@@ -430,8 +608,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   /**
    * Sets key-value pairs in the local store, with optional test simulation.
-   * In test mode with simulateStorageSetFailure flag, all set operations
-   * will fail immediately.
+   * In test mode with simulateStorageSetFailure flag, set operations fail
+   * according to the configured simulation mode.
    *
    * @param pairs - The key-value pairs to set in the local store
    * @throws Error if simulating storage failure for testing
@@ -467,6 +645,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
 
+    this.#supersedeWriteRetry();
     const abortController = new AbortController();
 
     // If we already have a write _pending_, abort it so the more up-to-date
@@ -489,10 +668,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         let backupFailed = false;
         try {
           // atomically set all the keys (includes test simulation check)
-          await this.#setInLocalStore({
-            data: state,
-            meta,
-          });
+          await this.#retryWrite(
+            () =>
+              this.#setInLocalStore({
+                data: state,
+                meta,
+              }),
+            'set-retry-recovered',
+            { supersedable: true },
+          );
 
           const backup = makeBackup(state, meta);
           // if we have a vault we can back it up
@@ -503,7 +687,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               // save it to the backup DB - wrapped in try-catch to differentiate
               // backup failures from storage.local failures in Sentry
               try {
-                await this.#backupDb?.set(backup);
+                const backupDb = this.#backupDb;
+                if (backupDb) {
+                  await this.#retryWrite(
+                    () => backupDb.set(backup),
+                    'set-backup-retry-recovered',
+                    { supersedable: false },
+                  );
+                }
                 this.#backup = stringifiedBackup;
               } catch (backupErr) {
                 backupFailed = true;
@@ -528,6 +719,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          // A write that failed only because the browser is closing is not a
+          // storage problem, so none of the failure handling below applies.
+          // Sentry is handled globally by `ignoreErrors`; returning early here
+          // is about the two effects that outlive this call - it must not latch
+          // `#dataPersistenceFailing`, which would suppress the report of a
+          // later real failure, and it must not run `#notifySetFailed`, which
+          // persists a storage-error flag that would warn the user in their
+          // next session. Both are unlikely to be reached with the browser
+          // going away, so this is precautionary.
+          if (isBrowserShuttingDownError(err)) {
+            log.info(
+              'MetaMask - storage write failed because the browser is shutting down',
+            );
+            return [false, err];
+          }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -567,6 +773,54 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
     this.#pendingPairs.set(key, value);
+    this.#pendingUpdateCount += 1;
+  }
+
+  #recordSplitStateWrite(
+    pairs: Map<string, unknown>,
+    coalescedUpdates: number,
+    writeDurationMs: number,
+  ): void {
+    const controllerPairs = [...pairs.entries()]
+      .filter(([key]) => key !== 'data' && key !== 'manifest' && key !== 'meta')
+      .toSorted(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
+    const sampleRate = this.#getPersistenceWriteSampleRate();
+    if (
+      controllerPairs.length === 0 ||
+      sampleRate <= 0 ||
+      this.#random() >= sampleRate
+    ) {
+      return;
+    }
+
+    const measurementStartedAt = performance.now();
+    const bytesByController = Object.fromEntries(
+      controllerPairs.map(([key, value]) => [
+        key,
+        getSerializedByteLength(value),
+      ]),
+    );
+    const totalBytes = getSerializedByteLength(
+      Object.fromEntries(controllerPairs),
+    );
+    const isIdle = this.#getIsIdle();
+    let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
+    if (isIdle === true) {
+      idleStatus = 'idle';
+    } else if (isIdle === false) {
+      idleStatus = 'active';
+    }
+
+    this.emit('splitStateWrite', {
+      bytesByController,
+      coalescedUpdates,
+      controllerKeys: controllerPairs.map(([key]) => key),
+      idleStatus,
+      measurementDurationMs: performance.now() - measurementStartedAt,
+      sampleRate,
+      totalBytes,
+      writeDurationMs,
+    });
   }
 
   async persist(): Promise<[boolean, Error | undefined]> {
@@ -585,6 +839,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
 
+    this.#supersedeWriteRetry();
     const abortController = new AbortController();
 
     // If we already have a write _pending_, abort it so the more up-to-date
@@ -607,11 +862,20 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         let backupFailed = false;
         try {
           const clone = structuredClone(this.#pendingPairs);
+          const coalescedUpdates = this.#pendingUpdateCount;
           // reset the pendingPairs
           this.#pendingPairs.clear();
+          this.#pendingUpdateCount = 0;
+          let writeDurationMs = 0;
           try {
             // save the pairs (includes test simulation check)
-            await this.#setKeyValuesInLocalStore(clone);
+            const writeStartedAt = performance.now();
+            await this.#retryWrite(
+              () => this.#setKeyValuesInLocalStore(clone),
+              'persist-retry-recovered',
+              { supersedable: true },
+            );
+            writeDurationMs = performance.now() - writeStartedAt;
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -622,7 +886,19 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                 this.#pendingPairs.set(key, value);
               }
             }
+            this.#pendingUpdateCount += coalescedUpdates;
             throw err;
+          }
+
+          try {
+            // Telemetry must not treat a successful write as a failure.
+            this.#recordSplitStateWrite(
+              clone,
+              coalescedUpdates,
+              writeDurationMs,
+            );
+          } catch {
+            // Ignore measurement/reporting failures after a successful write.
           }
 
           const partialState = Object.create(null);
@@ -636,7 +912,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             // save it to the backup DB - wrapped in try-catch to differentiate
             // backup failures from storage.local failures in Sentry
             try {
-              await this.#backupDb?.set(backup);
+              const backupDb = this.#backupDb;
+              if (backupDb) {
+                await this.#retryWrite(
+                  () => backupDb.set(backup),
+                  'persist-backup-retry-recovered',
+                  { supersedable: false },
+                );
+              }
             } catch (backupErr) {
               backupFailed = true;
               throw backupErr;
@@ -659,6 +942,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          // A write that failed only because the browser is closing is not a
+          // storage problem, so none of the failure handling below applies.
+          // Sentry is handled globally by `ignoreErrors`; returning early here
+          // is about the two effects that outlive this call - it must not latch
+          // `#dataPersistenceFailing`, which would suppress the report of a
+          // later real failure, and it must not run `#notifySetFailed`, which
+          // persists a storage-error flag that would warn the user in their
+          // next session. Both are unlikely to be reached with the browser
+          // going away, so this is precautionary.
+          if (isBrowserShuttingDownError(err)) {
+            log.info(
+              'MetaMask - storage write failed because the browser is shutting down',
+            );
+            return [false, err];
+          }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -732,6 +1030,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               tags: { 'persistence.error': 'get-failed' },
               fingerprint: ['persistence-error', 'get-failed'],
             });
+          }
+
+          // A read that failed only because the browser is closing says nothing
+          // about the state of the data, so it must not trigger vault recovery:
+          // emitting `vaultCorruptionDetected` and throwing `MISSING_VAULT_ERROR`
+          // would both be false positives. Re-throw the original error here, as
+          // we would for any other read failure below, so callers abort the same
+          // way. We still reported it above; whether that event is kept is
+          // decided by `ignoreErrors` in `setupSentry.js`, not here.
+          if (isBrowserShuttingDownError(localStoreError)) {
+            throw localStoreError;
           }
         }
 
@@ -822,6 +1131,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * its initial state.
    */
   async reset() {
+    this.#supersedeWriteRetry();
     await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive' },

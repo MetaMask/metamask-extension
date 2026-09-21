@@ -74,6 +74,15 @@ export enum MultichainNetworks {
   STELLAR = XlmScope.Pubnet,
 }
 
+export const MULTICHAIN_TESTNET_NETWORKS: readonly MultichainNetworks[] = [
+  MultichainNetworks.BITCOIN_TESTNET,
+  MultichainNetworks.BITCOIN_SIGNET,
+  MultichainNetworks.SOLANA_DEVNET,
+  MultichainNetworks.SOLANA_TESTNET,
+  MultichainNetworks.TRON_NILE,
+  MultichainNetworks.TRON_SHASTA,
+];
+
 // TODO: This data should be provided by the snap
 export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
   CaipChainId,

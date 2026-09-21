@@ -88,7 +88,7 @@ describe('PersonalSign Confirmation', () => {
         preloadedState: {
           ...mockedMetaMaskState,
           analyticsId: 'test-metametrics-id',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
           dataCollectionForMarketing: false,
         },

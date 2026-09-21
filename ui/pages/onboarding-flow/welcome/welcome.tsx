@@ -7,7 +7,7 @@ import React, {
   useState,
   type ComponentType,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -30,7 +30,7 @@ import {
 import {
   getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
 } from '../../../selectors';
@@ -62,6 +62,7 @@ import {
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
+import { useDispatch } from '../../../store/hooks';
 import WelcomeLogin from './welcome-login';
 import {
   LOGIN_ERROR,
@@ -74,7 +75,6 @@ import LoginErrorModal from './login-error-modal';
 
 const MetaMaskWordMarkAnimation = lazy(
   () =>
-    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./metamask-wordmark-animation') as unknown as Promise<{
       default: ComponentType<
         React.PropsWithChildren<{
@@ -88,7 +88,6 @@ const MetaMaskWordMarkAnimation = lazy(
 
 const FoxAppearAnimation = lazy(
   () =>
-    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./fox-appear-animation') as unknown as Promise<{
       default: ComponentType<
         React.PropsWithChildren<{
@@ -108,9 +107,7 @@ export default function OnboardingWelcome() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isSocialLoginFLow = useSelector(getIsSocialLoginFlow);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
@@ -157,7 +154,7 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
         navigate(
-          completedMetaMetricsOnboarding
+          consentDecisionMade
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS,
           { replace: true },
@@ -191,7 +188,7 @@ export default function OnboardingWelcome() {
     navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
-    completedMetaMetricsOnboarding,
+    consentDecisionMade,
     getIsUserAuthenticatedWithSocialLogin,
     isFireFox,
     isWalletResetInProgress,
@@ -567,6 +564,7 @@ export default function OnboardingWelcome() {
       justifyContent={BoxJustifyContent.Center}
       alignItems={BoxAlignItems.Center}
       className="welcome-container h-full w-full"
+      data-testid="parent-selector-onboarding-welcome"
     >
       {!isLoggingIn && (
         <Suspense fallback={<Box />}>

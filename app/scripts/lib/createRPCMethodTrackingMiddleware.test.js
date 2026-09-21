@@ -2,10 +2,6 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
-import {
-  MetaMetricsController,
-  getDefaultMetaMetricsControllerState,
-} from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -24,7 +20,10 @@ import {
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
-import { configureAnalytics } from '../controllers/analytics';
+import {
+  configureAnalytics,
+  setParticipateInMetaMetrics,
+} from '../controllers/analytics';
 import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
@@ -75,6 +74,7 @@ messenger.registerActionHandler(
 const analyticsControllerState = {
   analyticsId: '00000000-0000-4000-8000-000000000001',
   optedIn: false,
+  consentDecisionMade: false,
 };
 
 messenger.registerActionHandler('AnalyticsController:getState', () => ({
@@ -83,11 +83,21 @@ messenger.registerActionHandler('AnalyticsController:getState', () => ({
 
 messenger.registerActionHandler('AnalyticsController:optIn', () => {
   analyticsControllerState.optedIn = true;
+  analyticsControllerState.consentDecisionMade = true;
 });
 
 messenger.registerActionHandler('AnalyticsController:optOut', () => {
   analyticsControllerState.optedIn = false;
+  analyticsControllerState.consentDecisionMade = true;
 });
+
+messenger.registerActionHandler(
+  'AnalyticsController:resetConsentDecision',
+  () => {
+    analyticsControllerState.optedIn = false;
+    analyticsControllerState.consentDecisionMade = false;
+  },
+);
 
 const trackEventSpy = jest.fn();
 messenger.registerActionHandler(
@@ -97,29 +107,102 @@ messenger.registerActionHandler(
 messenger.registerActionHandler('AnalyticsController:identify', jest.fn());
 messenger.registerActionHandler('AnalyticsController:trackView', jest.fn());
 
-const controllerMessenger = new Messenger({
-  namespace: 'MetaMetricsController',
-  parent: messenger,
-});
+// Stands in for the event fragment store owned by the AnalyticsController, so
+// that the events the signature funnel emits through its fragment can be
+// asserted on alongside the events tracked directly.
+const eventFragments = new Map();
 
-messenger.delegate({
-  messenger: controllerMessenger,
-  actions: [
-    'AnalyticsController:getState',
-    'AnalyticsController:optIn',
-    'AnalyticsController:optOut',
+function mergeFragmentContext(base, override) {
+  if (base === undefined && override === undefined) {
+    return undefined;
+  }
+  return { ...base, ...override };
+}
+
+function emitFragmentEvent(fragment, name, context) {
+  const properties = { ...(fragment.properties ?? {}) };
+  const sensitiveProperties = { ...(fragment.sensitiveProperties ?? {}) };
+
+  messenger.call(
     'AnalyticsController:trackEvent',
-    'AnalyticsController:identify',
-    'AnalyticsController:trackView',
-    'PreferencesController:getState',
-    'NetworkController:getState',
-    'NetworkController:getNetworkClientById',
-  ],
-  events: [
-    'PreferencesController:stateChange',
-    'NetworkController:networkDidChange',
-  ],
-});
+    {
+      name,
+      properties,
+      sensitiveProperties,
+      saveDataRecording: false,
+      hasProperties:
+        Object.keys(properties).length > 0 ||
+        Object.keys(sensitiveProperties).length > 0,
+    },
+    context,
+  );
+}
+
+messenger.registerActionHandler(
+  'AnalyticsController:createEventFragment',
+  (options = {}) => {
+    const fragment = {
+      ...options,
+      properties: { ...(options.properties ?? {}) },
+      sensitiveProperties: { ...(options.sensitiveProperties ?? {}) },
+    };
+
+    eventFragments.set(fragment.id, fragment);
+
+    if (fragment.initialEvent) {
+      emitFragmentEvent(fragment, fragment.initialEvent, fragment.context);
+    }
+
+    return fragment;
+  },
+);
+
+messenger.registerActionHandler(
+  'AnalyticsController:updateEventFragment',
+  (id, payload = {}) => {
+    const fragment = eventFragments.get(id);
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    eventFragments.set(id, {
+      ...fragment,
+      properties: {
+        ...(fragment.properties ?? {}),
+        ...(payload.properties ?? {}),
+      },
+      sensitiveProperties: {
+        ...(fragment.sensitiveProperties ?? {}),
+        ...(payload.sensitiveProperties ?? {}),
+      },
+      context: mergeFragmentContext(fragment.context, payload.context),
+    });
+  },
+);
+
+messenger.registerActionHandler(
+  'AnalyticsController:finalizeEventFragment',
+  (id, { abandoned = false, context } = {}) => {
+    const fragment = eventFragments.get(id);
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    const name = abandoned ? fragment.failureEvent : fragment.successEvent;
+
+    if (name) {
+      emitFragmentEvent(
+        fragment,
+        name,
+        mergeFragmentContext(fragment.context, context),
+      );
+    }
+
+    eventFragments.delete(id);
+  },
+);
 
 const analyticsController = {
   get state() {
@@ -127,21 +210,21 @@ const analyticsController = {
   },
 };
 
-const metaMetricsController = new MetaMetricsController({
-  state: {
-    ...getDefaultMetaMetricsControllerState(),
-    fragments: {},
-  },
-  messenger: controllerMessenger,
-  version: '0.0.1',
-  environment: 'test',
-  extension: {
-    runtime: {
-      id: 'testid',
-      setUninstallURL: () => undefined,
-    },
-  },
-});
+messenger.registerActionHandler('MetaMetricsController:getState', () => ({
+  marketingCampaignCookieId: null,
+}));
+messenger.registerActionHandler(
+  'SentryTracingService:trackTracesAfterMetricsOptIn',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'SentryTracingService:clearTracesAfterMetricsOptIn',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'MetaMetricsController:setMarketingCampaignCookieId',
+  () => undefined,
+);
 
 messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
   isEvmSelected: true,
@@ -174,7 +257,6 @@ const createHandler = (opts) =>
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
-    metaMetricsController,
     analyticsController,
     getHDEntropyIndex: jest.fn(),
     ...opts,
@@ -223,10 +305,11 @@ jest.mock('@metamask/controller-utils', () => {
 describe('createRPCMethodTrackingMiddleware', () => {
   beforeEach(() => {
     trackEventSpy.mockClear();
+    eventFragments.clear();
   });
-  afterEach(() => {
+  afterEach(async () => {
     jest.resetAllMocks();
-    metaMetricsController.setParticipateInMetaMetrics(null);
+    await setParticipateInMetaMetrics(null);
   });
 
   describe('before participateInMetaMetrics is set', () => {
@@ -249,8 +332,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to false', () => {
-    beforeEach(() => {
-      metaMetricsController.setParticipateInMetaMetrics(false);
+    beforeEach(async () => {
+      await setParticipateInMetaMetrics(false);
     });
 
     it('should not track an event for a signature request', async () => {
@@ -272,8 +355,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to true', () => {
-    beforeEach(() => {
-      metaMetricsController.setParticipateInMetaMetrics(true);
+    beforeEach(async () => {
+      await setParticipateInMetaMetrics(true);
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
@@ -513,6 +596,43 @@ describe('createRPCMethodTrackingMiddleware', () => {
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           location: 'some_location',
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track a ${MetaMetricsEventName.EncryptionPublicKeyRejected} event if the user rejects`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: {
+          code: errorCodes.provider.userRejectedRequest,
+        },
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(getTrackedEventCall(0)).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.EncryptionPublicKeyRequested,
+        properties: {
+          method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+      expect(getTrackedEventCall(1)).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.EncryptionPublicKeyRejected,
+        properties: {
+          method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
         },
         referrer: { url: 'some.dapp' },
       });
@@ -1341,8 +1461,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
 
     describe('Multichain API requests', () => {
-      beforeEach(() => {
-        metaMetricsController.setParticipateInMetaMetrics(true);
+      beforeEach(async () => {
+        await setParticipateInMetaMetrics(true);
       });
 
       it('should track `wallet_createSession` events with multichain category and properties', async () => {

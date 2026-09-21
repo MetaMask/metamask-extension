@@ -12,7 +12,6 @@ export enum RowAlertKey {
   Network = 'network',
   PayWith = 'payWith',
   RequestFrom = 'requestFrom',
-  Resimulation = 'resimulation',
   RpcUrl = 'rpcUrl',
   ShieldFooterCoverageIndicator = 'shieldFooterCoverageIndicator',
   SigningInWith = 'signingInWith',

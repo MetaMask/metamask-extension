@@ -77,6 +77,7 @@ describe('GasSponsorshipModal', () => {
 
     useFeeCalculationsMock.mockReturnValue({
       addedProtectionFeeFiat: null,
+      addedProtectionFeeUsd: null,
       calculateGasEstimate: jest.fn(),
       estimatedFeeFiat: '$1.50',
       estimatedFeeFiatWith18SignificantDigits: null,
@@ -209,6 +210,7 @@ describe('GasSponsorshipModal', () => {
   it('displays native fee in fiat when available', () => {
     useFeeCalculationsMock.mockReturnValue({
       addedProtectionFeeFiat: null,
+      addedProtectionFeeUsd: null,
       calculateGasEstimate: jest.fn(),
       estimatedFeeFiat: '$2.75',
       estimatedFeeFiatWith18SignificantDigits: null,
@@ -231,6 +233,7 @@ describe('GasSponsorshipModal', () => {
   it('displays native fee in token amount when fiat is not available', () => {
     useFeeCalculationsMock.mockReturnValue({
       addedProtectionFeeFiat: null,
+      addedProtectionFeeUsd: null,
       calculateGasEstimate: jest.fn(),
       estimatedFeeFiat: '',
       estimatedFeeFiatWith18SignificantDigits: null,

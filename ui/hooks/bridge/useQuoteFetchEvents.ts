@@ -1,16 +1,25 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
+  assetIdsMatch,
   getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
+  getFromAmountInCurrency,
+  getFromToken,
   getFromTokenBalanceInUsd,
+  getIsSlippageUserOverride,
+  getSlippage,
+  getToToken,
   getWarningLabels,
+  getQuoteStreamComplete,
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import { useDispatch } from '../../store/hooks';
+import { swapQuoteFetchTrace } from '../../pages/bridge/utils/swap-quote-fetch-trace';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 
@@ -24,6 +33,7 @@ export const useQuoteFetchEvents = () => {
     activeQuote,
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
+  const quoteStreamComplete = useSelector(getQuoteStreamComplete);
   const isTxSubmittable = useIsTxSubmittable();
   const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
@@ -31,11 +41,22 @@ export const useQuoteFetchEvents = () => {
   );
 
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken);
+  const slippage = useSelector(getSlippage);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
 
   const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
   const hasSufficientGasForQuote = getHasSufficientGasForQuote(
     activeQuote ?? null,
   );
+
+  const firstQuoteRequestId = recommendedQuote?.quote.requestId;
+  const firstQuoteSrcAssetId = recommendedQuote?.quote.src.asset.assetId;
+  const firstQuoteDestAssetId = recommendedQuote?.quote.dest.asset.assetId;
+  const fromTokenAssetId = fromToken?.assetId;
+  const toTokenAssetId = toToken?.assetId;
 
   // Emitted each time quotes are fetched successfully
   useEffect(() => {
@@ -50,9 +71,68 @@ export const useQuoteFetchEvents = () => {
             recommendedQuote,
             fromTokenBalanceInUsd,
             hasSufficientGasForQuote,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              custom_slippage: isSlippageUserOverride,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              slippage_limit:
+                slippage === undefined ? undefined : Number(slippage),
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              usd_amount_source:
+                fromAmountInCurrency.usd.toNumber() || undefined,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              token_symbol_source: fromToken?.symbol,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              token_symbol_destination: toToken?.symbol,
+            },
           ),
         ),
       );
     }
   }, [quotesRefreshCount]);
+
+  // End the trace as soon as the first quote becomes available, including
+  // while the controller is still streaming additional quotes.
+  useEffect(() => {
+    if (
+      !firstQuoteRequestId ||
+      !firstQuoteSrcAssetId ||
+      !firstQuoteDestAssetId
+    ) {
+      return;
+    }
+
+    // A quote can arrive after the request that produced it was replaced.
+    // Ignore it when the current bridge assets identify a different request.
+    if (
+      !assetIdsMatch(fromTokenAssetId, firstQuoteSrcAssetId) ||
+      !assetIdsMatch(toTokenAssetId, firstQuoteDestAssetId)
+    ) {
+      return;
+    }
+
+    swapQuoteFetchTrace.finish('success');
+  }, [
+    firstQuoteRequestId,
+    firstQuoteSrcAssetId,
+    firstQuoteDestAssetId,
+    fromTokenAssetId,
+    toTokenAssetId,
+  ]);
+
+  useEffect(() => {
+    if (!quoteFetchError && quoteStreamComplete?.hasQuotes === false) {
+      swapQuoteFetchTrace.finish(
+        'no_quotes',
+        undefined,
+        quoteStreamComplete.reason,
+      );
+    }
+  }, [quoteFetchError, quoteStreamComplete]);
+
+  useEffect(() => {
+    if (quoteFetchError) {
+      swapQuoteFetchTrace.finish('error');
+    }
+  }, [quoteFetchError]);
 };

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { syncSeedPhrases } from '../../store/actions';
 import { getIsSocialLoginFlow } from '../../selectors';
+import { useDispatch } from '../../store/hooks';
 
 export const useSyncSRPs = () => {
   const dispatch = useDispatch();

@@ -8,8 +8,9 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { captureMessage } from '../../shared/lib/sentry';
-import { submitRequestToBackground } from '../store/background-connection';
+import type { TraceName } from '../../shared/lib/trace';
 import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
+import { submitRequestToBackground } from '../store/background-connection';
 import {
   MetaMetricsContext,
   MetaMetricsProvider,
@@ -19,6 +20,9 @@ import {
 jest.mock('../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
+  sentryLogger: {
+    extend: jest.fn(() => jest.fn()),
+  },
 }));
 
 jest.mock('../hooks/useSegmentContext', () => ({
@@ -35,12 +39,13 @@ jest.mock('../store/background-connection', () => ({
 }));
 
 const mockStore = configureMockStore([]);
+const TRACE_NAME_MOCK = 'Transaction' as TraceName;
 
 const renderProviderAtPath = (pathname: string) => {
   const store = mockStore({
     metamask: {
       analyticsId: '0x123',
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
     },
   });
@@ -74,7 +79,7 @@ const renderProvider = ({
   state: {
     metamask: {
       analyticsId: string | null;
-      completedMetaMetricsOnboarding: boolean;
+      consentDecisionMade: boolean;
       optedIn: boolean;
     };
   };
@@ -117,51 +122,138 @@ const renderProvider = ({
 
 describe('MetaMetricsProvider', () => {
   const mockedTrackAnalyticsEvent = jest.mocked(trackAnalyticsEvent);
+  const mockedTrackMetaMetricsPage = jest.mocked(trackMetaMetricsPage);
+  const mockedCaptureMessage = jest.mocked(captureMessage);
   const mockedSubmitRequestToBackground = jest.mocked(
     submitRequestToBackground,
   );
-  const mockedTrackMetaMetricsPage = jest.mocked(trackMetaMetricsPage);
-  const mockedCaptureMessage = jest.mocked(captureMessage);
 
   beforeEach(() => {
     jest.clearAllMocks();
     resetPreviousTrackedPagePathForTesting();
   });
 
-  it('buffers events when participation is enabled but analyticsId is missing', async () => {
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([true, false])(
+    'forwards buffered traces to the background without a consent snapshot',
+    async (isOptedIn: boolean) => {
+      const store = mockStore({
+        metamask: {
+          analyticsId: '0x123',
+          consentDecisionMade: true,
+          optedIn: isOptedIn,
+        },
+      });
+
+      const TestComponent = () => {
+        const { bufferedTrace, bufferedEndTrace } =
+          useContext(MetaMetricsContext);
+
+        useEffect(() => {
+          bufferedTrace({ name: TRACE_NAME_MOCK });
+          bufferedEndTrace({ name: TRACE_NAME_MOCK });
+        }, [bufferedTrace, bufferedEndTrace]);
+
+        return null;
+      };
+
+      const router = createMemoryRouter(
+        [
+          {
+            path: '*',
+            element: (
+              <MetaMetricsProvider>
+                <TestComponent />
+              </MetaMetricsProvider>
+            ),
+          },
+        ],
+        { initialEntries: ['/'] },
+      );
+
+      render(
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>,
+      );
+
+      await waitFor(() => {
+        expect(mockedSubmitRequestToBackground).toHaveBeenNthCalledWith(
+          1,
+          'bufferedTrace',
+          [{ name: TRACE_NAME_MOCK }],
+        );
+        expect(mockedSubmitRequestToBackground).toHaveBeenNthCalledWith(
+          2,
+          'bufferedEndTrace',
+          [{ name: TRACE_NAME_MOCK }],
+        );
+      });
+    },
+  );
+
+  it('keeps the buffered trace methods stable when the opt-in state changes', async () => {
+    let optedIn = false;
+    const store = mockStore(() => ({
+      metamask: {
+        analyticsId: '0x123',
+        consentDecisionMade: true,
+        optedIn,
+      },
+    }));
+
+    const runTraceEffect = jest.fn();
+
+    const TestComponent = () => {
+      const { bufferedTrace, bufferedEndTrace } =
+        useContext(MetaMetricsContext);
+
+      useEffect(() => {
+        runTraceEffect();
+      }, [bufferedTrace, bufferedEndTrace]);
+
+      return null;
+    };
+
+    const router = createMemoryRouter(
+      [
+        {
+          path: '*',
+          element: (
+            <MetaMetricsProvider>
+              <TestComponent />
+            </MetaMetricsProvider>
+          ),
+        },
+      ],
+      { initialEntries: ['/'] },
+    );
+
+    render(
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(runTraceEffect).toHaveBeenCalledTimes(1);
+    });
+
+    optedIn = true;
+    act(() => {
+      store.dispatch({ type: 'OPT_IN' });
+    });
+
+    expect(runTraceEffect).toHaveBeenCalledTimes(1);
+  });
+
+  it('queues events when participation is enabled but analyticsId is missing', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
           analyticsId: null,
-          completedMetaMetricsOnboarding: true,
-          optedIn: true,
-        },
-      },
-    });
-
-    await waitFor(() => {
-      expect(mockedSubmitRequestToBackground).toHaveBeenCalledWith(
-        'addEventBeforeMetricsOptIn',
-        [
-          expect.objectContaining({
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          }),
-        ],
-      );
-    });
-
-    expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
-  });
-
-  it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
-    renderProvider({
-      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-      state: {
-        metamask: {
-          analyticsId: '0x123',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         },
       },
@@ -178,8 +270,31 @@ describe('MetaMetricsProvider', () => {
         expect.anything(),
       );
     });
+  });
 
-    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
+  it('tracks events immediately when participation is enabled and analyticsId exists', async () => {
+    renderProvider({
+      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+      state: {
+        metamask: {
+          analyticsId: '0x123',
+          consentDecisionMade: true,
+          optedIn: true,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      expect(mockedTrackAnalyticsEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+          }),
+        }),
+        expect.anything(),
+      );
+    });
   });
 
   it('tracks metrics opt out immediately without an analyticsId', async () => {
@@ -188,7 +303,7 @@ describe('MetaMetricsProvider', () => {
       state: {
         metamask: {
           analyticsId: null,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         },
       },
@@ -205,17 +320,15 @@ describe('MetaMetricsProvider', () => {
         expect.anything(),
       );
     });
-
-    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
-  it('does not buffer normal events when the user has opted out of MetaMetrics', async () => {
+  it('does not track normal events when the user has opted out of MetaMetrics', async () => {
     renderProvider({
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       state: {
         metamask: {
           analyticsId: '0x123',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: false,
         },
       },
@@ -226,14 +339,13 @@ describe('MetaMetricsProvider', () => {
     });
 
     expect(mockedTrackAnalyticsEvent).not.toHaveBeenCalled();
-    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('tracks page views only once across provider remounts', async () => {
     const store = mockStore({
       metamask: {
         analyticsId: '0x123',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       },
     });

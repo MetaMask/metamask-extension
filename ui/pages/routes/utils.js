@@ -1,6 +1,5 @@
 import { matchPath } from 'react-router-dom';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import { getIsPureBlackPreviewEnabled } from '../../../shared/lib/environment';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -14,7 +13,6 @@ import {
   CONNECT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   IMPORT_SRP_ROUTE,
-  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   PERMISSIONS,
@@ -63,23 +61,9 @@ export function getThemeFromRawTheme(theme) {
   return theme;
 }
 
-// NOTE: setDocumentPureBlack and the isPureBlackEnabled param on setTheme are
-// temporary. Once pure-black and dark theme tokens are consolidated, remove
-// both functions and the data-pure-black attribute wiring. Tracked in TMCU-1083.
-export function setDocumentPureBlack(isPureBlackActive) {
-  if (isPureBlackActive) {
-    document.documentElement.dataset.pureBlack = 'true';
-  } else {
-    delete document.documentElement.dataset.pureBlack;
-  }
-}
-
 export function setTheme(theme) {
   const resolvedTheme = getThemeFromRawTheme(theme);
   document.documentElement.dataset.theme = resolvedTheme;
-  const pureBlackActive =
-    resolvedTheme === ThemeType.dark && getIsPureBlackPreviewEnabled();
-  setDocumentPureBlack(pureBlackActive);
 }
 
 function onConfirmPage(props) {
@@ -401,19 +385,6 @@ export function hideAppHeader(props) {
     isHandlingAddEthereumChainRequest ||
     isConfirmTransactionRoute(location.pathname) ||
     isImportSrpPage
-  );
-}
-
-export function showAppHeader(props) {
-  const { location } = props;
-  return Boolean(
-    matchPath(
-      {
-        path: DEFAULT_ROUTE,
-        end: true,
-      },
-      location.pathname,
-    ),
   );
 }
 

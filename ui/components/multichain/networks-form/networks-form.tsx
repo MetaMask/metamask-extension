@@ -1,11 +1,13 @@
 import log from 'loglevel';
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
-  Button as DSButton,
-  ButtonSize as DSButtonSize,
-  ButtonVariant as DSButtonVariant,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   IconName,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -25,6 +27,7 @@ import {
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
   hexToDecimal,
@@ -33,7 +36,10 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/lib/network.utils';
-import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
@@ -48,14 +54,10 @@ import {
 } from '../../../store/actions';
 import {
   Box,
-  ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
   FormTextField,
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
-  Tag,
   Text,
 } from '../../component-library';
 import {
@@ -82,6 +84,7 @@ import {
   getTokenNetworkFilter,
 } from '../../../selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { useDispatch } from '../../../store/hooks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -133,18 +136,29 @@ export const NetworksForm = ({
       ? undefined
       : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
+  const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
+  const chainFailoverUrls = networkChainIdHex
+    ? getFailoverUrlsForChainId(networkChainIdHex)
+    : [];
+
+  // Failover only applies to Infura RPC endpoints. NetworkController wires
+  // failover URLs solely for Infura endpoints; applying them to custom RPCs
+  // would leak requests to the failover, so it does not. Only surface failover
+  // in the form for Infura endpoints so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
+    return endpoint?.url &&
+      new URL(endpoint.url).hostname.endsWith('.infura.io')
+      ? chainFailoverUrls
+      : [];
+  };
+
+  const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
+
   const { safeChains } = useSafeChains();
 
-  const [errors, setErrors] = useState<
-    Record<string, { key: string; msg: string } | undefined>
-  >({});
-
-  const [warnings, setWarnings] = useState<
-    Record<string, { key: string; msg: string } | undefined>
-  >({});
-
-  const [suggestedName, setSuggestedName] = useState<string>();
-  const [suggestedTicker, setSuggestedTicker] = useState<string>();
+  const [rpcFetchError, setRpcFetchError] = useState<
+    { key: string; msg: string } | undefined
+  >();
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
@@ -154,9 +168,9 @@ export const NetworksForm = ({
       ? endpoint.replace('{infuraProjectId}', infuraProjectId ?? '')
       : endpoint;
 
-  // Validate the network name when it changes
-  useEffect(() => {
-    const chainIdHex = chainId ? toHex(chainId) : undefined;
+  const chainIdHex = chainId ? toHex(chainId) : undefined;
+
+  const { suggestedName, nameWarning } = useMemo(() => {
     const expectedName = chainIdHex
       ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
         NETWORKS_BYPASSING_VALIDATION[
@@ -165,22 +179,19 @@ export const NetworksForm = ({
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
-    const mismatch = expectedName && expectedName !== name;
-    setSuggestedName(mismatch ? expectedName : undefined);
-    setWarnings((state) => ({
-      ...state,
-      name: mismatch
+    const mismatch = Boolean(expectedName && expectedName !== name);
+    return {
+      suggestedName: mismatch ? expectedName : undefined,
+      nameWarning: mismatch
         ? {
             key: 'wrongNetworkName',
             msg: t('wrongNetworkName'),
           }
         : undefined,
-    }));
-  }, [chainId, name, safeChains]);
+    };
+  }, [chainIdHex, name, safeChains, t]);
 
-  // Validate the ticker when it changes
-  useEffect(() => {
-    const chainIdHex = chainId ? toHex(chainId) : undefined;
+  const { suggestedTicker, tickerWarning } = useMemo(() => {
     const expectedSymbol = chainIdHex
       ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
@@ -195,23 +206,22 @@ export const NetworksForm = ({
         ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
       : false;
 
-    const mismatch =
-      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
+    const mismatch = Boolean(
+      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol,
+    );
 
-    setSuggestedTicker(mismatch ? expectedSymbol : undefined);
-    setWarnings((state) => ({
-      ...state,
-      ticker: mismatch
+    return {
+      suggestedTicker: mismatch ? expectedSymbol : undefined,
+      tickerWarning: mismatch
         ? {
             key: 'chainListReturnedDifferentTickerSymbol',
             msg: t('chainListReturnedDifferentTickerSymbol'),
           }
         : undefined,
-    }));
-  }, [chainId, ticker, safeChains]);
+    };
+  }, [chainIdHex, ticker, safeChains, t]);
 
-  // Validate the chain ID when it changes
-  useEffect(() => {
+  const chainIdError = useMemo(() => {
     let error: [string, string] | undefined;
 
     if (chainId === undefined || chainId === '') {
@@ -236,8 +246,6 @@ export const NetworksForm = ({
       error = ['invalidChainIdTooBig', t('invalidChainIdTooBig')];
     }
 
-    const chainIdHex = toHex(chainId);
-
     if (!error && !existingNetwork) {
       const matchingNetwork = chainIdHex
         ? networkConfigurations[chainIdHex]
@@ -250,48 +258,82 @@ export const NetworksForm = ({
       }
     }
 
-    let rpcError: [string, string] | undefined;
-    if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
-      rpcError = [
-        'endpointReturnedDifferentChainId',
-        t('endpointReturnedDifferentChainId', [hexToDecimal(fetchedChainId)]),
-      ];
-    }
+    return error ? { key: error[0], msg: error[1] } : undefined;
+  }, [chainId, chainIdHex, existingNetwork, networkConfigurations, t]);
 
-    setErrors((state) => ({
-      ...state,
-      chainId: error ? { key: error[0], msg: error[1] } : undefined,
-      rpcUrl: rpcError ? { key: rpcError[0], msg: rpcError[1] } : undefined,
-    }));
-  }, [chainId, fetchedChainId, existingNetwork?.chainId]);
+  const rpcMismatchError = useMemo(() => {
+    if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
+      return {
+        key: 'endpointReturnedDifferentChainId',
+        msg: t('endpointReturnedDifferentChainId', [
+          hexToDecimal(fetchedChainId),
+        ]),
+      };
+    }
+    return undefined;
+  }, [fetchedChainId, chainIdHex, t]);
+
+  const warnings = useMemo(
+    () => ({
+      name: nameWarning,
+      ticker: tickerWarning,
+    }),
+    [nameWarning, tickerWarning],
+  );
+
+  const errors = useMemo(
+    () => ({
+      chainId: chainIdError,
+      rpcUrl: rpcFetchError ?? rpcMismatchError,
+    }),
+    [chainIdError, rpcFetchError, rpcMismatchError],
+  );
+
+  const selectedRpcUrl =
+    rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
+  const [prevSelectedRpcUrl, setPrevSelectedRpcUrl] = useState(selectedRpcUrl);
+
+  if (selectedRpcUrl !== prevSelectedRpcUrl) {
+    setPrevSelectedRpcUrl(selectedRpcUrl);
+    setRpcFetchError(undefined);
+    setFetchedChainId(undefined);
+  }
 
   // Fetch the chain ID from the RPC endpoint when it changes
   useEffect(() => {
-    const rpcUrl =
-      rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
+    if (!selectedRpcUrl) {
+      return undefined;
+    }
 
-    if (rpcUrl) {
-      jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
-        .then((response) => {
+    let cancelled = false;
+
+    jsonRpcRequest(templateInfuraRpc(selectedRpcUrl), 'eth_chainId')
+      .then((response) => {
+        if (!cancelled) {
           setFetchedChainId(response as string);
-        })
-        .catch((err) => {
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
           setFetchedChainId(undefined);
           log.warn('Failed to fetch the chainId from the endpoint.', err);
-          setErrors((state) => ({
-            ...state,
-            rpcUrl: {
-              key: 'failedToFetchChainId',
-              msg: t('failedToFetchChainId'),
-            },
-          }));
-        });
-    }
-  }, [chainId, rpcUrls]);
+          const errorKey = isRpcRateLimitError(err)
+            ? 'rpcUrlRateLimited'
+            : 'failedToFetchChainId';
+          setRpcFetchError({
+            key: errorKey,
+            msg: t(errorKey),
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedRpcUrl, t]);
 
   const onSubmit = async () => {
     try {
-      const chainIdHex = chainId ? toHex(chainId) : undefined;
       if (chainIdHex === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
       } else if (chainIdHex) {
@@ -468,17 +510,17 @@ export const NetworksForm = ({
         paddingBottom={2}
       >
         {onAddFromChainlist && !existingNetwork ? (
-          <DSButton
-            variant={DSButtonVariant.Secondary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
             startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
-            className="mb-4 rounded-xl"
+            className="mb-4"
             data-testid="network-form-add-from-chainlist"
           >
             {t('addFromChainlist')}
-          </DSButton>
+          </Button>
         ) : null}
 
         <FormTextField
@@ -507,19 +549,15 @@ export const NetworksForm = ({
                     data-testid="network-form-name-suggestion"
                   >
                     {t('suggestedTokenName')}
-                    <ButtonLink
-                      as="button"
-                      variant={TextVariant.bodySm}
-                      color={TextColor.primaryDefault}
+                    <TextButton
+                      size={TextButtonSize.BodySm}
                       onClick={() => {
                         setName(suggestedName);
                       }}
-                      paddingLeft={1}
-                      paddingRight={1}
-                      style={{ verticalAlign: 'baseline' }}
+                      className="px-1 align-baseline"
                     >
                       {suggestedName}
-                    </ButtonLink>
+                    </TextButton>
                   </Text>
                 )}
               </>
@@ -552,11 +590,23 @@ export const NetworksForm = ({
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
-          renderItem={(item, isList) =>
-            isList || item?.name || item?.type === RpcEndpointType.Infura ? (
-              <RpcListItem rpcEndpoint={item} />
+          renderItem={(item, isList) => {
+            const failoverUrls = failoverUrlsForEndpoint(item);
+            return isList ||
+              item?.name ||
+              item?.type === RpcEndpointType.Infura ||
+              failoverUrls.length > 0 ? (
+              <RpcListItem
+                rpcEndpoint={{
+                  ...item,
+                  failoverUrls,
+                }}
+              />
             ) : (
+              // A custom (non Infura) endpoint never has a failover, so it just
+              // renders the URL with no failover tag.
               <Text
+                as="span"
                 ellipsis
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
@@ -566,14 +616,9 @@ export const NetworksForm = ({
                 gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {isRpcFailoverEnabled &&
-                item.failoverUrls &&
-                item.failoverUrls.length > 0 ? (
-                  <Tag label={t('failover')} display={Display.Inline} />
-                ) : null}
               </Text>
-            )
-          }
+            );
+          }}
           renderTooltip={(item, isList) => {
             const url = stripKeyFromInfuraUrl(item.url);
             return url.length > (isList ? 37 : 35) ? url : undefined;
@@ -611,10 +656,7 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {isRpcFailoverEnabled &&
-        defaultRpcEndpoint &&
-        defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+        {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
@@ -627,7 +669,7 @@ export const NetworksForm = ({
             textFieldProps={{
               borderRadius: BorderRadius.LG,
             }}
-            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
+            value={onlyKeepHost(defaultFailoverUrls[0])}
             disabled={true}
           />
         ) : null}
@@ -674,12 +716,9 @@ export const NetworksForm = ({
               data-testid="network-form-chain-id-error"
             >
               {t('updateOrEditNetworkInformations')}{' '}
-              <ButtonLink
-                as="button"
-                variant={TextVariant.bodySm}
-                color={TextColor.primaryDefault}
+              <TextButton
+                size={TextButtonSize.BodySm}
                 onClick={() => {
-                  const chainIdHex = toHex(chainId);
                   if (chainIdHex) {
                     dispatch(
                       setEditedNetwork({
@@ -691,7 +730,7 @@ export const NetworksForm = ({
                 }}
               >
                 {t('editNetworkLink')}
-              </ButtonLink>
+              </TextButton>
             </HelpText>
           </Box>
         ) : null}
@@ -710,19 +749,15 @@ export const NetworksForm = ({
                 data-testid="network-form-ticker-suggestion"
               >
                 {t('suggestedCurrencySymbol')}
-                <ButtonLink
-                  as="button"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
+                <TextButton
+                  size={TextButtonSize.BodySm}
                   onClick={() => {
                     setTicker(suggestedTicker);
                   }}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  style={{ verticalAlign: 'baseline' }}
+                  className="px-1 align-baseline"
                 >
                   {suggestedTicker}
-                </ButtonLink>
+                </TextButton>
               </Text>
             ) : null
           }
@@ -814,26 +849,27 @@ export const NetworksForm = ({
         width={BlockSize.Full}
       >
         {usePageFooterStyle ? (
-          <DSButton
-            variant={DSButtonVariant.Primary}
-            size={DSButtonSize.Lg}
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
             isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            className="w-full rounded-xl"
+            className="w-full"
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </DSButton>
+          </Button>
         ) : (
-          <ButtonPrimary
-            disabled={isSaveDisabled}
+          <Button
+            variant={ButtonVariant.Primary}
+            isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            size={ButtonPrimarySize.Lg}
-            width={BlockSize.Full}
+            size={ButtonSize.Lg}
+            isFullWidth
             data-testid="page-container-footer-next"
           >
             {t('save')}
-          </ButtonPrimary>
+          </Button>
         )}
       </Box>
     </Box>

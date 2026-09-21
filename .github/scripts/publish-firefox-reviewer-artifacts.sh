@@ -50,9 +50,15 @@ ensure_mtree() {
   if command -v mtree >/dev/null 2>&1; then
     return
   fi
+  # /usr/bin/mtree on Debian/Ubuntu comes from mtree-netbsd; compare_builds.sh
+  # needs the NetBSD flavour (`mtree -c -k sha256digest -p`). macOS ships it.
   echo "Installing mtree for build comparison..."
   sudo apt-get update -qq
-  sudo apt-get install -y mtree
+  sudo apt-get install -y mtree-netbsd
+  command -v mtree >/dev/null 2>&1 || {
+    echo "::error::mtree still unavailable after installing mtree-netbsd"
+    exit 1
+  }
 }
 
 resolve_last_listed_version() {
@@ -147,7 +153,11 @@ run_package() {
 
   local work_root script_ref clone_dir last_listed
   work_root="$(mktemp -d)"
-  trap 'rm -rf "${work_root}"' EXIT
+  # Expand the path when registering the trap. With set -u, a trap that refs a
+  # function-local on EXIT runs after the local is unbound and fails the job.
+  # Shellcheck: Early expansion is intentional here
+  # shellcheck disable=SC2064
+  trap "rm -rf \"${work_root}\"" EXIT
   script_ref="${FIREFOX_BUNDLE_SCRIPT_REF}"
   clone_dir="${work_root}/firefox-bundle-script"
 

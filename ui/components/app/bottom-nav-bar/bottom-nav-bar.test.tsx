@@ -7,6 +7,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
@@ -14,9 +15,37 @@ import {
   MetaMetricsSwapsEventSource,
   ScreenViewedEntryPoint,
 } from '../../../../shared/constants/metametrics';
+import type { MoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
+import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../../hooks/money/useMoneyAnalytics.mock';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../../pages/money/constants/money-events';
 import { BottomNavBar } from './bottom-nav-bar';
 
 const mockNavigate = jest.fn();
+const mockUseMoneyAccountAvailability: jest.MockedFunction<
+  () => { availability: MoneyAccountAvailability }
+> = jest.fn(() => ({
+  availability: {
+    isAvailable: true,
+    address: '0x0000000000000000000000000000000000000001',
+  },
+}));
+
+jest.mock('../../../hooks/money/use-money-account-availability', () => ({
+  useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
+}));
+
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
@@ -85,16 +114,29 @@ function renderBottomNavBar(state = baseState, pathname = DEFAULT_ROUTE) {
 describe('BottomNavBar', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
   });
 
   describe('renders all tabs', () => {
-    it('renders Home, Swaps, Perps, and Activity tabs when Perps is available', () => {
-      const { getByTestId } = renderBottomNavBar();
+    it('renders Home, Perps, Money, Swaps, and Activity when available', () => {
+      const { getByTestId, getAllByRole } = renderBottomNavBar();
 
       expect(getByTestId('bottom-nav-home')).toBeInTheDocument();
       expect(getByTestId('bottom-nav-swaps')).toBeInTheDocument();
       expect(getByTestId('bottom-nav-perps')).toBeInTheDocument();
+      expect(getByTestId('bottom-nav-money')).toBeInTheDocument();
       expect(getByTestId('bottom-nav-activity')).toBeInTheDocument();
+      expect(
+        getAllByRole('button').map((button) =>
+          button.getAttribute('data-testid'),
+        ),
+      ).toStrictEqual([
+        'bottom-nav-home',
+        'bottom-nav-perps',
+        'bottom-nav-money',
+        'bottom-nav-swaps',
+        'bottom-nav-activity',
+      ]);
     });
 
     it('renders Home, Swaps, and Activity tabs when Perps is unavailable', () => {
@@ -106,6 +148,16 @@ describe('BottomNavBar', () => {
       expect(getByTestId('bottom-nav-swaps')).toBeInTheDocument();
       expect(queryByTestId('bottom-nav-perps')).not.toBeInTheDocument();
       expect(getByTestId('bottom-nav-activity')).toBeInTheDocument();
+    });
+
+    it('hides Money when the Money Account is unavailable', () => {
+      mockUseMoneyAccountAvailability.mockReturnValueOnce({
+        availability: { isAvailable: false },
+      });
+
+      const { queryByTestId } = renderBottomNavBar();
+
+      expect(queryByTestId('bottom-nav-money')).not.toBeInTheDocument();
     });
   });
 
@@ -144,6 +196,18 @@ describe('BottomNavBar', () => {
       );
 
       expect(getByTestId('bottom-nav-perps')).toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+      expect(getByTestId('bottom-nav-home')).not.toHaveAttribute(
+        'aria-current',
+      );
+    });
+
+    it('marks Money as active on the Money home route', () => {
+      const { getByTestId } = renderBottomNavBar(baseState, MONEY_HOME_ROUTE);
+
+      expect(getByTestId('bottom-nav-money')).toHaveAttribute(
         'aria-current',
         'page',
       );
@@ -202,6 +266,24 @@ describe('BottomNavBar', () => {
       });
     });
 
+    it('navigates to Money Home when Money is clicked', () => {
+      const { getByTestId } = renderBottomNavBar();
+
+      fireEvent.click(getByTestId('bottom-nav-money'));
+      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+        state: { stayOnHomePage: true },
+      });
+      expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+        componentName: MoneyComponentName.HomeTab,
+      });
+      expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+        labelKey: 'money',
+        redirectTarget: MoneyScreenName.MoneyHome,
+      });
+    });
+
     it('navigates to the swaps route when Swaps is clicked', () => {
       const { getByTestId } = renderBottomNavBar();
 
@@ -236,6 +318,7 @@ describe('BottomNavBar', () => {
       ['Home', 'bottom-nav-home'],
       ['Activity', 'bottom-nav-activity'],
       ['Perps', 'bottom-nav-perps'],
+      ['Money', 'bottom-nav-money'],
     ])(
       'resets the bridge controller when navigating to %s from swaps',
       (_label, testId) => {

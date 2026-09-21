@@ -23,9 +23,9 @@ const PINNED_GECKODRIVER_VERSION = '0.36.0';
  * Resolve the geckodriver binary to use.
  *
  * Resolution order:
- * 1. `GECKODRIVER_PATH` env var, if set. CI sets this explicitly via the
- *    "Pin geckodriver" step in `.github/workflows/run-e2e.yml` (also usable as
- *    a manual override to test a different driver version).
+ * 1. `GECKODRIVER_PATH` env var, if set. CI sets this via
+ *    `.github/scripts/pin-geckodriver.sh` (also usable as a manual override to
+ *    test a different driver version).
  * 2. The pinned {@link PINNED_GECKODRIVER_VERSION}, resolved (and downloaded +
  *    cached cross-platform) via the `selenium-manager` binary that ships with
  *    `selenium-webdriver`. This is the fallback that fixes local runs without
@@ -161,6 +161,15 @@ class FirefoxDriver {
     const service = process.env.FIREFOX_SNAP
       ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
       : new firefox.ServiceBuilder(resolveGeckodriverPath());
+
+    // Firefox 153 restricts WebDriver navigation to privileged pages (most
+    // `about:` pages, `chrome://`, `resource://`) unless system access is
+    // allowed. `getInternalId` reads the extension UUID from
+    // `about:debugging#addons`, so without this the session cannot start.
+    // Newer geckodriver rejects `--remote-allow-system-access` via Firefox
+    // capabilities; pass `--allow-system-access` to geckodriver instead.
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=1579790
+    service.addArguments('--allow-system-access');
 
     if (port) {
       service.setPort(port);

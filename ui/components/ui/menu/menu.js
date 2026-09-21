@@ -40,7 +40,11 @@ const Menu = ({
         onClick={onHide}
       />
       <div
-        className={classnames('menu__container', className)}
+        className={classnames(
+          'menu__container',
+          className,
+          'bg-elevated2 border border-alternative',
+        )}
         data-testid={className}
         ref={setPopperElement}
         style={styles.popper}

@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import type { OnChainRawNotificationsWithNetworkFields } from '@metamask/notification-services-controller/notification-services';
+import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
+  getNotificationSubtype,
+  type OnChainRawNotificationsWithNetworkFields,
+} from '@metamask/notification-services-controller/notification-services';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -13,14 +24,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 
 import { NotificationDetail } from '../notification-detail';
-import {
-  AvatarIcon,
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -30,7 +34,6 @@ import {
   TextVariant,
   TextColor,
   BlockSize,
-  IconColor,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
@@ -127,18 +130,13 @@ const NotificationDetailNetworkFee_ = ({
         createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
           .addCategory(MetaMetricsEventCategory.NotificationInteraction)
           .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            /* eslint-disable @typescript-eslint/naming-convention */
             notification_id: notification.id,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            notification_type: notification.type,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            notification_type: notification.notification_type,
+            notification_subtype: getNotificationSubtype(notification),
             chain_id: notification.payload.chain_id,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             clicked_item: 'fee_details',
+            /* eslint-enable @typescript-eslint/naming-convention */
           })
           .build(),
       );
@@ -195,8 +193,7 @@ const NotificationDetailNetworkFee_ = ({
         icon={
           <AvatarIcon
             iconName={IconName.Gas}
-            color={TextColor.infoDefault}
-            backgroundColor={BackgroundColor.infoMuted}
+            severity={AvatarIconSeverity.Info}
           />
         }
         primaryTextLeft={
@@ -237,9 +234,9 @@ const NotificationDetailNetworkFee_ = ({
             </Text>
             <Icon
               name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
-              color={IconColor.primaryDefault}
+              color={IconColor.PrimaryDefault}
               size={IconSize.Sm}
-              marginInlineEnd={1}
+              className="mr-1"
             />
           </Box>
         }

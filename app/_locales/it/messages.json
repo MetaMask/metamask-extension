@@ -159,9 +159,6 @@
   "back": {
     "message": "Indietro"
   },
-  "backupApprovalInfo": {
-    "message": "Questo codice è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare MetaMask o voglia accedere al tuo portafoglio su un altro dispositivo."
-  },
   "backupApprovalNotice": {
     "message": "Mantieni al sicuro il portafoglio e i fondi eseguendo il backup della frase di recupero."
   },
@@ -546,9 +543,6 @@
   "gasLimit": {
     "message": "Gas Limite"
   },
-  "gasLimitTooLow": {
-    "message": "Il Gas Limite deve essere almeno 21000"
-  },
   "gasUsed": {
     "message": "Gas Utilizzato"
   },
@@ -795,9 +789,6 @@
   "privateKey": {
     "message": "Chiave Privata",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Attenzione: non dire a nessuno questa chiave! Chiunque con la tua chiave privata può rubare qualsiasi moneta contenuta nel tuo account."
   },
   "privateNetwork": {
     "message": "Rete Privata"

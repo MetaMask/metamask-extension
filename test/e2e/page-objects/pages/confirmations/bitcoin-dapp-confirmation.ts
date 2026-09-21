@@ -1,8 +1,17 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Confirmation dialog displayed by the Bitcoin snap when a dapp requests an
- * action (sign message, sign PSBT, send transaction).
+ * Bitcoin snap confirmation for dapp sign / PSBT / send requests.
+ *
+ * Screen: snap-rendered confirmation dialog (not a MetaMask `#/confirmation`
+ * route of its own).
+ * Owns: clicking Approve on the snap confirmation.
+ * Boundaries: content is owned by the Bitcoin snap UI. EVM redesigned
+ * confirmations and other snap sign/tx page objects are separate.
+ * Related: Flask btc-wallet-standard E2E flows that open this dialog.
+ *
+ * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
+ * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
  */
 class BitcoinDappConfirmation {
   private readonly approveButton = { text: 'Approve' };

@@ -13,6 +13,9 @@ const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
+const {
+  buildPlaywrightDriver,
+} = require('./webdriver/build-playwright-driver');
 const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
@@ -20,6 +23,7 @@ const { setManifestFlags } = require('./set-manifest-flags');
 const {
   DAPP_PATHS,
   ERC_4337_ACCOUNT,
+  E2E_DRIVER,
   HARDWARE_WALLET_ACCOUNT_ID,
   HARDWARE_WALLET_LOCALHOST_NATIVE_ETH_HUMAN,
 } = require('./constants');
@@ -202,6 +206,12 @@ function shouldSeedHardwareWalletMainnetBalance(fixtures) {
 }
 
 /**
+ * options.testTimeout — Mocha timeout for this test in ms. Auto-detected from
+ * MOCHA_TIMEOUT (set by run-e2e-test.js and updated per-test by the global
+ * beforeEach hook in manifest-flag-mocha-hooks.ts). If a test sets
+ * this.timeout() inside the it() body (rather than on a describe block), the
+ * hook cannot detect it — pass testTimeout explicitly: testTimeout: this.timeout().
+ *
  * @param {object} options
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
@@ -210,6 +220,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     localNodeOptions = 'anvil',
     smartContract,
+    driverType = E2E_DRIVER.SELENIUM,
     driverOptions,
     dappOptions,
     staticServerOptions,
@@ -235,7 +246,10 @@ async function withFixtures(options, testSuite) {
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
     isBenchmark = false,
+    testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
+
+  const fixtureStartTime = Date.now();
 
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
@@ -267,6 +281,10 @@ async function withFixtures(options, testSuite) {
   let driver;
   let extensionId;
   let failed = false;
+  // Hoisted so the `finally` block can run Playwright-specific cleanup
+  // (user-data-dir removal) regardless of whether the try body returned
+  // early.
+  let playwrightCleanup;
 
   let localNode;
   const localNodes = [];
@@ -534,23 +552,48 @@ async function withFixtures(options, testSuite) {
 
     await setManifestFlags(manifestFlags);
 
-    const wd = await buildWebDriver({
-      ...driverOptions,
-      disableServerMochaToBackground,
-      isBenchmark,
-    });
+    if (driverType === E2E_DRIVER.PLAYWRIGHT) {
+      if (virtualAuthenticator) {
+        throw new Error(
+          'withFixtures: virtualAuthenticator is not supported on the Playwright path yet.',
+        );
+      }
+      const pwBrowser =
+        process.env.SELENIUM_BROWSER === 'firefox' ||
+        process.env.PLAYWRIGHT_BROWSER === 'firefox'
+          ? 'firefox'
+          : 'chrome';
+      const pwHarness = await buildPlaywrightDriver({
+        browser: pwBrowser,
+        ...driverOptions,
+      });
+      driver = pwHarness.driver;
+      driver.timeout =
+        extendedTimeoutMultiplier > 1
+          ? driver.timeout * extendedTimeoutMultiplier
+          : driver.timeout;
+      extensionId = driver.extensionId;
+      webDriver = driver.driver;
+      playwrightCleanup = pwHarness.cleanup;
+    } else {
+      const wd = await buildWebDriver({
+        ...driverOptions,
+        disableServerMochaToBackground,
+        isBenchmark,
+      });
 
-    driver = wd.driver;
-    driver.timeout =
-      extendedTimeoutMultiplier > 1
-        ? driver.timeout * extendedTimeoutMultiplier
-        : driver.timeout;
-    extensionId = wd.extensionId;
-    webDriver = driver.driver;
+      driver = wd.driver;
+      driver.timeout =
+        extendedTimeoutMultiplier > 1
+          ? driver.timeout * extendedTimeoutMultiplier
+          : driver.timeout;
+      extensionId = wd.extensionId;
+      webDriver = driver.driver;
 
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(ignoredConsoleErrors);
-      await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
+        await driver.checkBrowserForExceptions(ignoredConsoleErrors);
+        await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
+      }
     }
 
     let driverProxy;
@@ -582,7 +625,9 @@ async function withFixtures(options, testSuite) {
 
     console.log(`\nExecuting testcase: '${title}'\n`);
 
-    await testSuite({
+    // This lets our catch (screenshots) and finally (server cleanup) run before Mocha moves on to the next test.
+    const ARTIFACT_DEADLINE_BUFFER_MS = 5_000;
+    const testPromise = testSuite({
       bundlerServer,
       contractRegistry,
       driver: effectiveDriver,
@@ -599,6 +644,36 @@ async function withFixtures(options, testSuite) {
         },
       }),
     });
+
+    // Silence the orphaned test promise if the deadline wins the race and the
+    // test callback rejects afterwards (prevents unhandled-rejection noise).
+    // eslint-disable-next-line no-empty-function
+    testPromise.catch(() => {});
+
+    const elapsed = Date.now() - fixtureStartTime;
+    const deadlineMs = testTimeout - ARTIFACT_DEADLINE_BUFFER_MS - elapsed;
+    if (deadlineMs > 0 && testTimeout > 0) {
+      let deadlineTimer;
+      const deadlinePromise = new Promise((_, reject) => {
+        deadlineTimer = setTimeout(() => {
+          reject(
+            new Error(
+              `withFixtures internal deadline exceeded after ${deadlineMs}ms ` +
+                `(Mocha timeout: ${testTimeout}ms). Capturing artifacts before Mocha moves on.`,
+            ),
+          );
+        }, deadlineMs);
+      });
+
+      try {
+        await Promise.race([testPromise, deadlinePromise]);
+      } finally {
+        clearTimeout(deadlineTimer);
+      }
+    } else {
+      // --leave-running or very short timeout: no deadline, wait indefinitely
+      await testPromise;
+    }
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
     if (errorsAndExceptions) {
@@ -683,7 +758,14 @@ async function withFixtures(options, testSuite) {
         shutdownTasks.push(bundlerServer.stop());
       }
 
-      if (webDriver) {
+      if (playwrightCleanup) {
+        // Closes the context and then removes the temporary user-data-dir
+        // created by the Playwright harness. It performs the `driver.quit()`
+        // itself, so it must not be paired with a separate concurrent
+        // `driver.quit()`: profile removal would race with context shutdown
+        // and leak temp profiles or browser processes.
+        shutdownTasks.push(playwrightCleanup());
+      } else if (webDriver) {
         shutdownTasks.push(driver.quit());
       }
       if (numberOfDapps > 0) {

@@ -3,7 +3,20 @@ import { screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ToastMaster } from './toast-master';
+
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('../basic-functionality-migration-toast', () => ({
+  BasicFunctionalityMigrationToast: () => (
+    <div data-testid="mock-bft-migration-toast">
+      BasicFunctionalityMigrationToast
+    </div>
+  ),
+}));
 
 jest.mock('../perps/perps-withdraw-toast', () => ({
   PerpsWithdrawToast: () => (
@@ -11,7 +24,7 @@ jest.mock('../perps/perps-withdraw-toast', () => ({
   ),
 }));
 
-jest.mock('../../ui/survey-toast', () => ({
+jest.mock('../../ui/survey-toast/survey-toast', () => ({
   SurveyToast: () => null,
 }));
 
@@ -58,5 +71,52 @@ describe('ToastMaster routing', () => {
         screen.queryByTestId('mock-perps-withdraw-toast'),
       ).not.toBeInTheDocument();
     });
+
+    it('renders the Basic Functionality migration toast outside home', () => {
+      renderWithProvider(
+        <ToastMaster />,
+        createStore(),
+        '/confirm-transaction',
+      );
+      expect(
+        screen.getByTestId('mock-bft-migration-toast'),
+      ).toBeInTheDocument();
+    });
+  });
+});
+
+const ARC_ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
+const NATIVE_ASSET = '0x0000000000000000000000000000000000000000';
+
+function createArcStore() {
+  return configureStore({
+    metamask: {
+      ...mockState.metamask,
+      isUnlocked: true,
+      arcUsageNoticeShown: false,
+      tokenBalances: {
+        [ARC_ACCOUNT]: {
+          [CHAIN_IDS.ARC]: { [NATIVE_ASSET]: '0xde0b6b3a7640000' },
+        },
+      },
+    },
+    appState: { ...mockState.appState },
+  });
+}
+
+describe('on the home route', () => {
+  it('renders ArcUsageNoticeToast on / and not on /settings', () => {
+    const { unmount } = renderWithProvider(
+      <ToastMaster />,
+      createArcStore(),
+      '/',
+    );
+    expect(screen.getByTestId('arc-usage-notice-toast')).toBeInTheDocument();
+    unmount();
+
+    renderWithProvider(<ToastMaster />, createArcStore(), '/settings');
+    expect(
+      screen.queryByTestId('arc-usage-notice-toast'),
+    ).not.toBeInTheDocument();
   });
 });

@@ -5,6 +5,7 @@ import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
 import type {
   Provider,
+  RampsToken,
   ResourceState,
   TokensResponse,
 } from '@metamask/ramps-controller';
@@ -25,6 +26,8 @@ import {
   selectTokens,
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
+import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
+import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -57,7 +60,10 @@ function isCatalogSettled(
     !providers.isLoading &&
     !tokens.isLoading &&
     !providers.error &&
-    !tokens.error
+    !tokens.error &&
+    tokens.data !== null &&
+    Array.isArray(tokens.data.topTokens) &&
+    Array.isArray(tokens.data.allTokens)
   );
 }
 
@@ -73,19 +79,21 @@ function isCatalogEmpty(
   return providersEmpty || tokensEmpty;
 }
 
-// True when `assetId` is present in a settled catalog and not flagged off.
-function isAssetSupported(
-  tokensData: TokensResponse,
+// Finds `assetId` in the catalog, ignoring EVM address casing: callers build
+// asset ids from a checksummed address while the API returns a mix of
+// checksummed (USDC, USDT) and lowercase (mUSD) ids.
+function findCatalogToken(
+  tokensData: TokensResponse | null,
   assetId: CaipAssetType,
-): boolean {
+): RampsToken | undefined {
   const catalog = [
-    ...(tokensData.topTokens ?? []),
-    ...(tokensData.allTokens ?? []),
+    ...(tokensData?.topTokens ?? []),
+    ...(tokensData?.allTokens ?? []),
   ];
-  const match = catalog.find(
-    (token) => token.assetId.toLowerCase() === assetId.toLowerCase(),
+  return catalog.find(
+    (token) =>
+      normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
   );
-  return Boolean(match) && match?.tokenSupported !== false;
 }
 
 // Pre-select the token before navigating to build-quote. Fail closed so a
@@ -102,24 +110,19 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * Runs a fixed geo-block gate (service disruption, geolocation unknown, region
- * unsupported, providers/tokens fetched-but-empty) and then routes into the
- * native buy flow: an intent with a supported `assetId` pre-selects the token
- * and opens the build-quote page; without one it opens the token-selection
- * page; an unsupported `assetId` raises the unsupported modal. The gate is
- * skipped entirely when the `rampsEnabled` rollout flag is off (unchanged
- * Portfolio redirect).
+ * When `rampsEnabled` is on:
+ * - Wallets that have never connected to Portfolio use in-app Buy (geo gates).
+ * - Wallets that have connected to Portfolio open Portfolio (hedge while
+ * order-history Profile Sync is still rolling out; returning buyers keep
+ * Portfolio until migration lands).
  *
- * Geolocation is resolved on demand via the background `GeolocationController`
- * (mobile parity — it does not fetch at startup, so reading synced state alone
- * would fail closed). Any loading/indeterminate state fails open; only a
- * settled, definitively-blocking state raises a modal.
+ * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
  * {@link RampIntent}. It runs the gate and either shows a blocking modal or
  * opens the buy destination. Resolves to `true` when it proceeded and `false`
- * when a blocking modal was shown, so callers can gate follow-up UI (e.g. a
- * "tab opened" toast).
+ * when a blocking modal was shown, plus `opensBuyInPortfolioTab` so callers can
+ * gate follow-up UI (e.g. a "tab opened" toast).
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -131,6 +134,7 @@ export default function useRampsNavigation() {
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
+  const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
 
   const goToBuy = useCallback(
     async (intent?: RampIntent): Promise<boolean> => {
@@ -138,6 +142,13 @@ export default function useRampsNavigation() {
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
         // just an over-tight annotation.
+        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+        return true;
+      }
+
+      // Returning Portfolio users → Portfolio (not in-app) until Profile Sync
+      // migration can flip them onto native Buy.
+      if (everConnectedToPortfolio) {
         openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
         return true;
       }
@@ -188,16 +199,28 @@ export default function useRampsNavigation() {
       // Resolve against the catalog. Only block on a settled catalog that
       // definitively lacks/unsupports the token — an unsettled catalog fails
       // open (proceed with it selected, page re-resolves).
-      if (catalogData && !isAssetSupported(catalogData, assetId)) {
+      const catalogToken = findCatalogToken(tokens.data, assetId);
+      if (
+        catalogData &&
+        (!catalogToken || catalogToken.tokenSupported === false)
+      ) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
       }
-      const didPreselect = await preselectToken(assetId);
+
+      // `setSelectedToken` looks the token up by exact assetId, so pre-select
+      // with the catalog's own spelling rather than the caller's checksummed
+      // one. Without a catalog to resolve against, the intent is all we have.
+      const selectedAssetId =
+        (catalogToken?.assetId as CaipAssetType | undefined) ?? assetId;
+      const didPreselect = await preselectToken(selectedAssetId);
       if (!didPreselect) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
       }
-      navigate(RAMPS_BUILD_QUOTE_ROUTE, { state: { assetId } });
+      navigate(RAMPS_BUILD_QUOTE_ROUTE, {
+        state: { assetId: selectedAssetId },
+      });
       return true;
     },
     [
@@ -206,13 +229,17 @@ export default function useRampsNavigation() {
       isRegionUnsupported,
       providers,
       tokens,
+      everConnectedToPortfolio,
       dispatch,
       navigate,
       openBuyCryptoInPdapp,
     ],
   );
 
-  // Expose the rollout flag so callers can gate follow-up UI (e.g. the flag-off
-  // "tab opened" toast) without re-reading the selector themselves.
-  return { goToBuy, isRampsEnabled: isEnabled };
+  // Expose whether Buy leaves the extension so callers can gate follow-up UI
+  // (e.g. the "tab opened" toast) without re-deriving the destination.
+  return {
+    goToBuy,
+    opensBuyInPortfolioTab: !isEnabled || everConnectedToPortfolio,
+  };
 }

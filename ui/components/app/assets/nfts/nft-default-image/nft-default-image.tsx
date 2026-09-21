@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'clsx';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -10,6 +9,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ButtonLink } from '../../../../component-library';
 import { showIpfsModal } from '../../../../../store/actions';
+import { useDispatch } from '../../../../../store/hooks';
 
 type NftDefaultImageProps = {
   className: string;

@@ -10,15 +10,13 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
   MetaMetricsEventAccountType,
-  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
+import { createEventBuilder } from '../../controllers/analytics';
 import ExtensionPlatform from '../../platforms/extension';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
-import type { AnalyticsEvent } from '../../controllers/analytics';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
@@ -59,68 +57,25 @@ export class OAuthService {
 
   #platform: ExtensionPlatform;
 
-  #bufferedTrace: OAuthServiceOptions['bufferedTrace'];
-
-  #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
-
-  #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
-
-  #getCompletedMetaMetricsOnboarding: OAuthServiceOptions['getCompletedMetaMetricsOnboarding'];
-
-  #getOptedIn: OAuthServiceOptions['getOptedIn'];
+  #trackEvent: OAuthServiceOptions['trackEvent'];
 
   constructor({
     messenger,
     webAuthenticator,
     platform,
-    bufferedTrace,
-    bufferedEndTrace,
-    addEventBeforeMetricsOptIn,
-    getCompletedMetaMetricsOnboarding,
-    getOptedIn,
+    trackEvent,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
     this.#config = loadOAuthConfig();
     this.#webAuthenticator = webAuthenticator;
     this.#platform = platform;
-    this.#bufferedTrace = bufferedTrace;
-    this.#bufferedEndTrace = bufferedEndTrace;
-    this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
-    this.#getCompletedMetaMetricsOnboarding = getCompletedMetaMetricsOnboarding;
-    this.#getOptedIn = getOptedIn;
+    this.#trackEvent = trackEvent;
 
     this.#messenger.registerMethodActionHandlers(
       this,
       MESSENGER_EXPOSED_METHODS,
     );
-  }
-
-  /**
-   * Track a MetaMetrics event with buffering (handles consent checking)
-   *
-   * @param built - The built analytics event.
-   */
-  #trackEventWithBuffering(built: AnalyticsEvent): void {
-    const isMetricsEnabled =
-      this.#getCompletedMetaMetricsOnboarding() && this.#getOptedIn();
-
-    if (isMetricsEnabled) {
-      trackEvent(built);
-      return;
-    }
-
-    const { category, ...properties } = built.properties;
-    const bufferedPayload: MetaMetricsEventPayload = {
-      event: built.name,
-      category: category as MetaMetricsEventCategory,
-      properties: {
-        ...properties,
-        actionId: `${Date.now() + Math.random()}`,
-      },
-      sensitiveProperties: built.sensitiveProperties,
-    };
-    this.#addEventBeforeMetricsOptIn(bufferedPayload);
   }
 
   /**
@@ -285,7 +240,7 @@ export class OAuthService {
     let providerLoginSuccess = false;
 
     try {
-      this.#bufferedTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingOAuthProviderLogin,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -317,7 +272,7 @@ export class OAuthService {
 
       throw error;
     } finally {
-      this.#bufferedEndTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingOAuthProviderLogin,
         data: { success: providerLoginSuccess },
       });
@@ -338,7 +293,7 @@ export class OAuthService {
     let getAuthTokensSuccess = false;
 
     try {
-      this.#bufferedTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -365,7 +320,7 @@ export class OAuthService {
 
       throw error;
     } finally {
-      this.#bufferedEndTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         data: { success: getAuthTokensSuccess },
       });
@@ -383,7 +338,7 @@ export class OAuthService {
     errorCategory: 'provider_login' | 'get_auth_tokens';
     failureType: 'error' | 'user_cancelled';
   }): void {
-    this.#trackEventWithBuffering(
+    this.#trackEvent(
       createEventBuilder(MetaMetricsEventName.SocialLoginFailed)
         .addCategory(MetaMetricsEventCategory.Onboarding)
         .addProperties({
@@ -549,6 +504,8 @@ export class OAuthService {
         throw this.#getAuthFlowError();
       }
 
+      const confirmedTabId: number = openedTabId;
+
       const redirectUrl = await new Promise<string>((resolve, reject) => {
         const platform = this.#platform;
 
@@ -559,16 +516,16 @@ export class OAuthService {
 
         function finish(callback: () => void): void {
           cleanup();
-          platform.closeTab(openedTabId).catch(() => undefined);
+          platform.closeTab(confirmedTabId).catch(() => undefined);
           callback();
         }
 
         function onUpdated(
           tabId: number,
           changeInfo: { url?: string; pendingUrl?: string },
-          tab?: { url?: string },
+          tab: { url?: string },
         ): void {
-          if (tabId !== openedTabId) {
+          if (tabId !== confirmedTabId) {
             return;
           }
 
@@ -588,7 +545,7 @@ export class OAuthService {
         }
 
         function onRemoved(tabId: number): void {
-          if (tabId !== openedTabId) {
+          if (tabId !== confirmedTabId) {
             return;
           }
 

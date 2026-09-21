@@ -4,7 +4,9 @@ import { parseStandardTokenTransactionData } from '../../../../../../../shared/l
 
 export function useTokenTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const transactionData = currentConfirmation?.txParams?.data;
+  const transactionData =
+    currentConfirmation?.txParamsOriginal?.data ??
+    currentConfirmation?.txParams?.data;
 
   if (!transactionData) {
     return undefined;

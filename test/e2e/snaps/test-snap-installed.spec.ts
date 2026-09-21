@@ -64,7 +64,7 @@ describe('Test Snap installed', function () {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: 'fake-metrics-id',
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()

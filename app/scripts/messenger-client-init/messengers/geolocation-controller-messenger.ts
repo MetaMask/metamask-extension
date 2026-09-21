@@ -32,7 +32,7 @@ export function getGeolocationControllerMessenger(
 
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['GeolocationApiService:fetchGeolocation'],
+    actions: ['GeolocationApiService:fetchGeolocationData'],
   });
 
   return controllerMessenger;

@@ -1,5 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import WebcamUtils from '../../../../../helpers/utils/webcam-utils';
 import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import { isFirefoxBrowser } from '../../../../../../shared/lib/browser-runtime.utils';

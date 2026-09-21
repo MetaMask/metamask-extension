@@ -1,9 +1,9 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import {
-  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
+  QuoteResponse,
 } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -31,13 +31,13 @@ const createDiscountedQuotes = (
       ...quote.quote,
       feeData: {
         ...quote.quote.feeData,
-        metabridge: {
-          ...quote.quote.feeData.metabridge,
+        metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+          ...fee,
           amount: '1000000000000000000',
           quoteBpsFee: 50,
           baseBpsFee: 87.5,
           ...(discountType !== undefined && { discountType }),
-        },
+        })),
       },
     },
   }));

@@ -6,18 +6,25 @@ import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getLabelKeys } from '../../../../shared/lib/activity/label-keys';
+import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
+import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
+import type {
+  FiatAmount,
+  TokenAmount,
+} from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { formatPendingRampTokenLabel } from '../../../hooks/ramps/utils/formatPendingRampTokenLabel';
+import { hasPositiveNumericAmount } from '../../../hooks/ramps/utils/hasPositiveNumericAmount';
 import type { ActivityRowProps } from '../types';
-import { useFormatFiatAmount } from './useFormatFiatAmount';
+import { useFormatAsFiat } from '../../../hooks/useFormatAsFiat';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
 
 type ActivityContent = {
@@ -28,6 +35,56 @@ type ActivityContent = {
   secondaryAmount?: ReactNode;
   avatarTokens: ActivityListItemAvatarTokens;
 };
+
+/**
+ * Shared presentation for MM Pay product-balance rows (perps and money
+ * account): signed fiat amount, token avatar, and optional incoming direction.
+ *
+ * @param options - Row formatting options.
+ * @param options.currency - Fiat currency code used for formatting.
+ * @param options.fiat - Optional fiat amount from the activity item.
+ * @param options.formatCurrencyWithMinThreshold - Currency formatter.
+ * @param options.isIncoming - Whether to mark the amount as incoming (green +).
+ * @param options.isWithdraw - Whether to negate the fiat amount.
+ * @param options.subtitle - Row subtitle.
+ * @param options.title - Row title.
+ * @param options.token - Token metadata used for the avatar.
+ * @returns Activity row content fields.
+ */
+function buildMmPayProductBalanceContent({
+  currency,
+  fiat,
+  formatCurrencyWithMinThreshold,
+  isIncoming,
+  isWithdraw,
+  subtitle,
+  title,
+  token,
+}: {
+  currency: string;
+  fiat?: FiatAmount;
+  formatCurrencyWithMinThreshold: (amount: number, currency: string) => string;
+  isIncoming: boolean;
+  isWithdraw: boolean;
+  subtitle: string;
+  title: string;
+  token?: TokenAmount;
+}): ActivityContent {
+  const fiatAmount = fiat ? Number(fiat.amount) : undefined;
+  const signedFiatAmount =
+    isWithdraw && fiatAmount !== undefined ? -fiatAmount : fiatAmount;
+
+  return {
+    avatarTokens: [token?.assetId],
+    primaryAmount:
+      signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
+        ? formatCurrencyWithMinThreshold(signedFiatAmount, currency)
+        : undefined,
+    primaryDirection: isIncoming ? 'in' : undefined,
+    subtitle,
+    title,
+  };
+}
 
 function getChainDisplay(caipChainId: CaipChainId) {
   const { namespace } = parseCaipChainId(caipChainId);
@@ -50,7 +107,8 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const formatTokenAmount = useFormatTokenAmount();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId } = getChainDisplay(activity.chainId);
-  const formatAsFiat = useFormatFiatAmount(chainId);
+  const formatAsFiat = useFormatAsFiat(chainId);
+  const formatDisplayName = useGetDisplayName();
   const labelKeys = getLabelKeys({
     type: activity.type,
     status: activity.status,
@@ -68,7 +126,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [
-            shortenAddress(address) || t('unknown'),
+            formatDisplayName(address) || t('unknown'),
           ]),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
@@ -201,26 +259,60 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           secondaryAmount: formatAsFiat(token),
         };
       }
-      case 'perpsAddFunds':
-      case 'perpsWithdraw': {
-        const { fiat, token } = activity.data;
-        const fiatAmount = fiat ? Number(fiat.amount) : undefined;
-        const signedFiatAmount =
-          activity.type === 'perpsWithdraw' && fiatAmount !== undefined
-            ? -fiatAmount
-            : fiatAmount;
+      case 'rampBuy':
+      case 'rampSell': {
+        const { token, fiat, provider } = activity.data;
+        const symbol = token?.symbol ?? '';
+        const hasCryptoAmount = hasPositiveNumericAmount(token?.amount);
+        const orderFiat =
+          fiat?.currency && hasPositiveNumericAmount(fiat.amount)
+            ? formatCurrencyWithMinThreshold(Number(fiat.amount), fiat.currency)
+            : undefined;
 
         return {
           avatarTokens: [token?.assetId],
-          title: t(labelKeys.title.key),
-          subtitle: t('perpsBalance'),
+          title: t(labelKeys.title.key, [symbol]),
+          // No provider name means no subtitle: the ramp description repeats
+          // the row title verbatim.
+          subtitle: provider?.name || undefined,
           primaryAmount:
-            signedFiatAmount !== undefined && Number.isFinite(signedFiatAmount)
-              ? formatCurrencyWithMinThreshold(signedFiatAmount, PERPS_CURRENCY)
-              : undefined,
-          primaryDirection:
-            activity.type === 'perpsAddFunds' ? 'in' : undefined,
+            activity.status === 'pending' && token && !hasCryptoAmount
+              ? formatPendingRampTokenLabel(symbol)
+              : formatTokenAmount(token),
+          primaryDirection: token?.direction,
+          secondaryAmount: orderFiat ?? formatAsFiat(token),
         };
+      }
+      case 'perpsAddFunds':
+      case 'perpsWithdraw': {
+        const { fiat, token } = activity.data;
+
+        return buildMmPayProductBalanceContent({
+          currency: PERPS_CURRENCY,
+          fiat,
+          formatCurrencyWithMinThreshold,
+          isIncoming: activity.type === 'perpsAddFunds',
+          isWithdraw: activity.type === 'perpsWithdraw',
+          subtitle: t('perpsBalance'),
+          title: t(labelKeys.title.key),
+          token,
+        });
+      }
+      // Render the money-account balance change as fiat, consistent with other MM Pay rows.
+      case 'moneyAccountDeposit':
+      case 'moneyAccountWithdraw': {
+        const { fiat, token } = activity.data;
+
+        return buildMmPayProductBalanceContent({
+          currency: MONEY_ACCOUNT_FIAT_CURRENCY,
+          fiat,
+          formatCurrencyWithMinThreshold,
+          isIncoming: activity.type === 'moneyAccountDeposit',
+          isWithdraw: activity.type === 'moneyAccountWithdraw',
+          subtitle: t(labelKeys.description.key),
+          title: t(labelKeys.title.key),
+          token,
+        });
       }
       case 'nftBuy':
       case 'nftSell': {
@@ -326,6 +418,10 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const content = getContent();
   const { primaryAmount, primaryDirection, secondaryAmount, avatarTokens } =
     content;
+  const hasPrimaryAmount =
+    primaryAmount !== undefined &&
+    primaryAmount !== null &&
+    primaryAmount !== '';
 
   return {
     avatar: (
@@ -344,11 +440,11 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       </span>
     ),
     subtitle: content.subtitle,
-    primaryAmount: (
+    primaryAmount: hasPrimaryAmount ? (
       <span className={cn(primaryDirection === 'in' && 'text-success-default')}>
         {primaryAmount}
       </span>
-    ),
+    ) : undefined,
     secondaryAmount,
   };
 }

@@ -1,6 +1,7 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps, spanLocator } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
+import MockedPage from '../page-objects/pages/mocked-page';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -33,11 +34,6 @@ async function mockSnapBinaryAndWebsite(
 ) {
   return [await mockDialogSnap(mockServer), await mockSnapsWebsite(mockServer)];
 }
-
-const EMPTY_PAGE_BODY_SELECTOR = {
-  testId: 'empty-page-body',
-  text: 'Empty page by MetaMask',
-};
 
 describe('Test Snap UI Links', function () {
   it('test link in confirmation snap_dialog type', async function () {
@@ -75,7 +71,9 @@ describe('Test Snap UI Links', function () {
         await snapInstall.clickVisitSiteLink();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestE2EPage);
-        await driver.waitForSelector(EMPTY_PAGE_BODY_SELECTOR);
+        await new MockedPage(driver).checkDisplayedMessage(
+          'Empty page by MetaMask',
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.waitForDialogApproveButton();

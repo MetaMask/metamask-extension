@@ -11,7 +11,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_ANALYTICS_ID } from '../../constants';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
@@ -299,7 +299,7 @@ describe('Sentry errors', function () {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 analyticsId: null,
-                completedMetaMetricsOnboarding: true,
+                consentDecisionMade: true,
                 optedIn: false,
               })
               .build(),
@@ -372,7 +372,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: null,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: false,
             })
             .build(),
@@ -449,7 +449,7 @@ describe('Sentry errors', function () {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 analyticsId: MOCK_ANALYTICS_ID,
-                completedMetaMetricsOnboarding: true,
+                consentDecisionMade: true,
                 optedIn: true,
               })
               .build(),
@@ -534,7 +534,7 @@ describe('Sentry errors', function () {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 analyticsId: MOCK_ANALYTICS_ID,
-                completedMetaMetricsOnboarding: true,
+                consentDecisionMade: true,
                 optedIn: true,
               })
               .build(),
@@ -636,7 +636,7 @@ describe('Sentry errors', function () {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
                 analyticsId: MOCK_ANALYTICS_ID,
-                completedMetaMetricsOnboarding: true,
+                consentDecisionMade: true,
                 optedIn: true,
               })
               .withBadPreferencesControllerState()
@@ -726,7 +726,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: true,
             })
             .build(),
@@ -810,7 +810,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: true,
             })
             .build(),
@@ -917,7 +917,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: null,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: false,
             })
             .build(),
@@ -991,7 +991,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: null,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: false,
             })
             .build(),
@@ -1065,7 +1065,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: true,
             })
             .build(),
@@ -1136,15 +1136,14 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { optedIn } = extra.appState.state.AnalyticsController;
-          const { completedMetaMetricsOnboarding } =
-            extra.appState.state.MetaMetricsController;
+          const { optedIn, consentDecisionMade } =
+            extra.appState.state.AnalyticsController;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
           assert.equal(optedIn, true);
-          assert.equal(completedMetaMetricsOnboarding, true);
+          assert.equal(consentDecisionMade, true);
         },
       );
     });
@@ -1155,7 +1154,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: true,
             })
             .build(),
@@ -1257,7 +1256,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: true,
             })
             .build(),
@@ -1323,14 +1322,14 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { optedIn, completedMetaMetricsOnboarding } =
+          const { optedIn, consentDecisionMade } =
             extra.appState.state.metamask;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
           assert.equal(optedIn, true);
-          assert.equal(completedMetaMetricsOnboarding, true);
+          assert.equal(consentDecisionMade, true);
         },
       );
     });
@@ -1341,7 +1340,7 @@ describe('Sentry errors', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
               optedIn: true,
             })
             .build(),
@@ -1489,8 +1488,10 @@ describe('Sentry errors', function () {
       // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
       rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
-      // AnalyticsController keeps the queue out of UI state.
+      // AnalyticsController keeps the queue and fragments out of UI state.
+      eventFragments: false,
       eventQueue: false,
+      preConsentEventQueue: false,
       // Optional property on AppStateController; only set after a user
       // interacts with a Snap install dialog, so absent from initial state.
       snapsInstallPrivacyWarningShown: true,

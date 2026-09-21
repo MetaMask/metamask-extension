@@ -81,9 +81,6 @@
   "back": {
     "message": "Nyuma"
   },
-  "backupApprovalInfo": {
-    "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha MetaMask, au unataka kufikia waleti yako kwenye kifaa kingine."
-  },
   "backupApprovalNotice": {
     "message": "Hifadhi msimbo wa Siri wa Kurejesha data ili kuweka salama waleti yako na fedha."
   },
@@ -220,9 +217,6 @@
   },
   "gasLimit": {
     "message": "Kikomo cha Gesi"
-  },
-  "gasLimitTooLow": {
-    "message": "Kikomo cha gesi kinapaswa kua angalau 21000"
   },
   "gasUsed": {
     "message": "Gesi iliyotumika"
@@ -399,9 +393,6 @@
   "privateKey": {
     "message": "Ufunguo Binafsi",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Onyo: Kamwe usifichue ufunguo huu. Mtu yeyote mwenye funguo zako binafsi anaweza kuiba rasilimali yoyote iliyopo kwenye akaunti yako."
   },
   "privateNetwork": {
     "message": "Mtandao Binafsi"

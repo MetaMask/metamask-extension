@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import {
   Box,
@@ -21,6 +21,7 @@ import {
 } from '@metamask/design-system-react';
 import { addHexPrefix } from 'ethereumjs-util';
 import { isHexString } from '@metamask/utils';
+import { useDispatch } from '../../../store/hooks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,
@@ -403,7 +404,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={onCancel}
-          className="flex-1 rounded-xl border border-border-default"
+          className="flex-1 rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           {t('cancel')}

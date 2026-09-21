@@ -1,14 +1,18 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
   BATCH_SELL_ASSET_IDS,
   buildSendAssetConfigEntry,
   buildReceivedAsset,
 } from '../../../../../test/data/batch-sell';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { useRefreshSmartTransactionsLiveness } from '../../../bridge/hooks/useRefreshSmartTransactionsLiveness';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
 import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
 import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateValidation';
+
 import { BatchSellReviewPage } from './batch-sell-review-page';
 
 // Referenced from inside the `useBatchSellHighRateAlertModal` jest.mock(..)
@@ -23,6 +27,9 @@ jest.mock('./hooks/useBatchSellTradesFetching', () => ({
   useBatchSellTradesFetching: jest.fn(),
 }));
 jest.mock('./hooks/useBatchSellAggregateValidation');
+jest.mock('../../../bridge/hooks/useRefreshSmartTransactionsLiveness', () => ({
+  useRefreshSmartTransactionsLiveness: jest.fn(),
+}));
 jest.mock('../../hooks/useBatchSellHighRateAlertModal', () => ({
   useBatchSellHighRateAlertModal: () => ({
     openHighAlertModal: mockOpenHighAlertModal,
@@ -175,6 +182,9 @@ const mockUseBatchSellQuotesFetching = jest.mocked(useBatchSellQuotesFetching);
 const mockUseBatchSellAggregateValidation = jest.mocked(
   useBatchSellAggregateValidation,
 );
+const mockUseRefreshSmartTransactionsLiveness = jest.mocked(
+  useRefreshSmartTransactionsLiveness,
+);
 const mockUseSelector = jest.mocked(useSelector);
 
 // ── Default return values ──────────────────────────────────────────────────
@@ -270,6 +280,34 @@ describe('BatchSellReviewPage', () => {
 
       expect(screen.getByTestId('batch-sell-review-page')).toBeInTheDocument();
       expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('STX liveness refresh', () => {
+    // STX availability is gated on per-chain liveness, which is only fetched
+    // for chains the wallet has visited, so the review page refreshes it for
+    // the batch-sell source chain up front.
+    it('refreshes STX liveness for the selected receive asset chain', () => {
+      renderPage();
+
+      expect(mockUseRefreshSmartTransactionsLiveness).toHaveBeenCalledWith(
+        '0x1',
+      );
+    });
+
+    it('passes undefined for a non-EVM selected receive asset chain', () => {
+      renderPage({
+        quotesConfig: {
+          selectedReceiveAsset: buildReceivedAsset({
+            assetId: BATCH_SELL_ASSET_IDS.USDC,
+            chainId: MultichainNetworks.SOLANA,
+          }),
+        },
+      });
+
+      expect(mockUseRefreshSmartTransactionsLiveness).toHaveBeenCalledWith(
+        undefined,
+      );
     });
   });
 

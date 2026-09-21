@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { setSlippage } from '../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -26,8 +26,8 @@ const toToken = { assetId: 'eip155:1/erc20:0xabc' };
 const activeQuote = {
   quote: {
     slippage: 1.5,
-    srcAsset: fromToken,
-    destAsset: toToken,
+    src: { asset: fromToken },
+    dest: { asset: toToken },
   },
 };
 

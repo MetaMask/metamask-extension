@@ -9,8 +9,10 @@ import { SolScope, BtcScope, TrxScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
-import { SLIP44_ASSET_NAMESPACE } from '../../shared/constants/multichain/assets';
-import { isTronSpecialAsset } from '../../shared/lib/asset-utils';
+import {
+  isNativeCaipAssetId,
+  isTronSpecialAsset,
+} from '../../shared/lib/asset-utils';
 import {
   getAccountAssets,
   getAssetsMetadata,
@@ -62,7 +64,7 @@ const useNonEvmAssetsWithBalances = (
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
           address: assetReference,
-          isNative: assetNamespace === SLIP44_ASSET_NAMESPACE,
+          isNative: isNativeCaipAssetId(caipAssetId),
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,

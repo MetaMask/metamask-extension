@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -28,6 +27,7 @@ import {
   ButtonSize,
 } from '../../component-library';
 import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
+import { useDispatch } from '../../../store/hooks';
 
 export default function DataDeletionErrorModal() {
   const t = useI18nContext();

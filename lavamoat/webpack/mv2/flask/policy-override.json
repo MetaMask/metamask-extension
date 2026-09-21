@@ -147,6 +147,12 @@
       }
     },
     "@metamask/network-controller": {
+      "globals": {
+        "btoa": true,
+        "btoa.bind": false,
+        "fetch": true,
+        "fetch.bind": false
+      },
       "packages": {
         "cockatiel": true
       }
@@ -304,9 +310,15 @@
         "localStorage": false
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>zod": {
+    "openai>zod": {
       "globals": {
-        "__zod_globalRegistry": "write"
+        "__zod_globalRegistry": "write",
+        "__zod_globalConfig": "write"
+      }
+    },
+    "@metamask/notification-services-controller>firebase>@firebase/messaging": {
+      "globals": {
+        "PushManager": true
       }
     }
   }

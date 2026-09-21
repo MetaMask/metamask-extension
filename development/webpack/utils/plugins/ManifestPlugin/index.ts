@@ -621,7 +621,7 @@ export class ManifestPlugin<Z extends boolean> {
           manifest.web_accessible_resources =
             manifest.web_accessible_resources || [];
           const war = manifest.web_accessible_resources.find((resource) =>
-            resource.matches.includes('<all_urls>'),
+            resource.matches?.includes('<all_urls>'),
           );
           if (war) {
             // merge the resources into the existing <all_urls> resource, ensure uniqueness using `Set`

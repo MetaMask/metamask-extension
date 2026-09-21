@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -59,7 +59,7 @@ function createStore() {
 
 function renderContextProvider(store: ReturnType<typeof createStore>) {
   return renderHook(() => useConfirmContext(), {
-    wrapper: ({ children }: { children: React.ReactElement }) => (
+    wrapper: ({ children }: { children: React.ReactNode }) => (
       <Provider store={store}>
         <ConfirmContextProvider>
           {children as React.ReactElement}
@@ -85,6 +85,17 @@ describe('ConfirmContextProvider', () => {
     rerender();
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
+  });
+
+  it('does not navigate when confirmation disappears after suppressAutoExit is called', () => {
+    const store = createStore();
+    const { result, rerender } = renderContextProvider(store);
+
+    result.current.suppressAutoExit();
+    mockCurrentConfirmation = undefined;
+    rerender();
+
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('navigates to goBackTo when confirmation disappears and goBackTo is present', () => {
@@ -119,7 +130,7 @@ describe('ConfirmContextProvider', () => {
     };
 
     const { rerender } = renderHook(() => useConfirmContext(), {
-      wrapper: ({ children }: { children: React.ReactElement }) => (
+      wrapper: ({ children }: { children: React.ReactNode }) => (
         <Provider store={store}>
           <ConfirmContextProvider
             currentConfirmationOverride={override as never}

@@ -1,10 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
-import {
-  startPasskeyAuthentication,
-  cancelPasskeyCeremony,
-} from '../../../../shared/lib/passkey';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../test/lib/i18n-helpers';
@@ -21,6 +18,11 @@ const mockPasskeyAuthResponse = {
   response: {},
   type: 'public-key',
 };
+const mockAuthenticateWithPasskey = jest.fn();
+
+jest.mock('../../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => mockAuthenticateWithPasskey,
+}));
 
 jest.mock('../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual<
@@ -29,21 +31,11 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../store/actions'),
-  generatePasskeyAuthenticationOptions: jest.fn(() => Promise.resolve({})),
-}));
-
 jest.mock('../../../../shared/lib/passkey', () => ({
   ...jest.requireActual('../../../../shared/lib/passkey'),
-  startPasskeyAuthentication: jest.fn(),
   cancelPasskeyCeremony: jest.fn(),
 }));
 
-const mockStartPasskeyAuthentication =
-  startPasskeyAuthentication as jest.MockedFunction<
-    typeof startPasskeyAuthentication
-  >;
 const mockCancelPasskeyCeremony = cancelPasskeyCeremony as jest.MockedFunction<
   typeof cancelPasskeyCeremony
 >;
@@ -53,30 +45,32 @@ const mockGetEnvironmentType = getEnvironmentType as jest.MockedFunction<
 
 describe('runPasskeyVerificationCeremony', () => {
   it('returns the authentication response when the ceremony succeeds', async () => {
-    mockStartPasskeyAuthentication.mockResolvedValueOnce(
-      mockPasskeyAuthResponse as never,
-    );
+    const authenticateWithPasskey = jest
+      .fn()
+      .mockResolvedValue(mockPasskeyAuthResponse);
 
     const response = await runPasskeyVerificationCeremony({
       sentryContext: 'test ceremony',
       passkeyMethodLabel: PASSKEY_LABEL_BIOMETRICS,
       t: tEn,
       showErrorToast: false,
+      authenticateWithPasskey,
     });
 
     expect(response).toBe(mockPasskeyAuthResponse);
   });
 
   it('returns null when the ceremony is cancelled', async () => {
-    mockStartPasskeyAuthentication.mockRejectedValueOnce(
-      new DOMException('User cancelled', 'NotAllowedError'),
-    );
+    const authenticateWithPasskey = jest
+      .fn()
+      .mockRejectedValue(new DOMException('User cancelled', 'NotAllowedError'));
 
     const response = await runPasskeyVerificationCeremony({
       sentryContext: 'test ceremony',
       passkeyMethodLabel: PASSKEY_LABEL_BIOMETRICS,
       t: tEn,
       showErrorToast: false,
+      authenticateWithPasskey,
     });
 
     expect(response).toBeNull();
@@ -87,10 +81,9 @@ describe('PasskeyVerification', () => {
   const mockStore = configureMockStore()(mockState);
 
   beforeEach(() => {
+    jest.clearAllMocks();
     mockGetEnvironmentType.mockReturnValue('popup');
-    mockStartPasskeyAuthentication.mockResolvedValue(
-      mockPasskeyAuthResponse as never,
-    );
+    mockAuthenticateWithPasskey.mockResolvedValue(mockPasskeyAuthResponse);
   });
 
   it('auto-runs verification and calls onVerified when the ceremony succeeds', async () => {
@@ -116,7 +109,7 @@ describe('PasskeyVerification', () => {
   });
 
   it('calls onCeremonyFailed when the ceremony returns null', async () => {
-    mockStartPasskeyAuthentication.mockRejectedValueOnce(
+    mockAuthenticateWithPasskey.mockRejectedValueOnce(
       new DOMException('User cancelled', 'NotAllowedError'),
     );
     const onCeremonyFailed = jest.fn();
@@ -139,7 +132,7 @@ describe('PasskeyVerification', () => {
   });
 
   it('calls onUsePassword and cancels the ceremony when use password is clicked', async () => {
-    mockStartPasskeyAuthentication.mockReturnValue(
+    mockAuthenticateWithPasskey.mockReturnValue(
       new Promise(() => {
         // never resolves
       }),

@@ -38,13 +38,29 @@ const GATED_METRIC_VALUES = [
   METRIC.solanaAssetDetails.cls,
 
   // Onboarding form-to-form transitions
-  METRIC.onboardingImportWallet.doneButtonToHomeScreen,
-  METRIC.onboardingNewWallet.doneButtonToAssetList,
+  //
+  // Demoted per the procedure above, restore condition #45266:
+  // `onboardingNewWallet.doneButtonToAssetList` and the import flow's
+  // `doneButtonToHomeScreen` are the same ~37% per-iteration slow path
+  // (24/65 and 30/80 slow draws), so each is a coin flip rather than a
+  // measurement of one thing. No threshold value is correct against a
+  // bimodal null.
   METRIC.importSrpHome.loginToHomeScreen,
 
   // Flow totals
+  //
+  // `onboardingNewWallet.total` demoted per the procedure above, restore
+  // condition #45266. Its `doneButtonToAssetList` step is terminal, so the
+  // slow path propagates into the total instead of being absorbed by a
+  // following step: CV 41.8% (demote at >35%) and an FP rate of 11/14 = 79%
+  // (demote at >10%), against a run-level p75 that splits into a 2257–2300ms
+  // cluster and a 6858–10478ms cluster with the 5460ms fail ceiling sitting
+  // inside the gap.
+  //
+  // `onboardingImportWallet.total` stays gated: a step follows its slow one
+  // and absorbs the spill, leaving a unimodal 8.2% CV. It is the calibration
+  // target in #45205.
   METRIC.onboardingImportWallet.total,
-  METRIC.onboardingNewWallet.total,
   METRIC.importSrpHome.total,
   METRIC.swap.total,
 

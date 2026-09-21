@@ -14,9 +14,6 @@ export type TokenSearchResult = {
   name: string;
   iconUrl?: string;
   labels?: string[];
-  securityData?: {
-    resultType?: string;
-  };
 };
 
 export type TokenSearchPageInfo = {

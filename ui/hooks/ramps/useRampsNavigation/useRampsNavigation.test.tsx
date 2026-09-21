@@ -16,6 +16,7 @@ import {
   RAMPS_TOKEN_SELECTION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { PORTFOLIO_ORIGINS } from '../utils/portfolioConnection';
 import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
 
 jest.mock('../../../store/background-connection', () => ({
@@ -55,6 +56,8 @@ type MetamaskOverrides = Partial<{
   countries: ResourceState<Country[]>;
   providers: ResourceState<Provider[], Provider | null>;
   tokens: ResourceState<TokensResponse | null, RampsToken | null>;
+  subjects: Record<string, unknown>;
+  permissionHistory: Record<string, unknown>;
 }>;
 
 const buildState = (over: MetamaskOverrides = {}) => ({
@@ -75,6 +78,8 @@ const buildState = (over: MetamaskOverrides = {}) => ({
       isLoading: false,
       error: null,
     },
+    subjects: {},
+    permissionHistory: {},
     ...over,
   },
 });
@@ -129,6 +134,55 @@ describe('useRampsNavigation goToBuy', () => {
     await goToBuy(result);
     expect(openTab).toHaveBeenCalled();
     expect(mockGetGeolocation).not.toHaveBeenCalled();
+    expect(getModalName()).toBeNull();
+  });
+
+  it('flag on + ever connected to Portfolio → opens Portfolio (skips in-app)', async () => {
+    const { result, getModalName } = run(
+      buildState({
+        subjects: {
+          [PORTFOLIO_ORIGINS[0]]: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                parentCapability: 'endowment:caip25',
+              },
+            },
+          },
+        },
+      }),
+    );
+    const opened = await goToBuy(result);
+    expect(opened).toBe(true);
+    expect(result.current.opensBuyInPortfolioTab).toBe(true);
+    expect(openTab).toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockGetGeolocation).not.toHaveBeenCalled();
+    expect(getModalName()).toBeNull();
+  });
+
+  it('flag on + never connected to Portfolio → in-app token selection', async () => {
+    const { result, getModalName } = run(buildState());
+    const opened = await goToBuy(result);
+    expect(opened).toBe(true);
+    expect(result.current.opensBuyInPortfolioTab).toBe(false);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
 
@@ -324,8 +378,103 @@ describe('useRampsNavigation goToBuy', () => {
     const opened = await goToBuy(result, { assetId: 'eip155:1/erc20:0xabc' });
     expect(opened).toBe(true);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
-      state: { assetId: 'eip155:1/erc20:0xabc' },
+      state: { assetId: catalogAssetId },
     });
+  });
+
+  it('intent with a checksummed EVM assetId pre-selects the catalog spelling', async () => {
+    // Token pages build EVM asset ids from a checksummed address, while the
+    // catalog returns some of them lowercased (mUSD). The controller looks up
+    // the selected token by exact assetId, so the catalog spelling has to win.
+    const catalogAssetId =
+      'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:1/erc20:0xACA92E438df0B2401fF60dA7E4337B687a2435DA',
+    });
+
+    expect(opened).toBe(true);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      catalogAssetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: catalogAssetId },
+    });
+    expect(getModalName()).toBeNull();
+  });
+
+  it('intent with affected-network assetId matches a catalog token with checksum casing', async () => {
+    const catalogAssetId = 'eip155:59144/erc20:0xAbC';
+    const { result } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              {
+                assetId: catalogAssetId,
+                tokenSupported: true,
+              } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:59144/erc20:0xabc',
+    });
+
+    expect(opened).toBe(true);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: catalogAssetId },
+    });
+  });
+
+  it('intent with assetId and loading catalog fails open to build quote', async () => {
+    const assetId = 'eip155:143/erc20:0xabc';
+    const { result, getModalName } = run(
+      buildState({
+        providers: {
+          data: [],
+          selected: null,
+          isLoading: true,
+          error: null,
+        },
+        tokens: {
+          data: null,
+          selected: null,
+          isLoading: true,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(true);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+    });
+    expect(getModalName()).toBeNull();
   });
 
   it('intent with assetId absent from a settled catalog → shows RAMPS_UNSUPPORTED', async () => {
@@ -385,6 +534,65 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     const opened = await goToBuy(result, { assetId });
+    expect(opened).toBe(true);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      assetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+    });
+    expect(getModalName()).toBeNull();
+  });
+
+  it('intent with a checksummed assetId still uses the catalog spelling while the catalog refreshes', async () => {
+    // An unsettled catalog does not gate the buy, but the tokens it already
+    // holds are still the best source for the assetId spelling.
+    const catalogAssetId =
+      'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
+    const { result } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: true,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:1/erc20:0xACA92E438df0B2401fF60dA7E4337B687a2435DA',
+    });
+
+    expect(opened).toBe(true);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      catalogAssetId,
+    ]);
+  });
+
+  it('intent with assetId and incomplete settled catalog → fails open to build quote', async () => {
+    const assetId = 'eip155:8453/erc20:0xabc';
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: undefined,
+          } as unknown as TokensResponse,
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
     expect(opened).toBe(true);
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,

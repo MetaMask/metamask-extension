@@ -20,6 +20,7 @@ export {
   resetPerpsStreamManager,
   PerpsStreamManager,
 } from './PerpsStreamManager';
+export type { OrderBookConnectionStatus } from './PerpsStreamManager';
 
 // Legacy mock provider + controller (kept for PR 4/5 migration)
 export { getPerpsController } from './getPerpsController.mock';

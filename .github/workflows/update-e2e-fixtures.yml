@@ -180,8 +180,13 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Install anvil
-        run: yarn mm-foundryup
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
 
       - name: Download dist artifact
         uses: actions/download-artifact@v7

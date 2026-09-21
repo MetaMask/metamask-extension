@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { FormTextField } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -11,11 +11,13 @@ import {
 import type { MetaMaskReduxState } from '../../../store/store';
 import {
   IPFS_DEFAULT_GATEWAY_URL,
-  IPFS_FORBIDDEN_GATEWAY,
+  IPFS_FORBIDDEN_GATEWAYS,
 } from '../../../../shared/constants/network';
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { PRIVACY_ITEMS } from '../search-config';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -51,7 +53,7 @@ export const IpfsGatewayItem = () => {
     }
 
     const urlObj = new URL(validUrl);
-    if (urlObj.host === IPFS_FORBIDDEN_GATEWAY) {
+    if (IPFS_FORBIDDEN_GATEWAYS.includes(urlObj.host)) {
       setIpfsGatewayError(t('forbiddenIpfsGateway'));
       return;
     }

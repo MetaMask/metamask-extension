@@ -81,9 +81,6 @@
   "back": {
     "message": "Vissza"
   },
-  "backupApprovalInfo": {
-    "message": "Ez a titkos kód a tárca helyreállításához szükséges, ha elveszíti eszközét, elfelejti jelszavát, újra kell telepítenie a MetaMask alkalmazást, vagy ha a tárcájához egy másik eszközről szeretne hozzáférni."
-  },
   "backupApprovalNotice": {
     "message": "Készíts biztonsági másolatot titkos helyreállítási kódodról, hogy pénztárcád és pénzalapod biztosítva legyen."
   },
@@ -226,9 +223,6 @@
   },
   "gasLimit": {
     "message": "Gáz határértéke"
-  },
-  "gasLimitTooLow": {
-    "message": "A gáz határértéke legyen legalább 21000"
   },
   "gasUsed": {
     "message": "Használt gáz"
@@ -414,9 +408,6 @@
   "privateKey": {
     "message": "Privát kulcs",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Figyelem! Soha ne adja át másnak ezt a kulcsot. A privát kulcs birtokában ellophatják a számláján lévő pénzeszközöket."
   },
   "privateNetwork": {
     "message": "Magánhálózat"

@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -243,6 +243,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BALANCE_SKELETON = 'coin-overview-balance-skeleton';
 
   afterEach(() => {
+    jest.useRealTimers();
     store.clearActions();
     mockOpenBatchSellExperience.mockClear();
   });
@@ -316,7 +317,8 @@ describe('EthOverview', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should show a balance skeleton when funded account aggregate fiat balance is still zero', async () => {
+    it('should temporarily show a balance skeleton when funded account aggregate fiat balance is still zero', async () => {
+      jest.useFakeTimers();
       const mockedStoreWithStartupZeroBalance = {
         ...mockStore,
         metamask: {
@@ -338,6 +340,17 @@ describe('EthOverview', () => {
       );
 
       expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+
+      act(() => {
+        jest.advanceTimersByTime(1500);
+      });
+
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON),
+      ).not.toBeInTheDocument();
       expect(
         queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
       ).not.toBeInTheDocument();

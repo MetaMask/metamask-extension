@@ -4,6 +4,7 @@ import {
   boolean,
   optional,
   assert,
+  number,
 } from '@metamask/superstruct';
 import {
   getRemoteFeatureFlags,
@@ -19,6 +20,8 @@ import {
  */
 const DefiControllerV2FeatureFlag = object({
   enabled: optional(boolean()),
+  maxAttempts: optional(number()),
+  pollInterval: optional(number()),
 });
 
 /**

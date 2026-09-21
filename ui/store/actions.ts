@@ -14,7 +14,6 @@ import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
   bytesToString,
   CaipAccountId,
-  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
@@ -58,7 +57,6 @@ import type { NotificationServicesController } from '@metamask/notification-serv
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Immer, Patch } from 'immer';
-import { HandlerType } from '@metamask/snaps-utils';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -72,6 +70,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   BillingPortalResponse,
   GetCryptoApproveTransactionRequest,
@@ -94,20 +93,14 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
-import type {
-  PasskeyAuthenticationResponse,
-  PasskeyRegistrationOptions,
-  PasskeyAuthenticationOptions,
-  PasskeyRegistrationResponse,
-} from '@metamask/passkey-controller';
 import {
   toHardwareWalletError,
   isTrezorDesktopConnectionMissingError,
 } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
 import { captureException } from '../../shared/lib/sentry';
-import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -152,7 +145,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  MetaMetricsEventFragment,
+  MetaMetricsEventFragmentPayload,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
   MetaMetricsPageObject,
@@ -161,7 +154,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
-  MetaMetricsUserTraits,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import {
@@ -207,10 +199,7 @@ import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import {
-  ClaimSubmitToastType,
-  type NetworkConnectionBanner,
-} from '../../shared/constants/app-state';
+import { ClaimSubmitToastType } from '../../shared/constants/app-state';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -233,6 +222,7 @@ import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscription
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
+import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -434,8 +424,7 @@ export function decodeSeedPhraseFromBackground(
 type SeedPhraseBackgroundMethod =
   | 'createNewVaultAndGetSeedPhrase'
   | 'unlockAndGetSeedPhrase'
-  | 'getSeedPhrase'
-  | 'exportSeedPhraseWithPasskey';
+  | 'getSeedPhrase';
 
 /**
  * Fetches and decodes a seed phrase from a background RPC method.
@@ -856,8 +845,7 @@ export function setLastUsedSubscriptionPaymentDetails(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('cacheLastSelectedPaymentMethod', [
-        product,
-        payload,
+        { product, paymentMethod: payload },
       ]);
     } catch (error) {
       log.error('[setLastUsedSubscriptionPaymentDetails] error', error);
@@ -1046,28 +1034,6 @@ export function tryUnlockMetamask(
 }
 
 /**
- * Tries to unlock the metamask with the passkey.
- * @param authenticationResponse - The authentication response from the passkey.
- * @returns A promise that resolves when the unlock is successful or rejected when it fails.
- */
-export function tryUnlockMetamaskWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      await submitRequestToBackground('unlockWithPasskey', [
-        authenticationResponse,
-      ]);
-      await forceUpdateMetamaskState(dispatch);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-/**
  * Checks if the seedless onboarding user is authenticated.
  *
  * @returns True if the seedless onboarding user is authenticated, false otherwise.
@@ -1236,110 +1202,6 @@ export function submitPassword(password: string): Promise<void> {
 }
 
 /**
- * Generates passkey registration options.
- *
- * @returns Passkey registration options.
- */
-export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
-  const prfSupported = await isPasskeyPRFSupported();
-  return submitRequestToBackground('generatePasskeyRegistrationOptions', [
-    { prfAvailable: prfSupported !== false },
-  ]);
-}
-
-/**
- * Generates passkey authentication options.
- *
- * @returns Passkey authentication options.
- */
-export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
-  return submitRequestToBackground('generatePasskeyAuthenticationOptions');
-}
-
-/**
- * Generates passkey authentication options immediately after registration.
- *
- * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
- */
-export function generatePasskeyPostRegistrationAuthenticationOptions(
-  registrationResponse: PasskeyRegistrationResponse,
-): Promise<PasskeyAuthenticationOptions> {
-  return submitRequestToBackground(
-    'generatePasskeyPostRegistrationAuthenticationOptions',
-    [registrationResponse],
-  );
-}
-
-/**
- * Protects the vault key with a passkey.
- *
- * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
- * @param authenticationResponse - Post-registration `get()` response from the UI ceremony.
- * @param password - When onboarding is complete, the wallet password (step-up). Omit during onboarding.
- */
-export function protectVaultKeyWithPasskey(
-  registrationResponse: PasskeyRegistrationResponse,
-  authenticationResponse: PasskeyAuthenticationResponse,
-  password?: string,
-): Promise<void> {
-  return submitRequestToBackground('protectVaultKeyWithPasskey', [
-    registrationResponse,
-    authenticationResponse,
-    password,
-  ]);
-}
-
-/**
- * Removes the passkey from the vault using the passkey authentication response.
- *
- * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
- */
-export function removePasskeyWithPasskeyVerification(
-  authenticationResponse: PasskeyAuthenticationResponse,
-): Promise<void> {
-  return submitRequestToBackground('removePasskeyWithPasskeyVerification', [
-    authenticationResponse,
-  ]);
-}
-
-/**
- * Removes the passkey from the vault using the wallet password.
- *
- * @param password - The wallet password.
- */
-export function removePasskeyWithPasswordVerification(
-  password: string,
-): Promise<void> {
-  return submitRequestToBackground('removePasskeyWithPasswordVerification', [
-    password,
-  ]);
-}
-
-/**
- * Changes wallet password using a verified passkey assertion, then either re-wraps the
- * passkey record for the new vault encryption key or removes passkey enrollment.
- * (Non–social-login, passkey already enrolled.)
- *
- * @param newPassword - The new wallet password.
- * @param authenticationResponse - WebAuthn authentication response from `navigator.credentials.get`.
- * @param options - Settings forwarded to the background handler.
- * @param options.renewVaultKeyProtection - Whether to renew vault key protection. If `false`, removes passkey after the change instead of renewing vault key protection.
- */
-export function changePasswordWithPasskeyVerification(
-  newPassword: string,
-  authenticationResponse: PasskeyAuthenticationResponse,
-  options: { renewVaultKeyProtection: boolean },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('changePasswordWithPasskeyVerification', [
-      newPassword,
-      authenticationResponse,
-      options,
-    ]);
-  };
-}
-
-/**
  * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
  *
  * @param password - The password.
@@ -1383,43 +1245,6 @@ export function requestRevealSeedWords(
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-/**
- * Returns the Secret Recovery Phrase using a verified passkey assertion instead
- * of the wallet password.
- *
- * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
- * @param keyringId - The id of the HD keyring to export. Defaults to the primary keyring.
- * @returns The decoded seed phrase.
- */
-export function getSeedPhraseWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-  keyringId?: string,
-): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      return fetchSeedPhraseFromBackground('exportSeedPhraseWithPasskey', [
-        authenticationResponse,
-        keyringId,
-      ]);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
-export function tryReverseResolveAddress(
-  address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('tryReverseResolveAddress', [address]);
-    } catch (err) {
-      logErrorWithMessage(err);
     }
   };
 }
@@ -2591,7 +2416,8 @@ export function setSelectedMultichainAccount(
   return async (dispatch, _getState) => {
     log.debug(`background.setSelectedMultichainAccount`);
     try {
-      dispatch(showLoadingIndication());
+      // Fullscreen loading indication removed; callers are responsible for pending UX
+      // (e.g. component-local state, or `useTransition` where appropriate).
       await submitRequestToBackground('setSelectedMultichainAccount', [
         accountGroupId,
       ]);
@@ -2600,8 +2426,6 @@ export function setSelectedMultichainAccount(
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -3563,11 +3387,12 @@ export function createCancelTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createCancelTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createCancelTransaction', [
+    await submitRequestToBackground('createCancelTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3575,9 +3400,7 @@ export function createCancelTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
     return id;
   };
@@ -3590,11 +3413,12 @@ export function createSpeedUpTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug('background.createSpeedUpTransaction');
 
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     const actionId = generateActionId();
-    const newState = await submitRequestToBackground<
-      MetaMaskReduxState['metamask']
-    >('createSpeedUpTransaction', [
+    await submitRequestToBackground('createSpeedUpTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3602,9 +3426,7 @@ export function createSpeedUpTransaction(
 
     await forceUpdateMetamaskState(dispatch);
 
-    const currentNetworkTxList = getCurrentNetworkTransactions({
-      metamask: newState,
-    });
+    const currentNetworkTxList = getCurrentNetworkTransactions(getState());
     const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
     return newTx;
@@ -3823,18 +3645,6 @@ export function showImportNftsModal(payload: {
 export function hideImportNftsModal(): Action {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
-  };
-}
-
-export function hidePermittedNetworkToast(): Action {
-  return {
-    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE,
-  };
-}
-
-export function showPermittedNetworkToast(): Action {
-  return {
-    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN,
   };
 }
 
@@ -4071,31 +3881,6 @@ export function exportAccounts(
   };
 }
 
-/**
- * Reveals the private keys of multiple accounts using a single verified passkey
- * assertion instead of the wallet password.
- *
- * @param authenticationResponse - WebAuthn authentication response from the passkey ceremony.
- * @param addresses - The addresses whose private keys should be revealed.
- * @returns The private keys as hex strings, in the same order as `addresses`.
- */
-export function exportAccountsWithPasskey(
-  authenticationResponse: PasskeyAuthenticationResponse,
-  addresses: string[],
-): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      return await submitRequestToBackground<string[]>(
-        'exportAccountsWithPasskey',
-        [authenticationResponse, addresses],
-      );
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export function showPrivateKey(key: string): PayloadAction<string> {
   return {
     type: actionConstants.SHOW_PRIVATE_KEY,
@@ -4247,6 +4032,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setShowTickerWidget(value: boolean) {
+  return setPreference('showTickerWidget', value);
+}
+
 export function setDismissSmartAccountSuggestionEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4346,12 +4135,7 @@ export function toggleDefaultView(): ThunkAction<
       }
 
       if (isPopup) {
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId: number }) => Promise<void>;
-          };
-        };
-
+        const browserWithSidePanel = chrome;
         if (!browserWithSidePanel?.sidePanel?.open) {
           return;
         }
@@ -4376,6 +4160,8 @@ export function toggleDefaultView(): ThunkAction<
         // closing the popup, and skip persisting the preference, leaving both
         // surfaces open and the next launch defaulting back to the popup.
         try {
+          // Persist the preference
+          await dispatch(setUseSidePanelAsDefault(true));
           await browserWithSidePanel.sidePanel.open({ windowId });
         } catch (error) {
           // Nothing was opened, so the popup stays and state is consistent.
@@ -4385,11 +4171,6 @@ export function toggleDefaultView(): ThunkAction<
           );
           return;
         }
-
-        // Persist the preference before closing the popup so a reopen always
-        // honors the side panel choice and the background toolbar-behavior
-        // subscription flips to open-on-click.
-        await dispatch(setUseSidePanelAsDefault(true));
         window.close();
       }
     } catch (error) {
@@ -4843,11 +4624,15 @@ export function setIpfsGateway(
 
 export function toggleExternalServices(
   val: boolean,
+  ownedPreferences?: Record<string, boolean>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleExternalServices`);
     try {
-      await submitRequestToBackground('toggleExternalServices', [val]);
+      await submitRequestToBackground(
+        'toggleExternalServices',
+        ownedPreferences ? [val, ownedPreferences] : [val],
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
@@ -4861,19 +4646,89 @@ export function toggleBasicFunctionality(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleBasicFunctionality`);
     try {
-      await submitRequestToBackground('toggleExternalServices', [val]);
-      await Promise.all([
-        submitRequestToBackground('setUseMultiAccountBalanceChecker', [val]),
-        submitRequestToBackground('setUseTransactionSimulations', [val]),
-        submitRequestToBackground('setSecurityAlertsEnabled', [val]),
-        submitRequestToBackground('setUse4ByteResolution', [val]),
-        submitRequestToBackground('setUseExternalNameSources', [val]),
-      ]);
+      await submitRequestToBackground('toggleBasicFunctionality', [val]);
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
   };
+}
+
+/**
+ * Turns Basic Functionality on using the path that matches the wallet's
+ * consolidation state when this runs, rather than the state read when the
+ * caller rendered. Consolidation can complete while a confirmation dialog is
+ * open, and the legacy path only owns seven of the child preferences, so it
+ * would leave the rest off behind a consolidated toggle.
+ */
+export function enableBasicFunctionality(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    await dispatch(
+      getIsBasicFunctionalityConsolidationEnabled(getState())
+        ? toggleBasicFunctionality(true)
+        : toggleExternalServices(true),
+    );
+  };
+}
+
+export function consolidateBasicFunctionality(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('consolidateBasicFunctionality');
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[consolidateBasicFunctionality] error', error);
+    }
+  };
+}
+
+function dismissBasicFunctionalityMigrationNotification(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground(
+        'dismissBasicFunctionalityMigrationNotification',
+      );
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error(
+        '[dismissBasicFunctionalityMigrationNotification] error',
+        error,
+      );
+    }
+  };
+}
+
+export function hideMigrationModal(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return dismissBasicFunctionalityMigrationNotification();
+}
+
+export function hideMigrationToast(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return dismissBasicFunctionalityMigrationNotification();
 }
 
 export function setIsIpfsGatewayEnabled(
@@ -5034,6 +4889,7 @@ export function fetchAndSetQuotes(
     const [quotes, selectedAggId] = await trace(
       {
         name: TraceName.SwapQuotesFetched,
+        op: TraceOperation.BridgeDataFetch,
       },
       async () =>
         await submitRequestToBackground<Quotes>('fetchAndSetQuotes', [
@@ -5930,6 +5786,15 @@ export async function getLedgerPublicKey(
 }
 
 /**
+ * Get the active Ledger handler mode from the background.
+ *
+ * @returns Resolves to `LedgerHandlerMode.DMK` when the DMK bridge handler is active, or `LedgerHandlerMode.Legacy` otherwise.
+ */
+export async function getLedgerMode(): Promise<LedgerHandlerMode> {
+  return await submitRequestToBackground('getLedgerMode');
+}
+
+/**
  * Fetch the features/capabilities of the connected Trezor device.
  *
  * @returns The Trezor device features response including model, capabilities, and session info
@@ -6287,18 +6152,6 @@ export async function attemptCloseNotificationPopup() {
   }
 }
 
-/**
- * @param payload - details of the event to track
- * @param options - options for routing/handling of event
- * @returns
- */
-export function trackMetaMetricsEvent(
-  payload: MetaMetricsEventPayload,
-  options?: MetaMetricsEventOptions,
-) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
-}
-
 export function trackAnalyticsEvent(
   payload: AnalyticsEvent,
   options: AnalyticsEventBuildOptions & {
@@ -6310,15 +6163,9 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
-export function createEventFragment(
-  options: MetaMetricsEventFragment,
-): Promise<string> {
-  return submitRequestToBackground('createEventFragment', [options]);
-}
-
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
-  payload: Partial<MetaMetricsEventFragment>,
+  payload: MetaMetricsEventFragmentPayload,
 ) {
   return submitRequestToBackground('upsertTransactionUIMetricsFragment', [
     transactionId,
@@ -6328,20 +6175,9 @@ export function upsertTransactionUIMetricsFragment(
 
 export function updateEventFragment(
   id: string,
-  payload: Partial<MetaMetricsEventFragment>,
+  payload: MetaMetricsEventFragmentPayload,
 ) {
   return submitRequestToBackground('updateEventFragment', [id, payload]);
-}
-
-export function finalizeEventFragment(
-  id: string,
-  options?: {
-    abandoned?: boolean;
-    page?: MetaMetricsPageObject;
-    referrer?: MetaMetricsReferrerObject;
-  },
-) {
-  return submitRequestToBackground('finalizeEventFragment', [id, options]);
 }
 
 /**
@@ -6349,10 +6185,6 @@ export function finalizeEventFragment(
  */
 export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
   return submitRequestToBackground('trackMetaMetricsPage', [payload]);
-}
-
-export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {
-  return submitRequestToBackground('updateMetaMetricsTraits', [traits]);
 }
 
 export function resetViewedNotifications() {
@@ -6435,24 +6267,14 @@ type TemporarySmartTransactionGasFees = {
 const createSignedTransactions = async (
   unsignedTransaction: Partial<TransactionParams> & { chainId: string },
   fees: TemporarySmartTransactionGasFees[],
-  areCancelTransactions?: boolean,
 ): Promise<TransactionParams[]> => {
-  const unsignedTransactionsWithFees = fees.map((fee) => {
-    const unsignedTransactionWithFees = {
-      ...unsignedTransaction,
-      maxFeePerGas: decimalToHex(fee.maxFeePerGas),
-      maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
-      gas: areCancelTransactions
-        ? decimalToHex(21000) // It has to be 21000 for cancel transactions, otherwise the API would reject it.
-        : unsignedTransaction.gas,
-      value: unsignedTransaction.value,
-    };
-    if (areCancelTransactions) {
-      unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
-      unsignedTransactionWithFees.data = '0x';
-    }
-    return unsignedTransactionWithFees;
-  });
+  const unsignedTransactionsWithFees = fees.map((fee) => ({
+    ...unsignedTransaction,
+    maxFeePerGas: decimalToHex(fee.maxFeePerGas),
+    maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
+    gas: unsignedTransaction.gas,
+    value: unsignedTransaction.value,
+  }));
   const signedTransactions = await submitRequestToBackground<
     TransactionParams[]
   >('approveTransactionsWithSameNonce', [unsignedTransactionsWithFees]);
@@ -6466,7 +6288,6 @@ export function signAndSendSmartTransaction({
   unsignedTransaction: Partial<TransactionParams> & { chainId: string };
   smartTransactionFees: {
     fees: TemporarySmartTransactionGasFees[];
-    cancelFees: TemporarySmartTransactionGasFees[];
   };
 }): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -6480,9 +6301,6 @@ export function signAndSendSmartTransaction({
         [
           {
             signedTransactions,
-            // The "signedCanceledTransactions" parameter is still expected by the STX controller but is no longer used.
-            // So we are passing an empty array. The parameter may be deprecated in a future update.
-            signedCanceledTransactions: [],
             txParams: unsignedTransaction,
           },
         ],
@@ -6593,16 +6411,6 @@ export function fetchSmartTransactionsLiveness({
     }
   };
 }
-export function updateNetworkConnectionBanner(
-  networkConnectionBanner: NetworkConnectionBanner,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateNetworkConnectionBanner', [
-      networkConnectionBanner,
-    ]);
-  };
-}
-
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *
@@ -6704,14 +6512,18 @@ export function completeQrCodeScan(
   };
 }
 
-export function cancelQrCodeScan(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function cancelQrCodeScan(
+  error?: Error,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('cancelQrCodeScan');
+    // Error class instances do not survive extension-port serialization.
+    // HardwareWalletError is sent as its JSON shape so the background can
+    // reconstruct a typed error; plain Errors are reduced to their message.
+    const cancelPayload = error
+      ? [error instanceof HardwareWalletError ? error.toJSON() : error.message]
+      : [];
+
+    await submitRequestToBackground('cancelQrCodeScan', cancelPayload);
   };
 }
 
@@ -7689,6 +7501,12 @@ export function setPerpsTabBadgeSeen(value: boolean) {
   };
 }
 
+export function setLastPerpsDepositEntryPoint(entryPoint: string | null) {
+  return submitRequestToBackground('setLastPerpsDepositEntryPoint', [
+    entryPoint,
+  ]);
+}
+
 /**
  * Persist a dismissed mUSD asset-detail CTA key (chainId-tokenAddress).
  * Stored in AppStateController until uninstall.
@@ -7782,33 +7600,6 @@ function applyPatches(
   return immer.applyPatches(oldState, patches);
 }
 
-export async function sendMultichainTransaction(
-  snapId: string,
-  {
-    account,
-    scope,
-    assetType,
-  }: {
-    account: string;
-    scope: string;
-    assetType?: CaipAssetType;
-  },
-) {
-  await handleSnapRequest({
-    snapId,
-    origin: 'metamask',
-    handler: HandlerType.OnRpcRequest,
-    request: {
-      method: 'startSendTransactionFlow',
-      params: {
-        account,
-        scope,
-        assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
-      },
-    },
-  });
-}
-
 export async function getCode(address: Hex, networkClientId: string) {
   return await submitRequestToBackground<string>('getCode', [
     address,
@@ -7836,6 +7627,14 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
 
 export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
   return await submitRequestToBackground<boolean>('isSendBundleSupported', [
+    chainId,
+  ]);
+}
+
+export async function getSentinelNetworkFlags(
+  chainId: Hex,
+): Promise<SentinelNetwork> {
+  return await submitRequestToBackground<boolean>('getSentinelNetworkFlags', [
     chainId,
   ]);
 }
@@ -7890,11 +7689,15 @@ export async function getERC1155BalanceOf(
 export async function applyTransactionContainersExisting(
   transactionId: string,
   containerTypes: TransactionContainerType[],
+  incrementToggleCount = false,
 ) {
-  return await submitRequestToBackground<void>(
-    'applyTransactionContainersExisting',
-    [transactionId, containerTypes],
-  );
+  return await submitRequestToBackground<{
+    enforcedSimulationsSlippage?: number;
+  }>('applyTransactionContainersExisting', [
+    transactionId,
+    containerTypes,
+    incrementToggleCount,
+  ]);
 }
 
 export async function getLayer1GasFeeValue({

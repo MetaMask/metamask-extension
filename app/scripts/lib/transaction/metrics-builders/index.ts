@@ -10,6 +10,7 @@ import { buildTransactionMetricsContext } from '../metrics-context';
 import { getAccountMetricsProperties } from './account';
 import { getBaseMetricsProperties } from './base';
 import { getBatchMetricsProperties } from './batch';
+import { getEnforcedSimulationsMetricsProperties } from './enforced-simulations';
 import { getGasMetricsProperties } from './gas';
 import { getGaslessMetricsProperties } from './gasless';
 import { getHashMetricsProperties } from './hash';
@@ -36,6 +37,7 @@ const METRICS_BUILDERS: TransactionMetricsBuilder[] = [
   getHashMetricsProperties,
   getSmartTransactionProperties,
   getSecurityMetricsProperties,
+  getEnforcedSimulationsMetricsProperties,
   getRPCMetricsProperties,
   getSwapBridgeMetricsProperties,
   getAccountMetricsProperties,

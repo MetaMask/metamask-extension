@@ -1,6 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, fireEvent, render, screen } from '@testing-library/react';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
@@ -76,12 +75,21 @@ describe('AccessRestrictedProvider', () => {
   });
 
   it('throws when used outside the access-restricted modal provider', () => {
-    const { result } = renderHook(() => useAccessRestrictedModal());
+    const HookConsumer = () => {
+      useAccessRestrictedModal();
+      return null;
+    };
 
-    expect(result.error).toEqual(
-      new Error(
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    try {
+      expect(() => render(<HookConsumer />)).toThrow(
         'useAccessRestrictedModal must be used within AccessRestrictedProvider',
-      ),
-    );
+      );
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 });

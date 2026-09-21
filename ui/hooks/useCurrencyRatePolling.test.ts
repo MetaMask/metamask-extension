@@ -1,6 +1,6 @@
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { BtcScope } from '@metamask/keyring-api';
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import {

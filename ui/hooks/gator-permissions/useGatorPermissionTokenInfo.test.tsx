@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
@@ -69,8 +69,14 @@ describe('useGatorPermissionTokenInfo', () => {
     clearTokenInfoCaches();
   });
 
+  async function flushAsyncUpdates() {
+    await act(async () => {
+      await Promise.resolve();
+    });
+  }
+
   describe('native token handling', () => {
-    it('should return native token info for native-token-stream permission type', () => {
+    it('should return native token info for native-token-stream permission type', async () => {
       const testStore = createMockStore();
 
       const { result } = renderHook(
@@ -90,9 +96,10 @@ describe('useGatorPermissionTokenInfo', () => {
         chainId: mockChainId,
       });
       expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
+      await flushAsyncUpdates();
     });
 
-    it('should return native token info for native-token-periodic permission type', () => {
+    it('should return native token info for native-token-periodic permission type', async () => {
       const testStore = createMockStore();
 
       const { result } = renderHook(
@@ -111,9 +118,10 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: mockChainId,
       });
+      await flushAsyncUpdates();
     });
 
-    it('should fallback to CHAIN_ID_TO_CURRENCY_SYMBOL_MAP when network config is missing', () => {
+    it('should fallback to CHAIN_ID_TO_CURRENCY_SYMBOL_MAP when network config is missing', async () => {
       const sepoliaChainId = '0xaa36a7' as Hex; // Sepolia
       const testStore = createMockStore({
         multichainNetworkConfigurationsByChainId: {},
@@ -135,9 +143,10 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: sepoliaChainId,
       });
+      await flushAsyncUpdates();
     });
 
-    it('should default to ETH when neither network config nor CHAIN_ID_TO_CURRENCY_SYMBOL_MAP has the chain', () => {
+    it('should default to ETH when neither network config nor CHAIN_ID_TO_CURRENCY_SYMBOL_MAP has the chain', async () => {
       const unknownChainId = '0x999999' as Hex;
       const testStore = createMockStore({
         multichainNetworkConfigurationsByChainId: {},
@@ -159,11 +168,12 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: unknownChainId,
       });
+      await flushAsyncUpdates();
     });
   });
 
   describe('cache layer', () => {
-    it('should return cached token info immediately', () => {
+    it('should return cached token info immediately', async () => {
       const testStore = createMockStore({
         tokensChainsCache: {
           [mockChainId]: {
@@ -194,9 +204,10 @@ describe('useGatorPermissionTokenInfo', () => {
         chainId: mockChainId,
       });
       expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
+      await flushAsyncUpdates();
     });
 
-    it('should return imported token info', () => {
+    it('should return imported token info', async () => {
       const testStore = createMockStore({
         allTokens: {
           [mockChainId]: {
@@ -220,9 +231,10 @@ describe('useGatorPermissionTokenInfo', () => {
 
       expect(result.current.tokenInfo?.symbol).toBe('IMPORTED');
       expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
+      await flushAsyncUpdates();
     });
 
-    it('should prefer cache over imported tokens', () => {
+    it('should prefer cache over imported tokens', async () => {
       const testStore = createMockStore({
         tokensChainsCache: {
           [mockChainId]: {
@@ -254,6 +266,7 @@ describe('useGatorPermissionTokenInfo', () => {
       );
 
       expect(result.current.tokenInfo?.symbol).toBe('CACHED');
+      await flushAsyncUpdates();
     });
   });
 
@@ -269,21 +282,21 @@ describe('useGatorPermissionTokenInfo', () => {
       });
 
       const testStore = createMockStore();
-      const { result, waitForNextUpdate } = renderHook(
+      const { result } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, mockChainId),
         { wrapper: createWrapper(testStore) },
       );
 
       expect(result.current.loading).toBe(true);
 
-      await waitForNextUpdate();
-
-      expect(result.current.loading).toBe(false);
-      expect(result.current.tokenInfo?.symbol).toBe('API');
-      expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
-        mockTokenAddress,
-        mockChainId,
-      );
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+        expect(result.current.tokenInfo?.symbol).toBe('API');
+        expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
+          mockTokenAddress,
+          mockChainId,
+        );
+      });
     });
 
     it('should skip API when external services are disabled', async () => {
@@ -297,16 +310,16 @@ describe('useGatorPermissionTokenInfo', () => {
         useExternalServices: false,
       });
 
-      const { result, waitForNextUpdate } = renderHook(
+      const { result } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, mockChainId),
         { wrapper: createWrapper(testStore) },
       );
 
-      await waitForNextUpdate();
-
-      expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
-      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
-      expect(result.current.tokenInfo?.symbol).toBe('ONCHAIN');
+      await waitFor(() => {
+        expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
+        expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
+        expect(result.current.tokenInfo?.symbol).toBe('ONCHAIN');
+      });
     });
   });
 
@@ -320,16 +333,16 @@ describe('useGatorPermissionTokenInfo', () => {
       });
 
       const testStore = createMockStore();
-      const { result, waitForNextUpdate } = renderHook(
+      const { result } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, mockChainId),
         { wrapper: createWrapper(testStore) },
       );
 
-      await waitForNextUpdate();
-
-      expect(result.current.tokenInfo?.symbol).toBe('ONCHAIN');
-      expect(result.current.tokenInfo?.decimals).toBe(6);
-      expect(result.current.error).toBeNull();
+      await waitFor(() => {
+        expect(result.current.tokenInfo?.symbol).toBe('ONCHAIN');
+        expect(result.current.tokenInfo?.decimals).toBe(6);
+        expect(result.current.error).toBeNull();
+      });
     });
 
     it('should parse decimals from decimal string', async () => {
@@ -341,14 +354,14 @@ describe('useGatorPermissionTokenInfo', () => {
       });
 
       const testStore = createMockStore();
-      const { result, waitForNextUpdate } = renderHook(
+      const { result } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, mockChainId),
         { wrapper: createWrapper(testStore) },
       );
 
-      await waitForNextUpdate();
-
-      expect(result.current.tokenInfo?.decimals).toBe(6);
+      await waitFor(() => {
+        expect(result.current.tokenInfo?.decimals).toBe(6);
+      });
     });
 
     it('should parse decimals from hex string', async () => {
@@ -360,14 +373,14 @@ describe('useGatorPermissionTokenInfo', () => {
       });
 
       const testStore = createMockStore();
-      const { result, waitForNextUpdate } = renderHook(
+      const { result } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, mockChainId),
         { wrapper: createWrapper(testStore) },
       );
 
-      await waitForNextUpdate();
-
-      expect(result.current.tokenInfo?.decimals).toBe(18);
+      await waitFor(() => {
+        expect(result.current.tokenInfo?.decimals).toBe(18);
+      });
     });
 
     it('should use default values when both API and on-chain fail', async () => {
@@ -377,22 +390,22 @@ describe('useGatorPermissionTokenInfo', () => {
       );
 
       const testStore = createMockStore();
-      const { result, waitForNextUpdate } = renderHook(
+      const { result } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, mockChainId),
         { wrapper: createWrapper(testStore) },
       );
 
-      await waitForNextUpdate();
-
-      expect(result.current.tokenInfo?.symbol).toBe('Unknown Token');
-      expect(result.current.tokenInfo?.decimals).toBeUndefined();
-      expect(result.current.error).toBeInstanceOf(Error);
-      expect(result.current.error?.message).toBe('On-chain Error');
+      await waitFor(() => {
+        expect(result.current.tokenInfo?.symbol).toBe('Unknown Token');
+        expect(result.current.tokenInfo?.decimals).toBeUndefined();
+        expect(result.current.error).toBeInstanceOf(Error);
+        expect(result.current.error?.message).toBe('On-chain Error');
+      });
     });
   });
 
   describe('edge cases', () => {
-    it('should return default token info when tokenAddress is undefined without permission type', () => {
+    it('should return default token info when tokenAddress is undefined without permission type', async () => {
       const testStore = createMockStore();
       const { result } = renderHook(
         () => useGatorPermissionTokenInfo(undefined, mockChainId),
@@ -404,9 +417,10 @@ describe('useGatorPermissionTokenInfo', () => {
         symbol: 'Unknown Token',
         chainId: mockChainId,
       });
+      await flushAsyncUpdates();
     });
 
-    it('should return default token info when chainId is undefined', () => {
+    it('should return default token info when chainId is undefined', async () => {
       const testStore = createMockStore();
       const { result } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, undefined),
@@ -418,9 +432,10 @@ describe('useGatorPermissionTokenInfo', () => {
         symbol: 'Unknown Token',
         chainId: '0x0',
       });
+      await flushAsyncUpdates();
     });
 
-    it('should handle case-insensitive address matching', () => {
+    it('should handle case-insensitive address matching', async () => {
       const upperCaseAddress = mockTokenAddress.toUpperCase();
       const testStore = createMockStore({
         tokensChainsCache: {
@@ -442,6 +457,7 @@ describe('useGatorPermissionTokenInfo', () => {
       );
 
       expect(result.current.tokenInfo?.symbol).toBe('CACHED');
+      await flushAsyncUpdates();
     });
   });
 
@@ -459,27 +475,28 @@ describe('useGatorPermissionTokenInfo', () => {
       const testStore = createMockStore();
 
       // First call
-      const { result: result1, waitForNextUpdate: wait1 } = renderHook(
+      const { result: result1 } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, mockChainId),
         { wrapper: createWrapper(testStore) },
       );
 
-      await wait1();
-
-      expect(mockFetchAssetMetadata).toHaveBeenCalledTimes(1);
-      expect(result1.current.tokenInfo?.symbol).toBe('CACHED');
+      await waitFor(() => {
+        expect(mockFetchAssetMetadata).toHaveBeenCalledTimes(1);
+        expect(result1.current.tokenInfo?.symbol).toBe('CACHED');
+      });
 
       // Second call should use cache
-      const { result: result2, waitForNextUpdate: wait2 } = renderHook(
+      const { result: result2 } = renderHook(
         () => useGatorPermissionTokenInfo(mockTokenAddress, mockChainId),
         { wrapper: createWrapper(testStore) },
       );
 
-      await wait2();
+      await waitFor(() => {
+        expect(result2.current.tokenInfo?.symbol).toBe('CACHED');
+      });
 
       // API should still only be called once (reused from cache)
       expect(mockFetchAssetMetadata).toHaveBeenCalledTimes(1);
-      expect(result2.current.tokenInfo?.symbol).toBe('CACHED');
     });
   });
 });

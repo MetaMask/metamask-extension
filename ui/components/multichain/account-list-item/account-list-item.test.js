@@ -226,7 +226,7 @@ describe('AccountListItem', () => {
   });
 
   it('renders the tag with the snap name for named snap accounts', () => {
-    const { container } = render(
+    render(
       {
         account: {
           ...mockAccount,
@@ -253,12 +253,13 @@ describe('AccountListItem', () => {
         },
       },
     );
-    const tag = container.querySelector('.mm-tag');
-    expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
+    expect(
+      screen.getByText(`${mockSnap.manifest.proposedName} (Beta)`),
+    ).toBeInTheDocument();
   });
 
   it('does not render the tag with the snap name for preinstalled snap accounts', () => {
-    const { container } = render(
+    render(
       {
         account: {
           ...mockAccount,
@@ -285,8 +286,9 @@ describe('AccountListItem', () => {
         },
       },
     );
-    const tag = container.querySelector('.mm-tag');
-    expect(tag).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(`${mockSnap.manifest.proposedName} (Beta)`),
+    ).not.toBeInTheDocument();
   });
 
   describe('Multichain Behaviour', () => {
@@ -354,7 +356,7 @@ describe('AccountListItem', () => {
   });
   describe('Account labels', () => {
     it('renders the SRP pill for account when multi SRP are present in state', () => {
-      const { container } = render(
+      render(
         {
           account: {
             ...mockAccount,
@@ -394,8 +396,7 @@ describe('AccountListItem', () => {
         },
       );
 
-      const tag = container.querySelector('.mm-tag');
-      expect(tag.textContent).toBe('SRP #1');
+      expect(screen.getByText('SRP #1')).toBeInTheDocument();
     });
 
     it('does not render the any account label when explicitly disabled', () => {

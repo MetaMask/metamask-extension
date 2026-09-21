@@ -1,0 +1,201 @@
+import { describe, expect, it } from '@jest/globals';
+import {
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { onchainItem, accountsApiItem } from '../types/money-activity';
+import type { AccountsApiActivity } from '../types/money-activity';
+import {
+  buildMoneyActivityBuckets,
+  isMoneyActivityDeposit,
+  isMoneyActivityTransfer,
+  MoneyActivityFilter,
+} from './money-activity-filters';
+
+function makeTx(extra: Record<string, unknown>): TransactionMeta {
+  return {
+    id: 'tx-1',
+    chainId: '0x1',
+    time: 1,
+    ...extra,
+  } as unknown as TransactionMeta;
+}
+
+function makeCardActivity(
+  kind: AccountsApiActivity['kind'],
+  hash: string,
+): AccountsApiActivity {
+  const base = {
+    hash: hash as `0x${string}`,
+    time: 1,
+    chainId: '0x8f' as const,
+    token: {
+      address: '0xtoken' as `0x${string}`,
+      symbol: 'mUSD',
+      decimals: 6,
+    },
+    amount: '1000000',
+  };
+  if (kind === 'card') {
+    return { ...base, kind, paidTo: '0xmerchant' as `0x${string}` };
+  }
+  return { ...base, kind, receivedFrom: '0xfrom' as `0x${string}` };
+}
+
+describe('isMoneyActivityDeposit', () => {
+  it.each<TransactionType>([
+    TransactionType.incoming,
+    TransactionType.moneyAccountDeposit,
+    TransactionType.tokenMethodTransfer,
+    TransactionType.tokenMethodTransferFrom,
+  ])('returns true for %s', (type) => {
+    expect(isMoneyActivityDeposit(makeTx({ type }))).toBe(true);
+  });
+
+  it('returns true for a batch with a nested moneyAccountDeposit', () => {
+    expect(
+      isMoneyActivityDeposit(
+        makeTx({
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for withdraws', () => {
+    expect(
+      isMoneyActivityDeposit(
+        makeTx({ type: TransactionType.moneyAccountWithdraw }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('isMoneyActivityTransfer', () => {
+  it.each<TransactionType>([
+    TransactionType.moneyAccountWithdraw,
+    TransactionType.simpleSend,
+  ])('returns true for %s', (type) => {
+    expect(isMoneyActivityTransfer(makeTx({ type }))).toBe(true);
+  });
+
+  it('returns true for a batch with a nested moneyAccountWithdraw', () => {
+    expect(
+      isMoneyActivityTransfer(
+        makeTx({
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for deposits and incoming transfers', () => {
+    expect(
+      isMoneyActivityTransfer(
+        makeTx({ type: TransactionType.moneyAccountDeposit }),
+      ),
+    ).toBe(false);
+    expect(
+      isMoneyActivityTransfer(makeTx({ type: TransactionType.incoming })),
+    ).toBe(false);
+  });
+});
+
+describe('buildMoneyActivityBuckets', () => {
+  it('puts converted and received txs in Deposits and withdraws in Sends', () => {
+    const converted = onchainItem(
+      makeTx({
+        id: 'converted',
+        type: TransactionType.moneyAccountDeposit,
+      }),
+    );
+    const received = onchainItem(
+      makeTx({ id: 'received', type: TransactionType.incoming }),
+    );
+    const erc20Received = onchainItem(
+      makeTx({
+        id: 'erc20-received',
+        type: TransactionType.tokenMethodTransfer,
+      }),
+    );
+    const sent = onchainItem(
+      makeTx({
+        id: 'sent',
+        type: TransactionType.moneyAccountWithdraw,
+      }),
+    );
+
+    const buckets = buildMoneyActivityBuckets([
+      converted,
+      received,
+      erc20Received,
+      sent,
+    ]);
+
+    expect(
+      buckets[MoneyActivityFilter.All].map((item) => item.id),
+    ).toStrictEqual(['converted', 'received', 'erc20-received', 'sent']);
+    expect(
+      buckets[MoneyActivityFilter.Deposits].map((item) => item.id),
+    ).toStrictEqual(['converted', 'received', 'erc20-received']);
+    expect(
+      buckets[MoneyActivityFilter.Transfers].map((item) => item.id),
+    ).toStrictEqual(['sent']);
+  });
+
+  it('keeps visible Pay txs in All even when they are not Deposits or Sends', () => {
+    const payFromMoney = onchainItem(
+      makeTx({
+        id: 'pay-from-money',
+        type: TransactionType.contractInteraction,
+        metamaskPay: { tokenAddress: '0xmusd', chainId: '0x8f' },
+      }),
+    );
+
+    const buckets = buildMoneyActivityBuckets([payFromMoney]);
+
+    expect(
+      buckets[MoneyActivityFilter.All].map((item) => item.id),
+    ).toStrictEqual(['pay-from-money']);
+    expect(buckets[MoneyActivityFilter.Deposits]).toStrictEqual([]);
+    expect(buckets[MoneyActivityFilter.Transfers]).toStrictEqual([]);
+    expect(buckets[MoneyActivityFilter.Card]).toStrictEqual([]);
+  });
+
+  it('puts card, cashback, and refund rows in Card only', () => {
+    const card = accountsApiItem(makeCardActivity('card', '0xcard'));
+    const cashback = accountsApiItem(makeCardActivity('cashback', '0xback'));
+    const refund = accountsApiItem(makeCardActivity('refund', '0xrefund'));
+    const deposit = onchainItem(
+      makeTx({
+        id: 'deposit',
+        type: TransactionType.moneyAccountDeposit,
+      }),
+    );
+
+    const buckets = buildMoneyActivityBuckets([
+      card,
+      cashback,
+      refund,
+      deposit,
+    ]);
+
+    expect(
+      buckets[MoneyActivityFilter.All].map((item) => item.id),
+    ).toStrictEqual([
+      'card:0xcard',
+      'cashback:0xback',
+      'refund:0xrefund',
+      'deposit',
+    ]);
+    expect(
+      buckets[MoneyActivityFilter.Card].map((item) => item.id),
+    ).toStrictEqual(['card:0xcard', 'cashback:0xback', 'refund:0xrefund']);
+    expect(
+      buckets[MoneyActivityFilter.Deposits].map((item) => item.id),
+    ).toStrictEqual(['deposit']);
+    expect(buckets[MoneyActivityFilter.Transfers]).toStrictEqual([]);
+  });
+});

@@ -9,20 +9,36 @@ import {
   expectMockRequest,
   expectNoMockRequest,
 } from '../../helpers/mock-server';
-import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
+import { getMockAssetsPrice } from '../tokens/utils/mocks';
+
+const MOCK_ETH_PRICE = 1700;
+
+// The onboarding fixture seeds a zero ETH conversion rate, and the
+// exchange-rates request does not fire in these flows, so the homepage balance
+// would stay a loading skeleton without this.
+const MOCK_CURRENCY_RATES = {
+  currencyRates: {
+    ETH: {
+      conversionDate: Date.now(),
+      conversionRate: MOCK_ETH_PRICE,
+      usdConversionRate: MOCK_ETH_PRICE,
+    },
+  },
+};
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
@@ -46,7 +62,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               'eip155:1/slip44:60': {
                 id: 'ethereum',
-                price: 1700,
+                price: MOCK_ETH_PRICE,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
@@ -131,6 +147,10 @@ describe('MultiRpc:', function (this: Suite) {
               '0x1': true,
             },
           })
+          .withCurrencyController(MOCK_CURRENCY_RATES)
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
@@ -147,12 +167,12 @@ describe('MultiRpc:', function (this: Suite) {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
 
         // check rpc number
-        await selectNetworkDialog.openNetworkRPC('eip155:42161');
-        await selectNetworkDialog.checkNetworkRPCNumber(2);
+        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.checkNetworkRPCNumber(2);
       },
     );
   });
@@ -188,7 +208,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               'eip155:1/slip44:60': {
                 id: 'ethereum',
-                price: 1700,
+                price: MOCK_ETH_PRICE,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
@@ -263,8 +283,8 @@ describe('MultiRpc:', function (this: Suite) {
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        const tokensTab = new TokensTab(driver);
-        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
+        const networkFilter = new NetworkFilter(driver);
+        const originalFilterLabel = await networkFilter.getLabel();
 
         const usedUrlBeforeSwitch = await mockedEndpoint[1].getSeenRequests();
 
@@ -282,18 +302,18 @@ describe('MultiRpc:', function (this: Suite) {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openNetworkRPC('eip155:42161');
-        await selectNetworkDialog.checkNetworkRPCNumber(2);
-        await selectNetworkDialog.selectRPC('Arbitrum mainnet 2');
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.checkNetworkRPCNumber(2);
+        await networksPage.selectRPC('Arbitrum mainnet 2');
+        await networksPage.checkPageIsLoaded();
+        await networksPage.checkEditNetworkMessageIsDisplayed(
           'Arbitrum mainnet',
         );
         // Re-open the chain's RPC list to confirm the new RPC is selected.
-        await selectNetworkDialog.openNetworkRPC('eip155:42161');
-        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
+        await networksPage.openNetworkRPC('eip155:42161');
+        await networksPage.checkRpcIsSelected('Arbitrum mainnet 2');
 
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
         // check the url first request send on the background to the mocked rpc after switch
@@ -325,7 +345,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               'eip155:1/slip44:60': {
                 id: 'ethereum',
-                price: 1700,
+                price: MOCK_ETH_PRICE,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
@@ -398,36 +418,32 @@ describe('MultiRpc:', function (this: Suite) {
 
       async ({ driver }) => {
         await login(driver);
-        const tokensTab = new TokensTab(driver);
-        const originalFilterLabel = await tokensTab.getNetworksFilterLabel();
+        const networkFilter = new NetworkFilter(driver);
+        const originalFilterLabel = await networkFilter.getLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
-        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
-        await selectNetworkDialog.openEditNetworkModal();
+        await networksPage.openNetworkListOptions('eip155:42161');
+        await networksPage.openEditNetworkPage();
 
-        const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.checkPageIsLoaded();
-        await editNetworkModal.selectRPCInEditNetworkModal(
-          'Arbitrum mainnet 2',
-        );
-        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
-          'Arbitrum',
-        );
-        await selectNetworkDialog.clickCloseButton();
+        const editNetworkPage = new AddEditNetworkPage(driver);
+        await editNetworkPage.checkPageIsLoaded();
+        await editNetworkPage.selectRpcUrlAndSave('Arbitrum mainnet 2');
+        await networksPage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        await networksPage.clickCloseButton();
 
         // validate the network was successfully edited
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await tokensTab.waitUntilFilterLabelIs(originalFilterLabel);
+        await networkFilter.waitUntilLabelIs(originalFilterLabel);
 
         // check that the second rpc is selected in the network dialog
         await headerNavbar.openGlobalNetworksMenu();
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
+        await networksPage.checkPageIsLoaded();
+        await networksPage.checkRpcIsSelected('Arbitrum mainnet 2');
       },
     );
   });
@@ -453,7 +469,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               'eip155:1/slip44:60': {
                 id: 'ethereum',
-                price: 1700,
+                price: MOCK_ETH_PRICE,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
@@ -519,6 +535,10 @@ describe('MultiRpc:', function (this: Suite) {
             },
             selectedNetworkClientId: 'networkConfigurationId',
           })
+          .withCurrencyController(MOCK_CURRENCY_RATES)
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
@@ -537,11 +557,9 @@ describe('MultiRpc:', function (this: Suite) {
 
         // open edit network modal during onboarding and select the second rpc
         await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');
-        const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.checkPageIsLoaded();
-        await editNetworkModal.selectRPCInEditNetworkModal(
-          'Arbitrum mainnet 2',
-        );
+        const editNetworkPage = new AddEditNetworkPage(driver);
+        await editNetworkPage.checkPageIsLoaded();
+        await editNetworkPage.selectRpcUrlAndSave('Arbitrum mainnet 2');
         await onboardingPrivacySettingsPage.navigateBackToSettingsPage();
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
@@ -566,9 +584,9 @@ describe('MultiRpc:', function (this: Suite) {
         // check that the second rpc is selected in the network dialog
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.checkRpcIsSelected('Arbitrum mainnet 2');
       },
     );
   });

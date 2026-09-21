@@ -42,8 +42,9 @@ const selectors = {
 };
 
 const clickElement = async (testId: string) => {
+  const element = await screen.findByTestId(testId);
   await act(async () => {
-    fireEvent.click(await screen.findByTestId(testId));
+    fireEvent.click(element);
   });
 };
 
@@ -95,7 +96,7 @@ describe('Notifications Toggle', () => {
       preloadedState: {
         ...mockedState,
         analyticsId: 'test-metametrics-id',
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
         dataCollectionForMarketing: false,
       },
@@ -134,18 +135,11 @@ describe('Notifications Toggle', () => {
       MetaMetricsEventName.NotificationsSettingsUpdated,
       MetaMetricsEventCategory.NotificationSettings,
       {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'notifications',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        was_profile_syncing_on: true,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: true,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: false,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'master',
+        notification_channel: 'all',
+        enabled: false,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     );
   });
@@ -169,7 +163,7 @@ describe('Notifications Toggle', () => {
         isFeatureAnnouncementsEnabled: false,
         isMetamaskNotificationsFeatureSeen: true,
         dataCollectionForMarketing: false,
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
         optedIn: true,
       },
       backgroundConnection: backgroundConnectionMocked,
@@ -216,15 +210,11 @@ describe('Notifications Toggle', () => {
       MetaMetricsEventName.NotificationsSettingsUpdated,
       MetaMetricsEventCategory.NotificationSettings,
       {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_type: 'marketing_inAppNotificationsEnabled',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        old_value: false,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        new_value: true,
+        /* eslint-disable @typescript-eslint/naming-convention */
+        settings_type: 'marketing',
+        notification_channel: 'in_app',
+        enabled: true,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     );
   });

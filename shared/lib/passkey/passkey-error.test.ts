@@ -1,9 +1,9 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { JsonRpcError } from '@metamask/rpc-errors';
 
+import { PasskeyPRFRequiredError } from './passkey-capabilities';
 import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
 import {
-  ExtensionPasskeyErrorCode,
   getPasskeyErrorCode,
   getPasskeyControllerErrorCode,
   translatePasskeyError,
@@ -69,6 +69,12 @@ describe('translatePasskeyError', () => {
     ).toBe('t:passkeyErrorAlreadyEnrolled(Biometrics)');
   });
 
+  it('maps PasskeyPRFRequiredError to passkey not supported', () => {
+    expect(translatePasskeyError(new PasskeyPRFRequiredError(), t, label)).toBe(
+      't:passkeyErrorNotSupported(Biometrics)',
+    );
+  });
+
   it('returns null when no passkey-specific translation exists', () => {
     expect(translatePasskeyError(new Error('x'), t, label)).toBeNull();
   });
@@ -127,10 +133,10 @@ describe('translatePasskeyError', () => {
     ).toBe('t:passkeyUnlockFailed(Biometrics)');
   });
 
-  it('maps extension vault key renewal failed code', () => {
+  it('maps vault key renewal failed code', () => {
     expect(
       translatePasskeyError(
-        { code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed },
+        { code: PasskeyControllerErrorCode.VaultKeyRenewalFailed },
         t,
         label,
       ),
@@ -149,23 +155,23 @@ describe('translatePasskeyError', () => {
 });
 
 describe('getPasskeyControllerErrorCode', () => {
-  it('reads root string code for extension vault key renewal', () => {
+  it('reads root string code for vault key renewal', () => {
     expect(
       getPasskeyControllerErrorCode({
-        code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+        code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
       }),
-    ).toBe(ExtensionPasskeyErrorCode.VaultKeyRenewalFailed);
+    ).toBe(PasskeyControllerErrorCode.VaultKeyRenewalFailed);
   });
 
-  it('reads MetaRPC-style data.cause.code for extension vault key renewal', () => {
+  it('reads MetaRPC-style data.cause.code for vault key renewal', () => {
     const err = new JsonRpcError(-32603, 'internal error', {
       cause: {
         name: 'PasskeyControllerError',
-        code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+        code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
       },
     });
     expect(getPasskeyControllerErrorCode(err)).toBe(
-      ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+      PasskeyControllerErrorCode.VaultKeyRenewalFailed,
     );
   });
 
@@ -175,7 +181,7 @@ describe('getPasskeyControllerErrorCode', () => {
         code: PasskeyControllerErrorCode.NotEnrolled,
         data: {
           cause: {
-            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+            code: PasskeyControllerErrorCode.VaultKeyRenewalFailed,
           },
         },
       }),
@@ -192,6 +198,12 @@ describe('getPasskeyErrorCode', () => {
   it('returns timeout for PasskeyCeremonyTimeoutError', () => {
     expect(getPasskeyErrorCode(new PasskeyCeremonyTimeoutError())).toBe(
       'timeout',
+    );
+  });
+
+  it('returns prf_required for PasskeyPRFRequiredError', () => {
+    expect(getPasskeyErrorCode(new PasskeyPRFRequiredError())).toBe(
+      'prf_required',
     );
   });
 

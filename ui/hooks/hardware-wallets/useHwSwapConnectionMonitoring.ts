@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   ConnectionStatus,
-  getHardwareWalletErrorCode,
-  isUserRejectedHardwareWalletError,
+  isInE2eTest,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets';
 import {
@@ -12,6 +10,7 @@ import {
   HardwareWalletSignatureStatus,
 } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { getHardwareWalletSignatureErrorEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletConnectionMonitoringOptions = {
   signatureState: HardwareWalletSignaturesState;
@@ -44,10 +43,18 @@ export function useHwSwapConnectionMonitoring({
   dispatchSignatureEvent,
 }: UseHardwareWalletConnectionMonitoringOptions) {
   const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
   const handledConnectionErrorRef = useRef<unknown>(null);
   const isDeviceDisconnectedRef = useRef(false);
 
   useEffect(() => {
+    // E2E has no physical device, so the connection always looks disconnected.
+    // Treating that as a signing failure would strand the signing page in a
+    // terminal state instead of following the transaction to Submitted.
+    if (inE2e) {
+      return;
+    }
+
     if (
       signatureState.status !==
         HardwareWalletSignatureStatus.AwaitingFirstSignature &&
@@ -80,25 +87,14 @@ export function useHwSwapConnectionMonitoring({
 
     handledConnectionErrorRef.current = connectionState.error;
 
-    const errorCode = getHardwareWalletErrorCode(connectionState.error);
+    const event = getHardwareWalletSignatureErrorEvent(connectionState.error);
 
-    if (
-      errorCode === ErrorCode.ConnectionClosed ||
-      errorCode === ErrorCode.DeviceDisconnected
-    ) {
+    if (event.type === HardwareWalletSignatureEvent.DeviceDisconnected) {
       isDeviceDisconnectedRef.current = true;
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.DeviceDisconnected,
-      });
-      return;
     }
 
-    dispatchSignatureEvent({
-      type: isUserRejectedHardwareWalletError(connectionState.error)
-        ? HardwareWalletSignatureEvent.TransactionRejected
-        : HardwareWalletSignatureEvent.TransactionFailed,
-    });
-  }, [connectionState, signatureState.status, dispatchSignatureEvent]);
+    dispatchSignatureEvent(event);
+  }, [connectionState, inE2e, signatureState.status, dispatchSignatureEvent]);
 
   const resetConnectionError = useCallback((preserveError?: unknown) => {
     handledConnectionErrorRef.current = preserveError ?? null;

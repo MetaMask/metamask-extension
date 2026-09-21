@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { URDecoder } from '@ngraveio/bc-ur';
 import log from 'loglevel';
 import {

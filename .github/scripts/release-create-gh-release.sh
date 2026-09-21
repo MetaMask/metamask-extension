@@ -167,9 +167,23 @@ for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
     done < <(compgen -G "${artifact}")
 done
 
+# Sigstore bundles produced by the Collect attestation bundles workflow step.
+# Published alongside the zips so downstream submission jobs can verify build
+# provenance without a GitHub token (INFRA-3786).
+attestation_bundles=()
+for artifact in "${webpack_artifacts[@]}"; do
+    bundle="$(basename "${artifact}").sigstore.json"
+    if [[ ! -f "${bundle}" ]]; then
+        echo "::error::Attestation bundle not found: ${bundle} — Collect attestation bundles workflow step may have failed"
+        exit 1
+    fi
+    attestation_bundles+=("${bundle}")
+done
+
 release_body="$(awk -v version="[${VERSION}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
 gh release create "${tag}" \
     "${webpack_artifacts[@]}" \
+    "${attestation_bundles[@]}" \
     SHA256SUMS \
     --title "Version ${VERSION}" \
     --notes "${release_body}" \

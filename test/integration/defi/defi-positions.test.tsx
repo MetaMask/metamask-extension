@@ -59,7 +59,7 @@ const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,
   analyticsId: 'test-metametrics-id',
-  completedMetaMetricsOnboarding: true,
+  consentDecisionMade: true,
   optedIn: true,
   dataCollectionForMarketing: false,
   selectedNetworkClientId: 'testNetworkConfigurationId',
@@ -82,8 +82,11 @@ const withMetamaskConnectedToMainnet = {
       '0xe708': true,
     },
   },
+  // Pin legacy DeFi on / V2 off so these tests stay on the V1 UI regardless of
+  // remote client-config (V2 is currently enabled in development only).
   remoteFeatureFlags: {
     assetsDefiPositionsEnabled: true,
+    defiControllerV2: { enabled: false },
   },
   allDeFiPositions: {
     [account.address]: {

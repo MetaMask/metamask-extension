@@ -31,13 +31,12 @@ import {
   MetaMetricsEventName,
   type UnsanitizedMetaMetricsEventPayload,
   type MetaMetricsEventOptions,
-  type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
 import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import {
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../selectors';
 import { submitRequestToBackground } from '../store/background-connection';
@@ -46,7 +45,6 @@ import type {
   TraceName,
   TraceRequest,
   EndTraceRequest,
-  TraceCallback,
 } from '../../shared/lib/trace';
 import { EnvironmentType } from '../../shared/constants/app';
 
@@ -73,12 +71,11 @@ export type UITrackEventMethod = (
 ) => Promise<void>;
 
 /**
- * Method signature for starting a buffered trace
+ * Method signature for starting a buffered trace.
+ * There is no callback variant here: the trace runs in the background, and a
+ * callback cannot cross the JSON-RPC boundary.
  */
-export type UITraceMethod = <Result>(
-  request: TraceRequest,
-  fn?: TraceCallback<Result>,
-) => Promise<Result | undefined>;
+export type UITraceMethod = (request: TraceRequest) => Promise<void>;
 
 /**
  * Method signature for ending a buffered trace
@@ -146,16 +143,14 @@ type MetaMetricsProviderProps = {
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const analyticsId = useSelector(getAnalyticsId);
-  const isMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetricsEnabled = consentDecisionMade && isOptedIn;
   const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
   // Buffer events until we know whether or not we can submit them.
   const canMaybeTrackLater =
-    !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
+    !consentDecisionMade || (isMetricsEnabled && !analyticsId);
 
   const onboardingParentContext = useRef<TraceParentContext>(null);
 
@@ -189,6 +184,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
 
       if (
         canTrackImmediately ||
+        canMaybeTrackLater ||
         payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
       ) {
         let builder = createEventBuilder(fullPayload.event);
@@ -212,13 +208,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
           matomoEvent: options?.matomoEvent,
         } satisfies Parameters<typeof trackAnalyticsEvent>[1];
 
-        const built = builder.build();
-
-        trackAnalyticsEvent(built, trackOptions);
-      } else if (canMaybeTrackLater) {
-        await submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          fullPayload as MetaMetricsEventPayload,
-        ]);
+        trackAnalyticsEvent(builder.build(), trackOptions);
       }
     },
     [
@@ -229,8 +219,13 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     ],
   );
 
-  const bufferedTrace: UITraceMethod = useCallback((request, fn) => {
-    return submitRequestToBackground('bufferedTrace', [request, fn]);
+  // **IMPORTANT**: Keep buffered traces on the background connection. Calling the shared
+  // methods directly here would create a queue local to this UI page. Consent is
+  // resolved in the background, so these must not depend on the Redux copy of it:
+  // that copy lags the background state, and a changing identity here would
+  // restart the onboarding spans that consumers key effects off of.
+  const bufferedTrace: UITraceMethod = useCallback((request) => {
+    return submitRequestToBackground('bufferedTrace', [request]);
   }, []);
 
   const bufferedEndTrace: UIEndTraceMethod = useCallback((request) => {

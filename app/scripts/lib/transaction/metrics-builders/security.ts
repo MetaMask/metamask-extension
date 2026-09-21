@@ -2,7 +2,6 @@
 import { MetaMetricsEventUiCustomization } from '../../../../../shared/constants/metametrics';
 import {
   createCacheKey,
-  mapChainIdToSupportedEVMChain,
   ResultType,
 } from '../../../../../shared/lib/trust-signals';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -40,19 +39,15 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
   const securityAlertsEnabled =
     transactionMetricsRequest.getSecurityAlertsEnabled();
   if (securityAlertsEnabled) {
-    const { to } = transactionMeta.txParams;
-    if (typeof to === 'string') {
-      const supportedEVMChain = mapChainIdToSupportedEVMChain(
-        transactionMeta.chainId,
-      );
-      if (supportedEVMChain) {
-        const cacheKey = createCacheKey(supportedEVMChain, to);
-        const cachedResponse =
-          transactionMetricsRequest.getAddressSecurityAlertResponse(cacheKey);
-        addressAlertResponse = cachedResponse
-          ? cachedResponse.result_type
-          : ResultType.Loading;
-      }
+    const to =
+      transactionMeta.txParamsOriginal?.to ?? transactionMeta.txParams.to;
+    if (typeof to === 'string' && transactionMeta.chainId) {
+      const cacheKey = createCacheKey(transactionMeta.chainId, to);
+      const cachedResponse =
+        transactionMetricsRequest.getAddressSecurityAlertResponse(cacheKey);
+      addressAlertResponse = cachedResponse
+        ? cachedResponse.result_type
+        : ResultType.Loading;
     }
   }
 
@@ -62,6 +57,8 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
       ...blockaidProperties,
       ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
       address_alert_response: addressAlertResponse,
+      transaction_contract_verified:
+        addressAlertResponse === ResultType.Trusted,
     },
     sensitiveProperties: {},
   };

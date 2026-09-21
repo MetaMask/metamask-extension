@@ -1,23 +1,54 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
+  selectTransactionPayIsPostQuoteByTransactionId,
+  selectTransactionPayQuoteErrorByTransactionId,
   selectTransactionPayQuotesByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayTokensByTransactionId,
   selectTransactionPayTotalsByTransactionId,
   TransactionPayState,
 } from '../../../../selectors/transactionPayController';
+import {
+  isPerpsWithdrawTransaction,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../context/confirm';
 
 export function useTransactionPayQuotes() {
   return useTransactionPayData(selectTransactionPayQuotesByTransactionId);
 }
 
+export function useTransactionPayQuoteError() {
+  return useTransactionPayData(selectTransactionPayQuoteErrorByTransactionId);
+}
+
+export function useTransactionPayHasExecutableQuote() {
+  const quotes = useTransactionPayQuotes();
+
+  return (
+    quotes?.some((quote) => quote.strategy !== TransactionPayStrategy.None) ??
+    false
+  );
+}
+
 export function useTransactionPayRequiredTokens() {
   return useTransactionPayData(selectTransactionPayTokensByTransactionId);
+}
+
+export function useTransactionPayHasPositiveRequiredAmount() {
+  const requiredTokens = useTransactionPayRequiredTokens();
+
+  return requiredTokens.some(
+    (token) =>
+      !token.skipIfBalance &&
+      Boolean(token.amountRaw) &&
+      token.amountRaw !== '0',
+  );
 }
 
 export function useTransactionPaySourceAmounts() {
@@ -36,6 +67,35 @@ export function useTransactionPayTotals() {
 
 export function useTransactionPayIsMaxAmount() {
   return useTransactionPayData(selectTransactionPayIsMaxAmountByTransactionId);
+}
+
+export function useTransactionPayIsPostQuote() {
+  return useTransactionPayData(selectTransactionPayIsPostQuoteByTransactionId);
+}
+
+export function useIsTransactionPayQuotePending() {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isLoading = useIsTransactionPayLoading();
+  const isPostQuote = useTransactionPayIsPostQuote();
+  const hasPositiveRequiredAmount =
+    useTransactionPayHasPositiveRequiredAmount();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+
+  if (isPostQuoteWithdrawTransaction(currentConfirmation)) {
+    if (isPerpsWithdrawTransaction(currentConfirmation)) {
+      return hasPositiveRequiredAmount && (isLoading || !isPostQuote);
+    }
+
+    // Money-account withdraws carry no `requiredAssets`: Pay derives the
+    // amount from the nested transfer calldata that the debounced amount
+    // update commits in the background. Until it lands, the stored quote is
+    // the no-op quote saved when the destination token was selected, whose
+    // gas-only totals make the amount look fee-free. Stay pending so the rows
+    // load instead of showing that amount and then correcting it.
+    return isLoading || !primaryRequiredToken;
+  }
+
+  return isLoading;
 }
 
 export function useTransactionPayPrimaryRequiredToken() {

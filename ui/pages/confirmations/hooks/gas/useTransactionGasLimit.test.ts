@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { type TransactionMeta } from '@metamask/transaction-controller';
 
 import { useDappSwapContextOptional } from '../../context/dapp-swap';

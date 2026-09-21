@@ -1,6 +1,9 @@
 import React from 'react';
-import type { BoxProps, ButtonIconProps } from '@metamask/design-system-react';
-import type { TextFieldSearchStyleUtilityProps } from '../text-field-search/text-field-search.types';
+import type {
+  BoxProps,
+  ButtonIconProps,
+  TextFieldSearchProps,
+} from '@metamask/design-system-react';
 
 export enum HeaderSearchVariant {
   Screen = 'screen',
@@ -8,13 +11,13 @@ export enum HeaderSearchVariant {
 }
 
 export type HeaderSearchTextFieldSearchProps = Omit<
-  TextFieldSearchStyleUtilityProps,
+  TextFieldSearchProps,
   'onChange' | 'clearButtonOnClick'
 > & {
   onChangeText?: (text: string) => void;
   onClickClearButton?: () => void;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  clearButtonOnClick?: () => void;
+  clearButtonOnClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 // TODO: Convert to a `type` in a future major version.

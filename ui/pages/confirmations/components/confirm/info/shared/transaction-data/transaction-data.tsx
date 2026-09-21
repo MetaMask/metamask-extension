@@ -72,12 +72,12 @@ export const TransactionData = ({
     return null;
   }
 
-  if (pending) {
-    return <Container isLoading noPadding={noPadding} />;
-  }
-
   if (!hasTransactionData(transactionData)) {
     return null;
+  }
+
+  if (pending) {
+    return <Container isLoading noPadding={noPadding} />;
   }
 
   if (!value) {

@@ -1,20 +1,30 @@
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { Wallet } from '@metamask/wallet';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
-import {
-  getNetworkControllerInstanceOptions,
-  setupRpcEndpointMetrics,
-} from './instance-options/network-controller';
+import { getNetworkControllerInstanceOptions } from './instance-options/network-controller';
 import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import type { InitializeWalletRequest } from './types';
+import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
+import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
+import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
+import {
+  getShieldApiServiceInstanceOptions,
+  getShieldControllerInstanceOptions,
+} from './instance-options/shield-controller';
+import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -35,27 +45,53 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     showApprovalRequest,
     state,
+    platform,
   } = request;
 
   const transactionControllerInitMessenger =
     getTransactionControllerInitMessenger(messenger);
+  const seedlessOnboardingControllerInitMessenger =
+    getSeedlessOnboardingControllerInitMessenger(messenger);
+
+  // TC event listeners must be set up before the wallet is initialized.
+  // So that the TC can emit events to the wallet's messenger during initialization.
+  setupTransactionControllerListeners({
+    getTransactionMetricsRequest,
+    messenger: transactionControllerInitMessenger,
+  });
 
   const wallet = new Wallet({
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
+      claimsService: getClaimsServiceInstanceOptions(),
+      configRegistryApiService: getConfigRegistryApiServiceInstanceOptions(),
       connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
+      }),
+      gasFeeController: getGasFeeControllerInstanceOptions({
+        initMessenger: getGasFeeControllerInitMessenger(messenger),
       }),
       keyringController: getKeyringControllerInstanceOptions({
         encryptor,
         messenger,
       }),
       networkController: getNetworkControllerInstanceOptions(infuraProjectId),
+      passkeyController: getPasskeyControllerInstanceOptions({
+        messenger,
+        platform,
+      }),
+      seedlessOnboardingController:
+        getSeedlessOnboardingControllerInstanceOptions({
+          initMessenger: seedlessOnboardingControllerInitMessenger,
+        }),
+      shieldApiService: getShieldApiServiceInstanceOptions(),
+      shieldController: getShieldControllerInstanceOptions(),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
       storageService: getStorageServiceInstanceOptions(),
+      subscriptionService: getSubscriptionServiceInstanceOptions(),
       transactionController: getTransactionControllerInstanceOptions({
         initMessenger: transactionControllerInitMessenger,
         getFlatState,
@@ -81,12 +117,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
       useExternalServices:
         state.PreferencesController?.useExternalServices !== false,
     },
-  });
-
-  setupRpcEndpointMetrics(infuraProjectId, messenger);
-  setupTransactionControllerListeners({
-    getTransactionMetricsRequest,
-    messenger: transactionControllerInitMessenger,
+    authenticationState: {
+      srpSessionData: state.AuthenticationController?.srpSessionData as
+        | AuthenticationControllerState['srpSessionData']
+        | undefined,
+    },
   });
 
   wallet.init().catch((error) => console.error(error));

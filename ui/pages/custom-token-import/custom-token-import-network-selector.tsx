@@ -16,7 +16,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../components/component-library';
-import { NetworkListItem } from '../../components/multichain';
+import { NetworkListItem } from '../../components/multichain/network-list-item';
 import { isEvmChainId } from '../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
