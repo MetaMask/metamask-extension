@@ -1126,6 +1126,7 @@ export const computeQuoteValidationErrors = (
       !isNetworkFeeUnavailable &&
       nativeBalance &&
       quote &&
+      fromTokenInputValue &&
       !hasSufficientGasForQuote({
         balances,
         quote: quote.quote,
