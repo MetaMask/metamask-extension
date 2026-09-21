@@ -72,13 +72,10 @@ export function scanUnvalidatedSignatureAddresses(options: {
   const isPermit = PRIMARY_TYPES_PERMIT.some(
     (type) => type === typedDataMessage.primaryType,
   );
-  const hasVerifyingContract = Boolean(
-    typedDataMessage.domain?.verifyingContract,
-  );
 
   const { addresses } = extractSignatureAddresses(typedDataMessage, {
     exclude: signerAddress ? [signerAddress] : [],
-    excludeFields: isPermit && hasVerifyingContract ? ['spender'] : [],
+    excludeFields: isPermit ? ['spender'] : [],
   });
 
   for (const address of addresses) {

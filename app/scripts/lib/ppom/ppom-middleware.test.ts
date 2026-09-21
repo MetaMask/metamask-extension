@@ -14,8 +14,10 @@ import {
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
+import { scanUnvalidatedSignatureAddresses } from '../trust-signals/scan-unvalidated-signature';
 
 jest.mock('./ppom-util');
+jest.mock('../trust-signals/scan-unvalidated-signature');
 jest.mock('@metamask/controller-utils', () => ({
   ...jest.requireActual('@metamask/controller-utils'),
   detectSIWE: jest.fn(),
@@ -113,6 +115,9 @@ describe('PPOMMiddleware', () => {
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
   const detectSIWEMock = jest.mocked(detectSIWE);
+  const scanUnvalidatedSignatureAddressesMock = jest.mocked(
+    scanUnvalidatedSignatureAddresses,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -299,5 +304,53 @@ describe('PPOMMiddleware', () => {
     );
 
     expect(nextMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('starts signature address scan when PPOM returns benign for typed-data', async () => {
+    (validateRequestWithPPOM as jest.Mock).mockResolvedValue({
+      result_type: BlockaidResultType.Benign,
+      reason: BlockaidReason.notApplicable,
+      securityAlertId: SECURITY_ALERT_ID_MOCK,
+    });
+
+    const { middlewareFunction } = createMiddleware();
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_signTypedData_v4',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+    await flushPromises();
+
+    expect(scanUnvalidatedSignatureAddressesMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not start signature address scan when PPOM flags request', async () => {
+    (validateRequestWithPPOM as jest.Mock).mockResolvedValue(
+      SECURITY_ALERT_RESPONSE_MOCK,
+    );
+
+    const { middlewareFunction } = createMiddleware();
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_signTypedData_v4',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+    await flushPromises();
+
+    expect(scanUnvalidatedSignatureAddressesMock).not.toHaveBeenCalled();
   });
 });

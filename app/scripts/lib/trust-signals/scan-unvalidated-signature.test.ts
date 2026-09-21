@@ -189,30 +189,6 @@ describe('scanUnvalidatedSignatureAddresses', () => {
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
   });
 
-  it('does not exclude permit spender when verifyingContract is absent', () => {
-    const data = {
-      types: { Permit: [{ name: 'spender', type: 'address' }] },
-      primaryType: 'Permit',
-      domain: {},
-      message: { spender: MALICIOUS_ADDRESS },
-    };
-
-    scanUnvalidatedSignatureAddresses({
-      request: makeRequest('eth_signTypedData_v4', SIGNER_ADDRESS, data),
-      chainId: CHAIN_ID as `0x${string}`,
-      appStateController: makeCache(),
-      phishingController,
-    });
-
-    expect(mockScanAddressAndAddToCache).toHaveBeenCalledWith(
-      MALICIOUS_ADDRESS,
-      expect.any(Function),
-      expect.any(Function),
-      CHAIN_ID,
-      phishingController,
-    );
-  });
-
   it('handles malformed typed data without throwing', () => {
     const consoleErrorSpy = jest
       .spyOn(console, 'error')
