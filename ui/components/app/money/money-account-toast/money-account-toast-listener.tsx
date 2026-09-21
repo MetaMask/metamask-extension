@@ -19,6 +19,10 @@ import {
   getMoneyAccountDepositIntent,
   type MoneyAccountDepositIntent,
 } from '../../../../helpers/money/deposit-intent';
+import {
+  clearMoneyBatchTransaction,
+  registerMoneyBatchTransaction,
+} from '../../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import { selectTransactions } from '../../../../selectors/transactionController';
@@ -180,15 +184,22 @@ export function useMoneyAccountToasts(): void {
       const { id, status, replacedById } = transactionMeta;
 
       if (pendingStatuses.has(status)) {
+        // Register on every pending event so later payloads that carry
+        // `requiredTransactionIds` refresh the known-child set used by the
+        // generic toast listener to suppress Pay source-leg toasts.
+        registerMoneyBatchTransaction(transactionMeta);
         if (shouldShowPendingToast(id)) {
           showMoneyAccountToast('pending', transactionMeta);
         }
-      } else if (
-        status === TransactionStatus.confirmed &&
-        shouldShowTerminalToast(id)
-      ) {
-        showMoneyAccountToast('success', transactionMeta);
+      } else if (status === TransactionStatus.confirmed) {
+        // Always clear the in-flight registry on terminal status, even when a
+        // pending toast phase was never reserved (reload / skipped toast).
+        clearMoneyBatchTransaction(transactionMeta);
+        if (shouldShowTerminalToast(id)) {
+          showMoneyAccountToast('success', transactionMeta);
+        }
       } else if (failedStatuses.has(status)) {
+        clearMoneyBatchTransaction(transactionMeta);
         if (
           replacedById &&
           isSpeedUpReplacement(
