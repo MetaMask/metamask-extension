@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { act, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RampsQuoteDisplay from './ramps-quote-display';
@@ -80,17 +80,13 @@ describe('RampsQuoteDisplay', () => {
       queryByTestId('ramps-quote-display-warning-tooltip'),
     ).not.toBeInTheDocument();
 
-    await act(async () => {
-      fireEvent.mouseEnter(getByTestId('ramps-quote-display-warning-trigger'));
-    });
+    fireEvent.mouseEnter(getByTestId('ramps-quote-display-warning-trigger'));
 
     expect(
       getByTestId('ramps-quote-display-warning-tooltip'),
     ).toHaveTextContent('Quote unavailable.');
 
-    await act(async () => {
-      fireEvent.mouseLeave(getByTestId('ramps-quote-display-warning-trigger'));
-    });
+    fireEvent.mouseLeave(getByTestId('ramps-quote-display-warning-trigger'));
 
     expect(
       queryByTestId('ramps-quote-display-warning-tooltip'),
