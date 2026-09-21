@@ -409,9 +409,6 @@
     "message": "Yksityinen avain",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Varoitus: Älä koskaan paljasta tätä avainta. Kuka tahansa, jolla on yksityisavaimesi, voi varastaa tililläsi olevaa varallisuutta."
-  },
   "privateNetwork": {
     "message": "Yksityinen verkko"
   },
