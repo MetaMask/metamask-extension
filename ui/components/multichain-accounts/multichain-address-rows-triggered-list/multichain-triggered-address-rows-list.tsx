@@ -306,9 +306,9 @@ export const MultichainTriggeredAddressRowsList = ({
 
   return (
     <>
-      <button
-        type="button"
-        className="border-0 bg-transparent p-0 text-inherit"
+      <span
+        className="inline-flex border-0 bg-transparent p-0 text-inherit"
+        data-testid="multichain-address-rows-trigger"
         {...(triggerMode === 'click' && {
           commandfor: popoverId,
           command: 'toggle-popover',
@@ -319,9 +319,10 @@ export const MultichainTriggeredAddressRowsList = ({
         onClick={handleClick}
       >
         {children}
-      </button>
+      </span>
       <div
         id={popoverId}
+        // @ts-expect-error We need to update React types
         popover="auto"
         className="rounded-lg border border-border-muted bg-background-elevated2 p-2 inset-auto"
         style={{
