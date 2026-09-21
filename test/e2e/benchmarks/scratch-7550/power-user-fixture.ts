@@ -33,5 +33,8 @@ export const powerUserManifestFlags = {
   },
   useMockingPassThrough: true,
   disableServerMochaToBackground: true,
-  extendedTimeoutMultiplier: 6,
+  // Booting the 1000-token state can take longer than the 60s that a
+  // multiplier of 6 gives `.controller-loaded`, which fails every iteration
+  // during login before the measured interaction starts.
+  extendedTimeoutMultiplier: 12,
 } as const;

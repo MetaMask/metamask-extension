@@ -73,6 +73,7 @@ jobs:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
       SKIP_AFTER_BUILD: 1
+      BENCHMARK_ABORT_AFTER_CONSECUTIVE_FAILURES: 3
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3

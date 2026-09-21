@@ -164,12 +164,23 @@ export async function runBenchmarkWithIterations(
   let successfulRuns = 0;
   let failedRuns = 0;
 
+  // When an arm is broken rather than flaky (e.g. the UI never boots), every
+  // iteration burns its full timeout and the job can expire before the
+  // comparison runs. Opt in from CI to stop early instead.
+  const abortAfterConsecutiveFailures = Number(
+    process.env.BENCHMARK_ABORT_AFTER_CONSECUTIVE_FAILURES ?? 0,
+  );
+  let consecutiveFailures = 0;
+  let attemptedIterations = 0;
+
   for (let i = 0; i < iterations; i++) {
     const result = await runWithRetries(benchmarkFn, retries);
     allResults.push(result);
+    attemptedIterations += 1;
 
     if (result.success) {
       successfulRuns += 1;
+      consecutiveFailures = 0;
       // Generate report after each successful run (like Mocha's afterEach)
       const timerCount = performanceTracker.getTimerCount();
       if (timerCount > 0) {
@@ -177,6 +188,17 @@ export async function runBenchmarkWithIterations(
       }
     } else {
       failedRuns += 1;
+      consecutiveFailures += 1;
+
+      if (
+        abortAfterConsecutiveFailures > 0 &&
+        consecutiveFailures >= abortAfterConsecutiveFailures
+      ) {
+        console.error(
+          `Aborting ${name} after ${consecutiveFailures} consecutive failed iterations`,
+        );
+        break;
+      }
     }
   }
 
@@ -257,7 +279,7 @@ export async function runBenchmarkWithIterations(
 
   // Check overall run exclusion rate
   const overallExclusionCheck = checkExclusionRate(
-    iterations,
+    attemptedIterations,
     failedRuns,
     MAX_EXCLUSION_RATE,
   );
@@ -278,7 +300,7 @@ export async function runBenchmarkWithIterations(
 
   return {
     name,
-    iterations,
+    iterations: attemptedIterations,
     successfulRuns,
     failedRuns,
     timers: timerStats,
