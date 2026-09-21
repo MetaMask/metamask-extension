@@ -5,6 +5,11 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import {
+  registerMoneyBatchById,
+  registerMoneyBatchTransaction,
+  resetMoneyBatchRegistry,
+} from '../../../helpers/money/money-batch-registry';
+import {
   dismissToast,
   showFailedToast,
   showPendingToast,
@@ -24,6 +29,13 @@ const mockUnsubscribe = jest.fn();
 const mockGetState = jest.fn(() => ({
   metamask: { transactions: [] as TransactionMeta[] },
 }));
+const mockStoreSubscribers = new Set<() => void>();
+const mockStoreSubscribe = jest.fn((listener: () => void) => {
+  mockStoreSubscribers.add(listener);
+  return () => {
+    mockStoreSubscribers.delete(listener);
+  };
+});
 
 jest.mock('../../../hooks/useMessenger', () => ({
   useMessenger: () => ({
@@ -35,6 +47,7 @@ jest.mock('../../../hooks/useMessenger', () => ({
 jest.mock('react-redux', () => ({
   useStore: () => ({
     getState: mockGetState,
+    subscribe: mockStoreSubscribe,
   }),
 }));
 
@@ -77,12 +90,25 @@ function mountHook() {
   return { handlers, unmount };
 }
 
+function flushStoreSubscribers() {
+  for (const listener of [...mockStoreSubscribers]) {
+    listener();
+  }
+}
+
 describe('useTransactionEventToasts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useRealTimers();
+    mockStoreSubscribers.clear();
+    resetMoneyBatchRegistry();
     mockGetState.mockReturnValue({
       metamask: { transactions: [] },
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('subscribes to transaction lifecycle messenger events', () => {
@@ -401,21 +427,10 @@ describe('useTransactionEventToasts', () => {
       expect(mockShowPendingToast).not.toHaveBeenCalled();
     });
 
-    it('does not toast pay funding txs linked only by batchId', () => {
-      mockGetState.mockReturnValue({
-        metamask: {
-          transactions: [
-            createTransactionMeta({
-              id: 'money-deposit',
-              status: TransactionStatus.unapproved,
-              type: TransactionType.batch,
-              nestedTransactions: [
-                { type: TransactionType.moneyAccountDeposit },
-              ],
-              batchId: 'pay-batch-1',
-            }),
-          ],
-        },
+    it('does not toast pay funding txs registered as money-batch children', () => {
+      registerMoneyBatchTransaction({
+        id: 'money-deposit',
+        requiredTransactionIds: ['relay-submitted'],
       });
       const { handlers } = mountHook();
 
@@ -424,11 +439,86 @@ describe('useTransactionEventToasts', () => {
           id: 'relay-submitted',
           status: TransactionStatus.submitted,
           type: TransactionType.relayDeposit,
-          batchId: 'pay-batch-1',
         }),
       });
 
       expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('defers a pending toast until Redux links it to a money batch', () => {
+      registerMoneyBatchById('money-deposit');
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'money-deposit',
+              status: TransactionStatus.approved,
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.moneyAccountDeposit },
+              ],
+            }),
+          ],
+        },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'relay-deferred',
+          status: TransactionStatus.submitted,
+          type: TransactionType.relayDeposit,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+      expect(mockStoreSubscribe).toHaveBeenCalled();
+
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'money-deposit',
+              status: TransactionStatus.approved,
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.moneyAccountDeposit },
+              ],
+              requiredTransactionIds: ['relay-deferred'],
+            }),
+            createTransactionMeta({
+              id: 'relay-deferred',
+              status: TransactionStatus.submitted,
+              type: TransactionType.relayDeposit,
+            }),
+          ],
+        },
+      });
+      flushStoreSubscribers();
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('still toasts an unrelated tx after the money-batch deferral times out', () => {
+      jest.useFakeTimers();
+      registerMoneyBatchById('money-deposit');
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'unrelated-send',
+          status: TransactionStatus.submitted,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(3000);
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-unrelated-send',
+        expect.any(Object),
+      );
     });
 
     it('still toasts relay deposits that fund other transactions', () => {

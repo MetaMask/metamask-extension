@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
+import type { Store } from 'redux';
 import type { Hex } from 'viem';
 import {
   TransactionStatus,
@@ -21,6 +22,10 @@ import {
   isMoneyAccountChildTx,
   isMoneyAccountTx,
 } from '../../../helpers/money/money-transaction-guards';
+import {
+  isKnownMoneyBatchChild,
+  isMoneyBatchInFlight,
+} from '../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
@@ -159,6 +164,62 @@ function handleAccountsControllerTx(tx: Transaction) {
   }
 }
 
+type PendingDeferral = {
+  cancel: () => void;
+};
+
+const moneyBatchPendingToastDeferMs = 3000;
+
+function deferPendingToastDecision(
+  id: string,
+  transactionMeta: TransactionMeta,
+  store: Store<MetaMaskReduxState>,
+  pendingDeferrals: Map<string, PendingDeferral>,
+  show: () => void,
+) {
+  pendingDeferrals.get(id)?.cancel();
+
+  let settled = false;
+  let unsubscribe = () => undefined;
+  const timeout = {
+    id: undefined as ReturnType<typeof setTimeout> | undefined,
+  };
+
+  const finish = (shouldShow: boolean) => {
+    if (settled) {
+      return;
+    }
+    settled = true;
+    unsubscribe();
+    if (timeout.id !== undefined) {
+      clearTimeout(timeout.id);
+    }
+    pendingDeferrals.delete(id);
+    if (shouldShow) {
+      show();
+    }
+  };
+
+  const recheck = () => {
+    const transactions = selectTransactions(store.getState());
+    if (
+      isExcludedTransactionType(transactionMeta, transactions) ||
+      isKnownMoneyBatchChild(id)
+    ) {
+      finish(false);
+    }
+  };
+
+  unsubscribe = store.subscribe(recheck);
+  timeout.id = setTimeout(() => finish(true), moneyBatchPendingToastDeferMs);
+
+  pendingDeferrals.set(id, {
+    cancel: () => finish(false),
+  });
+
+  recheck();
+}
+
 /**
  * Subscribes to background transaction lifecycle events via the UI messenger
  */
@@ -167,6 +228,8 @@ export function useTransactionEventToasts(): void {
   const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
+    const pendingDeferrals = new Map<string, PendingDeferral>();
+
     // EVM via TransactionController
     const handleEvmStatusUpdate = (
       raw:
@@ -183,8 +246,14 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
+      if (isKnownMoneyBatchChild(id)) {
+        pendingDeferrals.get(id)?.cancel();
+        return;
+      }
+
       const transactions = selectTransactions(store.getState());
       if (isExcludedTransactionType(transactionMeta, transactions)) {
+        pendingDeferrals.get(id)?.cancel();
         return;
       }
 
@@ -195,12 +264,31 @@ export function useTransactionEventToasts(): void {
       };
 
       if (isPendingToastStatus(transactionMeta, status)) {
-        if (shouldShowPendingToast(id)) {
-          showPendingToast(toastId, props);
+        const show = () => {
+          if (shouldShowPendingToast(id)) {
+            showPendingToast(toastId, props);
+          }
+        };
+
+        if (isMoneyBatchInFlight()) {
+          deferPendingToastDecision(
+            id,
+            transactionMeta,
+            store,
+            pendingDeferrals,
+            show,
+          );
+          return;
         }
-      } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
-        showSuccessToast(toastId, props);
+
+        show();
+      } else if (status === 'confirmed') {
+        pendingDeferrals.get(id)?.cancel();
+        if (shouldShowTerminalToast(id)) {
+          showSuccessToast(toastId, props);
+        }
       } else if (failedStatuses.has(status)) {
+        pendingDeferrals.get(id)?.cancel();
         if (transactionMeta.replacedById) {
           if (
             isSpeedUpReplacement(transactionMeta.replacedById, transactions)
@@ -240,6 +328,10 @@ export function useTransactionEventToasts(): void {
     );
 
     return () => {
+      for (const deferral of pendingDeferrals.values()) {
+        deferral.cancel();
+      }
+      pendingDeferrals.clear();
       messenger.unsubscribe(
         'TransactionController:transactionStatusUpdated',
         handleEvmStatusUpdate,

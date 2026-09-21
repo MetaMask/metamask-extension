@@ -6,7 +6,6 @@ import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   getMoneyPayChainIds,
-  isMoneyAccountChildTx,
   isMoneyAccountTx,
   isMoneyDepositTx,
   isMoneyWithdrawTx,
@@ -109,51 +108,6 @@ describe('getMoneyPayChainIds', () => {
       sourceChainId: CHAIN_IDS.MONAD,
       destinationChainId: CHAIN_IDS.MONAD,
     });
-  });
-});
-
-describe('isMoneyAccountChildTx', () => {
-  it('matches a child linked via requiredTransactionIds', () => {
-    const child = makeTx({ id: 'relay-submitted' });
-    const parent = makeTx({
-      id: 'money-deposit',
-      type: TransactionType.moneyAccountDeposit,
-      requiredTransactionIds: ['relay-submitted'],
-    });
-
-    expect(isMoneyAccountChildTx(child, [parent, child])).toBe(true);
-  });
-
-  it('matches a child linked via shared batchId', () => {
-    const child = makeTx({ id: 'relay-submitted', batchId: 'Batch-1' });
-    const parent = makeTx({
-      id: 'money-deposit',
-      type: TransactionType.moneyAccountDeposit,
-      batchId: 'batch-1',
-    });
-
-    expect(isMoneyAccountChildTx(child, [parent, child])).toBe(true);
-  });
-
-  it('rejects a transaction when batchId matches a non-money parent', () => {
-    const child = makeTx({ id: 'relay-submitted', batchId: 'batch-1' });
-    const parent = makeTx({
-      id: 'other-parent',
-      type: TransactionType.contractInteraction,
-      batchId: 'batch-1',
-    });
-
-    expect(isMoneyAccountChildTx(child, [parent, child])).toBe(false);
-  });
-
-  it('rejects unrelated transactions', () => {
-    const child = makeTx({ id: 'relay-submitted' });
-    const parent = makeTx({
-      id: 'money-deposit',
-      type: TransactionType.moneyAccountDeposit,
-    });
-
-    expect(isMoneyAccountChildTx(child, [parent, child])).toBe(false);
   });
 });
 
