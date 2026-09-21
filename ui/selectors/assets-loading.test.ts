@@ -35,6 +35,9 @@ const OTHER_GROUP_ID = 'group-other';
 
 /**
  * Build the AssetsController state slice consumed by the loading selectors.
+ *
+ * @param assetsLoadingStatus - Per-account loading status map to embed.
+ * @returns The AssetsController state slice.
  */
 const buildAssetsState = (
   assetsLoadingStatus: Record<AccountId, AssetsLoadingStatus>,
@@ -46,6 +49,9 @@ const buildAssetsState = (
  * Build the AccountTreeController state slice consumed by the group-level
  * loading selectors. Only `accountTree.wallets` and `selectedAccountGroup`
  * are read by them; the cast relaxes the branded tree object types.
+ *
+ * @param selectedAccountGroup - Currently selected account group ID.
+ * @returns The AccountTreeController state slice.
  */
 const buildAccountTreeState = (
   selectedAccountGroup: string,
