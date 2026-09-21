@@ -64,6 +64,7 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
+import PasskeyMigrationModal from '../../components/app/passkey-migration-modal';
 import { captureException } from '../../../shared/lib/sentry';
 import { getCaretCoordinates } from './unlock-page.util';
 import {
@@ -82,6 +83,11 @@ type UnlockPageProps = UnlockPageContext & {
   isOnboardingCompleted: boolean;
   onSubmit: (password: string) => Promise<void>;
   navigateAfterUnlock: (context?: PasskeyUnlockSuccessContext) => Promise<void>;
+  /**
+   * Starts replacing a legacy passkey. The parent owns the replacement flow
+   * and navigation after it completes.
+   */
+  onReplacePasskey?: () => Promise<void>;
   isPasskeyActive: boolean;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
@@ -107,6 +113,7 @@ type UnlockPageState = {
   unlockDelayPeriod: number;
   showLoginErrorModal: boolean;
   showConnectionsRemovedModal: boolean;
+  showPasskeyMigrationModal: boolean;
   isPasswordUnlockMode: boolean;
 };
 
@@ -227,8 +234,9 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
      */
     mustDeferPasskeyToBrowserTab: PropTypes.bool,
     /**
-     * Completes passkey unlock and navigates after success (same redirect rules as password onSubmit).
+     * Starts replacing a legacy passkey after the migration prompt is accepted.
      */
+    onReplacePasskey: PropTypes.func,
   };
 
   state: UnlockPageState = {
@@ -240,6 +248,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     unlockDelayPeriod: 0,
     showLoginErrorModal: false,
     showConnectionsRemovedModal: false,
+    showPasskeyMigrationModal: false,
     isPasswordUnlockMode: true,
   };
 
@@ -565,6 +574,35 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     this.setState({ isPasswordUnlockMode, error: null });
   };
 
+  handlePasskeyUnlockSuccess = async ({
+    isPasskeyMigrationEligible,
+  }: PasskeyUnlockSuccessContext) => {
+    if (isPasskeyMigrationEligible) {
+      this.setState({ showPasskeyMigrationModal: true });
+      return;
+    }
+
+    await this.props.navigateAfterUnlock();
+  };
+
+  handleReplacePasskey = async () => {
+    this.setState({ showPasskeyMigrationModal: false });
+
+    if (this.props.onReplacePasskey) {
+      await this.props.onReplacePasskey();
+      return;
+    }
+
+    // Temporary UI-only fallback until the replacement controller operation is
+    // implemented.
+    await this.props.navigateAfterUnlock();
+  };
+
+  handleRemindMeLater = async () => {
+    this.setState({ showPasskeyMigrationModal: false });
+    await this.props.navigateAfterUnlock();
+  };
+
   handleUnlockPasskeyFromPasswordForm = () => {
     if (this.props.mustDeferPasskeyToBrowserTab) {
       cancelPasskeyCeremony();
@@ -650,6 +688,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       showResetPasswordModal,
       showLoginErrorModal,
       showConnectionsRemovedModal,
+      showPasskeyMigrationModal,
       isPasswordUnlockMode,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
@@ -682,6 +721,12 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
           />
         )}
         {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
+        {showPasskeyMigrationModal && (
+          <PasskeyMigrationModal
+            onReplacePasskey={this.handleReplacePasskey}
+            onRemindMeLater={this.handleRemindMeLater}
+          />
+        )}
         <Box
           flexDirection={BoxFlexDirection.Column}
           justifyContent={BoxJustifyContent.Center}
@@ -833,7 +878,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                 this.props.mustDeferPasskeyToBrowserTab
               }
               isPasswordInProgress={isSubmitting}
-              onUnlockSuccess={this.props.navigateAfterUnlock}
+              onUnlockSuccess={this.handlePasskeyUnlockSuccess}
               onUsePassword={() => this.setPasswordUnlockMode(true)}
             />
           )}

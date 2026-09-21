@@ -85,6 +85,14 @@ describe('UnlockPage component (passkey UI)', () => {
     },
   });
 
+  function setMockPasskeyRecord(passkeyRecord: unknown) {
+    (
+      mockStore.getState() as {
+        metamask: { passkeyRecord?: unknown };
+      }
+    ).metamask.passkeyRecord = passkeyRecord;
+  }
+
   const buildProps = (overrides: Record<string, unknown> = {}) => ({
     navigate: jest.fn(),
     location: { pathname: '/unlock', state: undefined },
@@ -112,6 +120,7 @@ describe('UnlockPage component (passkey UI)', () => {
   beforeEach(() => {
     mockUnlockWithPasskey.mockReset();
     mockUnlockWithPasskey.mockResolvedValue(undefined);
+    setMockPasskeyRecord(null);
   });
 
   afterEach(() => {
@@ -132,6 +141,34 @@ describe('UnlockPage component (passkey UI)', () => {
     await waitFor(() => {
       expect(mockUnlockWithPasskey).toHaveBeenCalled();
       expect(props.navigateAfterUnlock).toHaveBeenCalled();
+    });
+  });
+
+  it('shows the passkey migration modal after a legacy passkey unlock', async () => {
+    setMockPasskeyRecord({
+      keyDerivation: { method: 'userHandle' },
+    });
+    const props = buildProps();
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(getByTestId('passkey-migration-modal')).toBeInTheDocument();
+    });
+    expect(props.navigateAfterUnlock).not.toHaveBeenCalled();
+
+    fireEvent.click(
+      getByTestId('passkey-migration-modal-remind-me-later-button'),
+    );
+
+    await waitFor(() => {
+      expect(props.navigateAfterUnlock).toHaveBeenCalledTimes(1);
     });
   });
 
