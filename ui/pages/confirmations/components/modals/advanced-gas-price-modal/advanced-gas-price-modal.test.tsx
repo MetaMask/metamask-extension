@@ -21,8 +21,21 @@ jest.mock('../../gas-price-input/gas-price-input', () => ({
 }));
 
 jest.mock('../../gas-input/gas-input', () => ({
-  GasInput: ({ gasLimit }: { gasLimit: Hex | undefined }) => (
-    <div data-testid="gas-input">{gasLimit}</div>
+  GasInput: ({
+    gasLimit,
+    helpText,
+    isDisabled,
+  }: {
+    gasLimit: Hex | undefined;
+    helpText?: string;
+    isDisabled?: boolean;
+  }) => (
+    <>
+      <div data-is-disabled={isDisabled} data-testid="gas-input">
+        {gasLimit}
+      </div>
+      {helpText && <div data-testid="gas-input-help-text">{helpText}</div>}
+    </>
   ),
 }));
 
@@ -110,6 +123,18 @@ describe('AdvancedGasPriceModal', () => {
 
     expect(getByTestId('gas-input')).toBeEmptyDOMElement();
     expect(getByTestId('gas-fee-modal-save-button')).toBeDisabled();
+  });
+
+  it('disables gas limit editing and explains why it is unavailable', () => {
+    const { getByTestId } = render({ gasLimit: undefined });
+
+    expect(getByTestId('gas-input')).toHaveAttribute(
+      'data-is-disabled',
+      'true',
+    );
+    expect(getByTestId('gas-input-help-text')).toHaveTextContent(
+      messages.gasLimitEditingUnavailable.message,
+    );
   });
 
   it('invalidates stale gas when the network client changes', async () => {

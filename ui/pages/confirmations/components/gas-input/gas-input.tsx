@@ -10,12 +10,18 @@ import {
 import { FormTextField } from '../../../../components/component-library';
 import { validateGas } from '../../utils/gasValidations';
 
+export const GAS_INPUT_HELP_TEXT_ID = 'gas-input-help-text';
+
 export const GasInput = ({
   gasLimit,
+  helpText,
+  isDisabled,
   onChange,
   onErrorChange,
 }: {
   gasLimit: Hex | undefined;
+  helpText?: string;
+  isDisabled?: boolean;
   onChange: (value: Hex) => void;
   onErrorChange: (error: string | undefined) => void;
 }) => {
@@ -64,13 +70,22 @@ export const GasInput = ({
     onErrorChange(error);
   }, [error, onErrorChange]);
 
+  const displayedHelpText = error ?? helpText;
+
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
       <FormTextField
         id="gas-input"
         data-testid="gas-input"
+        disabled={isDisabled}
         error={Boolean(error)}
-        helpText={error}
+        helpText={displayedHelpText}
+        helpTextProps={{ id: GAS_INPUT_HELP_TEXT_ID }}
+        inputProps={{
+          'aria-describedby': displayedHelpText
+            ? GAS_INPUT_HELP_TEXT_ID
+            : undefined,
+        }}
         onChange={handleChange}
         label={t('gasLimit')}
         value={value}

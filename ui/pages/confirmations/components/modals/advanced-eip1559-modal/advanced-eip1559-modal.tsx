@@ -175,6 +175,10 @@ const AdvancedEIP1559ModalContent = ({
           <Box marginBottom={4} />
           <GasInput
             gasLimit={gasLimit}
+            helpText={
+              isGasLimitAvailable ? undefined : t('gasLimitEditingUnavailable')
+            }
+            isDisabled={!isGasLimitAvailable}
             onChange={setGasLimit}
             onErrorChange={handleGasError}
           />

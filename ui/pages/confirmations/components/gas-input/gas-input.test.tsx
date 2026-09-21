@@ -9,7 +9,13 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { GasInput } from './gas-input';
 
-const render = (props: { gasLimit?: Hex } = { gasLimit: '0x5208' }) => {
+const render = (
+  props: {
+    gasLimit?: Hex;
+    helpText?: string;
+    isDisabled?: boolean;
+  } = { gasLimit: '0x5208' },
+) => {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
     chainId: CHAIN_IDS.GOERLI,
   });
@@ -24,6 +30,8 @@ const render = (props: { gasLimit?: Hex } = { gasLimit: '0x5208' }) => {
   const result = renderWithConfirmContextProvider(
     <GasInput
       gasLimit={props.gasLimit}
+      helpText={props.helpText}
+      isDisabled={props.isDisabled}
       onChange={mockOnChange}
       onErrorChange={mockOnErrorChange}
     />,
@@ -57,6 +65,22 @@ describe('GasInput', () => {
     ) as HTMLInputElement;
 
     expect(input.value).toBe('');
+  });
+
+  it('disables editing and describes why the estimate is unavailable', () => {
+    const { getByTestId, getByText } = render({
+      gasLimit: undefined,
+      helpText: messages.gasLimitEditingUnavailable.message,
+      isDisabled: true,
+    });
+
+    const input = getByTestId('gas-input').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const helpText = getByText(messages.gasLimitEditingUnavailable.message);
+
+    expect(input).toBeDisabled();
+    expect(input).toHaveAttribute('aria-describedby', helpText.id);
   });
 
   it('updates the displayed value when the gas estimate changes', () => {
