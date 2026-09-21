@@ -114,6 +114,14 @@ jobs:
           path: test-artifacts/scratch-7550/benchmark-chrome-webpack-*.json
           if-no-files-found: error
 
+      - name: Upload failure DOM and screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scratch-7550-${{ matrix.scenario }}-failure-artifacts
+          path: test-artifacts/chrome
+          if-no-files-found: ignore
+
   report:
     name: merge + report
     needs: benchmark
