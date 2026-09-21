@@ -1,3 +1,4 @@
+import { it as jestIt } from '@jest/globals';
 import {
   CANONICAL_DEEP_LINK_HOST,
   DEEP_LINK_HOSTS,
@@ -15,7 +16,7 @@ describe('deep-link host constants', () => {
 });
 
 describe('isDeepLinkHost', () => {
-  it.each([
+  jestIt.each([
     'link.metamask.io',
     'links.link.metamask.io',
     'link.metamask.com',
@@ -24,7 +25,7 @@ describe('isDeepLinkHost', () => {
     expect(isDeepLinkHost(hostname)).toBe(true);
   });
 
-  it.each([
+  jestIt.each([
     'metamask.com',
     'link.metamask.com.evil.com',
     'link.metamask.io.evil.com',

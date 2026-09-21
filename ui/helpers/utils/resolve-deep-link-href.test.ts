@@ -1,7 +1,8 @@
+import { it as jestIt } from '@jest/globals';
 import { resolveTrustedDeepLinkHref } from './resolve-deep-link-href';
 
 describe('resolveTrustedDeepLinkHref', () => {
-  it.each(['link.metamask.io', 'link.metamask.com'])(
+  jestIt.each(['link.metamask.io', 'link.metamask.com'])(
     'resolves a supported deep link from %s',
     async (host) => {
       await expect(

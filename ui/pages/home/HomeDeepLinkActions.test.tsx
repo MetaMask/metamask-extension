@@ -1,4 +1,5 @@
 import React from 'react';
+import { it as jestIt } from '@jest/globals';
 import { renderHook, render, waitFor } from '@testing-library/react';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
@@ -195,7 +196,7 @@ describe('HomeDeepLinkActions', () => {
     },
   );
 
-  it.each(['link.metamask.io', 'link.metamask.com'])(
+  jestIt.each(['link.metamask.io', 'link.metamask.com'])(
     'dispatches setHomeDeepLinkQrCode for a valid predict deeplink URL from %s',
     async (host) => {
       const deeplinkUrl = `https://${host}/predict?marketId=30615&sig_params=marketId&sig=signature&utm_source=twitter`;
