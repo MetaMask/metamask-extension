@@ -7,6 +7,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.50.0]
+
+### Added
+
+- Added a Card filter on Money Account Activity and highlighted APY in the Money Home benefits list (#46404)
+- Added how it works link to money menu (#46421)
+- Added a Memecoins category on Perps markets so users can filter to memecoin perps (#46415)
+- Added a How it works page for Money Account with FAQs and disclosures (#46374)
+- Added "Paid by MetaMask" labeling when MetaMask sponsors network fees on Money account deposits and withdrawals (#46344)
+- Added an explanation when a token is unavailable in a user's region (#46347)
+- Added transaction details for MetaMask Card purchases, cashback, and refunds in Money activity (#46348)
+- Added a Products section to the Perps tab and replaced the market list category dropdown with a filter rail (#45956)
+- Added Backup & Sync support for buy and sell order history (#46044)
+- Added quote validation details on MetaMask Pay confirmations, shown by double-clicking the no-quote error (#46262)
+- Added explanatory tooltips across Money Account experiences (#46381)
+- Added a View all page for Earn on your crypto, including a full token list and conversion actions (#46354)
+- Added links to MetaMask web pages from the Meet mUSD and Explore your benefits sections on Money Home (#46232)
+- Added deposit actions to eligible tokens in the Earn on your crypto section (#46258)
+- Saved Perps order form, order book, and chart preferences (#46059)
+- Added a More menu to Money Home (#46156)
+
+### Changed
+
+- Updated wallet activity notifications to use server-provided, localized titles and descriptions (#46388)
+- Kept users on their current section when switching accounts and reset scroll position after navigation (#46412)
+- Opened the Send screen directly from Money Home instead of showing a destination menu (#46377)
+- Added analytics instrumentation for Money Account interactions (#46316)
+- Updated buttons with rounded styling in preparation for brand migration (#46163)
+- Added rollout support to control Money Account balance visibility on Home (#46265)
+- Added rollout support for advanced charts on the Token Details page (#46270)
+- Updated the main layout with a fixed header (#46353)
+- Bumped Stellar Snap from 0.1.0 to 1.0.0 (#46336)
+- Changed "low value tokens" to "low balance tokens" in the asset list (#46349)
+- Updated Money activity details to show the icon of the asset used in the transaction (#46343)
+
+### Fixed
+
+- Disabled the Manage default settings button after opening the wallet to keep onboarding settings in sync (#46359)
+- Hid the Earn on your crypto section when no eligible deposit tokens are available (#46355)
+- Fixed Perps accounts with empty responses from showing a fabricated $0.00 balance (#46332)
+- Stopped placing Linea ETH in a fixed second position in the Tokens list for new users with zero balances (#46327)
+- Hid the Money Home activity section when there is no activity to display (#46323)
+- Fixed duplicate Money Account toasts and corrected their text (#45996)
+- Fixed icon background colors in the Money information section (#46278)
+- Fixed the confirmation amount field to show two decimal places after selecting Max (#46226)
+- Fixed duplicate "Transaction submitted" toasts for gasless sends (#46434)
+- Fixed the blank page shown when returning to MetaMask from a provider order page (#46394)
+- Fixed gas-limit validation and blocking alerts to support valid limits as low as 12,000 (#46385)
+- Fixed block explorer button missing for some providers on the Buy order details page (#46398)
+- Fixed stablecoin amounts in MetaMask Pay being valued slightly off from $1, which could cause Max to request more than the available balance (#46370)
+- Fixed Basic Functionality migration notices disappearing after a feature-flag rollback, and repaired social-login wallets that were locked with Basic Functionality off (#46264)
+- Fixed EVM RPC requests failing under LavaMoat (#46339)
+- Fixed Money account deposits defaulting to a $0 pay token and showing a loading skeleton instead of $0 (#46342)
+- Fixed the buy flow resetting a user's entered amount when they picked a payment method (#46351)
+- Updated useNftImageUrl hook to handle non-strings (#46274)
+- Fixed a bug where the Continue button in the Buy flow was disabled without an explanation when quotes were unavailable (#46345)
+- Fixed recipient validation (including ENS names) never resolving in the send flow, and blocked submit until validation completes (#46295)
+- Fixed a bug where changing the account or token on a Money Account deposit could briefly show an incorrect "Insufficient funds" error (#46310)
+- Fixed the Money Account withdrawal confirmation showing a "From" label for the account that actually receives the funds; It now reads "To" (#46320)
+- Fixed a bug that could incorrectly show a "Not enough MON to cover fees" error when depositing to or withdrawing from a Money Account (#46312)
+- Fixed the spacing around the network avatars and the "Show default address" section in the account address menu (#46329)
+- Fixed Money Account deposits so a typed amount deposits exactly that amount (#46231)
+- Fixed a bug where a failed Perps account fetch could show a funded account as $0.00 and hide the Withdraw button (#45994)
+- Fixed transaction fees and totals shown in Money activity details (#46313)
+- Fixed the Money Benefits menu icon so it shows an outlink instead of a share icon (#46311)
+- Fixed the Money balance info popover colors (#46251)
+- Fixed icon buttons shrinking when placed in flex layouts (#46246)
+- Fixed inconsistent icon sizing and spacing in the Add funds menu (#46250)
+- Fixed a bug that briefly showed an incorrect amount to receive before the correct quote when withdrawing from Money (#46255)
+- Fixed a bug that was causing the deposit amount to flicker between $0, a loading skeleton and the prefilled amount (#46220)
+- Fixed missing explorer links for Arc and Robinhood Chain on the Receive QR screen (#46160)
+- Fixed the focus style being cut off on the new password fields in Settings > Security and password > Password (#46090)
+
 ## [13.49.0]
 
 ### Added
@@ -3253,7 +3326,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...HEAD
+[13.50.0]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...v13.50.0
 [13.49.0]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...v13.49.0
 [13.48.0]: https://github.com/MetaMask/metamask-extension/compare/v13.47.1...v13.48.0
 [13.47.1]: https://github.com/MetaMask/metamask-extension/compare/v13.47.0...v13.47.1
