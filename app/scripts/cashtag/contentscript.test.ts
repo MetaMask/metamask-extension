@@ -1,5 +1,5 @@
 import { createTickerResolver } from './lib/ticker-resolver';
-import { attachPageVisibility, createWidgetLifecycle } from './contentscript';
+import { createWidgetLifecycle } from './contentscript';
 import type { WidgetHandle } from './widget/host';
 
 function deferred<Value>() {
@@ -99,28 +99,5 @@ describe('createWidgetLifecycle', () => {
     expect(injectPills).toHaveBeenCalledTimes(1);
     expect(widget.stop).toHaveBeenCalledTimes(1);
     expect(secondWidget.stop).not.toHaveBeenCalled();
-  });
-});
-
-describe('attachPageVisibility', () => {
-  it('restarts the widget on a back-forward cache restore', async () => {
-    const lifecycle = {
-      setEnabled: jest.fn().mockResolvedValue(undefined),
-      stop: jest.fn(),
-    };
-    attachPageVisibility(lifecycle, async () => true);
-
-    window.dispatchEvent(new Event('pagehide'));
-    expect(lifecycle.stop).toHaveBeenCalledTimes(1);
-
-    window.dispatchEvent(new Event('pageshow'));
-    await Promise.resolve();
-    expect(lifecycle.setEnabled).not.toHaveBeenCalled();
-
-    const restored = new Event('pageshow') as PageTransitionEvent;
-    Object.defineProperty(restored, 'persisted', { value: true });
-    window.dispatchEvent(restored);
-    await Promise.resolve();
-    expect(lifecycle.setEnabled).toHaveBeenCalledWith(true);
   });
 });

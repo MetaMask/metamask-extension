@@ -94,9 +94,9 @@ export function TokenDetail({
             height={28}
           />
           <ButtonIcon
-            iconName={IconName.Ban}
+            iconName={IconName.MoreVertical}
             size={ButtonIconSize.Md}
-            ariaLabel="Disable this feature"
+            ariaLabel="More options"
             className="text-icon-alternative hover:bg-muted-hover hover:text-icon-default"
             onClick={onWidgetClick(onDisable)}
           />

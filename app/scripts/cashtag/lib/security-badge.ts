@@ -32,7 +32,7 @@ export function getSecurityInlineBadge(
   }
 }
 
-export type SecurityStatusBadge = {
+type SecurityStatusBadge = {
   icon: IconName;
   iconColor: IconColor;
   label: string;

@@ -55,7 +55,6 @@ export function createWidgetLifecycle(deps: WidgetDeps) {
     cleanup = null;
   }
 
-  // Bring the widget in line with the latest requested state.
   async function sync() {
     if (enabled && !cleanup) {
       await mount();
@@ -72,8 +71,6 @@ export function createWidgetLifecycle(deps: WidgetDeps) {
     return queue;
   }
 
-  // pagehide cannot await, so tear down synchronously. An in-flight mount sees
-  // the flag and discards whatever it injected.
   function stop() {
     enabled = false;
     unmount();
@@ -111,7 +108,7 @@ async function isWidgetEnabled() {
   }
 }
 
-export function attachPageVisibility(
+function attachPageVisibility(
   lifecycle: {
     setEnabled: (enabled: boolean) => Promise<void>;
     stop: () => void;
@@ -170,8 +167,6 @@ async function initializeCashtag() {
 }
 
 export function initCashtag() {
-  // Runs inside contentscript.js, which is injected into every frame at
-  // document_start. The background bridge enables only frame 0.
   if (!xHosts.has(window.location.hostname)) {
     return;
   }

@@ -336,6 +336,9 @@ const reactCompiler = getReactCompilerLoader({
 });
 
 const config = {
+  // All entries are added dynamically by ManifestPlugin
+  // an empty entry object prevents webpack's default entry.
+  entry: {},
   cache,
   plugins,
   context,
@@ -512,7 +515,7 @@ const config = {
           },
         ],
       },
-      // Host-page styles, imported as text so the content script can inject
+      // Cashtag widget host-page styles, imported as text so the content script can inject
       // and remove them without exposing a web-accessible stylesheet.
       {
         test: cashtagPageStylesRe,
@@ -632,7 +635,7 @@ const config = {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
       name: (chunk) =>
-        (!manifestPlugin.canBeChunked(chunk) ? false : 'runtime') as string,
+        (manifestPlugin.canBeChunked(chunk) ? 'runtime' : false) as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations

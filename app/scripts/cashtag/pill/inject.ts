@@ -7,7 +7,6 @@ function buildPillContents(data: AssetData) {
   const icon = document.createElement('img');
   icon.className = 'mm-cashtag-pill-icon';
   icon.alt = '';
-  icon.loading = 'lazy';
   icon.width = 18;
   icon.height = 18;
   icon.setAttribute('aria-hidden', 'true');

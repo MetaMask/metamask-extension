@@ -25,7 +25,8 @@ body {
   inset: auto;
   position: fixed;
   position-anchor: --cashtag-widget;
-  position-area: center;
+  top: anchor(center);
+  left: anchor(center);
   translate: -50% -50%;
 }
 

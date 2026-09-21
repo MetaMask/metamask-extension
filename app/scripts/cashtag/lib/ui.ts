@@ -1,4 +1,4 @@
-export function readPageTheme(): 'light' | 'dark' {
+function readPageTheme(): 'light' | 'dark' {
   const pageTheme = document.documentElement.dataset.theme;
   if (pageTheme === 'dark' || pageTheme === 'dim') {
     return 'dark';
