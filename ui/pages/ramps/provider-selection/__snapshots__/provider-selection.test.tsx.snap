@@ -26,7 +26,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -39,7 +39,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -231,7 +231,7 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
@@ -244,7 +244,7 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -320,7 +320,7 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
@@ -333,7 +333,7 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -409,7 +409,7 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-loading"
           role="dialog"
         >
@@ -422,7 +422,7 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -572,7 +572,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -585,7 +585,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -714,7 +714,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -727,7 +727,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
