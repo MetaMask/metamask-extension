@@ -155,6 +155,7 @@
     "accountIdByAddress": {
       "*": "string"
     },
+    "accountSourceBackfillEnqueued": "boolean",
     "accountsAssets": {
       "*": "array"
     },
@@ -288,6 +289,7 @@
         "lastUpdated": "number"
       }
     },
+    "autoramps": [],
     "balances": {
       "*": {
         "*": {
@@ -677,6 +679,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
+    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -708,6 +711,7 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
+    "lastPerpsDepositEntryPoint": "null",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
@@ -1010,6 +1014,7 @@
       "variational": {}
     },
     "region": "string",
+    "reportedAccounts": ["string"],
     "requests": {
       "*": {
         "status": "string",
@@ -1081,18 +1086,7 @@
     "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
-    "syncQueue": {
-      "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
-        {
-          "address": "string",
-          "scopes": ["string"]
-        },
-        {
-          "address": "string",
-          "scopes": ["string", "string", "string"]
-        }
-      ]
-    },
+    "syncQueue": {},
     "slides": [],
     "smartTransactionsState": {
       "fees": {
@@ -1247,7 +1241,6 @@
       "testnet": {},
       "mainnet": {}
     },
-    "tracesBeforeMetricsOptIn": [],
     "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},

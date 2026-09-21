@@ -204,7 +204,9 @@ describe('Popular Networks', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withBasicFunctionalityConsolidationDisabled()
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },

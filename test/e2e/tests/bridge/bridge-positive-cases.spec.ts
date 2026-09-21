@@ -16,7 +16,9 @@ import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
   checkQuoteRequestsAreNotMadeAfterTimestamp,
   getBridgeFixtures,
+  getExpectedQuoteTotalCosts,
 } from './bridge-test-utils';
+import MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD from './mocks/bridge-quotes-eth-robinhood.json';
 
 /**
  * Returns bridge fixtures layered with the bottom nav AB test treatment flags:
@@ -98,20 +100,6 @@ describe('Bridge tests', function (this: Suite) {
           expectedDestAmount: '1,642',
           expectedActivityAmount: '+1,642.0043',
         });
-        await bridgeTransaction({
-          driver,
-          quote: {
-            amount: '1',
-            tokenFrom: 'ETH',
-            tokenTo: 'ETH',
-            fromChain: 'Ethereum',
-            toChain: 'Linea',
-          },
-          expectedTransactionsCount: 4,
-          expectedDestAmount: '0.991',
-          expectedActivityAmount: '+0.9912',
-        });
-
         await homePage.goToTokensTab();
         await homePage.goToActivityList();
 
@@ -125,9 +113,27 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
             unapproved: true,
           },
-          expectedTransactionsCount: 6,
+          expectedTransactionsCount: 5,
           expectedDestAmount: '9.9',
           expectedActivityAmount: '+9.8996',
+        });
+
+        await bridgeTransaction({
+          driver,
+          quote: {
+            amount: '1',
+            tokenFrom: 'ETH',
+            tokenTo: 'ETH',
+            fromChain: 'Ethereum',
+            toChain: 'Robinhood',
+          },
+          expectedTransactionsCount: 6,
+          expectedDestAmount: '0.991',
+          expectedActivityAmount: '+0.9911',
+          submitDelay: 1000,
+          expectedTotalCost: getExpectedQuoteTotalCosts(
+            MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD,
+          ),
         });
       },
     );

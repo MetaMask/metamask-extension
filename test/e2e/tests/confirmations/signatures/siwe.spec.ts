@@ -85,7 +85,10 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
         await login(driver);
         await testDapp.openTestDappAndTriggerSignature(SignatureType.SIWE);
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

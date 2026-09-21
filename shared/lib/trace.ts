@@ -43,6 +43,8 @@ export enum TraceName {
   SetupStore = 'Setup Store',
   Signature = 'Signature',
   SwapQuoteFetch = 'Swap Quote Fetch',
+  SwapTokenSearch = 'Swap Token Search',
+  SwapPopularTokensFetch = 'Swap Popular Tokens Fetch',
   SwapQuotesFetched = 'Swap Quotes Fetched',
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
@@ -95,6 +97,7 @@ export enum TraceName {
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
+  StatePersist = 'State Persist',
 }
 
 /**
@@ -112,6 +115,9 @@ export enum TraceOperation {
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
+  StateWrite = 'state.write',
+  BridgeScreenPerformance = 'bridge.screen.performance',
+  BridgeDataFetch = 'bridge.data_fetch',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');

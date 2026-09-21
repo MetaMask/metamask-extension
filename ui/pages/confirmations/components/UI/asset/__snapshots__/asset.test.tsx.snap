@@ -7,7 +7,7 @@ exports[`TokenAsset hides balances when hideBalances is true 1`] = `
     data-testid="token-asset-0x1-TEST"
   >
     <div
-      class="mm-box shrink-0 mm-box--margin-right-4"
+      class="mr-4 shrink-0"
     >
       <div
         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
