@@ -34,7 +34,6 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": false,
-      "eventQueue": {},
       "marketingConsentDecisionMade": false,
       "optedIn": false,
       "optedInToMarketing": false,

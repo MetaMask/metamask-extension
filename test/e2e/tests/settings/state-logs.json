@@ -440,7 +440,6 @@
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
-    "eventQueue": {},
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
