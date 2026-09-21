@@ -28,7 +28,7 @@ import { parseRampIntent } from './parse-ramp-intent';
 export function BuyDeepLinkEntry() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { goToBuy } = useRampsNavigation();
+  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
   const hasInitiatedRef = useRef(false);
 
   useEffect(() => {
@@ -43,14 +43,19 @@ export function BuyDeepLinkEntry() {
     });
     const intent = parseRampIntent(params);
 
-    goToBuy(intent ? { assetId: intent.assetId } : undefined)
+    goToBuy(
+      intent ? { assetId: intent.assetId, chainId: intent.chainId } : undefined,
+    )
       .then((didNavigate) => {
-        if (!didNavigate) {
+        // When Buy leaves the extension (Portfolio fallback), it opened in a
+        // NEW tab — send this deep link tab home instead of leaving it on a
+        // spinner. Same when no navigation was possible (modal shown).
+        if (!didNavigate || opensBuyInPortfolioTab) {
           navigate(DEFAULT_ROUTE, { replace: true });
         }
       })
       .catch(() => navigate(DEFAULT_ROUTE, { replace: true }));
-  }, [goToBuy, navigate, location.search]);
+  }, [goToBuy, navigate, opensBuyInPortfolioTab, location.search]);
 
   return (
     <Box
