@@ -181,6 +181,7 @@ export default function RampsPaymentMethodListItem({
                 fiatAmount={fiatAmount}
                 isLoading={quoteLoading}
                 showWarningIcon={quoteError}
+                warningMessage={quoteErrorMessage}
               />
             ) : null}
             {isSelected ? (

@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
+import { act, fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RampsPaymentMethodListItem from './ramps-payment-method-list-item';
@@ -150,5 +151,30 @@ describe('RampsPaymentMethodListItem', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('shows the quote error message when hovering the warning icon', async () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quoteError
+        quoteErrorMessage="Minimum purchase is $25.00"
+        quote={null}
+        isDisabled
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    await act(async () => {
+      fireEvent.mouseEnter(getByTestId('ramps-quote-display-warning-trigger'));
+    });
+
+    expect(
+      getByTestId('ramps-quote-display-warning-tooltip'),
+    ).toHaveTextContent('Minimum purchase is $25.00');
   });
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useId, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -8,18 +8,36 @@ import {
   IconColor,
   IconName,
   IconSize,
+  FontWeight,
   Skeleton,
   Text,
   TextColor,
-  FontWeight,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  Popover,
+  PopoverPosition,
+} from '../../../../components/component-library';
+
+const WARNING_TOOLTIP_POPOVER_STYLE = {
+  zIndex: 1050,
+  paddingTop: '6px',
+  paddingBottom: '6px',
+  paddingLeft: '16px',
+  paddingRight: '16px',
+  maxWidth: 250,
+} as const;
 
 export type RampsQuoteDisplayProps = {
   cryptoAmount: string;
   fiatAmount: string | null;
   isLoading?: boolean;
   showWarningIcon?: boolean;
+  /**
+   * Why the quote is unavailable, shown in a hover tooltip next to the
+   * warning icon (e.g. provider limits or "Quote unavailable.").
+   */
+  warningMessage?: string;
 };
 
 /**
@@ -30,13 +48,24 @@ export type RampsQuoteDisplayProps = {
  * @param options0.fiatAmount
  * @param options0.isLoading
  * @param options0.showWarningIcon
+ * @param options0.warningMessage
  */
 export default function RampsQuoteDisplay({
   cryptoAmount,
   fiatAmount,
   isLoading = false,
   showWarningIcon = false,
+  warningMessage,
 }: RampsQuoteDisplayProps) {
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null,
+  );
+  const popoverId = useId();
+
+  const handleOpen = useCallback(() => setIsTooltipOpen(true), []);
+  const handleClose = useCallback(() => setIsTooltipOpen(false), []);
+
   if (isLoading) {
     return (
       <Box
@@ -60,11 +89,37 @@ export default function RampsQuoteDisplay({
         justifyContent={BoxJustifyContent.Center}
         data-testid="ramps-quote-display-warning"
       >
-        <Icon
-          name={IconName.Warning}
-          size={IconSize.Sm}
-          color={IconColor.WarningDefault}
-        />
+        <span
+          ref={setReferenceElement}
+          onMouseEnter={warningMessage ? handleOpen : undefined}
+          onMouseLeave={warningMessage ? handleClose : undefined}
+          aria-describedby={isTooltipOpen ? popoverId : undefined}
+          data-testid="ramps-quote-display-warning-trigger"
+          className="flex"
+        >
+          <Icon
+            name={IconName.Warning}
+            size={IconSize.Sm}
+            color={IconColor.WarningDefault}
+          />
+        </span>
+        {warningMessage ? (
+          <Popover
+            id={popoverId}
+            isOpen={isTooltipOpen}
+            position={PopoverPosition.BottomEnd}
+            referenceElement={referenceElement}
+            hasArrow
+            onPressEscKey={handleClose}
+            isPortal
+            style={WARNING_TOOLTIP_POPOVER_STYLE}
+            data-testid="ramps-quote-display-warning-tooltip"
+          >
+            <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+              {warningMessage}
+            </Text>
+          </Popover>
+        ) : null}
       </Box>
     );
   }
