@@ -1,10 +1,7 @@
 import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  isEligibleMoneyFundingAccount,
-  selectMoneyFundingAccount,
-} from './money-funding-account';
+import { selectMoneyFundingAccount } from './money-funding-account';
 
 const HD_ADDRESS = '0x1111111111111111111111111111111111111111';
 const HD_2_ADDRESS = '0x2222222222222222222222222222222222222222';
@@ -72,28 +69,6 @@ const buildState = (
       },
     },
   }) as unknown as Parameters<typeof selectMoneyFundingAccount>[0];
-
-describe('isEligibleMoneyFundingAccount', () => {
-  it('accepts an HD EVM account', () => {
-    expect(isEligibleMoneyFundingAccount(HD_ACCOUNT)).toBe(true);
-  });
-
-  it('accepts an imported EVM account', () => {
-    expect(isEligibleMoneyFundingAccount(IMPORTED_ACCOUNT)).toBe(true);
-  });
-
-  it('rejects a hardware account', () => {
-    expect(isEligibleMoneyFundingAccount(LEDGER_ACCOUNT)).toBe(false);
-  });
-
-  it('rejects a non-EVM account', () => {
-    expect(isEligibleMoneyFundingAccount(BTC_ACCOUNT)).toBe(false);
-  });
-
-  it('rejects undefined', () => {
-    expect(isEligibleMoneyFundingAccount(undefined)).toBe(false);
-  });
-});
 
 describe('selectMoneyFundingAccount', () => {
   it('returns the selected account when it is eligible', () => {

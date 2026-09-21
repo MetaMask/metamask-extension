@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
-import { selectMoneyFundingAccount } from '../../pages/confirmations/selectors/money-funding-account';
+import { selectMoneyFundingAccount } from '../../selectors/money/money-funding-account';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,

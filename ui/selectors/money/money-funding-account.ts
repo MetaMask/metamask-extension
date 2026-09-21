@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type { AccountsState } from '../../../../shared/lib/selectors/accounts';
-import { getMaybeSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import { isHardwareAccount } from '../../../components/app/rewards/utils/isHardwareAccount';
-import { EMPTY_OBJECT } from '../../../selectors/shared';
+import type { AccountsState } from '../../../shared/lib/selectors/accounts';
+import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
+import { EMPTY_OBJECT } from '../shared';
 
 // Returns the accounts map itself, not `Object.values(...)`: a fresh array on
 // every call would be a new reference each time, so reselect would treat the
@@ -29,7 +29,7 @@ const getInternalAccountsMap = (
  * @param account - The account to test.
  * @returns Whether the account is a valid Money Account counterparty.
  */
-export function isEligibleMoneyFundingAccount(
+function isEligibleMoneyFundingAccount(
   account: InternalAccount | undefined,
 ): account is InternalAccount {
   return Boolean(

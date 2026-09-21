@@ -34,9 +34,10 @@ export function usePayHardwareAccountAlert(): Alert[] {
   );
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
+  const shouldAlert = isHardwareWallet && isHardwareBlocked;
 
   return useMemo(() => {
-    if (!isHardwareWallet || !isHardwareBlocked) {
+    if (!shouldAlert) {
       return [];
     }
 
@@ -50,5 +51,5 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [isHardwareWallet, isHardwareBlocked, t]);
+  }, [shouldAlert, t]);
 }

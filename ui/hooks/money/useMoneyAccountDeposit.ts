@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
-import { selectMoneyFundingAccount } from '../../pages/confirmations/selectors/money-funding-account';
+import { selectMoneyFundingAccount } from '../../selectors/money/money-funding-account';
 import {
   clearMoneyAccountDepositIntent,
   setMoneyAccountDepositIntent,
