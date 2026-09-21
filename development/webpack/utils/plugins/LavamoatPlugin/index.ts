@@ -204,6 +204,7 @@ export const lavamoatBackgroundLayerRule = {
 // Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
 const unsafeLayerEntries: Set<string> = new Set([
   'scripts/inpage.js',
+  'scripts/inpage-mv2.js',
   'bootstrap',
   'service-worker.ts',
 ]);
