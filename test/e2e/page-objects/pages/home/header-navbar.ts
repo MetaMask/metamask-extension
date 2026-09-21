@@ -227,6 +227,11 @@ class HeaderNavbar {
       css: '[data-testid="multichain-address-rows-trigger"]',
     });
     await this.driver.hoverElement(trigger);
+    await this.driver.executeScript(
+      (element: HTMLElement) =>
+        element.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })),
+      trigger,
+    );
   }
 
   async clickNotificationCount(count: number): Promise<void> {

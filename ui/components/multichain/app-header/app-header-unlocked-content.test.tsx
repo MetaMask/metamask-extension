@@ -35,6 +35,24 @@ jest.mock('#ui/helpers/utils/window', () => ({
   openWindow: jest.fn(),
 }));
 
+jest.mock('react-toggle-button', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  return function mockToggleButton({
+    value,
+    onToggle,
+  }: {
+    value: boolean;
+    onToggle?: (value: boolean) => void;
+  }) {
+    return ReactActual.createElement('input', {
+      type: 'checkbox',
+      checked: value,
+      onChange: () => onToggle?.(!value),
+      readOnly: true,
+    });
+  };
+});
+
 describe('AppHeaderUnlockedContent trace', () => {
   beforeEach(() => {
     jest.clearAllMocks();
