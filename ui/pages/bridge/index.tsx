@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
@@ -18,6 +18,8 @@ import {
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
+import { endTrace, TraceName } from '../../../shared/lib/trace';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -32,7 +34,10 @@ import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { useBottomNavBar } from '../../hooks/useBottomNavBar';
 import { getFromChain } from '../../ducks/bridge/selectors';
-import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
+import {
+  startSwapViewLoadTrace,
+  useBridgeNavigation,
+} from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
@@ -45,13 +50,61 @@ import AwaitingSignatures from './awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';
+import { swapQuoteFetchTrace } from './utils/swap-quote-fetch-trace';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
   useBridging();
 
-  const { navigateToDefaultRoute } = useBridgeNavigation();
+  const {
+    navigateToDefaultRoute,
+    search,
+    swapViewTraceId,
+    swapViewPrefilledAmount,
+  } = useBridgeNavigation();
+  const [swapViewTrace] = useState(() => {
+    if (swapViewTraceId) {
+      return {
+        id: swapViewTraceId,
+        prefilledAmount: Boolean(swapViewPrefilledAmount),
+      };
+    }
+
+    const searchParams = new URLSearchParams(search);
+    return {
+      id: startSwapViewLoadTrace({
+        token: null,
+        search: searchParams,
+        entryPoint: 'deeplink',
+      }),
+      prefilledAmount: Boolean(searchParams.get(BridgeQueryParams.Amount)),
+    };
+  });
+  const isSwapFlowMountedRef = useRef(false);
+
+  useEffect(() => {
+    isSwapFlowMountedRef.current = true;
+
+    return () => {
+      isSwapFlowMountedRef.current = false;
+      // Defer cancellation so React StrictMode's setup/cleanup/setup probe is
+      // not mistaken for the user leaving the page.
+      queueMicrotask(() => {
+        if (isSwapFlowMountedRef.current) {
+          return;
+        }
+
+        endTrace({
+          name: TraceName.SwapViewLoaded,
+          id: swapViewTrace.id,
+          timestamp: Date.now(),
+          data: { result: 'cancelled' },
+        });
+        swapQuoteFetchTrace.finish('cancelled');
+      });
+    };
+  }, [swapViewTrace.id]);
   // Pre-fill the src chain balances, slippage and other quote params before rendering the bridge page
   // This also resets any search query parameters and navigation states
   usePrefillFromSearchQuery();
@@ -106,7 +159,10 @@ const CrossChainSwap = () => {
           setIsSettingsModalOpen(false);
         }}
       />
-      <PrepareBridgePage onOpenSettings={() => setIsSettingsModalOpen(true)} />
+      <PrepareBridgePage
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        swapViewTrace={swapViewTrace}
+      />
     </>
   );
 
