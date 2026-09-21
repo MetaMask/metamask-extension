@@ -2,7 +2,18 @@ import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MONEY_HOW_IT_WORKS_ROUTE } from '../../../helpers/constants/routes';
 import { MONEY_LANDING_URL } from '../constants/urls';
+import {
+  MONEY_URLS,
+  MoneyBottomSheetName,
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../constants/money-events';
+import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../../hooks/money/useMoneyAnalytics.mock';
 import { MoneyMoreMenu } from './money-more-menu';
 
 jest.mock(
@@ -21,6 +32,18 @@ jest.mock(
   }),
 );
 
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+
 const openMenu = async () => {
   await act(async () => {
     fireEvent.click(screen.getByTestId('money-more-menu-button'));
@@ -29,7 +52,34 @@ const openMenu = async () => {
 
 describe('MoneyMoreMenu', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     global.platform.openTab = jest.fn();
+  });
+
+  it('tracks the menu button click and sheet view when opened', async () => {
+    renderWithLocalization(<MoneyMoreMenu />);
+
+    await openMenu();
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyHome,
+    });
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      bottomSheetName: MoneyBottomSheetName.MoreSheet,
+    });
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Icon,
+      buttonIntent: MoneyButtonIntent.OpenMoreMenu,
+      componentName: MoneyComponentName.More,
+      redirectTarget: MoneyBottomSheetName.MoreSheet,
+    });
+    expect(mockMoneyAnalytics.trackBottomSheetViewed).toHaveBeenCalledTimes(1);
+
+    await openMenu();
+
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledTimes(1);
+    expect(mockMoneyAnalytics.trackBottomSheetViewed).toHaveBeenCalledTimes(1);
   });
 
   it('renders a closed menu button', () => {
@@ -47,7 +97,7 @@ describe('MoneyMoreMenu', () => {
     await openMenu();
 
     expect(screen.getByTestId('money-more-menu')).toBeInTheDocument();
-    expect(screen.getByTestId('money-more-menu-how-it-works')).toBeDisabled();
+    expect(screen.getByTestId('money-more-menu-how-it-works')).toBeEnabled();
     expect(
       screen.getByTestId('money-more-menu-how-it-works'),
     ).toHaveTextContent(messages.moneyHowItWorks.message);
@@ -62,6 +112,20 @@ describe('MoneyMoreMenu', () => {
     ).toHaveTextContent(messages.moneyContactSupport.message);
   });
 
+  it('navigates to the how it works page and closes when how it works is clicked', async () => {
+    renderWithLocalization(<MoneyMoreMenu />);
+
+    await openMenu();
+    fireEvent.click(screen.getByTestId('money-more-menu-how-it-works'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOW_IT_WORKS_ROUTE);
+    expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+      componentName: MoneyComponentName.MoreSheetHowItWorks,
+      redirectTarget: MoneyScreenName.MoneyHowItWorks,
+    });
+  });
+
   it('opens the money landing page and closes when benefits is clicked', async () => {
     renderWithLocalization(<MoneyMoreMenu />);
 
@@ -72,6 +136,10 @@ describe('MoneyMoreMenu', () => {
       url: MONEY_LANDING_URL,
     });
     expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+      componentName: MoneyComponentName.MoreSheetWhatYouGet,
+      redirectTarget: MONEY_URLS.MONEY_LANDING,
+    });
   });
 
   it('opens the support consent modal when contact support is clicked', async () => {
@@ -82,6 +150,10 @@ describe('MoneyMoreMenu', () => {
 
     expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
     expect(screen.getByTestId('support-consent-modal')).toBeInTheDocument();
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+      componentName: MoneyComponentName.MoreSheetContactSupport,
+      redirectTarget: MONEY_URLS.METAMASK_SUPPORT,
+    });
 
     fireEvent.click(screen.getByTestId('support-consent-modal'));
 

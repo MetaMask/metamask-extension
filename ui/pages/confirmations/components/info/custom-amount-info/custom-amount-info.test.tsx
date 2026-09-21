@@ -113,6 +113,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   isDepositPrefillEnabled: false,
   isDepositPrefillLoading: false,
   isDepositPrefilled: false,
+  isDepositPrefillSkipped: false,
   isInputChanged: false,
   isQuoteDerivedAmountLoading: false,
   updatePendingAmount: jest.fn(),
@@ -346,6 +347,25 @@ describe('CustomAmountInfo', () => {
     expect(queryByTestId('custom-amount')).not.toBeInTheDocument();
   });
 
+  it('shows $0 instead of the amount skeleton when deposit prefill is skipped', () => {
+    // A money-account deposit with no funded pay token can never commit a
+    // prefill, so the field must settle at $0 with a usable keypad rather than
+    // sitting behind the skeleton forever.
+    const { getByTestId, queryByTestId } = render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '0',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: false,
+        isDepositPrefilled: false,
+        isDepositPrefillSkipped: true,
+      },
+    });
+
+    expect(getByTestId('custom-amount')).toHaveTextContent('0');
+    expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
+  });
+
   it('does not show amount skeleton for deposit prefill loading when account has no funds', () => {
     const { getByTestId, queryByTestId } = render({
       accountNoFundsAlert: [{ key: 'accountNoFunds' }],
@@ -360,6 +380,41 @@ describe('CustomAmountInfo', () => {
 
     expect(getByTestId('custom-amount')).toBeInTheDocument();
     expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
+  });
+
+  it('withholds the stale amount from alerts while deposit prefill is loading', () => {
+    // `amountFiat` still holds the previously selected token's amount while
+    // prefill recomputes. Passing it on would compare it against the new
+    // token's balance and momentarily show "Insufficient funds".
+    render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '100',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: true,
+        isDepositPrefilled: false,
+      },
+    });
+
+    expect(
+      useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+    ).toHaveBeenCalledWith({ pendingFiatAmount: undefined });
+  });
+
+  it('passes the amount to alerts once the field has settled', () => {
+    render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '100',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: false,
+        isDepositPrefilled: true,
+      },
+    });
+
+    expect(
+      useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+    ).toHaveBeenCalledWith({ pendingFiatAmount: '100' });
   });
 
   it('keeps the amount visible when deposit prefill is enabled but not loading', () => {

@@ -5,13 +5,9 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonIcon,
-  ButtonIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   FontWeight,
-  IconColor,
-  IconName,
   Skeleton,
   Text,
   TextButton,
@@ -53,10 +49,7 @@ import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
-import {
-  TokenFiatDisplayInfo,
-  type TokenWithFiatAmount,
-} from '../../../components/app/assets/types';
+import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
@@ -106,6 +99,7 @@ import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
+import { AssetPageHeader } from './asset-page-header';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
 import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
@@ -385,28 +379,15 @@ const AssetPage = ({
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
   const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
-  const assetDisplayName = useMemo(
-    () =>
-      name && symbol && name !== symbol
-        ? `${name} (${symbol})`
-        : (name ?? symbol),
-    [name, symbol],
-  );
-  const assetNameElement = (
+  const assetHeaderBadges = (
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={2}
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextAlternative}
-        data-testid="asset-name"
-      >
-        {assetDisplayName}
-      </Text>
       <AssetPageSecurityTrustHeaderBadge />
+      {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+      {isAssetInactive && <AssetInactiveBadge />}
     </Box>
   );
 
@@ -459,56 +440,28 @@ const AssetPage = ({
         className="asset__content"
         data-testid="parent-selector-asset-details"
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          paddingBottom={3}
-          paddingLeft={2}
-          paddingRight={4}
-          className="pt-4 sticky top-0 z-10 bg-background-default"
-        >
-          <Box flexDirection={BoxFlexDirection.Row}>
-            <ButtonIcon
-              color={IconColor.IconDefault}
-              size={ButtonIconSize.Md}
-              ariaLabel={t('back') as string}
-              iconName={IconName.ArrowLeft}
-              onClick={handleBack}
-              className="asset-page__back-button"
-            />
-          </Box>
-          {optionsButton}
-        </Box>
+        <AssetPageHeader
+          symbol={symbol}
+          image={image}
+          networkImage={tokenChainImage}
+          networkName={networkName}
+          contractAddress={contractAddress || undefined}
+          titleEndAccessory={assetHeaderBadges}
+          endAccessory={optionsButton}
+          onBack={handleBack}
+        />
         {isAssetInactive && (
           <AssetActivateCard
             asset={tokenAsset as Asset}
             chainName={networkName}
           />
         )}
-        <Box paddingLeft={4}>
-          {isStockToken || isAssetInactive ? (
-            <Box alignItems={BoxAlignItems.Center} gap={2}>
-              {assetNameElement}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
-                {isAssetInactive && <AssetInactiveBadge />}
-              </Box>
-            </Box>
-          ) : (
-            assetNameElement
-          )}
-        </Box>
         <AssetPageSecurityTrustBanner />
         <AssetChart
           chainId={chainId}
           address={address}
           currentPrice={currentPrice}
           currency={currency}
-          asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
         />
         <MaybePerpsViewStreamBoundary
           enabled={Boolean(isPerpsMarketLoading || perpsMarket)}

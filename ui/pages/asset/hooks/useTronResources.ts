@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Balance, CaipAssetId } from '@metamask/keyring-api';
+import type { Asset } from '@metamask/assets-controllers';
 import { isTronSpecialAsset } from '../../../../shared/lib/asset-utils';
 import {
   getAssetsBalance,
@@ -49,12 +50,12 @@ const useMultichainStateTronBalances = (
 
     const assets = accountGroupAssets[chainId] || [];
     const accountBalances = multichainBalances?.[account.id];
-    const tronSpecialAssets = assets.filter((asset) =>
+    const tronSpecialAssets = assets.filter((asset: Asset) =>
       isTronSpecialAsset(asset.assetId),
     );
 
     return Object.fromEntries(
-      tronSpecialAssets.map((asset) => [
+      tronSpecialAssets.map((asset: Asset) => [
         asset.assetId,
         accountBalances?.[asset.assetId as CaipAssetId] ?? {
           amount: '0',

@@ -218,6 +218,25 @@ describe('trackRampsTransactionConfirmed', () => {
     expect(trackEvent).not.toHaveBeenCalled();
   });
 
+  it('emits once per order when the same pending order is resolved twice', () => {
+    const order = {
+      id: '/providers/moonpay/orders/dup-confirm',
+      providerOrderId: 'dup-confirm',
+      status: 'PENDING',
+      orderType: 'BUY',
+    } as unknown as RampsOrder;
+
+    // Buy-flow checkout callback resolves the order...
+    trackRampsTransactionConfirmed(order, 'us-ca', 'session-1');
+    // ...then the order-details re-entry watcher resolves it again.
+    trackRampsTransactionConfirmed(order);
+
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+    expect(jest.mocked(trackEvent).mock.calls[0][0].properties).toMatchObject({
+      checkout_session_id: 'session-1',
+    });
+  });
+
   it('passes region through to the confirmed properties', () => {
     trackRampsTransactionConfirmed(
       {

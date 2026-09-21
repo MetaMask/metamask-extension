@@ -16,6 +16,7 @@ import {
   selectPreferredPayToken,
   selectPreferredPayTokens,
   selectRelayFixedSpread,
+  selectStablecoins,
 } from './feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -778,6 +779,123 @@ describe('Confirmations Enforced Simulations Feature Flags', () => {
       expect(selectEnforcedSimulationsSlippage(state)).toBe(
         DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE,
       );
+    });
+  });
+
+  describe('selectStablecoins', () => {
+    const getMockStablecoinsState = (stableTokens?: unknown) =>
+      ({
+        metamask: {
+          remoteFeatureFlags: {
+            ...(stableTokens !== undefined && { stableTokens }),
+          },
+        },
+      }) as unknown as MockState;
+
+    it('returns the addresses from the flag, keyed by chain ID', () => {
+      const state = getMockStablecoinsState({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+
+      expect(selectStablecoins(state)).toStrictEqual({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+    });
+
+    it('lowercases chain IDs and addresses from the flag', () => {
+      const state = getMockStablecoinsState({
+        '0xA4B1': ['0xAF88D065E77C8CC2239327C5EDB3A432268E5831'],
+      });
+
+      expect(selectStablecoins(state)).toStrictEqual({
+        '0xa4b1': ['0xaf88d065e77c8cc2239327c5edb3a432268e5831'],
+      });
+    });
+
+    it('replaces the defaults rather than merging with them', () => {
+      const state = getMockStablecoinsState({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+
+      // Arbitrum is in the defaults but absent from the flag.
+      expect(selectStablecoins(state)['0xa4b1']).toBeUndefined();
+    });
+
+    it('drops chain entries whose value is not an array', () => {
+      const state = getMockStablecoinsState({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+        '0x89': 'not-an-array',
+      });
+
+      expect(selectStablecoins(state)).toStrictEqual({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+    });
+
+    it('drops non-string addresses within a chain entry', () => {
+      const state = getMockStablecoinsState({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', 42, null],
+      });
+
+      expect(selectStablecoins(state)).toStrictEqual({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+    });
+
+    it('falls back to the defaults when the flag is not set', () => {
+      const result = selectStablecoins(getMockStablecoinsState());
+
+      expect(result['0x1']).toContain(
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      );
+      expect(result['0xa4b1']).toContain(
+        '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+      );
+    });
+
+    it('falls back to the defaults when the flag is an array', () => {
+      const result = selectStablecoins(getMockStablecoinsState([]));
+
+      expect(result['0x1']).toContain(
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      );
+    });
+
+    // The extension distribution currently serves `{ enabled: false }`, which
+    // carries no address arrays. Treating it as an empty map would silently
+    // disable the peg and leave stablecoins mispriced.
+    it('falls back to the defaults when the flag has no address arrays', () => {
+      const result = selectStablecoins(
+        getMockStablecoinsState({ enabled: false }),
+      );
+
+      expect(result['0x1']).toContain(
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      );
+    });
+
+    it('includes MUSD and pUSD in the defaults', () => {
+      const result = selectStablecoins(getMockStablecoinsState());
+
+      expect(result['0x1']).toContain(
+        '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      );
+      expect(result['0xe708']).toContain(
+        '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      );
+      expect(result['0x89']).toContain(
+        '0xc011a7e12a19f7b1f670d46f03b03f3342e82dfb',
+      );
+    });
+
+    it('returns only lowercase addresses in the defaults', () => {
+      const result = selectStablecoins(getMockStablecoinsState());
+
+      Object.values(result)
+        .flat()
+        .forEach((address) => {
+          expect(address).toBe(address.toLowerCase());
+        });
     });
   });
 });
