@@ -213,6 +213,7 @@ export const BridgeQuotesModal = ({
                     {/* TOTAL COST + TAG */}
                     <Row gap={1}>
                       <Text
+                        data-testid="bridge-quote-total-cost"
                         variant={TextVariant.bodySm}
                         color={TextColor.textAlternative}
                         style={{ whiteSpace: 'nowrap' }}

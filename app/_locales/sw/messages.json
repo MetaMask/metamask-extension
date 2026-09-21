@@ -218,9 +218,6 @@
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasLimitTooLow": {
-    "message": "Kikomo cha gesi kinapaswa kua angalau 21000"
-  },
   "gasUsed": {
     "message": "Gesi iliyotumika"
   },
@@ -396,9 +393,6 @@
   "privateKey": {
     "message": "Ufunguo Binafsi",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Onyo: Kamwe usifichue ufunguo huu. Mtu yeyote mwenye funguo zako binafsi anaweza kuiba rasilimali yoyote iliyopo kwenye akaunti yako."
   },
   "privateNetwork": {
     "message": "Mtandao Binafsi"

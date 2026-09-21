@@ -36,6 +36,7 @@ type AssetListProps = {
   emptyStateMessage?: string;
   disableMetrics?: boolean;
   tagRenderers?: TokenTagRenderer[];
+  endRenderers?: TokenTagRenderer[];
 };
 
 type ListItem =
@@ -59,6 +60,7 @@ export const AssetList = ({
   emptyStateMessage,
   disableMetrics = false,
   tagRenderers,
+  endRenderers,
 }: AssetListProps) => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
@@ -213,6 +215,7 @@ export const AssetList = ({
                 onClick={() => handleAssetClick(item.asset)}
                 hideBalances={hideBalances}
                 tagRenderers={tagRenderers}
+                endRenderers={endRenderers}
               />
             )}
           </div>
