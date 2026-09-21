@@ -147,7 +147,9 @@ export const HardwareWalletRepair: React.FC = () => {
 
   return (
     <>
-      <MultichainMetaFoxLogo />
+      <div className="hidden sm:flex justify-center">
+        <MultichainMetaFoxLogo />
+      </div>
       <Page data-testid="hardware-wallet-repair">
         <Header
           endAccessory={

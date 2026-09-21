@@ -2,7 +2,9 @@ import { TrxAccountType, TrxScope } from '@metamask/keyring-api';
 import { Driver } from '../../webdriver/driver';
 import { getCleanAppState } from '../../helpers';
 import { TRON_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/tron-wallet-snap';
+import HomePage from '../pages/home/homepage';
 import { switchToNetworkFromNetworkSelect } from './network.flow';
+import { login } from './login.flow';
 
 /**
  * The subset of the extension state needed to determine whether the Tron
@@ -92,4 +94,28 @@ export async function waitForTronAccountToBeReady(
 export async function selectTronNetwork(driver: Driver): Promise<void> {
   await waitForTronAccountToBeReady(driver);
   await switchToNetworkFromNetworkSelect(driver, 'Tron');
+}
+
+/**
+ * Expected homepage native balance for `TRON_CHECK_BALANCE_ACCOUNT`
+ * (106072392 SUN ≈ 106.072 TRX).
+ */
+const TRON_CHECK_BALANCE_HOMEPAGE_BALANCE = '106.072';
+
+/**
+ * Logs in, selects the Tron network via the readiness-wait flow, and gates on
+ * the loaded homepage showing the seeded native TRX balance.
+ *
+ * @param driver - The WebDriver instance.
+ */
+export async function landOnTronHome(driver: Driver): Promise<void> {
+  await login(driver, { validateBalance: false });
+
+  await selectTronNetwork(driver);
+
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.checkExpectedBalanceIsDisplayed(
+    TRON_CHECK_BALANCE_HOMEPAGE_BALANCE,
+  );
 }

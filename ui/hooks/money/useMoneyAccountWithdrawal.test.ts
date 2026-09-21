@@ -1,5 +1,6 @@
 import { act } from '@testing-library/react';
 import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MONEY_HOME_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -50,6 +51,46 @@ const stateWithSelectedAccount = (accountType: string) => ({
 });
 
 const EVM_ACCOUNT_STATE = stateWithSelectedAccount(EthAccountType.Eoa);
+
+const HARDWARE_ACCOUNT_ID = 'hardware-account-id-mock';
+const SOFTWARE_ADDRESS = '0x9999999999999999999999999999999999999999';
+
+/**
+ * State where a hardware account is globally selected, alongside the given
+ * other accounts. The hardware account is listed first so the fallback has to
+ * skip it rather than merely picking the only entry.
+ *
+ * @param others - Additional accounts, in list order after the hardware one.
+ * @returns Mock state.
+ */
+const stateWithSelectedHardwareAccount = (
+  others: Record<string, unknown>[] = [],
+) => ({
+  metamask: {
+    internalAccounts: {
+      selectedAccount: HARDWARE_ACCOUNT_ID,
+      accounts: {
+        [HARDWARE_ACCOUNT_ID]: {
+          id: HARDWARE_ACCOUNT_ID,
+          type: EthAccountType.Eoa,
+          address: '0x1234567890123456789012345678901234567890',
+          metadata: { keyring: { type: KeyringTypes.ledger } },
+        },
+        ...others.reduce(
+          (acc, entry) => ({ ...acc, [entry.id as string]: entry }),
+          {},
+        ),
+      },
+    },
+  },
+});
+
+const SOFTWARE_ACCOUNT = {
+  id: 'software-account-id-mock',
+  type: EthAccountType.Eoa,
+  address: SOFTWARE_ADDRESS,
+  metadata: { keyring: { type: KeyringTypes.hd } },
+};
 
 describe('useMoneyAccountWithdrawal', () => {
   const navigateToTransactionMock = jest.fn();
@@ -171,5 +212,80 @@ describe('useMoneyAccountWithdrawal', () => {
 
     expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
     expect(reportErrorMock).toHaveBeenCalledTimes(1);
+  });
+
+  describe('when a hardware account is selected', () => {
+    it('withdraws to the next eligible account instead of the hardware one', async () => {
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountWithdrawal(),
+        stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT]),
+      );
+
+      await act(async () => {
+        await result.current.initiateWithdrawal();
+      });
+
+      expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
+        SOFTWARE_ADDRESS,
+      );
+      expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+        loader: ConfirmationLoader.CustomAmount,
+        goBackTo: '/',
+      });
+      expect(reportErrorMock).not.toHaveBeenCalled();
+    });
+
+    it('skips non-EVM accounts when choosing the fallback', async () => {
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountWithdrawal(),
+        stateWithSelectedHardwareAccount([
+          {
+            id: 'btc-account-id-mock',
+            type: BtcAccountType.P2wpkh,
+            address: 'bc1qexampleexampleexampleexampleexampleex',
+            metadata: { keyring: { type: 'Snap Keyring' } },
+          },
+          SOFTWARE_ACCOUNT,
+        ]),
+      );
+
+      await act(async () => {
+        await result.current.initiateWithdrawal();
+      });
+
+      expect(createWithdrawTransactionMock).toHaveBeenCalledWith(
+        SOFTWARE_ADDRESS,
+      );
+    });
+
+    it('fails fast when every account is a hardware account', async () => {
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountWithdrawal(),
+        stateWithSelectedHardwareAccount([
+          {
+            id: 'trezor-account-id-mock',
+            type: EthAccountType.Eoa,
+            address: SOFTWARE_ADDRESS,
+            metadata: { keyring: { type: KeyringTypes.trezor } },
+          },
+        ]),
+      );
+
+      await act(async () => {
+        await expect(
+          result.current.initiateWithdrawal(),
+        ).resolves.toBeUndefined();
+      });
+
+      expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
+      expect(navigateToTransactionMock).not.toHaveBeenCalled();
+      expect(reportErrorMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          error: expect.objectContaining({
+            message: '[Money Account] Missing recipient EVM address',
+          }),
+        }),
+      );
+    });
   });
 });

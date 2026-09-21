@@ -5,8 +5,6 @@ import {
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type {
   TraceCallback as ControllerTraceCallback,
@@ -18,15 +16,16 @@ import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import {
+  getBackendApiUrlsOption,
+  isBackendAuthDisabled,
+} from '../../../../shared/lib/core-backend-api-urls';
+import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateTracesEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-
-const ARC_CAIP_CHAIN_ID = toEvmCaipChainId(CHAIN_IDS.ARC);
 
 /**
  * Cached API client instance.
@@ -42,6 +41,9 @@ let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
 async function safeGetBearerToken(
   initMessenger: AssetsControllerInitMessenger,
 ): Promise<string | undefined> {
+  if (isBackendAuthDisabled()) {
+    return undefined;
+  }
   try {
     return await initMessenger.call('AuthenticationController:getBearerToken');
   } catch {
@@ -161,60 +163,10 @@ function getApiClient(
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
+      ...getBackendApiUrlsOption(),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;
-}
-
-/**
- * Forces a full Arc assets refresh after a confirmed transaction.
- *
- * Arc USDC is represented as a native asset in the wallet, but the
- * AccountActivity incremental balance update can miss that native USDC balance
- * after swaps while updating ERC-20 balances such as EURC correctly. A full
- * account asset scan resolves the native USDC balance, matching the manual
- * recovery path of reloading the extension or switching accounts.
- *
- * @param controllerMessenger - The AssetsController messenger.
- * @param assetsController - The initialized AssetsController instance.
- */
-function subscribeToArcTransactionConfirmedRefresh(
-  controllerMessenger: AssetsControllerMessenger,
-  assetsController: AssetsController,
-): void {
-  controllerMessenger.subscribe(
-    'TransactionController:transactionConfirmed',
-    (transactionMeta: TransactionMeta) => {
-      if (transactionMeta.chainId?.toLowerCase() !== CHAIN_IDS.ARC) {
-        return;
-      }
-
-      const fromAddress = transactionMeta.txParams.from?.toLowerCase();
-      if (!fromAddress) {
-        return;
-      }
-
-      // TODO: should be moved to the controller (comment on PR#46259)
-      const matchedAccount = controllerMessenger
-        .call('AccountTreeController:getAccountsFromSelectedAccountGroup')
-        .find(
-          (account: InternalAccount) =>
-            account.address.toLowerCase() === fromAddress,
-        );
-
-      if (!matchedAccount) {
-        return;
-      }
-
-      assetsController
-        .getAssets([matchedAccount], {
-          chainIds: [ARC_CAIP_CHAIN_ID],
-          forceUpdate: true,
-          bypassServerCache: true,
-        })
-        .catch(() => undefined);
-    },
-  );
 }
 
 /**
@@ -312,11 +264,6 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     }),
     trace: createAssetsControllerTrace(initMessenger),
   });
-
-  subscribeToArcTransactionConfirmedRefresh(
-    controllerMessenger,
-    messengerClient,
-  );
 
   return { messengerClient };
 };
