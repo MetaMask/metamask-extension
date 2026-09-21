@@ -1,13 +1,12 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { useCallback } from 'react';
-import type { MetaMaskReduxState } from '../../../../store/store';
 import { useAppSelector } from '../../../../store/hooks';
 import { estimateGas } from '../../../../store/actions';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
-import { getGasFeeEstimatesByChainId } from '../../../../ducks/metamask/metamask';
 import { useAsyncResult } from '../../../../hooks/useAsync';
+import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { Asset } from '../../types/send';
 import {
   getLayer1GasFees,
@@ -121,18 +120,6 @@ export const useMaxAmount = () => {
   const { rawBalanceNumeric } = useBalance();
   const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
 
-  const gasFeeEstimates = useAppSelector((state) => {
-    if (chainId && isEvmSendType) {
-      return (
-        getGasFeeEstimatesByChainId as (
-          s: MetaMaskReduxState,
-          id: Hex,
-        ) => GasFeeEstimatesType | undefined
-      )(state, chainId as Hex);
-    }
-    return undefined;
-  });
-
   const networkClientId = useAppSelector((state) => {
     if (!chainId) {
       return undefined;
@@ -147,6 +134,12 @@ export const useMaxAmount = () => {
 
   const requiresGasReservation =
     Boolean(isEvmNativeSendType) && !isNetworkGasSponsored;
+  const { gasFeeEstimates } = useGasFeeEstimates(
+    networkClientId,
+    Boolean(isEvmSendType) &&
+      requiresGasReservation &&
+      Boolean(networkClientId),
+  ) as { gasFeeEstimates?: GasFeeEstimatesType };
   const hasGasFeeEstimate =
     !requiresGasReservation ||
     Boolean(gasFeeEstimates && getMaxFeePerGasInWei(gasFeeEstimates));

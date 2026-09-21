@@ -20,6 +20,8 @@ jest.mock('./useBalance');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   estimateGas: jest.fn(),
+  gasFeeStartPollingByNetworkClientId: jest.fn().mockResolvedValue('token'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
 }));
 jest.mock('../../../../hooks/useIsNetworkGasSponsored');
 jest.mock('../../utils/send', () => ({
