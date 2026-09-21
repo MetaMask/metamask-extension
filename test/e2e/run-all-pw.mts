@@ -23,10 +23,7 @@ import {
  * invocation, which runs the spec up to N+1 times and stops at the first
  * failure. This runner maps the same semantics onto native Playwright flags:
  * each quality-gate spec is run in its own Playwright invocation with
- * `--repeat-each`, `--retries=0` (no retry masking), and `--max-failures=1`
- * (stop on first failure, matching Selenium's `--stop-after-one-failure`).
- * Running specs in separate invocations ensures a failure in one spec does
- * not prevent the remaining specs from running (Selenium's per-spec isolation).
+ * `--repeat-each`, `--retries=0` (no retry masking), and `--max-failures=1` (fail fast).
  *
  * Splitting/quality-gate/re-run logic only runs under GitHub Actions (guarded
  * by `process.env.GITHUB_ACTION`, matching `run-all.mts`). Locally the script
@@ -185,12 +182,9 @@ async function main(): Promise<void> {
     ...qualityGateOccurrences.keys(),
   ]);
 
-  // Track whether any invocation failed so we can exit non-zero at the end
-  // while still running every batch (normal + each quality-gate spec).
   let hasFailures = false;
 
   // Normal specs: standard run with config/CLI retries (flaky tolerance).
-  // Wrapped in try/catch so a failure here doesn't skip the quality gate.
   try {
     await runPlaywright({
       specs: normalSpecs,
