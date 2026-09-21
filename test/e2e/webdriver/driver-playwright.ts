@@ -611,19 +611,21 @@ export class PlaywrightDriver {
     }
 
     const locator = this.buildLocator(rawLocator).first();
-    if (state === 'visible' || state === 'hidden') {
-      await locator.waitFor({ state, timeout });
+    if (state === 'visible') {
+      await locator.waitFor({ state: 'attached', timeout });
+    } else if (state === 'hidden') {
+      await locator.waitFor({ state: 'hidden', timeout });
     } else if (state === 'detached') {
       await locator.waitFor({ state: 'detached', timeout });
     } else if (state === 'enabled') {
       // Playwright's `toBeEnabled` matcher polls in-page at a faster
       // cadence than our 100ms JS-loop and avoids a protocol round trip
-      // per check. We still pre-wait for `visible` to preserve the
-      // Selenium contract of "the element is on screen AND interactive".
-      await locator.waitFor({ state: 'visible', timeout });
+      // per check. We still pre-wait for DOM presence to preserve the
+      // Selenium contract of "the element exists AND is interactive".
+      await locator.waitFor({ state: 'attached', timeout });
       await expect(locator).toBeEnabled({ timeout });
     } else if (state === 'disabled') {
-      await locator.waitFor({ state: 'visible', timeout });
+      await locator.waitFor({ state: 'attached', timeout });
       await expect(locator).toBeDisabled({ timeout });
     } else {
       throw new Error(
