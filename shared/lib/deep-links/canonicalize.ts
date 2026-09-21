@@ -1,4 +1,9 @@
-import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
+import {
+  CANONICAL_DEEP_LINK_HOST,
+  DEEP_LINK_HOSTS,
+  SIG_PARAM,
+  SIG_PARAMS_PARAM,
+} from './constants';
 
 /**
  * Canonicalizes a URL by removing the `sig` query parameter
@@ -9,6 +14,9 @@ import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
  * @returns The canonicalized URL as a string.
  */
 export function canonicalize(url: URL): string {
+  const signingOrigin = DEEP_LINK_HOSTS.includes(url.hostname)
+    ? `https://${CANONICAL_DEEP_LINK_HOST}`
+    : url.origin;
   let queryString: string | undefined;
 
   const sigParams = url.searchParams.get(SIG_PARAMS_PARAM);
@@ -41,5 +49,5 @@ export function canonicalize(url: URL): string {
     queryString = params.toString();
   }
 
-  return url.origin + url.pathname + (queryString ? `?${queryString}` : '');
+  return signingOrigin + url.pathname + (queryString ? `?${queryString}` : '');
 }
