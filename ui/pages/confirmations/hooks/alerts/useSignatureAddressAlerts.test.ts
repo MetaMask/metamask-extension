@@ -179,28 +179,6 @@ describe('useSignatureAddressAlerts', () => {
     expect(result.current).toEqual([]);
   });
 
-  it('includes permit spender in scan when verifyingContract is absent', () => {
-    const request = makeTypedSignV4({
-      types: {
-        Permit: [{ name: 'spender', type: 'address' }],
-      },
-      domain: {},
-      primaryType: 'Permit',
-      message: { spender: MALICIOUS_ADDRESS },
-    });
-
-    renderHookWithConfirmContextProvider(
-      () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
-    );
-
-    expect(mockUseTrustSignals).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ value: MALICIOUS_ADDRESS }),
-      ]),
-    );
-  });
-
   it('returns overflow caution alert when address cap is exceeded', () => {
     const addresses: Record<string, string> = {};
     const types: { name: string; type: string }[] = [];
