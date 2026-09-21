@@ -157,25 +157,41 @@ export function useTokenTracker({
 
   // Initialize or tear down the tracker when tracker inputs change.
   useEffect(() => {
+    let cancelled = false;
     // Match main: signal loading when tracker inputs change. Kept in the effect
     // (with microtask) to avoid render-phase setState and set-state-in-effect sync.
-    queueMicrotask(() => setLoading(true));
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setLoading(true);
+      }
+    });
 
     if (!userAddress || chainId === undefined || !provider) {
       // If we do not have enough information to build a TokenTracker, we exit early
       // When the values above change, the effect will be restarted. We also teardown
       // tracker because inevitably this effect will run again momentarily.
       teardownTracker();
-      return;
+      return () => {
+        cancelled = true;
+      };
     }
 
     if (memoizedTokens.length === 0) {
       teardownTracker();
-      queueMicrotask(() => updateBalances([]));
-      return;
+      queueMicrotask(() => {
+        if (!cancelled) {
+          updateBalances([]);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
     buildTracker(userAddress, memoizedTokens);
+    return () => {
+      cancelled = true;
+    };
   }, [
     userAddress,
     teardownTracker,

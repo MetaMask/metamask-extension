@@ -28,13 +28,18 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
   });
 
   useEffect(() => {
+    let cancelled = false;
     let timeoutId;
 
     if (
       (hasRetried || !isEarliestNonce || !matchCurrentChainId) &&
       speedUpEnabled
     ) {
-      queueMicrotask(() => setSpeedUpEnabled(false));
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setSpeedUpEnabled(false);
+        }
+      });
     } else if (
       !hasRetried &&
       isEarliestNonce &&
@@ -42,7 +47,11 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
       !speedUpEnabled
     ) {
       if (Date.now() - submittedTime > SECOND * 5) {
-        queueMicrotask(() => setSpeedUpEnabled(true));
+        queueMicrotask(() => {
+          if (!cancelled) {
+            setSpeedUpEnabled(true);
+          }
+        });
       } else {
         timeoutId = setTimeout(
           () => {
@@ -54,6 +63,7 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
     }
 
     return () => {
+      cancelled = true;
       if (timeoutId) {
         clearTimeout(timeoutId);
       }

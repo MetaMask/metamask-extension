@@ -96,11 +96,7 @@ function RevealSeedPage() {
   const [password, setPassword] = useState('');
   const [seedWords, setSeedWords] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-<<<<<<< HEAD
-  const srpViewEventTrackedRef = React.useRef(false);
-=======
   const srpViewEventTrackedRef = useRef(false);
->>>>>>> origin/main
   const { value: showPassword, toggle } = useBoolean();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
 
@@ -114,12 +110,6 @@ function RevealSeedPage() {
   const scanResultPromiseRef = React.useRef<
     Promise<PhishingDetectionScanResult | null>
   >(Promise.resolve(null));
-  const [prevActiveTabOrigin, setPrevActiveTabOrigin] =
-    useState(activeTabOrigin);
-  if (activeTabOrigin !== prevActiveTabOrigin) {
-    setPrevActiveTabOrigin(activeTabOrigin);
-    setScanResult(null);
-  }
 
   if (activeTabOrigin !== trackedActiveTabOrigin) {
     setTrackedActiveTabOrigin(activeTabOrigin);
@@ -440,10 +430,7 @@ function RevealSeedPage() {
 
   useEffect(() => {
     if (screen === REVEAL_SEED_SCREEN && !srpViewEventTrackedRef.current) {
-<<<<<<< HEAD
-=======
       srpViewEventTrackedRef.current = true;
->>>>>>> origin/main
       trackEvent(
         createEventBuilder(MetaMetricsEventName.SrpViewSrpText)
           .addCategory(MetaMetricsEventCategory.Keys)
@@ -453,10 +440,6 @@ function RevealSeedPage() {
           })
           .build(),
       );
-<<<<<<< HEAD
-      srpViewEventTrackedRef.current = true;
-=======
->>>>>>> origin/main
     }
   }, [createEventBuilder, screen, trackEvent]);
 

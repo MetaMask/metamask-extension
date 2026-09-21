@@ -19,7 +19,6 @@
       "count": 2
     }
   },
-<<<<<<< HEAD
   "ui/components/app/compliance/useComplianceGate.ts": {
     "react-hooks/refs": {
       "count": 2
@@ -30,8 +29,6 @@
       "count": 1
     }
   },
-=======
->>>>>>> origin/main
   "ui/components/app/currency-input/currency-input.js": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -56,13 +53,8 @@
     }
   },
   "ui/components/app/name/name-details/name-details.tsx": {
-<<<<<<< HEAD
     "react-hooks/refs": {
       "count": 1
-=======
-    "react-hooks/set-state-in-effect": {
-      "count": 2
->>>>>>> origin/main
     }
   },
   "ui/components/app/permission-page-container/permission-page-container.component.js": {
@@ -755,21 +747,6 @@
   },
   "ui/pages/hardware-wallets/swap/qr-signature-code/qr-signature-code.tsx": {
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-<<<<<<< HEAD
-  "ui/pages/keychains/reveal-seed.tsx": {
-    "react-hooks/refs": {
-=======
-  "ui/pages/networks/chainlist-network-picker.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/networks/networks-page.tsx": {
-    "react-hooks/set-state-in-effect": {
->>>>>>> origin/main
       "count": 1
     }
   },

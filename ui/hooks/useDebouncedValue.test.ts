@@ -49,10 +49,14 @@ describe('useDebouncedValue', () => {
       { initialProps: { value: 'a', delayMs: 0 } },
     );
 
-    rerender({ value: 'b', delayMs: 0 });
+    act(() => {
+      rerender({ value: 'b', delayMs: 0 });
+    });
     expect(result.current).toBe('b');
 
-    rerender({ value: 'b', delayMs: 200 });
+    act(() => {
+      rerender({ value: 'b', delayMs: 200 });
+    });
     expect(result.current).toBe('b');
   });
 
@@ -62,7 +66,9 @@ describe('useDebouncedValue', () => {
       { initialProps: { value: 1 } },
     );
 
-    rerender({ value: 2 });
+    act(() => {
+      rerender({ value: 2 });
+    });
     expect(result.current).toBe(2);
   });
 
