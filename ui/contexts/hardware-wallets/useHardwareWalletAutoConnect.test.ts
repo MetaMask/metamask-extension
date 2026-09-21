@@ -386,6 +386,189 @@ describe('useHardwareWalletAutoConnect', () => {
       expect(mockSetAutoConnected).not.toHaveBeenCalled();
     });
 
+    it('ignores native connect when permission check returns denied', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      (
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+      ).mockResolvedValue(HardwareConnectionPermissionState.Denied);
+
+      setupHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+          connectRef: { current: mockConnectRef },
+        },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      await connectCallback({ productId: 123 } as HIDDevice);
+
+      expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
+        HardwareConnectionPermissionState.Denied,
+      );
+      expect(mockConnectRef).not.toHaveBeenCalled();
+      expect(mockUpdateConnectionState).not.toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
+
+    it('does not change connection state when native connect succeeds on a hardware wallet route without a connected device', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      setupHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+          connectRef: { current: mockConnectRef },
+        },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      await connectCallback({ productId: 123 } as HIDDevice);
+
+      expect(mockConnectRef).toHaveBeenCalled();
+      expect(mockUpdateConnectionState).not.toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
+
+    it('does not reset connection state when native connect rejects after unmount', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      let rejectConnect: (error: Error) => void = () => undefined;
+      const pendingConnect = new Promise<void>((_, reject) => {
+        rejectConnect = reject;
+      });
+      const connectFn = jest.fn(() => pendingConnect);
+
+      const { unmount } = setupHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+          connectRef: { current: connectFn },
+        },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      const connectPromise = connectCallback({ productId: 123 } as HIDDevice);
+
+      await waitFor(() => {
+        expect(connectFn).toHaveBeenCalled();
+      });
+
+      unmount();
+      rejectConnect(new Error('Connection failed'));
+
+      await connectPromise;
+
+      expect(mockUpdateConnectionState).not.toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
+
+    it('does not refresh permission state when the device disconnects after unmount', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(true),
+        destroy: jest.fn(),
+      };
+
+      let resolvePermission:
+        | ((value: HardwareConnectionPermissionState) => void)
+        | undefined;
+      (
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+      ).mockImplementation(
+        () =>
+          new Promise<HardwareConnectionPermissionState>((resolve) => {
+            resolvePermission = resolve;
+          }),
+      );
+
+      const { unmount } = setupHook(
+        {},
+        { adapterRef: { current: mockAdapter } },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const disconnectCallback = subscribeCall[2];
+
+      disconnectCallback({ productId: 123 } as HIDDevice);
+
+      await waitFor(() => {
+        expect(mockHandleDisconnect).toHaveBeenCalled();
+      });
+
+      unmount();
+      resolvePermission?.(HardwareConnectionPermissionState.Granted);
+
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 0);
+      });
+
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
+    });
+
+    it('swallows permission refresh failures after native disconnect', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(true),
+        destroy: jest.fn(),
+      };
+
+      (
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+      ).mockRejectedValue(new Error('Permission check failed'));
+
+      setupHook({}, { adapterRef: { current: mockAdapter } });
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const disconnectCallback = subscribeCall[2];
+
+      disconnectCallback({ productId: 123 } as HIDDevice);
+
+      await waitFor(() => {
+        expect(mockHandleDisconnect).toHaveBeenCalled();
+      });
+
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 0);
+      });
+
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
+    });
+
     it('handles native device disconnect event', async () => {
       const mockAdapter = {
         connect: jest.fn().mockResolvedValue(undefined),
@@ -1092,6 +1275,94 @@ describe('useHardwareWalletAutoConnect', () => {
 
       // Verify no connection attempt was made and no auto-connected state was set
       expect(mockConnectRef).not.toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
+
+    it('marks auto-connected with null when account address is missing', async () => {
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      setupAutoConnectHook({ accountAddress: null });
+
+      await waitFor(() => {
+        expect(mockSetAutoConnected).toHaveBeenCalledWith(null);
+      });
+
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.connected(),
+      );
+    });
+
+    it('does not change connection state when auto-connect succeeds on a hardware wallet route without a connected device', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      setupAutoConnectHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+        },
+      );
+
+      await waitFor(() => {
+        expect(mockConnectRef).toHaveBeenCalled();
+      });
+
+      expect(mockUpdateConnectionState).not.toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
+
+    it('does not reset connection state when auto-connect rejects after unmount', async () => {
+      // Always-disconnected adapter so neither the subscription effect nor the
+      // auto-connect effect can report a connected state before unmount.
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      let rejectConnect: (error: Error) => void = () => undefined;
+      mockConnectRef.mockReturnValue(
+        new Promise<void>((_, reject) => {
+          rejectConnect = reject;
+        }),
+      );
+
+      const { hook } = setupAutoConnectHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+        },
+      );
+
+      await waitFor(() => {
+        expect(mockConnectRef).toHaveBeenCalled();
+      });
+
+      expect(mockUpdateConnectionState).not.toHaveBeenCalled();
+
+      hook.unmount();
+      rejectConnect(new Error('Connection failed'));
+
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 0);
+      });
+
+      expect(mockUpdateConnectionState).not.toHaveBeenCalled();
       expect(mockSetAutoConnected).not.toHaveBeenCalled();
     });
   });
