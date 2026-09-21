@@ -1,4 +1,7 @@
-import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -122,7 +125,6 @@ export function useTransactionConfirm() {
     onDappSwapCompleted,
     prepareWithdrawTransaction,
     redirectToHwSigningPage,
-    selectedGasFeeToken,
     shouldRedirectToHwSigningPage,
     showErrorModal,
     transactionMeta,
