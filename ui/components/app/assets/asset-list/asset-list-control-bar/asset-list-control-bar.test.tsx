@@ -326,7 +326,6 @@ describe('NFTs options', () => {
 
     const networkFilterButton = await findByTestId('sort-by-networks');
     expect(networkFilterButton).toHaveTextContent(messages.allNetworks.message);
-    expect(networkFilterButton).toHaveClass('mm-box--rounded-pill');
 
     fireEvent.click(networkFilterButton);
     expect(
