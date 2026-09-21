@@ -147,46 +147,4 @@ describe('useRampsPaymentMethods', () => {
     expect(result.current.status).toBe('error');
     expect(result.current.error).toContain('network down');
   });
-
-  it('queries payment methods with the catalog assetId verbatim', () => {
-    // Catalogs return EVM token ids checksummed (e.g. USDT on Mainnet); the
-    // API must receive that id verbatim because downstream asset resolution
-    // is case-sensitive (TRAM-3977).
-    const store = createRampsMockStore({
-      providers: {
-        data: [],
-        selected: { id: 'ramp-network' },
-        isLoading: false,
-        error: null,
-      },
-      tokens: {
-        data: { topTokens: [], allTokens: [] },
-        selected: {
-          assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
-          symbol: 'USDT',
-          chainId: 'eip155:1',
-        },
-        isLoading: false,
-        error: null,
-      },
-      paymentMethods: {
-        data: [],
-        selected: null,
-        isLoading: false,
-        error: null,
-      },
-    });
-
-    renderHook(() => useRampsPaymentMethods(), {
-      wrapper: createRampsTestWrapper(store),
-    });
-
-    expect(mockedUseQuery).toHaveBeenCalledWith(
-      expect.objectContaining({
-        queryKey: expect.arrayContaining([
-          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
-        ]),
-      }),
-    );
-  });
 });

@@ -656,38 +656,6 @@ describe('RampsBuildQuoteScreen', () => {
     });
   });
 
-  it('passes the catalog assetId to quotes verbatim without lowercasing', () => {
-    // Real catalogs return EVM token ids checksummed (e.g. USDT on Mainnet).
-    // The quotes API must receive that id verbatim: downstream asset
-    // resolution is case-sensitive and lowercased addresses break it
-    // (TRAM-3977 — Ramp + USDT showed "not supported").
-    const usdtToken = {
-      assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      chainId: 'eip155:1',
-      name: 'Tether',
-      symbol: 'USDT',
-      decimals: 6,
-      iconUrl: 'https://example.com/usdt.png',
-      tokenSupported: true,
-    };
-
-    useRampsController.mockReturnValue(
-      mockControllerState({ selectedToken: usdtToken }),
-    );
-
-    renderWithProvider(
-      <RampsBuildQuoteScreen />,
-      createStore(),
-      '/ramps/build-quote',
-    );
-
-    expect(useRampsQuotes).toHaveBeenCalledWith(
-      expect.objectContaining({
-        assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      }),
-    );
-  });
-
   it('uses the chain-matching account address for non-EVM assets', () => {
     const solanaAccount = {
       id: 'sol-account-1',

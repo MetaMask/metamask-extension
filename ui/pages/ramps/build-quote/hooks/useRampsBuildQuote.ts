@@ -19,6 +19,7 @@ import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
+import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
@@ -134,10 +135,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     () =>
       quoteFetchEnabled
         ? {
-            // Send the catalog's assetId verbatim: downstream asset
-            // resolution is case-sensitive, and lowercased EVM addresses
-            // break it (TRAM-3977).
-            assetId: selectedToken?.assetId,
+            assetId: normalizeAssetIdForApi(selectedToken?.assetId),
             amount: debouncedAmount,
             walletAddress,
             redirectUrl: getRampCallbackBaseUrl(),

@@ -16,6 +16,7 @@ import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
+import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { ScrollContainer } from '../../../contexts/scroll-container';
@@ -96,9 +97,9 @@ export function RampsPaymentMethodScreen() {
   const amount =
     (location.state as PaymentMethodLocationState | null)?.amount ?? 0;
   const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
-  // Send the catalog's assetId verbatim to quotes (asset resolution is
-  // case-sensitive, TRAM-3977).
-  const assetId = selectedToken?.assetId ?? '';
+  const assetId = selectedToken?.assetId
+    ? normalizeAssetIdForApi(selectedToken.assetId)
+    : '';
   const tokenSymbol = selectedToken?.symbol ?? '';
 
   const paymentMethodIds = useMemo(

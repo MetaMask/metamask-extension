@@ -24,6 +24,7 @@ import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
+import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { completedOrdersFromRampsOrders } from '../../../hooks/ramps/utils/determinePreferredProvider';
 import { parseUserFacingError } from '../../../hooks/ramps/utils/parseUserFacingError';
 import { ScrollContainer } from '../../../contexts/scroll-container';
@@ -170,10 +171,9 @@ export function RampsProviderSelectionModal({
   useRampsScreenViewed('Provider Selection');
 
   const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
-  // Send the catalog's assetId verbatim to quotes (asset resolution is
-  // case-sensitive, TRAM-3977); provider availability filtering below is
-  // case-insensitive.
-  const assetId = selectedToken?.assetId ?? '';
+  const assetId = selectedToken?.assetId
+    ? normalizeAssetIdForApi(selectedToken.assetId)
+    : '';
   const tokenSymbol = selectedToken?.symbol ?? '';
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const regionCode = userRegion?.regionCode ?? '';
