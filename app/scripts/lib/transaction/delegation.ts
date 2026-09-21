@@ -58,7 +58,7 @@ type EnforcedSegment = {
   value: Hex;
 };
 
-type DelegationMessengerActions =
+export type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
   | TransactionControllerGetNonceLockAction
@@ -144,7 +144,11 @@ type ConvertTransactionToRedeemDelegationsResult = {
 };
 
 type GetDelegationTransactionRequest = {
-  messenger: DelegationMessenger;
+  /**
+   * Messenger that can perform at least the delegation / EIP-7702 signing
+   * actions. Callers may pass a wider messenger (e.g. payment-override init).
+   */
+  messenger: Messenger<string, DelegationMessengerActions, never>;
   isSubsidized?: boolean;
 };
 

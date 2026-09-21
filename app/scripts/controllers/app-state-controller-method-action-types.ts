@@ -75,6 +75,11 @@ export type AppStateControllerSetNewPrivacyPolicyToastShownDateAction = {
   handler: AppStateController['setNewPrivacyPolicyToastShownDate'];
 };
 
+export type AppStateControllerSetArcUsageNoticeShownAction = {
+  type: `AppStateController:setArcUsageNoticeShown`;
+  handler: AppStateController['setArcUsageNoticeShown'];
+};
+
 export type AppStateControllerSetPna25AcknowledgedAction = {
   type: `AppStateController:setPna25Acknowledged`;
   handler: AppStateController['setPna25Acknowledged'];
@@ -387,6 +392,16 @@ export type AppStateControllerSetLastInteractedConfirmationInfoAction = {
 };
 
 /**
+ * Sets the entry point that initiated the last Perps deposit flow.
+ *
+ * @param entryPoint - The entry point identifier, or undefined to clear.
+ */
+export type AppStateControllerSetLastPerpsDepositEntryPointAction = {
+  type: `AppStateController:setLastPerpsDepositEntryPoint`;
+  handler: AppStateController['setLastPerpsDepositEntryPoint'];
+};
+
+/**
  * A getter to retrieve currentPopupId saved in the appState
  */
 export type AppStateControllerGetCurrentPopupIdAction = {
@@ -494,11 +509,6 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
-export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
-  type: `AppStateController:setCanTrackWalletFundsObtained`;
-  handler: AppStateController['setCanTrackWalletFundsObtained'];
-};
-
 export type AppStateControllerSetIsWalletResetInProgressAction = {
   type: `AppStateController:setIsWalletResetInProgress`;
   handler: AppStateController['setIsWalletResetInProgress'];
@@ -580,6 +590,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
+  | AppStateControllerSetArcUsageNoticeShownAction
   | AppStateControllerSetPna25AcknowledgedAction
   | AppStateControllerSetShieldPausedToastLastClickedOrClosedAction
   | AppStateControllerSetShieldEndingToastLastClickedOrClosedAction
@@ -613,6 +624,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetCurrentPopupIdAction
   | AppStateControllerGetLastInteractedConfirmationInfoAction
   | AppStateControllerSetLastInteractedConfirmationInfoAction
+  | AppStateControllerSetLastPerpsDepositEntryPointAction
   | AppStateControllerGetCurrentPopupIdAction
   | AppStateControllerGetThrottledOriginStateAction
   | AppStateControllerUpdateThrottledOriginStateAction
@@ -625,7 +637,6 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetLastVisitedRouteAction
   | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerSetDefaultSubscriptionPaymentOptionsAction

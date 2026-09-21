@@ -6,6 +6,7 @@ import {
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getIsPayAmountPrefillEnabled } from '../../../../shared/lib/transaction/pay-prefill';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getDepositLimits } from '../utils/pay-deposit-limit';
 import {
   getRelayFixedSpreadFromConfig,
@@ -14,6 +15,100 @@ import {
 
 export const RELAY_FIXED_SPREAD_FEATURE_FLAG =
   'confirmations_relay_fixed_spread';
+
+export const STABLE_TOKENS_FEATURE_FLAG = 'stableTokens';
+
+/**
+ * USD-pegged tokens used when the `stableTokens` remote flag is absent or
+ * malformed. Kept in sync with mobile's `DEFAULT_STABLECOINS` so both clients
+ * value the same tokens at exactly $1.
+ *
+ * Addresses must be lowercase — lookups normalise the requested address before
+ * comparing.
+ *
+ * Deliberately separate from `STABLECOIN_ASSET_IDS` (bridge slippage) and
+ * `StablecoinsByChainId` (swaps): those lists serve different purposes, omit
+ * MUSD and pUSD, and must not silently widen the set of tokens priced at $1.
+ */
+const DEFAULT_STABLECOINS: Record<Hex, Hex[]> = {
+  [CHAIN_IDS.MAINNET]: [
+    '0xaca92e438df0b2401ff60da7e4337b687a2435da', // MUSD
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
+    '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+  ],
+  [CHAIN_IDS.ARBITRUM]: [
+    '0xaf88d065e77c8cc2239327c5edb3a432268e5831', // USDC
+  ],
+  [CHAIN_IDS.LINEA_MAINNET]: [
+    '0xaca92e438df0b2401ff60da7e4337b687a2435da', // MUSD
+    '0x176211869ca2b568f2a7d4ee941e073a821ee1ff', // USDC
+    '0xa219439258ca9da29e9cc4ce5596924745e12b93', // USDT
+  ],
+  [CHAIN_IDS.POLYGON]: [
+    '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', // USDC.e
+    '0xc011a7e12a19f7b1f670d46f03b03f3342e82dfb', // pUSD
+  ],
+};
+
+/**
+ * Lowercases chain IDs and addresses so flag data from LaunchDarkly can be
+ * compared directly against normalised request values. Entries whose value is
+ * not an array of addresses are dropped.
+ *
+ * @param raw - Raw `stableTokens` flag object.
+ * @returns Map of lowercase chain ID to lowercase addresses.
+ */
+function normalizeStablecoins(
+  raw: Record<string, unknown>,
+): Record<Hex, Hex[]> {
+  return Object.entries(raw).reduce<Record<Hex, Hex[]>>(
+    (acc, [chainId, addresses]) => {
+      if (Array.isArray(addresses)) {
+        acc[chainId.toLowerCase() as Hex] = addresses
+          .filter((address): address is string => typeof address === 'string')
+          .map((address) => address.toLowerCase() as Hex);
+      }
+      return acc;
+    },
+    {},
+  );
+}
+
+/**
+ * USD-pegged tokens by chain ID, from the `stableTokens` remote feature flag.
+ *
+ * A remote value replaces the defaults wholesale rather than merging, so the
+ * flag is the complete list when it supplies one.
+ *
+ * Falls back to {@link DEFAULT_STABLECOINS} when the flag is missing, is not a
+ * keyed object, or carries no per-chain address arrays. That last case matters:
+ * the extension distribution currently serves `{ enabled: false }`, a different
+ * shape to mobile's `Record<chainId, address[]>`. Treating that as an empty map
+ * would silently disable the peg and leave stablecoins mispriced, so we use the
+ * defaults until the flag is populated for the extension.
+ *
+ * Consequently this flag cannot currently switch the peg off; it can only
+ * override which tokens are pegged. Setting `stableTokens` to a populated map
+ * is the supported way to change behaviour.
+ */
+export const selectStablecoins = createSelector(
+  getRemoteFeatureFlags,
+  (flags): Record<Hex, Hex[]> => {
+    const flag = (flags as unknown as Record<string, unknown>)?.[
+      STABLE_TOKENS_FEATURE_FLAG
+    ];
+
+    if (flag && typeof flag === 'object' && !Array.isArray(flag)) {
+      const normalized = normalizeStablecoins(flag as Record<string, unknown>);
+
+      if (Object.keys(normalized).length > 0) {
+        return normalized;
+      }
+    }
+
+    return DEFAULT_STABLECOINS;
+  },
+);
 
 type ConfirmationsPayDappsFlag = {
   enabled?: boolean;
@@ -262,6 +357,7 @@ export const selectIsPayHardwareEnabled = createSelector(
 
 type PayExtendedFlag = {
   enableMoneyAccountTransactions?: Record<string, boolean>;
+  defaultPaySelectedSection?: Record<string, string>;
 };
 
 const selectPayExtendedFlag = createSelector(
@@ -298,6 +394,16 @@ export const selectIsMoneyAccountTransactionEnabled = createSelector(
   ],
   (enableMoneyAccountTransactions, transactionType): boolean =>
     Boolean(transactionType && enableMoneyAccountTransactions[transactionType]),
+);
+
+/**
+ * Map of transaction types whose default pay method is Money Account, from
+ * `confirmations_pay_extended.defaultPaySelectedSection`. Values are section
+ * ids; `"money-account"` selects the Money Account row.
+ */
+export const selectDefaultPaySelectedSection = createSelector(
+  selectPayExtendedFlag,
+  (flag): Record<string, string> => flag?.defaultPaySelectedSection ?? {},
 );
 
 /**

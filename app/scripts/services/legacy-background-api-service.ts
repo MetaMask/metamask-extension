@@ -1,5 +1,10 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
+import type {
+  AnalyticsControllerGetEventFragmentByIdAction,
+  AnalyticsControllerUpsertEventFragmentAction,
+  ReadonlyAnalyticsEventFragment,
+} from '@metamask/analytics-controller';
 import {
   AddNetworkFields,
   NetworkConfiguration,
@@ -69,6 +74,7 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
+  AccountsControllerClearStateAction,
   AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -249,6 +255,7 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerClearStateAction,
   AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
@@ -287,6 +294,7 @@ import {
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsSeedlessOnboardingFeatureEnabled,
 } from '../../../shared/lib/environment';
+import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
@@ -315,7 +323,7 @@ import { MINUTE } from '../../../shared/constants/time';
 import { KeyringType as KeyringTypes } from '../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventFragment,
+  MetaMetricsEventFragmentPayload,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
@@ -344,6 +352,8 @@ import {
   PreferencesControllerAddReferralApprovedAccountAction,
   PreferencesControllerAddReferralDeclinedAccountAction,
   PreferencesControllerAddReferralPassedAccountAction,
+  PreferencesControllerConsolidateBasicFunctionalityAction,
+  PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction,
   PreferencesControllerRemoveReferralDeclinedAccountAction,
   PreferencesControllerResetStateAction,
   PreferencesControllerSetAccountsReferralApprovedAction,
@@ -355,13 +365,6 @@ import {
   ReferralStatus,
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
-import {
-  MetaMetricsControllerCreateEventFragmentAction,
-  MetaMetricsControllerGetEventFragmentByIdAction,
-  MetaMetricsControllerUpdateEventFragmentAction,
-  MetaMetricsControllerBufferedEndTraceAction,
-  MetaMetricsControllerBufferedTraceAction,
-} from '../controllers/metametrics-controller-method-action-types';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import {
   DefiReferralPartner,
@@ -413,6 +416,10 @@ import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
@@ -599,6 +606,7 @@ type AllowedActions =
   | AccountTreeControllerReinitAction
   | AccountTreeControllerSyncWithUserStorageAction
   | AccountTreeControllerSyncWithUserStorageAtLeastOnceAction
+  | AccountsControllerClearStateAction
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
@@ -627,6 +635,7 @@ type AllowedActions =
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerClearStateAction
   | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
@@ -649,17 +658,16 @@ type AllowedActions =
   | KeyringControllerWithControllerAction
   | KeyringControllerWithKeyringV2Action
   | KeyringControllerWithKeyringV2UnsafeAction
-  | MetaMetricsControllerCreateEventFragmentAction
-  | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerUpdateEventFragmentAction
+  | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerUpsertEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSubmitEncryptionKeyAction
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
   | KeyringControllerWithKeyringAction
-  | MetaMetricsControllerBufferedTraceAction
-  | MetaMetricsControllerBufferedEndTraceAction
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
@@ -703,6 +711,8 @@ type AllowedActions =
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
   | PreferencesControllerAddReferralPassedAccountAction
+  | PreferencesControllerConsolidateBasicFunctionalityAction
+  | PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction
   | PreferencesControllerGetStateAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
   | PreferencesControllerResetStateAction
@@ -1530,8 +1540,8 @@ export class LegacyBackgroundApiService {
    * reset progress flag is set.
    */
   async resetWallet(restoreOnly = false): Promise<void> {
-    // sign out from Authentication service and clear the Session Data
-    this.#messenger.call('AuthenticationController:performSignOut');
+    // Sign out and re-arm profile/social pairing for the next wallet.
+    this.#messenger.call('AuthenticationController:clearState');
 
     // clear SeedlessOnboardingController state
     this.#messenger.call('SeedlessOnboardingController:clearState');
@@ -2439,7 +2449,7 @@ export class LegacyBackgroundApiService {
           },
         );
 
-        this.#messenger.call('MetaMetricsController:bufferedTrace', {
+        this.#messenger.call('SentryTracingService:bufferedTrace', {
           name: TraceName.OnboardingResetPassword,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -2474,7 +2484,7 @@ export class LegacyBackgroundApiService {
         await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
-        this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
           name: TraceName.OnboardingResetPassword,
           data: { success: changePasswordSuccess },
         });
@@ -2813,9 +2823,9 @@ export class LegacyBackgroundApiService {
    */
   #getTransactionUIMetricsFragment(
     transactionId: string,
-  ): MetaMetricsEventFragment | undefined {
+  ): ReadonlyAnalyticsEventFragment | undefined {
     return this.#messenger.call(
-      'MetaMetricsController:getEventFragmentById',
+      'AnalyticsController:getEventFragmentById',
       this.#getTransactionUIMetricsFragmentId(transactionId),
     );
   }
@@ -2823,41 +2833,26 @@ export class LegacyBackgroundApiService {
   /**
    * Creates or updates the UI metrics fragment for a given transaction.
    *
+   * This fragment declares no events: the UI writes properties into it as the
+   * user interacts with a confirmation, and the transaction metrics builders
+   * read them back when they emit their own events.
+   *
    * @param transactionId - The id of the transaction.
-   * @param payload - The fragment settings and properties to store.
+   * @param payload - The fragment properties to store.
    */
   upsertTransactionUIMetricsFragment(
     transactionId: string,
-    payload: Partial<MetaMetricsEventFragment>,
+    payload: MetaMetricsEventFragmentPayload,
   ): void {
     if (!transactionId || !payload) {
       return;
     }
 
-    const fragmentId = this.#getTransactionUIMetricsFragmentId(transactionId);
-    const existingFragment =
-      this.#getTransactionUIMetricsFragment(transactionId);
-
-    if (existingFragment) {
-      this.#messenger.call(
-        'MetaMetricsController:updateEventFragment',
-        fragmentId,
-        payload,
-      );
-      return;
-    }
-
-    this.#messenger.call('MetaMetricsController:createEventFragment', {
-      // `createEventFragment` derives the fragment `id` from `uniqueIdentifier`.
-      uniqueIdentifier: fragmentId,
-      // Required by createEventFragment, but this fragment is storage-only.
-      // We never finalize this fragment and we do not set initialEvent.
-      successEvent: 'Transaction Fragment Created',
-      category: MetaMetricsEventCategory.Transactions,
-      canDeleteIfAbandoned: true,
-      properties: payload.properties ?? {},
-      sensitiveProperties: payload.sensitiveProperties ?? {},
-    });
+    this.#messenger.call(
+      'AnalyticsController:upsertEventFragment',
+      this.#getTransactionUIMetricsFragmentId(transactionId),
+      payload,
+    );
   }
 
   /**
@@ -3096,11 +3091,20 @@ export class LegacyBackgroundApiService {
    * and the shield service is stopped if applicable.
    *
    * @param useExternal - Whether external services should be enabled.
+   * @param ownedPreferences - Optional per-preference values forwarded to
+   * PreferencesController so enabling can preserve granular onboarding choices
+   * in one write.
    */
-  toggleExternalServices(useExternal: boolean): void {
+  toggleExternalServices(
+    useExternal: boolean,
+    ownedPreferences?: Partial<
+      Record<ExternalServicesOwnedPreference, boolean>
+    >,
+  ): void {
     this.#messenger.call(
       'PreferencesController:toggleExternalServices',
       useExternal,
+      ownedPreferences,
     );
 
     const subscriptionState = this.#messenger.call(
@@ -3812,7 +3816,7 @@ export class LegacyBackgroundApiService {
   ): Promise<void> {
     let createSeedPhraseBackupSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3840,7 +3844,7 @@ export class LegacyBackgroundApiService {
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         data: { success: createSeedPhraseBackupSuccess },
       });
@@ -3856,7 +3860,7 @@ export class LegacyBackgroundApiService {
   async #fetchAllSecretData(password?: string): Promise<SecretMetadata[]> {
     let fetchAllSeedPhrasesSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingFetchSrps,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3868,7 +3872,7 @@ export class LegacyBackgroundApiService {
 
       return allSeedPhrases;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingFetchSrps,
         data: { success: fetchAllSeedPhrasesSuccess },
       });
@@ -3965,7 +3969,7 @@ export class LegacyBackgroundApiService {
       await this.#seedlessOperationMutex.runExclusive(async () => {
         let addNewSeedPhraseBackupSuccess = false;
         try {
-          this.#messenger.call('MetaMetricsController:bufferedTrace', {
+          this.#messenger.call('SentryTracingService:bufferedTrace', {
             name: TraceName.OnboardingAddSrp,
             op: TraceOperation.OnboardingSecurityOp,
           });
@@ -3989,7 +3993,7 @@ export class LegacyBackgroundApiService {
 
           throw err;
         } finally {
-          this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+          this.#messenger.call('SentryTracingService:bufferedEndTrace', {
             name: TraceName.OnboardingAddSrp,
             data: { success: addNewSeedPhraseBackupSuccess },
           });
@@ -4078,6 +4082,9 @@ export class LegacyBackgroundApiService {
 
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
+
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
@@ -4497,6 +4504,9 @@ export class LegacyBackgroundApiService {
 
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
+
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state

@@ -24,7 +24,10 @@ import {
   refine,
   type Infer,
 } from '@metamask/superstruct';
-import { KeyringControllerError } from '@metamask/keyring-controller';
+import {
+  isKeyringControllerError,
+  KeyringControllerError,
+} from '@metamask/keyring-controller';
 import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../constants/hardware-wallets';
 import { extractMessageFromUnknownError } from '../error';
 import { HardwareWalletType } from './types';
@@ -632,12 +635,23 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 }
 
 /**
- * Get HardwareWalletError code from a JsonRpcError
+ * Get a hardware-wallet ErrorCode from an unknown error.
+ *
+ * Signing failures are often a `KeyringControllerError` whose real hardware
+ * wallet code lives on `error.cause`. Unwrap that nested code first so callers
+ * do not need to inspect the wrapper themselves.
  *
  * @param error - The error to extract from
  * @returns The ErrorCode if found, null otherwise
  */
 export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
+  if (isKeyringControllerError(error) && error.cause !== error) {
+    const causeCode = getHardwareWalletErrorCode(error.cause);
+    if (causeCode !== null) {
+      return causeCode;
+    }
+  }
+
   // Check for serialized RPC error with cause
   if (isSerializedRpcHardwareWalletError(error)) {
     return mapNumericCodeToErrorCode(error.data.cause.code);
@@ -673,7 +687,7 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
  * @returns True if the error matches known HW error shapes
  */
 export function isHardwareWalletError(error: unknown): boolean {
-  if (error instanceof KeyringControllerError) {
+  if (isKeyringControllerError(error) && error.cause !== error) {
     return isHardwareWalletError(error.cause);
   }
 
@@ -695,15 +709,12 @@ export function isHardwareWalletError(error: unknown): boolean {
 
   const errorAsAny = error as {
     name?: string;
-    cause?: unknown;
     data?: { cause?: { name?: string } };
   };
 
   return (
     errorAsAny?.name === 'HardwareWalletError' ||
-    errorAsAny?.data?.cause?.name === 'HardwareWalletError' ||
-    (errorAsAny?.name === 'KeyringControllerError' &&
-      isHardwareWalletError(errorAsAny?.cause))
+    errorAsAny?.data?.cause?.name === 'HardwareWalletError'
   );
 }
 
@@ -741,9 +752,17 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
   // Some provider errors are transported as EIP-1193 userRejectedRequest (4001)
   // without preserving the full HardwareWalletError shape.
   const errorAsAny = error as { code?: unknown; data?: { code?: unknown } };
-  return (
+  if (
     errorAsAny?.code === errorCodes.provider.userRejectedRequest ||
     errorAsAny?.data?.code === errorCodes.provider.userRejectedRequest
+  ) {
+    return true;
+  }
+
+  return (
+    errorCause !== undefined &&
+    errorCause !== error &&
+    isUserRejectedHardwareWalletError(errorCause)
   );
 }
 
@@ -1044,7 +1063,7 @@ export function toHardwareWalletError(
     return error;
   }
 
-  if (error instanceof KeyringControllerError) {
+  if (isKeyringControllerError(error)) {
     return fromKeyringControllerError(error, walletType);
   }
 

@@ -1488,7 +1488,8 @@ describe('Sentry errors', function () {
       // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
       rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
-      // AnalyticsController keeps the queue out of UI state.
+      // AnalyticsController keeps the queue and fragments out of UI state.
+      eventFragments: false,
       eventQueue: false,
       preConsentEventQueue: false,
       // Optional property on AppStateController; only set after a user

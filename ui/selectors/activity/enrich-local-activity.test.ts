@@ -1,4 +1,8 @@
 import {
+  MUSD_TOKEN_ADDRESS,
+  MUSD_TOKEN_ASSET_ID_BY_CHAIN,
+} from '@metamask/money-account-utils';
+import {
   TransactionStatus,
   TransactionType,
   type TransactionMeta,
@@ -14,6 +18,13 @@ const TRANSFER_DATA =
   '0xa9059cbb00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000008ac7230489e80000';
 const REVOKE_DATA =
   '0x095ea7b300000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000000000';
+const TELLER_ADDRESS = '0x4444444444444444444444444444444444444444';
+// approve(teller, 5 mUSD)
+const MUSD_APPROVE_DATA =
+  '0x095ea7b3000000000000000000000000444444444444444444444444444444444444444400000000000000000000000000000000000000000000000000000000004c4b40';
+// transfer(recipient, 5 mUSD)
+const MUSD_TRANSFER_DATA =
+  '0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000004c4b40';
 
 function buildTokenTransferGroup(
   overrides: Partial<TransactionMeta> = {},
@@ -131,7 +142,144 @@ describe('enrichLocalActivity', () => {
     expect(enriched.type).toBe('revokeSpendingCap');
   });
 
-  it('maps a money account withdraw batch to a send of mUSD', () => {
+  function buildMoneyDepositGroup(
+    overrides: Partial<TransactionMeta> = {},
+  ): ReturnType<typeof buildTokenTransferGroup> {
+    return buildTokenTransferGroup({
+      type: TransactionType.batch,
+      txParams: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x1111111111111111111111111111111111111111',
+        data: '0x',
+        value: '0x0',
+      },
+      nestedTransactions: [
+        {
+          type: TransactionType.tokenMethodApprove,
+          to: MUSD_TOKEN_ADDRESS,
+          data: MUSD_APPROVE_DATA,
+        },
+        { type: TransactionType.moneyAccountDeposit, to: TELLER_ADDRESS },
+      ],
+      requiredAssets: [
+        { address: MUSD_TOKEN_ADDRESS, amount: '0x4c4b40', standard: 'erc20' },
+      ],
+      ...overrides,
+    });
+  }
+
+  function buildContractInteractionActivity(): ActivityListItem {
+    return {
+      type: 'contractInteraction',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x1111111111111111111111111111111111111111',
+      },
+    } as ActivityListItem;
+  }
+
+  it('maps a money account deposit batch to a moneyAccountDeposit', () => {
+    const group = buildMoneyDepositGroup();
+
+    const enriched = enrichLocalActivity(
+      buildContractInteractionActivity(),
+      group,
+    );
+
+    expect(enriched).toMatchObject({
+      type: 'moneyAccountDeposit',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        fiat: { amount: '5' },
+        token: {
+          direction: 'in',
+          symbol: 'mUSD',
+          decimals: 6,
+          amount: '5000000',
+          assetId: MUSD_TOKEN_ASSET_ID_BY_CHAIN[CHAIN_IDS.MAINNET],
+        },
+      },
+    });
+  });
+
+  it('falls back to the approve calldata amount when required assets hold the placeholder', () => {
+    const group = buildMoneyDepositGroup({
+      requiredAssets: [
+        { address: MUSD_TOKEN_ADDRESS, amount: '0x0', standard: 'erc20' },
+      ],
+    });
+
+    const enriched = enrichLocalActivity(
+      buildContractInteractionActivity(),
+      group,
+    );
+
+    expect(enriched.type).toBe('moneyAccountDeposit');
+    expect(enriched.data).toMatchObject({
+      fiat: { amount: '5' },
+      token: { amount: '5000000' },
+    });
+  });
+
+  it('falls back to the MM Pay target fiat while the batch is still a placeholder', () => {
+    const group = buildMoneyDepositGroup({
+      nestedTransactions: [
+        {
+          type: TransactionType.tokenMethodApprove,
+          to: MUSD_TOKEN_ADDRESS,
+          data: REVOKE_DATA,
+        },
+        { type: TransactionType.moneyAccountDeposit, to: TELLER_ADDRESS },
+      ],
+      requiredAssets: [
+        { address: MUSD_TOKEN_ADDRESS, amount: '0x0', standard: 'erc20' },
+      ],
+      metamaskPay: { targetFiat: '25' },
+    });
+
+    const enriched = enrichLocalActivity(
+      buildContractInteractionActivity(),
+      group,
+    );
+
+    expect(enriched.type).toBe('moneyAccountDeposit');
+    expect(enriched.data).toMatchObject({ fiat: { amount: '25' } });
+    expect(
+      (enriched.data as { token?: { amount?: string } }).token,
+    ).not.toHaveProperty('amount');
+  });
+
+  it('omits the amount and fiat while the batch is still a placeholder', () => {
+    const group = buildMoneyDepositGroup({
+      nestedTransactions: [
+        {
+          type: TransactionType.tokenMethodApprove,
+          to: MUSD_TOKEN_ADDRESS,
+          data: REVOKE_DATA,
+        },
+        { type: TransactionType.moneyAccountDeposit, to: TELLER_ADDRESS },
+      ],
+      requiredAssets: [
+        { address: MUSD_TOKEN_ADDRESS, amount: '0x0', standard: 'erc20' },
+      ],
+    });
+
+    const enriched = enrichLocalActivity(
+      buildContractInteractionActivity(),
+      group,
+    );
+
+    expect(enriched.type).toBe('moneyAccountDeposit');
+    expect(enriched.data).not.toHaveProperty('fiat');
+    expect(
+      (enriched.data as { token?: { amount?: string } }).token,
+    ).not.toHaveProperty('amount');
+  });
+
+  it('maps a money account withdraw batch to a moneyAccountWithdraw', () => {
     const group = buildTokenTransferGroup({
       type: TransactionType.batch,
       txParams: {
@@ -144,8 +292,8 @@ describe('enrichLocalActivity', () => {
         { type: TransactionType.moneyAccountWithdraw, data: '0x00' },
         {
           type: TransactionType.tokenMethodTransfer,
-          to: DAI_ADDRESS,
-          data: TRANSFER_DATA,
+          to: MUSD_TOKEN_ADDRESS,
+          data: MUSD_TRANSFER_DATA,
         },
       ],
     });
@@ -163,18 +311,116 @@ describe('enrichLocalActivity', () => {
     const enriched = enrichLocalActivity(activity, group);
 
     expect(enriched).toMatchObject({
-      type: 'send',
+      type: 'moneyAccountWithdraw',
       data: {
         from: '0x1111111111111111111111111111111111111111',
-        to: RECIPIENT,
+        fiat: { amount: '5' },
         token: {
           direction: 'out',
           symbol: 'mUSD',
           decimals: 6,
-          amount: '10000000000000000000',
+          amount: '5000000',
+          assetId: MUSD_TOKEN_ASSET_ID_BY_CHAIN[CHAIN_IDS.MAINNET],
         },
       },
     });
+  });
+
+  it('omits the amount for a withdraw placeholder with no encoded transfer', () => {
+    const group = buildTokenTransferGroup({
+      type: TransactionType.batch,
+      txParams: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x3333333333333333333333333333333333333333',
+        data: '0x',
+        value: '0x0',
+      },
+      nestedTransactions: [
+        { type: TransactionType.moneyAccountWithdraw, data: '0x00' },
+        {
+          type: TransactionType.tokenMethodTransfer,
+          to: MUSD_TOKEN_ADDRESS,
+          data: '0x',
+        },
+      ],
+    });
+
+    const enriched = enrichLocalActivity(
+      buildContractInteractionActivity(),
+      group,
+    );
+
+    expect(enriched.type).toBe('moneyAccountWithdraw');
+    expect(enriched.data).not.toHaveProperty('fiat');
+    expect(enriched.data).toMatchObject({ token: { symbol: 'mUSD' } });
+    expect(enriched.data).not.toMatchObject({
+      token: { amount: expect.anything() },
+    });
+  });
+
+  it('omits the amount for a withdraw batch with no nested transfer at all', () => {
+    const group = buildTokenTransferGroup({
+      type: TransactionType.batch,
+      txParams: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x3333333333333333333333333333333333333333',
+        data: '0x',
+        value: '0x0',
+      },
+      nestedTransactions: [
+        { type: TransactionType.moneyAccountWithdraw, data: '0x00' },
+      ],
+    });
+
+    const enriched = enrichLocalActivity(
+      buildContractInteractionActivity(),
+      group,
+    );
+
+    expect(enriched.type).toBe('moneyAccountWithdraw');
+    expect(enriched.data).not.toMatchObject({
+      token: { amount: expect.anything() },
+    });
+  });
+
+  it('ignores a zero-amount approve when resolving the deposit amount', () => {
+    const group = buildMoneyDepositGroup({
+      requiredAssets: [],
+      nestedTransactions: [
+        {
+          type: TransactionType.tokenMethodApprove,
+          to: MUSD_TOKEN_ADDRESS,
+          data: `0x095ea7b3${'0'.repeat(64)}${'0'.repeat(64)}`,
+        },
+        { type: TransactionType.moneyAccountDeposit, to: TELLER_ADDRESS },
+      ],
+    } as never);
+
+    const enriched = enrichLocalActivity(
+      buildContractInteractionActivity(),
+      group,
+    );
+
+    expect(enriched.type).toBe('moneyAccountDeposit');
+    expect(enriched.data).not.toMatchObject({
+      token: { amount: expect.anything() },
+    });
+  });
+
+  it('ignores a zero required amount and falls back to the approve calldata', () => {
+    const group = buildMoneyDepositGroup({
+      requiredAssets: [
+        { address: MUSD_TOKEN_ADDRESS, amount: '0x0', standard: 'erc20' },
+      ],
+    } as never);
+
+    const enriched = enrichLocalActivity(
+      buildContractInteractionActivity(),
+      group,
+    );
+
+    expect(enriched.type).toBe('moneyAccountDeposit');
+    expect(enriched.data).toMatchObject({ token: { amount: '5000000' } });
   });
 
   it('does not change unrelated activity items', () => {

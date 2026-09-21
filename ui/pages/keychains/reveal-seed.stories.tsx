@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { RouteMessengerContext } from '../../contexts/route-messenger';
 import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
 import RevealSeedPage from './reveal-seed';
