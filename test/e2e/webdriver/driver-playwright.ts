@@ -889,7 +889,31 @@ export class PlaywrightDriver {
   ): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
     await locator.click();
-    await this.page.keyboard.insertText(contentToPaste);
+
+    // Dispatch a synthetic paste event on the focused element. Components like
+    // the SRP input rely on onPaste to split the pasted text into individual
+    // word fields; keyboard.insertText alone fires only an input event.
+    const handled = await this.executeScript<boolean>(function (text: unknown) {
+      const el = document.activeElement;
+      if (!el) {
+        return false;
+      }
+      const dt = new DataTransfer();
+      dt.setData('text/plain', text as string);
+      const event = new ClipboardEvent('paste', {
+        bubbles: true,
+        cancelable: true,
+        clipboardData: dt,
+      });
+      el.dispatchEvent(event);
+      return event.defaultPrevented;
+    }, contentToPaste);
+
+    // If the paste event was not consumed (defaultPrevented), the field is a
+    // plain input without a custom onPaste handler — insert text directly.
+    if (!handled) {
+      await this.page.keyboard.insertText(contentToPaste);
+    }
   }
 
   async holdMouseDownOnElement(
