@@ -295,11 +295,6 @@
       "count": 8
     }
   },
-  "ui/helpers/higher-order-components/with-router-hooks/with-router-hooks.tsx": {
-    "react-hooks/refs": {
-      "count": 6
-    }
-  },
   "ui/hooks/accounts/useAccountsOperationsLoadingStates.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
