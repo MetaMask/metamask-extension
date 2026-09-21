@@ -8,6 +8,7 @@ import { BuyDeepLinkEntry } from './buy-deeplink-entry';
 
 const mockNavigate = jest.fn();
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
+let mockOpensBuyInPortfolioTab = false;
 let mockSearch = '';
 
 jest.mock('react-router-dom', () => ({
@@ -19,12 +20,16 @@ jest.mock('react-router-dom', () => ({
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => ({ goToBuy: mockGoToBuy }),
+  default: () => ({
+    goToBuy: mockGoToBuy,
+    opensBuyInPortfolioTab: mockOpensBuyInPortfolioTab,
+  }),
 }));
 
 describe('BuyDeepLinkEntry', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockOpensBuyInPortfolioTab = false;
     mockGoToBuy.mockResolvedValue(true);
   });
 
@@ -38,7 +43,7 @@ describe('BuyDeepLinkEntry', () => {
     ).toBeInTheDocument();
   });
 
-  it('calls goToBuy with the assetId built from deep link params', async () => {
+  it('calls goToBuy with the intent built from deep link params', async () => {
     mockSearch =
       '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
     render(<BuyDeepLinkEntry />);
@@ -48,6 +53,7 @@ describe('BuyDeepLinkEntry', () => {
     });
     expect(mockGoToBuy).toHaveBeenCalledWith({
       assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      chainId: 'eip155:1',
     });
   });
 
@@ -87,6 +93,19 @@ describe('BuyDeepLinkEntry', () => {
 
   it('navigates home when goToBuy rejects', async () => {
     mockGoToBuy.mockRejectedValue(new Error('boom'));
+    mockSearch =
+      '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
+    render(<BuyDeepLinkEntry />);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+    });
+  });
+
+  it('navigates home when the Portfolio fallback opened Buy in a new tab', async () => {
+    mockOpensBuyInPortfolioTab = true;
     mockSearch =
       '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
     render(<BuyDeepLinkEntry />);
