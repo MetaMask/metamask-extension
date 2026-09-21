@@ -193,13 +193,6 @@ export function BottomNavBar() {
         />
       )}
       <NavTab
-        isActive={isSwaps}
-        icon={IconName.SwapVertical}
-        label={t('swap')}
-        onClick={handleSwapsClick}
-        data-testid="bottom-nav-swaps"
-      />
-      <NavTab
         isActive={isActivity}
         icon={isActivity ? IconName.ClockFilled : IconName.Clock}
         label={t('activity')}
