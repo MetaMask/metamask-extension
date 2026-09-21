@@ -37,10 +37,14 @@ export function BuyDeepLinkEntry() {
     }
     hasInitiatedRef.current = true;
 
-    const params: Record<string, string> = {};
-    new URLSearchParams(location.search).forEach((value, key) => {
-      params[key] = value;
-    });
+    const searchParams = new URLSearchParams(location.search);
+    const params: Record<string, string | undefined> = {
+      address: searchParams.get('address') ?? undefined,
+      chainId: searchParams.get('chainId') ?? undefined,
+      assetId: searchParams.get('assetId') ?? undefined,
+      amount: searchParams.get('amount') ?? undefined,
+      currency: searchParams.get('currency') ?? undefined,
+    };
     const intent = parseRampIntent(params);
 
     goToBuy(
