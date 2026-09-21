@@ -4,6 +4,7 @@ import {
   clearMoneyBatchTransaction,
   isKnownMoneyBatchChild,
   isMoneyBatchInFlight,
+  mergeMoneyBatchChildrenFromTransactions,
   registerMoneyBatchById,
   registerMoneyBatchTransaction,
   resetMoneyBatchRegistry,
@@ -58,6 +59,20 @@ describe('money-batch-registry', () => {
       } as Pick<TransactionMeta, 'id' | 'requiredTransactionIds'>);
 
       expect(isMoneyBatchInFlight()).toBe(false);
+    });
+  });
+
+  describe('mergeMoneyBatchChildrenFromTransactions', () => {
+    it('merges requiredTransactionIds into already-registered parents only', () => {
+      registerMoneyBatchById('parent-1');
+      mergeMoneyBatchChildrenFromTransactions([
+        { id: 'parent-1', requiredTransactionIds: ['child-1'] },
+        { id: 'other', requiredTransactionIds: ['child-other'] },
+      ]);
+
+      expect(isKnownMoneyBatchChild('child-1')).toBe(true);
+      expect(isKnownMoneyBatchChild('child-other')).toBe(false);
+      expect(isMoneyBatchInFlight()).toBe(true);
     });
   });
 

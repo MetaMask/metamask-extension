@@ -7,7 +7,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
  * Module-level state rather than Redux: the generic transaction toast listener
  * must know a money batch is in flight even when the Redux snapshot is still
  * catching up to the background (debounced `sendUpdate`). Fed from messenger
- * event payloads and deposit initiation, cleared on terminal lifecycle events.
+ * event payloads, cleared on terminal lifecycle events.
  */
 type MoneyBatchEntry = {
   childIds: Set<string>;
@@ -43,10 +43,27 @@ export function registerMoneyBatchTransaction(
 }
 
 /**
- * Marks a money batch as in flight by parent transaction id alone.
+ * Merges `requiredTransactionIds` from Redux into already-registered money
+ * batches. No-op for transactions that are not registered parents.
  *
- * Used at deposit initiation, before the first status event, so the generic
- * toast listener can defer decisions while Pay source legs start submitting.
+ * @param transactions - Current Redux transaction list.
+ */
+export function mergeMoneyBatchChildrenFromTransactions(
+  transactions: Pick<TransactionMeta, 'id' | 'requiredTransactionIds'>[],
+): void {
+  for (const tx of transactions) {
+    const entry = moneyBatchesByParentId.get(tx.id);
+    if (!entry) {
+      continue;
+    }
+    for (const childId of tx.requiredTransactionIds ?? []) {
+      entry.childIds.add(childId);
+    }
+  }
+}
+
+/**
+ * Marks a money batch as in flight by parent transaction id alone.
  *
  * @param transactionId - The money account parent transaction id.
  */

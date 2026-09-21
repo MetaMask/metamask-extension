@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
-import type { Store } from 'redux';
 import type { Hex } from 'viem';
 import {
   TransactionStatus,
@@ -25,6 +24,7 @@ import {
 import {
   isKnownMoneyBatchChild,
   isMoneyBatchInFlight,
+  mergeMoneyBatchChildrenFromTransactions,
 } from '../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
@@ -77,11 +77,16 @@ export const batchHelperTransactionTypes = [
 ];
 
 /**
- * Upper bound for waiting on the debounced Redux sync while a money batch is
- * in flight. Matches `sendUpdate`'s maxWait (1s) with headroom so a registry
- * leak can never permanently swallow a legitimate toast.
+ * MetaMask Pay source-leg types used to fund a Money Account batch. While a
+ * money batch is in flight these are suppressed even before Redux carries the
+ * parent's `requiredTransactionIds` (messenger events beat debounced
+ * `sendUpdate`). Unrelated txs (e.g. a concurrent simpleSend) are unaffected.
  */
-const MONEY_BATCH_PENDING_TOAST_DEFER_MS = 3000;
+const moneyPaySourceLegTypes = new Set<TransactionType>([
+  TransactionType.relayDeposit,
+  TransactionType.bridge,
+  TransactionType.swap,
+]);
 
 function isExcludedTransactionType(
   transactionMeta: TransactionMeta,
@@ -93,10 +98,19 @@ function isExcludedTransactionType(
   ) {
     return true;
   }
-  return (
+  if (
     hasTransactionType(transactionMeta, excludedTransactionTypes) ||
     isMoneyAccountTx(transactionMeta) ||
-    isMoneyAccountChildTx(transactionMeta, transactions)
+    isMoneyAccountChildTx(transactionMeta, transactions) ||
+    isKnownMoneyBatchChild(transactionMeta.id)
+  ) {
+    return true;
+  }
+  // Cover the Redux-lag race for Pay source legs of an in-flight money batch.
+  return Boolean(
+    isMoneyBatchInFlight() &&
+    transactionMeta.type &&
+    moneyPaySourceLegTypes.has(transactionMeta.type),
   );
 }
 
@@ -171,76 +185,6 @@ function handleAccountsControllerTx(tx: Transaction) {
   }
 }
 
-type PendingDeferral = {
-  cancel: () => void;
-};
-
-/**
- * While a money batch is in flight, the Redux snapshot used by
- * `isMoneyAccountChildTx` can lag the messenger event (debounced sendUpdate).
- * Defer the pending-toast decision until either Redux shows the parent link,
- * or the timeout fires and we show the toast as a safe fallback.
- *
- * @param id - Transaction id whose pending toast is deferred.
- * @param transactionMeta - Fresh event payload for exclusion checks.
- * @param store - Redux store to subscribe to for catch-up.
- * @param pendingDeferrals - Active deferrals map for cancellation.
- * @param show - Callback that shows the pending toast (phase-gated).
- */
-function deferPendingToastDecision(
-  id: string,
-  transactionMeta: TransactionMeta,
-  store: Store<MetaMaskReduxState>,
-  pendingDeferrals: Map<string, PendingDeferral>,
-  show: () => void,
-): void {
-  pendingDeferrals.get(id)?.cancel();
-
-  let settled = false;
-  let unsubscribe: () => void = () => undefined;
-  const timeout = {
-    id: undefined as ReturnType<typeof setTimeout> | undefined,
-  };
-
-  const finish = (shouldShow: boolean) => {
-    if (settled) {
-      return;
-    }
-    settled = true;
-    unsubscribe();
-    if (timeout.id !== undefined) {
-      clearTimeout(timeout.id);
-    }
-    pendingDeferrals.delete(id);
-    if (shouldShow) {
-      show();
-    }
-  };
-
-  const recheck = () => {
-    const transactions = selectTransactions(store.getState());
-    if (
-      isExcludedTransactionType(transactionMeta, transactions) ||
-      isKnownMoneyBatchChild(id)
-    ) {
-      finish(false);
-    }
-  };
-
-  unsubscribe = store.subscribe(recheck);
-  timeout.id = setTimeout(
-    () => finish(true),
-    MONEY_BATCH_PENDING_TOAST_DEFER_MS,
-  );
-
-  pendingDeferrals.set(id, {
-    cancel: () => finish(false),
-  });
-
-  // State may already have caught up between the event and this deferral.
-  recheck();
-}
-
 /**
  * Subscribes to background transaction lifecycle events via the UI messenger
  */
@@ -249,8 +193,6 @@ export function useTransactionEventToasts(): void {
   const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
-    const pendingDeferrals = new Map<string, PendingDeferral>();
-
     // EVM via TransactionController
     const handleEvmStatusUpdate = (
       raw:
@@ -267,14 +209,12 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      if (isKnownMoneyBatchChild(id)) {
-        pendingDeferrals.get(id)?.cancel();
-        return;
-      }
-
       const transactions = selectTransactions(store.getState());
+      // Pull any parent→child links that Redux already has into the registry
+      // before the exclusion check, so known children suppress immediately.
+      mergeMoneyBatchChildrenFromTransactions(transactions);
+
       if (isExcludedTransactionType(transactionMeta, transactions)) {
-        pendingDeferrals.get(id)?.cancel();
         return;
       }
 
@@ -285,130 +225,23 @@ export function useTransactionEventToasts(): void {
       };
 
       if (isPendingToastStatus(transactionMeta, status)) {
-        const show = () => {
-          if (shouldShowPendingToast(id)) {
-            showPendingToast(toastId, props);
-          }
-        };
-
-        // Money Pay children often submit before Redux carries the parent's
-        // `requiredTransactionIds`. Defer so the guard can re-run against a
-        // caught-up snapshot; unrelated txs only wait while a money batch is
-        // in flight, then show after timeout.
-        if (isMoneyBatchInFlight()) {
-          deferPendingToastDecision(
-            id,
-            transactionMeta,
-            store,
-            pendingDeferrals,
-            show,
-          );
-          return;
+        if (shouldShowPendingToast(id)) {
+          showPendingToast(toastId, props);
         }
-
-        show();
-      } else if (status === 'confirmed') {
-        pendingDeferrals.get(id)?.cancel();
-
-        if (
-          isExcludedTransactionType(
-            transactionMeta,
-            selectTransactions(store.getState()),
-          ) ||
-          isKnownMoneyBatchChild(id)
-        ) {
-          return;
-        }
-
-        if (shouldShowTerminalToast(id)) {
-          showSuccessToast(toastId, props);
-          return;
-        }
-
-        // Pending was deferred and cancelled before a phase was reserved —
-        // wait for Redux catch-up (or timeout) before showing terminal.
-        if (isMoneyBatchInFlight()) {
-          deferPendingToastDecision(
-            id,
-            transactionMeta,
-            store,
-            pendingDeferrals,
-            () => {
-              const latestTransactions = selectTransactions(store.getState());
-              if (
-                isExcludedTransactionType(
-                  transactionMeta,
-                  latestTransactions,
-                ) ||
-                isKnownMoneyBatchChild(id)
-              ) {
-                return;
-              }
-              shouldShowPendingToast(id);
-              if (shouldShowTerminalToast(id)) {
-                showSuccessToast(toastId, props);
-              }
-            },
-          );
-        }
+      } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
+        showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
-        pendingDeferrals.get(id)?.cancel();
-
-        const latestTransactions = selectTransactions(store.getState());
-        if (
-          isExcludedTransactionType(transactionMeta, latestTransactions) ||
-          isKnownMoneyBatchChild(id)
-        ) {
-          return;
-        }
-
         if (transactionMeta.replacedById) {
           if (
-            isSpeedUpReplacement(
-              transactionMeta.replacedById,
-              latestTransactions,
-            )
+            isSpeedUpReplacement(transactionMeta.replacedById, transactions)
           ) {
             dismissToast(toastId);
             clearToastPhase(id);
-            return;
+          } else if (shouldShowTerminalToast(id)) {
+            showFailedToast(toastId, props);
           }
-        }
-
-        if (shouldShowTerminalToast(id)) {
+        } else if (shouldShowTerminalToast(id)) {
           showFailedToast(toastId, props);
-          return;
-        }
-
-        // Pending was deferred and cancelled before a phase was reserved.
-        if (isMoneyBatchInFlight()) {
-          deferPendingToastDecision(
-            id,
-            transactionMeta,
-            store,
-            pendingDeferrals,
-            () => {
-              const txs = selectTransactions(store.getState());
-              if (
-                isExcludedTransactionType(transactionMeta, txs) ||
-                isKnownMoneyBatchChild(id)
-              ) {
-                return;
-              }
-              if (
-                transactionMeta.replacedById &&
-                isSpeedUpReplacement(transactionMeta.replacedById, txs)
-              ) {
-                dismissToast(toastId);
-                clearToastPhase(id);
-                return;
-              }
-              shouldShowPendingToast(id);
-              if (shouldShowTerminalToast(id)) {
-                showFailedToast(toastId, props);
-              }
-            },
-          );
         }
       }
     };
@@ -437,10 +270,6 @@ export function useTransactionEventToasts(): void {
     );
 
     return () => {
-      for (const deferral of pendingDeferrals.values()) {
-        deferral.cancel();
-      }
-      pendingDeferrals.clear();
       messenger.unsubscribe(
         'TransactionController:transactionStatusUpdated',
         handleEvmStatusUpdate,
