@@ -315,6 +315,32 @@ export const REDIRECT_ROUTES = [
   { route: '/money', expectedUrl: `${BaseUrl.MetaMask}/money` },
 ] as const;
 
+/**
+ * Mocks the ramps catalog endpoints (region token and provider lists) with
+ * empty results. Used by buy deep link tests that route into the in-app
+ * unified buy flow without full ramps API mocking: an empty catalog makes the
+ * flow's eligibility gate show its unsupported modal deterministically, so no
+ * unmocked pass-through requests (e.g. provider/token icon CDNs) occur.
+ *
+ * @param server - The Mockttp server instance.
+ */
+export const mockRampsEmptyCatalog = async (server: Mockttp): Promise<void> => {
+  const region = 'us-tx'; // matches the mocked geolocation response (US-TX)
+  const hosts = [
+    'on-ramp-cache.api.cx.metamask.io',
+    'on-ramp-cache.uat-api.cx.metamask.io',
+  ];
+
+  for (const host of hosts) {
+    await server
+      .forGet(`https://${host}/v2/regions/${region}/topTokens`)
+      .thenJson(200, { topTokens: [], allTokens: [] });
+    await server
+      .forGet(`https://${host}/v2/regions/${region}/providers`)
+      .thenJson(200, { providers: [] });
+  }
+};
+
 export function getHashParams(url: URL) {
   const hash = url.hash.slice(1); // remove leading '#'
   const hashQuery = hash.split('?')[1] ?? '';
