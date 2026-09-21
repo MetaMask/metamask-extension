@@ -94,7 +94,29 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
 ];
 
-export const lavamoatPlugin = (args: Args) =>
+type IsolatedHtmlEntries = {
+  isIsolatedHtmlEntry: (name?: string | null) => boolean;
+  getIsolatedHtmlEntryNames: () => string[];
+};
+
+const lockdownBase = [
+  'runtime\\.[0-9a-h]{20}\\.js',
+  'scripts\\/contentscript\\.js',
+  'service-worker\\.js',
+];
+
+function lockdownPattern(isolatedHtmlNames: string[]) {
+  const isolated = isolatedHtmlNames.map(
+    (name) =>
+      `${name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}(?:\\.[0-9a-h]{20})?\\.js`,
+  );
+  return new RegExp(`^(?:${[...lockdownBase, ...isolated].join('|')})$`, 'u');
+}
+
+export const lavamoatPlugin = (
+  args: Args,
+  isolatedHtml?: IsolatedHtmlEntries,
+) =>
   new LavaMoatPlugin({
     rootDir,
     policyLocation: join(
@@ -108,8 +130,14 @@ export const lavamoatPlugin = (args: Args) =>
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
     // Apply lockdown to shared runtimes and self-contained extension entrypoints.
-    inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js|cashtag-widget(?:\.[0-9a-h]{20})?\.js)$/u,
+    // LavaMoat copies options at construct time, before WAR HTML entries exist,
+    // so this must resolve names when `.test` runs during emit.
+    inlineLockdown: {
+      test: (file: string) =>
+        lockdownPattern(isolatedHtml?.getIsolatedHtmlEntryNames() ?? []).test(
+          file,
+        ),
+    } as RegExp,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -153,14 +181,12 @@ export const lavamoatPlugin = (args: Args) =>
             },
           },
         };
-      } else if (chunk.name === 'cashtag-widget') {
-        // The iframed X widget has its own SES/LavaMoat runtime
+      } else if (isolatedHtml?.isIsolatedHtmlEntry(chunk.name)) {
         return {
           mode: 'safe',
           embeddedOptions: {
             scuttleGlobalThis: {
               enabled: true,
-              // Globals used by the X widget
               exceptions: ['browser', 'chrome', 'devicePixelRatio'],
             },
           },

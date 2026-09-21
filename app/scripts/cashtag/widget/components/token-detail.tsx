@@ -40,6 +40,11 @@ type Props = Readonly<{
 }>;
 
 const foxSrc = browser.runtime.getURL('images/logo/metamask-fox.svg');
+const badgeToneClass = {
+  success: 'border-success-muted text-success-default',
+  warning: 'border-warning-muted text-warning-default',
+  error: 'border-error-muted text-error-default',
+};
 
 export function TokenDetail({
   data,
@@ -65,7 +70,9 @@ export function TokenDetail({
             <div className="flex items-center gap-2 leading-none">
               <Label>{data.ticker}</Label>
               {securityBadge ? (
-                <span className="inline-flex h-[19px] items-center gap-1 rounded-md border border-success-muted bg-muted px-2 text-[10px] font-medium leading-none text-success-default">
+                <span
+                  className={`inline-flex h-[19px] items-center gap-1 rounded-md border bg-muted px-2 text-[10px] font-medium leading-none ${badgeToneClass[securityBadge.tone]}`}
+                >
                   <Icon
                     name={securityBadge.icon}
                     size={IconSize.Xs}

@@ -68,7 +68,6 @@ const webAccessibleResources = [
   ...(args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : []),
-  'images/*',
 ];
 // Styles for the outer X document. They cannot be bundled into the widget
 // frame HTML because that HTML is the iframe, so they are imported as strings
@@ -268,7 +267,7 @@ if (args.lavamoat) {
     lavamoatPlugin,
     lavamoatUnsafeLayerPlugin,
   } = require('./utils/plugins/LavamoatPlugin');
-  plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
+  plugins.push(lavamoatPlugin(args, manifestPlugin), lavamoatUnsafeLayerPlugin);
 }
 if (args.progress) {
   const { ProgressPlugin } = require('webpack');
@@ -323,16 +322,10 @@ const reactRefreshJsxLoader = getSwcLoader(
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
-const isCashtagWidgetEntry = (chunk: { name?: string | null }) =>
-  chunk.name === 'cashtag-widget';
 const isChunkableInitial = (chunk: Chunk) =>
-  !isCashtagWidgetEntry(chunk) &&
-  manifestPlugin.canBeChunked(chunk) &&
-  chunk.canBeInitial();
+  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
-  !isCashtagWidgetEntry(chunk) &&
-  manifestPlugin.canBeChunked(chunk) &&
-  !chunk.canBeInitial();
+  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -639,9 +632,7 @@ const config = {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
       name: (chunk) =>
-        (isCashtagWidgetEntry(chunk) || !manifestPlugin.canBeChunked(chunk)
-          ? false
-          : 'runtime') as string,
+        (!manifestPlugin.canBeChunked(chunk) ? false : 'runtime') as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
