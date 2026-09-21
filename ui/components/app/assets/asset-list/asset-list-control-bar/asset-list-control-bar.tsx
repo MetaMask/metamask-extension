@@ -32,11 +32,6 @@ import {
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
@@ -390,7 +385,7 @@ const AssetListControlBar = ({
       paddingBottom={1}
       data-testid={dataTestId}
     >
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Box className="flex justify-between">
         <Button
           data-testid="sort-by-networks"
           variant={ButtonVariant.Secondary}
@@ -403,12 +398,7 @@ const AssetListControlBar = ({
           {networkButtonText}
         </Button>
 
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexEnd}
-          alignItems={AlignItems.center}
-          gap={2}
-        >
+        <Box className="flex items-center justify-end" gap={2}>
           {showSortControl && (
             <Tooltip
               title={t('sortBy')}
