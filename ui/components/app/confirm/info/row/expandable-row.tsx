@@ -33,16 +33,20 @@ export const ConfirmInfoExpandableRow = (
       return undefined;
     }
 
+    let cancelled = false;
     const updateHeight = () => {
-      setContentHeight(node.scrollHeight);
+      if (!cancelled) {
+        setContentHeight(node.scrollHeight);
+      }
     };
 
-    updateHeight();
+    queueMicrotask(updateHeight);
 
     const resizeObserver = new ResizeObserver(updateHeight);
     resizeObserver.observe(node);
 
     return () => {
+      cancelled = true;
       resizeObserver.disconnect();
     };
   }, [expanded, content]);
