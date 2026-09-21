@@ -198,6 +198,7 @@ export const MultichainBridgeQuoteCard = ({
   const includedTxFees = getIncludedTxFees(activeQuote);
   const gasFees = getGasFees(activeQuote);
   const totalNetworkFee = getTotalNetworkFee(activeQuote);
+  const relayerFees = sumAmounts(activeQuote.quote.feeData.relayer);
 
   return (
     <>
@@ -367,6 +368,24 @@ export const MultichainBridgeQuoteCard = ({
                 {formatNetworkFee(gasFees?.valueInCurrency, currency)}
               </Text>
             )}
+          </Row>
+        )}
+
+        {relayerFees && (
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              {t('relayerFee')}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              data-testid="relayer-fees"
+            >
+              {formatNetworkFee(relayerFees?.valueInCurrency, currency)}
+            </Text>
           </Row>
         )}
 

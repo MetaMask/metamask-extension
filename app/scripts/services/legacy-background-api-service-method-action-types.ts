@@ -725,6 +725,9 @@ export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
  * and the shield service is stopped if applicable.
  *
  * @param useExternal - Whether external services should be enabled.
+ * @param ownedPreferences - Optional per-preference values forwarded to
+ * PreferencesController so enabling can preserve granular onboarding choices
+ * in one write.
  */
 export type LegacyBackgroundApiServiceToggleExternalServicesAction = {
   type: `LegacyBackgroundApiService:toggleExternalServices`;

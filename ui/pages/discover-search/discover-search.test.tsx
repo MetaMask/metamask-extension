@@ -317,13 +317,13 @@ describe('DiscoverSearchPage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('navigates home on back', () => {
+  it('navigates back on back button click', () => {
     renderPage();
 
     fireEvent.click(screen.getByTestId('discover-search-back-button'));
 
     expect(mockRunCloseTransition).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('navigates to the CAIP asset route when an asset result is clicked', async () => {

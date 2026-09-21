@@ -4,7 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import {
   en,
   I18nProvider,
@@ -13,8 +13,18 @@ import {
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
-import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
-import { onchainItem } from './types/money-activity';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from './constants/money-events';
+import MOCK_MONEY_TRANSACTIONS, {
+  MOCK_ACCOUNTS_API_ACTIVITY,
+} from './constants/mock-activity-data';
+import { accountsApiItem, onchainItem } from './types/money-activity';
 import { MoneyActivityPage } from './money-activity-page';
 import {
   buildMoneyActivityBuckets,
@@ -58,7 +68,16 @@ jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
   useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
 }));
 
-const mockItems = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+
+const mockItems = [
+  ...MOCK_MONEY_TRANSACTIONS.map(onchainItem),
+  ...MOCK_ACCOUNTS_API_ACTIVITY.map(accountsApiItem),
+];
 const mockBuckets = buildMoneyActivityBuckets(mockItems);
 
 function makePendingDeposit(): ReturnType<typeof onchainItem> {
@@ -80,6 +99,7 @@ function makePendingDeposit(): ReturnType<typeof onchainItem> {
 describe('MoneyActivityPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockGetPrivacyMode.mockReturnValue(false);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
@@ -91,6 +111,12 @@ describe('MoneyActivityPage', () => {
     mockUseMoneyActivityItems.mockReturnValue({
       items: mockItems,
       buckets: mockBuckets,
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
     });
     mockUseMoneyActivityItemClick.mockReturnValue(undefined);
   });
@@ -138,6 +164,9 @@ describe('MoneyActivityPage', () => {
       screen.getByTestId('money-activity-filter-sends'),
     ).toBeInTheDocument();
     expect(
+      screen.getByTestId('money-activity-filter-card'),
+    ).toBeInTheDocument();
+    expect(
       screen.queryByTestId('money-activity-pending-header'),
     ).not.toBeInTheDocument();
     expect(
@@ -150,9 +179,9 @@ describe('MoneyActivityPage', () => {
         ),
       ),
     ).toBeInTheDocument();
-    expect(screen.getAllByTestId(/money-activity-row-money-tx-/u).length).toBe(
-      MOCK_MONEY_TRANSACTIONS.length,
-    );
+    expect(
+      screen.getAllByTestId(/^money-activity-row-(?!primary-|fiat-)/u).length,
+    ).toBe(mockItems.length);
   });
 
   it('resets the overflow ancestor scroll so View all starts at the top', () => {
@@ -204,12 +233,76 @@ describe('MoneyActivityPage', () => {
     expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
       mockBuckets[MoneyActivityFilter.Transfers].length,
     );
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.Filter,
+      labelKey: 'moneyActivityFilterSends',
+      componentName: MoneyComponentName.ActivityFilterTransfers,
+    });
+  });
+
+  it('filters to Card when the Card chip is selected', () => {
+    renderWithLocalization(<MoneyActivityPage />);
+
+    fireEvent.click(screen.getByTestId('money-activity-filter-card'));
+
+    expect(screen.getByTestId('money-activity-filter-card')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByTestId('money-activity-filter-all')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(
+      screen.queryByText(messages.moneyActivityDeposited.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getAllByTestId(/money-activity-row-(?:card|cashback|refund):/u),
+    ).toHaveLength(mockBuckets[MoneyActivityFilter.Card].length);
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.Filter,
+      labelKey: 'moneyActivityFilterCard',
+      componentName: MoneyComponentName.ActivityFilterCard,
+    });
+  });
+
+  it('tracks the screen as viewed once availability has resolved', () => {
+    mockUseMoneyAccountAvailability.mockReturnValue({
+      availability: { isAvailable: false },
+      isLoading: true,
+    });
+
+    const { rerender } = renderWithLocalization(<MoneyActivityPage />);
+    expect(mockMoneyAnalytics.trackScreenViewed).not.toHaveBeenCalled();
+
+    mockUseMoneyAccountAvailability.mockReturnValue({
+      availability: {
+        isAvailable: true,
+        address: '0x0000000000000000000000000000000000000001',
+      },
+      isLoading: false,
+    });
+    rerender(<MoneyActivityPage />);
+    rerender(<MoneyActivityPage />);
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyActivity,
+    });
+    expect(mockMoneyAnalytics.trackScreenViewed).toHaveBeenCalledTimes(1);
   });
 
   it('shows empty copy when the active filter has no items', () => {
     mockUseMoneyActivityItems.mockReturnValue({
       items: [],
       buckets: EMPTY_MONEY_ACTIVITY_BUCKETS,
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
     });
 
     renderWithLocalization(<MoneyActivityPage />);
@@ -222,12 +315,52 @@ describe('MoneyActivityPage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('shows a blank list when Card has no activity', () => {
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: mockItems.filter((item) => item.kind === 'onchain'),
+      buckets: {
+        ...buildMoneyActivityBuckets(
+          mockItems.filter((item) => item.kind === 'onchain'),
+        ),
+        [MoneyActivityFilter.Card]: [],
+      },
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyActivityPage />);
+    fireEvent.click(screen.getByTestId('money-activity-filter-card'));
+
+    expect(screen.getByTestId('money-activity-card-empty')).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('money-activity-card-empty')).getByText(
+        messages.moneyActivityEmpty.message,
+      ),
+    ).toHaveClass('sr-only');
+    expect(
+      screen.queryByTestId('money-activity-empty'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(/^money-activity-row-(?!primary-|fiat-)/u),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders a Pending section above date groups when in-flight items exist', () => {
     const pending = makePendingDeposit();
     const items = [pending, ...mockItems];
     mockUseMoneyActivityItems.mockReturnValue({
       items,
       buckets: buildMoneyActivityBuckets(items),
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
     });
 
     renderWithLocalization(<MoneyActivityPage />);
@@ -258,5 +391,50 @@ describe('MoneyActivityPage', () => {
     expect(
       screen.getByTestId(`money-activity-row-${mockItems[0].id}`).tagName,
     ).toBe('DIV');
+  });
+
+  it('shows a settling skeleton instead of empty copy', () => {
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      buckets: EMPTY_MONEY_ACTIVITY_BUCKETS,
+      hasMore: true,
+      loadMore: jest.fn(),
+      isLoadingMore: true,
+      isSettling: true,
+      error: false,
+      refetch: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyActivityPage />);
+
+    expect(screen.getByTestId('money-activity-settling')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-activity-scroll-sentinel'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-activity-empty'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows a load error and retry when the Accounts API fails with no rows', () => {
+    const refetch = jest.fn();
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      buckets: EMPTY_MONEY_ACTIVITY_BUCKETS,
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: true,
+      refetch,
+    });
+
+    renderWithLocalization(<MoneyActivityPage />);
+
+    expect(screen.getByTestId('money-activity-empty')).toHaveTextContent(
+      messages.moneyActivityLoadError.message,
+    );
+    fireEvent.click(screen.getByTestId('money-activity-retry'));
+    expect(refetch).toHaveBeenCalledTimes(1);
   });
 });

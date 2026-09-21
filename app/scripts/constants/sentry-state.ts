@@ -73,6 +73,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    installAttribution: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -211,8 +212,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
-    tracesBeforeMetricsOptIn: false,
-    traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
   },
@@ -296,6 +295,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
+  },
+  ProfileMetricsController: {
+    accountSourceBackfillEnqueued: true,
+    reportedAccounts: false,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
@@ -412,6 +415,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     isContactSyncingEnabled: true,
+    isRampsSyncingEnabled: true,
   },
 };
 

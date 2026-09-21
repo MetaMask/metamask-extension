@@ -276,14 +276,7 @@ describe('PerpsDepositToast', () => {
           error: '',
           timestamp: 1_700_000_000_000,
         },
-        eventFragments: {
-          'transaction-ui-hl-deposit-tx': {
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              mm_pay_entry_point: HYPERLIQUID_DEPOSIT_PROMPT,
-            },
-          },
-        },
+        lastPerpsDepositEntryPoint: HYPERLIQUID_DEPOSIT_PROMPT,
       },
     });
 
@@ -319,14 +312,7 @@ describe('PerpsDepositToast', () => {
           error: '',
           timestamp: 1_700_000_000_000,
         },
-        eventFragments: {
-          'transaction-ui-other-deposit-tx': {
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              mm_pay_entry_point: 'some_other_entry_point',
-            },
-          },
-        },
+        lastPerpsDepositEntryPoint: undefined,
       },
     });
 
@@ -427,10 +413,14 @@ describe('PerpsDepositToast', () => {
       jest.advanceTimersByTime(1);
     });
 
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(2);
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
       'perpsClearDepositResult',
       [],
+    );
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'setLastPerpsDepositEntryPoint',
+      [null],
     );
   });
 
