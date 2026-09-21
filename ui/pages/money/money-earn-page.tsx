@@ -132,7 +132,7 @@ export function MoneyEarnPage() {
             size={ButtonSize.Lg}
             isLoading={isDepositLoading}
             onClick={handleConvert}
-            className="w-full rounded-lg"
+            className="w-full"
             data-testid="money-earn-convert-cta"
           >
             {t('moneyConvertYourCrypto')}
