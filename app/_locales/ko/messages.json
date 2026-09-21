@@ -3108,9 +3108,6 @@
   "copyAddressShort": {
     "message": "주소 복사"
   },
-  "copyPrivateKey": {
-    "message": "개인 키 복사"
-  },
   "copyToClipboard": {
     "message": "클립보드로 복사"
   },
@@ -5032,9 +5029,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "안전을 위해 지금은 이 텍스트를 선택할 수 없습니다."
   },
   "learnHow": {
     "message": "방법 확인하기"
@@ -8572,10 +8566,6 @@
     "message": "비공개 키",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 비공개 키",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "개인 키 입력이 표시되지 않습니다",
     "description": "Explains that the private key input is hidden"
@@ -8587,9 +8577,6 @@
   "privateKeyShown": {
     "message": "이 개인 키 입력은 표시됩니다",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "경고: 이 키를 노출하지 마세요. 비공개 키가 있는 사람이라면 누구든 회원님의 계정에 있는 자산을 훔칠 수 있습니다."
   },
   "privateKeys": {
     "message": "개인 키",
@@ -10692,12 +10679,6 @@
   },
   "showPermissions": {
     "message": "권한 표시"
-  },
-  "showPrivateKey": {
-    "message": "개인 키 표시"
-  },
-  "showSRP": {
-    "message": "비밀복구구문 표시"
   },
   "showTestnetNetworks": {
     "message": "테스트 네트워크 표시"

@@ -64,14 +64,20 @@ const earlyPendingToastTypes = new Set([
   TransactionType.musdClaim,
 ]);
 
+// Separate batch txs that share one toast with the main send/swap/bridge tx.
+export const batchHelperTransactionTypes = [
+  TransactionType.bridgeApproval,
+  TransactionType.swapApproval,
+  TransactionType.gasPayment,
+];
+
 function isExcludedTransactionType(
   transactionMeta: TransactionMeta,
   transactions: TransactionMeta[],
 ): boolean {
-  // Top-level only — nested swapApproval inside batch txs must still toast.
   if (
-    transactionMeta.type === TransactionType.bridgeApproval ||
-    transactionMeta.type === TransactionType.swapApproval
+    transactionMeta.type &&
+    batchHelperTransactionTypes.includes(transactionMeta.type)
   ) {
     return true;
   }
