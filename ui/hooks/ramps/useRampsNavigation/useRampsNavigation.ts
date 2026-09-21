@@ -28,6 +28,7 @@ import {
 import useRamps from '../useRamps/useRamps';
 import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
 import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
+import { resolveRampControllerAssetId } from '../utils/resolveRampControllerAssetId';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -79,9 +80,11 @@ function isCatalogEmpty(
   return providersEmpty || tokensEmpty;
 }
 
-// Finds `assetId` in the catalog, ignoring EVM address casing: callers build
-// asset ids from a checksummed address while the API returns a mix of
-// checksummed (USDC, USDT) and lowercase (mUSD) ids.
+// Finds `assetId` in the catalog, resolving it to the catalog's canonical
+// spelling: callers may build asset ids from a checksummed address while the
+// API returns a mix of checksummed (USDC, USDT) and lowercase (mUSD) ids, and
+// deep link intents express native assets with the `slip44:.` placeholder
+// while the catalog uses `slip44:{coinType}` (e.g. `eip155:1/slip44:60`).
 function findCatalogToken(
   tokensData: TokensResponse | null,
   assetId: CaipAssetType,
@@ -90,9 +93,11 @@ function findCatalogToken(
     ...(tokensData?.topTokens ?? []),
     ...(tokensData?.allTokens ?? []),
   ];
+  const canonicalAssetId = resolveRampControllerAssetId(assetId, catalog);
   return catalog.find(
     (token) =>
-      normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
+      normalizeAssetIdForApi(token.assetId) ===
+      normalizeAssetIdForApi(canonicalAssetId),
   );
 }
 
