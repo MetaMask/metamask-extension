@@ -481,9 +481,6 @@
     "ui/hooks/useCurrencyRatePolling.test.ts": {
       "React: Act warnings (component updates not wrapped)": 3
     },
-    "ui/hooks/useDebouncedValue.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 4
-    },
     "ui/hooks/useDecodedTransactionData.test.ts": {
       "error: Unexpected keys \"data\", \"to\", \"chainId\"": 1
     },

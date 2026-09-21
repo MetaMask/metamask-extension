@@ -24,14 +24,10 @@ export const useDebouncedValue = <Value>(
 
   useEffect(() => {
     if (delayMs <= 0) {
-      queueMicrotask(() => setDebounced(value));
       prevDelayMsRef.current = delayMs;
       return undefined;
     }
 
-    if (prevDelayMsRef.current <= 0) {
-      queueMicrotask(() => setDebounced(value));
-    }
     prevDelayMsRef.current = delayMs;
 
     const timer = setTimeout(() => setDebounced(value), delayMs);

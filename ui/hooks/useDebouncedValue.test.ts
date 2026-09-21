@@ -7,7 +7,9 @@ describe('useDebouncedValue', () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
     jest.useRealTimers();
   });
 
@@ -22,8 +24,10 @@ describe('useDebouncedValue', () => {
       { initialProps: { value: 'a' } },
     );
 
-    rerender({ value: 'ab' });
-    rerender({ value: 'abc' });
+    act(() => {
+      rerender({ value: 'ab' });
+      rerender({ value: 'abc' });
+    });
 
     expect(result.current).toBe('a');
 
@@ -68,12 +72,16 @@ describe('useDebouncedValue', () => {
       { initialProps: { value: 'first' } },
     );
 
-    rerender({ value: 'second' });
+    act(() => {
+      rerender({ value: 'second' });
+    });
 
     act(() => {
       jest.advanceTimersByTime(50);
     });
-    rerender({ value: 'third' });
+    act(() => {
+      rerender({ value: 'third' });
+    });
 
     act(() => {
       jest.advanceTimersByTime(99);

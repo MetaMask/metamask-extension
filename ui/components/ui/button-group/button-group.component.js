@@ -20,12 +20,13 @@ function ButtonGroup({
 
   if (newActiveButtonIndex !== prevNewActiveButtonIndex) {
     setPrevNewActiveButtonIndex(newActiveButtonIndex);
-    if (
-      typeof newActiveButtonIndex === 'number' &&
-      activeButtonIndex !== newActiveButtonIndex
-    ) {
-      setActiveButtonIndex(newActiveButtonIndex);
-    }
+  }
+
+  if (
+    typeof newActiveButtonIndex === 'number' &&
+    activeButtonIndex !== newActiveButtonIndex
+  ) {
+    setActiveButtonIndex(newActiveButtonIndex);
   }
 
   const renderButtons = () =>
