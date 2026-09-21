@@ -17,7 +17,14 @@ import { AdvancedGasPriceModal } from './advanced-gas-price-modal';
 const mockPersistGasFeePreference = jest.fn();
 
 jest.mock('../../gas-price-input/gas-price-input', () => ({
-  GasPriceInput: () => <div data-testid="gas-price-input">Gas Price Input</div>,
+  GasPriceInput: ({ onChange }: { onChange: (value: Hex) => void }) => (
+    <button
+      data-testid="gas-price-input"
+      onClick={() => onChange('0x77359400')}
+    >
+      Gas Price Input
+    </button>
+  ),
 }));
 
 jest.mock('../../gas-input/gas-input', () => ({
@@ -196,6 +203,40 @@ describe('AdvancedGasPriceModal', () => {
 
     expect(mockSetActiveModal).toHaveBeenCalledWith(
       GasModalType.EstimatesModal,
+    );
+  });
+
+  it('preserves an unsaved gas price when polled estimates update', async () => {
+    const { contractInteraction, getByTestId, getByText, store } = render();
+
+    fireEvent.click(getByTestId('gas-price-input'));
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          transactions: [
+            {
+              ...contractInteraction,
+              txParams: {
+                ...contractInteraction.txParams,
+                gasPrice: '0xb2d05e00',
+              },
+            },
+          ],
+        },
+      });
+    });
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() =>
+      expect(updateTransactionGasFees).toHaveBeenCalledWith(
+        contractInteraction.id,
+        {
+          userFeeLevel: 'custom',
+          gas: '0x7530',
+          gasPrice: '0x77359400',
+        },
+      ),
     );
   });
 

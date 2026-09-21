@@ -189,13 +189,12 @@ export const AdvancedGasPriceModal = (props: AdvancedGasPriceModalProps) => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const transactionKey = getAdvancedGasLimitTransactionKey(transactionMeta);
-  const modalStateKey = `${transactionKey}:${transactionMeta?.txParams?.gasPrice}`;
   const { gasLimit, isGasLimitAvailable, setGasLimit } =
     useAdvancedGasLimit(transactionMeta);
 
   return (
     <AdvancedGasPriceModalContent
-      key={modalStateKey}
+      key={transactionKey}
       transactionMeta={transactionMeta}
       gasLimit={gasLimit}
       isGasLimitAvailable={isGasLimitAvailable}

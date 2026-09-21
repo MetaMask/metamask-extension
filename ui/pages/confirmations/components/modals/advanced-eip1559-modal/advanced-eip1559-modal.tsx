@@ -221,13 +221,12 @@ export const AdvancedEIP1559Modal = (props: AdvancedEIP1559ModalProps) => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const transactionKey = getAdvancedGasLimitTransactionKey(transactionMeta);
-  const modalStateKey = `${transactionKey}:${transactionMeta?.txParams?.maxFeePerGas}:${transactionMeta?.txParams?.maxPriorityFeePerGas}`;
   const { gasLimit, isGasLimitAvailable, setGasLimit } =
     useAdvancedGasLimit(transactionMeta);
 
   return (
     <AdvancedEIP1559ModalContent
-      key={modalStateKey}
+      key={transactionKey}
       transactionMeta={transactionMeta}
       gasLimit={gasLimit}
       isGasLimitAvailable={isGasLimitAvailable}

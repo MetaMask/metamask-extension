@@ -18,8 +18,13 @@ import { AdvancedEIP1559Modal } from './advanced-eip1559-modal';
 const mockPersistGasFeePreference = jest.fn();
 
 jest.mock('../../max-base-fee-input/max-base-fee-input', () => ({
-  MaxBaseFeeInput: () => (
-    <div data-testid="max-base-fee-input">Max Base Fee Input</div>
+  MaxBaseFeeInput: ({ onChange }: { onChange: (value: Hex) => void }) => (
+    <button
+      data-testid="max-base-fee-input"
+      onClick={() => onChange('0x77359400')}
+    >
+      Max Base Fee Input
+    </button>
   ),
 }));
 
@@ -228,6 +233,42 @@ describe('AdvancedEIP1559Modal', () => {
 
     expect(mockSetActiveModal).toHaveBeenCalledWith(
       GasModalType.EstimatesModal,
+    );
+  });
+
+  it('preserves unsaved fee edits when polled estimates update', async () => {
+    const { contractInteraction, getByTestId, getByText, store } = render();
+
+    fireEvent.click(getByTestId('max-base-fee-input'));
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          transactions: [
+            {
+              ...contractInteraction,
+              txParams: {
+                ...contractInteraction.txParams,
+                maxFeePerGas: '0xb2d05e00',
+                maxPriorityFeePerGas: '0x3b9aca00',
+              },
+            },
+          ],
+        },
+      });
+    });
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() =>
+      expect(updateTransactionGasFees).toHaveBeenCalledWith(
+        contractInteraction.id,
+        {
+          userFeeLevel: 'custom',
+          gas: '0x7530',
+          maxFeePerGas: '0x77359400',
+          maxPriorityFeePerGas: '0x59682f00',
+        },
+      ),
     );
   });
 
