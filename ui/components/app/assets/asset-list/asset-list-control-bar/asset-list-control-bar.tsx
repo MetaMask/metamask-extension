@@ -2,12 +2,18 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
+  Box,
   Icon,
-  IconColor,
   IconName,
   IconSize,
+  Popover,
+  PopoverPosition,
+  twMerge,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
@@ -25,24 +31,7 @@ import {
   selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import {
-  Box,
-  ButtonBase,
-  ButtonBaseSize,
-  Popover,
-  PopoverPosition,
-  Text,
-} from '../../../../component-library';
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderColor,
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
@@ -190,7 +179,6 @@ const AssetListControlBar = ({
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
-  const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
   const networkButtonText = useNetworkFilterButtonLabel();
 
   const shouldShowRefreshButtons = useMemo(
@@ -389,71 +377,28 @@ const AssetListControlBar = ({
     closePopover();
   };
 
-  let networkFilterTextColor = TextColor.textDefault;
-  if (isNetworkSwitchPending) {
-    networkFilterTextColor = TextColor.transparent;
-  } else if (isSingleNetworkFilterSelected) {
-    networkFilterTextColor = TextColor.primaryDefault;
-  }
-
   return (
     <Box
-      className="asset-list-control-bar"
       marginLeft={4}
       marginRight={4}
+      paddingTop={4}
+      paddingBottom={1}
       data-testid={dataTestId}
     >
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-        <ButtonBase
+      <Box className="flex justify-between">
+        <Button
           data-testid="sort-by-networks"
-          variant={TextVariant.bodySmMedium}
-          className="asset-list-control-bar__button asset-list-control-bar__network_control"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Sm}
           onClick={handleNetworkFilterClick}
-          size={ButtonBaseSize.Sm}
-          loading={isNetworkSwitchPending}
-          disabled={isNetworkSwitchPending}
-          backgroundColor={
-            isNetworkFilterModalOpen
-              ? BackgroundColor.backgroundPressed
-              : BackgroundColor.backgroundDefault
-          }
-          color={
-            isSingleNetworkFilterSelected
-              ? TextColor.primaryDefault
-              : TextColor.textDefault
-          }
-          marginRight={isFullScreen ? 2 : null}
-          borderColor={BorderColor.borderMuted}
-          ellipsis
+          isLoading={isNetworkSwitchPending}
+          isDisabled={isNetworkSwitchPending}
+          startIconName={IconName.Filter}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {!isNetworkSwitchPending && (
-              <Icon
-                name={IconName.Filter}
-                size={IconSize.Md}
-                color={
-                  isSingleNetworkFilterSelected
-                    ? IconColor.PrimaryDefault
-                    : IconColor.IconDefault
-                }
-              />
-            )}
-            <Text
-              variant={TextVariant.bodySmMedium}
-              color={networkFilterTextColor}
-              ellipsis
-            >
-              {networkButtonText}
-            </Text>
-          </Box>
-        </ButtonBase>
+          {networkButtonText}
+        </Button>
 
-        <Box
-          className="asset-list-control-bar__buttons"
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexEnd}
-          alignItems={AlignItems.center}
-        >
+        <Box className="flex items-center justify-end" gap={2}>
           {showSortControl && (
             <Tooltip
               title={t('sortBy')}
@@ -464,9 +409,13 @@ const AssetListControlBar = ({
               <ButtonIcon
                 ref={setSortButtonRef}
                 data-testid="sort-by-popover-toggle"
-                className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
-                  isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
-                } hover:bg-hover active:bg-pressed`}
+                // Tooltip renders its child inside an inline wrapper, so the
+                // button has to be block-level to avoid the baseline leading
+                // that would shift it above its siblings.
+                className={twMerge(
+                  'flex',
+                  isTokenSortPopoverOpen && 'bg-pressed',
+                )}
                 onClick={toggleTokenSortPopover}
                 size={ButtonIconSize.Sm}
                 iconName={IconName.ListArrow}
@@ -497,7 +446,7 @@ const AssetListControlBar = ({
                 <ButtonIcon
                   ref={setImportButtonRef}
                   data-testid="importTokens-button"
-                  className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
+                  className="flex"
                   onClick={handleOpenTokenManagement}
                   size={ButtonIconSize.Sm}
                   iconName={IconName.MoreVertical}
