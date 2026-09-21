@@ -8,17 +8,21 @@ import {
 } from '@metamask/design-system-react';
 import Spinner from '../../../components/ui/spinner';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-links/buy-flow';
 import { parseRampIntent } from './parse-ramp-intent';
 
 /**
  * Entry page for `/buy` deep links when the unified buy feature is enabled.
  *
  * The deep link router lands the user here with the original query params.
- * The params are mapped to a buy intent and handed to the shared
- * `goToBuy` navigation chain, which applies the same eligibility gating and
- * token preselection as the in-app Buy buttons (service disruption,
- * geolocation, region and catalog checks) before opening the buy flow.
+ * When the in-app buy flow is available for this user, the params are mapped
+ * to a buy intent and handed to the shared `goToBuy` navigation chain, which
+ * applies the same eligibility gating and token preselection as the in-app
+ * Buy buttons. When Buy leaves the extension instead (the Portfolio fallback),
+ * the legacy behavior is preserved: the deep link params are forwarded
+ * verbatim to the Portfolio web app in a new tab.
  *
  * If no navigation is possible, the user is taken to the wallet home page;
  * any eligibility modal is still displayed by the global modal manager.
@@ -28,6 +32,7 @@ import { parseRampIntent } from './parse-ramp-intent';
 export function BuyDeepLinkEntry() {
   const location = useLocation();
   const navigate = useNavigate();
+  const t = useI18nContext();
   const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
   const hasInitiatedRef = useRef(false);
 
@@ -45,16 +50,27 @@ export function BuyDeepLinkEntry() {
       amount: searchParams.get('amount') ?? undefined,
       currency: searchParams.get('currency') ?? undefined,
     };
+
+    if (opensBuyInPortfolioTab) {
+      // Legacy redirect: forward the deep link params verbatim (the pre-UB2
+      // `/buy` behavior), then send this tab home. Portfolio handles token
+      // and amount preselection on its side.
+      const { redirectTo } = getBuyPortfolioRedirectDestination(
+        new URLSearchParams(location.search),
+      );
+      global.platform.openTab({ url: redirectTo.toString() });
+      navigate(DEFAULT_ROUTE, { replace: true });
+      return;
+    }
+
     const intent = parseRampIntent(params);
 
     goToBuy(
       intent ? { assetId: intent.assetId, chainId: intent.chainId } : undefined,
     )
       .then((didNavigate) => {
-        // When Buy leaves the extension (Portfolio fallback), it opened in a
-        // NEW tab — send this deep link tab home instead of leaving it on a
-        // spinner. Same when no navigation was possible (modal shown).
-        if (!didNavigate || opensBuyInPortfolioTab) {
+        // No navigation was possible (an eligibility modal was shown instead).
+        if (!didNavigate) {
           navigate(DEFAULT_ROUTE, { replace: true });
         }
       })
@@ -67,6 +83,8 @@ export function BuyDeepLinkEntry() {
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
+      aria-busy="true"
+      aria-label={t('loading')}
       data-testid="ramps-buy-deeplink-entry-loading"
     >
       <Spinner className="h-8 w-8" />

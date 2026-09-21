@@ -1,100 +1,81 @@
 import { parseRampIntent } from './parse-ramp-intent';
 
+const DAI = 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
 describe('parseRampIntent', () => {
   it('returns undefined when no intent params are present', () => {
     expect(parseRampIntent({})).toBeUndefined();
     expect(parseRampIntent({ utmSource: 'promo' })).toBeUndefined();
   });
 
-  it('prefers the assetId param and drops address and chainId', () => {
-    expect(
-      parseRampIntent({
+  const cases: [string, Record<string, string>, object | undefined][] = [
+    [
+      'builds an erc20 assetId from address and decimal chainId',
+      {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        chainId: '1',
+      },
+      { assetId: DAI, chainId: 'eip155:1' },
+    ],
+    [
+      'defaults the chain to Ethereum mainnet when only an address is given',
+      { address: '0x6b175474e89094c44da98b954eedeac495271d0f' },
+      { assetId: DAI, chainId: 'eip155:1' },
+    ],
+    [
+      'builds a native assetId for the zero address',
+      {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: '137',
+      },
+      { assetId: 'eip155:137/slip44:.', chainId: 'eip155:137' },
+    ],
+    [
+      'builds a native assetId when no address is given',
+      { chainId: '137' },
+      { assetId: 'eip155:137/slip44:.', chainId: 'eip155:137' },
+    ],
+    [
+      'drops address and chainId when assetId takes precedence',
+      {
         assetId: 'eip155:137/erc20:0xabc',
         address: '0xdef',
         chainId: '1',
-      }),
-    ).toStrictEqual({ assetId: 'eip155:137/erc20:0xabc' });
-  });
-
-  it('builds an erc20 assetId from address and decimal chainId', () => {
-    expect(
-      parseRampIntent({
-        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        chainId: '1',
-      }),
-    ).toStrictEqual({
-      assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
-      chainId: 'eip155:1',
-    });
-  });
-
-  it('defaults the chain to Ethereum mainnet when only an address is given', () => {
-    expect(
-      parseRampIntent({
-        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-      }),
-    ).toStrictEqual({
-      assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
-      chainId: 'eip155:1',
-    });
-  });
-
-  it('builds a native assetId for the zero address', () => {
-    expect(
-      parseRampIntent({
-        address: '0x0000000000000000000000000000000000000000',
-        chainId: '137',
-      }),
-    ).toStrictEqual({
-      assetId: 'eip155:137/slip44:.',
-      chainId: 'eip155:137',
-    });
-  });
-
-  it('builds a native assetId when no address is given', () => {
-    expect(parseRampIntent({ chainId: '137' })).toStrictEqual({
-      assetId: 'eip155:137/slip44:.',
-      chainId: 'eip155:137',
-    });
-  });
-
-  it('keeps only the defaulted chain when the address is invalid', () => {
-    expect(parseRampIntent({ address: 'not-an-address' })).toStrictEqual({
-      chainId: 'eip155:1',
-    });
-  });
-
-  it('keeps the chain when the address is invalid but the chain is valid', () => {
-    expect(
-      parseRampIntent({ address: 'not-an-address', chainId: '137' }),
-    ).toStrictEqual({ chainId: 'eip155:137' });
-  });
-
-  it('keeps remaining params when the address is invalid', () => {
-    expect(
-      parseRampIntent({
-        address: 'not-an-address',
-        chainId: '1',
-        amount: '50',
-      }),
-    ).toStrictEqual({ chainId: 'eip155:1', amount: '50' });
-  });
-
-  it('returns undefined when the chainId is invalid and no address resolves', () => {
-    expect(parseRampIntent({ chainId: 'not-a-chain' })).toBeUndefined();
-  });
-
-  it('passes amount and currency through', () => {
-    expect(
-      parseRampIntent({
+      },
+      { assetId: 'eip155:137/erc20:0xabc' },
+    ],
+    [
+      'passes amount and currency through',
+      {
         assetId: 'eip155:1/slip44:.',
         amount: '100',
         currency: 'usd',
-      }),
-    ).toStrictEqual({
-      assetId: 'eip155:1/slip44:.',
-      amount: '100',
-      currency: 'usd',
+      },
+      {
+        assetId: 'eip155:1/slip44:.',
+        amount: '100',
+        currency: 'usd',
+      },
+    ],
+    [
+      'keeps only the defaulted chain when the address is invalid',
+      { address: 'not-an-address' },
+      { chainId: 'eip155:1' },
+    ],
+    [
+      'keeps the chain and remaining params when the address is invalid',
+      { address: 'not-an-address', chainId: '137', amount: '50' },
+      { chainId: 'eip155:137', amount: '50' },
+    ],
+    [
+      'returns undefined when the chainId is invalid and nothing else resolves',
+      { chainId: 'not-a-chain' },
+      undefined,
+    ],
+  ];
+  for (const [label, params, expected] of cases) {
+    it(label, () => {
+      expect(parseRampIntent(params)).toStrictEqual(expected);
     });
-  });
+  }
 });
