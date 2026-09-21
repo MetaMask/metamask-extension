@@ -649,9 +649,6 @@ export class PreferencesController extends BaseController<
   consolidateBasicFunctionality(): void {
     const hasBftConsolidationMarker =
       this.state.preferences.isBasicFunctionalityConsolidatedEnabled;
-    if (hasBftConsolidationMarker && this.state.useExternalServices) {
-      return;
-    }
 
     const { firstTimeFlowType } = this.messenger.call(
       'OnboardingController:getState',
@@ -663,9 +660,6 @@ export class PreferencesController extends BaseController<
       firstTimeFlowType: firstTimeFlowType ?? undefined,
       authConnection,
     });
-    if (hasBftConsolidationMarker && !isSocialLogin) {
-      return;
-    }
 
     const preferenceState = {
       useExternalServices: this.state.useExternalServices,
@@ -679,6 +673,25 @@ export class PreferencesController extends BaseController<
     const hasDismissedNotice =
       this.state.preferences
         .basicFunctionalityMigrationNotificationDismissed === true;
+
+    if (hasBftConsolidationMarker && this.state.useExternalServices) {
+      if (
+        !hasDismissedNotice &&
+        this.state.preferences.basicFunctionalityMigrationNotification ===
+          null &&
+        notification !== null
+      ) {
+        this.update((state) => {
+          state.preferences.basicFunctionalityMigrationNotification =
+            notification;
+        });
+      }
+      return;
+    }
+
+    if (hasBftConsolidationMarker && !isSocialLogin) {
+      return;
+    }
 
     this.update((state) => {
       state.useExternalServices = landingState;

@@ -34,6 +34,17 @@ export function useBasicFunctionalityConsolidation(): void {
   const isSocialLoginUser = useAppSelector(
     getIsBasicFunctionalitySocialLoginUser,
   );
+  const migrationNotification = useAppSelector(
+    (state) =>
+      state.metamask.preferences?.basicFunctionalityMigrationNotification ??
+      null,
+  );
+  const isMigrationNotificationDismissed = useAppSelector((state) =>
+    Boolean(
+      state.metamask.preferences
+        ?.basicFunctionalityMigrationNotificationDismissed,
+    ),
+  );
   const shouldRunConsolidation =
     shouldStartBasicFunctionalityConsolidation({
       isRemoteFlagEnabled: isBftConsolidationRemoteEnabled,
@@ -43,7 +54,11 @@ export function useBasicFunctionalityConsolidation(): void {
     }) ||
     (hasBftConsolidationMarker &&
       !isBasicFunctionalityEnabled &&
-      isSocialLoginUser);
+      isSocialLoginUser) ||
+    (hasBftConsolidationMarker &&
+      isBasicFunctionalityEnabled &&
+      migrationNotification === null &&
+      !isMigrationNotificationDismissed);
 
   useEffect(() => {
     if (

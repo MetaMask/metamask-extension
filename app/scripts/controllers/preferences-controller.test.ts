@@ -836,13 +836,11 @@ describe('preferences controller', () => {
     });
 
     it('does not sync external services when already consolidated', () => {
-      const { controller, getOnboardingState, toggleExternalServices } =
-        setupController({});
+      const { controller, toggleExternalServices } = setupController({});
       controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
 
       controller.consolidateBasicFunctionality();
 
-      expect(getOnboardingState).not.toHaveBeenCalled();
       expect(toggleExternalServices).not.toHaveBeenCalled();
       expect(mockTrackEvent).not.toHaveBeenCalled();
     });

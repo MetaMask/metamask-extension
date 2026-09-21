@@ -118,6 +118,7 @@ describe('useBasicFunctionalityConsolidation', () => {
         },
         preferences: {
           isBasicFunctionalityConsolidatedEnabled: true,
+          basicFunctionalityMigrationNotificationDismissed: true,
         },
       },
     });
