@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RampsPaymentMethodListItem from './ramps-payment-method-list-item';
@@ -169,7 +169,9 @@ describe('RampsPaymentMethodListItem', () => {
       createStore(),
     );
 
-    fireEvent.mouseEnter(getByTestId('ramps-quote-display-warning-trigger'));
+    await act(async () => {
+      fireEvent.mouseEnter(getByTestId('ramps-quote-display-warning-trigger'));
+    });
 
     expect(
       getByTestId('ramps-quote-display-warning-tooltip'),
