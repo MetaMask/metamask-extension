@@ -1,4 +1,4 @@
-// Firefox: button[interestfor] hover → linked [popover] show/hide.
+// Firefox: [interestfor] hover → linked [popover] show/hide.
 
 let installed = false;
 
@@ -14,14 +14,12 @@ export function installInterestForPolyfill() {
   installed = true;
 
   document.addEventListener('mouseover', (event) => {
-    const button = (event.target as Element | null)?.closest(
-      'button[interestfor]',
-    );
-    if (!button) {
+    const trigger = (event.target as Element | null)?.closest('[interestfor]');
+    if (!trigger) {
       return;
     }
 
-    const popoverId = button.getAttribute('interestfor');
+    const popoverId = trigger.getAttribute('interestfor');
     const popover = popoverId ? document.getElementById(popoverId) : null;
     if (popover instanceof HTMLElement) {
       popover.showPopover();
@@ -32,11 +30,11 @@ export function installInterestForPolyfill() {
     const mouseEvent = event as MouseEvent;
     const { relatedTarget } = mouseEvent;
 
-    const button = (mouseEvent.target as Element | null)?.closest(
-      'button[interestfor]',
+    const trigger = (mouseEvent.target as Element | null)?.closest(
+      '[interestfor]',
     );
-    if (button) {
-      const popoverId = button.getAttribute('interestfor');
+    if (trigger) {
+      const popoverId = trigger.getAttribute('interestfor');
       const popover = popoverId ? document.getElementById(popoverId) : null;
       if (!(popover instanceof HTMLElement)) {
         return;
@@ -44,7 +42,7 @@ export function installInterestForPolyfill() {
 
       if (
         relatedTarget instanceof Node &&
-        (button.contains(relatedTarget) || popover.contains(relatedTarget))
+        (trigger.contains(relatedTarget) || popover.contains(relatedTarget))
       ) {
         return;
       }
@@ -59,7 +57,7 @@ export function installInterestForPolyfill() {
     }
 
     const linkedButton = document.querySelector(
-      `button[interestfor="${popover.id}"]`,
+      `[interestfor="${popover.id}"]`,
     );
     if (!linkedButton) {
       return;

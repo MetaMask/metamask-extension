@@ -36,9 +36,10 @@ beforeAll(() => {
         (force !== false && !this.hasAttribute('data-popover-open'))
       ) {
         this.showPopover();
-        return;
+        return true;
       }
       this.hidePopover();
+      return false;
     };
   }
 

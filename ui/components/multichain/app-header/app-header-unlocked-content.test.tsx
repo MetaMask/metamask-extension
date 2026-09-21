@@ -62,9 +62,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
 
-    const networksSubtitle = screen.getByTestId('networks-subtitle-test-id');
-    // The hover handler is on the first child Box inside MultichainTriggeredAddressRowsList
-    const hoverTarget = networksSubtitle.firstElementChild as HTMLElement;
+    const hoverTarget = screen.getByTestId('multichain-address-rows-trigger');
     fireEvent.mouseEnter(hoverTarget);
 
     await waitFor(() => {

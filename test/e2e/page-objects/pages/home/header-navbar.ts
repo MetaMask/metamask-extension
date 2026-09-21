@@ -216,11 +216,17 @@ class HeaderNavbar {
   }
 
   /**
-   * Click the network addresses link
+   * Hover the network addresses trigger to open the quick-copy popover.
    */
   async clickNetworkAddresses(): Promise<void> {
-    console.log('Click the network addresses link');
-    await this.driver.clickElement(this.networkAddressesLink);
+    console.log(
+      'Hover the network addresses trigger to open quick-copy popover',
+    );
+    const container = await this.driver.findElement(this.networkAddressesLink);
+    const trigger = await container.findElement({
+      css: '[data-testid="multichain-address-rows-trigger"]',
+    });
+    await this.driver.hoverElement(trigger);
   }
 
   async clickNotificationCount(count: number): Promise<void> {

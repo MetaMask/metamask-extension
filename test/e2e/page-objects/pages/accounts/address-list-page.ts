@@ -142,15 +142,19 @@ class AccountAddressListPage {
     console.log(
       `Check quick-copy popover shows "${networkAddress}" for "${networkName}"`,
     );
-    const row = await this.driver.findElement(
-      this.quickCopyRowByNetworkName(networkName),
+    await this.driver.waitUntil(
+      async () => {
+        const row = await this.driver.findElement(
+          this.quickCopyRowByNetworkName(networkName),
+        );
+        const rowText = await row.getText();
+        return rowText.includes(networkAddress);
+      },
+      {
+        interval: 100,
+        timeout: this.driver.timeout,
+      },
     );
-    const rowText = await row.getText();
-    if (!rowText.includes(networkAddress)) {
-      throw new Error(
-        `Expected quick-copy row for "${networkName}" to include "${networkAddress}" but got "${rowText}"`,
-      );
-    }
   }
 
   async checkQuickCopyPopoverIsLoaded(): Promise<void> {
