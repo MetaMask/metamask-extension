@@ -30,46 +30,49 @@ describe('Deep Link - /buy Route (unified buy)', function () {
     '/buy',
   ];
 
-  const signingVariants = ['signed with sig_params', 'unsigned'] as const;
+  const scenarios = buyRoutes.flatMap((route) =>
+    (['signed with sig_params', 'unsigned'] as const).map((signed) => ({
+      signed,
+      route,
+    })),
+  );
 
-  signingVariants.forEach((signed) => {
-    buyRoutes.forEach((route) => {
-      it(`routes ${signed} ${route} deep link into the in-app buy flow`, async function () {
-        const keyPair = await generateECDSAKeyPair();
-        const deepLinkPublicKey = bytesToB64(
-          await crypto.subtle.exportKey('raw', keyPair.publicKey),
-        );
+  for (const { signed, route } of scenarios) {
+    it(`routes ${signed} ${route} deep link into the in-app buy flow`, async function () {
+      const keyPair = await generateECDSAKeyPair();
+      const deepLinkPublicKey = bytesToB64(
+        await crypto.subtle.exportKey('raw', keyPair.publicKey),
+      );
 
-        await withFixtures(
-          await getConfig({
-            title: this.test?.fullTitle(),
-            deepLinkPublicKey,
-            manifestFlags: RAMPS_FEATURE_FLAGS,
-            additionalMocks: mockRampsEmptyCatalog,
-          }),
-          async ({ driver }: { driver: Driver }) => {
-            await driver.navigate();
-            const loginPage = new LoginPage(driver);
-            await loginPage.checkPageIsLoaded();
-            await loginPage.loginToHomepage();
-            await new HomePage(driver).checkPageIsLoaded();
+      await withFixtures(
+        await getConfig({
+          title: this.test?.fullTitle(),
+          deepLinkPublicKey,
+          manifestFlags: RAMPS_FEATURE_FLAGS,
+          additionalMocks: mockRampsEmptyCatalog,
+        }),
+        async ({ driver }: { driver: Driver }) => {
+          await driver.navigate();
+          const loginPage = new LoginPage(driver);
+          await loginPage.checkPageIsLoaded();
+          await loginPage.loginToHomepage();
+          await new HomePage(driver).checkPageIsLoaded();
 
-            const preparedUrl = await prepareDeepLinkUrl({
-              route,
-              signed,
-              privateKey: keyPair.privateKey,
-            });
+          const preparedUrl = await prepareDeepLinkUrl({
+            route,
+            signed,
+            privateKey: keyPair.privateKey,
+          });
 
-            await navigateDeepLinkToDestination(
-              driver,
-              preparedUrl,
-              'unlocked',
-              shouldRenderCheckbox(signed),
-              RampsBuyDeepLinkPage,
-            );
-          },
-        );
-      });
+          await navigateDeepLinkToDestination(
+            driver,
+            preparedUrl,
+            'unlocked',
+            shouldRenderCheckbox(signed),
+            RampsBuyDeepLinkPage,
+          );
+        },
+      );
     });
-  });
+  }
 });

@@ -1,18 +1,21 @@
+import { BaseUrl } from '../../constants/urls';
 import type { Route, Destination } from './routes/route';
 import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from './constants';
 
-type BuyDeepLinkRoute = Pick<Route, 'pathname'>;
-
-type ResolveBuyDeepLinkDestinationOptions = {
-  /** The parsed deep link route and destination. */
-  route: BuyDeepLinkRoute;
-  destination: Destination;
-  /**
-   * Whether the unified buy (native in-app buy) feature is enabled, e.g. the
-   * `rampsEnabled` remote feature flag.
-   */
-  isUnifiedBuyEnabled: boolean;
-};
+/**
+ * Builds the legacy `/buy` destination: an external redirect to the Portfolio
+ * web app with the deep link params forwarded verbatim.
+ *
+ * @param query - The deep link query params to forward.
+ * @returns The external redirect destination.
+ */
+export function getBuyPortfolioRedirectDestination(query: URLSearchParams): {
+  redirectTo: URL;
+} {
+  const buyUrl = new URL('/buy', BaseUrl.Portfolio);
+  query.forEach((value, key) => buyUrl.searchParams.append(key, value));
+  return { redirectTo: buyUrl };
+}
 
 /**
  * Resolves the final destination for a `/buy` deep link.
@@ -36,7 +39,12 @@ export function resolveBuyDeepLinkDestination({
   route,
   destination,
   isUnifiedBuyEnabled,
-}: ResolveBuyDeepLinkDestinationOptions): Destination {
+}: {
+  route: Pick<Route, 'pathname'>;
+  destination: Destination;
+  /** Whether the unified buy (native in-app buy) feature is enabled. */
+  isUnifiedBuyEnabled: boolean;
+}): Destination {
   if (
     !isUnifiedBuyEnabled ||
     route.pathname !== '/buy' ||
