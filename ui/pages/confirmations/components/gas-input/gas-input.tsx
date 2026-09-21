@@ -85,6 +85,7 @@ export const GasInput = ({
           'aria-describedby': displayedHelpText
             ? GAS_INPUT_HELP_TEXT_ID
             : undefined,
+          inputMode: 'numeric',
         }}
         onChange={handleChange}
         label={t('gasLimit')}

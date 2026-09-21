@@ -57,6 +57,17 @@ describe('GasInput', () => {
     expect(getByText(messages.gasLimit.message)).toBeInTheDocument();
   });
 
+  it('uses numeric input mode without number input behavior', () => {
+    const { getByTestId } = render();
+
+    const input = getByTestId('gas-input').querySelector(
+      'input',
+    ) as HTMLInputElement;
+
+    expect(input).toHaveAttribute('inputmode', 'numeric');
+    expect(input).toHaveAttribute('type', 'text');
+  });
+
   it('renders an empty value when the gas estimate is missing', () => {
     const { getByTestId } = render({ gasLimit: undefined });
 
