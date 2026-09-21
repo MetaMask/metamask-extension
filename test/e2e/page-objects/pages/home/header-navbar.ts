@@ -299,10 +299,6 @@ class HeaderNavbar {
     } catch {
       await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
     }
-    // Confirm the drawer is open: findVisibleElement checks actual viewport
-    // visibility, unlike waitForElementToStopMoving which passes even when the
-    // close button is at its stable off-screen position (drawer closed). Retry
-    // with clickElementUsingMouseMove if the click had no effect.
     try {
       await this.driver.findVisibleElement(this.drawerBackButton);
     } catch {
