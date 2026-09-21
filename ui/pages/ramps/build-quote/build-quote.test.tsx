@@ -10,6 +10,11 @@ import { RampsBuildQuoteScreen } from './build-quote';
 
 const QUOTE_DEBOUNCE_MS = 500;
 
+// A well-formed buy-widget URL as the quotes API returns for providers that
+// use the redirect flow (e.g. PayPal dummy quotes).
+const VALID_BUY_URL =
+  'https://on-ramp.api.cx.metamask.io/providers/paypal/buy-widget?regionId=%2Fregions%2Fus-nj&paymentMethodId=%2Fpayments%2Fpaypal&cryptoCurrencyId=%2Fcurrencies%2Fcrypto%2F137%2F0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&fiatCurrencyId=%2Fcurrencies%2Ffiat%2Fusd&amount=100&walletAddress=0x1234567890abcdef1234567890abcdef12345678&redirectUrl=https%3A%2F%2Fon-ramp-content.api.cx.metamask.io%2Fregions%2Ffake-callback&sdk=2.1.6&controller=22.0.0&context=extension';
+
 const mockNavigate = jest.fn();
 const mockGetBuyWidgetData = jest.fn();
 const mockWatchRampsCheckoutTab = jest.fn();
@@ -324,6 +329,20 @@ describe('RampsBuildQuoteScreen', () => {
   });
 
   it('opens the provider widget via background watch and navigates to complete buy on continue', async () => {
+    useRampsQuotes.mockReturnValue({
+      data: {
+        success: [
+          {
+            provider: 'transak',
+            id: 'quote-1',
+            quote: { buyURL: VALID_BUY_URL },
+          },
+        ],
+        error: [],
+      },
+      loading: false,
+      error: null,
+    });
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
       orderId: 'order-123',
@@ -343,6 +362,7 @@ describe('RampsBuildQuoteScreen', () => {
     expect(mockGetBuyWidgetData).toHaveBeenCalledWith({
       provider: 'transak',
       id: 'quote-1',
+      quote: { buyURL: VALID_BUY_URL },
     });
     expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -370,6 +390,20 @@ describe('RampsBuildQuoteScreen', () => {
   });
 
   it('watches redirect-only checkouts without an order code', async () => {
+    useRampsQuotes.mockReturnValue({
+      data: {
+        success: [
+          {
+            provider: 'transak',
+            id: 'quote-1',
+            quote: { buyURL: VALID_BUY_URL },
+          },
+        ],
+        error: [],
+      },
+      loading: false,
+      error: null,
+    });
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
     });
@@ -411,6 +445,22 @@ describe('RampsBuildQuoteScreen', () => {
   });
 
   it('surfaces an error and does not navigate when the widget has no url', async () => {
+    // The guard must pass a well-formed buyURL through so this exercises the
+    // `!widget?.url` branch, not the buyURL validation.
+    useRampsQuotes.mockReturnValue({
+      data: {
+        success: [
+          {
+            provider: 'transak',
+            id: 'quote-1',
+            quote: { buyURL: VALID_BUY_URL },
+          },
+        ],
+        error: [],
+      },
+      loading: false,
+      error: null,
+    });
     mockGetBuyWidgetData.mockResolvedValue(null);
 
     renderWithProvider(
@@ -423,6 +473,11 @@ describe('RampsBuildQuoteScreen', () => {
       fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
     });
 
+    expect(mockGetBuyWidgetData).toHaveBeenCalledWith({
+      provider: 'transak',
+      id: 'quote-1',
+      quote: { buyURL: VALID_BUY_URL },
+    });
     expect(mockWatchRampsCheckoutTab).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
@@ -431,6 +486,51 @@ describe('RampsBuildQuoteScreen', () => {
     expect(
       screen.getByTestId('ramps-build-quote-change-provider'),
     ).toHaveTextContent(messages.rampsChangeProvider.message);
+  });
+
+  // TRAM-3947: a mangled buy URL (bare `%` gluing the callback fragment onto
+  // cryptoCurrencyId) must be rejected client-side — fail fast with no doomed
+  // network round-trip, and keep the extension from fetching arbitrary URLs
+  // that carry the wallet address if the quotes API misbehaves.
+  it('surfaces an error and skips the widget fetch when the quote buy URL is malformed', async () => {
+    useRampsController.mockReturnValue({
+      ...mockControllerState(),
+      selectedProvider: { id: 'paypal', name: 'PayPal' },
+    });
+    useRampsQuotes.mockReturnValue({
+      data: {
+        success: [
+          {
+            provider: 'paypal',
+            id: 'quote-1',
+            quote: {
+              buyURL:
+                'https://on-ramp.api.cx.metamask.io/providers/paypal/buy-widget?regionId=us-nj&paymentMethodId=paypal&cryptoCurrencyId=137%ramp-content.api.cx.metamask.io%2Fregions%2Ffake-callback&sdk=2.1.6&controller=15.0.0&context=extension',
+            },
+          },
+        ],
+        error: [],
+      },
+      loading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockGetBuyWidgetData).not.toHaveBeenCalled();
+    expect(mockWatchRampsCheckoutTab).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsBuyWidgetError.message,
+    );
   });
 
   it('matches snapshot with provider quote error', () => {
