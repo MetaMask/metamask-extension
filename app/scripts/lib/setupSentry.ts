@@ -21,7 +21,8 @@ import {
   withIsolationScope,
   withScope,
 } from '@sentry/browser';
-import { logger } from '@sentry/core';
+import type * as Sentry from '@sentry/browser';
+import { debug as sentrySdkLogger } from '@sentry/core';
 import type {
   Breadcrumb,
   ErrorEvent as SentryErrorEvent,
@@ -188,7 +189,7 @@ export default function setupSentry(): typeof Sentry | undefined {
     startSpanManual,
     withIsolationScope,
     withScope,
-  };
+  } as typeof Sentry;
 }
 
 /**
