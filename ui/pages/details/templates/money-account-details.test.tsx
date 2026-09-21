@@ -16,6 +16,11 @@ jest.mock('../../../hooks/activity/useLocalTransactionMeta');
 jest.mock('../../../hooks/money/useMoneyAccountDeposit');
 jest.mock('../../../hooks/money/useMoneyAccountInfo');
 
+jest.mock('../../../contexts/route-messenger', () => ({
+  RouteMessengerProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+}));
+
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));

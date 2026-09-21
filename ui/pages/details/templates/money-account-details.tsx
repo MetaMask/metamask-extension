@@ -7,6 +7,8 @@ import {
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
 import type { MoneyAccountActivityItem } from '../../../../shared/lib/activity/types';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
+import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../../../components/app/money/messenger';
+import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../hooks/money/useMoneyAccountInfo';
@@ -19,15 +21,7 @@ type Props = {
   item: MoneyAccountActivityItem;
 };
 
-/**
- * Details for money-account deposits and withdrawals, laid out like the
- * other MM Pay details (perps): fiat hero, status and date, MM Pay fee
- * breakdown, and the per-transaction summary.
- *
- * @param props - Component props.
- * @param props.item - The money-account activity item to render.
- */
-export function MoneyAccountDetails({ item }: Readonly<Props>) {
+function MoneyAccountDetailsContent({ item }: Readonly<Props>) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { hasMoneyAccount } = useMoneyAccountInfo();
@@ -82,5 +76,28 @@ export function MoneyAccountDetails({ item }: Readonly<Props>) {
       metamaskPay={{ bridgeFeeFiat, networkFeeFiat, totalFiat }}
       transactionMeta={transactionMeta}
     />
+  );
+}
+
+/**
+ * Details for money-account deposits and withdrawals, laid out like the
+ * other MM Pay details (perps): fiat hero, status and date, MM Pay fee
+ * breakdown, and the per-transaction summary.
+ *
+ * Rendered from the generic transaction details route and the activity list
+ * dialog, neither of which provides a route messenger, so the template brings
+ * its own for the money account availability lookup.
+ *
+ * @param props - Component props.
+ * @param props.item - The money-account activity item to render.
+ */
+export function MoneyAccountDetails(props: Readonly<Props>) {
+  return (
+    <RouteMessengerProvider
+      path="money-account-details"
+      capabilities={MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES}
+    >
+      <MoneyAccountDetailsContent {...props} />
+    </RouteMessengerProvider>
   );
 }
