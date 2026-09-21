@@ -32,7 +32,6 @@ import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import { createMockNotificationPreferences } from '../hooks/metamask-notifications/mocks';
-import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilities';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
@@ -140,6 +139,7 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.getTokenStandardAndDetailsByChain = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.toggleBasicFunctionality = sinon.stub();
     background.setUseMultiAccountBalanceChecker = sinon.stub();
     background.setUseTransactionSimulations = sinon.stub();
     background.setSecurityAlertsEnabled = sinon.stub();
@@ -150,15 +150,6 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
-    background.changePasswordWithPasskeyVerification = sinon.stub();
-    background.protectVaultKeyWithPasskey = sinon.stub();
-    background.removePasskeyWithPasskeyVerification = sinon.stub();
-    background.removePasskeyWithPasswordVerification = sinon.stub();
-    background.unlockWithPasskey = sinon.stub();
-    background.generatePasskeyRegistrationOptions = sinon.stub();
-    background.generatePasskeyAuthenticationOptions = sinon.stub();
-    background.generatePasskeyPostRegistrationAuthenticationOptions =
-      sinon.stub();
     // Vault / seedless methods live on LegacyBackgroundApiService and are only
     // exposed via getApi(); stub them here for tests that use the controller
     // stub instance as the background connection directly.
@@ -180,6 +171,7 @@ describe('Actions', () => {
     background.getAppNameAndVersion = sinon.stub();
     background.getLedgerAppConfiguration = sinon.stub();
     background.getLedgerPublicKey = sinon.stub();
+    background.getLedgerMode = sinon.stub();
     background.unlockHardwareWalletAccount = sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
@@ -348,336 +340,6 @@ describe('Actions', () => {
       expect(
         changePasswordStub.calledOnceWith(newPassword, oldPassword),
       ).toStrictEqual(true);
-    });
-  });
-
-  describe('#changePasswordWithPasskeyVerification', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('submits passkey authentication response and new password to the background', async () => {
-      const store = mockStore();
-      const newPassword = 'new-password';
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-
-      background.changePasswordWithPasskeyVerification.resolves();
-      setBackgroundConnection(background);
-
-      await store.dispatch(
-        actions.changePasswordWithPasskeyVerification(
-          newPassword,
-          authenticationResponse,
-        ),
-      );
-
-      expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith({
-          newPassword,
-          authenticationResponse,
-          options: undefined,
-        }),
-      ).toStrictEqual(true);
-    });
-
-    it('forwards renewVaultKeyProtection option to the background', async () => {
-      const store = mockStore();
-      const newPassword = 'new-password';
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-
-      background.changePasswordWithPasskeyVerification.resolves();
-      setBackgroundConnection(background);
-
-      await store.dispatch(
-        actions.changePasswordWithPasskeyVerification(
-          newPassword,
-          authenticationResponse,
-          {
-            renewVaultKeyProtection: false,
-          },
-        ),
-      );
-
-      expect(
-        background.changePasswordWithPasskeyVerification.calledOnceWith({
-          newPassword,
-          authenticationResponse,
-          options: { renewVaultKeyProtection: false },
-        }),
-      ).toStrictEqual(true);
-    });
-
-    it('throws when the background rejects', async () => {
-      const store = mockStore();
-      const err = new Error('passkey verification failed');
-      background.changePasswordWithPasskeyVerification.rejects(err);
-      setBackgroundConnection(background);
-
-      await expect(
-        store.dispatch(
-          actions.changePasswordWithPasskeyVerification('pw', {
-            id: 'cred',
-            rawId: 'cred',
-            response: {
-              clientDataJSON: 'e30',
-              authenticatorData: 'AA',
-              signature: 'sig',
-            },
-            type: 'public-key',
-          }),
-        ),
-      ).rejects.toThrow('passkey verification failed');
-    });
-  });
-
-  describe('passkey background requests', () => {
-    afterEach(() => {
-      sinon.restore();
-      jest.restoreAllMocks();
-    });
-
-    it('#tryUnlockMetamaskWithPasskey dispatches success actions when unlock succeeds', async () => {
-      const store = mockStore();
-      background.unlockWithPasskey.resolves();
-      setBackgroundConnection(background);
-
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-
-      await store.dispatch(
-        actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
-      );
-
-      expect(
-        background.unlockWithPasskey.calledOnceWith(authenticationResponse),
-      ).toBe(true);
-      expect(store.getActions()).toStrictEqual([
-        { type: actionConstants.SHOW_LOADING, payload: undefined },
-        { type: actionConstants.HIDE_LOADING },
-      ]);
-    });
-
-    it('#tryUnlockMetamaskWithPasskey dispatches failure and rethrows when unlock fails', async () => {
-      const store = mockStore();
-      background.unlockWithPasskey.rejects(new Error('unlock failed'));
-      setBackgroundConnection(background);
-
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-
-      await expect(
-        store.dispatch(
-          actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
-        ),
-      ).rejects.toThrow('unlock failed');
-
-      expect(store.getActions()).toStrictEqual([
-        { type: actionConstants.SHOW_LOADING, payload: undefined },
-        { type: actionConstants.HIDE_LOADING },
-      ]);
-    });
-
-    it('#generatePasskeyRegistrationOptions passes prfAvailable true when PRF support is true', async () => {
-      jest
-        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
-        .mockResolvedValue(true);
-      background.generatePasskeyRegistrationOptions.resolves({
-        rp: { name: 'MM' },
-      });
-      setBackgroundConnection(background);
-
-      await actions.generatePasskeyRegistrationOptions();
-
-      expect(
-        background.generatePasskeyRegistrationOptions.calledOnceWith({
-          prfAvailable: true,
-        }),
-      ).toBe(true);
-    });
-
-    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
-      jest
-        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
-        .mockResolvedValue(false);
-      background.generatePasskeyRegistrationOptions.resolves({
-        rp: { name: 'MM' },
-      });
-      setBackgroundConnection(background);
-
-      await actions.generatePasskeyRegistrationOptions();
-
-      expect(
-        background.generatePasskeyRegistrationOptions.calledOnceWith({
-          prfAvailable: false,
-        }),
-      ).toBe(true);
-    });
-
-    it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {
-      const opts = { challenge: 'AQ', allowCredentials: [] };
-      background.generatePasskeyAuthenticationOptions.resolves(opts);
-      setBackgroundConnection(background);
-
-      const result = await actions.generatePasskeyAuthenticationOptions();
-
-      expect(result).toStrictEqual(opts);
-      expect(background.generatePasskeyAuthenticationOptions.calledOnce).toBe(
-        true,
-      );
-    });
-
-    it('#generatePasskeyPostRegistrationAuthenticationOptions forwards registration response', async () => {
-      const registrationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          attestationObject: 'e30',
-        },
-        type: 'public-key',
-      };
-      const opts = { challenge: 'post', allowCredentials: [] };
-      background.generatePasskeyPostRegistrationAuthenticationOptions.resolves(
-        opts,
-      );
-      setBackgroundConnection(background);
-
-      const result =
-        await actions.generatePasskeyPostRegistrationAuthenticationOptions(
-          registrationResponse,
-        );
-
-      expect(result).toStrictEqual(opts);
-      expect(
-        background.generatePasskeyPostRegistrationAuthenticationOptions.calledOnceWith(
-          registrationResponse,
-        ),
-      ).toBe(true);
-    });
-
-    it('#protectVaultKeyWithPasskey forwards registration and authentication responses and optional password', async () => {
-      const registrationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          attestationObject: 'e30',
-        },
-        type: 'public-key',
-      };
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'AA',
-        },
-        type: 'public-key',
-      };
-      background.protectVaultKeyWithPasskey.resolves();
-      setBackgroundConnection(background);
-
-      await actions.protectVaultKeyWithPasskey(
-        registrationResponse,
-        authenticationResponse,
-        'secret',
-      );
-
-      expect(
-        background.protectVaultKeyWithPasskey.calledOnceWith({
-          registrationResponse,
-          authenticationResponse,
-          password: 'secret',
-        }),
-      ).toBe(true);
-
-      await actions.protectVaultKeyWithPasskey(
-        registrationResponse,
-        authenticationResponse,
-      );
-
-      expect(
-        background.protectVaultKeyWithPasskey.secondCall.args,
-      ).toStrictEqual([
-        {
-          registrationResponse,
-          authenticationResponse,
-          password: undefined,
-        },
-      ]);
-    });
-
-    it('#removePasskeyWithPasskeyVerification forwards the authentication response', async () => {
-      const authenticationResponse = {
-        id: 'cred',
-        rawId: 'cred',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'sig',
-        },
-        type: 'public-key',
-      };
-      background.removePasskeyWithPasskeyVerification.resolves();
-      setBackgroundConnection(background);
-
-      await actions.removePasskeyWithPasskeyVerification(
-        authenticationResponse,
-      );
-
-      expect(
-        background.removePasskeyWithPasskeyVerification.calledOnceWith(
-          authenticationResponse,
-        ),
-      ).toBe(true);
-    });
-
-    it('#removePasskeyWithPasswordVerification forwards the password', async () => {
-      background.removePasskeyWithPasswordVerification.resolves();
-      setBackgroundConnection(background);
-
-      await actions.removePasskeyWithPasswordVerification('wallet-password');
-
-      expect(
-        background.removePasskeyWithPasswordVerification.calledOnceWith(
-          'wallet-password',
-        ),
-      ).toBe(true);
     });
   });
 
@@ -1061,132 +723,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#getSeedPhraseWithPasskey', () => {
-    const authenticationResponse = {
-      id: 'cred',
-      rawId: 'cred',
-      response: {
-        authenticatorData: 'auth',
-        clientDataJSON: 'e30',
-        signature: 'sig',
-      },
-      type: 'public-key',
-    };
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('forwards the authentication response and keyring id and decodes the seed phrase', async () => {
-      const store = mockStore();
-
-      const exportSeedPhraseWithPasskey = sinon
-        .stub()
-        .resolves(toSerializedSeedPhraseBuffer('test seed'));
-
-      background.getApi.returns({ exportSeedPhraseWithPasskey });
-      setBackgroundConnection(background.getApi());
-
-      const seedPhrase = await store.dispatch(
-        actions.getSeedPhraseWithPasskey(authenticationResponse, 'keyring-id'),
-      );
-
-      expect(
-        exportSeedPhraseWithPasskey.calledOnceWith(
-          authenticationResponse,
-          'keyring-id',
-        ),
-      ).toBe(true);
-      expect(seedPhrase).toStrictEqual('test seed');
-    });
-
-    it('hides the loading indication and rethrows when the background errors', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        exportSeedPhraseWithPasskey: sinon.stub().rejects(new Error('error')),
-      });
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(
-        store.dispatch(
-          actions.getSeedPhraseWithPasskey(authenticationResponse),
-        ),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#exportAccountsWithPasskey', () => {
-    const authenticationResponse = {
-      id: 'cred',
-      rawId: 'cred',
-      response: {
-        authenticatorData: 'auth',
-        clientDataJSON: 'e30',
-        signature: 'sig',
-      },
-      type: 'public-key',
-    };
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('forwards the authentication response and addresses and returns the private keys', async () => {
-      const store = mockStore();
-
-      const testPrivKeys = ['priv-key-one', 'priv-key-two'];
-      const exportAccountsWithPasskey = sinon.stub().resolves(testPrivKeys);
-
-      background.getApi.returns({ exportAccountsWithPasskey });
-      setBackgroundConnection(background.getApi());
-
-      const addresses = ['0xAddressOne', '0xAddressTwo'];
-      const privateKeys = await store.dispatch(
-        actions.exportAccountsWithPasskey(authenticationResponse, addresses),
-      );
-
-      expect(
-        exportAccountsWithPasskey.calledOnceWith(
-          authenticationResponse,
-          addresses,
-        ),
-      ).toBe(true);
-      expect(privateKeys).toStrictEqual(testPrivKeys);
-    });
-
-    it('hides the loading indication and rethrows when the background errors', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        exportAccountsWithPasskey: sinon.stub().rejects(new Error('error')),
-      });
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(
-        store.dispatch(
-          actions.exportAccountsWithPasskey(authenticationResponse, [
-            '0xAddress',
-          ]),
-        ),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#removeAccount', () => {
     afterEach(() => {
       sinon.restore();
@@ -1442,6 +978,23 @@ describe('Actions', () => {
 
       expect(background.getLedgerPublicKey.callCount).toStrictEqual(1);
       expect(result).toStrictEqual(mockResponse);
+    });
+  });
+
+  describe('#getLedgerMode', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerMode in background and returns the active handler mode', async () => {
+      background.getLedgerMode.resolves('dmk');
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerMode();
+
+      expect(background.getLedgerMode.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual('dmk');
     });
   });
 
@@ -2262,17 +1815,13 @@ describe('Actions', () => {
 
       setBackgroundConnection(background.getApi());
 
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
       await store.dispatch(
         actions.setSelectedMultichainAccount(
           'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
         ),
       );
-      expect(store.getActions()).toStrictEqual(expectedActions);
+      // No fullscreen loading indication — pending UI is owned by useTransition
+      expect(store.getActions()).toStrictEqual([]);
     });
   });
 
@@ -4319,33 +3868,109 @@ describe('Actions', () => {
     });
   });
 
+  describe('#hideMigrationModal', () => {
+    it('dismisses the Basic Functionality migration notification', async () => {
+      const store = mockStore();
+
+      background.dismissBasicFunctionalityMigrationNotification = sinon.stub();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.hideMigrationModal());
+
+      expect(
+        background.dismissBasicFunctionalityMigrationNotification.callCount,
+      ).toStrictEqual(1);
+    });
+  });
+
+  describe('#hideMigrationToast', () => {
+    it('dismisses the Basic Functionality migration notification', async () => {
+      const store = mockStore();
+
+      background.dismissBasicFunctionalityMigrationNotification = sinon.stub();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.hideMigrationToast());
+
+      expect(
+        background.dismissBasicFunctionalityMigrationNotification.callCount,
+      ).toStrictEqual(1);
+    });
+  });
+
   describe('#toggleBasicFunctionality', () => {
-    it('calls toggleExternalServices and consolidated preference setters', async () => {
+    it('calls the background toggleBasicFunctionality action', async () => {
       const store = mockStore();
 
       setBackgroundConnection(background);
 
       await store.dispatch(actions.toggleBasicFunctionality(false));
 
-      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
-      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
-        false,
-      ]);
-      expect(
-        background.setUseMultiAccountBalanceChecker.getCall(0).args,
-      ).toStrictEqual([false]);
-      expect(
-        background.setUseTransactionSimulations.getCall(0).args,
-      ).toStrictEqual([false]);
-      expect(background.setSecurityAlertsEnabled.getCall(0).args).toStrictEqual(
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
         [false],
       );
-      expect(background.setUse4ByteResolution.getCall(0).args).toStrictEqual([
-        false,
+    });
+  });
+
+  describe('#enableBasicFunctionality', () => {
+    const buildStateForConsolidation = (isConsolidated) => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        useExternalServices: false,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: isConsolidated,
+        },
+        preferences: {
+          ...defaultState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled: isConsolidated,
+        },
+      },
+    });
+
+    it('uses the consolidated toggle when the wallet is consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
+        [true],
+      );
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
+    });
+
+    it('uses the legacy toggle when the wallet is not consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(false));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
       ]);
-      expect(
-        background.setUseExternalNameSources.getCall(0).args,
-      ).toStrictEqual([false]);
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(0);
+    });
+
+    it('reads consolidation state when dispatched, not when created', async () => {
+      const unconsolidatedStore = mockStore(buildStateForConsolidation(false));
+      const consolidatedStore = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      // Built while the wallet is unconsolidated, dispatched after
+      // consolidation has landed.
+      const thunkAction = actions.enableBasicFunctionality();
+      unconsolidatedStore.getState();
+      await consolidatedStore.dispatch(thunkAction);
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
     });
   });
 
@@ -4477,6 +4102,90 @@ describe('Actions', () => {
         ),
       ).toBe(true);
       expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('signAndSendSmartTransaction', () => {
+    it('signs and submits ordinary fee variants without changing the transaction shape', async () => {
+      const store = mockStore();
+      const unsignedTransaction = {
+        chainId: '0x1',
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x2222222222222222222222222222222222222222',
+        data: '0x1234',
+        gas: '0x7530',
+        value: '0x1',
+      };
+      const signedTransactions = ['0xsigned1', '0xsigned2'];
+      const approveTransactionsWithSameNonce = sinon
+        .stub()
+        .resolves(signedTransactions);
+      const submitSignedTransactions = sinon
+        .stub()
+        .resolves({ uuid: 'smart-transaction-uuid' });
+
+      setBackgroundConnection({
+        approveTransactionsWithSameNonce,
+        submitSignedTransactions,
+      });
+
+      const uuid = await store.dispatch(
+        actions.signAndSendSmartTransaction({
+          unsignedTransaction,
+          smartTransactionFees: {
+            fees: [
+              {
+                maxFeePerGas: '100',
+                maxPriorityFeePerGas: '2',
+                gas: '21000',
+                value: '0',
+              },
+              {
+                maxFeePerGas: '200',
+                maxPriorityFeePerGas: '3',
+                gas: '21000',
+                value: '0',
+              },
+            ],
+          },
+        }),
+      );
+
+      expect(approveTransactionsWithSameNonce.getCall(0).args).toStrictEqual([
+        [
+          {
+            ...unsignedTransaction,
+            maxFeePerGas: '64',
+            maxPriorityFeePerGas: '2',
+          },
+          {
+            ...unsignedTransaction,
+            maxFeePerGas: 'c8',
+            maxPriorityFeePerGas: '3',
+          },
+        ],
+      ]);
+      expect(submitSignedTransactions.getCall(0).args).toStrictEqual([
+        {
+          signedTransactions,
+          txParams: unsignedTransaction,
+        },
+      ]);
+      expect(uuid).toBe('smart-transaction-uuid');
+    });
+  });
+
+  describe('cancelSmartTransaction', () => {
+    it('cancels the Smart Transaction by UUID', async () => {
+      const store = mockStore();
+      const cancelSmartTransaction = sinon.stub().resolves();
+      setBackgroundConnection({ cancelSmartTransaction });
+
+      await store.dispatch(actions.cancelSmartTransaction('uuid-to-cancel'));
+
+      expect(cancelSmartTransaction.getCall(0).args).toStrictEqual([
+        'uuid-to-cancel',
+      ]);
     });
   });
 

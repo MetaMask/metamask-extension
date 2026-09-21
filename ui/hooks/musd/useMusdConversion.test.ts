@@ -205,9 +205,11 @@ describe('useMusdConversion', () => {
 
       expect(mockAddTransaction).toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          pathname: `/confirm-transaction/${MOCK_TX_ID}`,
-        }),
+        {
+          pathname: '/confirm-transaction/tx-abc-123',
+          search: 'loader=customAmount&goBackTo=%2Fasset%2F0x1%2F0xtest',
+        },
+        { replace: true },
       );
 
       useMusdGeoBlocking.mockReturnValue({
@@ -294,9 +296,11 @@ describe('useMusdConversion', () => {
 
       expect(mockAddTransaction).not.toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalledWith(
-        expect.objectContaining({
+        {
           pathname: '/confirm-transaction/existing-tx-id',
-        }),
+          search: 'loader=customAmount&goBackTo=%2Fasset%2F0x1%2F0xtest',
+        },
+        { replace: true },
       );
     });
 
@@ -346,10 +350,11 @@ describe('useMusdConversion', () => {
       );
       expect(mockAddTransaction).toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          pathname: `/confirm-transaction/${MOCK_TX_ID}`,
+        {
+          pathname: '/confirm-transaction/tx-abc-123',
           search: 'loader=customAmount&goBackTo=%2Fasset%2F0x1%2F0xtest',
-        }),
+        },
+        { replace: true },
       );
     });
 

@@ -1,4 +1,9 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
+import {
+  Box as DSBox,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
@@ -29,6 +34,8 @@ import { useFormatters } from '../../../../../hooks/useFormatters';
 import { AccountTypeLabel } from '../account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 
+export type TokenTagRenderer = (token: AssetType) => ReactNode;
+
 type AssetRowProps = {
   asset: AssetType;
   onClick?: () => void;
@@ -37,6 +44,14 @@ type AssetRowProps = {
 
 type TokenAssetProps = AssetRowProps & {
   hideBalances?: boolean;
+  tagRenderers?: TokenTagRenderer[];
+  /**
+   * Optional renderers for a row-end accessory (e.g. ramps' unavailable-token
+   * info button). Rendered as its own row slot — vertically centered against
+   * the full row height, like the balance column — rather than nested next to
+   * the token name, so it doesn't share `tagRenderers`' inline placement.
+   */
+  endRenderers?: TokenTagRenderer[];
 };
 
 const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
@@ -103,7 +118,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        style={{ flex: 1, overflow: 'hidden' }}
+        style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}
       >
         <Text
           variant={TextVariant.bodyMdMedium}
@@ -130,6 +145,8 @@ const TokenAsset = ({
   onClick,
   isSelected,
   hideBalances = false,
+  tagRenderers,
+  endRenderers,
 }: TokenAssetProps) => {
   const tokenData = asset;
   const {
@@ -158,6 +175,21 @@ const TokenAsset = ({
     : (image ?? '');
 
   const handleClick = disabled ? undefined : onClick;
+  // Dim all static row content when disabled, reusing the shared disabled
+  // opacity token. The tagRenderers/endRenderers slots are intentionally left
+  // undimmed so accessory affordances (e.g. ramps' unavailable-token info
+  // button) stay prominent and interactive.
+  const dimmedStyle: React.CSSProperties | undefined = disabled
+    ? { opacity: 'var(--opacity-disabled)' }
+    : undefined;
+  const tag = tagRenderers?.reduce<ReactNode>(
+    (found, render) => found ?? render(asset),
+    null,
+  );
+  const endAccessory = endRenderers?.reduce<ReactNode>(
+    (found, render) => found ?? render(asset),
+    null,
+  );
 
   return (
     <Box
@@ -175,9 +207,17 @@ const TokenAsset = ({
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
-      style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
+      // Ignore pointer events on the whole row when disabled so `.send-asset`
+      // hover styles (pointer cursor, hover background) don't suggest that a
+      // non-selectable row is interactive; the row-end accessory below
+      // re-enables them for itself.
+      style={disabled ? { pointerEvents: 'none' } : undefined}
     >
-      <Box marginRight={4}>
+      <DSBox
+        marginRight={4}
+        className="shrink-0"
+        style={disabled ? { opacity: 'var(--opacity-disabled)' } : undefined}
+      >
         <BadgeWrapper
           badge={
             chainId ? (
@@ -196,40 +236,59 @@ const TokenAsset = ({
             showHalo={false}
           />
         </BadgeWrapper>
-      </Box>
+      </DSBox>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        style={{ flex: 1, overflow: 'hidden' }}
+        style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+        <DSBox
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          className="min-w-0 overflow-hidden"
         >
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-            marginRight={1}
-          >
-            {name}
-          </Text>
-          <AccountTypeLabel label={typeLabel} />
-        </Box>
+          <DSBox className="mr-1 min-w-0 overflow-hidden" style={dimmedStyle}>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+              ellipsis
+            >
+              {name}
+            </Text>
+          </DSBox>
+          {tag ? <DSBox className="shrink-0">{tag}</DSBox> : null}
+          {typeLabel ? (
+            <DSBox className="shrink-0" style={dimmedStyle}>
+              <AccountTypeLabel label={typeLabel} />
+            </DSBox>
+          ) : null}
+        </DSBox>
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
           ellipsis
+          style={dimmedStyle}
         >
           {symbol}
         </Text>
       </Box>
+      {endAccessory ? (
+        <DSBox
+          marginLeft={2}
+          className="shrink-0"
+          style={disabled ? { pointerEvents: 'auto' } : undefined}
+        >
+          {endAccessory}
+        </DSBox>
+      ) : null}
       {!hideBalances && (
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.flexEnd}
           marginLeft={2}
+          className="shrink-0"
+          style={dimmedStyle}
         >
           <Text variant={TextVariant.bodyMdMedium}>
             {formatCurrencyWithMinThreshold(
@@ -254,6 +313,8 @@ export const Asset = ({
   onClick,
   isSelected,
   hideBalances,
+  tagRenderers,
+  endRenderers,
 }: TokenAssetProps) => {
   if (NFT_STANDARDS.includes(asset.standard as AssetStandard)) {
     return <NftAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
@@ -264,6 +325,8 @@ export const Asset = ({
       onClick={onClick}
       isSelected={isSelected}
       hideBalances={hideBalances}
+      tagRenderers={tagRenderers}
+      endRenderers={endRenderers}
     />
   );
 };

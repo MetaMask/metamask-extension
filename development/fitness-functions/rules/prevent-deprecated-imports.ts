@@ -15,7 +15,6 @@ const DEPRECATED_COMPONENT_PATHS = [
   'component-library/button-icon',
   'component-library/button-link',
   'component-library/button-primary',
-  'component-library/checkbox',
   'component-library/form-text-field/deprecated',
   'component-library/icon',
   'component-library/modal-content/deprecated/modal-content',

@@ -486,17 +486,3 @@ window.logStateString = async function () {
   state.platform = await browser.runtime.getPlatformInfo();
   return JSON.stringify(state, null, 2);
 };
-
-window.logState = async function (toClipboard) {
-  try {
-    const result = await window.logStateString();
-    if (toClipboard) {
-      await navigator.clipboard.writeText(result);
-      console.log('State log copied');
-    } else {
-      console.log(result);
-    }
-  } catch (err) {
-    console.error(err.message);
-  }
-};

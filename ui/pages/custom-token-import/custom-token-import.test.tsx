@@ -50,6 +50,7 @@ const backgroundConnectionMock = new Proxy(
 );
 
 const mockNavigate = jest.fn();
+const mockToastSuccess = jest.fn();
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -58,6 +59,19 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockNavigate,
   };
 });
+
+jest.mock('../../components/ui/toast/toast', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+  },
+  ToastContent: ({
+    title,
+    dataTestId,
+  }: {
+    title: string;
+    dataTestId?: string;
+  }) => <div data-testid={dataTestId}>{title}</div>,
+}));
 
 jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
   jest.requireActual(
@@ -156,6 +170,7 @@ describe('CustomTokenImportPage', () => {
     trackAnalyticsEventMock.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
     mockNavigate.mockClear();
+    mockToastSuccess.mockClear();
     const actions = getMockedActions();
     actions.addImportedTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
@@ -339,7 +354,7 @@ describe('CustomTokenImportPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('returns to token management with success toast state after submitting a custom token', async () => {
+  it('shows a success toast and returns to token management after submitting a custom token', async () => {
     const actions = getMockedActions();
     await submitCustomToken();
 
@@ -357,14 +372,17 @@ describe('CustomTokenImportPage', () => {
       ),
     );
     await waitFor(() =>
-      expect(mockNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
-        state: {
-          tokenManagementToast: {
-            type: 'customTokenAdded',
-            symbol: 'APE',
-          },
-        },
-      }),
+      expect(mockToastSuccess).toHaveBeenCalledWith(
+        expect.objectContaining({
+          props: expect.objectContaining({
+            dataTestId: 'token-management-custom-token-success-toast',
+            title: expect.stringContaining('APE'),
+          }),
+        }),
+      ),
+    );
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE),
     );
     await waitFor(() =>
       expect(trackAnalyticsEventMock).toHaveBeenCalledWith(
@@ -389,13 +407,11 @@ describe('CustomTokenImportPage', () => {
     );
   });
 
-  describe('when the assets-unify-state remote feature flag is enabled', () => {
+  describe('when the unified assets state is included in the build', () => {
     it('seeds AssetsController via importCustomAssetsBatch so the token appears in the manage-tokens list', async () => {
       const actions = getMockedActions();
 
-      await submitCustomToken({
-        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
-      });
+      await submitCustomToken();
 
       const expectedAssetId =
         'eip155:1/erc20:0x1111111111111111111111111111111111111111';
@@ -428,9 +444,7 @@ describe('CustomTokenImportPage', () => {
     it('passes the full token name (not the symbol) as the name field in metadata', async () => {
       const actions = getMockedActions();
 
-      await submitCustomToken({
-        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
-      });
+      await submitCustomToken();
 
       const expectedAssetId =
         'eip155:1/erc20:0x1111111111111111111111111111111111111111';
@@ -453,7 +467,6 @@ describe('CustomTokenImportPage', () => {
         'eip155:1/erc20:0x1111111111111111111111111111111111111111';
 
       await submitCustomToken({
-        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
         assetPreferences: {
           [assetId]: { hidden: true },
         },
@@ -485,6 +498,7 @@ describe('CustomTokenImportPage', () => {
         // list when assets-unify-state is on: the token remains in
         // `customAssets` (so the unified `getAllTokens` selector still
         // returns it) and `assetPreferences[assetId].hidden` is `true`.
+        // The hidden-token filter is still gated by the runtime FF (read path).
         customAssets: { [accountId]: [assetId] },
         assetsInfo: {
           [assetId]: {

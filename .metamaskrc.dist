@@ -25,6 +25,17 @@ PASSKEY_ENABLED='false'
 ; Uses production API endpoint by default (same as builds.yml)
 ;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'
 
+; Core backend REST API base URL overrides
+; Uses production API endpoints by default when unset
+;MM_BACKEND_ACCOUNTS_API_URL='https://accounts.api.cx.metamask.io'
+;MM_BACKEND_PRICES_API_URL='https://price.api.cx.metamask.io'
+;MM_BACKEND_TOKEN_API_URL='https://token.api.cx.metamask.io'
+;MM_BACKEND_TOKENS_API_URL='https://tokens.api.cx.metamask.io'
+; Set to `true` to stop sending the bearer token on core-backend REST requests.
+; Production auth tokens are rejected by non-production backends, so this is
+; usually needed alongside the URL overrides above.
+;MM_BACKEND_DISABLE_AUTH='true'
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=
@@ -73,6 +84,10 @@ BLOCKAID_PUBLIC_KEY=
 ;   existing trace() callers) is unaffected.
 ;   Hotfix release required to flip this in production.
 ;SENTRY_DISTRIBUTED_TRACING_DISABLED=true
+; Sample rates: tracesSampleRate and WRAPPER_SAMPLE_RATE are compile-time
+;   constants, but the remote feature flag `sentry: { tracesSampleRate,
+;   wrapperSampleRate }` overrides them at Sentry init (no build required).
+;   See shared/lib/sentry-remote-rates.ts.
 
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
 ; This should NEVER be enabled in production since it slows down react
@@ -94,6 +109,15 @@ BLOCKAID_PUBLIC_KEY=
 ; Set this to `true` to enable `AuthenticationController` environment config to match the extension's build type. If set to `true`, `beta` and `uat` builds will result in using `Env.UAT`. Leaving it to `false` or unset will use `Env.PRD`.
 ; FORCE_AUTH_MATCH_BUILD='false'
 
+; Set to `dev` to point AuthenticationController and identity services
+; (User Storage, Profile Metrics, Config Registry, Authenticated User Storage)
+; at DEV backends. Defaults to prod, and is ignored outside local development
+; (`yarn start`) builds. Restart `yarn start` after changing.
+; Enabling DEV will break authenticated services that still talk to PRD
+; (notifications, shield, money-account, bridge, perps). After flipping,
+; clear the auth session from Settings → Debug → Backup and sync.
+; MM_DEV_API_ENV=dev
+
 ; This variable is required to run performance tests
 TEST_SRP_2=
 
@@ -111,6 +135,14 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; Intended for local development and QA only.
 ;FORCE_ENFORCED_SIMULATIONS='true'
 
-; Set to `true` to enable pure-black (OLED) dark mode locally and rebuild (`yarn start`).
-; To enable for all users, change the corresponding entry in builds.yml to `true`.
-MM_PURE_BLACK_PREVIEW=true
+; Set to `true` to inject curated Money Home activity rows (deposits,
+; converts, receives, sends — including pending and failed) so the Activity
+; list UI can be reviewed without live deposit/withdraw. Remote flag
+; `moneyActivityMockDataEnabled` takes precedence when it is a boolean.
+; Rebuild after changing this value.
+;MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED='true'
+
+; Set to `true` so Money activity rows navigate to the transaction details
+; page. Remote flag `moneyEnableActivityDetails` takes precedence when it
+; is a boolean. Rebuild after changing this value.
+;MM_MONEY_ENABLE_ACTIVITY_DETAILS='true'

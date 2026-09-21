@@ -1,4 +1,5 @@
 import React from 'react';
+import { act, fireEvent } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -14,11 +15,14 @@ import {
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
-  useIsTransactionPayLoading,
+  useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import {
+  useIsPaidByMetaMask,
+  useSponsoredNetworkFeeFlags,
+} from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { BridgeFeeRow, BridgeFeeRowProps } from './bridge-fee-row';
@@ -51,10 +55,13 @@ function getPerpsWithdrawState() {
 describe('BridgeFeeRow', () => {
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
-  const useIsTransactionPayLoadingMock = jest.mocked(
-    useIsTransactionPayLoading,
+  const useIsTransactionPayQuotePendingMock = jest.mocked(
+    useIsTransactionPayQuotePending,
   );
   const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
+  const useSponsoredNetworkFeeFlagsMock = jest.mocked(
+    useSponsoredNetworkFeeFlags,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -67,8 +74,12 @@ describe('BridgeFeeRow', () => {
       },
     } as TransactionPayTotals);
 
-    useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(false);
     useIsPaidByMetaMaskMock.mockReturnValue(false);
+    useSponsoredNetworkFeeFlagsMock.mockReturnValue({
+      isSourceNetworkSponsored: false,
+      isTargetNetworkSponsored: false,
+    });
 
     useTransactionPayQuotesMock.mockReturnValue([
       {} as TransactionPayQuote<Json>,
@@ -76,7 +87,7 @@ describe('BridgeFeeRow', () => {
   });
 
   it('renders skeleton with label when loading (Default variant)', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(true);
 
     const { getByTestId, queryByTestId, getByText } = render();
 
@@ -86,7 +97,7 @@ describe('BridgeFeeRow', () => {
   });
 
   it('renders bridge fee skeleton only when loading (Small variant)', () => {
-    useIsTransactionPayLoadingMock.mockReturnValue(true);
+    useIsTransactionPayQuotePendingMock.mockReturnValue(true);
 
     const { getByTestId, queryByTestId, queryByText } = render({
       variant: ConfirmInfoRowSize.Small,
@@ -287,6 +298,85 @@ describe('BridgeFeeRow', () => {
       expect(
         queryByTestId('bridge-fee-tooltip-popover-button'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Network fee paid by MetaMask (partial sponsorship)', () => {
+    beforeEach(() => {
+      useSponsoredNetworkFeeFlagsMock.mockReturnValue({
+        isSourceNetworkSponsored: false,
+        isTargetNetworkSponsored: true,
+      });
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '0.14' },
+          metaMask: { usd: '0' },
+          sourceNetwork: { estimate: { usd: '0.20' } },
+          targetNetwork: { usd: '0.03' },
+        },
+      } as TransactionPayTotals);
+    });
+
+    it('keeps user-paid source gas in the fee total on cross-chain deposits', () => {
+      const { getByTestId } = render();
+
+      // provider 0.14 + source 0.20; target 0.03 is sponsored
+      expect(getByTestId('transaction-fee-value')).toHaveTextContent('$0.34');
+    });
+
+    it('shows the user-paid source network fee in the tooltip, not Paid by MetaMask', async () => {
+      const { getByTestId, findByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      await act(async () => {
+        fireEvent.click(getByTestId('bridge-fee-tooltip-popover-button'));
+      });
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.networkFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(
+        `${messages.networkFee.message}: $0.20`,
+      );
+      expect(tooltip.textContent).not.toContain(
+        `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+      );
+      expect(tooltip.textContent).toContain(
+        `${messages.bridgeFee.message}: $0.14`,
+      );
+    });
+
+    it('labels the network fee as Paid by MetaMask when only target gas remains and is sponsored', async () => {
+      useSponsoredNetworkFeeFlagsMock.mockReturnValue({
+        isSourceNetworkSponsored: true,
+        isTargetNetworkSponsored: true,
+      });
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '0.14' },
+          metaMask: { usd: '0' },
+          sourceNetwork: { estimate: { usd: '0' } },
+          targetNetwork: { usd: '0.03' },
+        },
+      } as TransactionPayTotals);
+
+      const { getByTestId, findByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      expect(getByTestId('transaction-fee-value')).toHaveTextContent('$0.14');
+
+      await act(async () => {
+        fireEvent.click(getByTestId('bridge-fee-tooltip-popover-button'));
+      });
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.networkFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(
+        `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+      );
     });
   });
 

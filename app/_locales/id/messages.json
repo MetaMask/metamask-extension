@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "Ikon akun"
   },
+  "accountImported": {
+    "message": "Akun berhasil diimpor",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "Nama akun"
   },
@@ -152,8 +156,9 @@
   "accountsConnected": {
     "message": "Akun terhubung"
   },
-  "accountsPermissionsTitle": {
-    "message": "Melihat akun Anda dan menyarankan transaksi"
+  "accountsCount": {
+    "message": "$1 akun",
+    "description": "Label showing number of accounts selected, $1 is the count"
   },
   "accountsSmallCase": {
     "message": "akun"
@@ -166,6 +171,9 @@
   },
   "activity": {
     "message": "Aktivitas"
+  },
+  "activityAndNonceDataDeleted": {
+    "message": "Data aktivitas dan nonce telah dihapus"
   },
   "activityEmptyDescription": {
     "message": "Tukar token pertama Anda hari ini."
@@ -475,6 +483,42 @@
   },
   "activity_marketShort_success_title": {
     "message": "Posisi short ditutup - pasar"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Deposit gagal"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Mendeposit"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Didepositkan"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Pengiriman gagal"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Mengirim"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Terkirim"
   },
   "activity_nftBuy_failed_title": {
     "message": "Pembelian gagal"
@@ -851,15 +895,59 @@
   "activity_predictionsWithdrawFunds_success_title": {
     "message": "Penarikan prediksi"
   },
+  "activity_rampBuy_failed_description": {
+    "message": "Pembelian gagal"
+  },
+  "activity_rampBuy_failed_title": {
+    "message": "Pembelian gagal"
+  },
+  "activity_rampBuy_pending_description": {
+    "message": "Membeli $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_pending_title": {
+    "message": "Membeli $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_description": {
+    "message": "Dibeli senilai $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampBuy_success_title": {
+    "message": "Dibeli senilai $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_failed_description": {
+    "message": "Penjualan gagal"
+  },
+  "activity_rampSell_failed_title": {
+    "message": "Penjualan gagal"
+  },
+  "activity_rampSell_pending_description": {
+    "message": "Menjual $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_pending_title": {
+    "message": "Menjual $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_description": {
+    "message": "$1 dijual",
+    "description": "$1 is the token symbol"
+  },
+  "activity_rampSell_success_title": {
+    "message": "$1 dijual",
+    "description": "$1 is the token symbol"
+  },
   "activity_receive_failed_description": {
-    "message": "Dari: $1",
+    "message": "Dari $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_failed_title": {
     "message": "Penerimaan gagal"
   },
   "activity_receive_pending_description": {
-    "message": "Dari: $1",
+    "message": "Dari $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
@@ -867,7 +955,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_receive_success_description": {
-    "message": "Dari: $1",
+    "message": "Dari $1",
     "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
@@ -918,14 +1006,14 @@
     "description": "$1 is the token symbol"
   },
   "activity_send_failed_description": {
-    "message": "Ke: $1",
+    "message": "Ke $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_failed_title": {
     "message": "Pengiriman gagal"
   },
   "activity_send_pending_description": {
-    "message": "Ke: $1",
+    "message": "Ke $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
@@ -933,7 +1021,7 @@
     "description": "$1 is the token symbol"
   },
   "activity_send_success_description": {
-    "message": "Ke: $1",
+    "message": "Ke $1",
     "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
@@ -1246,7 +1334,7 @@
     "message": "Ditambahkan"
   },
   "addedProtectionDescription": {
-    "message": "Anda berinteraksi dengan alamat yang tidak dikenal. Ini membantu mencegah transaksi berbahaya."
+    "message": "Karena Anda berinteraksi dengan alamat yang tidak dikenal, fitur perlindungan dapat mencegah beberapa transaksi berbahaya."
   },
   "addedProtectionIncludesNetworkFee": {
     "message": "Termasuk $1 untuk perlindungan tambahan",
@@ -1353,6 +1441,12 @@
   "alert": {
     "message": "Peringatan"
   },
+  "alertAccountNoFundsMessage": {
+    "message": "Dana tidak tersedia. Gunakan akun lain."
+  },
+  "alertAccountNoFundsTitle": {
+    "message": "Dana tidak cukup"
+  },
   "alertAccountTypeUpgradeMessage": {
     "message": "Anda memperbarui akun ke akun cerdas. Anda akan tetap menggunakan alamat akun yang sama sambil membuka transaksi yang lebih cepat dan biaya jaringan yang lebih rendah. $1"
   },
@@ -1380,8 +1474,15 @@
   "alertContentMultipleApprovals": {
     "message": "Anda memberikan izin kepada orang lain untuk menarik token Anda, meskipun tindakan tersebut tidak diperlukan untuk transaksi ini."
   },
+  "alertDepositLimit": {
+    "message": "Deposit maks: $1",
+    "description": "$1 is the formatted USD deposit limit (e.g. $100,000)"
+  },
   "alertDisableTooltip": {
     "message": "Ini dapat diubah dalam \"Pengaturan > Peringatan\""
+  },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Kurangi atau gunakan metode pembayaran yang berbeda."
   },
   "alertInsufficientPayTokenBalance": {
     "message": "Dana tidak cukup"
@@ -1397,10 +1498,10 @@
     "message": "Penyerang terkadang meniru situs dengan membuat perubahan kecil pada alamat situs. Pastikan Anda berinteraksi dengan situs yang dituju sebelum melanjutkan."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "Kami tidak dapat memverifikasi alamat ini. Alamat ini mungkin baru atau belum diverifikasi. Lanjutkan hanya jika Anda memercayai sumbernya."
+    "message": "Mitra keamanan tidak memiliki riwayat yang cukup andal untuk memverifikasi alamat ini."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "Jika Anda mengonfirmasikan permintaan ini, kemungkinan besar aset Anda akan hilang karena penipuan."
+    "message": "Mitra keamanan telah menandai alamat ini karena adanya aktivitas berbahaya."
   },
   "alertMessageBurnAddress": {
     "message": "Anda mengirimkan aset ke alamat burn. Jika dilanjutkan, aset Anda akan hilang."
@@ -1414,8 +1515,8 @@
   "alertMessageGasFeeLow": {
     "message": "Saat memilih biaya rendah, perkirakan transaksi lebih lambat dan waktu tunggu lebih lama. Untuk transaksi lebih cepat, pilih opsi biaya Pasar atau Agresif."
   },
-  "alertMessageGasTooLow": {
-    "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 21000 atau lebih tinggi."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Untuk melanjutkan transaksi ini, Anda perlu meningkatkan batas gas menjadi 12000 atau lebih tinggi."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Anda tidak memiliki cukup $1 di akun untuk membayar biaya jaringan."
@@ -1468,6 +1569,15 @@
   "alertPayHardwareAccountTitle": {
     "message": "Dompet tidak didukung"
   },
+  "alertPerpsWithdrawBalanceUnavailable": {
+    "message": "Tidak dapat memeriksa saldo Perp Anda. Coba lagi."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Alamat ditandai sebagai berisiko tinggi"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Sinyal alamat terbatas"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "Interaksi pertama"
   },
@@ -1501,6 +1611,9 @@
   "alertReasonPendingTransactions": {
     "message": "Transaksi tertunda"
   },
+  "alertReasonPerpsWithdrawBalanceUnavailable": {
+    "message": "Saldo tidak tersedia"
+  },
   "alertReasonSignIn": {
     "message": "Permintaan masuk yang mencurigakan"
   },
@@ -1530,9 +1643,6 @@
   },
   "allNetworks": {
     "message": "Semua jaringan"
-  },
-  "allPermissions": {
-    "message": "Koneksi dapp"
   },
   "allPopularNetworks": {
     "message": "Semua jaringan populer"
@@ -1623,6 +1733,12 @@
   "approvedOnForAccounts": {
     "message": "Disetujui pada $1 untuk $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
+  },
+  "arcUsageNoticeDescription": {
+    "message": "Selamat datang di Arc! Untuk memfasilitasi dan memverifikasi penggunaan Anda atas Arc chain, kami dapat membagikan informasi kepada tim Arc."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "Pemberitahuan"
   },
   "areYouSure": {
     "message": "Anda yakin?"
@@ -1725,6 +1841,9 @@
   "back": {
     "message": "Kembali"
   },
+  "backToSafety": {
+    "message": "Kembali ke keamanan"
+  },
   "backUpIncomplete": {
     "message": "Pencadangan tidak selesai"
   },
@@ -1761,6 +1880,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "Kontak"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "Order beli & jual"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Kelola apa saja yang Anda sinkronkan"
   },
@@ -1769,9 +1891,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Pelajari cara kami melindungi privasi Anda"
-  },
-  "backupApprovalInfo": {
-    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
   },
   "backupApprovalNotice": {
     "message": "Cadangkan Frasa Pemulihan Rahasia untuk menjaga keamanan dompet dan dana Anda."
@@ -1822,6 +1941,38 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Aktifkan fungsionalitas dasar"
+  },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "Pengaturan Anda telah diubah"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "postingan blog"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "Kami memperbarui cara kerja MetaMask untuk login sosial. Untuk menghadirkan pengalaman yang mulus di seluruh ekosistem MetaMask, pengenal login sosial Anda (email atau nama pengguna) kini akan ditautkan secara aman ke profil pengguna dan alamat akun terkait milik Anda. Sebagai bagian dari pembaruan ini, Fungsionalitas Dasar dan pengaturan default lainnya akan selalu diaktifkan."
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "Kami tidak pernah menjual data Anda kepada pihak ketiga. Baca selengkapnya seputar apa saja yang kami kumpulkan dan alasannya di bagian $1 dan bagian $2 yang telah diperbarui.",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "Pemberitahuan Privasi"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "Pembaruan privasi dan produk"
+  },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "API pihak ketiga kini menjadi bagian dari Fungsionalitas Dasar. Berdasarkan preferensi Anda sebelumnya, pengaturan ini $1. Anda dapat mengubahnya setiap saat di $2",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "dinonaktifkan"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "diaktifkan"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "Pengaturan > Privasi"
   },
   "basicFunctionalityRequired_description": {
     "message": "Fitur ini tidak tersedia saat fungsi dasar dinonaktifkan. Gunakan tombol di bawah ini untuk mengaktifkannya."
@@ -1950,53 +2101,77 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Jika dilanjutkan, semua aset yang Anda daftarkan di Blur bisa berpotensi hilang."
+  "blockaidAlertModalMessage": {
+    "message": "Mitra keamanan menemukan sinyal berisiko tinggi dalam $1 ini. Jika dilanjutkan, dana Anda tidak dapat dipulihkan.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request"
   },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Anda berinteraksi dengan situs berbahaya. Jika dilanjutkan, Anda akan kehilangan aset milik Anda."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Jika dilanjutkan, semua aset yang Anda daftarkan di OpenSea bisa berpotensi hilang."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Jika permintaan ini dikonfirmasi, Anda dapat kehilangan aset milik Anda. Sebaiknya batalkan permintaan ini."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Anda mengirimkan aset milik Anda ke penipu. Jika dilanjutkan, Anda akan kehilangan aset tersebut."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Jika permintaan ini dikonfirmasi, Anda mengizinkan penipu untuk menarik dan menggunakan aset Anda. Anda tidak akan mendapatkannya kembali."
+  "blockaidAlertModalMessageWithAmount": {
+    "message": "Mitra keamanan menemukan sinyal berisiko tinggi dalam $1 ini. Jika dilanjutkan, $2 Anda tidak dapat dipulihkan.",
+    "description": "$1 is a request type noun such as approval, transfer, signature or request; $2 is the formatted fiat value at risk"
   },
   "blockaidDescriptionApproveFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan dapat mengambil semua aset Anda."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, seseorang dapat mencuri aset Anda yang terdaftar di Blur."
+    "message": "Anda memberikan alamat yang ditandai oleh izin mitra keamanan untuk memindahkan aset Anda."
   },
   "blockaidDescriptionErrored": {
-    "message": "Karena terjadi kesalahan, kami tidak dapat memeriksa peringatan keamanan. Lanjutkan hanya jika Anda memercayai setiap alamat yang terlibat."
+    "message": "Kami tidak dapat menyelesaikan pemeriksaan keamanan ini. Lanjutkan hanya jika Anda memercayai situs dan alamat yang terlibat."
+  },
+  "blockaidDescriptionHighRiskSignature": {
+    "message": "Mitra keamanan menandai tanda tangan ini sebagai risiko tinggi. Penandatanganan dapat mengotorisasi tindakan terhadap aset Anda tanpa izin Anda."
   },
   "blockaidDescriptionMaliciousDomain": {
-    "message": "Anda berinteraksi dengan domain berbahaya. Jika Anda menyetujui permintaan ini, aset Anda kemungkinan akan hilang."
+    "message": "Mitra keamanan menandai situs ini sebagai berbahaya. Jika ini adalah penipuan, dana Anda tidak dapat dipulihkan."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Jika Anda menyetujui permintaan ini, aset Anda kemungkinan akan hilang."
+  "blockaidDescriptionMaliciousDomainWithAmount": {
+    "message": "Mitra keamanan menandai situs ini sebagai berbahaya. Jika ini adalah penipuan, $1 Anda tidak dapat dipulihkan.",
+    "description": "$1 is the formatted fiat value at risk"
   },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, seseorang dapat mencuri aset Anda yang terdaftar di OpenSea."
+  "blockaidDescriptionMarketplaceFarming": {
+    "message": "Anda memberikan alamat yang ditandai oleh izin mitra keamanan untuk memindahkan aset Anda yang terdaftar di $1.",
+    "description": "$1 is a marketplace name such as OpenSea or Blur"
+  },
+  "blockaidDescriptionRiskSignals": {
+    "message": "Mitra keamanan menemukan sinyal risiko dalam permintaan ini. Tinjau sebelum melanjutkan."
   },
   "blockaidDescriptionTransferFarming": {
-    "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan akan mengambil semua aset Anda."
+    "message": "Anda mengirim aset ke alamat yang ditandai oleh mitra keamanan. Jika ini adalah penipuan, dana Anda tidak dapat dipulihkan."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Ini adalah permintaan tipuan"
+  "blockaidDescriptionTransferFarmingWithAmount": {
+    "message": "Anda mengirim aset ke alamat yang ditandai oleh mitra keamanan. Jika ini adalah penipuan, $1 Anda tidak dapat dipulihkan.",
+    "description": "$1 is the formatted fiat value at risk"
+  },
+  "blockaidRequestTypeApproval": {
+    "message": "persetujuan",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeRequest": {
+    "message": "minta",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeSignature": {
+    "message": "tanda tangan",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidRequestTypeTransfer": {
+    "message": "transfer",
+    "description": "Noun inserted into blockaidAlertModalMessage as $1"
+  },
+  "blockaidTitleHighRiskApproval": {
+    "message": "Persetujuan berisiko tinggi"
+  },
+  "blockaidTitleHighRiskSignature": {
+    "message": "Tanda tangan berisiko tinggi"
+  },
+  "blockaidTitleHighRiskTransfer": {
+    "message": "Transfer berisiko tinggi"
   },
   "blockaidTitleMayNotBeSafe": {
-    "message": "Berhati-hatilah"
+    "message": "Pemeriksaan keamanan tidak tersedia"
   },
-  "blockaidTitleSuspicious": {
-    "message": "Ini adalah permintaan yang mencurigakan"
+  "blockaidTitleRiskSignalsDetected": {
+    "message": "Sinyal risiko terdeteksi"
+  },
+  "blockaidTitleSiteFlaggedUnsafe": {
+    "message": "Situs yang ditandai sebagai tidak aman"
   },
   "blockies": {
     "message": "Blockies"
@@ -2087,6 +2262,12 @@
   },
   "bridgeNoPriceInfoTitle": {
     "message": "Tidak ada informasi harga"
+  },
+  "bridgeOffHoursDescription": {
+    "message": "Pasar ditutup: Harga dihitung oleh penerbit, bukan merupakan data pasar secara langsung. Situasinya mungkin berbeda saat pasar dibuka kembali pada sesi perdagangan berikutnya yang tersedia."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Perdagangan di luar jam kerja"
   },
   "bridgePoints": {
     "message": "Estimasi poin",
@@ -2319,6 +2500,22 @@
   "bridgeSendLoading": {
     "message": "Mengirim dari chain sumber"
   },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Aktifkan $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "Swap ini berpotensi gagal. Di Stellar, akun Anda tidak dapat menerima $1 sampai token tersebut diaktifkan di dompet Anda dengan trustline yang valid.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "Swap ini berpotensi gagal. Di Stellar, $1 tidak dapat menerima $2 sampai Anda beralih ke akun tersebut dan mengaktifkan token dengan trustline yang valid.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Aktifkan $1 di Stellar terlebih dahulu",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
+  },
   "bridgeSuspicious": {
     "message": "Mencurigakan"
   },
@@ -2344,7 +2541,7 @@
     "message": "Gunakan jumlah maks yang diizinkan"
   },
   "bridgeValidationInsufficientGasMessage": {
-    "message": "Anda tidak memiliki cukup $1 untuk membayar biaya gas untuk bridge ini. Masukkan jumlah yang lebih kecil atau beli lebih banyak $1."
+    "message": "Anda tidak memiliki cukup $1 untuk membayar biaya jaringan untuk bridge ini. Masukkan jumlah yang lebih kecil atau beli lebih banyak $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Diperlukan lebih banyak $1 untuk gas"
@@ -2731,7 +2928,7 @@
     "message": "Untuk melindungi aset Anda, sebaiknya tolak permintaan tersebut."
   },
   "confirmationAlertModalTitleDescription": {
-    "message": "Aset Anda berpotensi hilang"
+    "message": "Permintaan berisiko tinggi"
   },
   "confirmed": {
     "message": "Dikonfirmasi"
@@ -2757,8 +2954,8 @@
   "connectAHardwareWalletDescription": {
     "message": "Menggunakan USB atau Kode QR"
   },
-  "connectAccounts": {
-    "message": "Hubungkan akun"
+  "connectAnyway": {
+    "message": "Tetap hubungkan"
   },
   "connectHardwareDevice": {
     "message": "Hubungkan $1",
@@ -2804,18 +3001,6 @@
   "connectedSnaps": {
     "message": "Snaps yang Terhubung"
   },
-  "connectedWithAccount": {
-    "message": "$1 akun terhubung",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Terhubung dengan $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 jaringan terhubung",
-    "description": "$1 represents network length"
-  },
   "connecting": {
     "message": "Menghubungkan"
   },
@@ -2853,6 +3038,9 @@
   "connectionRequest": {
     "message": "Permintaan koneksi"
   },
+  "connections": {
+    "message": "Koneksi"
+  },
   "connectionsRemovedModalDescription": {
     "message": "Beberapa koneksi (seperti dompet perangkat keras dan snap) telah dihapus karena tidak aktif di perangkat ini. Anda dapat menambahkannya kembali setiap saat di Pengaturan."
   },
@@ -2880,6 +3068,9 @@
   },
   "continue": {
     "message": "Lanjutkan"
+  },
+  "continueAtYourOwnRisk": {
+    "message": "Lanjutkan dengan risiko Anda sendiri"
   },
   "contract": {
     "message": "Kontrak"
@@ -2916,9 +3107,6 @@
   },
   "copyAddressShort": {
     "message": "Salin alamat"
-  },
-  "copyPrivateKey": {
-    "message": "Salin kunci pribadi"
   },
   "copyToClipboard": {
     "message": "Salin ke papan klip"
@@ -3056,9 +3244,6 @@
   "customerSupport": {
     "message": "dukungan pelanggan"
   },
-  "dappConnections": {
-    "message": "Koneksi Dapp"
-  },
   "dappSuggested": {
     "message": "Situs yang disarankan"
   },
@@ -3083,6 +3268,9 @@
   },
   "dappSwapRewardText": {
     "message": "Dapatkan $1 poin"
+  },
+  "dapps": {
+    "message": "Dapp"
   },
   "darkTheme": {
     "message": "Gelap"
@@ -3243,6 +3431,9 @@
   "deepLink_thePredictPage": {
     "message": "halaman pasar prediksi"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "halaman pengaturan privasi"
+  },
   "deepLink_theRewardsPage": {
     "message": "halaman MetaMask Reward"
   },
@@ -3302,6 +3493,9 @@
   },
   "defiTabErrorTitle": {
     "message": "Kami tidak dapat memuat halaman ini."
+  },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi tidak didukung di jaringan ini."
   },
   "delete": {
     "message": "Hapus"
@@ -3390,7 +3584,7 @@
     "message": "Nonaktifkan"
   },
   "disabledGasOptionToolTipMessage": {
-    "message": "“$1” dinonaktifkan karena tidak memenuhi kenaikan minimal 10% dari biaya gas asli.",
+    "message": "“$1” dinonaktifkan karena tidak memenuhi kenaikan minimum 10% dari biaya jaringan awal.",
     "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
@@ -3403,22 +3597,33 @@
     "message": "Anda yakin ingin memutus koneksi? Fungsionalitas situs Anda bisa hilang."
   },
   "disconnectAllSites": {
-    "message": "Putuskan Semua Koneksi"
+    "message": "Putuskan semua koneksi"
   },
   "disconnectAllSitesDescriptionText": {
-    "message": "Jika Anda memutuskan koneksi dari semua situs, Anda perlu menghubungkan kembali akun dan jaringan Anda untuk dapat menggunakannya lagi."
+    "message": "Tindakan ini akan memutus koneksi semua akun Anda dari semua dapp. Anda perlu menghubungkannya kembali untuk dapat menggunakannya lagi."
   },
   "disconnectAllSitesError": {
     "message": "Beberapa dapp tidak dapat diputus koneksinya. Coba lagi."
   },
+  "disconnectAllSitesQuestion": {
+    "message": "Putuskan semua koneksi?"
+  },
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
   },
-  "disconnectMessage": {
-    "message": "Ini akan memutus koneksi dari situs ini"
-  },
   "disconnectPrompt": {
     "message": "Putuskan koneksi $1"
+  },
+  "disconnectQuestion": {
+    "message": "Putuskan koneksi?"
+  },
+  "disconnectSiteDescriptionText": {
+    "message": "Tindakan ini akan memutus koneksi semua akun Anda dari $1. Anda perlu menghubungkannya kembali untuk menggunakan dapp ini lagi.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "Koneksi berhasil diputus dari $1.",
+    "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
     "message": "Putuskan koneksi akun ini"
@@ -3426,9 +3631,17 @@
   "discover": {
     "message": "Temukan"
   },
+  "discoverSearchCap": {
+    "message": "kap",
+    "description": "Abbreviated label for market cap in Discover search result rows."
+  },
   "discoverSearchNoResults": {
     "message": "Hasil tidak ditemukan",
     "description": "Empty state when Discover search returns no matching assets."
+  },
+  "discoverSearchNoResultsFor": {
+    "message": "Tidak ditemukan hasil untuk “$1”",
+    "description": "Empty state title when Discover search returns no matching assets for a user query."
   },
   "discoverSearchPopularAssets": {
     "message": "Lihat aset populer lainnya",
@@ -3544,7 +3757,7 @@
     "message": "Edit kontak"
   },
   "editGasFeeModalTitle": {
-    "message": "Edit biaya gas"
+    "message": "Edit biaya jaringan"
   },
   "editGasLimitOutOfBounds": {
     "message": "Batas gas minimum adalah $1"
@@ -3582,17 +3795,11 @@
   "editNetworkLink": {
     "message": "edit jaringan asli"
   },
-  "editNetworksTitle": {
-    "message": "Edit jaringan"
-  },
   "editNonceField": {
     "message": "Edit nonce"
   },
   "editNonceMessage": {
     "message": "Ini merupakan fitur lanjutan, gunakan dengan hati-hati."
-  },
-  "editPermissions": {
-    "message": "Edit izin"
   },
   "editSpendingCap": {
     "message": "Edit batas penggunaan"
@@ -4006,14 +4213,14 @@
   "gasLimit": {
     "message": "Batas gas"
   },
-  "gasLimitTooLow": {
-    "message": "Batas gas minimum adalah 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Batas gas minimum adalah 12000"
   },
   "gasPrice": {
     "message": "Harga gas"
   },
   "gasPriceExcessive": {
-    "message": "Biaya gas Anda diatur terlalu tinggi. Pertimbangkan untuk menurunkan jumlahnya."
+    "message": "Biaya jaringan Anda terlalu tinggi. Pertimbangkan untuk menurunkan jumlahnya."
   },
   "gasPriceFetchFailed": {
     "message": "Estimasi biaya gas gagal karena terjadi kesalahan pada jaringan."
@@ -4251,9 +4458,25 @@
     "message": "Spender: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "Swap $1 $2 dengan $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "Menukar $1 $2 dengan $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Menukar $1 $2 dengan $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "Ke: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Anda menolak transaksi ini di perangkat Anda",
@@ -4267,6 +4490,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Lanjutkan"
+  },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "$1 Anda hanya dapat menandatangani data bertipe versi 4 (V4). Situs ini meminta jenis tanda tangan versi lama yang tidak didukung",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorReconnectButton": {
     "message": "Hubungkan kembali dan coba lagi",
@@ -4311,6 +4538,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 terkunci",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "Tanda tangan tidak didukung"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Pastikan perangkat $1 Anda telah diatur dengan Frasa Pemulihan Rahasia atau passphrase untuk akun yang dipilih",
@@ -4494,6 +4724,22 @@
   },
   "honeypotTitle": {
     "message": "Honey pot"
+  },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Depositkan token apa pun. Kami akan menukarnya dan mengirimkannya ke akun Hyperliquid Anda secara otomatis—tanpa biaya MetaMask.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "Tidak, terima kasih. Depositkan secara manual",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "Danai Hyperliquid dengan MetaMask",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Dana siap untuk diperdagangkan di Hyperliquid dan MetaMask Perps.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Gunakan kode referensi MetaMask untuk seluruh perdagangan mendatang sesuai dengan $1 Hyperliquid. MetaMask mendapatkan komisi dari biaya.",
@@ -4784,9 +5030,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Demi keamanan Anda, memilih teks ini tidak tersedia untuk saat ini."
-  },
   "learnHow": {
     "message": "Pelajari caranya"
   },
@@ -4994,7 +5237,7 @@
     "message": "Masuk"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "Sesi Anda telah berakhir. Masuk lagi untuk melanjutkan."
+    "message": "Masuk lagi untuk melanjutkan."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "Sesi telah berakhir"
@@ -5023,8 +5266,8 @@
     "message": "rendah"
   },
   "lowValueAssets": {
-    "message": "Token bernilai rendah ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "message": "Token bersaldo rendah ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Mainnet Ethereum"
@@ -5043,6 +5286,13 @@
   },
   "manage": {
     "message": "Kelola"
+  },
+  "manageAccounts": {
+    "message": "Kelola akun",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
+  },
+  "manageConnectedAccounts": {
+    "message": "Kelola akun yang terhubung"
   },
   "manageDefaultSettings": {
     "message": "Kelola pengaturan default"
@@ -5108,10 +5358,6 @@
   "memo": {
     "message": "memo"
   },
-  "merklRewardsClaimBonus": {
-    "message": "Klaim bonus",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "Gagal mengklaim bonus mUSD",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5123,10 +5369,6 @@
   "merklRewardsToastSuccess": {
     "message": "Bonus mUSD telah tiba!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "Terjadi kesalahan tidak terduga. Coba lagi.",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Pesan"
@@ -5209,6 +5451,411 @@
   "mmFee": {
     "message": "$1% biaya MetaMask"
   },
+  "money": {
+    "message": "Dana"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Saldo tersedia: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Proyeksi saldo 1 tahun:"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Proyeksi ini mengasumsikan bahwa Persentase Hasil Tahunan (APY) sebesar $1% tetap tidak berubah selama satu tahun. APY bersifat variabel dan tidak dijamin.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
+  "moneyActivity": {
+    "message": "Aktivitas"
+  },
+  "moneyActivityCard": {
+    "message": "Kartu"
+  },
+  "moneyActivityConversionFailed": {
+    "message": "Konversi gagal"
+  },
+  "moneyActivityConverted": {
+    "message": "Dikonversi"
+  },
+  "moneyActivityConverting": {
+    "message": "Mengonversi"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Deposit gagal"
+  },
+  "moneyActivityDeposited": {
+    "message": "Didepositkan"
+  },
+  "moneyActivityDepositing": {
+    "message": "Mendeposit"
+  },
+  "moneyActivityDetailsPaidTo": {
+    "message": "Dibayar kepada"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "Diterima dari"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "ID Transaksi"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "Anda mendapatkan"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "Anda menggunakan"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "Anda menerima pengembalian dana"
+  },
+  "moneyActivityEmpty": {
+    "message": "Belum ada aktivitas"
+  },
+  "moneyActivityFilterAll": {
+    "message": "Semua"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Kartu"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Deposit"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Mengirim"
+  },
+  "moneyActivityLoadError": {
+    "message": "Tidak dapat memuat aktivitas Anda"
+  },
+  "moneyActivityMusdBack": {
+    "message": "pengembalian mUSD"
+  },
+  "moneyActivityPending": {
+    "message": "Menunggu"
+  },
+  "moneyActivityPurchase": {
+    "message": "Pembelian"
+  },
+  "moneyActivityReceived": {
+    "message": "Diterima"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "Dari: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Menerima"
+  },
+  "moneyActivityRefund": {
+    "message": "Pengembalian dana"
+  },
+  "moneyActivityRetry": {
+    "message": "Coba lagi"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Pengiriman gagal"
+  },
+  "moneyActivitySending": {
+    "message": "Mengirim"
+  },
+  "moneyActivitySent": {
+    "message": "Terkirim"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "Biaya konversi mencakup biaya jaringan dan mungkin termasuk biaya penyedia layanan.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
+  },
+  "moneyActivityViewAll": {
+    "message": "Lihat semua"
+  },
+  "moneyAdd": {
+    "message": "Tambah"
+  },
+  "moneyApy": {
+    "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Saldo mUSD yang didukung dolar selalu tersedia untuk digunakan, dikirim, atau diperdagangkan setiap saat. Kami tidak menghitung saldo ini ke dalam total saldo akun Anda."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Penarikan diproses segera, bergantung pada waktu konfirmasi jaringan standar di blockchain terkait. Jika likuiditas terbatas, mungkin terjadi penundaan sementara."
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Saldo terakhir yang diketahui"
+  },
+  "moneyBalanceRetry": {
+    "message": "Coba lagi"
+  },
+  "moneyBalanceUnavailable": {
+    "message": "Saldo tidak tersedia"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "Saat ini kami tidak dapat menampilkan saldo Anda. Dana Anda aman—cobalah sebentar lagi."
+  },
+  "moneyBenefitAutoEarn": {
+    "message": "Persentase hasil otomatis pada saldo Money Anda"
+  },
+  "moneyBenefitLiquidity": {
+    "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"
+  },
+  "moneyBenefitSend": {
+    "message": "Kirim ke dompet Anda di MetaMask"
+  },
+  "moneyBenefitStablecoin": {
+    "message": "Amankan uang Anda di mUSD, stablecoin yang didukung dolar dengan rasio 1:1"
+  },
+  "moneyBenefits": {
+    "message": "Manfaat"
+  },
+  "moneyContactSupport": {
+    "message": "Hubungi dukungan"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "Konversikan kripto Anda"
+  },
+  "moneyEarnApyTitle": {
+    "message": "Dapatkan hingga $1 APY"
+  },
+  "moneyEarnOnCrypto": {
+    "message": "Raih pendapatan dari kripto"
+  },
+  "moneyEarnOnCryptoDescription": {
+    "message": "Lihat bagaimana uang Anda dapat bertambah nilainya dari waktu ke waktu dengan mengonversikan kripto menjadi mUSD."
+  },
+  "moneyEarnOnCryptoDescriptionMiddle": {
+    "message": "dalam aset dan Anda bisa mendapatkan keuntungan hingga"
+  },
+  "moneyEarnOnCryptoDescriptionPrefix": {
+    "message": "Tambahkan"
+  },
+  "moneyEarnOnCryptoDescriptionSuffix": {
+    "message": "dalam satu tahun."
+  },
+  "moneyEarnOnCryptoNoFee": {
+    "message": "Tidak ada biaya"
+  },
+  "moneyEarnTitle": {
+    "message": "Hasilkan pada saldo Anda"
+  },
+  "moneyEarnings": {
+    "message": "Pendapatan"
+  },
+  "moneyExploreBenefits": {
+    "message": "Jelajahi manfaat Anda"
+  },
+  "moneyFundDescription": {
+    "message": "Danai Money Account dan lihat saldo Anda bertambah."
+  },
+  "moneyFundDescriptionWithApy": {
+    "message": "Danai Money account dan lihat saldo Anda bertambah hingga $1 APY."
+  },
+  "moneyHomeApyTooltip": {
+    "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin. Dana masuk ke brankas DeFi, yang dikelola oleh Veda dengan pengawasan risiko oleh Steakhouse Financial, yang menghasilkan pengembalian di pasar pinjaman yang sudah mapan."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money Account didukung oleh Monad."
+  },
+  "moneyHowItWorks": {
+    "message": "Cara kerjanya"
+  },
+  "moneyHowItWorksDescription": {
+    "message": "Tambahkan mUSD dan saldo yang didukung dolar siap untuk digunakan, diperdagangkan, atau dikirim setiap saat."
+  },
+  "moneyHowItWorksDescription1": {
+    "message": "Tambahkan mUSD ke Money account dan dapatkan hingga $1 APY (variabel) secara otomatis. Dana masuk ke brankas DeFi, yang dikelola oleh Veda dengan pemantauan risiko oleh Steakhouse Financial. Nilai dihasilkan oleh platform DeFi pihak ketiga yang menyebarkan dana dalam protokol blockchain. Tanpa stake, tanpa klaim, tanpa penguncian.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksDescription2": {
+    "message": "Saldo Dana merupakan saldo penggunaan Anda. Hubungkan Kartu MetaMask untuk digunakan di lebih dari 150 juta merchant di seluruh dunia. Dana Anda terus menghasilkan keuntungan hingga saat Anda menggunakannya."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money Account didukung oleh Monad."
+  },
+  "moneyHowItWorksDescriptionWithApy": {
+    "message": "Tambahkan mUSD dan dapatkan hingga $1. Saldo Anda didukung dolar dan siap untuk digunakan, diperdagangkan, atau dikirim setiap saat.",
+    "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Account bukanlah rekening bank, rekening tabungan, atau produk deposito yang diasuransikan. APY bersifat variabel dan tidak dijamin. Money Account melibatkan kontrak cerdas, protokol, likuiditas, dan risiko lainnya, dan Anda berpotensi kehilangan sebagian atau seluruh dana. Tunduk pada pembatasan regional. Syarat dan ketentuan berlaku."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Risiko dan Pengungkapan"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Hingga $1 APY. Nilainya bersifat variabel dan berfluktuasi sesuai kondisi pasar. Nilai saat ini selalu ditampilkan di dalam Money account.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Apakah tingkat APY berubah?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "Anda sendiri! MetaMask merupakan dompet penyimpanan mandiri, artinya hanya Kunci Pribadi pemilik akun yang dapat mengontrolnya. MetaMask tidak dapat mengakses, membekukan, atau memindahkan dana Anda. Inilah yang membedakan kami dari rekening bank tradisional dan platform kripto kustodian—tidak ada pihak ketiga yang memegang dana Anda."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Siapa yang mengontrol dana saya?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Tidak ada biaya untuk membuka Money Account dan tidak ada biaya untuk mendepositkan stablecoin. Anda akan dikenakan biaya saat mendepositkan token yang bukan merupakan stablecoin. Terdapat juga biaya yang terkait dengan transaksi Kartu MetaMask, penarikan ATM, dan biaya penarikan mata uang lokal. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "Lihat perincian biaya Kartu selengkapnya di sini."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Apakah ada biaya yang dikenakan?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Ya. Anda dapat berdagang, mengirim, menggunakan, atau menarik seluruh saldo Anda setiap saat tanpa periode pemberitahuan, tanpa penalti, dan tanpa biaya penarikan dari MetaMask. Jika likuiditas terbatas, penundaan sementara dapat terjadi."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Apakah dana saya terkunci? Bisakah saya menarik dana setiap saat?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Akun yang menghasilkan APY variabel hingga $1. Anda mendepositkan dana, yang disimpan di akun sebagai mUSD, dan mendapatkan APY hingga $1. mUSD merupakan stablecoin berbasis dolar milik MetaMask. Anda dapat menggunakan atau menarik dana Anda setiap saat tanpa penalti. Anda dapat menggunakan dana Anda melalui Kartu MetaMask di lebih dari 150 juta merchant Mastercard di seluruh dunia.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Apa itu akun Dana?"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD merupakan stablecoin berbasis dolar milik MetaMask dengan rasio 1:1. Saldo Money Anda disimpan dalam bentuk mUSD dan tetap tersedia untuk digunakan, dikirim, atau diperdagangkan setiap saat.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "Apa itu mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Saldo Money Anda adalah saldo yang dapat digunakan — saldo ini terus menghasilkan keuntungan hingga saat Anda menggunakannya. Money account bukanlah rekening bank, rekening tabungan, atau produk simpanan yang dijamin.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Apakah ini rekening tabungan atau rekening penggunaan?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "Pertanyaan Umum"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Saat Anda mendepositkan dana, maka dana tersebut ditempatkan dalam protokol DeFi yang sudah mapan, seperti Aave dan Morpho, di mana dana tersebut menghasilkan keuntungan dari aktivitas ekonomi riil. Keuntungan ini kemudian diberikan kepada Anda dalam bentuk APY.\n\nPenyedia layanan pihak ketiga bernama Steakhouse Financial memantau bagaimana dana dialokasikan dalam protokol tersebut. Veda, penyedia infrastruktur pihak ketiga, menyebarkan dan memelihara brankas kontrak cerdas yang menyimpan dana Anda.\n\nKeuntungan tersebut bukanlah bunga yang dibayarkan oleh MetaMask atau oleh penerbit mUSD. Itu merupakan keuntungan on-chain yang dihasilkan oleh posisi dalam protokol DeFi pihak ketiga."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Dari mana hasil tersebut berasal?"
+  },
+  "moneyHowYourMoneyGrows": {
+    "message": "Bagaimana uang Anda bertambah"
+  },
+  "moneyLearnMore": {
+    "message": "Selengkapnya"
+  },
+  "moneyLifetime": {
+    "message": "Seumur Hidup"
+  },
+  "moneyLifetimeTooltip": {
+    "message": "Jumlah total yang Anda peroleh dari saldo Money account selama ini."
+  },
+  "moneyMeetMusd": {
+    "message": "Jumpai mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Jumlah total yang Anda peroleh dari saldo Money account dalam 30 hari terakhir."
+  },
+  "moneyMoreInformation": {
+    "message": "Informasi selengkapnya"
+  },
+  "moneyMoreOptions": {
+    "message": "Opsi lain"
+  },
+  "moneyMusd": {
+    "message": "mUSD"
+  },
+  "moneySend": {
+    "message": "Kirim"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Tidak dapat menambahkan dana. Coba lagi."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Tidak dapat mengonversi. Coba lagi."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Deposit gagal"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Gagal menambahkan dana"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Konversi gagal"
+  },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Pemesanan kartu membutuhkan waktu beberapa menit."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Menambahkan dana"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Mendeposit"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Mengonversi kripto"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 ditambahkan ke Money account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Ditambahkan ke Money Account."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Dana ditambahkan"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Deposit selesai"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Konversi selesai"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Butuh waktu beberapa menit."
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Tidak dapat mentransfer dana. Coba lagi."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Transfer gagal"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "akun Anda"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Transfer sedang berlangsung"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 ditambahkan ke $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Ditambahkan ke $1.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Transfer selesai"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Akun lain"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Segera hadir"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Akun perp"
+  },
+  "moneyTransferSendExternal": {
+    "message": "Alamat eksternal"
+  },
+  "moneyTransferTitle": {
+    "message": "Kirim dana ke"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Rekening bank"
+  },
   "month": {
     "message": "bulan"
   },
@@ -5217,10 +5864,6 @@
   },
   "more": {
     "message": "lainnya"
-  },
-  "moreAccounts": {
-    "message": "+ $1 akun lain",
-    "description": "$1 is the number of accounts"
   },
   "moreCapital": {
     "message": "Selengkapnya"
@@ -5292,54 +5935,6 @@
     "message": "$1 ingin menggunakan Snap $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "Mengakumulasi bonus berikutnya",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "Klaim bonus $1",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "Estimasi bonus tahunan",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "Informasi bonus Anda",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "Proyeksi pendapatan Anda selama setahun berdasarkan saldo dan suku bunga saat ini. Suku bunga bersifat variabel dan dapat berubah.",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "Selengkapnya.",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "Total bonus yang telah diklaim sejak mulai.",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "Bonus tahunan $1% yang Anda peroleh hanya dengan memiliki mUSD. Anda dapat mengklaimnya setiap hari di Linea. $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "Bonus seumur hidup telah diklaim",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "Tidak ada bonus yang terakumulasi",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "Bonus $1%",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "Bonus Anda",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "Bonus harian",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5403,29 +5998,9 @@
   "musdBuyMusd": {
     "message": "Beli mUSD"
   },
-  "musdClaimSendingTo": {
-    "message": "Mengirim ke",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "Mengirim ke $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "Klaim bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
-  },
-  "musdClaimableBonus": {
-    "message": "Bonus yang dapat diklaim",
-    "description": "Label for the claimable bonus row in the mUSD conversion confirmation screen"
-  },
-  "musdClaimableBonusTooltip": {
-    "message": "Bonus tahunan yang Anda peroleh karena memiliki mUSD. Bonus Anda dapat diklaim setiap hari di Linea. $1",
-    "description": "$1 is the 'Terms apply' link"
-  },
-  "musdClaimableBonusTooltipAria": {
-    "message": "Detail bonus yang dapat diklaim",
-    "description": "Accessible name for the info control that opens the claimable bonus explanation popover"
   },
   "musdConversionFeeTooltipDescription": {
     "message": "Biaya konversi mUSD mencakup biaya jaringan dan mungkin termasuk biaya penyedia. MetaMask tidak mengenakan biaya saat Anda mengonversi ke mUSD.",
@@ -5451,10 +6026,6 @@
   "musdConvert": {
     "message": "Konversikan"
   },
-  "musdEarnBonusPercentage": {
-    "message": "Dapatkan bonus sebesar $1%",
-    "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
-  },
   "musdEducationGetStarted": {
     "message": "Mulai"
   },
@@ -5467,10 +6038,6 @@
   },
   "musdGetMusd": {
     "message": "Dapatkan mUSD"
-  },
-  "musdMetaMaskUsd": {
-    "message": "MetaMask USD",
-    "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
   },
   "musdSymbol": {
     "message": "mUSD",
@@ -5493,10 +6060,6 @@
     "message": "Hanya simpan alamat yang Anda percaya.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Ini telah diidentifikasi sebagai berbahaya. Kami sarankan untuk tidak berinteraksi dengan alamat ini.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Jika Anda mengetahui alamat ini, berikan nama panggilan agar dapat dikenali di kemudian hari.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5508,10 +6071,6 @@
   "nameInstructionsSaved": {
     "message": "Anda telah menambahkan nama panggilan untuk alamat ini sebelumnya. Anda dapat mengedit atau melihat nama panggilan lain yang disarankan.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Kami tidak dapat memverifikasi alamat ini. Alamat ini mungkin baru atau belum diverifikasi. Atur nama tampilan pribadi untuk mengidentifikasinya di masa mendatang.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Nama panggilan",
@@ -5540,10 +6099,6 @@
   "nameModalTitleVerified": {
     "message": "Alamat terverifikasi",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Alamat perlu ditinjau ulang",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Diusulkan oleh $1",
@@ -5639,9 +6194,6 @@
   "networkFeeExplanationTitle": {
     "message": "Biaya jaringan"
   },
-  "networkMenu": {
-    "message": "Menu jaringan"
-  },
   "networkMenuHeading": {
     "message": "Pilih jaringan"
   },
@@ -5678,9 +6230,6 @@
   "networkOptions": {
     "message": "Opsi jaringan"
   },
-  "networkPermissionToast": {
-    "message": "Izin jaringan diperbarui"
-  },
   "networkStatus": {
     "message": "Status jaringan"
   },
@@ -5692,7 +6241,7 @@
     "message": "Rentang biaya prioritas (alias “tip penambang”). Ini berlaku bagi penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
   "networkStatusStabilityFeeTooltip": {
-    "message": "Biaya gas relatif $1 dalam 72 jam terakhir.",
+    "message": "Biaya jaringan $1 berdasarkan data 72 jam terakhir.",
     "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
@@ -5716,9 +6265,6 @@
   },
   "networks": {
     "message": "Jaringan"
-  },
-  "networksSmallCase": {
-    "message": "jaringan"
   },
   "new": {
     "message": "Baru!"
@@ -5806,6 +6352,9 @@
   "nftTokenIdPlaceholder": {
     "message": "Masukkan id token"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "NFT tidak didukung di jaringan ini."
+  },
   "nftWarningContent": {
     "message": "Anda memberikan akses ke $1, termasuk setiap akses yang Anda miliki di masa mendatang. Pihak lain dapat mentransfer NFT ini dari dompet Anda kapan saja tanpa meminta izin Anda sampai Anda membatalkan persetujuan ini. $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -5832,15 +6381,16 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noConnectionDescription": {
-    "message": "MetaMask tidak terhubung ke situs ini. Untuk memulai, pilih tombol Hubungkan ke situs ini."
-  },
   "noDefaultAddress": {
     "message": "Tidak ada alamat $1",
     "description": "$1 is the default address scope"
   },
   "noDomainResolution": {
     "message": "Tidak ada resolusi untuk domain yang tersedia."
+  },
+  "noFee": {
+    "message": "Tidak ada biaya",
+    "description": "Label shown next to Money Account deposit tokens that incur no Relay fixed-spread fee"
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap, dan sebagian besar dompet perangkat keras, tidak akan berfungsi dengan versi browser saat ini."
@@ -5947,18 +6497,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Penarikan siap"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Kini Anda dapat menarik $1 yang belum di-stake"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Permintaan untuk membatalkan stake $1 telah dikirim"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Menerima NFT dari"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Mengirim NFT ke"
-  },
   "notificationItemNetwork": {
     "message": "Jaringan"
   },
@@ -5967,18 +6505,6 @@
   },
   "notificationItemReceived": {
     "message": "Diterima"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Diterima dari"
-  },
-  "notificationItemSent": {
-    "message": "Terkirim"
-  },
-  "notificationItemSentTo": {
-    "message": "Terkirim ke"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake selesai"
   },
   "notificationItemStaked": {
     "message": "Di-stake"
@@ -5992,17 +6518,11 @@
   "notificationItemSwapped": {
     "message": "Ditukar"
   },
-  "notificationItemSwappedFor": {
-    "message": "untuk"
-  },
   "notificationItemTo": {
     "message": "Ke"
   },
   "notificationItemTransactionId": {
     "message": "ID Transaksi"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Pembatalan Stake selesai"
   },
   "notificationItemUnStaked": {
     "message": "Stake dibatalkan"
@@ -6067,11 +6587,14 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Anda belum menerima notifikasi."
   },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "Kami tidak dapat memuat pengaturan notifikasi akun Anda. Coba lagi nanti."
+  },
   "notificationsSettingsAgenticCliDescription": {
-    "message": "Permintaan koneksi CLI, persetujuan, dan pembaruan sesi untuk Agentic"
+    "message": "Permintaan koneksi CLI, persetujuan, dan pembaruan sesi untuk dompet Agen"
   },
   "notificationsSettingsAgenticCliTitle": {
-    "message": "Agentic CLI"
+    "message": "Dompet agen"
   },
   "notificationsSettingsBoxError": {
     "message": "Terjadi kesalahan. Coba lagi."
@@ -6394,6 +6917,10 @@
     "message": "$1 belum diatur untuk dompet ini. Aktifkan $1 di Pengaturan.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyErrorNotSupported": {
+    "message": "MetaMask tidak dapat menggunakan kode sandi yang disimpan di sini. Coba lagi dan simpan di pengelola kata sandi.",
+    "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
+  },
   "passkeyErrorRegistrationFailed": {
     "message": "Pengaturan $1 gagal. Coba lagi",
     "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -6499,7 +7026,7 @@
     "message": "Tampilkan kata sandi"
   },
   "passwordsDontMatch": {
-    "message": "Kata sandi tidak cocok"
+    "message": "Kata sandi tidak cocok."
   },
   "paste": {
     "message": "Tempel"
@@ -6512,9 +7039,29 @@
     "message": "Bayar melalui",
     "description": "Label for pay with row showing which token is used to pay transaction fees"
   },
+  "payWithCrypto": {
+    "message": "Kripto",
+    "description": "Section header for crypto payment methods in the Pay with picker"
+  },
+  "payWithEmptySelection": {
+    "message": "Pilih metode pembayaran",
+    "description": "Placeholder shown in the Pay with row when no payment token is selected"
+  },
   "payWithModalTitle": {
     "message": "Bayar melalui",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payWithMoneyAccount": {
+    "message": "Money Account",
+    "description": "Label for paying with the user's Money account in the Pay with picker"
+  },
+  "payWithOtherAssets": {
+    "message": "Aset lainnya",
+    "description": "Row label that opens the full token list in the Pay with picker"
+  },
+  "payWithOtherAssetsDescription": {
+    "message": "Pilih dari token Anda",
+    "description": "Subtitle for the Other assets row in the Pay with picker"
   },
   "payee": {
     "message": "Penerima pembayaran"
@@ -6547,6 +7094,10 @@
   "percentChange": {
     "message": "Perubahan persentase"
   },
+  "permissionCannotMoveFunds": {
+    "message": "Tidak dapat memindahkan dana tanpa izin Anda",
+    "description": "Permission item shown on dapp connection screen indicating dapp cannot move funds"
+  },
   "permissionFor": {
     "message": "Izin untuk"
   },
@@ -6566,6 +7117,14 @@
   "permissionRevokedForAccounts": {
     "message": "Dicabut dalam pembaruan ini untuk $1",
     "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
+  },
+  "permissionSeeAddresses": {
+    "message": "Lihat alamat, saldo, dan aktivitas",
+    "description": "Permission item shown on dapp connection screen"
+  },
+  "permissionSendRequests": {
+    "message": "Kirim permintaan untuk transaksi",
+    "description": "Permission item shown on dapp connection screen"
   },
   "permission_accessNamedSnap": {
     "message": "Hubungkan ke $1.",
@@ -6807,7 +7366,10 @@
     "message": "Izin"
   },
   "permissionsPageEmptyDescription": {
-    "message": "Izin tidak terdeteksi. Setelah Anda memberikan izin ke situs atau menginstal Snap, detailnya akan muncul di sini."
+    "message": "Saat Anda memberikan izin, detailnya akan ditampilkan di sini."
+  },
+  "permissionsPageEmptyTitle": {
+    "message": "Tak ada apa pun di sini"
   },
   "permitSimulationChange_approve": {
     "message": "Batas penggunaan"
@@ -6833,9 +7395,6 @@
   "permitSimulationDetailInfo": {
     "message": "Anda memberi izin kepada spender untuk menggunakan sejumlah token ini dari akun Anda."
   },
-  "permittedChainToastUpdate": {
-    "message": "$1 memiliki akses ke $2."
-  },
   "perps": {
     "message": "Perps"
   },
@@ -6856,9 +7415,6 @@
   },
   "perpsAddFunds": {
     "message": "Tambahkan dana"
-  },
-  "perpsAddFundsDescription": {
-    "message": "Tambahkan dana untuk mulai memperdagangkan kontrak perpetual dengan leverage"
   },
   "perpsAddMargin": {
     "message": "Tambahkan margin"
@@ -6914,6 +7470,10 @@
   "perpsCancelOrder": {
     "message": "Batalkan order"
   },
+  "perpsCancelOrderFailed": {
+    "message": "Order tidak dapat dibatalkan. Coba lagi.",
+    "description": "Error shown when cancelling a perps order fails for a reason the trader cannot act on specifically"
+  },
   "perpsCandleIntervals": {
     "message": "Atur interval lilin"
   },
@@ -6925,6 +7485,12 @@
   },
   "perpsCandlePeriodMinutes": {
     "message": "Menit"
+  },
+  "perpsChart": {
+    "message": "Grafik harga"
+  },
+  "perpsChartLoadError": {
+    "message": "Gagal mengunggah data grafik"
   },
   "perpsCloseAll": {
     "message": "Tutup semua"
@@ -6938,6 +7504,15 @@
   "perpsCloseAmount": {
     "message": "Jumlah penutupan"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Jumlah penutupan dibatasi sebesar nilai posisi Anda."
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Masukkan jumlah penutupan sebagai persentase dari posisi Anda"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Masukkan jumlah penutupan dalam dolar AS"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Harga tidak bisa lebih dari 95% dari harga pasar"
   },
@@ -6950,14 +7525,23 @@
   "perpsClosePartialMinNotional": {
     "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau tutup seluruh posisi."
   },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Persentase penutupan dibatasi hingga 100%."
+  },
   "perpsClosePosition": {
     "message": "Tutup posisi"
+  },
+  "perpsClosePrice": {
+    "message": "Harga penutupan"
   },
   "perpsClosePriceUnavailable": {
     "message": "Harga saat ini tidak tersedia. Coba lagi sebentar lagi."
   },
   "perpsCloseShort": {
     "message": "Tutup short"
+  },
+  "perpsCollapseChart": {
+    "message": "Perkecil bagan"
   },
   "perpsConfirmCloseLong": {
     "message": "Tutup long"
@@ -7053,6 +7637,13 @@
     "message": "Estimasi P&L pada take profit",
     "description": "Label for estimated profit or loss when take profit is hit"
   },
+  "perpsExchangeAccountNotFound": {
+    "message": "Tambahkan dana untuk memulai perdagangan.",
+    "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "Perbesar bagan"
+  },
   "perpsExploreMarkets": {
     "message": "Jelajahi pasar"
   },
@@ -7074,6 +7665,10 @@
   "perpsFilterAll": {
     "message": "Semua"
   },
+  "perpsFilterClear": {
+    "message": "$1, hapus filter",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Komoditas"
   },
@@ -7088,6 +7683,17 @@
   },
   "perpsFilterIndex": {
     "message": "Indeks"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Koin meme"
+  },
+  "perpsFilterMore": {
+    "message": "Selengkapnya",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Lainnya, $1 dipilih",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Baru"
@@ -7185,6 +7791,18 @@
   "perpsMarket": {
     "message": "Pasar"
   },
+  "perpsMarketCategories": {
+    "message": "Kategori pasar",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 pasar",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 pasar",
+    "description": "Count of markets currently listed, when exactly one is listed"
+  },
   "perpsMarketNotFound": {
     "message": "Pasar tidak ditemukan"
   },
@@ -7249,11 +7867,31 @@
   "perpsOrderBookApply": {
     "message": "Terapkan"
   },
+  "perpsOrderBookBuy": {
+    "message": "Beli: $1%",
+    "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
+  },
+  "perpsOrderBookConfigTitle": {
+    "message": "Disusun berdasarkan dan Dikelompokkan berdasarkan"
+  },
   "perpsOrderBookConnectionError": {
     "message": "Koneksi pemesanan order hilang"
   },
+  "perpsOrderBookDepthRatio": {
+    "message": "Beli $1%, jual $2%",
+    "description": "Accessible label for the order book buy/sell depth ratio bar. $1 is the buy percentage, $2 is the sell percentage."
+  },
   "perpsOrderBookGroupBy": {
     "message": "Pengelompokan berdasarkan"
+  },
+  "perpsOrderBookLayout": {
+    "message": "Tata letak daftar order"
+  },
+  "perpsOrderBookLayoutLeft": {
+    "message": "Kiri"
+  },
+  "perpsOrderBookLayoutRight": {
+    "message": "Benar"
   },
   "perpsOrderBookListedBy": {
     "message": "Terdaftar berdasarkan"
@@ -7261,11 +7899,24 @@
   "perpsOrderBookLoading": {
     "message": "Memuat daftar order"
   },
+  "perpsOrderBookNoData": {
+    "message": "Daftar order kosong"
+  },
   "perpsOrderBookPrice": {
     "message": "Harga"
   },
   "perpsOrderBookReconnect": {
     "message": "Hubungkan kembali"
+  },
+  "perpsOrderBookReconnecting": {
+    "message": "Menghubungkan kembali ke daftar order"
+  },
+  "perpsOrderBookResize": {
+    "message": "Ubah ukuran daftar order"
+  },
+  "perpsOrderBookSell": {
+    "message": "Jual: $1%",
+    "description": "Order book sell-side depth percentage label. $1 is the sell percentage."
   },
   "perpsOrderBookSize": {
     "message": "Ukuran"
@@ -7276,14 +7927,33 @@
   "perpsOrderBookTotal": {
     "message": "Total"
   },
+  "perpsOrderBookUsePrice": {
+    "message": "Gunakan $1 sebagai harga limit",
+    "description": "Accessible label for a tappable order book price row. $1 is the formatted price; selecting it switches the order form to a limit order prefilled with this price."
+  },
   "perpsOrderBookValueType": {
     "message": "Jenis nilai"
+  },
+  "perpsOrderBookViewModeBoth": {
+    "message": "Daftar order yang menampilkan harga beli dan harga jual",
+    "description": "Accessible label for the order book view toggle when both buy and sell sides are visible. Activating cycles to bids only."
+  },
+  "perpsOrderBookViewModeBuy": {
+    "message": "Daftar order yang menampilkan harga beli saja",
+    "description": "Accessible label for the order book view toggle when only the buy (bid) side is visible. Activating cycles to asks only."
+  },
+  "perpsOrderBookViewModeSell": {
+    "message": "Daftar order yang menampilkan harga jual saja",
+    "description": "Accessible label for the order book view toggle when only the sell (ask) side is visible. Activating cycles back to both sides."
   },
   "perpsOrderDate": {
     "message": "Tanggal"
   },
   "perpsOrderFailed": {
     "message": "Order tidak dapat dibuat. Coba lagi."
+  },
+  "perpsOrderFilled": {
+    "message": "Terpenuhi"
   },
   "perpsOrderOriginalSize": {
     "message": "Ukuran asli"
@@ -7293,6 +7963,12 @@
   },
   "perpsOrderStatus": {
     "message": "Status"
+  },
+  "perpsOrderTotalFee": {
+    "message": "Total biaya"
+  },
+  "perpsOrderType": {
+    "message": "Jenis order"
   },
   "perpsOrderValue": {
     "message": "Nilai order"
@@ -7312,6 +7988,10 @@
   },
   "perpsPositions": {
     "message": "Posisi"
+  },
+  "perpsProducts": {
+    "message": "Produk",
+    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Terlalu banyak permintaan. Mohon tunggu dan coba lagi."
@@ -7427,14 +8107,8 @@
   "perpsSortByPriceChange": {
     "message": "Perubahan harga"
   },
-  "perpsSortByRank": {
-    "message": "Peringkat"
-  },
-  "perpsSortBySection": {
-    "message": "Urutkan sesuai"
-  },
   "perpsSortByTitle": {
-    "message": "Filter"
+    "message": "Urutkan sesuai"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -7498,6 +8172,10 @@
   "perpsTakeProfitInvalidPrice": {
     "message": "Take profit harus dilakukan pada harga $1 $2",
     "description": "Validation error when take profit price is on the wrong side of the reference price. $1 is above/below, $2 is current/entry."
+  },
+  "perpsToastCancelOrderAlreadyClosed": {
+    "message": "Order ini tidak lagi dibuka",
+    "description": "Success toast text shown when a perps order was already filled or cancelled before the cancel request reached the provider"
   },
   "perpsToastCancelOrderFailed": {
     "message": "Gagal membatalkan order",
@@ -7615,6 +8293,10 @@
     "message": "Mengirimkan perdagangan Anda",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "Tidak dapat membuka perdagangan",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "Posisi ditutup",
     "description": "Success toast text shown when a perps position is closed"
@@ -7631,11 +8313,17 @@
     "message": "TP/SL berhasil diperbarui",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "Total saldo"
+  "perpsTopMovers": {
+    "message": "Penggerak teratas",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
   },
-  "perpsTradePerps": {
-    "message": "Perdagangkan perp"
+  "perpsTopMoversGainers": {
+    "message": "Gainer",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "Loser",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
   "perpsTrades": {
     "message": "Perdagangan"
@@ -7878,10 +8566,6 @@
     "message": "Kunci pribadi",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Kunci pribadi untuk $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Kunci pribadi disembunyikan",
     "description": "Explains that the private key input is hidden"
@@ -7893,9 +8577,6 @@
   "privateKeyShown": {
     "message": "Kunci pribadi ini sedang ditampilkan",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Peringatan: Jangan ungkapkan kunci ini. Siapa pun yang memiliki kunci pribadi Anda dapat mencuri aset yang disimpan di akun Anda."
   },
   "privateKeys": {
     "message": "Kunci pribadi",
@@ -8028,6 +8709,10 @@
   "quotedTotalCost": {
     "message": "Total biaya: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Kembali ke dompet",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Tarif terbaik"
   },
@@ -8045,6 +8730,25 @@
   "rampsChangeProvider": {
     "message": "Ubah penyedia."
   },
+  "rampsChangeProviders": {
+    "message": "ubah penyedia",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
+  "rampsChooseProvider": {
+    "message": "Pilih penyedia"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "Selesaikan pembelian",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "Selesaikan pembelian Anda di tab $1",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "Lanjutkan di browser",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Coba lagi, atau hubungi dukungan jika hal ini terus terjadi."
   },
@@ -8056,6 +8760,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Terjadi kesalahan saat memuat token"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Diperkirakan akan menerima",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "Pembelian maksimum adalah $1",
@@ -8081,8 +8789,82 @@
     "message": "pada $1",
     "description": "$1 is the network name"
   },
-  "rampsOtherOptions": {
-    "message": "Opsi lainnya"
+  "rampsOrderDetailsBankDetails": {
+    "message": "Detail transfer bank"
+  },
+  "rampsOrderDetailsBuyAgain": {
+    "message": "Beli lagi"
+  },
+  "rampsOrderDetailsFees": {
+    "message": "Biaya"
+  },
+  "rampsOrderDetailsOrderId": {
+    "message": "ID Order"
+  },
+  "rampsOrderDetailsPaidWith": {
+    "message": "Dibayar dengan",
+    "description": "Label for the payment method used on a ramp order"
+  },
+  "rampsOrderDetailsProviderFee": {
+    "message": "Biaya $1",
+    "description": "$1 is the ramp provider name for the fee row label"
+  },
+  "rampsOrderDetailsTotal": {
+    "message": "Total"
+  },
+  "rampsOrderDetailsViewOnProvider": {
+    "message": "Lihat di $1"
+  },
+  "rampsOrderToastFailedDescription": {
+    "message": "Ada masalah dengan order Anda.",
+    "description": "Description for the failed ramp buy order toast"
+  },
+  "rampsOrderToastFailedTitle": {
+    "message": "Pembelian gagal",
+    "description": "Title for the failed ramp buy order toast"
+  },
+  "rampsOrderToastPendingDescription": {
+    "message": "Order Anda sedang diproses.",
+    "description": "Description for the pending ramp buy order toast"
+  },
+  "rampsOrderToastPendingTitle": {
+    "message": "Pembelian sedang berlangsung",
+    "description": "Title for the pending ramp buy order toast"
+  },
+  "rampsOrderToastSellFailedDescription": {
+    "message": "Ada masalah dengan order Anda.",
+    "description": "Description for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellFailedTitle": {
+    "message": "Penjualan gagal",
+    "description": "Title for the failed ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingDescription": {
+    "message": "Order Anda sedang diproses.",
+    "description": "Description for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellPendingTitle": {
+    "message": "Penjualan sedang berlangsung",
+    "description": "Title for the pending ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessDescription": {
+    "message": "Dana Anda sedang dikirim.",
+    "description": "Description for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSellSuccessTitle": {
+    "message": "Penjualan berhasil",
+    "description": "Title for the successful ramp sell order toast"
+  },
+  "rampsOrderToastSuccessDescription": {
+    "message": "Kripto Anda sedang dikirim.",
+    "description": "Description for the successful ramp buy order toast"
+  },
+  "rampsOrderToastSuccessTitle": {
+    "message": "Pembelian berhasil",
+    "description": "Title for the successful ramp buy order toast"
+  },
+  "rampsPayWith": {
+    "message": "Bayar melalui"
   },
   "rampsPaymentDelayBusinessDay": {
     "message": "hari kerja"
@@ -8108,12 +8890,12 @@
   "rampsPaymentDelayMinutes": {
     "message": "menit"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  "rampsPaymentMethod": {
+    "message": "Metode pembayaran",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Maks $1",
+  "rampsPaymentMethodLimits": {
+    "message": "Hingga $1",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8121,20 +8903,13 @@
     "description": "$1 is the minimum fiat buy amount"
   },
   "rampsPreviouslyUsed": {
-    "message": "Digunakan sebelumnya"
-  },
-  "rampsProviders": {
-    "message": "Penyedia"
+    "message": "Terakhir digunakan"
   },
   "rampsQuoteFetchError": {
-    "message": "Gagal mengambil kuotasi."
+    "message": "Terjadi kesalahan saat mengambil kuotasi. Masukkan jumlah yang lebih rendah atau"
   },
   "rampsQuoteUnavailable": {
     "message": "Kuotasi tidak tersedia."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Kuotasi yang ditampilkan untuk $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Pilih metode pembayaran"
@@ -8147,6 +8922,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Tampilkan semua token"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Token ini tidak tersedia di wilayah Anda.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token tidak tersedia",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Pembelian kripto belum didukung di wilayah Anda."
@@ -8229,11 +9012,22 @@
   "rejected": {
     "message": "Ditolak"
   },
+  "relayerFee": {
+    "message": "Biaya relayer"
+  },
   "remove": {
     "message": "Hapus"
   },
   "removeAccount": {
     "message": "Hapus akun"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "Anda dapat memulihkan akun ini kapan saja dengan mengimpornya menggunakan kunci privat.",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "Hapus $1",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "Pastikan Anda memiliki Frasa Pemulihan Rahasia atau kunci pribadi untuk akun ini sebelum menghapusnya.",
@@ -8301,9 +9095,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Ini merupakan situs yang meminta konfirmasi Anda."
-  },
-  "requestingFor": {
-    "message": "Meminta untuk"
   },
   "required": {
     "message": "Diperlukan"
@@ -8691,6 +9482,10 @@
   "searchAnAcccountOrContact": {
     "message": "Cari akun atau kontak"
   },
+  "searchAnAccount": {
+    "message": "Cari akun",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "Cari aset untuk dikirim"
   },
@@ -8963,20 +9758,23 @@
   "securityTrustMalicious": {
     "message": "Berbahaya"
   },
+  "securityTrustMaliciousDappConnection": {
+    "message": "Berbahaya—ditandai sebagai tidak aman"
+  },
   "securityTrustMaliciousLabel": {
     "message": "Berbahaya"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 ditandai sebagai berbahaya. Kemungkinan besar akan mencuri dana dari siapa pun yang berinteraksi dengannya."
+    "message": "Mitra keamanan menandai $1 sebagai berisiko tinggi."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "Token ini ditandai sebagai berbahaya. Kemungkinan besar akan mencuri dana dari siapa pun yang berinteraksi dengannya."
+    "message": "Mitra keamanan menandai token ini sebagai berisiko tinggi."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "Sinyal risiko serius terdeteksi pada $1. Sebaiknya jangan memperdagangkan token ini."
+    "message": "Mitra keamanan menandai $1 sebagai berisiko tinggi."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Sinyal risiko serius terdeteksi pada token ini. Sebaiknya jangan memperdagangkan token ini."
+    "message": "Mitra keamanan menandai token ini sebagai berisiko tinggi."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Token berbahaya"
@@ -9006,10 +9804,10 @@
     "message": "Berisiko"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 ditandai sebagai mencurigakan. Perhatikan risikonya sebelum melanjutkan."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan $1."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "Token ini ditandai sebagai mencurigakan. Perhatikan risikonya sebelum melanjutkan."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan token ini."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Token mencurigakan"
@@ -9021,13 +9819,13 @@
     "message": "Sinyal risiko tidak terdeteksi. Selalu lakukan riset terhadap aset apa pun sebelum melakukan perdagangan."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Sinyal risiko serius terdeteksi. Sebaiknya hindari aset ini."
+    "message": "Mitra keamanan menandai token ini sebagai berisiko tinggi."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "Sinyal risiko tidak terdeteksi. Selalu lakukan riset terhadap aset apa pun sebelum melakukan perdagangan."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Sinyal peringatan terdeteksi. Tinjau masalah yang ditandai dengan cermat sebelum memperdagangkan aset ini."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan token ini."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Analisis keamanan tidak dapat dimuat untuk token ini."
@@ -9036,10 +9834,10 @@
     "message": "Mencurigakan"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 adalah token yang mencurigakan."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan $1."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "Ini adalah token yang mencurigakan."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan token ini."
   },
   "securityTrustTelegram": {
     "message": "Telegram"
@@ -9103,8 +9901,8 @@
   "select": {
     "message": "Pilih"
   },
-  "selectAccountToConnect": {
-    "message": "Pilih akun yang akan dihubungkan"
+  "selectAccounts": {
+    "message": "Pilih akun"
   },
   "selectAll": {
     "message": "Pilih semua"
@@ -9124,11 +9922,11 @@
   "selectNFTPrivacyPreference": {
     "message": "Aktifkan Autodeteksi NFT"
   },
-  "selectNetworkToFilter": {
-    "message": "Pilih jaringan untuk disaring"
-  },
   "selectPathHelp": {
     "message": "Jika Anda tidak menemukan akun yang diharapkan, coba alihkan jalur HD atau jaringan yang dipilih saat ini."
+  },
+  "selectPerpsAccount": {
+    "message": "Pilih akun perp"
   },
   "selectRecipient": {
     "message": "Pilih penerima"
@@ -9170,6 +9968,9 @@
   },
   "sendSelectSendAsset": {
     "message": "Pilih aset yang akan dikirim"
+  },
+  "sendToPerps": {
+    "message": "Kirim ke Perp"
   },
   "sendingAsset": {
     "message": "Mengirim $1"
@@ -9879,14 +10680,14 @@
   "showPermissions": {
     "message": "Tampilkan Izin"
   },
-  "showPrivateKey": {
-    "message": "Tampilkan kunci pribadi"
-  },
-  "showSRP": {
-    "message": "Tampilkan Frasa Pemulihan Rahasia"
-  },
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"
+  },
+  "showTickerWidget": {
+    "message": "Tampilkan widget web di X"
+  },
+  "showTickerWidgetDescription": {
+    "message": "Menampilkan widget MetaMask yang berisi detail token saat Anda menjelajahi X.com."
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask kini terbuka di panel samping secara default. $1 setiap saat dari menu.",
@@ -9989,8 +10790,9 @@
   "singleNetwork": {
     "message": "1 jaringan"
   },
-  "sites": {
-    "message": "Situs"
+  "sitePermissionsBanner": {
+    "message": "$1 dapat melihat akun Anda yang terhubung dan menyarankan transaksi.",
+    "description": "$1 is the site hostname"
   },
   "siweIssued": {
     "message": "Diterbitkan"
@@ -10561,7 +11363,7 @@
     "message": "Pertukaran akan gagal"
   },
   "stxCancelledDescription": {
-    "message": "Transaksi Anda akan gagal dan dibatalkan agar Anda tidak perlu membayar biaya gas yang tidak seharusnya."
+    "message": "Transaksi Anda akan gagal dan dibatalkan agar Anda tidak perlu membayar biaya jaringan yang tidak seharusnya."
   },
   "stxCancelledSubDescription": {
     "message": "Cobalah untuk menukar lagi. Kami akan selalu hadir untuk melindungi Anda dari risiko serupa di lain waktu."
@@ -10606,7 +11408,7 @@
     "message": "Swap dibatalkan"
   },
   "stxUserCancelledDescription": {
-    "message": "Transaksi Anda telah dibatalkan dan Anda tidak membayar biaya gas yang tidak perlu."
+    "message": "Transaksi Anda telah dibatalkan dan Anda tidak membayar biaya jaringan yang tidak perlu."
   },
   "submit": {
     "message": "Kirim"
@@ -10738,7 +11540,7 @@
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask tidak menghasilkan uang dari biaya gas. Biaya ini merupakan estimasi dan dapat berubah berdasarkan seberapa sibuk jaringan dan seberapa rumit transaksinya. Pelajari selengkapnya $1.",
+    "message": "MetaMask tidak memperoleh keuntungan dari biaya jaringan. Biaya ini merupakan estimasi dan dapat berubah tergantung seberapa sibuk jaringan dan seberapa rumit transaksi tersebut. Pelajari selengkapnya $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -10749,7 +11551,7 @@
     "message": " Termasuk"
   },
   "swapGasFeesSplit": {
-    "message": "Biaya gas pada layar sebelumnya dibagi antara kedua transaksi ini."
+    "message": "Biaya jaringan pada layar sebelumnya dibagi di antara kedua transaksi ini."
   },
   "swapGasFeesSponsored": {
     "message": "Dibayar oleh MetaMask"
@@ -10885,7 +11687,7 @@
     "message": "Sumber likuiditas"
   },
   "swapSuggestedGasSettingToolTipMessage": {
-    "message": "Pertukaran adalah transaksi yang kompleks dan sensitif terhadap waktu. Kami merekomendasikan biaya gas ini untuk keseimbangan yang baik antara biaya dan konfidensi dari keberhasilan Pertukaran."
+    "message": "Swap adalah transaksi yang kompleks dan sensitif terhadap waktu. Kami merekomendasikan biaya jaringan ini untuk mendapatkan keseimbangan yang baik antara biaya dan kepastian keberhasilan Swap."
   },
   "swapToConfirmWithHwWallet": {
     "message": "untuk mengonfirmasikan dengan dompet perangkat keras Anda"
@@ -10910,7 +11712,7 @@
     "message": "Tidak dikenal"
   },
   "swapValidationInsufficientGasMessage": {
-    "message": "Anda tidak memiliki cukup $1 untuk membayar biaya gas untuk swap ini. Masukkan jumlah yang lebih kecil atau beli $1 lebih banyak."
+    "message": "Anda tidak memiliki cukup $1 untuk membayar biaya jaringan untuk swap ini. Masukkan jumlah yang lebih kecil atau beli lebih banyak $1."
   },
   "swapZeroSlippage": {
     "message": "Selip 0%"
@@ -11126,7 +11928,7 @@
     "message": "Fungsi"
   },
   "transactionDetailGasHeading": {
-    "message": "Estimasi biaya gas"
+    "message": "Estimasi biaya jaringan"
   },
   "transactionError": {
     "message": "Kesalahan transaksi. Pengecualian diberikan dalam kode kontrak."
@@ -11147,7 +11949,7 @@
     "message": "Biaya dasar (GWEI)"
   },
   "transactionHistoryL1GasLabel": {
-    "message": "Total biaya gas L1"
+    "message": "Total biaya jaringan L1"
   },
   "transactionHistoryL2GasLimitLabel": {
     "message": "Batas gas L2"
@@ -11162,7 +11964,7 @@
     "message": "Biaya prioritas (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Total biaya gas"
+    "message": "Total biaya jaringan"
   },
   "transactionIdCopied": {
     "message": "ID Transaksi disalin"
@@ -11262,14 +12064,8 @@
   "troubleStartingTitle": {
     "message": "MetaMask mengalami masalah saat memulai."
   },
-  "trustSignalBlockDescription": {
-    "message": "Jika Anda terhubung ke situs ini, Anda bisa kehilangan seluruh aset Anda."
-  },
-  "trustSignalBlockTitle": {
-    "message": "Situs berbahaya terdeteksi"
-  },
-  "trustSignalContinueAnyway": {
-    "message": "Tetap Terhubung"
+  "trustSignalPhishingWarning": {
+    "message": "Situs ini menunjukkan tanda-tanda aktivitas phishing atau pengurasan dompet. Situs ini mungkin meminta transaksi yang dirancang untuk mencuri dana Anda."
   },
   "tryAgain": {
     "message": "Coba lagi"
@@ -11495,6 +12291,10 @@
   "value": {
     "message": "Nilai"
   },
+  "variationalReferralSubtitle": {
+    "message": "Dapatkan +15% poin Omni dan tingkatan Perak selama 90 hari dengan kode referensi MetaMask.",
+    "description": "The subtitle of the Variational referral confirmation screen"
+  },
   "version": {
     "message": "Versi"
   },
@@ -11528,6 +12328,10 @@
   },
   "viewTokenDetails": {
     "message": "Lihat detail token"
+  },
+  "viewXMore": {
+    "message": "Lihat $1 lainnya",
+    "description": "Link to show remaining Discover search results. $1 is the hidden result count."
   },
   "viewinExplorer": {
     "message": "Lihat $1 di explorer",
@@ -11636,7 +12440,7 @@
     "message": "Berdasarkan catatan kami, nama jaringan mungkin tidak cocok dengan ID chain ini."
   },
   "wrongPassword": {
-    "message": "Kata sandi salah",
+    "message": "Kata sandi salah. Coba lagi.",
     "description": "Displayed when the user enters an incorrect password"
   },
   "year": {

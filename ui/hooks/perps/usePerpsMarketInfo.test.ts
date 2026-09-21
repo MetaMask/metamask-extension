@@ -46,12 +46,12 @@ describe('usePerpsMarketInfo', () => {
     clearPerpsMarketInfoModuleCache();
   });
 
-  it('returns undefined before the fetch resolves', () => {
+  it('reports loading before the fetch resolves', () => {
     mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
     const { result } = renderHookWithProvider(() => usePerpsMarketInfo('BTC'), {
       metamask: defaultPerpsMetamask,
     });
-    expect(result.current).toBeUndefined();
+    expect(result.current).toEqual({ market: undefined, isLoading: true });
   });
 
   it('returns the matching market after the fetch resolves', async () => {
@@ -66,9 +66,9 @@ describe('usePerpsMarketInfo', () => {
     });
 
     await waitFor(() => {
-      expect(result.current).toBeDefined();
-      expect(result.current?.name).toBe('BTC');
-      expect(result.current?.szDecimals).toBe(5);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.market?.name).toBe('BTC');
+      expect(result.current.market?.szDecimals).toBe(5);
     });
   });
 
@@ -82,11 +82,11 @@ describe('usePerpsMarketInfo', () => {
     );
 
     await waitFor(() => {
-      expect(result.current?.name).toBe('HYPE');
+      expect(result.current.market?.name).toBe('HYPE');
     });
   });
 
-  it('returns undefined when the symbol is not in the market list', async () => {
+  it('returns no market and not loading when the symbol is not in the market list', async () => {
     const markets = [makeMarketInfo({ name: 'BTC' })];
     mockSubmitRequestToBackground.mockResolvedValue(markets);
 
@@ -95,22 +95,32 @@ describe('usePerpsMarketInfo', () => {
     });
 
     await waitFor(() => {
-      expect(result.current).toBeUndefined();
+      expect(result.current).toEqual({ market: undefined, isLoading: false });
     });
   });
 
-  it('returns undefined and does not throw when the fetch rejects', async () => {
+  it('returns no market and not loading when the fetch rejects', async () => {
     mockSubmitRequestToBackground.mockRejectedValue(new Error('network error'));
 
     const { result } = renderHookWithProvider(() => usePerpsMarketInfo('BTC'), {
       metamask: defaultPerpsMetamask,
     });
 
-    await act(async () => {
-      await Promise.resolve();
+    await waitFor(() => {
+      expect(result.current).toEqual({ market: undefined, isLoading: false });
     });
+  });
 
-    expect(result.current).toBeUndefined();
+  it('skips the fetch and does not report loading when disabled', () => {
+    mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsMarketInfo('BTC', { enabled: false }),
+      { metamask: defaultPerpsMetamask },
+    );
+
+    expect(result.current).toEqual({ market: undefined, isLoading: false });
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('does not update state after unmount (cancelled flag)', async () => {
@@ -133,7 +143,7 @@ describe('usePerpsMarketInfo', () => {
       await Promise.resolve();
     });
 
-    expect(result.current).toBeUndefined();
+    expect(result.current).toEqual({ market: undefined, isLoading: true });
   });
 
   it('refetches when perps environment (testnet) changes', async () => {
@@ -152,7 +162,7 @@ describe('usePerpsMarketInfo', () => {
     );
 
     await waitFor(() => {
-      expect(result.current?.szDecimals).toBe(5);
+      expect(result.current.market?.szDecimals).toBe(5);
     });
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
 
@@ -167,7 +177,7 @@ describe('usePerpsMarketInfo', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
     });
     await waitFor(() => {
-      expect(result.current?.szDecimals).toBe(2);
+      expect(result.current.market?.szDecimals).toBe(2);
     });
   });
 
@@ -185,7 +195,7 @@ describe('usePerpsMarketInfo', () => {
     );
 
     await waitFor(() => {
-      expect(mainResult.current?.szDecimals).toBe(5);
+      expect(mainResult.current.market?.szDecimals).toBe(5);
     });
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
 
@@ -195,7 +205,7 @@ describe('usePerpsMarketInfo', () => {
     );
 
     await waitFor(() => {
-      expect(testResult.current?.szDecimals).toBe(1);
+      expect(testResult.current.market?.szDecimals).toBe(1);
     });
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
   });
@@ -216,7 +226,7 @@ describe('usePerpsMarketInfo', () => {
     );
 
     await waitFor(() => {
-      expect(result.current?.szDecimals).toBe(5);
+      expect(result.current.market?.szDecimals).toBe(5);
     });
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
 
@@ -236,7 +246,7 @@ describe('usePerpsMarketInfo', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
     });
     await waitFor(() => {
-      expect(result.current?.szDecimals).toBe(3);
+      expect(result.current.market?.szDecimals).toBe(3);
     });
   });
 

@@ -8,11 +8,11 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  Checkbox,
 } from '@metamask/design-system-react';
 import {
   ButtonIcon,
   ButtonIconSize,
-  Checkbox,
   IconName,
   Text,
 } from '../../component-library';
@@ -83,17 +83,21 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
           <Text as="h6" variant={TextVariant.bodySm}>
             {t('authorizedPermissions')}:
           </Text>
-          <ul className="connected-accounts-permissions__list">
+          <ul className="connected-accounts-permissions__list flex flex-col gap-1">
             {permissionLabels.map(({ label }, idx) => (
               <li
                 key={`connected-permission-${idx}`}
                 className="connected-accounts-permissions__list-item"
               >
                 <Checkbox
-                  isChecked
+                  isSelected
                   isDisabled
                   id={`connected-permission-${idx}`}
                   label={label}
+                  onChange={() => {
+                    // TODO: @MetaMask/design-system-engineers make onChange no a required prop
+                    // Permissions are display-only; selection cannot be changed.
+                  }}
                 />
               </li>
             ))}

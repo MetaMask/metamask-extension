@@ -38,7 +38,7 @@ type BaseProps = {
 type BaseNotification = BaseProps;
 type NotificationToken = BaseProps & { amount: string };
 type NotificationPlatform = BaseProps & {
-  cta?: { content: string; link: string };
+  cta?: { link: string };
 };
 
 export type NotificationListItemProps =

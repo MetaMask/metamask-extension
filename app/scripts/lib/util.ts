@@ -546,9 +546,7 @@ export const getMethodDataName = async (
  * getBooleanFlag('false'); // false
  * getBooleanFlag(false); // false
  */
-export function getBooleanFlag(value: string | boolean | undefined): boolean {
-  return value === true || value === 'true';
-}
+export { getBooleanFlag } from '../../../shared/lib/environment';
 
 // Cache for known domains
 let knownDomainsSet: Set<string> | null = null;

@@ -1,4 +1,5 @@
 import { PERPS_ERROR_CODES } from '@metamask/perps-controller';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import {
   ERROR_CODE_TO_I18N_KEY,
   API_ERROR_PATTERNS,
@@ -12,6 +13,8 @@ jest.mock('@metamask/perps-controller', () => ({
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
     PROVIDER_NOT_AVAILABLE: 'PROVIDER_NOT_AVAILABLE',
+    PROVIDER_NOT_FOUND: 'PROVIDER_NOT_FOUND',
+    PROVIDER_LIFECYCLE_STALE: 'PROVIDER_LIFECYCLE_STALE',
     TOKEN_NOT_SUPPORTED: 'TOKEN_NOT_SUPPORTED',
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
@@ -54,6 +57,31 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_TIME_IN_FORCE_NOT_SUPPORTED: 'ORDER_TIME_IN_FORCE_NOT_SUPPORTED',
     ORDER_EDIT_TRIGGER_UNSUPPORTED: 'ORDER_EDIT_TRIGGER_UNSUPPORTED',
     ORDER_EDIT_ORDER_UNVERIFIABLE: 'ORDER_EDIT_ORDER_UNVERIFIABLE',
+    ORDER_STRATEGY_PARAMS_NOT_SUPPORTED: 'ORDER_STRATEGY_PARAMS_NOT_SUPPORTED',
+    ORDER_STRATEGY_FIELD_UNSUPPORTED: 'ORDER_STRATEGY_FIELD_UNSUPPORTED',
+    ORDER_STRATEGY_MARKET_UNSUPPORTED: 'ORDER_STRATEGY_MARKET_UNSUPPORTED',
+    ORDER_STRATEGY_ROUTE_UNAVAILABLE: 'ORDER_STRATEGY_ROUTE_UNAVAILABLE',
+    ORDER_STRATEGY_HANDLE_UNKNOWN: 'ORDER_STRATEGY_HANDLE_UNKNOWN',
+    ORDER_STRATEGY_CANCEL_INCOMPLETE: 'ORDER_STRATEGY_CANCEL_INCOMPLETE',
+    ORDER_EDIT_STRATEGY_UNSUPPORTED: 'ORDER_EDIT_STRATEGY_UNSUPPORTED',
+    ORDER_TWAP_DURATION_REQUIRED: 'ORDER_TWAP_DURATION_REQUIRED',
+    ORDER_TWAP_DURATION_INVALID: 'ORDER_TWAP_DURATION_INVALID',
+    ORDER_TWAP_NOTIONAL_TOO_SMALL: 'ORDER_TWAP_NOTIONAL_TOO_SMALL',
+    ORDER_SCALE_RANGE_REQUIRED: 'ORDER_SCALE_RANGE_REQUIRED',
+    ORDER_SCALE_RANGE_INVALID: 'ORDER_SCALE_RANGE_INVALID',
+    ORDER_SCALE_COUNT_INVALID: 'ORDER_SCALE_COUNT_INVALID',
+    ORDER_SCALE_SIZE_TOO_SMALL: 'ORDER_SCALE_SIZE_TOO_SMALL',
+    ORDER_SCALE_NOTIONAL_TOO_SMALL: 'ORDER_SCALE_NOTIONAL_TOO_SMALL',
+    ORDER_CHASE_INTERVAL_INVALID: 'ORDER_CHASE_INTERVAL_INVALID',
+    ORDER_CHASE_DURATION_INVALID: 'ORDER_CHASE_DURATION_INVALID',
+    ORDER_CHASE_MAX_DISTANCE_INVALID: 'ORDER_CHASE_MAX_DISTANCE_INVALID',
+    ORDER_CHASE_LIMIT_REACHED: 'ORDER_CHASE_LIMIT_REACHED',
+    ORDER_CHASE_ABANDONED: 'ORDER_CHASE_ABANDONED',
+    ORDER_CHASE_TOUCH_UNAVAILABLE: 'ORDER_CHASE_TOUCH_UNAVAILABLE',
+    ORDER_MARGIN_MODE_INVALID: 'ORDER_MARGIN_MODE_INVALID',
+    ORDER_MARGIN_MODE_UNSUPPORTED: 'ORDER_MARGIN_MODE_UNSUPPORTED',
+    ORDER_MARGIN_MODE_POSITION_OPEN: 'ORDER_MARGIN_MODE_POSITION_OPEN',
+    ORDER_MARGIN_MODE_ORDER_OPEN: 'ORDER_MARGIN_MODE_ORDER_OPEN',
     EXCHANGE_ACCOUNT_NOT_FOUND: 'EXCHANGE_ACCOUNT_NOT_FOUND',
     EXCHANGE_MULTI_SIG_REQUIRED: 'EXCHANGE_MULTI_SIG_REQUIRED',
     EXCHANGE_INVALID_NONCE: 'EXCHANGE_INVALID_NONCE',
@@ -74,8 +102,10 @@ jest.mock('@metamask/perps-controller', () => ({
     INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
     REDUCE_ONLY_VIOLATION: 'REDUCE_ONLY_VIOLATION',
     POSITION_WOULD_FLIP: 'POSITION_WOULD_FLIP',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
     TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
+    TPSL_PROTECTION_LOST: 'TPSL_PROTECTION_LOST',
     ORDER_REJECTED: 'ORDER_REJECTED',
     SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
     RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
@@ -92,6 +122,100 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
       expect(ERROR_CODE_TO_I18N_KEY).toHaveProperty(code);
       expect(typeof ERROR_CODE_TO_I18N_KEY[code]).toBe('string');
     }
+  });
+
+  it('resolves every mapped i18n key to real en copy', () => {
+    const keys = [...new Set(Object.values(ERROR_CODE_TO_I18N_KEY))];
+
+    // `tEn` throws on a key the en locale does not define, so a mapping that
+    // points at a string nobody ever added surfaces here rather than as an
+    // empty error toast in front of a user.
+    const emptyCopy = keys.filter((key) => tEn(key).trim().length === 0);
+
+    expect(emptyCopy).toStrictEqual([]);
+  });
+
+  it('translates every v12 strategy placement error code', () => {
+    // The controller added these in v12.0.0 for `twap` / `scale` / `chase`
+    // placements. Named literally rather than filtered out of the enum so that
+    // a code silently dropped from a future controller release fails here.
+    const strategyCodes = [
+      'ORDER_STRATEGY_PARAMS_NOT_SUPPORTED',
+      'ORDER_STRATEGY_FIELD_UNSUPPORTED',
+      'ORDER_STRATEGY_MARKET_UNSUPPORTED',
+      'ORDER_STRATEGY_HANDLE_UNKNOWN',
+      'ORDER_STRATEGY_CANCEL_INCOMPLETE',
+      'ORDER_EDIT_STRATEGY_UNSUPPORTED',
+      'ORDER_TWAP_DURATION_REQUIRED',
+      'ORDER_TWAP_DURATION_INVALID',
+      'ORDER_TWAP_NOTIONAL_TOO_SMALL',
+      'ORDER_SCALE_RANGE_REQUIRED',
+      'ORDER_SCALE_RANGE_INVALID',
+      'ORDER_SCALE_COUNT_INVALID',
+      'ORDER_SCALE_SIZE_TOO_SMALL',
+      'ORDER_SCALE_NOTIONAL_TOO_SMALL',
+      'ORDER_CHASE_INTERVAL_INVALID',
+      'ORDER_CHASE_DURATION_INVALID',
+      'ORDER_CHASE_LIMIT_REACHED',
+      'ORDER_CHASE_ABANDONED',
+      'ORDER_CHASE_TOUCH_UNAVAILABLE',
+    ] as const;
+
+    const translated = strategyCodes.map((code) => {
+      const error = Object.assign(new Error('strategy rejected'), { code });
+      return translatePerpsError(error, mockT);
+    });
+
+    expect(translated).toStrictEqual(
+      strategyCodes.map(() => '[perpsOrderFailed]'),
+    );
+  });
+
+  it('translates every error code introduced after v12', () => {
+    // Controller 13.0.0-16.2.0 widened `PerpsErrorCode`. Named literally rather
+    // than derived from the enum so a code dropped from a later release fails
+    // here instead of silently shrinking the assertion to nothing.
+    const codesAddedAfterV12 = [
+      ['PROVIDER_NOT_FOUND', '[somethingWentWrong]'],
+      ['PROVIDER_LIFECYCLE_STALE', '[somethingWentWrong]'],
+      ['ORDER_STRATEGY_ROUTE_UNAVAILABLE', '[perpsOrderFailed]'],
+      ['ORDER_CHASE_MAX_DISTANCE_INVALID', '[perpsOrderFailed]'],
+      ['TPSL_PROTECTION_LOST', '[somethingWentWrong]'],
+      ['POSITION_NOT_FOUND', '[somethingWentWrong]'],
+      ['ORDER_MARGIN_MODE_INVALID', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_UNSUPPORTED', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_POSITION_OPEN', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_ORDER_OPEN', '[perpsOrderFailed]'],
+    ] as const;
+
+    const translated = codesAddedAfterV12.map(([code]) =>
+      translatePerpsError(
+        Object.assign(new Error('rejected'), { code }),
+        mockT,
+      ),
+    );
+
+    expect(translated).toStrictEqual(
+      codesAddedAfterV12.map(([, expected]) => expected),
+    );
+  });
+
+  it('translates cancel-path strategy codes with the cancel wording', () => {
+    const handleUnknown = Object.assign(new Error('no such handle'), {
+      code: 'ORDER_STRATEGY_HANDLE_UNKNOWN',
+    });
+    const cancelIncomplete = Object.assign(new Error('partially resting'), {
+      code: 'ORDER_STRATEGY_CANCEL_INCOMPLETE',
+    });
+
+    const results = [handleUnknown, cancelIncomplete].map((error) =>
+      translatePerpsError(error, mockT, CANCEL_ORDER_I18N_KEY_OVERRIDES),
+    );
+
+    expect(results).toStrictEqual([
+      '[perpsCancelOrderFailed]',
+      '[perpsCancelOrderFailed]',
+    ]);
   });
 
   it('maps WITHDRAW_FAILED to perpsWithdrawFailed', () => {

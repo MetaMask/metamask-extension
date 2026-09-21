@@ -77,16 +77,13 @@ export const GlobalMenuList = ({
   const navigate = useNavigate();
 
   return (
-    <Box
-      className={`global-menu-list ${className}`}
-      flexDirection={BoxFlexDirection.Column}
-    >
+    <nav className={`global-menu-list ${className}`}>
       {sections.map((section, sectionIndex) => (
         <Box key={section.id} flexDirection={BoxFlexDirection.Column}>
           {/* Section Separator - Show before section if it's not the first section */}
           {sectionIndex > 0 && !section.hideDividerAbove && (
             <Box className="w-full px-2 py-2">
-              <Box className="w-full border-t border-muted" />
+              <hr className="m-0 w-full border-0 border-t border-muted" />
             </Box>
           )}
 
@@ -155,6 +152,6 @@ export const GlobalMenuList = ({
           })}
         </Box>
       ))}
-    </Box>
+    </nav>
   );
 };

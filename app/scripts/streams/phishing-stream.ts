@@ -5,6 +5,7 @@ import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
+import { isObject } from '@metamask/utils';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
@@ -18,7 +19,7 @@ import {
   PHISHING_STREAM,
   PHISHING_WARNING_PAGE,
 } from '../constants/stream';
-import { logStreamDisconnectWarning, MessageType } from './stream-utils';
+import { logStreamDisconnectWarning } from './stream-utils';
 
 const phishingPageUrl = new URL(
   process.env.PHISHING_WARNING_PAGE_URL as string,
@@ -204,9 +205,9 @@ const onDisconnectDestroyPhishingStreams = (): void => {
  * @param msg.name - Custom property and name to identify the message received
  */
 const onMessageSetUpPhishingStreams = (
-  msg: MessageType,
-): Promise<string | undefined> | undefined => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
+  msg: unknown,
+): Promise<string> | undefined => {
+  if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!phishingExtStream) {
       setupPhishingExtStreams();
     }
@@ -214,6 +215,7 @@ const onMessageSetUpPhishingStreams = (
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
     );
   }
+  // A Promise would claim the response channel from other message listeners.
   return undefined;
 };
 

@@ -89,6 +89,9 @@ export function usePerpsLiveCandles(
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const hasReceivedFirstUpdate = useRef(false);
+  const subscriptionKey = `${symbol}|${interval}|${duration ?? ''}|${throttleMs}`;
+  const [prevSubscriptionKey, setPrevSubscriptionKey] =
+    useState(subscriptionKey);
 
   // Stable refs for the current subscription params (for validation in callbacks)
   const currentSymbolRef = useRef(symbol);
@@ -96,16 +99,16 @@ export function usePerpsLiveCandles(
   currentSymbolRef.current = symbol;
   currentIntervalRef.current = interval;
 
-  useEffect(() => {
-    // Reset state when symbol or interval changes
+  if (subscriptionKey !== prevSubscriptionKey) {
+    setPrevSubscriptionKey(subscriptionKey);
     setCandleData(null);
-    setIsInitialLoading(true);
     setError(null);
     hasReceivedFirstUpdate.current = false;
+    setIsInitialLoading(Boolean(symbol && interval));
+  }
 
+  useEffect(() => {
     if (!symbol || !interval) {
-      setCandleData(null);
-      setIsInitialLoading(false);
       return undefined;
     }
 

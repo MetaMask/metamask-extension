@@ -184,7 +184,7 @@ export default function RecoveryPhrase({
       alignItems={BoxAlignItems.Center}
       gap={6}
       className="recovery-phrase h-full"
-      data-testid="recovery-phrase"
+      data-testid="parent-selector-secure-wallet"
     >
       <Box>
         {showSrpDetailsModal && (

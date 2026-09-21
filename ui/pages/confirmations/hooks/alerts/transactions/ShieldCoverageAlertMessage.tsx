@@ -1,5 +1,3 @@
-'use no memo';
-
 import React from 'react';
 import {
   Text,

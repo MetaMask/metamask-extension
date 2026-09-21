@@ -6,9 +6,9 @@ import {
   selectAllNetworksFromNetworkSelect,
   switchToNetworkFromNetworkSelect,
 } from '../../page-objects/flows/network.flow';
+import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import TronAssetDetailsPage from '../../page-objects/pages/asset/tron-asset-details';
 import {
   EMPTY_TRON_ACCOUNT,
   TRON_PORTFOLIO_ACCOUNT,
@@ -240,7 +240,7 @@ describe('Tron - Assets', function (this: Suite) {
           const tokensTab = new TokensTab(driver);
           await waitForTronAssetList(tokensTab);
           await tokensTab.clickOnAsset('Tron');
-          const details = new TronAssetDetailsPage(driver);
+          const details = new AssetDetailsPage(driver);
           await details.checkPageIsLoaded();
           await details.checkCurrentPriceHeader();
           await details.checkPriceChart();
@@ -264,15 +264,13 @@ describe('Tron - Assets', function (this: Suite) {
           const tokensTab = new TokensTab(driver);
           await waitForTronAssetList(tokensTab);
           await tokensTab.clickOnAsset('Tether');
-          const details = new TronAssetDetailsPage(driver);
+          const details = new AssetDetailsPage(driver);
           await details.checkPageIsLoaded();
           await details.checkCurrentPriceHeader();
           await details.checkPriceChart();
           await details.checkTokenActionButtons();
           await details.checkAllStandardSections();
-          await driver.assertElementNotPresent(
-            '[data-testid="tron-daily-resources"]',
-          );
+          await details.checkDailyResourcesSectionIsAbsent();
         },
       );
     });

@@ -32,14 +32,14 @@ export function TransactionId({ value }: TransactionIdProps) {
       onClick={() => handleCopy(value)}
       aria-label={t('copyTransactionId')}
       className={classnames(
-        'inline-flex items-center gap-1 rounded-full h-6 min-w-0 border-0 px-2 py-1',
+        'inline-flex items-center gap-1 rounded-full min-w-0 border-0 px-2 py-1',
         copied ? 'bg-success-muted' : 'bg-muted hover:bg-muted-hover',
       )}
       data-testid="transaction-id"
     >
       <Text
         ellipsis
-        variant={TextVariant.BodySm}
+        className="@compact:text-s-body-sm"
         fontWeight={FontWeight.Regular}
         color={copied ? TextColor.SuccessDefault : TextColor.TextDefault}
       >

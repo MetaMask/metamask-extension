@@ -27,20 +27,11 @@ jest.mock('../../../shared/lib/selectors/networks', () => ({
 }));
 
 jest.mock('../../ducks/metamask/metamask', () => ({
-  getIsPrimarySeedPhraseBackedUp: () => true,
   getWeb3ShimUsageAlertEnabledness: () => false,
 }));
 
-jest.mock('../../../shared/lib/selectors/accounts', () => {
-  // Stable reference — react-redux warns if a selector returns a new object each call.
-  const mockSelectedInternalAccount = { address: '0x1' };
-  return {
-    getSelectedInternalAccount: () => mockSelectedInternalAccount,
-  };
-});
-
-jest.mock('../../selectors/multi-srp/multi-srp', () => ({
-  getShouldShowSeedPhraseReminder: () => false,
+jest.mock('../../components/app/recovery-phrase-reminder', () => ({
+  SeedPhraseBackupNotificationContainer: () => null,
 }));
 
 jest.mock('../../store/actions', () => ({

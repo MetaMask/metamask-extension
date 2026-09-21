@@ -6,9 +6,7 @@ import {
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
-  IconColor,
   IconName,
-  usePureBlack,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -30,6 +28,47 @@ function clearDrawerOpen(root: HTMLElement = document.documentElement) {
   root.style.removeProperty(drawerOpenVar);
 }
 
+const dialogClassNameBase = classnames(
+  'group',
+
+  // Reset + clip stencil
+  'box-border border-0 bg-transparent p-0',
+  'm-0 ms-auto me-[max(0px,calc((100vw-var(--width-max))/2))]',
+  'h-full max-h-full w-[min(400px,100%)] overflow-clip [translate:none]',
+
+  // Dialog enter/exit
+  'transition-[display,overlay] transition-discrete duration-300 ease-in-out',
+  'motion-reduce:duration-[0.01ms]',
+
+  // Backdrop fade
+  'backdrop:opacity-0 open:backdrop:opacity-100',
+  'backdrop:transition-[opacity,display,overlay] backdrop:transition-discrete',
+  'backdrop:duration-[var(--global-drawer-open,300ms)] backdrop:ease-linear',
+  'starting:open:backdrop:opacity-0',
+  'motion-reduce:backdrop:duration-[0.01ms]',
+
+  // Narrow viewports: full bleed
+  'max-[575px]:mx-0 max-[575px]:w-full max-[575px]:max-w-full',
+);
+
+const dialogClassNameFullscreen =
+  'min-[576px]:top-[91px] min-[576px]:h-[calc(100%-91px)] min-[576px]:max-h-[calc(100%-91px)]';
+
+const frameClassName = classnames(
+  'h-full w-full',
+
+  // Closed: slide out
+  '[translate:100%_0]',
+  'transition-[translate] duration-300 ease-in-out',
+  'motion-reduce:duration-[0.01ms]',
+
+  // Open: slide in (`--global-drawer-open: none` skips)
+  'group-open:[translate:0_0]',
+  'group-open:[animation:var(--global-drawer-open,slide-in-from-right_300ms_ease-in-out_backwards)]',
+  'starting:group-open:[translate:var(--global-drawer-open,100%_0)]',
+  'motion-reduce:group-open:animate-none',
+);
+
 /**
  *
  * @param props - The component props
@@ -49,15 +88,13 @@ export const GlobalMenuDrawer = ({
   'data-testid': dataTestId,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
   const isLargeDrawer = isFullscreen || isSidepanel;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
@@ -73,6 +110,9 @@ export const GlobalMenuDrawer = ({
           // jsdom does not implement HTMLDialogElement.showModal
           dialog.setAttribute('open', '');
         }
+      }
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = 0;
       }
       return;
     }
@@ -109,16 +149,17 @@ export const GlobalMenuDrawer = ({
   }, []);
 
   const titleId = 'global-menu-drawer-title';
-  const className = classnames('global-menu-drawer', {
-    'global-menu-drawer--fullscreen': isFullscreen,
-  });
+  const dialogClassName = classnames(
+    dialogClassNameBase,
+    isFullscreen && dialogClassNameFullscreen,
+  );
 
   const panel = (
     <Box
-      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack && isLargeDrawer ? ' border-l border-muted' : ''}`}
+      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isLargeDrawer ? ' border-l border-alternative' : ''}`}
       backgroundColor={
-        isPureBlack && isLargeDrawer
-          ? BoxBackgroundColor.BackgroundAlternative
+        isLargeDrawer
+          ? BoxBackgroundColor.BackgroundElevated1
           : BoxBackgroundColor.BackgroundDefault
       }
     >
@@ -130,8 +171,6 @@ export const GlobalMenuDrawer = ({
             ariaLabel={title || t('close')}
             onClick={requestClose}
             data-testid="drawer-close-button"
-            className="text-icon-alternative"
-            iconProps={{ color: IconColor.IconAlternative }}
           />
           {title && (
             <span className="sr-only" id={titleId}>
@@ -142,6 +181,7 @@ export const GlobalMenuDrawer = ({
       )}
 
       <Box
+        ref={scrollRef}
         flexDirection={BoxFlexDirection.Column}
         className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
       >
@@ -154,14 +194,14 @@ export const GlobalMenuDrawer = ({
     <dialog
       ref={dialogRef}
       aria-labelledby={title ? titleId : undefined}
-      className={className}
+      className={dialogClassName}
       // @ts-expect-error closedby missing in React types
       // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
       closedby="any"
       data-testid={dataTestId}
       onClose={handleDialogClose}
     >
-      <div className="global-menu-drawer__frame">{panel}</div>
+      <div className={frameClassName}>{panel}</div>
     </dialog>
   );
 };

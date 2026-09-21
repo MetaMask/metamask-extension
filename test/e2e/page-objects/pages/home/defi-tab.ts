@@ -1,6 +1,17 @@
 import { Driver } from '../../../webdriver/driver';
 import HomePage from './homepage';
 
+/**
+ * A single DeFi protocol / position cell in the DeFi list.
+ *
+ * Screen: not a route by itself — cells inside the DeFi tab on `#/`.
+ * Owns: asserting a cell's token/protocol name and market-value text.
+ * Boundaries: tab-level empty/error states and navigation into protocol
+ * details belong to `DeFiTab`.
+ * Related: `DeFiTab` (owner; exposes `defiTabCells`).
+ *
+ * @see ui/components/app/assets/defi-list/cells/defi-protocol-cell.tsx
+ */
 class DeFiToken {
   protected readonly driver: Driver;
 
@@ -37,7 +48,31 @@ class DeFiToken {
   }
 }
 
+/**
+ * Home DeFi tab: protocol positions list, empty/error states, and entry into
+ * protocol details.
+ *
+ * Screen: `#/` DeFi tab (`account-overview__defi-tab`), reached via
+ * `HomePage.goToDeFiTab()`; protocol rows navigate to `#/defi/...`.
+ * Owns: empty and error messages, the avatar group icon, `DeFiToken` cell
+ * checks via `defiTabCells`, and clicking into Aave V3 details.
+ * Boundaries: homepage chrome and other tabs stay on `HomePage`. Cell-level
+ * name/value assertions belong to `DeFiToken`.
+ * Related: `HomePage` (`goToDeFiTab`), `DeFiToken` (`defiTabCells`),
+ * `NetworkFilter` (shared control bar on the DeFi list).
+ *
+ * @see ui/pages/defi/pages/defi-tab.tsx
+ */
 class DeFiTab extends HomePage {
+  private readonly aaveV3ProtocolName = {
+    css: '[data-testid="multichain-token-list-item-token-name"]',
+    text: 'Aave V3',
+  };
+
+  private readonly defiPage = {
+    testId: 'parent-selector-defi-tab',
+  };
+
   readonly defiTabCells: DeFiToken;
 
   private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
@@ -66,11 +101,14 @@ class DeFiTab extends HomePage {
     await this.driver.waitForSelector(this.noPositionsMessage);
   }
 
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.defiPage);
+    console.log('DeFi tab is loaded');
+  }
+
   async clickIntoAaveV3DetailsPage() {
     console.log('Click Aave V3 details page');
-    await this.driver.clickElement({
-      text: 'Aave V3',
-    });
+    await this.driver.clickElement(this.aaveV3ProtocolName);
   }
 }
 

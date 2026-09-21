@@ -302,9 +302,17 @@ const mockExportAccountsWithPasskey = jest
     },
   );
 
-const mockGeneratePasskeyAuthenticationOptions = jest
-  .fn()
-  .mockResolvedValue({ challenge: 'challenge' });
+const mockAuthenticateWithPasskey = jest.fn(() =>
+  mockStartPasskeyAuthentication({} as never),
+);
+
+jest.mock('../../../hooks/passkey/usePasskeyAuthentication', () => ({
+  usePasskeyAuthentication: () => mockAuthenticateWithPasskey,
+}));
+
+jest.mock('../../../hooks/passkey/usePasskeyPrivateKeyExport', () => ({
+  usePasskeyPrivateKeyExport: () => mockExportAccountsWithPasskey,
+}));
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -321,14 +329,6 @@ jest.mock('../../../store/actions', () => ({
   exportAccounts: (_pwd: string, _addresses: string[]) => {
     return mockExportAccounts(_pwd, _addresses);
   },
-  exportAccountsWithPasskey: (
-    authenticationResponse: unknown,
-    addresses: string[],
-  ) => {
-    return mockExportAccountsWithPasskey(authenticationResponse, addresses);
-  },
-  generatePasskeyAuthenticationOptions: () =>
-    mockGeneratePasskeyAuthenticationOptions(),
 }));
 
 const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {

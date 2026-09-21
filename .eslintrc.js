@@ -65,8 +65,6 @@ module.exports = defineConfig([
       '.eslintrc.*.js',
       '.mocharc.js',
       '*.config.js',
-      'app/scripts/lockdown-run.js',
-      'app/scripts/lockdown-more.js',
       'development/**/*.js',
       'test/e2e/**/*.js',
       'test/helpers/*.js',
@@ -115,7 +113,6 @@ module.exports = defineConfig([
       'test/stub/**/*.js',
       'test/unit-global/**/*.js',
     ],
-    ignores: ['app/scripts/lockdown-run.js', 'app/scripts/lockdown-more.js'],
     extends: [
       eslintConfig,
       baseConfig,
@@ -408,20 +405,19 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
-      // v7 compiler rules from recommended — warn until MetaMask-planning#6402
-      // promotes them to error and clears the baseline.
-      'react-hooks/config': 'warn',
-      'react-hooks/error-boundaries': 'warn',
-      'react-hooks/gating': 'warn',
-      'react-hooks/globals': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
-      'react-hooks/purity': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/set-state-in-render': 'warn',
-      'react-hooks/static-components': 'warn',
-      'react-hooks/use-memo': 'warn',
+      'react-hooks/config': 'error',
+      'react-hooks/error-boundaries': 'error',
+      'react-hooks/gating': 'error',
+      'react-hooks/globals': 'error',
+      'react-hooks/immutability': 'error',
+      'react-hooks/preserve-manual-memoization': 'error',
+      'react-hooks/purity': 'error',
+      'react-hooks/refs': 'error',
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/set-state-in-render': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/use-memo': 'error',
+      'react-hooks/incompatible-library': 'error',
     },
     settings: {
       react: {
@@ -438,8 +434,7 @@ module.exports = defineConfig([
   /**
    * TypeScript React-specific code
    *
-   * Similar to above, but marks a majority of errors to warnings.
-   * TODO - combine rulesets and resolve errors
+   * TODO: combine rulesets where possible.
    */
   {
     files: ['ui/**/*.ts', 'ui/**/*.tsx'],
@@ -477,20 +472,19 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
-      // v7 compiler rules from recommended — warn until MetaMask-planning#6402
-      // promotes them to error and clears the baseline.
-      'react-hooks/config': 'warn',
-      'react-hooks/error-boundaries': 'warn',
-      'react-hooks/gating': 'warn',
-      'react-hooks/globals': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
-      'react-hooks/purity': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/set-state-in-render': 'warn',
-      'react-hooks/static-components': 'warn',
-      'react-hooks/use-memo': 'warn',
+      'react-hooks/config': 'error',
+      'react-hooks/error-boundaries': 'error',
+      'react-hooks/gating': 'error',
+      'react-hooks/globals': 'error',
+      'react-hooks/immutability': 'error',
+      'react-hooks/preserve-manual-memoization': 'error',
+      'react-hooks/purity': 'error',
+      'react-hooks/refs': 'error',
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/set-state-in-render': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/use-memo': 'error',
+      'react-hooks/incompatible-library': 'error',
     },
     settings: {
       react: {
@@ -672,22 +666,6 @@ module.exports = defineConfig([
     rules: {
       'n/no-process-exit': 'off',
       'n/hashbang': 'off',
-    },
-  },
-  /**
-   * Lockdown files
-   */
-  {
-    files: [
-      'app/scripts/lockdown-run.js',
-      'app/scripts/lockdown-more.js',
-      'test/helpers/protect-intrinsics-helpers.js',
-    ],
-    languageOptions: {
-      globals: {
-        harden: 'readonly',
-        Compartment: 'readonly',
-      },
     },
   },
   /**

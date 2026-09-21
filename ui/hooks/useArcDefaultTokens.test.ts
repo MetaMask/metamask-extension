@@ -1,4 +1,5 @@
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import { importCustomAssetsBatch } from '../store/actions';
 import { useArcDefaultTokens } from './useArcDefaultTokens';
 
@@ -8,7 +9,15 @@ jest.mock('../store/actions', () => ({
   })),
 }));
 
+jest.mock('../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../shared/lib/environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),
+}));
+
 const mockImportCustomAssetsBatch = jest.mocked(importCustomAssetsBatch);
+const mockGetIsAssetsUnifiedStateIncludedInBuild = jest.mocked(
+  getIsAssetsUnifiedStateIncludedInBuild,
+);
 
 const ARC_CHAIN_ID = '0x13b2';
 const ARC_USDC_ASSET_ID =
@@ -62,6 +71,15 @@ const buildState = ({
 describe('useArcDefaultTokens', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetIsAssetsUnifiedStateIncludedInBuild.mockReturnValue(true);
+  });
+
+  it('does nothing when the unified assets state is not included in the build', () => {
+    mockGetIsAssetsUnifiedStateIncludedInBuild.mockReturnValue(false);
+
+    renderHookWithProvider(() => useArcDefaultTokens(), buildState());
+
+    expect(mockImportCustomAssetsBatch).not.toHaveBeenCalled();
   });
 
   it('imports Arc USDC for an EVM account when Arc is present and the asset is missing', () => {

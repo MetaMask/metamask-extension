@@ -2,13 +2,17 @@ import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { strict as assert } from 'assert';
 import { Readable } from 'stream';
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import { BigNumber } from 'bignumber.js';
 import {
+  calcQuoteMetadata,
+  getNativeAssetForChainId,
   QuoteStreamCompleteReason,
   TokenFeature,
   type FeatureFlagResponse,
 } from '@metamask/bridge-controller';
 
-import { emptyHtmlPage } from '../../mock-e2e';
+import { formatAmount } from '../../../../shared/lib/format-amount';
+import { emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES } from '../../mock-e2e';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -27,16 +31,26 @@ import {
   BRIDGE_L2_MOCK_CURRENCY_RATES,
   BRIDGE_L2_WITH_FIXTURES_OPTIONS,
   BRIDGE_MOCK_CURRENCY_RATES,
+  BRIDGE_MOCK_TOKEN_SPOT_PRICES,
+  BRIDGE_MONAD_MOCK_CURRENCY_RATES,
+  BRIDGE_MONAD_USD_SPOT_PRICE,
+  BRIDGE_MONAD_WITH_FIXTURES_OPTIONS,
+  BRIDGE_SOLANA_USD_SPOT_PRICE,
   BRIDGE_WITH_FIXTURES_OPTIONS,
+  MONAD_NATIVE_ASSET_ID,
   getBridgeAssetsControllerConfig,
   getBridgeL2AssetsControllerConfig,
+  getBridgeMockUsdSpotPrice,
+  getBridgeMonadBaseAssetsControllerConfig,
 } from './bridge-unified-assets-config';
 import {
   MOCK_TOKENS_ARBITRUM,
   MOCK_TOKENS_ETHEREUM,
   MOCK_TOKENS_LINEA,
+  MOCK_TOKENS_BASE,
+  MOCK_TOKENS_MONAD,
+  MOCK_TOKENS_ROBINHOOD,
   MOCK_GET_TOKEN_ARBITRUM,
-  MOCK_BRIDGE_ETH_TO_ETH_LINEA,
   MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM,
   MOCK_BRIDGE_DAI_TO_ETH_LINEA,
   MOCK_BRIDGE_USDC_TO_DAI_LINEA,
@@ -44,8 +58,11 @@ import {
   MOCK_BRIDGE_NATIVE_L2_TO_L2,
   MOCK_BRIDGE_DAI_L2_TO_L2,
   MOCK_BRIDGE_DAI_L2_TO_MAINNET,
+  MOCK_BRIDGE_MON_TO_USDC_BASE,
   TOP_ASSETS_API_LINEA_MOCK_RESULT,
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
+  TOP_ASSETS_API_MONAD_MOCK_RESULT,
+  TOP_ASSETS_API_BASE_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
   SSE_RESPONSE_HEADER,
@@ -53,6 +70,7 @@ import {
   BRIDGE_REFRESH_RATE,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
 } from './constants';
+import MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD from './mocks/bridge-quotes-eth-robinhood.json';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
@@ -163,6 +181,46 @@ export async function mockTopAssetsArbitrum(mockServer: Mockttp) {
       json: TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
     };
   });
+}
+
+async function mockTopAssetsMonad(mockServer: Mockttp) {
+  return await mockServer.forGet(/143\/topAssets/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: TOP_ASSETS_API_MONAD_MOCK_RESULT,
+    };
+  });
+}
+
+async function mockTopAssetsBase(mockServer: Mockttp) {
+  return await mockServer.forGet(/8453\/topAssets/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: TOP_ASSETS_API_BASE_MOCK_RESULT,
+    };
+  });
+}
+
+async function mockTokensBase(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/8453(\?.*)?$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_BASE,
+      };
+    });
+}
+
+async function mockTokensMonad(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/143(\?.*)?$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_MONAD,
+      };
+    });
 }
 
 async function mockTokensEthereum(mockServer: Mockttp) {
@@ -304,6 +362,7 @@ export async function mockGetPopularTokens(mockServer: Mockttp) {
       MOCK_GET_TOKEN_ARBITRUM.map((token) =>
         toBridgeTokenResponse(42161, token),
       ),
+      MOCK_TOKENS_ROBINHOOD.map((token) => toBridgeTokenResponse(4663, token)),
     ].flat(),
   }));
 }
@@ -389,7 +448,82 @@ async function mockSearchTokens(mockServer: Mockttp) {
           },
         };
       }),
+    await mockServer
+      .forPost(/getTokens\/search/u)
+      .withJsonBodyIncluding({
+        chainIds: ['eip155:4663'],
+      })
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(
+          MOCK_TOKENS_ROBINHOOD,
+          body.query ?? '',
+        );
+        return {
+          statusCode: 200,
+          json: {
+            data: tokens.map((token) => toBridgeTokenResponse(4663, token)),
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
+          },
+        };
+      }),
   ];
+}
+
+async function mockSearchTokensMonadBase(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost(/getTokens\/search/u)
+      .withJsonBodyIncluding({
+        chainIds: ['eip155:143'],
+      })
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(MOCK_TOKENS_MONAD, body.query ?? '');
+        return {
+          statusCode: 200,
+          json: {
+            data: tokens.map((token) => toBridgeTokenResponse(143, token)),
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
+          },
+        };
+      }),
+    await mockServer
+      .forPost(/getTokens\/search/u)
+      .withJsonBodyIncluding({
+        chainIds: ['eip155:8453'],
+      })
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(MOCK_TOKENS_BASE, body.query ?? '');
+        return {
+          statusCode: 200,
+          json: {
+            data: tokens.map((token) => toBridgeTokenResponse(8453, token)),
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
+          },
+        };
+      }),
+  ];
+}
+
+async function mockGetPopularTokensMonadBase(mockServer: Mockttp) {
+  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+    statusCode: 200,
+    json: [
+      MOCK_TOKENS_MONAD.map((token) => toBridgeTokenResponse(143, token)),
+      MOCK_TOKENS_BASE.map((token) => toBridgeTokenResponse(8453, token)),
+    ].flat(),
+  }));
 }
 
 async function mockETHtoETH(mockServer: Mockttp, sseEnabled?: boolean) {
@@ -402,7 +536,7 @@ async function mockETHtoETH(mockServer: Mockttp, sseEnabled?: boolean) {
       })
       .thenStream(
         200,
-        mockSseEventSource(MOCK_BRIDGE_ETH_TO_ETH_LINEA),
+        mockSseEventSource(MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD, 0),
         SSE_RESPONSE_HEADER,
       );
   }
@@ -415,7 +549,7 @@ async function mockETHtoETH(mockServer: Mockttp, sseEnabled?: boolean) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: MOCK_BRIDGE_ETH_TO_ETH_LINEA,
+        json: MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD,
       };
     });
 }
@@ -580,21 +714,10 @@ function mockSseEventSource(
   );
 }
 
-/**
- * Production sends smart transactions to endpoints these fixtures do not mock:
- * the migration flags move them to the per-network sentinel hosts instead of
- * `transaction.api.cx.metamask.io`, and EIP-7702 support on mainnet publishes
- * gasless swaps through the transaction relay. Pinning both off keeps the
- * request URLs the mocks below answer.
- */
 const UNMOCKED_TRANSACTION_ENDPOINTS_OFF = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_eip_7702: { contracts: {}, supportedChains: [] },
-  stxMigrationBatchStatus: { value: false },
-  stxMigrationCancel: { value: false },
-  stxMigrationGetFees: { value: false },
-  stxMigrationSubmitTransactions: { value: false },
 };
 
 async function mockFeatureFlags(
@@ -762,6 +885,39 @@ async function mockNativeL2toL2(mockServer: Mockttp, sseEnabled?: boolean) {
     });
 }
 
+async function mockMONtoUSDCBase(mockServer: Mockttp, sseEnabled?: boolean) {
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .withQuery({
+        srcChainId: 143,
+        destChainId: 8453,
+        srcTokenAddress: '0x0000000000000000000000000000000000000000',
+        destTokenAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      })
+      .always()
+      .thenStream(
+        200,
+        mockSseEventSource(MOCK_BRIDGE_MON_TO_USDC_BASE),
+        SSE_RESPONSE_HEADER,
+      );
+  }
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcChainId: 143,
+      destChainId: 8453,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_MON_TO_USDC_BASE,
+      };
+    });
+}
+
 async function mockDAIL2toL2(mockServer: Mockttp, sseEnabled?: boolean) {
   if (sseEnabled) {
     return await mockServer
@@ -845,6 +1001,18 @@ async function mockAccountsTransactions(mockServer: Mockttp) {
     });
 }
 
+async function mockTransactionDetails(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/networks\/\d+\/transactions\/0x[0-9a-fA-F]+/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { data: null },
+    }));
+}
+
 async function mockAccountsBalances(mockServer: Mockttp) {
   return await mockServer
     .forGet(
@@ -920,7 +1088,7 @@ async function mockPriceSpotPricesV3(
   ethUsdSpotPrice: number = BRIDGE_ETH_USD_SPOT_PRICE,
 ) {
   const resolvedEthPrice = ethUsdSpotPrice;
-  const SOLANA_SPOT_PRICE = 112.87;
+  const SOLANA_SPOT_PRICE = BRIDGE_SOLANA_USD_SPOT_PRICE;
 
   const tokenEntry = (
     id: string,
@@ -939,26 +1107,23 @@ async function mockPriceSpotPricesV3(
     'eip155:42161/slip44:60',
   ] as const;
 
-  const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
-    'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
-      'dai',
-      1.0,
+  const stablecoins: Record<
+    string,
+    ReturnType<typeof tokenEntry>
+  > = Object.fromEntries(
+    Object.entries(BRIDGE_MOCK_TOKEN_SPOT_PRICES).map(
+      ([assetId, { id, price }]) => [assetId, tokenEntry(id, price)],
     ),
-    'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
-      'dai',
-      1.0,
-    ),
-    'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
-      'musd',
-      0.9999,
-    ),
-  };
+  );
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback((request) => {
       const url = new URL(request.url);
-      const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
+      const vsCurrency =
+        url.searchParams.get('vsCurrency')?.toLowerCase() ?? 'usd';
+      const includeMarketData =
+        url.searchParams.get('includeMarketData') === 'true';
       const ethPriceChange1d = vsCurrency === 'usd' ? 2.5 : 0;
       const requestedAssetIds = (url.searchParams.get('assetIds') ?? '')
         .split(',')
@@ -975,7 +1140,8 @@ async function mockPriceSpotPricesV3(
         if (
           (ethNativeAssetIds as readonly string[]).includes(assetId) ||
           assetId.endsWith('/slip44:60') ||
-          assetId.endsWith('/slip44:1')
+          assetId.endsWith('/slip44:1') ||
+          assetId === MONAD_NATIVE_ASSET_ID
         ) {
           json[assetId] = tokenEntry(
             'ethereum',
@@ -995,7 +1161,20 @@ async function mockPriceSpotPricesV3(
         }
       }
 
-      return { statusCode: 200, json };
+      if (includeMarketData) {
+        return { statusCode: 200, json };
+      }
+
+      // Without `includeMarketData` the API answers with prices keyed by the
+      // requested currency, which is the shape the bridge controller parses.
+      const pricesByCurrency = Object.fromEntries(
+        Object.entries(json).map(([assetId, { price }]) => [
+          assetId,
+          { [vsCurrency]: price },
+        ]),
+      );
+
+      return { statusCode: 200, json: pricesByCurrency };
     });
 }
 
@@ -1030,6 +1209,22 @@ export async function mockGasPricesArbitrum(mockServer: Mockttp) {
 export async function mockGasPricesMainnet(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://gas.api.cx.metamask.io/networks/1/gasPrices')
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          SafeGasPrice: '30',
+          ProposeGasPrice: '30',
+          FastGasPrice: '30',
+        },
+      };
+    });
+}
+
+export async function mockGasPricesMonad(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://gas.api.cx.metamask.io/networks/143/gasPrices')
     .always()
     .thenCallback(() => {
       return {
@@ -1204,9 +1399,7 @@ async function mockSmartTransactionsForBridge(
 
   // getFees: queried before submitting each STX
   await mockServer
-    .forPost(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/getFees`,
-    )
+    .forPost(`${sentinelUrl}/v1/networks/${chainId}/getFees`)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -1243,9 +1436,7 @@ async function mockSmartTransactionsForBridge(
   // When a bridge requires an approval, rawTxs = [approvalTx, bridgeTx]; we
   // forward both sequentially to preserve nonce order (same as mobile).
   await mockServer
-    .forPost(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/submitTransactions`,
-    )
+    .forPost(`${sentinelUrl}/v1/networks/${chainId}/submitTransactions`)
     .always()
     .thenCallback(async (req) => {
       let rawTxs: string[] = [];
@@ -1294,9 +1485,7 @@ async function mockSmartTransactionsForBridge(
   // batchStatus: return the on-chain hash with the given status so the
   // STX controller resolves accordingly.
   await mockServer
-    .forGet(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/batchStatus`,
-    )
+    .forGet(`${sentinelUrl}/v1/networks/${chainId}/batchStatus`)
     .always()
     .thenCallback((req) => {
       const uuid = new URL(req.url).searchParams.get('uuids') ?? STX_UUID;
@@ -1413,6 +1602,7 @@ export const getBridgeFixtures = ({
           STX_MAINNET_NETWORK_CONFIG,
         ),
         await mockAccountsTransactions(mockServer),
+        await mockTransactionDetails(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPricesV3(mockServer),
         await mockSwapAggregatorLinea(mockServer),
@@ -1749,6 +1939,7 @@ export const getBridgeL2Fixtures = (
           featureFlags,
           STX_LINEA_NETWORK_CONFIG,
         ),
+        await mockTransactionDetails(mockServer),
         await mockAccountsBalances(mockServer),
         await mockSwapAggregatorMetadataLinea(mockServer),
         await mockSwapTokensLinea(mockServer),
@@ -1783,6 +1974,128 @@ export const getBridgeL2Fixtures = (
           hardfork: 'london',
           loadState:
             './test/e2e/seeder/network-states/with100Usdc100Usdt50Dai.json',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+/**
+ * Fixtures for Monad → Base bridge E2E (WPN-1798 / EXT-4).
+ * Enables Monad (`0x8f`) + Base (`0x2105`), Anvil chain 143, and MON→USDC(Base) mocks.
+ *
+ * @param title - Mocha test title for fixture isolation.
+ * @param featureFlags - Bridge feature flags (should include Monad + SSE).
+ * @returns withFixtures options for Monad→Base bridge tests.
+ */
+export const getMonadBaseBridgeFixtures = (
+  title?: string,
+  featureFlags: Partial<FeatureFlagResponse> = {},
+) => {
+  const fixtureBuilder = new FixtureBuilderV2()
+    .withNetworkRpcUrlOnLocalhost('0x8f')
+    .withCurrencyController(BRIDGE_MONAD_MOCK_CURRENCY_RATES)
+    .withTokenListController({
+      tokensChainsCache: {
+        '0x2105': {
+          timestamp: Date.now(),
+          data: {
+            '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
+              name: 'USD Coin',
+              symbol: 'USDC',
+              address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+              decimals: 6,
+              occurrences: 1,
+              aggregators: [],
+              iconUrl: '',
+            },
+          },
+        },
+        '0x8f': {
+          timestamp: Date.now(),
+          data: {
+            '0x754704bc059f8c67012fed69bc8a327a5aafb603': {
+              name: 'USD Coin',
+              symbol: 'USDC',
+              address: '0x754704bc059f8c67012fed69bc8a327a5aafb603',
+              decimals: 6,
+              occurrences: 1,
+              aggregators: [],
+              iconUrl: '',
+            },
+          },
+        },
+      },
+    })
+    .withEnabledNetworks({
+      eip155: {
+        '0x8f': true,
+        '0x2105': true,
+      },
+    })
+    .withNetworkEnablementController({
+      nativeAssetIdentifiers: {
+        'eip155:143': MONAD_NATIVE_ASSET_ID,
+      },
+    })
+    .withAssetsController(getBridgeMonadBaseAssetsControllerConfig());
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => {
+      const mocks = [
+        await mockPortfolioPage(mockServer),
+        await mockGetTxStatus(mockServer),
+        await mockTopAssetsMonad(mockServer),
+        await mockTopAssetsBase(mockServer),
+        await mockTokensMonad(mockServer),
+        await mockTokensBase(mockServer),
+        await mockGetPopularTokensMonadBase(mockServer),
+        await mockMONtoUSDCBase(mockServer, featureFlags.sse?.enabled),
+        await mockGasPricesMonad(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags, {
+          gasFeesSponsoredNetwork: {
+            '0x8f': false,
+          },
+          smartTransactionsNetworks: {
+            '0x8f': {
+              extensionActive: false,
+              sentinelUrl:
+                'https://tx-sentinel-monad-mainnet.api.cx.metamask.io',
+            },
+          },
+        }),
+        await mockAccountsBalances(mockServer),
+        await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer, BRIDGE_MONAD_USD_SPOT_PRICE),
+      ];
+
+      mocks.push(...(await mockSearchTokensMonadBase(mockServer)));
+
+      return mocks.filter(Boolean);
+    },
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+        gasFeesSponsoredNetwork: {
+          '0x8f': false,
+        },
+        smartTransactionsNetworks: {
+          '0x8f': {
+            extensionActive: false,
+            sentinelUrl: 'https://tx-sentinel-monad-mainnet.api.cx.metamask.io',
+          },
+        },
+      },
+    },
+    ...BRIDGE_MONAD_WITH_FIXTURES_OPTIONS,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 143,
+          hardfork: 'london',
         },
       },
     ],
@@ -2154,4 +2467,104 @@ export async function enterBridgeQuote(
   });
 
   return bridgePage;
+}
+
+/**
+ * The bridge controller prices gas with the `medium` estimate, which the gas
+ * API mock serves for every chain.
+ */
+const MOCK_BRIDGE_FEES_PER_GAS = {
+  estimatedBaseFeeInDecGwei: MOCK_SUGGESTED_GAS_FEES.estimatedBaseFee,
+  feePerGasInDecGwei: MOCK_SUGGESTED_GAS_FEES.medium.suggestedMaxFeePerGas,
+};
+
+/** Locale and display currency the extension runs under in E2E. */
+const LOCALE = 'en-US';
+
+// The quote card renders fiat costs with a 2 decimal currency format. The UI
+// formatters live behind imports that only load inside the extension, so mirror
+// the format here instead.
+const currencyFormatter = new Intl.NumberFormat(LOCALE, {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+/** The quote shape the bridge API mocks serve, narrowed to the fields read here. */
+type MockedQuote = {
+  quote: {
+    srcChainId: number;
+    srcAsset: { assetId: string };
+    destAsset: { assetId: string };
+  };
+};
+
+type CalcQuoteMetadataQuote = Parameters<typeof calcQuoteMetadata>[0];
+
+const toExchangeRate = (
+  assetId: string | undefined,
+  ethUsdSpotPrice: number,
+) => {
+  const price = assetId
+    ? getBridgeMockUsdSpotPrice(assetId, ethUsdSpotPrice)
+    : undefined;
+  if (!price) {
+    return {};
+  }
+  return { exchangeRate: String(price), usdExchangeRate: String(price) };
+};
+
+/**
+ * Derives the Total cost each quote renders in the Select quote dialog,
+ * cheapest first, from the mocked quotes and mocked prices/gas estimates.
+ * Unpriced tokens have no fiat cost, so the dialog falls back to the native
+ * network fee.
+ *
+ * @param quotes - Mocked quote responses served for the route under test.
+ * @param options - Overrides for fixtures that use a different native price.
+ * @param options.ethUsdSpotPrice - Native ETH price used by the fixtures.
+ * @returns Total cost strings as rendered, e.g. `$38.95` or `0.0143 ETH`.
+ */
+export function getExpectedQuoteTotalCosts(
+  quotes: unknown[],
+  {
+    ethUsdSpotPrice = BRIDGE_ETH_USD_SPOT_PRICE,
+  }: { ethUsdSpotPrice?: number } = {},
+): string[] {
+  const costs = quotes.map((quote) => {
+    const { quote: quoteData } = quote as MockedQuote;
+    const nativeAsset = getNativeAssetForChainId(quoteData.srcChainId);
+
+    const metadata = calcQuoteMetadata(quote as CalcQuoteMetadataQuote, {
+      bridgeFeesPerGas: MOCK_BRIDGE_FEES_PER_GAS,
+      srcTokenExchangeRate: toExchangeRate(
+        quoteData.srcAsset.assetId,
+        ethUsdSpotPrice,
+      ),
+      destTokenExchangeRate: toExchangeRate(
+        quoteData.destAsset.assetId,
+        ethUsdSpotPrice,
+      ),
+      nativeExchangeRate: toExchangeRate(nativeAsset.assetId, ethUsdSpotPrice),
+    });
+
+    const costInCurrency = metadata.cost?.valueInCurrency;
+    if (costInCurrency) {
+      return {
+        amount: new BigNumber(costInCurrency),
+        text: currencyFormatter.format(Number(costInCurrency)),
+      };
+    }
+
+    const networkFee = new BigNumber(metadata.totalNetworkFee?.amount ?? '0');
+    return {
+      amount: networkFee,
+      text: [formatAmount(LOCALE, networkFee), nativeAsset.symbol].join(' '),
+    };
+  });
+
+  return costs
+    .sort((a, b) => a.amount.comparedTo(b.amount) ?? 0)
+    .map(({ text }) => text);
 }

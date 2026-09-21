@@ -6,6 +6,7 @@ import {
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  QuoteMetadataMigrationPhase,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { CaipChainId, CaipAssetType } from '@metamask/utils';
@@ -71,6 +72,9 @@ export const BRIDGE_ONLY_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
 export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
+
+export const BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE =
+  QuoteMetadataMigrationPhase.V2WithV1Fallback;
 
 /**
  * Resolves the Bridge API base URL to use based on the current MetaMask
@@ -311,12 +315,12 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: {
-    // ETH -> USDe on Robinhood
-    address: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
-    symbol: 'USDe',
-    decimals: 18,
-    name: 'USDe',
-    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34')}`,
+    // ETH -> USDG on Robinhood
+    address: '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168',
+    symbol: 'USDG',
+    decimals: 6,
+    name: 'Global Dollar',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168')}`,
   },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana
@@ -346,6 +350,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
 } as const;
 
 export const BRIDGE_ASSET_PICKER_HIDDEN_ASSETS = new Set([
-  // Arc blockchain: Two USDC - one native, one ERC20. Hidding native for convenience.
+  // Arc blockchain: Two USDC - one native, one ERC20. Hiding native for convenience.
+  // Both the legacy erc20:0x0 placeholder and the current slip44:5042 ID are
+  // listed because persisted balance state may still carry the legacy ID
+  // until the pending state migration for the slip44 rollout lands.
   'eip155:5042/erc20:0x0000000000000000000000000000000000000000',
+  'eip155:5042/slip44:5042',
 ]);

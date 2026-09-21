@@ -17,4 +17,14 @@
       color: var(--color-primary-default);
     }
   }
+
+  &--hidden {
+    // Opacity creates a stacking context that children cannot opt out of, so
+    // the muted styling is applied per child to spare the edit-mode icons.
+    > *:not(.multichain-account-cell__trailing),
+    .multichain-account-cell__trailing
+      > *:not(.multichain-account-cell__edit-mode-action-icon) {
+      opacity: 0.6;
+    }
+  }
 }

@@ -3,8 +3,7 @@ import { filterOutArcNativeAsset } from './arc';
 const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
 const ARC_NATIVE_HEX_CHAIN_ID = '0x13b2';
 const ARC_NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
-const ARC_NATIVE_ASSET_ID =
-  'eip155:5042/erc20:0x0000000000000000000000000000000000000000';
+const ARC_NATIVE_ASSET_ID = 'eip155:5042/slip44:5042';
 const ARC_ERC20_USDC_ADDRESS = '0x3600000000000000000000000000000000000000';
 
 type Asset = {
@@ -36,6 +35,11 @@ describe('filterOutArcNativeAsset', () => {
   const arcNativeUpperAddress = {
     chainId: ARC_NATIVE_HEX_CHAIN_ID.toUpperCase(),
     address: ARC_NATIVE_ADDRESS.toUpperCase(),
+    isNative: true,
+  };
+  const arcNativeEmptyAddress = {
+    chainId: ARC_NATIVE_HEX_CHAIN_ID,
+    address: '',
     isNative: true,
   };
   const arcNativeUpperAssetId = {
@@ -79,6 +83,12 @@ describe('filterOutArcNativeAsset', () => {
       description: 'matches the Arc native asset case-insensitively',
       assets: [arcNativeUpperAddress, arcNativeUpperAssetId],
       expected: [],
+    },
+    {
+      description:
+        'filters out the Arc native asset when the route token has an empty address',
+      assets: [arcNativeEmptyAddress, arcErc20UsdcByAddress],
+      expected: [arcErc20UsdcByAddress],
     },
     {
       description: 'keeps the Arc native address when it is on a non-Arc chain',

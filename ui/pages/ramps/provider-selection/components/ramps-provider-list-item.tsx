@@ -10,18 +10,22 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Tag,
   Text,
   TextColor,
   FontWeight,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getRampsListItemClassName } from '../../components/get-ramps-list-item-class-name';
 import RampsQuoteDisplay from '../../payment-method/components/ramps-quote-display';
+import type { ProviderTag } from '../utils/build-provider-list-items';
 
 export type RampsProviderListItemProps = {
   provider: Provider;
   isSelected?: boolean;
   isDisabled?: boolean;
+  tags?: ProviderTag[];
   subtitle?: string | null;
   showQuote?: boolean;
   quote?: Quote | null;
@@ -34,11 +38,11 @@ export type RampsProviderListItemProps = {
 /**
  * Provider row matching mobile ProviderSelection: name (+ optional subtitle)
  * on the left, quote amounts on the right.
- *
  * @param options0
  * @param options0.provider
  * @param options0.isSelected
  * @param options0.isDisabled
+ * @param options0.tags
  * @param options0.subtitle
  * @param options0.showQuote
  * @param options0.quote
@@ -51,6 +55,7 @@ export default function RampsProviderListItem({
   provider,
   isSelected = false,
   isDisabled = false,
+  tags = [],
   subtitle = null,
   showQuote = false,
   quote = null,
@@ -66,7 +71,7 @@ export default function RampsProviderListItem({
     quote.quote.amountOut !== null &&
     tokenSymbol
       ? formatToken(Number(quote.quote.amountOut), tokenSymbol, {
-          maximumFractionDigits: 6,
+          maximumFractionDigits: 4,
           minimumFractionDigits: 0,
         })
       : '';
@@ -80,7 +85,7 @@ export default function RampsProviderListItem({
     <ButtonBase
       onClick={onClick}
       isDisabled={isDisabled}
-      className="w-full rounded-lg px-4 py-3 min-w-0 h-auto hover:bg-hover active:bg-pressed"
+      className={getRampsListItemClassName(isSelected)}
       data-testid={`ramps-provider-item-${provider.id}`}
     >
       <Box
@@ -96,13 +101,31 @@ export default function RampsProviderListItem({
           alignItems={BoxAlignItems.Start}
           gap={1}
         >
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            className="truncate text-left"
+          <Box
+            className="w-full min-w-0"
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
           >
-            {provider.name}
-          </Text>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              className="min-w-0 flex-1 truncate text-left"
+              data-testid={`ramps-provider-item-name-${provider.id}`}
+            >
+              {provider.name}
+            </Text>
+            {tags.map((tag, index) => (
+              <Tag
+                key={tag.label}
+                severity={tag.severity}
+                className="shrink-0 self-center"
+                data-testid={`ramps-provider-item-tag-${provider.id}-${index}`}
+              >
+                {tag.label}
+              </Tag>
+            ))}
+          </Box>
           {subtitle ? (
             <Text
               variant={TextVariant.BodySm}

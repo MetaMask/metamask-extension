@@ -269,6 +269,11 @@ jobs:
 
       - name: Submit AMO upload via Lambda invoke (B1)
         id: amo-upload
+        env:
+          # A successful AMO Flask submission took 103 seconds. Wait for the
+          # synchronous Lambda response without AWS CLI retries spawning
+          # overlapping submissions for the same version.
+          AWS_MAX_ATTEMPTS: '1'
         run: |
           set -euo pipefail
 
@@ -298,6 +303,7 @@ jobs:
             --qualifier "${LAMBDA_QUALIFIER}" \
             --invocation-type RequestResponse \
             --cli-binary-format raw-in-base64-out \
+            --cli-read-timeout 600 \
             --payload "${PAYLOAD}" \
             /tmp/amo-response.json || INVOKE_RESULT=$?
 

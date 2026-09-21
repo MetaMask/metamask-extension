@@ -1,12 +1,23 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Represents the page for connecting hardware wallets.
- * This page allows users to initiate connections with various hardware wallet types.
- * Clicking a wallet option directly initiates the connection flow.
+ * Hardware wallet type picker: Ledger, Trezor, Lattice, and QR / other.
+ *
+ * Screen: `#/new-account/connect` (`CONNECT_HARDWARE_ROUTE`).
+ * Owns: page-loaded checks, the Firefox-not-supported message, closing the
+ * page, and clicking through to Ledger / Trezor / Lattice / QR connect paths.
+ * Boundaries: choosing a device type only. Account selection after the device
+ * connects belongs to `SelectHardwareWalletAccountPage`.
+ * Related: `SelectHardwareWalletAccountPage` (next step after connect).
+ *
+ * @see ui/pages/create-account/connect-hardware/select-hardware.tsx
  */
 class ConnectHardwareWalletPage {
   private readonly closeButton = '[data-testid="hardware-connect-close-btn"]';
+
+  private readonly connectHardwareWalletPage = {
+    testId: 'parent-selector-connect-hardware-wallet-page',
+  };
 
   private readonly connectHardwareWalletPageTitle = {
     text: 'Connect a hardware wallet',
@@ -41,6 +52,7 @@ class ConnectHardwareWalletPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.connectHardwareWalletPage,
         this.connectHardwareWalletPageTitle,
         this.connectLatticeButton,
       ]);

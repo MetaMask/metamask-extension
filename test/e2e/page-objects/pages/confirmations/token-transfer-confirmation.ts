@@ -2,6 +2,20 @@ import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 import TransactionConfirmation from './transaction-confirmation';
 
+/**
+ * Token / native transfer confirmation on the redesigned confirm screen.
+ *
+ * Screen: `#/confirmation` for token or native send approvals.
+ * Owns: transfer amount/symbol heading, interacting-with / network /
+ * network-fee paragraphs, and loaded-state checks tied to expected fee.
+ * Boundaries: inherits advanced details and gas entry from
+ * `TransactionConfirmation`. Gas estimate editing is `GasFeeModal`; fee
+ * token selection is `GasFeeTokenModal`.
+ * Related: `TransactionConfirmation`, `GasFeeModal`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/token-transfer/token-transfer.tsx
+ * @see ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.tsx
+ */
 class TokenTransferTransactionConfirmation extends TransactionConfirmation {
   private readonly confirmButton = '[data-testid="confirm-footer-button"]';
 
