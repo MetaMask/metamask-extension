@@ -91,6 +91,9 @@ async function runWithRetries(
       lastResult = result;
 
       if (!result.success) {
+        console.error(
+          `Benchmark iteration failed: ${result.error ?? 'Benchmark failed'}`,
+        );
         throw new Error(result.error ?? 'Benchmark failed');
       }
       return result;
@@ -287,6 +290,7 @@ export async function runBenchmarkWithIterations(
     thresholdsPassed: thresholdResult?.passed ?? true,
     ...(webVitalsSummary && { webVitals: webVitalsSummary }),
     benchmarkType,
+    firstError: allResults.find((result) => result.error)?.error,
   };
 }
 

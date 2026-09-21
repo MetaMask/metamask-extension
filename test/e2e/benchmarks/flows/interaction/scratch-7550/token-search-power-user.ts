@@ -1,5 +1,6 @@
 import { withFixtures } from '../../../../helpers';
 import { login } from '../../../../page-objects/flows/login.flow';
+import TokensTab from '../../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../../utils/long-task-helper';
 import {
@@ -19,24 +20,17 @@ export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 // Generated power-user tokens use symbols TK{n}; this filters a large list.
 const TOKEN_SEARCH_QUERY = 'TK';
-const TOKEN_OPTIONS_BUTTON =
-  '[data-testid="asset-list-control-bar-action-button"]';
-const MANAGE_TOKENS_BUTTON = '[data-testid="manageTokens__button"]';
 const TOKEN_MANAGEMENT_SEARCH_INPUT =
   '[data-testid="token-management-search-input"]';
-const TOKEN_MANAGEMENT_SEARCH_LOADING =
-  '[data-testid="token-management-search-loading"]';
-const TOKEN_MANAGEMENT_PAGE_LIST =
-  '[data-testid="token-management-page-list"]';
 const TOKEN_MANAGEMENT_READY_TIMEOUT_MS = 120_000;
-const TOKEN_SEARCH_READY_TIMEOUT_MS = 120_000;
+const TOKEN_SEARCH_INPUT_TIMEOUT_MS = 15_000;
 
 async function openTokenManagement(driver: Driver): Promise<void> {
-  // Power-user login can take a while; a short probe then clicking a missing
-  // legacy import button waits for the full extended driver timeout (~6 min).
-  await driver.waitForSelector(TOKEN_OPTIONS_BUTTON);
-  await driver.clickElement(TOKEN_OPTIONS_BUTTON);
-  await driver.clickElement(MANAGE_TOKENS_BUTTON);
+  const tokensTab = new TokensTab(driver);
+  await tokensTab.goToTokensTab();
+  await tokensTab.checkPageIsLoaded();
+  await tokensTab.clickTokenOptionsButton();
+  await tokensTab.clickManageTokens();
 }
 
 async function waitForTokenManagementPage(driver: Driver): Promise<void> {
@@ -79,6 +73,9 @@ export async function run(): Promise<BenchmarkRunResult> {
 
         await openTokenManagement(driver);
         await waitForTokenManagementPage(driver);
+        await driver.waitForSelector(TOKEN_MANAGEMENT_SEARCH_INPUT, {
+          timeout: TOKEN_MANAGEMENT_READY_TIMEOUT_MS,
+        });
 
         await driver.resetLongTaskMetrics();
         const startedAt = Date.now();
@@ -86,23 +83,17 @@ export async function run(): Promise<BenchmarkRunResult> {
           TOKEN_MANAGEMENT_SEARCH_INPUT,
           TOKEN_SEARCH_QUERY,
         );
+        // INP/TBT for typing must not wait on the token-search API. Loading can
+        // stay visible for the whole 120s timeout when that request hangs.
         await driver.waitUntil(
           async () => {
             const value = await driver.executeScript(
               `return document.querySelector('[data-testid="token-management-search-input"]')?.value ?? ''`,
             );
-            if (value !== TOKEN_SEARCH_QUERY) {
-              return false;
-            }
-            const loading = await driver.isElementPresentAndVisible(
-              TOKEN_MANAGEMENT_SEARCH_LOADING,
-              200,
-            );
-            return !loading;
+            return value === TOKEN_SEARCH_QUERY;
           },
-          { timeout: TOKEN_SEARCH_READY_TIMEOUT_MS },
+          { timeout: TOKEN_SEARCH_INPUT_TIMEOUT_MS },
         );
-        await driver.waitForSelector(TOKEN_MANAGEMENT_PAGE_LIST);
         const duration = Date.now() - startedAt;
 
         const longTaskData = await driver.collectLongTaskMetrics();

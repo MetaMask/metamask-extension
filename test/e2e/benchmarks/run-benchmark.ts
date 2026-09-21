@@ -229,7 +229,9 @@ async function runBenchmarkFile(
 
     if (summary.successfulRuns === 0) {
       throw new Error(
-        `All ${options.iterations} iterations failed for ${fileName}`,
+        summary.firstError
+          ? `All ${options.iterations} iterations failed for ${fileName}: ${summary.firstError}`
+          : `All ${options.iterations} iterations failed for ${fileName}`,
       );
     }
 

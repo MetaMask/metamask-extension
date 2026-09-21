@@ -111,6 +111,7 @@ export type BenchmarkSummary = {
   benchmarkType?: BenchmarkType;
   /** Web vitals per-run data and aggregated statistics */
   webVitals?: WebVitalsSummary;
+  firstError?: string;
 };
 
 /**
