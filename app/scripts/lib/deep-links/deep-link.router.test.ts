@@ -517,100 +517,85 @@ describe('DeepLinkRouter', () => {
         } as unknown as ReturnType<MetaMaskController['getState']>);
       };
 
-      it('routes /buy to the in-app buy deep link entry when rampsEnabled is on', async () => {
-        arrangeState({ rampsEnabled: true });
-        parseMock.mockResolvedValue(arrangeBuyLink());
+      it.each([
+        ['a plain boolean', { rampsEnabled: true }],
+        [
+          'a version-gated flag',
+          { rampsEnabled: { enabled: true, minimumVersion: '13.48.0' } },
+        ],
+      ])(
+        'routes /buy to the in-app buy deep link entry when rampsEnabled is %s',
+        async (_label, remoteFeatureFlags) => {
+          arrangeState(remoteFeatureFlags);
+          parseMock.mockResolvedValue(arrangeBuyLink());
 
-        await onBeforeRequest?.({
-          tabId: 1,
-          url: BUY_URL,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
+          await onBeforeRequest?.({
+            tabId: 1,
+            url: BUY_URL,
+          } as browser.WebRequest.OnBeforeRequestDetailsType);
 
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: `${EXTENSION_HOME}#/ramps/buy-deeplink-entry?address=0xabc&chainId=1`,
-        });
-      });
+          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+            url: `${EXTENSION_HOME}#/ramps/buy-deeplink-entry?address=0xabc&chainId=1`,
+          });
+        },
+      );
 
-      it('routes /buy to the in-app entry when rampsEnabled is a version-gated flag', async () => {
-        arrangeState({
-          rampsEnabled: { enabled: true, minimumVersion: '13.48.0' },
-        });
-        parseMock.mockResolvedValue(arrangeBuyLink());
+      it.each([
+        ['off', { rampsEnabled: false }],
+        ['missing from state', {}],
+      ])(
+        'keeps the external redirect for /buy when rampsEnabled is %s',
+        async (_label, remoteFeatureFlags) => {
+          arrangeState(remoteFeatureFlags);
+          parseMock.mockResolvedValue(arrangeBuyLink());
 
-        await onBeforeRequest?.({
-          tabId: 1,
-          url: BUY_URL,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
+          await onBeforeRequest?.({
+            tabId: 1,
+            url: BUY_URL,
+          } as browser.WebRequest.OnBeforeRequestDetailsType);
 
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: `${EXTENSION_HOME}#/ramps/buy-deeplink-entry?address=0xabc&chainId=1`,
-        });
-      });
+          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+            url: BUY_PORTFOLIO_DESTINATION,
+          });
+        },
+      );
 
-      it('keeps the external redirect for /buy when rampsEnabled is off', async () => {
-        arrangeState({ rampsEnabled: false });
-        parseMock.mockResolvedValue(arrangeBuyLink());
+      const otherRoutesCases: [string, ParsedDeepLink, string, string][] = [
+        [
+          'does not reroute other redirecting routes when rampsEnabled is on',
+          {
+            signature: 'valid',
+            route: { pathname: '/sell' },
+            destination: {
+              redirectTo: new URL('https://example.com/sell-route'),
+            },
+          } as ParsedDeepLink,
+          'https://example.com/sell',
+          'https://example.com/sell-route',
+        ],
+        [
+          'still shows the interstitial for unsigned /buy links from untrusted origins when rampsEnabled is on',
+          { ...arrangeBuyLink(), signature: 'missing' } as ParsedDeepLink,
+          BUY_URL,
+          `${EXTENSION_HOME}#link?u=%2Fbuy%3Faddress%3D0xabc%26chainId%3D1`,
+        ],
+      ];
+      it.each(otherRoutesCases)(
+        '%s',
+        async (_label, parsed, url, expectedUrl) => {
+          arrangeState({ rampsEnabled: true });
+          parseMock.mockResolvedValue(parsed);
 
-        await onBeforeRequest?.({
-          tabId: 1,
-          url: BUY_URL,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
+          await onBeforeRequest?.({
+            tabId: 1,
+            url,
+          } as browser.WebRequest.OnBeforeRequestDetailsType);
 
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: BUY_PORTFOLIO_DESTINATION,
-        });
-      });
-
-      it('keeps the external redirect for /buy when the flag is missing from state', async () => {
-        arrangeState({});
-        parseMock.mockResolvedValue(arrangeBuyLink());
-
-        await onBeforeRequest?.({
-          tabId: 1,
-          url: BUY_URL,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
-
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: BUY_PORTFOLIO_DESTINATION,
-        });
-      });
-
-      it('does not reroute other redirecting routes when rampsEnabled is on', async () => {
-        arrangeState({ rampsEnabled: true });
-        parseMock.mockResolvedValue({
-          signature: 'valid',
-          route: { pathname: '/sell' },
-          destination: {
-            redirectTo: new URL('https://example.com/sell-route'),
-          },
-        } as ParsedDeepLink);
-
-        await onBeforeRequest?.({
-          tabId: 1,
-          url: 'https://example.com/sell',
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
-
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: 'https://example.com/sell-route',
-        });
-      });
-
-      it('still shows the interstitial for unsigned /buy links from untrusted origins when rampsEnabled is on', async () => {
-        arrangeState({ rampsEnabled: true });
-        parseMock.mockResolvedValue({
-          ...arrangeBuyLink(),
-          signature: 'missing',
-        } as ParsedDeepLink);
-
-        await onBeforeRequest?.({
-          tabId: 1,
-          url: BUY_URL,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
-
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: `${EXTENSION_HOME}#link?u=%2Fbuy%3Faddress%3D0xabc%26chainId%3D1`,
-        });
-      });
+          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+            url: expectedUrl,
+          });
+        },
+      );
     });
 
     describe('resolveRequestOrigin', () => {
