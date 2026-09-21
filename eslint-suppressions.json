@@ -651,7 +651,7 @@
   },
   "ui/pages/bridge/prepare/prepare-bridge-page.tsx": {
     "react-hooks/exhaustive-deps": {
-      "count": 2
+      "count": 1
     }
   },
   "ui/pages/confirmations/components/confirm/dapp-swap-comparison-banner/dapp-swap-comparison-banner.tsx": {
