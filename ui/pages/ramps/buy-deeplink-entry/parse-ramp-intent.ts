@@ -1,4 +1,4 @@
-import type { CaipAssetType } from '@metamask/utils';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
@@ -13,10 +13,18 @@ import {
 export type RampDeepLinkIntent = {
   /** CAIP-19 asset to pre-select, e.g. `eip155:1/erc20:0x...`. */
   assetId?: CaipAssetType;
+  /** CAIP-2 chain of the link, e.g. `eip155:1`, kept for the Portfolio fallback deeplink. */
+  chainId?: CaipChainId;
   /** Fiat amount requested by the link, e.g. `'100'`. Not yet consumed by the extension buy flow. */
   amount?: string;
   /** Fiat currency code requested by the link, e.g. `'usd'`. */
   currency?: string;
+};
+
+type RampIntentCandidate = RampDeepLinkIntent & {
+  address?: string;
+  /** Raw chainId param from the link, before CAIP-2 conversion. */
+  rawChainId?: string;
 };
 
 const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -36,11 +44,9 @@ const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
 export function parseRampIntent(
   pathParams: Record<string, string | undefined>,
 ): RampDeepLinkIntent | undefined {
-  const intentCandidate: Partial<
-    RampDeepLinkIntent & { address?: string; chainId?: string }
-  > = {
+  const intentCandidate: Partial<RampIntentCandidate> = {
     address: pathParams.address,
-    chainId: pathParams.chainId,
+    rawChainId: pathParams.chainId,
     // The link-provided assetId is validated downstream by the buy flow's
     // catalog lookup, which fails closed with an unsupported-asset modal.
     assetId: pathParams.assetId as CaipAssetType | undefined,
@@ -52,7 +58,7 @@ export function parseRampIntent(
   if (
     !intentCandidate.address &&
     !intentCandidate.assetId &&
-    !intentCandidate.chainId &&
+    !intentCandidate.rawChainId &&
     !intentCandidate.amount &&
     !intentCandidate.currency
   ) {
@@ -62,45 +68,53 @@ export function parseRampIntent(
   if (intentCandidate.assetId) {
     // Because assetId is present it takes precedence and we delete address and chainId
     delete intentCandidate.address;
-    delete intentCandidate.chainId;
+    delete intentCandidate.rawChainId;
   } else {
     // Because assetId is not present, we assume these are EVM params
-    if (!intentCandidate.chainId) {
-      intentCandidate.chainId = '1';
+    let assetIdNamespace: CaipChainId | undefined;
+    try {
+      assetIdNamespace = toEvmCaipChainId(
+        toHex(intentCandidate.rawChainId ?? '1'),
+      );
+    } catch {
+      // Invalid chainId — drop the asset intent entirely.
     }
 
-    const { address } = intentCandidate;
-    let assetIdAssetReference = '';
-    if (address && address !== NATIVE_ADDRESS) {
-      if (isValidHexAddress(address)) {
-        assetIdAssetReference = `erc20:${toChecksumHexAddress(address)}`;
-      }
-    } else {
-      // TODO: replace slip44 with the actual slip44 value for the chain
-      assetIdAssetReference = 'slip44:.';
-    }
+    if (assetIdNamespace) {
+      // Retained on the intent so the Portfolio fallback deeplink keeps the
+      // link's chain.
+      intentCandidate.chainId = assetIdNamespace;
 
-    if (assetIdAssetReference) {
-      try {
-        const assetIdNamespace = toEvmCaipChainId(
-          toHex(intentCandidate.chainId),
-        );
+      const { address } = intentCandidate;
+      if (!address || address === NATIVE_ADDRESS) {
+        // TODO: replace slip44 with the actual slip44 value for the chain
         intentCandidate.assetId =
-          `${assetIdNamespace}/${assetIdAssetReference}` as CaipAssetType;
-      } catch {
-        // Invalid chainId — drop the asset intent entirely.
+          `${assetIdNamespace}/slip44:.` as CaipAssetType;
+      } else if (isValidHexAddress(address)) {
+        intentCandidate.assetId =
+          `${assetIdNamespace}/erc20:${toChecksumHexAddress(address)}` as CaipAssetType;
+      } else {
+        // Invalid address — drop the asset intent, keep the chain.
+        delete intentCandidate.assetId;
       }
+      delete intentCandidate.address;
+    } else {
+      delete intentCandidate.address;
+      delete intentCandidate.assetId;
     }
-
-    delete intentCandidate.address;
-    delete intentCandidate.chainId;
   }
+
+  delete intentCandidate.rawChainId;
 
   Object.keys(intentCandidate).forEach(
     (key) =>
       intentCandidate[key as keyof RampDeepLinkIntent] === undefined &&
       delete intentCandidate[key as keyof RampDeepLinkIntent],
   );
+
+  if (Object.keys(intentCandidate).length === 0) {
+    return undefined;
+  }
 
   return intentCandidate as RampDeepLinkIntent;
 }
