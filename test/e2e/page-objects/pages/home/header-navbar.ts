@@ -25,7 +25,7 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
+  private readonly accountSnapButton = '[data-testid="global-menu-snaps"]';
 
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
@@ -79,6 +79,9 @@ class HeaderNavbar {
     `.multichain-network-list-item--selected [data-testid="${networkName}"]`;
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
+
+  private readonly snapListPage =
+    '[data-testid="parent-selector-snap-list-page"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -323,7 +326,9 @@ class HeaderNavbar {
   async openSnapListPage(): Promise<void> {
     console.log('Open account snap page');
     await this.openGlobalMenu();
+    await this.driver.waitForElementToStopMoving(this.accountSnapButton);
     await this.driver.clickElement(this.accountSnapButton);
+    await this.driver.waitForSelector(this.snapListPage);
   }
 
   /**
