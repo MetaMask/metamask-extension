@@ -1,7 +1,7 @@
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { DAPP_HOST_ADDRESS, DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';

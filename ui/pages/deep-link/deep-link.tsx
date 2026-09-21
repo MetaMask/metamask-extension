@@ -287,6 +287,7 @@ export const DeepLink = () => {
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexDirection={FlexDirection.Column}
+      data-testid="parent-selector-deep-link-page"
       style={{ marginTop: '111px' }}
     >
       <Box

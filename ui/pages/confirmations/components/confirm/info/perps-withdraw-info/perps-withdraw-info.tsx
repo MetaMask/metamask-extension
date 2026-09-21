@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
+import { useDefaultPaySelectedSection } from '../../../../hooks/pay/useDefaultPaySelectedSection';
 import { usePerpsWithdrawDefaultToken } from '../../../../hooks/pay/usePerpsWithdrawDefaultToken';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import { PerpsWithdrawBalance } from '../../../perps-confirmations/perps-withdraw-balance';
@@ -8,6 +9,8 @@ import { usePerpsLiveAccount } from '../../../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../../../hooks/perps/getTradeableBalance';
 
 export const PerpsWithdrawInfo = () => {
+  useDefaultPaySelectedSection();
+
   useAddToken({
     chainId: ARBITRUM_USDC.chainId,
     decimals: ARBITRUM_USDC.decimals,

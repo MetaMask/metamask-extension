@@ -5033,6 +5033,22 @@ describe('getLastVisitedPerpsRoute', () => {
 
     expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
   });
+
+  it('returns a stable reference when a state push replaces the route object', () => {
+    const buildState = () => ({
+      metamask: {
+        lastVisitedRoute: {
+          name: 'perps',
+          path: '/perps/trade/BTC',
+          timestamp: 1700000000000,
+        },
+      },
+    });
+
+    expect(selectors.getLastVisitedPerpsRoute(buildState())).toBe(
+      selectors.getLastVisitedPerpsRoute(buildState()),
+    );
+  });
 });
 
 describe('snap selectors', () => {

@@ -2,7 +2,11 @@ import { it } from '@jest/globals';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_ACTIVITY_ROUTE,
+  MONEY_EARN_ROUTE,
   MONEY_HOME_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
+  getMoneyTransactionDetailsRoute,
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
@@ -62,6 +66,50 @@ describe('getActiveBottomNavTabs', () => {
     });
   });
 
+  it('marks isMoney active on the Money activity route', () => {
+    expect(getActiveBottomNavTabs(MONEY_ACTIVITY_ROUTE)).toStrictEqual({
+      isHome: false,
+      isPerps: false,
+      isMoney: true,
+      isSwaps: false,
+      isActivity: false,
+    });
+  });
+
+  it('marks isMoney active on the Money earn route', () => {
+    expect(getActiveBottomNavTabs(MONEY_EARN_ROUTE)).toStrictEqual({
+      isHome: false,
+      isPerps: false,
+      isMoney: true,
+      isSwaps: false,
+      isActivity: false,
+    });
+  });
+
+  it('marks isMoney active on the Money How it works route', () => {
+    expect(getActiveBottomNavTabs(MONEY_HOW_IT_WORKS_ROUTE)).toStrictEqual({
+      isHome: false,
+      isPerps: false,
+      isMoney: true,
+      isSwaps: false,
+      isActivity: false,
+    });
+  });
+
+  it('marks isMoney active on the Money transaction details route', () => {
+    expect(
+      getActiveBottomNavTabs(
+        getMoneyTransactionDetailsRoute('money-tx-deposited'),
+      ),
+    ).toStrictEqual({
+      isHome: false,
+      isPerps: false,
+      isMoney: true,
+      isSwaps: false,
+      isActivity: false,
+    });
+  });
+
   it('returns all false for an unrelated route', () => {
     expect(getActiveBottomNavTabs('/settings')).toStrictEqual({
       isHome: false,
@@ -78,6 +126,13 @@ describe('isBottomNavRoute', () => {
     ['default route', DEFAULT_ROUTE],
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
     ['Money home route', MONEY_HOME_ROUTE],
+    ['Money activity route', MONEY_ACTIVITY_ROUTE],
+    ['Money earn route', MONEY_EARN_ROUTE],
+    ['Money How it works route', MONEY_HOW_IT_WORKS_ROUTE],
+    [
+      'Money transaction details route',
+      getMoneyTransactionDetailsRoute('money-tx-deposited'),
+    ],
     ['swap path', SWAP_PATH],
     ['activity route', ACTIVITY_ROUTE],
   ])('returns true for the %s', (_label, route) => {

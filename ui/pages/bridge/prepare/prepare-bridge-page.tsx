@@ -14,7 +14,7 @@ import {
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -323,6 +323,11 @@ const PrepareBridgePage = ({
   // making it safe not to worry about recreating this function on dependency updates.
   const debouncedUpdateQuoteRequestInController = useRef(
     debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
+      const [params] = args;
+      if (isValidQuoteRequest(params)) {
+        endTrace({ name: TraceName.SwapQuoteFetch });
+        trace({ name: TraceName.SwapQuoteFetch });
+      }
       dispatch(updateQuoteRequestParams(...args));
     }, 300),
   );
@@ -365,6 +370,8 @@ const PrepareBridgePage = ({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      custom_slippage: isSlippageUserOverride,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
     };
@@ -424,7 +431,7 @@ const PrepareBridgePage = ({
       />
 
       <Column
-        className="prepare-bridge-page"
+        className="prepare-bridge-page flex-1"
         gap={4}
         data-testid="parent-selector-bridge-quote"
       >
@@ -649,15 +656,14 @@ const PrepareBridgePage = ({
 
         {!isInitialQuoteLoading && (
           <Column
+            className="sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16"
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
-            height={BlockSize.Full}
             gap={3}
             paddingInline={4}
             paddingTop={4}
             paddingBottom={4}
             backgroundColor={BackgroundColor.backgroundDefault}
-            style={{ position: 'sticky', bottom: 0 }}
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {

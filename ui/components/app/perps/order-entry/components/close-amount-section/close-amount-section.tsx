@@ -10,6 +10,9 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  Button,
+  ButtonSize,
+  ButtonVariant,
 } from '@metamask/design-system-react';
 import { formatPositionSize } from '../../../../../../../shared/lib/perps-formatters';
 import {
@@ -26,8 +29,103 @@ import { isUnsignedDecimalInput, formatNumberForInput } from '../../utils';
 /** Fixed width (rem) for the close-% chip so the slider row layout stays stable as digits change */
 const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
 
+/** Largest share of a position a single close can take. */
+const MAX_CLOSE_PERCENT = 100;
+
+/** Fractional digits used for the USD close amount, matching mobile. */
+const USD_INPUT_DECIMALS = 2;
+
+/** Fractional digits kept when a dollar amount resolves to a partial percent. */
+const PERCENT_INPUT_DECIMALS = 2;
+
+/**
+ * Which unit the trader types the close amount in. The slider is always
+ * available alongside whichever unit is selected, so these two values plus the
+ * slider make up the three input modes.
+ */
+type CloseAmountUnit = 'usd' | 'percent';
+
+/**
+ * Clamps a close percentage into the closable range.
+ *
+ * `Infinity` is treated as an over-close rather than as "no amount": a pasted
+ * value long enough to overflow a double still means the trader asked for more
+ * than the position holds, and returning 0 there would show a 100% cap while
+ * committing nothing. Only a genuine non-number falls back to 0.
+ *
+ * @param percent - Raw percentage, possibly out of range or non-finite.
+ * @returns The percentage constrained to 0-100, or 0 when not a number.
+ */
+const clampClosePercent = (percent: number): number => {
+  if (Number.isNaN(percent)) {
+    return 0;
+  }
+  return Math.min(MAX_CLOSE_PERCENT, Math.max(0, percent));
+};
+
+/**
+ * Renders a close percentage for the percent field.
+ *
+ * A percentage derived from a typed dollar amount is rarely whole, and on a
+ * small position one percentage point is worth several cents, so the fraction
+ * is kept rather than rounded away. Whole percentages — every value the slider
+ * and the percent field itself produce — still render without a decimal tail.
+ *
+ * @param percent - The committed close percentage.
+ * @returns The percentage as editable field text.
+ */
+const formatPercentForInput = (percent: number): string =>
+  formatNumberForInput(percent, PERCENT_INPUT_DECIMALS);
+
+/**
+ * Truncates a typed dollar amount to whole cents.
+ *
+ * Mirrors mobile's keypad handling: the fractional part is cut rather than
+ * rounded, and a trailing "." is preserved so an in-progress "2." survives.
+ * Cutting at the input keeps the committed percentage exact for what was
+ * actually entered, instead of rounding the derived percentage afterwards.
+ *
+ * @param value - The raw field text.
+ * @returns The text limited to two decimal places.
+ */
+const truncateToUsdCents = (value: string): string => {
+  const separatorIndex = value.indexOf('.');
+  if (separatorIndex === -1) {
+    return value;
+  }
+  const integerPart = value.slice(0, separatorIndex);
+  const decimalPart = value.slice(separatorIndex + 1);
+  return decimalPart.length === 0
+    ? `${integerPart}.`
+    : `${integerPart}.${decimalPart.slice(0, USD_INPUT_DECIMALS)}`;
+};
+
+/** Scale used to round a percentage to the precision the field renders. */
+const PERCENT_PRECISION_SCALE = 10 ** PERCENT_INPUT_DECIMALS;
+
+/**
+ * Rounds a percentage to the precision the percent field displays.
+ *
+ * Keeping the committed value and the rendered value at the same precision
+ * means the trader never reads a number the position does not actually match —
+ * e.g. a 99.999% close rendering as "100" while a sliver stays open.
+ *
+ * @param percent - The raw percentage.
+ * @returns The percentage rounded to the displayed precision.
+ */
+const roundToPercentPrecision = (percent: number): number =>
+  Number.isFinite(percent)
+    ? Math.round(percent * PERCENT_PRECISION_SCALE) / PERCENT_PRECISION_SCALE
+    : percent;
+
 /**
  * CloseAmountSection - Section for selecting how much of a position to close
+ *
+ * The trader picks the amount in one of three ways: the slider, a USD notional
+ * amount, or a percentage of the position. USD and percent share a single field
+ * whose unit is chosen by the `$` / `%` selector; the slider is always visible.
+ * `closePercent` stays the single source of truth for every mode, so an amount
+ * entered in one unit is immediately reflected in the others.
  *
  * @param props - Component props
  * @param props.positionSize - Total position size (absolute value); labeled "Available to close"
@@ -36,6 +134,7 @@ const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
  * @param props.asset - Asset symbol for display
  * @param props.currentPrice - Current asset price for USD calculation
  * @param props.sizeDecimals - Market size decimals for controller-based size formatting
+ * @param props.onInputMethodChange - Reports which control the trader used, for analytics
  */
 export const CloseAmountSection = ({
   positionSize,
@@ -44,6 +143,7 @@ export const CloseAmountSection = ({
   asset,
   currentPrice,
   sizeDecimals,
+  onInputMethodChange,
 }: CloseAmountSectionProps) => {
   const t = useI18nContext();
 
@@ -55,50 +155,192 @@ export const CloseAmountSection = ({
     [totalNotionalUsd, closePercent],
   );
 
+  const [unit, setUnit] = useState<CloseAmountUnit>('usd');
   const [rawInput, setRawInput] = useState('');
   const [isUsdInputFocused, setIsUsdInputFocused] = useState(false);
+  const [percentInputValue, setPercentInputValue] = useState(() =>
+    formatPercentForInput(closePercent),
+  );
+  // Set when the trader asks for more than the position holds. Cleared as soon
+  // as they enter an amount that fits, so it only ever describes the value
+  // currently in the field.
+  const [didExceedPosition, setDidExceedPosition] = useState(false);
+
+  const isPercentUnit = unit === 'percent';
 
   const displayValue = useMemo(
-    () => formatNumberForInput(closeValueUsd, 2),
+    () => formatNumberForInput(closeValueUsd, USD_INPUT_DECIMALS),
     [closeValueUsd],
+  );
+
+  // Keep the percent field in step with slider drags and USD entry without an
+  // effect, so the displayed value never lags a render behind `closePercent`.
+  // Skipped while the trader is typing, so clearing the field to retype does
+  // not immediately snap it back to "0".
+  const [isEditingPercent, setIsEditingPercent] = useState(false);
+  const [prevClosePercent, setPrevClosePercent] = useState(closePercent);
+  if (closePercent !== prevClosePercent) {
+    setPrevClosePercent(closePercent);
+    if (!isEditingPercent) {
+      setPercentInputValue(formatPercentForInput(closePercent));
+    }
+  }
+
+  const commitPercent = useCallback(
+    (percent: number) => {
+      onClosePercentChange(percent);
+      // Always 'percentage', never 'max': mobile reserves 'max' for an explicit
+      // Max button, which this screen has no equivalent of. Inferring it from a
+      // typed 100 would label these events differently across platforms.
+      onInputMethodChange?.('percentage');
+    },
+    [onClosePercentChange, onInputMethodChange],
   );
 
   const handleUsdInputChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-      if (value === '' || isUnsignedDecimalInput(value)) {
-        setRawInput(value);
-
-        const parsed = Number.parseFloat(value);
-        if (!Number.isNaN(parsed) && totalNotionalUsd > 0) {
-          const newPercent = Math.min(
-            100,
-            Math.max(0, (parsed / totalNotionalUsd) * 100),
-          );
-          onClosePercentChange(newPercent);
-        } else if (value === '' || value === '0') {
-          onClosePercentChange(0);
-        }
+      if (!(value === '' || isUnsignedDecimalInput(value))) {
+        return;
       }
+      onInputMethodChange?.('keypad');
+
+      // Constrain the entry to cents, matching mobile. Without this a sub-cent
+      // amount just under the position — 112,499.995 of 112,500 — stays a
+      // "partial" close while its size rounds up to the whole position, sending
+      // a partial order for everything the trader holds.
+      const truncatedValue = truncateToUsdCents(value);
+      const parsed = Number.parseFloat(truncatedValue);
+      // `''`, `'.'` and a zero-valued position all mean "no amount chosen".
+      // Committing 0 here keeps the field and `closePercent` in agreement; a
+      // partially typed value must never leave a stale percentage behind it.
+      if (Number.isNaN(parsed) || totalNotionalUsd <= 0) {
+        setRawInput(truncatedValue);
+        setDidExceedPosition(false);
+        onClosePercentChange(0);
+        return;
+      }
+
+      // Cap rather than reject: an over-close can never reach submission, and
+      // the message below tells the trader why the value changed.
+      const exceedsPosition = parsed > totalNotionalUsd;
+      setDidExceedPosition(exceedsPosition);
+      // Show the capped amount straight away rather than the typed one, so the
+      // field agrees with the slider, the summary, and the cap message.
+      setRawInput(
+        exceedsPosition
+          ? formatNumberForInput(totalNotionalUsd, USD_INPUT_DECIMALS)
+          : truncatedValue,
+      );
+      // Kept exact, deliberately un-rounded. The trader asked to close a precise
+      // dollar amount, and a percentage step is worth more the larger the
+      // position: 0.01% of a $112,500 position is $11.25, so rounding here would
+      // silently close more than was typed. The dollar field remains the source
+      // of truth for what it shows; the percent field, which can only render two
+      // decimals, is the approximation.
+      onClosePercentChange(
+        clampClosePercent((parsed / totalNotionalUsd) * 100),
+      );
     },
-    [totalNotionalUsd, onClosePercentChange],
+    [totalNotionalUsd, onClosePercentChange, onInputMethodChange],
   );
 
-  const handleUsdInputFocus = useCallback(() => {
-    setIsUsdInputFocused(true);
-    setRawInput(formatNumberForInput(closeValueUsd, 2));
-  }, [closeValueUsd]);
+  const handleUsdInputFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      setIsUsdInputFocused(true);
+      setRawInput(formatNumberForInput(closeValueUsd, USD_INPUT_DECIMALS));
+      // The field is pre-filled with the whole position value, so select it the
+      // way AmountInput does: typing replaces it instead of appending digits to
+      // it and asking for an accidental over-close.
+      event.target.select();
+    },
+    [closeValueUsd],
+  );
 
   const handleUsdInputBlur = useCallback(() => {
     setIsUsdInputFocused(false);
+    // The capped percentage is the source of truth; re-deriving the field from
+    // it replaces an over-typed amount with the amount actually being closed.
+    setRawInput('');
   }, []);
+
+  const handlePercentInputChange = useCallback(
+    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+      // Decimals are accepted, not just digits: a percentage derived from a
+      // typed dollar amount is shown with fractional precision, so the trader
+      // has to be able to edit the value the field is actually displaying.
+      if (!(value === '' || isUnsignedDecimalInput(value))) {
+        return;
+      }
+
+      const parsed = Number.parseFloat(value);
+      if (Number.isNaN(parsed)) {
+        // '' and a lone '.' are both "no amount chosen yet".
+        setPercentInputValue(value);
+        setDidExceedPosition(false);
+        commitPercent(0);
+        return;
+      }
+
+      const exceedsMax = parsed > MAX_CLOSE_PERCENT;
+      setDidExceedPosition(exceedsMax);
+      // Show the capped percentage straight away rather than the typed one, so
+      // the field agrees with the slider and the cap message — the same moment
+      // the dollar field caps at the position value.
+      setPercentInputValue(
+        exceedsMax ? formatPercentForInput(MAX_CLOSE_PERCENT) : value,
+      );
+      // Commit only the precision the field can show. Otherwise a typed 99.999
+      // renders as "100" once blurred while a 0.001% sliver of the position
+      // stays open — the trader would read that as a full close.
+      commitPercent(clampClosePercent(roundToPercentPrecision(parsed)));
+    },
+    [commitPercent],
+  );
+
+  const handlePercentInputFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      setIsEditingPercent(true);
+      event.target.select();
+    },
+    [],
+  );
+
+  const handlePercentInputBlur = useCallback(() => {
+    setIsEditingPercent(false);
+    // Snap the field back to the percentage actually committed, so a typed
+    // "150" is left showing the "100" that will be closed.
+    setPercentInputValue(formatPercentForInput(closePercent));
+  }, [closePercent]);
 
   const handleSliderChange = useCallback(
     (_event: Event, value: number | number[]) => {
       const percent = Array.isArray(value) ? value[0] : value;
+      setDidExceedPosition(false);
       onClosePercentChange(percent);
+      // Unconditionally 'slider', matching mobile — see commitPercent on 'max'.
+      onInputMethodChange?.('slider');
     },
-    [onClosePercentChange],
+    [onClosePercentChange, onInputMethodChange],
   );
+
+  const handleSelectUsdUnit = useCallback(() => {
+    setUnit('usd');
+    setDidExceedPosition(false);
+  }, []);
+
+  const handleSelectPercentUnit = useCallback(() => {
+    setUnit('percent');
+    setDidExceedPosition(false);
+  }, []);
+
+  // While the USD field has focus the trader's own draft is shown, including an
+  // empty one; otherwise the field re-derives from the committed percentage.
+  const usdFieldValue = isUsdInputFocused ? rawInput : displayValue;
+  const fieldValue = isPercentUnit ? percentInputValue : usdFieldValue;
+
+  const overCloseMessage = isPercentUnit
+    ? t('perpsClosePercentCappedAtMax')
+    : t('perpsCloseAmountCappedAtPosition');
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
@@ -116,31 +358,88 @@ export const CloseAmountSection = ({
       </Box>
 
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsCloseAmount')}
-        </Text>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsCloseAmount')}
+          </Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+            data-testid="close-amount-mode-selector"
+          >
+            <Button
+              size={ButtonSize.Sm}
+              variant={
+                isPercentUnit ? ButtonVariant.Tertiary : ButtonVariant.Secondary
+              }
+              type="button"
+              onClick={handleSelectUsdUnit}
+              aria-pressed={!isPercentUnit}
+              aria-label={t('perpsCloseAmountInUsdLabel')}
+              data-testid="close-amount-mode-usd"
+            >
+              {t('perpsCloseAmountInUsd')}
+            </Button>
+            <Button
+              size={ButtonSize.Sm}
+              variant={
+                isPercentUnit ? ButtonVariant.Secondary : ButtonVariant.Tertiary
+              }
+              type="button"
+              onClick={handleSelectPercentUnit}
+              aria-pressed={isPercentUnit}
+              aria-label={t('perpsCloseAmountInPercentLabel')}
+              data-testid="close-amount-mode-percent"
+            >
+              {t('perpsCloseAmountInPercent')}
+            </Button>
+          </Box>
+        </Box>
         <TextField
           size={TextFieldSize.Md}
-          value={isUsdInputFocused ? rawInput : displayValue}
-          onChange={handleUsdInputChange}
-          onFocus={handleUsdInputFocus}
-          onBlur={handleUsdInputBlur}
-          placeholder="0.00"
+          value={fieldValue}
+          onChange={
+            isPercentUnit ? handlePercentInputChange : handleUsdInputChange
+          }
+          onFocus={
+            isPercentUnit ? handlePercentInputFocus : handleUsdInputFocus
+          }
+          onBlur={isPercentUnit ? handlePercentInputBlur : handleUsdInputBlur}
+          placeholder={isPercentUnit ? '0' : '0.00'}
           borderRadius={BorderRadius.MD}
           borderWidth={0}
           backgroundColor={BackgroundColor.backgroundMuted}
           className="w-full"
-          data-testid="close-amount-value"
-          inputProps={{ inputMode: 'decimal' }}
+          data-testid={
+            isPercentUnit ? 'close-amount-percent' : 'close-amount-value'
+          }
+          inputProps={{
+            inputMode: 'decimal',
+          }}
           startAccessory={
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
+              data-testid="close-amount-unit"
             >
-              $
+              {isPercentUnit ? '%' : '$'}
             </Text>
           }
         />
+        {didExceedPosition ? (
+          <Text
+            variant={TextVariant.BodyXs}
+            color={TextColor.ErrorDefault}
+            data-testid="close-amount-over-close-error"
+          >
+            {overCloseMessage}
+          </Text>
+        ) : null}
       </Box>
 
       <Box
@@ -155,7 +454,7 @@ export const CloseAmountSection = ({
         >
           <PerpsSlider
             min={0}
-            max={100}
+            max={MAX_CLOSE_PERCENT}
             step={1}
             value={closePercent}
             onChange={handleSliderChange}
@@ -180,7 +479,7 @@ export const CloseAmountSection = ({
             textAlign={TextAlign.Center}
             style={{ width: '100%', fontVariantNumeric: 'tabular-nums' }}
           >
-            {Math.round(closePercent)} %
+            {formatPercentForInput(closePercent)} %
           </Text>
         </Box>
       </Box>

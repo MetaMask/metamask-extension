@@ -5,8 +5,10 @@ import {
   findNetworkClientIdByChainId,
   updateAndApproveTx,
 } from '../../../../store/actions';
-import { isUserRejectedHardwareWalletError } from '../../../../contexts/hardware-wallets';
-import { cleanupPendingApproval } from '../hardware-wallet-signatures.utils';
+import {
+  getHardwareWalletSignatureErrorEvent,
+  cleanupPendingApproval,
+} from '../hardware-wallet-signatures.utils';
 import { HardwareWalletSignatureEvent } from '../hardware-wallet-signatures-state-machine';
 import type {
   UseSendBundleSubmissionOptions,
@@ -78,20 +80,9 @@ export function useSendBundleSubmission({
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
-      if (isStaleAttempt(submissionGeneration)) {
-        return;
+      if (!isStaleAttempt(submissionGeneration)) {
+        dispatchSignatureEvent(getHardwareWalletSignatureErrorEvent(error));
       }
-
-      if (isUserRejectedHardwareWalletError(error)) {
-        dispatchSignatureEvent({
-          type: HardwareWalletSignatureEvent.TransactionRejected,
-        });
-        return;
-      }
-
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
     }
   }, [
     currentApprovalRequestId,
@@ -178,20 +169,9 @@ export function useSendBundleSubmission({
         type: HardwareWalletSignatureEvent.TransactionSubmitted,
       });
     } catch (error) {
-      if (isStaleAttempt(submissionGeneration)) {
-        return;
+      if (!isStaleAttempt(submissionGeneration)) {
+        dispatchSignatureEvent(getHardwareWalletSignatureErrorEvent(error));
       }
-
-      if (isUserRejectedHardwareWalletError(error)) {
-        dispatchSignatureEvent({
-          type: HardwareWalletSignatureEvent.TransactionRejected,
-        });
-        return;
-      }
-
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.TransactionFailed,
-      });
     }
   }, [
     currentApprovalRequestId,

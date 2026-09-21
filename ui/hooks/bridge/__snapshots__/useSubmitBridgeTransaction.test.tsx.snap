@@ -95,6 +95,10 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
             "usd": "12",
             "valueInCurrency": "12",
           },
+          "cost": {
+            "usd": "12",
+            "valueInCurrency": "12",
+          },
           "priceImpact": {
             "usd": "988",
             "valueInCurrency": "988",
@@ -180,6 +184,7 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
     {
       "best_quote_provider": "lifi_across",
       "can_submit": true,
+      "custom_slippage": false,
       "feature_id": "unified_swap_bridge",
       "gas_included": false,
       "gas_included_7702": false,
@@ -187,6 +192,7 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
       "price_impact": 0,
       "provider": "lifi_across",
       "quoted_time_minutes": 0.25,
+      "slippage_limit": 0,
       "token_symbol_destination": "USDC",
       "token_symbol_source": "USDC",
       "usd_amount_source": 1000,
@@ -201,6 +207,7 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
     null,
     undefined,
     "token_amount",
+    "1.5",
   ],
 ]
 `;
@@ -302,6 +309,10 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
             "usd": "12",
             "valueInCurrency": "12",
           },
+          "cost": {
+            "usd": "12",
+            "valueInCurrency": "12",
+          },
           "priceImpact": {
             "usd": "988",
             "valueInCurrency": "988",
@@ -387,6 +398,7 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
     {
       "best_quote_provider": "lifi_across",
       "can_submit": true,
+      "custom_slippage": false,
       "feature_id": "unified_swap_bridge",
       "gas_included": false,
       "gas_included_7702": false,
@@ -394,6 +406,7 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
       "price_impact": 0,
       "provider": "lifi_across",
       "quoted_time_minutes": 0.25,
+      "slippage_limit": 0,
       "token_symbol_destination": "ETH",
       "token_symbol_source": "ETH",
       "usd_amount_source": 1000,
@@ -408,6 +421,7 @@ exports[`ui/hooks/bridge/useSubmitBridgeTransaction submitBridgeTransaction exec
     null,
     undefined,
     "token_amount",
+    "1.5",
   ],
 ]
 `;

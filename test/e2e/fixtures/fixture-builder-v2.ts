@@ -27,7 +27,9 @@ import type { SelectedNetworkControllerState } from '@metamask/selected-network-
 import type {
   PermissionConstraint,
   PermissionControllerState,
+  SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
@@ -283,6 +285,13 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAuthenticationController(
+    data: Partial<AuthenticationControllerState>,
+  ): this {
+    merge(this.fixture.data.AuthenticationController, data);
+    return this;
+  }
+
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
     return this;
@@ -392,6 +401,16 @@ class FixtureBuilderV2 {
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {
     merge(this.fixture.data.PermissionController, data);
+    return this;
+  }
+
+  withSubjectMetadataController(
+    data: Partial<SubjectMetadataControllerState>,
+  ): this {
+    merge(
+      (this.fixture.data as Record<string, unknown>).SubjectMetadataController,
+      data,
+    );
     return this;
   }
 
@@ -1430,6 +1449,7 @@ class FixtureBuilderV2 {
       isAccountSyncingEnabled: false,
       isBackupAndSyncEnabled: false,
       isContactSyncingEnabled: false,
+      isRampsSyncingEnabled: false,
     });
   }
 
@@ -1607,6 +1627,19 @@ class FixtureBuilderV2 {
   withUseBasicFunctionalityDisabled(): this {
     return this.withPreferencesController({
       useExternalServices: false,
+    });
+  }
+
+  /**
+   * Uses the pre-consolidation settings layout (Assets autodetect toggles,
+   * Privacy → Third-party APIs, etc.). Required for E2E tests that exercise
+   * those surfaces when `default-fixture.json` marks the wallet consolidated.
+   */
+  withBasicFunctionalityConsolidationDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        isBasicFunctionalityConsolidatedEnabled: false,
+      },
     });
   }
 
