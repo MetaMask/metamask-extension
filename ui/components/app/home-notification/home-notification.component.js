@@ -7,6 +7,7 @@ import {
   Checkbox,
   Icon,
   IconName,
+  TextVariant,
 } from '@metamask/design-system-react';
 import Tooltip from '../../ui/tooltip';
 import { IconColor } from '../../../helpers/constants/design-system';
@@ -39,8 +40,9 @@ const HomeNotification = ({
   const checkboxElement = checkboxText && (
     <Checkbox
       id="homeNotification_checkbox"
+      label={checkboxText}
+      labelProps={{ variant: TextVariant.BodySm }}
       isSelected={checkboxState}
-      className="home-notification__checkbox"
       onChange={setCheckBoxState}
     />
   );
@@ -95,12 +97,6 @@ const HomeNotification = ({
             ) : (
               checkboxElement
             )}
-            <label
-              className="home-notification__checkbox-label"
-              htmlFor="homeNotification_checkbox"
-            >
-              {checkboxText}
-            </label>
           </div>
         ) : null}
       </div>
