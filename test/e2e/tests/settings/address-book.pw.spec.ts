@@ -1,8 +1,12 @@
 import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
-import { E2E_DRIVER, NETWORK_CLIENT_ID  } from '../../constants';
+import { E2E_DRIVER, NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
+import {
+  TRUNCATED_ADDRESS_END_CHARS,
+  TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_NAME_CHAR_LIMIT,
+} from '../../../../shared/constants/labels';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -14,6 +18,13 @@ import SelectNetworkModal from '../../page-objects/pages/networks/select-network
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
+
+function shortenAddress(address: string): string {
+  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
+    return address;
+  }
+  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(-TRUNCATED_ADDRESS_END_CHARS)}`;
+}
 
 async function mockTokenList(mockServer: Mockttp) {
   return await mockServer
