@@ -66,7 +66,10 @@ NON_ZERO_NATIVE_NETWORKS.forEach((id) => {
           await transactionConfirmation.checkNativeTransferPath(
             network.nativeSymbol,
           );
-          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'disappear',
+          });
 
           await homePage.goToActivityList();
           const activityTab = new ActivityTab(driver);

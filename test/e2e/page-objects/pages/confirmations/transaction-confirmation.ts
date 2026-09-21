@@ -486,6 +486,42 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.clickElement(this.enforcedSimulationsToggle);
   }
 
+  /**
+   * Confirm/cancel footer click. Matches `Confirmation.clickFooterButton` on
+   * current main so this class still typechecks when CI merges that API.
+   * @param options0
+   * @param options0.button
+   * @param options0.waitUntil
+   */
+  async clickFooterButton({
+    button,
+    waitUntil,
+  }: {
+    button: 'confirm' | 'cancel';
+    waitUntil?: 'windowClose' | 'disappear';
+  }): Promise<void> {
+    const locator =
+      button === 'confirm'
+        ? '[data-testid="confirm-footer-button"]'
+        : '[data-testid="confirm-footer-cancel-button"]';
+
+    switch (waitUntil) {
+      case 'windowClose':
+        await this.driver.clickElementAndWaitForWindowToClose(locator);
+        return;
+      case 'disappear':
+        await this.driver.clickElementAndWaitToDisappear(locator);
+        return;
+      case undefined:
+        await this.driver.clickElement(locator);
+        return;
+      default: {
+        const exhaustive: never = waitUntil;
+        throw new Error(`Unhandled waitUntil: ${String(exhaustive)}`);
+      }
+    }
+  }
+
   async clickGasFeeTokenPill() {
     await this.driver.clickElement(this.gasFeeTokenArrow);
   }
