@@ -87,7 +87,7 @@ export function parseRampIntent(
 
       const { address } = intentCandidate;
       if (!address || address === NATIVE_ADDRESS) {
-        // TODO: replace slip44 with the actual slip44 value for the chain
+        // The ramps controller currently represents native assets with slip44:.
         intentCandidate.assetId =
           `${assetIdNamespace}/slip44:.` as CaipAssetType;
       } else if (isValidHexAddress(address)) {
