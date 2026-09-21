@@ -58,11 +58,13 @@ describe('NativeAsset', () => {
     } as unknown as NetworkConfiguration);
   });
 
-  it('fetches network config for the asset chainId', () => {
+  it('fetches network config for the asset chainId', async () => {
     renderWithProvider(
       <NativeAsset token={ethToken} chainId={MAINNET_CHAIN_ID} />,
       configureMockStore()(mockState),
     );
+
+    await screen.findByTestId('asset-page');
 
     expect(mockSelectNetworkConfigurationByChainId).toHaveBeenCalledWith(
       expect.anything(),
