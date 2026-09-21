@@ -33,7 +33,6 @@ const REQUIRED_QUERY_PARAMS = [
 ] as const;
 
 // Detecting control characters is the purpose of this check.
-// eslint-disable-next-line no-control-regex
 const WHITESPACE_OR_CONTROL = /[\s\u007f]/u;
 
 const INVALID_PERCENT_ESCAPE = /%(?![0-9a-fA-F]{2})/u;
