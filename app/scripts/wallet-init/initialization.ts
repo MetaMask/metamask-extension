@@ -1,3 +1,4 @@
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { Wallet } from '@metamask/wallet';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -18,6 +19,7 @@ import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
 import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
@@ -51,12 +53,20 @@ export function initializeWallet(request: InitializeWalletRequest) {
   const seedlessOnboardingControllerInitMessenger =
     getSeedlessOnboardingControllerInitMessenger(messenger);
 
+  // TC event listeners must be set up before the wallet is initialized.
+  // So that the TC can emit events to the wallet's messenger during initialization.
+  setupTransactionControllerListeners({
+    getTransactionMetricsRequest,
+    messenger: transactionControllerInitMessenger,
+  });
+
   const wallet = new Wallet({
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
       claimsService: getClaimsServiceInstanceOptions(),
+      configRegistryApiService: getConfigRegistryApiServiceInstanceOptions(),
       connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
       }),
@@ -107,11 +117,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
       useExternalServices:
         state.PreferencesController?.useExternalServices !== false,
     },
-  });
-
-  setupTransactionControllerListeners({
-    getTransactionMetricsRequest,
-    messenger: transactionControllerInitMessenger,
+    authenticationState: {
+      srpSessionData: state.AuthenticationController?.srpSessionData as
+        | AuthenticationControllerState['srpSessionData']
+        | undefined,
+    },
   });
 
   wallet.init().catch((error) => console.error(error));

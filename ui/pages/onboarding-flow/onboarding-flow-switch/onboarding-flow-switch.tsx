@@ -21,7 +21,7 @@ import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   getFirstTimeFlowType,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getIsSocialLoginFlow,
   getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
@@ -45,9 +45,7 @@ export default function OnboardingFlowSwitch() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
 
   if (completedOnboarding) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -57,7 +55,7 @@ export default function OnboardingFlowSwitch() {
     return (
       <Navigate
         to={
-          completedMetaMetricsOnboarding
+          consentDecisionMade
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS
         }

@@ -13,7 +13,7 @@ import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from '../bridge/constants';
-import { checkNotification } from './shared';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
 
 const MUSD_MALICIOUS_SECURITY_DATA = {
   type: 'Malicious',
@@ -129,6 +129,27 @@ describe('Swaps - notifications', function () {
     );
   });
 
+  it('clamps slippage to 100% maximum in transaction settings', async function () {
+    await withFixtures(
+      getBridgeFixtures({
+        title: this.test?.fullTitle(),
+        featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      }),
+      async ({ driver }) => {
+        await login(driver, { expectedBalance: '$225,730.11' });
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgeQuotePage = new BridgeQuotePage(driver);
+        await bridgeQuotePage.enterBridgeQuote({ amount: '1' });
+        await bridgeQuotePage.waitForQuote();
+
+        await bridgeQuotePage.setCustomSlippage('101');
+        await bridgeQuotePage.checkCustomSlippageDisplayedValue('100');
+      },
+    );
+  });
+
   it('shows low slippage warning in transaction settings', async function () {
     await withFixtures(
       getBridgeFixtures({
@@ -148,10 +169,11 @@ describe('Swaps - notifications', function () {
 
         await bridgeQuotePage.setCustomSlippage('0.1');
 
-        await checkNotification(driver, {
-          title: 'Low slippage',
-          text: 'A value this low (0.1%) may result in a failed swap',
-        });
+        const swapPage = new SwapPage(driver);
+        await swapPage.checkNotificationBanner(
+          'Low slippage',
+          'A value this low (0.1%) may result in a failed swap',
+        );
       },
     );
   });

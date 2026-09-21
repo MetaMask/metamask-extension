@@ -2,6 +2,10 @@ import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-cont
 import type { ShowApprovalRequest } from '@metamask/approval-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import type { Encryptor } from '@metamask/keyring-controller';
+import type {
+  AuthenticationControllerGetStateAction,
+  AuthenticationControllerStateChangeEvent,
+} from '@metamask/profile-sync-controller/auth';
 import type { DefaultActions, DefaultEvents } from '@metamask/wallet';
 import type { Json } from '@metamask/utils';
 import { Browser } from 'webextension-polyfill';
@@ -22,18 +26,21 @@ import type {
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
  * extra actions/events the extension-side wiring reads (the metaMetrics id from
- * `AnalyticsController`, the remote feature flag toggle subscriptions, and the
+ * `AnalyticsController`, the canonical profile id from `AuthenticationController`,
+ * the remote feature flag toggle and canonical-id refresh subscriptions, and the
  * TransactionController init messenger used by extension hooks/listeners).
  * The remote feature flag enable/disable/update actions the toggle calls are
  * already covered by `DefaultActions`.
  */
 export type WalletInitMessenger = RootMessenger<
   | AnalyticsControllerGetStateAction
+  | AuthenticationControllerGetStateAction
   | DefaultActions
   | OnboardingControllerGetStateAction
   | SeedlessOnboardingControllerInitMessengerActions
   | TransactionControllerInitMessengerActions,
   | DefaultEvents
+  | AuthenticationControllerStateChangeEvent
   | OnboardingControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent
   | TransactionControllerInitMessengerEvents

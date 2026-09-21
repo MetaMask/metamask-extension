@@ -33,7 +33,7 @@ class OnboardingPrivacySettingsPage {
 
   private readonly assetsSettings = '[data-testid="category-item-Assets"]';
 
-  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
+  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h4' };
 
   // General settings
   private readonly basicFunctionalityCheckbox =
@@ -72,7 +72,7 @@ class OnboardingPrivacySettingsPage {
 
   private readonly generalSettings = '[data-testid="category-item-General"]';
 
-  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
+  private readonly generalSettingsMessage = { text: 'General', tag: 'h4' };
 
   private readonly networkNameInput =
     '[data-testid="network-form-network-name"]';
@@ -84,8 +84,6 @@ class OnboardingPrivacySettingsPage {
     '[data-testid="privacy-settings-back-button"]';
 
   private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
-
-  private readonly securitySettings = '[data-testid="category-item-Security"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -132,11 +130,13 @@ class OnboardingPrivacySettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
+      // The Security category is deliberately omitted: when Basic Functionality
+      // consolidation is enabled it is only rendered for the social login flow,
+      // so it cannot identify this page.
       await this.driver.waitForMultipleSelectors([
         this.page,
         this.generalSettings,
         this.assetsSettings,
-        this.securitySettings,
       ]);
     } catch (e) {
       console.log(
@@ -198,11 +198,20 @@ class OnboardingPrivacySettingsPage {
     await this.checkPageIsLoaded();
     await this.driver.clickElement(this.assetsSettings);
     await this.driver.waitForSelector(this.assetsSettingsMessage);
-    await Promise.all(
-      (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
-        (toggle) => toggle.click(),
-      ),
-    );
+    // When Basic Functionality consolidation is enabled these toggles are owned
+    // by the Basic Functionality setting and are not rendered here, so there can
+    // be nothing to switch off. The toggles render in the same commit as the
+    // heading awaited above, so a missing toggle means it is genuinely absent
+    // rather than still pending.
+    if (
+      await this.driver.isElementPresentAndVisible(this.assetsPrivacyToggle)
+    ) {
+      await Promise.all(
+        (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
+          (toggle) => toggle.click(),
+        ),
+      );
+    }
     console.log('Verify all asset privacy toggles are off');
     await this.driver.assertElementNotPresent(this.assetsPrivacyToggle);
 

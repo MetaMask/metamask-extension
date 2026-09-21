@@ -21,7 +21,8 @@ class TokenManagementPage {
 
   private readonly driver: Driver;
 
-  private readonly pageSelector = '[data-testid="token-management-page"]';
+  private readonly parentSelector =
+    '[data-testid="parent-selector-token-management-page"]';
 
   private readonly successToast =
     '[data-testid="token-management-custom-token-success-toast"]';
@@ -32,7 +33,7 @@ class TokenManagementPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check that the Manage Tokens page is loaded');
-    await this.driver.waitForSelector(this.pageSelector);
+    await this.driver.waitForSelector(this.parentSelector);
   }
 
   async checkSuccessToastIsDisplayed(): Promise<void> {

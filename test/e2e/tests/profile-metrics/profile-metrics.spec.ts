@@ -5,8 +5,9 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { MockedEndpoint } from '../../mock-e2e';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -27,6 +28,24 @@ const mockRemoteFeatureFlags = () => (mockServer: Mockttp) =>
         statusCode: 200,
       };
     });
+
+/**
+ * Default fixture marks the wallet consolidated; keep MetaMetrics opted out
+ * and clear reported accounts so all scopes are re-synced on unlock.
+ */
+function buildConsolidatedProfileMetricsFixture() {
+  const fixture = new FixtureBuilderV2()
+    .withMetaMetricsController({
+      analyticsId: MOCK_ANALYTICS_ID,
+      optedIn: false,
+    })
+    .build();
+
+  // FixtureBuilder merges partial state; lodash merge does not clear arrays.
+  fixture.data.ProfileMetricsController.reportedAccounts = [];
+
+  return fixture;
+}
 
 /**
  * Mocks the authentication service endpoint for profile metrics.
@@ -128,16 +147,11 @@ async function waitForScopesToBeSynced(
 }
 
 describe('Profile Metrics', function () {
-  describe('when MetaMetrics is enabled and the user acknowledged the privacy change', function () {
-    it('sends existing accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
+  describe('when the user acknowledged the privacy change and basic functionality is consolidated', function () {
+    it('sends existing accounts to the API on wallet unlock and an initial delay', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              consentDecisionMade: true,
-              optedIn: true,
-            })
-            .build(),
+          fixtures: buildConsolidatedProfileMetricsFixture(),
           testSpecificMock: async (server: Mockttp) => [
             await mockAuthService(server),
             await mockRemoteFeatureFlags()(server),
@@ -172,12 +186,7 @@ describe('Profile Metrics', function () {
     it('sends new accounts to the API when they are created after wallet unlock', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              consentDecisionMade: true,
-              optedIn: true,
-            })
-            .build(),
+          fixtures: buildConsolidatedProfileMetricsFixture(),
           testSpecificMock: async (server: Mockttp) => [
             await mockAuthService(server),
             await mockRemoteFeatureFlags()(server),
@@ -231,7 +240,8 @@ describe('Profile Metrics', function () {
 
   [
     {
-      title: 'when MetaMetrics is disabled',
+      title:
+        'when MetaMetrics is disabled and basic functionality is not consolidated',
       consentDecisionMade: true,
       optedIn: false,
       pna25Acknowledged: true,
@@ -255,6 +265,7 @@ describe('Profile Metrics', function () {
               .withAppStateController({
                 pna25Acknowledged,
               })
+              .withBasicFunctionalityConsolidationDisabled()
               .build(),
             testSpecificMock: async (server: Mockttp) => [
               await mockAuthService(server),

@@ -3,6 +3,7 @@ import type { RouteMessengerFromCapabilities } from '../../messengers/route-mess
 
 export const ALLOWED_CAPABILITIES = defineAllowedRouteCapabilities({
   actions: [
+    'MoneyAccountAvailabilityService:getAvailability',
     'NetworkConnectionBannerController:switchToDefaultInfuraRpcEndpoint',
   ],
   events: [],

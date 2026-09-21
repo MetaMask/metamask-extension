@@ -29,6 +29,13 @@ import { resetBridgeController } from '../../../ducks/bridge/actions';
 import { useDispatch } from '../../../store/hooks';
 import { transitionForward } from '../../ui/transition';
 import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
+import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../../pages/money/constants/money-events';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -82,6 +89,9 @@ export function BottomNavBar() {
     useMoneyAccountAvailability();
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
   const { openBridgeExperience } = useBridging();
+  const { trackButtonClicked: trackMoneyButtonClicked } = useMoneyAnalytics({
+    componentName: MoneyComponentName.HomeTab,
+  });
 
   const { isHome, isPerps, isMoney, isSwaps, isActivity } =
     getActiveBottomNavTabs(pathname);
@@ -118,11 +128,17 @@ export function BottomNavBar() {
   }, [navigate, resetBridgeIfNeeded]);
 
   const handleMoneyClick = useCallback(() => {
+    trackMoneyButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+      labelKey: 'money',
+      redirectTarget: MoneyScreenName.MoneyHome,
+    });
     resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
     );
-  }, [navigate, resetBridgeIfNeeded]);
+  }, [navigate, resetBridgeIfNeeded, trackMoneyButtonClicked]);
 
   const handleSwapsClick = useCallback(() => {
     if (isSwaps) {
@@ -147,8 +163,8 @@ export function BottomNavBar() {
 
   return (
     <nav
-      data-testid="bottom-nav-bar"
-      className="bottom-nav-bar w-full bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100]"
+      data-testid="parent-selector-bottom-nav-bar"
+      className="bottom-nav-bar sticky bottom-0 mt-auto w-full shrink-0 bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100] transition-[background-color,backdrop-filter] duration-200"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
       <NavTab
@@ -170,7 +186,7 @@ export function BottomNavBar() {
       {moneyAccountAvailability.isAvailable && (
         <NavTab
           isActive={isMoney}
-          icon={IconName.Coin}
+          icon={isMoney ? IconName.MusdFilled : IconName.Musd}
           label={t('money')}
           onClick={handleMoneyClick}
           data-testid="bottom-nav-money"

@@ -28,11 +28,32 @@ export const DEFAULT_MONEY_ACCOUNT_BLOCKED_COUNTRIES = ['GB'];
 const UNKNOWN_LOCATION = 'UNKNOWN';
 
 /**
+ * The LaunchDarkly flag that gates the Money balance card on the wallet home
+ * screen, independently of {@link MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME}.
+ */
+export const MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME =
+  'moneyHomeScreenCardEnabled';
+
+/**
  * The LaunchDarkly flag that gates the realized Earnings section on Money
  * Home.
  */
 export const MONEY_EARNING_SECTION_ENABLED_FLAG_NAME =
   'earnMoneyEarningSectionEnabled';
+
+/**
+ * The LaunchDarkly flag that injects curated Money activity rows for UI
+ * review. Same name and plain-boolean shape as mobile.
+ */
+export const MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME =
+  'moneyActivityMockDataEnabled';
+
+/**
+ * The LaunchDarkly flag that gates navigation from Money activity rows to
+ * the transaction details page. Same name as mobile.
+ */
+export const MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME =
+  'moneyEnableActivityDetails';
 
 /**
  * Whether the Money Account feature is enabled.
@@ -119,6 +140,28 @@ export function isMoneyAccountGeoEligible(
 }
 
 /**
+ * Whether the Money balance card on the wallet home screen is enabled.
+ *
+ * The flag is version-gated and fails closed when absent, malformed, or below
+ * the current extension version.
+ *
+ * This says nothing about whether Money Account itself is enabled; callers
+ * must also gate on {@link isMoneyAccountEnabled}.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether the home screen card is enabled.
+ */
+export function isMoneyHomeScreenCardEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return (
+    validatedVersionGatedFeatureFlag(
+      remoteFeatureFlags?.[MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME],
+    ) ?? false
+  );
+}
+
+/**
  * Whether the realized Earnings section on Money Home is enabled.
  *
  * The flag is version-gated and fails closed when absent, malformed, or below
@@ -135,4 +178,47 @@ export function isMoneyEarningSectionEnabled(
       remoteFeatureFlags?.[MONEY_EARNING_SECTION_ENABLED_FLAG_NAME],
     ) ?? false
   );
+}
+
+/**
+ * Whether Money Home should render curated mock activity instead of a live
+ * transaction list.
+ *
+ * A remote boolean wins (including `false`). Any other remote value falls
+ * through to {@link MONEY_ACTIVITY_MOCK_DATA_ENABLED_ENV_VAR}.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether mock activity data is enabled.
+ */
+export function isMoneyActivityMockDataEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  const remote =
+    remoteFeatureFlags?.[MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME];
+  if (typeof remote === 'boolean') {
+    return remote;
+  }
+
+  return process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED?.toString() === 'true';
+}
+
+/**
+ * Whether tapping a Money activity row should open the transaction details
+ * page.
+ *
+ * A remote boolean wins (including `false`). Any other remote value falls
+ * through to `MM_MONEY_ENABLE_ACTIVITY_DETAILS`.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether activity details navigation is enabled.
+ */
+export function isMoneyActivityDetailsEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  const remote = remoteFeatureFlags?.[MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME];
+  if (typeof remote === 'boolean') {
+    return remote;
+  }
+
+  return process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS?.toString() === 'true';
 }

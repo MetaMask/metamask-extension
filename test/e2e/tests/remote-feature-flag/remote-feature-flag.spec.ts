@@ -4,9 +4,9 @@ import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { login } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import DeveloperOptionsPage from '../../page-objects/pages/debug-page';
+import DeveloperOptionsPage from '../../page-objects/pages/settings/debug-page';
 import {
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
   MOCK_ANALYTICS_ID,

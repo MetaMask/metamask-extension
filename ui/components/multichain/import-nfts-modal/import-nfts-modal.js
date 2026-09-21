@@ -7,6 +7,10 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  ModalContent,
+  Modal,
+  ModalOverlay,
+  ModalHeader,
 } from '@metamask/design-system-react';
 import {
   MetaMetricsEventName,
@@ -48,17 +52,7 @@ import {
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Label,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-} from '../../component-library';
+import { Box, Icon, IconName, IconSize, Label } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
@@ -273,6 +267,7 @@ export const ImportNftsModal = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader
+          closeButtonProps={{ ariaLabel: t('close') }}
           onClose={() => {
             onClose();
             navigate(DEFAULT_ROUTE);
@@ -400,7 +395,7 @@ export const ImportNftsModal = ({ onClose }) => {
               onClose();
               navigate(DEFAULT_ROUTE);
             }}
-            className="import-nfts-modal__cancel-button flex-1 rounded-xl"
+            className="import-nfts-modal__cancel-button flex-1"
           >
             {t('cancel')}
           </Button>
@@ -409,7 +404,7 @@ export const ImportNftsModal = ({ onClose }) => {
             size={ButtonSize.Lg}
             onClick={() => handleAddNft()}
             isDisabled={isFormDisabled}
-            className="flex-1 rounded-xl"
+            className="flex-1"
             data-testid="import-nfts-modal-import-button"
           >
             {t('import')}

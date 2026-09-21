@@ -167,7 +167,10 @@ function useProposedNames(value: string, type: NameType, variation: string) {
 
   // Track latest proposed names without resetting polling interval.
   const proposedNamesRef = useRef(proposedNames);
-  proposedNamesRef.current = proposedNames;
+
+  useEffect(() => {
+    proposedNamesRef.current = proposedNames;
+  }, [proposedNames]);
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -347,12 +350,12 @@ export default function NameDetails({
 
     switch (displayState) {
       case TrustSignalDisplayState.Malicious:
-        titleKey = 'nameModalTitleMalicious';
-        instructionsKey = 'nameInstructionsMalicious';
+        titleKey = 'alertReasonAddressTrustSignalMalicious';
+        instructionsKey = 'alertMessageAddressTrustSignalMalicious';
         break;
       case TrustSignalDisplayState.Warning:
-        titleKey = 'nameModalTitleWarning';
-        instructionsKey = 'nameInstructionsWarning';
+        titleKey = 'alertReasonAddressTrustSignalWarning';
+        instructionsKey = 'alertMessageAddressTrustSignal';
         break;
       case TrustSignalDisplayState.Verified:
         titleKey = 'nameModalTitleVerified';

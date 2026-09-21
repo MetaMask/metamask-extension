@@ -7,6 +7,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../../tes
 import {
   permitNFTSignatureMsg,
   permitSignatureMsg,
+  permitSignatureMsgWithUnsignedFields,
 } from '../../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../../utils/token';
 import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-helpers';
@@ -44,6 +45,30 @@ describe('PermitSimulation', () => {
       expect(screen.getByText('30')).toBeInTheDocument();
     });
     expect(container).toMatchSnapshot();
+  });
+
+  it('ignores unsigned fields and displays the signed unlimited ERC-20 permit', async () => {
+    const state = getMockTypedSignConfirmStateForRequest(
+      permitSignatureMsgWithUnsignedFields,
+    );
+    const mockStore = configureMockStore([])(state);
+
+    renderWithConfirmContextProvider(<PermitSimulation />, mockStore);
+
+    expect(
+      await screen.findByText(messages.unlimited.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText(messages.spendingCap.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.permitSimulationDetailInfo.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.permitSimulationChange_revoke2.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.revokeSimulationDetailsDesc.message),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('#0')).not.toBeInTheDocument();
   });
 
   it('renders correctly for NFT permit', async () => {

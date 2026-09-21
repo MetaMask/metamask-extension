@@ -3,7 +3,30 @@ import {
   MetaMetricsEventName,
 } from '../../constants/metametrics';
 import { MISSING, VALID, INVALID } from './verify';
-import { createEvent } from './metrics';
+import { createEvent, shouldTrackDeepLinkNavigation } from './metrics';
+
+describe('shouldTrackDeepLinkNavigation', () => {
+  it('returns false for an external redirect destination', () => {
+    const result = shouldTrackDeepLinkNavigation({
+      destination: {
+        redirectTo: new URL('https://portfolio.metamask.io/buy'),
+      },
+    });
+
+    expect(result).toBe(false);
+  });
+
+  it('returns true for an extension route destination', () => {
+    const result = shouldTrackDeepLinkNavigation({
+      destination: {
+        path: '/perps',
+        query: new URLSearchParams(),
+      },
+    });
+
+    expect(result).toBe(true);
+  });
+});
 
 describe('createEvent', () => {
   describe('basic functionality', () => {

@@ -17,6 +17,7 @@ import {
   TRON_RECIPIENT_ADDRESS,
   SUN_PER_TRX,
   mockAccountsApiV2WithTron,
+  mockBridgeGetTronTokens,
   mockExchangeRates,
   mockFiatExchangeRates,
   mockTronFeatureFlags,
@@ -25,7 +26,7 @@ import {
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
 
 const TRON_PROVIDER_ANY_ACCOUNT_RE =
-  /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/nile\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
+  /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/shasta\.api\.trongrid\.io|https:\/\/nile\.trongrid\.io|https:\/\/nile\.api\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
@@ -82,6 +83,7 @@ export type WithTronFixturesOptions = Omit<
     localNodes: unknown[];
   }) => Promise<void> | void;
   fixtures?: unknown;
+  ignoredConsoleErrors?: string[];
   includeAnvil?: boolean;
   testSpecificMock?: (
     mockServer: Mockttp,
@@ -127,6 +129,15 @@ export function buildTronNodeOptions(
   };
 }
 
+/**
+ * Temporary unblock for Snap RPC noise that masked assertion results during
+ * background-page console capture. Remove once the Snap stops emitting these.
+ */
+const DEFAULT_TRON_IGNORED_CONSOLE_ERRORS = [
+  'getSubscriptions',
+  'Unexpected end of JSON input',
+];
+
 export async function withTronFixtures(
   options: WithTronFixturesOptions,
   testSuite: WithFixturesTestSuite,
@@ -136,6 +147,7 @@ export async function withTronFixtures(
     accounts,
     includeAnvil = true,
     testSpecificMock,
+    ignoredConsoleErrors,
     ...withFixtureOptions
   } = options;
   const nodeOptions = buildTronNodeOptions(accounts);
@@ -149,6 +161,10 @@ export async function withTronFixtures(
   await withFixtures(
     {
       ...withFixtureOptions,
+      ignoredConsoleErrors: [
+        ...DEFAULT_TRON_IGNORED_CONSOLE_ERRORS,
+        ...(ignoredConsoleErrors ?? []),
+      ],
       localNodeOptions: [
         ...(includeAnvil ? ['anvil'] : []),
         {
@@ -242,6 +258,9 @@ async function mockTronFixtureApis(
     await mockFiatExchangeRates(mockServer),
     await mockTronFixtureSpotPrices(mockServer, accounts, tronNode),
     await mockTronFixtureAssets(mockServer, accounts, tronNode),
+    // Empty catch-all bodies made `fetchPopularTokens` throw
+    // 'Unexpected end of JSON input' during the Tron network switch.
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockTronGetReward(mockServer),
     // NOTE: do not register static getblock/getnowblock/getblockbynum or
     // broadcasttransaction mocks here. mockttp serves the first matching
@@ -501,7 +520,7 @@ function getUniqueAssets(accounts: TronFixtureAccount[]): TronFixtureAsset[] {
 
 function tronProviderUrl(path: string): RegExp {
   return new RegExp(
-    `^(https://tron-mainnet\\.infura\\.io/v3/[^/]+|https://api\\.trongrid\\.io|https://api\\.shasta\\.trongrid\\.io|https://nile\\.trongrid\\.io)${path}(\\?[^#]*)?$`,
+    `^(https://tron-mainnet\\.infura\\.io/v3/[^/]+|https://api\\.trongrid\\.io|https://api\\.shasta\\.trongrid\\.io|https://shasta\\.api\\.trongrid\\.io|https://nile\\.trongrid\\.io|https://nile\\.api\\.trongrid\\.io)${path}(\\?[^#]*)?$`,
     'u',
   );
 }

@@ -4,10 +4,10 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import { Driver } from '../../webdriver/driver';
 import {
   DAPP_PATH,
@@ -16,7 +16,11 @@ import {
 } from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  getMockAssetsPrice,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
   it('should display basic wallets and accounts', async function () {
@@ -35,6 +39,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 usdConversionRate: MOCK_ETH_CONVERSION_RATE,
               },
             },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -67,10 +74,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           wallet: 'Wallet 1',
           balance: '$85,025.00',
         });
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           account: 'Account 1',
           wallet: 'Wallet 2',
-          balance: '$0.00',
         });
         await accountListPage.checkNumberOfAvailableAccounts(2);
       },
@@ -103,6 +109,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 'eip155:1/slip44:60': { amount: '0' },
               },
             },
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -116,7 +123,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x15af1d78b58c40000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver, {
+          expectedBalance: '$85,025.00',
+          waitForNonEvmAccounts: false,
+        });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const headerNavbar = new HeaderNavbar(driver);
@@ -129,9 +139,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
         await accountListPage.checkAddWalletButtonIsDisplayed();
 
-        // The balance is not loaded for a non-selected account (which was never selected before)
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
-          balance: '$0.00',
+        // The balance is not loaded for a non-selected account (which was never
+        // selected before), so nothing is rendered rather than a misleading $0.00
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Wallet 1',
           account: 'Account 1',
         });
@@ -163,6 +173,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 usdConversionRate: MOCK_ETH_CONVERSION_RATE,
               },
             },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -205,10 +218,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           wallet: 'Wallet 1',
           balance: '$85,025.00',
         });
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           account: 'Snap Account 1',
           wallet: 'MetaMask Simple Snap Keyring',
-          balance: '$0.00',
         });
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.checkAccountDisplayedInAccountList(

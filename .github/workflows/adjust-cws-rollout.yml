@@ -17,12 +17,14 @@ name: Adjust CWS rollout percentage
 # Listing vars (*_DEV, prod, EXTENSION_ID_FLASK) match upload; OIDC environment differs.
 #
 # CWS v2: :fetchStatus (current deployPercentage) → :setPublishedDeployPercentage
+# Version input is release semver X.Y.Z; crxVersion is derived per target via cws-target-config.sh
+# (prod/dev → X.Y.Z.0, flask → X.Y.Z.150 — same as upload and publish workflows).
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Published Chrome manifest version (e.g. 12.9.1) — must match live CWS crxVersion for the target listing'
+        description: 'Release semver X.Y.Z (e.g. 13.43.0) — crxVersion is derived per target (prod/dev → X.Y.Z.0, flask → X.Y.Z.150)'
         required: true
         type: string
       desired_percentage:
@@ -75,7 +77,9 @@ jobs:
       - name: Checkout scripts
         uses: actions/checkout@v6
         with:
-          sparse-checkout: .github/scripts/adjust-cws-rollout-guardrails.sh
+          sparse-checkout: |
+            .github/scripts/cws-target-config.sh
+            .github/scripts/adjust-cws-rollout-guardrails.sh
           sparse-checkout-cone-mode: false
 
       - name: Resolve target configuration
@@ -94,77 +98,13 @@ jobs:
         run: |
           set -euo pipefail
           GITHUB_REF="${{ github.ref }}"
-          # All targets require main. Originally each target had its own ref check to allow
-          # different branch policies; since all three targets are now aligned on refs/heads/main,
-          # the check is unified here before target resolution.
           if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
             echo "::error::CWS rollout must run from refs/heads/main (current: ${GITHUB_REF})"
             exit 1
           fi
-          if [[ "${TARGET}" == "dev" ]]; then
-            WIF_PROVIDER="${WIF_PROVIDER_DEV}"
-            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
-            EXTENSION_ID="${EXTENSION_ID_DEV}"
-            PUBLISHER_ID="${PUBLISHER_ID_DEV}"
-          elif [[ "${TARGET}" == "production" ]]; then
-            WIF_PROVIDER="${WIF_PROVIDER_PROD}"
-            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
-            EXTENSION_ID="${EXTENSION_ID_PROD}"
-            PUBLISHER_ID="${PUBLISHER_ID_PROD}"
-          elif [[ "${TARGET}" == "flask" ]]; then
-            WIF_PROVIDER="${WIF_PROVIDER_PROD}"
-            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
-            EXTENSION_ID="${EXTENSION_ID_FLASK}"
-            PUBLISHER_ID="${PUBLISHER_ID_FLASK}"
-          else
-            echo "::error::Invalid target: ${TARGET}"
-            exit 1
-          fi
-          if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+){0,3}$ ]]; then
-            echo "::error::Invalid version format: ${VERSION} — use 1–4 dot-separated integers (e.g. 12.9.1)"
-            exit 1
-          fi
-          IFS='.' read -r -a version_parts <<< "${VERSION}"
-          for part in "${version_parts[@]}"; do
-            if [[ ! "${part}" =~ ^(0|[1-9][0-9]*)$ ]]; then
-              echo "::error::Version segment must be a non-negative integer without leading zeros: ${part} in ${VERSION}"
-              exit 1
-            fi
-            if (( 10#${part} > 65535 )); then
-              echo "::error::Version segment out of range (0–65535): ${part} in ${VERSION}"
-              exit 1
-            fi
-          done
-          if [[ -z "${EXTENSION_ID:-}" ]]; then
-            case "${TARGET}" in
-              dev) EXTENSION_ID_VAR="EXTENSION_ID_DEV" ;;
-              production) EXTENSION_ID_VAR="EXTENSION_ID" ;;
-              flask) EXTENSION_ID_VAR="EXTENSION_ID_FLASK" ;;
-            esac
-            echo "::error::Missing ${EXTENSION_ID_VAR} repository variable for target '${TARGET}'"
-            exit 1
-          fi
-          missing=""
-          for name in WIF_PROVIDER WIF_SERVICE_ACCOUNT PUBLISHER_ID; do
-            if [[ -z "${!name:-}" ]]; then
-              missing="${missing} ${name}"
-            fi
-          done
-          if [[ -n "${missing}" ]]; then
-            echo "::error::Missing repository variables for target '${TARGET}':${missing}"
-            exit 1
-          fi
-          {
-            echo "WIF_PROVIDER=${WIF_PROVIDER}"
-            echo "WIF_SERVICE_ACCOUNT=${WIF_SERVICE_ACCOUNT}"
-            echo "EXTENSION_ID=${EXTENSION_ID}"
-            echo "PUBLISHER_ID=${PUBLISHER_ID}"
-          } >> "${GITHUB_ENV}"
-          {
-            echo "target=${TARGET}"
-            echo "extension_id=${EXTENSION_ID}"
-            echo "publisher_id=${PUBLISHER_ID}"
-          } >> "${GITHUB_OUTPUT}"
+          # Sets GITHUB_ENV and same-step vars: WIF_*, EXTENSION_ID, PUBLISHER_ID, CRX_VERSION.
+          # shellcheck disable=SC1091
+          source .github/scripts/cws-target-config.sh
 
       - name: Authenticate to Google Cloud
         id: auth
@@ -192,14 +132,8 @@ jobs:
             exit 1
           fi
           # setPublishedDeployPercentage only affects the live published revision.
-          # Read baseline exclusively from publishedItemRevisionStatus so a mistyped
-          # older version cannot supply a false current percentage.
-          # Flask CWS listing stores versions as "{version}-flask.0"; other targets use raw version.
-          if [[ "${TARGET}" == "flask" ]]; then
-            CRX_VERSION="${VERSION}-flask.0"
-          else
-            CRX_VERSION="${VERSION}"
-          fi
+          # Match publishedItemRevisionStatus.crxVersion against derived CRX_VERSION
+          # (4-part manifest version from cws-target-config.sh).
           published_channel=$(jq -c --arg ver "${CRX_VERSION}" '
             (.publishedItemRevisionStatus.distributionChannels // [])
             | map(select(.crxVersion == $ver))
@@ -220,7 +154,7 @@ jobs:
             exit 1
           fi
           echo "current_percentage=${current_pct}" >> "${GITHUB_OUTPUT}"
-          echo "Current rollout for version ${VERSION}: ${current_pct}%"
+          echo "Current rollout for crxVersion ${CRX_VERSION}: ${current_pct}%"
 
       - name: Validate rollout guardrails
         id: guardrails
@@ -277,7 +211,8 @@ jobs:
             echo "| GitHub Environment | \`${{ env.ROLLOUT_ENV }}\` (required reviewers — configure in repo Settings) |"
             echo "| Triggered by | \`${{ github.actor }}\` (sender: \`${{ github.event.sender.login }}\`, type=\`${{ github.event.sender.type }}\`) |"
             echo "| Target | \`${{ inputs.target }}\` |"
-            echo "| Version | \`${{ inputs.version }}\` |"
+            echo "| Version input | \`${{ inputs.version }}\` |"
+            echo "| crxVersion | \`${{ env.CRX_VERSION }}\` |"
             echo "| Branch | \`${{ github.ref }}\` |"
             echo "| Previous percentage | \`${CURRENT_PCT:-n/a}\` |"
             echo "| Requested percentage | \`${{ inputs.desired_percentage }}\` |"

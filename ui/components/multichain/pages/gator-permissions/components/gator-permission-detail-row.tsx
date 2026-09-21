@@ -11,9 +11,9 @@ import {
   Icon,
   IconName,
   IconSize,
+  Skeleton,
 } from '@metamask/design-system-react';
 
-import { Skeleton } from '../../../../component-library/skeleton';
 import Tooltip from '../../../../ui/tooltip';
 
 export const gatorPermissionDetailRowStyle = {
@@ -83,7 +83,7 @@ export const GatorPermissionDetailRow = ({
         gap={2}
         alignItems={BoxAlignItems.Center}
       >
-        <Skeleton isLoading={isLoading} width="100px" height="16px">
+        <Skeleton hideChildren={isLoading} width="100px" height="16px">
           <Text
             variant={TextVariant.BodyMd}
             color={TextColor.TextAlternative}
