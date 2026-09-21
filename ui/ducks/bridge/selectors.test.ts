@@ -3169,8 +3169,8 @@ describe('Bridge selectors', () => {
       const nativeReserveError = getInsufficientNativeReserveError(state);
 
       expect(nativeReserveError).toStrictEqual({
-        minimumNativeBalanceToBeKeptInAccount: '0.05',
-        maxSwappableNativeBalance: '9.95',
+        minimumNativeBalanceToBeKeptInAccount: '0.2',
+        maxSwappableNativeBalance: '9.8',
       });
       expect(getQuoteRequestInsufficientBal(state)).toBe(true);
       expect(result.isInsufficientNativeReserve).toBe(true);
@@ -3180,7 +3180,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
-          fromTokenInputValue: '9.95000',
+          fromTokenInputValue: '9.80000',
           fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
           // 10 native Arc USDC in atomic units.
           fromNativeBalance: '10000000000000000000',
@@ -3190,7 +3190,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
           quoteRequest: {
             srcChainId: CHAIN_IDS.ARC,
-            srcTokenAmount: '9950000',
+            srcTokenAmount: '9800000',
           },
         },
         metamaskStateOverrides: {
