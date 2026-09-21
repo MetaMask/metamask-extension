@@ -858,7 +858,7 @@
   "previewBuilds": {
     "@metamask/account-tree-controller": {
       "type": "breaking",
-      "previewVersion": "10.0.1-preview-b168a5fd4"
+      "previewVersion": "10.0.1-preview-2731bd7"
     }
   },
   "engines": {

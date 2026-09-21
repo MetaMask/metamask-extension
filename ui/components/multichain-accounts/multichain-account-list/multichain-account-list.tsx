@@ -205,7 +205,7 @@ function renderWalletHeaderTrailingControl({
   if (editHeaderAction === 'remove') {
     return (
       <Box
-        className="flex items-center gap-1"
+        className="flex items-center gap-1 mr-1.5"
         data-testid="multichain-account-tree-wallet-header-remove"
         role="button"
         tabIndex={0}
@@ -241,7 +241,7 @@ function renderWalletHeaderTrailingControl({
   if (editHeaderAction === 'locked') {
     return (
       <Box
-        className="flex items-center gap-1"
+        className="flex items-center gap-1 mr-1.5"
         data-testid="multichain-account-tree-wallet-header-locked"
         role="button"
         tabIndex={0}
@@ -263,13 +263,6 @@ function renderWalletHeaderTrailingControl({
           color={IconColor.IconAlternative}
           data-testid="multichain-account-tree-wallet-header-locked-icon"
         />
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.TextAlternative}
-        >
-          {t('locked')}
-        </Text>
       </Box>
     );
   }
