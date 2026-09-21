@@ -28,7 +28,19 @@ type ScenarioRow = {
   beforeBundle: BenchmarkBundle;
   afterBundle: BenchmarkBundle;
   primaryTimer: string;
+  primaryDeltaMetric: 'inp' | 'tbt';
 };
+
+type QualityAssessment = {
+  notes: string[];
+  hasInvalidBaseline: boolean;
+  hasUnreliableCv: boolean;
+  hasMixedDirection: boolean;
+};
+
+const POOR_CV_THRESHOLD = 30;
+const UNRELIABLE_CV_THRESHOLD = 50;
+const INVALID_ACTION_DURATION_MS = 60_000;
 
 function parseArgs(): CliArgs {
   const args = process.argv.slice(2);
@@ -77,6 +89,29 @@ function getBenchmarkError(
   return isBenchmarkError(entry) ? entry.error : undefined;
 }
 
+function getBenchmarkResult(
+  bundle: BenchmarkBundle,
+  registryKey: string,
+): BenchmarkResults | undefined {
+  const result = bundle[registryKey];
+  return result && !isBenchmarkError(result) ? result : undefined;
+}
+
+function getTimerCv(
+  result: BenchmarkResults,
+  timerId: string,
+): number | undefined {
+  const mean = result.mean[timerId];
+  const stdDev = result.stdDev[timerId];
+  return mean !== undefined && mean > 0 && stdDev !== undefined
+    ? (stdDev / mean) * 100
+    : undefined;
+}
+
+function formatCv(cv: number | undefined): string {
+  return cv === undefined ? '' : ` (CV ${Math.round(cv)}%)`;
+}
+
 function formatMetric(
   bundle: BenchmarkBundle,
   registryKey: string,
@@ -96,52 +131,152 @@ function formatMetric(
   const inp = webVitals?.aggregated.inp?.p75 ?? result.webVitals?.aggregated.inp?.p75;
   const parts: string[] = [];
   if (inp !== undefined && inp !== null) {
-    parts.push(`INP p75 ${Math.round(inp)}ms`);
+    parts.push(
+      `INP p75 ${Math.round(inp)}ms${formatCv(webVitals?.aggregated.inp?.cv)}`,
+    );
   }
   if (actionP75 !== undefined) {
-    parts.push(`action p75 ${Math.round(actionP75)}ms`);
+    parts.push(
+      `action p75 ${Math.round(actionP75)}ms${formatCv(
+        getTimerCv(result, timerId),
+      )}`,
+    );
   }
   if (longTaskMax !== undefined) {
-    parts.push(`longTaskMax p75 ${Math.round(longTaskMax)}ms`);
+    parts.push(
+      `longTaskMax p75 ${Math.round(longTaskMax)}ms${formatCv(
+        getTimerCv(result, 'longTaskMaxDuration'),
+      )}`,
+    );
   }
   if (tbt !== undefined) {
-    parts.push(`TBT p75 ${Math.round(tbt)}ms`);
+    parts.push(
+      `TBT p75 ${Math.round(tbt)}ms${formatCv(getTimerCv(result, 'tbt'))}`,
+    );
   }
   return parts.length > 0 ? parts.join(' · ') : 'n/a';
 }
 
-function formatDelta(before: string, after: string): string {
-  if (
-    before === 'n/a' ||
-    after === 'n/a' ||
-    before === 'harness error' ||
-    after === 'harness error'
-  ) {
-    return 'n/a';
+function getMetricValue(
+  result: BenchmarkResults,
+  timerId: string,
+  metric: ScenarioRow['primaryDeltaMetric'],
+): number | undefined {
+  if (metric === 'inp') {
+    return result.webVitals?.aggregated.inp?.p75 ?? undefined;
   }
-  const parseInp = (value: string): number | null => {
-    const match = value.match(/INP p75 (\d+)ms/u);
-    return match ? Number(match[1]) : null;
-  };
-  const beforeInp = parseInp(before);
-  const afterInp = parseInp(after);
-  if (beforeInp === null || afterInp === null) {
-    return 'see notes';
-  }
-  const delta = afterInp - beforeInp;
-  const sign = delta > 0 ? '+' : '';
-  return `${sign}${delta}ms INP`;
+  return result.p75[timerId];
 }
 
-function formatNotes(...errors: Array<string | undefined>): string {
-  const messages = errors.filter((message): message is string => Boolean(message));
-  if (messages.length === 0) {
+function formatDelta(row: ScenarioRow): string {
+  const before = getBenchmarkResult(row.beforeBundle, row.beforeKey);
+  const after = getBenchmarkResult(row.afterBundle, row.afterKey);
+  if (!before || !after) {
+    return 'n/a';
+  }
+
+  const timerId =
+    row.primaryDeltaMetric === 'tbt' ? 'tbt' : row.primaryTimer;
+  const beforeValue = getMetricValue(
+    before,
+    timerId,
+    row.primaryDeltaMetric,
+  );
+  const afterValue = getMetricValue(after, timerId, row.primaryDeltaMetric);
+  if (beforeValue === undefined || afterValue === undefined) {
+    return 'see notes';
+  }
+
+  const delta = Math.round(afterValue - beforeValue);
+  const sign = delta > 0 ? '+' : '';
+  const percent =
+    beforeValue > 0
+      ? ` (${sign}${Math.round((delta / beforeValue) * 100)}%)`
+      : '';
+  return `${sign}${delta}ms ${row.primaryDeltaMetric.toUpperCase()}${percent}`;
+}
+
+function assessQuality(row: ScenarioRow): QualityAssessment {
+  const notes: string[] = [];
+  const before = getBenchmarkResult(row.beforeBundle, row.beforeKey);
+  const after = getBenchmarkResult(row.afterBundle, row.afterKey);
+  if (!before || !after) {
+    return {
+      notes,
+      hasInvalidBaseline: false,
+      hasUnreliableCv: false,
+      hasMixedDirection: false,
+    };
+  }
+
+  const hasInvalidBaseline =
+    before.p75[row.primaryTimer] >= INVALID_ACTION_DURATION_MS;
+  if (hasInvalidBaseline) {
+    notes.push('invalid baseline: action timer ≥60s');
+  }
+
+  const cvMetrics = [
+    ['before INP', before.webVitals?.aggregated.inp?.cv],
+    ['before action', getTimerCv(before, row.primaryTimer)],
+    ['before longTaskMax', getTimerCv(before, 'longTaskMaxDuration')],
+    ['before TBT', getTimerCv(before, 'tbt')],
+    ['after INP', after.webVitals?.aggregated.inp?.cv],
+    ['after action', getTimerCv(after, row.primaryTimer)],
+    ['after longTaskMax', getTimerCv(after, 'longTaskMaxDuration')],
+    ['after TBT', getTimerCv(after, 'tbt')],
+  ] as const;
+  const highCv = cvMetrics
+    .filter(([, cv]) => cv !== undefined && cv >= POOR_CV_THRESHOLD)
+    .map(([label, cv]) => `${label} ${Math.round(cv ?? 0)}%`);
+  if (highCv.length > 0) {
+    notes.push(`high CV: ${highCv.join(', ')}`);
+  }
+  const hasUnreliableCv = cvMetrics.some(
+    ([, cv]) => cv !== undefined && cv >= UNRELIABLE_CV_THRESHOLD,
+  );
+
+  const metricPairs = [
+    [
+      before.webVitals?.aggregated.inp?.p75,
+      after.webVitals?.aggregated.inp?.p75,
+    ],
+    [before.p75[row.primaryTimer], after.p75[row.primaryTimer]],
+    [before.p75.longTaskMaxDuration, after.p75.longTaskMaxDuration],
+    [before.p75.tbt, after.p75.tbt],
+  ];
+  const deltas = metricPairs
+    .filter(
+      (pair): pair is [number, number] =>
+        pair[0] !== undefined && pair[1] !== undefined,
+    )
+    .map(([beforeValue, afterValue]) => afterValue - beforeValue)
+    .filter((delta) => delta !== 0);
+  const hasMixedDirection =
+    deltas.some((delta) => delta < 0) &&
+    deltas.some((delta) => delta > 0);
+  if (hasMixedDirection) {
+    notes.push('mixed direction across INP/action/long-task metrics');
+  }
+
+  return {
+    notes,
+    hasInvalidBaseline,
+    hasUnreliableCv,
+    hasMixedDirection,
+  };
+}
+
+function formatNotes(...messages: Array<string | undefined>): string {
+  const filtered = messages.filter(
+    (message): message is string => Boolean(message),
+  );
+  if (filtered.length === 0) {
     return '';
   }
-  return messages
+  return filtered
     .map((message) => message.replace(/^Error:\s*/u, '').replace(/\|/gu, '\\|'))
     .join(' · ')
-    .slice(0, 200);
+    .slice(0, 500);
 }
 
 function buildRow(row: ScenarioRow): string {
@@ -165,12 +300,26 @@ function buildRow(row: ScenarioRow): string {
   );
   const beforeCell = `${before} @ \`${row.beforeSha.slice(0, 7)}\``;
   const afterCell = `${after} @ \`${row.afterSha.slice(0, 7)}\``;
-  const delta = formatDelta(before, after);
-  const status =
+  const quality = assessQuality(row);
+  const delta =
+    quality.hasInvalidBaseline || quality.hasMixedDirection
+      ? 'not reportable'
+      : formatDelta(row);
+  const statusBase =
     beforeError || afterError || before === 'n/a' || after === 'n/a'
       ? 'failed'
       : 'done';
-  const notes = formatNotes(beforeError, afterError);
+  const status =
+    statusBase === 'failed'
+      ? statusBase
+      : quality.hasInvalidBaseline
+        ? 'invalid'
+        : quality.hasUnreliableCv
+          ? 'unreliable'
+          : quality.hasMixedDirection
+            ? 'mixed'
+            : statusBase;
+  const notes = formatNotes(beforeError, afterError, ...quality.notes);
   return `| ${row.scenario} | ${row.harness} | ${beforeCell} | ${afterCell} | ${delta} | ${status} | ${notes} |`;
 }
 
@@ -191,6 +340,7 @@ function main(): void {
       beforeBundle: beforeTokenBundle,
       afterBundle,
       primaryTimer: 'token_search_power_user',
+      primaryDeltaMetric: 'tbt',
     },
     {
       scenario: 'Account switching',
@@ -202,6 +352,7 @@ function main(): void {
       beforeBundle: beforeSwitchBundle,
       afterBundle,
       primaryTimer: 'account_switch',
+      primaryDeltaMetric: 'inp',
     },
     {
       scenario: 'Network switching',
@@ -213,6 +364,7 @@ function main(): void {
       beforeBundle: beforeSwitchBundle,
       afterBundle,
       primaryTimer: 'network_switch',
+      primaryDeltaMetric: 'inp',
     },
   ];
 
@@ -224,6 +376,10 @@ function main(): void {
 
   const body = rows.map(buildRow).join('\n');
   const footer = `
+
+Token search uses TBT as its primary delta; switch scenarios use INP. CV ≥30% is
+flagged, CV ≥50% is unreliable, and mixed-direction rows are not evidence of an
+improvement.
 
 ### SHAs
 

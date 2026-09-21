@@ -105,14 +105,6 @@ export async function run(): Promise<BenchmarkRunResult> {
         await driver.clickElement(
           `[data-testid="${TARGET_ACCOUNT_CELL_TEST_ID}"]`,
         );
-        await driver
-          .waitForSelector(ACCOUNT_LIST_PAGE, {
-            state: 'detached',
-            timeout: POWER_USER_SYNC_TIMEOUT_MS,
-          })
-          .catch(() => {
-            // Popover may unmount without removing the page root; header label is authoritative.
-          });
         await waitForHeaderAccountLabel(driver, TARGET_ACCOUNT);
         const duration = Date.now() - startedAt;
 
