@@ -61,9 +61,10 @@ export function useSignatureAddressAlerts(): Alert[] {
       const isPermit = PRIMARY_TYPES_PERMIT.some(
         (type) => type === parsed.primaryType,
       );
+      const hasVerifyingContract = Boolean(parsed.domain?.verifyingContract);
       return extractSignatureAddresses(parsed, {
         exclude: signer ? [signer] : [],
-        excludeFields: isPermit ? ['spender'] : [],
+        excludeFields: isPermit && hasVerifyingContract ? ['spender'] : [],
       });
     } catch {
       return empty;
