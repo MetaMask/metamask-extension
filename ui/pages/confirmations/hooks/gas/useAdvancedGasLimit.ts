@@ -1,5 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  UserFeeLevel,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { omit } from 'lodash';
 
@@ -15,6 +18,7 @@ type GasLimitState = {
   editableGasLimit: Hex | undefined;
   estimationFailed: boolean;
   hasCurrentEstimate: boolean;
+  hasManualGasLimit: boolean;
   sourceGasLimit: Hex | undefined;
   transactionKey: string;
 };
@@ -52,11 +56,15 @@ export function useAdvancedGasLimit(
 ): {
   gasLimit: Hex | undefined;
   isGasLimitAvailable: boolean;
+  isGasLimitEditable: boolean;
   setGasLimit: (gasLimit: Hex) => void;
   transactionKey: string;
 } {
   const transactionGasLimit = transactionMeta?.txParams?.gas as Hex | undefined;
-  const estimationFailed = Boolean(transactionMeta?.simulationFails);
+  const estimationFailed = Boolean(
+    transactionMeta?.simulationFails &&
+    transactionMeta.userFeeLevel !== UserFeeLevel.CUSTOM,
+  );
   const transactionKey = useMemo(
     () => getAdvancedGasLimitTransactionKey(transactionMeta),
     [transactionMeta],
@@ -66,6 +74,7 @@ export function useAdvancedGasLimit(
     editableGasLimit: estimationFailed ? undefined : transactionGasLimit,
     estimationFailed,
     hasCurrentEstimate: !estimationFailed && transactionGasLimit !== undefined,
+    hasManualGasLimit: false,
     sourceGasLimit: transactionGasLimit,
     transactionKey,
   }));
@@ -89,6 +98,7 @@ export function useAdvancedGasLimit(
       editableGasLimit: hasCurrentEstimate ? transactionGasLimit : undefined,
       estimationFailed,
       hasCurrentEstimate,
+      hasManualGasLimit: false,
       sourceGasLimit: transactionGasLimit,
       transactionKey,
     };
@@ -97,12 +107,13 @@ export function useAdvancedGasLimit(
 
   const setGasLimit = useCallback(
     (updatedGasLimit: Hex) => {
-      if (!currentState.hasCurrentEstimate) {
+      if (!currentState.hasCurrentEstimate && !currentState.estimationFailed) {
         return;
       }
       setState({
         ...currentState,
         editableGasLimit: updatedGasLimit,
+        hasManualGasLimit: true,
       });
     },
     [currentState],
@@ -111,8 +122,10 @@ export function useAdvancedGasLimit(
   return {
     gasLimit: currentState.editableGasLimit,
     isGasLimitAvailable:
-      currentState.hasCurrentEstimate &&
+      (currentState.hasCurrentEstimate || currentState.hasManualGasLimit) &&
       currentState.editableGasLimit !== undefined,
+    isGasLimitEditable:
+      currentState.hasCurrentEstimate || currentState.estimationFailed,
     setGasLimit,
     transactionKey,
   };

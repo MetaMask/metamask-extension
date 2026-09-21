@@ -40,15 +40,22 @@ jest.mock('../../gas-input/gas-input', () => ({
     gasLimit,
     helpText,
     isDisabled,
+    onChange,
   }: {
     gasLimit: Hex | undefined;
     helpText?: string;
     isDisabled?: boolean;
+    onChange: (value: Hex) => void;
   }) => (
     <>
-      <div data-is-disabled={isDisabled} data-testid="gas-input">
+      <button
+        data-is-disabled={isDisabled}
+        data-testid="gas-input"
+        disabled={isDisabled}
+        onClick={() => onChange('0x9c40')}
+      >
         {gasLimit}
-      </div>
+      </button>
       {helpText && (
         <div id="gas-input-help-text" data-testid="gas-input-help-text">
           {helpText}
@@ -216,14 +223,34 @@ describe('AdvancedEIP1559Modal', () => {
     expect(getByTestId('gas-fee-modal-save-button')).toBeEnabled();
   });
 
-  it('disables Save when gas estimation failed', () => {
-    const { getByTestId } = render({
+  it('allows manual gas limit recovery when estimation fails', async () => {
+    const { contractInteraction, getByTestId, getByText } = render({
       gasLimit: '0x9c40',
       simulationFails: { message: 'execution reverted' },
     });
 
     expect(getByTestId('gas-input')).toBeEmptyDOMElement();
+    expect(getByTestId('gas-input')).toBeEnabled();
+    expect(getByTestId('gas-input-help-text')).toHaveTextContent(
+      messages.alertMessageGasEstimateFailed.message,
+    );
     expect(getByTestId('gas-fee-modal-save-button')).toBeDisabled();
+
+    fireEvent.click(getByTestId('gas-input'));
+    expect(getByTestId('gas-fee-modal-save-button')).toBeEnabled();
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() =>
+      expect(updateTransactionGasFees).toHaveBeenCalledWith(
+        contractInteraction.id,
+        {
+          userFeeLevel: 'custom',
+          gas: '0x9c40',
+          maxFeePerGas: '0x3b9aca00',
+          maxPriorityFeePerGas: '0x59682f00',
+        },
+      ),
+    );
   });
 
   it('navigates to EstimatesModal when Cancel is clicked', () => {

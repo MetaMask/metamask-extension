@@ -2,6 +2,7 @@ import React from 'react';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import {
   CHAIN_IDS,
+  type SimulationError,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
@@ -33,15 +34,22 @@ jest.mock('../../gas-input/gas-input', () => ({
     gasLimit,
     helpText,
     isDisabled,
+    onChange,
   }: {
     gasLimit: Hex | undefined;
     helpText?: string;
     isDisabled?: boolean;
+    onChange: (value: Hex) => void;
   }) => (
     <>
-      <div data-is-disabled={isDisabled} data-testid="gas-input">
+      <button
+        data-is-disabled={isDisabled}
+        data-testid="gas-input"
+        disabled={isDisabled}
+        onClick={() => onChange('0x9c40')}
+      >
         {gasLimit}
-      </div>
+      </button>
       {helpText && (
         <div id="gas-input-help-text" data-testid="gas-input-help-text">
           {helpText}
@@ -59,9 +67,18 @@ jest.mock('../../../../../store/actions/update-transaction-gas-fees', () => ({
   updateTransactionGasFees: jest.fn(() => ({ type: 'update-gas-fees' })),
 }));
 
-const render = ({ gasLimit }: { gasLimit?: Hex } = { gasLimit: '0x7530' }) => {
+const render = (
+  {
+    gasLimit,
+    simulationFails,
+  }: {
+    gasLimit?: Hex;
+    simulationFails?: SimulationError;
+  } = { gasLimit: '0x7530' },
+) => {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
     chainId: CHAIN_IDS.GOERLI,
+    simulationFails,
   }) as TransactionMeta;
   contractInteraction.txParams.from =
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -194,6 +211,35 @@ describe('AdvancedGasPriceModal', () => {
       expect(getByTestId('gas-input')).toHaveTextContent('0x9c40'),
     );
     expect(getByTestId('gas-fee-modal-save-button')).toBeEnabled();
+  });
+
+  it('allows manual gas limit recovery when estimation fails', async () => {
+    const { contractInteraction, getByTestId, getByText } = render({
+      gasLimit: '0x9c40',
+      simulationFails: { message: 'execution reverted' },
+    });
+
+    expect(getByTestId('gas-input')).toBeEmptyDOMElement();
+    expect(getByTestId('gas-input')).toBeEnabled();
+    expect(getByTestId('gas-input-help-text')).toHaveTextContent(
+      messages.alertMessageGasEstimateFailed.message,
+    );
+    expect(getByTestId('gas-fee-modal-save-button')).toBeDisabled();
+
+    fireEvent.click(getByTestId('gas-input'));
+    expect(getByTestId('gas-fee-modal-save-button')).toBeEnabled();
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() =>
+      expect(updateTransactionGasFees).toHaveBeenCalledWith(
+        contractInteraction.id,
+        {
+          userFeeLevel: 'custom',
+          gas: '0x9c40',
+          gasPrice: '0x2540be400',
+        },
+      ),
+    );
   });
 
   it('navigates to EstimatesModal when Cancel is clicked', () => {

@@ -47,6 +47,7 @@ const AdvancedEIP1559ModalContent = ({
   transactionMeta,
   gasLimit,
   isGasLimitAvailable,
+  isGasLimitEditable,
   setGasLimit,
   setActiveModal,
   handleCloseModals,
@@ -54,6 +55,7 @@ const AdvancedEIP1559ModalContent = ({
   transactionMeta: TransactionMeta;
   gasLimit: Hex | undefined;
   isGasLimitAvailable: boolean;
+  isGasLimitEditable: boolean;
   setGasLimit: (gasLimit: Hex) => void;
 }) => {
   const t = useI18nContext();
@@ -83,6 +85,16 @@ const AdvancedEIP1559ModalContent = ({
   const hasError = Boolean(
     errors.gas || errors.maxFeePerGas || errors.maxPriorityFeePerGas,
   );
+  const isGasEstimationFailed = Boolean(
+    transactionMeta.simulationFails &&
+    transactionMeta.userFeeLevel !== UserFeeLevel.CUSTOM,
+  );
+  let gasLimitHelpText: string | undefined;
+  if (!isGasLimitAvailable) {
+    gasLimitHelpText = isGasEstimationFailed
+      ? t('alertMessageGasEstimateFailed')
+      : t('gasLimitEditingUnavailable');
+  }
 
   const handleSaveClick = useCallback(async () => {
     if (!transactionMeta?.id || !isGasLimitAvailable || !gasLimit) {
@@ -175,10 +187,8 @@ const AdvancedEIP1559ModalContent = ({
           <Box marginBottom={4} />
           <GasInput
             gasLimit={gasLimit}
-            helpText={
-              isGasLimitAvailable ? undefined : t('gasLimitEditingUnavailable')
-            }
-            isDisabled={!isGasLimitAvailable}
+            helpText={gasLimitHelpText}
+            isDisabled={!isGasLimitEditable}
             onChange={setGasLimit}
             onErrorChange={handleGasError}
           />
@@ -221,7 +231,7 @@ export const AdvancedEIP1559Modal = (props: AdvancedEIP1559ModalProps) => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const transactionKey = getAdvancedGasLimitTransactionKey(transactionMeta);
-  const { gasLimit, isGasLimitAvailable, setGasLimit } =
+  const { gasLimit, isGasLimitAvailable, isGasLimitEditable, setGasLimit } =
     useAdvancedGasLimit(transactionMeta);
 
   return (
@@ -230,6 +240,7 @@ export const AdvancedEIP1559Modal = (props: AdvancedEIP1559ModalProps) => {
       transactionMeta={transactionMeta}
       gasLimit={gasLimit}
       isGasLimitAvailable={isGasLimitAvailable}
+      isGasLimitEditable={isGasLimitEditable}
       setGasLimit={setGasLimit}
       {...props}
     />

@@ -1,5 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  UserFeeLevel,
+} from '@metamask/transaction-controller';
 
 import { useAdvancedGasLimit } from './useAdvancedGasLimit';
 
@@ -26,6 +29,7 @@ describe('useAdvancedGasLimit', () => {
 
     expect(result.current.gasLimit).toBe('0x7530');
     expect(result.current.isGasLimitAvailable).toBe(true);
+    expect(result.current.isGasLimitEditable).toBe(true);
   });
 
   it('keeps a user-edited gas limit for the current transaction', () => {
@@ -52,9 +56,10 @@ describe('useAdvancedGasLimit', () => {
 
     expect(result.current.gasLimit).toBeUndefined();
     expect(result.current.isGasLimitAvailable).toBe(false);
+    expect(result.current.isGasLimitEditable).toBe(false);
   });
 
-  it('invalidates the gas limit after estimation fails', () => {
+  it('allows manual gas limit editing after estimation fails', () => {
     const transactionMeta = createTransactionMeta({
       simulationFails: { debug: {}, reason: 'execution reverted' },
     });
@@ -62,6 +67,24 @@ describe('useAdvancedGasLimit', () => {
 
     expect(result.current.gasLimit).toBeUndefined();
     expect(result.current.isGasLimitAvailable).toBe(false);
+    expect(result.current.isGasLimitEditable).toBe(true);
+
+    act(() => result.current.setGasLimit('0x9c40'));
+
+    expect(result.current.gasLimit).toBe('0x9c40');
+    expect(result.current.isGasLimitAvailable).toBe(true);
+  });
+
+  it('uses custom gas despite a previous estimation failure', () => {
+    const transactionMeta = createTransactionMeta({
+      simulationFails: { debug: {}, reason: 'execution reverted' },
+      userFeeLevel: UserFeeLevel.CUSTOM,
+    });
+    const { result } = renderHook(() => useAdvancedGasLimit(transactionMeta));
+
+    expect(result.current.gasLimit).toBe('0x7530');
+    expect(result.current.isGasLimitAvailable).toBe(true);
+    expect(result.current.isGasLimitEditable).toBe(true);
   });
 
   it('does not reuse a failed estimate when the failure clears', () => {
@@ -80,6 +103,7 @@ describe('useAdvancedGasLimit', () => {
 
     expect(result.current.gasLimit).toBeUndefined();
     expect(result.current.isGasLimitAvailable).toBe(false);
+    expect(result.current.isGasLimitEditable).toBe(false);
   });
 
   it('keeps a user edit after a new estimate arrives', () => {

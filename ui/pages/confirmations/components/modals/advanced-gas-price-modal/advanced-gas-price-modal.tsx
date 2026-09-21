@@ -46,6 +46,7 @@ const AdvancedGasPriceModalContent = ({
   transactionMeta,
   gasLimit,
   isGasLimitAvailable,
+  isGasLimitEditable,
   setGasLimit,
   setActiveModal,
   handleCloseModals,
@@ -53,6 +54,7 @@ const AdvancedGasPriceModalContent = ({
   transactionMeta: TransactionMeta;
   gasLimit: Hex | undefined;
   isGasLimitAvailable: boolean;
+  isGasLimitEditable: boolean;
   setGasLimit: (gasLimit: Hex) => void;
 }) => {
   const t = useI18nContext();
@@ -73,6 +75,16 @@ const AdvancedGasPriceModalContent = ({
     gasPrice: undefined,
   });
   const hasError = Boolean(errors.gas || errors.gasPrice);
+  const isGasEstimationFailed = Boolean(
+    transactionMeta.simulationFails &&
+    transactionMeta.userFeeLevel !== UserFeeLevel.CUSTOM,
+  );
+  let gasLimitHelpText: string | undefined;
+  if (!isGasLimitAvailable) {
+    gasLimitHelpText = isGasEstimationFailed
+      ? t('alertMessageGasEstimateFailed')
+      : t('gasLimitEditingUnavailable');
+  }
 
   const handleSaveClick = useCallback(async () => {
     if (!transactionMeta?.id || !isGasLimitAvailable || !gasLimit) {
@@ -143,10 +155,8 @@ const AdvancedGasPriceModalContent = ({
           <Box marginBottom={4} />
           <GasInput
             gasLimit={gasLimit}
-            helpText={
-              isGasLimitAvailable ? undefined : t('gasLimitEditingUnavailable')
-            }
-            isDisabled={!isGasLimitAvailable}
+            helpText={gasLimitHelpText}
+            isDisabled={!isGasLimitEditable}
             onChange={setGasLimit}
             onErrorChange={handleGasError}
           />
@@ -189,7 +199,7 @@ export const AdvancedGasPriceModal = (props: AdvancedGasPriceModalProps) => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const transactionKey = getAdvancedGasLimitTransactionKey(transactionMeta);
-  const { gasLimit, isGasLimitAvailable, setGasLimit } =
+  const { gasLimit, isGasLimitAvailable, isGasLimitEditable, setGasLimit } =
     useAdvancedGasLimit(transactionMeta);
 
   return (
@@ -198,6 +208,7 @@ export const AdvancedGasPriceModal = (props: AdvancedGasPriceModalProps) => {
       transactionMeta={transactionMeta}
       gasLimit={gasLimit}
       isGasLimitAvailable={isGasLimitAvailable}
+      isGasLimitEditable={isGasLimitEditable}
       setGasLimit={setGasLimit}
       {...props}
     />
