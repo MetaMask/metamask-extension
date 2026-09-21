@@ -21,6 +21,19 @@ export async function buildPowerUserFixture(
 export async function setupPowerUserBenchmarkMocks(
   mockServer: Mockttp,
 ): Promise<void> {
+  // The live registry now serves non-EVM chains. This build converts every
+  // entry to hex and captures an exception on `solana:`, which both fails the
+  // iteration on an unexpected error and can stall the controllers on boot.
+  await mockServer
+    .forGet(
+      /^https:\/\/client-config\.[a-z-]*api\.cx\.metamask\.io\/v1\/config\/networks/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { data: { version: '0.0.0', timestamp: 0, chains: [] } },
+    }));
+
   await mockNotificationServices(mockServer);
   await getTestSpecificMock()(mockServer);
 }
