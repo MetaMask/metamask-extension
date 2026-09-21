@@ -64,6 +64,10 @@ export async function run(): Promise<BenchmarkRunResult> {
         testSpecificMock: setupPowerUserBenchmarkMocks,
         title: testTitle,
         ...powerUserManifestFlags,
+        // This arm renders a 1000-token list against live token and price APIs,
+        // so failed or throttled requests log console errors that fail the run
+        // after the measured interaction has already completed.
+        ignoredConsoleErrors: ['ignore-all'],
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {

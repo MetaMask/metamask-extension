@@ -698,7 +698,14 @@ async function withFixtures(options, testSuite) {
          * forcing background exceptions to be captured
          * proving more helpful context
          */
-        await driver.navigate(PAGES.BACKGROUND);
+        try {
+          await driver.navigate(PAGES.BACKGROUND);
+        } catch (navigateError) {
+          // This navigate is only for diagnostics, and it waits for
+          // `.controller-loaded`, which the MV3 background page never sets. Let
+          // it fail quietly so the original error is the one reported.
+          console.error(navigateError);
+        }
       }
     }
 
