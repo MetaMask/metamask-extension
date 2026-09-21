@@ -1,7 +1,5 @@
 import { memoize } from 'lodash';
 
-import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../../../shared/lib/deep-links/constants';
-
 import { MUSD_ROUTE_DEFINITIONS } from '../../pages/musd/constants/routes';
 
 type AppRoute = {
