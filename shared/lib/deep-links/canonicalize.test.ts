@@ -28,6 +28,14 @@ describe('canonicalize', () => {
     expect(canonicalize(url)).toBe('https://link.metamask.io/path?a=2&b=1');
   });
 
+  it('does not normalize a non-HTTPS canonical deep-link origin', () => {
+    const url = new URL(
+      `http://link.metamask.io:8080/path?a=2&${SIG_PARAM}=abc&b=1`,
+    );
+
+    expect(canonicalize(url)).toBe('http://link.metamask.io:8080/path?a=2&b=1');
+  });
+
   it('does not normalize lookalike alternate deep-link hosts', () => {
     const url = new URL(
       `https://link.metamask.com.evil.tld/path?a=2&${SIG_PARAM}=abc&b=1`,
