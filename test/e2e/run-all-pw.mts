@@ -23,9 +23,10 @@ import {
  * invocation, which runs the spec up to N+1 times and stops at the first
  * failure. This runner maps the same semantics onto native Playwright flags:
  * each quality-gate spec is run in its own Playwright invocation with
- * `--repeat-each` and `--retries=0` (no retry masking). Running specs in
- * separate invocations ensures a failure in one spec does not prevent the
- * remaining specs from running (matching Selenium's per-spec isolation).
+ * `--repeat-each`, `--retries=0` (no retry masking), and `--max-failures=1`
+ * (stop on first failure, matching Selenium's `--stop-after-one-failure`).
+ * Running specs in separate invocations ensures a failure in one spec does
+ * not prevent the remaining specs from running (Selenium's per-spec isolation).
  *
  * Splitting/quality-gate/re-run logic only runs under GitHub Actions (guarded
  * by `process.env.GITHUB_ACTION`, matching `run-all.mts`). Locally the script
@@ -214,7 +215,11 @@ async function main(): Promise<void> {
       await runPlaywright({
         specs: [spec],
         project,
-        extraArgs: [`--repeat-each=${runCount}`, '--retries=0'],
+        extraArgs: [
+          `--repeat-each=${runCount}`,
+          '--retries=0',
+          '--max-failures=1',
+        ],
         outputFile: `test/test-results/e2e/junit-pw-${shardLabel}-qg.xml`,
       });
     } catch {
