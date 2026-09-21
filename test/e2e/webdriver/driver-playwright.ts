@@ -322,6 +322,40 @@ export class PlaywrightDriver {
     return this.registerPage(page);
   }
 
+  private openWindowHandles(): string[] {
+    return [...this.pages.entries()]
+      .filter(([, page]) => !page.isClosed())
+      .map(([handle]) => handle);
+  }
+
+  private async switchToWindowMatching(
+    description: string,
+    matches: (page: Page) => Promise<boolean>,
+    delayStep: number,
+    timeout: number,
+  ): Promise<void> {
+    const deadline = Date.now() + timeout;
+    while (Date.now() <= deadline) {
+      await this.getAllWindowHandles();
+      for (const page of this.pages.values()) {
+        if (page.isClosed()) {
+          continue;
+        }
+        try {
+          if (await matches(page)) {
+            this.currentPage = page;
+            await page.bringToFront();
+            return;
+          }
+        } catch {
+          // Window may still be loading or may have closed.
+        }
+      }
+      await this.delay(delayStep);
+    }
+    throw new Error(`No window with ${description}`);
+  }
+
   private get page(): Page {
     if (!this.currentPage || this.currentPage.isClosed()) {
       const next = this.pages.values().next();
@@ -886,6 +920,9 @@ export class PlaywrightDriver {
   // -- Navigation -----------------------------------------------------------
 
   async navigate(page: string = PAGES.HOME): Promise<void> {
+    if (page === PAGES.BACKGROUND && this.browser === 'chrome') {
+      return;
+    }
     const target =
       this.browser === 'firefox' && page === PAGES.SIDEPANEL
         ? PAGES.HOME
@@ -977,34 +1014,52 @@ export class PlaywrightDriver {
   }
 
   async switchToWindowWithUrl(
-    _url: string,
+    url: string,
     _initialHandles?: string[],
-    _delayStep = 1000,
-    _timeout = this.timeout,
+    delayStep = 1000,
+    timeout = this.timeout,
   ): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.switchToWindowWithUrl is not yet implemented.',
+    const expected = new URL(url).toString();
+    await this.switchToWindowMatching(
+      `url: ${expected}`,
+      async (page) => page.url() === expected,
+      delayStep,
+      timeout,
     );
   }
 
   async switchToWindowWithTitle(
-    _title: string,
+    title: string,
     _initialHandles?: string[],
-    _delayStep = 1000,
-    _timeout = this.timeout,
+    delayStep = 1000,
+    timeout = this.timeout,
   ): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.switchToWindowWithTitle is not yet implemented.',
+    await this.switchToWindowMatching(
+      `title: ${title}`,
+      async (page) => (await page.title()) === title,
+      delayStep,
+      timeout,
     );
   }
 
   async waitUntilXWindowHandles(
-    _expected: number,
-    _delayStep = 1000,
-    _timeout = this.timeout,
+    expected: number,
+    delayStep = 1000,
+    timeout = this.timeout,
   ): Promise<string[]> {
+    const x = this.browser === 'chrome' ? expected + 1 : expected;
+    const deadline = Date.now() + timeout;
+    let windowHandles: string[] = [];
+    while (Date.now() <= deadline) {
+      await this.getAllWindowHandles();
+      windowHandles = this.openWindowHandles();
+      if (windowHandles.length === x) {
+        return windowHandles;
+      }
+      await this.delay(delayStep);
+    }
     throw new Error(
-      'PlaywrightDriver.waitUntilXWindowHandles is not yet implemented.',
+      `waitUntilXWindowHandles timed out polling window handles. Expected: ${x}, Actual: ${windowHandles.length}`,
     );
   }
 

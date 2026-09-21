@@ -10,6 +10,7 @@ import { firefox } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
 import { isHeadless } from '../../../helpers/env';
 import { getOrBuildXpi } from '../../helpers/xpi';
+import { installPlaywrightClockBuiltins } from './pw-clock-init-script';
 
 const METAMASK_GECKO_ID = 'webextension@metamask.io';
 const DEFAULT_FIREFOX_RDP_PORT = 6023;
@@ -517,6 +518,8 @@ export async function launchMetaMaskFirefoxExtension(
     },
     ignoreHTTPSErrors: true,
   });
+
+  await context.addInitScript(installPlaywrightClockBuiltins);
 
   try {
     const xpiPath = await xpiPromise;

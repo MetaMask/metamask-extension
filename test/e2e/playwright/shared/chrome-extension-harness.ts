@@ -6,6 +6,7 @@ import path from 'node:path';
 import { chromium } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
 import { isHeadless } from '../../../helpers/env';
+import { installPlaywrightClockBuiltins } from './pw-clock-init-script';
 
 export type ChromeHarnessOptions = {
   extensionDirectory?: string;
@@ -127,6 +128,8 @@ export async function launchMetaMaskChromeExtension(
     viewport: null,
     ignoreHTTPSErrors: true,
   });
+
+  await context.addInitScript(installPlaywrightClockBuiltins);
 
   // Wait for the MV3 service worker before returning so the first
   // `chrome-extension://<id>/...` navigation doesn't race the worker's
