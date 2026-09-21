@@ -185,10 +185,20 @@ function buildUnavailableComparisonContent(
   ].join('\n');
 }
 
-function buildCollapsibleSection(summary: string, body: string): string {
+function buildCollapsibleSection({
+  summary,
+  body,
+  highlightSummary = false,
+}: {
+  summary: string;
+  body: string;
+  highlightSummary?: boolean;
+}): string {
+  const summaryContent = highlightSummary ? `<strong>${summary}</strong>` : summary;
+
   return [
     '<details>',
-    `<summary><strong>${summary}</strong></summary>`,
+    `<summary>${summaryContent}</summary>`,
     '',
     '<br>',
     '',
@@ -232,35 +242,35 @@ function buildBundleSizeSection({
   baselineCommitHashes: string[];
 }): string {
   if (!currentSummary) {
-    return buildCollapsibleSection(
-      'Bundle Size Diffs',
-      'Bundle size data unavailable.',
-    );
+    return buildCollapsibleSection({
+      summary: 'Bundle Size Diffs',
+      body: 'Bundle size data unavailable.',
+    });
   }
 
   const currentSizes = getBundlePartSizes(currentSummary);
   const currentZipSize = currentSummary.zip ?? 0;
 
   if (baselineCommitHashes.length === 0) {
-    return buildCollapsibleSection(
-      'Bundle Size Diffs',
-      buildUnavailableComparisonContent(
+    return buildCollapsibleSection({
+      summary: 'Bundle Size Diffs',
+      body: buildUnavailableComparisonContent(
         currentSizes,
         currentZipSize,
         'No bundle-size baseline commit was available for this build, so diff values are omitted.',
       ),
-    );
+    });
   }
 
   if (!storedBundleSizeData) {
-    return buildCollapsibleSection(
-      'Bundle Size Diffs',
-      buildUnavailableComparisonContent(
+    return buildCollapsibleSection({
+      summary: 'Bundle Size Diffs',
+      body: buildUnavailableComparisonContent(
         currentSizes,
         currentZipSize,
         'Bundle-size history data could not be loaded, so diff values are omitted.',
       ),
-    );
+    });
   }
 
   const baselineSummary = getBaselineSummary(
@@ -269,14 +279,14 @@ function buildBundleSizeSection({
   );
 
   if (!baselineSummary) {
-    return buildCollapsibleSection(
-      'Bundle Size Diffs',
-      buildUnavailableComparisonContent(
+    return buildCollapsibleSection({
+      summary: 'Bundle Size Diffs',
+      body: buildUnavailableComparisonContent(
         currentSizes,
         currentZipSize,
         'No matching bundle-size baseline was found in the history data, so diff values are omitted.',
       ),
-    );
+    });
   }
 
   const sizeDiffRows = bundleParts.map((part) =>
@@ -332,10 +342,11 @@ function buildBundleSizeSection({
     .filter(Boolean)
     .join(' ');
 
-  return buildCollapsibleSection(
-    sizeDiffTitle,
-    [bundleSizeTableHeader, ...sizeDiffRows].join('\n'),
-  );
+  return buildCollapsibleSection({
+    summary: sizeDiffTitle,
+    body: [bundleSizeTableHeader, ...sizeDiffRows].join('\n'),
+    highlightSummary: Boolean(sizeDiffWarning),
+  });
 }
 
 /**
