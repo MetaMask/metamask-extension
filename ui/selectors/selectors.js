@@ -2995,6 +2995,27 @@ export function getPasskeyDerivationMethod(state) {
 }
 
 /**
+ * Checks if the enrolled passkey derives the vault wrapping key from its
+ * legacy user handle.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyUserHandleBased(state) {
+  return getPasskeyDerivationMethod(state) === 'userHandle';
+}
+
+/**
+ * Checks if the enrolled passkey derives the vault wrapping key using PRF.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyPRFBased(state) {
+  return getPasskeyDerivationMethod(state) === 'prf';
+}
+
+/**
  * Passkey authenticator AAGUID from the enrolled credential.
  *
  * @param {object} state - Redux state

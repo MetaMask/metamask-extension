@@ -40,9 +40,18 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
+  getIsPasskeyUserHandleBased,
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
+
+export type PasskeyUnlockSuccessContext = {
+  /**
+   * Whether the unlocked passkey uses the legacy userHandle derivation and
+   * should be offered migration.
+   */
+  isPasskeyMigrationEligible: boolean;
+};
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
@@ -50,7 +59,7 @@ export type UnlockPasskeySectionProps = {
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
   isPasswordInProgress: boolean;
-  onUnlockSuccess: () => Promise<void>;
+  onUnlockSuccess: (context: PasskeyUnlockSuccessContext) => Promise<void>;
   onUsePassword: () => void;
 };
 
@@ -68,6 +77,7 @@ export const UnlockPasskeySection = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const unlockWithPasskey = usePasskeyUnlock();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+  const isPasskeyMigrationEligible = useSelector(getIsPasskeyUserHandleBased);
   const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
@@ -126,7 +136,7 @@ export const UnlockPasskeySection = ({
         );
 
         await unlockWithPasskey();
-        await onUnlockSuccess();
+        await onUnlockSuccess({ isPasskeyMigrationEligible });
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.AppUnlocked)
@@ -212,6 +222,7 @@ export const UnlockPasskeySection = ({
       onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,
+      isPasskeyMigrationEligible,
       passkeyAuthenticatorId,
       t,
       trackEvent,

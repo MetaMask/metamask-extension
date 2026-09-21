@@ -66,7 +66,11 @@ import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
 import { getCaretCoordinates } from './unlock-page.util';
-import { UnlockPasskeyIconButton, UnlockPasskeySection } from './passkey';
+import {
+  UnlockPasskeyIconButton,
+  UnlockPasskeySection,
+  type PasskeyUnlockSuccessContext,
+} from './passkey';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
@@ -77,7 +81,7 @@ type UnlockPageProps = UnlockPageContext & {
   isUnlocked: boolean;
   isOnboardingCompleted: boolean;
   onSubmit: (password: string) => Promise<void>;
-  navigateAfterUnlock: () => Promise<void>;
+  navigateAfterUnlock: (context?: PasskeyUnlockSuccessContext) => Promise<void>;
   isPasskeyActive: boolean;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
