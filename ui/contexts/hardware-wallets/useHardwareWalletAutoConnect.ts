@@ -17,7 +17,6 @@ import {
   type HardwareWalletRefs,
 } from './HardwareWalletStateManager';
 import { ConnectionState } from './connectionState';
-import { isHardwareWalletRoute } from './utils';
 
 type UseHardwareWalletAutoConnectParams = {
   state: HardwareWalletState;
@@ -48,7 +47,6 @@ export const useHardwareWalletAutoConnect = ({
 }: UseHardwareWalletAutoConnectParams) => {
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
   const location = useLocation();
-  const isOnAutoConnectRoute = isHardwareWalletRoute(location.pathname);
   const isOnRepairRoute = location.pathname === HARDWARE_WALLET_REPAIR_ROUTE;
 
   const {
@@ -126,13 +124,14 @@ export const useHardwareWalletAutoConnect = ({
             if (!abortSignal.aborted && adapterRef.current?.isConnected()) {
               updateConnectionState(ConnectionState.connected());
               setAutoConnected(effectAccountAddress);
-            } else if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+            } else if (!abortSignal.aborted) {
+              // connect() resolves even on failure (it records the error
+              // internally); reset so that error can't trigger the
+              // blocking modal.
               updateConnectionState(ConnectionState.disconnected());
             }
           } catch {
-            // Background auto-connect is best-effort; a failed probe must never
-            // surface as a blocking error modal on hardware-wallet routes. Reset
-            // to disconnected so the CTA ("Connect Ledger") handles not-ready state.
+            // Backstop if connect() rejects.
             if (!abortSignal.aborted) {
               updateConnectionState(ConnectionState.disconnected());
             }
@@ -236,7 +235,6 @@ export const useHardwareWalletAutoConnect = ({
       isWebUsbAvailable,
       handleDisconnect,
       isOnRepairRoute,
-      isOnAutoConnectRoute,
       setHardwareConnectionPermissionState,
       updateConnectionState,
       setAutoConnected,
@@ -294,13 +292,14 @@ export const useHardwareWalletAutoConnect = ({
               if (!abortSignal.aborted && adapterRef.current?.isConnected()) {
                 updateConnectionState(ConnectionState.connected());
                 setAutoConnected(effectAccountAddress ?? null);
-              } else if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+              } else if (!abortSignal.aborted) {
+                // connect() resolves even on failure (it records the error
+                // internally); reset so that error can't trigger the
+                // blocking modal.
                 updateConnectionState(ConnectionState.disconnected());
               }
             } catch {
-              // Background auto-connect is best-effort; a failed probe must never
-              // surface as a blocking error modal on hardware-wallet routes. Reset
-              // to disconnected so the CTA ("Connect Ledger") handles not-ready state.
+              // Backstop if connect() rejects.
               if (!abortSignal.aborted) {
                 updateConnectionState(ConnectionState.disconnected());
               }
@@ -326,7 +325,6 @@ export const useHardwareWalletAutoConnect = ({
       accountAddress,
       walletType,
       hardwareConnectionPermissionState,
-      isOnAutoConnectRoute,
       resetAutoConnectState,
       setAutoConnected,
       updateConnectionState,
