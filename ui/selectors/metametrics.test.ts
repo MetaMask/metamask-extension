@@ -21,7 +21,7 @@ describe('MetaMetrics selectors', () => {
     );
   });
 
-  it('returns the user\'s marketing consent preference based on their decision state', () => {
+  it("returns the user's marketing consent preference based on their decision state", () => {
     // Returns null when the user has not made a decision
     expect(
       getDataCollectionForMarketing(
