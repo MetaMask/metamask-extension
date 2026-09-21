@@ -2408,7 +2408,6 @@
     },
     "@metamask/notification-services-controller": {
       "globals": {
-        "Intl.NumberFormat": true,
         "addEventListener": true,
         "console.error": true,
         "fetch": true,
@@ -2421,7 +2420,6 @@
         "@metamask/base-controller": true,
         "@metamask/notification-services-controller>@metamask/controller-utils": true,
         "@metamask/notification-services-controller>@metamask/utils": true,
-        "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
         "@metamask/assets-controller>lodash-es": true,
         "loglevel": true,
@@ -3317,6 +3315,20 @@
         "lodash": true
       }
     },
+    "@metamask/bridge-controller>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
     "@metamask/notification-services-controller>@metamask/controller-utils>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -3335,6 +3347,20 @@
       "packages": {
         "nock>debug": true,
         "@metamask/utils>pony-cause": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/keyring-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
       }
     },
     "@metamask/profile-sync-controller>@metamask/keyring-controller>@metamask/utils": {
@@ -3361,6 +3387,13 @@
         "@metamask/superstruct": true,
         "@scure/base": true,
         "buffer": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
       }
     },
     "@metamask/notification-services-controller>@metamask/utils": {
