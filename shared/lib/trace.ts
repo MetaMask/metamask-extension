@@ -1,5 +1,5 @@
 import type * as Sentry from '@sentry/browser';
-import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
+import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/core';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
   TraceCallback as ControllerTraceCallback,

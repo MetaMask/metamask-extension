@@ -15,7 +15,7 @@ import React, {
 } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { Span } from '@sentry/types';
+import type { Span } from '@sentry/core';
 import { omit } from 'lodash';
 
 import { captureException, captureMessage } from '../../shared/lib/sentry';
