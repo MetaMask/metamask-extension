@@ -67,7 +67,7 @@ export function useIntersectionObserver({
     ? threshold.join(',')
     : String(threshold);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     callbackRef.current = onChange;
   }, [onChange]);
 

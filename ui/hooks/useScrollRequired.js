@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { debounce } from 'lodash';
 import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
@@ -66,7 +72,7 @@ export const useScrollRequired = (
 
   const updateRef = useRef(update);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     updateRef.current = update;
   }, [update]);
 
@@ -79,13 +85,22 @@ export const useScrollRequired = (
     }
   }, []);
 
-  const debouncedUpdateRef = useRef(null);
-  if (debouncedUpdateRef.current === null) {
-    debouncedUpdateRef.current = debounce(() => {
+  const debouncedFnRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const debounced = debounce(() => {
       updateRef.current();
     }, 25);
-  }
-  const onScroll = debouncedUpdateRef.current;
+    debouncedFnRef.current = debounced;
+    return () => {
+      debounced.cancel();
+      debouncedFnRef.current = null;
+    };
+  }, []);
+
+  const onScroll = useCallback(() => {
+    debouncedFnRef.current?.();
+  }, []);
 
   useEffect(() => {
     if (!scrollElement) {
@@ -112,13 +127,6 @@ export const useScrollRequired = (
       });
     }
   }, [scrollElement]);
-
-  useEffect(
-    () => () => {
-      debouncedUpdateRef.current?.cancel();
-    },
-    [],
-  );
 
   return {
     isScrollable: isScrollableState,

@@ -172,6 +172,35 @@ describe('useIntersectionObserver', () => {
     expect(instances[0].options?.root).toBe(scrollRoot);
   });
 
+  it('invokes the latest onChange after the callback changes', () => {
+    const instances = mockIntersectionObserver();
+    const first = jest.fn();
+    const second = jest.fn();
+    const element = document.createElement('div');
+
+    const { result, rerender } = renderHook(
+      ({ onChange }: { onChange: typeof first }) =>
+        useIntersectionObserver({ onChange }),
+      { initialProps: { onChange: first } },
+    );
+
+    act(() => {
+      result.current.ref(element);
+    });
+    rerender({ onChange: second });
+    emit(instances[0], {
+      isIntersecting: true,
+      intersectionRatio: 1,
+      target: element,
+    });
+
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledWith(
+      true,
+      expect.objectContaining({ target: element }),
+    );
+  });
+
   it('updates state and calls onChange when an entry intersects', () => {
     const instances = mockIntersectionObserver();
     const onChange = jest.fn();

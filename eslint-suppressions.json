@@ -429,9 +429,6 @@
     }
   },
   "ui/hooks/useScrollRequired.js": {
-    "react-hooks/refs": {
-      "count": 3
-    },
     "react-hooks/set-state-in-effect": {
       "count": 2
     }

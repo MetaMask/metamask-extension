@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import stringify from 'fast-json-stable-stringify';
 import type { Json } from '@metamask/utils';
@@ -35,7 +35,7 @@ const useMultiPolling = <PollingInput extends Json>(
   // Keep ref to latest stop function for use in unmount cleanup
   const stopPollingRef = useRef(usePollingOptions.stopPollingByPollingToken);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     stopPollingRef.current = usePollingOptions.stopPollingByPollingToken;
   }, [usePollingOptions.stopPollingByPollingToken]);
 
@@ -59,7 +59,7 @@ const useMultiPolling = <PollingInput extends Json>(
   // Track current `inputKeyMap` for race condition handling in async callbacks
   const inputKeyMapRef = useRef(inputKeyMap);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     inputKeyMapRef.current = inputKeyMap;
   }, [inputKeyMap]);
 

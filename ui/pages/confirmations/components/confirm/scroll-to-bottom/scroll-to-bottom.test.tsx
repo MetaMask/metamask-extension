@@ -6,6 +6,10 @@ import {
   getMockPersonalSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import {
+  ConfirmContext,
+  type ConfirmContextType,
+} from '../../../context/confirm';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';
@@ -37,6 +41,27 @@ const mockUseScrollRequiredResult: MockScrollRequiredResult = {
   scrollElement: { scrollTo: mockScrollTo },
   ref: jest.fn(),
 };
+
+function confirmContextWithId(id: string): ConfirmContextType {
+  return {
+    currentConfirmation: {
+      id,
+    } as ConfirmContextType['currentConfirmation'],
+    isScrollToBottomCompleted: true,
+    setIsScrollToBottomCompleted: jest.fn(),
+    goBackTo: undefined,
+    suppressAutoExit: () => undefined,
+  };
+}
+
+function renderScrollToBottom(confirmationId: string) {
+  return renderWithConfirmContextProvider(
+    <ConfirmContext.Provider value={confirmContextWithId(confirmationId)}>
+      <ScrollToBottom>foobar</ScrollToBottom>
+    </ConfirmContext.Provider>,
+    mockStore,
+  );
+}
 
 jest.mock('../../../../../hooks/useScrollRequired', () => ({
   useScrollRequired: () => mockUseScrollRequiredResult,
@@ -103,9 +128,15 @@ describe('ScrollToBottom', () => {
     it('scrolls to the top when the confirmation changes', () => {
       mockScrollTo.mockClear();
 
-      renderWithConfirmContextProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
-        mockStore,
+      const { rerender } = renderScrollToBottom('confirmation-1');
+
+      expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
+      mockScrollTo.mockClear();
+
+      rerender(
+        <ConfirmContext.Provider value={confirmContextWithId('confirmation-2')}>
+          <ScrollToBottom>foobar</ScrollToBottom>
+        </ConfirmContext.Provider>,
       );
 
       expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
@@ -130,9 +161,14 @@ describe('ScrollToBottom', () => {
     });
 
     it('resets setHasScrolledToBottom to false when the confirmation changes', () => {
-      renderWithConfirmContextProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
-        mockStore,
+      const { rerender } = renderScrollToBottom('confirmation-1');
+
+      mockSetHasScrolledToBottom.mockClear();
+
+      rerender(
+        <ConfirmContext.Provider value={confirmContextWithId('confirmation-2')}>
+          <ScrollToBottom>foobar</ScrollToBottom>
+        </ConfirmContext.Provider>,
       );
 
       expect(mockSetHasScrolledToBottom).toHaveBeenCalledWith(false);
