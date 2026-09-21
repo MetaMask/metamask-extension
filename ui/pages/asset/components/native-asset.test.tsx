@@ -1,6 +1,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import type { Hex } from '@metamask/utils';
+import type { NetworkConfiguration } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -19,7 +21,7 @@ const mockSelectNetworkConfigurationByChainId = jest.mocked(
 const mockOpenTab = jest.fn();
 global.platform = {
   openTab: mockOpenTab,
-};
+} as unknown as typeof global.platform;
 
 jest.mock('../../../hooks/useAnalytics', () => ({
   useAnalytics: () => ({
@@ -46,29 +48,38 @@ jest.mock('./asset-page', () => ({
 }));
 
 const MAINNET_CHAIN_ID = CHAIN_IDS.MAINNET;
-const CUSTOM_CHAIN_ID = '0x539' as const;
+const CUSTOM_CHAIN_ID = '0x539' as Hex;
 
 const ethToken = {
   symbol: 'ETH',
   decimals: 18,
+  address: '0x0000000000000000000000000000000000000000',
 };
 
 function createNetworkConfig({
   chainId,
   blockExplorerUrl,
 }: {
-  chainId: string;
+  chainId: Hex;
   blockExplorerUrl?: string;
-}) {
+}): NetworkConfiguration {
   return {
     chainId,
     name: chainId === MAINNET_CHAIN_ID ? 'Ethereum Mainnet' : 'Custom Network',
     nativeCurrency: chainId === MAINNET_CHAIN_ID ? 'ETH' : 'TEST',
-    rpcEndpoints: [{ networkClientId: `network-${chainId}`, type: 'custom' }],
+    rpcEndpoints: [
+      {
+        networkClientId: `network-${chainId}`,
+        type: 'custom',
+        url: `https://rpc.example.com/${chainId}`,
+      },
+    ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: blockExplorerUrl ? [blockExplorerUrl] : [],
+    blockExplorerUrls: blockExplorerUrl
+      ? ([blockExplorerUrl] as `https://${string}`[])
+      : [],
     defaultBlockExplorerUrlIndex: blockExplorerUrl ? 0 : undefined,
-  };
+  } as NetworkConfiguration;
 }
 
 describe('NativeAsset', () => {
