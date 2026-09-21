@@ -206,7 +206,7 @@ async function fetchOptionalBundleSizeSummary(
   try {
     return (await fetchJson(url, label)) as BundleSizeSummary;
   } catch (error) {
-    console.log(`Skipping ${label}: ${String(error)}`);
+    console.log(`Skipping ${label}:`, error);
     return null;
   }
 }
@@ -217,7 +217,7 @@ async function fetchOptionalStoredBundleSizeData(
   try {
     return (await fetchJson(url, 'devBundleSizeStats')) as StoredBundleSizeData;
   } catch (error) {
-    console.log(`Skipping devBundleSizeStats: ${String(error)}`);
+    console.log('Skipping devBundleSizeStats:', error);
     return null;
   }
 }
@@ -328,7 +328,9 @@ function buildBundleSizeSection({
     sizeDiffWarning = '[🚀 Bundle size reduced!]';
   }
 
-  const sizeDiffTitle = `Bundle Size Diffs${sizeDiffWarning ? ` ${sizeDiffWarning}` : ''}`;
+  const sizeDiffTitle = ['Bundle Size Diffs', sizeDiffWarning]
+    .filter(Boolean)
+    .join(' ');
 
   return buildCollapsibleSection(
     sizeDiffTitle,

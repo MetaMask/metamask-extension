@@ -316,31 +316,31 @@ describe('buildBundleSizeDiffSection', () => {
   });
 
   it('renders bundle size unavailable when the current summary fetch fails', async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: false,
-        statusText: 'Not Found',
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(bundleSizeData),
-      } as unknown as Response);
+    const error = new Error('bundle size stats unavailable');
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    mockFetch.mockRejectedValueOnce(error).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(bundleSizeData),
+    } as unknown as Response);
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
     expect(result).toContain('Bundle size data unavailable.');
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      'Skipping bundleSizeStats:',
+      error,
+    );
   });
 
   it('renders current sizes when the stored baseline fetch fails', async () => {
+    const error = new Error('bundle size history unavailable');
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
     mockFetch
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(webpackSummary),
       } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: false,
-        statusText: 'Not Found',
-      } as Response);
+      .mockRejectedValueOnce(error);
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
@@ -354,6 +354,10 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('|  | content scripts | 60 Bytes | n/a | n/a |');
     expect(result).toContain('|  | zip | 4.1 KiB | n/a | n/a |');
     expect(result).not.toContain('Bundle size data unavailable.');
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      'Skipping devBundleSizeStats:',
+      error,
+    );
   });
 
   it('shows no warning when tracked bundle diffs are within threshold', async () => {
