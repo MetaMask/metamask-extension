@@ -17,6 +17,7 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { TxToastNotification } from 'test/e2e/page-objects/components/tx-toast-notification';
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
@@ -126,6 +127,8 @@ describe('Send - Hex Address Normalization', function () {
           await homePage.goToActivityList();
           const activityTab = new ActivityTab(driver);
           await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+          const txToastNotification = new TxToastNotification(driver);
+          await txToastNotification.closeToastNotification();
           await activityTab.clickConfirmedTransaction();
           const transactionDetailsPage = new TransactionDetailsPage(driver);
 
