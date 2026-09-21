@@ -10,7 +10,6 @@ import {
 } from '../../selectors/rampsController';
 import { setRampsSelectedPaymentMethod } from '../../store/controller-actions/ramps-controller';
 import { rampsQueries } from './queries';
-import { normalizeAssetIdForApi } from './utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from './utils/parseUserFacingError';
 
 export type RampsQueryStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -44,7 +43,9 @@ export function useRampsPaymentMethods(): UseRampsPaymentMethodsResult {
     ...rampsQueries.paymentMethods.options({
       regionCode: userRegion?.regionCode ?? '',
       fiat: userRegion?.country?.currency ?? '',
-      assetId: normalizeAssetIdForApi(selectedToken?.assetId),
+      // Send the catalog's assetId verbatim: downstream asset resolution is
+      // case-sensitive, and lowercased EVM addresses break it (TRAM-3977).
+      assetId: selectedToken?.assetId ?? '',
       providerId: selectedProvider?.id ?? '',
     }),
     enabled: queryEnabled,

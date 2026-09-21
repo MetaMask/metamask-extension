@@ -281,6 +281,44 @@ describe('RampsProviderSelectionModal', () => {
     expect(mockOnClose).toHaveBeenCalled();
   });
 
+  it('passes the catalog assetId to quotes verbatim and still filters by lowercase keys', () => {
+    // Catalogs return EVM token ids checksummed (e.g. USDT on Mainnet) while
+    // provider config keys are lowercase. The quotes API must receive the id
+    // verbatim (downstream asset resolution is case-sensitive, TRAM-3977),
+    // and availability filtering must stay case-insensitive.
+    const usdtToken = {
+      assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      symbol: 'USDT',
+      chainId: 'eip155:1',
+    };
+    const ramp = {
+      id: '/providers/ramp-network',
+      name: 'Ramp Network',
+      supportedCryptoCurrencies: {
+        // Lowercase contract address, as served by the API.
+        'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7': true,
+      },
+    } as unknown as Provider;
+
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      providers: [ramp],
+      selectedProvider: ramp,
+      selectedToken: usdtToken,
+    });
+
+    renderModal({ amount: 100 });
+
+    expect(
+      screen.getByTestId('ramps-provider-item-/providers/ramp-network'),
+    ).toBeInTheDocument();
+    expect(mockUseRampsQuotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      }),
+    );
+  });
+
   it('uses the chain-matching account address for non-EVM assets', () => {
     const solanaAccount = {
       id: 'sol-account-1',

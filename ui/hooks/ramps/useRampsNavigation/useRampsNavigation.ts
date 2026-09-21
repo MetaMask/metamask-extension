@@ -27,7 +27,7 @@ import {
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
 import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
-import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
+import { normalizeAssetIdForComparison } from '../utils/normalizeAssetIdForComparison';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -92,7 +92,8 @@ function findCatalogToken(
   ];
   return catalog.find(
     (token) =>
-      normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
+      normalizeAssetIdForComparison(token.assetId) ===
+      normalizeAssetIdForComparison(assetId),
   );
 }
 
