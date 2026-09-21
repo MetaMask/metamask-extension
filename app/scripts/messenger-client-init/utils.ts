@@ -133,6 +133,7 @@ export function initMessengerClients({
   for (const [key, value] of Object.entries(initFunctions)) {
     const messengerClientName = key as MessengerClientsToInitialize;
     const initFunction = value as InitFunction<typeof messengerClientName>;
+    const { reference } = initFunction;
     const messengerCallbacks = MESSENGER_FACTORIES[messengerClientName];
 
     const controllerMessengerCallback =
@@ -153,6 +154,16 @@ export function initMessengerClients({
       getMessengerClient,
       initMessenger,
     };
+
+    const rawState = finalInitRequest.persistedState[messengerClientName];
+    if (rawState && reference && 'struct' in reference) {
+      validateControllerState(
+        rawState,
+        reference.struct,
+        'lenient',
+        controllerMessenger.captureException,
+      );
+    }
 
     const result = initFunction({
       ...finalInitRequest,
