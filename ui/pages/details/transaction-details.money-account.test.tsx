@@ -82,8 +82,8 @@ function renderDetails(transaction: TransactionMeta) {
 
 describe('TransactionDetails for money account transactions', () => {
   it.each([
-    ['deposit', EvmTransactionType.moneyAccountDeposit, 'Deposited'],
-    ['withdraw', EvmTransactionType.moneyAccountWithdraw, 'Sent'],
+    ['deposit', EvmTransactionType.moneyAccountDeposit, 'Deposited mUSD'],
+    ['withdraw', EvmTransactionType.moneyAccountWithdraw, 'Received mUSD'],
   ])(
     'renders a money account %s outside a route messenger context',
     async (_label, nestedType, title) => {

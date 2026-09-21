@@ -21,7 +21,7 @@ type Props = {
   item: MoneyAccountActivityItem;
 };
 
-function MoneyAccountDetailsContent({ item }: Readonly<Props>) {
+const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { hasMoneyAccount } = useMoneyAccountInfo();
@@ -77,7 +77,7 @@ function MoneyAccountDetailsContent({ item }: Readonly<Props>) {
       transactionMeta={transactionMeta}
     />
   );
-}
+};
 
 /**
  * Details for money-account deposits and withdrawals, laid out like the
