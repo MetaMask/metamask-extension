@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import merge from 'lodash/merge';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   type ParsedDeepLink,
@@ -16,8 +15,8 @@ import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route'
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 import { resolveBuyDeepLinkDestination } from '../../../../shared/lib/deep-links/buy-flow';
-import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -63,11 +62,15 @@ export class DeepLinkRouter extends EventEmitter<{
     const state = this.getState() as {
       remoteFeatureFlags?: Record<string, unknown>;
     };
-    const flags = merge(
-      {},
-      state.remoteFeatureFlags ?? {},
-      getManifestFlags().remoteFeatureFlags ?? {},
-    );
+    // Resolve through the same manifest-merged path as the UI selector
+    // (`getIsRampsEnabled`). Reading raw controller state here would ignore
+    // `.manifest-overrides.json`, so a manifest override could enable the
+    // in-app buy flow in the UI while deep links kept redirecting externally.
+    const flags = getRemoteFeatureFlags({
+      metamask: {
+        remoteFeatureFlags: state.remoteFeatureFlags,
+      },
+    } as never);
     return getBooleanFeatureFlag(flags.rampsEnabled, false);
   }
 
