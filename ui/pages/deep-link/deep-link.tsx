@@ -19,9 +19,11 @@ import {
 } from '@metamask/design-system-react';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
+import { resolveBuyDeepLinkDestination } from '../../../shared/lib/deep-links/buy-flow';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
+import { getIsRampsEnabled } from '../../selectors/ramps-feature-flags';
 import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
@@ -55,6 +57,8 @@ const { getExtensionURL } = globalThis.platform;
  * @param t - The translation function.
  * @param abortController
  * @param setPageNotFoundError - The function to call when the destination is missing.
+ * @param isUnifiedBuyEnabled - Whether the unified buy (native in-app buy)
+ * feature is enabled, e.g. the `rampsEnabled` remote feature flag.
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -67,6 +71,7 @@ async function updateStateFromUrl(
   t: TranslateFunction,
   abortController: AbortController,
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
+  isUnifiedBuyEnabled: boolean,
 ) {
   try {
     const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
@@ -79,12 +84,21 @@ async function updateStateFromUrl(
     if (parsed) {
       const { destination } = parsed;
 
+      // Route-specific destination resolution — e.g. routing `/buy` into the
+      // in-app unified buy flow when the `rampsEnabled` flag is on. The
+      // interstitial policy above is unaffected.
+      const resolvedDestination = resolveBuyDeepLinkDestination({
+        route: parsed.route,
+        destination,
+        isUnifiedBuyEnabled,
+      });
+
       const href =
-        'redirectTo' in destination
-          ? destination.redirectTo.toString()
+        'redirectTo' in resolvedDestination
+          ? resolvedDestination.redirectTo.toString()
           : getExtensionURL(
-              destination.path,
-              destination.query.toString() ?? null,
+              resolvedDestination.path,
+              resolvedDestination.query.toString() ?? null,
             );
       const title = parsed.route.getTitle(url.searchParams);
 
@@ -146,6 +160,7 @@ export const DeepLink = () => {
     (state: MetaMaskReduxState) =>
       getPreferences(state).skipDeepLinkInterstitial,
   );
+  const isUnifiedBuyEnabled = useSelector(getIsRampsEnabled);
 
   const [description, setDescription] = useState<string | null>(null);
   const [pageNotFoundError, setPageNotFoundError] = useState<boolean>(false);
@@ -234,6 +249,7 @@ export const DeepLink = () => {
         t,
         abortController,
         setPageNotFoundError,
+        isUnifiedBuyEnabled,
       );
     };
 
@@ -241,7 +257,7 @@ export const DeepLink = () => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError]);
+  }, [location.search, t, setPageNotFoundError, isUnifiedBuyEnabled]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);

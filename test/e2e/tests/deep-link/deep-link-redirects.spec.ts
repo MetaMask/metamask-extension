@@ -22,6 +22,15 @@ describe('Deep Link - External Redirects', function () {
       await getConfig({
         title: this.test?.fullTitle(),
         deepLinkPublicKey,
+        // This spec covers the legacy external-redirect behavior. With the
+        // `rampsEnabled` flag on (the E2E default from the feature flag
+        // registry), `/buy` routes into the in-app unified buy flow instead —
+        // see deep-link-route-buy-ramps.spec.ts.
+        manifestFlags: {
+          remoteFeatureFlags: {
+            rampsEnabled: false,
+          },
+        },
       }),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
