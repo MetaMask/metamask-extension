@@ -1043,6 +1043,7 @@ describe('PerpsView', () => {
         watchlistMarkets: [],
         watchlistCount,
         isInitialLoading: true,
+        isLive: true,
       });
     };
 

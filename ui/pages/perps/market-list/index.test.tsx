@@ -127,6 +127,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        areMarketsLive: jest.fn().mockReturnValue(false),
       });
 
       renderWithProvider(<MarketListView />, mockStore);
@@ -379,6 +380,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        areMarketsLive: jest.fn().mockReturnValue(false),
       });
 
       renderWithProvider(

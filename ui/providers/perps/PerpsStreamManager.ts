@@ -65,6 +65,13 @@ import { PerpsDataChannel } from './PerpsDataChannel';
  */
 export type OrderBookConnectionStatus = 'connecting' | 'connected' | 'error';
 
+/** Why a wallet preload span ended. */
+type PreloadEndReason =
+  | 'connection_failed'
+  | 'released'
+  | 'subscriptions_ready'
+  | 'timeout';
+
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
 const EMPTY_ORDERS: Order[] = [];
@@ -74,6 +81,7 @@ const EMPTY_PRICES: PriceUpdate[] = [];
 const CONNECTION_TIMEOUT_MS = 30_000;
 const START_BOUNDARY_TAG = 'start_boundary';
 const COMPLETION_BOUNDARY_TAG = 'completion_boundary';
+const TESTNET_TAG = 'is_testnet';
 
 /**
  * Placeholder noop function for channel initialization.
@@ -827,16 +835,22 @@ class PerpsStreamManager {
    * @param options.address
    * @param options.useTerminalApi
    * @param options.accountChanged
+   * @param options.provider - Perps provider this preload is for.
+   * @param options.isTestnet - Network this preload is for.
    * @returns A handle that releases this preload.
    */
   startPreload({
     address,
     useTerminalApi,
     accountChanged,
+    provider,
+    isTestnet,
   }: {
     address: string;
     useTerminalApi: boolean;
     accountChanged: boolean;
+    provider: string;
+    isTestnet: boolean;
   }): { stop: () => void } {
     const name = accountChanged
       ? TraceName.PerpsAccountSwitchReconnection
@@ -880,6 +894,8 @@ class PerpsStreamManager {
             feature: 'perps',
             [PERPS_LIFECYCLE_TAG]: context,
             source: 'wallet_root',
+            provider,
+            [TESTNET_TAG]: isTestnet,
             [START_BOUNDARY_TAG]: 'wallet_root_effect',
             [COMPLETION_BOUNDARY_TAG]: 'preload_ready',
             ...(accountChanged ? { trigger: 'requested_account_change' } : {}),
@@ -889,7 +905,7 @@ class PerpsStreamManager {
       .catch((error: unknown) => {
         console.debug('[PerpsStreamManager] Trace start failed', error);
       });
-    const finish = (success: boolean, reason: string) => {
+    const finish = (success: boolean, reason: PreloadEndReason) => {
       if (ended) {
         return;
       }

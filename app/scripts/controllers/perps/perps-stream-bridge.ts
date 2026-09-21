@@ -19,8 +19,23 @@ const WebSocketConnectionState = {
 type WebSocketConnectionState =
   (typeof WebSocketConnectionState)[keyof typeof WebSocketConnectionState];
 
+/** Every notification channel the bridge emits on. */
+export type PerpsStreamChannel =
+  | 'account'
+  | 'accountSession'
+  | 'candles'
+  | 'connectionState'
+  | 'fills'
+  | 'markets'
+  | 'orderBook'
+  | 'orderBookAggregated'
+  | 'orderBookAggregatedStatus'
+  | 'orders'
+  | 'positions'
+  | 'prices';
+
 type EmitFn = (
-  channel: string,
+  channel: PerpsStreamChannel,
   data: unknown,
   extra?: Record<string, unknown>,
 ) => void;
@@ -560,7 +575,7 @@ export class PerpsStreamBridge {
    * @param channel - Notification channel.
    * @returns Whether this UI connection owns the channel.
    */
-  canEmit(channel: string): boolean {
+  canEmit(channel: Parameters<EmitFn>[0]): boolean {
     return (
       (channel === 'accountSession' &&
         this.#isConnectionAlive() &&

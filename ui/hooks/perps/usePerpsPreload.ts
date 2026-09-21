@@ -61,14 +61,9 @@ export function usePerpsPreload(walletReady: boolean): void {
       address,
       useTerminalApi,
       accountChanged,
+      provider,
+      isTestnet,
     });
     return () => session.stop();
-  }, [
-    enabled,
-    address,
-    // Provider or network changes release the old preload and register a new one.
-    provider,
-    isTestnet,
-    useTerminalApi,
-  ]);
+  }, [enabled, address, provider, isTestnet, useTerminalApi]);
 }

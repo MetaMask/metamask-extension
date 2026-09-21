@@ -268,15 +268,18 @@ const PERPS_TRACE_NAMES = {
   'Perps Account Switch Reconnection': TraceName.PerpsAccountSwitchReconnection,
   'Perps Market Data Preload': TraceName.PerpsMarketDataPreload,
   'Perps User Data Preload': TraceName.PerpsUserDataPreload,
-} satisfies Record<PerpsTraceName, TraceName>;
+} as const satisfies Record<PerpsTraceName, TraceName>;
 
 function createTracer(): PerpsTracer {
-  const pendingSpans = new Map<string, { name: TraceName; id: string }>();
+  const pendingSpans = new Map<
+    `${PerpsTraceName}:${string}`,
+    { name: TraceName; id: string }
+  >();
 
   return {
     trace: (params) => {
       const request = { ...params, name: PERPS_TRACE_NAMES[params.name] };
-      const key = `${params.name}:${params.id}`;
+      const key = `${params.name}:${params.id}` as const;
       const existing = pendingSpans.get(key);
       if (existing) {
         endTrace({
@@ -299,7 +302,7 @@ function createTracer(): PerpsTracer {
       pendingSpans.set(key, { name: request.name, id: request.id });
     },
     endTrace: (params) => {
-      const key = `${params.name}:${params.id}`;
+      const key = `${params.name}:${params.id}` as const;
       const pending = pendingSpans.get(key);
       if (pending) {
         endTrace({ ...pending, data: params.data });

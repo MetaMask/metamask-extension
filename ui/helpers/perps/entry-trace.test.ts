@@ -101,7 +101,7 @@ describe('Perps entry lifecycle', () => {
   it('ends an abandoned destination without ending its replacement', async () => {
     const oldId = entry.startPerpsEntry('home');
     const newId = entry.startPerpsEntry('market_list');
-    entry.endPerpsEntry(oldId, true, 'late_render');
+    entry.endPerpsEntry(oldId, true, 'live_rows_committed');
 
     await flush();
     expect(endTrace).toHaveBeenCalledTimes(1);
@@ -195,7 +195,7 @@ describe('Perps entry lifecycle', () => {
     async (variant) => {
       const id = entry.startPerpsEntry('home');
       entry.endPerpsEntry(id, true, 'live_rows_committed', variant);
-      entry.endPerpsEntry(id, true, 'late_render', variant);
+      entry.endPerpsEntry(id, true, 'live_rows_committed', variant);
 
       await flush();
       expect(trace).toHaveBeenCalledWith(

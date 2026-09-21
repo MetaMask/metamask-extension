@@ -14,6 +14,11 @@ type LifecycleContext =
   | 'unknown';
 export type PerpsEntrySurface = 'home' | 'market_list';
 export type PerpsEntryVariant = 'empty' | 'position' | 'order';
+export type PerpsEntryEndReason =
+  | 'generation_changed'
+  | 'live_rows_committed'
+  | 'timeout'
+  | 'unmounted';
 
 const getEntryTraceName = (surface: PerpsEntrySurface): TraceName =>
   surface === 'home'
@@ -137,7 +142,7 @@ export function startPerpsEntry(surface: PerpsEntrySurface): string {
 export function endPerpsEntry(
   id: string,
   success: boolean,
-  reason: string,
+  reason: PerpsEntryEndReason,
   variant?: PerpsEntryVariant,
 ): void {
   if (pendingEntry?.id !== id) {

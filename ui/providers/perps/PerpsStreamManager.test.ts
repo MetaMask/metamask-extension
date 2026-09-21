@@ -115,6 +115,8 @@ describe('PerpsStreamManager', () => {
         address: '0xfirst',
         useTerminalApi: false,
         accountChanged: false,
+        provider: 'hyperliquid',
+        isTestnet: false,
       });
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsRegisterPreload',
@@ -151,6 +153,8 @@ describe('PerpsStreamManager', () => {
           address: '0xfirst',
           useTerminalApi: false,
           accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
         }));
       });
       expect(endTrace).not.toHaveBeenCalled();
@@ -185,6 +189,8 @@ describe('PerpsStreamManager', () => {
           address: '0xfirst',
           useTerminalApi: false,
           accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
         }));
       });
       expect(preloadManager.initForAddress).toHaveBeenCalledTimes(1);
@@ -221,6 +227,8 @@ describe('PerpsStreamManager', () => {
           address: '0xfirst',
           useTerminalApi: false,
           accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
         });
       });
 
@@ -267,6 +275,8 @@ describe('PerpsStreamManager', () => {
             address: '0xfirst',
             useTerminalApi: false,
             accountChanged: false,
+            provider: 'hyperliquid',
+            isTestnet: false,
           });
         });
         expect(manager.isInitialized('0xfirst')).toBe(
@@ -319,6 +329,8 @@ describe('PerpsStreamManager', () => {
             address: '0xfirst',
             useTerminalApi: false,
             accountChanged: false,
+            provider: 'hyperliquid',
+            isTestnet: false,
           });
         });
         const address = owner === 'new account' ? '0xsecond' : '0xfirst';
@@ -330,6 +342,8 @@ describe('PerpsStreamManager', () => {
               address,
               useTerminalApi: false,
               accountChanged: false,
+              provider: 'hyperliquid',
+              isTestnet: false,
             });
           }
         });
@@ -358,6 +372,8 @@ describe('PerpsStreamManager', () => {
           address: '0xfirst',
           useTerminalApi: false,
           accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
         });
       });
 
@@ -401,6 +417,8 @@ describe('PerpsStreamManager', () => {
           address: '0xfirst',
           useTerminalApi: false,
           accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
         });
         await flushPromises();
         const onMarkets = jest.fn();
