@@ -15,6 +15,8 @@ pwTest.describe('Auto-Lock Timer', () => {
       {},
       testInfo,
     ) => {
+      // TEMPORARY: intentional failure to verify CI runs remaining specs
+      throw new Error('[TEST] Intentional failure — verifying run-all-pw isolation');
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2().build(),
