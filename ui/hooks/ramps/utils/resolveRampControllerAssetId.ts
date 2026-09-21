@@ -7,14 +7,11 @@
  * catalog's `slip44:{coinType}`, e.g. `eip155:1/slip44:60`).
  */
 
-/**
- * Token shape required for resolving assetId.
- * Matches the fields used from the RampsController token list.
- */
+/** Token shape from the RampsController token list used for resolving. */
 export type TokenForResolve = {
   assetId?: string;
   chainId?: string;
-}
+};
 
 /**
  * Resolves an assetId to the catalog's canonical format.

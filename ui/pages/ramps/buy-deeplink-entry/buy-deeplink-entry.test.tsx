@@ -6,8 +6,12 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { BuyDeepLinkEntry } from './buy-deeplink-entry';
 
+const DAI_SEARCH =
+  '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
+
 const mockNavigate = jest.fn();
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
+const globalMockPlatformOpenTab = jest.fn();
 let mockOpensBuyInPortfolioTab = false;
 let mockSearch = '';
 
@@ -16,6 +20,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
   useLocation: () => ({ search: mockSearch }),
 }));
+
+// jsdom environment: `global` is the ambient window; give it a platform mock.
+(global as { platform?: object }).platform = {
+  openTab: globalMockPlatformOpenTab,
+};
 
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -27,30 +36,25 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
 }));
 
 describe('BuyDeepLinkEntry', () => {
+  const renderEntry = (search: string) => {
+    mockSearch = search;
+    return render(<BuyDeepLinkEntry />);
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockOpensBuyInPortfolioTab = false;
     mockGoToBuy.mockResolvedValue(true);
   });
 
-  it('renders a loading state', () => {
-    mockSearch =
-      '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
-    render(<BuyDeepLinkEntry />);
+  it('calls goToBuy with the intent built from deep link params, once across re-renders', () => {
+    const { rerender } = renderEntry(DAI_SEARCH);
+    rerender(<BuyDeepLinkEntry />);
 
     expect(
       screen.getByTestId('ramps-buy-deeplink-entry-loading'),
     ).toBeInTheDocument();
-  });
-
-  it('calls goToBuy with the intent built from deep link params', async () => {
-    mockSearch =
-      '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
-    render(<BuyDeepLinkEntry />);
-
-    await waitFor(() => {
-      expect(mockGoToBuy).toHaveBeenCalledTimes(1);
-    });
+    expect(mockGoToBuy).toHaveBeenCalledTimes(1);
     expect(mockGoToBuy).toHaveBeenCalledWith({
       assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
       chainId: 'eip155:1',
@@ -58,8 +62,7 @@ describe('BuyDeepLinkEntry', () => {
   });
 
   it('calls goToBuy with no intent when there are no intent params', async () => {
-    mockSearch = '?utm_source=promo';
-    render(<BuyDeepLinkEntry />);
+    renderEntry('?utm_source=promo');
 
     await waitFor(() => {
       expect(mockGoToBuy).toHaveBeenCalledTimes(1);
@@ -67,53 +70,35 @@ describe('BuyDeepLinkEntry', () => {
     expect(mockGoToBuy).toHaveBeenCalledWith(undefined);
   });
 
-  it('calls goToBuy once across re-renders', async () => {
-    mockSearch =
-      '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
-    const { rerender } = render(<BuyDeepLinkEntry />);
-    rerender(<BuyDeepLinkEntry />);
+  const navigateHomeCases: [string, () => void][] = [
+    ['reports it did not navigate', () => mockGoToBuy.mockResolvedValue(false)],
+    ['rejects', () => mockGoToBuy.mockRejectedValue(new Error('boom'))],
+  ];
+  for (const [label, arrange] of navigateHomeCases) {
+    it(`navigates home when goToBuy ${label}`, async () => {
+      arrange();
+      renderEntry(DAI_SEARCH);
 
-    await waitFor(() => {
-      expect(mockGoToBuy).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it('navigates home when goToBuy reports it did not navigate', async () => {
-    mockGoToBuy.mockResolvedValue(false);
-    mockSearch =
-      '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
-    render(<BuyDeepLinkEntry />);
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+        });
       });
     });
-  });
+  }
 
-  it('navigates home when goToBuy rejects', async () => {
-    mockGoToBuy.mockRejectedValue(new Error('boom'));
-    mockSearch =
-      '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
-    render(<BuyDeepLinkEntry />);
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
-      });
-    });
-  });
-
-  it('navigates home when the Portfolio fallback opened Buy in a new tab', async () => {
+  it('opens the legacy Portfolio redirect with verbatim params when the Portfolio fallback applies', async () => {
     mockOpensBuyInPortfolioTab = true;
-    mockSearch =
-      '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
-    render(<BuyDeepLinkEntry />);
+    renderEntry(DAI_SEARCH);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
+      expect(globalMockPlatformOpenTab).toHaveBeenCalledWith({
+        url: 'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
       });
+    });
+    expect(mockGoToBuy).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
     });
   });
 });
