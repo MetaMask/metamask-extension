@@ -19,7 +19,7 @@
     "app/scripts/lib/forwardRequestToSnap.test.ts": {
       "error: Error from onAfterRequest hook: Error:": 2
     },
-    "app/scripts/lib/migrator/index.test.js": {
+    "app/scripts/lib/migrator/index.test.ts": {
       "MetaMask: Migration skipped warnings": 2,
       "MetaMask: Migration state warnings": 1,
       "error: Error: Migration #157: No INFURA_PROJECT_ID": 1,
@@ -318,17 +318,6 @@
     "ui/components/multichain-accounts/smart-contract-account-toggle/smart-contract-account-toggle.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
       "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/components/multichain/account-details/account-details-display.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: DOM nesting violations": 1
-    },
-    "ui/components/multichain/account-details/account-details.test.js": {
-      "React: Act warnings (component updates not wrapped)": 8,
-      "React: DOM nesting violations": 1,
-      "warn: LavaDome: Initiated with \"unsafeOpenModeShadow\" set": 1,
-      "warn: LavaDomeDebug(getTextByRoot): Call/include this function for": 1
     },
     "ui/components/multichain/account-list-item-menu/account-list-item-menu.test.js": {
       "React: PropTypes validation failures": 1

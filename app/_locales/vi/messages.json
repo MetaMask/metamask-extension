@@ -1515,8 +1515,8 @@
   "alertMessageGasFeeLow": {
     "message": "Khi chọn phí thấp, hãy lưu ý giao dịch sẽ chậm hơn và thời gian chờ đợi lâu hơn. Để giao dịch nhanh hơn, hãy chọn các tùy chọn phí Thị trường hoặc Cao."
   },
-  "alertMessageGasTooLow": {
-    "message": "Để tiếp tục giao dịch này, bạn cần tăng giới hạn phí gas lên 21000 hoặc cao hơn."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Để tiếp tục giao dịch này, bạn cần tăng giới hạn phí gas lên 12000 hoặc cao hơn."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí mạng."
@@ -1879,6 +1879,9 @@
   },
   "backupAndSyncFeatureContacts": {
     "message": "Danh bạ"
+  },
+  "backupAndSyncFeatureRamps": {
+    "message": "Lệnh mua & bán"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "Quản lý những gì được đồng bộ"
@@ -3105,9 +3108,6 @@
   "copyAddressShort": {
     "message": "Sao chép địa chỉ"
   },
-  "copyPrivateKey": {
-    "message": "Sao chép khóa riêng tư"
-  },
   "copyToClipboard": {
     "message": "Sao chép vào bộ nhớ đệm"
   },
@@ -4213,8 +4213,8 @@
   "gasLimit": {
     "message": "Hạn mức phí gas"
   },
-  "gasLimitTooLow": {
-    "message": "Hạn mức phí gas ít nhất phải là 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Hạn mức phí gas ít nhất phải là 12000"
   },
   "gasPrice": {
     "message": "Giá gas"
@@ -5030,9 +5030,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Vì sự an toàn của bạn, việc chọn văn bản này hiện không khả dụng."
-  },
   "learnHow": {
     "message": "Tìm hiểu cách thức"
   },
@@ -5268,6 +5265,10 @@
   "lowLowercase": {
     "message": "thấp"
   },
+  "lowValueAssets": {
+    "message": "Token có số dư thấp ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -5453,13 +5454,6 @@
   "money": {
     "message": "Tài chính"
   },
-  "moneyAccountApyPitch": {
-    "message": "Sinh lời với APY $1%",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Thông tin APY"
-  },
   "moneyAccountApyTooltip": {
     "message": "Tỷ suất hiển thị là Lợi suất phần trăm hằng năm (APY) ước tính dựa trên điều kiện thị trường hiện tại. APY có thể thay đổi và không được đảm bảo."
   },
@@ -5469,9 +5463,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Số dư dự kiến sau 1 năm:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Số dư dự kiến sau 1 năm"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Dự đoán này giả định rằng Lợi suất phần trăm hằng năm (APY) $1% không thay đổi trong vòng một năm. APY có thể thay đổi và không được đảm bảo.",
@@ -5524,6 +5515,9 @@
   },
   "moneyActivityFilterAll": {
     "message": "Tất cả"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Thẻ"
   },
   "moneyActivityFilterDeposits": {
     "message": "Nạp tiền"
@@ -5592,9 +5586,6 @@
   "moneyBalanceRetry": {
     "message": "Thử lại"
   },
-  "moneyBalanceTitle": {
-    "message": "Số dư Tài chính"
-  },
   "moneyBalanceUnavailable": {
     "message": "Số dư không khả dụng"
   },
@@ -5603,9 +5594,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Tự động sinh lời từ số dư Money của bạn"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Tự động sinh lời với APY lên đến ~$1"
   },
   "moneyBenefitLiquidity": {
     "message": "Có khả năng thanh khoản cao, không bị khóa vốn, cho phép giao dịch hoặc rút tiền bất cứ lúc nào"
@@ -5661,11 +5649,21 @@
   "moneyFundDescriptionWithApy": {
     "message": "Nạp tiền vào Money Account và theo dõi số dư tăng trưởng với APY lên đến $1."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Lãi suất hiển thị là Tỷ suất lợi nhuận hằng năm (APY) ước tính dựa trên điều kiện thị trường hiện tại. APY có thể thay đổi và không được đảm bảo. Tiền được đưa vào một kho DeFi do Veda quản lý, với sự giám sát rủi ro từ Steakhouse Financial, nhằm tạo lợi nhuận trên các thị trường cho vay đã được thiết lập."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money Account được hỗ trợ bởi Monad."
+  },
   "moneyHowItWorks": {
     "message": "Cách hoạt động"
   },
   "moneyHowItWorksDescription": {
     "message": "Nạp mUSD và số dư được bảo chứng bằng đô-la của bạn sẽ sẵn sàng để chi tiêu, giao dịch hoặc gửi bất cứ lúc nào."
+  },
+  "moneyHowItWorksDescription1": {
+    "message": "Nạp mUSD vào Money Account của bạn và tự động sinh lời với lãi suất APY lên đến $1 (có thể thay đổi). Tiền sẽ được đưa vào một kho DeFi do Veda quản lý và được giám sát rủi ro bởi Steakhouse Financial. Mức lãi suất được tạo ra từ các nền tảng DeFi bên thứ ba triển khai vốn vào các giao thức chuỗi khối. Không cần ký gửi, không cần nhận, không bị khóa tài sản.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescription2": {
     "message": "Số dư Tài chính của bạn là số dư để chi tiêu. Liên kết Thẻ MetaMask để chi tiêu tại hơn 150 triệu cửa hàng trên toàn cầu. Tiền của bạn vẫn sinh lời cho đến thời điểm bạn sử dụng."
@@ -5679,6 +5677,13 @@
   },
   "moneyHowItWorksDisclosuresBody": {
     "message": "Money Account không phải là tài khoản ngân hàng, tài khoản tiết kiệm hoặc sản phẩm tiền gửi được bảo hiểm. Lãi suất APY có thể thay đổi và không được đảm bảo. Money Account có các rủi ro liên quan đến hợp đồng thông minh, giao thức, thanh khoản và các rủi ro khác, vì vậy bạn có thể mất một phần hoặc toàn bộ số tiền của mình. Việc sử dụng còn tùy thuộc vào các hạn chế theo khu vực. Có áp dụng các điều khoản và điều kiện."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Rủi ro và Công bố"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Lãi suất APY lên đến $1. Lãi suất này có thể thay đổi và biến động theo điều kiện thị trường. Lãi suất hiện tại luôn được hiển thị trong Money Account.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Tỷ lệ APY có thay đổi không?"
@@ -5704,11 +5709,23 @@
   "moneyHowItWorksFaqLockedQuestion": {
     "message": "Tiền của tôi có bị khóa không? Tôi có thể rút tiền bất cứ lúc nào không?"
   },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Đây là tài khoản có thể sinh lời với lãi suất APY lên đến $1 (có thể thay đổi). Bạn nạp tiền vào tài khoản, số tiền của bạn sẽ được giữ dưới dạng mUSD và có thể nhận lãi suất APY lên đến $1. mUSD là đồng ổn định được bảo chứng bằng đô-la của MetaMask. Bạn có thể sử dụng hoặc rút tiền bất cứ lúc nào mà không bị phạt. Bạn cũng có thể chi tiêu số tiền này bằng MetaMask Card tại hơn 150 triệu điểm chấp nhận Mastercard trên toàn thế giới.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Tài khoản Tài chính là gì?"
   },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD là đồng ổn định được bảo chứng bằng đô-la theo tỷ lệ 1:1 của MetaMask. Số dư Money Account của bạn được giữ dưới dạng mUSD và luôn sẵn sàng để chi tiêu, gửi hoặc giao dịch bất kỳ lúc nào.",
+    "description": "Drafted from existing Money copy for content review."
+  },
   "moneyHowItWorksFaqMusdQuestion": {
     "message": "mUSD là gì?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Số dư Money Account là số dư chi tiêu của bạn — số dư này tiếp tục sinh lời cho đến thời điểm bạn sử dụng. Money Account không phải là tài khoản ngân hàng, tài khoản tiết kiệm hoặc sản phẩm tiền gửi được bảo hiểm.",
+    "description": "Drafted from existing Money copy for content review."
   },
   "moneyHowItWorksFaqSpendingQuestion": {
     "message": "Đây là tài khoản tiết kiệm hay tài khoản chi tiêu?"
@@ -5731,8 +5748,14 @@
   "moneyLifetime": {
     "message": "Trọn đời"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Tổng lợi nhuận bạn đã nhận được từ số dư Money Account theo thời gian."
+  },
   "moneyMeetMusd": {
     "message": "Tìm hiểu về mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Tổng lợi nhuận bạn đã nhận được từ số dư Money Account trong 30 ngày qua."
   },
   "moneyMoreInformation": {
     "message": "Thông tin khác"
@@ -5773,6 +5796,10 @@
   "moneyToastDepositInProgressTitleConvert": {
     "message": "Đang chuyển đổi tiền mã hóa"
   },
+  "moneyToastDepositSuccessDescription": {
+    "message": "Đã nạp $1 vào Money Account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
   "moneyToastDepositSuccessDescriptionNoAmount": {
     "message": "Đã nạp tiền vào Money Account."
   },
@@ -5799,6 +5826,14 @@
   },
   "moneyToastWithdrawInProgressTitle": {
     "message": "Đang chuyển tiền"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "Đã nạp $1 vào $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Đã nạp vào $1.",
+    "description": "$1 is the destination account name"
   },
   "moneyToastWithdrawSuccessTitle": {
     "message": "Chuyển tiền hoàn tất"
@@ -6462,18 +6497,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Sẵn sàng rút tiền"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Bây giờ bạn có thể rút $1 chưa ký gửi của bạn"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Đã gửi yêu cầu hủy ký gửi $1 của bạn"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Đã nhận NFT từ"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Đã gửi NFT đến"
-  },
   "notificationItemNetwork": {
     "message": "Mạng"
   },
@@ -6482,18 +6505,6 @@
   },
   "notificationItemReceived": {
     "message": "Đã nhận"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Đã nhận từ"
-  },
-  "notificationItemSent": {
-    "message": "Đã gửi"
-  },
-  "notificationItemSentTo": {
-    "message": "Đã gửi đến"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Đã hoàn tất ký gửi"
   },
   "notificationItemStaked": {
     "message": "Đã ký gửi"
@@ -6507,17 +6518,11 @@
   "notificationItemSwapped": {
     "message": "Đã hoán đổi"
   },
-  "notificationItemSwappedFor": {
-    "message": "để lấy"
-  },
   "notificationItemTo": {
     "message": "Đến"
   },
   "notificationItemTransactionId": {
     "message": "ID giao dịch"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Hoàn tất hủy ký gửi"
   },
   "notificationItemUnStaked": {
     "message": "Đã hủy ký gửi"
@@ -7666,6 +7671,10 @@
   "perpsFilterAll": {
     "message": "Tất cả"
   },
+  "perpsFilterClear": {
+    "message": "$1, xóa bộ lọc",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Hàng hóa"
   },
@@ -7682,11 +7691,15 @@
     "message": "Chỉ số"
   },
   "perpsFilterMemecoins": {
-    "message": "Memecoins"
+    "message": "Memecoin"
   },
   "perpsFilterMore": {
     "message": "Thêm",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Thêm, đã chọn $1",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Mới"
@@ -7783,6 +7796,18 @@
   },
   "perpsMarket": {
     "message": "Thị trường"
+  },
+  "perpsMarketCategories": {
+    "message": "Danh mục thị trường",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 thị trường",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 thị trường",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Không tìm thấy thị trường"
@@ -8547,10 +8572,6 @@
     "message": "Khóa riêng tư",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Khóa riêng tư cho $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Khóa riêng tư bị ẩn",
     "description": "Explains that the private key input is hidden"
@@ -8562,9 +8583,6 @@
   "privateKeyShown": {
     "message": "Khóa riêng tư này đang được hiển thị",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Cảnh báo: Tuyệt đối không để lộ khóa này. Bất kỳ ai có khóa riêng tư cũng có thể đánh cắp tài sản được lưu giữ trong tài khoản của bạn."
   },
   "privateKeys": {
     "message": "Khóa riêng tư",
@@ -8717,6 +8735,10 @@
   },
   "rampsChangeProvider": {
     "message": "Thay đổi nhà cung cấp."
+  },
+  "rampsChangeProviders": {
+    "message": "thay đổi nhà cung cấp",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
     "message": "Chọn nhà cung cấp"
@@ -8889,6 +8911,9 @@
   "rampsPreviouslyUsed": {
     "message": "Sử dụng lần cuối"
   },
+  "rampsQuoteFetchError": {
+    "message": "Lỗi khi lấy báo giá. Nhập số tiền thấp hơn hoặc"
+  },
   "rampsQuoteUnavailable": {
     "message": "Không có báo giá."
   },
@@ -8903,6 +8928,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Hiển thị tất cả token"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Token này không khả dụng tại khu vực của bạn.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token không khả dụng",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Tính năng mua tiền mã hóa hiện chưa được hỗ trợ tại khu vực của bạn."
@@ -10652,12 +10685,6 @@
   },
   "showPermissions": {
     "message": "Hiển thị quyền"
-  },
-  "showPrivateKey": {
-    "message": "Hiển thị khóa riêng tư"
-  },
-  "showSRP": {
-    "message": "Hiển thị Cụm mật khẩu khôi phục bí mật"
   },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"

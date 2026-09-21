@@ -34,7 +34,7 @@ export function MoneyEarnPage() {
   const privacyMode = useSelector(getPrivacyMode);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const { apyDecimal } = useMoneyAccountBalance({
+  const { apyDecimal, apyPercent } = useMoneyAccountBalance({
     enabled: availability.isAvailable,
   });
   const { tokens, isNoFeeToken } = useMoneyDepositTokens();
@@ -107,9 +107,9 @@ export function MoneyEarnPage() {
           <MoneyPotentialEarningsSummary
             tokens={eligibleTokens}
             apyDecimal={apyDecimal}
+            apyPercent={apyPercent}
             privacyMode={privacyMode}
             headingVariant={TextVariant.HeadingLg}
-            showInfoIcon={false}
           />
 
           {eligibleTokens.map((token, index) => (

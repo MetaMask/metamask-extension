@@ -36,7 +36,10 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/lib/network.utils';
-import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
@@ -314,9 +317,12 @@ export const NetworksForm = ({
         if (!cancelled) {
           setFetchedChainId(undefined);
           log.warn('Failed to fetch the chainId from the endpoint.', err);
+          const errorKey = isRpcRateLimitError(err)
+            ? 'rpcUrlRateLimited'
+            : 'failedToFetchChainId';
           setRpcFetchError({
-            key: 'failedToFetchChainId',
-            msg: t('failedToFetchChainId'),
+            key: errorKey,
+            msg: t(errorKey),
           });
         }
       });

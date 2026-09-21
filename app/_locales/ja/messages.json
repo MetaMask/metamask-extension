@@ -1515,8 +1515,8 @@
   "alertMessageGasFeeLow": {
     "message": "低い手数料を選択すると、トランザクションに時間がかかり、待機時間が長くなります。より素早くトランザクションを行うには、市場に合った、または積極的な手数料のオプションを選択してください。"
   },
-  "alertMessageGasTooLow": {
-    "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "このトランザクションを続行するには、ガスリミットを12000以上に上げる必要があります。"
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
@@ -3105,9 +3105,6 @@
   "copyAddressShort": {
     "message": "アドレスをコピー"
   },
-  "copyPrivateKey": {
-    "message": "秘密鍵をコピー"
-  },
   "copyToClipboard": {
     "message": "クリップボードにコピー"
   },
@@ -4213,8 +4210,8 @@
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitTooLow": {
-    "message": "ガスリミットは21000以上にする必要があります"
+  "gasLimitBelowMinimum": {
+    "message": "ガスリミットは12000以上にする必要があります"
   },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
@@ -5030,9 +5027,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "安全上の理由により、現在このテキストは選択できません。"
-  },
   "learnHow": {
     "message": "方法"
   },
@@ -5453,13 +5447,6 @@
   "money": {
     "message": "マネー"
   },
-  "moneyAccountApyPitch": {
-    "message": "年換算利率 (APY) $1%を獲得",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY情報"
-  },
   "moneyAccountApyTooltip": {
     "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
   },
@@ -5469,9 +5456,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "1年後の予想残高:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1年後の予想残高"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "予測では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されるものではありません。",
@@ -5524,6 +5508,9 @@
   },
   "moneyActivityFilterAll": {
     "message": "すべて"
+  },
+  "moneyActivityFilterCard": {
+    "message": "カード"
   },
   "moneyActivityFilterDeposits": {
     "message": "デポジット"
@@ -5592,9 +5579,6 @@
   "moneyBalanceRetry": {
     "message": "再試行"
   },
-  "moneyBalanceTitle": {
-    "message": "マネー残高"
-  },
   "moneyBalanceUnavailable": {
     "message": "残高が利用できません"
   },
@@ -5603,9 +5587,6 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Money残高に対する利息を自動で獲得"
-  },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "最大約$1のAPYを自動で獲得"
   },
   "moneyBenefitLiquidity": {
     "message": "ロックアップなしで完全な流動性が確保され、いつでも取引や引き出しが可能です"
@@ -5660,6 +5641,12 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Money Accountに入金して、残高が最大$1のAPYで増えていく様子を眺めましょう。"
+  },
+  "moneyHomeApyTooltip": {
+    "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。資金は、Vedaが管理し、Steakhouse Financialがリスク監督を行うDeFiボールトに預け入れられ、確立された融資市場を通じて収益を生み出します。"
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money AccountはMonadにより運用されています。"
   },
   "moneyHowItWorks": {
     "message": "報酬獲得の仕組み"
@@ -5731,8 +5718,14 @@
   "moneyLifetime": {
     "message": "全期間"
   },
+  "moneyLifetimeTooltip": {
+    "message": "これまでMoney Accountで発生した総収益額。"
+  },
   "moneyMeetMusd": {
     "message": "mUSDのご紹介"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "過去30日間にMoney Accountで発生した総収益額。"
   },
   "moneyMoreInformation": {
     "message": "他の情報"
@@ -6462,18 +6455,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "出金準備ができました"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "これでステーキングが解除された$1を引き出すことができます"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1のステーキングを解除するリクエストが送信されました"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFTを次の相手から受け取りました:"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFTを次の相手に送りました:"
-  },
   "notificationItemNetwork": {
     "message": "ネットワーク:"
   },
@@ -6482,18 +6463,6 @@
   },
   "notificationItemReceived": {
     "message": "受け取りました"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "次の相手から受け取りました:"
-  },
-  "notificationItemSent": {
-    "message": "送信完了"
-  },
-  "notificationItemSentTo": {
-    "message": "次の相手に送りました:"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "ステーキングが完了しました"
   },
   "notificationItemStaked": {
     "message": "ステーキング中"
@@ -6507,17 +6476,11 @@
   "notificationItemSwapped": {
     "message": "スワップ完了"
   },
-  "notificationItemSwappedFor": {
-    "message": "-"
-  },
   "notificationItemTo": {
     "message": "送り先"
   },
   "notificationItemTransactionId": {
     "message": "トランザクションID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "ステーキングの解除が完了しました"
   },
   "notificationItemUnStaked": {
     "message": "ステーキングが解除されました"
@@ -7676,7 +7639,7 @@
     "message": "インデックス"
   },
   "perpsFilterMemecoins": {
-    "message": "Memecoins"
+    "message": "ミームコイン"
   },
   "perpsFilterMore": {
     "message": "さらに表示",
@@ -8537,10 +8500,6 @@
     "message": "秘密鍵",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1の秘密鍵",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "秘密鍵は非表示になっています",
     "description": "Explains that the private key input is hidden"
@@ -8552,9 +8511,6 @@
   "privateKeyShown": {
     "message": "秘密鍵は表示されています",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "警告: この鍵は絶対に公開しないでください。秘密鍵を持つ人は誰でも、アカウントに保持されているアセットを盗むことができます。"
   },
   "privateKeys": {
     "message": "秘密鍵",
@@ -10642,12 +10598,6 @@
   },
   "showPermissions": {
     "message": "表示許可"
-  },
-  "showPrivateKey": {
-    "message": "秘密鍵を表示"
-  },
-  "showSRP": {
-    "message": "シークレットリカバリーフレーズを表示"
   },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"

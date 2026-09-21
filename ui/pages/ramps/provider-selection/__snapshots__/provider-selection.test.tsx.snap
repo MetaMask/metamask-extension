@@ -26,7 +26,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -88,7 +88,8 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -151,7 +152,8 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/moonpay"
                         >
                           MoonPay
                         </p>
@@ -229,7 +231,7 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
@@ -318,7 +320,7 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
@@ -407,7 +409,7 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-loading"
           role="dialog"
         >
@@ -570,7 +572,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -632,7 +634,8 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -711,7 +714,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -773,7 +776,8 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -811,7 +815,8 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/moonpay"
                         >
                           MoonPay
                         </p>

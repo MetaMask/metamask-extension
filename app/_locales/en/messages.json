@@ -1572,8 +1572,8 @@
   "alertMessageGasFeeLow": {
     "message": "When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options."
   },
-  "alertMessageGasTooLow": {
-    "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "To continue with this transaction, you’ll need to increase the gas limit to 12000 or higher."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "You do not have enough $1 in your account to pay for network fees."
@@ -3165,9 +3165,6 @@
   "copyAddressShort": {
     "message": "Copy address"
   },
-  "copyPrivateKey": {
-    "message": "Copy private key"
-  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -4273,8 +4270,8 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitTooLow": {
-    "message": "Gas limit must be at least 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Gas limit must be at least 12000"
   },
   "gasPrice": {
     "message": "Gas price"
@@ -5106,9 +5103,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "For your safety, selecting this text is not available right now."
-  },
   "learnHow": {
     "message": "Learn how"
   },
@@ -5533,12 +5527,13 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Earn $1% APY",
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY info"
+  "moneyAccountApyPitchEarn": {
+    "message": "Earn $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed."
@@ -5549,9 +5544,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Projected 1-year balance"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed.",
@@ -5604,6 +5596,9 @@
   },
   "moneyActivityFilterAll": {
     "message": "All"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Card"
   },
   "moneyActivityFilterDeposits": {
     "message": "Deposits"
@@ -5672,9 +5667,6 @@
   "moneyBalanceRetry": {
     "message": "Retry"
   },
-  "moneyBalanceTitle": {
-    "message": "Money balance"
-  },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
   },
@@ -5685,7 +5677,8 @@
     "message": "Auto-earn yield on your Money balance"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Auto-earn up to ~$1 APY"
+    "message": "Auto-earn up to $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"
@@ -5726,6 +5719,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "No fee"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed. No guarantee of return.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Earn on your balance"
   },
@@ -5740,6 +5737,16 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Fund your Money account and watch your balance grow with up to $1 APY."
+  },
+  "moneyHomeApyTooltip": {
+    "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed. Funds go into a DeFi vault, administered by Veda with risk oversight by Steakhouse Financial, that generates returns across established lending markets."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Your Money account earns up to $1 automatically.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money account is powered by Monad."
   },
   "moneyHowItWorks": {
     "message": "How it works"
@@ -5834,8 +5841,14 @@
   "moneyLifetime": {
     "message": "Lifetime"
   },
+  "moneyLifetimeTooltip": {
+    "message": "The total you've earned on your Money account balance over time."
+  },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "The total you've earned on your Money account balance in the last 30 days."
   },
   "moneyMoreInformation": {
     "message": "More information"
@@ -6577,18 +6590,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal ready"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "You can now withdraw your unstaked $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Your request to unstake $1 has been sent"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Received NFT from"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Sent NFT to"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6597,18 +6598,6 @@
   },
   "notificationItemReceived": {
     "message": "Received"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Received from"
-  },
-  "notificationItemSent": {
-    "message": "Sent"
-  },
-  "notificationItemSentTo": {
-    "message": "Sent to"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake completed"
   },
   "notificationItemStaked": {
     "message": "Staked"
@@ -6622,17 +6611,11 @@
   "notificationItemSwapped": {
     "message": "Swapped"
   },
-  "notificationItemSwappedFor": {
-    "message": "for"
-  },
   "notificationItemTo": {
     "message": "To"
   },
   "notificationItemTransactionId": {
     "message": "Transaction ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "UnStaking complete"
   },
   "notificationItemUnStaked": {
     "message": "Unstaked"
@@ -8682,10 +8665,6 @@
     "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Private key for $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "The private key is hidden",
     "description": "Explains that the private key input is hidden"
@@ -8697,9 +8676,6 @@
   "privateKeyShown": {
     "message": "This private key is being shown",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateKeys": {
     "message": "Private keys",
@@ -9480,6 +9456,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "This RPC provider is limiting requests. Try again later or use a different RPC URL."
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -10803,12 +10782,6 @@
   "showPermissions": {
     "message": "Show permissions"
   },
-  "showPrivateKey": {
-    "message": "Show private key"
-  },
-  "showSRP": {
-    "message": "Show Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -11772,6 +11745,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Auto"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Slippage tolerance was capped at 100%."
   },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
