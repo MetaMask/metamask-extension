@@ -294,7 +294,7 @@ async function isEIP7702GasFeeTokensEnabled(
     return false;
   }
 
-  const { chainId, isExternalSign } = transactionMeta;
+  const { chainId, selectedGasFeeToken } = transactionMeta;
   const uiState = getUIState(getFlatState());
 
   const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
@@ -308,7 +308,7 @@ async function isEIP7702GasFeeTokensEnabled(
   return (
     !isSmartTransactionEnabled ||
     !isSendBundleSupportedChain ||
-    Boolean(isExternalSign)
+    Boolean(selectedGasFeeToken)
   );
 }
 

@@ -287,7 +287,7 @@ describe('TransactionController wallet instance options', () => {
       expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
 
-    it('returns true when isExternalSign is true', async () => {
+    it('returns true when a gas fee token is selected', async () => {
       getIsSmartTransactionMock.mockReturnValue(true);
       isSendBundleSupportedMock.mockResolvedValue(true);
 
@@ -295,7 +295,7 @@ describe('TransactionController wallet instance options', () => {
       expect(
         await optionFn?.({
           ...mockTransactionMeta,
-          isExternalSign: true,
+          selectedGasFeeToken: '0x0000000000000000000000000000000000000001',
         }),
       ).toBe(true);
     });
