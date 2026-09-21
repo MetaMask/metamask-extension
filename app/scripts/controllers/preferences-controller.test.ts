@@ -22,6 +22,7 @@ import {
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -732,8 +733,15 @@ describe('preferences controller', () => {
     });
 
     it('consolidates a social-login wallet and syncs external services', () => {
-      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
-        setupController({});
+      const {
+        controller,
+        getOnboardingState,
+        getSeedlessOnboardingState,
+        toggleExternalServices,
+      } = setupController({});
+      getOnboardingState.mockReturnValue({
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
+      });
       getSeedlessOnboardingState.mockReturnValue({
         authConnection: 'google',
       });
@@ -813,10 +821,17 @@ describe('preferences controller', () => {
     });
 
     it('repairs a consolidated social-login wallet with Basic Functionality disabled', () => {
-      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
-        setupController({});
+      const {
+        controller,
+        getOnboardingState,
+        getSeedlessOnboardingState,
+        toggleExternalServices,
+      } = setupController({});
       controller.toggleExternalServices(false);
       controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      getOnboardingState.mockReturnValue({
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
+      });
       getSeedlessOnboardingState.mockReturnValue({
         authConnection: 'google',
       });
@@ -841,6 +856,24 @@ describe('preferences controller', () => {
 
       controller.consolidateBasicFunctionality();
 
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('repairs a toast notice for a consolidated social-create wallet with mixed settings', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setUseTokenDetection(false);
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      getOnboardingState.mockReturnValue({
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('toast');
       expect(toggleExternalServices).not.toHaveBeenCalled();
       expect(mockTrackEvent).not.toHaveBeenCalled();
     });

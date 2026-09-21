@@ -79,16 +79,33 @@ export function isBasicFunctionalitySocialLoginUser({
 }
 
 /**
+ * Whether the user imported an existing wallet through social-login OAuth.
+ * Only this cohort receives the migration modal.
+ *
+ * @param params - Social-import signals from onboarding state.
+ * @param params.firstTimeFlowType - Onboarding first-time flow type.
+ */
+export function isBasicFunctionalitySocialImportUser({
+  firstTimeFlowType,
+}: {
+  firstTimeFlowType?: string;
+}): boolean {
+  return firstTimeFlowType === FirstTimeFlowType.socialImport;
+}
+
+/**
  * Computes the one-time Basic Functionality consolidation landing state and
  * notice. Call only when the remote FF is on and the user is not yet
  * consolidated.
  *
  * @param preferences - Current Basic Functionality preference values.
  * @param isSocialLogin - Whether this is a social-login user.
+ * @param isSocialImport - Whether this is a social-import user.
  */
 export function getBasicFunctionalityConsolidationPlan(
   preferences: BasicFunctionalityPreferenceState,
   isSocialLogin: boolean,
+  isSocialImport = false,
 ): BasicFunctionalityConsolidationPlan {
   const basicFunctionalityEnabled = preferences.useExternalServices === true;
   const areAllChildrenEnabled = BFT_CHILD_PREFERENCES.every(
@@ -111,7 +128,7 @@ export function getBasicFunctionalityConsolidationPlan(
     (!basicFunctionalityEnabled && areAllChildrenDisabled);
 
   let notification: BasicFunctionalityMigrationNotification = null;
-  if (isSocialLogin) {
+  if (isSocialImport) {
     notification = 'modal';
   } else if (!isConsistent) {
     notification = 'toast';

@@ -30,6 +30,7 @@ import {
   BFT_CHILD_PREFERENCES,
   EXTERNAL_SERVICES_OWNED_PREFERENCES,
   getBasicFunctionalityConsolidationPlan,
+  isBasicFunctionalitySocialImportUser,
   isBasicFunctionalitySocialLoginUser,
   type BasicFunctionalityPreferenceState,
   type ExternalServicesOwnedPreference,
@@ -660,6 +661,9 @@ export class PreferencesController extends BaseController<
       firstTimeFlowType: firstTimeFlowType ?? undefined,
       authConnection,
     });
+    const isSocialImport = isBasicFunctionalitySocialImportUser({
+      firstTimeFlowType: firstTimeFlowType ?? undefined,
+    });
 
     const preferenceState = {
       useExternalServices: this.state.useExternalServices,
@@ -669,7 +673,11 @@ export class PreferencesController extends BaseController<
     }
 
     const { landingState, notification, isConsistent } =
-      getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
+      getBasicFunctionalityConsolidationPlan(
+        preferenceState,
+        isSocialLogin,
+        isSocialImport,
+      );
     const hasDismissedNotice =
       this.state.preferences
         .basicFunctionalityMigrationNotificationDismissed === true;

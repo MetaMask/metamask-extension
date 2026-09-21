@@ -59,13 +59,27 @@ describe('getBasicFunctionalityConsolidationPlan', () => {
     });
   });
 
-  it('schedules a modal and enables BFT for social-login users', () => {
+  it('schedules a modal and enables BFT for social-import users', () => {
     expect(
-      getBasicFunctionalityConsolidationPlan(allDisabled, true),
+      getBasicFunctionalityConsolidationPlan(allDisabled, true, true),
     ).toStrictEqual({
       landingState: true,
       notification: 'modal',
       isConsistent: true,
+    });
+  });
+
+  it('schedules a toast for social-login users with mixed settings when not social-import', () => {
+    expect(
+      getBasicFunctionalityConsolidationPlan(
+        { ...allEnabled, useTokenDetection: false },
+        true,
+        false,
+      ),
+    ).toStrictEqual({
+      landingState: true,
+      notification: 'toast',
+      isConsistent: false,
     });
   });
 });
