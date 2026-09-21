@@ -109,7 +109,7 @@ pwTest.describe('Traces', () => {
         },
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
-          await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
+          await expectMockRequest(driver, mockedEndpoint[0]);
         },
       );
     },

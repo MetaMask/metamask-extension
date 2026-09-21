@@ -1,6 +1,6 @@
 import { Browser } from 'selenium-webdriver';
 import { getCleanAppState } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
+import { Driver, PAGES } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
 import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
@@ -50,7 +50,7 @@ export const handleSidepanelPostOnboarding = async (
     { timeout: 30000, interval: 500 },
   );
 
-  await driver.navigate();
+  await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
   // Wait for the home page to fully load
   const headerNavbar = new HeaderNavbar(driver);
