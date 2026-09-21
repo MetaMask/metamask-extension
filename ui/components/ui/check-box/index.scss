@@ -7,13 +7,13 @@
   height: 18px;
   font-size: 21px;
   line-height: 0.9;
-  border-radius: 2px;
+  border-radius: 50%;
   display: flex;
 
   &__checked,
   &__indeterminate {
-    color: var(--color-primary-default);
-    border-color: var(--color-primary-default);
+    color: var(--color-icon-default);
+    border-color: var(--color-icon-default);
   }
 
   &:disabled {
