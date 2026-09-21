@@ -521,9 +521,7 @@ describe('RampsBuildQuoteScreen', () => {
       '/ramps/build-quote',
     );
 
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
-    });
+    fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
 
     expect(mockGetBuyWidgetData).not.toHaveBeenCalled();
     expect(mockWatchRampsCheckoutTab).not.toHaveBeenCalled();
