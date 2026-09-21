@@ -168,6 +168,9 @@ describe('custom-network-harness', () => {
             name: network.name,
             symbol: network.nativeSymbol,
             decimals: 18,
+            // catalogResponses tags ERC-20 ids with occurrences (Chiliz/Plasma
+            // UI natives use erc20:0x0).
+            ...(assetId.includes('/erc20:') ? { occurrences: 100 } : {}),
           })),
         );
       });
