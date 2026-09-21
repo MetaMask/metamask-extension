@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import merge from 'lodash/merge';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   type ParsedDeepLink,
@@ -14,6 +15,9 @@ import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
+import { resolveBuyDeepLinkDestination } from '../../../../shared/lib/deep-links/buy-flow';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+import { getBooleanFeatureFlag } from '../../../../shared/lib/remote-feature-flag-utils';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -46,6 +50,26 @@ export class DeepLinkRouter extends EventEmitter<{
    * The function to get the current state of the application.
    */
   private getState: Options['getState'];
+
+  /**
+   * Whether the unified buy (native in-app buy) feature is enabled. Reads the
+   * `rampsEnabled` remote feature flag from background state, with manifest
+   * flag overrides taking precedence (mirrors the `getIsRampsEnabled` UI
+   * selector).
+   *
+   * @returns True if the unified buy feature is enabled.
+   */
+  private isUnifiedBuyEnabled(): boolean {
+    const state = this.getState() as {
+      remoteFeatureFlags?: Record<string, unknown>;
+    };
+    const flags = merge(
+      {},
+      state.remoteFeatureFlags ?? {},
+      getManifestFlags().remoteFeatureFlags ?? {},
+    );
+    return getBooleanFeatureFlag(flags.rampsEnabled, false);
+  }
 
   constructor({ getExtensionURL, getState }: Options) {
     super();
@@ -201,13 +225,24 @@ export class DeepLinkRouter extends EventEmitter<{
             TRIMMED_DEEP_LINK_ROUTE,
             search.toString(),
           );
-        } else if ('redirectTo' in parsed.destination) {
-          link = parsed.destination.redirectTo.toString();
         } else {
-          link = this.getExtensionURL(
-            parsed.destination.path,
-            parsed.destination.query.toString(),
-          );
+          // Route-specific destination resolution — e.g. routing `/buy` into
+          // the in-app unified buy flow when the `rampsEnabled` flag is on.
+          // This runs after the interstitial policy above and does not affect it.
+          const destination = resolveBuyDeepLinkDestination({
+            route: parsed.route,
+            destination: parsed.destination,
+            isUnifiedBuyEnabled: this.isUnifiedBuyEnabled(),
+          });
+
+          if ('redirectTo' in destination) {
+            link = destination.redirectTo.toString();
+          } else {
+            link = this.getExtensionURL(
+              destination.path,
+              destination.query.toString(),
+            );
+          }
         }
       } else {
         // unable to parse, show error page
