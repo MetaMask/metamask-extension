@@ -57,6 +57,34 @@ export type RatingDistribution = {
   null: number;
 };
 
+/**
+ * The machine a benchmark ran on.
+ *
+ * A runner pool is not homogeneous — on GitHub-hosted runners the same metric
+ * splits into fast and slow job modes by Azure region, 21% apart on Chrome — so
+ * without this a slow box is indistinguishable from slow code, and run-to-run
+ * spread conflates machine variation with the noise a gate is trying to measure.
+ */
+export type HostProvenance = {
+  /** The `runs-on` value the job requested, passed via `BENCHMARK_RUNNER_LABEL`. */
+  label?: string;
+  /** `RUNNER_NAME`, where the provider sets it. */
+  name?: string;
+  /** Cloud region or zone. Undefined on GitHub-hosted runners; see host-provenance.ts. */
+  region?: string;
+  os?: string;
+  arch?: string;
+  cpuModel?: string;
+  cpuCount?: number;
+  cpuSpeedMhz?: number;
+  totalMemMb?: number;
+  /** Cumulative CPU steal since boot, percent. These runners are VMs, so the
+   * hypervisor can deschedule the guest without it appearing anywhere else. */
+  stealPercent?: number;
+  /** Fixed-work CPU probe, ms, timed in the Node process. Not the in-page probe. */
+  cpuProbeMs?: number;
+};
+
 /** Per-metric statistics (mean, percentiles, etc.) */
 export type TimerStatistics = {
   id: string;
@@ -111,6 +139,8 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
   trimmedCount?: StatisticalResult;
   outliers?: StatisticalResult;
+  /** The machine this run executed on */
+  host?: HostProvenance;
   webVitals?: WebVitalsSummary;
 };
 
