@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useState } from 'react';
+import React, { useId } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -14,19 +14,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Popover,
-  PopoverPosition,
-} from '../../../../components/component-library';
-
-const WARNING_TOOLTIP_POPOVER_STYLE = {
-  zIndex: 1050,
-  paddingTop: '6px',
-  paddingBottom: '6px',
-  paddingLeft: '16px',
-  paddingRight: '16px',
-  maxWidth: 250,
-} as const;
 
 export type RampsQuoteDisplayProps = {
   cryptoAmount: string;
@@ -57,14 +44,7 @@ export default function RampsQuoteDisplay({
   showWarningIcon = false,
   warningMessage,
 }: RampsQuoteDisplayProps) {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
-    null,
-  );
   const popoverId = useId();
-
-  const handleOpen = useCallback(() => setIsTooltipOpen(true), []);
-  const handleClose = useCallback(() => setIsTooltipOpen(false), []);
 
   if (isLoading) {
     return (
@@ -89,36 +69,32 @@ export default function RampsQuoteDisplay({
         justifyContent={BoxJustifyContent.Center}
         data-testid="ramps-quote-display-warning"
       >
-        <span
-          ref={setReferenceElement}
-          onMouseEnter={warningMessage ? handleOpen : undefined}
-          onMouseLeave={warningMessage ? handleClose : undefined}
-          aria-describedby={isTooltipOpen ? popoverId : undefined}
+        <button
+          type="button"
+          className="border-0 bg-transparent p-0"
+          onClick={(event) => event.stopPropagation()}
+          // @ts-expect-error React types do not include interestfor yet.
+          interestfor={popoverId} // eslint-disable-line react/no-unknown-property
           data-testid="ramps-quote-display-warning-trigger"
-          className="flex"
         >
           <Icon
             name={IconName.Warning}
             size={IconSize.Sm}
             color={IconColor.WarningDefault}
           />
-        </span>
+        </button>
         {warningMessage ? (
-          <Popover
+          <div
+            // @ts-expect-error React types do not include popover yet.
+            popover="hint"
             id={popoverId}
-            isOpen={isTooltipOpen}
-            position={PopoverPosition.BottomEnd}
-            referenceElement={referenceElement}
-            hasArrow
-            onPressEscKey={handleClose}
-            isPortal
-            style={WARNING_TOOLTIP_POPOVER_STYLE}
             data-testid="ramps-quote-display-warning-tooltip"
+            className="m-0 max-w-[250px] rounded-lg border border-border-muted bg-background-default p-4 text-text-default shadow-md [position-area:bottom]"
           >
             <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
               {warningMessage}
             </Text>
-          </Popover>
+          </div>
         ) : null}
       </Box>
     );

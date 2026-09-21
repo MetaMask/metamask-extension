@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { act, fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RampsQuoteDisplay from './ramps-quote-display';
@@ -65,8 +64,8 @@ describe('RampsQuoteDisplay', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('shows the warning message in a tooltip while hovering the warning icon', async () => {
-    const { getByTestId, queryByTestId } = renderWithProvider(
+  it('associates the warning icon with a native tooltip', () => {
+    const { getByTestId } = renderWithProvider(
       <RampsQuoteDisplay
         cryptoAmount=""
         fiatAmount={null}
@@ -76,24 +75,12 @@ describe('RampsQuoteDisplay', () => {
       createStore(),
     );
 
-    expect(
-      queryByTestId('ramps-quote-display-warning-tooltip'),
-    ).not.toBeInTheDocument();
+    const trigger = getByTestId('ramps-quote-display-warning-trigger');
+    const tooltip = getByTestId('ramps-quote-display-warning-tooltip');
 
-    await act(async () => {
-      fireEvent.mouseEnter(getByTestId('ramps-quote-display-warning-trigger'));
-    });
-
-    expect(
-      getByTestId('ramps-quote-display-warning-tooltip'),
-    ).toHaveTextContent('Quote unavailable.');
-
-    await act(async () => {
-      fireEvent.mouseLeave(getByTestId('ramps-quote-display-warning-trigger'));
-    });
-
-    expect(
-      queryByTestId('ramps-quote-display-warning-tooltip'),
-    ).not.toBeInTheDocument();
+    expect(trigger).toHaveAttribute('interestfor', tooltip.id);
+    expect(trigger.tagName).toBe('BUTTON');
+    expect(tooltip).toHaveAttribute('popover', 'hint');
+    expect(tooltip).toHaveTextContent('Quote unavailable.');
   });
 });
