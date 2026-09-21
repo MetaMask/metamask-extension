@@ -257,6 +257,12 @@ export class PlaywrightDriver {
 
   private scriptCdpSession: CDPSession | null = null;
 
+  // CDP session and authenticator ID for WebAuthn virtual authenticator
+  // (Chromium-only, used by passkey tests).
+  private webAuthnCdpSession: CDPSession | null = null;
+
+  private virtualAuthenticatorId: string | null = null;
+
   constructor({
     context,
     page,
@@ -1206,5 +1212,43 @@ export class PlaywrightDriver {
         error,
       );
     }
+  }
+
+  // -- WebAuthn virtual authenticator (Chromium-only, via CDP) ---------------
+
+  async addVirtualAuthenticator(): Promise<void> {
+    if (this.browser !== 'chrome') {
+      throw new Error(
+        'PlaywrightDriver.addVirtualAuthenticator is only supported on Chromium (CDP WebAuthn domain).',
+      );
+    }
+    if (!this.webAuthnCdpSession) {
+      this.webAuthnCdpSession = await this.context.newCDPSession(this.page);
+      await this.webAuthnCdpSession.send('WebAuthn.enable');
+    }
+    const { authenticatorId } = await this.webAuthnCdpSession.send(
+      'WebAuthn.addVirtualAuthenticator',
+      {
+        options: {
+          protocol: 'ctap2',
+          transport: 'internal',
+          hasResidentKey: true,
+          hasUserVerification: true,
+          isUserVerified: true,
+          automaticPresenceSimulation: true,
+        },
+      },
+    );
+    this.virtualAuthenticatorId = authenticatorId;
+  }
+
+  async removeVirtualAuthenticator(): Promise<void> {
+    if (!this.webAuthnCdpSession || !this.virtualAuthenticatorId) {
+      return;
+    }
+    await this.webAuthnCdpSession.send('WebAuthn.removeVirtualAuthenticator', {
+      authenticatorId: this.virtualAuthenticatorId,
+    });
+    this.virtualAuthenticatorId = null;
   }
 }

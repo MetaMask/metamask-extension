@@ -1,43 +1,16 @@
-import {
-  VirtualAuthenticatorOptions,
-  Transport,
-  Protocol,
-} from 'selenium-webdriver/lib/virtual_authenticator';
 import type { PasskeyRecord } from '@metamask/passkey-controller';
-import { Driver } from './driver';
+import { PlaywrightDriver } from './driver-playwright';
 
-type RawDriverWithVirtualAuth = {
-  addVirtualAuthenticator: (
-    options: VirtualAuthenticatorOptions,
-  ) => Promise<void>;
-  removeVirtualAuthenticator: () => Promise<void>;
-};
-
-function createPlatformAuthenticatorOptions(): VirtualAuthenticatorOptions {
-  const authOptions = new VirtualAuthenticatorOptions();
-  authOptions.setProtocol(Protocol.CTAP2);
-  authOptions.setTransport(Transport.INTERNAL);
-  authOptions.setHasResidentKey(true);
-  authOptions.setHasUserVerification(true);
-  authOptions.setIsUserVerified(true);
-  authOptions.setIsUserConsenting(true);
-  return authOptions;
-}
-
-function getRawDriver(driver: Driver): RawDriverWithVirtualAuth {
-  return driver.driver as unknown as RawDriverWithVirtualAuth;
-}
-
-export async function addVirtualAuthenticator(driver: Driver): Promise<void> {
-  await getRawDriver(driver).addVirtualAuthenticator(
-    createPlatformAuthenticatorOptions(),
-  );
+export async function addVirtualAuthenticator(
+  driver: PlaywrightDriver,
+): Promise<void> {
+  await driver.addVirtualAuthenticator();
 }
 
 export async function removeVirtualAuthenticator(
-  driver: Driver,
+  driver: PlaywrightDriver,
 ): Promise<void> {
-  await getRawDriver(driver).removeVirtualAuthenticator();
+  await driver.removeVirtualAuthenticator();
 }
 
 export const DUMMY_PASSKEY_RECORD: PasskeyRecord = {
