@@ -406,12 +406,13 @@ export default function OnboardingFlow() {
     if (
       pathname?.startsWith(ONBOARDING_REVEAL_SRP_ROUTE) ||
       pathname?.startsWith(ONBOARDING_REVIEW_SRP_ROUTE) ||
-      pathname?.startsWith(ONBOARDING_CONFIRM_SRP_ROUTE)
+      pathname?.startsWith(ONBOARDING_CONFIRM_SRP_ROUTE) ||
+      (pathname === ONBOARDING_COMPLETION_ROUTE && Boolean(isFromReminder))
     ) {
       return 'var(--color-background-default)';
     }
     return 'var(--color-background-muted)';
-  }, [pathname, isPopup]);
+  }, [pathname, isPopup, isFromReminder]);
 
   return (
     <Box
