@@ -57,6 +57,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
 import { useDispatch } from '../../store/hooks';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
@@ -564,14 +565,14 @@ export const CustomTokenImportPage = () => {
       }
 
       trackSubmitAttempt(1);
-      navigate(TOKEN_MANAGEMENT_ROUTE, {
-        state: {
-          tokenManagementToast: {
-            type: 'customTokenAdded',
-            symbol,
-          },
-        },
-      });
+      // The toaster is mounted globally, so the toast survives this navigation.
+      toast.success(
+        <ToastContent
+          title={t('newCustomTokenAdded', [symbol])}
+          dataTestId="token-management-custom-token-success-toast"
+        />,
+      );
+      navigate(TOKEN_MANAGEMENT_ROUTE);
     } catch (error) {
       trackSubmitAttempt(0);
       throw error;
@@ -591,6 +592,7 @@ export const CustomTokenImportPage = () => {
     selectedAccount?.id,
     selectedNetwork,
     symbol,
+    t,
     trackSubmitAttempt,
   ]);
 
