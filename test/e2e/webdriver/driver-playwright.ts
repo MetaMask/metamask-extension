@@ -93,6 +93,8 @@ function sanitizeTestTitle(title: string): string {
   return title.replace(/[^a-zA-Z0-9-_]/gu, '_');
 }
 
+const WINDOW_SWITCH_TIMEOUT = 30 * 1000;
+
 const DOWNLOADS_FOLDER = path.join(
   process.cwd(),
   'test-artifacts',
@@ -276,7 +278,9 @@ export class PlaywrightDriver {
       this.registerPage(newPage);
     });
     this.context.on('weberror', (webError) => {
-      this.errors.push(webError.error());
+      if (webError.page()?.url().startsWith(this.extensionUrl)) {
+        this.errors.push(webError.error());
+      }
     });
   }
 
@@ -320,6 +324,35 @@ export class PlaywrightDriver {
       }
     }
     return this.registerPage(page);
+  }
+
+  private async openPageInNewWindow(url: string): Promise<Page> {
+    const page = await this.context.newPage();
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    return page;
+  }
+
+  // Firefox `context.newPage()` opens a new window; use a tab in the
+  // extension window so `triggerUi` still opens the confirmation dialog.
+  private async openTabInCurrentWindow(url: string): Promise<Page> {
+    const extensionPage = [...this.pages.values()].find(
+      (page) => !page.isClosed() && page.url().startsWith(this.extensionUrl),
+    );
+    if (!extensionPage) {
+      return await this.openPageInNewWindow(url);
+    }
+
+    const [page] = await Promise.all([
+      this.context.waitForEvent('page', { timeout: this.timeout }),
+      extensionPage.evaluate(async (target) => {
+        const { browser } = globalThis as unknown as {
+          browser: { tabs: { create: (options: object) => Promise<unknown> } };
+        };
+        await browser.tabs.create({ url: target, active: true });
+      }, url),
+    ]);
+    await page.waitForLoadState('domcontentloaded');
+    return page;
   }
 
   private openWindowHandles(): string[] {
@@ -817,6 +850,25 @@ export class PlaywrightDriver {
     throw lastError;
   }
 
+  async clickElementAndWaitForWindowToClose(
+    rawLocator: RawLocator,
+    retries = 3,
+  ): Promise<void> {
+    const closingPage = this.page;
+    await Promise.all([
+      closingPage.waitForEvent('close', { timeout: this.timeout }),
+      this.clickElement(rawLocator, retries),
+    ]);
+
+    const remainingPage = this.context
+      .pages()
+      .find((candidate) => candidate !== closingPage && !candidate.isClosed());
+    if (remainingPage) {
+      this.currentPage = remainingPage;
+      this.registerPage(remainingPage);
+    }
+  }
+
   async clickElementSafe(
     rawLocator: RawLocator,
     timeout = 2000,
@@ -933,11 +985,12 @@ export class PlaywrightDriver {
   }
 
   async openNewPage(url: string): Promise<string> {
-    const page = await this.context.newPage();
+    const page =
+      this.browser === 'firefox'
+        ? await this.openTabInCurrentWindow(url)
+        : await this.openPageInNewWindow(url);
     this.currentPage = page;
-    const handle = this.handleFor(page);
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-    return handle;
+    return this.handleFor(page);
   }
 
   async openNewURL(url: string): Promise<void> {
@@ -1017,7 +1070,7 @@ export class PlaywrightDriver {
     url: string,
     _initialHandles?: string[],
     delayStep = 1000,
-    timeout = this.timeout,
+    timeout = WINDOW_SWITCH_TIMEOUT,
   ): Promise<void> {
     const expected = new URL(url).toString();
     await this.switchToWindowMatching(
@@ -1032,7 +1085,7 @@ export class PlaywrightDriver {
     title: string,
     _initialHandles?: string[],
     delayStep = 1000,
-    timeout = this.timeout,
+    timeout = WINDOW_SWITCH_TIMEOUT,
   ): Promise<void> {
     await this.switchToWindowMatching(
       `title: ${title}`,
