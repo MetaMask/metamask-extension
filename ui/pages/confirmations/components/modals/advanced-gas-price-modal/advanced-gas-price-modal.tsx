@@ -25,7 +25,7 @@ import {
 } from '../../../../../components/component-library';
 import { GasModalType } from '../../../constants/gas';
 import { GasPriceInput } from '../../gas-price-input/gas-price-input';
-import { GasInput } from '../../gas-input/gas-input';
+import { GAS_INPUT_HELP_TEXT_ID, GasInput } from '../../gas-input/gas-input';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
@@ -167,6 +167,9 @@ const AdvancedGasPriceModalContent = ({
               {t('cancel')}
             </Button>
             <Button
+              aria-describedby={
+                isGasLimitAvailable ? undefined : GAS_INPUT_HELP_TEXT_ID
+              }
               data-testid="gas-fee-modal-save-button"
               style={{ flex: 1 }}
               size={ButtonSize.Lg}

@@ -26,7 +26,7 @@ import {
 import { GasModalType } from '../../../constants/gas';
 import { MaxBaseFeeInput } from '../../max-base-fee-input/max-base-fee-input';
 import { PriorityFeeInput } from '../../priority-fee-input/priority-fee-input';
-import { GasInput } from '../../gas-input/gas-input';
+import { GAS_INPUT_HELP_TEXT_ID, GasInput } from '../../gas-input/gas-input';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
@@ -199,6 +199,9 @@ const AdvancedEIP1559ModalContent = ({
               {t('cancel')}
             </Button>
             <Button
+              aria-describedby={
+                isGasLimitAvailable ? undefined : GAS_INPUT_HELP_TEXT_ID
+              }
               data-testid="gas-fee-modal-save-button"
               style={{ flex: 1 }}
               size={ButtonSize.Lg}

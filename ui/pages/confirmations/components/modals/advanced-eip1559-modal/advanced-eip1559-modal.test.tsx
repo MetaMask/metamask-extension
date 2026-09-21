@@ -30,6 +30,7 @@ jest.mock('../../priority-fee-input/priority-fee-input', () => ({
 }));
 
 jest.mock('../../gas-input/gas-input', () => ({
+  GAS_INPUT_HELP_TEXT_ID: 'gas-input-help-text',
   GasInput: ({
     gasLimit,
     helpText,
@@ -43,7 +44,11 @@ jest.mock('../../gas-input/gas-input', () => ({
       <div data-is-disabled={isDisabled} data-testid="gas-input">
         {gasLimit}
       </div>
-      {helpText && <div data-testid="gas-input-help-text">{helpText}</div>}
+      {helpText && (
+        <div id="gas-input-help-text" data-testid="gas-input-help-text">
+          {helpText}
+        </div>
+      )}
     </>
   ),
 }));
@@ -153,6 +158,16 @@ describe('AdvancedEIP1559Modal', () => {
     );
     expect(getByTestId('gas-input-help-text')).toHaveTextContent(
       messages.gasLimitEditingUnavailable.message,
+    );
+  });
+
+  it('describes disabled Save using the gas limit status text', () => {
+    const { getByTestId } = render({ gasLimit: undefined });
+
+    const helpText = getByTestId('gas-input-help-text');
+    expect(getByTestId('gas-fee-modal-save-button')).toHaveAttribute(
+      'aria-describedby',
+      helpText.id,
     );
   });
 
