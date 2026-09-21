@@ -32,7 +32,7 @@ jobs:
       release-sha: ${{ steps.compute-tag.outputs.release_sha }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: ${{ github.sha }}
           sparse-checkout: .github/scripts
@@ -202,7 +202,7 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
@@ -210,7 +210,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download artifact 'build-dist-webpack'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           path: build-dist-webpack
           name: build-dist-webpack
@@ -219,7 +219,7 @@ jobs:
         run: yarn sentry:publish --dist-directory build-dist-webpack/dist
 
       - name: Download artifact 'build-dist-mv2-webpack'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           path: build-dist-mv2-webpack
           name: build-dist-mv2-webpack
@@ -228,7 +228,7 @@ jobs:
         run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-webpack/dist
 
       - name: Download artifact 'build-flask-webpack'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           path: build-flask-webpack
           name: build-flask-webpack
@@ -237,7 +237,7 @@ jobs:
         run: yarn sentry:publish --build-type flask --dist-directory build-flask-webpack/dist
 
       - name: Download artifact 'build-flask-mv2-webpack'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           path: build-flask-mv2-webpack
           name: build-flask-mv2-webpack
@@ -248,25 +248,25 @@ jobs:
       # SLSA build provenance attestation (INFRA-2665).
       - name: Attest webpack chrome artifact
         id: attest-chrome
-        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
           subject-path: build-dist-webpack/builds/metamask-chrome-*.zip
 
       - name: Attest webpack firefox artifact
         id: attest-firefox
-        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
           subject-path: build-dist-mv2-webpack/builds/metamask-firefox-*.zip
 
       - name: Attest webpack flask chrome artifact
         id: attest-flask-chrome
-        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
           subject-path: build-flask-webpack/builds/metamask-chrome-*.zip
 
       - name: Attest webpack flask firefox artifact
         id: attest-flask-firefox
-        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
           subject-path: build-flask-mv2-webpack/builds/metamask-firefox-*.zip
 

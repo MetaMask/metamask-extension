@@ -17,7 +17,7 @@ jobs:
       use-matrix: ${{ steps.set-use-matrix.outputs.use-matrix }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -30,7 +30,7 @@ jobs:
       - name: Upload changed files artifact
         # On branch `stable`, there's no reason to do a diff
         if: ${{ (github.head_ref || github.ref_name) != 'stable' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: changed-files
           path: ./changed-files/
@@ -39,7 +39,7 @@ jobs:
       - name: Resolve latest E2E report run IDs
         id: e2e-reports
         continue-on-error: true
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           retries: 3
           script: |
@@ -55,7 +55,7 @@ jobs:
         # `continue-on-error` matters: a missing report only costs shard balance (e2e falls back to a naive split)
         # failing here would skip both E2E workflows and fail ci-status-gate, blocking every PR.
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: test-e2e-chrome-report
           path: test/test-results/
@@ -67,7 +67,7 @@ jobs:
         # `continue-on-error` matters: a missing report only costs shard balance (e2e falls back to a naive split)
         # failing here would skip both E2E workflows and fail ci-status-gate, blocking every PR.
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: test-e2e-firefox-report
           path: test/test-results/
@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload test-runs-for-splitting
         continue-on-error: true
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: test-runs-for-splitting
           path: test/test-results/test-runs-*.json
