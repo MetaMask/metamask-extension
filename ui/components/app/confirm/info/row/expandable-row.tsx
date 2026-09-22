@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -27,26 +27,23 @@ export const ConfirmInfoExpandableRow = (
   const contentRef = useRef<HTMLSpanElement | null>(null);
   const [contentHeight, setContentHeight] = useState(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const node = contentRef.current;
     if (!node) {
       return undefined;
     }
 
-    let cancelled = false;
     const updateHeight = () => {
-      if (!cancelled) {
-        setContentHeight(node.scrollHeight);
-      }
+      setContentHeight(node.scrollHeight);
     };
 
-    queueMicrotask(updateHeight);
+    // Measure before paint so rows that start expanded are not clipped at 0px.
+    updateHeight();
 
     const resizeObserver = new ResizeObserver(updateHeight);
     resizeObserver.observe(node);
 
     return () => {
-      cancelled = true;
       resizeObserver.disconnect();
     };
   }, [expanded, content]);
