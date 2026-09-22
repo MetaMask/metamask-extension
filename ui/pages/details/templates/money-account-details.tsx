@@ -5,6 +5,10 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
+import {
+  applyDisplaySign,
+  getDisplaySignPrefix,
+} from '../../../../shared/lib/activity/fiat';
 import type { MoneyAccountActivityItem } from '../../../../shared/lib/activity/types';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../../../components/app/money/messenger';
@@ -41,10 +45,13 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
         )
       : null;
 
+  const isIncoming = item.data.token?.direction === 'in';
   const formattedAmount = formatFiat(item.data.fiat?.amount);
-  const amountSign = isDeposit ? '+' : '-';
   const signedAmount = formattedAmount
-    ? `${amountSign}${formattedAmount}`
+    ? applyDisplaySign(
+        formattedAmount,
+        getDisplaySignPrefix(item.data.token?.direction, { showPlus: true }),
+      )
     : null;
 
   return (
@@ -71,7 +78,7 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
       }
       formatFiat={formatFiat}
       heroAmount={signedAmount}
-      heroTextColor={isDeposit ? 'text-success-default' : 'text-default'}
+      heroTextColor={isIncoming ? 'text-success-default' : 'text-default'}
       item={item}
       metamaskPay={{ bridgeFeeFiat, networkFeeFiat, totalFiat }}
       transactionMeta={transactionMeta}
@@ -82,7 +89,9 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
 /**
  * Details for money-account deposits and withdrawals, laid out like the
  * other MM Pay details (perps): fiat hero, status and date, MM Pay fee
- * breakdown, and the per-transaction summary.
+ * breakdown, and the per-transaction summary. The hero is signed from the
+ * selected account's perspective, matching the activity row: a deposit is
+ * an outflow and a withdrawal an inflow.
  *
  * Rendered from the generic transaction details route and the activity list
  * dialog, neither of which provides a route messenger, so the template brings
