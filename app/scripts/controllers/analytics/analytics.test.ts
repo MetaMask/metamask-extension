@@ -8,7 +8,9 @@ import type {
   AnalyticsControllerGetStateAction,
   AnalyticsControllerIdentifyAction,
   AnalyticsControllerOptInAction,
+  AnalyticsControllerOptInToMarketingAction,
   AnalyticsControllerOptOutAction,
+  AnalyticsControllerOptOutOfMarketingAction,
   AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
@@ -24,16 +26,17 @@ import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
+import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../metametrics-controller-method-action-types';
 import type {
-  MetaMetricsControllerClearTracesAfterMetricsOptInAction,
-  MetaMetricsControllerSetMarketingCampaignCookieIdAction,
-  MetaMetricsControllerTrackTracesAfterMetricsOptInAction,
-} from '../metametrics-controller-method-action-types';
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
+} from '../../services/sentry/sentry-tracing-service-method-action-types';
 import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
   identify,
+  setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
   trackEvent,
   updateProfileSessionData,
@@ -55,9 +58,10 @@ function createConfiguredMessenger({
     analyticsId: TEST_ANALYTICS_ID,
     optedIn,
     consentDecisionMade,
+    optedInToMarketing: false,
+    marketingConsentDecisionMade: false,
   };
   const metaMetricsControllerState = {
-    dataCollectionForMarketing: false,
     marketingCampaignCookieId,
   };
   const trackEventHandler = jest.fn();
@@ -70,6 +74,14 @@ function createConfiguredMessenger({
   const optOutHandler = jest.fn(() => {
     analyticsControllerState.optedIn = false;
     analyticsControllerState.consentDecisionMade = true;
+  });
+  const optInToMarketingHandler = jest.fn(async () => {
+    analyticsControllerState.optedInToMarketing = true;
+    analyticsControllerState.marketingConsentDecisionMade = true;
+  });
+  const optOutOfMarketingHandler = jest.fn(() => {
+    analyticsControllerState.optedInToMarketing = false;
+    analyticsControllerState.marketingConsentDecisionMade = true;
   });
   const resetConsentDecisionHandler = jest.fn(() => {
     analyticsControllerState.optedIn = false;
@@ -92,15 +104,17 @@ function createConfiguredMessenger({
     | NetworkControllerGetNetworkClientByIdAction
     | RemoteFeatureFlagControllerGetStateAction
     | MetaMetricsControllerGetStateAction
-    | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
-    | MetaMetricsControllerClearTracesAfterMetricsOptInAction
     | MetaMetricsControllerSetMarketingCampaignCookieIdAction
+    | SentryTracingServiceTrackTracesAfterMetricsOptInAction
+    | SentryTracingServiceClearTracesAfterMetricsOptInAction
     | AnalyticsControllerGetStateAction
     | AnalyticsControllerTrackEventAction
     | AnalyticsControllerIdentifyAction
     | AnalyticsControllerTrackViewAction
     | AnalyticsControllerOptInAction
+    | AnalyticsControllerOptInToMarketingAction
     | AnalyticsControllerOptOutAction
+    | AnalyticsControllerOptOutOfMarketingAction
     | AnalyticsControllerResetConsentDecisionAction
     | ActionConstraint,
     never
@@ -152,19 +166,19 @@ function createConfiguredMessenger({
     () => metaMetricsControllerState as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:trackTracesAfterMetricsOptIn',
-    trackTracesHandler as never,
-  );
-  rootMessenger.registerActionHandler(
-    'MetaMetricsController:clearTracesAfterMetricsOptIn',
-    clearTracesHandler as never,
-  );
-  rootMessenger.registerActionHandler(
     'MetaMetricsController:setMarketingCampaignCookieId',
     ((cookieId: string | null) => {
       metaMetricsControllerState.marketingCampaignCookieId = cookieId;
       setMarketingCampaignCookieIdHandler(cookieId);
     }) as never,
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:trackTracesAfterMetricsOptIn',
+    trackTracesHandler,
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:clearTracesAfterMetricsOptIn',
+    clearTracesHandler,
   );
   rootMessenger.registerActionHandler(
     'AnalyticsController:getState',
@@ -191,6 +205,14 @@ function createConfiguredMessenger({
     optOutHandler as never,
   );
   rootMessenger.registerActionHandler(
+    'AnalyticsController:optInToMarketing',
+    optInToMarketingHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:optOutOfMarketing',
+    optOutOfMarketingHandler as never,
+  );
+  rootMessenger.registerActionHandler(
     'AnalyticsController:resetConsentDecision',
     resetConsentDecisionHandler as never,
   );
@@ -208,6 +230,8 @@ function createConfiguredMessenger({
     trackViewHandler,
     optInHandler,
     optOutHandler,
+    optInToMarketingHandler,
+    optOutOfMarketingHandler,
     resetConsentDecisionHandler,
     trackTracesHandler,
     clearTracesHandler,
@@ -380,12 +404,19 @@ describe('analytics', () => {
       expect(analyticsControllerState.consentDecisionMade).toBe(false);
     });
 
-    it('does not nullify the analyticsId when set to false', async () => {
+    it('preserves the analyticsId when opting out and back in', async () => {
       const { analyticsControllerState } = createConfiguredMessenger();
 
-      const analyticsId = await setParticipateInMetaMetrics(false);
+      const analyticsIdAfterOptOut = await setParticipateInMetaMetrics(false);
 
-      expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(analyticsIdAfterOptOut).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(analyticsControllerState.analyticsId).toStrictEqual(
+        TEST_ANALYTICS_ID,
+      );
+
+      const analyticsIdAfterOptIn = await setParticipateInMetaMetrics(true);
+
+      expect(analyticsIdAfterOptIn).toStrictEqual(TEST_ANALYTICS_ID);
       expect(analyticsControllerState.analyticsId).toStrictEqual(
         TEST_ANALYTICS_ID,
       );
@@ -405,6 +436,33 @@ describe('analytics', () => {
 
       await setParticipateInMetaMetrics(false);
 
+      expect(setMarketingCampaignCookieIdHandler).toHaveBeenCalledWith(null);
+      expect(metaMetricsControllerState.marketingCampaignCookieId).toBeNull();
+    });
+
+    it('updates AnalyticsController marketing consent', async () => {
+      const {
+        analyticsControllerState,
+        optInToMarketingHandler,
+        optOutOfMarketingHandler,
+        metaMetricsControllerState,
+        setMarketingCampaignCookieIdHandler,
+      } = createConfiguredMessenger({
+        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+      });
+
+      const analyticsId = await setDataCollectionForMarketing(true);
+
+      expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(optInToMarketingHandler).toHaveBeenCalledTimes(1);
+      expect(analyticsControllerState.optedInToMarketing).toBe(true);
+      expect(analyticsControllerState.marketingConsentDecisionMade).toBe(true);
+
+      await setDataCollectionForMarketing(false);
+
+      expect(optOutOfMarketingHandler).toHaveBeenCalledTimes(1);
+      expect(analyticsControllerState.optedInToMarketing).toBe(false);
+      expect(analyticsControllerState.marketingConsentDecisionMade).toBe(true);
       expect(setMarketingCampaignCookieIdHandler).toHaveBeenCalledWith(null);
       expect(metaMetricsControllerState.marketingCampaignCookieId).toBeNull();
     });

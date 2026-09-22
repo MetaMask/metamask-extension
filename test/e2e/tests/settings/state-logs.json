@@ -380,7 +380,6 @@
       "verifiedSnaps": {}
     },
     "databaseUnavailable": "boolean",
-    "dataCollectionForMarketing": "boolean",
     "defaultHomeActiveTabName": "null",
     "depositInProgress": "boolean",
     "depositRequests": [],
@@ -722,6 +721,7 @@
     "logs": {},
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
+    "marketingConsentDecisionMade": "boolean",
     "marketData": {
       "*": {}
     },
@@ -878,6 +878,7 @@
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
+    "optedInToMarketing": "boolean",
     "orderBookPreferences": {
       "currency": "string",
       "metric": "string"
@@ -1014,7 +1015,7 @@
       "variational": {}
     },
     "region": "string",
-    "reportedAccounts": "array",
+    "reportedAccounts": ["string"],
     "requests": {
       "*": {
         "status": "string",
@@ -1086,18 +1087,7 @@
     "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
-    "syncQueue": {
-      "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
-        {
-          "address": "string",
-          "scopes": ["string"]
-        },
-        {
-          "address": "string",
-          "scopes": ["string", "string", "string"]
-        }
-      ]
-    },
+    "syncQueue": {},
     "slides": [],
     "smartTransactionsState": {
       "fees": {
@@ -1252,7 +1242,6 @@
       "testnet": {},
       "mainnet": {}
     },
-    "tracesBeforeMetricsOptIn": [],
     "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},

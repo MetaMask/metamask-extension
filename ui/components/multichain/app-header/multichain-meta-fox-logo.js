@@ -1,36 +1,17 @@
-import React, { useCallback } from 'react';
-
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
-
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
-
 import Logo from '../../ui/metafox-logo';
 
 export const MultichainMetaFoxLogo = () => {
-  const navigate = useNavigate();
   const theme = useTheme();
-
-  const onClick = useCallback(async () => {
-    navigate(DEFAULT_ROUTE);
-  }, [navigate]);
+  const t = useI18nContext();
 
   return (
-    <Box
-      display={[Display.None, Display.Flex]}
-      alignItems={AlignItems.center}
-      margin={2}
-      className="multichain-app-header-logo"
-      data-testid="app-header-logo"
-      justifyContent={JustifyContent.center}
-    >
-      <Logo unsetIconHeight onClick={onClick} theme={theme} />
-    </Box>
+    <Link to={DEFAULT_ROUTE} className="py-4" aria-label={t('home')}>
+      <Logo unsetIconHeight theme={theme} />
+    </Link>
   );
 };

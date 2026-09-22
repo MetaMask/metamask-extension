@@ -139,6 +139,7 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.getTokenStandardAndDetailsByChain = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.toggleBasicFunctionality = sinon.stub();
     background.setUseMultiAccountBalanceChecker = sinon.stub();
     background.setUseTransactionSimulations = sinon.stub();
     background.setSecurityAlertsEnabled = sinon.stub();
@@ -3898,32 +3899,78 @@ describe('Actions', () => {
   });
 
   describe('#toggleBasicFunctionality', () => {
-    it('calls toggleExternalServices and consolidated preference setters', async () => {
+    it('calls the background toggleBasicFunctionality action', async () => {
       const store = mockStore();
 
       setBackgroundConnection(background);
 
       await store.dispatch(actions.toggleBasicFunctionality(false));
 
-      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
-      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
-        false,
-      ]);
-      expect(
-        background.setUseMultiAccountBalanceChecker.getCall(0).args,
-      ).toStrictEqual([false]);
-      expect(
-        background.setUseTransactionSimulations.getCall(0).args,
-      ).toStrictEqual([false]);
-      expect(background.setSecurityAlertsEnabled.getCall(0).args).toStrictEqual(
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
         [false],
       );
-      expect(background.setUse4ByteResolution.getCall(0).args).toStrictEqual([
-        false,
+    });
+  });
+
+  describe('#enableBasicFunctionality', () => {
+    const buildStateForConsolidation = (isConsolidated) => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        useExternalServices: false,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: isConsolidated,
+        },
+        preferences: {
+          ...defaultState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled: isConsolidated,
+        },
+      },
+    });
+
+    it('uses the consolidated toggle when the wallet is consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
+        [true],
+      );
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
+    });
+
+    it('uses the legacy toggle when the wallet is not consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(false));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
       ]);
-      expect(
-        background.setUseExternalNameSources.getCall(0).args,
-      ).toStrictEqual([false]);
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(0);
+    });
+
+    it('reads consolidation state when dispatched, not when created', async () => {
+      const unconsolidatedStore = mockStore(buildStateForConsolidation(false));
+      const consolidatedStore = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      // Built while the wallet is unconsolidated, dispatched after
+      // consolidation has landed.
+      const thunkAction = actions.enableBasicFunctionality();
+      unconsolidatedStore.getState();
+      await consolidatedStore.dispatch(thunkAction);
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
     });
   });
 
@@ -4055,6 +4102,90 @@ describe('Actions', () => {
         ),
       ).toBe(true);
       expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('signAndSendSmartTransaction', () => {
+    it('signs and submits ordinary fee variants without changing the transaction shape', async () => {
+      const store = mockStore();
+      const unsignedTransaction = {
+        chainId: '0x1',
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x2222222222222222222222222222222222222222',
+        data: '0x1234',
+        gas: '0x7530',
+        value: '0x1',
+      };
+      const signedTransactions = ['0xsigned1', '0xsigned2'];
+      const approveTransactionsWithSameNonce = sinon
+        .stub()
+        .resolves(signedTransactions);
+      const submitSignedTransactions = sinon
+        .stub()
+        .resolves({ uuid: 'smart-transaction-uuid' });
+
+      setBackgroundConnection({
+        approveTransactionsWithSameNonce,
+        submitSignedTransactions,
+      });
+
+      const uuid = await store.dispatch(
+        actions.signAndSendSmartTransaction({
+          unsignedTransaction,
+          smartTransactionFees: {
+            fees: [
+              {
+                maxFeePerGas: '100',
+                maxPriorityFeePerGas: '2',
+                gas: '21000',
+                value: '0',
+              },
+              {
+                maxFeePerGas: '200',
+                maxPriorityFeePerGas: '3',
+                gas: '21000',
+                value: '0',
+              },
+            ],
+          },
+        }),
+      );
+
+      expect(approveTransactionsWithSameNonce.getCall(0).args).toStrictEqual([
+        [
+          {
+            ...unsignedTransaction,
+            maxFeePerGas: '64',
+            maxPriorityFeePerGas: '2',
+          },
+          {
+            ...unsignedTransaction,
+            maxFeePerGas: 'c8',
+            maxPriorityFeePerGas: '3',
+          },
+        ],
+      ]);
+      expect(submitSignedTransactions.getCall(0).args).toStrictEqual([
+        {
+          signedTransactions,
+          txParams: unsignedTransaction,
+        },
+      ]);
+      expect(uuid).toBe('smart-transaction-uuid');
+    });
+  });
+
+  describe('cancelSmartTransaction', () => {
+    it('cancels the Smart Transaction by UUID', async () => {
+      const store = mockStore();
+      const cancelSmartTransaction = sinon.stub().resolves();
+      setBackgroundConnection({ cancelSmartTransaction });
+
+      await store.dispatch(actions.cancelSmartTransaction('uuid-to-cancel'));
+
+      expect(cancelSmartTransaction.getCall(0).args).toStrictEqual([
+        'uuid-to-cancel',
+      ]);
     });
   });
 

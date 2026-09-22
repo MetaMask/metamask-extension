@@ -8,7 +8,6 @@ export { AddressCopyButton } from './address-copy-button';
 export { NetworkListItem } from './network-list-item';
 export { NetworkListMenu } from './network-list-menu';
 export { ProductTour } from './product-tour-popover';
-export { AccountDetails } from './account-details';
 export { ImportAccount } from './import-account';
 export { ImportNftsModal } from './import-nfts-modal';
 export { AccountDetailsMenuItem, ViewExplorerMenuItem } from './menu-items';

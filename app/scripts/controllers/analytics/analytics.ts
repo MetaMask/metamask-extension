@@ -367,7 +367,9 @@ export function trackEvent(
         analyticsId,
         event: MetaMetricsEventName.MetricsOptOut,
         properties: eventPayload.properties as Record<string, Json> | undefined,
-        context: eventPayload.context as AnalyticsContext | undefined,
+        context: eventPayload.context as
+          | Partial<MetaMetricsContext>
+          | undefined,
       });
       return;
     }
@@ -421,8 +423,8 @@ export function identify(
 /**
  * Set whether the user participates in MetaMetrics.
  *
- * Consent is owned by AnalyticsController. Buffered traces and the marketing
- * campaign cookie remain on MetaMetricsController.
+ * Consent is owned by AnalyticsController. The in-memory buffered-trace queue
+ * is flushed or cleared here.
  *
  * @param participateInMetaMetrics - Whether the user wants to participate, or `null` to reset to undecided.
  * @returns The current analytics id.
@@ -438,16 +440,16 @@ export async function setParticipateInMetaMetrics(
   if (participateInMetaMetrics === true) {
     await analyticsMessenger.call('AnalyticsController:optIn');
     analyticsMessenger.call(
-      'MetaMetricsController:trackTracesAfterMetricsOptIn',
+      'SentryTracingService:trackTracesAfterMetricsOptIn',
     );
     analyticsMessenger.call(
-      'MetaMetricsController:clearTracesAfterMetricsOptIn',
+      'SentryTracingService:clearTracesAfterMetricsOptIn',
     );
   } else {
     if (participateInMetaMetrics === false) {
       analyticsMessenger.call('AnalyticsController:optOut');
       analyticsMessenger.call(
-        'MetaMetricsController:clearTracesAfterMetricsOptIn',
+        'SentryTracingService:clearTracesAfterMetricsOptIn',
       );
     } else {
       analyticsMessenger.call('AnalyticsController:resetConsentDecision');
@@ -470,6 +472,33 @@ export async function setParticipateInMetaMetrics(
     participateInMetaMetrics !== null
   ) {
     updateExtensionUninstallUrl(participateInMetaMetrics === true, analyticsId);
+  }
+
+  return analyticsId;
+}
+
+export async function setDataCollectionForMarketing(
+  dataCollectionForMarketing: boolean,
+): Promise<string> {
+  const analyticsMessenger = getMessenger();
+  const { analyticsId } = analyticsMessenger.call(
+    'AnalyticsController:getState',
+  );
+
+  if (dataCollectionForMarketing) {
+    await analyticsMessenger.call('AnalyticsController:optInToMarketing');
+  } else {
+    analyticsMessenger.call('AnalyticsController:optOutOfMarketing');
+
+    const { marketingCampaignCookieId } = analyticsMessenger.call(
+      'MetaMetricsController:getState',
+    );
+    if (marketingCampaignCookieId) {
+      analyticsMessenger.call(
+        'MetaMetricsController:setMarketingCampaignCookieId',
+        null,
+      );
+    }
   }
 
   return analyticsId;

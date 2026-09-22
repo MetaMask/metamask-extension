@@ -1057,7 +1057,7 @@ export const getQuoteRequestInsufficientBal = createSelector(
     ),
 );
 
-const getQuoteStreamComplete = (state: BridgeAppState) =>
+export const getQuoteStreamComplete = (state: BridgeAppState) =>
   state.metamask.quoteStreamComplete;
 
 /**
