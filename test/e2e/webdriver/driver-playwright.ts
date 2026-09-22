@@ -850,6 +850,25 @@ export class PlaywrightDriver {
     }
   }
 
+  /**
+   * Clicks a nested button element by its text content. First attempts to click
+   * a button with the exact text, then falls back to finding an element
+   * containing the text and clicking its parent button.
+   *
+   * @param buttonText - The text content of the button to click.
+   */
+  async clickNestedButton(buttonText: string): Promise<void> {
+    try {
+      await this.clickElement({ text: buttonText, tag: 'button' });
+    } catch {
+      // Fallback: find element containing text and click its parent button
+      const locator = this.page
+        .locator(`//*[contains(text(),"${buttonText}")]/parent::button`)
+        .first();
+      await locator.click({ timeout: this.timeout });
+    }
+  }
+
   async clickElementAndWaitToDisappear(
     rawLocator: RawLocator,
     timeout = 3000,
