@@ -100,9 +100,9 @@ type IsolatedHtmlEntries = {
 };
 
 const lockdownBase = [
-  'runtime\\.[0-9a-h]{20}\\.js',
-  'scripts\\/contentscript\\.js',
-  'service-worker\\.js',
+  String.raw`runtime\.[0-9a-h]{20}\.js`,
+  String.raw`scripts\/contentscript\.js`,
+  String.raw`service-worker\.js`,
 ];
 
 function lockdownPattern(isolatedHtmlNames: string[]) {
