@@ -34,7 +34,9 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": false,
+      "marketingConsentDecisionMade": false,
       "optedIn": false,
+      "optedInToMarketing": false,
       "preConsentEventQueue": {
         "00000000-0000-4000-8000-000000000000": {
           "eventName": "App Installed",
@@ -49,20 +51,21 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 222,
+      "currentMigrationVersion": 228,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
       },
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome",
         "os": "mac"
       },
-      "canTrackWalletFundsObtained": true,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -160,27 +163,17 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "dataCollectionForMarketing": null,
-      "fragments": {},
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": [
-        {
-          "request": {
-            "name": "Onboarding - Overall Journey",
-            "op": "onboarding.user_journey",
-            "startTime": 1764061390458
-          },
-          "type": "start"
-        }
-      ],
-      "traits": {
-        "install_date_ext": "2026-01-22",
-        "storage_kind": "split"
-      }
+      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
+    },
+    "MoneyAccountController": {
+      "moneyAccounts": {}
+    },
+    "MoneyAccountUpgradeController": {
+      "upgradedAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
@@ -545,7 +538,7 @@
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
         "stellar": {
-          "stellar:pubnet": false,
+          "stellar:pubnet": true,
           "stellar:testnet": false
         },
         "tron": {
@@ -2016,6 +2009,8 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
@@ -2068,17 +2063,14 @@
       "watchEthereumAccountEnabled": false
     },
     "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
+      "reportedAccounts": [],
       "syncQueue": {}
     },
     "RampsController": {
-      "countries": {
-        "data": [],
-        "error": null,
-        "isLoading": false,
-        "selected": null
-      },
+      "autoramps": [],
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null
@@ -2130,6 +2122,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/stellar-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
@@ -2251,12 +2244,13 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": {}
   },
   "meta": {
     "storageKind": "split",
-    "version": 222
+    "version": 228
   }
 }

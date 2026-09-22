@@ -1,12 +1,14 @@
 import React, {
   useCallback,
+  useDeferredValue,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
 import { useSelector, useStore } from 'react-redux';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -34,8 +36,6 @@ import {
   type Hex,
 } from '@metamask/utils';
 import { ERC20 } from '@metamask/controller-utils';
-import { useDeferredValue } from '../../hooks/useDeferredValue';
-
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -68,7 +68,6 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   CUSTOM_TOKEN_IMPORT_ROUTE,
   DEFAULT_ROUTE,
-  TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
@@ -143,23 +142,6 @@ const METRICS_PROPERTIES = {
   viewState: 'view_state',
 } as const;
 
-type TokenManagementRouteState = {
-  tokenManagementToast?: {
-    type: 'customTokenAdded';
-    symbol: string;
-  };
-};
-
-type TokenManagementPageToast =
-  | {
-      type: 'customTokenAdded';
-      symbol: string;
-    }
-  | {
-      type: 'networkAdded';
-      name: string;
-    };
-
 type TokenManagementListItem =
   | {
       type: 'managed';
@@ -169,22 +151,6 @@ type TokenManagementListItem =
       type: 'api-result';
       result: TokenSearchResult;
     };
-
-const getTokenManagementToastFromRouteState = (state: unknown) => {
-  if (!state || typeof state !== 'object') {
-    return null;
-  }
-
-  const routeToast = (state as TokenManagementRouteState).tokenManagementToast;
-  if (routeToast?.type !== 'customTokenAdded' || !routeToast.symbol) {
-    return null;
-  }
-
-  return {
-    type: 'customTokenAdded' as const,
-    symbol: routeToast.symbol,
-  };
-};
 
 const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   if (!assetId || typeof assetId !== 'string') {
@@ -407,7 +373,6 @@ export const TokenManagementPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const enableFeaturedEvmNetwork = useEnableFeaturedEvmNetwork();
@@ -419,16 +384,12 @@ export const TokenManagementPage = () => {
     () => new Set<string>(),
   );
 
-  const showPageToast = useCallback(
-    (pageToast: TokenManagementPageToast) => {
-      const title =
-        pageToast.type === 'customTokenAdded'
-          ? t('newCustomTokenAdded', [pageToast.symbol])
-          : t('newNetworkAdded', [pageToast.name]);
+  const showNetworkAddedToast = useCallback(
+    (networkName: string) => {
       toast.success(
         <ToastContent
-          title={title}
-          dataTestId="token-management-custom-token-success-toast"
+          title={t('newNetworkAdded', [networkName])}
+          dataTestId="token-management-network-added-success-toast"
         />,
       );
     },
@@ -475,7 +436,9 @@ export const TokenManagementPage = () => {
   >(() => new Set<string>());
   const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
   const hasTrackedScreenOpenedRef = useRef(false);
-  const tokenListOrderRef = useRef<Map<string, number>>(new Map());
+  const [tokenListOrder, setTokenListOrder] = useState<Map<string, number>>(
+    () => new Map(),
+  );
 
   const stageHide = useCallback((key: string, payload: StagedHidePayload) => {
     stagedHidesRef.current.set(key, payload);
@@ -902,16 +865,6 @@ export const TokenManagementPage = () => {
   }, []);
 
   useEffect(() => {
-    const routeToast = getTokenManagementToastFromRouteState(location.state);
-    if (!routeToast) {
-      return;
-    }
-
-    showPageToast(routeToast);
-    navigate(TOKEN_MANAGEMENT_ROUTE, { replace: true, state: null });
-  }, [location.state, navigate, showPageToast]);
-
-  useEffect(() => {
     commitStagedHidesRef.current = async () => {
       if (stagedHidesRef.current.size === 0) {
         return;
@@ -1149,10 +1102,7 @@ export const TokenManagementPage = () => {
               return;
             }
 
-            showPageToast({
-              type: 'networkAdded',
-              name: featuredNetwork.name,
-            });
+            showNetworkAddedToast(featuredNetwork.name);
             return;
           }
           const addedNetwork = await enableFeaturedEvmNetwork(payload.assetId);
@@ -1197,7 +1147,7 @@ export const TokenManagementPage = () => {
 
           trackEvent(tokenAddedEvent);
           if (addedNetwork) {
-            showPageToast({ type: 'networkAdded', name: addedNetwork.name });
+            showNetworkAddedToast(addedNetwork.name);
           }
           return;
         }
@@ -1238,7 +1188,7 @@ export const TokenManagementPage = () => {
       removePendingKey,
       removeCommittedHideKey,
       stageHide,
-      showPageToast,
+      showNetworkAddedToast,
       t,
       trackEvent,
       unstageHide,
@@ -1478,47 +1428,67 @@ export const TokenManagementPage = () => {
     visibleTokenAssetIds,
   ]);
 
-  const tokenListItems = useMemo<TokenManagementListItem[]>(() => {
-    const nextTokenListItems = (() => {
-      if (hasQuery) {
-        return searchResults.map((result) => ({
-          type: 'api-result' as const,
-          result,
-        }));
-      }
+  const unsortedTokenListItems = useMemo<TokenManagementListItem[]>(() => {
+    if (hasQuery) {
+      return searchResults.map((result) => ({
+        type: 'api-result' as const,
+        result,
+      }));
+    }
 
-      return [
-        ...visibleTokens.map((token) => ({
-          type: 'managed' as const,
-          token,
-        })),
-        ...browseApiResults.map((result) => ({
-          type: 'api-result' as const,
-          result,
-        })),
-      ];
-    })();
+    return [
+      ...visibleTokens.map((token) => ({
+        type: 'managed' as const,
+        token,
+      })),
+      ...browseApiResults.map((result) => ({
+        type: 'api-result' as const,
+        result,
+      })),
+    ];
+  }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
 
-    nextTokenListItems.forEach((item) => {
+  const tokenListResult = useMemo(() => {
+    const order = new Map(tokenListOrder);
+    let orderChanged = false;
+
+    for (const item of unsortedTokenListItems) {
       const itemKey = getTokenManagementListItemOrderKey(item);
-      if (!tokenListOrderRef.current.has(itemKey)) {
-        tokenListOrderRef.current.set(itemKey, tokenListOrderRef.current.size);
+      if (!order.has(itemKey)) {
+        order.set(itemKey, order.size);
+        orderChanged = true;
       }
-    });
+    }
 
-    return [...nextTokenListItems].sort((itemA, itemB) => {
+    const items = [...unsortedTokenListItems].sort((itemA, itemB) => {
       const itemAOrder =
-        tokenListOrderRef.current.get(
-          getTokenManagementListItemOrderKey(itemA),
-        ) ?? Number.MAX_SAFE_INTEGER;
+        order.get(getTokenManagementListItemOrderKey(itemA)) ??
+        Number.MAX_SAFE_INTEGER;
       const itemBOrder =
-        tokenListOrderRef.current.get(
-          getTokenManagementListItemOrderKey(itemB),
-        ) ?? Number.MAX_SAFE_INTEGER;
+        order.get(getTokenManagementListItemOrderKey(itemB)) ??
+        Number.MAX_SAFE_INTEGER;
 
       return itemAOrder - itemBOrder;
     });
-  }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
+
+    return {
+      items,
+      pendingOrder: orderChanged ? order : null,
+    };
+  }, [unsortedTokenListItems, tokenListOrder]);
+
+  const tokenListItems = tokenListResult.items;
+  const pendingTokenListOrder = tokenListResult.pendingOrder;
+
+  useLayoutEffect(() => {
+    if (!pendingTokenListOrder) {
+      return;
+    }
+    // Persist newly discovered list item order keys after derive+sort in useMemo.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- order map must follow list growth without render-time setState
+    setTokenListOrder(pendingTokenListOrder);
+  }, [pendingTokenListOrder]);
+
   const tokenManagementViewState =
     tokenListItems.length === 0
       ? TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE
@@ -1688,7 +1658,7 @@ export const TokenManagementPage = () => {
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="w-full h-full min-h-0"
-      data-testid="token-management-page"
+      data-testid="parent-selector-token-management-page"
     >
       <Header startAccessory={startAccessory}>{t('manageTokens')}</Header>
 

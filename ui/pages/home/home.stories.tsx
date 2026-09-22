@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import Home from './home';
 import testData from '../../../.storybook/test-data';
@@ -27,7 +27,8 @@ function createHomeStoryStore(overrides: HomeStoryStateOverrides = {}) {
       completedOnboarding: true,
       firstTimeFlowType: FirstTimeFlowType.import,
       termsOfUseLastAgreed: Date.now(),
-      dataCollectionForMarketing: false,
+      optedInToMarketing: false,
+      marketingConsentDecisionMade: true,
       useExternalServices: true,
       recoveryPhraseReminderHasBeenShown: true,
       recoveryPhraseReminderLastShown: Date.now(),

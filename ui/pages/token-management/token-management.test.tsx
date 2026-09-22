@@ -48,9 +48,6 @@ const backgroundConnectionMock = new Proxy(
   },
 );
 
-const mockTokenManagementLocationState = {
-  current: null as unknown,
-};
 const mockUseNavigate = jest.fn();
 const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
@@ -64,7 +61,7 @@ jest.mock('react-router-dom', () => {
       pathname: '/token-management',
       search: '',
       hash: '',
-      state: mockTokenManagementLocationState.current,
+      state: null,
       key: 'token-management-test',
     }),
   };
@@ -379,7 +376,6 @@ describe('TokenManagementPage', () => {
   };
 
   beforeEach(() => {
-    mockTokenManagementLocationState.current = null;
     mockUseNavigate.mockClear();
     mockToastSuccess.mockClear();
     trackAnalyticsEventMock.mockClear();
@@ -468,8 +464,7 @@ describe('TokenManagementPage', () => {
     },
   });
 
-  const renderPage = (state = createState(), routeState?: unknown) => {
-    mockTokenManagementLocationState.current = routeState ?? null;
+  const renderPage = (state = createState()) => {
     const store = configureStore({
       ...state,
     });
@@ -546,7 +541,9 @@ describe('TokenManagementPage', () => {
 
   it('renders without crashing', () => {
     renderPage();
-    expect(screen.getByTestId('token-management-page')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('parent-selector-token-management-page'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('token-management-header-back-button'),
     ).toBeInTheDocument();
@@ -630,26 +627,6 @@ describe('TokenManagementPage', () => {
         sensitiveProperties: {},
       }),
       expect.anything(),
-    );
-  });
-
-  it('shows an animated custom token success toast from route state', async () => {
-    renderPage(createState(), {
-      tokenManagementToast: {
-        type: 'customTokenAdded',
-        symbol: 'APE',
-      },
-    });
-
-    await waitFor(() =>
-      expect(mockToastSuccess).toHaveBeenCalledWith(
-        expect.objectContaining({
-          props: expect.objectContaining({
-            dataTestId: 'token-management-custom-token-success-toast',
-            title: expect.stringContaining('APE'),
-          }),
-        }),
-      ),
     );
   });
 
@@ -1259,7 +1236,7 @@ describe('TokenManagementPage', () => {
     expect(mockToastSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
         props: expect.objectContaining({
-          dataTestId: 'token-management-custom-token-success-toast',
+          dataTestId: 'token-management-network-added-success-toast',
           title: '“Base” was successfully added!',
         }),
       }),

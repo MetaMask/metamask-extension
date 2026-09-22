@@ -4,9 +4,7 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": {
-      "accountsByChainId": "object"
-    },
+    "AccountTracker": {},
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -36,7 +34,9 @@
       "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "consentDecisionMade": true,
       "eventQueue": "object",
-      "optedIn": true
+      "marketingConsentDecisionMade": "boolean",
+      "optedIn": true,
+      "optedInToMarketing": "boolean"
     },
     "AnnouncementController": {
       "announcements": "object"
@@ -45,15 +45,16 @@
       "currentAppVersion": "string",
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": "boolean",
       "browserEnvironment": {
         "browser": "string",
         "os": "string"
       },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -85,7 +86,8 @@
     "AssetsController": "object",
     "AuthenticationController": {
       "isSignedIn": "boolean",
-      "needsProfilePairing": "boolean"
+      "needsProfilePairing": "boolean",
+      "needsSocialPairing": "boolean"
     },
     "BridgeController": {
       "inputPrimaryDenomination": "string"
@@ -105,10 +107,7 @@
       "lastFetched": null,
       "version": null
     },
-    "CurrencyController": {
-      "currencyRates": {},
-      "currentCurrency": "usd"
-    },
+    "CurrencyController": {},
     "DeFiPositionsControllerV2": "object",
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -125,27 +124,17 @@
       "logs": "object"
     },
     "MetaMetricsController": {
-      "dataCollectionForMarketing": "boolean",
-      "fragments": "object",
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object",
-      "traits": "object"
+      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MultichainAssetsController": {
-      "accountsAssets": "object",
-      "allIgnoredAssets": "object",
-      "assetsMetadata": "object"
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": "object"
-    },
-    "MultichainBalancesController": {
-      "balances": "object"
-    },
+    "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
+    "MultichainAssetsController": {},
+    "MultichainAssetsRatesController": {},
+    "MultichainBalancesController": {},
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],
@@ -241,6 +230,8 @@
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": "boolean",
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
@@ -285,9 +276,16 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": "boolean"
     },
-    "ProfileMetricsController": "object",
+    "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
+      "initialDelayEndTimestamp": "number",
+      "initialEnqueueCompleted": "boolean",
+      "proofBackfillEnqueued": "boolean",
+      "reportedAccounts": "object",
+      "syncQueue": "object"
+    },
     "RampsController": {
-      "countries": "object",
+      "autoramps": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -337,17 +335,9 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenBalancesController": {
-      "tokenBalances": "object"
-    },
-    "TokenRatesController": {
-      "marketData": "object"
-    },
-    "TokensController": {
-      "allDetectedTokens": {},
-      "allIgnoredTokens": {},
-      "allTokens": {}
-    },
+    "TokenBalancesController": {},
+    "TokenRatesController": {},
+    "TokensController": {},
     "TransactionController": {
       "lastFetchedBlockNumbers": "object",
       "methodData": "object",
@@ -361,12 +351,13 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": "object"
   },
   "meta": {
     "storageKind": "split",
-    "version": 222
+    "version": 228
   }
 }

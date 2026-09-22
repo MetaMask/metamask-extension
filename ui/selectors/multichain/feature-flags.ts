@@ -4,7 +4,16 @@ import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
+import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+
+export {
+  BFT_CHILD_PREFERENCES,
+  getIsBasicFunctionalityConsolidationEnabled,
+  getIsBasicFunctionalityToggleEnabled,
+  getShouldShowBasicFunctionalityMigrationModal,
+  getShouldShowBasicFunctionalityMigrationToast,
+} from './basic-functionality';
 
 /**
  * Get the state of the `bitcoinAccounts` feature flag with version check.
@@ -117,36 +126,6 @@ export const getIsTokenManagementFilterEnabled = createSelector(
 );
 
 /**
- * Get the state of the `extensionBasicFunctionalityToggle` remote feature flag.
- *
- * @param _state - The MetaMask state object
- * @returns boolean - True if the feature is enabled, false otherwise.
- */
-export const getIsBasicFunctionalityToggleEnabled = createSelector(
-  getRemoteFeatureFlags,
-  ({ extensionBasicFunctionalityToggle }) =>
-    getBooleanFeatureFlag(extensionBasicFunctionalityToggle, false),
-);
-
-/**
- * Get whether the consolidated Basic Functionality experience should be shown.
- * The remote flag controls rollout eligibility; the persisted marker ensures
- * the experience only applies to users who onboarded into the cohort.
- *
- * @param _state - The MetaMask state object
- * @returns boolean - True if the user is in the consolidated Basic Functionality cohort.
- */
-export const getIsBasicFunctionalityConsolidationEnabled = createSelector(
-  getIsBasicFunctionalityToggleEnabled,
-  (state) =>
-    Boolean(
-      state.metamask.preferences?.isBasicFunctionalityConsolidatedEnabled,
-    ),
-  (isBasicFunctionalityToggleEnabled, isConsolidatedUser) =>
-    isBasicFunctionalityToggleEnabled && isConsolidatedUser,
-);
-
-/**
  * Get the state of the `extensionUxNetworkManagement` remote feature flag.
  *
  * @param _state - The MetaMask state object
@@ -195,4 +174,22 @@ export const getIsSecurityTrustTdpEnabled = createSelector(
 export const getIsDiscoverSearchEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ extensionUXSearch }) => getBooleanFeatureFlag(extensionUXSearch, false),
+);
+
+/**
+ * Selector that returns whether the TradingView advanced charts integration
+ * should be shown on the Token Details Page.
+ *
+ * When enabled, the Token Details Page renders the TradingView advanced chart
+ * iframe instead of the legacy Chart.js line chart.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True when the advanced chart integration should be shown.
+ */
+export const getIsAdvancedChartsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) => {
+    const rawFlagValue = remoteFeatureFlags[TOKEN_DETAILS_ADVANCED_CHARTS_FLAG];
+    return getBooleanFeatureFlag(rawFlagValue, false);
+  },
 );

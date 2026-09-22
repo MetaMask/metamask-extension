@@ -2,7 +2,7 @@ import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
+import NFTDetailsPage from '../../../page-objects/pages/asset/nft-details-page';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';

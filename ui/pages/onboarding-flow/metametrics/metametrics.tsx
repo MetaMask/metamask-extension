@@ -25,7 +25,7 @@ import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
@@ -126,9 +126,7 @@ export default function OnboardingMetametrics() {
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
@@ -148,7 +146,7 @@ export default function OnboardingMetametrics() {
   let isParticipateInMetaMetricsChecked = true;
   if (participateTouched) {
     isParticipateInMetaMetricsChecked = participateLocal;
-  } else if (completedMetaMetricsOnboarding) {
+  } else if (consentDecisionMade) {
     isParticipateInMetaMetricsChecked = isOptedIn;
   }
   const isDataCollectionForMarketingChecked = marketingTouched

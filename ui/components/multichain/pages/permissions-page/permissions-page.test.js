@@ -242,6 +242,55 @@ describe('All Connections', () => {
       expect(queryByTestId('disconnect-all-button')).not.toBeInTheDocument();
     });
 
+    it('shows empty state and hides Disconnect All button when only snaps exist', () => {
+      const stateWithOnlySnaps = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+          subjectMetadata: {
+            'npm:@metamask/testSnap1': {
+              name: 'Test Snap 1',
+              version: '1.2.3',
+              subjectType: 'snap',
+            },
+          },
+          subjects: {
+            'npm:@metamask/testSnap1': {
+              origin: 'npm:@metamask/testSnap1',
+              permissions: {
+                'endowment:ethereum-provider': {
+                  caveats: null,
+                  date: 1698071087770,
+                  id: 'test-snap-permission',
+                  invoker: 'npm:@metamask/testSnap1',
+                  parentCapability: 'endowment:ethereum-provider',
+                },
+              },
+            },
+          },
+          snaps: {
+            'npm:@metamask/testSnap1': {
+              id: 'npm:@metamask/testSnap1',
+              origin: 'npm:@metamask/testSnap1',
+              version: '1.2.3',
+              iconUrl: null,
+              initialPermissions: {
+                'endowment:ethereum-provider': {},
+              },
+            },
+          },
+        },
+      };
+      const snapsOnlyStore = configureStore(stateWithOnlySnaps);
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <PermissionsPage />,
+        snapsOnlyStore,
+      );
+      expect(queryByTestId('disconnect-all-button')).not.toBeInTheDocument();
+      expect(getByTestId('no-connections')).toBeInTheDocument();
+    });
+
     it('opens Disconnect All Sites modal when button is clicked', () => {
       const { getByTestId } = renderWithProvider(
         <PermissionsPage />,

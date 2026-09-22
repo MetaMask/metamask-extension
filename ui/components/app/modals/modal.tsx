@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { AnyAction, Dispatch } from 'redux';
-import { usePureBlack } from '@metamask/design-system-react';
 
 import { connect } from 'react-redux';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -289,7 +288,6 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const isPureBlack = usePureBlack();
   const modalRef = useRef<FadeModalRef | null>(null);
 
   useEffect(() => {
@@ -302,13 +300,10 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
 
   const modal = MODALS[modalState.name ?? 'DEFAULT'];
   const { contents: children, disableBackdropClick = false, testId } = modal;
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
   const modalStyle = {
     ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
-    ...(isPureBlack && {
-      backgroundColor: 'var(--color-background-alternative)',
-      border: '1px solid var(--color-border-muted)',
-    }),
+    backgroundColor: 'var(--color-background-elevated1)',
+    border: '1px solid var(--color-border-alternative)',
   };
   const contentStyle = modal.contentStyle ?? {};
 

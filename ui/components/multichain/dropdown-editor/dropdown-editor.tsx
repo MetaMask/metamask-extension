@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -71,7 +71,12 @@ export const DropdownEditor = <Item,>({
   buttonDataTestId: string;
 }) => {
   const t = useI18nContext();
-  const dropdown = useRef(null);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null,
+  );
+  const setDropdownRef = useCallback((node: HTMLElement | null) => {
+    setReferenceElement(node);
+  }, []);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const renderDropdownList = () => (
@@ -197,7 +202,7 @@ export const DropdownEditor = <Item,>({
       borderWidth={1}
       paddingLeft={4}
       paddingRight={4}
-      ref={dropdown}
+      ref={setDropdownRef}
     >
       {selectedItem ? (
         renderItem(selectedItem, false)
@@ -239,7 +244,7 @@ export const DropdownEditor = <Item,>({
           matchWidth={true}
           paddingRight={0}
           className="dropdown-editor__item-popover"
-          referenceElement={dropdown.current}
+          referenceElement={referenceElement}
           position={PopoverPosition.Bottom}
           isOpen={isDropdownOpen}
           onClickOutside={() => setIsDropdownOpen(false)}

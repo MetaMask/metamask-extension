@@ -8,7 +8,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { getCompletedMetaMetricsOnboarding, getOptedIn } from '../../selectors';
+import { getConsentDecisionMade, getOptedIn } from '../../selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   BannerAlert,
@@ -53,11 +53,9 @@ type ErrorPageProps = {
 
 const ErrorPage = ({ error }: ErrorPageProps) => {
   const t = useI18nContext();
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
 
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);

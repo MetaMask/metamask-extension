@@ -37,7 +37,7 @@ describe('ContactsListPage', () => {
 
   it('renders the contacts page', () => {
     const { getByTestId } = renderPage();
-    expect(getByTestId('contacts-page')).toBeInTheDocument();
+    expect(getByTestId('parent-selector-contacts-page')).toBeInTheDocument();
   });
 
   it('renders header with "Contacts" title', () => {
@@ -110,7 +110,7 @@ describe('ContactsListPage', () => {
       },
     };
     const { getByTestId } = renderPage(stateWithBrokenAccount);
-    expect(getByTestId('contacts-page')).toBeInTheDocument();
+    expect(getByTestId('parent-selector-contacts-page')).toBeInTheDocument();
     expect(getByTestId('contact-list-item')).toBeInTheDocument();
   });
 

@@ -252,6 +252,18 @@ describe('PayWithModal', () => {
     expect(screen.getByTestId('has-tag-renderers')).toHaveTextContent('true');
   });
 
+  it('passes no-fee tag renderers for money account withdraws', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        type: TransactionType.moneyAccountWithdraw,
+      },
+    } as ReturnType<typeof useConfirmContext>);
+
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    expect(screen.getByTestId('has-tag-renderers')).toHaveTextContent('true');
+  });
+
   it('calls onClose when close button is clicked', () => {
     renderModal({ isOpen: true, onClose: onCloseMock });
 

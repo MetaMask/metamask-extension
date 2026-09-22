@@ -119,12 +119,14 @@ describe('Token List via StorageService', function () {
                 symbol: tokenSymbol,
                 name: tokenName,
                 decimals: 18,
+                balance: '1',
               },
               {
                 address: mUsdAddress,
                 symbol: 'MUSD',
                 name: 'mUSD',
                 decimals: 6,
+                balance: '0',
               },
             ],
             { includeAssetsV3: false },
@@ -267,6 +269,7 @@ describe('Token List via StorageService', function () {
                   name: tokenName,
                   symbol: tokenSymbol,
                   decimals: 18,
+                  occurrences: 100,
                 });
               }
 
