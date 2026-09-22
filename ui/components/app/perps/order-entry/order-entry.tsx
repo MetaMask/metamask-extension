@@ -66,6 +66,7 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.limitPricePrefill
  * @param props.onInputMethodChange
  * @param props.isLoadingAccount
+ * @param props.hasNoAvailableBalance
  */
 export const OrderEntry = ({
   asset,
@@ -86,6 +87,7 @@ export const OrderEntry = ({
   onOrderTypeChange,
   onAddFunds,
   isLoadingAccount = false,
+  hasNoAvailableBalance = false,
   initialLeverage,
   initialDraft,
   onLeverageChange,
@@ -345,6 +347,7 @@ export const OrderEntry = ({
             }
             onAddFunds={onAddFunds}
             isLoadingAccount={isLoadingAccount}
+            hasNoAvailableBalance={hasNoAvailableBalance}
             autoFocus={autoFocusUsd && formState.type === 'market'}
             usdPlaceholder={usdPlaceholder}
             usdInputRef={usdInputRef}

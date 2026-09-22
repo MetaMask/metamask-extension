@@ -25,7 +25,10 @@ import {
   PERPS_MIN_MARKET_ORDER_USD,
   PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC,
 } from '../../components/app/perps/constants';
-import { markUnfundedDepositFunnel } from '../../components/app/perps/utils/unfunded-deposit-funnel';
+import {
+  confirmUnfundedDepositFunnel,
+  markUnfundedDepositFunnel,
+} from '../../components/app/perps/utils/unfunded-deposit-funnel';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -46,6 +49,9 @@ import type { UsePerpsMaxSlippageReturn } from '../../hooks/perps/usePerpsMaxSli
 import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
+
+/** The account `test/data/mock-state.json` has selected. */
+const MOCK_SELECTED_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 const mockAnalyticsTrackEvent = jest.fn();
 
@@ -2027,7 +2033,9 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(
         screen.getByTestId('perps-unfunded-add-funds-hint'),
-      ).toHaveTextContent(messages.perpsAddFundsHint.message);
+      ).toHaveTextContent(
+        tEn('perpsAddFundsHint', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
 
       await act(async () => {
         fireEvent.click(submitButton);
@@ -2044,8 +2052,10 @@ describe('PerpsOrderEntryPage', () => {
             [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
               PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
             [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-              PERPS_EVENT_VALUE.BUTTON_LOCATION.TRADING,
+              PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
             [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+            [PERPS_EVENT_PROPERTY.DEPOSIT_CLICK_OUTCOME]:
+              PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.DEPOSIT,
           }),
         }),
       );
@@ -2073,7 +2083,9 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(
         screen.getByTestId('perps-unfunded-add-funds-hint'),
-      ).toHaveTextContent(messages.perpsAddFundsHint.message);
+      ).toHaveTextContent(
+        tEn('perpsAddFundsHint', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
 
       await act(async () => {
         fireEvent.click(submitButton);
@@ -2105,6 +2117,67 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockTriggerDeposit).not.toHaveBeenCalled();
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      // The geo-blocked click is itself a funnel drop-off, so it must be
+      // tracked rather than returning before any event is emitted.
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+            [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+              PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+            [PERPS_EVENT_PROPERTY.DEPOSIT_CLICK_OUTCOME]:
+              PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.GEO_BLOCK_MODAL,
+          }),
+        }),
+      );
+    });
+
+    it('does not treat an unreadable balance as unfunded', async () => {
+      // A missing balance field is an unknown balance, not a zero one. Prompting
+      // a funded trader to deposit collateral they already hold is worse than
+      // falling through to normal trade validation.
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          spendableBalance: undefined,
+          withdrawableBalance: undefined,
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.queryByTestId('perps-unfunded-add-funds-hint'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not treat an unparseable balance as unfunded', async () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          spendableBalance: 'not-a-number',
+          withdrawableBalance: 'not-a-number',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.queryByTestId('perps-unfunded-add-funds-hint'),
+      ).not.toBeInTheDocument();
     });
 
     it('gates the amount input add funds action when compliance blocks the selected wallet', async () => {
@@ -3533,7 +3606,8 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('tracks trade_submitted_after_deposit after a successful order when the unfunded funnel is active', async () => {
-      markUnfundedDepositFunnel();
+      markUnfundedDepositFunnel(MOCK_SELECTED_ADDRESS);
+      confirmUnfundedDepositFunnel(MOCK_SELECTED_ADDRESS);
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 

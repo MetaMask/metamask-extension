@@ -30,7 +30,6 @@ import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
-import { PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC } from '../../../constants';
 import {
   formatNumberForInput,
   isDigitsOnlyInput,
@@ -66,6 +65,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.currentPositionSize
  * @param options0.onAddFunds
  * @param options0.isLoadingAccount
+ * @param options0.hasNoAvailableBalance
  * @param options0.szDecimals
  * @param options0.autoFocus
  * @param options0.usdPlaceholder
@@ -86,6 +86,7 @@ export const AmountInput = ({
   currentPositionSize,
   onAddFunds,
   isLoadingAccount = false,
+  hasNoAvailableBalance = false,
   autoFocus = false,
   usdPlaceholder = '0.00',
   usdInputRef,
@@ -411,9 +412,7 @@ export const AmountInput = ({
           <SensitiveText variant={TextVariant.BodySm} isHidden={privacyMode}>
             {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </SensitiveText>
-          {onAddFunds &&
-          !isLoadingAccount &&
-          availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC ? (
+          {hasNoAvailableBalance ? (
             <Button
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Sm}
@@ -430,7 +429,7 @@ export const AmountInput = ({
               iconProps={{ color: IconColor.IconAlternative }}
               ariaLabel={t('addFunds')}
               type="button"
-              onClick={isLoadingAccount ? undefined : onAddFunds}
+              onClick={onAddFunds}
               isDisabled={isLoadingAccount}
               data-testid="amount-input-add-funds"
             />

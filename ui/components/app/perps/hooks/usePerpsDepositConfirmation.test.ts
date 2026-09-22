@@ -80,11 +80,14 @@ describe('usePerpsDepositConfirmation', () => {
       { replace: true },
     );
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
+    // The property is always emitted so a funded deposit is distinguishable
+    // from an older client that reported nothing.
     expect(mockTrack).toHaveBeenCalledWith(
       MetaMetricsEventName.PerpsUiInteraction,
       {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_FLOW_OPENED,
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
       },
     );
   });

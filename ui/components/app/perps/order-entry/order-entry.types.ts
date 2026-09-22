@@ -143,6 +143,8 @@ export type OrderEntryProps = {
   onAddFunds?: () => void;
   /** True while the live perps account stream is still hydrating */
   isLoadingAccount?: boolean;
+  /** True when the account is known to hold no tradeable collateral */
+  hasNoAvailableBalance?: boolean;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
   /** Unexpired same-market draft used to restore a new-order form. */
@@ -219,6 +221,8 @@ export type AmountInputProps = {
   onAddFunds?: () => void;
   /** True while the live perps account stream is still hydrating */
   isLoadingAccount?: boolean;
+  /** True when the account is known to hold no tradeable collateral */
+  hasNoAvailableBalance?: boolean;
   /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
   autoFocus?: boolean;
   /** Placeholder override for the USD input. Defaults to '0.00'. */

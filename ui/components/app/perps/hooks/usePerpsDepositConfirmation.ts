@@ -55,7 +55,7 @@ export function usePerpsDepositConfirmation(
   } = options;
   const navigate = useNavigate();
   const location = useLocation();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = useSelector(getSelectedInternalAccount)?.address;
   const { ensureArbitrumNetworkExists } = usePerpsNetworkManagement();
   const { track } = usePerpsEventTracking();
   const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +68,7 @@ export function usePerpsDepositConfirmation(
       return null;
     }
 
-    if (!selectedAccount?.address) {
+    if (!selectedAddress) {
       console.error('No selected account');
       return null;
     }
@@ -91,9 +91,10 @@ export function usePerpsDepositConfirmation(
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_FLOW_OPENED,
-        ...(isUnfundedDepositFunnelActive()
-          ? { [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false }
-          : {}),
+        // Always emit the property so a funded deposit is distinguishable from
+        // an older client that did not report it at all.
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]:
+          !isUnfundedDepositFunnelActive(selectedAddress),
       });
 
       if (navigateOnCreate) {
@@ -140,7 +141,7 @@ export function usePerpsDepositConfirmation(
     navigateOnCreate,
     onCreated,
     payWithOption,
-    selectedAccount?.address,
+    selectedAddress,
   ]);
 
   return {

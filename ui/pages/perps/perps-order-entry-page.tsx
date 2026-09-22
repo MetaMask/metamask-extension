@@ -49,6 +49,8 @@ import {
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
+  type PerpsButtonLocation,
+  type PerpsDepositClickOutcome,
 } from '../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
@@ -106,7 +108,10 @@ import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { usePerpsAbandonOrderTracking } from '../../hooks/perps/usePerpsAbandonOrderTracking';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
-import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
+import {
+  getTradeableBalance,
+  getTradeableBalanceRaw,
+} from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
@@ -1141,11 +1146,19 @@ const PerpsOrderEntryPage = () => {
   // funded by spot USDC are recognized as tradeable. Withdraw screens still
   // read `account.spendableBalance` directly.
   const availableBalance = Number.parseFloat(getTradeableBalance(account));
+  // A missing or unparseable balance field is an unknown balance, not a zero
+  // one: enabling the deposit CTA there would prompt a funded trader to deposit
+  // collateral they already hold. Only a balance we actually read counts, so
+  // this reads the raw field rather than the `'0'`-defaulted one.
+  const rawTradeableBalance = getTradeableBalanceRaw(account);
+  const hasKnownBalance =
+    rawTradeableBalance !== undefined &&
+    Number.isFinite(Number.parseFloat(rawTradeableBalance));
   const hasNoAvailableBalance =
     orderMode === 'new' &&
     !isLoadingAccount &&
-    (!Number.isFinite(availableBalance) ||
-      availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC);
+    hasKnownBalance &&
+    availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC;
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
 
   const isNearLiquidation = useMemo(() => {
@@ -2166,7 +2179,7 @@ const PerpsOrderEntryPage = () => {
           // placeOrder already clears the controller draft; this is defensive.
         });
       }
-      if (consumeUnfundedDepositFunnel()) {
+      if (consumeUnfundedDepositFunnel(selectedAddress)) {
         track(MetaMetricsEventName.PerpsUiInteraction, {
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.TRADE_SUBMITTED_AFTER_DEPOSIT,
@@ -2315,28 +2328,49 @@ const PerpsOrderEntryPage = () => {
     isEstimatedSlippageReady,
   ]);
 
-  const trackUnfundedDepositCta = useCallback(
-    (buttonLocation: string) => {
-      markUnfundedDepositFunnel();
+  /**
+   * Emits the Add funds click. Called before the eligibility branch so a
+   * geo-blocked click still lands in the funnel — that dismissal is the
+   * drop-off this instrumentation exists to measure.
+   */
+  const trackDepositCta = useCallback(
+    ({
+      buttonLocation,
+      isFunded,
+      outcome,
+    }: {
+      buttonLocation: PerpsButtonLocation;
+      isFunded: boolean;
+      outcome: PerpsDepositClickOutcome;
+    }) => {
+      if (!isFunded && selectedAddress) {
+        markUnfundedDepositFunnel(selectedAddress);
+      }
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
         [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
-        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: isFunded,
+        [PERPS_EVENT_PROPERTY.DEPOSIT_CLICK_OUTCOME]: outcome,
         ...(decodedSymbol
           ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
           : {}),
       });
     },
-    [decodedSymbol, track],
+    [decodedSymbol, selectedAddress, track],
   );
 
   const handlePrimaryAction = useCallback(async () => {
     await gate(async () => {
       if (hasNoAvailableBalance) {
         if (!isEligible) {
+          trackDepositCta({
+            buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+            isFunded: false,
+            outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.GEO_BLOCK_MODAL,
+          });
           setIsGeoBlockModalOpen(true);
           return;
         }
@@ -2344,7 +2378,11 @@ const PerpsOrderEntryPage = () => {
           return;
         }
 
-        trackUnfundedDepositCta(PERPS_EVENT_VALUE.BUTTON_LOCATION.TRADING);
+        trackDepositCta({
+          buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+          isFunded: false,
+          outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.DEPOSIT,
+        });
         await triggerDeposit();
         return;
       }
@@ -2358,7 +2396,7 @@ const PerpsOrderEntryPage = () => {
     isDepositLoading,
     isEligible,
     selectedAddress,
-    trackUnfundedDepositCta,
+    trackDepositCta,
     triggerDeposit,
   ]);
 
@@ -2368,6 +2406,11 @@ const PerpsOrderEntryPage = () => {
         return;
       }
       if (!isEligible) {
+        trackDepositCta({
+          buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+          isFunded: !hasNoAvailableBalance,
+          outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.GEO_BLOCK_MODAL,
+        });
         setIsGeoBlockModalOpen(true);
         return;
       }
@@ -2375,35 +2418,22 @@ const PerpsOrderEntryPage = () => {
         return;
       }
 
-      if (hasNoAvailableBalance) {
-        trackUnfundedDepositCta(PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT);
-      } else {
-        track(MetaMetricsEventName.PerpsUiInteraction, {
-          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-            PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-            PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
-          [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-            PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
-          [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
-          ...(decodedSymbol
-            ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
-            : {}),
-        });
-      }
+      trackDepositCta({
+        buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+        isFunded: !hasNoAvailableBalance,
+        outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.DEPOSIT,
+      });
 
       await triggerDeposit();
     });
   }, [
-    decodedSymbol,
     gate,
     hasNoAvailableBalance,
     isLoadingAccount,
     isDepositLoading,
     isEligible,
     selectedAddress,
-    track,
-    trackUnfundedDepositCta,
+    trackDepositCta,
     triggerDeposit,
   ]);
 
@@ -2548,6 +2578,7 @@ const PerpsOrderEntryPage = () => {
           onOrderTypeChange={handleOrderTypeChange}
           onAddFunds={handleAddFunds}
           isLoadingAccount={isLoadingAccount}
+          hasNoAvailableBalance={hasNoAvailableBalance}
           initialLeverage={initialLeverage}
           initialDraft={restoredOrderDraft}
           onLeverageChange={handleLeverageChange}
@@ -2624,7 +2655,7 @@ const PerpsOrderEntryPage = () => {
             color={TextColor.TextAlternative}
             data-testid="perps-unfunded-add-funds-hint"
           >
-            {t('perpsAddFundsHint')}
+            {t('perpsAddFundsHint', [`$${PERPS_MIN_MARKET_ORDER_USD}`])}
           </Text>
         )}
         <Button

@@ -81,7 +81,7 @@ describe('AmountInput', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('keeps the add funds icon while the account is still loading at zero balance', () => {
+    it('keeps the disabled add funds icon while the account is still loading', () => {
       const onAddFunds = jest.fn();
       renderWithProvider(
         <AmountInput
@@ -101,12 +101,13 @@ describe('AmountInput', () => {
       expect(onAddFunds).not.toHaveBeenCalled();
     });
 
-    it('renders a labeled Add funds control when available balance is zero', () => {
+    it('renders a labeled Add funds control when the page reports no balance', () => {
       const onAddFunds = jest.fn();
       renderWithProvider(
         <AmountInput
           {...defaultProps}
           availableBalance={0}
+          hasNoAvailableBalance
           onAddFunds={onAddFunds}
         />,
         mockStore,
@@ -117,6 +118,25 @@ describe('AmountInput', () => {
 
       fireEvent.click(addFunds);
       expect(onAddFunds).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps the icon when the page classifies a zero balance as funded', () => {
+      // A modify-mode trader with all margin committed reads 0 here but is not
+      // unfunded. The page owns that call, so the child must not re-derive it.
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          availableBalance={0}
+          hasNoAvailableBalance={false}
+          onAddFunds={onAddFunds}
+        />,
+        mockStore,
+      );
+
+      const addFunds = screen.getByTestId('amount-input-add-funds');
+      expect(addFunds).not.toHaveTextContent(messages.addFunds.message);
+      expect(addFunds).toHaveAttribute('aria-label', messages.addFunds.message);
     });
 
     it('labels the add funds icon with the translated add funds string when funded', () => {

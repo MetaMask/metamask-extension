@@ -239,13 +239,53 @@ describe('PerpsDepositToast', () => {
         duration: 5000,
       },
     );
+    // The property is always emitted so a funded deposit is distinguishable
+    // from an older client that reported nothing.
     expect(mockTrack).toHaveBeenCalledWith(
       MetaMetricsEventName.PerpsUiInteraction,
       {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_CONFIRMED,
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
       },
     );
+  });
+
+  it('emits deposit_confirmed once when the effect re-runs for the same deposit', () => {
+    // The effect's deps include entryPoint and t, and clearDepositResult issues
+    // two independent background calls, so a re-run for the same deposit must
+    // not double-count the funnel's confirmation event.
+    const buildState = (entryPoint: string | null) => ({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastPerpsDepositEntryPoint: entryPoint,
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    const { rerender } = renderWithProvider(
+      <PerpsDepositToast />,
+      configureStore(buildState('trade_screen')),
+    );
+    rerender(<PerpsDepositToast />);
+
+    const confirmedEmits = mockTrack.mock.calls.filter(
+      ([, properties]) =>
+        properties?.[PERPS_EVENT_PROPERTY.INTERACTION_TYPE] ===
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_CONFIRMED,
+    );
+    expect(confirmedEmits).toHaveLength(1);
   });
 
   it('renders success toast when the deposit transaction is no longer active', () => {

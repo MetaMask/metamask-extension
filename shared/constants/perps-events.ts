@@ -40,6 +40,8 @@ export const PERPS_EVENT_PROPERTY = {
   QUERY_LENGTH: 'query_length',
   HAS_RESULTS: 'has_results',
   ACTIVE_CHIPS: 'active_chips',
+  /** Extension unfunded-deposit funnel: what the Add funds click actually opened. */
+  DEPOSIT_CLICK_OUTCOME: 'deposit_click_outcome',
 } as const;
 
 /**
@@ -86,6 +88,8 @@ export const PERPS_EVENT_VALUE = {
     TRADING: 'trading',
     /** Extension trade-screen available-to-trade row Add funds control. */
     AMOUNT_INPUT: 'amount_input',
+    /** Extension trade-screen sticky-footer primary CTA. */
+    ORDER_FORM_FOOTER: 'order_form_footer',
   },
   BUTTON_CLICKED: {
     ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED,
@@ -122,6 +126,11 @@ export const PERPS_EVENT_VALUE = {
     DEPOSIT_CONFIRMED: 'deposit_confirmed',
     TRADE_SUBMITTED_AFTER_DEPOSIT: 'trade_submitted_after_deposit',
   },
+  /** What an Add funds click opened — geo-blocked clicks are a funnel drop-off. */
+  DEPOSIT_CLICK_OUTCOME: {
+    DEPOSIT: 'deposit',
+    GEO_BLOCK_MODAL: 'geo_block_modal',
+  },
   ERROR_TYPE: {
     ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_TYPE,
     /**
@@ -147,6 +156,14 @@ export const PERPS_EVENT_VALUE = {
     TRADE: 'trade',
   },
 } as const;
+
+/** Where a tracked button click happened. Derived so typos fail to compile. */
+export type PerpsButtonLocation =
+  (typeof PERPS_EVENT_VALUE.BUTTON_LOCATION)[keyof typeof PERPS_EVENT_VALUE.BUTTON_LOCATION];
+
+/** What an Add funds click opened. Derived so typos fail to compile. */
+export type PerpsDepositClickOutcome =
+  (typeof PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME)[keyof typeof PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME];
 
 /**
  * Extension-only event properties.
