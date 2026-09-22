@@ -547,14 +547,17 @@ class Driver {
    * @param {string | object} rawLocator - Element locator
    * @param {object} [options] - parameter object
    * @param {number} [options.timeout] - specifies the maximum amount of time (in milliseconds)
-   * to wait for the condition to be met and desired state of the element to wait for.
-   * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
-   * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * to wait for the condition to be met. Defaults to the driver's timeout.
    * @param {string} [options.state] - specifies the state of the element to wait for.
-   * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
-   * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * Supported states:
+   *   - 'visible' (default): wait until the element is visible on the page
+   *   - 'hidden': wait until the element is not visible (hidden via CSS or removed from DOM)
+   *   - 'detached': wait until the element is removed from the DOM
+   *   - 'enabled': wait until the element is enabled
+   *   - 'disabled': wait until the element is disabled
    * @param {number} [options.waitAtLeastGuard] - minimum milliseconds to wait before passing
-   * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
+   * @returns {Promise<WebElement|null>} promise resolving to the element when visible/enabled/disabled,
+   * or null when waiting for hidden/detached states.
    * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
    */
   async waitForSelector(
@@ -571,7 +574,7 @@ class Driver {
     }
 
     let element;
-    if (!['visible', 'detached', 'enabled', 'disabled'].includes(state)) {
+    if (!['visible', 'hidden', 'detached', 'enabled', 'disabled'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
@@ -579,6 +582,17 @@ class Driver {
         until.elementLocated(this.buildLocator(rawLocator)),
         timeout,
       );
+    } else if (state === 'hidden') {
+      const locator = this.buildLocator(rawLocator);
+      await this.driver.wait(async () => {
+        const elements = await this.driver.findElements(locator);
+        if (elements.length === 0) {
+          return true;
+        }
+        const isDisplayed = await elements[0].isDisplayed().catch(() => false);
+        return !isDisplayed;
+      }, timeout);
+      return null;
     } else if (state === 'detached') {
       element = await this.driver.wait(
         until.stalenessOf(await this.findElement(rawLocator)),
