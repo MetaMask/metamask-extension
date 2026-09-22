@@ -56,19 +56,25 @@ import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { createCaipStream } from '../../shared/lib/caip-stream';
 import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
-import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
+import { getErrorBackup, getErrorLike } from '../../shared/lib/error-like';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
+import {
+  CriticalErrorRepairAction,
+  getStateCorruptionErrorType,
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  isStateCorruptionErrorType,
+} from '../../shared/constants/critical-error';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { hasAnalyticsConsent } from '../../shared/lib/analytics';
 import { shouldTrackDeepLinkNavigation } from '../../shared/lib/deep-links/metrics';
 import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
-import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
-import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import {
   isPhishingWarningPageUrl,
@@ -94,9 +100,9 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
   getPlatform,
   initInstallType,
-  isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
+import { installActiveTabTracker } from './lib/active-tab/active-tab-tracker';
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
@@ -118,11 +124,12 @@ import { trackDeepLinkNavigation } from './lib/deep-links/track-deep-link-naviga
 import { getRequestSafeReload } from './lib/safe-reload';
 import { sanitizeSentryBackgroundState } from './lib/state-utils';
 import {
-  readCriticalErrorRestoreSession,
-  clearCriticalErrorRestoreSession,
+  readCriticalErrorRepairSession,
+  clearCriticalErrorRepairSession,
   handoffRestoringTabToExtension,
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
+import { repairStateCorruptionInPlace } from './lib/critical-error/repair-state-corruption-in-place';
 import { requestRepair } from './lib/repair';
 import {
   createSidepanelOpener,
@@ -171,7 +178,7 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * `null` in production builds so we do not keep loose mutable test globals.
  */
 const inTestState = process.env.IN_TEST
-  ? { restoreInProgress: false, hasVaultAtStartup: null }
+  ? { recoverInProgress: false, hasVaultAtStartup: null }
   : null;
 
 const { safePersist, requestSafeReload, evacuate } =
@@ -283,6 +290,20 @@ function setGlobalInitializers() {
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
+
+/**
+ * Helper function to refresh appActiveTab by querying the current active tab.
+ * This is used when the sidepanel opens to ensure it has the current tab info,
+ * and when the focused window changes to keep appActiveTab in sync.
+ *
+ * @type {import('./lib/active-tab/active-tab-tracker').ActiveTabTrackerApi['refreshAppActiveTab']}
+ */
+// Initialize appActiveTab by querying the current active tab on startup
+// Tab listeners to populate appActiveTab
+const { refreshAppActiveTab } = installActiveTabTracker({
+  getController: () => controller,
+  getIsInitialized: () => isInitialized,
+});
 
 /**
  * Install/update lifecycle dependencies. `controller` is accessed via a getter
@@ -399,8 +420,8 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
-const corruptionHandler = new CorruptionHandler();
 const criticalErrorHandler = new CriticalErrorHandler();
+
 /**
  * Handles the onConnect event.
  *
@@ -444,9 +465,36 @@ const handleOnConnect = async (port) => {
   let removeCriticalErrorListeners;
   if (isMetaMaskUIPort) {
     criticalErrorHandler.registerPortForCriticalError({
+      getBackup: async () =>
+        (await persistenceManager.getBackup().catch(() => null)) ?? null,
       port,
-      repairCallback: () =>
-        requestRepair(() => openRestoringTabAndReload(requestSafeReload)),
+      repairCallback: async ({
+        repairAction,
+        criticalErrorType,
+        backup,
+        connectedPorts,
+      }) =>
+        requestRepair(async () => {
+          if (isStateCorruptionErrorType(criticalErrorType)) {
+            await repairStateCorruptionInPlace({
+              repairAction,
+              backup,
+              connectedPorts,
+              initBackground,
+              backgroundIsInitialized: () => isInitialized,
+              persistenceManager,
+              setGlobalInitializers,
+              setRestoreFlowType: () => {
+                controller.onboardingController.setFirstTimeFlowType(
+                  FirstTimeFlowType.restore,
+                );
+              },
+              tryPostMessage,
+            });
+          } else {
+            await openRestoringTabAndReload(requestSafeReload, repairAction);
+          }
+        }),
     });
     removeCriticalErrorListeners = () =>
       criticalErrorHandler.removeListenersForPort(port);
@@ -468,12 +516,12 @@ const handleOnConnect = async (port) => {
 
     // For testing: skip connectWindowPostMessage to simulate state sync hang.
     // Only when backup pre-existed at startup (i.e. after a runtime.reload(),
-    // not during the initial onboarding session) and we're not in the restore
+    // not during the initial onboarding session) and we're not in the recover
     // flow (so recovery can complete).
     if (
       process.env.IN_TEST &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
-      !inTestState?.restoreInProgress &&
+      !inTestState?.recoverInProgress &&
       hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
     ) {
       return;
@@ -482,6 +530,7 @@ const handleOnConnect = async (port) => {
     // This is set in `setupController`, which is called as part of initialization
     connectWindowPostMessage(port, removeCriticalErrorListeners);
   } catch (error) {
+    let criticalErrorMessageSent = false;
     try {
       sentry?.captureException(error);
 
@@ -489,59 +538,39 @@ const handleOnConnect = async (port) => {
       // not for contentscripts injected into regular web pages.
       // Contentscripts can't display error screens and would create hanging promises.
       if (isMetaMaskUIPort) {
-        // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
-        // restore from a backup, if we have one.
-        if (isStateCorruptionError(error)) {
-          await corruptionHandler.handleStateCorruptionError({
-            port,
-            error,
-            database: persistenceManager,
-            repairCallback: async (backup) => {
-              // we are going to reinitialize the background script, so we need to
-              // reset the initialization promises. this is gross since it is
-              // possible the original references could have been passed to other
-              // functions, and we can't update those references from here.
-              // right now, that isn't the case though.
-              setGlobalInitializers();
-
-              if (hasVault(backup)) {
-                await initBackground(backup);
-                controller.onboardingController.setFirstTimeFlowType(
-                  FirstTimeFlowType.restore,
-                );
-              } else {
-                // if we don't have a backup we need to make sure we clear the state
-                // from the database, and then reinitialize the background script
-                // with the first time state.
-                await persistenceManager.reset();
-                await initBackground(null);
-              }
-            },
-          });
-        } else {
-          // General errors
-          const errorLike = isObject(error)
-            ? {
-                message: error.message ?? 'Unknown error',
-                name: error.name ?? 'UnknownError',
-                stack: error.stack,
-                // Preserve sentryTags for searchable/filterable fields in Sentry UI
-                ...(error.sentryTags && { sentryTags: error.sentryTags }),
-              }
-            : {
-                message: String(error),
-                name: 'UnknownError',
-                stack: '',
-              };
-          tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+        const errorLike = getErrorLike(error);
+        const stateCorruptionErrorType = getStateCorruptionErrorType(errorLike);
+        const isStateCorruption = stateCorruptionErrorType !== undefined;
+        const backup = isStateCorruption ? getErrorBackup(error) : undefined;
+        if (isObject(backup)) {
+          criticalErrorHandler.cacheBackup(backup);
+        }
+        const repairAction = hasVault(backup)
+          ? CriticalErrorRepairAction.Recover
+          : CriticalErrorRepairAction.Reset;
+        criticalErrorMessageSent = tryPostMessage(
+          port,
+          isStateCorruption
+            ? METHOD_DISPLAY_STATE_CORRUPTION_ERROR
+            : DISPLAY_GENERAL_STARTUP_ERROR,
+          {
             error: errorLike,
+            ...(isStateCorruption
+              ? {
+                  analyticsConsent: hasAnalyticsConsent(backup),
+                  criticalErrorType: stateCorruptionErrorType,
+                  repairAction,
+                }
+              : {}),
             currentLocale:
               controller?.preferencesController?.state?.currentLocale,
-          });
-        }
+          },
+        );
       }
     } finally {
-      removeCriticalErrorListeners?.();
+      if (!criticalErrorMessageSent) {
+        removeCriticalErrorListeners?.();
+      }
     }
   }
 };
@@ -926,71 +955,6 @@ function trackAppOpened(environment) {
     emitAppOpenedMetricEvent(environment);
   }
 }
-
-/**
- * Helper function to refresh appActiveTab by querying the current active tab.
- * This is used when the sidepanel opens to ensure it has the current tab info,
- * and when the focused window changes to keep appActiveTab in sync.
- *
- * @param {number} [windowId] - If provided, queries the active tab in this
- * specific window. Otherwise queries the active tab in the current window.
- */
-const refreshAppActiveTab = async (windowId) => {
-  await isInitialized;
-  if (!controller) {
-    return;
-  }
-
-  try {
-    const queryOptions = windowId
-      ? { active: true, windowId }
-      : { active: true, currentWindow: true };
-
-    const tabs = await browser.tabs.query(queryOptions);
-    if (!tabs || tabs.length === 0) {
-      return;
-    }
-
-    const activeTab = tabs[0];
-    const { id, title, url, favIconUrl } = activeTab;
-
-    if (!url) {
-      // Clear appActiveTab when there's no URL (e.g., new blank tab)
-      controller.appStateController.clearAppActiveTab();
-      return;
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    if (!isWebOrigin(origin)) {
-      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
-      controller.appStateController.clearAppActiveTab();
-      return;
-    }
-
-    // Update appActiveTab with current active tab info
-    controller.appStateController.setAppActiveTab({
-      id,
-      title,
-      origin,
-      protocol,
-      url,
-      host,
-      href,
-      favIconUrl,
-    });
-
-    // Update subject metadata for permission system
-    controller.subjectMetadataController.addSubjectMetadata({
-      origin,
-      name: title || host || origin,
-      iconUrl: favIconUrl || null,
-      subjectType: 'website',
-    });
-  } catch (error) {
-    console.log('Error refreshing appActiveTab:', error.message);
-  }
-};
 
 /**
  * Initializes the MetaMask Controller with any initial state and default language.
@@ -1733,182 +1697,6 @@ setupSidePanelToolbarBehavior({
   waitUntilInitialized: async () => await isInitialized,
 });
 
-// Initialize appActiveTab by querying the current active tab on startup
-const initializeAppActiveTab = async () => {
-  await refreshAppActiveTab();
-};
-
-initializeAppActiveTab();
-
-// Tab listeners to populate appActiveTab
-browser.tabs.onActivated.addListener(async ({ tabId }) => {
-  // Wait for controller to be initialized
-  await isInitialized;
-  if (!controller) {
-    return {};
-  }
-
-  try {
-    const tabInfo = await browser.tabs.get(tabId);
-    const { id, title, url, favIconUrl } = tabInfo;
-
-    if (!url) {
-      // Clear appActiveTab when there's no URL (e.g., new blank tab)
-      controller.appStateController.clearAppActiveTab();
-      return {};
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    if (!isWebOrigin(origin)) {
-      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
-      controller.appStateController.clearAppActiveTab();
-      return {};
-    }
-
-    // Update the app active tab state
-    controller.appStateController.setAppActiveTab({
-      id,
-      title,
-      origin,
-      protocol,
-      url,
-      host,
-      href,
-      favIconUrl,
-    });
-
-    // Update subject metadata for permission system
-    controller.subjectMetadataController.addSubjectMetadata({
-      origin,
-      name: title || host || origin,
-      iconUrl: favIconUrl || null,
-      subjectType: 'website',
-    });
-  } catch (error) {
-    // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onActivated listener:', error.message);
-  }
-
-  return {};
-});
-
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  // Wait for controller to be initialized
-  await isInitialized;
-  if (!controller) {
-    return {};
-  }
-
-  // Only update when URL changes or when page finishes loading
-  // This prevents flickering from multiple updates during page load
-  const urlChanged = changeInfo.url !== undefined;
-  const statusComplete = changeInfo.status === 'complete';
-
-  if (!urlChanged && !statusComplete) {
-    return {};
-  }
-
-  try {
-    // Use tab from parameter if available, otherwise fetch it.
-    // The tab parameter is usually provided by Chrome, but may be undefined
-    // in edge cases (e.g., when a tab is being removed), so we fall back to
-    // fetching it explicitly.
-    const tabInfo = tab || (await browser.tabs.get(tabId));
-    const { id, title, url, favIconUrl } = tabInfo;
-
-    // Only update if this is the currently active tab
-    // This prevents updating with stale data from background tabs
-    const currentAppActiveTab =
-      controller.appStateController.state.appActiveTab;
-    const isActiveTab = currentAppActiveTab?.id === id;
-
-    if (!url) {
-      // Only clear if this is the currently active tab
-      if (isActiveTab) {
-        controller.appStateController.clearAppActiveTab();
-      }
-      return {};
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    // Skip if no origin, null origin, or extension pages
-    if (
-      !origin ||
-      origin === 'null' ||
-      origin.startsWith('chrome-extension://') ||
-      origin.startsWith('moz-extension://')
-    ) {
-      // Only clear if this is the currently active tab
-      if (isActiveTab) {
-        controller.appStateController.clearAppActiveTab();
-      }
-      return {};
-    }
-
-    // Also check if this tab is actually the active tab in the current window.
-    // This is needed because stored appActiveTab might be stale if the user
-    // switched tabs quickly, or if tabs were closed/reopened. Querying the
-    // browser ensures we only update for the truly active tab.
-    let isActuallyActive = false;
-    try {
-      const activeTabs = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      isActuallyActive = activeTabs.some((activeTab) => activeTab.id === id);
-    } catch (error) {
-      // Fallback to checking against stored active tab
-      isActuallyActive = isActiveTab;
-    }
-
-    // Only update if URL changed and it's the active tab, or if status is complete and it's the active tab
-    if ((urlChanged || statusComplete) && isActuallyActive) {
-      // Update the app active tab state
-      controller.appStateController.setAppActiveTab({
-        id,
-        title,
-        origin,
-        protocol,
-        url,
-        host,
-        href,
-        favIconUrl,
-      });
-
-      // Update subject metadata for permission system
-      controller.subjectMetadataController.addSubjectMetadata({
-        origin,
-        name: title || host || origin,
-        iconUrl: favIconUrl || null,
-        subjectType: 'website',
-      });
-    }
-  } catch (error) {
-    // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onUpdated listener:', error.message);
-  }
-
-  return {};
-});
-
-// Window focus listener to keep appActiveTab in sync across browser windows.
-// Without this, switching between Chrome windows can leave appActiveTab pointing
-// at the previously focused window's tab, causing
-// the connection bar [ui/components/multichain/dapp-connection-control-bar/dapp-connection-control-bar.tsx]
-// to disappear or appear on the wrong window.
-browser.windows.onFocusChanged.addListener(async (windowId) => {
-  // WINDOW_ID_NONE means all browser windows lost focus (e.g., user switched
-  // to another application). Keep appActiveTab unchanged so it stays correct
-  // when the user returns to Chrome.
-  if (windowId === browser.windows.WINDOW_ID_NONE) {
-    return;
-  }
-
-  await refreshAppActiveTab(windowId);
-});
-
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
     const backgroundState = sanitizeSentryBackgroundState(
@@ -1940,7 +1728,7 @@ async function initBackground(backup) {
     persistenceManager.cleanUpMostRecentRetrievedState();
 
     // For testing: simulate initialization hang. Only when backup exists in
-    // IndexedDB and we're not already in the restore flow (backup param is
+    // IndexedDB and we're not already in the recover flow (backup param is
     // null). Skip when backup param is non-null so vault recovery can complete.
     if (
       process.env.IN_TEST &&
@@ -1965,16 +1753,17 @@ async function initBackground(backup) {
 }
 /**
  * Service worker entry for background startup: normal init, or critical-error
- * restore (when a session and vault backup exist).
+ * repair when a session exists.
  */
 async function initOrRestoreBackground() {
   if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
     return;
   }
 
-  const restoreSession = await readCriticalErrorRestoreSession(browser);
+  const repairSession = await readCriticalErrorRepairSession(browser);
+  const repairAction = repairSession?.repairAction;
 
-  // Fetch the backup once, shared by the restore path below and by
+  // Fetch the backup once, shared by the recover path below and by
   // the simulateBackground*Hang test flags (which need to know whether a
   // backup already existed at startup, before onboarding can create one).
   const testingFlags = process.env.IN_TEST
@@ -1982,7 +1771,7 @@ async function initOrRestoreBackground() {
     : undefined;
   let backup = null;
   if (
-    restoreSession ||
+    repairSession ||
     testingFlags?.simulateBackgroundStateSyncHang ||
     testingFlags?.simulateBackgroundInitializationHang
   ) {
@@ -2000,16 +1789,27 @@ async function initOrRestoreBackground() {
     }
   }
 
-  if (restoreSession) {
-    await clearCriticalErrorRestoreSession(browser);
-    if (backupHasVault) {
-      if (inTestState) {
-        inTestState.restoreInProgress = true;
+  if (repairSession) {
+    await clearCriticalErrorRepairSession(browser);
+
+    if (repairAction === CriticalErrorRepairAction.Reset && !backupHasVault) {
+      await persistenceManager.reset();
+      initBackground(null);
+      try {
+        await isInitialized;
+      } catch (error) {
+        log.error('critical-error-reset: initialization failed', error);
+        return;
       }
-      const handoffPayload = {
-        tabId: restoreSession.tabId,
-        tabUrl: restoreSession.tabUrl,
-      };
+
+      await handoffRestoringTabToExtension(platform, repairSession);
+      return;
+    }
+
+    if (repairAction === CriticalErrorRepairAction.Recover && backupHasVault) {
+      if (inTestState) {
+        inTestState.recoverInProgress = true;
+      }
       initBackground(backup);
       try {
         await isInitialized;
@@ -2022,7 +1822,7 @@ async function initOrRestoreBackground() {
         FirstTimeFlowType.restore,
       );
 
-      await handoffRestoringTabToExtension(platform, handoffPayload);
+      await handoffRestoringTabToExtension(platform, repairSession);
       return;
     }
   }
