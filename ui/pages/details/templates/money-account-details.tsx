@@ -47,12 +47,13 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
 
   const isIncoming = item.data.token?.direction === 'in';
   const formattedAmount = formatFiat(item.data.fiat?.amount);
-  const signedAmount = formattedAmount
-    ? applyDisplaySign(
-        formattedAmount,
-        getDisplaySignPrefix(item.data.token?.direction, { showPlus: true }),
-      )
-    : null;
+  const signedAmount =
+    formattedAmount && item.data.token
+      ? applyDisplaySign(
+          formattedAmount,
+          getDisplaySignPrefix(item.data.token.direction, { showPlus: true }),
+        )
+      : formattedAmount;
 
   return (
     <MmPayDetailsLayout
