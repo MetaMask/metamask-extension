@@ -45,6 +45,8 @@ type CollectedBundleSizeStats = {
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
+const LAVAMOAT_LOCKDOWN_PREFIX =
+  '/*! SES sources included by LavaMoat. Do not optimize or minify. */';
 
 function isJavaScriptAsset(assetName: string): boolean {
   return (
@@ -945,6 +947,7 @@ export class ManifestPlugin<Z extends boolean> {
         async (assets: Assets) => {
           this.resolveEntrypoints(compilation);
           const bundleSizeStats = this.collectBundleSizeStats(compilation);
+          this.assertIsolatedAssetsAreLockedDown(assets);
           await this.zipAndMoveAssets(compilation, assets, options);
           this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
         },
@@ -954,9 +957,38 @@ export class ManifestPlugin<Z extends boolean> {
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
         this.resolveEntrypoints(compilation);
         const bundleSizeStats = this.collectBundleSizeStats(compilation);
+        this.assertIsolatedAssetsAreLockedDown(assets);
         this.moveAssets(compilation, assets, options);
         this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
       });
+    }
+  }
+
+  private assertIsolatedAssetsAreLockedDown(assets: Assets): void {
+    const isolatedNames = [...this.isolatedHtmlEntries].map((name) =>
+      name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&'),
+    );
+    const isolatedAssetRe = new RegExp(
+      `^(?:${isolatedNames.join('|')})(?:\\.[0-9a-h]{20})?\\.js$`,
+      'u',
+    );
+    const isolatedAssets = Object.entries(assets).filter(([name]) =>
+      isolatedAssetRe.test(name),
+    );
+
+    if (!isolatedAssets.length && isolatedNames.length) {
+      throw new Error(
+        'No JavaScript asset was emitted for an isolated HTML entry',
+      );
+    }
+
+    for (const [name, asset] of isolatedAssets) {
+      const source = String(asset.source());
+      if (!source.startsWith(LAVAMOAT_LOCKDOWN_PREFIX)) {
+        throw new Error(
+          `Isolated asset "${name}" is missing the LavaMoat lockdown prelude`,
+        );
+      }
     }
   }
 }
