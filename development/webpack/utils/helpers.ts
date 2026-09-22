@@ -118,6 +118,11 @@ export function getMinimizers() {
     new TerserPlugin({
       // use SWC to minify (about 7x faster than Terser)
       minify: TerserPlugin.swcMinify,
+      // terser-webpack-plugin defaults this to `true`, and since 5.6 it
+      // forwards it to `swc.minify()`, which our pinned `@swc/core` rejects as
+      // an unknown field. Earlier versions ignored it for `swcMinify`, so no
+      // comments were ever extracted here; `false` keeps that behavior.
+      extractComments: false,
       // Determinism (and a small local build-time win): one minifier process.
       parallel: false,
       // do not minify snow.
