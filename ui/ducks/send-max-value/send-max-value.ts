@@ -32,7 +32,8 @@ export function selectMaxValueModeForTransaction(
     return false;
   }
 
-  return Boolean(state.sendMaxValue.maxValueMode[transactionId]);
+  // Test and mock stores may omit this slice entirely.
+  return Boolean(state.sendMaxValue?.maxValueMode[transactionId]);
 }
 
 export default sendMaxValueSlice.reducer;
