@@ -3152,9 +3152,6 @@
   "current": {
     "message": "現在"
   },
-  "currentAccountNotConnected": {
-    "message": "現在のアカウントは接続されていません"
-  },
   "currentEstimatedBaseFee": {
     "message": "現在: $1 gwei"
   },
