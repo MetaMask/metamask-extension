@@ -13,10 +13,7 @@ import type {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
 import { useMessenger } from '../../../hooks/useMessenger';
-import {
-  hasTransactionType,
-  isPerpsWithdrawTransaction,
-} from '../../../../shared/lib/transactions.utils';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import {
   isMoneyAccountChildTx,
   isMoneyAccountTx,
@@ -59,12 +56,6 @@ const excludedTransactionTypes: TransactionType[] = [
   TransactionType.shieldSubscriptionApprove,
 ];
 
-// Ported from custom toasts that included pre-broadcast (approved/signed) stage
-const earlyPendingToastTypes = new Set([
-  TransactionType.musdConversion,
-  TransactionType.musdClaim,
-]);
-
 // Separate batch txs that share one toast with the main send/swap/bridge tx.
 export const batchHelperTransactionTypes = [
   TransactionType.bridgeApproval,
@@ -91,28 +82,11 @@ function isExcludedTransactionType(
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
 
-function isPendingToastStatus(
-  transactionMeta: TransactionMeta,
-  status: string,
-) {
-  if (status === TransactionStatus.submitted) {
-    return true;
-  }
-
-  const isEarlyPending =
-    (transactionMeta.type &&
-      earlyPendingToastTypes.has(transactionMeta.type)) ||
-    isPerpsWithdrawTransaction(transactionMeta);
-
-  if (isEarlyPending) {
-    return (
-      status === TransactionStatus.approved ||
-      status === TransactionStatus.signed
-    );
-  }
-
-  return false;
-}
+const pendingStatuses = new Set<string>([
+  TransactionStatus.approved,
+  TransactionStatus.signed,
+  TransactionStatus.submitted,
+]);
 
 const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
@@ -198,7 +172,7 @@ export function useTransactionEventToasts(): void {
         to: getDetailsRoute(chainId, hash),
       };
 
-      if (isPendingToastStatus(transactionMeta, status)) {
+      if (pendingStatuses.has(status)) {
         if (shouldShowPendingToast(id)) {
           showPendingToast(toastId, props);
         }
