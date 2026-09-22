@@ -77,6 +77,9 @@ describe('PerpsProducts', () => {
         screen.getByTestId('perps-products-categories-pill-crypto'),
       ).toHaveTextContent(messages.perpsFilterCrypto.message);
       expect(
+        screen.getByTestId('perps-products-categories-pill-memecoin'),
+      ).toHaveTextContent(messages.perpsFilterMemecoins.message);
+      expect(
         screen.getByTestId('perps-products-categories-pill-stock'),
       ).toHaveTextContent(messages.perpsFilterStocks.message);
     });
@@ -103,6 +106,14 @@ describe('PerpsProducts', () => {
             .querySelector('svg'),
         ).toBeInTheDocument();
       }
+    });
+
+    it('renders the local sentiment-satisfied glyph on the memecoin chip', () => {
+      renderSection();
+
+      expect(
+        screen.getByTestId('perps-sentiment-satisfied-icon'),
+      ).toBeInTheDocument();
     });
   });
 
