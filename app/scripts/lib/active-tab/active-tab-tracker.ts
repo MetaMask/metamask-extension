@@ -35,7 +35,7 @@ export type ActiveTabTrackerController = {
 
 export type InstallActiveTabTrackerDeps = {
   getController: () => ActiveTabTrackerController | null | undefined;
-  isInitialized: Promise<void>;
+  getIsInitialized: () => Promise<void>;
 };
 
 export type ActiveTabTrackerApi = {
@@ -102,11 +102,12 @@ async function isTabActiveInCurrentWindow(
  *
  * @param options - Injected controller accessor and initialization gate.
  * @param options.getController - Returns the MetaMask controller when ready.
- * @param options.isInitialized - Resolves when controller setup has finished.
+ * @param options.getIsInitialized - Returns the current initialization promise
+ * (must be re-read after critical-error recovery replaces it in `background.js`).
  */
 export function installActiveTabTracker({
   getController,
-  isInitialized,
+  getIsInitialized,
 }: InstallActiveTabTrackerDeps): ActiveTabTrackerApi {
   /**
    * Helper function to refresh appActiveTab by querying the current active tab.
@@ -117,7 +118,7 @@ export function installActiveTabTracker({
    * window. Otherwise queries the active tab in the current window.
    */
   const refreshAppActiveTab = async (windowId?: number) => {
-    await isInitialized;
+    await getIsInitialized();
     const controller = getController();
     if (!controller) {
       return;
@@ -146,7 +147,7 @@ export function installActiveTabTracker({
   // Tab listeners to populate appActiveTab
   browser.tabs.onActivated.addListener(async ({ tabId }) => {
     // Wait for controller to be initialized
-    await isInitialized;
+    await getIsInitialized();
     const controller = getController();
     if (!controller) {
       return {};
@@ -166,7 +167,7 @@ export function installActiveTabTracker({
 
   browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     // Wait for controller to be initialized
-    await isInitialized;
+    await getIsInitialized();
     const controller = getController();
     if (!controller) {
       return {};

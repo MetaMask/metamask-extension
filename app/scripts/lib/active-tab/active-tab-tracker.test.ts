@@ -144,7 +144,7 @@ describe('installActiveTabTracker', () => {
 
     const { refreshAppActiveTab } = installActiveTabTracker({
       getController: () => controller,
-      isInitialized,
+      getIsInitialized: () => isInitialized,
     });
 
     expect(tabActivatedListeners).toHaveLength(1);
@@ -177,13 +177,49 @@ describe('installActiveTabTracker', () => {
     });
   });
 
+  it('refreshAppActiveTab awaits the current initialization promise', async () => {
+    const controller = createMockController();
+    let resolveFirst!: () => void;
+    let currentInit = new Promise<void>((resolve) => {
+      resolveFirst = resolve;
+    });
+
+    (browser.tabs.query as jest.Mock).mockResolvedValue([
+      { id: 12, title: 'Recovered', url: 'https://recovered.test' },
+    ]);
+
+    const { refreshAppActiveTab } = installActiveTabTracker({
+      getController: () => controller,
+      getIsInitialized: () => currentInit,
+    });
+
+    resolveFirst();
+    await currentInit;
+    await Promise.resolve();
+    controller.setAppActiveTab.mockClear();
+
+    let resolveSecond!: () => void;
+    currentInit = new Promise<void>((resolve) => {
+      resolveSecond = resolve;
+    });
+
+    const refreshPromise = refreshAppActiveTab();
+    await Promise.resolve();
+    expect(controller.setAppActiveTab).not.toHaveBeenCalled();
+
+    resolveSecond();
+    await refreshPromise;
+
+    expect(controller.setAppActiveTab).toHaveBeenCalled();
+  });
+
   it('handles tabs.onActivated', async () => {
     const controller = createMockController();
     const isInitialized = Promise.resolve();
 
     installActiveTabTracker({
       getController: () => controller,
-      isInitialized,
+      getIsInitialized: () => isInitialized,
     });
 
     (browser.tabs.get as jest.Mock).mockResolvedValue({
@@ -205,7 +241,7 @@ describe('installActiveTabTracker', () => {
 
     installActiveTabTracker({
       getController: () => controller,
-      isInitialized,
+      getIsInitialized: () => isInitialized,
     });
 
     await Promise.resolve();
@@ -223,7 +259,7 @@ describe('installActiveTabTracker', () => {
 
     installActiveTabTracker({
       getController: () => controller,
-      isInitialized,
+      getIsInitialized: () => isInitialized,
     });
 
     (browser.tabs.query as jest.Mock).mockResolvedValue([{ id: 7 }]);

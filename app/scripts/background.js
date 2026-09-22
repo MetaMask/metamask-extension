@@ -292,7 +292,7 @@ setGlobalInitializers();
 // Tab listeners to populate appActiveTab
 const { refreshAppActiveTab } = installActiveTabTracker({
   getController: () => controller,
-  isInitialized,
+  getIsInitialized: () => isInitialized,
 });
 
 /**
