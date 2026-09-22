@@ -34,6 +34,7 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
 } from '../../../selectors';
+import { getSocialLoginType } from '../../../selectors/onboarding/onboarding';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -110,6 +111,7 @@ export default function OnboardingWelcome() {
   const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
+  const socialLoginType = useSelector(getSocialLoginType);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
@@ -252,7 +254,13 @@ export default function OnboardingWelcome() {
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
-    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
+    await dispatch(
+      setFirstTimeFlowType(
+        socialLoginType
+          ? FirstTimeFlowType.socialImport
+          : FirstTimeFlowType.import,
+      ),
+    );
     trackEvent(
       createEventBuilder(MetaMetricsEventName.WalletImportStarted)
         .addCategory(MetaMetricsEventCategory.Onboarding)
@@ -277,6 +285,7 @@ export default function OnboardingWelcome() {
     onboardingParentContext,
     bufferedTrace,
     accountTypeForMetrics,
+    socialLoginType,
   ]);
 
   const handleSocialLogin = useCallback(

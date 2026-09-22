@@ -31,6 +31,7 @@ import {
   EXTERNAL_SERVICES_OWNED_PREFERENCES,
   getBasicFunctionalityConsolidationPlan,
   isBasicFunctionalitySocialLoginUser,
+  shouldRepairBasicFunctionalitySocialMigrationNotice,
   type BasicFunctionalityPreferenceState,
   type ExternalServicesOwnedPreference,
 } from '../../../shared/lib/basic-functionality-consolidation';
@@ -649,10 +650,6 @@ export class PreferencesController extends BaseController<
   consolidateBasicFunctionality(): void {
     const hasBftConsolidationMarker =
       this.state.preferences.isBasicFunctionalityConsolidatedEnabled;
-    if (hasBftConsolidationMarker && this.state.useExternalServices) {
-      return;
-    }
-
     const { firstTimeFlowType } = this.messenger.call(
       'OnboardingController:getState',
     );
@@ -663,6 +660,31 @@ export class PreferencesController extends BaseController<
       firstTimeFlowType: firstTimeFlowType ?? undefined,
       authConnection,
     });
+    const hasDismissedNotice =
+      this.state.preferences
+        .basicFunctionalityMigrationNotificationDismissed === true;
+    const migrationNotification =
+      this.state.preferences.basicFunctionalityMigrationNotification ?? null;
+
+    if (
+      shouldRepairBasicFunctionalitySocialMigrationNotice({
+        hasConsolidationMarker: hasBftConsolidationMarker,
+        useExternalServices: this.state.useExternalServices,
+        isSocialLogin,
+        migrationNotification,
+        migrationNotificationDismissed: hasDismissedNotice,
+      })
+    ) {
+      this.update((state) => {
+        state.preferences.basicFunctionalityMigrationNotification = 'modal';
+      });
+      return;
+    }
+
+    if (hasBftConsolidationMarker && this.state.useExternalServices) {
+      return;
+    }
+
     if (hasBftConsolidationMarker && !isSocialLogin) {
       return;
     }
@@ -676,9 +698,6 @@ export class PreferencesController extends BaseController<
 
     const { landingState, notification, isConsistent } =
       getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
-    const hasDismissedNotice =
-      this.state.preferences
-        .basicFunctionalityMigrationNotificationDismissed === true;
 
     this.update((state) => {
       state.useExternalServices = landingState;

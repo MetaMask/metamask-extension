@@ -11,7 +11,6 @@ import {
   selectNeedsProfilePairing,
   selectNeedsSocialPairing,
 } from '../../../selectors/identity/authentication';
-import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
 import { requestProfilePairing } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
@@ -25,8 +24,9 @@ import { useSignIn } from './useSignIn';
  * flips to `true`. That, in turn, re-arms the gate below and triggers a
  * forced `performSignIn` (`signIn(true)`) which re-runs the pairing logic
  * inside the controller. The same forced sign-in path is used for social
- * identifier pairing when a social-login user still needs pairing and the
- * Basic Functionality consolidation experience is on.
+ * identifier pairing when pairing is still needed and the Basic Functionality
+ * consolidation experience is on (including SRP-import wallets that lost local
+ * OAuth state but still need server-side social pairing).
  *
  * @returns An object containing:
  * - `autoSignIn`: A function to automatically sign in the user if necessary.
@@ -49,12 +49,10 @@ export function useAutoSignIn(): {
   const isSignedIn = useSelector(selectIsSignedIn);
   const needsProfilePairing = useSelector(selectNeedsProfilePairing);
   const needsSocialPairing = useSelector(selectNeedsSocialPairing);
-  const isSocialLoginFlow = Boolean(useSelector(getIsSocialLoginFlow));
   const isBftConsolidationEnabled = Boolean(
     useSelector(getIsBasicFunctionalityConsolidationEnabled),
   );
-  const shouldSocialPair =
-    needsSocialPairing && isSocialLoginFlow && isBftConsolidationEnabled;
+  const shouldSocialPair = needsSocialPairing && isBftConsolidationEnabled;
 
   const keyrings = useSelector(getMetaMaskKeyrings);
   const previousKeyringsLength = useRef(keyrings.length);

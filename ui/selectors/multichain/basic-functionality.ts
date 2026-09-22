@@ -5,9 +5,11 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 import {
   BFT_CHILD_PREFERENCES,
   EXTERNAL_SERVICES_OWNED_PREFERENCES,
+  shouldRepairBasicFunctionalitySocialMigrationNotice,
   type ExternalServicesOwnedPreference,
 } from '../../../shared/lib/basic-functionality-consolidation';
 import { isBasicFunctionalityConsistent } from '../../../shared/lib/basic-functionality-consolidation-gate';
+import { getIsBasicFunctionalitySocialLoginUser } from '../onboarding/onboarding';
 
 export { BFT_CHILD_PREFERENCES };
 
@@ -90,6 +92,32 @@ export const getShouldShowBasicFunctionalityMigrationToast = createSelector(
  * turned off, so the child preferences cannot diverge behind the consolidated
  * toggle.
  */
+export const getShouldRepairBasicFunctionalitySocialMigrationNotice =
+  createSelector(
+    (state) =>
+      Boolean(
+        state.metamask.preferences?.isBasicFunctionalityConsolidatedEnabled,
+      ),
+    (state) => Boolean(state.metamask.useExternalServices),
+    getIsBasicFunctionalitySocialLoginUser,
+    getBasicFunctionalityMigrationNotification,
+    getIsBasicFunctionalityMigrationNotificationDismissed,
+    (
+      hasConsolidationMarker,
+      useExternalServices,
+      isSocialLogin,
+      migrationNotification,
+      migrationNotificationDismissed,
+    ) =>
+      shouldRepairBasicFunctionalitySocialMigrationNotice({
+        hasConsolidationMarker,
+        useExternalServices,
+        isSocialLogin,
+        migrationNotification: migrationNotification ?? null,
+        migrationNotificationDismissed,
+      }),
+  );
+
 export const getIsBasicFunctionalityConsolidationEnabled = createSelector(
   getIsBasicFunctionalityToggleEnabled,
   (state) =>

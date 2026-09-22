@@ -1,5 +1,6 @@
 import {
   getBasicFunctionalityConsolidationPlan,
+  shouldRepairBasicFunctionalitySocialMigrationNotice,
   shouldStartBasicFunctionalityConsolidation,
 } from './basic-functionality-consolidation';
 
@@ -67,6 +68,44 @@ describe('getBasicFunctionalityConsolidationPlan', () => {
       notification: 'modal',
       isConsistent: true,
     });
+  });
+});
+
+describe('shouldRepairBasicFunctionalitySocialMigrationNotice', () => {
+  it('schedules repair for consolidated social wallets missing the modal', () => {
+    expect(
+      shouldRepairBasicFunctionalitySocialMigrationNotice({
+        hasConsolidationMarker: true,
+        useExternalServices: true,
+        isSocialLogin: true,
+        migrationNotification: null,
+        migrationNotificationDismissed: false,
+      }),
+    ).toBe(true);
+  });
+
+  it('does not repair when the modal is already scheduled', () => {
+    expect(
+      shouldRepairBasicFunctionalitySocialMigrationNotice({
+        hasConsolidationMarker: true,
+        useExternalServices: true,
+        isSocialLogin: true,
+        migrationNotification: 'modal',
+        migrationNotificationDismissed: false,
+      }),
+    ).toBe(false);
+  });
+
+  it('does not repair when the notice was dismissed', () => {
+    expect(
+      shouldRepairBasicFunctionalitySocialMigrationNotice({
+        hasConsolidationMarker: true,
+        useExternalServices: true,
+        isSocialLogin: true,
+        migrationNotification: null,
+        migrationNotificationDismissed: true,
+      }),
+    ).toBe(false);
   });
 });
 

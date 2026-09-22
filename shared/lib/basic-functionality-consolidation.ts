@@ -133,6 +133,39 @@ export function getBasicFunctionalityConsolidationPlan(
  * @param params.useExternalServices - Current Basic Functionality state.
  * @param params.hasConsolidationMarker - Whether the wallet is already marked.
  */
+/**
+ * Whether a consolidated social wallet still needs the migration modal
+ * scheduled (for example after SRP import cleared local OAuth state).
+ *
+ * @param params - Repair inputs from preferences and social classification.
+ * @param params.hasConsolidationMarker
+ * @param params.useExternalServices
+ * @param params.isSocialLogin
+ * @param params.migrationNotification
+ * @param params.migrationNotificationDismissed
+ */
+export function shouldRepairBasicFunctionalitySocialMigrationNotice({
+  hasConsolidationMarker,
+  useExternalServices,
+  isSocialLogin,
+  migrationNotification,
+  migrationNotificationDismissed,
+}: {
+  hasConsolidationMarker: boolean;
+  useExternalServices: boolean;
+  isSocialLogin: boolean;
+  migrationNotification: BasicFunctionalityMigrationNotification;
+  migrationNotificationDismissed: boolean;
+}): boolean {
+  return (
+    hasConsolidationMarker &&
+    useExternalServices &&
+    isSocialLogin &&
+    !migrationNotificationDismissed &&
+    migrationNotification !== 'modal'
+  );
+}
+
 export function shouldStartBasicFunctionalityConsolidation({
   isRemoteFlagEnabled,
   isBuildFlagEnabled,

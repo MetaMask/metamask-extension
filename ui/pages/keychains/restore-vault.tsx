@@ -78,7 +78,13 @@ function RestoreVaultPage() {
 
         await dispatch(resetWallet(true));
 
-        await dispatch(setFirstTimeFlowType(FirstTimeFlowType.restore));
+        await dispatch(
+          setFirstTimeFlowType(
+            isSocialLoginFlow
+              ? FirstTimeFlowType.socialImport
+              : FirstTimeFlowType.restore,
+          ),
+        );
 
         await dispatch(
           createNewVaultAndRestore(password, secretRecoveryPhrase),

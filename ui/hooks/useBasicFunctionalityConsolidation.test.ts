@@ -107,6 +107,49 @@ describe('useBasicFunctionalityConsolidation', () => {
     });
   });
 
+  it('waits for social pairing before consolidating', () => {
+    renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
+      metamask: {
+        completedOnboarding: true,
+        isUnlocked: true,
+        useExternalServices: true,
+        needsSocialPairing: true,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: true,
+        },
+        preferences: {
+          isBasicFunctionalityConsolidatedEnabled: false,
+        },
+      },
+    });
+
+    expect(consolidateBasicFunctionality).not.toHaveBeenCalled();
+  });
+
+  it('repairs the social migration modal for a consolidated social wallet', async () => {
+    renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
+      metamask: {
+        completedOnboarding: true,
+        isUnlocked: true,
+        useExternalServices: true,
+        needsSocialPairing: false,
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: true,
+        },
+        preferences: {
+          isBasicFunctionalityConsolidatedEnabled: true,
+          basicFunctionalityMigrationNotification: null,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      expect(consolidateBasicFunctionality).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('does not recheck a healthy consolidated wallet', () => {
     renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
       metamask: {

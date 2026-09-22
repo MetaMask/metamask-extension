@@ -835,6 +835,23 @@ describe('preferences controller', () => {
       expect(mockTrackEvent).not.toHaveBeenCalled();
     });
 
+    it('schedules the social migration modal for a consolidated social wallet that missed it', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      getOnboardingState.mockReturnValue({
+        firstTimeFlowType: 'socialImport',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
     it('does not sync external services when already consolidated', () => {
       const { controller, getOnboardingState, toggleExternalServices } =
         setupController({});
@@ -842,7 +859,7 @@ describe('preferences controller', () => {
 
       controller.consolidateBasicFunctionality();
 
-      expect(getOnboardingState).not.toHaveBeenCalled();
+      expect(getOnboardingState).toHaveBeenCalled();
       expect(toggleExternalServices).not.toHaveBeenCalled();
       expect(mockTrackEvent).not.toHaveBeenCalled();
     });
