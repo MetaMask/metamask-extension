@@ -41,10 +41,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import {
-  getActiveTabDomainAllowlist,
-  getActiveTabDomainForMetrics,
-} from '../../shared/lib/active-tab-domain-metrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { maskObject } from '../../shared/lib/object.utils';
@@ -60,7 +56,6 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
-import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import {
   createEvent,
   shouldTrackDeepLinkNavigation,
@@ -90,12 +85,9 @@ import MetamaskController, {
 } from './metamask-controller';
 import { createEventBuilder, trackEvent } from './controllers/analytics';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import {
-  getPlatform,
-  initInstallType,
-  isWebOrigin,
-  shouldEmitDappViewedEvent,
-} from './lib/util';
+import { getPlatform, initInstallType, isWebOrigin } from './lib/util';
+import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
+import { createDappMetrics } from './lib/metrics/dapp-metrics';
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
@@ -128,8 +120,6 @@ import {
 } from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
-import { getIframeProperties } from './lib/getIframeProperties';
 import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
 /**
@@ -236,9 +226,26 @@ const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-const senderOriginMapping = {};
-const tabOriginMapping = {};
-const frameIdMapping = {};
+
+const uiPresence = createUiPresenceTracker({
+  getOpenMetamaskTabsIDs: () => openMetamaskTabsIDs,
+  getOpenPopupCount: () => openPopupCount,
+  getOpenSidePanelCount: () => openSidePanelCount,
+  getNotificationIsOpen: () => notificationIsOpen,
+});
+
+// DappViewed / AppOpened metrics, tab→origin registries, and onNavigateToTab
+// (see app/scripts/lib/metrics/dapp-metrics.ts).
+const {
+  trackDappView,
+  emitAppOpenedMetricEvent,
+  shouldEmitAppOpened,
+  trackAppOpened,
+  installOnNavigateToTabListener,
+} = createDappMetrics({
+  getController: () => controller,
+  isAnyUiOpen: uiPresence.isAnyUiOpen,
+});
 
 const requestOpenSidepanel = createSidepanelOpener();
 
@@ -748,173 +755,6 @@ async function loadPreinstalledSnaps() {
 }
 
 /**
- * Emit event of DappViewed,
- * which should only be tracked only after a user opts into metrics and connected to the dapp
- *
- * @param {string} origin - URL of visited dapp
- * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
- * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
- */
-function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
-  const { analyticsId } = controller.getState();
-  if (!shouldEmitDappViewedEvent(analyticsId)) {
-    return;
-  }
-
-  const numberOfConnectedAccounts =
-    controller.getPermittedAccounts(origin).length;
-  if (numberOfConnectedAccounts === 0) {
-    return;
-  }
-
-  const accountsState = controller.controllerMessenger.call(
-    'AccountsController:getState',
-  );
-  const numberOfTotalAccounts = Object.keys(
-    accountsState.internalAccounts.accounts,
-  ).length;
-
-  const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
-
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.DappViewed)
-      .addCategory(MetaMetricsEventCategory.InpageProvider)
-      .addProperties({
-        is_first_visit: false,
-        number_of_accounts: numberOfTotalAccounts,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-        ...iframeProps,
-      })
-      .build({
-        referrer: {
-          url: origin,
-        },
-        excludeMetaMetricsId: true,
-      }),
-  );
-}
-
-/**
- * Track dapp connection when loaded and permissioned
- *
- * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
- */
-function trackDappView(remotePort) {
-  if (
-    !remotePort.sender?.tab ||
-    !remotePort.sender?.url ||
-    !remotePort.sender?.tab?.url
-  ) {
-    return;
-  }
-  const tabId = remotePort.sender.tab.id;
-  const url = new URL(remotePort.sender.url);
-  const { origin } = url;
-  const tabUrl = new URL(remotePort.sender.tab.url);
-  const { origin: tabOrigin } = tabUrl;
-  const { frameId } = remotePort.sender;
-
-  // store the origin to corresponding tab so it can provide info for onActivated listener
-  if (!Object.keys(senderOriginMapping).includes(tabId)) {
-    senderOriginMapping[tabId] = origin;
-  }
-  // do the same for tab origin, which can be different to sender origin
-  if (!(tabId in tabOriginMapping)) {
-    tabOriginMapping[tabId] = tabOrigin;
-  }
-  if (!(tabId in frameIdMapping)) {
-    frameIdMapping[tabId] = frameId;
-  }
-
-  const isConnectedToDapp = controller.controllerMessenger.call(
-    'PermissionController:hasPermissions',
-    origin,
-  );
-
-  // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
-  const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
-
-  // *** Emit DappViewed metric event when ***
-  // - refresh the dapp
-  // - open dapp in a new tab
-  if (isConnectedToDapp && isTabLoaded) {
-    emitDappViewedMetricEvent(origin, tabOrigin, frameId);
-  }
-}
-
-/**
- * Emit App Opened event
- *
- * @param {string} environmentType - The environment type where the app is opening
- */
-function emitAppOpenedMetricEvent(environmentType) {
-  const { consentDecisionMade, optedIn } = controller.getState();
-
-  // Skip if user hasn't opted into metrics
-  if (!consentDecisionMade || !optedIn) {
-    return;
-  }
-
-  const activeTabOrigin =
-    controller.appStateController.state.appActiveTab?.origin;
-  const allowlist = getActiveTabDomainAllowlist(
-    controller.remoteFeatureFlagController.state,
-  );
-  const activeTabDomain = getActiveTabDomainForMetrics(
-    activeTabOrigin,
-    allowlist,
-  );
-
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.AppOpened)
-      .addCategory(MetaMetricsEventCategory.App)
-      .addProperties(
-        activeTabDomain ? { active_tab_domain: activeTabDomain } : {},
-      )
-      .build({ environmentType }),
-  );
-}
-
-/**
- * Returns true if the App Opened metric event should fire for the given env.
- *
- * @param {string} environment - The environment type where the app is opening
- * @returns {boolean}
- */
-function shouldEmitAppOpened(environment) {
-  // List of valid environment types to track
-  const environmentTypeList = [
-    ENVIRONMENT_TYPE_POPUP,
-    ENVIRONMENT_TYPE_NOTIFICATION,
-    ENVIRONMENT_TYPE_FULLSCREEN,
-    ENVIRONMENT_TYPE_SIDEPANEL,
-  ];
-
-  // Check if any UI instances are currently open
-  const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
-  const isAlreadyOpen =
-    isFullscreenOpen ||
-    notificationIsOpen ||
-    openPopupCount > 0 ||
-    openSidePanelCount > 0;
-
-  // Only emit event if no UI is open and environment is valid
-  return !isAlreadyOpen && environmentTypeList.includes(environment);
-}
-
-/**
- * This function checks if the app is being opened
- * and emits an event only if no other UI instances are currently open.
- *
- * @param {string} environment - The environment type where the app is opening
- */
-function trackAppOpened(environment) {
-  if (shouldEmitAppOpened(environment)) {
-    emitAppOpenedMetricEvent(environment);
-  }
-}
-
-/**
  * Helper function to refresh appActiveTab by querying the current active tab.
  * This is used when the sidepanel opens to ensure it has the current tab info,
  * and when the focused window changes to keep appActiveTab in sync.
@@ -1165,15 +1005,7 @@ export function setupController(
 
   setupSentryGetStateGlobal(controller);
 
-  const isClientOpenStatus = () => {
-    return (
-      openPopupCount > 0 ||
-      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen ||
-      openSidePanelCount > 0 ||
-      false
-    );
-  };
+  const isClientOpenStatus = uiPresence.isClientOpen;
 
   const hasPersistentUiOpen = () => {
     return openPopupCount > 0 || openSidePanelCount > 0;
@@ -1666,55 +1498,6 @@ browser.runtime.onUpdateAvailable.addListener((details) => {
   onUpdateAvailable(details, getInstallLifecycleDeps());
 });
 
-function onNavigateToTab() {
-  browser.tabs.onActivated.addListener((onActivatedTab) => {
-    if (controller) {
-      const { tabId } = onActivatedTab;
-      const currentOrigin = senderOriginMapping[tabId];
-      const currentTabOrigin = tabOriginMapping[tabId];
-      // *** Emit DappViewed metric event when ***
-      // - navigate to a connected dapp
-      if (currentOrigin) {
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[currentOrigin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(
-            currentOrigin,
-            currentTabOrigin,
-            frameIdMapping[tabId],
-          );
-        }
-      }
-
-      // If the connected dApp is a referral partner, trigger the referral flow
-      const partner = getPartnerByOrigin(currentTabOrigin);
-      if (partner) {
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[currentTabOrigin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        if (isConnectedToDapp) {
-          controller.controllerMessenger
-            .call(
-              'LegacyBackgroundApiService:handleDefiReferral',
-              partner,
-              tabId,
-              ReferralTriggerType.OnNavigateConnectedTab,
-            )
-            .catch((error) => {
-              log.error(
-                `Failed to handle ${partner.name} referral after navigation to connected tab: `,
-                error,
-              );
-            });
-        }
-      }
-    }
-  });
-}
-
 setupSidePanelToolbarBehavior({
   getController: () => controller,
   waitUntilInitialized: async () => await isInitialized,
@@ -1908,7 +1691,7 @@ function setupSentryGetStateGlobal(store) {
  * @param {Backup | null} backup
  */
 async function initBackground(backup) {
-  onNavigateToTab();
+  installOnNavigateToTabListener();
   try {
     await initialize(backup);
     if (process.env.IN_TEST) {
