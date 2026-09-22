@@ -622,6 +622,42 @@ describe('useHardwareWalletSignatures', () => {
       });
     });
 
+    it('restarts the send even when connectionState lags behind a successful ensureDeviceReady check', async () => {
+      // App closed: first submit fails with a no-event error, triggering the
+      // auto-restart effect. The retry's resubmit then succeeds.
+      mockUpdateAndApproveTx
+        .mockReturnValueOnce((() =>
+          Promise.reject({
+            code: ErrorCode.DeviceStateEthAppClosed,
+            message: 'Ethereum app is not open',
+          })) as never)
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+      // Race: ensureDeviceReady() resolves true, but connectionState.status
+      // (read by handleRetry's closure) still lags at a non-retryable value.
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.AwaitingApp },
+      });
+      mockEnsureDeviceReady.mockResolvedValue(true);
+
+      const { result } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await act(async () => {
+        await flushPromises();
+      });
+
+      // Restart must actually happen, not silently no-op on the stale status.
+      expect(mockCancelCurrentBatch).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+    });
+
     it('passes nested batch transaction ids to the sign tracker', async () => {
       await renderUseHardwareWalletSignaturesAndFlush({
         locationState: createSendBundleLocationState(),

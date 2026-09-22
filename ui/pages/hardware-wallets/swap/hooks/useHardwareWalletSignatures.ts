@@ -484,7 +484,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       }
 
       setNeedsSendBundleRestart(false);
-      await handleRetry();
+      // ensureDeviceReady() above is already a live readiness check;
+      // connectionState may still lag a tick, so skip its stale re-check.
+      await handleRetry({ skipConnectionCheck: true });
     };
 
     attemptRestart().catch(() => {
