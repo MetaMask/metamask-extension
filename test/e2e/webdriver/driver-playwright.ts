@@ -966,8 +966,9 @@ export class PlaywrightDriver {
 
   /**
    * Waits until the current page's URL equals the given URL. Mirrors the
-   * Selenium driver's `waitForUrl` (`until.urlIs`). Playwright treats a
-   * plain string (no glob characters) as an exact-match pattern.
+   * Selenium driver's `waitForUrl` (`until.urlIs`) by polling `page.url()`
+   * instead of using Playwright's navigation-aware `waitForURL`, which can
+   * fail with `net::ERR_ABORTED` during redirects or frame detachment.
    *
    * @param options - Parameters for the function.
    * @param options.url - The URL to wait for.
@@ -980,10 +981,7 @@ export class PlaywrightDriver {
     url: string;
     timeout?: number;
   }): Promise<void> {
-    await this.page.waitForURL((current) => current.href === url, {
-      timeout,
-      waitUntil: 'commit',
-    });
+    await this.waitUntil(async () => this.page.url() === url, { timeout });
   }
 
   async refresh(): Promise<void> {
