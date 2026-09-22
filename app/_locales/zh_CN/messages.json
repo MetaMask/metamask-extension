@@ -2550,17 +2550,9 @@
     "message": "此特定网络要求您的账户中保留 $1 $3 的储备金。根据您当前的余额，您最多可使用 $2 $3",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
-  "bridgeValidationInsufficientNativeReserveMessageArc": {
-    "message": "请在账户中至少保留 $1 $3 以支付 Arc 网络费用。根据你当前的余额，最多可使用 $2 $3。",
-    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
-  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "需要最低 $1 储备金余额",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridgeValidationInsufficientNativeReserveTitleArc": {
-    "message": "保留一些 $1 以支付 Arc 网络费用",
-    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "桥接"

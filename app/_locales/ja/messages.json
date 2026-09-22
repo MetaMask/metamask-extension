@@ -2547,17 +2547,9 @@
     "message": "このネットワークは、アカウントに$1 $3の準備金を必要とします。現在の残高では$2 $3までしか使えません",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
-  "bridgeValidationInsufficientNativeReserveMessageArc": {
-    "message": "Arc のネットワーク手数料をカバーするために、アカウントに少なくとも $1 $3 を残してください。現在の残高では、最大 $2 $3 を使用できます。",
-    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
-  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "$1以上の準備金が必要です",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridgeValidationInsufficientNativeReserveTitleArc": {
-    "message": "Arc のネットワーク手数料用に $1 を少し残してください",
-    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "ブリッジ"

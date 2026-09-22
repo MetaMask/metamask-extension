@@ -2550,17 +2550,9 @@
     "message": "Αυτό το συγκεκριμένο δίκτυο απαιτεί τη διατήρηση ενός αποθεματικού ύψους $1 $3 στον λογαριασμό σας. Με το τρέχον υπόλοιπό σας μπορείτε να χρησιμοποιήσετε έως και $2 $3",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
-  "bridgeValidationInsufficientNativeReserveMessageArc": {
-    "message": "Διατηρήστε τουλάχιστον $1 $3 στον λογαριασμό σας για την κάλυψη των προμηθειών δικτύου Arc. Με το τρέχον υπόλοιπό σας, μπορείτε να χρησιμοποιήσετε έως και $2 $3.",
-    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
-  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Απαιτείται ελάχιστο υπόλοιπο ασφαλείας $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridgeValidationInsufficientNativeReserveTitleArc": {
-    "message": "Κρατήστε λίγα $1 για τις προμήθειες δικτύου Arc",
-    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "Διασύνδεση"

@@ -2550,17 +2550,9 @@
     "message": "이 특정 네트워크는 계정에 최소 $1 $3의 잔액을 유지해야 합니다. 현재 잔액으로는 최대 $2 $3까지 사용할 수 있습니다.",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
-  "bridgeValidationInsufficientNativeReserveMessageArc": {
-    "message": "Arc 네트워크 수수료를 충당하려면 계정에 최소 $1 $3을(를) 남겨 두세요. 현재 잔액으로 최대 $2 $3까지 사용할 수 있습니다.",
-    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
-  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "최소 $1의 예치금이 필요합니다",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridgeValidationInsufficientNativeReserveTitleArc": {
-    "message": "Arc 네트워크 수수료를 위해 $1을(를) 조금 남겨 두세요",
-    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "브릿징"

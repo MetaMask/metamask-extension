@@ -2550,17 +2550,9 @@
     "message": "Jaringan khusus ini mengharuskan Anda untuk mempertahankan saldo cadangan sebesar $1 $3 di akun Anda. Dengan saldo saat ini, Anda dapat menggunakan maksimal $2 $3",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
-  "bridgeValidationInsufficientNativeReserveMessageArc": {
-    "message": "Simpan setidaknya $1 $3 di akun Anda untuk membayar biaya jaringan Arc. Dengan saldo Anda saat ini, Anda dapat menggunakan hingga $2 $3.",
-    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
-  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Saldo cadangan minimum $1 diperlukan",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridgeValidationInsufficientNativeReserveTitleArc": {
-    "message": "Sisakan sebagian $1 untuk biaya jaringan Arc",
-    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "Bridge"

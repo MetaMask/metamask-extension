@@ -2550,17 +2550,9 @@
     "message": "इस विशेष नेटवर्क के लिए आपके अकाउंट में $1 $3 का रिज़र्व बनाए रखना आवश्यक है। आपके वर्तमान बैलेंस के साथ, आप अधिकतम $2 $3 तक उपयोग कर सकते हैं",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
-  "bridgeValidationInsufficientNativeReserveMessageArc": {
-    "message": "Arc नेटवर्क शुल्कों को कवर करने के लिए अपने खाते में कम से कम $1 $3 रखें। अपने मौजूदा बैलेंस के साथ, आप $2 $3 तक उपयोग कर सकते हैं।",
-    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
-  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "न्यूनतम $1 रिज़र्व बैलेंस आवश्यक है",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridgeValidationInsufficientNativeReserveTitleArc": {
-    "message": "Arc नेटवर्क शुल्कों के लिए कुछ $1 रखें",
-    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "ब्रिज किया जा रहा है"

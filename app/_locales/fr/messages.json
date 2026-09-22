@@ -2547,17 +2547,9 @@
     "message": "Ce réseau spécifique exige que vous mainteniez une réserve de $1 $3 sur votre compte. Avec votre solde actuel, vous pouvez utiliser $2 $3 au maximum",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
-  "bridgeValidationInsufficientNativeReserveMessageArc": {
-    "message": "Conservez au moins $1 $3 sur votre compte pour couvrir les frais de réseau Arc. Avec votre solde actuel, vous pouvez utiliser jusqu’à $2 $3.",
-    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
-  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Solde minimum de réserve en $1 requis",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridgeValidationInsufficientNativeReserveTitleArc": {
-    "message": "Conservez du $1 pour les frais de réseau Arc",
-    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "Établissement d’une passerelle"

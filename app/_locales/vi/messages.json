@@ -2550,17 +2550,9 @@
     "message": "Mạng cụ thể này yêu cầu duy trì khoản dự trữ $1 $3 trong tài khoản của bạn. Với số dư hiện tại, bạn có thể sử dụng tối đa $2 $3",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
-  "bridgeValidationInsufficientNativeReserveMessageArc": {
-    "message": "Giữ lại ít nhất $1 $3 trong tài khoản của bạn để trả phí mạng Arc. Với số dư hiện tại, bạn có thể sử dụng tối đa $2 $3.",
-    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
-  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Yêu cầu số dư dự trữ tối thiểu $1",
     "description": "$1 is the ticker symbol of the token"
-  },
-  "bridgeValidationInsufficientNativeReserveTitleArc": {
-    "message": "Giữ lại một ít $1 cho phí mạng Arc",
-    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "Cầu nối"
