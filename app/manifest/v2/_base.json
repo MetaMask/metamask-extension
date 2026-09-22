@@ -72,6 +72,5 @@
     "identity",
     "cookies"
   ],
-  "short_name": "__MSG_appName__",
-  "web_accessible_resources": ["cashtag-widget.html"]
+  "short_name": "__MSG_appName__"
 }
