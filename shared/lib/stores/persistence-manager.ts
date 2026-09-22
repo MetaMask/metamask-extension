@@ -809,13 +809,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       return;
     }
 
-    const controllerKeys = [...bytesByController.keys()].sort((left, right) =>
-      left.localeCompare(right),
-    );
-    const sortedBytesByController: Map<string, number> = new Map(
-      controllerKeys.map((key) => [key, bytesByController.get(key) as number]),
-    );
-
     const isIdle = this.#getIsIdle();
     let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
     if (isIdle === true) {
@@ -825,9 +818,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
 
     this.emit('splitStateWrite', {
-      bytesByController: sortedBytesByController,
+      bytesByController,
       coalescedUpdates,
-      controllerKeys,
+      controllerKeys: [...bytesByController.keys()],
       idleStatus,
       measurementDurationMs: performance.now() - measurementStartedAt,
       sampleRate,

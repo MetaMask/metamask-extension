@@ -834,11 +834,11 @@ describe('PersistenceManager', () => {
       const barControllerLength = JSON.stringify({ enabled: true }).length;
       expect(event).toStrictEqual({
         bytesByController: new Map([
-          ['BarController', barControllerLength],
           ['FooController', fooControllerLength],
+          ['BarController', barControllerLength],
         ]),
         coalescedUpdates: 3,
-        controllerKeys: ['BarController', 'FooController'],
+        controllerKeys: ['FooController', 'BarController'],
         idleStatus: 'idle',
         measurementDurationMs: expect.any(Number),
         sampleRate: 1,
