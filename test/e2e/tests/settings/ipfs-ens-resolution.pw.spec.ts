@@ -37,8 +37,6 @@ pwTest.describe('Settings', () => {
           await mockEnsDotDomains(mockServer),
         ];
       }
-      // Using proxy port that doesn't resolve so that the browser can error out properly
-      // on the ".eth" hostname. The proxy does too much interference with 8000.
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
@@ -47,9 +45,6 @@ pwTest.describe('Settings', () => {
           driverType: E2E_DRIVER.PLAYWRIGHT,
           title: testInfo.titlePath.join(' '),
           testSpecificMock: mockEns,
-          driverOptions: {
-            proxyPort: '8001',
-          },
         },
         async ({ driver }) => {
           await driver.navigate();
