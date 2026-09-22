@@ -2972,7 +2972,7 @@
         "@metamask/bridge-status-controller>@metamask/controller-utils": true,
         "@metamask/rpc-errors": true,
         "@metamask/bridge-status-controller>@metamask/transaction-controller>@metamask/utils": true,
-        "@metamask/bridge-status-controller>uuid": true
+        "@metamask/bridge-status-controller>@metamask/transaction-controller>uuid": true
       }
     },
     "@metamask/transaction-pay-controller": {
@@ -7514,6 +7514,11 @@
       }
     },
     "@metamask/profile-metrics-controller>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/transaction-controller>uuid": {
       "globals": {
         "crypto": true
       }
