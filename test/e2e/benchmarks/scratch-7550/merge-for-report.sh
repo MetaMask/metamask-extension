@@ -27,20 +27,36 @@ merge_json() {
   jq -s 'add' "${existing[@]}"
 }
 
+# Prefer after-* JSON for the current AFTER_SHA; fall back to any after-* file so
+# merge + report can combine a partial re-run with prior_run_id artifacts.
+resolve_after_scenario_json() {
+  local scenario_slug="$1"
+  local preferred="$ARTIFACT_DIR/benchmark-chrome-webpack-after-${AFTER_SHA:0:7}-${scenario_slug}.json"
+  if [ -f "$preferred" ]; then
+    echo "$preferred"
+    return
+  fi
+  local match
+  match="$(find "$ARTIFACT_DIR" -maxdepth 1 -name "benchmark-chrome-webpack-after-*-${scenario_slug}.json" -print 2>/dev/null | sort | tail -1)"
+  if [ -n "$match" ]; then
+    echo "Warning: using after artifact (not current SHA): $match" >&2
+    echo "$match"
+    return
+  fi
+  echo ""
+}
+
+AFTER_TOKEN_JSON="$(resolve_after_scenario_json token-search-power-user)"
+AFTER_SWITCH_JSON="$(resolve_after_scenario_json account-switch)"
 AFTER_PREFIX="benchmark-chrome-webpack-after-${AFTER_SHA:0:7}"
 AFTER_MERGED="$ARTIFACT_DIR/${AFTER_PREFIX}-merged.json"
-merge_json \
-  "$ARTIFACT_DIR/${AFTER_PREFIX}-token-search-power-user.json" \
-  "$ARTIFACT_DIR/${AFTER_PREFIX}-account-switch.json" \
-  "$ARTIFACT_DIR/${AFTER_PREFIX}-network-switch.json" \
-  > "$AFTER_MERGED"
+merge_json "$AFTER_TOKEN_JSON" "$AFTER_SWITCH_JSON" > "$AFTER_MERGED"
 
 BEFORE_TOKEN_JSON="$ARTIFACT_DIR/benchmark-chrome-webpack-before-${PRE_7475_SHA:0:7}-token-search-power-user.json"
 BEFORE_SWITCH_PREFIX="benchmark-chrome-webpack-before-${PRE_7476_SHA:0:7}"
 BEFORE_SWITCH_MERGED="$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-merged.json"
 merge_json \
   "$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-account-switch.json" \
-  "$ARTIFACT_DIR/${BEFORE_SWITCH_PREFIX}-network-switch.json" \
   > "$BEFORE_SWITCH_MERGED"
 
 if [ ! -f "$AFTER_MERGED" ] || [ "$(cat "$AFTER_MERGED")" = '{}' ]; then

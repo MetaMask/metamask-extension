@@ -69,7 +69,7 @@ run_before_preset_at_sha \
   "$RETRIES" \
   "$ROOT"
 
-echo "=== Before account/network @ ${PRE_7476_SHA} ==="
+echo "=== Before account switch @ ${PRE_7476_SHA} ==="
 BEFORE_SWITCH_LABEL="before-switch-${PRE_7476_SHA:0:7}"
 BEFORE_SWITCH_JSON="$(benchmark_json_path "$BEFORE_SWITCH_LABEL")"
 run_before_preset_at_sha \

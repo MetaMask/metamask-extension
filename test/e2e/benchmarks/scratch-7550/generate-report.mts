@@ -366,19 +366,7 @@ function main(): void {
       beforeBundle: beforeSwitchBundle,
       afterBundle,
       primaryTimer: 'account_switch',
-      primaryDeltaMetric: 'inp',
-    },
-    {
-      scenario: 'Network switching',
-      harness: 'network-switch USER_ACTION',
-      beforeSha: cli.beforeSwitchSha,
-      afterSha: cli.afterSha,
-      beforeKey: 'networkSwitch',
-      afterKey: 'networkSwitch',
-      beforeBundle: beforeSwitchBundle,
-      afterBundle,
-      primaryTimer: 'network_switch',
-      primaryDeltaMetric: 'inp',
+      primaryDeltaMetric: 'tbt',
     },
   ];
 
@@ -391,7 +379,7 @@ function main(): void {
   const body = rows.map(buildRow).join('\n');
   const footer = `
 
-Token search uses TBT as its primary delta; switch scenarios use INP. CV ≥30% is
+Both scenarios use TBT p75 as the primary delta (INP shown in cells). CV ≥30% is
 flagged, CV ≥50% is unreliable, and mixed-direction rows are not evidence of an
 improvement.
 
@@ -399,7 +387,7 @@ improvement.
 
 - After (current): \`${cli.afterSha}\`
 - Before token search (pre-#7475 / extension#44443): \`${cli.beforeTokenSha}\`
-- Before account/network (pre-#7476 / extension#45265): \`${cli.beforeSwitchSha}\`
+- Before account switch (pre-#7476 / extension#45265): \`${cli.beforeSwitchSha}\`
 `;
 
   writeFileSync(cli.out, `${header}${body}${footer}`);

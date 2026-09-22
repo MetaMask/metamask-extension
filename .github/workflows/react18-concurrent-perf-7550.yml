@@ -2,25 +2,80 @@ name: React 18 concurrent perf (#7550 scratch)
 
 on:
   workflow_dispatch:
+    inputs:
+      scenario:
+        description: Which benchmark scenario(s) to run
+        type: choice
+        default: all
+        options:
+          - all
+          - token-search-power-user
+          - account-switch
+      iterations:
+        description: Iterations per arm (before + after)
+        type: choice
+        default: '20'
+        options:
+          - '20'
+          - '40'
+      prior_run_id:
+        description: >-
+          Optional Actions run ID — download scratch-7550-* JSON from that run
+          before this run's artifacts (for scenarios skipped when scenario != all).
+          Example: 35742151915
+        required: false
+        type: string
   push:
     branches:
       - test/7550-react-18-performance
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: react18-concurrent-perf-7550-${{ github.ref }}
   cancel-in-progress: true
 
 env:
-  # 5 was enough to get the harness green. 20 tightens p75 for the #6657 table.
-  BENCHMARK_ITERATIONS: 20
   BENCHMARK_RETRIES: 1
   PRE_7475_SHA: 23a9a0e2284fb7aa2e8fc51cb40553f93249ed30
   PRE_7476_SHA: 384fb12684915651d4a82f6344de354309a9ed01
 
 jobs:
+  prepare:
+    name: prepare matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      benchmark_iterations: ${{ steps.set-matrix.outputs.benchmark_iterations }}
+    steps:
+      - id: set-matrix
+        env:
+          SCENARIO: ${{ github.event_name == 'workflow_dispatch' && inputs.scenario || 'all' }}
+          ITERATIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.iterations || '20' }}
+          PRE_7475_SHA: ${{ env.PRE_7475_SHA }}
+          PRE_7476_SHA: ${{ env.PRE_7476_SHA }}
+        run: |
+          case "$SCENARIO" in
+            token-search-power-user)
+              MATRIX=$(jq -nc --arg sha "$PRE_7475_SHA" \
+                '{include:[{scenario:"token-search-power-user",before_sha:$sha}]}')
+              ;;
+            account-switch)
+              MATRIX=$(jq -nc --arg sha "$PRE_7476_SHA" \
+                '{include:[{scenario:"account-switch",before_sha:$sha}]}')
+              ;;
+            *)
+              MATRIX=$(jq -nc \
+                --arg t "$PRE_7475_SHA" \
+                --arg a "$PRE_7476_SHA" \
+                '{include:[{scenario:"token-search-power-user",before_sha:$t},{scenario:"account-switch",before_sha:$a}]}')
+              ;;
+          esac
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "benchmark_iterations=$ITERATIONS" >> "$GITHUB_OUTPUT"
+
   build-test-webpack:
     name: build-test-webpack
     runs-on: ubuntu-latest
@@ -54,19 +109,14 @@ jobs:
 
   benchmark:
     name: benchmark / ${{ matrix.scenario }}
-    needs: build-test-webpack
+    needs:
+      - prepare
+      - build-test-webpack
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - scenario: token-search-power-user
-            before_sha: 23a9a0e2284fb7aa2e8fc51cb40553f93249ed30
-          - scenario: account-switch
-            before_sha: 384fb12684915651d4a82f6344de354309a9ed01
-          - scenario: network-switch
-            before_sha: 384fb12684915651d4a82f6344de354309a9ed01
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     env:
       SELENIUM_BROWSER: chrome
       SELENIUM_HEADLESS: true
@@ -74,6 +124,7 @@ jobs:
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
       SKIP_AFTER_BUILD: 1
       BENCHMARK_ABORT_AFTER_CONSECUTIVE_FAILURES: 3
+      BENCHMARK_ITERATIONS: ${{ needs.prepare.outputs.benchmark_iterations }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -124,10 +175,12 @@ jobs:
 
   report:
     name: merge + report
-    needs: benchmark
+    needs:
+      - prepare
+      - benchmark
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: always()
+    if: always() && needs.benchmark.result != 'cancelled'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -135,7 +188,19 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Download scenario artifacts
+      - name: Download prior scenario artifacts (optional)
+        if: >-
+          github.event_name == 'workflow_dispatch' &&
+          inputs.prior_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          pattern: scratch-7550-*
+          merge-multiple: true
+          path: test-artifacts/scratch-7550
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.prior_run_id }}
+
+      - name: Download scenario artifacts (this run)
         uses: actions/download-artifact@v4
         with:
           pattern: scratch-7550-*
@@ -150,12 +215,18 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          if [ -f test-artifacts/scratch-7550/react18-concurrent-perf-report.md ]; then
-            echo '### React 18 concurrent perf report' >> "$GITHUB_STEP_SUMMARY"
-            cat test-artifacts/scratch-7550/react18-concurrent-perf-report.md >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo 'Report not generated — one or more benchmark jobs may have failed.' >> "$GITHUB_STEP_SUMMARY"
-          fi
+          {
+            echo '### React 18 concurrent perf report'
+            if [ -f test-artifacts/scratch-7550/react18-concurrent-perf-report.md ]; then
+              cat test-artifacts/scratch-7550/react18-concurrent-perf-report.md
+            else
+              echo 'Report not generated — one or more benchmark jobs may have failed.'
+            fi
+            if [ -n "${{ github.event_name == 'workflow_dispatch' && inputs.prior_run_id || '' }}" ]; then
+              echo ''
+              echo "_Merged with prior run \`${{ inputs.prior_run_id }}\` for skipped scenario(s)._"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload scratch-7550 report
         if: always()
