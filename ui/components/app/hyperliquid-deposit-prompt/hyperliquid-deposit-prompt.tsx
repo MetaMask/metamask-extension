@@ -31,10 +31,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  closeNotificationFromPopup,
-  upsertTransactionUIMetricsFragment,
-} from '../../../store/actions';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -45,7 +42,7 @@ import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
-import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
+import { TokenIcon } from '../token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/feature-flags';
@@ -226,14 +223,6 @@ export const HyperliquidDepositPrompt: React.FC<
       onActionComplete({ action: 'dismiss' });
     }
   }, [isSignerMismatch, onActionComplete]);
-
-  // When this component renders in the popup, close any notification window.
-  // This is to prevent an open notification window from showing the same approval.
-  useEffect(() => {
-    closeNotificationFromPopup().catch(() => {
-      // Ignore errors - notification may not be open
-    });
-  }, []);
 
   useEffect(() => {
     if (isSignerMismatch || hasTrackedView.current) {

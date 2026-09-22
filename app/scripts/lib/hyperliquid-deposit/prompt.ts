@@ -4,7 +4,7 @@ import { HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE } from '../../../../shared/con
 
 type HyperliquidDepositPromptApprovalController = Pick<
   ApprovalController,
-  'add' | 'addAndShowApprovalRequest' | 'hasRequest'
+  'add' | 'addAndShowApprovalRequest' | 'hasRequest' | 'state'
 >;
 
 type ShowHyperliquidDepositPromptApprovalOptions = {
@@ -15,6 +15,7 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
   // Optional function to open the popup. If provided and returns true, the
   // approval is added without triggering UI (the popup will show it).
   requestOpenPopup?: (tabId: number) => Promise<boolean>;
+  closeNotification?: () => Promise<void>;
 };
 
 /**
@@ -27,6 +28,7 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
  * @param options.selectedAddress - The address that signed the request.
  * @param options.tabId - The tab ID of the dapp that triggered the approval.
  * @param options.requestOpenPopup - Optional function to open popup.
+ * @param options.closeNotification - Optional function to close notification.
  */
 export async function showHyperliquidDepositPromptApproval({
   approvalController,
@@ -34,6 +36,7 @@ export async function showHyperliquidDepositPromptApproval({
   selectedAddress,
   tabId,
   requestOpenPopup,
+  closeNotification,
 }: ShowHyperliquidDepositPromptApprovalOptions): Promise<void> {
   if (
     approvalController.hasRequest({
@@ -52,12 +55,18 @@ export async function showHyperliquidDepositPromptApproval({
     type: HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
   };
 
-  // If requestOpenPopup is provided and we have a tabId, try to open popup first.
-  // The callback handles any cleanup (e.g., closing notification) on success.
-  if (requestOpenPopup && tabId !== undefined) {
+  const pendingApprovalCount = Object.keys(
+    approvalController.state.pendingApprovals,
+  ).length;
+
+  // If requestOpenPopup is provided, we have a tabId, and there are no other pending
+  // approvals, try to open popup. (If there are other pending approvals, they will show
+  // first in popup, not our deposit prompt.) On success, close notification and add prompt.
+  if (requestOpenPopup && tabId !== undefined && pendingApprovalCount === 0) {
     try {
       const popupOpened = await requestOpenPopup(tabId);
       if (popupOpened) {
+        await closeNotification?.();
         approvalController.add(approvalRequest).catch(() => {
           // User dismissed or approval failed - both are expected flows
         });
@@ -69,8 +78,6 @@ export async function showHyperliquidDepositPromptApproval({
         error,
       );
     }
-  } else if (requestOpenPopup && tabId === undefined) {
-    log.debug('HyperliquidDepositPrompt: tabId missing, using default UI');
   }
 
   // Default: let triggerUi decide (notification/sidepanel)

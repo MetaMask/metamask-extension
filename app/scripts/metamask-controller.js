@@ -5515,6 +5515,9 @@ export default class MetamaskController extends EventEmitter {
               requestOpenPopup: useSidePanelAsDefault
                 ? undefined
                 : createPopupOpener({ extension: this.extension }),
+              closeNotification: useSidePanelAsDefault
+                ? undefined
+                : () => this.notificationManager.closePopup(),
             });
           },
         }),

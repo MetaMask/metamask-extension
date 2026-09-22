@@ -62,7 +62,6 @@ jest.mock('../../../store/controller-actions/transaction-pay-controller');
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  closeNotificationFromPopup: jest.fn().mockResolvedValue(undefined),
   upsertTransactionUIMetricsFragment: jest.fn(),
 }));
 

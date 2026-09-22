@@ -5,10 +5,11 @@ describe('showHyperliquidDepositPromptApproval', () => {
   const origin = 'https://app.hyperliquid.xyz';
   const selectedAddress = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
-  const createApprovalController = () => ({
+  const createApprovalController = (pendingApprovals = {}) => ({
     add: jest.fn().mockResolvedValue(undefined),
     addAndShowApprovalRequest: jest.fn().mockResolvedValue(undefined),
     hasRequest: jest.fn().mockReturnValue(false),
+    state: { pendingApprovals },
   });
 
   it('adds and shows a Hyperliquid deposit prompt approval', async () => {
@@ -162,6 +163,83 @@ describe('showHyperliquidDepositPromptApproval', () => {
           requestOpenPopup,
         }),
       ).resolves.toBeUndefined();
+    });
+
+    it('calls closeNotification after popup opens but before adding approval', async () => {
+      const approvalController = createApprovalController();
+      const requestOpenPopup = jest.fn().mockResolvedValue(true);
+      const closeNotification = jest.fn().mockResolvedValue(undefined);
+      const callOrder: string[] = [];
+
+      // Track call order
+      requestOpenPopup.mockImplementation(async () => {
+        callOrder.push('requestOpenPopup');
+        return true;
+      });
+      closeNotification.mockImplementation(async () => {
+        callOrder.push('closeNotification');
+      });
+      approvalController.add.mockImplementation(async () => {
+        callOrder.push('add');
+      });
+
+      await showHyperliquidDepositPromptApproval({
+        approvalController,
+        origin,
+        selectedAddress,
+        tabId: 123,
+        requestOpenPopup,
+        closeNotification,
+      });
+
+      expect(closeNotification).toHaveBeenCalled();
+      expect(callOrder).toEqual([
+        'requestOpenPopup',
+        'closeNotification',
+        'add',
+      ]);
+    });
+
+    it('does not call closeNotification when popup fails to open', async () => {
+      const approvalController = createApprovalController();
+      const requestOpenPopup = jest.fn().mockResolvedValue(false);
+      const closeNotification = jest.fn().mockResolvedValue(undefined);
+
+      await showHyperliquidDepositPromptApproval({
+        approvalController,
+        origin,
+        selectedAddress,
+        tabId: 123,
+        requestOpenPopup,
+        closeNotification,
+      });
+
+      expect(closeNotification).not.toHaveBeenCalled();
+    });
+
+    it('falls back to addAndShowApprovalRequest() when other approvals are pending', async () => {
+      // Simulate another approval already pending
+      const approvalController = createApprovalController({
+        'other-approval-id': { type: 'wallet_requestPermissions' },
+      });
+      const requestOpenPopup = jest.fn().mockResolvedValue(true);
+      const closeNotification = jest.fn().mockResolvedValue(undefined);
+
+      await showHyperliquidDepositPromptApproval({
+        approvalController,
+        origin,
+        selectedAddress,
+        tabId: 123,
+        requestOpenPopup,
+        closeNotification,
+      });
+
+      // Should not try to open popup when other approvals are pending
+      expect(requestOpenPopup).not.toHaveBeenCalled();
+      expect(closeNotification).not.toHaveBeenCalled();
+      expect(approvalController.add).not.toHaveBeenCalled();
+      // Should fall back to default flow
+      expect(approvalController.addAndShowApprovalRequest).toHaveBeenCalled();
     });
   });
 });
