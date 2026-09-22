@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -22,10 +22,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useMoneyBackNavigation } from '../../hooks/money/use-money-back-navigation';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
@@ -80,7 +84,6 @@ const FILTERS: {
 
 export function MoneyActivityPage() {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const privacyMode = useSelector(getPrivacyMode);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
@@ -141,9 +144,7 @@ export function MoneyActivityPage() {
     [filteredItems, t],
   );
 
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
+  const handleBack = useMoneyBackNavigation(MONEY_HOME_ROUTE);
 
   const scrollSentinel = hasMore ? (
     <div ref={sentinelRef} data-testid="money-activity-scroll-sentinel" />

@@ -1,11 +1,10 @@
 import React, {
-  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
 } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -32,7 +31,6 @@ import {
 import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
-  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
@@ -41,6 +39,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useMoneyBackNavigation } from '../../hooks/money/use-money-back-navigation';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
@@ -87,7 +86,6 @@ const STATUS_COLOR = {
 export function MoneyTransactionDetailsPage() {
   const t = useI18nContext() as MoneyActivityTranslate;
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const navigate = useNavigate();
   const { transactionId } = useParams<{ transactionId: string }>();
   const privacyMode = useSelector(getPrivacyMode);
   const detailsEnabled = useSelector(selectMoneyActivityDetailsEnabled);
@@ -151,9 +149,7 @@ export function MoneyTransactionDetailsPage() {
       ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
       : undefined;
 
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
+  const handleBack = useMoneyBackNavigation(MONEY_ACTIVITY_ROUTE);
   const formattedFee =
     feeUsd === undefined
       ? '-'

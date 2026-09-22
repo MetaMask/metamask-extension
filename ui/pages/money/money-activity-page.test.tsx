@@ -11,7 +11,11 @@ import {
   renderWithLocalization,
 } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
@@ -37,6 +41,7 @@ const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
 const mockUseMoneyActivityItemClick = jest.fn();
 const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
 
 jest.mock('react-redux', () => ({
@@ -54,6 +59,7 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
 }));
 
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
@@ -99,6 +105,7 @@ function makePendingDeposit(): ReturnType<typeof onchainItem> {
 describe('MoneyActivityPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({ key: 'ci9s3nlq' });
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockGetPrivacyMode.mockReturnValue(false);
     mockUseMoneyAccountAvailability.mockReturnValue({
@@ -209,6 +216,17 @@ describe('MoneyActivityPage', () => {
 
     fireEvent.click(screen.getByTestId('money-activity-back-button'));
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('navigates to Money home when the page was opened directly by URL', () => {
+    mockUseLocation.mockReturnValue({ key: 'default' });
+
+    renderWithLocalization(<MoneyActivityPage />);
+
+    fireEvent.click(screen.getByTestId('money-activity-back-button'));
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+    });
   });
 
   it('filters to Sends when the Sends chip is selected', () => {

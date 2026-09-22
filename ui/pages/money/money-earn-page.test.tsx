@@ -2,7 +2,11 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
@@ -22,6 +26,7 @@ const mockUseMoneyAddDepositToken = jest.fn();
 const mockInitiateDeposit = jest.fn();
 const mockHandleAddToken = jest.fn();
 const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
 
 const createToken = (
@@ -53,6 +58,7 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
 }));
 
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
@@ -85,6 +91,7 @@ describe('MoneyEarnPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({ key: 'ci9s3nlq' });
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockGetPrivacyMode.mockReturnValue(false);
     mockUseMoneyAccountAvailability.mockReturnValue({
@@ -156,6 +163,18 @@ describe('MoneyEarnPage', () => {
     fireEvent.click(screen.getByTestId('money-earn-back-button'));
 
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('navigates to Money home when the page was opened directly by URL', () => {
+    mockUseLocation.mockReturnValue({ key: 'default' });
+
+    renderWithLocalization(<MoneyEarnPage />);
+
+    fireEvent.click(screen.getByTestId('money-earn-back-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+    });
   });
 
   it('passes the row token to handleAddToken when Add is clicked', () => {

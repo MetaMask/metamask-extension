@@ -1,5 +1,5 @@
 import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -9,9 +9,13 @@ import {
   Skeleton,
   TextVariant,
 } from '@metamask/design-system-react';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useMoneyBackNavigation } from '../../hooks/money/use-money-back-navigation';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAddDepositToken } from '../../hooks/money/use-money-add-deposit-token';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
@@ -30,7 +34,6 @@ import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scr
 
 export function MoneyEarnPage() {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const privacyMode = useSelector(getPrivacyMode);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
@@ -60,9 +63,7 @@ export function MoneyEarnPage() {
     trackScreenViewed,
   );
 
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
+  const handleBack = useMoneyBackNavigation(MONEY_HOME_ROUTE);
 
   const handleConvert = useCallback(() => {
     trackButtonClicked({
