@@ -11,6 +11,7 @@ import {
   selectRequiredTransactions,
   selectRequiredTransactionHashes,
   selectTransactionById,
+  selectTransactionChainIdAndHash,
   selectUnapprovedTransactionById,
   selectNonReplacedTransactions,
 } from './transactionController';
@@ -38,6 +39,7 @@ describe('transactionController selectors', () => {
     selectRequiredTransactions.clearCache();
     selectRequiredTransactionHashes.clearCache();
     selectTransactionById.clearCache();
+    selectTransactionChainIdAndHash.clearCache();
     selectUnapprovedTransactionById.clearCache();
     selectNonReplacedTransactions.clearCache();
   });
@@ -254,6 +256,36 @@ describe('transactionController selectors', () => {
       const state = createMockState([tx]);
 
       expect(selectTransactionById(state, undefined)).toBeUndefined();
+    });
+  });
+
+  describe('selectTransactionChainIdAndHash', () => {
+    it('returns chainId and hash when both are present', () => {
+      const tx = makeTx({
+        id: 'tx-1',
+        time: 1,
+        chainId: '0x1',
+        hash: '0xabc',
+      });
+      const state = createMockState([tx]);
+
+      expect(selectTransactionChainIdAndHash(state, 'tx-1')).toStrictEqual({
+        chainId: '0x1',
+        hash: '0xabc',
+      });
+    });
+
+    it('returns undefined when hash is missing', () => {
+      const tx = makeTx({ id: 'tx-1', time: 1, chainId: '0x1' });
+      const state = createMockState([tx]);
+
+      expect(selectTransactionChainIdAndHash(state, 'tx-1')).toBeUndefined();
+    });
+
+    it('returns undefined when the transaction is not in state', () => {
+      const state = createMockState([]);
+
+      expect(selectTransactionChainIdAndHash(state, 'tx-1')).toBeUndefined();
     });
   });
 

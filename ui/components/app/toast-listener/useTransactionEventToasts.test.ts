@@ -119,97 +119,66 @@ describe('useTransactionEventToasts', () => {
   });
 
   describe('EVM via TransactionController', () => {
-    it('shows a pending toast with a details link when hash is present', () => {
+    it('shows a pending toast when a tx is submitted', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'pending-with-hash',
+          id: 'pending-submitted',
           status: TransactionStatus.submitted,
-          hash: '0xabc',
         }),
       });
 
       expect(mockShowPendingToast).toHaveBeenCalledWith(
-        'tx-pending-with-hash',
+        'tx-pending-submitted',
         {
-          transactionId: 'pending-with-hash',
-          to: '/tx/eip155:1/0xabc',
+          transactionId: 'pending-submitted',
         },
       );
     });
 
-    it('shows a success toast with a details link when a pending tx confirms', () => {
+    it('shows a success toast when a pending tx confirms', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'success-with-hash',
+          id: 'submitted-then-confirmed',
           status: TransactionStatus.submitted,
-          hash: '0xabc',
         }),
       });
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'success-with-hash',
+          id: 'submitted-then-confirmed',
           status: TransactionStatus.confirmed,
-          hash: '0xabc',
         }),
       });
 
       expect(mockShowSuccessToast).toHaveBeenCalledWith(
-        'tx-success-with-hash',
-        {
-          transactionId: 'success-with-hash',
-          to: '/tx/eip155:1/0xabc',
-        },
+        'tx-submitted-then-confirmed',
+        { transactionId: 'submitted-then-confirmed' },
       );
     });
 
-    it('shows a failed toast with a details link when a pending tx fails', () => {
+    it('shows a failed toast when a pending tx fails', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'failed-with-hash',
-          status: TransactionStatus.submitted,
-          hash: '0xabc',
-        }),
-      });
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'failed-with-hash',
-          status: TransactionStatus.failed,
-          hash: '0xabc',
-        }),
-      });
-
-      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-failed-with-hash', {
-        transactionId: 'failed-with-hash',
-        to: '/tx/eip155:1/0xabc',
-      });
-    });
-
-    it('omits the details link when hash is missing', () => {
-      const { handlers } = mountHook();
-
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'failed-no-hash',
+          id: 'submitted-then-failed',
           status: TransactionStatus.submitted,
         }),
       });
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'failed-no-hash',
+          id: 'submitted-then-failed',
           status: TransactionStatus.failed,
         }),
       });
 
-      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-failed-no-hash', {
-        transactionId: 'failed-no-hash',
-        to: undefined,
-      });
+      expect(mockShowFailedToast).toHaveBeenCalledWith(
+        'tx-submitted-then-failed',
+        { transactionId: 'submitted-then-failed' },
+      );
     });
 
     it('dismisses the original pending toast when a tx is dropped for speed-up', () => {
@@ -286,7 +255,6 @@ describe('useTransactionEventToasts', () => {
 
       expect(mockShowFailedToast).toHaveBeenCalledWith('tx-cancel-id1', {
         transactionId: 'cancel-id1',
-        to: undefined,
       });
       expect(mockDismissToast).not.toHaveBeenCalled();
     });
@@ -308,7 +276,7 @@ describe('useTransactionEventToasts', () => {
       );
     });
 
-    it('does not reopen a pending toast from approved through submitted without a hash', () => {
+    it('shows a pending toast only once from approved through submitted', () => {
       const { handlers } = mountHook();
       const transactionMeta = {
         id: 'generic-pending-once',
@@ -337,7 +305,7 @@ describe('useTransactionEventToasts', () => {
       expect(mockShowPendingToast).toHaveBeenCalledTimes(1);
     });
 
-    it('updates the pending toast with a details link when a hash arrives after approved', () => {
+    it('does not reshow the pending toast when a hash arrives after approved', () => {
       const { handlers } = mountHook();
       const transactionMeta = {
         id: 'approved-then-hash',
@@ -358,22 +326,7 @@ describe('useTransactionEventToasts', () => {
         }),
       });
 
-      expect(mockShowPendingToast).toHaveBeenNthCalledWith(
-        1,
-        'tx-approved-then-hash',
-        {
-          transactionId: 'approved-then-hash',
-          to: undefined,
-        },
-      );
-      expect(mockShowPendingToast).toHaveBeenNthCalledWith(
-        2,
-        'tx-approved-then-hash',
-        {
-          transactionId: 'approved-then-hash',
-          to: '/tx/eip155:1/0xabc',
-        },
-      );
+      expect(mockShowPendingToast).toHaveBeenCalledTimes(1);
     });
 
     it('shows a failed toast when an approved tx fails before submit', () => {
@@ -394,10 +347,7 @@ describe('useTransactionEventToasts', () => {
 
       expect(mockShowFailedToast).toHaveBeenCalledWith(
         'tx-approved-then-failed',
-        {
-          transactionId: 'approved-then-failed',
-          to: undefined,
-        },
+        { transactionId: 'approved-then-failed' },
       );
     });
 
@@ -433,10 +383,7 @@ describe('useTransactionEventToasts', () => {
 
       expect(mockShowFailedToast).toHaveBeenCalledWith(
         'tx-approved-then-rejected',
-        {
-          transactionId: 'approved-then-rejected',
-          to: undefined,
-        },
+        { transactionId: 'approved-then-rejected' },
       );
     });
 
