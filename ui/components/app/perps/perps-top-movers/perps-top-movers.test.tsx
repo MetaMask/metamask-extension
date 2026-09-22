@@ -119,7 +119,7 @@ describe('PerpsTopMovers', () => {
       expect(track.parentElement).toHaveClass('pl-4', 'pr-4');
     });
 
-    it('stacks the ranked pills as a two-column grid', () => {
+    it('wraps the ranked pills onto as many lines as they need', () => {
       renderSection(
         Array.from({ length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT }, (_, index) =>
           createMarket(`SYM${index}`, `+${index}.00%`),
@@ -128,7 +128,8 @@ describe('PerpsTopMovers', () => {
 
       const list = screen.getByTestId('perps-top-movers-list');
 
-      expect(list).toHaveClass('grid', 'grid-cols-2');
+      expect(list).toHaveClass('flex', 'flex-wrap');
+      expect(list).not.toHaveClass('flex-nowrap');
       expect(list.childElementCount).toBe(PERPS_CONSTANTS.TOP_MOVERS_LIMIT);
     });
 
@@ -149,13 +150,12 @@ describe('PerpsTopMovers', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('gives every pill the full width of its grid cell', () => {
+    it('lets every pill keep its own content width', () => {
       renderSection();
 
       screen.getAllByTestId(/^perps-top-movers-pill-/u).forEach((pill) => {
-        expect(pill).toHaveClass('w-full');
-        expect(pill).not.toHaveClass('w-auto');
-        expect(pill).not.toHaveClass('shrink-0');
+        expect(pill).toHaveClass('w-auto');
+        expect(pill).not.toHaveClass('w-full');
       });
     });
 
@@ -169,13 +169,13 @@ describe('PerpsTopMovers', () => {
       expect(getPillSymbols()).toStrictEqual(['AAA', 'BBB', 'CCC']);
     });
 
-    it('renders a stacked two-column skeleton grid while market data loads', () => {
+    it('renders a wrapping skeleton while market data loads', () => {
       renderSection([], true);
 
       const skeleton = screen.getByTestId('perps-top-movers-skeleton');
 
       expect(skeleton).toBeInTheDocument();
-      expect(skeleton).toHaveClass('grid', 'grid-cols-2');
+      expect(skeleton).toHaveClass('flex', 'flex-wrap');
       // One placeholder per ranked slot, so the section does not reflow when
       // the live ranking lands.
       expect(skeleton.childElementCount).toBe(PERPS_CONSTANTS.TOP_MOVERS_LIMIT);
@@ -185,7 +185,7 @@ describe('PerpsTopMovers', () => {
       // half of this contract via the `h-auto`/`py-1.5` assertion in
       // perps-top-mover-pill.test.tsx.
       Array.from(skeleton.children).forEach((placeholder) => {
-        expect(placeholder).toHaveClass('h-9', 'w-full');
+        expect(placeholder).toHaveClass('h-9');
       });
       expect(skeleton).not.toHaveClass('overflow-x-auto');
       expect(

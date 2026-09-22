@@ -43,26 +43,27 @@ const GAINERS_DIRECTION: SortDirection =
 const LOSERS_DIRECTION: SortDirection = 'asc';
 
 /**
- * Pills are laid out two per row. Eight ranked markets therefore stack as the
- * design's 2-column x 4-row grid, which fits any width the extension is shown
- * at — so there is nothing to slide sideways on a desktop without a trackpad.
+ * Pills keep the content width they have on mobile and wrap onto as many lines
+ * as the current width needs. Wrapping rather than scrolling is the point: a
+ * desktop user without a trackpad has no gesture to slide a row sideways, so
+ * every ranked market has to be reachable on screen.
  */
-const PILL_GRID_STYLES = 'grid grid-cols-2 gap-2 px-4';
+const PILL_LIST_STYLES = 'flex flex-wrap gap-2 px-4';
 
-/** One skeleton placeholder per ranked slot, so the grid keeps its shape while loading. */
+/** One skeleton placeholder per ranked slot, so the section reserves its space while loading. */
 const SKELETON_PILL_KEYS = Array.from(
   { length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT },
   (_, index) => `slot-${index}`,
 );
 
 /**
- * Skeleton pill footprint: full grid cell wide, and `h-9` (36px) to match a real
- * pill exactly. A pill is content-height (`h-auto` + `py-1.5` in `PILL_STYLES`),
- * so it measures its 24px `AvatarTokenSize.Sm` logo plus 12px of padding — 36px,
- * confirmed against the live section. Anything shorter makes the section jump by
- * four rows' worth of difference the moment the ranking lands.
+ * Skeleton pill footprint, matching mobile's SectionPillsSkeleton width. `h-9`
+ * (36px) is the height a real pill measures: it is content-height (`h-auto` +
+ * `py-1.5` in `PILL_STYLES`) over a 24px `AvatarTokenSize.Sm` logo, confirmed
+ * against the live section. A shorter placeholder makes the section jump when
+ * the ranking lands.
  */
-const SKELETON_PILL_STYLES = 'h-9 w-full rounded-full';
+const SKELETON_PILL_STYLES = 'h-9 w-[104px] rounded-full';
 
 export type PerpsTopMoversProps = {
   /** Live markets to rank, owned by the Perps tab's market-list stream. */
@@ -72,9 +73,9 @@ export type PerpsTopMoversProps = {
 };
 
 /**
- * PerpsTopMovers ranks the live perps markets by 24h price change and stacks
- * the strongest movers as a two-column grid of pills, so every ranked market is
- * reachable without a sideways scroll the desktop has no gesture for. The
+ * PerpsTopMovers ranks the live perps markets by 24h price change and lays the
+ * strongest movers out as wrapping pills, so every ranked market is reachable
+ * without a sideways scroll the desktop has no gesture for. The
  * Gainers/Losers toggle flips the ranking direction in place, and the header
  * opens the full market list already sorted by price change in that direction.
  *
@@ -200,7 +201,7 @@ export const PerpsTopMovers = ({
 
       {isLoading ? (
         <Box
-          className={PILL_GRID_STYLES}
+          className={PILL_LIST_STYLES}
           data-testid="perps-top-movers-skeleton"
         >
           {SKELETON_PILL_KEYS.map((pillKey) => (
@@ -211,7 +212,7 @@ export const PerpsTopMovers = ({
           ))}
         </Box>
       ) : (
-        <Box className={PILL_GRID_STYLES} data-testid="perps-top-movers-list">
+        <Box className={PILL_LIST_STYLES} data-testid="perps-top-movers-list">
           {markets.map((market) => (
             <PerpsTopMoverPill
               key={market.symbol}

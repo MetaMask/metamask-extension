@@ -41,15 +41,18 @@ describe('PerpsTopMoverPill', () => {
     expect(screen.getByTestId('perps-top-movers-pill-BTC')).toBeInTheDocument();
   });
 
-  it('fills its grid cell instead of sizing to its label', () => {
+  it('sizes to its label but can never outgrow the row', () => {
     renderPill();
 
     const pill = screen.getByTestId('perps-top-movers-pill-BTC');
 
-    // Equal-width cells are what makes the two columns line up; a pill that
-    // hugged its label would leave the grid ragged and reintroduce overflow.
-    expect(pill).toHaveClass('w-full', 'min-w-0');
-    expect(pill).not.toHaveClass('w-auto');
+    // Content width, as on mobile.
+    expect(pill).toHaveClass('w-auto');
+    expect(pill).not.toHaveClass('w-full');
+    // The list wraps rather than scrolls, so a pill must be able to give way if
+    // its label alone is wider than the row. `shrink-0` would pin it at content
+    // width and push the section sideways again.
+    expect(pill).toHaveClass('max-w-full', 'min-w-0');
     expect(pill).not.toHaveClass('shrink-0');
     // The pill is content-height, so its 24px logo plus this 12px of padding is
     // what makes it 36px. The loading skeleton hardcodes that 36px as `h-9`, so

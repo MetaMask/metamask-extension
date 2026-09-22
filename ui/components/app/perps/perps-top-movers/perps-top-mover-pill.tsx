@@ -21,14 +21,16 @@ export type PerpsTopMoverPillProps = {
   onPress: (market: PerpsMarketData) => void;
 };
 
-// A lozenge filling its grid cell: logo, ticker and change sit inline on one
-// row, matching mobile's `ExplorePill` (`rounded-full`, muted background, p-2).
-// Unlike mobile's content-width pill, this one takes the full cell so the two
-// columns line up; `min-w-0` lets the ticker truncate rather than push the
-// change out of the cell, and `h-auto` prevents ButtonBase's fixed `h-12` from
-// stretching the capsule.
+// A content-width lozenge: logo, ticker and change sit inline on one row,
+// matching mobile's `ExplorePill` (`rounded-full`, muted background, p-2).
+// `w-auto` overrides ButtonBase's full-width default so each pill hugs its
+// label the way mobile's do; `h-auto` prevents the fixed `h-12` from stretching
+// the capsule. Deliberately not `shrink-0`: the list wraps instead of
+// scrolling, so a pill wider than the whole row has to be able to shrink and
+// truncate rather than push the section sideways. `max-w-full` caps it at the
+// row, `min-w-0` lets the ticker inside actually give way.
 const PILL_STYLES =
-  'w-full min-w-0 h-auto justify-start gap-1.5 rounded-full bg-muted px-2 py-1.5 cursor-pointer hover:bg-hover active:bg-pressed';
+  'w-auto max-w-full min-w-0 h-auto justify-center gap-1.5 rounded-full bg-muted px-2 py-1.5 cursor-pointer hover:bg-hover active:bg-pressed';
 
 /**
  * PerpsTopMoverPill renders one ranked market as a horizontal pill: token
