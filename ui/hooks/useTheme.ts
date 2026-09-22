@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { getTheme } from '../selectors';
 import { ThemeType } from '../../shared/constants/preferences';
@@ -70,8 +70,7 @@ export function useTheme(): ThemeType.light | ThemeType.dark {
   const [systemTheme, setSystemTheme] = useState<
     ThemeType.light | ThemeType.dark
   >(getSystemTheme);
-
-  const mediaQueryRef = useRef(
+  const [mediaQuery] = useState(() =>
     window.matchMedia('(prefers-color-scheme: dark)'),
   );
 
@@ -81,7 +80,7 @@ export function useTheme(): ThemeType.light | ThemeType.dark {
     setSystemTheme(newSystemTheme);
   }, []);
 
-  useEventListener('change', handleSystemThemeChange, mediaQueryRef);
+  useEventListener('change', handleSystemThemeChange, mediaQuery);
 
   return resolveTheme(settingTheme, systemTheme);
 }

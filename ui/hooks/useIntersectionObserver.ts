@@ -1,5 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { RefObject } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react';
 
 type State = {
   isIntersecting: boolean;
@@ -60,15 +67,31 @@ export function useIntersectionObserver({
     ? threshold.join(',')
     : String(threshold);
 
-  callbackRef.current = onChange;
-  thresholdRef.current = threshold;
+  useLayoutEffect(() => {
+    callbackRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    thresholdRef.current = threshold;
+  }, [threshold]);
+
+  const [observerRoot, setObserverRoot] = useState<Element | Document | null>(
+    null,
+  );
+
+  // Re-read rootRef every commit; the ref object is stable while `.current` is set
+  // when the scroll container mounts (see activity list + ScrollContainer).
+  useLayoutEffect(() => {
+    const nextRoot = rootRef?.current ?? root ?? null;
+    setObserverRoot((previous) =>
+      previous === nextRoot ? previous : nextRoot,
+    );
+  });
 
   useEffect(() => {
     if (!ref || !('IntersectionObserver' in globalThis)) {
       return undefined;
     }
-
-    const rootElement = rootRef?.current ?? root ?? null;
 
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
@@ -80,7 +103,7 @@ export function useIntersectionObserver({
           callbackRef.current?.(isIntersecting, entry);
         }
       },
-      { threshold: thresholdRef.current, root: rootElement, rootMargin },
+      { threshold: thresholdRef.current, root: observerRoot, rootMargin },
     );
 
     observer.observe(ref);
@@ -88,9 +111,9 @@ export function useIntersectionObserver({
     return () => {
       observer.disconnect();
     };
-  }, [ref, thresholdKey, root, rootRef, rootMargin]);
+  }, [ref, thresholdKey, observerRoot, rootMargin]);
 
-  const setRefCallback = useCallback(
+  const setRefFn = useCallback(
     (node?: Element | null) => {
       setRef(node ?? null);
       if (!node) {
@@ -100,19 +123,17 @@ export function useIntersectionObserver({
     [initialIsIntersecting],
   );
 
-  const result = useMemo(
-    () =>
-      [
-        setRefCallback,
-        Boolean(state.isIntersecting),
-        state.entry,
-      ] as IntersectionReturn,
-    [setRefCallback, state.entry, state.isIntersecting],
-  );
-
-  result.ref = result[0];
-  result.isIntersecting = result[1];
-  result.entry = result[2];
-
-  return result;
+  return useMemo((): IntersectionReturn => {
+    const isIntersecting = Boolean(state.isIntersecting);
+    const { entry } = state;
+    const tuple = [
+      setRefFn,
+      isIntersecting,
+      entry,
+    ] as unknown as IntersectionReturn;
+    tuple.ref = setRefFn;
+    tuple.isIntersecting = isIntersecting;
+    tuple.entry = entry;
+    return tuple;
+  }, [setRefFn, state]);
 }
