@@ -85,6 +85,7 @@ export function Toaster() {
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
                 className="relative z-10 self-start"
+                data-testid="toast-close-button"
                 onClick={() => {
                   (item as ToastWithClose).onClose?.();
                   toast.dismiss(item.id);
@@ -127,7 +128,7 @@ export const ToastContent = ({
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Sm}
-          className="mt-2 rounded-lg"
+          className="mt-2"
           textProps={{
             variant: TextVariant.BodySm,
           }}

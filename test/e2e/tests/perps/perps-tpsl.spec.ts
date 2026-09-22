@@ -20,7 +20,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { PerpsTab } from '../../page-objects/pages/home/perps-tab';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { assertPerpsActivityShowsCloseFill } from '../../page-objects/flows/perps-activity-close-fill.flow';
-import { getPerpsConfigEligible } from './perps-fixture-config';
+import { getPerpsConfigEligibleWithEthLongPosition } from './perps-fixture-config';
 import {
   WS_USER_WITH_ETH_LONG_POSITION,
   pushPositionClosed,
@@ -33,7 +33,7 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
   it('simulates take-profit fill: TP set on ETH long then stream clears the position', async function () {
     await withFixtures(
       {
-        ...getPerpsConfigEligible(this.test?.fullTitle()),
+        ...getPerpsConfigEligibleWithEthLongPosition(this.test?.fullTitle()),
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -86,7 +86,7 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
   it('simulates stop-loss fill: SL set on ETH long then stream clears the position', async function () {
     await withFixtures(
       {
-        ...getPerpsConfigEligible(this.test?.fullTitle()),
+        ...getPerpsConfigEligibleWithEthLongPosition(this.test?.fullTitle()),
         perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
       },
       async ({ driver }: { driver: Driver }) => {

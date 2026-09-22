@@ -423,9 +423,6 @@
   "gasLimit": {
     "message": "Gas 上限"
   },
-  "gasLimitTooLow": {
-    "message": "Gas 上限至少為 21000"
-  },
   "gasPriceExcessive": {
     "message": "您的 gas 費用設定得太高了。考慮降低一些。"
   },
@@ -729,9 +726,6 @@
   "privateKey": {
     "message": "私鑰",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "警告：永遠不要公開這個私鑰。任何取得這把私鑰的人都可以竊取這個帳戶中的所有資產。"
   },
   "privateNetwork": {
     "message": "私有網路"

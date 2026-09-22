@@ -4,6 +4,7 @@ import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../shared/constants/onboarding';
+import { isBasicFunctionalitySocialLoginUser } from '../../../shared/lib/basic-functionality-consolidation';
 import { OnboardingControllerState } from '../../../shared/types/onboarding';
 import { getIsSocialLoginFlow } from '../first-time-flow';
 
@@ -16,6 +17,20 @@ export function getSocialLoginType(
   state: OnboardingState,
 ): AuthConnection | undefined {
   return state.metamask.authConnection;
+}
+
+/**
+ * Determines whether a wallet is a social-login wallet for Basic Functionality.
+ *
+ * @param state - The onboarding state.
+ */
+export function getIsBasicFunctionalitySocialLoginUser(
+  state: OnboardingState,
+): boolean {
+  return isBasicFunctionalitySocialLoginUser({
+    firstTimeFlowType: state.metamask.firstTimeFlowType ?? undefined,
+    authConnection: state.metamask.authConnection,
+  });
 }
 
 export function getSocialLoginEmail(
