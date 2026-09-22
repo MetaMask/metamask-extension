@@ -73,7 +73,7 @@ export type SplitStateWriteEvent = {
    * Per-controller size estimates from `JSON.stringify(value).length`.
    * Not exact storage byte counts.
    */
-  bytesByController: Record<string, number>;
+  bytesByController: Map<string, number>;
   coalescedUpdates: number;
   controllerKeys: string[];
   idleStatus: 'active' | 'idle' | 'unknown';
@@ -788,7 +788,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
 
     const measurementStartedAt = performance.now();
-    const bytesByController: Record<string, number> = {};
+    const bytesByController: Map<string, number> = new Map();
     const controllerKeys: string[] = [];
     let totalBytes = 0;
 
@@ -802,7 +802,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       const serializedValue = JSON.stringify(value);
       const serializedLength =
         serializedValue === undefined ? 0 : serializedValue.length;
-      bytesByController[key] = serializedLength;
+      bytesByController.set(key, serializedLength);
       controllerKeys.push(key);
       totalBytes += serializedLength;
     }
@@ -812,10 +812,9 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
 
     controllerKeys.sort((leftKey, rightKey) => leftKey.localeCompare(rightKey));
-    const sortedBytesByController: Record<string, number> = {};
-    for (const key of controllerKeys) {
-      sortedBytesByController[key] = bytesByController[key];
-    }
+    const sortedBytesByController: Map<string, number> = new Map(
+      controllerKeys.map((key) => [key, bytesByController.get(key) as number]),
+    );
 
     const isIdle = this.#getIsIdle();
     let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';

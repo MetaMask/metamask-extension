@@ -4,10 +4,10 @@ import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { trackSplitStateWrite } from './state-write-metrics';
 
 const EVENT: SplitStateWriteEvent = {
-  bytesByController: {
-    BarController: 21,
-    FooController: 13,
-  },
+  bytesByController: new Map([
+    ['BarController', 21],
+    ['FooController', 13],
+  ]),
   coalescedUpdates: 3,
   controllerKeys: ['BarController', 'FooController'],
   idleStatus: 'idle',

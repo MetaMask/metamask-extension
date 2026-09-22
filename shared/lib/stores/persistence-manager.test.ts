@@ -833,10 +833,10 @@ describe('PersistenceManager', () => {
       }).length;
       const barControllerLength = JSON.stringify({ enabled: true }).length;
       expect(event).toStrictEqual({
-        bytesByController: {
-          BarController: barControllerLength,
-          FooController: fooControllerLength,
-        },
+        bytesByController: new Map([
+          ['BarController', barControllerLength],
+          ['FooController', fooControllerLength],
+        ]),
         coalescedUpdates: 3,
         controllerKeys: ['BarController', 'FooController'],
         idleStatus: 'idle',
@@ -845,7 +845,7 @@ describe('PersistenceManager', () => {
         totalBytes: barControllerLength + fooControllerLength,
         writeDurationMs: expect.any(Number),
       });
-      expect(Object.keys(event.bytesByController)).toStrictEqual(
+      expect([...event.bytesByController.keys()]).toStrictEqual(
         event.controllerKeys,
       );
       expect(JSON.stringify(event)).not.toContain(
