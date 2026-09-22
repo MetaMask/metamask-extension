@@ -1,4 +1,5 @@
 import { zeroAddress } from 'ethereumjs-util';
+import { BigNumber } from 'bignumber.js';
 import {
   ChainId,
   type QuoteResponse,
@@ -71,6 +72,7 @@ import {
   getToAccounts,
   getHardwareWalletName,
   getActiveQuoteInsufficientNativeReserveError,
+  isNativeBalanceInsufficientForQuote,
   getInsufficientNativeReserveError,
   getQuoteRequestInsufficientBal,
   getFromTokenBalanceInUsd,
@@ -101,11 +103,13 @@ describe('Bridge selectors', () => {
     fromTokenInputValue = '1',
     fromNativeBalance = '1',
     nonEvmFeesInNative,
+    quoteNativeReserve,
     srcTokenAmount = '100000000',
   }: {
     fromTokenInputValue?: string;
     fromNativeBalance?: string;
     nonEvmFeesInNative?: string;
+    quoteNativeReserve?: string;
     srcTokenAmount?: string;
   } = {}) => {
     const btcAsset = getNativeAssetForChainId(ChainId.BTC);
@@ -142,6 +146,18 @@ describe('Bridge selectors', () => {
             estimatedProcessingTimeInSeconds: 600,
             nonEvmFeesInNative,
           };
+    const quote = btcQuote ? toQuoteResponseV2(btcQuote) : undefined;
+    if (quote && quoteNativeReserve) {
+      quote.quote.feeData.reserve = [
+        {
+          amount: new BigNumber(quoteNativeReserve)
+            .times(10 ** btcAsset.decimals)
+            .toFixed(0),
+          normalizedAmount: quoteNativeReserve,
+          asset: btcAsset,
+        },
+      ];
+    }
 
     return createBridgeMockStore({
       bridgeSliceOverrides: {
@@ -155,7 +171,7 @@ describe('Bridge selectors', () => {
           srcChainId: ChainId.BTC,
           srcTokenAmount,
         },
-        quotes: btcQuote ? [toQuoteResponseV2(btcQuote)] : [],
+        quotes: quote ? [quote] : [],
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -3231,6 +3247,123 @@ describe('Bridge selectors', () => {
       );
       expect(result.isInsufficientNativeReserve).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('uses a quote-carried reserve instead of the chain fallback', () => {
+      const state = createBtcBridgeState({
+        fromTokenInputValue: '0.9',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.00000001',
+        quoteNativeReserve: '0.1',
+        srcTokenAmount: '90000000',
+      });
+
+      const error = getActiveQuoteInsufficientNativeReserveError(state);
+
+      expect(error?.minimumNativeBalanceToBeKeptInAccount).toBe('0.1');
+      expect(error?.maxSwappableNativeBalance).toBe('0.89999999');
+    });
+
+    it('uses a quote-carried reserve on Stellar', () => {
+      const asset = getNativeAssetForChainId(ChainId.STELLAR);
+      const activeQuote = {
+        quote: {
+          src: { normalizedAmount: '9' },
+          feeData: {
+            network: [
+              {
+                amount: '100',
+                normalizedAmount: '0.00001',
+                asset,
+              },
+            ],
+            reserve: [
+              {
+                amount: '15000000',
+                normalizedAmount: '1.5',
+                asset,
+              },
+            ],
+          },
+        },
+      } as unknown as QuoteResponse;
+
+      const error = getActiveQuoteInsufficientNativeReserveError.resultFunc(
+        undefined,
+        toBridgeToken(asset),
+        '10',
+        '9',
+        { activeQuote } as Parameters<
+          typeof getActiveQuoteInsufficientNativeReserveError.resultFunc
+        >[4],
+      );
+
+      expect(error).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '1.5',
+        maxSwappableNativeBalance: '8.49999',
+      });
+    });
+
+    it('shows a quote-carried reserve error when the balance cannot cover the reserve', () => {
+      const asset = getNativeAssetForChainId(ChainId.STELLAR);
+      const activeQuote = {
+        quote: {
+          src: { normalizedAmount: '0.2' },
+          feeData: {
+            network: [
+              {
+                amount: '100',
+                normalizedAmount: '0.00001',
+                asset,
+              },
+            ],
+            reserve: [
+              {
+                amount: '15000000',
+                normalizedAmount: '1.5',
+                asset,
+              },
+            ],
+          },
+        },
+      } as unknown as QuoteResponse;
+
+      const error = getActiveQuoteInsufficientNativeReserveError.resultFunc(
+        undefined,
+        toBridgeToken(asset),
+        '1',
+        '0.2',
+        { activeQuote } as Parameters<
+          typeof getActiveQuoteInsufficientNativeReserveError.resultFunc
+        >[4],
+      );
+
+      expect(error).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '1.5',
+        maxSwappableNativeBalance: '0',
+      });
+    });
+
+    it('flags insufficient native gas for a token source that cannot cover the quote reserve', () => {
+      const native = getNativeAssetForChainId(ChainId.STELLAR);
+      const usdcAssetId =
+        'stellar:pubnet/credit_alphanum4:USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as const;
+      const quote = {
+        quote: {
+          src: { normalizedAmount: '10', asset: { assetId: usdcAssetId } },
+          feeData: {
+            network: [{ normalizedAmount: '0.00001', asset: native }],
+            reserve: [{ normalizedAmount: '1.5', asset: native }],
+          },
+        },
+      } as unknown as QuoteResponse;
+
+      expect(
+        isNativeBalanceInsufficientForQuote(quote, '0.4', usdcAssetId, '0'),
+      ).toBe(true);
+      expect(
+        isNativeBalanceInsufficientForQuote(quote, '2', usdcAssetId, '0'),
+      ).toBe(false);
     });
 
     it('should return isInsufficientGasForQuote=true and isInsufficientNativeReserve=false on Bitcoin when the quote fee cannot be paid', () => {

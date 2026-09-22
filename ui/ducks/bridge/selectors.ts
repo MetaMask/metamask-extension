@@ -90,6 +90,7 @@ import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import {
   safeAmountForCalc,
   getPriceImpactNumber,
+  getNativeReserve,
   getTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
 import {
@@ -997,10 +998,11 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     );
 
     const totalNetworkFee = getTotalNetworkFee(activeQuote)?.normalizedAmount;
+    const quoteNativeReserve = getNativeReserve(activeQuote)?.normalizedAmount;
     const sentAmountString = activeQuote?.quote.src.normalizedAmount;
 
     if (
-      isBitcoinNativeReserveChain &&
+      (isBitcoinNativeReserveChain || quoteNativeReserve) &&
       totalNetworkFee &&
       sentAmountString &&
       nativeBalance &&
@@ -1009,7 +1011,13 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     ) {
       const nativeBalanceInNativeUnits = new BigNumber(nativeBalance);
       const sentAmount = new BigNumber(sentAmountString);
+      const minimumNativeReserve =
+        quoteNativeReserve ??
+        getMinimumReserveBalanceForCaipAssetId(fromToken?.assetId);
 
+      // Fee + sent amount already fails the gas check, which hides this banner.
+      // Do not also bail out when balance - fee - reserve <= 0: that is the
+      // case this banner exists to show.
       if (
         nativeBalanceInNativeUnits.sub(totalNetworkFee).sub(sentAmount).lte(0)
       ) {
@@ -1021,18 +1029,16 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
         0,
       );
 
-      const minimumNativeBalanceToBeKeptInAccount =
-        getMinimumReserveBalanceForCaipAssetId(fromToken?.assetId);
       const maxSwappableNativeBalance = nativeBalanceInNativeUnits
         .sub(totalNetworkFee)
-        .sub(minimumNativeBalanceToBeKeptInAccount)
+        .sub(minimumNativeReserve)
         .sub(quoteSourceOverhead);
 
       return buildInsufficientNativeReserveError({
         fromToken,
         nativeBalance,
         validatedSrcAmount,
-        minimumNativeBalanceToBeKeptInAccount,
+        minimumNativeBalanceToBeKeptInAccount: minimumNativeReserve,
         maxSwappableNativeBalance,
       });
     }
@@ -1076,13 +1082,20 @@ export const isNativeBalanceInsufficientForQuote = (
   const totalNetworkFeeAmount =
     getTotalNetworkFee(quote)?.normalizedAmount ?? '0';
 
+  // Native source: reserve is shown by getActiveQuoteInsufficientNativeReserveError
+  // ("use max"). That banner is hidden while this flag is set, so reserve stays
+  // out of the native-source check.
+  // Token source: there is no max to apply to the token amount. A short native
+  // balance (fee + quote reserve) uses the "buy more" gas banner instead.
   return isNativeAddress(fromAssetId)
     ? new BigNumber(nativeBalance)
         .sub(totalNetworkFeeAmount)
         .sub(sentAmount)
         .sub(minimumBalanceToKeep)
         .lte(0)
-    : new BigNumber(nativeBalance).lte(totalNetworkFeeAmount);
+    : new BigNumber(nativeBalance)
+        .sub(getNativeReserve(quote)?.normalizedAmount ?? '0')
+        .lte(totalNetworkFeeAmount);
 };
 /**
  * Native amount that must be reserved on the source chain (e.g. Solana rent
