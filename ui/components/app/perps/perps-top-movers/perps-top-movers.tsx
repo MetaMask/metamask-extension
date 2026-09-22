@@ -55,8 +55,14 @@ const SKELETON_PILL_KEYS = Array.from(
   (_, index) => `slot-${index}`,
 );
 
-/** Skeleton pill footprint: full grid cell wide, same height as a real pill. */
-const SKELETON_PILL_STYLES = 'h-8 w-full rounded-full';
+/**
+ * Skeleton pill footprint: full grid cell wide, and `h-9` (36px) to match a real
+ * pill exactly. A pill is content-height (`h-auto` + `py-1.5` in `PILL_STYLES`),
+ * so it measures its 24px `AvatarTokenSize.Sm` logo plus 12px of padding — 36px,
+ * confirmed against the live section. Anything shorter makes the section jump by
+ * four rows' worth of difference the moment the ranking lands.
+ */
+const SKELETON_PILL_STYLES = 'h-9 w-full rounded-full';
 
 export type PerpsTopMoversProps = {
   /** Live markets to rank, owned by the Perps tab's market-list stream. */

@@ -179,6 +179,14 @@ describe('PerpsTopMovers', () => {
       // One placeholder per ranked slot, so the section does not reflow when
       // the live ranking lands.
       expect(skeleton.childElementCount).toBe(PERPS_CONSTANTS.TOP_MOVERS_LIMIT);
+      // ...each the same 36px a real pill measures. A shorter placeholder makes
+      // the whole section jump upward the moment the ranking lands, which is the
+      // reflow this skeleton exists to prevent. `PerpsTopMoverPill` keeps its
+      // half of this contract via the `h-auto`/`py-1.5` assertion in
+      // perps-top-mover-pill.test.tsx.
+      Array.from(skeleton.children).forEach((placeholder) => {
+        expect(placeholder).toHaveClass('h-9', 'w-full');
+      });
       expect(skeleton).not.toHaveClass('overflow-x-auto');
       expect(
         screen.queryByTestId('perps-top-movers-list'),

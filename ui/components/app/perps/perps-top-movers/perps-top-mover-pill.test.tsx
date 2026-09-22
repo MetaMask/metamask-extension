@@ -51,6 +51,11 @@ describe('PerpsTopMoverPill', () => {
     expect(pill).toHaveClass('w-full', 'min-w-0');
     expect(pill).not.toHaveClass('w-auto');
     expect(pill).not.toHaveClass('shrink-0');
+    // The pill is content-height, so its 24px logo plus this 12px of padding is
+    // what makes it 36px. The loading skeleton hardcodes that 36px as `h-9`, so
+    // changing either of these without changing the skeleton reintroduces a
+    // reflow when the ranking lands.
+    expect(pill).toHaveClass('h-auto', 'py-1.5');
   });
 
   it('truncates a long ticker rather than pushing the change out of the cell', () => {
