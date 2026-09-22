@@ -617,19 +617,21 @@ export class PlaywrightDriver {
     }
 
     const locator = this.buildLocator(rawLocator).first();
-    if (state === 'visible' || state === 'hidden') {
-      await locator.waitFor({ state, timeout });
+    if (state === 'visible') {
+      await locator.waitFor({ state: 'attached', timeout });
+    } else if (state === 'hidden') {
+      await locator.waitFor({ state: 'hidden', timeout });
     } else if (state === 'detached') {
       await locator.waitFor({ state: 'detached', timeout });
     } else if (state === 'enabled') {
       // Playwright's `toBeEnabled` matcher polls in-page at a faster
       // cadence than our 100ms JS-loop and avoids a protocol round trip
-      // per check. We still pre-wait for `visible` to preserve the
-      // Selenium contract of "the element is on screen AND interactive".
-      await locator.waitFor({ state: 'visible', timeout });
+      // per check. We still pre-wait for DOM presence to preserve the
+      // Selenium contract of "the element exists AND is interactive".
+      await locator.waitFor({ state: 'attached', timeout });
       await expect(locator).toBeEnabled({ timeout });
     } else if (state === 'disabled') {
-      await locator.waitFor({ state: 'visible', timeout });
+      await locator.waitFor({ state: 'attached', timeout });
       await expect(locator).toBeDisabled({ timeout });
     } else {
       throw new Error(
@@ -994,8 +996,9 @@ export class PlaywrightDriver {
 
   /**
    * Waits until the current page's URL equals the given URL. Mirrors the
-   * Selenium driver's `waitForUrl` (`until.urlIs`). Playwright treats a
-   * plain string (no glob characters) as an exact-match pattern.
+   * Selenium driver's `waitForUrl` (`until.urlIs`) by polling `page.url()`
+   * instead of using Playwright's navigation-aware `waitForURL`, which can
+   * fail with `net::ERR_ABORTED` during redirects or frame detachment.
    *
    * @param options - Parameters for the function.
    * @param options.url - The URL to wait for.
@@ -1008,10 +1011,7 @@ export class PlaywrightDriver {
     url: string;
     timeout?: number;
   }): Promise<void> {
-    await this.page.waitForURL((current) => current.href === url, {
-      timeout,
-      waitUntil: 'commit',
-    });
+    await this.waitUntil(async () => this.page.url() === url, { timeout });
   }
 
   async refresh(): Promise<void> {

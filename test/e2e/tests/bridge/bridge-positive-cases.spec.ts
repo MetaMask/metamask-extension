@@ -10,7 +10,6 @@ import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
-import BottomNavBar from '../../page-objects/pages/home/bottom-nav-bar-page';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import {
@@ -25,8 +24,8 @@ import MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD from './mocks/bridge-quotes-eth-robinhoo
  * - `RemoteFeatureFlagController.remoteFeatureFlags` with treatment variant
  * - `manifestFlags.remoteFeatureFlags` with treatment variant
  *
- * This means the bottom nav bar is shown. When bottom nav bar is shown,
- * the back button is removed on Swap/Bridge pages so tests must accommodate for this.
+ * This means the bottom nav bar is shown on routes that use the main layout.
+ * Swaps is outside that layout, so its back button remains available.
  * @param options
  */
 function getBridgeFixturesWithBottomNavTreatment(
@@ -385,9 +384,9 @@ describe('Bridge tests', function (this: Suite) {
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);
 
-        const bottomNav = new BottomNavBar(driver);
-        await bottomNav.checkPageIsLoaded();
-        await bottomNav.clickSwaps();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.checkPageIsLoaded();
@@ -400,8 +399,8 @@ describe('Bridge tests', function (this: Suite) {
         });
         const finalQuoteRequestTimestamp = Date.now();
 
-        // Navigate back via bottom nav (back button is hidden in treatment)
-        await bottomNav.clickHome();
+        // Navigate back via the Swaps page back button.
+        await bridgePage.goBack();
         await checkQuoteRequestsAreNotMadeAfterTimestamp(
           driver,
           finalQuoteRequestTimestamp,
@@ -427,12 +426,12 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$225,730.11' });
 
-        const bottomNav = new BottomNavBar(driver);
-        await bottomNav.checkPageIsLoaded();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
         const bridgePage = new BridgeQuotePage(driver);
         const tokenOverviewPage = new TokenOverviewPage(driver);
 
-        await bottomNav.clickSwaps();
+        await homePage.startSwapFlow();
         await bridgePage.checkPageIsLoaded();
         await bridgePage.searchForAssetAndSelect('DAI');
         console.log('Selected source asset DAI');
@@ -456,12 +455,11 @@ describe('Bridge tests', function (this: Suite) {
         await bridgePage.checkAssetsAreSelected('DAI', 'USDC');
 
         console.log(
-          'Checking that selected assets are reset after reopening Swap page via bottom nav',
+          'Checking that selected assets are reset after reopening Swap page',
         );
-        // Navigate home via bottom nav (back button is hidden in treatment)
-        await bottomNav.clickHome();
-        // Navigate back to bridge via bottom nav swaps tab
-        await bottomNav.clickSwaps();
+        // Navigate home via the Swaps page back button, then reopen Swaps.
+        await bridgePage.goBack();
+        await homePage.startSwapFlow();
         await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
       },
     );

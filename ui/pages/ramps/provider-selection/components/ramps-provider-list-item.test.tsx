@@ -96,7 +96,7 @@ describe('RampsProviderListItem', () => {
       <RampsProviderListItem
         provider={provider}
         tags={[
-          { label: 'Most reliable', severity: 'neutral' },
+          { label: 'Most reliable', severity: 'info' },
           { label: 'Best rate', severity: 'success' },
         ]}
         onClick={jest.fn()}
