@@ -142,6 +142,11 @@
         "depcheck>@babel/traverse": true
       }
     },
+    "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": {
       "packages": {
         "@babel/core>@babel/types": true
@@ -167,7 +172,8 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
       }
     },
     "@babel/preset-typescript>@babel/plugin-transform-typescript": {
@@ -798,6 +804,7 @@
         "browserslist": true,
         "autoprefixer>caniuse-lite": true,
         "autoprefixer>fraction.js": true,
+        "autoprefixer>normalize-range": true,
         "postcss>picocolors": true,
         "postcss": true,
         "stylelint>postcss-value-parser": true
@@ -1188,7 +1195,7 @@
         "postcss-loader>cosmiconfig>env-paths": true,
         "stylelint>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
-        "mocha>js-yaml": true,
+        "postcss-loader>cosmiconfig>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
         "typescript": true
       }
@@ -1401,11 +1408,10 @@
         "path.win32.normalize": true,
         "process.nextTick": true,
         "process.versions.pnp": true,
-        "url.fileURLToPath": true
+        "url": true
       },
       "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
+        "Buffer.isBuffer": true,
         "URL": true,
         "clearTimeout": true,
         "process.cwd": true,
@@ -1579,7 +1585,7 @@
         "mockttp>express>methods": true,
         "koa>on-finished": true,
         "koa>parseurl": true,
-        "sinon>nise>path-to-regexp": true,
+        "serve-handler>path-to-regexp": true,
         "mockttp>express>proxy-addr": true,
         "mockttp>express>qs": true,
         "mockttp>express>range-parser": true,
@@ -2101,13 +2107,14 @@
     },
     "webpack>loader-runner": {
       "builtin": {
-        "fs.readFile": true,
+        "fs": true,
         "url": true
       },
       "globals": {
         "Buffer.from": true,
         "Buffer.isBuffer": true,
         "console.error": true,
+        "process.nextTick": true,
         "setImmediate": true
       },
       "packages": {
@@ -2311,9 +2318,9 @@
         "process.platform": true
       }
     },
-    "sinon>nise>path-to-regexp": {
+    "serve-handler>path-to-regexp": {
       "packages": {
-        "sinon>nise>path-to-regexp>isarray": true
+        "serve-handler>path-to-regexp>isarray": true
       }
     },
     "postcss>picocolors": {
@@ -2400,12 +2407,14 @@
       "packages": {
         "css-loader>icss-utils": true,
         "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss-selector-parser": true,
         "stylelint>postcss-value-parser": true
       }
     },
     "css-loader>postcss-modules-scope": {
       "packages": {
-        "stylelint>postcss-selector-parser": true
+        "stylelint>postcss-selector-parser": true,
+        "tailwindcss>postcss-selector-parser": true
       }
     },
     "css-loader>postcss-modules-values": {
@@ -3141,18 +3150,9 @@
     },
     "copy-webpack-plugin>tinyglobby": {
       "builtin": {
-        "fs.readdir": true,
-        "fs.readdirSync": true,
-        "fs.realpath": true,
-        "fs.realpathSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "path.isAbsolute": true,
-        "path.posix.join": true,
-        "path.posix.normalize": true,
-        "path.posix.relative": true,
-        "path.resolve": true,
-        "url.fileURLToPath": true
+        "fs": true,
+        "path": true,
+        "url": true
       },
       "globals": {
         "URL": true,
@@ -3309,7 +3309,6 @@
         "path.dirname": true,
         "path.isAbsolute": true,
         "path.join": true,
-        "path.relative": true,
         "path.resolve": true
       },
       "globals": {
@@ -3317,7 +3316,6 @@
         "console.error": true,
         "process.env.WATCHPACK_POLLING": true,
         "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
-        "process.env.WATCHPACK_RETRIES": true,
         "process.env.WATCHPACK_WATCHER_LIMIT": true,
         "process.nextTick": true,
         "process.platform": true,
@@ -3325,6 +3323,7 @@
         "setTimeout": true
       },
       "packages": {
+        "webpack>glob-to-regexp": true,
         "webpack>graceful-fs": true
       }
     },

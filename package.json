@@ -328,8 +328,6 @@
     "protobufjs": "^7.6.5",
     "tmp": "^0.2.7",
     "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
-    "webpack": "5.104.1",
-    "terser-webpack-plugin": "5.3.16",
     "esbuild": "0.28.1",
     "valibot": "^1.4.2",
     "@metamask/snaps-controllers": "^21.1.0",
