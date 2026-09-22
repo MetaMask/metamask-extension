@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { useCallback, useId, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -27,6 +27,10 @@ export type RampsQuoteDisplayProps = {
   warningMessage?: string;
 };
 
+const supportsInterestTooltips =
+  typeof HTMLButtonElement !== 'undefined' &&
+  'interestFor' in HTMLButtonElement.prototype;
+
 /**
  * Right-column quote preview for payment method rows (mobile `QuoteDisplay`).
  *
@@ -45,6 +49,13 @@ export default function RampsQuoteDisplay({
   warningMessage,
 }: RampsQuoteDisplayProps) {
   const popoverId = useId();
+  const [isFallbackTooltipOpen, setIsFallbackTooltipOpen] = useState(false);
+  const handleFallbackOpen = useCallback(() => {
+    setIsFallbackTooltipOpen(true);
+  }, []);
+  const handleFallbackClose = useCallback(() => {
+    setIsFallbackTooltipOpen(false);
+  }, []);
 
   if (isLoading) {
     return (
@@ -68,11 +79,32 @@ export default function RampsQuoteDisplay({
         alignItems={BoxAlignItems.End}
         justifyContent={BoxJustifyContent.Center}
         data-testid="ramps-quote-display-warning"
+        onMouseEnter={
+          warningMessage && !supportsInterestTooltips
+            ? handleFallbackOpen
+            : undefined
+        }
+        onMouseLeave={
+          warningMessage && !supportsInterestTooltips
+            ? handleFallbackClose
+            : undefined
+        }
       >
         <button
           type="button"
           className="border-0 bg-transparent p-0"
           onClick={(event) => event.stopPropagation()}
+          onFocus={
+            warningMessage && !supportsInterestTooltips
+              ? handleFallbackOpen
+              : undefined
+          }
+          onBlur={
+            warningMessage && !supportsInterestTooltips
+              ? handleFallbackClose
+              : undefined
+          }
+          onKeyDown={(event) => event.stopPropagation()}
           // @ts-expect-error React types do not include interestfor yet.
           interestfor={popoverId} // eslint-disable-line react/no-unknown-property
           data-testid="ramps-quote-display-warning-trigger"
@@ -90,6 +122,7 @@ export default function RampsQuoteDisplay({
             id={popoverId}
             data-testid="ramps-quote-display-warning-tooltip"
             className="m-0 max-w-[250px] rounded-lg border border-border-muted bg-background-default p-4 text-text-default shadow-md [position-area:bottom]"
+            hidden={!supportsInterestTooltips && !isFallbackTooltipOpen}
           >
             <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
               {warningMessage}

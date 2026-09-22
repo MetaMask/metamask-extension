@@ -103,7 +103,12 @@ export default function RampsPaymentMethodListItem({
       : null;
 
   return (
-    <ButtonBase asChild className={getRampsListItemClassName(isSelected)}>
+    <ButtonBase
+      asChild
+      className={`${getRampsListItemClassName(isSelected)}${
+        isDisabled ? ' cursor-not-allowed opacity-50' : ''
+      }`}
+    >
       <div
         role="button"
         tabIndex={isDisabled ? -1 : 0}
