@@ -24,6 +24,7 @@ export const row: UIComponentFactory<RowElement> = ({
             flexShrink: 0,
           }
         : {}),
+      // We do this to cause an overhang with certain confirmation row variants
       marginLeft: '-8px',
       marginRight: '-8px',
       marginTop: '0px',
