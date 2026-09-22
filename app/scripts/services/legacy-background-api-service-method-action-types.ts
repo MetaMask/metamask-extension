@@ -769,9 +769,7 @@ export type LegacyBackgroundApiServiceGetLedgerAppConfigurationAction = {
 /**
  * Get the active Ledger handler mode based on the remote feature flag.
  *
- * Reads from `RemoteFeatureFlagController` state and merges with manifest
- * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
- * builds without touching LaunchDarkly.
+ * Reads the effective value from `RemoteFeatureFlagController` state.
  *
  * @returns The Ledger handler mode.
  */

@@ -1,4 +1,3 @@
-import * as manifestFlags from '../../../shared/lib/manifestFlags';
 import { MUSD_BUYABLE_CHAIN_IDS } from '../../components/app/musd/constants';
 import type { MusdFeatureFlags } from '../../pages/musd/types';
 import {
@@ -40,13 +39,7 @@ const getMockState = (
 });
 
 describe('MUSD Feature Flag Selectors', () => {
-  let getManifestFlagsMock: jest.SpyInstance;
-
   beforeEach(() => {
-    getManifestFlagsMock = jest
-      .spyOn(manifestFlags, 'getManifestFlags')
-      .mockReturnValue({});
-
     // reselect caches results; reset between tests so each gets fresh state
     selectIsMusdConversionFlowEnabled.resetRecomputations();
     selectIsMusdCtaEnabled.resetRecomputations();
@@ -62,10 +55,6 @@ describe('MUSD Feature Flag Selectors', () => {
     selectAllMusdFeatureFlags.resetRecomputations();
     selectShouldShowAnyMusdCta.resetRecomputations();
     selectMusdBuyableChainIds.resetRecomputations();
-  });
-
-  afterEach(() => {
-    getManifestFlagsMock.mockRestore();
   });
 
   // --------------------------------------------------------------------------

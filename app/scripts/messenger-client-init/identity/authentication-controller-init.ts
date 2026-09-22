@@ -39,14 +39,11 @@ export const AuthenticationControllerInit: MessengerClientInitFunction<
     const { remoteFeatureFlags } = initMessenger.call(
       'RemoteFeatureFlagController:getState',
     );
-    // Resolve through the same manifest-merged path as the UI selector so
-    // `.manifest-overrides.json` / e2e manifestFlags cannot enable consolidation
-    // in the UI while the background gate ignores them.
-    const mergedFlags = getRemoteFeatureFlags({
+    const effectiveFlags = getRemoteFeatureFlags({
       metamask: { remoteFeatureFlags },
     });
     return getIsBasicFunctionalityConsolidationGateEnabled({
-      remoteFeatureFlags: mergedFlags,
+      remoteFeatureFlags: effectiveFlags,
       preferencesState: preferencesController.state,
     });
   };

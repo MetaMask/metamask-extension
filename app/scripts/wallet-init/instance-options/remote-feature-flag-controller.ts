@@ -89,7 +89,7 @@ export function getRemoteFeatureFlagClientConfigApiService() {
 
 type RemoteFeatureFlagControllerInstanceOptions =
   WalletOptions['instanceOptions']['remoteFeatureFlagController'] & {
-    overrideFeatureFlags?: ManifestFlags['remoteFeatureFlags'];
+    overrideFeatureFlags: ManifestFlags['remoteFeatureFlags'];
   };
 
 /**

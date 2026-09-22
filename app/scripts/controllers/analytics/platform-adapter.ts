@@ -18,7 +18,6 @@ import {
 import { UTM_PARAMETERS } from '../../../../shared/types/metametrics';
 import {
   enrichWithABTests,
-  getRemoteFeatureFlagsWithManifestOverrides,
   hasABTestAnalyticsMappingForEvent,
 } from '../../../../shared/lib/ab-testing/ab-test-analytics';
 import {
@@ -112,10 +111,8 @@ export function createEnrichmentContext(
     hasBasicFunctionalityEnabled: () =>
       messenger.call('PreferencesController:getState').useExternalServices,
     getRemoteFeatureFlags: () =>
-      getRemoteFeatureFlagsWithManifestOverrides(
-        messenger.call('RemoteFeatureFlagController:getState')
-          ?.remoteFeatureFlags as Record<string, unknown> | undefined,
-      ),
+      (messenger.call('RemoteFeatureFlagController:getState')
+        ?.remoteFeatureFlags as Record<string, unknown> | undefined) ?? {},
     getFeatureFlagThresholdGroups: () =>
       (messenger.call('RemoteFeatureFlagController:getState')
         ?.featureFlagThresholdGroups as Record<string, string> | undefined) ??

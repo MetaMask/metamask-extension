@@ -68,7 +68,6 @@ import { DecodedTransactionDataSource } from '../../../shared/types/transaction-
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
 import { isSendBundleSupported } from '../lib/transaction/sentinel-api';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
@@ -105,12 +104,6 @@ jest.mock('../../../shared/lib/hardware-wallets', () => ({
 }));
 
 jest.mock('../lib/transaction/containers/enforced-simulations');
-
-jest.mock('../../../shared/lib/manifestFlags', () => ({
-  getManifestFlags: jest.fn(() => ({})),
-}));
-
-const mockGetManifestFlags = jest.mocked(getManifestFlags);
 
 jest.mock('../../../shared/lib/shield/subscription-utils', () => ({
   ...jest.requireActual('../../../shared/lib/shield/subscription-utils'),
@@ -1568,36 +1561,6 @@ describe('LegacyBackgroundApiService', () => {
             rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
           ).toBe('legacy');
         });
-      });
-
-      it('returns DMK when a manifest override enables ledgerDmk', async () => {
-        mockGetManifestFlags.mockReturnValue({
-          remoteFeatureFlags: {
-            ledgerDmk: {
-              enabled: true,
-              featureVersion: '13.36.0',
-              minimumVersion: '13.36.0',
-            },
-          },
-        });
-
-        try {
-          await withService(async ({ rootMessenger }) => {
-            rootMessenger.registerActionHandler(
-              'RemoteFeatureFlagController:getState',
-              () => ({
-                remoteFeatureFlags: {},
-                cacheTimestamp: 0,
-              }),
-            );
-
-            expect(
-              rootMessenger.call('LegacyBackgroundApiService:getLedgerMode'),
-            ).toBe('dmk');
-          });
-        } finally {
-          mockGetManifestFlags.mockReturnValue({});
-        }
       });
     });
 

@@ -7,15 +7,8 @@ import {
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../../shared/constants/hyperliquid-deposit-prompt';
-import { getManifestFlags } from '../../../../../shared/lib/manifestFlags';
 import { createBuilderRequest } from './test-utils';
 import { getMetaMaskPayProperties } from './metamask-pay';
-
-jest.mock('../../../../../shared/lib/manifestFlags', () => ({
-  getManifestFlags: jest.fn(),
-}));
-
-const getManifestFlagsMock = jest.mocked(getManifestFlags);
 
 const PREFILL_ENABLED_FLAGS = {
   confirmations_pay_extended: {
@@ -78,10 +71,6 @@ function createPayRequest(overrides = {}) {
 }
 
 describe('getMetaMaskPayProperties', () => {
-  beforeEach(() => {
-    getManifestFlagsMock.mockReturnValue({});
-  });
-
   describe('core pay properties', () => {
     it('returns empty when metamaskPay is absent', async () => {
       const request = createBuilderRequest();
@@ -330,17 +319,9 @@ describe('getMetaMaskPayProperties', () => {
       expect(result.properties.mm_pay_amount_input_type).toBe('manual');
     });
 
-    it('prefers manifest flags over controller flags', async () => {
-      getManifestFlagsMock.mockReturnValue({
-        remoteFeatureFlags: PREFILL_ENABLED_FLAGS,
-      });
-
+    it('uses the effective controller flags', async () => {
       const request = createMusdRequest({
-        flags: {
-          confirmations_pay_extended: {
-            prefilledAmount: { default: { enabled: false } },
-          },
-        },
+        flags: PREFILL_ENABLED_FLAGS,
       });
 
       const result = await getMetaMaskPayProperties(request);
