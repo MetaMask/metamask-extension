@@ -261,6 +261,12 @@
         "image": "string"
       }
     },
+    "assetsLoadingStatus": {
+      "*": "string"
+    },
+    "assetsLoadingTokens": {
+      "*": "number"
+    },
     "assetsMetadata": {
       "*": {
         "name": "string",
