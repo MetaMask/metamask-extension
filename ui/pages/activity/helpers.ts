@@ -3,7 +3,11 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
+import {
+  isCaipAssetType,
+  parseCaipAssetType,
+  type CaipAssetType,
+} from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { ARC_USDC_TOKEN_ADDRESS } from '../../../shared/constants/network';
@@ -99,6 +103,38 @@ export function activityMatchesAssetId(
         ),
       ),
   );
+}
+
+/**
+ * Checks whether an activity item belongs in the Activity list for the
+ * selected networks.
+ *
+ * Cross-chain bridge rows are anchored to the source transaction chain, but
+ * users expect them to appear when filtering by the destination chain too.
+ *
+ * @param item - The activity item to check.
+ * @param networks - The selected CAIP chain IDs.
+ * @returns Whether the activity item references one of the selected networks.
+ */
+export function activityMatchesNetworks(
+  item: ActivityListItem,
+  networks: string[],
+) {
+  const selectedNetworks = new Set(networks);
+
+  if (selectedNetworks.has(item.chainId)) {
+    return true;
+  }
+
+  const { data } = item;
+  const destinationAssetId =
+    'destinationToken' in data ? data.destinationToken?.assetId : undefined;
+
+  if (!destinationAssetId || !isCaipAssetType(destinationAssetId)) {
+    return false;
+  }
+
+  return selectedNetworks.has(parseCaipAssetType(destinationAssetId).chainId);
 }
 
 function getActivityCellStatus(

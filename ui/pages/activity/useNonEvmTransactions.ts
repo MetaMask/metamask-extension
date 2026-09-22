@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectNonEvmActivityItems } from '../../selectors/activity';
 import { selectRampsSettlementHashes } from '../../selectors/rampsController';
-import { activityMatchesAssetId, type ActivityListFilter } from './helpers';
+import {
+  activityMatchesAssetId,
+  activityMatchesNetworks,
+  type ActivityListFilter,
+} from './helpers';
 
 export function useNonEvmTransactions(filters: ActivityListFilter) {
   const nonEvmItems = useSelector(selectNonEvmActivityItems);
@@ -16,8 +20,7 @@ export function useNonEvmTransactions(filters: ActivityListFilter) {
     if (assetId) {
       items = items.filter((item) => activityMatchesAssetId(item, assetId));
     } else if (networks?.length) {
-      const selectedNetworks = new Set(networks);
-      items = items.filter((item) => selectedNetworks.has(item.chainId));
+      items = items.filter((item) => activityMatchesNetworks(item, networks));
     } else {
       return [];
     }

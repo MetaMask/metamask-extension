@@ -1,6 +1,7 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
   activityMatchesAssetId,
+  activityMatchesNetworks,
   dedupeItems,
   getActivityItemIdentifier,
   getItemKey,
@@ -146,6 +147,62 @@ describe('activityMatchesAssetId', () => {
         'eip155:5042/erc20:0x3600000000000000000000000000000000000000' as never,
       ),
     ).toBe(true);
+  });
+});
+
+describe('activityMatchesNetworks', () => {
+  it('matches an activity item by its source chain', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'bridge',
+      chainId: 'eip155:1',
+      data: {
+        from: '0x1',
+        destinationToken: {
+          assetId: 'eip155:5042/slip44:5042',
+          direction: 'in',
+        },
+      },
+    });
+
+    expect(activityMatchesNetworks(item, ['eip155:1'])).toBe(true);
+  });
+
+  it('matches a bridge activity item by its destination chain', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'bridge',
+      chainId: 'eip155:1',
+      data: {
+        from: '0x1',
+        destinationToken: {
+          assetId: 'eip155:5042/slip44:5042',
+          direction: 'in',
+        },
+      },
+    });
+
+    expect(activityMatchesNetworks(item, ['eip155:5042'])).toBe(true);
+  });
+
+  it('does not match unrelated networks', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'bridge',
+      chainId: 'eip155:1',
+      data: {
+        from: '0x1',
+        destinationToken: {
+          assetId: 'eip155:5042/slip44:5042',
+          direction: 'in',
+        },
+      },
+    });
+
+    expect(activityMatchesNetworks(item, ['eip155:59144'])).toBe(false);
   });
 });
 
