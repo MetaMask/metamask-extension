@@ -554,10 +554,18 @@ export function usePerpsOrderForm({
   );
   const defaultAmountKey = `${mode}|${formState.leverage}|${availableBalance}|${defaultAmountFieldsForBalance.amount}|${defaultAmountFieldsForBalance.balancePercent}`;
 
+  // `hasUserEditedAmount` state updates asynchronously; on the same render as a
+  // form reset, derive the flag from the incoming draft so default-amount sync
+  // does not clobber a restored amount when `defaultAmountKey` also changes.
+  const userHasEditedAmount =
+    resetDependenciesChanged && shouldResetForm
+      ? Boolean(initialDraft?.amount)
+      : hasUserEditedAmount;
+
   if (
     defaultAmountKey !== prevDefaultAmountKey &&
     mode === 'new' &&
-    !hasUserEditedAmount &&
+    !userHasEditedAmount &&
     defaultAmountFieldsForBalance.amount &&
     (formState.amount !== defaultAmountFieldsForBalance.amount ||
       formState.balancePercent !== defaultAmountFieldsForBalance.balancePercent)
