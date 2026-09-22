@@ -1,4 +1,10 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import type { CandleData } from '@metamask/perps-controller';
 import type {
   CandlePeriod,
@@ -89,23 +95,28 @@ export function usePerpsLiveCandles(
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const hasReceivedFirstUpdate = useRef(false);
+  const symbolRef = useRef(symbol);
+  const intervalRef = useRef(interval);
+
+  useLayoutEffect(() => {
+    symbolRef.current = symbol;
+    intervalRef.current = interval;
+  }, [symbol, interval]);
+
   const subscriptionKey = `${symbol}|${interval}|${duration ?? ''}|${throttleMs}`;
   const [prevSubscriptionKey, setPrevSubscriptionKey] =
     useState(subscriptionKey);
-
-  // Stable refs for the current subscription params (for validation in callbacks)
-  const currentSymbolRef = useRef(symbol);
-  const currentIntervalRef = useRef(interval);
-  currentSymbolRef.current = symbol;
-  currentIntervalRef.current = interval;
 
   if (subscriptionKey !== prevSubscriptionKey) {
     setPrevSubscriptionKey(subscriptionKey);
     setCandleData(null);
     setError(null);
-    hasReceivedFirstUpdate.current = false;
     setIsInitialLoading(Boolean(symbol && interval));
   }
+
+  useEffect(() => {
+    hasReceivedFirstUpdate.current = false;
+  }, [subscriptionKey]);
 
   useEffect(() => {
     if (!symbol || !interval) {
@@ -123,8 +134,8 @@ export function usePerpsLiveCandles(
         // Validate incoming data matches current subscription
         // (prevents stale data from race conditions during symbol/interval switch)
         if (
-          data.symbol !== currentSymbolRef.current ||
-          data.interval !== currentIntervalRef.current
+          data.symbol !== symbolRef.current ||
+          data.interval !== intervalRef.current
         ) {
           return;
         }
