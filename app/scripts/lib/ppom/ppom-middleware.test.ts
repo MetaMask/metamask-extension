@@ -7,6 +7,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { scanUnvalidatedSignatureAddresses } from '../trust-signals/scan-unvalidated-signature';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
@@ -14,7 +15,6 @@ import {
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
-import { scanUnvalidatedSignatureAddresses } from '../trust-signals/scan-unvalidated-signature';
 
 jest.mock('./ppom-util');
 jest.mock('../trust-signals/scan-unvalidated-signature');
@@ -308,6 +308,8 @@ describe('PPOMMiddleware', () => {
 
   it('starts signature address scan when PPOM returns benign for typed-data', async () => {
     (validateRequestWithPPOM as jest.Mock).mockResolvedValue({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: BlockaidResultType.Benign,
       reason: BlockaidReason.notApplicable,
       securityAlertId: SECURITY_ALERT_ID_MOCK,
