@@ -1,6 +1,8 @@
 import type { PopupOpenerDeps } from './background';
 import { createPopupOpener } from './background';
 
+const originalChrome = globalThis.chrome;
+
 describe('createPopupOpener', () => {
   const createMockDeps = (): PopupOpenerDeps =>
     ({
@@ -23,13 +25,11 @@ describe('createPopupOpener', () => {
   });
 
   afterEach(() => {
-    // @ts-expect-error - cleaning up mock
-    delete globalThis.chrome;
+    globalThis.chrome = originalChrome;
   });
 
   it('returns false if chrome.action.openPopup is not available', async () => {
-    // @ts-expect-error - removing mock
-    delete globalThis.chrome;
+    globalThis.chrome = {} as typeof chrome;
 
     const deps = createMockDeps();
     const requestOpenPopup = createPopupOpener(deps);
