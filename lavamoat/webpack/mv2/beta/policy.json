@@ -992,7 +992,7 @@
         "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-controller>@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
         "buffer": true,
         "@metamask/assets-controller>lodash-es": true,
@@ -1017,7 +1017,7 @@
         "@metamask/bridge-status-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "@metamask/bridge-status-controller>uuid": true
       }
@@ -1229,7 +1229,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-controller>@metamask/controller-utils>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
@@ -1246,7 +1246,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/controller-utils>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
@@ -1991,7 +1991,7 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/keyring-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/assets-controller>lodash-es": true,
@@ -2310,7 +2310,7 @@
     },
     "@metamask/bridge-controller>@metamask/multichain-network-controller": {
       "packages": {
-        "@metamask/utils": true
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/utils": true
       }
     },
     "@metamask/multichain-transactions-controller": {
@@ -3291,6 +3291,21 @@
         "@noble/hashes": true,
         "@scure/base": true,
         "buffer": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "nock>debug": true,
         "lodash": true
       }
     },
@@ -4748,11 +4763,6 @@
       }
     },
     "@metamask/wallet>@metamask/controller-utils>bignumber.js": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/notification-services-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
