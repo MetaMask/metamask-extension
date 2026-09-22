@@ -257,6 +257,12 @@ export class PlaywrightDriver {
 
   private scriptCdpSession: CDPSession | null = null;
 
+  // CDP session and authenticator ID for WebAuthn virtual authenticator
+  // (Chromium-only, used by passkey tests).
+  private webAuthnCdpSession: CDPSession | null = null;
+
+  private virtualAuthenticatorId: string | null = null;
+
   constructor({
     context,
     page,
@@ -885,7 +891,31 @@ export class PlaywrightDriver {
   ): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
     await locator.click();
-    await this.page.keyboard.insertText(contentToPaste);
+
+    // Dispatch a synthetic paste event on the focused element. Components like
+    // the SRP input rely on onPaste to split the pasted text into individual
+    // word fields; keyboard.insertText alone fires only an input event.
+    const handled = await this.executeScript<boolean>(function (text: unknown) {
+      const el = document.activeElement;
+      if (!el) {
+        return false;
+      }
+      const dt = new DataTransfer();
+      dt.setData('text/plain', text as string);
+      const event = new ClipboardEvent('paste', {
+        bubbles: true,
+        cancelable: true,
+        clipboardData: dt,
+      });
+      el.dispatchEvent(event);
+      return event.defaultPrevented;
+    }, contentToPaste);
+
+    // If the paste event was not consumed (defaultPrevented), the field is a
+    // plain input without a custom onPaste handler — insert text directly.
+    if (!handled) {
+      await this.page.keyboard.insertText(contentToPaste);
+    }
   }
 
   async holdMouseDownOnElement(
@@ -1206,5 +1236,43 @@ export class PlaywrightDriver {
         error,
       );
     }
+  }
+
+  // -- WebAuthn virtual authenticator (Chromium-only, via CDP) ---------------
+
+  async addVirtualAuthenticator(): Promise<void> {
+    if (this.browser !== 'chrome') {
+      throw new Error(
+        'PlaywrightDriver.addVirtualAuthenticator is only supported on Chromium (CDP WebAuthn domain).',
+      );
+    }
+    if (!this.webAuthnCdpSession) {
+      this.webAuthnCdpSession = await this.context.newCDPSession(this.page);
+      await this.webAuthnCdpSession.send('WebAuthn.enable');
+    }
+    const { authenticatorId } = await this.webAuthnCdpSession.send(
+      'WebAuthn.addVirtualAuthenticator',
+      {
+        options: {
+          protocol: 'ctap2',
+          transport: 'internal',
+          hasResidentKey: true,
+          hasUserVerification: true,
+          isUserVerified: true,
+          automaticPresenceSimulation: true,
+        },
+      },
+    );
+    this.virtualAuthenticatorId = authenticatorId;
+  }
+
+  async removeVirtualAuthenticator(): Promise<void> {
+    if (!this.webAuthnCdpSession || !this.virtualAuthenticatorId) {
+      return;
+    }
+    await this.webAuthnCdpSession.send('WebAuthn.removeVirtualAuthenticator', {
+      authenticatorId: this.virtualAuthenticatorId,
+    });
+    this.virtualAuthenticatorId = null;
   }
 }
