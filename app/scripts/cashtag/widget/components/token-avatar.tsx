@@ -25,7 +25,6 @@ export function TokenAvatar({ asset, size = 'sm' }: Props) {
 
   return (
     <BadgeWrapper
-      // DS default includes `self-start`, which beats parent `items-center`.
       className="shrink-0 self-center"
       badge={
         chainSrc ? (
