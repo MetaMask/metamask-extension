@@ -2,7 +2,7 @@ import {
   SnapController,
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { createDeferredPromise, Json } from '@metamask/utils';
+import { createDeferredPromise, Duration, inMilliseconds } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -104,6 +104,7 @@ export const SnapControllerInit: MessengerClientInitFunction<
     state: persistedState.SnapController,
 
     messenger: controllerMessenger,
+    maxIdleTime: inMilliseconds(2, Duration.Minute),
     featureFlags: {
       allowLocalSnaps,
       requireAllowlist,
