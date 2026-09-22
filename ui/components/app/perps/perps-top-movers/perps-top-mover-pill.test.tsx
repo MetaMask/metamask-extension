@@ -54,10 +54,22 @@ describe('PerpsTopMoverPill', () => {
   });
 
   it('truncates a long ticker rather than pushing the change out of the cell', () => {
-    renderPill();
+    renderPill({ symbol: 'AVERYLONGTICKER' });
 
-    expect(screen.getByText('BTC')).toHaveClass('min-w-0', 'truncate');
+    const pill = screen.getByTestId('perps-top-movers-pill-AVERYLONGTICKER');
+
+    // jsdom computes no layout, so the behaviour is pinned through the classes
+    // that produce it: the ticker is the only part allowed to shrink and clip,
+    // and the change value is held at its natural width so a long ticker can
+    // never squeeze it out of the cell.
+    expect(screen.getByText('AVERYLONGTICKER')).toHaveClass(
+      'min-w-0',
+      'truncate',
+    );
     expect(screen.getByText('+2.84%')).toHaveClass('shrink-0');
+    // `truncate` clips through text-overflow, so the whole ticker stays in the
+    // DOM and the button keeps its full accessible name.
+    expect(pill).toHaveTextContent('AVERYLONGTICKER');
   });
 
   it('displays the ticker', () => {
