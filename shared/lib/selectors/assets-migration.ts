@@ -37,6 +37,7 @@ import {
 } from '../assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import { AssetType } from '../../constants/transaction';
+import { augmentTempoCurrencyRates } from '../assets/enablement/tempo';
 import { createDeepEqualSelector } from './selector-creators';
 
 // Old state controllers and fields status
@@ -76,8 +77,6 @@ import { createDeepEqualSelector } from './selector-creators';
 //
 // TokenListController
 // tokensChainsCache: TODO (There are no plans to port this state)
-
-const USD_CURRENCY = 'USD';
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
@@ -685,16 +684,8 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: AssetsControllerState }) =>
       state.metamask?.assetsPrice ?? {},
-    (state: { metamask: NetworkState }) =>
-      state.metamask?.networkConfigurationsByChainId ?? {},
   ],
-  (
-    isAssetsUnifyStateEnabled,
-    currencyRates,
-    assetsInfo,
-    assetsPrice,
-    networkConfigurationsByChainId,
-  ) => {
+  (isAssetsUnifyStateEnabled, currencyRates, assetsInfo, assetsPrice) => {
     if (!isAssetsUnifyStateEnabled) {
       return currencyRates;
     }
@@ -733,33 +724,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       };
     }
 
-    const hasUsdNativeCurrency = Object.values(
-      networkConfigurationsByChainId,
-    ).some(({ nativeCurrency }) => nativeCurrency === USD_CURRENCY);
-    const usdPrice = Object.values(assetsPrice).reduce<
-      FungibleAssetPrice | undefined
-    >(
-      (latest, price) =>
-        price.assetPriceType === 'fungible' &&
-        Number.isFinite(price.price) &&
-        price.price > 0 &&
-        Number.isFinite(price.usdPrice) &&
-        price.usdPrice > 0 &&
-        (!latest || price.lastUpdated > latest.lastUpdated)
-          ? price
-          : latest,
-      undefined,
-    );
-
-    if (hasUsdNativeCurrency && !result[USD_CURRENCY] && usdPrice) {
-      result[USD_CURRENCY] = {
-        conversionDate: usdPrice.lastUpdated / 1000,
-        conversionRate: usdPrice.price / usdPrice.usdPrice,
-        usdConversionRate: 1,
-      };
-    }
-
-    return result;
+    return augmentTempoCurrencyRates(result, assetsPrice);
   },
 ) as unknown as ControllerStateSelector<CurrencyRateState, 'currencyRates'>;
 

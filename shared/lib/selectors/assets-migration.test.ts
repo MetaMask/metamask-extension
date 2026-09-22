@@ -1716,7 +1716,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
               lastUpdated: 1700000001000,
             }),
           },
-          networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
         },
       };
 
@@ -1754,7 +1753,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
                 usdPrice,
               }),
             },
-            networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
           },
         };
 
@@ -1763,6 +1761,33 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
         expect(result.USD).toBeUndefined();
       },
     );
+
+    it('does not derive a USD rate from a price outside Tempo', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          currencyRates: {},
+          assetsInfo: {
+            [erc20AssetId]: {
+              type: 'erc20',
+              symbol: 'USDC',
+              decimals: 6,
+            },
+          },
+          assetsPrice: {
+            [erc20AssetId]: makeMockPrice({
+              id: 'usdc',
+              price: 0.9,
+              usdPrice: 1,
+            }),
+          },
+        },
+      };
+
+      const result = getCurrencyRateControllerCurrencyRates(state);
+
+      expect(result.USD).toBeUndefined();
+    });
   });
 });
 
@@ -1943,6 +1968,9 @@ describe('getTokenRatesControllerMarketData', () => {
         result[tempoChainId][
           toChecksumHexAddress(tempoBridgedUsdcAddressLowercase) as Hex
         ];
+      expect(
+        getCurrencyRateControllerCurrencyRates(state).USD?.conversionRate,
+      ).toBeCloseTo(0.92);
       expect(pathUsdMarketData.price).toBeCloseTo(0.9 / 0.92);
       expect(pathUsdMarketData.currency).toBe('USD');
       expect(bridgedUsdcMarketData.price).toBeCloseTo(0.99);
