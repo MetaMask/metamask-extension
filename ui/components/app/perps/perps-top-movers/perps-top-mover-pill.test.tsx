@@ -41,14 +41,23 @@ describe('PerpsTopMoverPill', () => {
     expect(screen.getByTestId('perps-top-movers-pill-BTC')).toBeInTheDocument();
   });
 
-  it('sizes to its label instead of stretching or shrinking in a row', () => {
+  it('fills its grid cell instead of sizing to its label', () => {
     renderPill();
 
     const pill = screen.getByTestId('perps-top-movers-pill-BTC');
 
-    expect(pill).toHaveClass('w-auto', 'shrink-0');
-    expect(pill).not.toHaveClass('flex-1');
-    expect(pill).not.toHaveClass('min-w-0');
+    // Equal-width cells are what makes the two columns line up; a pill that
+    // hugged its label would leave the grid ragged and reintroduce overflow.
+    expect(pill).toHaveClass('w-full', 'min-w-0');
+    expect(pill).not.toHaveClass('w-auto');
+    expect(pill).not.toHaveClass('shrink-0');
+  });
+
+  it('truncates a long ticker rather than pushing the change out of the cell', () => {
+    renderPill();
+
+    expect(screen.getByText('BTC')).toHaveClass('min-w-0', 'truncate');
+    expect(screen.getByText('+2.84%')).toHaveClass('shrink-0');
   });
 
   it('displays the ticker', () => {
