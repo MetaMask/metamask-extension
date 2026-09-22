@@ -1,13 +1,21 @@
+import type { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
+import type { Messenger } from '@metamask/messenger';
+import type {
+  PermissionConstraint,
+  PermissionControllerHasPermissionsAction,
+  PermissionControllerState,
+} from '@metamask/permission-controller';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import type { Runtime } from 'webextension-polyfill';
-import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_SIDEPANEL,
+  type EnvironmentType,
 } from '../../../../shared/constants/app';
+import { getPartnerByOrigin } from '../../../../shared/constants/defi-referrals';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -16,54 +24,62 @@ import {
   getActiveTabDomainAllowlist,
   getActiveTabDomainForMetrics,
 } from '../../../../shared/lib/active-tab-domain-metrics';
-import { getPartnerByOrigin } from '../../../../shared/constants/defi-referrals';
+import type { FlattenedBackgroundStateProxy } from '../../../../shared/types';
+import type { AppStateControllerState } from '../../controllers/app-state-controller';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import type { LegacyBackgroundApiServiceHandleDefiReferralAction } from '../../services/legacy-background-api-service-method-action-types';
 import { ReferralTriggerType } from '../defi-referrals/createDefiReferralMiddleware';
 import { getIframeProperties } from '../getIframeProperties';
 import { shouldEmitDappViewedEvent } from '../util';
 
+type DappMetricsActions =
+  | AccountsControllerGetStateAction
+  | PermissionControllerHasPermissionsAction
+  | LegacyBackgroundApiServiceHandleDefiReferralAction;
+
+type DappMetricsMessenger = Messenger<'DappMetrics', DappMetricsActions, never>;
+
 export type DappMetricsController = {
-  getState: () => {
-    analyticsId?: string;
-    consentDecisionMade?: boolean;
-    optedIn?: boolean;
-  };
+  getState: () => Pick<
+    FlattenedBackgroundStateProxy,
+    'analyticsId' | 'consentDecisionMade' | 'optedIn'
+  >;
   getPermittedAccounts: (origin: string) => string[];
-  controllerMessenger: {
-    call: (method: string, ...args: unknown[]) => unknown;
-  };
+  controllerMessenger: Pick<DappMetricsMessenger, 'call'>;
   permissionController: {
-    state: {
-      subjects: Record<string, unknown | undefined>;
-    };
+    state: Pick<PermissionControllerState<PermissionConstraint>, 'subjects'>;
   };
   appStateController: {
-    state: {
-      appActiveTab?: {
-        origin?: string;
-      };
-    };
+    state: Pick<AppStateControllerState, 'appActiveTab'>;
   };
   remoteFeatureFlagController: {
-    state: Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>;
+    state: NonNullable<Parameters<typeof getActiveTabDomainAllowlist>[0]>;
   };
 };
 
 export type CreateDappMetricsDeps = {
-  getController: () => DappMetricsController;
+  getController: () => DappMetricsController | undefined;
   isAnyUiOpen: () => boolean;
 };
 
 export type DappMetricsApi = {
-  trackDappView: (remotePort: Runtime.Port) => void;
-  emitAppOpenedMetricEvent: (environmentType: string) => void;
-  shouldEmitAppOpened: (environment: string) => boolean;
-  trackAppOpened: (environment: string) => void;
+  trackDappView: (remotePort: DappViewRemotePort) => void;
+  emitAppOpenedMetricEvent: (environmentType: EnvironmentType) => void;
+  shouldEmitAppOpened: (environment: EnvironmentType) => boolean;
+  trackAppOpened: (environment: EnvironmentType) => void;
   installOnNavigateToTabListener: () => void;
 };
 
 type TabOriginRegistry = Record<number, string>;
 type TabFrameRegistry = Record<number, number | undefined>;
+
+type PortSender = NonNullable<Runtime.Port['sender']>;
+type PortTab = NonNullable<PortSender['tab']>;
+type DappViewRemotePort = {
+  sender?: Pick<PortSender, 'url' | 'frameId'> & {
+    tab?: Pick<PortTab, 'id' | 'title' | 'url'>;
+  };
+};
 
 /**
  * @param options - Injected controller accessor and UI presence predicate.
@@ -78,6 +94,14 @@ export function createDappMetrics({
   const tabOriginMapping: TabOriginRegistry = {};
   const frameIdMapping: TabFrameRegistry = {};
 
+  const requireController = (): DappMetricsController => {
+    const controller = getController();
+    if (!controller) {
+      throw new TypeError('controller is undefined');
+    }
+    return controller;
+  };
+
   /**
    * Emit event of DappViewed,
    * which should only be tracked only after a user opts into metrics and connected to the dapp
@@ -91,7 +115,7 @@ export function createDappMetrics({
     mainFrameOrigin?: string,
     frameId?: number,
   ) => {
-    const controller = getController();
+    const controller = requireController();
 
     const { analyticsId } = controller.getState();
     if (!shouldEmitDappViewedEvent(analyticsId ?? null)) {
@@ -106,9 +130,7 @@ export function createDappMetrics({
 
     const accountsState = controller.controllerMessenger.call(
       'AccountsController:getState',
-    ) as {
-      internalAccounts: { accounts: Record<string, unknown> };
-    };
+    );
     const numberOfTotalAccounts = Object.keys(
       accountsState.internalAccounts.accounts,
     ).length;
@@ -145,7 +167,7 @@ export function createDappMetrics({
    *
    * @param remotePort - The port provided by a new context.
    */
-  const trackDappView = (remotePort: Runtime.Port) => {
+  const trackDappView = (remotePort: DappViewRemotePort) => {
     if (
       !remotePort.sender?.tab ||
       !remotePort.sender?.url ||
@@ -153,7 +175,7 @@ export function createDappMetrics({
     ) {
       return;
     }
-    const controller = getController();
+    const controller = requireController();
     const tabId = remotePort.sender.tab.id;
     if (typeof tabId !== 'number') {
       return;
@@ -179,7 +201,7 @@ export function createDappMetrics({
     const isConnectedToDapp = controller.controllerMessenger.call(
       'PermissionController:hasPermissions',
       origin,
-    ) as boolean | undefined;
+    );
 
     // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
     const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
@@ -197,8 +219,8 @@ export function createDappMetrics({
    *
    * @param environmentType - The environment type where the app is opening
    */
-  const emitAppOpenedMetricEvent = (environmentType: string) => {
-    const controller = getController();
+  const emitAppOpenedMetricEvent = (environmentType: EnvironmentType) => {
+    const controller = requireController();
 
     const { consentDecisionMade, optedIn } = controller.getState();
 
@@ -238,7 +260,7 @@ export function createDappMetrics({
    * @param environment - The environment type where the app is opening
    * @returns
    */
-  const shouldEmitAppOpened = (environment: string) => {
+  const shouldEmitAppOpened = (environment: EnvironmentType) => {
     // List of valid environment types to track
     const environmentTypeList = [
       ENVIRONMENT_TYPE_POPUP,
@@ -260,7 +282,7 @@ export function createDappMetrics({
    *
    * @param environment - The environment type where the app is opening
    */
-  const trackAppOpened = (environment: string) => {
+  const trackAppOpened = (environment: EnvironmentType) => {
     if (shouldEmitAppOpened(environment)) {
       emitAppOpenedMetricEvent(environment);
     }
@@ -298,19 +320,19 @@ export function createDappMetrics({
           // when the dapp is not connected, connectSitePermissions is undefined
           const isConnectedToDapp = connectSitePermissions !== undefined;
           if (isConnectedToDapp) {
-            (
-              controller.controllerMessenger.call(
+            controller.controllerMessenger
+              .call(
                 'LegacyBackgroundApiService:handleDefiReferral',
                 partner,
                 tabId,
                 ReferralTriggerType.OnNavigateConnectedTab,
-              ) as Promise<unknown>
-            ).catch((error: unknown) => {
-              log.error(
-                `Failed to handle ${partner.name} referral after navigation to connected tab: `,
-                error,
-              );
-            });
+              )
+              .catch((error: unknown) => {
+                log.error(
+                  `Failed to handle ${partner.name} referral after navigation to connected tab: `,
+                  error,
+                );
+              });
           }
         }
       }

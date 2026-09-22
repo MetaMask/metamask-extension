@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "ショートをクローズしました - マーケット"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "デポジット失敗"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "入金中"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "デポジット"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "送金に失敗しました"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "送信中"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "送信完了"
-  },
   "activity_nftBuy_failed_title": {
     "message": "購入に失敗しました"
   },
@@ -3187,9 +3151,6 @@
   },
   "current": {
     "message": "現在"
-  },
-  "currentAccountNotConnected": {
-    "message": "現在のアカウントは接続されていません"
   },
   "currentEstimatedBaseFee": {
     "message": "現在: $1 gwei"

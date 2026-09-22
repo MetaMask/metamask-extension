@@ -1,4 +1,3 @@
-import browser from 'webextension-polyfill';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -7,7 +6,7 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import { getPartnerByOrigin } from '../../../../shared/constants/defi-referrals';
 import { ReferralTriggerType } from '../defi-referrals/createDefiReferralMiddleware';
-import { createDappMetrics } from './dapp-metrics';
+import { createDappMetrics, type DappMetricsController } from './dapp-metrics';
 
 jest.mock('../../../../shared/constants/defi-referrals', () => ({
   getPartnerByOrigin: jest.fn(),
@@ -54,7 +53,9 @@ describe('createDappMetrics', () => {
     buildMock.mockReturnValue({ built: true });
   });
 
-  function createController(overrides = {}) {
+  function createController(
+    overrides: Record<string, unknown> = {},
+  ): DappMetricsController {
     return {
       getState: () => ({
         analyticsId: 'analytics-id',
@@ -74,14 +75,31 @@ describe('createDappMetrics', () => {
         }),
       },
       permissionController: {
-        state: { subjects: { 'https://dapp.test': {} } },
+        state: {
+          subjects: {
+            'https://dapp.test': {
+              origin: 'https://dapp.test',
+              permissions: {},
+            },
+          },
+        },
       },
       appStateController: {
-        state: { appActiveTab: { origin: 'https://dapp.test' } },
+        state: {
+          appActiveTab: {
+            id: 1,
+            title: 'My Dapp',
+            origin: 'https://dapp.test',
+            protocol: 'https:',
+            url: 'https://dapp.test',
+            host: 'dapp.test',
+            href: 'https://dapp.test',
+          },
+        },
       },
       remoteFeatureFlagController: { state: { remoteFeatureFlags: {} } },
       ...overrides,
-    };
+    } as unknown as DappMetricsController;
   }
 
   it('shouldEmitAppOpened returns false when UI is already open', () => {
@@ -119,7 +137,7 @@ describe('createDappMetrics', () => {
         url: 'https://dapp.test/page',
         frameId: 0,
       },
-    } as browser.Runtime.Port);
+    });
 
     expect(createEventBuilder).toHaveBeenCalledWith(
       MetaMetricsEventName.DappViewed,
@@ -142,7 +160,7 @@ describe('createDappMetrics', () => {
         url: 'https://dapp.test',
         frameId: 0,
       },
-    } as browser.Runtime.Port);
+    });
 
     installOnNavigateToTabListener();
     (trackEvent as jest.Mock).mockClear();
@@ -175,8 +193,14 @@ describe('createDappMetrics', () => {
       permissionController: {
         state: {
           subjects: {
-            'https://partner.test': {},
-            'https://iframe.partner.test': {},
+            'https://partner.test': {
+              origin: 'https://partner.test',
+              permissions: {},
+            },
+            'https://iframe.partner.test': {
+              origin: 'https://iframe.partner.test',
+              permissions: {},
+            },
           },
         },
       },
@@ -195,7 +219,7 @@ describe('createDappMetrics', () => {
         url: 'https://iframe.partner.test/embed',
         frameId: 1,
       },
-    } as browser.Runtime.Port);
+    });
 
     installOnNavigateToTabListener();
     tabActivatedListeners[0]({ tabId: 7 });
@@ -216,8 +240,14 @@ describe('createDappMetrics', () => {
       permissionController: {
         state: {
           subjects: {
-            'https://first.test': {},
-            'https://second.test': {},
+            'https://first.test': {
+              origin: 'https://first.test',
+              permissions: {},
+            },
+            'https://second.test': {
+              origin: 'https://second.test',
+              permissions: {},
+            },
           },
         },
       },
@@ -229,14 +259,13 @@ describe('createDappMetrics', () => {
       },
     );
 
-    const port = (senderUrl: string) =>
-      ({
-        sender: {
-          tab: { id: 42, title: 'Loaded', url: 'https://tab.test' },
-          url: senderUrl,
-          frameId: 0,
-        },
-      }) as browser.Runtime.Port;
+    const port = (senderUrl: string) => ({
+      sender: {
+        tab: { id: 42, title: 'Loaded', url: 'https://tab.test' },
+        url: senderUrl,
+        frameId: 0,
+      },
+    });
 
     trackDappView(port('https://first.test'));
     trackDappView(port('https://second.test'));
