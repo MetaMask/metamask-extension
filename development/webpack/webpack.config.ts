@@ -78,7 +78,7 @@ const cashtagPageStylesRe =
 // HtmlBundlerPlugin extracts every stylesheet it recognises into its own asset,
 // which would break the string imports above, so they are excluded here.
 const bundledStylesRe =
-  /^(?!.*[\\/]cashtag[\\/](?:pill|widget)[/]page\.css$|.*[\\/]cashtag[\\/]widget[/]widget\.css$).*\.(?:css|scss|sass|less|styl)$/u;
+  /^(?!.*[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$|.*[\\/]cashtag[\\/]widget[\\/]widget\.css$).*\.(?:css|scss|sass|less|styl)$/u;
 
 // Keep widget.css outside HtmlBundler. Its CSS @import is not resolved
 // correctly there, which leaves design-token variables undefined in dist

@@ -187,7 +187,11 @@ export const lavamoatPlugin = (
           embeddedOptions: {
             scuttleGlobalThis: {
               enabled: true,
-              exceptions: ['browser', 'chrome', 'devicePixelRatio'],
+              exceptions: [
+                ...getScuttleGlobalThisExceptions(args),
+                'browser',
+                'chrome',
+              ],
             },
           },
         };
