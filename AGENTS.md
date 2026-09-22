@@ -1213,9 +1213,15 @@ Complete all steps for **push** above, then:
 - Push new commits instead of amending
 - If the Conventional Commit type in the PR's title is `chore`, please evaluate if `chore` is truly the best choice. We also have two custom types: `bump` (for package updates) and `release` (for tasks on a release branch and tasks that are all about getting a release ready).
 
+**Review threads (agents):**
+
+- **Never resolve a review thread before human reviewers have had time to read new comments and respond.** This is a hard rule, not a convention.
+- **Do not resolve threads unilaterally.** Prefer to let the human reviewers engaging with a thread close it once they have determined the raised issues are resolved.
+- **Leave a thread open if it may be relevant, educational, or of future reference value.** Most threads should still be closed to avoid clutter.
+- **Do not re-post a comment on an unresolved thread that has not been updated.** Resolving every thread is not a merge requirement here, so an unresolved thread is not by itself a signal that anything is outstanding.
+
 ### Before Merging
 
-- [ ] All conversations resolved
 - [ ] Required approvals received
 - [ ] CI checks passing
 - [ ] Review the squash commit message (auto-generated from PR)
