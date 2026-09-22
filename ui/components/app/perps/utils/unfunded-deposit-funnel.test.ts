@@ -41,6 +41,23 @@ describe('unfunded-deposit-funnel', () => {
     expect(consumeUnfundedDepositFunnel(ADDRESS)).toBe(false);
   });
 
+  it('keeps a confirmed funnel when the unfunded CTA is clicked again', () => {
+    markUnfundedDepositFunnel(ADDRESS);
+    confirmUnfundedDepositFunnel(ADDRESS);
+    markUnfundedDepositFunnel(ADDRESS);
+
+    expect(consumeUnfundedDepositFunnel(ADDRESS)).toBe(true);
+  });
+
+  it('restarts the funnel when a different address clicks after a confirmation', () => {
+    markUnfundedDepositFunnel(ADDRESS);
+    confirmUnfundedDepositFunnel(ADDRESS);
+    markUnfundedDepositFunnel(OTHER_ADDRESS);
+
+    expect(consumeUnfundedDepositFunnel(ADDRESS)).toBe(false);
+    expect(consumeUnfundedDepositFunnel(OTHER_ADDRESS)).toBe(false);
+  });
+
   it('does not confirm or consume for a different address', () => {
     markUnfundedDepositFunnel(ADDRESS);
     confirmUnfundedDepositFunnel(OTHER_ADDRESS);

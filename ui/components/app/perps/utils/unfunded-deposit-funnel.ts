@@ -44,6 +44,13 @@ function writeFunnel(funnel: UnfundedDepositFunnel): void {
  * @param address - The unfunded account that started the deposit.
  */
 export function markUnfundedDepositFunnel(address: string): void {
+  // Keep an existing confirmation for this address: the balance stream can lag
+  // a confirmed deposit, so the unfunded CTA may be clicked again before the
+  // first post-deposit order, which must still join the funnel.
+  const existing = readFunnel();
+  if (existing?.address === address && existing.confirmedAt !== null) {
+    return;
+  }
   writeFunnel({ address, confirmedAt: null });
 }
 
