@@ -340,4 +340,27 @@ describe('NFT Items', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  describe('Sort control', () => {
+    it('renders the sort control when the account has NFTs', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useNftDetection: true,
+      });
+      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+    });
+
+    it('does not render the sort control when the empty state is shown', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: [],
+        useNftDetection: true,
+      });
+      expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('sort-by-popover-toggle'),
+      ).not.toBeInTheDocument();
+    });
+  });
 });
