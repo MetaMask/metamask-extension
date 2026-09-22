@@ -5,12 +5,9 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { useSearchParams } from 'react-router-dom';
 
-import {
-  getCrossChainMetaMaskCachedBalances,
-  selectMaxValueModeForTransaction,
-} from '../../../../../../selectors';
+import { getCrossChainMetaMaskCachedBalances } from '../../../../../../selectors';
+import { selectMaxValueModeForTransaction } from '../../../../../../ducks/send-max-value/send-max-value';
 import {
   addHexes,
   multiplyHexes,
@@ -49,13 +46,10 @@ export const useMaxValueRefresher = () => {
     txParams: { from },
   } = transactionMeta;
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const isMaxAmountMode = useSelector((state) =>
+  const isMaxValueMode = useSelector((state) =>
     selectMaxValueModeForTransaction(state, transactionMeta?.id),
   );
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-  const [searchParams] = useSearchParams();
-  const paramMaxValueMode = searchParams.get('maxValueMode') === 'true';
-  const isMaxValueMode = isMaxAmountMode || paramMaxValueMode;
   const crossChainNativeBalances = useSelector(
     getCrossChainMetaMaskCachedBalances,
   ) as { [chainId: string]: { [from: string]: string } };
