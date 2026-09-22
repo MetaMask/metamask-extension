@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "ショートをクローズしました - マーケット"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "デポジット失敗"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "入金中"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "デポジット"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "送金に失敗しました"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "送信中"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "送信完了"
-  },
   "activity_nftBuy_failed_title": {
     "message": "購入に失敗しました"
   },
@@ -3105,9 +3069,6 @@
   "copyAddressShort": {
     "message": "アドレスをコピー"
   },
-  "copyPrivateKey": {
-    "message": "秘密鍵をコピー"
-  },
   "copyToClipboard": {
     "message": "クリップボードにコピー"
   },
@@ -3166,6 +3127,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMaskを再インストール"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMaskのステートのリセット"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "問題が解決されませんか？"
   },
@@ -3187,9 +3151,6 @@
   },
   "current": {
     "message": "現在"
-  },
-  "currentAccountNotConnected": {
-    "message": "現在のアカウントは接続されていません"
   },
   "currentEstimatedBaseFee": {
     "message": "現在: $1 gwei"
@@ -5029,9 +4990,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "安全上の理由により、現在このテキストは選択できません。"
   },
   "learnHow": {
     "message": "方法"
@@ -8506,10 +8464,6 @@
     "message": "秘密鍵",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1の秘密鍵",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "秘密鍵は非表示になっています",
     "description": "Explains that the private key input is hidden"
@@ -8521,9 +8475,6 @@
   "privateKeyShown": {
     "message": "秘密鍵は表示されています",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "警告: この鍵は絶対に公開しないでください。秘密鍵を持つ人は誰でも、アカウントに保持されているアセットを盗むことができます。"
   },
   "privateKeys": {
     "message": "秘密鍵",
@@ -9888,9 +9839,6 @@
   "sendAlertNewAddressTitle": {
     "message": "新しいアドレス"
   },
-  "sendBugReport": {
-    "message": "バグの報告をお送りください."
-  },
   "sendBundleHwGasPayment": {
     "message": "ネットワーク手数料を$1で支払い中",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10612,12 +10560,6 @@
   "showPermissions": {
     "message": "表示許可"
   },
-  "showPrivateKey": {
-    "message": "秘密鍵を表示"
-  },
-  "showSRP": {
-    "message": "シークレットリカバリーフレーズを表示"
-  },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
   },
@@ -11224,38 +11166,19 @@
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1に従ってヴォールトを復元することを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "$1に従ってMetaMaskをリセットすることを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "ヴォールトを自動的に復元することができません。"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "ヴォールトは自動バックアップから復元することができます。自動リカバリーでは現在の設定が削除され、ヴォールトのみが復元されます。"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "内部エラー: データベースにアクセスできません"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMaskのステートのリセット"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "データベースをリセットしています…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "アカウントの復元"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "データベースを復元しています…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "これらの手順",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "シークレットリカバリーフレーズの復元方法"
@@ -12060,9 +11983,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1との接続が利用できません。続行する前にネットワーク接続情報を更新するか、後でもう一度お試しください。",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
   },
   "unexpectedError": {
     "message": "予期せぬエラーが発生しました。",

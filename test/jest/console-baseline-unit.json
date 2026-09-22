@@ -319,17 +319,6 @@
       "React: Act warnings (component updates not wrapped)": 6,
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/multichain/account-details/account-details-display.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: DOM nesting violations": 1
-    },
-    "ui/components/multichain/account-details/account-details.test.js": {
-      "React: Act warnings (component updates not wrapped)": 8,
-      "React: DOM nesting violations": 1,
-      "warn: LavaDome: Initiated with \"unsafeOpenModeShadow\" set": 1,
-      "warn: LavaDomeDebug(getTextByRoot): Call/include this function for": 1
-    },
     "ui/components/multichain/account-list-item-menu/account-list-item-menu.test.js": {
       "React: PropTypes validation failures": 1
     },
@@ -657,8 +646,7 @@
       "React: Act warnings (component updates not wrapped)": 12
     },
     "ui/pages/confirmations/components/confirm/title/hooks/useCurrentSpendingCap.test.ts": {
-      "MetaMask: Background connection not initialized": 2,
-      "React: Act warnings (component updates not wrapped)": 2
+      "MetaMask: Background connection not initialized": 2
     },
     "ui/pages/confirmations/components/gas-timing/gas-timing.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 1
@@ -735,8 +723,11 @@
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
+    "ui/pages/keychains/restore-vault.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 6
+    },
     "ui/pages/multi-srp/import-srp/import-srp.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 881
+      "React: Act warnings (component updates not wrapped)": 519
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
@@ -776,7 +767,7 @@
       "Reselect: Input stability warnings": 3
     },
     "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 212
+      "React: Act warnings (component updates not wrapped)": 127
     },
     "ui/pages/onboarding-flow/metametrics/metametrics.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 4
@@ -909,7 +900,7 @@
       "error: Warning: React does not recognize": 1
     },
     "ui/pages/srp-input-form/index.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 412
+      "React: Act warnings (component updates not wrapped)": 244
     },
     "ui/pages/swaps/awaiting-signatures/awaiting-signatures.test.js": {
       "Reselect: Identity function warnings": 1
