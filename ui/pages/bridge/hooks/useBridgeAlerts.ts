@@ -26,9 +26,9 @@ import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRamps
 import { isQuoteExpiredOrInvalid, getDestChainId } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useDispatch } from '../../../store/hooks';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../components/app/assets/enablement/arc';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
-import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../components/app/assets/enablement/arc';
 
 /**
  * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
@@ -231,11 +231,18 @@ export const useBridgeAlerts = () => {
       });
     }
 
+    const hasArcInsufficientNativeReserve = Boolean(
+      fromChain?.chainId === ARC_NATIVE_CAIP_CHAIN_ID &&
+        insufficientNativeReserveError &&
+        insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+          '0',
+    );
+
     if (
       !isLoading &&
       activeQuote &&
       !isInsufficientBalance &&
-      isInsufficientGasForQuote
+      (isInsufficientGasForQuote || hasArcInsufficientNativeReserve)
     ) {
       categorizeAlert({
         id: 'insufficient-gas',
@@ -309,25 +316,17 @@ export const useBridgeAlerts = () => {
     if (
       !isInsufficientBalance &&
       !isInsufficientGasForQuote &&
+      !hasArcInsufficientNativeReserve &&
       insufficientNativeReserveError &&
       insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
         '0'
     ) {
-      const isFromChainArc = fromChain?.chainId === ARC_NATIVE_CAIP_CHAIN_ID;
-      const insufficientNativeReserveTitleKey = isFromChainArc
-        ? 'bridgeValidationInsufficientNativeReserveTitleArc'
-        : 'bridgeValidationInsufficientNativeReserveTitle';
-
-      const insufficientNativeReserveMessageKey = isFromChainArc
-        ? 'bridgeValidationInsufficientNativeReserveMessageArc'
-        : 'bridgeValidationInsufficientNativeReserveMessage';
-
       categorizeAlert({
         id: 'insufficient-native-reserve',
         isDismissable: false,
         severity: 'warning',
-        title: t(insufficientNativeReserveTitleKey, [ticker]),
-        description: t(insufficientNativeReserveMessageKey, [
+        title: t('bridgeValidationInsufficientNativeReserveTitle', [ticker]),
+        description: t('bridgeValidationInsufficientNativeReserveMessage', [
           insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
           insufficientNativeReserveError.maxSwappableNativeBalance,
           ticker,
