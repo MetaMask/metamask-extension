@@ -464,6 +464,26 @@ describe('useActivityRowContent', () => {
       expect(result.current.secondaryAmount).toBeUndefined();
     });
 
+    it('shows the quoted fiat as the primary amount before the mUSD amount is known', () => {
+      mockFormatTokenAmount.mockReturnValue('-0 mUSD');
+      mockFormatAsFiat.mockReturnValue('-$0.00');
+      const activity = buildMoneyActivity(
+        'moneyAccountDeposit',
+        '25',
+        'pending',
+      );
+      delete activity.data.token?.amount;
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(activity),
+      );
+
+      expect(result.current.primaryAmount.props.children).toBe('-25 usd');
+      expect(result.current.secondaryAmount).toBeUndefined();
+      expect(mockFormatTokenAmount).not.toHaveBeenCalled();
+      expect(mockFormatAsFiat).not.toHaveBeenCalled();
+    });
+
     it('marks a failed deposit title as an error', () => {
       const { result } = renderHookWithProvider(() =>
         useActivityRowContent(

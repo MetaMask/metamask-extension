@@ -304,7 +304,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       }
       // Rendered like a send/receive row with the money account as the
       // counterparty, matching mobile. mUSD is pegged 1:1 to USD, so the
-      // pegged fiat amount stands in when no market rate is available.
+      // pegged fiat amount stands in when no market rate is available. Until
+      // the batch commits to an mUSD amount only MM Pay's quoted fiat is
+      // known, so that becomes the primary amount rather than "0 mUSD".
       case 'moneyAccountDeposit':
       case 'moneyAccountWithdraw': {
         const { fiat, token } = activity.data;
@@ -319,14 +321,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
                 getDisplaySignPrefix(token.direction, { showPlus: true }),
               )
             : undefined;
+        const hasTokenAmount = Boolean(token?.amount);
 
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [token?.symbol ?? '']),
           subtitle: t(labelKeys.description.key),
-          primaryAmount: formatTokenAmount(token),
+          primaryAmount: hasTokenAmount ? formatTokenAmount(token) : peggedFiat,
           primaryDirection: token?.direction,
-          secondaryAmount: formatAsFiat(token) ?? peggedFiat,
+          secondaryAmount: hasTokenAmount
+            ? (formatAsFiat(token) ?? peggedFiat)
+            : undefined,
         };
       }
       case 'nftBuy':
