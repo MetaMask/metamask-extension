@@ -2919,6 +2919,45 @@ describe('PerpsStreamBridge', () => {
       jest.useRealTimers();
     });
 
+    it.each([false, true])(
+      'ignores empty reconnect markets and continues hydration with terminal backend=%s',
+      async (useTerminalApi) => {
+        jest.useFakeTimers();
+        const controller = createMockController();
+        const markets = [{ symbol: 'BTC' }];
+        controller.getMarketDataWithPrices
+          .mockResolvedValueOnce([])
+          .mockResolvedValueOnce(markets as never);
+        const { bridge, emit } = createBridge({
+          controller: controller as unknown as PerpsController,
+          isTerminalBackendEnabled: () => useTerminalApi,
+        });
+        try {
+          await bridge.bridgeApi().perpsInit();
+          emit.mockClear();
+          const listener = getConnectionStateListener(controller);
+          listener(WebSocketConnectionState.Disconnected);
+          listener(WebSocketConnectionState.Connected);
+          await jest.advanceTimersByTimeAsync(300);
+
+          expect(
+            emit.mock.calls.filter(([channel]) => channel === 'markets'),
+          ).toEqual([]);
+          expect(emit).toHaveBeenCalledWith('positions', []);
+          expect(emit).toHaveBeenCalledWith('orders', []);
+          expect(emit).toHaveBeenCalledWith('account', null);
+
+          listener(WebSocketConnectionState.Disconnected);
+          listener(WebSocketConnectionState.Connected);
+          await jest.advanceTimersByTimeAsync(300);
+          expect(emit).toHaveBeenCalledWith('markets', markets, { live: true });
+        } finally {
+          bridge.dispose();
+          jest.useRealTimers();
+        }
+      },
+    );
+
     it('does not hydrate on initial connected state (no prior disconnect)', async () => {
       jest.useFakeTimers();
       const controller = createMockController();

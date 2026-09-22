@@ -1312,7 +1312,7 @@ export class PerpsStreamBridge {
         return;
       }
 
-      if (marketsResult) {
+      if (Array.isArray(marketsResult) && marketsResult.length > 0) {
         this.#emit('markets', marketsResult, { live: true });
         this.#prewarmPrices(marketsResult);
       }
