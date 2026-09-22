@@ -4,12 +4,10 @@ import {
   BoxFlexDirection,
   Modal,
   ModalContent,
+  ModalContentSize,
   ModalOverlay,
 } from '@metamask/design-system-react';
-import SetupPasskeyContent, {
-  type PasskeySetupOperation,
-} from '../setup-passkey-content';
-import { usePasskeyReplacement } from '../../../hooks/passkey/usePasskeyReplacement';
+import SetupPasskeyContent from '../passkey-setup/setup-passkey-content';
 
 export type PasskeyReplacementModalProps = Readonly<{
   onComplete: () => void | Promise<void>;
@@ -28,26 +26,9 @@ export default function PasskeyReplacementModal({
   onComplete,
   onRemindMeLater,
 }: PasskeyReplacementModalProps) {
-  const { replacePasskey } = usePasskeyReplacement();
-
   const handleRemindMeLater = useCallback(() => {
     Promise.resolve(onRemindMeLater()).catch(() => undefined);
   }, [onRemindMeLater]);
-
-  const replacePasskeyForSetup: PasskeySetupOperation = useCallback(
-    async ({ onStageChange }) => {
-      await replacePasskey({
-        onStageChange: (stage) => {
-          if (stage === 'complete') {
-            return;
-          }
-
-          onStageChange?.(stage);
-        },
-      });
-    },
-    [replacePasskey],
-  );
 
   return (
     <Modal
@@ -59,6 +40,7 @@ export default function PasskeyReplacementModal({
     >
       <ModalOverlay />
       <ModalContent
+        size={ModalContentSize.Md}
         className="items-center"
         modalDialogProps={{
           flexDirection: BoxFlexDirection.Column,
@@ -68,9 +50,9 @@ export default function PasskeyReplacementModal({
           <SetupPasskeyContent
             onNext={onComplete}
             onSkip={handleRemindMeLater}
-            enrollWithPasskey={replacePasskeyForSetup}
             isPasskeyRegistered={false}
             checkPasskeyPRFSupport={false}
+            isPrfMigration
           />
         </Box>
       </ModalContent>

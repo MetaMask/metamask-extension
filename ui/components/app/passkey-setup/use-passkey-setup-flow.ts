@@ -1,29 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import log from 'loglevel';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
-  Text,
-  BoxFlexDirection,
-  BoxAlignItems,
-  BoxJustifyContent,
-  ButtonSize,
-  ButtonVariant,
-  Button,
-  TextButton,
-  TextVariant,
-  FontWeight,
-  TextColor,
-} from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../hooks/useI18nContext';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getFirstTimeFlowType,
   getIsPasskeyRegistered,
@@ -31,30 +9,31 @@ import {
   getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
   getSocialLoginType,
-} from '../../selectors';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+} from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { createSentryError } from '../../../shared/lib/error';
-import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
+} from '../../../../shared/constants/metametrics';
+import { createSentryError } from '../../../../shared/lib/error';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
-} from '../../../shared/lib/passkey';
-import { captureException } from '../../../shared/lib/sentry';
-import { forceUpdateMetamaskState } from '../../store/actions';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import { useDispatch } from '../../store/hooks';
-import { usePasskeyPRFSupport } from '../../hooks/usePasskeyPRFSupport';
-import { usePasskeyEnrollment } from '../../hooks/passkey/usePasskeyEnrollment';
-import {
-  PasskeyEnrollmentSteps,
-  type PasskeyEnrollmentStepStatus,
-} from './passkey-enrollment-steps';
+} from '../../../../shared/lib/passkey';
+import { PasskeyPRFRequiredError } from '../../../../shared/lib/passkey/passkey-capabilities';
+import { captureException } from '../../../../shared/lib/sentry';
+import { forceUpdateMetamaskState } from '../../../store/actions';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
+import { usePasskeyPRFSupport } from '../../../hooks/usePasskeyPRFSupport';
+import type { PasskeyEnrollmentStepStatus } from '../passkey-enrollment-steps';
+import type {
+  PasskeySetupOperation,
+  SetupPasskeyContentProps,
+} from './passkey-setup.types';
 
 /** Pause after enrollment succeeds so step completion is visible before navigation. */
 const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 1000;
@@ -63,73 +42,34 @@ const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 1000;
 const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
   'idle';
 
-export type SetupPasskeyContentProps = {
-  readonly onNext: () => void | Promise<void>;
-  readonly onSkip?: () => void | Promise<void>;
-  readonly password?: string;
-  readonly enrollWithPasskey?: PasskeySetupOperation;
-  readonly isPasskeyRegistered?: boolean;
-  readonly checkPasskeyPRFSupport?: boolean;
+type UsePasskeySetupFlowParams = SetupPasskeyContentProps & {
+  setupPasskey: PasskeySetupOperation;
 };
-
-export type PasskeySetupOperation = (options: {
-  password?: string;
-  onStageChange?: (stage: PasskeySetupStage) => void;
-}) => Promise<void>;
-
-export type PasskeySetupStage = 'register' | 'verify' | 'enroll';
 
 /**
- * Reusable passkey setup content used by onboarding and restore-vault flows.
+ * Owns passkey setup progress, analytics, and ceremony error handling.
  *
- * @param options0 - Component props.
- * @param options0.onNext - Called after passkey setup completes.
- * @param options0.onSkip - Called when the user skips passkey setup.
- * @param options0.password - Wallet password when vault is restored.
- * @param options0.enrollWithPasskey - Optional passkey setup operation.
- * @param options0.isPasskeyRegistered - Optional override for the registered
- *   passkey state.
- * @param options0.checkPasskeyPRFSupport - Whether to skip setup when PRF is
- *   unsupported.
+ * @param params - Setup callbacks and the selected passkey operation.
+ * @param params.onNext - Called after passkey setup completes.
+ * @param params.onSkip - Called when the user skips passkey setup.
+ * @param params.password - Wallet password when the vault is restored.
+ * @param params.isPasskeyRegistered - Optional override for the registered
+ * passkey state.
+ * @param params.checkPasskeyPRFSupport - Whether to skip setup when PRF is
+ * unsupported.
+ * @param params.isPrfMigration - Whether this setup replaces an existing
+ * passkey.
+ * @param params.setupPasskey - Enrollment or replacement ceremony.
  */
-export default function SetupPasskeyContent(props: SetupPasskeyContentProps) {
-  if (props.enrollWithPasskey) {
-    return (
-      <SetupPasskeyContentView
-        {...props}
-        enrollWithPasskey={props.enrollWithPasskey}
-      />
-    );
-  }
-
-  return <SetupPasskeyContentWithDefaultEnrollment {...props} />;
-}
-
-function SetupPasskeyContentWithDefaultEnrollment(
-  props: SetupPasskeyContentProps,
-) {
-  const { enrollWithPasskey } = usePasskeyEnrollment();
-
-  return (
-    <SetupPasskeyContentView {...props} enrollWithPasskey={enrollWithPasskey} />
-  );
-}
-
-type SetupPasskeyContentViewProps = Omit<
-  SetupPasskeyContentProps,
-  'enrollWithPasskey'
-> & {
-  enrollWithPasskey: PasskeySetupOperation;
-};
-
-function SetupPasskeyContentView({
+export function usePasskeySetupFlow({
   onNext,
   onSkip,
   password,
-  enrollWithPasskey,
+  setupPasskey,
   isPasskeyRegistered: isPasskeyRegisteredOverride,
   checkPasskeyPRFSupport = true,
-}: SetupPasskeyContentViewProps) {
+  isPrfMigration = false,
+}: UsePasskeySetupFlowParams) {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext() as (
@@ -171,6 +111,7 @@ function SetupPasskeyContentView({
       DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE,
     );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
+  const [isPrfMigrationError, setIsPrfMigrationError] = useState(false);
   const isMountedRef = useRef(true);
   const hasAdvancedRef = useRef(false);
   const hasTrackedView = useRef(false);
@@ -254,6 +195,7 @@ function SetupPasskeyContentView({
     let currentStep = 'register';
 
     setEnrollmentError(null);
+    setIsPrfMigrationError(false);
     setRegisterStepPhase('loading');
     setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
     setIsEnrollmentInProgress(true);
@@ -269,7 +211,7 @@ function SetupPasskeyContentView({
     );
 
     try {
-      await enrollWithPasskey({
+      await setupPasskey({
         password,
         onStageChange: (stage) => {
           currentStep = stage;
@@ -340,6 +282,13 @@ function SetupPasskeyContentView({
         return;
       }
 
+      if (isPrfMigration && error instanceof PasskeyPRFRequiredError) {
+        if (isMountedRef.current) {
+          setIsPrfMigrationError(true);
+        }
+        return;
+      }
+
       const errorCode = getPasskeyErrorCode(error);
       captureException(
         createSentryError(
@@ -381,109 +330,26 @@ function SetupPasskeyContentView({
   }, [
     baseProperties,
     dispatch,
-    enrollWithPasskey,
+    setupPasskey,
     goToNextStep,
     t,
     passkeyMethodLabel,
     trackEvent,
     createEventBuilder,
     password,
+    isPrfMigration,
   ]);
 
-  if (isPasskeyRegistered && !isEnrollmentInProgress) {
-    return null;
-  }
-
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      gap={4}
-      className="h-full"
-      data-testid="parent-selector-setup-passkey"
-    >
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Center}
-        alignItems={BoxAlignItems.Center}
-        className="my-8"
-      >
-        <img
-          src="images/biometric.png"
-          alt="Biometrics"
-          width={200}
-          height={200}
-        />
-      </Box>
-
-      {isEnrollmentInProgress ? (
-        <>
-          <Text
-            variant={TextVariant.HeadingLg}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-          >
-            {t('settingUpPasskey', [passkeyMethodLabel])}
-          </Text>
-          <PasskeyEnrollmentSteps
-            registerStatus={registerStepPhase}
-            verifyStatus={verifyStepPhase}
-            registerLabel={t('passkeySetupStepRegister', [
-              passkeyMethodSpecificLabel,
-            ])}
-            verifyLabel={t('passkeySetupStepVerify', [
-              passkeyMethodSpecificLabel,
-            ])}
-            className="w-full"
-          />
-        </>
-      ) : (
-        <>
-          <Text
-            variant={TextVariant.HeadingLg}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
-          >
-            {t('unlockWithPasskey', [passkeyMethodLabel])}
-          </Text>
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('passkeyDescription', [passkeyMethodSpecificLabel])}
-          </Text>
-
-          {enrollmentError ? (
-            <BannerAlert
-              severity={BannerAlertSeverity.Danger}
-              description={enrollmentError}
-              data-testid="passkey-enrollment-error"
-            />
-          ) : null}
-
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={4}
-            className="mt-auto w-full"
-          >
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              className="w-full"
-              data-testid="passkey-set-up-button"
-              aria-label={t('setUpPasskey', [passkeyMethodLabel])}
-              onClick={handleSetupPasskey}
-            >
-              {t('setUpPasskey', [passkeyMethodLabel])}
-            </Button>
-            <TextButton
-              type="button"
-              className="w-full"
-              color={TextColor.PrimaryDefault}
-              data-testid="passkey-maybe-later-button"
-              onClick={handleMaybeLater}
-            >
-              {t('maybeLater')}
-            </TextButton>
-          </Box>
-        </>
-      )}
-    </Box>
-  );
+  return {
+    enrollmentError,
+    handleMaybeLater,
+    handleSetupPasskey,
+    isEnrollmentInProgress,
+    isPasskeyRegistered,
+    isPrfMigrationError,
+    passkeyMethodLabel,
+    passkeyMethodSpecificLabel,
+    registerStepPhase,
+    verifyStepPhase,
+  };
 }

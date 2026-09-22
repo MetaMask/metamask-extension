@@ -7050,6 +7050,22 @@
     "message": "Your current passkey works until you replace it.",
     "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
   },
+  "passkeyMigrationReplacementDescription": {
+    "message": "It was saved to this device, which can't protect your wallet key. Try again and choose Google Password Manager when your browser asks where to save it. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Keep my current passkey for now",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "That passkey won't work",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Try again",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
   "passkeyMigrationSupportedProviders": {
     "message": "See supported providers",
     "description": "Link text to the supported passkey providers page."
