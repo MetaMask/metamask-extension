@@ -27,26 +27,16 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
-import { TraceName } from '../../../../shared/lib/trace';
 import PrepareBridgePage from './prepare-bridge-page';
 
-const mockTrace = jest.fn();
-const mockEndTrace = jest.fn();
+const mockQuoteTraceStart = jest.fn();
 
-jest.mock('../../../../shared/lib/trace', () => {
-  const actual = jest.requireActual('../../../../shared/lib/trace');
-  return {
-    ...actual,
-    trace: (...args: unknown[]) => {
-      mockTrace(...args);
-      return actual.trace(...args);
-    },
-    endTrace: (...args: unknown[]) => {
-      mockEndTrace(...args);
-      return actual.endTrace(...args);
-    },
-  };
-});
+jest.mock('../utils/swap-quote-fetch-trace', () => ({
+  swapQuoteFetchTrace: {
+    start: (...args: unknown[]) => mockQuoteTraceStart(...args),
+    finish: jest.fn(),
+  },
+}));
 
 // Mock the bridge hooks
 jest.mock('../hooks/useGasIncludedSupport', () => ({
@@ -674,30 +664,18 @@ describe('PrepareBridgePage', () => {
         configureStore(makeQuoteRequestStore()),
       );
 
+      expect(mockQuoteTraceStart).not.toHaveBeenCalled();
+
       await act(async () => {
         jest.advanceTimersByTime(300);
         await Promise.resolve();
       });
 
-      expect(mockEndTrace).toHaveBeenCalledWith({
-        name: TraceName.SwapQuoteFetch,
+      expect(mockQuoteTraceStart).toHaveBeenCalledWith({
+        srcChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+        destChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        isRefresh: false,
       });
-      expect(mockTrace).toHaveBeenCalledWith({
-        name: TraceName.SwapQuoteFetch,
-      });
-      const quoteFetchEndIndex = mockEndTrace.mock.calls.findIndex(
-        ([request]) =>
-          (request as { name: string }).name === TraceName.SwapQuoteFetch,
-      );
-      const quoteFetchStartIndex = mockTrace.mock.calls.findIndex(
-        ([request]) =>
-          (request as { name: string }).name === TraceName.SwapQuoteFetch,
-      );
-      expect(quoteFetchEndIndex).toBeGreaterThanOrEqual(0);
-      expect(quoteFetchStartIndex).toBeGreaterThanOrEqual(0);
-      expect(
-        mockEndTrace.mock.invocationCallOrder[quoteFetchEndIndex],
-      ).toBeLessThan(mockTrace.mock.invocationCallOrder[quoteFetchStartIndex]);
     });
 
     it('starts a trace when quotes are manually refreshed', async () => {
@@ -712,8 +690,7 @@ describe('PrepareBridgePage', () => {
         jest.advanceTimersByTime(300);
         await Promise.resolve();
       });
-      mockTrace.mockClear();
-      mockEndTrace.mockClear();
+      mockQuoteTraceStart.mockClear();
 
       fireEvent.click(getByTestId('bridge-cta-button'));
       await act(async () => {
@@ -721,11 +698,10 @@ describe('PrepareBridgePage', () => {
         await Promise.resolve();
       });
 
-      expect(mockEndTrace).toHaveBeenCalledWith({
-        name: TraceName.SwapQuoteFetch,
-      });
-      expect(mockTrace).toHaveBeenCalledWith({
-        name: TraceName.SwapQuoteFetch,
+      expect(mockQuoteTraceStart).toHaveBeenCalledWith({
+        srcChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+        destChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        isRefresh: true,
       });
     });
 
@@ -742,12 +718,7 @@ describe('PrepareBridgePage', () => {
         await Promise.resolve();
       });
 
-      expect(mockTrace).not.toHaveBeenCalledWith(
-        expect.objectContaining({ name: TraceName.SwapQuoteFetch }),
-      );
-      expect(mockEndTrace).not.toHaveBeenCalledWith({
-        name: TraceName.SwapQuoteFetch,
-      });
+      expect(mockQuoteTraceStart).not.toHaveBeenCalled();
     });
   });
 

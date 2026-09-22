@@ -116,7 +116,6 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             backgroundColor={BackgroundColor.backgroundElevated1}
             borderColor={BorderColor.borderAlternative}
             borderWidth={1}
-            borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -125,6 +124,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             ref={modalDialogRef}
             {...modalDialogProps}
             className={classnames(
+              'rounded-[32px]',
               'mm-modal-content__dialog',
               `mm-modal-content__dialog--size-${size}`,
               modalDialogProps?.className,

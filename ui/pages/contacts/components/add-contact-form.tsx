@@ -404,7 +404,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={onCancel}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="page-container-footer-cancel"
         >
           {t('cancel')}
@@ -414,7 +414,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           size={ButtonSize.Lg}
           isDisabled={isSaveDisabled}
           onClick={handleSubmit}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="page-container-footer-next"
         >
           {t('save')}

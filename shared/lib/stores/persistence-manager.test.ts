@@ -8,8 +8,10 @@ import { getManifestFlags } from '../manifestFlags';
 import {
   BROWSER_SHUTTING_DOWN_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
+  INACCESSIBLE_DATABASE_ERROR,
   MISSING_VAULT_ERROR,
 } from '../../constants/errors';
+import { StateCorruptionErrorType } from '../../constants/critical-error';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -101,7 +103,10 @@ describe('PersistenceManager', () => {
     process.env.IN_TEST = 'true';
     jest.clearAllMocks();
     mockedGetManifestFlags.mockReturnValue({});
-    manager = new PersistenceManager({ localStore: new ExtensionStore() });
+    manager = new PersistenceManager({
+      getPersistenceWriteSampleRate: () => 0,
+      localStore: new ExtensionStore(),
+    });
   });
 
   afterEach(() => {
@@ -130,8 +135,10 @@ describe('PersistenceManager', () => {
       const listener = jest.fn();
       expect(() => {
         manager.on('splitStateMigrationSucceeded', listener);
+        manager.on('splitStateWrite', listener);
         manager.on('writeRetryRecovered', listener);
         manager.off('splitStateMigrationSucceeded', listener);
+        manager.off('splitStateWrite', listener);
         manager.off('vaultCorruptionDetected', listener);
         manager.off('writeRetryRecovered', listener);
       }).not.toThrow();
@@ -611,9 +618,24 @@ describe('PersistenceManager', () => {
         },
       });
 
-      await expect(manager.get({ validateVault: true })).rejects.toThrow(
-        MISSING_VAULT_ERROR,
-      );
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: MISSING_VAULT_ERROR,
+        corruptionType: StateCorruptionErrorType.MissingVaultInDatabase,
+      });
+    });
+
+    it('does throw when validating state fails but has a backup', async () => {
+      mockStoreGet.mockRejectedValueOnce(new Error('storage failed'));
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: INACCESSIBLE_DATABASE_ERROR,
+        corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+      });
     });
 
     describe('when the browser is shutting down', () => {
@@ -681,9 +703,12 @@ describe('PersistenceManager', () => {
           KeyringController: { vault: 'vault' },
         });
 
-        await expect(manager.get({ validateVault: true })).rejects.toThrow(
-          MISSING_VAULT_ERROR,
-        );
+        await expect(
+          manager.get({ validateVault: true }),
+        ).rejects.toMatchObject({
+          message: INACCESSIBLE_DATABASE_ERROR,
+          corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+        });
       });
     });
   });
@@ -799,6 +824,136 @@ describe('PersistenceManager', () => {
       /* eslint-enable jest/prefer-strict-equal */
       expect(passedMap.has('BarController')).toBe(true);
       expect(passedMap.get('BarController')).toBeUndefined();
+    });
+
+    it('reports sampled write size, frequency, controllers, and idle status without state values', async () => {
+      manager = new PersistenceManager({
+        getIsIdle: () => true,
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', {
+        privateValue: 'controller state value',
+      });
+      manager.update('FooController', {
+        privateValue: 'latest controller state value',
+      });
+      manager.update('BarController', { enabled: true });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      const [event] = listener.mock.calls[0];
+      expect(event).toStrictEqual({
+        bytesByController: {
+          BarController: new TextEncoder().encode(
+            JSON.stringify({ enabled: true }),
+          ).byteLength,
+          FooController: new TextEncoder().encode(
+            JSON.stringify({
+              privateValue: 'latest controller state value',
+            }),
+          ).byteLength,
+        },
+        coalescedUpdates: 3,
+        controllerKeys: ['BarController', 'FooController'],
+        idleStatus: 'idle',
+        measurementDurationMs: expect.any(Number),
+        sampleRate: 1,
+        totalBytes: new TextEncoder().encode(
+          JSON.stringify({
+            BarController: { enabled: true },
+            FooController: {
+              privateValue: 'latest controller state value',
+            },
+          }),
+        ).byteLength,
+        writeDurationMs: expect.any(Number),
+      });
+      expect(Object.keys(event.bytesByController)).toStrictEqual(
+        event.controllerKeys,
+      );
+      expect(JSON.stringify(event)).not.toContain(
+        'latest controller state value',
+      );
+    });
+
+    it('does not serialize write measurements when the write is not sampled', async () => {
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const stringifySpy = jest.spyOn(JSON, 'stringify');
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).not.toHaveBeenCalled();
+      expect(stringifySpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          FooController: expect.anything(),
+        }),
+      );
+      stringifySpy.mockRestore();
+    });
+
+    it('reports unknown idle status when no idle source is configured', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({ idleStatus: 'unknown' }),
+      );
+    });
+
+    it('keeps persist successful when write measurement throws', async () => {
+      const telemetryError = new Error('idle check failed');
+      manager = new PersistenceManager({
+        getIsIdle: () => {
+          throw telemetryError;
+        },
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      const [result, persistError] = await manager.persist();
+
+      expect(result).toBe(true);
+      expect(persistError).toBeUndefined();
+      expect(listener).not.toHaveBeenCalled();
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+      expect(
+        (mockStoreSetKeyValues.mock.calls[0]?.[0] as Map<string, unknown>).has(
+          'FooController',
+        ),
+      ).toBe(true);
+
+      // A successful write must not be merged back into pending pairs.
+      await manager.persist();
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(2);
+      expect(
+        (mockStoreSetKeyValues.mock.calls[1]?.[0] as Map<string, unknown>).has(
+          'FooController',
+        ),
+      ).toBe(false);
     });
 
     it('retries store.setKeyValues once before reporting success', async () => {

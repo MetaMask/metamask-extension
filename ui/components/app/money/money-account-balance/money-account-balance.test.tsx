@@ -1,4 +1,5 @@
 import React from 'react';
+import BigNumber from 'bignumber.js';
 import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -9,6 +10,16 @@ import type { UseMoneyAccountBalanceResult } from '../../../../hooks/money/useMo
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
 import type { UseMoneyAccountInfoResult } from '../../../../hooks/money/useMoneyAccountInfo';
+import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../../../hooks/money/useMoneyAnalytics.mock';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
+} from '../../../../pages/money/constants/money-events';
 import {
   MoneyAccountBalance,
   MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID,
@@ -33,6 +44,12 @@ jest.mock('../../../../hooks/money/useMoneyAccountDeposit', () => ({
   useMoneyAccountDeposit: jest.fn(),
 }));
 
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+
 const mockUseMoneyAccountBalance = jest.mocked(useMoneyAccountBalance);
 const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
 const mockUseMoneyAccountDeposit = jest.mocked(useMoneyAccountDeposit);
@@ -42,6 +59,7 @@ const MONEY_ADDRESS = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B' as const;
 
 type ArrangeOptions = {
   hasMoneyAccount?: boolean;
+  tokenTotal?: BigNumber;
   totalFiatFormatted?: string;
   lastKnownTotalFiatFormatted?: string;
   isBalanceLoading?: boolean;
@@ -59,6 +77,7 @@ type ArrangeOptions = {
  *
  * @param options - What the hooks should report.
  * @param options.hasMoneyAccount - Whether a Money Account exists.
+ * @param options.tokenTotal - The live balance as a BigNumber, if any.
  * @param options.totalFiatFormatted - The live formatted balance, if any.
  * @param options.lastKnownTotalFiatFormatted - The last-known balance, if any.
  * @param options.isBalanceLoading - Whether the balance fetch is in flight.
@@ -68,6 +87,7 @@ type ArrangeOptions = {
  */
 const arrange = ({
   hasMoneyAccount = true,
+  tokenTotal,
   totalFiatFormatted,
   lastKnownTotalFiatFormatted,
   isBalanceLoading = false,
@@ -90,6 +110,7 @@ const arrange = ({
   } satisfies UseMoneyAccountInfoResult);
 
   mockUseMoneyAccountBalance.mockReturnValue({
+    tokenTotal,
     totalFiatFormatted,
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
@@ -98,7 +119,7 @@ const arrange = ({
   } as UseMoneyAccountBalanceResult);
 };
 
-const render = ({ privacyMode = false } = {}) =>
+const render = ({ privacyMode = false, isHomeCardEnabled = true } = {}) =>
   renderWithProvider(
     <MoneyAccountBalance />,
     configureMockStore()({
@@ -106,6 +127,13 @@ const render = ({ privacyMode = false } = {}) =>
       metamask: {
         ...mockState.metamask,
         preferences: { ...mockState.metamask.preferences, privacyMode },
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          moneyHomeScreenCardEnabled: {
+            enabled: isHomeCardEnabled,
+            minimumVersion: '0.0.0',
+          },
+        },
       },
     }),
   );
@@ -113,6 +141,7 @@ const render = ({ privacyMode = false } = {}) =>
 describe('MoneyAccountBalance', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
   });
 
   it('renders nothing when there is no money account', () => {
@@ -128,6 +157,14 @@ describe('MoneyAccountBalance', () => {
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
   });
 
+  it('renders nothing when the home screen card flag is off', () => {
+    arrange({ totalFiatFormatted: '$2,384.34' });
+
+    const { queryByTestId } = render({ isHomeCardEnabled: false });
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
+  });
+
   it('renders the live balance when one is available', () => {
     arrange({ totalFiatFormatted: '$2,384.34' });
 
@@ -136,9 +173,9 @@ describe('MoneyAccountBalance', () => {
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$2,384.34',
     );
-    expect(getByText(tEn('moneyBalanceTitle'))).toBeInTheDocument();
-    expect(getByText('• mUSD')).toBeInTheDocument();
+    expect(getByText(tEn('money'))).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
   });
 
   it('hides the balance when privacy mode is on', () => {
@@ -203,7 +240,7 @@ describe('MoneyAccountBalance', () => {
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
 
-  it('shows the info copy when the info icon is clicked', async () => {
+  it('shows the info copy when the title is hovered', async () => {
     arrange({ totalFiatFormatted: '$2,384.34' });
 
     const { getByTestId, getByText, queryByText } = render();
@@ -211,8 +248,8 @@ describe('MoneyAccountBalance', () => {
     expect(queryByText(/Your dollar-backed mUSD balance/u)).toBeNull();
 
     await act(async () => {
-      fireEvent.click(
-        getByTestId(`${MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}-button`),
+      fireEvent.mouseEnter(
+        getByTestId(`${MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}-trigger`),
       );
     });
 
@@ -222,12 +259,80 @@ describe('MoneyAccountBalance', () => {
     expect(getByText(tEn('moneyBalanceInfoWithdrawals'))).toHaveClass(
       'text-default',
     );
+    expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
+      tooltipName: MoneyTooltipName.MoneyBalance,
+      tooltipType: MoneyTooltipType.Info,
+    });
+  });
+
+  it('shows Add instead of the figure when the live balance is zero', () => {
+    arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toHaveTextContent(tEn('moneyAdd'));
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+  });
+
+  it('shows Add instead of $0.00 when the live balance is sub-cent dust', () => {
+    arrange({
+      tokenTotal: new BigNumber('0.004'),
+      totalFiatFormatted: '$0.00',
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toHaveTextContent(tEn('moneyAdd'));
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+  });
+
+  it('shows the figure rather than Add once the live balance reaches one cent', () => {
+    arrange({
+      tokenTotal: new BigNumber('0.01'),
+      totalFiatFormatted: '$0.01',
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$0.01',
+    );
+  });
+
+  it('keeps the masked figure rather than Add when privacy mode hides a zero balance', () => {
+    arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
+
+    const { getByTestId, queryByTestId } = render({ privacyMode: true });
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID),
+    ).not.toHaveTextContent('$0.00');
+  });
+
+  it('keeps the last-known label rather than Add when the stale figure is zero', () => {
+    arrange({ lastKnownTotalFiatFormatted: '$0.00' });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$0.00',
+    );
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
+    ).toBeInTheDocument();
   });
 
   it('initiates a generic deposit when Add is clicked', () => {
     // No intent: consumers derive it from the transaction's actual payment
     // method, exactly as mobile's MoneyBalanceCard does.
-    arrange({ totalFiatFormatted: '$2,384.34' });
+    arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
 
     const { getByTestId } = render();
 
@@ -235,10 +340,49 @@ describe('MoneyAccountBalance', () => {
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
     expect(mockInitiateDeposit).toHaveBeenCalledWith();
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.WalletHome,
+      componentName: MoneyComponentName.BalanceCard,
+    });
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+  });
+
+  it('tracks the component as viewed once when it renders', () => {
+    arrange({ totalFiatFormatted: '$2,384.34' });
+
+    const { rerender } = render();
+    rerender(<MoneyAccountBalance />);
+
+    expect(mockMoneyAnalytics.trackComponentViewed).toHaveBeenCalledTimes(1);
+  });
+
+  it('tracks the view only once the component first renders', () => {
+    arrange({ hasMoneyAccount: false });
+
+    const { rerender } = render();
+    expect(mockMoneyAnalytics.trackComponentViewed).not.toHaveBeenCalled();
+
+    arrange({ totalFiatFormatted: '$2,384.34' });
+    rerender(<MoneyAccountBalance />);
+    arrange({ hasMoneyAccount: false });
+    rerender(<MoneyAccountBalance />);
+    arrange({ totalFiatFormatted: '$2,384.34' });
+    rerender(<MoneyAccountBalance />);
+
+    expect(mockMoneyAnalytics.trackComponentViewed).toHaveBeenCalledTimes(1);
   });
 
   it('disables the Add button while a deposit is being initiated', () => {
-    arrange({ totalFiatFormatted: '$2,384.34', isDepositLoading: true });
+    arrange({
+      tokenTotal: new BigNumber(0),
+      totalFiatFormatted: '$0.00',
+      isDepositLoading: true,
+    });
 
     const { getByTestId } = render();
 

@@ -44,7 +44,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
           <input
             aria-invalid="false"
             checked=""
-            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-icon-default enabled:hover:bg-icon-default-hover enabled:active:bg-icon-default-pressed border-icon-default"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded-full border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-icon-default enabled:hover:bg-icon-default-hover enabled:active:bg-icon-default-pressed border-icon-default"
             id="metametrics-opt-in"
             type="checkbox"
           />
@@ -91,7 +91,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
         >
           <input
             aria-invalid="false"
-            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-transparent enabled:hover:bg-hover enabled:active:bg-pressed border-default"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded-full border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-transparent enabled:hover:bg-hover enabled:active:bg-pressed border-default"
             id="metametrics-datacollection-opt-in"
             type="checkbox"
           />
@@ -126,7 +126,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
       class="w-full"
     >
       <button
-        class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+        class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
         data-testid="metametrics-i-agree"
         role="button"
       >
@@ -185,7 +185,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
           <input
             aria-invalid="false"
             checked=""
-            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-icon-default enabled:hover:bg-icon-default-hover enabled:active:bg-icon-default-pressed border-icon-default"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded-full border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-icon-default enabled:hover:bg-icon-default-hover enabled:active:bg-icon-default-pressed border-icon-default"
             id="metametrics-opt-in"
             type="checkbox"
           />
@@ -232,7 +232,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
         >
           <input
             aria-invalid="false"
-            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-transparent enabled:hover:bg-hover enabled:active:bg-pressed border-default"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded-full border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-transparent enabled:hover:bg-hover enabled:active:bg-pressed border-default"
             id="metametrics-datacollection-opt-in"
             type="checkbox"
           />
@@ -267,7 +267,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
       class="w-full"
     >
       <button
-        class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+        class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
         data-testid="metametrics-i-agree"
         role="button"
       >
