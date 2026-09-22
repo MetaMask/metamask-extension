@@ -1,4 +1,10 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import { validateRewardsReferralCode } from '../../store/actions';
 import { useDispatch } from '../../store/hooks';
 
@@ -75,7 +81,7 @@ export const useValidateReferralCode = (
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     requestIdRef.current = requestId;
   }, [requestId]);
 
@@ -87,11 +93,9 @@ export const useValidateReferralCode = (
   }, []);
 
   const invalidatePendingValidation = useCallback(() => {
-    setRequestId((current) => {
-      const nextRequestId = current + 1;
-      requestIdRef.current = nextRequestId;
-      return nextRequestId;
-    });
+    const nextRequestId = requestIdRef.current + 1;
+    requestIdRef.current = nextRequestId;
+    setRequestId(nextRequestId);
     clearDebounceTimer();
   }, [clearDebounceTimer]);
 
@@ -101,11 +105,7 @@ export const useValidateReferralCode = (
   // response can still apply and flip isUnknownError after the prop was cleared.
   if (initialValue !== trackedInitialValue) {
     setTrackedInitialValue(initialValue);
-    setRequestId((current) => {
-      const nextRequestId = current + 1;
-      requestIdRef.current = nextRequestId;
-      return nextRequestId;
-    });
+    setRequestId((current) => current + 1);
     const normalized = normalizeReferralCode(initialValue);
     setReferralCodeState(normalized);
     if (normalized.length < REFERRAL_CODE_MIN_LENGTH) {
