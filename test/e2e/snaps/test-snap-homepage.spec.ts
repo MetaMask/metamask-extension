@@ -5,6 +5,7 @@ import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import SnapListPage from '../page-objects/pages/snaps/list-page';
+import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockHomePageSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -27,13 +28,17 @@ describe('Test Snap Homepage', function (this: Suite) {
 
         const headerNavbar = new HeaderNavbar(driver);
         const snapListPage = new SnapListPage(driver);
+        const testSnaps = new TestSnaps(driver);
 
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectHomePageButton',
         );
+        await testSnaps.checkInstallationComplete(
+          'connectHomePageButton',
+          'Reconnect to Home Page Snap',
+        );
 
-        // switch to metamask page and open the three dots menu
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

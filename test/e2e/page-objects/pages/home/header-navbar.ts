@@ -25,7 +25,8 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private readonly accountSnapButton = '[data-testid="global-menu-snaps"]';
+  private readonly accountSnapButton =
+    'dialog[open] [data-testid="global-menu-snaps"]';
 
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
