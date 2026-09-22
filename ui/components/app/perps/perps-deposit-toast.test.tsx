@@ -65,6 +65,8 @@ describe('PerpsDepositToast', () => {
   beforeEach(() => {
     submitRequestToBackgroundMock.mockResolvedValue(undefined);
     jest.clearAllMocks();
+    localStorage.clear();
+    sessionStorage.clear();
     jest.useRealTimers();
   });
 
@@ -251,11 +253,10 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('emits deposit_confirmed once when the effect re-runs for the same deposit', () => {
-    // The effect's deps include entryPoint and t, and clearDepositResult issues
-    // two independent background calls, so a re-run for the same deposit must
-    // not double-count the funnel's confirmation event.
-    const buildState = (entryPoint: string | null) => ({
+  it('emits deposit_confirmed once when the toast remounts for the same deposit', () => {
+    // Unmounting (e.g. auto-lock) cancels the timeout that clears the result,
+    // so a remount re-runs the effect for the same success and must not re-emit.
+    const state = {
       metamask: {
         ...mockState.metamask,
         transactions: [
@@ -265,20 +266,20 @@ describe('PerpsDepositToast', () => {
           }),
         ],
         lastDepositTransactionId: 'result-tx-1',
-        lastPerpsDepositEntryPoint: entryPoint,
         lastDepositResult: {
           success: true,
           error: '',
           timestamp: 1_700_000_000_000,
         },
       },
-    });
+    };
 
-    const { rerender } = renderWithProvider(
+    const first = renderWithProvider(
       <PerpsDepositToast />,
-      configureStore(buildState('trade_screen')),
+      configureStore(state),
     );
-    rerender(<PerpsDepositToast />);
+    first.unmount();
+    renderWithProvider(<PerpsDepositToast />, configureStore(state));
 
     const confirmedEmits = mockTrack.mock.calls.filter(
       ([, properties]) =>

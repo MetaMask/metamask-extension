@@ -78,23 +78,56 @@ export function isUnfundedDepositFunnelActive(
 export function confirmUnfundedDepositFunnel(
   address: string | undefined | null,
 ): void {
-  if (!address) {
-    return;
-  }
   const funnel = readFunnel();
-  if (funnel?.address !== address) {
+  if (!address || funnel?.address !== address) {
     return;
   }
   writeFunnel({ ...funnel, confirmedAt: Date.now() });
 }
 
-/** Drops the funnel, e.g. when the deposit failed or was abandoned. */
-export function clearUnfundedDepositFunnel(): void {
+function clearUnfundedDepositFunnel(): void {
   try {
     sessionStorage.removeItem(UNFUNDED_DEPOSIT_FUNNEL_KEY);
   } catch {
     // Ignore storage failures; a stale entry is address-scoped anyway.
   }
+}
+
+/**
+ * Drops `address`'s funnel only while its deposit is still pending. A failed
+ * follow-up deposit must not erase a deposit that already confirmed.
+ *
+ * @param address - The account whose deposit failed.
+ */
+export function clearPendingUnfundedDepositFunnel(
+  address: string | undefined | null,
+): void {
+  const funnel = readFunnel();
+  if (!address || funnel?.address !== address || funnel.confirmedAt !== null) {
+    return;
+  }
+  clearUnfundedDepositFunnel();
+}
+
+const TRACKED_DEPOSIT_RESULT_KEY = 'perps.trackedDepositResult';
+
+/**
+ * Records that a deposit result was already reported, and returns whether it
+ * is new. Stored in localStorage so the guard survives the toast remounting on
+ * unlock and the popup reopening while the result is still in controller state.
+ *
+ * @param resultKey - Stable identity of the deposit result.
+ */
+export function markDepositResultTracked(resultKey: string): boolean {
+  try {
+    if (localStorage.getItem(TRACKED_DEPOSIT_RESULT_KEY) === resultKey) {
+      return false;
+    }
+    localStorage.setItem(TRACKED_DEPOSIT_RESULT_KEY, resultKey);
+  } catch {
+    // Storage unavailable: report it as new rather than drop the event.
+  }
+  return true;
 }
 
 /**
@@ -107,11 +140,8 @@ export function clearUnfundedDepositFunnel(): void {
 export function consumeUnfundedDepositFunnel(
   address: string | undefined | null,
 ): boolean {
-  if (!address) {
-    return false;
-  }
   const funnel = readFunnel();
-  if (funnel?.address !== address || funnel.confirmedAt === null) {
+  if (!address || funnel?.address !== address || funnel.confirmedAt === null) {
     return false;
   }
   clearUnfundedDepositFunnel();

@@ -1992,25 +1992,6 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
-    it('does not treat a loading account as unfunded', () => {
-      mockLiveAccount.mockReturnValue({
-        account: null,
-        isInitialLoading: true,
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const submitButton = screen.getByTestId('submit-order-button');
-
-      expect(submitButton).toBeDisabled();
-      expect(submitButton).not.toHaveTextContent(
-        messages.perpsAddFundsToTrade.message,
-      );
-      expect(
-        screen.queryByTestId('perps-unfunded-add-funds-hint'),
-      ).not.toBeInTheDocument();
-    });
-
     it('enables submit button and shows add funds to trade when balance is zero', async () => {
       mockLiveAccount.mockReturnValue({
         account: {
@@ -2135,31 +2116,10 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('does not treat an unreadable balance as unfunded', async () => {
-      // A missing balance field is an unknown balance, not a zero one. Prompting
+    it('does not treat an unparseable balance as unfunded', async () => {
+      // An unreadable balance is an unknown balance, not a zero one. Prompting
       // a funded trader to deposit collateral they already hold is worse than
       // falling through to normal trade validation.
-      mockLiveAccount.mockReturnValue({
-        account: {
-          ...mockAccountState,
-          spendableBalance: undefined,
-          withdrawableBalance: undefined,
-          totalBalance: '0',
-        },
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
-        messages.perpsAddFundsToTrade.message,
-      );
-      expect(
-        screen.queryByTestId('perps-unfunded-add-funds-hint'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('does not treat an unparseable balance as unfunded', async () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
@@ -2198,57 +2158,41 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockTriggerDeposit).not.toHaveBeenCalled();
     });
 
-    it('tracks the unfunded amount-input add funds click', async () => {
-      mockLiveAccount.mockReturnValue({
-        account: {
-          ...mockAccountState,
-          spendableBalance: '0',
-          withdrawableBalance: '0',
-          totalBalance: '0',
-        },
-        isInitialLoading: false,
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-      mockAnalyticsTrackEvent.mockClear();
+    (
+      [
+        ['unfunded', '0', false],
+        ['funded', mockAccountState.withdrawableBalance, true],
+      ] as const
+    ).forEach(([label, balance, hasPerpBalance]) => {
+      it(`tracks the ${label} amount-input add funds click`, async () => {
+        mockLiveAccount.mockReturnValue({
+          account: {
+            ...mockAccountState,
+            spendableBalance: balance,
+            withdrawableBalance: balance,
+          },
+          isInitialLoading: false,
+        });
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+        mockAnalyticsTrackEvent.mockClear();
 
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('amount-input-add-funds'));
-      });
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+        });
 
-      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
-      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: MetaMetricsEventName.PerpsUiInteraction,
-          properties: expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-              PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
-            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+        expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+        expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.PerpsUiInteraction,
+            properties: expect.objectContaining({
+              [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+                PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+              [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+            }),
           }),
-        }),
-      );
-    });
-
-    it('tracks the funded amount-input add funds click', async () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-      mockAnalyticsTrackEvent.mockClear();
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+        );
       });
-
-      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
-      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: MetaMetricsEventName.PerpsUiInteraction,
-          properties: expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-              PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
-            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
-          }),
-        }),
-      );
     });
 
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
@@ -2318,42 +2262,34 @@ describe('PerpsOrderEntryPage', () => {
       expect(submitButton).not.toHaveTextContent(
         messages.perpsAddFundsToTrade.message,
       );
+      expect(
+        screen.queryByTestId('perps-unfunded-add-funds-hint'),
+      ).not.toBeInTheDocument();
     });
 
-    it('keeps close submit enabled while the account stream is still loading', () => {
-      mockSearchParams.set('mode', 'close');
-      mockLivePositions.mockReturnValue({
-        positions: mockPositions,
-        isInitialLoading: false,
-      });
-      mockLiveAccount.mockReturnValue({
-        account: null,
-        isInitialLoading: true,
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
+    (
+      [
+        ['close', 'Close position'],
+        ['modify', 'Modify Position'],
+      ] as const
+    ).forEach(([mode, label]) => {
+      it(`keeps ${mode} submit enabled while the account stream is still loading`, () => {
+        mockSearchParams.set('mode', mode);
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        mockLiveAccount.mockReturnValue({
+          account: null,
+          isInitialLoading: true,
+        });
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      const submitButton = screen.getByTestId('submit-order-button');
-      expect(submitButton).not.toBeDisabled();
-      expect(submitButton).toHaveTextContent('Close position');
-    });
-
-    it('keeps modify submit enabled while the account stream is still loading', () => {
-      mockSearchParams.set('mode', 'modify');
-      mockLivePositions.mockReturnValue({
-        positions: mockPositions,
-        isInitialLoading: false,
+        const submitButton = screen.getByTestId('submit-order-button');
+        expect(submitButton).not.toBeDisabled();
+        expect(submitButton).toHaveTextContent(label);
       });
-      mockLiveAccount.mockReturnValue({
-        account: null,
-        isInitialLoading: true,
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const submitButton = screen.getByTestId('submit-order-button');
-      expect(submitButton).not.toBeDisabled();
-      expect(submitButton).toHaveTextContent('Modify Position');
     });
 
     it('disables submit when selected account address is missing', async () => {

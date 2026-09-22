@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   PERPS_EVENT_PROPERTY,
@@ -20,9 +20,10 @@ import {
 } from '../../../selectors/perps-controller';
 import { toast, ToastContent } from '../../ui/toast/toast';
 import {
-  clearUnfundedDepositFunnel,
+  clearPendingUnfundedDepositFunnel,
   confirmUnfundedDepositFunnel,
   isUnfundedDepositFunnelActive,
+  markDepositResultTracked,
 } from './utils/unfunded-deposit-funnel';
 
 const id = 'perps-deposit-toast';
@@ -49,12 +50,7 @@ export function PerpsDepositToast() {
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
-
-  // The emit lives in a presentation effect whose deps (entryPoint, t) can
-  // change while the same deposit result is still on screen, and the component
-  // remounts on unlock. Key the guard on the result identity so
-  // deposit_confirmed is emitted once per deposit.
-  const trackedDepositResultRef = useRef<string | null>(null);
+  const lastDepositResultTimestamp = lastDepositResult?.timestamp;
 
   useEffect(() => {
     if (!hasDepositResult) {
@@ -80,16 +76,16 @@ export function PerpsDepositToast() {
     );
     const options = { id, duration };
 
-    // `lastDepositTransactionId` is the per-deposit identity; pairing it with
-    // the outcome also covers a pending result that later resolves.
-    const depositResultKey = `${depositTransactionId ?? ''}:${String(isSuccess)}`;
-    const isNewDepositResult =
-      trackedDepositResultRef.current !== depositResultKey;
+    // The emit lives in a presentation effect whose deps (entryPoint, t) can
+    // change while the same result is on screen, and the component remounts on
+    // unlock, so the fire-once guard is persisted and keyed on the result.
+    const depositResultKey = `${depositTransactionId ?? ''}:${String(
+      lastDepositResultTimestamp ?? '',
+    )}:${String(isSuccess)}`;
 
     if (isSuccess) {
       toast.success(content, options);
-      if (isNewDepositResult) {
-        trackedDepositResultRef.current = depositResultKey;
+      if (markDepositResultTracked(depositResultKey)) {
         const isUnfundedFunnel = isUnfundedDepositFunnelActive(selectedAddress);
         confirmUnfundedDepositFunnel(selectedAddress);
         track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -100,13 +96,11 @@ export function PerpsDepositToast() {
       }
     } else {
       toast.error(content, options);
-      if (isNewDepositResult) {
-        trackedDepositResultRef.current = depositResultKey;
+      if (markDepositResultTracked(depositResultKey)) {
         // A failed deposit must not let a later unrelated order report itself
-        // as a post-deposit trade. Only this address's funnel is dropped.
-        if (isUnfundedDepositFunnelActive(selectedAddress)) {
-          clearUnfundedDepositFunnel();
-        }
+        // as a post-deposit trade, but it must not erase an earlier deposit
+        // that already confirmed either.
+        clearPendingUnfundedDepositFunnel(selectedAddress);
       }
     }
 
@@ -124,6 +118,7 @@ export function PerpsDepositToast() {
     hasDepositResult,
     lastDepositResultError,
     lastDepositResultSuccess,
+    lastDepositResultTimestamp,
     selectedAddress,
     t,
     track,

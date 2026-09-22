@@ -1,8 +1,9 @@
 import {
-  clearUnfundedDepositFunnel,
+  clearPendingUnfundedDepositFunnel,
   confirmUnfundedDepositFunnel,
   consumeUnfundedDepositFunnel,
   isUnfundedDepositFunnelActive,
+  markDepositResultTracked,
   markUnfundedDepositFunnel,
 } from './unfunded-deposit-funnel';
 
@@ -12,6 +13,7 @@ const OTHER_ADDRESS = '0x1111111111111111111111111111111111111111';
 describe('unfunded-deposit-funnel', () => {
   beforeEach(() => {
     sessionStorage.clear();
+    localStorage.clear();
   });
 
   it('starts inactive', () => {
@@ -66,11 +68,29 @@ describe('unfunded-deposit-funnel', () => {
     expect(consumeUnfundedDepositFunnel(ADDRESS)).toBe(false);
   });
 
-  it('clears an abandoned or failed funnel', () => {
+  it('keeps a confirmed funnel when a later deposit fails', () => {
     markUnfundedDepositFunnel(ADDRESS);
-    clearUnfundedDepositFunnel();
+    confirmUnfundedDepositFunnel(ADDRESS);
+    clearPendingUnfundedDepositFunnel(ADDRESS);
+
+    expect(consumeUnfundedDepositFunnel(ADDRESS)).toBe(true);
+  });
+
+  it('drops a pending funnel when its deposit fails', () => {
+    markUnfundedDepositFunnel(ADDRESS);
+    clearPendingUnfundedDepositFunnel(OTHER_ADDRESS);
+
+    expect(isUnfundedDepositFunnelActive(ADDRESS)).toBe(true);
+
+    clearPendingUnfundedDepositFunnel(ADDRESS);
 
     expect(isUnfundedDepositFunnelActive(ADDRESS)).toBe(false);
+  });
+
+  it('reports a deposit result as new only once', () => {
+    expect(markDepositResultTracked('tx-1:1:true')).toBe(true);
+    expect(markDepositResultTracked('tx-1:1:true')).toBe(false);
+    expect(markDepositResultTracked('tx-2:2:true')).toBe(true);
   });
 
   it('ignores a missing address', () => {
