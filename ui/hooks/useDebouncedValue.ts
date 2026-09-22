@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePrevious } from './usePrevious';
 
 const DEFAULT_DEBOUNCE_MS = 300;
@@ -19,28 +19,59 @@ export const useDebouncedValue = <Value>(
   delayMs: number = DEFAULT_DEBOUNCE_MS,
 ): Value => {
   const [debounced, setDebounced] = useState<Value>(value);
-  const prevDelayMsRef = useRef(delayMs);
+  const [immediateSnapshot, setImmediateSnapshot] = useState<Value>(value);
   const previousDelayMs = usePrevious(delayMs);
 
   useEffect(() => {
     if (delayMs <= 0) {
-      prevDelayMsRef.current = delayMs;
-      return undefined;
+      let cancelled = false;
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setDebounced(value);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
-    prevDelayMsRef.current = delayMs;
+    let cancelled = false;
 
-    const timer = setTimeout(() => setDebounced(value), delayMs);
-    return () => clearTimeout(timer);
-  }, [value, delayMs]);
+    const applyDebounced = (next: Value) => {
+      if (!cancelled) {
+        setDebounced(next);
+      }
+    };
+
+    if (previousDelayMs !== undefined && previousDelayMs <= 0) {
+      queueMicrotask(() => {
+        setImmediateSnapshot(value);
+        applyDebounced(value);
+      });
+    }
+
+    const timer = setTimeout(() => applyDebounced(value), delayMs);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [value, delayMs, previousDelayMs]);
 
   if (delayMs <= 0) {
     return value;
   }
 
-  // After immediate mode, `debounced` can lag until the effect runs; show `value` on
-  // the first delayed render so callers do not flash stale data.
-  if (previousDelayMs !== undefined && previousDelayMs <= 0) {
+  const staleAfterImmediate =
+    debounced !== value &&
+    value === immediateSnapshot &&
+    debounced !== immediateSnapshot;
+
+  if (
+    (previousDelayMs !== undefined &&
+      previousDelayMs <= 0 &&
+      debounced !== value) ||
+    staleAfterImmediate
+  ) {
     return value;
   }
 

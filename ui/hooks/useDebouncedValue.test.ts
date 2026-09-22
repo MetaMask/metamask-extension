@@ -1,5 +1,11 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useDebouncedValue } from './useDebouncedValue';
+
+async function flushMicrotasks(): Promise<void> {
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
 
 describe('useDebouncedValue', () => {
   beforeEach(() => {
@@ -42,7 +48,7 @@ describe('useDebouncedValue', () => {
     expect(result.current).toBe('abc');
   });
 
-  it('keeps debounced state in sync when switching from immediate to delayed mode', () => {
+  it('keeps debounced state in sync when switching from immediate to delayed mode', async () => {
     const { result, rerender } = renderHook(
       ({ value, delayMs }: { value: string; delayMs: number }) =>
         useDebouncedValue(value, delayMs),
@@ -52,8 +58,17 @@ describe('useDebouncedValue', () => {
     act(() => {
       rerender({ value: 'b', delayMs: 0 });
     });
+    await flushMicrotasks();
     expect(result.current).toBe('b');
 
+    act(() => {
+      rerender({ value: 'b', delayMs: 200 });
+    });
+    await waitFor(() => {
+      expect(result.current).toBe('b');
+    });
+
+    // A second render before the debounce window must not resurrect stale state.
     act(() => {
       rerender({ value: 'b', delayMs: 200 });
     });
