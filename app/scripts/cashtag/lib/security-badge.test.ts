@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { IconColor, IconName } from '@metamask/design-system-react';
 import { getSecurityStatusBadge } from './security-badge';
 
