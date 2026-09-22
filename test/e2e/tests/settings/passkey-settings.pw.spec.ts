@@ -19,7 +19,11 @@ import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 pwTest.describe('Passkey settings', () => {
   pwTest(
     'Turns off biometrics with passkey fallback to password',
-    async ({}, testInfo) => {
+    async (
+      // eslint-disable-next-line no-empty-pattern
+      {},
+      testInfo,
+    ) => {
       // Firefox does not support CDP WebAuthn API
       if (testInfo.project.name === 'firefox-e2e') {
         pwTest.skip();
@@ -64,7 +68,11 @@ pwTest.describe('Passkey settings', () => {
 
   pwTest(
     'Turns on biometrics from settings after passkey was removed',
-    async ({}, testInfo) => {
+    async (
+      // eslint-disable-next-line no-empty-pattern
+      {},
+      testInfo,
+    ) => {
       // Firefox does not support CDP WebAuthn API
       if (testInfo.project.name === 'firefox-e2e') {
         pwTest.skip();
