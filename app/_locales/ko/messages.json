@@ -3188,9 +3188,6 @@
   "current": {
     "message": "현재"
   },
-  "currentAccountNotConnected": {
-    "message": "현재 계정이 연결되어 있지 있습니다."
-  },
   "currentEstimatedBaseFee": {
     "message": "현재: $1 GWEI"
   },

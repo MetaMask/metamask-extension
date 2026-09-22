@@ -3188,9 +3188,6 @@
   "current": {
     "message": "Actual"
   },
-  "currentAccountNotConnected": {
-    "message": "La cuenta actual no está conectada"
-  },
   "currentEstimatedBaseFee": {
     "message": "Actual: $1 GWEI"
   },

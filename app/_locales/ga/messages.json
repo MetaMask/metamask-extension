@@ -1235,9 +1235,6 @@
   "currencySymbolDefinition": {
     "message": "An tsiombail ticéir a thaispeántar d’airgeadra an líonra seo."
   },
-  "currentAccountNotConnected": {
-    "message": "Níl do chuntas reatha ceangailte"
-  },
   "currentExtension": {
     "message": "Leathanach síneadh reatha"
   },

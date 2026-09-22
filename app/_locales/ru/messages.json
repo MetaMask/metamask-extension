@@ -3185,9 +3185,6 @@
   "current": {
     "message": "Текущая"
   },
-  "currentAccountNotConnected": {
-    "message": "Ваша текущий счет не подключен"
-  },
   "currentEstimatedBaseFee": {
     "message": "Текущая: $1 Гвей"
   },

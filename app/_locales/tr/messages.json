@@ -3188,9 +3188,6 @@
   "current": {
     "message": "Mevcut"
   },
-  "currentAccountNotConnected": {
-    "message": "Mevcut hesabınız bağlı değil"
-  },
   "currentEstimatedBaseFee": {
     "message": "Geçerli: $1 GWEI"
   },

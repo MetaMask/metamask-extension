@@ -3188,9 +3188,6 @@
   "current": {
     "message": "Τρέχουσα"
   },
-  "currentAccountNotConnected": {
-    "message": "Ο τρέχων λογαριασμός σας δεν είναι συνδεδεμένος"
-  },
   "currentEstimatedBaseFee": {
     "message": "Τρέχον: $1 GWEI"
   },
