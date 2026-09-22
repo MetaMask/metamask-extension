@@ -45,10 +45,25 @@ export function usePerpsChannel<TData>(
     emptyValueRef.current = emptyValue;
   }, [getChannel, emptyValue]);
 
-  const [data, setData] = useState<TData>(emptyValue);
+  const [data, setData] = useState<TData>(() => {
+    if (isInitializing || !streamManager) {
+      return emptyValue;
+    }
+    const channel = getChannel(streamManager);
+    return channel.hasCachedData() ? channel.getCachedData() : emptyValue;
+  });
 
-  const hasReceivedData = useRef(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const hasReceivedData = useRef(
+    !isInitializing &&
+      streamManager !== null &&
+      getChannel(streamManager).hasCachedData(),
+  );
+  const [isInitialLoading, setIsInitialLoading] = useState(() => {
+    if (isInitializing || !streamManager) {
+      return true;
+    }
+    return !getChannel(streamManager).hasCachedData();
+  });
 
   useLayoutEffect(() => {
     if (resetKey === undefined || !streamManager) {

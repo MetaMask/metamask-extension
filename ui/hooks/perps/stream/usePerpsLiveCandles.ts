@@ -1,4 +1,10 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import type { CandleData } from '@metamask/perps-controller';
 import type {
   CandlePeriod,
@@ -89,6 +95,14 @@ export function usePerpsLiveCandles(
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const hasReceivedFirstUpdate = useRef(false);
+  const symbolRef = useRef(symbol);
+  const intervalRef = useRef(interval);
+
+  useLayoutEffect(() => {
+    symbolRef.current = symbol;
+    intervalRef.current = interval;
+  }, [symbol, interval]);
+
   const subscriptionKey = `${symbol}|${interval}|${duration ?? ''}|${throttleMs}`;
   const [prevSubscriptionKey, setPrevSubscriptionKey] =
     useState(subscriptionKey);
@@ -119,7 +133,10 @@ export function usePerpsLiveCandles(
       callback: (data: CandleData) => {
         // Validate incoming data matches current subscription
         // (prevents stale data from race conditions during symbol/interval switch)
-        if (data.symbol !== symbol || data.interval !== interval) {
+        if (
+          data.symbol !== symbolRef.current ||
+          data.interval !== intervalRef.current
+        ) {
           return;
         }
 
