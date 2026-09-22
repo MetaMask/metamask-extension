@@ -4,23 +4,39 @@ import {
   TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
-import { Box } from '@metamask/design-system-react';
+import {
+  Box,
+  Button,
+  BoxFlexDirection,
+  ButtonVariant,
+  BoxAlignItems,
+  ButtonSize,
+} from '@metamask/design-system-react';
 import { pickBy } from 'lodash';
 
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalContentSize,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '../../../../../components/component-library';
+import { GasModalType } from '../../../constants/gas';
 import { MaxBaseFeeInput } from '../../max-base-fee-input/max-base-fee-input';
 import { PriorityFeeInput } from '../../priority-fee-input/priority-fee-input';
-import {
-  getAdvancedGasLimitTransactionKey,
-  useAdvancedGasLimit,
-} from '../../../hooks/gas/useAdvancedGasLimit';
+import { GAS_INPUT_HELP_TEXT_ID, GasInput } from '../../gas-input/gas-input';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
 import { hexWEIToDecGWEI } from '../../../../../../shared/lib/conversion.utils';
 import { usePersistGasFeePreference } from '../../../hooks/gas/usePersistGasFeePreference';
+import {
+  getAdvancedGasLimitTransactionKey,
+  useAdvancedGasLimit,
+} from '../../../hooks/gas/useAdvancedGasLimit';
 import { useDispatch } from '../../../../../store/hooks';
-import { GasModalType } from '../../../constants/gas';
-import { AdvancedGasFeeModal } from '../advanced-gas-fee-modal/advanced-gas-fee-modal';
 
 type AdvancedEIP1559ModalProps = {
   setActiveModal: (modal: GasModalType) => void;
@@ -69,6 +85,16 @@ const AdvancedEIP1559ModalContent = ({
   const hasError = Boolean(
     errors.gas || errors.maxFeePerGas || errors.maxPriorityFeePerGas,
   );
+  const isGasEstimationFailed = Boolean(
+    transactionMeta.simulationFails &&
+    transactionMeta.userFeeLevel !== UserFeeLevel.CUSTOM,
+  );
+  let gasLimitHelpText: string | undefined;
+  if (!isGasLimitAvailable) {
+    gasLimitHelpText = isGasEstimationFailed
+      ? t('alertMessageGasEstimateFailed')
+      : t('gasLimitEditingUnavailable');
+  }
 
   const handleSaveClick = useCallback(async () => {
     if (!transactionMeta?.id || !isGasLimitAvailable || !gasLimit) {
@@ -139,35 +165,65 @@ const AdvancedEIP1559ModalContent = ({
   }
 
   return (
-    <AdvancedGasFeeModal
-      gasLimit={gasLimit}
-      handleCloseModals={handleCloseModals}
-      hasError={hasError}
-      isGasEstimationFailed={Boolean(
-        transactionMeta.simulationFails &&
-        transactionMeta.userFeeLevel !== UserFeeLevel.CUSTOM,
-      )}
-      isGasLimitAvailable={isGasLimitAvailable}
-      isGasLimitEditable={isGasLimitEditable}
-      modalTestId="gas-fee-advanced-eip1559-modal"
-      onGasLimitChange={setGasLimit}
-      onGasLimitErrorChange={handleGasError}
-      onNavigateToEstimates={navigateToEstimatesModal}
-      onSave={handleSaveClick}
-      title={t('advancedEIP1559ModalTitle')}
-    >
-      <MaxBaseFeeInput
-        onChange={handleMaxFeePerGasChange}
-        maxPriorityFeePerGas={gasParams.maxPriorityFeePerGas}
-        onErrorChange={handleMaxFeePerGasError}
-      />
-      <Box marginBottom={4} />
-      <PriorityFeeInput
-        onChange={handleMaxPriorityFeePerGasChange}
-        maxFeePerGas={gasParams.maxFeePerGas}
-        onErrorChange={handleMaxPriorityFeePerGasError}
-      />
-    </AdvancedGasFeeModal>
+    <Modal isOpen={true} onClose={handleCloseModals}>
+      <ModalOverlay />
+      <ModalContent
+        size={ModalContentSize.Md}
+        data-testid="gas-fee-advanced-eip1559-modal"
+      >
+        <ModalHeader>{t('advancedEIP1559ModalTitle')}</ModalHeader>
+        <ModalBody>
+          <MaxBaseFeeInput
+            onChange={handleMaxFeePerGasChange}
+            maxPriorityFeePerGas={gasParams.maxPriorityFeePerGas}
+            onErrorChange={handleMaxFeePerGasError}
+          />
+          <Box marginBottom={4} />
+          <PriorityFeeInput
+            onChange={handleMaxPriorityFeePerGasChange}
+            maxFeePerGas={gasParams.maxFeePerGas}
+            onErrorChange={handleMaxPriorityFeePerGasError}
+          />
+          <Box marginBottom={4} />
+          <GasInput
+            gasLimit={gasLimit}
+            helpText={gasLimitHelpText}
+            isDisabled={!isGasLimitEditable}
+            onChange={setGasLimit}
+            onErrorChange={handleGasError}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Box
+            alignItems={BoxAlignItems.Stretch}
+            flexDirection={BoxFlexDirection.Row}
+            gap={4}
+          >
+            <Button
+              data-testid="gas-fee-modal-cancel-button"
+              style={{ flex: 1 }}
+              size={ButtonSize.Lg}
+              variant={ButtonVariant.Secondary}
+              onClick={navigateToEstimatesModal}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              aria-describedby={
+                isGasLimitAvailable ? undefined : GAS_INPUT_HELP_TEXT_ID
+              }
+              data-testid="gas-fee-modal-save-button"
+              style={{ flex: 1 }}
+              size={ButtonSize.Lg}
+              isDisabled={hasError || !isGasLimitAvailable}
+              onClick={handleSaveClick}
+            >
+              {t('save')}
+            </Button>
+          </Box>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
