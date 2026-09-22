@@ -25,11 +25,18 @@ export function getSocialLoginType(
  * @param state - The onboarding state.
  */
 export function getIsBasicFunctionalitySocialLoginUser(
-  state: OnboardingState,
+  state: OnboardingState & {
+    metamask: OnboardingState['metamask'] & {
+      preferences?: { hasLinkedSocialLoginProfile?: boolean };
+    };
+  },
 ): boolean {
   return isBasicFunctionalitySocialLoginUser({
     firstTimeFlowType: state.metamask.firstTimeFlowType ?? undefined,
     authConnection: state.metamask.authConnection,
+    hasLinkedSocialLoginProfile: Boolean(
+      state.metamask.preferences?.hasLinkedSocialLoginProfile,
+    ),
   });
 }
 

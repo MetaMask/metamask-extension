@@ -86,6 +86,16 @@ export type PreferencesControllerConsolidateBasicFunctionalityAction = {
 };
 
 /**
+ * Marks the wallet as having a linked social profile when login/pairing
+ * returns `profile_aliases` that include a social identifier type.
+ */
+export type PreferencesControllerHandleLinkedSocialProfileFromProfileAliasesAction =
+  {
+    type: `PreferencesController:handleLinkedSocialProfileFromProfileAliases`;
+    handler: PreferencesController['handleLinkedSocialProfileFromProfileAliases'];
+  };
+
+/**
  * Setter for the `useTokenDetection` property
  *
  * @param val - Whether or not the user prefers to use the static token list or dynamic token list from the API
@@ -438,6 +448,7 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerToggleExternalServicesAction
   | PreferencesControllerToggleBasicFunctionalityAction
   | PreferencesControllerConsolidateBasicFunctionalityAction
+  | PreferencesControllerHandleLinkedSocialProfileFromProfileAliasesAction
   | PreferencesControllerSetUseTokenDetectionAction
   | PreferencesControllerSetUseNftDetectionAction
   | PreferencesControllerSetUse4ByteResolutionAction

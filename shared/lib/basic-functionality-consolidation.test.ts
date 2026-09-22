@@ -1,5 +1,7 @@
 import {
   getBasicFunctionalityConsolidationPlan,
+  isBasicFunctionalitySocialLoginUser,
+  profileAliasesIncludeSocialIdentifier,
   shouldRepairBasicFunctionalitySocialMigrationNotice,
   shouldStartBasicFunctionalityConsolidation,
 } from './basic-functionality-consolidation';
@@ -68,6 +70,42 @@ describe('getBasicFunctionalityConsolidationPlan', () => {
       notification: 'modal',
       isConsistent: true,
     });
+  });
+});
+
+describe('isBasicFunctionalitySocialLoginUser', () => {
+  it('treats persisted linked-social profiles as social-login wallets', () => {
+    expect(
+      isBasicFunctionalitySocialLoginUser({
+        firstTimeFlowType: 'import',
+        hasLinkedSocialLoginProfile: true,
+      }),
+    ).toBe(true);
+  });
+});
+
+describe('profileAliasesIncludeSocialIdentifier', () => {
+  it('detects linked social identifiers in profile aliases', () => {
+    expect(
+      profileAliasesIncludeSocialIdentifier([
+        {
+          identifierIds: [{ id: 'abc', type: 'SRP' }],
+        },
+        {
+          identifierIds: [{ id: 'def', type: 'GOOGLE' }],
+        },
+      ]),
+    ).toBe(true);
+  });
+
+  it('returns false when aliases only contain SRP identifiers', () => {
+    expect(
+      profileAliasesIncludeSocialIdentifier([
+        {
+          identifierIds: [{ id: 'abc', type: 'SRP' }],
+        },
+      ]),
+    ).toBe(false);
   });
 });
 

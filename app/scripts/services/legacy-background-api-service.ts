@@ -1540,6 +1540,11 @@ export class LegacyBackgroundApiService {
    * reset progress flag is set.
    */
   async resetWallet(restoreOnly = false): Promise<void> {
+    const preserveLinkedSocialLoginProfile =
+      restoreOnly &&
+      this.#messenger.call('PreferencesController:getState').preferences
+        ?.hasLinkedSocialLoginProfile === true;
+
     // Sign out and re-arm profile/social pairing for the next wallet.
     this.#messenger.call('AuthenticationController:clearState');
 
@@ -1562,6 +1567,13 @@ export class LegacyBackgroundApiService {
 
     // reset preferences to defaults
     this.#messenger.call('PreferencesController:resetState');
+
+    if (preserveLinkedSocialLoginProfile) {
+      this.#messenger.call('PreferencesController:setPreference', [
+        'hasLinkedSocialLoginProfile',
+        true,
+      ]);
+    }
 
     if (!restoreOnly) {
       // reset onboarding state

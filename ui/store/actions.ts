@@ -303,6 +303,9 @@ export function startOAuthLogin(
           oauth2LoginResult,
         ]));
         seedlessAuthSuccess = true;
+        await dispatch(
+          setPreference('hasLinkedSocialLoginProfile', true, false),
+        );
       } catch (error) {
         trackEvent?.({
           event: MetaMetricsEventName.SocialLoginFailed,

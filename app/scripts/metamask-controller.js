@@ -862,6 +862,16 @@ export default class MetamaskController extends EventEmitter {
       this._onLock(),
     );
 
+    this.controllerMessenger.subscribe(
+      'AuthenticationController:profileSignIn',
+      ({ profileAliases }) => {
+        this.controllerMessenger.call(
+          'PreferencesController:handleLinkedSocialProfileFromProfileAliases',
+          profileAliases,
+        );
+      },
+    );
+
     // Ramps buy-flow terminal-outcome KPIs (completed / failed). Fires in the
     // background (not the UI) so the outcome is captured even when the popup is
     // closed — the common case, since the order polls to a terminal status

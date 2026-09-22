@@ -46,6 +46,15 @@ export type BasicFunctionalityPreferenceState = {
   useExternalServices: boolean;
 } & Record<(typeof BFT_CHILD_PREFERENCES)[number], boolean>;
 
+export const LINKED_SOCIAL_IDENTIFIER_TYPES = [
+  'GOOGLE',
+  'APPLE',
+  'TELEGRAM',
+] as const;
+
+export type LinkedSocialIdentifierType =
+  (typeof LINKED_SOCIAL_IDENTIFIER_TYPES)[number];
+
 export type BasicFunctionalityConsolidationPlan = {
   landingState: boolean;
   notification: BasicFunctionalityMigrationNotification;
@@ -63,18 +72,41 @@ export type BasicFunctionalityConsolidationPlan = {
  * @param params - Social-login signals from onboarding state.
  * @param params.firstTimeFlowType - Onboarding first-time flow type.
  * @param params.authConnection - Seedless social login provider, if any.
+ * @param params.hasLinkedSocialLoginProfile - Persisted linked-social marker.
  */
 export function isBasicFunctionalitySocialLoginUser({
   firstTimeFlowType,
   authConnection,
+  hasLinkedSocialLoginProfile = false,
 }: {
   firstTimeFlowType?: string;
   authConnection?: string;
+  hasLinkedSocialLoginProfile?: boolean;
 }): boolean {
   return (
+    hasLinkedSocialLoginProfile ||
     firstTimeFlowType === FirstTimeFlowType.socialCreate ||
     firstTimeFlowType === FirstTimeFlowType.socialImport ||
     Boolean(authConnection)
+  );
+}
+
+/**
+ * Whether `profile_aliases` from SRP login include a linked social identifier.
+ *
+ * @param profileAliases - Alias entries returned by auth login or pairing.
+ */
+export function profileAliasesIncludeSocialIdentifier(
+  profileAliases: {
+    identifierIds: { type: string }[];
+  }[],
+): boolean {
+  return profileAliases.some((alias) =>
+    alias.identifierIds.some((identifier) =>
+      LINKED_SOCIAL_IDENTIFIER_TYPES.includes(
+        identifier.type as LinkedSocialIdentifierType,
+      ),
+    ),
   );
 }
 

@@ -12,6 +12,7 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import { type PreferencesState } from '@metamask/preferences-controller';
+import type { ProfileAlias } from '@metamask/profile-sync-controller/auth';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import {
@@ -31,6 +32,7 @@ import {
   EXTERNAL_SERVICES_OWNED_PREFERENCES,
   getBasicFunctionalityConsolidationPlan,
   isBasicFunctionalitySocialLoginUser,
+  profileAliasesIncludeSocialIdentifier,
   shouldRepairBasicFunctionalitySocialMigrationNotice,
   type BasicFunctionalityPreferenceState,
   type ExternalServicesOwnedPreference,
@@ -178,6 +180,7 @@ export const getDefaultPreferencesControllerState =
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
       isBasicFunctionalityConsolidatedEnabled: false,
+      hasLinkedSocialLoginProfile: false,
       basicFunctionalityMigrationNotification: null,
       basicFunctionalityMigrationNotificationDismissed: false,
       privacyMode: false,
@@ -487,6 +490,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setDefaultAddressScope',
   'setSnapsAddSnapAccountModalDismissed',
   'consolidateBasicFunctionality',
+  'handleLinkedSocialProfileFromProfileAliases',
   'dismissBasicFunctionalityMigrationNotification',
   'resetState',
   'addReferralApprovedAccount',
@@ -647,9 +651,33 @@ export class PreferencesController extends BaseController<
    * Also repairs previously consolidated social-login wallets that still have
    * Basic Functionality disabled.
    */
+  /**
+   * Marks the wallet as having a linked social profile when login/pairing
+   * returns `profile_aliases` that include a social identifier type.
+   *
+   * @param profileAliases - Alias entries from AuthenticationController sign-in.
+   */
+  handleLinkedSocialProfileFromProfileAliases(
+    profileAliases: ProfileAlias[],
+  ): void {
+    if (!profileAliasesIncludeSocialIdentifier(profileAliases)) {
+      return;
+    }
+
+    if (!this.state.preferences.hasLinkedSocialLoginProfile) {
+      this.update((state) => {
+        state.preferences.hasLinkedSocialLoginProfile = true;
+      });
+    }
+
+    this.consolidateBasicFunctionality();
+  }
+
   consolidateBasicFunctionality(): void {
     const hasBftConsolidationMarker =
       this.state.preferences.isBasicFunctionalityConsolidatedEnabled;
+    const hasLinkedSocialLoginProfile =
+      this.state.preferences.hasLinkedSocialLoginProfile === true;
     const { firstTimeFlowType } = this.messenger.call(
       'OnboardingController:getState',
     );
@@ -659,7 +687,14 @@ export class PreferencesController extends BaseController<
     const isSocialLogin = isBasicFunctionalitySocialLoginUser({
       firstTimeFlowType: firstTimeFlowType ?? undefined,
       authConnection,
+      hasLinkedSocialLoginProfile,
     });
+
+    if (isSocialLogin && !hasLinkedSocialLoginProfile) {
+      this.update((state) => {
+        state.preferences.hasLinkedSocialLoginProfile = true;
+      });
+    }
     const hasDismissedNotice =
       this.state.preferences
         .basicFunctionalityMigrationNotificationDismissed === true;

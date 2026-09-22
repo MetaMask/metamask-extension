@@ -8,6 +8,11 @@ export type Preferences = {
   featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
   isBasicFunctionalityConsolidatedEnabled: boolean;
+  /**
+   * True when this wallet has (or had) a linked social-login profile, including
+   * after local OAuth state is cleared by SRP import/restore.
+   */
+  hasLinkedSocialLoginProfile: boolean;
   basicFunctionalityMigrationNotification: 'modal' | 'toast' | null;
   basicFunctionalityMigrationNotificationDismissed: boolean;
   privacyMode: boolean;
