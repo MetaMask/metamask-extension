@@ -173,7 +173,9 @@ export function useTransactionEventToasts(): void {
       };
 
       if (pendingStatuses.has(status)) {
-        if (shouldShowPendingToast(id)) {
+        // Hash only exists after submit. Reuse the same toast id
+        // so we attach the link without opening a second toast.
+        if (shouldShowPendingToast(id) || props.to) {
           showPendingToast(toastId, props);
         }
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {

@@ -308,7 +308,7 @@ describe('useTransactionEventToasts', () => {
       );
     });
 
-    it('shows a pending toast only once from approved through submitted', () => {
+    it('does not reopen a pending toast from approved through submitted without a hash', () => {
       const { handlers } = mountHook();
       const transactionMeta = {
         id: 'generic-pending-once',
@@ -335,6 +335,45 @@ describe('useTransactionEventToasts', () => {
       });
 
       expect(mockShowPendingToast).toHaveBeenCalledTimes(1);
+    });
+
+    it('updates the pending toast with a details link when a hash arrives after approved', () => {
+      const { handlers } = mountHook();
+      const transactionMeta = {
+        id: 'approved-then-hash',
+        type: TransactionType.simpleSend,
+      };
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          ...transactionMeta,
+          status: TransactionStatus.approved,
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          ...transactionMeta,
+          status: TransactionStatus.submitted,
+          hash: '0xabc',
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenNthCalledWith(
+        1,
+        'tx-approved-then-hash',
+        {
+          transactionId: 'approved-then-hash',
+          to: undefined,
+        },
+      );
+      expect(mockShowPendingToast).toHaveBeenNthCalledWith(
+        2,
+        'tx-approved-then-hash',
+        {
+          transactionId: 'approved-then-hash',
+          to: '/tx/eip155:1/0xabc',
+        },
+      );
     });
 
     it('shows a failed toast when an approved tx fails before submit', () => {
