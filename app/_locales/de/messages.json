@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "Short-Position geschlossen ‒ Markt"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "Einzahlung fehlgeschlagen"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "Einzahlung"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "Eingezahlt"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Senden fehlgeschlagen"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Senden"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "Gesendet"
-  },
   "activity_nftBuy_failed_title": {
     "message": "Kauf fehlgeschlagen"
   },

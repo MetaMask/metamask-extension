@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "Posición corta cerrada: mercado"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "Depósito fallido"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "Depositando"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "Depositado"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Error al enviar"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Enviando"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "Enviado"
-  },
   "activity_nftBuy_failed_title": {
     "message": "Compra fallida"
   },

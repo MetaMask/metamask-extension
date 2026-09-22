@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "숏 청산 완료 - 시장가"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "예치 실패"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "예치 중"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "입금됨"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "전송 실패"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "전송 중"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "전송됨"
-  },
   "activity_nftBuy_failed_title": {
     "message": "매수 실패"
   },

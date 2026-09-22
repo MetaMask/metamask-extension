@@ -515,40 +515,44 @@
     "message": "Closed short - market"
   },
   "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Deposit failed"
   },
   "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Depositing"
+    "message": "Depositing $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Deposited"
+    "message": "Deposited $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Send failed"
+    "message": "Receive failed"
   },
   "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Sending"
+    "message": "Receiving $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Sent"
+    "message": "Received $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Buy failed"
