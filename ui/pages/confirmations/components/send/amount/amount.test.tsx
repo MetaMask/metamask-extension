@@ -238,6 +238,7 @@ describe('Amount', () => {
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
       getMaxAmount: () => '5',
       isMaxAmountAvailable: true,
+      isMaxAmountError: false,
       isMaxAmountPending: false,
     });
 
@@ -252,6 +253,7 @@ describe('Amount', () => {
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
       getMaxAmount: () => undefined,
       isMaxAmountAvailable: false,
+      isMaxAmountError: false,
       isMaxAmountPending: true,
     });
 
@@ -260,10 +262,26 @@ describe('Amount', () => {
     expect(getByText(messages.max.message).closest('button')).toBeDisabled();
   });
 
+  it('disables the max button without an error before estimation starts', () => {
+    jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
+      getMaxAmount: () => undefined,
+      isMaxAmountAvailable: false,
+      isMaxAmountError: false,
+      isMaxAmountPending: false,
+    });
+
+    const { getByText } = render();
+
+    expect(
+      getByText(messages.max.message).closest('button'),
+    ).not.toHaveAttribute('title');
+  });
+
   it('disables the max button and explains when estimation fails', () => {
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
       getMaxAmount: () => undefined,
       isMaxAmountAvailable: false,
+      isMaxAmountError: true,
       isMaxAmountPending: false,
     });
 
@@ -282,6 +300,7 @@ describe('Amount', () => {
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
       getMaxAmount: () => '5',
       isMaxAmountAvailable: true,
+      isMaxAmountError: false,
       isMaxAmountPending: false,
     });
     const mockSetAmountInputMethodPressedMax = jest.fn();

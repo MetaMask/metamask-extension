@@ -235,6 +235,10 @@ export const useMaxAmount = () => {
 
   const isMaxAmountPending =
     requiresGasReservation && hasGasEstimateInputs && gasEstimateResult.pending;
+  const isMaxAmountError =
+    requiresGasReservation &&
+    hasGasEstimateInputs &&
+    gasEstimateResult.status === 'error';
   const isMaxAmountAvailable =
     !requiresGasReservation ||
     Boolean(
@@ -278,6 +282,7 @@ export const useMaxAmount = () => {
   return {
     getMaxAmount,
     isMaxAmountAvailable,
+    isMaxAmountError,
     isMaxAmountPending,
   };
 };
