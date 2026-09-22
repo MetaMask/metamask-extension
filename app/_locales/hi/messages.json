@@ -3155,9 +3155,6 @@
   "current": {
     "message": "मौजूदा"
   },
-  "currentAccountNotConnected": {
-    "message": "आपका चालू अकाउंट कनेक्ट नहीं है"
-  },
   "currentEstimatedBaseFee": {
     "message": "वर्तमान: $1 GWEI"
   },
