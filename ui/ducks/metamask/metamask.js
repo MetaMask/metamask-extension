@@ -56,7 +56,8 @@ const initialState = {
   analyticsId: null,
   optedIn: false,
   consentDecisionMade: false,
-  dataCollectionForMarketing: null,
+  optedInToMarketing: false,
+  marketingConsentDecisionMade: false,
   currencyRates: {
     ETH: {
       conversionRate: null,
@@ -147,7 +148,8 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_DATA_COLLECTION_FOR_MARKETING:
       return {
         ...metamaskState,
-        dataCollectionForMarketing: action.value,
+        optedInToMarketing: action.value === true,
+        marketingConsentDecisionMade: true,
       };
 
     case actionConstants.COMPLETE_ONBOARDING: {
@@ -186,6 +188,8 @@ export default function reduceMetamask(state = initialState, action) {
         analyticsId: null,
         optedIn: false,
         consentDecisionMade: false,
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: false,
       };
     }
 
