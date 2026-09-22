@@ -26,21 +26,17 @@ export const GasInput = ({
   onErrorChange: (error: string | undefined) => void;
 }) => {
   const t = useI18nContext();
-  const [state, setState] = useState<{
-    error: string | undefined;
-    sourceGasLimit: Hex | undefined;
-    value: string;
-  }>(() => ({
-    error: undefined,
-    sourceGasLimit: gasLimit,
-    value: gasLimit ? hexToDecimal(gasLimit).toString() : '',
-  }));
-  const gasLimitChanged = state.sourceGasLimit !== gasLimit;
-  let { value } = state;
+  const [value, setValue] = useState(() =>
+    gasLimit ? hexToDecimal(gasLimit).toString() : '',
+  );
+  const [error, setError] = useState<string | undefined>();
+  const [sourceGasLimit, setSourceGasLimit] = useState(gasLimit);
+  const gasLimitChanged = sourceGasLimit !== gasLimit;
+  let displayedValue = value;
   if (gasLimitChanged) {
-    value = gasLimit ? hexToDecimal(gasLimit).toString() : '';
+    displayedValue = gasLimit ? hexToDecimal(gasLimit).toString() : '';
   }
-  const error = gasLimitChanged ? undefined : state.error;
+  const displayedError = gasLimitChanged ? undefined : error;
 
   const validateGasCallback = useCallback(
     (valueToBeValidated: string): string | undefined => {
@@ -53,11 +49,9 @@ export const GasInput = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
       const validationError = validateGasCallback(newValue);
-      setState({
-        error: validationError,
-        sourceGasLimit: gasLimit,
-        value: newValue,
-      });
+      setValue(newValue);
+      setError(validationError);
+      setSourceGasLimit(gasLimit);
       if (!validationError) {
         const updatedGasLimitHex = add0x(decimalToHex(newValue)) as Hex;
         onChange(updatedGasLimitHex);
@@ -67,10 +61,10 @@ export const GasInput = ({
   );
 
   useEffect(() => {
-    onErrorChange(error);
-  }, [error, onErrorChange]);
+    onErrorChange(displayedError);
+  }, [displayedError, onErrorChange]);
 
-  const displayedHelpText = error ?? helpText;
+  const displayedHelpText = displayedError ?? helpText;
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -78,7 +72,7 @@ export const GasInput = ({
         id="gas-input"
         data-testid="gas-input"
         disabled={isDisabled}
-        error={Boolean(error)}
+        error={Boolean(displayedError)}
         helpText={displayedHelpText}
         helpTextProps={{ id: GAS_INPUT_HELP_TEXT_ID }}
         inputProps={{
@@ -89,7 +83,7 @@ export const GasInput = ({
         }}
         onChange={handleChange}
         label={t('gasLimit')}
-        value={value}
+        value={displayedValue}
       />
     </Box>
   );
