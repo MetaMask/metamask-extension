@@ -1,12 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { expect } from '@playwright/test';
-import type {
-  BrowserContext,
-  CDPSession,
-  Locator,
-  Page,
-} from '@playwright/test';
+import type { BrowserContext, Locator, Page } from '@playwright/test';
 
 /**
  * PlaywrightDriver — drop-in replacement for `webdriver/driver.js`'s `Driver`
@@ -255,8 +250,6 @@ export class PlaywrightDriver {
 
   private handleCounter = 0;
 
-  private scriptCdpSession: CDPSession | null = null;
-
   constructor({
     context,
     page,
@@ -311,7 +304,6 @@ export class PlaywrightDriver {
     page.on('close', () => {
       this.pages.delete(handle);
       if (this.currentPage === page) {
-        this.scriptCdpSession = null;
         const next = this.pages.values().next();
         if (!next.done) {
           this.currentPage = next.value;
@@ -335,8 +327,6 @@ export class PlaywrightDriver {
       const next = this.pages.values().next();
       if (!next.done) {
         this.currentPage = next.value;
-        // CDP sessions are page-scoped; invalidate when the active page changes
-        this.scriptCdpSession = null;
       }
     }
     return this.currentPage;
@@ -436,13 +426,6 @@ export class PlaywrightDriver {
       source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
     }
 
-    // On Chromium, use CDP Runtime.evaluate instead of page.evaluate to
-    // bypass LavaMoat scuttling of globals like setInterval; Firefox MV2
-    // doesn't scuttle so page.evaluate is fine there.
-    if (this.browser === 'chrome') {
-      return await this.executeScriptViaCDP<TResult>(source, args);
-    }
-
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -454,38 +437,6 @@ export class PlaywrightDriver {
       },
       { source, passedArgs: args },
     )) as TResult;
-  }
-
-  /**
-   * Runs a script string in the page via CDP Runtime.evaluate, bypassing
-   * Playwright's in-page runtime.
-   * @param source
-   * @param args
-   */
-  private async executeScriptViaCDP<TResult>(
-    source: string,
-    args: unknown[],
-  ): Promise<TResult> {
-    if (!this.scriptCdpSession) {
-      this.scriptCdpSession = await this.context.newCDPSession(this.page);
-    }
-
-    const expression = `(${source}).apply(null, ${JSON.stringify(args)})`;
-    const result = await this.scriptCdpSession.send('Runtime.evaluate', {
-      expression,
-      returnByValue: true,
-      awaitPromise: true,
-    });
-
-    if (result.exceptionDetails) {
-      const text =
-        result.exceptionDetails.exception?.description ||
-        result.exceptionDetails.text ||
-        'Script evaluation failed';
-      throw new Error(text);
-    }
-
-    return result.result.value as TResult;
   }
 
   // Selenium's executeAsyncScript resolves when the script invokes its trailing
@@ -969,7 +920,6 @@ export class PlaywrightDriver {
   async openNewPage(url: string): Promise<string> {
     const page = await this.context.newPage();
     this.currentPage = page;
-    this.scriptCdpSession = null;
     const handle = this.handleFor(page);
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     return handle;
@@ -1037,7 +987,6 @@ export class PlaywrightDriver {
       );
     }
     this.currentPage = page;
-    this.scriptCdpSession = null;
     await page.bringToFront();
   }
 
