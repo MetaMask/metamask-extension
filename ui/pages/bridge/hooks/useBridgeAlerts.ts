@@ -233,9 +233,9 @@ export const useBridgeAlerts = () => {
 
     const hasArcInsufficientNativeReserve = Boolean(
       fromChain?.chainId === ARC_NATIVE_CAIP_CHAIN_ID &&
-        insufficientNativeReserveError &&
-        insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
-          '0',
+      insufficientNativeReserveError &&
+      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+        '0',
     );
 
     if (
