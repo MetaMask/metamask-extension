@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent } from '@testing-library/react';
 import { useTokenInsightsData } from '../../../hooks/useTokenInsightsData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -22,7 +22,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
 jest.mock('../../../hooks/useTokenInsightsData');
 jest.mock('../../../hooks/useI18nContext');
-jest.mock('../../../components/multichain', () => ({
+jest.mock('../../../components/multichain/address-copy-button', () => ({
   AddressCopyButton: ({
     address,
     shorten,
@@ -31,7 +31,9 @@ jest.mock('../../../components/multichain', () => ({
     shorten: boolean;
   }) => (
     <button data-testid="address-copy-button">
-      {shorten ? `${address.slice(0, 6)}...${address.slice(-4)}` : address}
+      <span data-testid="address-copy-button-text">
+        {shorten ? `${address.slice(0, 6)}...${address.slice(-4)}` : address}
+      </span>
     </button>
   ),
 }));
@@ -184,12 +186,14 @@ describe('TokenInsightsModal', () => {
   });
 
   describe('Modal Behavior', () => {
-    it('should call onClose when close button is clicked', () => {
+    it('should call onClose when close button is clicked', async () => {
       const onClose = jest.fn();
       renderComponent({ onClose });
 
       const closeButton = screen.getByLabelText('close');
-      fireEvent.click(closeButton);
+      await act(async () => {
+        fireEvent.click(closeButton);
+      });
 
       expect(onClose).toHaveBeenCalled();
     });
@@ -199,17 +203,21 @@ describe('TokenInsightsModal', () => {
       renderComponent({ onClose });
 
       // Simulate click outside the modal
-      fireEvent.mouseDown(document.body);
+      await act(async () => {
+        fireEvent.mouseDown(document.body);
+      });
 
       expect(onClose).toHaveBeenCalled();
     });
 
-    it('should not close modal when clicking inside', () => {
+    it('should not close modal when clicking inside', async () => {
       const onClose = jest.fn();
       renderComponent({ onClose });
 
       const modalContent = screen.getByTestId('token-price');
-      fireEvent.mouseDown(modalContent);
+      await act(async () => {
+        fireEvent.mouseDown(modalContent);
+      });
 
       expect(onClose).not.toHaveBeenCalled();
     });

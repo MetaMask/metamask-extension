@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { userEvent } from '@testing-library/user-event';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import mockState from '../../../test/data/mock-state.json';
@@ -58,8 +57,11 @@ describe('SrpInputForm', () => {
     expect(srpNote).toBeInTheDocument();
 
     if (srpNote) {
-      srpNote.focus();
-      await userEvent.type(srpNote, TEST_SEED);
+      fireEvent.paste(srpNote, {
+        clipboardData: {
+          getData: () => TEST_SEED,
+        },
+      });
     }
 
     await waitFor(() => {
@@ -81,8 +83,11 @@ describe('SrpInputForm', () => {
 
     // First, enter some text
     if (srpNote) {
-      srpNote.focus();
-      await userEvent.type(srpNote, TEST_SEED);
+      fireEvent.paste(srpNote, {
+        clipboardData: {
+          getData: () => TEST_SEED,
+        },
+      });
     }
 
     // Wait for the clear button to appear
@@ -91,12 +96,9 @@ describe('SrpInputForm', () => {
         messages.onboardingSrpInputClearAll.message,
       );
       expect(clearButton).toBeInTheDocument();
-
-      // Click the clear button
-      if (clearButton) {
-        fireEvent.click(clearButton);
-      }
     });
+
+    fireEvent.click(getByText(messages.onboardingSrpInputClearAll.message));
 
     // Verify the clear callback was called
     await waitFor(() => {

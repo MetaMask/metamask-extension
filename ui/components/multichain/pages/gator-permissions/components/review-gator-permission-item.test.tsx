@@ -20,6 +20,10 @@ import { getPendingRevocations } from '../../../../../selectors/gator-permission
 import { EMPTY_ARRAY } from '../../../../../selectors/shared';
 import { ReviewGatorPermissionItem } from './review-gator-permission-item';
 
+jest.mock('../../../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: () => [false, jest.fn().mockResolvedValue(true)],
+}));
+
 const mockAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
 const mockAccountName = 'Test Gator Account';
 

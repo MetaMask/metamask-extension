@@ -10,7 +10,12 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const ShowMore = ({ children, className = '', ...props }) => {
+export const ShowMore = ({
+  children,
+  className = '',
+  buttonBackground,
+  ...props
+}) => {
   const t = useI18nContext();
   const { contentRef, isOverflowing } = useIsOverflowing();
   const [isOpen, setIsOpen] = useState(false);
