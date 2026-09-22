@@ -226,7 +226,6 @@ export const useMaxAmount = () => {
     chainId,
     from,
     hexData,
-    gasFeeEstimates,
     hasGasFeeEstimate,
     networkClientId,
     rawBalanceNumeric,
