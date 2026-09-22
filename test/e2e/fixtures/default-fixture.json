@@ -173,13 +173,15 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
-      "optedIn": false
+      "marketingConsentDecisionMade": true,
+      "optedIn": false,
+      "optedInToMarketing": false
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 227,
+      "currentMigrationVersion": 228,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -404,7 +406,6 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "dataCollectionForMarketing": false,
       "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
@@ -1288,6 +1289,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 227
+    "version": 228
   }
 }
