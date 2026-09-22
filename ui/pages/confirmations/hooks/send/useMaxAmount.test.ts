@@ -1,6 +1,7 @@
 import { act, waitFor } from '@testing-library/react';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import { estimateGas } from '../../../../store/actions';
+import { UPDATE_METAMASK_STATE } from '../../../../store/actionConstants';
 import { useIsNetworkGasSponsored } from '../../../../hooks/useIsNetworkGasSponsored';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
@@ -148,6 +149,39 @@ describe('useMaxAmount', () => {
       1.5,
     );
     expect(result.current.getMaxAmount()).toBe('999.99957066841144');
+  });
+
+  it('keeps Max available when gas fee estimates refresh', async () => {
+    const { result, store } = renderHookWithProvider(
+      useMaxAmount,
+      createState({ suggestedMaxFeePerGas: '1' }),
+    );
+
+    await waitFor(() => expect(result.current.isMaxAmountAvailable).toBe(true));
+    expect(result.current.getMaxAmount()).toBe('999.999979');
+
+    act(() => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: {
+          gasFeeEstimatesByChainId: {
+            ...store.getState().metamask.gasFeeEstimatesByChainId,
+            '0x5': {
+              gasFeeEstimates: {
+                medium: {
+                  suggestedMaxFeePerGas: '2',
+                },
+              },
+            },
+          },
+        },
+      });
+    });
+
+    expect(result.current.isMaxAmountPending).toBe(false);
+    expect(result.current.isMaxAmountAvailable).toBe(true);
+    expect(result.current.getMaxAmount()).toBe('999.999958');
+    expect(estimateGasMock).toHaveBeenCalledTimes(2);
   });
 
   it('reserves a node estimate above 21,000 gas', async () => {
