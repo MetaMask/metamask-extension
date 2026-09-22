@@ -1,8 +1,13 @@
+import type { MetaMaskReduxState } from '../../store/store';
 import sendMaxValueReducer, {
   initialState,
   selectMaxValueModeForTransaction,
   setMaxValueMode,
+  type SendMaxValueState,
 } from './send-max-value';
+
+const buildState = (sendMaxValue: SendMaxValueState) =>
+  ({ sendMaxValue }) as unknown as MetaMaskReduxState;
 
 describe('sendMaxValue', () => {
   describe('setMaxValueMode', () => {
@@ -35,22 +40,16 @@ describe('sendMaxValue', () => {
 
   describe('selectMaxValueModeForTransaction', () => {
     it('returns true only for the transaction with max value mode enabled', () => {
-      const state = {
-        sendMaxValue: {
-          maxValueMode: {
-            'tx-1': true,
-          },
-        },
-      };
+      const state = buildState({ maxValueMode: { 'tx-1': true } });
 
       expect(selectMaxValueModeForTransaction(state, 'tx-1')).toBe(true);
       expect(selectMaxValueModeForTransaction(state, 'tx-2')).toBe(false);
     });
 
     it('returns false when the transaction id is missing', () => {
-      expect(
-        selectMaxValueModeForTransaction({ sendMaxValue: initialState }),
-      ).toBe(false);
+      expect(selectMaxValueModeForTransaction(buildState(initialState))).toBe(
+        false,
+      );
     });
   });
 });

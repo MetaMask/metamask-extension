@@ -14,6 +14,7 @@ import {
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { updateEditableParams } from '../../../../../../store/actions';
+import type { MetaMaskReduxState } from '../../../../../../store/store';
 import { useConfirmContext } from '../../../../context/confirm';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
@@ -46,7 +47,7 @@ export const useMaxValueRefresher = () => {
     txParams: { from },
   } = transactionMeta;
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const isMaxValueMode = useSelector((state) =>
+  const isMaxValueMode = useSelector((state: MetaMaskReduxState) =>
     selectMaxValueModeForTransaction(state, transactionMeta?.id),
   );
   const { updateTransactionEventFragment } = useTransactionEventFragment();

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { MetaMaskReduxState } from '../../store/store';
 
 export type SendMaxValueState = {
   maxValueMode: Record<string, boolean>;
@@ -24,14 +25,14 @@ const sendMaxValueSlice = createSlice({
 export const { setMaxValueMode } = sendMaxValueSlice.actions;
 
 export function selectMaxValueModeForTransaction(
-  state: { sendMaxValue?: SendMaxValueState },
+  state: MetaMaskReduxState,
   transactionId?: string,
 ): boolean {
   if (!transactionId) {
     return false;
   }
 
-  return Boolean(state.sendMaxValue?.maxValueMode[transactionId]);
+  return Boolean(state.sendMaxValue.maxValueMode[transactionId]);
 }
 
 export default sendMaxValueSlice.reducer;
