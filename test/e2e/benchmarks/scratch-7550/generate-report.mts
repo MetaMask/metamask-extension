@@ -235,15 +235,27 @@ function assessQuality(row: ScenarioRow): QualityAssessment {
     ([, cv]) => cv !== undefined && cv >= UNRELIABLE_CV_THRESHOLD,
   );
 
-  const metricPairs = [
-    [
-      before.webVitals?.aggregated.inp?.p75,
-      after.webVitals?.aggregated.inp?.p75,
-    ],
-    [before.p75[row.primaryTimer], after.p75[row.primaryTimer]],
-    [before.p75.longTaskMaxDuration, after.p75.longTaskMaxDuration],
-    [before.p75.tbt, after.p75.tbt],
-  ];
+  // Token search: end-to-end action time includes list filtering (#7475 guidance
+  // is INP / long tasks / TBT). Do not treat action duration as evidence.
+  const metricPairs =
+    row.beforeKey === 'tokenSearchPowerUser'
+      ? [
+          [
+            before.webVitals?.aggregated.inp?.p75,
+            after.webVitals?.aggregated.inp?.p75,
+          ],
+          [before.p75.longTaskMaxDuration, after.p75.longTaskMaxDuration],
+          [before.p75.tbt, after.p75.tbt],
+        ]
+      : [
+          [
+            before.webVitals?.aggregated.inp?.p75,
+            after.webVitals?.aggregated.inp?.p75,
+          ],
+          [before.p75[row.primaryTimer], after.p75[row.primaryTimer]],
+          [before.p75.longTaskMaxDuration, after.p75.longTaskMaxDuration],
+          [before.p75.tbt, after.p75.tbt],
+        ];
   const deltas = metricPairs
     .filter(
       (pair): pair is [number, number] =>
@@ -302,7 +314,9 @@ function buildRow(row: ScenarioRow): string {
   const afterCell = `${after} @ \`${row.afterSha.slice(0, 7)}\``;
   const quality = assessQuality(row);
   const delta =
-    quality.hasInvalidBaseline || quality.hasMixedDirection
+    quality.hasInvalidBaseline ||
+    quality.hasMixedDirection ||
+    quality.hasUnreliableCv
       ? 'not reportable'
       : formatDelta(row);
   const statusBase =
