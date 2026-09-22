@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
@@ -20,6 +20,7 @@ import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accoun
 import { getCurrentLocale } from '../../ducks/locale/locale';
 import { isMaintainedLocale } from '../../../shared/constants/locales';
 import { useDispatch } from '../../store/hooks';
+import type { MetaMaskReduxState } from '../../store/types';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
@@ -96,6 +97,7 @@ export const useCarouselManagement = ({
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
+  const store = useStore<MetaMaskReduxState>();
   const slides = useSelector(getSlides);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
@@ -103,15 +105,13 @@ export const useCarouselManagement = ({
   const useExternalServices = useSelector(getUseExternalServices);
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
-  const slidesRef = useRef(slides);
-  slidesRef.current = slides;
+
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
   );
   const currentLocale = useSelector(getCurrentLocale);
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
-
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
   const [downloadEligibilityReady, setDownloadEligibilityReady] =
     useState<boolean>(false);
@@ -205,7 +205,7 @@ export const useCarouselManagement = ({
 
         const normalizeList = (list: CarouselSlide[]) =>
           list
-            .map((s) => normalize(s, slidesRef.current ?? []))
+            .map((s) => normalize(s, getSlides(store.getState())))
             .filter((s): s is CarouselSlide => Boolean(s))
             .filter(isNowActive);
 
@@ -262,12 +262,14 @@ export const useCarouselManagement = ({
   }, [
     enabled,
     dispatch,
+    store,
     hasZeroBalance,
     contentfulEnabled,
     currentLocale,
     testDate,
     inTest,
     downloadEligibilityReady,
+    downloadEligible,
   ]);
 
   return { slides };

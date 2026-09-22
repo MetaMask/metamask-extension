@@ -221,7 +221,7 @@ export function ViewContactContent({
           size={ButtonSize.Lg}
           isDanger
           onClick={onDelete}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="view-contact-delete-button"
         >
           {t('delete')}
@@ -230,7 +230,7 @@ export function ViewContactContent({
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           onClick={onEdit}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="view-contact-edit-button"
         >
           {t('edit')}

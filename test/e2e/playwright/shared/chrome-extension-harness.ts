@@ -82,6 +82,8 @@ export async function launchMetaMaskChromeExtension(
     '--disable-features=Translate',
     '--disable-component-update',
     '--disable-dev-shm-usage',
+    // Required for the proxy to work as Playwright's per-page HTTPS error ignoring (ignoreHTTPSErrors) doesn't cover MV3 extension service workers
+    '--ignore-certificate-errors',
     ...(options.extraArgs ?? []),
   ];
 
