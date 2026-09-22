@@ -32,9 +32,9 @@ export const GasInput = ({
   const [error, setError] = useState<string | undefined>();
   const [sourceGasLimit, setSourceGasLimit] = useState(gasLimit);
   const gasLimitChanged = sourceGasLimit !== gasLimit;
-  let displayedValue = value;
+  let valueDecimal = value;
   if (gasLimitChanged) {
-    displayedValue = gasLimit ? hexToDecimal(gasLimit).toString() : '';
+    valueDecimal = gasLimit ? hexToDecimal(gasLimit).toString() : '';
   }
   const displayedError = gasLimitChanged ? undefined : error;
 
@@ -83,7 +83,7 @@ export const GasInput = ({
         }}
         onChange={handleChange}
         label={t('gasLimit')}
-        value={displayedValue}
+        value={valueDecimal}
       />
     </Box>
   );
