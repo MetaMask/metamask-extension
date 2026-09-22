@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, within } from '@testing-library/react';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
   AccountGroupType,
@@ -61,6 +61,8 @@ const TEST_IDS = {
   DISCONNECT_BUTTON: 'disconnect-button',
   SITE_INFO_BANNER: 'connected-site-info-banner',
   DISCONNECT_ALL_MODAL: 'disconnect-all-modal',
+  SEARCH: 'multichain-edit-account-list-search',
+  SEARCH_CLEAR_BUTTON: 'text-field-search-clear-button',
 } as const;
 
 const mockEvmAccount1 = createMockInternalAccount({
@@ -365,6 +367,53 @@ describe('MultichainEditAccountsPage', () => {
     expect(getByText('Test Group 1')).toBeInTheDocument();
     expect(getByText('Test Group 2')).toBeInTheDocument();
     expect(getByText('Test Group 3')).toBeInTheDocument();
+  });
+
+  it('displays the search field with correct placeholder', () => {
+    const { getByTestId } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    expect(searchContainer).toBeInTheDocument();
+
+    const searchInput = within(searchContainer).getByPlaceholderText(
+      messages.searchYourAccounts.message,
+    );
+    expect(searchInput).toBeInTheDocument();
+  });
+
+  it('filters accounts when search text is entered', () => {
+    const { getByTestId, getByText, queryByText } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'Test Group 2' } });
+
+    expect(getByText('Test Group 2')).toBeInTheDocument();
+    expect(queryByText('Test Group 1')).not.toBeInTheDocument();
+    expect(queryByText('Test Group 3')).not.toBeInTheDocument();
+  });
+
+  it('filters accounts when search text is an address', () => {
+    const { getByTestId, getByText, queryByText } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    // search for the first 4 characters of mockEvmAccount2's address
+    fireEvent.change(searchInput, { target: { value: '0x2222' } });
+
+    expect(getByText('Test Group 2')).toBeInTheDocument();
+    expect(queryByText('Test Group 1')).not.toBeInTheDocument();
+    expect(queryByText('Test Group 3')).not.toBeInTheDocument();
+  });
+
+  it('shows "No accounts found" message when no accounts match search criteria', () => {
+    const { getByTestId, getByText } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'nonexistent account' } });
+
+    expect(getByText(messages.noAccountsFound.message)).toBeInTheDocument();
   });
 
   it('shows selected accounts with visual indication', () => {

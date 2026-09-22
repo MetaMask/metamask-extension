@@ -8,6 +8,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import {
+  type CaipAssetType,
   type CaipChainId,
   type Hex,
   parseCaipAssetType,
@@ -16,13 +17,16 @@ import {
   AssetType,
   FeatureId,
   formatAddressToCaipReference,
+  formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
   isNonEvmChainId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { v4 as uuidv4 } from 'uuid';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
+import { getChainIdFromAssetId } from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
@@ -41,6 +45,7 @@ import {
 } from '../../ducks/bridge/actions';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { useDispatch } from '../../store/hooks';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -101,11 +106,51 @@ export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
        */
       gasSymbol?: string;
     } | null;
+    swapViewTraceId?: string;
+    swapViewPrefilledAmount?: boolean;
   };
 };
 
 const clearSendBundleIfPresent = (state: BridgeNavigationOptions['state']) =>
   Object.hasOwn(state, 'sendBundle') ? { sendBundle: null } : {};
+
+export const startSwapViewLoadTrace = ({
+  token,
+  search,
+  entryPoint,
+}: {
+  token: BridgeNavigationOptions['state']['token'];
+  search: URLSearchParams;
+  entryPoint?: string;
+}) => {
+  const id = uuidv4();
+  const srcChainId = token?.chainId
+    ? formatChainIdToCaip(token.chainId)
+    : getChainIdFromAssetId(
+        search.get(BridgeQueryParams.From) as CaipAssetType,
+      );
+  const destChainId = getChainIdFromAssetId(
+    search.get(BridgeQueryParams.To) as CaipAssetType,
+  );
+
+  trace({
+    name: TraceName.SwapViewLoaded,
+    op: TraceOperation.BridgeScreenPerformance,
+    id,
+    data: {
+      /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */
+      entry_point: entryPoint ?? 'unknown',
+      view_mode: 'Unified',
+      prefilled_amount: Boolean(search.get(BridgeQueryParams.Amount)),
+      ...(srcChainId && { src_chain_id: srcChainId }),
+      ...(destChainId && { dest_chain_id: destChainId }),
+      /* eslint-enable @typescript-eslint/naming-convention */
+    },
+    startTime: Date.now(),
+  });
+
+  return id;
+};
 
 /**
  * Builds a "cleared" bridge navigation state: preserves any extra props from
@@ -201,13 +246,21 @@ export const useBridgeNavigation = () => {
         token: BridgeNavigationOptions['state']['token'];
         search: URLSearchParams;
         isEntrypoint: boolean;
+        entryPoint?: string;
       } = {
         token: state?.token,
         search: new URLSearchParams(''),
         isEntrypoint: false,
       },
     ) => {
-      const { token, search: searchParams, isEntrypoint } = params;
+      const { token, search: searchParams, isEntrypoint, entryPoint } = params;
+      const swapViewTraceId = isEntrypoint
+        ? startSwapViewLoadTrace({
+            token,
+            search: searchParams,
+            entryPoint,
+          })
+        : undefined;
       // Publish PageViewed event on initial page view
       isEntrypoint &&
         dispatch(
@@ -227,6 +280,14 @@ export const useBridgeNavigation = () => {
           state: {
             ...state,
             token,
+            ...(swapViewTraceId
+              ? {
+                  swapViewTraceId,
+                  swapViewPrefilledAmount: Boolean(
+                    searchParams.get(BridgeQueryParams.Amount),
+                  ),
+                }
+              : {}),
             ...clearSendBundleIfPresent(state),
           },
           replace: !isEntrypoint,
@@ -352,6 +413,8 @@ export const useBridgeNavigation = () => {
      * from the asset page
      */
     token: memoizedToken,
+    swapViewTraceId: state.swapViewTraceId,
+    swapViewPrefilledAmount: state.swapViewPrefilledAmount,
     search,
     resetLocationState,
     resetSearchParams,

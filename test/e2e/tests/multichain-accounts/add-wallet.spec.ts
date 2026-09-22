@@ -4,8 +4,8 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -14,7 +14,11 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from '../identity/account-syncing/mock-data';
-import { mockPriceApi } from '../tokens/utils/mocks';
+import {
+  getMockAssetsPrice,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
 import { mockIdentityServices } from '../identity/mocks';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
@@ -39,6 +43,18 @@ describe('Add wallet', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
+          })
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           userStorageMockttpController.setupPath(
@@ -159,18 +175,21 @@ describe('Add wallet', function () {
           'foobarbazqux',
         );
 
-        // Check new imported account has correct name and label
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkAccountImportedToastIsDisplayed();
+        await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);
+
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Imported accounts',
           account: IMPORTED_ACCOUNT_NAME,
-          balance: '$0.00',
         });
         await accountListPage.checkNumberOfAvailableAccounts(4);
-        await accountListPage.switchToAccount(IMPORTED_ACCOUNT_NAME);
-        await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);
       },
     );
   });

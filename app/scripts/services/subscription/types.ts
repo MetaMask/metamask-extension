@@ -4,12 +4,12 @@ import {
   SubscriptionControllerGetCryptoApproveTransactionParamsAction,
   SubscriptionControllerGetPricingAction,
   SubscriptionControllerGetSubscriptionsAction,
-  SubscriptionControllerStartShieldSubscriptionWithCardAction,
+  SubscriptionControllerStartSubscriptionWithCardAction,
   SubscriptionControllerUpdatePaymentMethodAction,
   SubscriptionControllerSubmitSponsorshipIntentsAction,
   SubscriptionControllerGetStateAction,
   SubscriptionControllerLinkRewardsAction,
-  SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
+  SubscriptionControllerSubmitSubscriptionCryptoApprovalAction,
   SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
@@ -50,7 +50,7 @@ export type ServiceName = typeof SERVICE_NAME;
 
 type AllowedActions =
   | SubscriptionControllerGetPricingAction
-  | SubscriptionControllerStartShieldSubscriptionWithCardAction
+  | SubscriptionControllerStartSubscriptionWithCardAction
   | SubscriptionControllerUpdatePaymentMethodAction
   | SubscriptionControllerGetSubscriptionsAction
   | SubscriptionControllerGetCryptoApproveTransactionParamsAction
@@ -58,7 +58,7 @@ type AllowedActions =
   | SubscriptionControllerSubmitSponsorshipIntentsAction
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerLinkRewardsAction
-  | SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction
+  | SubscriptionControllerSubmitSubscriptionCryptoApprovalAction
   | SubscriptionControllerClearLastSelectedPaymentMethodAction
   | TransactionControllerGetTransactionsAction
   | PreferencesControllerGetStateAction

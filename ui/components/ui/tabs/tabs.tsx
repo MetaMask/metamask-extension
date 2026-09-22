@@ -294,7 +294,6 @@ export const Tabs = <TKey extends string = string>({
         role="tablist"
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Start}
-        backgroundColor={BoxBackgroundColor.BackgroundDefault}
         gap={4}
         {...tabListProps}
         onKeyDown={handleTabListKeyDown}

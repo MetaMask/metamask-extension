@@ -75,6 +75,10 @@ class NotificationsSettingsPage {
     section: Exclude<NotificationPreferenceSection, 'walletActivity'>,
   ) => `[data-testid="${section}-in-app-notifications-toggle-box"]`;
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly shortPresenceTimeoutMs = 1000;
 
   constructor(driver: Driver) {
@@ -219,6 +223,7 @@ class NotificationsSettingsPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.allowNotificationsToggle,
+        this.settingsPage,
       ]);
     } catch (e) {
       console.log(

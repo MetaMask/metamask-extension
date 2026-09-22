@@ -3,7 +3,7 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
-import AccountList from '../../page-objects/pages/account-list-page';
+import AccountList from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -13,7 +13,9 @@ import {
   completeImportSRPOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { getMockAssetsPrice, mockSpotPrices } from '../tokens/utils/mocks';
+
+const MOCK_ETH_PRICE = 1700;
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
@@ -52,7 +54,7 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       }),
     await mockSpotPrices(mockServer, {
       'eip155:1/slip44:60': {
-        price: 1700,
+        price: MOCK_ETH_PRICE,
         marketCap: 382623505141,
         pricePercentChange1d: 0,
       },
@@ -139,6 +141,18 @@ describe('MetaMask onboarding ', function () {
             eip155: {
               '0x1': true,
             },
+          })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_PRICE,
+                usdConversionRate: MOCK_ETH_PRICE,
+              },
+            },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
           })
           .build(),
         title: this.test?.fullTitle(),

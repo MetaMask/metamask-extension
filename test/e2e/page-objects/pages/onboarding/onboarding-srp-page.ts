@@ -89,10 +89,6 @@ class OnboardingSrpPage {
     await this.driver.clickElementAndWaitToDisappear(this.srpConfirmButton);
   }
 
-  async clickConfirmButtonWithSrpError(): Promise<void> {
-    await this.driver.clickElement(this.srpConfirmButton);
-  }
-
   /**
    * Fill the SRP words with the provided seed phrase
    *

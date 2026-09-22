@@ -2,11 +2,17 @@ import type { Hex } from '@metamask/utils';
 import { useQuery } from '@metamask/react-data-query';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MoneyAccountApiDataServiceQueryKeys } from '../../../shared/lib/money/query-keys';
+import { reportMoneyQueryErrorOnce } from '../../helpers/money/report-money-error';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 import { useMoneyAccountInterest } from './useMoneyAccountInterest';
 
 jest.mock('@metamask/react-data-query', () => ({
   useQuery: jest.fn(),
+}));
+
+jest.mock('../../helpers/money/report-money-error', () => ({
+  ...jest.requireActual('../../helpers/money/report-money-error'),
+  reportMoneyQueryErrorOnce: jest.fn(),
 }));
 
 jest.mock('./useMoneyAccountInfo', () => ({
@@ -15,6 +21,7 @@ jest.mock('./useMoneyAccountInfo', () => ({
 
 const mockUseQuery = jest.mocked(useQuery);
 const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
+const mockReportMoneyQueryErrorOnce = jest.mocked(reportMoneyQueryErrorOnce);
 
 const MONEY_ADDRESS: Hex = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B';
 const VAULT_ADDRESS: Hex = '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae';
@@ -115,5 +122,31 @@ describe('useMoneyAccountInterest', () => {
 
     expect(mockUseQuery.mock.calls[0][0].enabled).toBe(false);
     expect(mockUseQuery.mock.calls[1][0].enabled).toBe(false);
+  });
+
+  it('forwards an interest fetch failure to Sentry', () => {
+    const last30Error = new Error('30d down');
+    const sinceInceptionError = new Error('inception down');
+    mockUseQuery
+      .mockReturnValueOnce({ isError: true, error: last30Error } as never)
+      .mockReturnValueOnce({
+        isError: true,
+        error: sinceInceptionError,
+      } as never);
+
+    renderHookWithProvider(() => useMoneyAccountInterest(), buildState());
+
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+      'interest:30d',
+      '[Money Account] Interest fetch failed',
+      last30Error,
+      { window: '30d' },
+    );
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+      'interest:since_inception',
+      '[Money Account] Interest fetch failed',
+      sinceInceptionError,
+      { window: 'since_inception' },
+    );
   });
 });

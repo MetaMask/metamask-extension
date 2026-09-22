@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectBalanceByWallet } from '../../selectors/assets';
+import { getAccountGroupDisplayBalance } from '../../helpers/utils/account-group-balance';
 import { useDisplayBalanceCalc } from './useAccountBalance';
 
 export function useSingleWalletDisplayBalance(walletId: string) {
@@ -21,17 +22,16 @@ export function useSingleWalletAccountsBalanceCallback(walletId: string) {
 
   const getDisplayBalance = useCallback(
     (groupId: string) => {
-      const balance = walletBalance.groups?.[groupId];
-      if (!balance) {
-        return undefined;
-      }
-
-      const displayBalance = displayBalanceCalc(
-        balance?.totalBalanceInUserCurrency,
-        balance?.userCurrency,
+      // Undefined when this group has no known balance yet, so nothing is
+      // rendered instead of a misleading "$0.00".
+      const groupBalance = getAccountGroupDisplayBalance(
+        walletBalance.groups?.[groupId],
       );
 
-      return displayBalance;
+      return (
+        groupBalance &&
+        displayBalanceCalc(groupBalance.amount, groupBalance.currency)
+      );
     },
     [walletBalance, displayBalanceCalc],
   );

@@ -19,14 +19,6 @@
   }
 }
 
-.multichain-app-header-logo + .multichain-page {
-  $height-screen-sm-min: 720px;
-
-  @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-    padding-top: 0;
-  }
-}
-
 .snap-view > .multichain-page {
   $height-screen-sm-min: 720px;
 
