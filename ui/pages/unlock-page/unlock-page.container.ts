@@ -49,10 +49,6 @@ type OwnProps = {
   navigateAfterUnlock?: (
     context?: PasskeyUnlockSuccessContext,
   ) => Promise<void>;
-  /**
-   * Starts replacing a legacy passkey after the migration prompt is accepted.
-   */
-  onReplacePasskey?: () => Promise<void>;
 };
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
@@ -147,7 +143,6 @@ const UnlockPageConnected = compose(
     navigateAfterUnlock?: (
       context?: PasskeyUnlockSuccessContext,
     ) => Promise<void>;
-    onReplacePasskey?: () => Promise<void>;
   }>
 >;
 

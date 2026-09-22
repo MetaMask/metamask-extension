@@ -65,6 +65,7 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import PasskeyMigrationModal from '../../components/app/passkey-migration-modal';
+import PasskeyReplacementModal from '../../components/app/passkey-replacement-modal';
 import { captureException } from '../../../shared/lib/sentry';
 import { getCaretCoordinates } from './unlock-page.util';
 import {
@@ -83,11 +84,6 @@ type UnlockPageProps = UnlockPageContext & {
   isOnboardingCompleted: boolean;
   onSubmit: (password: string) => Promise<void>;
   navigateAfterUnlock: (context?: PasskeyUnlockSuccessContext) => Promise<void>;
-  /**
-   * Starts replacing a legacy passkey. The parent owns the replacement flow
-   * and navigation after it completes.
-   */
-  onReplacePasskey?: () => Promise<void>;
   isPasskeyActive: boolean;
   checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
@@ -114,6 +110,7 @@ type UnlockPageState = {
   showLoginErrorModal: boolean;
   showConnectionsRemovedModal: boolean;
   showPasskeyMigrationModal: boolean;
+  showPasskeyReplacementModal: boolean;
   isPasswordUnlockMode: boolean;
 };
 
@@ -233,10 +230,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
      * When true, passkey unlock UI defers ceremony to a full extension tab (sidepanel + incompatible AAGUID).
      */
     mustDeferPasskeyToBrowserTab: PropTypes.bool,
-    /**
-     * Starts replacing a legacy passkey after the migration prompt is accepted.
-     */
-    onReplacePasskey: PropTypes.func,
   };
 
   state: UnlockPageState = {
@@ -249,6 +242,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     showLoginErrorModal: false,
     showConnectionsRemovedModal: false,
     showPasskeyMigrationModal: false,
+    showPasskeyReplacementModal: false,
     isPasswordUnlockMode: true,
   };
 
@@ -586,20 +580,22 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   handleReplacePasskey = async () => {
-    this.setState({ showPasskeyMigrationModal: false });
-
-    if (this.props.onReplacePasskey) {
-      await this.props.onReplacePasskey();
-      return;
-    }
-
-    // Temporary UI-only fallback until the replacement controller operation is
-    // implemented.
-    await this.props.navigateAfterUnlock();
+    this.setState({
+      showPasskeyMigrationModal: false,
+      showPasskeyReplacementModal: true,
+    });
   };
 
   handleRemindMeLater = async () => {
-    this.setState({ showPasskeyMigrationModal: false });
+    this.setState({
+      showPasskeyMigrationModal: false,
+      showPasskeyReplacementModal: false,
+    });
+    await this.props.navigateAfterUnlock();
+  };
+
+  handlePasskeyReplacementComplete = async () => {
+    this.setState({ showPasskeyReplacementModal: false });
     await this.props.navigateAfterUnlock();
   };
 
@@ -689,6 +685,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       showLoginErrorModal,
       showConnectionsRemovedModal,
       showPasskeyMigrationModal,
+      showPasskeyReplacementModal,
       isPasswordUnlockMode,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
@@ -724,6 +721,12 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
         {showPasskeyMigrationModal && (
           <PasskeyMigrationModal
             onReplacePasskey={this.handleReplacePasskey}
+            onRemindMeLater={this.handleRemindMeLater}
+          />
+        )}
+        {showPasskeyReplacementModal && (
+          <PasskeyReplacementModal
+            onComplete={this.handlePasskeyReplacementComplete}
             onRemindMeLater={this.handleRemindMeLater}
           />
         )}

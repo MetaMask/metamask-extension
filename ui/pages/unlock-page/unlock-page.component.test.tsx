@@ -11,9 +11,16 @@ import UnlockPage from './unlock-page.component';
 
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
+const mockReplacePasskey = jest.fn();
 
 jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
+}));
+
+jest.mock('../../hooks/passkey/usePasskeyReplacement', () => ({
+  usePasskeyReplacement: () => ({
+    replacePasskey: mockReplacePasskey,
+  }),
 }));
 
 jest.mock('../../hooks/useAnalytics', () => {
@@ -170,6 +177,32 @@ describe('UnlockPage component (passkey UI)', () => {
     await waitFor(() => {
       expect(props.navigateAfterUnlock).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('opens the replacement modal when the user chooses to replace the passkey', async () => {
+    setMockPasskeyRecord({
+      keyDerivation: { method: 'userHandle' },
+    });
+    const props = buildProps();
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(getByTestId('passkey-migration-modal')).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('passkey-migration-modal-replace-button'));
+
+    await waitFor(() => {
+      expect(getByTestId('passkey-replacement-modal')).toBeInTheDocument();
+    });
+    expect(props.navigateAfterUnlock).not.toHaveBeenCalled();
   });
 
   it('navigates after a successful password unlock', async () => {

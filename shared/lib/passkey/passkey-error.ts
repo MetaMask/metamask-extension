@@ -5,7 +5,7 @@ import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
 
 export type TranslateFn = (key: string, substitutions?: string[]) => string;
 
-const PASSKEY_PRF_REQUIRED_ERROR_CODE = 'prf_required';
+const PASSKEY_PRF_REQUIRED_ERROR_CODE = PasskeyControllerErrorCode.PrfRequired;
 
 /**
  * Maps passkey error `code` strings (controller + extension) to extension `messages.json` keys.

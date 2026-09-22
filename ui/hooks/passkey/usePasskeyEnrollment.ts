@@ -56,9 +56,9 @@ export function usePasskeyEnrollment() {
         authenticationOptions,
       );
 
-      if (!hasPasskeyPRFResult(authenticationResponse)) {
-        throw new PasskeyPRFRequiredError();
-      }
+      // if (!hasPasskeyPRFResult(authenticationResponse)) {
+      //   throw new PasskeyPRFRequiredError();
+      // }
 
       onStageChange?.('enroll');
       await messenger.call('PasskeyController:protectVaultKeyWithPasskey', {
