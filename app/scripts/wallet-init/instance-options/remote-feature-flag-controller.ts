@@ -11,10 +11,7 @@ import {
   type MetaMaskBuildEnvironment,
 } from '../../../../shared/constants/build';
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
-import {
-  getManifestFlags,
-  type ManifestFlags,
-} from '../../../../shared/lib/manifestFlags';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import type { WalletInitMessenger } from '../types';
 
 const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
@@ -87,11 +84,6 @@ export function getRemoteFeatureFlagClientConfigApiService() {
   });
 }
 
-type RemoteFeatureFlagControllerInstanceOptions =
-  WalletOptions['instanceOptions']['remoteFeatureFlagController'] & {
-    overrideFeatureFlags: ManifestFlags['remoteFeatureFlags'];
-  };
-
 /**
  * Build the extension's `RemoteFeatureFlagController` instance options. The
  * `disabled` value is the initial value only (set once at construction); the
@@ -115,7 +107,7 @@ export function getRemoteFeatureFlagControllerInstanceOptions({
 }: {
   messenger: WalletInitMessenger;
   state: Record<string, Record<string, Json>>;
-}): RemoteFeatureFlagControllerInstanceOptions {
+}): WalletOptions['instanceOptions']['remoteFeatureFlagController'] {
   return {
     clientConfigApiService: getRemoteFeatureFlagClientConfigApiService(),
     // Manifest flags are available before the asynchronous `wallet.init()`
