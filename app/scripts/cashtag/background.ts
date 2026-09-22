@@ -353,10 +353,6 @@ function handleSetWidgetEnabled(
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
           /* eslint-disable @typescript-eslint/naming-convention */
-          settings_group: 'preferences_and_display',
-          settings_type: 'show_metamask_widget_on_x',
-          old_value: previous,
-          new_value: enabled,
           show_metamask_widget_on_x: enabled,
           /* eslint-enable @typescript-eslint/naming-convention */
           location: 'x_widget',
