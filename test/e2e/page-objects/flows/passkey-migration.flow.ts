@@ -1,5 +1,8 @@
 import { Driver } from '../../webdriver/driver';
-import { addLegacyUserHandlePasskeyCredential } from '../../webdriver/virtual-authenticator';
+import {
+  addLegacyUserHandlePasskeyCredential,
+  replaceVirtualAuthenticator,
+} from '../../webdriver/virtual-authenticator';
 import PasskeyMigrationModal from '../pages/dialog/passkey-migration-modal';
 import SetupPasskeyPage from '../pages/onboarding/setup-passkey-page';
 
@@ -29,6 +32,7 @@ export const openLegacyPasskeyMigration = async (
 export const replaceLegacyPasskey = async (driver: Driver): Promise<void> => {
   const passkeyMigrationModal = new PasskeyMigrationModal(driver);
   await passkeyMigrationModal.clickReplacePasskey();
+  await replaceVirtualAuthenticator(driver);
 
   const setupPasskeyPage = new SetupPasskeyPage(driver);
   await setupPasskeyPage.checkPageIsLoaded();
@@ -41,15 +45,19 @@ export const replaceLegacyPasskey = async (driver: Driver): Promise<void> => {
  * waits for the rejection screen.
  *
  * @param driver - WebDriver instance on the passkey migration modal.
+ * @param extensionId - Unpacked extension id used as the WebAuthn RP ID.
  */
 export const replaceLegacyPasskeyWithNonPrfAuthenticator = async (
   driver: Driver,
+  extensionId: string,
 ): Promise<void> => {
   const passkeyMigrationModal = new PasskeyMigrationModal(driver);
   await passkeyMigrationModal.clickReplacePasskey();
+  await replaceVirtualAuthenticator(driver);
 
   const setupPasskeyPage = new SetupPasskeyPage(driver);
   await setupPasskeyPage.checkPageIsLoaded();
   await setupPasskeyPage.clickSetUpPasskey();
   await setupPasskeyPage.checkPrfRejectionIsDisplayed();
+  await addLegacyUserHandlePasskeyCredential(driver, extensionId);
 };

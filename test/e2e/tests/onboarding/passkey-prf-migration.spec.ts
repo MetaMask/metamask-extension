@@ -2,10 +2,10 @@ import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { getLegacyUserHandlePasskeyRecord } from '../../webdriver/legacy-passkey-fixture';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PasskeyMigrationModal from '../../page-objects/pages/dialog/passkey-migration-modal';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
+import { getLegacyUserHandlePasskeyRecord } from '../../webdriver/virtual-authenticator';
 import {
   openLegacyPasskeyMigration,
   replaceLegacyPasskey,
@@ -98,7 +98,7 @@ describe('Passkey PRF migration', function () {
         extensionId: string;
       }) => {
         await openLegacyPasskeyMigration(driver, extensionId);
-        await replaceLegacyPasskeyWithNonPrfAuthenticator(driver);
+        await replaceLegacyPasskeyWithNonPrfAuthenticator(driver, extensionId);
 
         const setupPasskeyPage = new SetupPasskeyPage(driver);
         await setupPasskeyPage.clickKeepCurrentPasskey();
