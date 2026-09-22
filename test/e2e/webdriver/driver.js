@@ -574,7 +574,9 @@ class Driver {
     }
 
     let element;
-    if (!['visible', 'hidden', 'detached', 'enabled', 'disabled'].includes(state)) {
+    if (
+      !['visible', 'hidden', 'detached', 'enabled', 'disabled'].includes(state)
+    ) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
