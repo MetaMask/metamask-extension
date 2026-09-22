@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { usePasskeyEnrollment } from '../../../hooks/passkey/usePasskeyEnrollment';
-import { usePasskeyReplacement } from '../../../hooks/passkey/usePasskeyReplacement';
+import { usePasskeyPrfMigration } from '../../../hooks/passkey/usePasskeyPrfMigration';
 import { PasskeySetupView } from './passkey-setup-view';
 import type {
   PasskeySetupOperation,
@@ -33,6 +33,7 @@ export default function SetupPasskeyContent({
  *
  * @param props - Passkey setup props.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PasskeyEnrollmentSetup(props: SetupPasskeyContentProps) {
   const { enrollWithPasskey } = usePasskeyEnrollment();
 
@@ -44,8 +45,10 @@ function PasskeyEnrollmentSetup(props: SetupPasskeyContentProps) {
  *
  * @param props - Passkey setup props.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PasskeyMigrationSetup(props: SetupPasskeyContentProps) {
-  const { replacePasskey } = usePasskeyReplacement();
+  const { replacePasskey } = usePasskeyPrfMigration();
+
   const setupPasskey: PasskeySetupOperation = useCallback(
     async ({ onStageChange }) => {
       await replacePasskey({

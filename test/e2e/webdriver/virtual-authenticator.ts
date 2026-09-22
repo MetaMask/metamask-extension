@@ -2,11 +2,18 @@ import {
   VirtualAuthenticatorOptions,
   Transport,
   Protocol,
+  Credential as VirtualAuthenticatorCredential,
 } from 'selenium-webdriver/lib/virtual_authenticator';
 import type { PasskeyRecord } from '@metamask/passkey-controller';
 import { Driver } from './driver';
+import {
+  getLegacyPasskeyPrivateKey,
+  LEGACY_PASSKEY_CREDENTIAL_ID,
+  LEGACY_PASSKEY_USER_HANDLE,
+} from './legacy-passkey-fixture';
 
 type RawDriverWithVirtualAuth = {
+  addCredential: (credential: VirtualAuthenticatorCredential) => Promise<void>;
   addVirtualAuthenticator: (
     options: VirtualAuthenticatorOptions,
   ) => Promise<void>;
@@ -38,6 +45,28 @@ export async function removeVirtualAuthenticator(
   driver: Driver,
 ): Promise<void> {
   await getRawDriver(driver).removeVirtualAuthenticator();
+}
+
+/**
+ * Loads the legacy userHandle credential that matches
+ * {@link getLegacyUserHandlePasskeyRecord}.
+ *
+ * @param driver - WebDriver instance with a virtual authenticator attached.
+ * @param extensionId - Unpacked extension id, used as the WebAuthn RP ID.
+ */
+export async function addLegacyUserHandlePasskeyCredential(
+  driver: Driver,
+  extensionId: string,
+): Promise<void> {
+  await getRawDriver(driver).addCredential(
+    VirtualAuthenticatorCredential.createResidentCredential(
+      LEGACY_PASSKEY_CREDENTIAL_ID,
+      `chrome-extension://${extensionId}`,
+      LEGACY_PASSKEY_USER_HANDLE,
+      getLegacyPasskeyPrivateKey(),
+      0,
+    ),
+  );
 }
 
 export const DUMMY_PASSKEY_RECORD: PasskeyRecord = {

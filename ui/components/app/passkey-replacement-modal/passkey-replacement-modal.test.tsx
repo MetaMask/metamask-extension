@@ -18,8 +18,8 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
 
-jest.mock('../../../hooks/passkey/usePasskeyReplacement', () => ({
-  usePasskeyReplacement: () => ({
+jest.mock('../../../hooks/passkey/usePasskeyPrfMigration', () => ({
+  usePasskeyPrfMigration: () => ({
     replacePasskey: mockReplacePasskey,
   }),
 }));

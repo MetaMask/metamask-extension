@@ -38,7 +38,7 @@ export type ReplacePasskeyParams = {
  * complete. This hook owns the browser ceremonies and removes the staged
  * replacement ceremony when the browser flow is abandoned.
  */
-export function usePasskeyReplacement() {
+export function usePasskeyPrfMigration() {
   const messenger = useMessenger<PasskeyReplacementMessenger>();
   const activeRegistrationChallenge = useRef<string | null>(null);
   const isUnmounted = useRef(false);
@@ -120,7 +120,7 @@ export function usePasskeyReplacement() {
         await forceUpdateMetamaskState(dispatch);
       }
     },
-    [cancelActiveReplacement, messenger],
+    [cancelActiveReplacement, dispatch, messenger],
   );
 
   return { replacePasskey };

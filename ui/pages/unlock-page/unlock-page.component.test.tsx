@@ -17,8 +17,8 @@ jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
 }));
 
-jest.mock('../../hooks/passkey/usePasskeyReplacement', () => ({
-  usePasskeyReplacement: () => ({
+jest.mock('../../hooks/passkey/usePasskeyPrfMigration', () => ({
+  usePasskeyPrfMigration: () => ({
     replacePasskey: mockReplacePasskey,
   }),
 }));

@@ -12,7 +12,7 @@ import {
   startPasskeyRegistration,
 } from '../../../shared/lib/passkey';
 import { PasskeyPRFRequiredError } from '../../../shared/lib/passkey/passkey-capabilities';
-import { usePasskeyReplacement } from './usePasskeyReplacement';
+import { usePasskeyPrfMigration } from './usePasskeyPrfMigration';
 
 jest.mock('../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
@@ -64,7 +64,7 @@ type ReplacementMessenger = RouteMessenger<
 
 function renderReplacementHook(routeMessenger: ReplacementMessenger) {
   return renderHookWithProviderTyped(
-    () => usePasskeyReplacement(),
+    () => usePasskeyPrfMigration(),
     {},
     '/',
     undefined,
@@ -74,7 +74,7 @@ function renderReplacementHook(routeMessenger: ReplacementMessenger) {
   );
 }
 
-describe('usePasskeyReplacement', () => {
+describe('usePasskeyPrfMigration', () => {
   const registrationOptions = { challenge: 'registration-challenge' };
   const authenticationOptions = { challenge: 'authentication-challenge' };
   const generatePasskeyReplacementRegistrationOptions = jest

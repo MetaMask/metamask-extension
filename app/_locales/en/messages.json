@@ -7052,7 +7052,7 @@
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyMigrationDescription1": {
-    "message": "The way your passkey was saved can't fully protect your wallet key. Replace it to keep using Passkey.",
+    "message": "The way your passkey was saved can't fully protect your wallet key. Replace it to keep using Biometrics feature.",
     "description": "First description shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeyMigrationDescription2": {
