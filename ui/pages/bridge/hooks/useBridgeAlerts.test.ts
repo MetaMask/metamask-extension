@@ -25,6 +25,7 @@ import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../components/app/assets/enablement/arc';
 import { useBridgeAlerts } from './useBridgeAlerts';
 
 jest.mock('../../../hooks/useI18nContext');
@@ -586,6 +587,34 @@ describe('useBridgeAlerts', () => {
             severity: BannerAlertSeverity.Warning,
             actionButtonLabel: 'bridgeUseMaxAmountAllowedWithReserve:ETH',
           }),
+        }),
+      );
+    });
+
+    it('uses Arc-specific reserve message when the source chain is Arc', () => {
+      jest
+        .mocked(getFromChain)
+        .mockReturnValue({ chainId: ARC_NATIVE_CAIP_CHAIN_ID } as never);
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({
+        priceImpact: { amount: '0.05' },
+      });
+      jest
+        .mocked(getActiveQuoteInsufficientNativeReserveError)
+        .mockReturnValue({
+          minimumNativeBalanceToBeKeptInAccount: '0.2',
+          maxSwappableNativeBalance: '9.8',
+        });
+
+      const { result } = renderHook();
+
+      expect(
+        result.current.alertsById['insufficient-native-reserve'],
+      ).toStrictEqual(
+        expect.objectContaining({
+          title: 'bridgeValidationInsufficientNativeReserveTitleArc:ETH',
+          description:
+            'bridgeValidationInsufficientNativeReserveMessageArc:0.2,9.8,ETH',
         }),
       );
     });

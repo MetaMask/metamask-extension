@@ -2547,9 +2547,17 @@
     "message": "Эта конкретная сеть требует поддержания резерва в размере $1 $3 на вашем счете. С вашим текущим балансом вы можете использовать максимум $2 $3",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
+  "bridgeValidationInsufficientNativeReserveMessageArc": {
+    "message": "Оставьте на счете не менее $1 $3 для оплаты сетевых комиссий Arc. С вашим текущим балансом вы можете использовать до $2 $3.",
+    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
+  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Требуется минимальный резервный баланс в размере $1",
     "description": "$1 is the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitleArc": {
+    "message": "Оставьте немного $1 для сетевых комиссий Arc",
+    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "Создание моста"

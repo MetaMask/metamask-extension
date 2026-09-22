@@ -28,6 +28,7 @@ import { type BridgeAlert } from '../prepare/types';
 import { useDispatch } from '../../../store/hooks';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../components/app/assets/enablement/arc';
 
 /**
  * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
@@ -312,12 +313,21 @@ export const useBridgeAlerts = () => {
       insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
         '0'
     ) {
+      const isFromChainArc = fromChain?.chainId === ARC_NATIVE_CAIP_CHAIN_ID;
+      const insufficientNativeReserveTitleKey = isFromChainArc
+        ? 'bridgeValidationInsufficientNativeReserveTitleArc'
+        : 'bridgeValidationInsufficientNativeReserveTitle';
+
+      const insufficientNativeReserveMessageKey = isFromChainArc
+        ? 'bridgeValidationInsufficientNativeReserveMessageArc'
+        : 'bridgeValidationInsufficientNativeReserveMessage';
+
       categorizeAlert({
         id: 'insufficient-native-reserve',
         isDismissable: false,
         severity: 'warning',
-        title: t('bridgeValidationInsufficientNativeReserveTitle', [ticker]),
-        description: t('bridgeValidationInsufficientNativeReserveMessage', [
+        title: t(insufficientNativeReserveTitleKey, [ticker]),
+        description: t(insufficientNativeReserveMessageKey, [
           insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
           insufficientNativeReserveError.maxSwappableNativeBalance,
           ticker,

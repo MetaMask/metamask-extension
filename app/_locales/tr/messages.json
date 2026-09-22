@@ -2550,9 +2550,17 @@
     "message": "Bu ağ için hesabınızda minimum $1 $3 rezerv bulunmalıdır. Güncel bakiyenizle maksimum $2 $3 kullanabilirsiniz",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
+  "bridgeValidationInsufficientNativeReserveMessageArc": {
+    "message": "Arc ağ ücretlerini karşılamak için hesabınızda en az $1 $3 bulundurun. Mevcut bakiyenizle en fazla $2 $3 kullanabilirsiniz.",
+    "description": "$1 is the minimum Arc USDC reserve amount, $2 is the spendable balance, $3 is the token ticker symbol"
+  },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Minimum $1 reserv bakiyesi gerekli",
     "description": "$1 is the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitleArc": {
+    "message": "Arc ağ ücretleri için biraz $1 bırakın",
+    "description": "$1 is the token ticker symbol"
   },
   "bridging": {
     "message": "Köprü"
