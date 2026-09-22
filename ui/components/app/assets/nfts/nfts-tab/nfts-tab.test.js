@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import configureStore from '../../../../../store/store';
@@ -248,6 +248,7 @@ describe('NFT Items', () => {
   setBackgroundConnection({
     detectNfts: detectNftsStub,
     getState: getStateStub,
+    getStatePatches: jest.fn().mockResolvedValue([]),
     checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
@@ -342,21 +343,25 @@ describe('NFT Items', () => {
   });
 
   describe('Sort control', () => {
-    it('renders the sort control when the account has NFTs', () => {
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        useNftDetection: true,
-      });
+    it('renders the sort control when the account has NFTs', async () => {
+      await act(async () =>
+        render({
+          selectedAddress: ACCOUNT_1,
+          nfts: NFTS,
+          useNftDetection: true,
+        }),
+      );
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
     });
 
-    it('does not render the sort control when the empty state is shown', () => {
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: [],
-        useNftDetection: true,
-      });
+    it('does not render the sort control when the empty state is shown', async () => {
+      await act(async () =>
+        render({
+          selectedAddress: ACCOUNT_1,
+          nfts: [],
+          useNftDetection: true,
+        }),
+      );
       expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
       expect(
         screen.queryByTestId('sort-by-popover-toggle'),
