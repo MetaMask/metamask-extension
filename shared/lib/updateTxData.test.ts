@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import updateTxData from './updateTxData';
+import updateTxData, { type UpdateTxDataMeta } from './updateTxData';
 
 describe('updateTxData', () => {
   const mockAddToAddressBookIfNew = jest.fn();
@@ -11,7 +11,7 @@ describe('updateTxData', () => {
   it('should add to address book if txData type is simpleSend', () => {
     const txData = {
       type: TransactionType.simpleSend,
-    };
+    } as UpdateTxDataMeta;
     updateTxData({
       txData,
       addToAddressBookIfNew: mockAddToAddressBookIfNew,
@@ -25,7 +25,7 @@ describe('updateTxData', () => {
   });
 
   it('should update estimatedBaseFee if baseFeePerGas is provided', () => {
-    const txData = {};
+    const txData = {} as UpdateTxDataMeta;
     const result = updateTxData({
       txData,
       baseFeePerGas: 'mockBaseFeePerGas',
@@ -34,7 +34,7 @@ describe('updateTxData', () => {
   });
 
   it('should update contractMethodName if name is provided', () => {
-    const txData = {};
+    const txData = {} as UpdateTxDataMeta;
     const result = updateTxData({
       txData,
       name: 'mockName',
@@ -43,7 +43,7 @@ describe('updateTxData', () => {
   });
 
   it('should update dappProposedTokenAmount and originalApprovalAmount if dappProposedTokenAmount is provided', () => {
-    const txData = {};
+    const txData = {} as UpdateTxDataMeta;
     const result = updateTxData({
       txData,
       dappProposedTokenAmount: 'mockDappProposedTokenAmount',
@@ -53,7 +53,7 @@ describe('updateTxData', () => {
   });
 
   it('should update customTokenAmount and finalApprovalAmount if customTokenAmount is provided', () => {
-    const txData = {};
+    const txData = {} as UpdateTxDataMeta;
     const result = updateTxData({
       txData,
       customTokenAmount: 'mockCustomTokenAmount',
@@ -63,7 +63,7 @@ describe('updateTxData', () => {
   });
 
   it('should update finalApprovalAmount if dappProposedTokenAmount is provided but customTokenAmount is not', () => {
-    const txData = {};
+    const txData = {} as UpdateTxDataMeta;
     const result = updateTxData({
       txData,
       dappProposedTokenAmount: 'mockDappProposedTokenAmount',
@@ -72,7 +72,7 @@ describe('updateTxData', () => {
   });
 
   it('should update currentTokenBalance if currentTokenBalance is provided', () => {
-    const txData = {};
+    const txData = {} as UpdateTxDataMeta;
     const result = updateTxData({
       txData,
       currentTokenBalance: 'mockCurrentTokenBalance',
@@ -81,7 +81,7 @@ describe('updateTxData', () => {
   });
 
   it('should update maxFeePerGas in txParams if maxFeePerGas is provided', () => {
-    const txData = { txParams: {} };
+    const txData = { txParams: {} } as UpdateTxDataMeta;
     const result = updateTxData({
       txData,
       maxFeePerGas: 'mockMaxFeePerGas',
@@ -90,7 +90,7 @@ describe('updateTxData', () => {
   });
 
   it('should update maxPriorityFeePerGas in txParams if maxPriorityFeePerGas is provided', () => {
-    const txData = { txParams: {} };
+    const txData = { txParams: {} } as UpdateTxDataMeta;
     const result = updateTxData({
       txData,
       maxPriorityFeePerGas: 'mockMaxPriorityFeePerGas',

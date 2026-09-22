@@ -74,7 +74,7 @@ const AddOrBalance = ({
       <Button
         size={ButtonSize.Md}
         variant={ButtonVariant.Primary}
-        className="shrink-0 rounded-md"
+        className="shrink-0"
         isLoading={isDepositLoading}
         data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
         onClick={onAddClick}

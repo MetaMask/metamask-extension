@@ -808,9 +808,9 @@
     "@metamask/analytics-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/utils": true,
-        "lodash": true,
-        "uuid": true
+        "@metamask/analytics-controller>@metamask/utils": true,
+        "@metamask/assets-controller>lodash-es": true,
+        "@metamask/analytics-controller>uuid": true
       }
     },
     "@metamask/announcement-controller": {
@@ -1797,7 +1797,7 @@
         "@metamask/gator-permissions-controller>@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
-        "@metamask/delegation-deployments": true,
+        "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
         "@metamask/gator-permissions-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true
@@ -2128,7 +2128,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
-        "@metamask/delegation-deployments": true,
+        "@metamask/money-account-upgrade-controller>@metamask/delegation-deployments": true,
         "@metamask/keyring-controller": true,
         "@metamask/money-account-utils": true,
         "@metamask/utils": true
@@ -3083,6 +3083,11 @@
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
+      }
+    },
+    "@metamask/analytics-controller>@metamask/utils": {
+      "packages": {
+        "nock>debug": true
       }
     },
     "@metamask/assets-controller>@metamask/utils": {
@@ -7422,6 +7427,11 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "@metamask/analytics-controller>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/assets-controllers>uuid": {
