@@ -99,6 +99,9 @@ class PreferencesAndDisplaySettings {
     await this.checkNoLoadingOverlaySpinner();
     await this.driver.waitForSelector(this.localeSelectList);
     await this.driver.clickElement({ text: languageToSelect });
+    await this.driver.waitForSelector(this.localeSelectList, {
+      state: 'hidden',
+    });
     await this.checkNoLoadingOverlaySpinner();
   }
 
