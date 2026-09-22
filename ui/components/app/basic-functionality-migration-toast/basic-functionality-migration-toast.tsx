@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,30 +9,76 @@ import {
   TextVariant,
   Toast,
 } from '@metamask/design-system-react';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../selectors';
 import { getShouldShowBasicFunctionalityMigrationToast } from '../../../selectors/multichain/feature-flags';
 import { hideMigrationToast } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
+import {
+  BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
+  BasicFunctionalityMixedToastAction,
+} from './constants';
 
 export function BasicFunctionalityMigrationToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const shouldShow = useSelector(getShouldShowBasicFunctionalityMigrationToast);
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
+  const hasTrackedView = useRef(false);
+  const [isHiding, setIsHiding] = useState(false);
 
-  if (!shouldShow) {
+  const trackNoticeAction = useCallback(
+    (action: BasicFunctionalityMixedToastAction) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NoticeUpdateDisplayed)
+          .addProperties({
+            name: BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
+            action,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, trackEvent],
+  );
+
+  useEffect(() => {
+    if (!shouldShow || hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
+    trackNoticeAction(BasicFunctionalityMixedToastAction.Viewed);
+  }, [shouldShow, trackNoticeAction]);
+
+  const hideToast = useCallback(async () => {
+    setIsHiding(true);
+    await dispatch(hideMigrationToast());
+  }, [dispatch]);
+
+  if (!shouldShow || isHiding) {
     return null;
   }
 
-  const dismissToast = () => {
-    dispatch(hideMigrationToast());
+  const dismissToast = async () => {
+    trackNoticeAction(BasicFunctionalityMixedToastAction.Dismiss);
+    await hideToast();
   };
 
-  const openPrivacySettings = () => {
-    dismissToast();
+  const openPrivacySettings = async () => {
+    trackNoticeAction(BasicFunctionalityMixedToastAction.OpenSettings);
+    await hideToast();
+    // Notification windows are too small for Settings; open the full extension
+    // UI instead. Popup and other surfaces navigate in-app.
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+      globalThis.platform?.openExtensionInBrowser?.(PRIVACY_ROUTE);
+      return;
+    }
     navigate(PRIVACY_ROUTE);
   };
 

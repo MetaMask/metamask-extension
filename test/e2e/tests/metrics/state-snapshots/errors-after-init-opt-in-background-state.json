@@ -173,8 +173,7 @@
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "dataCollectionForMarketing": "boolean",
-    "marketingCampaignCookieId": null,
-    "tracesBeforeMetricsOptIn": "object"
+    "marketingCampaignCookieId": null
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -327,7 +326,14 @@
     "useTransactionSimulations": true,
     "watchEthereumAccountEnabled": "boolean"
   },
-  "ProfileMetricsController": "object",
+  "ProfileMetricsController": {
+    "accountSourceBackfillEnqueued": true,
+    "initialDelayEndTimestamp": "number",
+    "initialEnqueueCompleted": "boolean",
+    "proofBackfillEnqueued": "boolean",
+    "reportedAccounts": "object",
+    "syncQueue": "object"
+  },
   "QrSyncController": "object",
   "RampsController": {
     "autoramps": "object",

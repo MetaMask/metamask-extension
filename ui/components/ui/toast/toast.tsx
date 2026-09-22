@@ -121,7 +121,7 @@ export const ToastContent = ({
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Sm}
-          className="mt-2 rounded-lg"
+          className="mt-2"
           textProps={{
             variant: TextVariant.BodySm,
           }}

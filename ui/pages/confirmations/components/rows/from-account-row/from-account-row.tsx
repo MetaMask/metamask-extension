@@ -1,6 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import {
   AvatarAccountSize,
@@ -18,6 +21,7 @@ import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/r
 import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
 import {
@@ -27,6 +31,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
+import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
 import { AccountSelectModal } from '../../account-select-modal';
 
@@ -42,13 +47,36 @@ type FromAccountRowProps = {
 };
 
 /**
- * "From <wallet>" account selector row.
+ * Transaction types whose selected account is the *destination* of the funds
+ * rather than the source, so the row must read "To" instead of "From".
  *
- * Displays the account currently funding the transaction and lets the user
+ * A money-account withdraw moves mUSD out of the vault into an EVM account, so
+ * the account picked here is the recipient — see
+ * `replaceAccountInNestedTransactions`, which rewrites the transfer recipient
+ * in the nested calldata when the selection changes. Mirrors mobile
+ * `PayAccountSelector`, which only labels the row "From" for deposits and
+ * otherwise falls back to the "To" default.
+ */
+const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountWithdraw,
+];
+
+/**
+ * "From <wallet>" / "To <wallet>" account selector row.
+ *
+ * Displays the account on the other end of the transfer and lets the user
  * switch to another EVM account via a modal. Selecting an account updates the
  * TransactionPayController's `accountOverride`. The displayed account is
  * `accountOverride ?? txParams.from`, matching how the pay controller resolves
  * the funding account.
+ *
+ * The label direction follows the flow: funding flows (e.g. money-account
+ * deposit) read "From", whereas withdraws read "To" because the selected
+ * account receives the funds.
+ *
+ * Flows that cannot be funded by a hardware device (Money Account deposit and
+ * withdraw, Perps, Predict) hide hardware accounts from the modal, so the user
+ * cannot pick an account that `usePayHardwareAccountAlert` would then block.
  *
  * @param props - Component props.
  * @param props.showDivider - Whether to render a divider below the row.
@@ -62,6 +90,7 @@ export function FromAccountRow({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isHardwareBlocked = useIsPayHardwareBlocked();
   const transactionId = currentConfirmation?.id ?? '';
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
@@ -117,7 +146,14 @@ export function FromAccountRow({
     return null;
   }
 
-  const label = fromWalletName ? `${t('from')} ${fromWalletName}` : t('from');
+  const isRecipientRow = hasTransactionType(
+    currentConfirmation,
+    RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES,
+  );
+  const directionLabel = isRecipientRow ? t('to') : t('from');
+  const label = fromWalletName
+    ? `${directionLabel} ${fromWalletName}`
+    : directionLabel;
 
   return (
     <>
@@ -165,6 +201,8 @@ export function FromAccountRow({
           selectedAddress={from}
           onSelect={handleSelect}
           onClose={closeModal}
+          title={isRecipientRow ? t('selectRecipient') : undefined}
+          excludeHardwareAccounts={isHardwareBlocked}
         />
       )}
     </>

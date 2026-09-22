@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { RefObject } from 'react';
 
 type State = {
   isIntersecting: boolean;
@@ -7,6 +8,7 @@ type State = {
 
 type UseIntersectionObserverOptions = {
   root?: Element | Document | null;
+  rootRef?: RefObject<Element | Document | null>;
   rootMargin?: string;
   threshold?: number | number[];
   onChange?: (
@@ -42,6 +44,7 @@ function meetsThreshold(
 export function useIntersectionObserver({
   threshold = 0,
   root = null,
+  rootRef,
   rootMargin = '0%',
   initialIsIntersecting = false,
   onChange,
@@ -65,6 +68,8 @@ export function useIntersectionObserver({
       return undefined;
     }
 
+    const rootElement = rootRef?.current ?? root ?? null;
+
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
         for (const entry of entries) {
@@ -75,7 +80,7 @@ export function useIntersectionObserver({
           callbackRef.current?.(isIntersecting, entry);
         }
       },
-      { threshold: thresholdRef.current, root, rootMargin },
+      { threshold: thresholdRef.current, root: rootElement, rootMargin },
     );
 
     observer.observe(ref);
@@ -83,7 +88,7 @@ export function useIntersectionObserver({
     return () => {
       observer.disconnect();
     };
-  }, [ref, thresholdKey, root, rootMargin]);
+  }, [ref, thresholdKey, root, rootRef, rootMargin]);
 
   useEffect(() => {
     if (!ref && state.entry?.target) {

@@ -1,5 +1,6 @@
 import { act } from '@testing-library/react';
 import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MONEY_HOME_ROUTE } from '../../helpers/constants/routes';
 import { getMoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
@@ -51,6 +52,46 @@ const stateWithSelectedAccount = (accountType: string) => ({
 });
 
 const EVM_ACCOUNT_STATE = stateWithSelectedAccount(EthAccountType.Eoa);
+
+const HARDWARE_ACCOUNT_ID = 'hardware-account-id-mock';
+const SOFTWARE_ADDRESS = '0x9999999999999999999999999999999999999999';
+
+/**
+ * State where a hardware account is globally selected, alongside the given
+ * other accounts. The hardware account is listed first so the fallback has to
+ * skip it rather than merely picking the only entry.
+ *
+ * @param others - Additional accounts, in list order after the hardware one.
+ * @returns Mock state.
+ */
+const stateWithSelectedHardwareAccount = (
+  others: Record<string, unknown>[] = [],
+) => ({
+  metamask: {
+    internalAccounts: {
+      selectedAccount: HARDWARE_ACCOUNT_ID,
+      accounts: {
+        [HARDWARE_ACCOUNT_ID]: {
+          id: HARDWARE_ACCOUNT_ID,
+          type: EthAccountType.Eoa,
+          address: '0x1234567890123456789012345678901234567890',
+          metadata: { keyring: { type: KeyringTypes.ledger } },
+        },
+        ...others.reduce(
+          (acc, entry) => ({ ...acc, [entry.id as string]: entry }),
+          {},
+        ),
+      },
+    },
+  },
+});
+
+const SOFTWARE_ACCOUNT = {
+  id: 'software-account-id-mock',
+  type: EthAccountType.Eoa,
+  address: SOFTWARE_ADDRESS,
+  metadata: { keyring: { type: KeyringTypes.hd } },
+};
 
 describe('useMoneyAccountDeposit', () => {
   const navigateToTransactionMock = jest.fn();
@@ -104,6 +145,25 @@ describe('useMoneyAccountDeposit', () => {
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: MONEY_HOME_ROUTE,
+    });
+  });
+
+  it('forwards the preferred payment token to the confirmation', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({
+        preferredPaymentToken: { address: '0xabc', chainId: '0x1' },
+      });
+    });
+
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+      goBackTo: '/',
+      preferredPaymentToken: { address: '0xabc', chainId: '0x1' },
     });
   });
 
@@ -254,5 +314,80 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).not.toHaveBeenCalled();
     expect(reportErrorMock).toHaveBeenCalledTimes(1);
+  });
+
+  describe('when a hardware account is selected', () => {
+    it('funds from the next eligible account instead of the hardware one', async () => {
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountDeposit(),
+        stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT]),
+      );
+
+      await act(async () => {
+        await result.current.initiateDeposit();
+      });
+
+      expect(createDepositTransactionMock).toHaveBeenCalledWith(
+        expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+        SOFTWARE_ADDRESS,
+      );
+      expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+        loader: ConfirmationLoader.CustomAmount,
+        goBackTo: '/',
+      });
+      expect(reportErrorMock).not.toHaveBeenCalled();
+    });
+
+    it('skips non-EVM accounts when choosing the fallback', async () => {
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountDeposit(),
+        stateWithSelectedHardwareAccount([
+          {
+            id: 'btc-account-id-mock',
+            type: BtcAccountType.P2wpkh,
+            address: 'bc1qexampleexampleexampleexampleexampleex',
+            metadata: { keyring: { type: 'Snap Keyring' } },
+          },
+          SOFTWARE_ACCOUNT,
+        ]),
+      );
+
+      await act(async () => {
+        await result.current.initiateDeposit();
+      });
+
+      expect(createDepositTransactionMock).toHaveBeenCalledWith(
+        expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+        SOFTWARE_ADDRESS,
+      );
+    });
+
+    it('fails fast when every account is a hardware account', async () => {
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountDeposit(),
+        stateWithSelectedHardwareAccount([
+          {
+            id: 'trezor-account-id-mock',
+            type: EthAccountType.Eoa,
+            address: SOFTWARE_ADDRESS,
+            metadata: { keyring: { type: KeyringTypes.trezor } },
+          },
+        ]),
+      );
+
+      await act(async () => {
+        await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
+      });
+
+      expect(createDepositTransactionMock).not.toHaveBeenCalled();
+      expect(navigateToTransactionMock).not.toHaveBeenCalled();
+      expect(reportErrorMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          error: expect.objectContaining({
+            message: '[Money Account] Missing funding EVM account',
+          }),
+        }),
+      );
+    });
   });
 });

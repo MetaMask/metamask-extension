@@ -295,7 +295,7 @@
     cursor: pointer;
     background-color: var(--brand-colors-grey-grey000);
     border: none;
-    border-radius: 12px;
+    border-radius: 100px;
     height: 48px;
     transition: opacity 0.2s ease;
 
@@ -324,7 +324,7 @@
     cursor: pointer;
     background-color: var(--color-background-muted);
     border: none;
-    border-radius: 12px;
+    border-radius: 100px;
     transition: background-color 0.2s ease;
 
     &:hover {
