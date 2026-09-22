@@ -1,3 +1,4 @@
+import { TransactionContainerType } from '@metamask/transaction-controller';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
 import { getTransactionDetailsMetricsProperties } from './transaction-details';
 import { createBuilderRequest } from './test-utils';
@@ -19,7 +20,6 @@ describe('transaction-details builder', () => {
         context: {
           ...createBuilderRequest().context,
           isContractInteraction: true,
-          contractMethod4Byte: '0xa9059cbb',
         } as never,
       }),
     );
@@ -32,6 +32,38 @@ describe('transaction-details builder', () => {
     );
     expect(result.properties.completion_time).toEqual(expect.any(String));
     expect(result.sensitiveProperties).toStrictEqual({});
+  });
+
+  it('uses original contract details for transactions with containers', async () => {
+    const result = await getTransactionDetailsMetricsProperties(
+      createBuilderRequest({
+        transactionMeta: {
+          ...createBuilderRequest().transactionMeta,
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
+          txParams: {
+            ...createBuilderRequest().transactionMeta.txParams,
+            to: '0xdb9b1e94b5b69df7e401ddbede43491141047db3',
+            data: '0x1cff79cd',
+          },
+          txParamsOriginal: {
+            ...createBuilderRequest().transactionMeta.txParams,
+            to: '0x3333333333333333333333333333333333333333',
+            data: '0xa9059cbb',
+          },
+        } as never,
+        context: {
+          ...createBuilderRequest().context,
+          isContractInteraction: true,
+        } as never,
+      }),
+    );
+
+    expect(result.properties.transaction_contract_address).toStrictEqual([
+      '0x3333333333333333333333333333333333333333',
+    ]);
+    expect(result.properties.transaction_contract_method_4byte).toBe(
+      '0xa9059cbb',
+    );
   });
 
   it('forwards transactionEventPayload.error to properties on finalized', async () => {

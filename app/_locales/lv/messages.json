@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasLimitTooLow": {
-    "message": "Minimālajai Gas robežvērtībai jābūt vismaz 21000"
-  },
   "gasUsed": {
     "message": "Izlietotie Gas"
   },
@@ -414,9 +411,6 @@
   "privateKey": {
     "message": "Privātā atslēga",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Brīdinājums! Nekad neizpaudiet šo atslēgu. Ikviens, kuram ir Jūsu privātās atslēgas, var nozagt jebkuru jūsu kontā esošo aktīvu."
   },
   "privateNetwork": {
     "message": "Privātais tīkls"

@@ -155,6 +155,7 @@
     "accountIdByAddress": {
       "*": "string"
     },
+    "accountSourceBackfillEnqueued": "boolean",
     "accountsAssets": {
       "*": "array"
     },
@@ -205,6 +206,7 @@
     "accountWalletsMetadata": {},
     "activeProvider": "string",
     "activeQrCodeScanRequest": "null",
+    "arcUsageNoticeShown": "boolean",
     "lastQrScanCompletedSuccessfully": "null",
     "addressBook": {},
     "addressScanCache": {},
@@ -287,6 +289,7 @@
         "lastUpdated": "number"
       }
     },
+    "autoramps": [],
     "balances": {
       "*": {
         "*": {
@@ -297,6 +300,7 @@
     },
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
+    "batchTransactionCounts": {},
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -304,7 +308,6 @@
     "cachedMarketDataByProvider": "object",
     "cachedUserDataByProvider": "object",
     "cacheTimestamp": "number",
-    "canTrackWalletFundsObtained": "boolean",
     "claims": [],
     "claimsConfigurations": {
       "supportedNetworks": ["string"],
@@ -377,7 +380,6 @@
       "verifiedSnaps": {}
     },
     "databaseUnavailable": "boolean",
-    "dataCollectionForMarketing": "boolean",
     "defaultHomeActiveTabName": "null",
     "depositInProgress": "boolean",
     "depositRequests": [],
@@ -482,6 +484,28 @@
         "schedule": "string",
         "scheduledAt": "string",
         "snapId": "string"
+      },
+      "cronjob-npm:@metamask/stellar-wallet-snap-0": {
+        "date": "string",
+        "id": "string",
+        "recurring": "boolean",
+        "request": {
+          "method": "string"
+        },
+        "schedule": "string",
+        "scheduledAt": "string",
+        "snapId": "string"
+      },
+      "cronjob-npm:@metamask/stellar-wallet-snap-1": {
+        "date": "string",
+        "id": "string",
+        "recurring": "boolean",
+        "request": {
+          "method": "string"
+        },
+        "schedule": "string",
+        "scheduledAt": "string",
+        "snapId": "string"
       }
     },
     "fcmToken": "string",
@@ -489,8 +513,8 @@
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
     "firstTimeInfo": {},
+    "installAttribution": "null",
     "forgottenPassword": "boolean",
-    "fragments": {},
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
@@ -654,6 +678,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
+    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -685,6 +710,7 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
+    "lastPerpsDepositEntryPoint": "null",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
@@ -695,6 +721,7 @@
     "logs": {},
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
+    "marketingConsentDecisionMade": "boolean",
     "marketData": {
       "*": {}
     },
@@ -711,6 +738,7 @@
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "mode": "string",
+    "moneyAccounts": {},
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "string",
@@ -822,6 +850,7 @@
       }
     },
     "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
     "networkConnectionBannerNetwork": "null",
@@ -849,6 +878,11 @@
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
+    "optedInToMarketing": "boolean",
+    "orderBookPreferences": {
+      "currency": "string",
+      "metric": "string"
+    },
     "orderedNetworkList": [
       {
         "networkId": "string"
@@ -895,6 +929,8 @@
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
+      "basicFunctionalityMigrationNotification": "null",
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
@@ -979,6 +1015,7 @@
       "variational": {}
     },
     "region": "string",
+    "reportedAccounts": ["string"],
     "requests": {
       "*": {
         "status": "string",
@@ -1036,6 +1073,7 @@
     "selectedAccountGroup": "string",
     "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
+    "selectedOrderType": "string",
     "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
     "shieldSubscriptionError": "null",
@@ -1049,18 +1087,7 @@
     "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
-    "syncQueue": {
-      "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
-        {
-          "address": "string",
-          "scopes": ["string"]
-        },
-        {
-          "address": "string",
-          "scopes": ["string", "string", "string"]
-        }
-      ]
-    },
+    "syncQueue": {},
     "slides": [],
     "smartTransactionsState": {
       "fees": {
@@ -1179,6 +1206,15 @@
         "subjectType": "string",
         "svgIcon": "string",
         "version": "string"
+      },
+      "npm:@metamask/stellar-wallet-snap": {
+        "extensionId": "null",
+        "iconUrl": "null",
+        "name": "string",
+        "origin": "string",
+        "subjectType": "string",
+        "svgIcon": "string",
+        "version": "string"
       }
     },
     "subjects": {},
@@ -1206,11 +1242,7 @@
       "testnet": {},
       "mainnet": {}
     },
-    "tracesBeforeMetricsOptIn": [],
-    "traits": {
-      "install_date_ext": "string",
-      "storage_kind": "string"
-    },
+    "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},
     "transactions": [],
@@ -1227,6 +1259,7 @@
     "unapprovedTypedMessagesCount": "number",
     "unconnectedAccountAlertShownOrigins": {},
     "updateModalLastDismissedAt": "null",
+    "upgradedAccounts": {},
     "urlScanCache": {},
     "use4ByteResolution": "boolean",
     "useAddressBarEnsResolution": "boolean",
@@ -1244,6 +1277,7 @@
     "useTransactionSimulations": "boolean",
     "version": "null",
     "versionInfo": [],
+    "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {
       "testnet": [],

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
@@ -25,7 +25,9 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
+import { BasicFunctionalityMigrationToast } from '../basic-functionality-migration-toast';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
+import { ArcUsageNoticeToast } from '../arc-usage-notice-toast';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -79,7 +81,11 @@ const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
 const MemoizedShieldEndingToast = memo(ShieldEndingToast);
 const MemoizedSidePanelMigrationToast = memo(SidePanelMigrationToast);
+const MemoizedBasicFunctionalityMigrationToast = memo(
+  BasicFunctionalityMigrationToast,
+);
 const MemoizedStorageErrorToast = memo(StorageErrorToast);
+const MemoizedArcUsageNoticeToast = memo(ArcUsageNoticeToast);
 
 export function ToastMaster() {
   const location = useLocation();
@@ -94,17 +100,25 @@ export function ToastMaster() {
   const onPerpsScreen = currentPathname.startsWith(PERPS_ROUTE);
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
+  // BFT migration toast must appear on any screen (including confirmation /
+  // notification) so users cannot complete a tx before seeing it.
+  const basicFunctionalityMigrationToast = (
+    <MemoizedBasicFunctionalityMigrationToast key="basic-functionality-migration" />
+  );
+
   if (onHomeScreen) {
     return (
       <ToastContainer>
         <MemoizedStorageErrorToast />
         <MemoizedSurveyToast />
         <MemoizedPrivacyPolicyToast />
+        <MemoizedArcUsageNoticeToast />
         <MemoizedInfuraSwitchToast />
         <MemoizedPerpsWithdrawToast />
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />
         <MemoizedSidePanelMigrationToast />
+        {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
   }
@@ -114,6 +128,7 @@ export function ToastMaster() {
       <ToastContainer>
         <MemoizedStorageErrorToast />
         <MemoizedPerpsWithdrawToast />
+        {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
   }
@@ -122,21 +137,19 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         <MemoizedStorageErrorToast />
+        {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
   }
 
-  // On other screens, only render ToastContainer if storage error toast should show
-  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
-  if (shouldShowStorageErrorToast) {
-    return (
-      <ToastContainer>
-        <MemoizedStorageErrorToast />
-      </ToastContainer>
-    );
-  }
-
-  return null;
+  // On other screens, always mount a container so the BFT migration toast can
+  // show (e.g. confirmation / notification). Storage-error toast stays optional.
+  return (
+    <ToastContainer>
+      {shouldShowStorageErrorToast ? <MemoizedStorageErrorToast /> : null}
+      {basicFunctionalityMigrationToast}
+    </ToastContainer>
+  );
 }
 
 function PrivacyPolicyToast() {
@@ -334,7 +347,7 @@ function StorageErrorToast() {
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [isDismissed, setIsDismissed] = useState(false);
-  const [hasTrackedView, setHasTrackedView] = useState(false);
+  const hasTrackedViewRef = useRef(false);
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
@@ -352,15 +365,15 @@ function StorageErrorToast() {
 
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
-    if (shouldShow && !hasTrackedView) {
+    if (shouldShow && !hasTrackedViewRef.current) {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.StorageErrorToastViewed)
           .addCategory(MetaMetricsEventCategory.Error)
           .build(),
       );
-      setHasTrackedView(true);
+      hasTrackedViewRef.current = true;
     }
-  }, [shouldShow, hasTrackedView, trackEvent, createEventBuilder]);
+  }, [shouldShow, trackEvent, createEventBuilder]);
 
   const handleRevealSrpClick = () => {
     trackEvent(

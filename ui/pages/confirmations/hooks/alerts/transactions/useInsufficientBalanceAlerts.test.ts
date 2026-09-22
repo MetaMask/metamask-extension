@@ -21,6 +21,10 @@ import {
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
+jest.mock('../../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(),
+}));
 jest.mock('../../gas/useIsGaslessSupported');
 jest.mock('../../pay/useTransactionPayHasSourceAmount');
 jest.mock('../../pay/useTransactionPayData');
@@ -384,6 +388,21 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual(ALERT);
   });
 
+  it('returns no alerts for money account deposits even when native balance is insufficient', () => {
+    const moneyAccountDeposit = {
+      ...TRANSACTION_MOCK,
+      nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+    } as TransactionMeta;
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: moneyAccountDeposit,
+      transaction: moneyAccountDeposit,
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
   describe('post-quote withdraws', () => {
     const WITHDRAW_TRANSACTION_MOCK = {
       ...TRANSACTION_MOCK,
@@ -409,7 +428,7 @@ describe('useInsufficientBalanceAlerts', () => {
       expect(alerts).toEqual([]);
     });
 
-    it('returns alert when post-quote is disabled for the type, since the direct transfer spends native balance', () => {
+    it('returns no alerts for a direct money-account withdraw, which is sponsored from the money account', () => {
       const alerts = runHook({
         balance: 7,
         currentConfirmation: WITHDRAW_TRANSACTION_MOCK,
@@ -417,7 +436,7 @@ describe('useInsufficientBalanceAlerts', () => {
         remoteFeatureFlags: buildPostQuoteFlags(false),
       });
 
-      expect(alerts).toEqual(ALERT);
+      expect(alerts).toEqual([]);
     });
   });
 

@@ -36,7 +36,7 @@ import {
   getChainIdsToPoll,
   getDataCollectionForMarketing,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
@@ -211,13 +211,11 @@ export const CoinOverview = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = useMemo(
-    () => completedMetaMetricsOnboarding && isOptedIn,
-    [completedMetaMetricsOnboarding, isOptedIn],
+    () => consentDecisionMade && isOptedIn,
+    [consentDecisionMade, isOptedIn],
   );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
@@ -287,14 +285,24 @@ export const CoinOverview = ({
 
   const [hasZeroFiatBalanceDelayElapsed, setHasZeroFiatBalanceDelayElapsed] =
     useState(false);
+  const [prevDelayKey, setPrevDelayKey] = useState(enabledNetworksDelayKey);
+  const [prevShouldDelayZeroFiatBalance, setPrevShouldDelayZeroFiatBalance] =
+    useState(shouldDelayZeroFiatBalance);
+
+  if (
+    enabledNetworksDelayKey !== prevDelayKey ||
+    shouldDelayZeroFiatBalance !== prevShouldDelayZeroFiatBalance
+  ) {
+    setPrevDelayKey(enabledNetworksDelayKey);
+    setPrevShouldDelayZeroFiatBalance(shouldDelayZeroFiatBalance);
+    setHasZeroFiatBalanceDelayElapsed(false);
+  }
 
   useEffect(() => {
     if (!shouldDelayZeroFiatBalance) {
-      setHasZeroFiatBalanceDelayElapsed(false);
       return undefined;
     }
 
-    setHasZeroFiatBalanceDelayElapsed(false);
     const timeoutId = setTimeout(() => {
       setHasZeroFiatBalanceDelayElapsed(true);
     }, ZERO_FIAT_BALANCE_DELAY_MS);

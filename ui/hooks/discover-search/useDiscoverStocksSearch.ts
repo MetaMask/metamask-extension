@@ -69,18 +69,14 @@ export const useDiscoverStocksSearch = ({
     [hasQuery],
   );
 
-  const stocksQuery = useInfiniteQuery<StocksSearchPage, Error>({
+  const stocksQuery = useInfiniteQuery({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'stocks',
       trimmedQuery,
       chainIds,
     ] as const,
-    queryFn: async ({
-      pageParam,
-    }: {
-      pageParam?: string;
-    }): Promise<StocksSearchPage> => {
+    queryFn: async ({ pageParam }): Promise<StocksSearchPage> => {
       const response = await fetchRwas({
         chainIds,
         query: hasQuery ? trimmedQuery : undefined,
@@ -96,13 +92,14 @@ export const useDiscoverStocksSearch = ({
         pageInfo: response.pageInfo,
       };
     },
+    initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) =>
       lastPage.pageInfo.hasNextPage
         ? (lastPage.pageInfo.nextCursor ?? undefined)
         : undefined,
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
+    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   const pages = stocksQuery.data?.pages ?? [];

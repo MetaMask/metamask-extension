@@ -208,7 +208,9 @@ describe('PasskeyRegisterSubPage', () => {
       expect(mockVerifyPassword).toHaveBeenCalledWith('test-password');
     });
 
-    expect(getByTestId('register-passkey-description')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByTestId('register-passkey-description')).toBeInTheDocument();
+    });
 
     await waitFor(() => {
       expect(getByTestId('passkey-setup-steps')).toBeInTheDocument();

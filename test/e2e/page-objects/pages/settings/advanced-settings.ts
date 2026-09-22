@@ -54,6 +54,10 @@ class AdvancedSettings {
     testId: 'transactions-show-hex-data-toggle',
   };
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly showConversionOnTestnetsToggle = {
     xpath:
       "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
@@ -74,6 +78,7 @@ class AdvancedSettings {
       await this.driver.waitForMultipleSelectors([
         this.downloadStateLogsButton,
         this.downloadDataButton,
+        this.settingsPage,
       ]);
     } catch (e) {
       console.log(

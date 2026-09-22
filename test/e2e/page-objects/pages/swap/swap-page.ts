@@ -11,6 +11,7 @@ export type SwapOptions = {
 };
 
 export type SwapReviewOptions = {
+  exchangeRate?: string;
   swapFrom: string;
   swapTo: string;
   swapToAmount: string;
@@ -244,6 +245,18 @@ class SwapPage {
     });
   }
 
+  /**
+   * Waits for the from/to amount fields to be populated. Throws if the
+   * amounts are still empty once the wait times out.
+   */
+  async checkSwapAmountsArePopulated(): Promise<void> {
+    await this.driver.wait(async () => {
+      const fromAmount = await this.getFromAmountValue();
+      const toAmount = await this.getToAmountValue();
+      return fromAmount !== '' && toAmount !== '';
+    }, this.driver.timeout);
+  }
+
   async checkSwapButtonIsEnabled(): Promise<void> {
     await this.driver.waitForSelector(this.swapButton, {
       state: 'enabled',
@@ -352,7 +365,9 @@ class SwapPage {
     const toAmountText = await toAmount.getAttribute('value');
     assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
-      text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
+      text: `1 ${options.swapFrom} = ${
+        options.exchangeRate ?? options.swapToAmount
+      } ${options.swapTo}`,
       tag: 'p',
     });
     await this.driver.waitForSelector(this.rateMessage);
@@ -449,6 +464,27 @@ class SwapPage {
       css: this.transactionHeader,
       text: message,
     });
+  }
+
+  async verifyQuote(options: {
+    swapFrom: string;
+    swapTo: string;
+    amount: number;
+  }): Promise<void> {
+    await this.checkQuoteIsDisplayed();
+    await this.checkSourceToken(options.swapFrom);
+    await this.checkDestinationToken(options.swapTo);
+
+    const swapFromAmount = await this.getFromAmountValue();
+    assert.equal(swapFromAmount, options.amount.toString());
+
+    const swapToAmount = await this.getToAmountValue();
+    const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ''));
+    assert.equal(
+      normalizedSwapToAmount > 0,
+      true,
+      `Expected destination amount to be > 0 but got ${swapToAmount}`,
+    );
   }
 
   async waitForMaxButtonToBeDisplayed(): Promise<void> {

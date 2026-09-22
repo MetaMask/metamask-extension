@@ -8,7 +8,6 @@ export { AddressCopyButton } from './address-copy-button';
 export { NetworkListItem } from './network-list-item';
 export { NetworkListMenu } from './network-list-menu';
 export { ProductTour } from './product-tour-popover';
-export { AccountDetails } from './account-details';
 export { ImportAccount } from './import-account';
 export { ImportNftsModal } from './import-nfts-modal';
 export { AccountDetailsMenuItem, ViewExplorerMenuItem } from './menu-items';
@@ -34,7 +33,7 @@ export { NotificationsSettingsAccount } from './notifications-settings-account';
 export { NotificationListItemSnap } from './notification-list-item-snap';
 export { NotificationsTagCounter } from './notifications-tag-counter';
 export { Toast, ToastContainer } from './toast';
-export { DisconnectPermissionsModal } from './disconnect-permissions-modal';
+export { DisconnectAllGatorPermissionsModal } from './disconnect-all-gator-permissions-modal';
 export { ReceiveModal } from './receive-modal';
 export {
   Carousel,

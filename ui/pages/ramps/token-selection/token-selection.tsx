@@ -17,6 +17,7 @@ import {
   RampsSelectionCenteredSpinner,
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
+import { RampsTokenUnavailableInfo } from './components/ramps-token-unavailable-info';
 import {
   filterRampsTokensByEnabledNetworks,
   mapRampsTokensToSendAssets,
@@ -109,6 +110,23 @@ export function RampsTokenSelectionScreen() {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
+  // Tokens flagged `disabled` by the catalog (tokenSupported === false) cannot
+  // be bought in the user's region / via any available provider. Surface an
+  // info button that explains why, instead of only greying the row out
+  // (Figma "Token unavailable" dialog, TRAM-3710/TRAM-3961).
+  const renderUnavailableInfo = useCallback((asset: AssetType) => {
+    if (!asset.disabled) {
+      return null;
+    }
+
+    return <RampsTokenUnavailableInfo />;
+  }, []);
+
+  const endRenderers = useMemo(
+    () => [renderUnavailableInfo],
+    [renderUnavailableInfo],
+  );
+
   const handleAssetSelect = useCallback(
     (asset: AssetType) => {
       if (asset.disabled || !asset.assetId) {
@@ -165,6 +183,7 @@ export function RampsTokenSelectionScreen() {
             onAssetSelect={handleAssetSelect}
             onSearchQueryChange={setSearchQuery}
             onSelectedChainIdChange={setSelectedChainId}
+            endRenderers={endRenderers}
           />
         </ScrollContainer>
 

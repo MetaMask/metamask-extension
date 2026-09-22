@@ -70,7 +70,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         isBlocking: false,
         key: 'trustSignalMalicious',
         message: t('alertMessageAddressTrustSignalMalicious'),
-        reason: t('nameModalTitleMalicious'),
+        reason: t('alertReasonAddressTrustSignalMalicious'),
         severity: Severity.Danger,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
@@ -80,7 +80,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         isBlocking: false,
         key: 'trustSignalWarning',
         message: t('alertMessageAddressTrustSignal'),
-        reason: t('nameModalTitleWarning'),
+        reason: t('alertReasonAddressTrustSignalWarning'),
         severity: Severity.Warning,
       });
     }
