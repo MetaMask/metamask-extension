@@ -23,6 +23,14 @@ import {
   isValidZipMtime,
 } from '../utils/plugins/ManifestPlugin/zip-mtime';
 
+// `buildDependencies` entries are either a path or `{ dependency, optional }`.
+// The config only ever writes paths, but the type allows both.
+function buildDependencyPath(
+  item: NonNullable<FileCacheOptions['buildDependencies']>[string][number],
+) {
+  return typeof item === 'string' ? item : item.dependency;
+}
+
 function getWebpackInstance(config: Configuration) {
   // webpack logs a warning if we pass config.watch to it without a callback
   // we don't want a callback because that will cause the build to run
@@ -226,10 +234,12 @@ ${Object.entries(env)
     const cache = config.cache as FileCacheOptions;
     const configBuildDependencies = cache.buildDependencies?.config ?? [];
     assert.ok(
-      configBuildDependencies.every(
-        (path) =>
-          !path.endsWith('.metamaskrc') && !path.endsWith('.metamaskprodrc'),
-      ),
+      configBuildDependencies
+        .map(buildDependencyPath)
+        .every(
+          (path) =>
+            !path.endsWith('.metamaskrc') && !path.endsWith('.metamaskprodrc'),
+        ),
       'optional rc files should not be cache dependencies when they do not exist',
     );
 
@@ -313,7 +323,9 @@ ${Object.entries(env)
 
     const config: Configuration = getWebpackConfig();
     const cache = config.cache as FileCacheOptions;
-    const configBuildDependencies = cache.buildDependencies?.config ?? [];
+    const configBuildDependencies = (cache.buildDependencies?.config ?? []).map(
+      buildDependencyPath,
+    );
 
     assert.ok(
       configBuildDependencies.some((path) => path.endsWith('.metamaskrc')),
