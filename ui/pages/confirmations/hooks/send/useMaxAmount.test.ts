@@ -265,7 +265,17 @@ describe('useMaxAmount', () => {
     await waitFor(() => expect(result.current.isMaxAmountPending).toBe(false));
 
     expect(result.current.isMaxAmountAvailable).toBe(false);
+    expect(result.current.isMaxAmountError).toBe(true);
     expect(result.current.getMaxAmount()).toBeUndefined();
+  });
+
+  it('does not report an error while estimate inputs are missing', () => {
+    sendContext = { ...sendContext, toResolved: undefined };
+    const { result } = renderHookWithProvider(useMaxAmount, createState());
+
+    expect(result.current.isMaxAmountAvailable).toBe(false);
+    expect(result.current.isMaxAmountError).toBe(false);
+    expect(result.current.isMaxAmountPending).toBe(false);
   });
 
   it('uses legacy medium gas fee estimates', async () => {
@@ -298,6 +308,7 @@ describe('useMaxAmount', () => {
 
     expect(estimateGasMock).not.toHaveBeenCalled();
     expect(result.current.isMaxAmountAvailable).toBe(false);
+    expect(result.current.isMaxAmountError).toBe(false);
     expect(result.current.getMaxAmount()).toBeUndefined();
   });
 

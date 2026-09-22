@@ -51,6 +51,7 @@ export const Amount = ({
   const {
     getMaxAmount,
     isMaxAmountAvailable = true,
+    isMaxAmountError = false,
     isMaxAmountPending = false,
   } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
@@ -219,11 +220,7 @@ export const Amount = ({
               loading={isMaxAmountPending}
               marginLeft={2}
               onClick={updateToMax}
-              title={
-                !isMaxAmountAvailable && !isMaxAmountPending
-                  ? t('maxAmountUnavailable')
-                  : undefined
-              }
+              title={isMaxAmountError ? t('maxAmountUnavailable') : undefined}
               variant={TextVariant.bodySm}
             >
               {t('max')}
