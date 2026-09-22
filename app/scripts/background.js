@@ -456,6 +456,7 @@ const handleOnConnect = async (port) => {
         criticalErrorType,
         backup,
         connectedPorts,
+        liveConnectedPorts,
       }) =>
         requestRepair(async () => {
           if (isStateCorruptionErrorType(criticalErrorType)) {
@@ -463,6 +464,7 @@ const handleOnConnect = async (port) => {
               repairAction,
               backup,
               connectedPorts,
+              liveConnectedPorts,
               initBackground,
               backgroundIsInitialized: () => isInitialized,
               persistenceManager,

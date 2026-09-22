@@ -10,6 +10,8 @@ export type RepairStateCorruptionInPlaceOptions = {
   repairAction: CriticalErrorRepairAction;
   backup: Backup | null;
   connectedPorts: Set<chrome.runtime.Port>;
+  /** Live set that accumulates ports registered after the repair started. */
+  liveConnectedPorts: Set<chrome.runtime.Port>;
   initBackground: (backup: Backup | null) => Promise<void>;
   /**
    * Resolves when background initialization has completed, or rejects when it
@@ -42,6 +44,7 @@ export type RepairStateCorruptionInPlaceOptions = {
  * @param options.repairAction
  * @param options.backup
  * @param options.connectedPorts
+ * @param options.liveConnectedPorts
  * @param options.initBackground
  * @param options.backgroundIsInitialized
  * @param options.persistenceManager
@@ -53,6 +56,7 @@ export async function repairStateCorruptionInPlace({
   repairAction,
   backup,
   connectedPorts,
+  liveConnectedPorts,
   initBackground,
   backgroundIsInitialized,
   persistenceManager,
@@ -87,7 +91,10 @@ export async function repairStateCorruptionInPlace({
     // Always reload UI windows after a repair attempt starts. Listeners were
     // already removed before this runs, so without a reload the user would be
     // stuck on the error screen unable to retry.
-    for (const connectedPort of connectedPorts) {
+    // Merge the pre-repair snapshot with any ports that connected while
+    // background re-init was running, so both sets receive the reload command.
+    const allPorts = new Set([...connectedPorts, ...liveConnectedPorts]);
+    for (const connectedPort of allPorts) {
       tryPostMessage(connectedPort, RELOAD_WINDOW);
     }
   }

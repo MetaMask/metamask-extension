@@ -49,6 +49,7 @@ describe('repairStateCorruptionInPlace', () => {
       repairAction: CriticalErrorRepairAction.Recover,
       backup,
       connectedPorts,
+      liveConnectedPorts: new Set(),
       initBackground,
       backgroundIsInitialized,
       persistenceManager,
@@ -77,6 +78,7 @@ describe('repairStateCorruptionInPlace', () => {
       repairAction: CriticalErrorRepairAction.Reset,
       backup: null,
       connectedPorts,
+      liveConnectedPorts: new Set(),
       initBackground,
       backgroundIsInitialized,
       persistenceManager,
@@ -105,6 +107,7 @@ describe('repairStateCorruptionInPlace', () => {
         repairAction: CriticalErrorRepairAction.Recover,
         backup,
         connectedPorts,
+        liveConnectedPorts: new Set(),
         initBackground,
         backgroundIsInitialized,
         persistenceManager,
@@ -130,6 +133,7 @@ describe('repairStateCorruptionInPlace', () => {
         repairAction: CriticalErrorRepairAction.Reset,
         backup,
         connectedPorts,
+        liveConnectedPorts: new Set(),
         initBackground,
         backgroundIsInitialized,
         persistenceManager,
@@ -165,6 +169,7 @@ describe('repairStateCorruptionInPlace', () => {
         repairAction: CriticalErrorRepairAction.Recover,
         backup,
         connectedPorts,
+        liveConnectedPorts: new Set(),
         initBackground,
         backgroundIsInitialized,
         persistenceManager,
@@ -194,6 +199,7 @@ describe('repairStateCorruptionInPlace', () => {
         repairAction: CriticalErrorRepairAction.Reset,
         backup: null,
         connectedPorts,
+        liveConnectedPorts: new Set(),
         initBackground,
         backgroundIsInitialized,
         persistenceManager,
@@ -207,5 +213,32 @@ describe('repairStateCorruptionInPlace', () => {
     expect(setGlobalInitializers).not.toHaveBeenCalled();
     expect(initBackground).not.toHaveBeenCalled();
     expect(tryPostMessage).toHaveBeenCalledWith(port, RELOAD_WINDOW);
+  });
+
+  it('reloads ports that connected during re-init (liveConnectedPorts)', async () => {
+    const backup: Backup = {
+      KeyringController: { vault: 'vault-data' },
+    };
+    const originalPort = createMockPort();
+    const latePort = createMockPort();
+    const connectedPorts = new Set([originalPort]);
+    const liveConnectedPorts = new Set([latePort]);
+
+    await repairStateCorruptionInPlace({
+      repairAction: CriticalErrorRepairAction.Recover,
+      backup,
+      connectedPorts,
+      liveConnectedPorts,
+      initBackground,
+      backgroundIsInitialized,
+      persistenceManager,
+      setGlobalInitializers,
+      setRestoreFlowType,
+      tryPostMessage,
+    });
+
+    expect(tryPostMessage).toHaveBeenCalledWith(originalPort, RELOAD_WINDOW);
+    expect(tryPostMessage).toHaveBeenCalledWith(latePort, RELOAD_WINDOW);
+    expect(tryPostMessage).toHaveBeenCalledTimes(2);
   });
 });

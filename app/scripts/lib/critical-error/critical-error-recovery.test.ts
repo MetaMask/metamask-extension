@@ -186,6 +186,7 @@ describe('CriticalErrorHandler', () => {
         criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
         backup,
         connectedPorts: expect.any(Set),
+        liveConnectedPorts: expect.any(Set),
       });
       expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
         backup,
@@ -242,6 +243,7 @@ describe('CriticalErrorHandler', () => {
         criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
         backup: cachedBackup,
         connectedPorts: expect.any(Set),
+        liveConnectedPorts: expect.any(Set),
       });
     });
 
@@ -341,6 +343,7 @@ describe('CriticalErrorHandler', () => {
         criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
         backup: null,
         connectedPorts: expect.any(Set),
+        liveConnectedPorts: expect.any(Set),
       });
       expect(jest.mocked(trackVaultCorruptionEvent)).toHaveBeenCalledWith(
         null,

@@ -22,6 +22,8 @@ export type RepairCallbackOptions = {
   criticalErrorType: CriticalErrorType;
   backup: Backup | null;
   connectedPorts: Set<chrome.runtime.Port>;
+  /** Live set of ports registered after the repair started (late connectors). */
+  liveConnectedPorts: Set<chrome.runtime.Port>;
 };
 
 export type RepairCallback = (
@@ -231,6 +233,7 @@ export class CriticalErrorHandler {
         criticalErrorType,
         backup,
         connectedPorts,
+        liveConnectedPorts: this.connectedPorts,
       });
     } catch (repairError) {
       captureException(repairError);
