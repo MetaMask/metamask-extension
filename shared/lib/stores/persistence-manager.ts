@@ -789,7 +789,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
     const measurementStartedAt = performance.now();
     const bytesByController: Map<string, number> = new Map();
-    const controllerKeys: string[] = [];
     let totalBytes = 0;
 
     for (const [key, value] of pairs) {
@@ -803,15 +802,16 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       const serializedLength =
         serializedValue === undefined ? 0 : serializedValue.length;
       bytesByController.set(key, serializedLength);
-      controllerKeys.push(key);
       totalBytes += serializedLength;
     }
 
-    if (controllerKeys.length === 0) {
+    if (bytesByController.size === 0) {
       return;
     }
 
-    controllerKeys.sort((leftKey, rightKey) => leftKey.localeCompare(rightKey));
+    const controllerKeys = [...bytesByController.keys()].sort((left, right) =>
+      left.localeCompare(right),
+    );
     const sortedBytesByController: Map<string, number> = new Map(
       controllerKeys.map((key) => [key, bytesByController.get(key) as number]),
     );
