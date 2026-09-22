@@ -2,7 +2,11 @@ import {
   SnapController,
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { createDeferredPromise, Duration, inMilliseconds } from '@metamask/utils';
+import {
+  createDeferredPromise,
+  Duration,
+  inMilliseconds,
+} from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
