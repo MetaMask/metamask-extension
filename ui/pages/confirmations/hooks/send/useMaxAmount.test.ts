@@ -205,6 +205,45 @@ describe('useMaxAmount', () => {
     );
   });
 
+  it('backs off the bootstrap value after insufficient funds errors', async () => {
+    estimateGasMock
+      .mockRejectedValueOnce(
+        new Error('insufficient funds for gas * price + value'),
+      )
+      .mockRejectedValueOnce(new Error('insufficient balance'))
+      .mockResolvedValue('0x5208');
+    const { result } = renderHookWithProvider(useMaxAmount, createState());
+
+    await waitFor(() => expect(result.current.isMaxAmountAvailable).toBe(true));
+
+    expect(estimateGasMock).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ value: '0x30ca024f987b900000' }),
+      'goerli',
+      1.5,
+    );
+    expect(estimateGasMock).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ value: '0x18650127cc3dc80000' }),
+      'goerli',
+      1.5,
+    );
+    expect(estimateGasMock).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({ value: '0xc328093e61ee40000' }),
+      'goerli',
+      1.5,
+    );
+    expect(estimateGasMock).toHaveBeenNthCalledWith(
+      4,
+      expect.objectContaining({ value: '0x3635c8274c51cc4b80' }),
+      'goerli',
+      1.5,
+    );
+    expect(estimateGasMock).toHaveBeenCalledTimes(4);
+    expect(result.current.getMaxAmount()).toBe('999.99957066841144');
+  });
+
   it('re-estimates when the sender, recipient, chain, or RPC changes', async () => {
     const state = createState({
       chainId: '0x6',
@@ -267,6 +306,18 @@ describe('useMaxAmount', () => {
     expect(result.current.isMaxAmountAvailable).toBe(false);
     expect(result.current.isMaxAmountError).toBe(true);
     expect(result.current.getMaxAmount()).toBeUndefined();
+    expect(estimateGasMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('limits bootstrap retries for insufficient funds errors', async () => {
+    estimateGasMock.mockRejectedValue(new Error('insufficient funds'));
+    const { result } = renderHookWithProvider(useMaxAmount, createState());
+
+    await waitFor(() => expect(result.current.isMaxAmountPending).toBe(false));
+
+    expect(result.current.isMaxAmountAvailable).toBe(false);
+    expect(result.current.isMaxAmountError).toBe(true);
+    expect(estimateGasMock).toHaveBeenCalledTimes(6);
   });
 
   it('does not report an error while estimate inputs are missing', () => {

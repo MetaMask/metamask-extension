@@ -20,6 +20,10 @@ import { useSendType } from './useSendType';
 
 const GWEI_TO_WEI_CONVERSION_RATE = 1e9;
 const GAS_LIMIT_BUFFER_MULTIPLIER = 1.5;
+const INITIAL_BOOTSTRAP_BALANCE_MULTIPLIER = '0.9';
+const BOOTSTRAP_BACKOFF_DIVISOR = '2';
+const MAX_BOOTSTRAP_ESTIMATE_ATTEMPTS = 6;
+const INSUFFICIENT_FUNDS_ERROR_PATTERN = /insufficient (?:funds|balance)/iu;
 
 type FeeMarketGasFeeEstimate = {
   medium: {
@@ -199,15 +203,41 @@ export const useMaxAmount = () => {
       };
     };
 
+    const estimateBootstrapTransaction = (
+      rawValue: Numeric,
+      attemptsRemaining: number,
+    ): Promise<{ gasLimit: Hex; layer1GasFees: Hex }> => {
+      const bootstrapValue = toTokenMinimalUnit(
+        rawValue.toString(),
+        asset.decimals,
+        10,
+      ) as string;
+
+      return estimateTransaction(bootstrapValue).catch((error: unknown) => {
+        if (
+          !(error instanceof Error) ||
+          !INSUFFICIENT_FUNDS_ERROR_PATTERN.test(error.message) ||
+          attemptsRemaining === 1
+        ) {
+          throw error;
+        }
+
+        return estimateBootstrapTransaction(
+          rawValue.divide(new Numeric(BOOTSTRAP_BACKOFF_DIVISOR, 10)),
+          attemptsRemaining - 1,
+        );
+      });
+    };
+
     // Bootstrap below the full balance so the node can reserve gas while using
-    // a representative value for payable contracts, then re-estimate using the
-    // resulting Max value.
-    const bootstrapValue = toTokenMinimalUnit(
-      rawBalanceNumeric.times(new Numeric('0.9', 10)).toString(),
-      asset.decimals,
-      10,
-    ) as string;
-    const initialEstimate = await estimateTransaction(bootstrapValue);
+    // a representative value for payable contracts. If the balance cannot
+    // cover that value and gas, back off before re-estimating with Max.
+    const initialEstimate = await estimateBootstrapTransaction(
+      rawBalanceNumeric.times(
+        new Numeric(INITIAL_BOOTSTRAP_BALANCE_MULTIPLIER, 10),
+      ),
+      MAX_BOOTSTRAP_ESTIMATE_ATTEMPTS,
+    );
     const initialMaxAmount = getMaxAmountFn({
       asset,
       estimatedTotalGas: getEstimatedTotalGas(
