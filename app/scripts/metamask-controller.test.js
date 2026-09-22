@@ -2404,11 +2404,10 @@ describe('MetaMaskController', () => {
             ...cloneDeep(firstTimeState),
             AnalyticsController: {
               analyticsId: 'MOCK_METRICS_ID',
-              optedIn: true,
               consentDecisionMade: true,
-            },
-            MetaMetricsController: {
-              dataCollectionForMarketing: true,
+              marketingConsentDecisionMade: true,
+              optedIn: true,
+              optedInToMarketing: true,
             },
           },
           initLangCode: 'en_US',

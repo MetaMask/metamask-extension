@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "Short kapatıldı - piyasa"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "Para yatırma işlemi başarısız oldu"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "Yatırılıyor"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "Yatırıldı"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Gönderilemedi"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Gönderiliyor"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "Gönderildi"
-  },
   "activity_nftBuy_failed_title": {
     "message": "Alış işlemi başarısız oldu"
   },
@@ -3166,6 +3130,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask'i geri yükleyin"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask Durumunu Sıfırla"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Hala sorun mu yaşıyorsunuz?"
   },
@@ -3187,9 +3154,6 @@
   },
   "current": {
     "message": "Mevcut"
-  },
-  "currentAccountNotConnected": {
-    "message": "Mevcut hesabınız bağlı değil"
   },
   "currentEstimatedBaseFee": {
     "message": "Geçerli: $1 GWEI"
@@ -9962,9 +9926,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Yeni adres"
   },
-  "sendBugReport": {
-    "message": "Bize bir hata raporu gönderin."
-  },
   "sendBundleHwGasPayment": {
     "message": "Ağ ücreti $1 ile ödeniyor",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -11292,38 +11253,19 @@
   "stateCorruptionAreYouSure": {
     "message": "İlerlemek istediğinizden emin misiniz?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1 izleyerek kasanızı geri yüklemeye karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "$1 izleyerek MetaMask'i sıfırlamaya karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Kasanız otomatik olarak kurtarılamaz."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Kasanız otomatik bir yedeklemeden kurtarılabilir. Otomatik kurtarma, mevcut ayar ve tercihlerinizi silerek yalnızca kasanızı geri yükleyecektir."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Dahili hata: Veri tabanına erişim sağlanamıyor"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask Durumunu Sıfırla"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Veri tabanı sıfırlanıyor…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Hesapları geri yükle"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Veri tabanı geri yükleniyor…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "bu talimatları",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Gizli Kurtarma İfadeniz nasıl kurtarılır"
@@ -12128,9 +12070,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1 ile bağlantı güvenilir değil. Devam etmeden önce ağ bağlantı bilgilerini güncelleyin veya daha sonra tekrar deneyin.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Bu davranış beklenmedik bir durumdur ve hesaplarınız geri yüklense bile hata olarak bildirilmelidir."
   },
   "unexpectedError": {
     "message": "Beklenmedik bir hata oluştu.",
