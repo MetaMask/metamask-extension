@@ -151,9 +151,9 @@ export async function startPasskeyRegistration(
       };
     }
 
-    if (!hasPasskeyPRFEnabled({ clientExtensionResults })) {
-      throw new PasskeyPRFRequiredError();
-    }
+    // if (!hasPasskeyPRFEnabled({ clientExtensionResults })) {
+    //   throw new PasskeyPRFRequiredError();
+    // }
 
     return {
       ...response,

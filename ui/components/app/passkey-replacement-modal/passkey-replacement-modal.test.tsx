@@ -5,13 +5,11 @@ import thunk from 'redux-thunk';
 import { PasskeyPRFRequiredError } from '../../../../shared/lib/passkey/passkey-capabilities';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import {
-  forceUpdateMetamaskState,
-  verifyPassword,
-} from '../../../store/actions';
+import { forceUpdateMetamaskState } from '../../../store/actions';
 import PasskeyReplacementModal from './passkey-replacement-modal';
 
 const mockReplacePasskey = jest.fn();
+const mockTrackEvent = jest.fn();
 
 jest.mock('../../../../shared/lib/sentry', () => ({
   ...jest.requireActual<typeof import('../../../../shared/lib/sentry')>(
@@ -26,22 +24,42 @@ jest.mock('../../../hooks/passkey/usePasskeyReplacement', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual<typeof import('../../../store/actions')>(
     '../../../store/actions',
   ),
   forceUpdateMetamaskState: jest.fn(),
-  verifyPassword: jest.fn(),
 }));
 
 describe('PasskeyReplacementModal', () => {
   const onComplete = jest.fn();
   const onRemindMeLater = jest.fn();
-  const store = configureMockStore([thunk])({});
+  const store = configureMockStore([thunk])({
+    metamask: {
+      firstTimeFlowType: null,
+      passkeyRecord: {
+        keyDerivation: {
+          method: 'userHandle',
+        },
+      },
+    },
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(verifyPassword).mockResolvedValue(true);
     jest.mocked(forceUpdateMetamaskState).mockResolvedValue(undefined);
     mockReplacePasskey.mockImplementation(async ({ onStageChange }) => {
       onStageChange?.('register');
@@ -60,41 +78,35 @@ describe('PasskeyReplacementModal', () => {
     );
   }
 
-  it('collects the wallet password and completes replacement', async () => {
+  it('uses the shared setup content and completes replacement', async () => {
     const { getByTestId } = renderModal();
 
-    fireEvent.change(getByTestId('passkey-replacement-password-input'), {
-      target: { value: 'wallet-password' },
-    });
-    fireEvent.click(getByTestId('passkey-replacement-continue-button'));
+    fireEvent.click(getByTestId('passkey-set-up-button'));
 
-    await waitFor(() => {
-      expect(mockReplacePasskey).toHaveBeenCalledWith({
-        password: 'wallet-password',
-        onStageChange: expect.any(Function),
-      });
-      expect(onComplete).toHaveBeenCalledTimes(1);
-    });
-    expect(verifyPassword).toHaveBeenCalledWith('wallet-password');
+    await waitFor(
+      () => {
+        expect(mockReplacePasskey).toHaveBeenCalledWith({
+          onStageChange: expect.any(Function),
+        });
+        expect(onComplete).toHaveBeenCalledTimes(1);
+      },
+      { timeout: 3000 },
+    );
     expect(forceUpdateMetamaskState).toHaveBeenCalled();
   });
 
-  it('shows an incorrect-password error and does not start replacement', async () => {
-    jest.mocked(verifyPassword).mockRejectedValueOnce(new Error('wrong'));
+  it('shows an error when the controller rejects replacement', async () => {
+    mockReplacePasskey.mockRejectedValueOnce(new Error('wrong'));
     const { getByTestId } = renderModal();
 
-    fireEvent.change(getByTestId('passkey-replacement-password-input'), {
-      target: { value: 'wrong-password' },
-    });
-    fireEvent.click(getByTestId('passkey-replacement-continue-button'));
+    fireEvent.click(getByTestId('passkey-set-up-button'));
 
     await waitFor(() => {
-      expect(getByTestId('passkey-replacement-password-input')).toHaveAttribute(
-        'aria-invalid',
-        'true',
-      );
+      expect(getByTestId('passkey-enrollment-error')).toBeInTheDocument();
     });
-    expect(mockReplacePasskey).not.toHaveBeenCalled();
+    expect(mockReplacePasskey).toHaveBeenCalledWith({
+      onStageChange: expect.any(Function),
+    });
     expect(onComplete).not.toHaveBeenCalled();
   });
 
@@ -102,36 +114,31 @@ describe('PasskeyReplacementModal', () => {
     mockReplacePasskey.mockRejectedValueOnce(new PasskeyPRFRequiredError());
     const { getByTestId, getByText } = renderModal();
 
-    fireEvent.change(getByTestId('passkey-replacement-password-input'), {
-      target: { value: 'wallet-password' },
-    });
-    fireEvent.click(getByTestId('passkey-replacement-continue-button'));
+    fireEvent.click(getByTestId('passkey-set-up-button'));
 
     await waitFor(() => {
       expect(
         getByText(messages.passkeyErrorNotSupported.message),
       ).toBeInTheDocument();
     });
-    expect(
-      getByTestId('passkey-replacement-password-input'),
-    ).toBeInTheDocument();
+    expect(getByTestId('passkey-set-up-button')).toBeInTheDocument();
     expect(onComplete).not.toHaveBeenCalled();
 
-    fireEvent.change(getByTestId('passkey-replacement-password-input'), {
-      target: { value: 'wallet-password' },
-    });
-    fireEvent.click(getByTestId('passkey-replacement-continue-button'));
+    fireEvent.click(getByTestId('passkey-set-up-button'));
 
-    await waitFor(() => {
-      expect(mockReplacePasskey).toHaveBeenCalledTimes(2);
-      expect(onComplete).toHaveBeenCalledTimes(1);
-    });
+    await waitFor(
+      () => {
+        expect(mockReplacePasskey).toHaveBeenCalledTimes(2);
+        expect(onComplete).toHaveBeenCalledTimes(1);
+      },
+      { timeout: 3000 },
+    );
   });
 
   it('leaves the migration when the user chooses remind me later', () => {
     const { getByTestId } = renderModal();
 
-    fireEvent.click(getByTestId('passkey-replacement-remind-me-later-button'));
+    fireEvent.click(getByTestId('passkey-maybe-later-button'));
 
     expect(onRemindMeLater).toHaveBeenCalledTimes(1);
   });

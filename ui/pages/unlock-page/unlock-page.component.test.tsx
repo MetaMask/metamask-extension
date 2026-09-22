@@ -166,6 +166,7 @@ describe('UnlockPage component (passkey UI)', () => {
     fireEvent.click(getByTestId('unlock-passkey-button'));
 
     await waitFor(() => {
+      expect(mockUnlockWithPasskey).toHaveBeenCalledTimes(1);
       expect(getByTestId('passkey-migration-modal')).toBeInTheDocument();
     });
     expect(props.navigateAfterUnlock).not.toHaveBeenCalled();
@@ -200,6 +201,7 @@ describe('UnlockPage component (passkey UI)', () => {
     fireEvent.click(getByTestId('passkey-migration-modal-replace-button'));
 
     await waitFor(() => {
+      expect(mockUnlockWithPasskey).toHaveBeenCalledTimes(1);
       expect(getByTestId('passkey-replacement-modal')).toBeInTheDocument();
     });
     expect(props.navigateAfterUnlock).not.toHaveBeenCalled();

@@ -14,6 +14,8 @@ import {
 } from '../../../shared/lib/passkey/passkey-capabilities';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useMessenger } from '../useMessenger';
+import { forceUpdateMetamaskState } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
 
 type PasskeyReplacementMessenger = RouteMessenger<
   | 'PasskeyController:generatePasskeyReplacementRegistrationOptions'
@@ -26,7 +28,6 @@ type PasskeyReplacementMessenger = RouteMessenger<
 export type PasskeyReplacementStage = 'register' | 'verify' | 'complete';
 
 export type ReplacePasskeyParams = {
-  password?: string;
   onStageChange?: (stage: PasskeyReplacementStage) => void;
 };
 
@@ -41,6 +42,7 @@ export function usePasskeyReplacement() {
   const messenger = useMessenger<PasskeyReplacementMessenger>();
   const activeRegistrationChallenge = useRef<string | null>(null);
   const isUnmounted = useRef(false);
+  const dispatch = useDispatch();
 
   const cancelActiveReplacement = useCallback(async () => {
     const challenge = activeRegistrationChallenge.current;
@@ -65,7 +67,7 @@ export function usePasskeyReplacement() {
   }, [cancelActiveReplacement]);
 
   const replacePasskey = useCallback(
-    async ({ password, onStageChange }: ReplacePasskeyParams = {}) => {
+    async ({ onStageChange }: ReplacePasskeyParams = {}) => {
       onStageChange?.('register');
 
       const registrationOptions = await messenger.call(
@@ -108,13 +110,14 @@ export function usePasskeyReplacement() {
         await messenger.call('PasskeyController:completePasskeyReplacement', {
           registrationResponse,
           authenticationResponse,
-          password,
         });
         activeRegistrationChallenge.current = null;
         onStageChange?.('complete');
       } catch (error) {
         await cancelActiveReplacement();
         throw error;
+      } finally {
+        await forceUpdateMetamaskState(dispatch);
       }
     },
     [cancelActiveReplacement, messenger],

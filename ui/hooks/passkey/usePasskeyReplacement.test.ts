@@ -122,10 +122,7 @@ describe('usePasskeyReplacement', () => {
     const onStageChange = jest.fn();
     const { result } = renderReplacementFlow();
 
-    await result.current.replacePasskey({
-      password: 'wallet-password',
-      onStageChange,
-    });
+    await result.current.replacePasskey({ onStageChange });
 
     expect(onStageChange.mock.calls).toStrictEqual([
       ['register'],
@@ -141,7 +138,6 @@ describe('usePasskeyReplacement', () => {
     expect(completePasskeyReplacement).toHaveBeenCalledWith({
       registrationResponse,
       authenticationResponse,
-      password: 'wallet-password',
     });
     expect(startPasskeyRegistration).toHaveBeenCalledWith(registrationOptions);
     expect(startPasskeyAuthentication).toHaveBeenCalledWith(
@@ -157,9 +153,9 @@ describe('usePasskeyReplacement', () => {
     });
     const { result } = renderReplacementFlow();
 
-    await expect(
-      result.current.replacePasskey({ password: 'wallet-password' }),
-    ).rejects.toBeInstanceOf(PasskeyPRFRequiredError);
+    await expect(result.current.replacePasskey()).rejects.toBeInstanceOf(
+      PasskeyPRFRequiredError,
+    );
 
     expect(cancelPasskeyReplacement).toHaveBeenCalledWith(
       registrationOptions.challenge,
@@ -172,9 +168,7 @@ describe('usePasskeyReplacement', () => {
     jest.mocked(startPasskeyRegistration).mockRejectedValueOnce(error);
     const { result } = renderReplacementFlow();
 
-    await expect(
-      result.current.replacePasskey({ password: 'wallet-password' }),
-    ).rejects.toBe(error);
+    await expect(result.current.replacePasskey()).rejects.toBe(error);
 
     expect(cancelPasskeyReplacement).toHaveBeenCalledWith(
       registrationOptions.challenge,
@@ -193,9 +187,7 @@ describe('usePasskeyReplacement', () => {
     const { result, unmount } = renderReplacementFlow();
 
     act(() => {
-      result.current
-        .replacePasskey({ password: 'wallet-password' })
-        .catch(() => undefined);
+      result.current.replacePasskey().catch(() => undefined);
     });
     await waitFor(() => {
       expect(startPasskeyRegistration).toHaveBeenCalled();

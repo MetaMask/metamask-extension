@@ -345,7 +345,7 @@
     "@metamask/profile-sync-controller": "^32.0.0",
     "@metamask/account-tree-controller": "^9.0.0",
     "@metamask/ramps-controller": "^22.0.0",
-    "@metamask/passkey-controller": "file:./passky-controller.tgz"
+    "@metamask/passkey-controller": "file:./passkey-controller.tgz"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -465,7 +465,7 @@
     "@metamask/notification-services-controller": "^29.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
-    "@metamask/passkey-controller": "file:./passky-controller.tgz",
+    "@metamask/passkey-controller": "file:./passkey-controller.tgz",
     "@metamask/permission-controller": "^13.0.0",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.3.0",
@@ -507,7 +507,7 @@
     "@metamask/tron-wallet-snap": "^3.2.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^11.12.1",
-    "@metamask/wallet": "^12.0.3",
+    "@metamask/wallet": "./metamask-wallet.tgz",
     "@mui/material": "^5.18.0",
     "@mui/system": "^5.18.0",
     "@mui/x-date-pickers": "^7.29.4",

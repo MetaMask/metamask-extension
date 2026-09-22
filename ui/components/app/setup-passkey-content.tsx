@@ -51,7 +51,6 @@ import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
 import { usePasskeyPRFSupport } from '../../hooks/usePasskeyPRFSupport';
 import { usePasskeyEnrollment } from '../../hooks/passkey/usePasskeyEnrollment';
-
 import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
@@ -65,23 +64,73 @@ const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
   'idle';
 
 export type SetupPasskeyContentProps = {
-  readonly onNext: () => void;
+  readonly onNext: () => void | Promise<void>;
+  readonly onSkip?: () => void | Promise<void>;
   readonly password?: string;
+  readonly enrollWithPasskey?: PasskeySetupOperation;
+  readonly isPasskeyRegistered?: boolean;
+  readonly checkPasskeyPRFSupport?: boolean;
 };
+
+export type PasskeySetupOperation = (options: {
+  password?: string;
+  onStageChange?: (stage: PasskeySetupStage) => void;
+}) => Promise<void>;
+
+export type PasskeySetupStage = 'register' | 'verify' | 'enroll';
 
 /**
  * Reusable passkey setup content used by onboarding and restore-vault flows.
  *
  * @param options0 - Component props.
- * @param options0.onNext - Called after the passkey step is skipped or completed.
+ * @param options0.onNext - Called after passkey setup completes.
+ * @param options0.onSkip - Called when the user skips passkey setup.
  * @param options0.password - Wallet password when vault is restored.
+ * @param options0.enrollWithPasskey - Optional passkey setup operation.
+ * @param options0.isPasskeyRegistered - Optional override for the registered
+ *   passkey state.
+ * @param options0.checkPasskeyPRFSupport - Whether to skip setup when PRF is
+ *   unsupported.
  */
-export default function SetupPasskeyContent({
-  onNext,
-  password,
-}: SetupPasskeyContentProps) {
-  const dispatch = useDispatch();
+export default function SetupPasskeyContent(props: SetupPasskeyContentProps) {
+  if (props.enrollWithPasskey) {
+    return (
+      <SetupPasskeyContentView
+        {...props}
+        enrollWithPasskey={props.enrollWithPasskey}
+      />
+    );
+  }
+
+  return <SetupPasskeyContentWithDefaultEnrollment {...props} />;
+}
+
+function SetupPasskeyContentWithDefaultEnrollment(
+  props: SetupPasskeyContentProps,
+) {
   const { enrollWithPasskey } = usePasskeyEnrollment();
+
+  return (
+    <SetupPasskeyContentView {...props} enrollWithPasskey={enrollWithPasskey} />
+  );
+}
+
+type SetupPasskeyContentViewProps = Omit<
+  SetupPasskeyContentProps,
+  'enrollWithPasskey'
+> & {
+  enrollWithPasskey: PasskeySetupOperation;
+};
+
+function SetupPasskeyContentView({
+  onNext,
+  onSkip,
+  password,
+  enrollWithPasskey,
+  isPasskeyRegistered: isPasskeyRegisteredOverride,
+  checkPasskeyPRFSupport = true,
+}: SetupPasskeyContentViewProps) {
+  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext() as (
     key: string,
@@ -92,7 +141,9 @@ export default function SetupPasskeyContent({
     getPasskeyAuthMethodKey({ specific: true }),
   );
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const isPasskeyRegisteredFromState = useSelector(getIsPasskeyRegistered);
+  const isPasskeyRegistered =
+    isPasskeyRegisteredOverride ?? isPasskeyRegisteredFromState;
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
 
@@ -142,7 +193,7 @@ export default function SetupPasskeyContent({
   }, [onNext]);
 
   usePasskeyPRFSupport({
-    enabled: !isPasskeyRegistered,
+    enabled: checkPasskeyPRFSupport && !isPasskeyRegistered,
     onUnsupported: goToNextStep,
   });
 
@@ -189,6 +240,11 @@ export default function SetupPasskeyContent({
         })
         .build(),
     );
+
+    if (onSkip) {
+      Promise.resolve(onSkip()).catch(() => undefined);
+      return;
+    }
 
     goToNextStep();
   };
@@ -368,7 +424,6 @@ export default function SetupPasskeyContent({
           >
             {t('settingUpPasskey', [passkeyMethodLabel])}
           </Text>
-
           <PasskeyEnrollmentSteps
             registerStatus={registerStepPhase}
             verifyStatus={verifyStepPhase}
