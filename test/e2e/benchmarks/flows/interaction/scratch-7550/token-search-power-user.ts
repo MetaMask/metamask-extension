@@ -1,6 +1,5 @@
 import { withFixtures } from '../../../../helpers';
 import { login } from '../../../../page-objects/flows/login.flow';
-import TokensTab from '../../../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../../../webdriver/driver';
 import { buildLongTaskTimerResults } from '../../../utils/long-task-helper';
 import {
@@ -20,17 +19,21 @@ export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 // Generated power-user tokens use symbols TK{n}; this filters a large list.
 const TOKEN_SEARCH_QUERY = 'TK';
+// The before arm runs this file against the `test/e2e` of an older SHA, so it
+// drives the UI by selector rather than through page objects, whose methods
+// only exist at HEAD.
+const TOKEN_OPTIONS_BUTTON =
+  '[data-testid="asset-list-control-bar-action-button"]';
+const MANAGE_TOKENS_BUTTON = '[data-testid="manageTokens__button"]';
 const TOKEN_MANAGEMENT_SEARCH_INPUT =
   '[data-testid="token-management-search-input"]';
 const TOKEN_MANAGEMENT_READY_TIMEOUT_MS = 120_000;
 const TOKEN_SEARCH_INPUT_TIMEOUT_MS = 15_000;
 
 async function openTokenManagement(driver: Driver): Promise<void> {
-  const tokensTab = new TokensTab(driver);
-  await tokensTab.goToTokensTab();
-  await tokensTab.checkPageIsLoaded();
-  await tokensTab.clickTokenOptionsButton();
-  await tokensTab.clickManageTokens();
+  await driver.waitForSelector(TOKEN_OPTIONS_BUTTON);
+  await driver.clickElement(TOKEN_OPTIONS_BUTTON);
+  await driver.clickElement(MANAGE_TOKENS_BUTTON);
 }
 
 async function waitForTokenManagementPage(driver: Driver): Promise<void> {
