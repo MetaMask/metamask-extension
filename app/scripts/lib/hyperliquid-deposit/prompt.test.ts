@@ -9,7 +9,11 @@ describe('showHyperliquidDepositPromptApproval', () => {
     add: jest.fn().mockResolvedValue(undefined),
     addAndShowApprovalRequest: jest.fn().mockResolvedValue(undefined),
     hasRequest: jest.fn().mockReturnValue(false),
-    state: { pendingApprovals },
+    state: {
+      pendingApprovals,
+      pendingApprovalCount: Object.keys(pendingApprovals).length,
+      approvalFlows: [],
+    },
   });
 
   it('adds and shows a Hyperliquid deposit prompt approval', async () => {
