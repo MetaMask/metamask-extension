@@ -1,8 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SnapSignAuthEntryConfirmation {
-  protected driver: Driver;
-
   private cancelButton = {
     testId: 'confirm-sign-auth-entry-cancel-snap-footer-button',
     text: 'Cancel',
@@ -12,6 +10,8 @@ class SnapSignAuthEntryConfirmation {
     testId: 'confirm-sign-auth-entry-confirm-snap-footer-button',
     text: 'Confirm',
   };
+
+  protected driver: Driver;
 
   private header = {
     text: 'Authorize smart contract',
