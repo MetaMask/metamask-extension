@@ -12,6 +12,7 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseTransactionSimulations } from '../../../../../selectors';
+import { isTransactionGasFeeSponsorshipAvailable } from '../../../../../../shared/lib/transaction-gas-fee.utils';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
@@ -40,7 +41,8 @@ export function useInsufficientBalanceAlerts({
   const { hasInsufficientBalance, isNativeBalanceKnown, nativeCurrency } =
     useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
-  const isSponsored = currentConfirmation?.isGasFeeSponsored;
+  const isSponsored =
+    isTransactionGasFeeSponsorshipAvailable(currentConfirmation);
   const {
     isSupported: isGaslessSupported,
     pending: isGaslessSupportedPending,

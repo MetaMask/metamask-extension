@@ -5,6 +5,7 @@ import {
 import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { isTransactionGasFeeSponsorshipAvailable } from '../../../../../../shared/lib/transaction-gas-fee.utils';
 import {
   AlertActionKey,
   RowAlertKey,
@@ -79,8 +80,9 @@ function hasGasSponsorshipWarning(
 export function useGasSponsorshipWarningAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, isGasFeeSponsored, simulationData } =
-    currentConfirmation ?? {};
+  const { chainId, simulationData } = currentConfirmation ?? {};
+  const isGasFeeSponsored =
+    isTransactionGasFeeSponsorshipAvailable(currentConfirmation);
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
 
   const callTraceErrors = (

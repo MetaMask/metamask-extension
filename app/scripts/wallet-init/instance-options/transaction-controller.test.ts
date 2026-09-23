@@ -286,18 +286,5 @@ describe('TransactionController wallet instance options', () => {
       const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
       expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
-
-    it('returns true when isExternalSign is true', async () => {
-      getIsSmartTransactionMock.mockReturnValue(true);
-      isSendBundleSupportedMock.mockResolvedValue(true);
-
-      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
-      expect(
-        await optionFn?.({
-          ...mockTransactionMeta,
-          isExternalSign: true,
-        }),
-      ).toBe(true);
-    });
   });
 });

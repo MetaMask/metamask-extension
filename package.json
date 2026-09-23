@@ -172,6 +172,7 @@
   },
   "resolutions": {
     "@metamask/eth-sig-util": "^9.0.0",
+    "@metamask/transaction-controller": "^71.0.0",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "36.0.0",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
@@ -501,7 +502,7 @@
     "@metamask/stellar-wallet-snap": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^8.0.1",
-    "@metamask/transaction-controller": "^70.1.0",
+    "@metamask/transaction-controller": "^71.0.0",
     "@metamask/transaction-pay-controller": "^27.1.1",
     "@metamask/tron-wallet-snap": "^3.2.0",
     "@metamask/user-operation-controller": "^41.2.5",
