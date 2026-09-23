@@ -207,6 +207,7 @@
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "gasSponsorshipOptOutByChainId": "object",
+        "hasLinkedSocialLoginProfile": "boolean",
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",

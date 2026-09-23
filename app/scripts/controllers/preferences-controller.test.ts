@@ -585,6 +585,7 @@ describe('preferences controller', () => {
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
+        hasLinkedSocialLoginProfile: false,
         basicFunctionalityMigrationNotification: null,
         basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
@@ -621,6 +622,7 @@ describe('preferences controller', () => {
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
+        hasLinkedSocialLoginProfile: false,
         basicFunctionalityMigrationNotification: null,
         basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
@@ -836,15 +838,43 @@ describe('preferences controller', () => {
     });
 
     it('does not sync external services when already consolidated', () => {
-      const { controller, getOnboardingState, toggleExternalServices } =
-        setupController({});
+      const { controller, toggleExternalServices } = setupController({});
       controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
 
       controller.consolidateBasicFunctionality();
 
-      expect(getOnboardingState).not.toHaveBeenCalled();
       expect(toggleExternalServices).not.toHaveBeenCalled();
       expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('repairs a consolidated linked-social wallet missing the migration modal', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      controller.setPreference('hasLinkedSocialLoginProfile', true);
+
+      controller.consolidateBasicFunctionality();
+
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(getOnboardingState).toHaveBeenCalled();
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('treats linked-social profile preference as a social-login wallet', () => {
+      const { controller, toggleExternalServices } = setupController({});
+      controller.setPreference('hasLinkedSocialLoginProfile', true);
+      controller.toggleExternalServices(false);
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
     });
   });
 
@@ -987,6 +1017,7 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
+            "hasLinkedSocialLoginProfile": false,
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
@@ -1060,6 +1091,7 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
+            "hasLinkedSocialLoginProfile": false,
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
@@ -1147,6 +1179,7 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
+            "hasLinkedSocialLoginProfile": false,
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
@@ -1235,6 +1268,7 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
+            "hasLinkedSocialLoginProfile": false,
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
@@ -1579,6 +1613,7 @@ describe('preferences controller', () => {
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
             isBasicFunctionalityConsolidatedEnabled: false,
+            hasLinkedSocialLoginProfile: false,
             basicFunctionalityMigrationNotification: null,
             basicFunctionalityMigrationNotificationDismissed: false,
             skipDeepLinkInterstitial: false,
