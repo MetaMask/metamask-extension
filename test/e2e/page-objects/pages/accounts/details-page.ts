@@ -350,7 +350,8 @@ class AccountDetailsPage {
    */
   async navigateBack(): Promise<void> {
     console.log('Navigate back from account details');
-    await this.driver.clickElementAndWaitToDisappear(this.parentSelector);
+    await this.driver.clickElement(this.backButton);
+    await this.driver.assertElementNotPresent(this.parentSelector);
   }
 
   /**
