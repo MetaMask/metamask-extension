@@ -593,7 +593,7 @@ export const NetworksForm = ({
                   ...item,
                   failoverUrls,
                 }}
-                asButton={false}
+                asButton={isList}
               />
             ) : (
               // A custom (non Infura) endpoint never has a failover, so it just

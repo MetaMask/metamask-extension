@@ -80,7 +80,11 @@ export const DropdownEditor = <Item,>({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const renderDropdownList = () => (
-    <Box id={listboxId} role="listbox" className="py-2">
+    <Box
+      id={listboxId}
+      role="listbox"
+      className="max-h-40 overflow-y-auto py-2"
+    >
       {items?.map((item, index) => {
         const selectItem = () => {
           onItemSelected(index);

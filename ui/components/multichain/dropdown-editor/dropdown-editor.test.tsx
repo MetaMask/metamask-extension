@@ -48,7 +48,9 @@ describe('DropdownEditor', () => {
         onItemDeleted={onItemDeleted}
         onItemAdd={onItemAdd}
         itemKey={(item) => item}
-        renderItem={(item) => <span>{item}</span>}
+        renderItem={(item, isList) =>
+          isList ? <button type="button">{item}</button> : <span>{item}</span>
+        }
         renderTooltip={() => undefined}
         buttonDataTestId="rpc-dropdown"
       />,
@@ -78,7 +80,16 @@ describe('DropdownEditor', () => {
     fireEvent.click(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
-    fireEvent.click(screen.getByRole('option', { name: /Second endpoint/u }));
+    expect(screen.getByRole('listbox')).toHaveClass(
+      'max-h-40',
+      'overflow-y-auto',
+    );
+    const secondOption = screen.getByRole('option', {
+      name: /Second endpoint/u,
+    });
+    fireEvent.click(
+      within(secondOption).getByRole('button', { name: 'Second endpoint' }),
+    );
 
     expect(onItemSelected).toHaveBeenCalledWith(1);
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
