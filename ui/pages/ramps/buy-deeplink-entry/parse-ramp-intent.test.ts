@@ -72,6 +72,16 @@ describe('parseRampIntent', () => {
       { chainId: 'not-a-chain' },
       undefined,
     ],
+    ['drops a malformed assetId param', { assetId: 'not-an-asset' }, undefined],
+    [
+      'falls back to the EVM params when the assetId is malformed',
+      {
+        assetId: 'eip155:1/',
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        chainId: '1',
+      },
+      { assetId: DAI, chainId: 'eip155:1' },
+    ],
   ];
   for (const [label, params, expected] of cases) {
     it(label, () => {
