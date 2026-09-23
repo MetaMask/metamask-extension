@@ -72,7 +72,7 @@ const createStateWithoutExternalServices = (): ReturnType<
     useExternalServices: false,
   });
 
-const createNonBridgeChainState = (): ReturnType<typeof createStateOverrides> =>
+const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
   createStateOverrides({
     useExternalServices: true,
     selectedNetworkClientId: 'sepolia',
