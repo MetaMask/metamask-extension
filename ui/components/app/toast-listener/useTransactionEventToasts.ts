@@ -156,10 +156,7 @@ function handleAccountsControllerTx(tx: Transaction) {
     showPendingToast(toastId);
   } else if (tx.status === 'confirmed' && shouldShowTerminalToast(tx.id)) {
     showSuccessToast(toastId);
-  } else if (
-    tx.status === 'failed' &&
-    shouldShowFailedToast(tx.id)
-  ) {
+  } else if (tx.status === 'failed' && shouldShowFailedToast(tx.id)) {
     showFailedToast(toastId);
   }
 }
