@@ -197,7 +197,7 @@ export type ControllerStatePropertiesEnumerated = {
   optedInToMarketing?: AnalyticsControllerState['optedInToMarketing'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
+  marketingCampaignCookieId?: AnalyticsControllerState['marketingCampaignCookieId'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
   metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];

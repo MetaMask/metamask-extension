@@ -114,7 +114,6 @@ const VERSION = '0.0.1-test';
 const DEFAULT_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_ANALYTICS_ID = '00000000-0000-4000-8000-000000000001';
-const TEST_GA_COOKIE_ID = '123456.123455';
 
 const MOCK_ANALYTICS_CONTROLLER_OPTED_IN: AnalyticsControllerState = {
   optedIn: true,
@@ -222,9 +221,7 @@ describe('MetaMetricsController', function () {
       const spy = jest.spyOn(segmentMock, 'track');
       await withController(({ controller, controllerMessenger }) => {
         expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
-        expect(controller.state).toStrictEqual({
-          marketingCampaignCookieId: null,
-        });
+        expect(controller.state).toStrictEqual({});
         expect(controller).not.toHaveProperty('bufferedTrace');
         expect(controller).not.toHaveProperty('bufferedEndTrace');
         expect(controller).not.toHaveProperty('trackTracesAfterMetricsOptIn');
@@ -1471,57 +1468,6 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('setMarketingCampaignCookieId', function () {
-    it('should update marketingCampaignCookieId in the context when cookieId is available', async function () {
-      await withController(
-        {
-          analyticsControllerState: {
-            optedInToMarketing: true,
-            marketingConsentDecisionMade: true,
-          },
-          options: {
-            state: {
-              marketingCampaignCookieId: null,
-            },
-          },
-        },
-        ({ controller }) => {
-          controller.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
-          expect(controller.state.marketingCampaignCookieId).toStrictEqual(
-            TEST_GA_COOKIE_ID,
-          );
-          const spy = jest.spyOn(segmentMock, 'track');
-          trackLegacyMetaMetricsPayload({
-            event: 'Fake Event',
-            category: 'Unit Test',
-            properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id: '1',
-            },
-          });
-          expect(spy).toHaveBeenCalledTimes(1);
-          expect(spy).toHaveBeenCalledWith(
-            {
-              event: 'Fake Event',
-              userId: TEST_ANALYTICS_ID,
-              context: {
-                ...DEFAULT_TEST_CONTEXT,
-                marketingCampaignCookieId: TEST_GA_COOKIE_ID,
-              },
-              properties: {
-                ...DEFAULT_EVENT_PROPERTIES,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id: '1',
-              },
-            },
-            spy.mock.calls[0][1],
-          );
-        },
-      );
-    });
-  });
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(({ controller }) => {
@@ -1531,11 +1477,7 @@ describe('MetaMetricsController', function () {
             controller.metadata,
             'includeInDebugSnapshot',
           ),
-        ).toMatchInlineSnapshot(`
-          {
-            "marketingCampaignCookieId": null,
-          }
-        `);
+        ).toMatchInlineSnapshot(`{}`);
       });
     });
 
@@ -1547,11 +1489,7 @@ describe('MetaMetricsController', function () {
             controller.metadata,
             'includeInStateLogs',
           ),
-        ).toMatchInlineSnapshot(`
-          {
-            "marketingCampaignCookieId": null,
-          }
-        `);
+        ).toMatchInlineSnapshot(`{}`);
       });
     });
 
@@ -1563,11 +1501,7 @@ describe('MetaMetricsController', function () {
             controller.metadata,
             'persist',
           ),
-        ).toMatchInlineSnapshot(`
-          {
-            "marketingCampaignCookieId": null,
-          }
-        `);
+        ).toMatchInlineSnapshot(`{}`);
       });
     });
 
@@ -1681,9 +1615,6 @@ async function withController<ReturnValue>(
 
     const mmcState = merge(
       {},
-      {
-        marketingCampaignCookieId: null,
-      },
       options.state ?? {},
     ) as MetaMetricsControllerState;
 

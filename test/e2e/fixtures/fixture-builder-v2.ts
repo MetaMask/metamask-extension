@@ -47,7 +47,6 @@ import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
-import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type { Preferences } from '../../../shared/types/preferences';
 import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
@@ -130,7 +129,7 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
-type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
+type MetaMetricsControllerFixturePatch = {
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   analyticsId?: string | null;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
@@ -315,10 +314,7 @@ class FixtureBuilderV2 {
       optedIn,
       consentDecisionMade,
       dataCollectionForMarketing,
-      ...metaMetricsControllerPatch
     } = data;
-
-    merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
     if (
       analyticsId !== undefined ||
