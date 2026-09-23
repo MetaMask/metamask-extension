@@ -524,40 +524,6 @@ export const NetworksForm = ({
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
           autoFocus
-          helpText={
-            ((name && warnings?.name?.msg) || suggestedName) && (
-              <>
-                {name && warnings?.name?.msg && (
-                  <HelpText
-                    variant={TextVariant.bodySm}
-                    severity={HelpTextSeverity.Warning}
-                  >
-                    {warnings.name.msg}
-                  </HelpText>
-                )}
-
-                {suggestedName && (
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textDefault}
-                    data-testid="network-form-name-suggestion"
-                  >
-                    {t('suggestedTokenName')}
-                    <TextButton
-                      size={TextButtonSize.BodySm}
-                      onClick={() => {
-                        setName(suggestedName);
-                      }}
-                      className="px-1 align-baseline"
-                    >
-                      {suggestedName}
-                    </TextButton>
-                  </Text>
-                )}
-              </>
-            )
-          }
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
@@ -575,6 +541,38 @@ export const NetworksForm = ({
           }
           value={name}
         />
+        {(name && warnings?.name?.msg) || suggestedName ? (
+          <Box marginTop={1}>
+            {name && warnings?.name?.msg ? (
+              <HelpText
+                variant={TextVariant.bodySm}
+                severity={HelpTextSeverity.Warning}
+              >
+                {warnings.name.msg}
+              </HelpText>
+            ) : null}
+
+            {suggestedName ? (
+              <Text
+                as="span"
+                variant={TextVariant.bodySm}
+                color={TextColor.textDefault}
+                data-testid="network-form-name-suggestion"
+              >
+                {t('suggestedTokenName')}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    setName(suggestedName);
+                  }}
+                  className="px-1 align-baseline"
+                >
+                  {suggestedName}
+                </TextButton>
+              </Text>
+            ) : null}
+          </Box>
+        ) : null}
         <DropdownEditor
           title={t('defaultRpcUrl')}
           placeholder={t('addAUrl')}
@@ -730,27 +728,6 @@ export const NetworksForm = ({
           placeholder={t('enterSymbol')}
           className="pt-4"
           data-testid="network-form-ticker"
-          helpText={
-            suggestedTicker ? (
-              <Text
-                as="span"
-                variant={TextVariant.bodySm}
-                color={TextColor.textDefault}
-                data-testid="network-form-ticker-suggestion"
-              >
-                {t('suggestedCurrencySymbol')}
-                <TextButton
-                  size={TextButtonSize.BodySm}
-                  onClick={() => {
-                    setTicker(suggestedTicker);
-                  }}
-                  className="px-1 align-baseline"
-                >
-                  {suggestedTicker}
-                </TextButton>
-              </Text>
-            ) : null
-          }
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
@@ -768,6 +745,26 @@ export const NetworksForm = ({
           }
           value={ticker}
         />
+        {suggestedTicker ? (
+          <Text
+            as="span"
+            variant={TextVariant.bodySm}
+            color={TextColor.textDefault}
+            marginTop={1}
+            data-testid="network-form-ticker-suggestion"
+          >
+            {t('suggestedCurrencySymbol')}
+            <TextButton
+              size={TextButtonSize.BodySm}
+              onClick={() => {
+                setTicker(suggestedTicker);
+              }}
+              className="px-1 align-baseline"
+            >
+              {suggestedTicker}
+            </TextButton>
+          </Text>
+        ) : null}
         {ticker && warnings.ticker?.msg ? (
           <HelpText
             variant={TextVariant.bodySm}
