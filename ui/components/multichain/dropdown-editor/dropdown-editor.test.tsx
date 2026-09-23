@@ -1,8 +1,24 @@
 import React from 'react';
-import { render, screen, within } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
+
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  const react = jest.requireActual('react');
+  return {
+    ...actual,
+    Popover: ({
+      children,
+      isOpen,
+      role,
+    }: {
+      children: React.ReactNode;
+      isOpen: boolean;
+      role: React.AriaRole;
+    }) => (isOpen ? react.createElement('div', { role }, children) : null),
+  };
+});
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -52,29 +68,27 @@ describe('DropdownEditor', () => {
     expect(screen.getByText('First endpoint')).toBeInTheDocument();
   });
 
-  it('selects an item and closes the popover', async () => {
-    const user = userEvent.setup();
+  it('selects an item and closes the popover', () => {
     renderEditor();
 
     const trigger = screen.getByTestId('rpc-dropdown');
-    await user.click(trigger);
+    fireEvent.click(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
-    await user.click(screen.getByRole('option', { name: /Second endpoint/u }));
+    fireEvent.click(screen.getByRole('option', { name: /Second endpoint/u }));
 
     expect(onItemSelected).toHaveBeenCalledWith(1);
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('deletes an item without selecting it', async () => {
-    const user = userEvent.setup();
+  it('deletes an item without selecting it', () => {
     renderEditor();
 
-    await user.click(screen.getByTestId('rpc-dropdown'));
+    fireEvent.click(screen.getByTestId('rpc-dropdown'));
     const secondOption = screen.getByRole('option', {
       name: /Second endpoint/u,
     });
-    await user.click(
+    fireEvent.click(
       within(secondOption).getByRole('button', { name: 'delete' }),
     );
 
@@ -82,12 +96,11 @@ describe('DropdownEditor', () => {
     expect(onItemSelected).not.toHaveBeenCalled();
   });
 
-  it('opens the add-item flow', async () => {
-    const user = userEvent.setup();
+  it('opens the add-item flow', () => {
     renderEditor();
 
-    await user.click(screen.getByTestId('rpc-dropdown'));
-    await user.click(screen.getByRole('button', { name: 'Add RPC URL' }));
+    fireEvent.click(screen.getByTestId('rpc-dropdown'));
+    fireEvent.click(screen.getByRole('button', { name: 'Add RPC URL' }));
 
     expect(onItemAdd).toHaveBeenCalledTimes(1);
   });
