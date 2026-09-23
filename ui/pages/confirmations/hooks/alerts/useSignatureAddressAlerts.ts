@@ -55,7 +55,7 @@ export function useSignatureAddressAlerts(): Alert[] {
     const msgData = signatureRequest.messageParams?.data;
     // V1 typed-data is an array of { name, type, value } and is not scanned.
     // V3/V4 may arrive as a JSON string or as an already-parsed object.
-    if (msgData == null || Array.isArray(msgData)) {
+    if (msgData === undefined || msgData === null || Array.isArray(msgData)) {
       return empty;
     }
 
