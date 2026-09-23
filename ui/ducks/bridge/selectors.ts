@@ -615,15 +615,13 @@ export const getFromBalances = createSelector(
     const normalizedBalances = maybeNormalizedBalances ?? {};
     const nativeAsset = getNativeAssetForChainId(fromToken.chainId);
 
-    const nativeBalanceAssetIdToUse =
-      Object.keys(normalizedBalances).find((assetId) =>
-        assetIdsMatch(assetId as CaipAssetType, nativeAsset.assetId),
-      ) ?? nativeAsset.assetId;
+    const nativeBalanceAssetIdToUse = (Object.keys(normalizedBalances).find(
+      (assetId) => assetIdsMatch(assetId as CaipAssetType, nativeAsset.assetId),
+    ) ?? nativeAsset.assetId) as CaipAssetType;
 
-    const fromTokenBalanceAssetIdToUse =
-      Object.keys(normalizedBalances).find((assetId) =>
-        assetIdsMatch(assetId as CaipAssetType, fromToken.assetId),
-      ) ?? fromToken.assetId;
+    const fromTokenBalanceAssetIdToUse = (Object.keys(normalizedBalances).find(
+      (assetId) => assetIdsMatch(assetId as CaipAssetType, fromToken.assetId),
+    ) ?? fromToken.assetId) as CaipAssetType;
 
     return {
       ...Object.fromEntries(
