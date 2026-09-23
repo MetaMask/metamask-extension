@@ -130,13 +130,11 @@ export default function SrpInputImport({
 
     checkForInvalidWords(newDraftSrp);
     setDraftSrp(newDraftSrp);
-    return isValidMnemonic(parsedSrp);
   };
 
   const handleAcceptedSrpPaste = async (rawSrp: string) => {
-    if (!onSrpPaste(rawSrp)) {
-      return;
-    }
+    onSrpPaste(rawSrp);
+
     try {
       await navigator.clipboard.writeText('');
     } catch {

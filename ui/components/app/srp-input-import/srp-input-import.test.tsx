@@ -30,6 +30,9 @@ const mockClipboardWriteText = jest.fn().mockResolvedValue(undefined);
 
 const COLLIDING_24_WORD_SRP =
   'tumble heart quit undo right legal salute lizard tape unveil art lava filter fee snack fragile duck impact oven come cram tourist casino sort';
+const CHECKSUM_INVALID_SRP = `${TEST_SEED_PHRASE.split(' ')
+  .slice(0, -1)
+  .join(' ')} abandon`;
 
 Object.defineProperty(navigator, 'clipboard', {
   value: {
@@ -156,6 +159,24 @@ describe('SrpInputImport', () => {
     });
   });
 
+  it('clears the clipboard after truncating an overlong SRP paste', async () => {
+    const onChange = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport onChange={onChange} />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => `${COLLIDING_24_WORD_SRP} abandon`,
+      },
+    });
+
+    await waitFor(() => {
+      expect(mockClipboardWriteText).toHaveBeenCalledWith('');
+      expect(onChange).toHaveBeenLastCalledWith(COLLIDING_24_WORD_SRP);
+    });
+  });
+
   it('reports a failed clear after accepting an SRP paste', async () => {
     mockClipboardWriteText.mockRejectedValueOnce(new Error('Clipboard denied'));
     const onClipboardClearFailed = jest.fn();
@@ -173,6 +194,28 @@ describe('SrpInputImport', () => {
     });
 
     await waitFor(() => {
+      expect(onClipboardClearFailed).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('reports a failed clear after accepting a checksum-invalid SRP paste', async () => {
+    mockClipboardWriteText.mockRejectedValueOnce(new Error('Clipboard denied'));
+    const onClipboardClearFailed = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport
+        onChange={jest.fn()}
+        onClipboardClearFailed={onClipboardClearFailed}
+      />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => CHECKSUM_INVALID_SRP,
+      },
+    });
+
+    await waitFor(() => {
+      expect(mockClipboardWriteText).toHaveBeenCalledWith('');
       expect(onClipboardClearFailed).toHaveBeenCalledTimes(1);
     });
   });
