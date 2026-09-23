@@ -66,12 +66,6 @@ export async function withStellarWalletSnap(
         numberOfTestDapps: 1,
         customDappPaths: [DAPP_PATH.TEST_DAPP_STELLAR],
       },
-      manifestFlags: {
-        remoteFeatureFlags: {
-          stellarAccounts: { enabled: true, minimumVersion: '0.0.1' },
-          sendRedesign: { enabled: false },
-        },
-      },
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockStellarFeatureFlag(mockServer),
         await mockHorizonAccount(mockServer),

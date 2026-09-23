@@ -2,8 +2,10 @@
 import { Mockttp } from 'mockttp';
 import { DEFAULT_STELLAR_ADDRESS } from '../../../constants';
 
-const HORIZON_MAINNET_URL = 'https://horizon.stellar.org';
-const HORIZON_TESTNET_URL = 'https://horizon-testnet.stellar.org';
+const HORIZON_MAINNET_URL_PATTERN =
+  '(?:https:\\/\\/horizon\\.stellar\\.org|https:\\/\\/stellar-mainnet\\.infura\\.io\\/v3\\/[^/]+\\/horizon)';
+const HORIZON_TESTNET_URL_PATTERN =
+  '(?:https:\\/\\/horizon-testnet\\.stellar\\.org|https:\\/\\/stellar-testnet\\.infura\\.io\\/v3\\/[^/]+\\/horizon)';
 
 const accountResponse = (address: string) => ({
   id: address,
@@ -47,7 +49,7 @@ export const mockHorizonAccount = (
   mockServer
     .forGet(
       new RegExp(
-        `^${HORIZON_MAINNET_URL.replace(/\./gu, '\\.')}/accounts/(G[A-Z0-9]{55})$`,
+        `^${HORIZON_MAINNET_URL_PATTERN}/accounts/(G[A-Z0-9]{55})$`,
         'u',
       ),
     )
@@ -77,5 +79,7 @@ export const mockHorizonTestnetAccount = (
   address: string = DEFAULT_STELLAR_ADDRESS,
 ) =>
   mockServer
-    .forGet(`${HORIZON_TESTNET_URL}/accounts/${address}`)
+    .forGet(
+      new RegExp(`^${HORIZON_TESTNET_URL_PATTERN}/accounts/${address}$`, 'u'),
+    )
     .thenJson(200, accountResponse(address));
