@@ -56,7 +56,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Immer, Patch } from 'immer';
+import { enablePatches, Immer, Patch } from 'immer';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -7605,6 +7605,14 @@ export async function setLastInteractedConfirmationInfo(
     [info],
   );
 }
+// Immer's patch support is an opt-in plugin, and the plugin registry is
+// module-global rather than per-Immer-instance. We enable it here because this
+// is the only place the UI applies patches itself. Do not rely on another
+// package having enabled it: `@metamask/base-controller` calls `enablePatches`
+// too, but only on whichever copy of immer it resolves, which is not
+// necessarily the copy this file imports.
+enablePatches();
+
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],
