@@ -1,13 +1,4 @@
-import type {
-  AuthenticationControllerState,
-  ProfileAlias,
-} from '@metamask/profile-sync-controller/auth';
-
-export const SOCIAL_LOGIN_IDENTIFIER_TYPES = new Set([
-  'GOOGLE',
-  'APPLE',
-  'TELEGRAM',
-]);
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 
 /**
  * Auth-api identifier types that indicate a profile is linked to social login.
@@ -15,8 +6,19 @@ export const SOCIAL_LOGIN_IDENTIFIER_TYPES = new Set([
  */
 export type SocialLoginIdentifierType = 'GOOGLE' | 'APPLE' | 'TELEGRAM';
 
+export const SOCIAL_LOGIN_IDENTIFIER_TYPES: ReadonlySet<string> =
+  new Set<SocialLoginIdentifierType>(['GOOGLE', 'APPLE', 'TELEGRAM']);
+
 export type PairedIdentifier = {
   type: string;
+};
+
+/**
+ * Minimal shape of a profile alias. Structural so it accepts Core's
+ * `ProfileAlias`, which the `auth` entrypoint does not re-export.
+ */
+export type ProfileAliasWithIdentifiers = {
+  identifierIds: readonly PairedIdentifier[];
 };
 
 /**
@@ -25,14 +27,14 @@ export type PairedIdentifier = {
  * @param profileAliases - Aliases returned by profile pair or sign-in events.
  */
 export function profileAliasesIncludeSocialLogin(
-  profileAliases: ProfileAlias[] | undefined,
+  profileAliases: readonly ProfileAliasWithIdentifiers[] | undefined,
 ): boolean {
   if (!profileAliases?.length) {
     return false;
   }
 
   return profileAliases.some((alias) =>
-    alias.identifierIds.some((identifier: { type: string }) =>
+    alias.identifierIds.some((identifier) =>
       SOCIAL_LOGIN_IDENTIFIER_TYPES.has(identifier.type),
     ),
   );

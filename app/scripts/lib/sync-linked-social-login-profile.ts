@@ -1,6 +1,7 @@
 import type {
+  AuthenticationControllerProfileSignInEvent,
   AuthenticationControllerState,
-  ProfileSignInInfo,
+  AuthenticationControllerStateChangeEvent,
 } from '@metamask/profile-sync-controller/auth';
 import type { PreferencesController } from '../controllers/preferences-controller';
 import {
@@ -18,7 +19,8 @@ type LinkedSocialLoginProfileSyncMessenger = RootMessenger<
       type: 'PreferencesController:consolidateBasicFunctionality';
       handler: () => void;
     },
-  never
+  | AuthenticationControllerProfileSignInEvent
+  | AuthenticationControllerStateChangeEvent
 >;
 
 /**
@@ -68,7 +70,7 @@ export function registerLinkedSocialLoginProfileSync(
 ): void {
   messenger.subscribe(
     'AuthenticationController:profileSignIn',
-    ({ profileAliases }: ProfileSignInInfo) => {
+    ({ profileAliases }) => {
       applyLinkedSocialLoginProfileDetection(
         preferencesController,
         profileAliasesIncludeSocialLogin(profileAliases),
@@ -76,13 +78,10 @@ export function registerLinkedSocialLoginProfileSync(
     },
   );
 
-  messenger.subscribe(
-    'AuthenticationController:stateChange',
-    (authState: AuthenticationControllerState) => {
-      applyLinkedSocialLoginProfileDetection(
-        preferencesController,
-        authenticationStateIncludesLinkedSocialLogin(authState),
-      );
-    },
-  );
+  messenger.subscribe('AuthenticationController:stateChange', (authState) => {
+    applyLinkedSocialLoginProfileDetection(
+      preferencesController,
+      authenticationStateIncludesLinkedSocialLogin(authState),
+    );
+  });
 }

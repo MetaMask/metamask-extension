@@ -1,35 +1,57 @@
-import type { ProfileAlias } from '@metamask/profile-sync-controller/auth';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import {
   authenticationStateIncludesLinkedSocialLogin,
   getPairedIdentifierIdsFromAuthState,
   pairedIdentifiersIncludeSocialLogin,
   profileAliasesIncludeSocialLogin,
   shouldRepairBasicFunctionalitySocialMigrationNotice,
+  type PairedIdentifier,
 } from './linked-social-login-profile';
+
+/**
+ * Builds auth state with paired identifiers on the primary SRP session
+ * profile. Core PR #10394 adds `pairedIdentifierIds` to `UserProfile`; cast
+ * until that lands in the installed `@metamask/profile-sync-controller`.
+ *
+ * @param pairedIdentifierIds - Paired identifiers to attach to the profile.
+ */
+function buildAuthState(
+  pairedIdentifierIds: PairedIdentifier[],
+): AuthenticationControllerState {
+  return {
+    isSignedIn: true,
+    srpSessionData: {
+      'entropy-1': {
+        profile: {
+          identifierId: 'id-1',
+          metaMetricsId: 'mm-1',
+          profileId: 'profile-1',
+          canonicalProfileId: 'profile-1',
+          pairedIdentifierIds,
+        },
+        token: {
+          accessToken: 'token',
+          expiresIn: 3600,
+          obtainedAt: 1,
+        },
+      },
+    },
+  } as AuthenticationControllerState;
+}
 
 describe('profileAliasesIncludeSocialLogin', () => {
   it('returns true when an alias includes a social identifier type', () => {
-    const profileAliases: ProfileAlias[] = [
-      {
-        aliasProfileId: 'alias-1',
-        canonicalProfileId: 'canonical-1',
-        identifierIds: [{ id: 'google-id', type: 'GOOGLE' }],
-      },
-    ];
-
-    expect(profileAliasesIncludeSocialLogin(profileAliases)).toBe(true);
+    expect(
+      profileAliasesIncludeSocialLogin([
+        { identifierIds: [{ type: 'GOOGLE' }] },
+      ]),
+    ).toBe(true);
   });
 
   it('returns false when aliases only include SRP identifiers', () => {
-    const profileAliases: ProfileAlias[] = [
-      {
-        aliasProfileId: 'alias-1',
-        canonicalProfileId: 'canonical-1',
-        identifierIds: [{ id: 'srp-id', type: 'SRP' }],
-      },
-    ];
-
-    expect(profileAliasesIncludeSocialLogin(profileAliases)).toBe(false);
+    expect(
+      profileAliasesIncludeSocialLogin([{ identifierIds: [{ type: 'SRP' }] }]),
+    ).toBe(false);
   });
 });
 
@@ -48,25 +70,9 @@ describe('pairedIdentifiersIncludeSocialLogin', () => {
 describe('getPairedIdentifierIdsFromAuthState', () => {
   it('reads paired identifier ids from the primary srp session profile', () => {
     expect(
-      getPairedIdentifierIdsFromAuthState({
-        isSignedIn: true,
-        srpSessionData: {
-          'entropy-1': {
-            profile: {
-              identifierId: 'id-1',
-              metaMetricsId: 'mm-1',
-              profileId: 'profile-1',
-              canonicalProfileId: 'profile-1',
-              pairedIdentifierIds: [{ type: 'GOOGLE' }, { type: 'SRP' }],
-            },
-            token: {
-              accessToken: 'token',
-              expiresIn: 3600,
-              obtainedAt: 1,
-            },
-          },
-        },
-      }),
+      getPairedIdentifierIdsFromAuthState(
+        buildAuthState([{ type: 'GOOGLE' }, { type: 'SRP' }]),
+      ),
     ).toStrictEqual([{ type: 'GOOGLE' }, { type: 'SRP' }]);
   });
 });
@@ -74,26 +80,18 @@ describe('getPairedIdentifierIdsFromAuthState', () => {
 describe('authenticationStateIncludesLinkedSocialLogin', () => {
   it('reads paired identifier ids from srpSessionData profile', () => {
     expect(
-      authenticationStateIncludesLinkedSocialLogin({
-        isSignedIn: true,
-        srpSessionData: {
-          'entropy-1': {
-            profile: {
-              identifierId: 'id-1',
-              metaMetricsId: 'mm-1',
-              profileId: 'profile-1',
-              canonicalProfileId: 'profile-1',
-              pairedIdentifierIds: [{ type: 'GOOGLE' }],
-            },
-            token: {
-              accessToken: 'token',
-              expiresIn: 3600,
-              obtainedAt: 1,
-            },
-          },
-        },
-      }),
+      authenticationStateIncludesLinkedSocialLogin(
+        buildAuthState([{ type: 'GOOGLE' }]),
+      ),
     ).toBe(true);
+  });
+
+  it('returns false when paired identifiers are only SRP', () => {
+    expect(
+      authenticationStateIncludesLinkedSocialLogin(
+        buildAuthState([{ type: 'SRP' }]),
+      ),
+    ).toBe(false);
   });
 });
 
