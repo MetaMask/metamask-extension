@@ -257,15 +257,7 @@ const getMinimumReserveBalanceForCaipAssetId = (
     return '0';
   }
   const { chainId } = parseCaipAssetType(caipAssetId);
-  // if (isArcTokenUSDC(caipAssetId)) {
   return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
-  // }
-
-  // if (!isNativeAddress(caipAssetId)) {
-  //   return '0';
-  // }
-
-  // return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
 };
 
 type InsufficientNativeReserveError = {
