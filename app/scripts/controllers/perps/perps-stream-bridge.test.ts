@@ -5,6 +5,7 @@ import type {
   Position,
   OrderFill,
 } from '@metamask/perps-controller';
+import { captureException } from '../../../../shared/lib/sentry';
 
 // Provide the runtime enum that the source file imports. Jest cannot parse
 // the full @metamask/perps-controller bundle (Hyperliquid SDK uses ESM), so
@@ -18,6 +19,11 @@ const WebSocketConnectionState = {
 
 jest.mock('@metamask/perps-controller', () => ({
   WebSocketConnectionState,
+}));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
 }));
 
 // eslint-disable-next-line import-x/first
@@ -789,9 +795,13 @@ describe('PerpsStreamBridge', () => {
         controller: controller as unknown as PerpsController,
       });
       const api = bridge.bridgeApi();
+      jest.mocked(captureException).mockClear();
 
       await expect(api.perpsInit()).resolves.toBeUndefined();
       expect(controller.startMarketDataPreload).toHaveBeenCalledTimes(1);
+      expect(captureException).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'preload blew up' }),
+      );
     });
 
     it('emits on correct channels when static subscription callbacks fire', async () => {
@@ -4155,6 +4165,7 @@ describe('wallet-root Perps preload', () => {
     'finishes wallet preload when optional cache warming %s',
     async (failure) => {
       const { api, controller, controllerApi, bridge, emit } = setup();
+      jest.mocked(captureException).mockClear();
       controller.startMarketDataPreload.mockImplementation(() => {
         const error = new Error('cache unavailable');
         if (failure === 'throws') {
@@ -4171,6 +4182,10 @@ describe('wallet-root Perps preload', () => {
         );
         expect(controller.subscribeToPrices).toHaveBeenCalled();
         expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+        expect(captureException).toHaveBeenCalledTimes(2);
+        expect(captureException).toHaveBeenCalledWith(
+          expect.objectContaining({ message: 'cache unavailable' }),
+        );
       } finally {
         bridge.dispose();
       }
@@ -4179,6 +4194,7 @@ describe('wallet-root Perps preload', () => {
 
   it('continues initialization after best-effort cache preload throws', async () => {
     const { api, controller, controllerApi, bridge } = setup();
+    jest.mocked(captureException).mockClear();
     controller.startMarketDataPreload.mockImplementation(() => {
       throw new Error('cache unavailable');
     });
@@ -4186,6 +4202,9 @@ describe('wallet-root Perps preload', () => {
     await api.perpsInit();
 
     expect(controllerApi.perpsInit).toHaveBeenCalledTimes(1);
+    expect(captureException).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'cache unavailable' }),
+    );
     bridge.destroy();
   });
 
