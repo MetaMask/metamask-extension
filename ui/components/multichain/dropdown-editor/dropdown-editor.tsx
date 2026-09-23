@@ -11,8 +11,10 @@ import {
   ButtonBase,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconColor,
   IconName,
+  IconSize,
   Label,
   Text,
   TextColor,
@@ -149,14 +151,19 @@ export const DropdownEditor = <Item,>({
         );
       })}
 
-      <ButtonBase
-        asChild
+      <button
+        type="button"
         onClick={onItemAdd}
-        startIconName={IconName.Add}
-        className="h-auto w-full justify-start rounded-none bg-transparent px-4 py-4 text-primary-default hover:bg-hover active:scale-100 active:bg-pressed"
+        className="flex h-auto w-full items-center justify-start gap-2 rounded-none bg-transparent px-4 py-4 text-primary-default hover:bg-hover active:bg-pressed"
       >
-        <button type="button">{addButtonText}</button>
-      </ButtonBase>
+        <Icon
+          name={IconName.Add}
+          size={IconSize.Sm}
+          color={IconColor.PrimaryDefault}
+          aria-hidden
+        />
+        {addButtonText}
+      </button>
     </Box>
   );
 
