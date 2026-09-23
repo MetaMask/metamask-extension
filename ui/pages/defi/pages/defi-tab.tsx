@@ -27,8 +27,6 @@ import DefiListV2 from './defi-list-v2';
 function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
   const { positions, isLoading, isError, refresh } = useDeFiPositionsV2();
   const listItems = useDeFiListItemsV2({ positions, isLoading, isError });
-  // Only an empty array means the list shows its empty state: loading
-  // (`undefined`) and error (`null`) render their own UI.
   const isEmpty = listItems?.length === 0;
 
   const handleRefresh = useCallback(() => {
@@ -45,12 +43,7 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
         onRefresh={handleRefresh}
         data-testid="parent-selector-defi-tab"
       />
-      <DefiListV2
-        onClick={onClickAsset}
-        positions={positions}
-        isLoading={isLoading}
-        isError={isError}
-      />
+      <DefiListV2 items={listItems} onClick={onClickAsset} />
     </>
   );
 }
@@ -65,8 +58,6 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
   const positions = useDefiPositionsList();
-  // Only an empty array means the list shows its empty state: loading
-  // (`undefined`) and error (`null`) render their own UI.
   const isEmpty = positions?.length === 0;
 
   return (
@@ -76,7 +67,7 @@ function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
         showSortControl={!isEmpty}
         data-testid="parent-selector-defi-tab"
       />
-      <DefiList onClick={onClickAsset} />
+      <DefiList items={positions} onClick={onClickAsset} />
     </>
   );
 }

@@ -12,17 +12,17 @@ import { ASSET_CELL_HEIGHT } from '../constants';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DefiProtocolCell from './cells/defi-protocol-cell';
-import { useDefiPositionsList } from './useDefiPositionsList';
+import { type DefiPositionsList } from './useDefiPositionsList';
 
 type DefiListProps = {
+  items: DefiPositionsList;
   onClick: (chainId: string, protocolId: string) => void;
 };
 
-export default function DefiList({ onClick }: DefiListProps) {
+export default function DefiList({ items, onClick }: Readonly<DefiListProps>) {
   const t = useI18nContext();
-  const sortedFilteredDefi = useDefiPositionsList();
 
-  if (sortedFilteredDefi === undefined) {
+  if (items === undefined) {
     return (
       <Box
         flexDirection={BoxFlexDirection.Column}
@@ -35,7 +35,7 @@ export default function DefiList({ onClick }: DefiListProps) {
     );
   }
 
-  if (sortedFilteredDefi === null) {
+  if (items === null) {
     return (
       <DeFiErrorMessage
         title={t('defiTabErrorTitle')}
@@ -46,7 +46,7 @@ export default function DefiList({ onClick }: DefiListProps) {
 
   return (
     <VirtualizedList
-      data={sortedFilteredDefi}
+      data={items}
       estimatedItemSize={ASSET_CELL_HEIGHT}
       overscan={10}
       keyExtractor={(position) => `${position.protocolId}#${position.chainId}`}
