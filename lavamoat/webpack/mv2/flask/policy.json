@@ -957,7 +957,7 @@
         "console.error": true
       },
       "packages": {
-        "immer": true
+        "@metamask/base-controller>immer": true
       }
     },
     "@metamask/base-data-service": {
@@ -6004,6 +6004,11 @@
       },
       "packages": {
         "eth-ens-namehash>idna-uts46-hx>punycode": true
+      }
+    },
+    "@metamask/base-controller>immer": {
+      "globals": {
+        "Iterator": true
       }
     },
     "string.prototype.matchall>internal-slot": {
