@@ -88,13 +88,21 @@ async function waitForRestart(driver: Driver): Promise<void> {
  * Reloads the extension, and waits for restart.
  *
  * @param driver - WebDriver instance.
+ * @param options - Reload options.
+ * @param options.evacuatePersistence - Whether to flush pending persistence
+ * before reloading.
  */
-export const reloadExtension = async (driver: Driver): Promise<void> => {
+export const reloadExtension = async (
+  driver: Driver,
+  { evacuatePersistence = true }: { evacuatePersistence?: boolean } = {},
+): Promise<void> => {
   const extensionWindow = await driver.driver.getWindowHandle();
   const blankWindow = await driver.openNewPage('about:blank');
 
   await driver.switchToWindow(extensionWindow);
-  await pausePersistence(driver);
+  if (evacuatePersistence) {
+    await pausePersistence(driver);
+  }
   await driver.executeScript(
     `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
   );
