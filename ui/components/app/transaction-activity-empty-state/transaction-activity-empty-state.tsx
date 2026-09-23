@@ -27,6 +27,13 @@ import { FundingMethodModal } from '../../multichain/funding-method-modal/fundin
 import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 
+const SWAP_SIGNING_METHODS = [
+  EthMethod.SignTransaction,
+  EthMethod.SignUserOperation,
+  SolMethod.SignTransaction,
+  BtcMethod.SignPsbt,
+];
+
 export type TransactionActivityEmptyStateProps = {
   /**
    * Additional className to apply to the component
@@ -47,10 +54,7 @@ export const TransactionActivityEmptyState = ({
   const [isFundingModalOpen, setIsFundingModalOpen] = useState(false);
 
   const isSigningEnabled =
-    account.methods.includes(EthMethod.SignTransaction) ||
-    account.methods.includes(EthMethod.SignUserOperation) ||
-    account.methods.includes(SolMethod.SignTransaction) ||
-    account.methods.includes(BtcMethod.SignPsbt) ||
+    SWAP_SIGNING_METHODS.some((method) => account.methods.includes(method)) ||
     account.type === TrxAccountType.Eoa;
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const chainId = useSelector(getCurrentChainId);
