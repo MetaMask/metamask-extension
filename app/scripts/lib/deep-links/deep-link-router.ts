@@ -52,9 +52,9 @@ export class DeepLinkRouter extends EventEmitter<{
   private getState: Options['getState'];
 
   /**
-   * Whether the unified buy (native in-app buy) feature is enabled: the
-   * `rampsEnabled` remote feature flag, resolved through the same
-   * manifest-merged path as the `getIsRampsEnabled` UI selector.
+   * Whether the unified buy feature is enabled: the `rampsEnabled` remote
+   * flag, resolved through the same manifest-merged path as the
+   * `getIsRampsEnabled` UI selector.
    *
    * @returns True if the unified buy feature is enabled.
    */
@@ -229,9 +229,9 @@ export class DeepLinkRouter extends EventEmitter<{
             search.toString(),
           );
         } else {
-          // Route-specific destination resolution — e.g. routing `/buy` into
-          // the in-app unified buy flow when the `rampsEnabled` flag is on.
-          // Runs after the interstitial policy above; does not affect it.
+          // Route-specific destination resolution (e.g. `/buy` into the
+          // in-app unified buy flow). Runs after the interstitial policy
+          // above; does not affect it.
           const destination = resolveBuyDeepLinkDestination({
             route: parsed.route,
             destination: parsed.destination,

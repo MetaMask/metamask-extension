@@ -16,16 +16,14 @@ import { parseRampIntent } from './parse-ramp-intent';
 /**
  * Entry page for `/buy` deep links when the unified buy feature is enabled.
  *
- * The deep link router lands the user here with the original query params.
- * When the in-app buy flow is available for this user, the params are mapped
- * to a buy intent and handed to the shared `goToBuy` navigation chain, which
- * applies the same eligibility gating and token preselection as the in-app
- * Buy buttons. When Buy leaves the extension instead (the Portfolio fallback),
- * the legacy behavior is preserved: the deep link params are forwarded
- * verbatim to the Portfolio web app in a new tab.
- *
- * If no navigation is possible, the user is taken to the wallet home page;
- * any eligibility modal is still displayed by the global modal manager.
+ * The router lands the user here with the original query params. When the
+ * in-app buy flow is available, the params are mapped to a buy intent and
+ * handed to the shared `goToBuy` chain (same eligibility gating and token
+ * preselection as the in-app Buy buttons). When Buy leaves the extension
+ * instead (the Portfolio fallback), the legacy behavior is preserved: the
+ * deep link params are forwarded verbatim to Portfolio in a new tab. If no
+ * navigation is possible, the user is taken to the wallet home page; any
+ * eligibility modal is still displayed by the global modal manager.
  *
  * @returns The loading page shown while the buy flow is being resolved.
  */
@@ -42,8 +40,7 @@ export function BuyDeepLinkEntry() {
     }
     hasInitiatedRef.current = true;
 
-    // `goToBuy` resolves asynchronously; a navigation that lands after this
-    // page unmounts must be dropped (React Router warns otherwise).
+    // Drop navigations that land after unmount (React Router warns).
     let isCancelled = false;
 
     const searchParams = new URLSearchParams(location.search);
@@ -57,13 +54,9 @@ export function BuyDeepLinkEntry() {
 
     if (opensBuyInPortfolioTab) {
       // Legacy redirect: forward the deep link params verbatim (the pre-UB2
-      // `/buy` behavior), then send this tab home. Portfolio handles token
-      // and amount preselection on its side.
-      //
-      // Note: this intentionally does NOT reuse `openBuyCryptoInPdapp` (the
-      // `goToBuy` Portfolio path) — that builder drops the link's token and
-      // amount params and appends analytics params instead, which would break
-      // deep link param preservation.
+      // `/buy` behavior), then send this tab home. Intentionally NOT
+      // `openBuyCryptoInPdapp` (the `goToBuy` Portfolio path) — that builder
+      // drops the link's token/amount params and appends analytics params.
       const { redirectTo } = getBuyPortfolioRedirectDestination(
         new URLSearchParams(location.search),
       );

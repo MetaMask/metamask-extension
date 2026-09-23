@@ -20,11 +20,8 @@ const RAMPS_FEATURE_FLAGS = {
 };
 
 describe('Deep Link - /buy Route (unified buy)', function () {
-  /**
-   * With the `rampsEnabled` flag on, `/buy` deep links must route into the
-   * in-app unified buy flow instead of the external Portfolio redirect.
-   * Token preselection params are forwarded to the flow's entry page.
-   */
+  // With the `rampsEnabled` flag on, `/buy` deep links must route into the
+  // in-app unified buy flow instead of the external Portfolio redirect.
   const buyRoutes = [
     '/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
     '/buy',
