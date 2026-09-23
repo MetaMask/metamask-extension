@@ -11,7 +11,6 @@ import {
   selectNeedsProfilePairing,
   selectNeedsSocialPairing,
 } from '../../../selectors/identity/authentication';
-import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
 import { requestProfilePairing } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
@@ -49,12 +48,10 @@ export function useAutoSignIn(): {
   const isSignedIn = useSelector(selectIsSignedIn);
   const needsProfilePairing = useSelector(selectNeedsProfilePairing);
   const needsSocialPairing = useSelector(selectNeedsSocialPairing);
-  const isSocialLoginFlow = Boolean(useSelector(getIsSocialLoginFlow));
   const isBftConsolidationEnabled = Boolean(
     useSelector(getIsBasicFunctionalityConsolidationEnabled),
   );
-  const shouldSocialPair =
-    needsSocialPairing && isSocialLoginFlow && isBftConsolidationEnabled;
+  const shouldSocialPair = needsSocialPairing && isBftConsolidationEnabled;
 
   const keyrings = useSelector(getMetaMaskKeyrings);
   const previousKeyringsLength = useRef(keyrings.length);

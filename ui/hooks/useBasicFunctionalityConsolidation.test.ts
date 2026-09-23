@@ -107,6 +107,52 @@ describe('useBasicFunctionalityConsolidation', () => {
     });
   });
 
+  it('waits for auth sign-in before repairing an imported wallet without local social state', () => {
+    renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
+      metamask: {
+        completedOnboarding: true,
+        isUnlocked: true,
+        isSignedIn: false,
+        useExternalServices: true,
+        firstTimeFlowType: FirstTimeFlowType.import,
+        needsSocialPairing: true,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: true,
+        },
+        preferences: {
+          isBasicFunctionalityConsolidatedEnabled: true,
+          hasLinkedSocialLoginProfile: false,
+        },
+      },
+    });
+
+    expect(consolidateBasicFunctionality).not.toHaveBeenCalled();
+  });
+
+  it('repairs after linked-social profile is detected for an imported wallet', async () => {
+    renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
+      metamask: {
+        completedOnboarding: true,
+        isUnlocked: true,
+        isSignedIn: true,
+        needsSocialPairing: false,
+        useExternalServices: true,
+        firstTimeFlowType: FirstTimeFlowType.import,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: true,
+        },
+        preferences: {
+          isBasicFunctionalityConsolidatedEnabled: true,
+          hasLinkedSocialLoginProfile: true,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      expect(consolidateBasicFunctionality).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('does not recheck a healthy consolidated wallet', () => {
     renderHookWithProvider(() => useBasicFunctionalityConsolidation(), {
       metamask: {

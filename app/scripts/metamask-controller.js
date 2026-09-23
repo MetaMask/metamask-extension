@@ -342,6 +342,7 @@ import {
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
+import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
@@ -854,6 +855,11 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', (update) => {
       this.userTraitsService.handleMetaMaskStateUpdate(update);
     });
+
+    registerLinkedSocialLoginProfileSync(
+      this.controllerMessenger,
+      this.preferencesController,
+    );
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),

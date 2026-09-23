@@ -252,7 +252,7 @@ describe('useAutoSignIn', () => {
       expect(mockPerformSignInAction).toHaveBeenCalled();
     });
 
-    it('does not force sign-in for an SRP user when pairing is needed and consolidation is on', async () => {
+    it('forces sign-in for an SRP user when pairing is needed and consolidation is on', async () => {
       const state = arrangeMockState({
         ...socialPairingReadyState,
         needsSocialPairing: true,
@@ -271,7 +271,7 @@ describe('useAutoSignIn', () => {
         await hook.result.current.autoSignIn();
       });
 
-      expect(mockPerformSignInAction).not.toHaveBeenCalled();
+      expect(mockPerformSignInAction).toHaveBeenCalled();
     });
 
     it('does not force sign-in for a social-login user when consolidation is off', async () => {
