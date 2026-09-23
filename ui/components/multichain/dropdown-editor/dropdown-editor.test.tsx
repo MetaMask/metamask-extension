@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
 
