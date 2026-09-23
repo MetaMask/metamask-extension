@@ -48,7 +48,9 @@ export function useSignatureAddressAlerts(): Alert[] {
     }
 
     const msgData = signatureRequest.messageParams?.data;
-    if (typeof msgData !== 'string' || !msgData) {
+    // V1 typed-data is an array of { name, type, value } and is not scanned.
+    // V3/V4 may arrive as a JSON string or as an already-parsed object.
+    if (msgData == null || Array.isArray(msgData)) {
       return empty;
     }
 

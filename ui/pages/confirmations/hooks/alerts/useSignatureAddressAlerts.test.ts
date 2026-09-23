@@ -131,6 +131,38 @@ describe('useSignatureAddressAlerts', () => {
     expect(result.current).toEqual([]);
   });
 
+  it('returns a danger alert when typed data arrives as an object', () => {
+    const request = makeTypedSignV4({
+      types: {
+        Transfer: [{ name: 'recipient', type: 'address' }],
+      },
+      primaryType: 'Transfer',
+      message: { recipient: MALICIOUS_ADDRESS },
+    });
+
+    mockUseTrustSignals.mockReturnValue([
+      { state: TrustSignalDisplayState.Malicious },
+    ]);
+
+    const state = stateWithSignatureRequest(request);
+    const stored = state.metamask.signatureRequests[request.id];
+    stored.messageParams = {
+      ...stored.messageParams,
+      data: JSON.parse(request.msgParams?.data as string),
+    };
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureAddressAlerts(),
+      state,
+    );
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0]).toMatchObject({
+      key: `signatureAddressTrustSignalMalicious_${MALICIOUS_ADDRESS}`,
+      severity: Severity.Danger,
+    });
+  });
+
   it('returns a danger alert for a malicious address field', () => {
     const request = makeTypedSignV4({
       types: {
