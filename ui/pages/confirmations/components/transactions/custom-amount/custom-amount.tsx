@@ -18,7 +18,7 @@ import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 const FIAT_DISPLAY_DECIMALS = 2;
 
 // The field is a fiat amount, so keystrokes past the cent are rejected.
-const FIAT_INPUT_PATTERN = /^[0-9]*[.,]?[0-9]{0,2}$/u;
+const FIAT_INPUT_PATTERN = /^\d*[.,]?\d{0,2}$/u;
 
 export type CustomAmountProps = {
   amountFiat: string;
