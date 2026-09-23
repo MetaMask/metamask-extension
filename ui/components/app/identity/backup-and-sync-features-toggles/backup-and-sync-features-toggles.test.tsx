@@ -8,6 +8,7 @@ import { MetamaskIdentityProvider } from '../../../../contexts/identity';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   BackupAndSyncFeaturesToggles,
+  backupAndSyncFeaturesTogglesSections,
   backupAndSyncFeaturesTogglesTestIds,
 } from './backup-and-sync-features-toggles';
 
@@ -58,6 +59,31 @@ describe('BackupAndSyncFeaturesToggles', () => {
     expect(
       getByTestId(backupAndSyncFeaturesTogglesTestIds.container),
     ).toBeInTheDocument();
+  });
+
+  it('centers feature icons and applies the standard settings icon style', () => {
+    const { container } = render(
+      <Redux.Provider store={mockStore(initialStore())}>
+        <MetamaskIdentityProvider>
+          <BackupAndSyncFeaturesToggles />
+        </MetamaskIdentityProvider>
+      </Redux.Provider>,
+    );
+
+    for (const { id } of backupAndSyncFeaturesTogglesSections) {
+      const row = container.querySelector(
+        `#backup-and-sync-features-toggles-${id}`,
+      );
+      const icon = row?.querySelector('.mm-icon');
+
+      expect(row).toHaveClass('mm-box--align-items-center');
+      expect(icon).toHaveClass(
+        'mm-icon--size-md',
+        'mm-box--color-icon-alternative',
+        'shrink-0',
+      );
+      expect(icon?.parentElement).toHaveClass('mm-box--align-items-center');
+    }
   });
 
   it('tracks the toggle event', () => {
