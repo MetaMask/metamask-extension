@@ -1,4 +1,10 @@
-import React, { useMemo, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   twMerge,
@@ -176,7 +182,10 @@ export const OrderEntry = ({
       : t('perpsFeesTooltipProviderFee');
 
   const onCalculationsChangeRef = useRef(onCalculationsChange);
-  onCalculationsChangeRef.current = onCalculationsChange;
+
+  useLayoutEffect(() => {
+    onCalculationsChangeRef.current = onCalculationsChange;
+  }, [onCalculationsChange]);
 
   const prevCalculationsRef = useRef<OrderCalculations | null>(null);
 
@@ -185,13 +194,16 @@ export const OrderEntry = ({
       if (a === null) {
         return true;
       }
+      // `Object.is` rather than `!==`: a market price of 0 makes the fee and
+      // liquidation figures NaN, and `NaN !== NaN` reports a change on every
+      // render, so the effect below would re-notify the page without end.
       return (
-        a.positionSize !== b.positionSize ||
-        a.marginRequired !== b.marginRequired ||
-        a.liquidationPrice !== b.liquidationPrice ||
-        a.liquidationPriceRaw !== b.liquidationPriceRaw ||
-        a.orderValue !== b.orderValue ||
-        a.estimatedFees !== b.estimatedFees
+        !Object.is(a.positionSize, b.positionSize) ||
+        !Object.is(a.marginRequired, b.marginRequired) ||
+        !Object.is(a.liquidationPrice, b.liquidationPrice) ||
+        !Object.is(a.liquidationPriceRaw, b.liquidationPriceRaw) ||
+        !Object.is(a.orderValue, b.orderValue) ||
+        !Object.is(a.estimatedFees, b.estimatedFees)
       );
     },
     [],

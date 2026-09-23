@@ -96,6 +96,21 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setLastShownPrfMigrationReminderAt', () => {
+    it('sets lastShownPrfMigrationReminderAt', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBeNull();
+
+        const timestamp = Date.now();
+        controller.setLastShownPrfMigrationReminderAt(timestamp);
+
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBe(
+          timestamp,
+        );
+      });
+    });
+  });
+
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
       await withController(({ controller }) => {
@@ -859,6 +874,7 @@ describe('AppStateController', () => {
               },
               "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -949,6 +965,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastPerpsDepositEntryPoint": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -1032,6 +1049,7 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -1113,6 +1131,7 @@ describe('AppStateController', () => {
               },
               "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,

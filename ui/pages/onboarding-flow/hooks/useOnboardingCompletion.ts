@@ -14,6 +14,7 @@ import {
   buildInterstitialRoute,
 } from '../../../../shared/lib/deep-links/utils';
 import { createEvent } from '../../../../shared/lib/deep-links/metrics';
+import { routes } from '../../../../shared/lib/deep-links/routes';
 import {
   DeferredDeepLink,
   DeferredDeepLinkRoute,
@@ -49,6 +50,7 @@ import {
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -101,10 +103,29 @@ export function useOnboardingCompletion() {
       }
 
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+        const url = new URL(deferredDeepLinkToUse.referringLink);
+        const route = routes.get(url.pathname.toLowerCase());
+        let continuityId: string | undefined;
+
+        try {
+          if (route?.handler(url.searchParams).trackContinuity) {
+            const tab = await browser.tabs.getCurrent();
+            if (tab?.id !== undefined) {
+              continuityId = await submitRequestToBackground<string>(
+                'setContinuityIdForTab',
+                [tab.id],
+              );
+            }
+          }
+        } catch (error) {
+          console.error('Failed to set deep link continuity ID:', error);
+        }
+
         await trackEvent(
           createEvent({
+            continuityId,
             signature: deferredDeepLinkResult.signature,
-            url: new URL(deferredDeepLinkToUse.referringLink),
+            url,
           }),
         );
       }

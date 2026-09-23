@@ -1,4 +1,5 @@
 import React from 'react';
+import browser from 'webextension-polyfill';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
@@ -60,6 +61,7 @@ jest.mock('../../../components/component-library/lottie-animation', () => ({
 
 jest.mock('webextension-polyfill', () => ({
   tabs: {
+    getCurrent: jest.fn(),
     query: jest.fn(),
   },
   sidePanel: {
@@ -88,6 +90,7 @@ jest.mock('../../../../shared/lib/environment', () => ({
 
 // Mock background connection to prevent "Background connection not initialized" warnings
 const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
+const mockSetContinuityIdForTab = jest.fn().mockResolvedValue('continuity-id');
 const mockSetIsBackupAndSyncFeatureEnabled = jest
   .fn()
   .mockResolvedValue(undefined);
@@ -99,6 +102,7 @@ const mockSetUseMultiAccountBalanceChecker = jest
 const backgroundConnectionMock = new Proxy(
   {
     removeDeferredDeepLink: mockRemoveDeferredDeepLink,
+    setContinuityIdForTab: mockSetContinuityIdForTab,
     setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
     toggleExternalServices: mockToggleExternalServices,
     setPreference: mockSetPreference,
@@ -810,6 +814,137 @@ describe('Wallet Ready Page', () => {
             sensitiveProperties: {},
           });
         });
+        expect(browser.tabs.getCurrent).not.toHaveBeenCalled();
+        expect(mockSetContinuityIdForTab).not.toHaveBeenCalled();
+      });
+
+      it('attaches a continuity ID to a deferred perps link in a tab', async () => {
+        (browser.tabs.getCurrent as jest.Mock).mockResolvedValue({ id: 123 });
+        (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+          {
+            type: DeferredDeepLinkRouteType.Navigate,
+            route: '/?tab=perps',
+            signature: VALID,
+          },
+        );
+        const mockStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink: 'https://link.metamask.io/perps',
+            },
+          },
+        });
+        const { getByTestId } = renderWithProvider(
+          <CreationSuccessful />,
+          mockStore,
+        );
+
+        fireEvent.click(getByTestId('onboarding-complete-done'));
+
+        await waitFor(() => {
+          expect(mockSetContinuityIdForTab).toHaveBeenCalledWith(123);
+          expect(mockTrackEvent).toHaveBeenCalledWith(
+            expect.objectContaining({
+              name: MetaMetricsEventName.DeepLinkUsed,
+              properties: expect.objectContaining({
+                continuityId: 'continuity-id',
+                route: '/perps',
+              }),
+            }),
+          );
+        });
+      });
+
+      it('tracks a deferred perps link without an ID when there is no tab', async () => {
+        (browser.tabs.getCurrent as jest.Mock).mockResolvedValue(undefined);
+        (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+          {
+            type: DeferredDeepLinkRouteType.Navigate,
+            route: '/?tab=perps',
+            signature: VALID,
+          },
+        );
+        const mockStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink: 'https://link.metamask.io/perps',
+            },
+          },
+        });
+        const { getByTestId } = renderWithProvider(
+          <CreationSuccessful />,
+          mockStore,
+        );
+
+        fireEvent.click(getByTestId('onboarding-complete-done'));
+
+        await waitFor(() => {
+          expect(mockTrackEvent).toHaveBeenCalledWith(
+            expect.objectContaining({
+              name: MetaMetricsEventName.DeepLinkUsed,
+              properties: expect.not.objectContaining({
+                continuityId: expect.anything(),
+              }),
+            }),
+          );
+        });
+        expect(mockSetContinuityIdForTab).not.toHaveBeenCalled();
+      });
+
+      it('navigates and tracks a deferred perps link when setting the ID fails', async () => {
+        const consoleErrorSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation();
+        (browser.tabs.getCurrent as jest.Mock).mockResolvedValue({ id: 123 });
+        mockSetContinuityIdForTab.mockRejectedValueOnce(
+          new Error('RPC failed'),
+        );
+        (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+          {
+            type: DeferredDeepLinkRouteType.Navigate,
+            route: '/?tab=perps',
+            signature: VALID,
+          },
+        );
+        const mockStore = configureMockStore([thunk])({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink: 'https://link.metamask.io/perps',
+            },
+          },
+        });
+        const { getByTestId } = renderWithProvider(
+          <CreationSuccessful />,
+          mockStore,
+        );
+
+        fireEvent.click(getByTestId('onboarding-complete-done'));
+
+        await waitFor(() => {
+          expect(mockTrackEvent).toHaveBeenCalledWith(
+            expect.objectContaining({
+              name: MetaMetricsEventName.DeepLinkUsed,
+              properties: expect.not.objectContaining({
+                continuityId: expect.anything(),
+              }),
+            }),
+          );
+          expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=perps');
+        });
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          'Failed to set deep link continuity ID:',
+          expect.any(Error),
+        );
+        consoleErrorSpy.mockRestore();
       });
 
       it('tracks the event for deferred Interstitial links', async () => {
