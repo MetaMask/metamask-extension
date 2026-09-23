@@ -39,7 +39,6 @@ export const stripProtocol = (endpoint: string) => {
 // currently when selecting or editing endpoints for a network.
 const RpcListItem = ({
   rpcEndpoint,
-  asButton = true,
 }: {
   rpcEndpoint: {
     name?: string;
@@ -47,7 +46,6 @@ const RpcListItem = ({
     failoverUrls?: string[];
     type: RpcEndpointType;
   };
-  asButton?: boolean;
 }) => {
   const t = useI18nContext();
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
@@ -75,7 +73,7 @@ const RpcListItem = ({
     >
       <Box>
         <Text
-          as={asButton ? 'button' : 'span'}
+          as="span"
           padding={0}
           width={BlockSize.Full}
           color={name ? TextColor.textDefault : TextColor.textAlternative}

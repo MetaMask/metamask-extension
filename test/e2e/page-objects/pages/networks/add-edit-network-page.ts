@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 
 /**
  * The network details form. Adding and editing render the same form, so one
@@ -251,8 +252,7 @@ class AddEditNetworkPage {
     console.log(`Select RPC ${rpcName} on the edit network page`);
     await this.driver.clickElement(this.rpcDropDownButton);
     await this.driver.clickElement({
-      text: rpcName,
-      tag: 'button',
+      xpath: `//button[.//*[contains(text(), ${quoteXPathText(rpcName)})]]`,
     });
     await this.saveEditedNetwork();
   }

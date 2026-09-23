@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 
 /**
  * The network management list: custom networks, popular networks available to
@@ -319,8 +320,7 @@ class NetworksPage {
     console.log(`Select RPC ${rpcName} for network`);
     await this.driver.waitForSelector(this.selectRpcMessage);
     await this.driver.clickElementAndWaitToDisappear({
-      text: rpcName,
-      tag: 'button',
+      xpath: `//button[.//*[contains(text(), ${quoteXPathText(rpcName)})]]`,
     });
   }
 

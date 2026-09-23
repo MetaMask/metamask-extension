@@ -21,7 +21,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Popover, PopoverPosition } from '../../component-library';
+import { Popover, PopoverPosition, PopoverRole } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 
 export enum DropdownEditorStyle {
@@ -93,18 +93,8 @@ export const DropdownEditor = <Item,>({
         const row = (
           <Box
             key={itemKey(item)}
-            role="option"
-            aria-selected={index === selectedItemIndex}
-            tabIndex={0}
-            onClick={selectItem}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                selectItem();
-              }
-            }}
             className={classnames(
-              'relative flex cursor-pointer items-center justify-between px-4 hover:bg-hover',
+              'relative flex items-center justify-between px-4 hover:bg-hover',
               {
                 'bg-primary-muted hover:bg-primary-muted':
                   index === selectedItemIndex,
@@ -114,7 +104,16 @@ export const DropdownEditor = <Item,>({
             {index === selectedItemIndex && (
               <Box className="absolute left-1 top-1 h-[calc(100%-8px)] w-1 rounded-full bg-primary-default" />
             )}
-            {renderItem(item, true)}
+            <button
+              type="button"
+              role="option"
+              aria-selected={index === selectedItemIndex}
+              className="min-w-0 flex-1 text-left"
+              data-testid={`dropdown-editor-option-${index}`}
+              onClick={selectItem}
+            >
+              {renderItem(item, true)}
+            </button>
             {itemIsDeletable(item, items) && (
               <ButtonIcon
                 className="ml-1"
@@ -244,8 +243,10 @@ export const DropdownEditor = <Item,>({
           className="z-[1]"
           referenceElement={referenceElement}
           position={PopoverPosition.Bottom}
+          role={PopoverRole.Dialog}
           isOpen={isDropdownOpen}
           onClickOutside={() => setIsDropdownOpen(false)}
+          onPressEscKey={() => setIsDropdownOpen(false)}
         >
           {renderDropdownList()}
         </Popover>

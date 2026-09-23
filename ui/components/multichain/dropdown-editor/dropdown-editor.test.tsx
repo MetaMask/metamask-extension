@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
@@ -12,10 +12,28 @@ jest.mock('../../component-library', () => {
     Popover: ({
       children,
       isOpen,
+      role,
+      onPressEscKey,
     }: {
       children: React.ReactNode;
       isOpen: boolean;
-    }) => (isOpen ? react.createElement('div', null, children) : null),
+      role?: React.AriaRole;
+      onPressEscKey?: () => void;
+    }) =>
+      isOpen
+        ? react.createElement(
+            'div',
+            {
+              role,
+              onKeyDown: (event: React.KeyboardEvent) => {
+                if (event.key === 'Escape') {
+                  onPressEscKey?.();
+                }
+              },
+            },
+            children,
+          )
+        : null,
   };
 });
 
@@ -48,9 +66,7 @@ describe('DropdownEditor', () => {
         onItemDeleted={onItemDeleted}
         onItemAdd={onItemAdd}
         itemKey={(item) => item}
-        renderItem={(item, isList) =>
-          isList ? <button type="button">{item}</button> : <span>{item}</span>
-        }
+        renderItem={(item) => <span>{item}</span>}
         renderTooltip={() => undefined}
         buttonDataTestId="rpc-dropdown"
       />,
@@ -87,46 +103,28 @@ describe('DropdownEditor', () => {
     const secondOption = screen.getByRole('option', {
       name: /Second endpoint/u,
     });
-    fireEvent.click(
-      within(secondOption).getByRole('button', { name: 'Second endpoint' }),
-    );
+    expect(secondOption).toHaveAttribute('type', 'button');
+    fireEvent.click(secondOption);
 
     expect(onItemSelected).toHaveBeenCalledWith(1);
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 
-  [
-    { key: 'Enter', shouldSelect: true },
-    { key: ' ', shouldSelect: true },
-    { key: 'Escape', shouldSelect: false },
-  ].forEach(({ key, shouldSelect }) => {
-    it(`handles the "${key}" key when an item is focused`, () => {
-      renderEditor();
+  it('closes the popover when Escape is pressed', () => {
+    renderEditor();
 
-      fireEvent.click(screen.getByTestId('rpc-dropdown'));
-      fireEvent.keyDown(
-        screen.getByRole('option', { name: /Second endpoint/u }),
-        { key },
-      );
+    const trigger = screen.getByTestId('rpc-dropdown');
+    fireEvent.click(trigger);
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
 
-      if (shouldSelect) {
-        expect(onItemSelected).toHaveBeenCalledWith(1);
-      } else {
-        expect(onItemSelected).not.toHaveBeenCalled();
-      }
-    });
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('deletes an item without selecting it', () => {
     renderEditor();
 
     fireEvent.click(screen.getByTestId('rpc-dropdown'));
-    const secondOption = screen.getByRole('option', {
-      name: /Second endpoint/u,
-    });
-    fireEvent.click(
-      within(secondOption).getByRole('button', { name: 'delete' }),
-    );
+    fireEvent.click(screen.getByTestId('delete-item-1'));
 
     expect(onItemDeleted).toHaveBeenCalledWith(1, 0);
     expect(onItemSelected).not.toHaveBeenCalled();
