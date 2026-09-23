@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
+import { CaipChainId } from '@metamask/utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -20,7 +20,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -150,11 +149,7 @@ export const MultichainPrivateKeyRow = ({
   onCopy,
   privateKey,
 }: MultichainPrivateKeyRowProps) => {
-  const networkImageSrc = getImageForChainId(
-    chainId.startsWith(KnownCaipNamespace.Eip155)
-      ? convertCaipToHexChainId(chainId)
-      : chainId,
-  );
+  const networkImageSrc = getImageForChainId(chainId);
 
   return (
     <Box

@@ -1,8 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
-import { CaipChainId } from '@metamask/utils';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -60,7 +59,6 @@ import { MultichainPrivateKeyRow } from './multichain-private-key-row';
 
 const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
 const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
-const ETHEREUM_MAINNET_CAIP_CHAIN_ID = 'eip155:1' as CaipChainId;
 
 /**
  * Check if the account has the private key available according to its keyring type.
@@ -136,15 +134,18 @@ const MultichainPrivateKeyList = ({
     [setPassword],
   );
 
-  const exportableAddresses = useMemo(
+  const exportableAccounts = useMemo(
     () =>
-      accounts
-        .filter(
-          (account: InternalAccount) =>
-            hasPrivateKeyAvailable(account) && isEvmAccountType(account.type),
-        )
-        .map((account) => account.address),
+      accounts.filter(
+        (account: InternalAccount) =>
+          hasPrivateKeyAvailable(account) && isEvmAccountType(account.type),
+      ),
     [accounts],
+  );
+
+  const exportableAddresses = useMemo(
+    () => exportableAccounts.map((account) => account.address),
+    [exportableAccounts],
   );
 
   const buildPrivateKeyMap = useCallback(
@@ -407,11 +408,7 @@ const MultichainPrivateKeyList = ({
 
   const privateKeySections = useMemo(
     () =>
-      accounts.flatMap((account) => {
-        if (!isEvmAccountType(account.type)) {
-          return [];
-        }
-
+      exportableAccounts.flatMap((account) => {
         const privateKey = privateKeys[account.address];
         if (!privateKey) {
           return [];
@@ -420,13 +417,13 @@ const MultichainPrivateKeyList = ({
         return [
           {
             account,
-            chainId: ETHEREUM_MAINNET_CAIP_CHAIN_ID,
+            chainId: EthScope.Mainnet,
             networkName: t('ethereumAndEvms'),
             privateKey,
           },
         ];
       }),
-    [accounts, privateKeys, t],
+    [exportableAccounts, privateKeys, t],
   );
 
   const handlePrivateKeyCopy = useCallback(
