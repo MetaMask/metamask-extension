@@ -124,6 +124,7 @@
     "LoggingController": {
       "logs": "object"
     },
+    "MetaMetricsController": "object",
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
