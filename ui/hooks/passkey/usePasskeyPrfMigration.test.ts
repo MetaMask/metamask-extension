@@ -12,7 +12,16 @@ import {
   startPasskeyRegistration,
 } from '../../../shared/lib/passkey';
 import { PasskeyPRFRequiredError } from '../../../shared/lib/passkey/passkey-capabilities';
+import { forceUpdateMetamaskState } from '../../store/actions';
 import { usePasskeyPrfMigration } from './usePasskeyPrfMigration';
+
+jest.mock('../../store/actions', () => {
+  const actual = jest.requireActual('../../store/actions');
+  return {
+    ...actual,
+    forceUpdateMetamaskState: jest.fn(),
+  };
+});
 
 jest.mock('../../../shared/lib/passkey', () => ({
   ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
@@ -96,6 +105,7 @@ describe('usePasskeyPrfMigration', () => {
     );
     completePasskeyReplacement.mockResolvedValue(undefined);
     cancelPasskeyReplacement.mockResolvedValue(undefined);
+    jest.mocked(forceUpdateMetamaskState).mockResolvedValue(undefined);
     jest
       .mocked(startPasskeyRegistration)
       .mockResolvedValue(registrationResponse);

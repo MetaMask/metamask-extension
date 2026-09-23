@@ -42,6 +42,7 @@ import Mascot from '../../components/ui/mascot';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
   UNLOCK_ROUTE,
 } from '../../helpers/constants/routes';
 import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unlock';
@@ -64,8 +65,6 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
-import PasskeyMigrationModal from '../../components/app/passkey-migration-modal';
-import PasskeyReplacementModal from '../../components/app/passkey-replacement-modal';
 import { captureException } from '../../../shared/lib/sentry';
 import { getCaretCoordinates } from './unlock-page.util';
 import {
@@ -109,8 +108,6 @@ type UnlockPageState = {
   unlockDelayPeriod: number;
   showLoginErrorModal: boolean;
   showConnectionsRemovedModal: boolean;
-  showPasskeyMigrationModal: boolean;
-  showPasskeyReplacementModal: boolean;
   isPasswordUnlockMode: boolean;
 };
 
@@ -241,8 +238,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     unlockDelayPeriod: 0,
     showLoginErrorModal: false,
     showConnectionsRemovedModal: false,
-    showPasskeyMigrationModal: false,
-    showPasskeyReplacementModal: false,
     isPasswordUnlockMode: true,
   };
 
@@ -572,30 +567,13 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     isPasskeyMigrationEligible,
   }: PasskeyUnlockSuccessContext) => {
     if (isPasskeyMigrationEligible) {
-      this.setState({ showPasskeyMigrationModal: true });
+      this.props.navigate(ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE, {
+        replace: true,
+        state: this.props.location.state,
+      });
       return;
     }
 
-    await this.props.navigateAfterUnlock();
-  };
-
-  handleReplacePasskey = async () => {
-    this.setState({
-      showPasskeyMigrationModal: false,
-      showPasskeyReplacementModal: true,
-    });
-  };
-
-  handleRemindMeLater = async () => {
-    this.setState({
-      showPasskeyMigrationModal: false,
-      showPasskeyReplacementModal: false,
-    });
-    await this.props.navigateAfterUnlock();
-  };
-
-  handlePasskeyReplacementComplete = async () => {
-    this.setState({ showPasskeyReplacementModal: false });
     await this.props.navigateAfterUnlock();
   };
 
@@ -684,8 +662,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       showResetPasswordModal,
       showLoginErrorModal,
       showConnectionsRemovedModal,
-      showPasskeyMigrationModal,
-      showPasskeyReplacementModal,
       isPasswordUnlockMode,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
@@ -718,18 +694,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
           />
         )}
         {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
-        {showPasskeyMigrationModal && (
-          <PasskeyMigrationModal
-            onReplacePasskey={this.handleReplacePasskey}
-            onRemindMeLater={this.handleRemindMeLater}
-          />
-        )}
-        {showPasskeyReplacementModal && (
-          <PasskeyReplacementModal
-            onComplete={this.handlePasskeyReplacementComplete}
-            onRemindMeLater={this.handleRemindMeLater}
-          />
-        )}
         <Box
           flexDirection={BoxFlexDirection.Column}
           justifyContent={BoxJustifyContent.Center}

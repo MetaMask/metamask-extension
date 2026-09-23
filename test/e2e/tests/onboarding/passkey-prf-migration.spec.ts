@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import PasskeyMigrationModal from '../../page-objects/pages/dialog/passkey-migration-modal';
+import PasskeyPrfMigrationPage from '../../page-objects/pages/onboarding/passkey-prf-migration-page';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 import { getLegacyUserHandlePasskeyRecord } from '../../webdriver/virtual-authenticator';
 import {
@@ -40,8 +40,8 @@ describe('Passkey PRF migration', function () {
       }) => {
         await openLegacyPasskeyMigration(driver, extensionId);
 
-        const passkeyMigrationModal = new PasskeyMigrationModal(driver);
-        await passkeyMigrationModal.clickRemindMeLater();
+        const passkeyPrfMigrationPage = new PasskeyPrfMigrationPage(driver);
+        await passkeyPrfMigrationPage.clickRemindMeLater();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

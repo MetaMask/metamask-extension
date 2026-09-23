@@ -3,7 +3,7 @@ import {
   addLegacyUserHandlePasskeyCredential,
   replaceVirtualAuthenticator,
 } from '../../webdriver/virtual-authenticator';
-import PasskeyMigrationModal from '../pages/dialog/passkey-migration-modal';
+import PasskeyPrfMigrationPage from '../pages/onboarding/passkey-prf-migration-page';
 import SetupPasskeyPage from '../pages/onboarding/setup-passkey-page';
 
 /**
@@ -20,18 +20,18 @@ export const openLegacyPasskeyMigration = async (
   await addLegacyUserHandlePasskeyCredential(driver, extensionId);
   await driver.navigate();
 
-  const passkeyMigrationModal = new PasskeyMigrationModal(driver);
-  await passkeyMigrationModal.checkPageIsLoaded();
+  const passkeyPrfMigrationPage = new PasskeyPrfMigrationPage(driver);
+  await passkeyPrfMigrationPage.checkPageIsLoaded();
 };
 
 /**
  * Replaces the current legacy passkey with a PRF-backed passkey.
  *
- * @param driver - WebDriver instance on the passkey migration modal.
+ * @param driver - WebDriver instance on the passkey migration page.
  */
 export const replaceLegacyPasskey = async (driver: Driver): Promise<void> => {
-  const passkeyMigrationModal = new PasskeyMigrationModal(driver);
-  await passkeyMigrationModal.clickReplacePasskey();
+  const passkeyPrfMigrationPage = new PasskeyPrfMigrationPage(driver);
+  await passkeyPrfMigrationPage.clickReplacePasskey();
   await replaceVirtualAuthenticator(driver);
 
   const setupPasskeyPage = new SetupPasskeyPage(driver);
@@ -44,15 +44,15 @@ export const replaceLegacyPasskey = async (driver: Driver): Promise<void> => {
  * Attempts replacement with an authenticator that does not return PRF and
  * waits for the rejection screen.
  *
- * @param driver - WebDriver instance on the passkey migration modal.
+ * @param driver - WebDriver instance on the passkey migration page.
  * @param extensionId - Unpacked extension id used as the WebAuthn RP ID.
  */
 export const replaceLegacyPasskeyWithNonPrfAuthenticator = async (
   driver: Driver,
   extensionId: string,
 ): Promise<void> => {
-  const passkeyMigrationModal = new PasskeyMigrationModal(driver);
-  await passkeyMigrationModal.clickReplacePasskey();
+  const passkeyPrfMigrationPage = new PasskeyPrfMigrationPage(driver);
+  await passkeyPrfMigrationPage.clickReplacePasskey();
   await replaceVirtualAuthenticator(driver);
 
   const setupPasskeyPage = new SetupPasskeyPage(driver);

@@ -7,20 +7,14 @@ import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
+import { ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE } from '../../helpers/constants/routes';
 import UnlockPage from './unlock-page.component';
 
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
-const mockReplacePasskey = jest.fn();
 
 jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
-}));
-
-jest.mock('../../hooks/passkey/usePasskeyPrfMigration', () => ({
-  usePasskeyPrfMigration: () => ({
-    replacePasskey: mockReplacePasskey,
-  }),
 }));
 
 jest.mock('../../hooks/useAnalytics', () => {
@@ -151,7 +145,7 @@ describe('UnlockPage component (passkey UI)', () => {
     });
   });
 
-  it('shows the passkey migration modal after a legacy passkey unlock', async () => {
+  it('navigates to passkey migration after a legacy passkey unlock', async () => {
     setMockPasskeyRecord({
       keyDerivation: { method: 'userHandle' },
     });
@@ -167,42 +161,13 @@ describe('UnlockPage component (passkey UI)', () => {
 
     await waitFor(() => {
       expect(mockUnlockWithPasskey).toHaveBeenCalledTimes(1);
-      expect(getByTestId('passkey-migration-modal')).toBeInTheDocument();
-    });
-    expect(props.navigateAfterUnlock).not.toHaveBeenCalled();
-
-    fireEvent.click(
-      getByTestId('passkey-migration-modal-remind-me-later-button'),
-    );
-
-    await waitFor(() => {
-      expect(props.navigateAfterUnlock).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it('opens the replacement modal when the user chooses to replace the passkey', async () => {
-    setMockPasskeyRecord({
-      keyDerivation: { method: 'userHandle' },
-    });
-    const props = buildProps();
-
-    const { getByTestId } = renderWithProvider(
-      <UnlockPage {...props} />,
-      mockStore,
-      '/unlock',
-    );
-
-    fireEvent.click(getByTestId('unlock-passkey-button'));
-
-    await waitFor(() => {
-      expect(getByTestId('passkey-migration-modal')).toBeInTheDocument();
-    });
-
-    fireEvent.click(getByTestId('passkey-migration-modal-replace-button'));
-
-    await waitFor(() => {
-      expect(mockUnlockWithPasskey).toHaveBeenCalledTimes(1);
-      expect(getByTestId('passkey-replacement-modal')).toBeInTheDocument();
+      expect(props.navigate).toHaveBeenCalledWith(
+        ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+        {
+          replace: true,
+          state: undefined,
+        },
+      );
     });
     expect(props.navigateAfterUnlock).not.toHaveBeenCalled();
   });
