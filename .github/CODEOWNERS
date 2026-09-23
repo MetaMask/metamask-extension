@@ -359,6 +359,7 @@ app/scripts/wallet-init/instance-options/storage-service*                @MetaMa
 /shared/lib/deep-links/utils*                                 @MetaMask/extension-security-team
 /shared/lib/deep-links/verify*                                @MetaMask/extension-security-team
 /shared/lib/deep-links/routes/route*                          @MetaMask/extension-security-team
+/shared/lib/deep-links/buy-flow*                              @MetaMask/extension-security-team
 /ui/helpers/utils/resolve-deep-link-href*                     @MetaMask/extension-security-team
 /ui/pages/deep-link/                                          @MetaMask/extension-security-team
 
