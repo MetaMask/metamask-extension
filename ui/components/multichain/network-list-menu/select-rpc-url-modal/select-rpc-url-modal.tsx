@@ -79,9 +79,7 @@ export const SelectRpcUrlModal = ({
         <button
           type="button"
           key={rpcEndpoint.url}
-          data-testid={`network-rpc-option-${encodeURIComponent(
-            rpcEndpoint.name ?? String(index),
-          )}`}
+          data-testid={`network-rpc-option-${rpcEndpoint.name ?? String(index)}`}
           onClick={() => {
             const network = {
               ...networkConfigurationToUse,

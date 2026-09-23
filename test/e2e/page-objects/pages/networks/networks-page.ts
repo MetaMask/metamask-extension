@@ -319,7 +319,7 @@ class NetworksPage {
     console.log(`Select RPC ${rpcName} for network`);
     await this.driver.waitForSelector(this.selectRpcMessage);
     await this.driver.clickElementAndWaitToDisappear({
-      testId: `network-rpc-option-${encodeURIComponent(rpcName)}`,
+      testId: `network-rpc-option-${rpcName}`,
     });
   }
 

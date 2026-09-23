@@ -580,9 +580,7 @@ export const NetworksForm = ({
           items={rpcUrls.rpcEndpoints}
           itemKey={(endpoint) => endpoint.url}
           itemDataTestId={(endpoint, index) =>
-            `network-form-rpc-option-${encodeURIComponent(
-              endpoint.name ?? String(index),
-            )}`
+            `network-form-rpc-option-${endpoint.name ?? String(index)}`
           }
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}

@@ -66,7 +66,7 @@ describe('DropdownEditor', () => {
         onItemDeleted={onItemDeleted}
         onItemAdd={onItemAdd}
         itemKey={(item) => item}
-        itemDataTestId={(item) => `endpoint-${encodeURIComponent(item)}`}
+        itemDataTestId={(item) => `endpoint-${item}`}
         renderItem={(item) => <span>{item}</span>}
         renderTooltip={() => undefined}
         buttonDataTestId="rpc-dropdown"
@@ -101,7 +101,7 @@ describe('DropdownEditor', () => {
       'max-h-40',
       'overflow-y-auto',
     );
-    const secondOption = screen.getByTestId('endpoint-Second%20endpoint');
+    const secondOption = screen.getByTestId('endpoint-Second endpoint');
     expect(secondOption).toHaveAttribute('type', 'button');
     fireEvent.click(secondOption);
 
