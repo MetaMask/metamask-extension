@@ -1,4 +1,5 @@
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import { CAIP_ASSET_TYPE_REGEX } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
@@ -19,6 +20,21 @@ export type RampDeepLinkIntent = {
 };
 
 const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+/**
+ * Validates a link-provided CAIP-19 asset id. Deep link params are untrusted
+ * input, and the buy flow's catalog lookup fails open while the catalog is
+ * unsettled, so malformed asset ids are rejected here rather than passed on.
+ *
+ * @param value - The raw `assetId` query param.
+ * @returns The validated asset id string, or undefined when malformed.
+ */
+function validateCaipAssetId(value: string): CaipAssetType | undefined {
+  return CAIP_ASSET_TYPE_REGEX.test(value)
+    ? (value as CaipAssetType)
+    : undefined;
+}
+
 /**
  * Builds a buy intent from `/buy` deep link query params (ported from
  * mobile's `app/components/UI/Ramp/utils/parseRampIntent.ts`).
@@ -39,9 +55,9 @@ export function parseRampIntent(
   > = {
     address: pathParams.address,
     rawChainId: pathParams.chainId,
-    // Validated downstream by the buy flow's catalog lookup, which fails
-    // closed with an unsupported-asset modal.
-    assetId: pathParams.assetId as CaipAssetType | undefined,
+    assetId: pathParams.assetId
+      ? validateCaipAssetId(pathParams.assetId)
+      : undefined,
     amount: pathParams.amount,
     currency: pathParams.currency,
   };
