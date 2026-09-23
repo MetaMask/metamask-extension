@@ -259,6 +259,7 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockPerpsTrack = jest.fn();
 // Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
 // properties the page constructs.
 const mockPerpsScreenViewedOptions: {
@@ -275,7 +276,7 @@ jest.mock('../../hooks/perps', () => ({
       mockPerpsScreenViewedOptions.push(options);
       return undefined;
     }
-    return { track: jest.fn() };
+    return { track: mockPerpsTrack };
   },
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
@@ -1555,6 +1556,17 @@ describe('PerpsMarketDetailPage', () => {
       const marginMenu = screen.getByTestId('perps-margin-menu');
       expect(marginMenu).toBeInTheDocument();
       expect(marginMenu.parentElement).toBe(document.body);
+      expect(mockPerpsTrack).toHaveBeenCalledWith(
+        'Perp UI Interaction',
+        expect.objectContaining({
+          interaction_type: 'button_clicked',
+          button_clicked: 'margin',
+          button_location: 'asset_details',
+        }),
+      );
+      mockPerpsTrack.mock.calls.forEach(([, properties]) => {
+        expect(properties).not.toHaveProperty('button_type');
+      });
       expect(
         screen.getByText(messages.perpsAddMargin.message),
       ).toBeInTheDocument();
