@@ -34,7 +34,9 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": false,
+      "marketingConsentDecisionMade": false,
       "optedIn": false,
+      "optedInToMarketing": false,
       "preConsentEventQueue": {
         "00000000-0000-4000-8000-000000000000": {
           "eventName": "App Installed",
@@ -49,7 +51,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 227,
+      "currentMigrationVersion": 228,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -161,7 +163,6 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "dataCollectionForMarketing": null,
       "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
@@ -2250,6 +2251,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 227
+    "version": 228
   }
 }
