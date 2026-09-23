@@ -33,6 +33,11 @@ jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
   isSecurityAlertsAPIEnabled: jest.fn(),
 }));
 
+jest.mock('@metamask/phishing-controller', () => ({
+  ...jest.requireActual('@metamask/phishing-controller'),
+  isAddressScanSupportedChainId: jest.fn(),
+}));
+
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(() => (key: string) => key),
 }));
@@ -44,6 +49,10 @@ const mockUseTrustSignals = jest.requireMock(
 const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
   '../../../../../app/scripts/lib/ppom/security-alerts-api',
 ).isSecurityAlertsAPIEnabled;
+
+const mockIsAddressScanSupportedChainId = jest.requireMock(
+  '@metamask/phishing-controller',
+).isAddressScanSupportedChainId;
 
 const MALICIOUS_ADDRESS = '0x0000000000000000000000000000000000000bad';
 const WARNING_ADDRESS = '0x0000000000000000000000000000000000000001';
@@ -102,6 +111,7 @@ describe('useSignatureAddressAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
+    mockIsAddressScanSupportedChainId.mockReturnValue(true);
     mockUseTrustSignals.mockReturnValue([]);
   });
 
@@ -277,6 +287,31 @@ describe('useSignatureAddressAlerts', () => {
     );
 
     expect(mockUseTrustSignals).toHaveBeenCalledWith([]);
+    expect(result.current).toEqual([]);
+  });
+
+  it('does not warn about an incomplete scan on an unsupported chain', () => {
+    mockIsAddressScanSupportedChainId.mockReturnValue(false);
+
+    const addresses: Record<string, string> = {};
+    const types: { name: string; type: string }[] = [];
+    for (let i = 0; i < 12; i += 1) {
+      const name = `addr${i}`;
+      addresses[name] = `0x${String(i).padStart(40, '0')}`;
+      types.push({ name, type: 'address' });
+    }
+
+    const request = makeTypedSignV4({
+      types: { Flood: types },
+      primaryType: 'Flood',
+      message: addresses,
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useSignatureAddressAlerts(),
+      stateWithSignatureRequest(request),
+    );
+
     expect(result.current).toEqual([]);
   });
 

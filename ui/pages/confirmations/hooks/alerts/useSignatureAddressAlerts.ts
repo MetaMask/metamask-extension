@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { extractSignatureAddresses } from '@metamask/phishing-controller';
+import {
+  extractSignatureAddresses,
+  isAddressScanSupportedChainId,
+} from '@metamask/phishing-controller';
 import { SignatureRequestType } from '@metamask/signature-controller';
 import type { Hex } from '@metamask/utils';
 
@@ -42,7 +45,9 @@ export function useSignatureAddressAlerts(): Alert[] {
     if (
       !signatureRequest ||
       signatureRequest.type !== SignatureRequestType.TypedSign ||
-      !isSecurityAlertsAPIEnabled()
+      !isSecurityAlertsAPIEnabled() ||
+      !signatureRequest.chainId ||
+      !isAddressScanSupportedChainId(signatureRequest.chainId)
     ) {
       return empty;
     }
