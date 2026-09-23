@@ -15,6 +15,7 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
@@ -1557,7 +1558,7 @@ describe('PerpsMarketDetailPage', () => {
       expect(marginMenu).toBeInTheDocument();
       expect(marginMenu.parentElement).toBe(document.body);
       expect(mockPerpsTrack).toHaveBeenCalledWith(
-        'Perp UI Interaction',
+        MetaMetricsEventName.PerpsUiInteraction,
         expect.objectContaining({
           interaction_type: 'button_clicked',
           button_clicked: 'margin',
