@@ -17,7 +17,6 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject } from '@metamask/utils';
-import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -52,10 +51,8 @@ import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
-import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { createCaipStream } from '../../shared/lib/caip-stream';
-import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getErrorBackup, getErrorLike } from '../../shared/lib/error-like';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
@@ -72,10 +69,7 @@ import {
   createEvent,
   shouldTrackDeepLinkNavigation,
 } from '../../shared/lib/deep-links/metrics';
-import {
-  backedUpStateKeys,
-  hasVault,
-} from '../../shared/lib/stores/persistence-manager';
+import { hasVault } from '../../shared/lib/stores/persistence-manager';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
@@ -106,6 +100,9 @@ import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { loadStateFromPersistence } from './lib/startup/load-state-from-persistence';
+import { wireStatePersistence } from './lib/startup/wire-state-persistence';
+import { parsePortInfo } from './lib/parse-port-info';
+import { loadPreinstalledSnaps } from './lib/load-preinstalled-snaps';
 import {
   handleOnInstalled,
   onUpdateAvailable,
@@ -116,7 +113,6 @@ import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
-import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { getRequestSafeReload } from './lib/safe-reload';
@@ -199,40 +195,11 @@ global.logEncryptedVault = () => {
 
 const { sentry } = global;
 
-const metamaskInternalProcessHash = {
-  [ENVIRONMENT_TYPE_POPUP]: true,
-  [ENVIRONMENT_TYPE_NOTIFICATION]: true,
-  [ENVIRONMENT_TYPE_FULLSCREEN]: true,
-};
-
 log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-
-/**
- * Parses port connection info for routing decisions.
- * Determines if the port is from the MetaMask UI (popup, notification, fullscreen)
- * vs a contentscript injected into a regular web page.
- *
- * @param {browser.Runtime.Port} port - The port to parse.
- * @returns {{ processName: string, senderUrl: URL | null, isMetaMaskUIPort: boolean }} Parsed port info.
- */
-function parsePortInfo(port) {
-  const processName = port.name;
-  const senderUrl = port.sender?.url ? new URL(port.sender.url) : null;
-
-  let isMetaMaskUIPort;
-  if (isFirefox) {
-    isMetaMaskUIPort = Boolean(metamaskInternalProcessHash[processName]);
-  } else {
-    isMetaMaskUIPort =
-      senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
-  }
-
-  return { processName, senderUrl, isMetaMaskUIPort };
-}
 
 let openPopupCount = 0;
 let notificationIsOpen = false;
@@ -754,29 +721,6 @@ async function initialize(backup) {
 }
 
 /**
- * Loads the preinstalled snaps from urls and returns them as an array.
- * It fails if any Snap fails to load in the expected time range.
- * Supports .json.gz files using gzip decompression.
- */
-async function loadPreinstalledSnaps() {
-  const fetchWithTimeout = getFetchWithTimeout();
-  const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
-    const response = await fetchWithTimeout(url);
-
-    // If the Snap is compressed, decompress it
-    if (url.pathname.endsWith('.json.gz')) {
-      const ds = new DecompressionStream('gzip');
-      const decompressedStream = response.body.pipeThrough(ds);
-      return await new Response(decompressedStream).json();
-    }
-
-    return await response.json();
-  });
-
-  return Promise.all(promises);
-}
-
-/**
  * Emit event of DappViewed,
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
@@ -1001,119 +945,12 @@ export function setupController(
     controller.appStateController.setStorageWriteErrorType(errorType);
   });
 
-  /**
-   * @type {Array<string>} List of controller store keys that have changed since initialization.
-   */
-  const changedControllerKeys = [];
-  const currentState = controller.store.getState();
-  for (const key of Object.keys(currentState)) {
-    const initialControllerState = initState[key] || {};
-    const newControllerState = currentState[key];
-    if (newControllerState === null || typeof newControllerState !== 'object') {
-      captureException(
-        new Error(
-          `Invalid controller state for '${key}' of type '${newControllerState === null ? 'null' : typeof newControllerState}'`,
-        ),
-      );
-      continue;
-    }
-    const newControllerStateKeys = Object.keys(newControllerState);
-
-    // if the number of keys has changed, we need to persist the new state
-    if (
-      newControllerStateKeys.length ===
-      Object.keys(initialControllerState).length
-    ) {
-      // if any of the controller's own top-level keys have changed
-      // (via reference comparison) we need to persist the new state.
-      for (const subKey of newControllerStateKeys) {
-        if (newControllerState[subKey] !== initialControllerState[subKey]) {
-          changedControllerKeys.push(key);
-          break;
-        }
-      }
-    } else {
-      changedControllerKeys.push(key);
-    }
-  }
-
-  if (persistenceManager.storageKind === 'split') {
-    if (changedControllerKeys.length > 0) {
-      log.info(
-        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
-      );
-      // update the new state
-      changedControllerKeys.forEach((key) => {
-        persistenceManager.update(key, currentState[key]);
-      });
-      // then persist it
-      safePersist().catch((error) => {
-        log.error('Error persisting updated state:', error);
-        sentry?.captureException(error);
-      });
-    }
-
-    controller.store.on(
-      'stateChange',
-      async ({ controllerKey, newState, _oldState, _patches }) => {
-        persistenceManager.update(controllerKey, newState);
-
-        // if this key is one of the `backedUpStateKeys` we must always
-        // re-persist all of the other `backedUpStateKeys`, as they must always
-        // stored in the backup DB together.
-        if (backedUpStateKeys.includes(controllerKey)) {
-          backedUpStateKeys.forEach((key) => {
-            if (key === controllerKey) {
-              // already updated this one
-              return;
-            }
-            // Get the state for this backed-up key using messenger.
-            // We filter to only persistent properties using deriveStateFromMetadata
-            // to match what ComposableObservableStore does in stateChange events.
-            // This ensures non-persistent properties (e.g., KeyringController's
-            // isUnlocked, keyrings, encryptionKey) are not written to storage.
-            const controllerConfig = controller.store.config[key];
-            if (!controllerConfig?.metadata) {
-              throw new Error(
-                `Cannot backup ${key}: controller metadata is required but not found. ` +
-                  `All controllers in backedUpStateKeys must extend BaseController and define metadata.`,
-              );
-            }
-            const fullState = controller.controllerMessenger.call(
-              `${key}:getState`,
-            );
-            const state = deriveStateFromMetadata(
-              fullState,
-              controllerConfig.metadata,
-              'persist',
-            );
-            persistenceManager.update(key, state);
-          });
-        }
-        try {
-          await safePersist();
-        } catch (error) {
-          log.error('Error persisting state change:', error);
-          sentry?.captureException(error);
-        }
-      },
-    );
-  } else {
-    if (changedControllerKeys.length > 0) {
-      log.info(
-        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
-      );
-      // persist the new state
-      safePersist(currentState).catch((error) => {
-        log.error('Error persisting updated controller state:', error);
-        sentry?.captureException(error);
-      });
-    }
-    controller.store.on('update', safePersist);
-  }
-  controller.store.on('error', (error) => {
-    log.error('MetaMask controller.store error:', error);
-    sentry?.captureException(error);
+  wireStatePersistence({
+    controller,
+    persistenceManager,
+    initState,
+    safePersist,
+    sentry,
   });
 
   setupEnsIpfsResolver({
