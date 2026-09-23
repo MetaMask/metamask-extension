@@ -26,9 +26,7 @@ describe('Stellar - Sign Message - e2e tests', function () {
         await testDapp.setMessage(messageToSign);
         await testDapp.signMessage();
 
-        const signMessageConfirmation = new SnapSignMessageConfirmation(
-          driver,
-        );
+        const signMessageConfirmation = new SnapSignMessageConfirmation(driver);
         await confirmStellarSnapSigning(driver, signMessageConfirmation);
 
         await testDapp.switchTo();
