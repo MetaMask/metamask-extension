@@ -601,6 +601,10 @@ export const routeConfig = [
             element: <BatchSell />,
           },
           {
+            path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
+            element: <CrossChainSwap />,
+          },
+          {
             path: `${DEFI_ROUTE}/:chainId/:protocolId`,
             element: <DeFiPage />,
           },
@@ -679,10 +683,6 @@ export const routeConfig = [
           {
             element: <RequireBasicFunctionality />,
             children: [
-              {
-                path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-                element: <CrossChainSwap />,
-              },
               {
                 path: ACTIVITY_ROUTE,
                 element: <ActivityPage />,

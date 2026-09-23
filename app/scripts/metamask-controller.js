@@ -229,6 +229,7 @@ import {
   trackPage,
   updateEventFragment,
 } from './controllers/analytics';
+import { setDataCollectionForMarketing } from './controllers/analytics/analytics';
 import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
@@ -2581,10 +2582,7 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       setParticipateInMetaMetrics,
-      setDataCollectionForMarketing:
-        metaMetricsController.setDataCollectionForMarketing.bind(
-          metaMetricsController,
-        ),
+      setDataCollectionForMarketing,
       setMarketingCampaignCookieId:
         metaMetricsController.setMarketingCampaignCookieId.bind(
           metaMetricsController,
@@ -4733,19 +4731,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   setUpCookieHandlerCommunication({ connectionStream }) {
-    const {
-      analyticsId,
-      dataCollectionForMarketing,
-      consentDecisionMade,
-      optedIn,
-    } = this.getState();
+    const { analyticsId, optedInToMarketing, consentDecisionMade, optedIn } =
+      this.getState();
 
-    if (
-      analyticsId &&
-      dataCollectionForMarketing &&
-      consentDecisionMade &&
-      optedIn
-    ) {
+    if (analyticsId && optedInToMarketing && consentDecisionMade && optedIn) {
       // setup multiplexing
       const mux = setupMultiplex(connectionStream);
       const metamaskCookieHandlerStream = mux.createStream(

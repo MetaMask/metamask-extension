@@ -14,37 +14,9 @@
       "count": 1
     }
   },
-  "ui/components/app/alert-system/multiple-alert-modal/multiple-alert-modal.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/app/assets/nfts/nft-details/nft-full-image.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/components/app/balance-empty-state/balance-empty-state.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    }
-  },
-  "ui/components/app/compliance/useComplianceGate.ts": {
-    "react-hooks/refs": {
-      "count": 2
-    }
-  },
-  "ui/components/app/confirm/info/row/expandable-row.tsx": {
-    "react-hooks/refs": {
-      "count": 3
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/app/connected-accounts-list/connected-accounts-list-options/connected-accounts-list-options.component.js": {
-    "react-hooks/refs": {
-      "count": 1
     }
   },
   "ui/components/app/currency-input/currency-input.js": {
@@ -70,30 +42,9 @@
       "count": 1
     }
   },
-  "ui/components/app/name/name-details/name-details.tsx": {
-    "react-hooks/refs": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 2
-    }
-  },
-  "ui/components/app/permission-cell/permission-cell-options.js": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/components/app/permission-page-container/permission-page-container.component.js": {
     "react-hooks/preserve-manual-memoization": {
       "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/app/perps/close-position/close-position-modal.tsx": {
-    "react-hooks/refs": {
-      "count": 2
     }
   },
   "ui/components/app/perps/hooks/usePerpsWithdrawNavigation.ts": {
@@ -101,22 +52,7 @@
       "count": 1
     }
   },
-  "ui/components/app/perps/order-entry/components/order-summary/order-summary.tsx": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/app/perps/order-entry/order-entry.tsx": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/components/app/product-safety/scam-questionnaire/useScamQuestionnaire.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/app/qr-hardware-popover/qr-hardware-sign-request/qr-hardware-sign-request/qr-hardware-sign-request.tsx": {
     "react-hooks/set-state-in-effect": {
       "count": 1
     }
@@ -128,11 +64,6 @@
   },
   "ui/components/app/snaps/snap-ui-date-time-picker/snap-ui-date-time-picker.tsx": {
     "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/app/srp-input-import/srp-input-import.tsx": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -149,9 +80,6 @@
   "ui/components/app/toast-master/toast-master.js": {
     "react-hooks/purity": {
       "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx": {
@@ -162,11 +90,6 @@
   "ui/components/app/wallet-overview/coin-buttons.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 4
-    }
-  },
-  "ui/components/app/wallet-overview/coin-overview.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/components/component-library/modal-content/deprecated/modal-content.tsx": {
@@ -186,9 +109,6 @@
   },
   "ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.tsx": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -210,14 +130,6 @@
   "ui/components/multichain/dropdown-editor/dropdown-editor.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/network-list-item-menu/network-list-item-menu.stories.tsx": {
-    "react-hooks/refs": {
-      "count": 1
     }
   },
   "ui/components/multichain/network-list-menu/popular-network-list/popular-network-list.tsx": {
@@ -225,18 +137,8 @@
       "count": 1
     }
   },
-  "ui/components/multichain/network-manager/network-manager.tsx": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/components/multichain/toast/toast.tsx": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/components/ui/button-group/button-group.component.js": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -255,28 +157,8 @@
       "count": 2
     }
   },
-  "ui/components/ui/mascot/mascot.component.js": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/ui/menu/menu.js": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/ui/metafox-logo/horizontal-logo.js": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/components/ui/popover/popover.component.js": {
     "react-hooks/static-components": {
-      "count": 1
-    }
-  },
-  "ui/components/ui/tabs/tabs.tsx": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -305,18 +187,8 @@
       "count": 8
     }
   },
-  "ui/helpers/higher-order-components/with-router-hooks/with-router-hooks.tsx": {
-    "react-hooks/refs": {
-      "count": 6
-    }
-  },
   "ui/hooks/accounts/useAccountsOperationsLoadingStates.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/hooks/activity/useActivityCacheInvalidation.ts": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -385,28 +257,8 @@
       "count": 3
     }
   },
-  "ui/hooks/musd/useMusdConversionConfirmTrace.ts": {
-    "react-hooks/refs": {
-      "count": 3
-    }
-  },
-  "ui/hooks/perps/stream/usePerpsChannel.ts": {
-    "react-hooks/refs": {
-      "count": 4
-    }
-  },
-  "ui/hooks/perps/stream/usePerpsLiveCandles.ts": {
-    "react-hooks/refs": {
-      "count": 3
-    }
-  },
-  "ui/hooks/perps/usePerpsAbandonOrderTracking.ts": {
-    "react-hooks/refs": {
-      "count": 2
-    }
-  },
-  "ui/hooks/perps/usePerpsEventTracking.ts": {
-    "react-hooks/refs": {
+  "ui/hooks/perps/stream/usePerpsLivePrices.ts": {
+    "react-hooks/purity": {
       "count": 1
     }
   },
@@ -415,33 +267,13 @@
       "count": 1
     }
   },
-  "ui/hooks/perps/usePerpsOrderForm.ts": {
-    "react-hooks/refs": {
-      "count": 9
-    }
-  },
-  "ui/hooks/perps/usePerpsTransactionHistory.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/hooks/rewards/useOptIn.ts": {
     "react-hooks/preserve-manual-memoization": {
       "count": 1
     }
   },
-  "ui/hooks/rewards/useValidateReferralCode.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/hooks/rewards/useVipTier.ts": {
     "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    }
-  },
-  "ui/hooks/subscription/useSubscription.ts": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -460,58 +292,18 @@
       "count": 4
     }
   },
-  "ui/hooks/useCarouselManagement/useCarouselManagement.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/hooks/useClickOutside.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/hooks/useDebouncedValue.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/hooks/useEqualityCheck.js": {
     "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
-  "ui/hooks/useEventListener.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/hooks/useIntersectionObserver.ts": {
-    "react-hooks/immutability": {
-      "count": 3
-    },
-    "react-hooks/refs": {
-      "count": 2
-    },
-    "react-hooks/set-state-in-effect": {
+    "react-hooks/exhaustive-deps": {
       "count": 1
     }
   },
   "ui/hooks/useMultiPolling.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 2
-    }
-  },
-  "ui/hooks/useMultichainAccountsIntroModal.ts": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -526,11 +318,8 @@
     }
   },
   "ui/hooks/useScrollRequired.js": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 6
+    "react-hooks/set-state-in-effect": {
+      "count": 2
     }
   },
   "ui/hooks/useShallowEqualityCheck.ts": {
@@ -540,12 +329,7 @@
   },
   "ui/hooks/useShouldAnimateGasEstimations.js": {
     "react-hooks/refs": {
-      "count": 3
-    }
-  },
-  "ui/hooks/useShouldShowSpeedUp.js": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
+      "count": 2
     }
   },
   "ui/hooks/useSpinDelay.ts": {
@@ -558,14 +342,6 @@
       "count": 5
     }
   },
-  "ui/hooks/useTheme.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/hooks/useTokenFiatAmount.js": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -573,11 +349,6 @@
   },
   "ui/hooks/useTokenInsightsData.ts": {
     "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    }
-  },
-  "ui/hooks/useTokenTracker.js": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -611,11 +382,6 @@
   },
   "ui/pages/batch-sell/hooks/useBatchSellHighRateAlertModal.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/batch-sell/pages/review/batch-sell-review-page.tsx": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -692,11 +458,6 @@
   "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
     }
   },
   "ui/pages/confirmations/components/developer/perps-withdraw-button/perps-withdraw-button.tsx": {
@@ -817,11 +578,6 @@
       "count": 2
     }
   },
-  "ui/pages/contacts/components/add-contact-form.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/contacts/contact-details-page.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 1
@@ -845,14 +601,6 @@
   "ui/pages/custom-token-import/custom-token-import.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 2
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 2
-    }
-  },
-  "ui/pages/defi/hooks/useDeFiPositionsV2.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
     }
   },
   "ui/pages/details/components/convert-again-button.tsx": {
@@ -885,24 +633,6 @@
       "count": 1
     }
   },
-  "ui/pages/keychains/reveal-seed.tsx": {
-    "react-hooks/refs": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 2
-    }
-  },
-  "ui/pages/networks/chainlist-network-picker.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/networks/networks-page.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/notification-details/notification-details.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -923,27 +653,6 @@
       "count": 8
     }
   },
-  "ui/pages/perps/market-list/index.tsx": {
-    "react-hooks/refs": {
-      "count": 5
-    }
-  },
-  "ui/pages/perps/perps-market-detail-page.tsx": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 2
-    },
-    "react-hooks/refs": {
-      "count": 2
-    }
-  },
-  "ui/pages/perps/perps-order-entry-page.tsx": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 5
-    }
-  },
   "ui/pages/ramps/build-quote/hooks/useBuildQuoteAmount.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1
@@ -959,18 +668,8 @@
       "count": 1
     }
   },
-  "ui/pages/routes/global-menu-route-transition.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/settings/settings.tsx": {
     "react-hooks/preserve-manual-memoization": {
-      "count": 3
-    }
-  },
-  "ui/pages/settings/sync-accounts/components/qr-code-scan.tsx": {
-    "react-hooks/refs": {
       "count": 3
     }
   },
