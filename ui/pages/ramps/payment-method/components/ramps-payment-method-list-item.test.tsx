@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
-import { act, fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RampsPaymentMethodListItem from './ramps-payment-method-list-item';
@@ -174,11 +174,11 @@ describe('RampsPaymentMethodListItem', () => {
     expect(trigger).not.toHaveAttribute('interestfor');
     expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull();
 
-    await act(async () => {
-      fireEvent.focus(trigger);
-    });
+    fireEvent.focus(trigger);
 
-    const tooltip = getByTestId('ramps-quote-display-warning-tooltip');
+    const tooltip = await waitFor(() =>
+      getByTestId('ramps-quote-display-warning-tooltip'),
+    );
     expect(tooltip).toHaveTextContent('Minimum purchase is $25.00');
     expect(trigger).toHaveAttribute('aria-describedby', tooltip.id);
   });
@@ -230,6 +230,31 @@ describe('RampsPaymentMethodListItem', () => {
     fireEvent.click(row);
     fireEvent.keyDown(row, { key: 'Enter' });
     fireEvent.keyUp(row, { key: ' ' });
+
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('does not activate the row from keys pressed on the warning trigger', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quoteError
+        quoteErrorMessage="Minimum purchase is $25.00"
+        quote={null}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={onClick}
+      />,
+      createStore(),
+    );
+
+    const trigger = getByTestId('ramps-quote-display-warning-trigger');
+
+    fireEvent.click(trigger);
+    fireEvent.keyDown(trigger, { key: 'Enter' });
+    fireEvent.keyUp(trigger, { key: ' ' });
 
     expect(onClick).not.toHaveBeenCalled();
   });

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RampsQuoteDisplay, {
@@ -67,7 +67,7 @@ describe('RampsQuoteDisplay', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('opens a fallback tooltip on hover and focus when interest invokers are unsupported', () => {
+  it('opens a fallback tooltip on hover and focus when interest invokers are unsupported', async () => {
     const { getByTestId, queryByTestId } = renderWithProvider(
       <RampsQuoteDisplay
         cryptoAmount=""
@@ -85,20 +85,33 @@ describe('RampsQuoteDisplay', () => {
     expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull();
 
     fireEvent.mouseEnter(warning);
-    let tooltip = getByTestId('ramps-quote-display-warning-tooltip');
+    const tooltip = getByTestId('ramps-quote-display-warning-tooltip');
     expect(tooltip).toHaveTextContent('Quote unavailable.');
     expect(trigger).toHaveAttribute('aria-describedby', tooltip.id);
 
+    // Moving onto the tooltip keeps it open during the grace period.
     fireEvent.mouseLeave(warning);
-    expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull();
+    fireEvent.mouseEnter(tooltip);
+    expect(
+      getByTestId('ramps-quote-display-warning-tooltip'),
+    ).toHaveTextContent('Quote unavailable.');
 
+    // Leaving the tooltip closes it after the grace period.
+    fireEvent.mouseLeave(tooltip);
+    await waitFor(() =>
+      expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull(),
+    );
+
+    // Escape dismisses the tooltip while it is open.
     fireEvent.focus(trigger);
-    tooltip = getByTestId('ramps-quote-display-warning-tooltip');
-    expect(tooltip).toHaveTextContent('Quote unavailable.');
-    expect(trigger).toHaveAttribute('aria-describedby', tooltip.id);
-
-    fireEvent.blur(trigger);
-    expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull();
+    expect(
+      getByTestId('ramps-quote-display-warning-tooltip'),
+    ).toHaveTextContent('Quote unavailable.');
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await waitFor(() =>
+      expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull(),
+    );
+    expect(trigger).not.toHaveAttribute('aria-describedby');
   });
 
   it('associates the warning icon with a native tooltip when interest invokers are supported', () => {

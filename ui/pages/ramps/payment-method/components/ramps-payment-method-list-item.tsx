@@ -108,13 +108,13 @@ export default function RampsPaymentMethodListItem({
       isDisabled={isDisabled}
       className={getRampsListItemClassName(isSelected)}
     >
-      <div
+      <div // NOSONAR: hosts a nested tooltip trigger that a native <button> cannot contain; keyboard support is implemented below
         role="button"
         tabIndex={isDisabled ? -1 : 0}
         aria-disabled={isDisabled || undefined}
         onClick={isDisabled ? undefined : onClick}
         onKeyDown={(event) => {
-          if (isDisabled) {
+          if (isDisabled || event.target !== event.currentTarget) {
             return;
           }
           if (event.key === 'Enter') {
@@ -125,7 +125,7 @@ export default function RampsPaymentMethodListItem({
           }
         }}
         onKeyUp={(event) => {
-          if (isDisabled) {
+          if (isDisabled || event.target !== event.currentTarget) {
             return;
           }
           if (event.key === ' ') {

@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -14,6 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+// NOSONAR: migrating this fallback to the design-system Popover would add @floating-ui to the bundle and require LavaMoat policy changes, which is deferred to a dedicated design-system follow-up
 import {
   Popover,
   PopoverPosition,
@@ -43,6 +44,184 @@ export const interestInvokerSupport = {
 };
 
 /**
+ * Grace period before the fallback tooltip closes, so the pointer can move
+ * onto the tooltip text (WCAG 1.4.13 Hoverable).
+ */
+const FALLBACK_TOOLTIP_CLOSE_DELAY_MS = 300;
+
+type TooltipContentProps = {
+  message: string;
+};
+
+function tooltipContent({ message }: TooltipContentProps) {
+  return (
+    <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+      {message}
+    </Text>
+  );
+}
+
+export function NativeTooltip({
+  popoverId,
+  message,
+}: {
+  popoverId: string;
+  message: string;
+}) {
+  return (
+    <div
+      // @ts-expect-error React types do not include popover yet.
+      popover="hint"
+      id={popoverId}
+      onClick={(event) => event.stopPropagation()}
+      onKeyDown={(event) => event.stopPropagation()}
+      data-testid="ramps-quote-display-warning-tooltip"
+      className="m-0 max-w-[250px] rounded-lg border border-border-muted bg-background-default p-4 text-text-default shadow-md [position-area:bottom]"
+    >
+      {tooltipContent({ message })}
+    </div>
+  );
+}
+
+type FallbackTooltipProps = {
+  popoverId: string;
+  isOpen: boolean;
+  message: string;
+  referenceElement: HTMLButtonElement | null;
+  onDismiss: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+};
+
+export function FallbackTooltip({
+  popoverId,
+  isOpen,
+  message,
+  referenceElement,
+  onDismiss,
+  onMouseEnter,
+  onMouseLeave,
+}: FallbackTooltipProps) {
+  return (
+    <Popover // NOSONAR: see import note; legacy Popover migration is deferred to a design-system follow-up
+      id={popoverId}
+      isOpen={isOpen}
+      position={PopoverPosition.Auto}
+      referenceElement={referenceElement}
+      hasArrow
+      isPortal
+      onPressEscKey={onDismiss}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      style={{ maxWidth: '250px' }}
+      data-testid="ramps-quote-display-warning-tooltip"
+    >
+      {tooltipContent({ message })}
+    </Popover>
+  );
+}
+
+type RampsQuoteWarningProps = {
+  warningMessage: string;
+};
+
+/**
+ * Quote-unavailable warning icon with a tooltip explaining why the quote is
+ * missing. Uses the native Interest Invokers API on Chromium 141+ and falls
+ * back to a hover/focus-triggered `Popover` elsewhere.
+ * @param options0
+ * @param options0.warningMessage
+ */
+export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
+  const nativePopoverId = useId();
+  const fallbackPopoverId = useId();
+  const [triggerElement, setTriggerElement] =
+    useState<HTMLButtonElement | null>(null);
+  const [isFallbackTooltipOpen, setIsFallbackTooltipOpen] = useState(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openFallbackTooltip = useCallback(() => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setIsFallbackTooltipOpen(true);
+  }, []);
+
+  const scheduleFallbackClose = useCallback(() => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      closeTimeoutRef.current = null;
+      setIsFallbackTooltipOpen(false);
+    }, FALLBACK_TOOLTIP_CLOSE_DELAY_MS);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    },
+    [],
+  );
+
+  const isNativeTooltip = interestInvokerSupport.detected;
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.End}
+      justifyContent={BoxJustifyContent.Center}
+      data-testid="ramps-quote-display-warning"
+      {...(isNativeTooltip
+        ? {}
+        : {
+            onMouseEnter: openFallbackTooltip,
+            onMouseLeave: scheduleFallbackClose,
+          })}
+    >
+      <button
+        type="button"
+        ref={setTriggerElement}
+        className="border-0 bg-transparent p-0"
+        onClick={(event) => event.stopPropagation()}
+        onFocus={isNativeTooltip ? undefined : openFallbackTooltip}
+        onBlur={isNativeTooltip ? undefined : scheduleFallbackClose}
+        aria-describedby={
+          !isNativeTooltip && isFallbackTooltipOpen
+            ? fallbackPopoverId
+            : undefined
+        }
+        // @ts-expect-error React types do not include interestfor yet.
+        interestfor={isNativeTooltip ? nativePopoverId : undefined} // eslint-disable-line react/no-unknown-property
+        data-testid="ramps-quote-display-warning-trigger"
+      >
+        <Icon
+          name={IconName.Warning}
+          size={IconSize.Sm}
+          color={IconColor.WarningDefault}
+        />
+      </button>
+      {isNativeTooltip ? (
+        <NativeTooltip popoverId={nativePopoverId} message={warningMessage} />
+      ) : (
+        <FallbackTooltip
+          popoverId={fallbackPopoverId}
+          isOpen={isFallbackTooltipOpen}
+          message={warningMessage}
+          referenceElement={triggerElement}
+          onDismiss={() => setIsFallbackTooltipOpen(false)}
+          onMouseEnter={openFallbackTooltip}
+          onMouseLeave={scheduleFallbackClose}
+        />
+      )}
+    </Box>
+  );
+}
+
+/**
  * Right-column quote preview for payment method rows (mobile `QuoteDisplay`).
  *
  * @param options0
@@ -59,18 +238,6 @@ export default function RampsQuoteDisplay({
   showWarningIcon = false,
   warningMessage,
 }: RampsQuoteDisplayProps) {
-  const nativePopoverId = useId();
-  const fallbackPopoverId = useId();
-  const [triggerElement, setTriggerElement] =
-    useState<HTMLButtonElement | null>(null);
-  const [isFallbackTooltipOpen, setIsFallbackTooltipOpen] = useState(false);
-  const handleFallbackOpen = useCallback(() => {
-    setIsFallbackTooltipOpen(true);
-  }, []);
-  const handleFallbackClose = useCallback(() => {
-    setIsFallbackTooltipOpen(false);
-  }, []);
-
   if (isLoading) {
     return (
       <Box
@@ -87,73 +254,20 @@ export default function RampsQuoteDisplay({
   }
 
   if (showWarningIcon) {
-    const useNativeTooltip =
-      interestInvokerSupport.detected && Boolean(warningMessage);
-    const useFallbackTooltip =
-      !interestInvokerSupport.detected && Boolean(warningMessage);
-    return (
+    return warningMessage ? (
+      <RampsQuoteWarning warningMessage={warningMessage} />
+    ) : (
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.End}
         justifyContent={BoxJustifyContent.Center}
         data-testid="ramps-quote-display-warning"
-        onMouseEnter={useFallbackTooltip ? handleFallbackOpen : undefined}
-        onMouseLeave={useFallbackTooltip ? handleFallbackClose : undefined}
       >
-        <button
-          type="button"
-          ref={setTriggerElement}
-          className="border-0 bg-transparent p-0"
-          onClick={(event) => event.stopPropagation()}
-          onFocus={useFallbackTooltip ? handleFallbackOpen : undefined}
-          onBlur={useFallbackTooltip ? handleFallbackClose : undefined}
-          onKeyDown={(event) => event.stopPropagation()}
-          aria-describedby={
-            useFallbackTooltip && isFallbackTooltipOpen
-              ? fallbackPopoverId
-              : undefined
-          }
-          // @ts-expect-error React types do not include interestfor yet.
-          interestfor={useNativeTooltip ? nativePopoverId : undefined} // eslint-disable-line react/no-unknown-property
-          data-testid="ramps-quote-display-warning-trigger"
-        >
-          <Icon
-            name={IconName.Warning}
-            size={IconSize.Sm}
-            color={IconColor.WarningDefault}
-          />
-        </button>
-        {useNativeTooltip ? (
-          <div
-            // @ts-expect-error React types do not include popover yet.
-            popover="hint"
-            id={nativePopoverId}
-            onClick={(event) => event.stopPropagation()}
-            data-testid="ramps-quote-display-warning-tooltip"
-            className="m-0 max-w-[250px] rounded-lg border border-border-muted bg-background-default p-4 text-text-default shadow-md [position-area:bottom]"
-          >
-            <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-              {warningMessage}
-            </Text>
-          </div>
-        ) : null}
-        {useFallbackTooltip ? (
-          <Popover
-            id={fallbackPopoverId}
-            isOpen={isFallbackTooltipOpen}
-            position={PopoverPosition.Auto}
-            referenceElement={triggerElement}
-            hasArrow
-            isPortal
-            onPressEscKey={handleFallbackClose}
-            style={{ maxWidth: '250px' }}
-            data-testid="ramps-quote-display-warning-tooltip"
-          >
-            <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-              {warningMessage}
-            </Text>
-          </Popover>
-        ) : null}
+        <Icon
+          name={IconName.Warning}
+          size={IconSize.Sm}
+          color={IconColor.WarningDefault}
+        />
       </Box>
     );
   }
