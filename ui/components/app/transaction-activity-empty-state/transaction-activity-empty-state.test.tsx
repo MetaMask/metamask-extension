@@ -3,14 +3,17 @@ import { screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { EthMethod } from '@metamask/keyring-api';
+import {
+  BtcMethod,
+  EthMethod,
+  SolMethod,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import * as useMultichainSelectorHook from '../../../hooks/useMultichainSelector';
 import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import {
   TransactionActivityEmptyState,
@@ -62,14 +65,20 @@ const createStateOverrides = (
   metamask: metamaskOverrides,
 });
 
-const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
+const createStateWithoutExternalServices = (): ReturnType<
+  typeof createStateOverrides
+> =>
+  createStateOverrides({
+    useExternalServices: false,
+  });
+
+const createNonBridgeChainState = (): ReturnType<typeof createStateOverrides> =>
   createStateOverrides({
     useExternalServices: true,
     selectedNetworkClientId: 'sepolia',
     networkConfigurationsByChainId: {
       ...mockState.metamask.networkConfigurationsByChainId,
       '0xaa36a7': {
-        // Sepolia - not in allowed swaps chains (prod or testing/dev)
         chainId: '0xaa36a7',
         name: 'Sepolia',
         nativeCurrency: 'ETH',
@@ -84,13 +93,6 @@ const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
         blockExplorerUrls: [],
       },
     },
-  });
-
-const createStateWithoutExternalServices = (): ReturnType<
-  typeof createStateOverrides
-> =>
-  createStateOverrides({
-    useExternalServices: false,
   });
 
 const createValidSwapState = (): ReturnType<typeof createStateOverrides> =>
@@ -124,14 +126,6 @@ const setupMocks = (): {
   mockUseBridging.mockReturnValue({
     openBridgeExperience: mockOpenBridgeExperience,
   });
-
-  // Mock useMultichainSelector to return EVM network by default
-  jest
-    .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
-    .mockReturnValue({
-      chainId: '0x1', // Default to mainnet (EVM)
-      isEvmNetwork: true,
-    });
 
   return { mockOpenBridgeExperience, mockUseBridging };
 };
@@ -249,7 +243,11 @@ describe('TransactionActivityEmptyState', () => {
         ReturnType<typeof createStateOverrides> | Record<string, never>,
       ]
     >([
-      ['not a swaps chain', accountWithSigning, createTestnetState()],
+      [
+        'the current chain is not a unified swaps/bridge chain',
+        accountWithSigning,
+        createNonBridgeChainState(),
+      ],
       [
         'external services are disabled',
         accountWithSigning,
@@ -272,23 +270,39 @@ describe('TransactionActivityEmptyState', () => {
       },
     );
 
-    it('enables swap button when all conditions are met', () => {
-      const stateOverrides = createValidSwapState();
-      renderComponent({}, stateOverrides, accountWithSigning);
-      expectSwapButtonState(true);
-    });
-
-    it('enables swap button for Solana networks even when isSwapsChain is false', () => {
-      jest
-        .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
-        .mockReturnValue({
-          chainId: MultichainNetworks.SOLANA,
-          isEvmNetwork: false,
-        });
-      const stateOverrides = createTestnetState();
-      renderComponent({}, stateOverrides, accountWithSigning);
-      expectSwapButtonState(true); // Should be enabled due to Solana logic
-    });
+    it.each([
+      [
+        'EVM',
+        createAccount({
+          methods: [EthMethod.SignTransaction, 'personal_sign'],
+        }),
+      ],
+      [
+        'Solana',
+        createAccount({
+          methods: [SolMethod.SignTransaction],
+        }),
+      ],
+      [
+        'Bitcoin',
+        createAccount({
+          methods: [BtcMethod.SignPsbt],
+        }),
+      ],
+      [
+        'Tron',
+        createAccount({
+          type: TrxAccountType.Eoa,
+          methods: [],
+        }),
+      ],
+    ])(
+      'enables swap button for a %s account that can sign when the chain is supported and external services are enabled',
+      (_network, account) => {
+        renderComponent({}, createValidSwapState(), account);
+        expectSwapButtonState(true);
+      },
+    );
 
     it('calls openBridgeExperience when swap button is clicked', () => {
       const stateOverrides = createValidSwapState();
