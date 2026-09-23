@@ -35,7 +35,7 @@ jest.mock('../../../shared/lib/trace', () => ({
   getPerformanceTimestamp: () => Date.now(),
 }));
 jest.mock('../../helpers/perps/entry-trace', () => ({
-  getPerpsLifecycleContext: () => Promise.resolve('cold_process'),
+  readPerpsLifecycleContext: () => 'cold_process',
   observePerpsLifecycle: () => jest.fn(),
   PERPS_LIFECYCLE_TAG: 'lifecycle_context',
 }));

@@ -638,6 +638,36 @@ describe('PerpsStreamBridge', () => {
   });
 
   describe('foreground lifecycle', () => {
+    it('notifies other open UIs of first settlement without requiring active streams', async () => {
+      const first = createBridge({
+        controller: Object.assign(createMockController(), {
+          stopMarketDataPreload: jest.fn(),
+        }) as unknown as PerpsController,
+      });
+      const other = createBridge({
+        controller: first.controller,
+        isPreloadAllowed: () => false,
+      });
+      const closed = createBridge({
+        controller: first.controller,
+        isConnectionAlive: () => false,
+      });
+      try {
+        expect(other.bridge.canEmit('lifecycleContext')).toBe(true);
+        expect(other.bridge.canEmit('markets')).toBe(false);
+        expect(closed.bridge.canEmit('lifecycleContext')).toBe(false);
+        await first.bridge.bridgeApi().perpsMarkForegroundSettled();
+        await first.bridge.bridgeApi().perpsMarkForegroundSettled();
+        expect(other.emit).toHaveBeenCalledTimes(1);
+        expect(other.emit).toHaveBeenCalledWith('lifecycleContext', 'warm');
+        expect(closed.emit).not.toHaveBeenCalled();
+      } finally {
+        first.bridge.dispose();
+        other.bridge.dispose();
+        closed.bridge.dispose();
+      }
+    });
+
     it('preserves settlement across UI bridges but not controller replacement', async () => {
       const first = createBridge();
       const reloaded = createBridge({ controller: first.controller });

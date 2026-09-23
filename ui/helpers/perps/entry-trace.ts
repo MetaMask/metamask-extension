@@ -35,22 +35,18 @@ let pendingEntry:
       id: string;
       surface: PerpsEntrySurface;
       timer: ReturnType<typeof setTimeout>;
-      traceReady: Promise<void>;
     }
   | undefined;
 
+let cachedLifecycle: LifecycleContext | undefined;
+let lifecycleRequest: Promise<void> | undefined;
+
 /**
- * Read process-scoped cold state without consuming it. A missing background
- * response is unknown, never an inferred cold entry. Capture visibility now so
- * a delayed response cannot overwrite a later resume transition.
- *
- * @returns Lifecycle at the operation boundary.
+ * Prime the lifecycle cache once after the background RPC connection is ready.
+ * @returns Completion of the bounded lookup, shared by concurrent callers.
  */
-export function getPerpsLifecycleContext(): Promise<LifecycleContext> {
-  if (resumed) {
-    return Promise.resolve('background_resume');
-  }
-  return new Promise((resolve) => {
+export function primePerpsLifecycleContext(): Promise<void> {
+  lifecycleRequest ??= new Promise<LifecycleContext>((resolve) => {
     const timeout = setTimeout(() => resolve('unknown'), 1_000);
     submitRequestToBackground('perpsGetLifecycleContext', [])
       .then((context: unknown) => {
@@ -62,7 +58,24 @@ export function getPerpsLifecycleContext(): Promise<LifecycleContext> {
       })
       .catch(() => resolve('unknown'))
       .finally(() => clearTimeout(timeout));
+  }).then((context) => {
+    // Foreground settlement may have made the session warm during the lookup.
+    cachedLifecycle ??= context;
   });
+  return lifecycleRequest;
+}
+
+/**
+ * Read lifecycle synchronously at the operation boundary, retaining resume state.
+ * @returns Unknown until priming completes, otherwise the cached lifecycle.
+ */
+export function readPerpsLifecycleContext(): LifecycleContext {
+  return resumed ? 'background_resume' : (cachedLifecycle ?? 'unknown');
+}
+
+/** Mirror shared-process foreground settlement without consuming this UI's resume. */
+export function markPerpsLifecycleWarm(): void {
+  cachedLifecycle = 'warm';
 }
 
 let wasHidden = false;
@@ -100,29 +113,23 @@ export function startPerpsEntry(surface: PerpsEntrySurface): string {
     endPerpsEntry(pendingEntry.id, false, 'generation_changed');
   }
   const id = crypto.randomUUID();
-  const startTime = getPerformanceTimestamp();
-  const traceReady = getPerpsLifecycleContext()
-    .then((context) =>
-      trace({
-        name: getEntryTraceName(surface),
-        startTime,
-        id,
-        op: TraceOperation.PerpsOperation,
-        tags: {
-          feature: 'perps',
-          [PERPS_LIFECYCLE_TAG]: context,
-          surface,
-        },
-      }),
-    )
-    .then(() => undefined)
-    .catch((error: unknown) => {
-      console.debug('[PerpsEntry] Trace start failed', error);
+  try {
+    trace({
+      name: getEntryTraceName(surface),
+      id,
+      op: TraceOperation.PerpsOperation,
+      tags: {
+        feature: 'perps',
+        [PERPS_LIFECYCLE_TAG]: readPerpsLifecycleContext(),
+        surface,
+      },
     });
+  } catch (error) {
+    console.debug('[PerpsEntry] Trace start failed', error);
+  }
   pendingEntry = {
     id,
     surface,
-    traceReady,
     timer: setTimeout(
       () => endPerpsEntry(id, false, 'timeout'),
       ENTRY_TIMEOUT_MS,
@@ -149,25 +156,24 @@ export function endPerpsEntry(
     return;
   }
   clearTimeout(pendingEntry.timer);
-  const { surface, traceReady } = pendingEntry;
+  const { surface } = pendingEntry;
   const timestamp = getPerformanceTimestamp();
-  traceReady
-    .then(() =>
-      endTrace({
-        name: getEntryTraceName(surface),
-        timestamp,
-        id,
-        data: success
-          ? { success, ...(variant ? { variant } : {}) }
-          : { success, reason },
-      }),
-    )
-    .catch((error: unknown) => {
-      console.debug('[PerpsEntry] Trace end failed', error);
+  try {
+    endTrace({
+      name: getEntryTraceName(surface),
+      timestamp,
+      id,
+      data: success
+        ? { success, ...(variant ? { variant } : {}) }
+        : { success, reason },
     });
+  } catch (error) {
+    console.debug('[PerpsEntry] Trace end failed', error);
+  }
   pendingEntry = undefined;
   if (success) {
     resumed = false;
+    markPerpsLifecycleWarm();
     // Only committed foreground rows consume cold, independently of preload.
     submitRequestToBackground('perpsMarkForegroundSettled', []).catch(
       (error: unknown) =>

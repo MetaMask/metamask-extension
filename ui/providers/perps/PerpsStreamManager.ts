@@ -44,7 +44,7 @@ import {
   getPerformanceTimestamp,
 } from '../../../shared/lib/trace';
 import {
-  getPerpsLifecycleContext,
+  readPerpsLifecycleContext,
   PERPS_LIFECYCLE_TAG,
 } from '../../helpers/perps/entry-trace';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -882,47 +882,41 @@ class PerpsStreamManager {
         console.debug('[PerpsStreamManager] Release failed', error);
       });
     };
-    const startTime = getPerformanceTimestamp();
-    const traceReady = getPerpsLifecycleContext()
-      .then((context) =>
-        trace({
-          startTime,
-          name,
-          id,
-          op: TraceOperation.PerpsOperation,
-          tags: {
-            feature: 'perps',
-            [PERPS_LIFECYCLE_TAG]: context,
-            source: 'wallet_root',
-            provider,
-            [TESTNET_TAG]: isTestnet,
-            [START_BOUNDARY_TAG]: 'wallet_root_effect',
-            [COMPLETION_BOUNDARY_TAG]: 'preload_ready',
-            ...(accountChanged ? { trigger: 'requested_account_change' } : {}),
-          },
-        }),
-      )
-      .catch((error: unknown) => {
-        console.debug('[PerpsStreamManager] Trace start failed', error);
+    try {
+      trace({
+        name,
+        id,
+        op: TraceOperation.PerpsOperation,
+        tags: {
+          feature: 'perps',
+          [PERPS_LIFECYCLE_TAG]: readPerpsLifecycleContext(),
+          source: 'wallet_root',
+          provider,
+          [TESTNET_TAG]: isTestnet,
+          [START_BOUNDARY_TAG]: 'wallet_root_effect',
+          [COMPLETION_BOUNDARY_TAG]: 'preload_ready',
+          ...(accountChanged ? { trigger: 'requested_account_change' } : {}),
+        },
       });
+    } catch (error) {
+      console.debug('[PerpsStreamManager] Trace start failed', error);
+    }
     const finish = (success: boolean, reason: PreloadEndReason) => {
       if (ended) {
         return;
       }
       ended = true;
       const timestamp = getPerformanceTimestamp();
-      traceReady
-        .then(() =>
-          endTrace({
-            timestamp,
-            name,
-            id,
-            data: { success, reason },
-          }),
-        )
-        .catch((error: unknown) => {
-          console.debug('[PerpsStreamManager] Trace end failed', error);
+      try {
+        endTrace({
+          timestamp,
+          name,
+          id,
+          data: { success, reason },
         });
+      } catch (error) {
+        console.debug('[PerpsStreamManager] Trace end failed', error);
+      }
     };
     const timeout = setTimeout(() => {
       cancelled = true;

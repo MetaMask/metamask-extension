@@ -37,7 +37,7 @@ function setVisibility(value: DocumentVisibilityState) {
 }
 
 describe('Perps entry lifecycle', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.useFakeTimers();
     jest.clearAllMocks();
     let settled = false;
@@ -56,6 +56,7 @@ describe('Perps entry lifecycle', () => {
     jest.isolateModules(() => {
       entry = jest.requireActual('./entry-trace');
     });
+    await entry.primePerpsLifecycleContext();
   });
 
   afterEach(async () => {
@@ -87,13 +88,13 @@ describe('Perps entry lifecycle', () => {
     const abandoned = entry.startPerpsEntry('home');
     entry.endPerpsEntry(abandoned, false, 'unmounted');
     await flush();
-    expect(await entry.getPerpsLifecycleContext()).toBe('cold_process');
+    expect(entry.readPerpsLifecycleContext()).toBe('cold_process');
 
     const completed = entry.startPerpsEntry('home');
     entry.endPerpsEntry(completed, true, 'live_rows_committed');
 
     await flush();
-    expect(await entry.getPerpsLifecycleContext()).toBe('warm');
+    expect(entry.readPerpsLifecycleContext()).toBe('warm');
     await flush();
     expect(jest.getTimerCount()).toBe(0);
   });
@@ -130,7 +131,7 @@ describe('Perps entry lifecycle', () => {
       }),
     );
     await flush();
-    expect(await entry.getPerpsLifecycleContext()).toBe('cold_process');
+    expect(entry.readPerpsLifecycleContext()).toBe('cold_process');
   });
 
   it('preserves pending entries while hidden and tags a later mount as resume', async () => {
@@ -246,7 +247,7 @@ describe('Perps entry lifecycle', () => {
     setVisibility('visible');
 
     await flush();
-    expect(await entry.getPerpsLifecycleContext()).toBe('cold_process');
+    expect(entry.readPerpsLifecycleContext()).toBe('cold_process');
   });
   it('reads settled background state after a UI module reload', async () => {
     const id = entry.startPerpsEntry('home');
@@ -255,8 +256,8 @@ describe('Perps entry lifecycle', () => {
     jest.isolateModules(() => {
       entry = jest.requireActual('./entry-trace');
     });
+    await entry.primePerpsLifecycleContext();
     entry.startPerpsEntry('home');
-    await flush();
     expect(trace).toHaveBeenLastCalledWith(
       expect.objectContaining({
         tags: expect.objectContaining({ [entry.PERPS_LIFECYCLE_TAG]: 'warm' }),
@@ -264,7 +265,7 @@ describe('Perps entry lifecycle', () => {
     );
   });
 
-  it('preserves actual start and end timestamps while classification is delayed', async () => {
+  it('starts and ends synchronously while the lifecycle lookup is pending', async () => {
     let resolve!: (context: string) => void;
     jest.mocked(submitRequestToBackground).mockImplementation((method) =>
       method === 'perpsGetLifecycleContext'
@@ -273,30 +274,13 @@ describe('Perps entry lifecycle', () => {
           })
         : Promise.resolve(undefined),
     );
-    const started = getPerformanceTimestamp();
+    jest.isolateModules(() => {
+      entry = jest.requireActual('./entry-trace');
+    });
+    const priming = entry.primePerpsLifecycleContext();
+    expect(entry.primePerpsLifecycleContext()).toBe(priming);
     const id = entry.startPerpsEntry('home');
-    jest.advanceTimersByTime(50);
-    const ended = getPerformanceTimestamp();
-    entry.endPerpsEntry(id, true, 'live_rows_committed');
-    jest.advanceTimersByTime(500);
-    resolve('cold_process');
-    await flush();
-    expect(trace).toHaveBeenCalledWith(
-      expect.objectContaining({ startTime: started }),
-    );
-    expect(endTrace).toHaveBeenCalledWith(
-      expect.objectContaining({ timestamp: ended }),
-    );
-  });
-
-  it('reports unknown when background classification times out and never settles an abandoned entry', async () => {
-    jest
-      .mocked(submitRequestToBackground)
-      .mockReturnValue(new Promise(() => undefined));
-    const id = entry.startPerpsEntry('home');
-    entry.endPerpsEntry(id, false, 'unmounted');
-    jest.advanceTimersByTime(1_000);
-    await flush();
+    expect(trace).toHaveBeenCalledTimes(1);
     expect(trace).toHaveBeenCalledWith(
       expect.objectContaining({
         tags: expect.objectContaining({
@@ -304,11 +288,34 @@ describe('Perps entry lifecycle', () => {
         }),
       }),
     );
+    expect(jest.mocked(trace).mock.calls[0][0]).not.toHaveProperty('startTime');
+    jest.advanceTimersByTime(50);
+    const timestamp = getPerformanceTimestamp();
+    entry.endPerpsEntry(id, true, 'live_rows_committed');
     expect(endTrace).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: { success: false, reason: 'unmounted' },
-      }),
+      expect.objectContaining({ id, timestamp }),
     );
+    resolve('cold_process');
+    await priming;
+    expect(entry.readPerpsLifecycleContext()).toBe('warm');
+    expect(trace).toHaveBeenCalledTimes(1);
+    expect(endTrace).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps unknown on lookup timeout without delaying abandoned trace cleanup', async () => {
+    jest
+      .mocked(submitRequestToBackground)
+      .mockReturnValue(new Promise(() => undefined));
+    jest.isolateModules(() => {
+      entry = jest.requireActual('./entry-trace');
+    });
+    const priming = entry.primePerpsLifecycleContext();
+    const id = entry.startPerpsEntry('home');
+    entry.endPerpsEntry(id, false, 'unmounted');
+    expect(endTrace).toHaveBeenCalledWith(expect.objectContaining({ id }));
+    jest.advanceTimersByTime(1_000);
+    await priming;
+    expect(entry.readPerpsLifecycleContext()).toBe('unknown');
     expect(submitRequestToBackground).not.toHaveBeenCalledWith(
       'perpsMarkForegroundSettled',
       [],
@@ -322,15 +329,63 @@ describe('Perps entry lifecycle', () => {
         resolve = done;
       }),
     );
+    jest.isolateModules(() => {
+      entry = jest.requireActual('./entry-trace');
+    });
     const cleanup = entry.observePerpsLifecycle();
-    const priorContext = entry.getPerpsLifecycleContext();
+    const priming = entry.primePerpsLifecycleContext();
     setVisibility('hidden');
     setVisibility('visible');
-    resolve('warm');
-    expect(await priorContext).toBe('warm');
-    expect(await entry.getPerpsLifecycleContext()).toBe('background_resume');
+    resolve('cold_process');
+    await priming;
+    expect(entry.readPerpsLifecycleContext()).toBe('background_resume');
     cleanup();
   });
+
+  it('keeps settlement from another UI when a delayed cold lookup completes', async () => {
+    let resolve!: (context: string) => void;
+    jest.mocked(submitRequestToBackground).mockReturnValue(
+      new Promise<string>((done) => {
+        resolve = done;
+      }),
+    );
+    jest.isolateModules(() => {
+      entry = jest.requireActual('./entry-trace');
+    });
+    const priming = entry.primePerpsLifecycleContext();
+    entry.markPerpsLifecycleWarm();
+    resolve('cold_process');
+    await priming;
+    expect(entry.readPerpsLifecycleContext()).toBe('warm');
+    const cleanup = entry.observePerpsLifecycle();
+    setVisibility('hidden');
+    setVisibility('visible');
+    entry.markPerpsLifecycleWarm();
+    expect(entry.readPerpsLifecycleContext()).toBe('background_resume');
+    cleanup();
+  });
+
+  it('falls back to unknown when lifecycle priming fails', async () => {
+    jest
+      .mocked(submitRequestToBackground)
+      .mockRejectedValueOnce(new Error('offline'));
+    jest.isolateModules(() => {
+      entry = jest.requireActual('./entry-trace');
+    });
+    await entry.primePerpsLifecycleContext();
+    expect(entry.readPerpsLifecycleContext()).toBe('unknown');
+  });
+
+  it('primes once and reads cached lifecycle without another RPC', async () => {
+    const calls = jest.mocked(submitRequestToBackground).mock.calls.length;
+    await entry.primePerpsLifecycleContext();
+    expect(entry.readPerpsLifecycleContext()).toBe('cold_process');
+    const id = entry.startPerpsEntry('home');
+    entry.endPerpsEntry(id, false, 'unmounted');
+    expect(submitRequestToBackground).toHaveBeenCalledTimes(calls);
+    expect(endTrace).toHaveBeenCalledWith(expect.objectContaining({ id }));
+  });
+
   it('attempts trace cleanup when trace creation throws', async () => {
     const diagnostic = jest
       .spyOn(console, 'debug')

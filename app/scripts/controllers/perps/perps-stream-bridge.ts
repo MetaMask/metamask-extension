@@ -26,6 +26,7 @@ export type PerpsStreamChannel =
   | 'candles'
   | 'connectionState'
   | 'fills'
+  | 'lifecycleContext'
   | 'markets'
   | 'orderBook'
   | 'orderBookAggregated'
@@ -321,7 +322,15 @@ export class PerpsStreamBridge {
       perpsGetLifecycleContext: async () =>
         settledControllers.has(this.#controller) ? 'warm' : 'cold_process',
       perpsMarkForegroundSettled: async () => {
+        if (settledControllers.has(this.#controller)) {
+          return;
+        }
         settledControllers.add(this.#controller);
+        for (const bridge of controllerBridges.get(this.#controller) ?? []) {
+          if (bridge.#isConnectionAlive()) {
+            bridge.#emit('lifecycleContext', 'warm');
+          }
+        }
       },
       perpsInit: async (...args: unknown[]) => {
         if (!this.#isPreloadAllowed()) {
@@ -576,6 +585,10 @@ export class PerpsStreamBridge {
    * @returns Whether this UI connection owns the channel.
    */
   canEmit(channel: Parameters<EmitFn>[0]): boolean {
+    // Process-level telemetry must reach UIs without active data subscriptions.
+    if (channel === 'lifecycleContext') {
+      return this.#isConnectionAlive();
+    }
     return (
       (channel === 'accountSession' &&
         this.#isConnectionAlive() &&

@@ -15,7 +15,7 @@ jest.mock('../../../shared/lib/trace', () => ({
   getPerformanceTimestamp: () => Date.now(),
 }));
 jest.mock('../../helpers/perps/entry-trace', () => ({
-  getPerpsLifecycleContext: () => Promise.resolve('cold_process'),
+  readPerpsLifecycleContext: () => 'cold_process',
   PERPS_LIFECYCLE_TAG: 'lifecycle_context',
 }));
 
@@ -123,7 +123,16 @@ describe('PerpsStreamManager', () => {
         [expect.any(String)],
       );
       expect(preloadManager.initForAddress).not.toHaveBeenCalled();
+      expect(trace).toHaveBeenCalledTimes(1);
+      expect(jest.mocked(trace).mock.calls[0][0]).not.toHaveProperty(
+        'startTime',
+      );
       unmount();
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'released' },
+        }),
+      );
       await settle(async () => {
         registration.resolve();
       });
