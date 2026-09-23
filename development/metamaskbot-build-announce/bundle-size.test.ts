@@ -116,9 +116,7 @@ describe('buildBundleSizeDiffSection', () => {
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
     expect(result).toContain('<details>');
-    expect(result).toContain(
-      '<summary>Bundle Size Diffs</summary>',
-    );
+    expect(result).toContain('<summary>Bundle Size Diffs</summary>');
     expect(result).toContain(
       '\n\n<br>\n\n| Status | Bundle | Total | Diff | Change |',
     );
@@ -233,9 +231,7 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts);
 
-    expect(result).toContain(
-      '<summary>Bundle Size Diffs</summary>',
-    );
+    expect(result).toContain('<summary>Bundle Size Diffs</summary>');
     expect(result).toContain(
       '<small>No bundle-size baseline commit was available for this build, so diff values are omitted.</small>',
     );
@@ -253,9 +249,7 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain(
-      '<summary>Bundle Size Diffs</summary>',
-    );
+    expect(result).toContain('<summary>Bundle Size Diffs</summary>');
     expect(result).toContain(
       '<small>No matching bundle-size baseline was found in the history data, so diff values are omitted.</small>',
     );

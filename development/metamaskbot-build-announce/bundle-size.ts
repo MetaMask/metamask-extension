@@ -194,7 +194,9 @@ function buildCollapsibleSection({
   body: string;
   highlightSummary?: boolean;
 }): string {
-  const summaryContent = highlightSummary ? `<strong>${summary}</strong>` : summary;
+  const summaryContent = highlightSummary
+    ? `<strong>${summary}</strong>`
+    : summary;
 
   return [
     '<details>',
