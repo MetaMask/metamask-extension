@@ -17,6 +17,7 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
   {
     'eip155:143': '10',
+    'eip155:5042': '0.05',
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
 
