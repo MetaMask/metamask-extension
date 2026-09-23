@@ -42,6 +42,10 @@ export function BuyDeepLinkEntry() {
     }
     hasInitiatedRef.current = true;
 
+    // `goToBuy` resolves asynchronously; a navigation that lands after this
+    // page unmounts must be dropped (React Router warns otherwise).
+    let isCancelled = false;
+
     const searchParams = new URLSearchParams(location.search);
     const params: Record<string, string | undefined> = {
       address: searchParams.get('address') ?? undefined,
@@ -55,6 +59,11 @@ export function BuyDeepLinkEntry() {
       // Legacy redirect: forward the deep link params verbatim (the pre-UB2
       // `/buy` behavior), then send this tab home. Portfolio handles token
       // and amount preselection on its side.
+      //
+      // Note: this intentionally does NOT reuse `openBuyCryptoInPdapp` (the
+      // `goToBuy` Portfolio path) — that builder drops the link's token and
+      // amount params and appends analytics params instead, which would break
+      // deep link param preservation.
       const { redirectTo } = getBuyPortfolioRedirectDestination(
         new URLSearchParams(location.search),
       );
@@ -70,11 +79,19 @@ export function BuyDeepLinkEntry() {
     )
       .then((didNavigate) => {
         // No navigation was possible (an eligibility modal was shown instead).
-        if (!didNavigate) {
+        if (!isCancelled && !didNavigate) {
           navigate(DEFAULT_ROUTE, { replace: true });
         }
       })
-      .catch(() => navigate(DEFAULT_ROUTE, { replace: true }));
+      .catch(() => {
+        if (!isCancelled) {
+          navigate(DEFAULT_ROUTE, { replace: true });
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [goToBuy, navigate, opensBuyInPortfolioTab, location.search]);
 
   return (
