@@ -33,12 +33,12 @@ import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
-import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { getBatchSellQuotes } from '../batch-sell/selectors';
 import { ARC_ERC20_USDC_BRIDGE_ASSET } from '../../components/app/assets/enablement/arc';
 import * as stellarAssetsSelectors from '../../selectors/stellar-assets';
+import { resolveMinimumBalanceToKeep } from '../../pages/bridge/utils/minimum-reserve';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -82,7 +82,6 @@ import {
   getIsInOffHoursTrading,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
-  resolveMinimumBalanceToKeep,
   getChainValueOrderOverride,
   getIsDestSameAsActiveAccount,
   getDestAccountDisplayName,
@@ -2536,8 +2535,8 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             decimals: 18,
-            chainId: 'eip155:1',
-            assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
+            chainId: 'eip155:10',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM).assetId,
           },
           fromNativeBalance: '1000000000000000000',
         },
@@ -5343,28 +5342,37 @@ describe('Bridge selectors', () => {
   });
 
   describe('resolveMinimumBalanceToKeep', () => {
-    const SOL_RESERVE = '890880';
+    const LAMPORT_RESERVE = '890880';
 
     it('returns the SOL rent-exemption reserve for a Solana chain id', () => {
-      expect(resolveMinimumBalanceToKeep(SolScope.Mainnet, SOL_RESERVE)).toBe(
-        SOL_RESERVE,
-      );
-    });
-
-    it("returns '0' for a non-Solana EVM chain id", () => {
-      expect(resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, SOL_RESERVE)).toBe(
-        '0',
-      );
-    });
-
-    it("returns '0' for a non-Solana non-EVM (Bitcoin) chain id", () => {
       expect(
-        resolveMinimumBalanceToKeep(MultichainNetworks.BITCOIN, SOL_RESERVE),
-      ).toBe('0');
+        resolveMinimumBalanceToKeep(SolScope.Mainnet, LAMPORT_RESERVE),
+      ).toStrictEqual({
+        amount: LAMPORT_RESERVE,
+        normalizedAmount: '0.00089088',
+        asset: getNativeAssetForChainId(SolScope.Mainnet),
+      });
     });
 
-    it("returns '0' when the chain id is undefined", () => {
-      expect(resolveMinimumBalanceToKeep(undefined, SOL_RESERVE)).toBe('0');
+    it('returns undefined for a non-Solana EVM chain id', () => {
+      expect(
+        resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, LAMPORT_RESERVE),
+      ).toBe(undefined);
+    });
+
+    it('returns undefined for a non-Solana non-EVM (Bitcoin) chain id', () => {
+      expect(
+        resolveMinimumBalanceToKeep(
+          MultichainNetworks.BITCOIN,
+          LAMPORT_RESERVE,
+        ),
+      ).toBe(undefined);
+    });
+
+    it('returns undefined when the chain id is undefined', () => {
+      expect(resolveMinimumBalanceToKeep(undefined, LAMPORT_RESERVE)).toBe(
+        undefined,
+      );
     });
   });
 });
