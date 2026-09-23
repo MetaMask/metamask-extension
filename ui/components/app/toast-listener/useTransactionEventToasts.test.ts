@@ -212,6 +212,40 @@ describe('useTransactionEventToasts', () => {
       });
     });
 
+    it('shows a failed toast when a tx fails before submit', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'failed-before-submit',
+          status: TransactionStatus.failed,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+      expect(mockShowFailedToast).toHaveBeenCalledWith(
+        'tx-failed-before-submit',
+        {
+          transactionId: 'failed-before-submit',
+          to: undefined,
+        },
+      );
+    });
+
+    it('does not toast when a tx is rejected without a pending toast', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'rejected-no-pending',
+          status: TransactionStatus.rejected,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+      expect(mockShowFailedToast).not.toHaveBeenCalled();
+    });
+
     it('dismisses the original pending toast when a tx is dropped for speed-up', () => {
       mockGetState.mockReturnValue({
         metamask: {
@@ -471,6 +505,25 @@ describe('useTransactionEventToasts', () => {
       });
 
       expect(mockShowPendingToast).toHaveBeenCalledWith('tx-id4');
+    });
+
+    it('shows a failed toast when a tx fails without a pending toast', () => {
+      const { handlers } = mountHook();
+
+      handlers[accountsControllerEvent]({
+        transactions: {
+          'account-1': [
+            {
+              id: 'id5',
+              status: 'failed',
+              type: 'send',
+              chain: 'tron:728126428',
+            },
+          ],
+        },
+      });
+
+      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-id5');
     });
   });
 });
