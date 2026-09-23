@@ -57,7 +57,6 @@ export async function withStellarWalletSnap(
           },
           stellar: {
             [MultichainNetworks.STELLAR]: true,
-            [MultichainNetworks.STELLAR_TESTNET]: true,
           },
         })
         .build(),
