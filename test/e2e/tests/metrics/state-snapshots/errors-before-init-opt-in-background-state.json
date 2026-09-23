@@ -55,6 +55,7 @@
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "outdatedBrowserWarningLastShown": "object",
+      "passkeyPrfMigrationNoticeCounter": "number",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",

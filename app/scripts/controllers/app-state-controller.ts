@@ -193,6 +193,10 @@ export type AppStateControllerState = {
    * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
    */
   passkeyAutoUnlockSuppressed: boolean;
+  /**
+   * Number of times the legacy passkey PRF migration notice has been shown.
+   */
+  passkeyPrfMigrationNoticeCounter: number;
 
   /**
    * The entry point that initiated the last Perps deposit flow (e.g.
@@ -333,6 +337,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
+  passkeyPrfMigrationNoticeCounter: 0,
   lastPerpsDepositEntryPoint: null,
   ...getInitialStateOverrides(),
 });
@@ -698,6 +703,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  passkeyPrfMigrationNoticeCounter: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   deferredDeepLink: {
     includeInStateLogs: false,
     persist: true,
@@ -759,6 +770,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setOnboardingDate',
   'setOutdatedBrowserWarningLastShown',
   'setPasskeyAutoUnlockSuppressed',
+  'incrementPasskeyPrfMigrationNoticeCounter',
   'setPendingExtensionVersion',
   'setPendingRedirectRoute',
   'setPendingShieldCohort',
@@ -960,6 +972,12 @@ export class AppStateController extends BaseController<
   setPasskeyAutoUnlockSuppressed(suppressed: boolean): void {
     this.update((state) => {
       state.passkeyAutoUnlockSuppressed = suppressed;
+    });
+  }
+
+  incrementPasskeyPrfMigrationNoticeCounter(): void {
+    this.update((state) => {
+      state.passkeyPrfMigrationNoticeCounter += 1;
     });
   }
 

@@ -47,17 +47,24 @@ const authenticationResponse: PasskeyAuthenticationResponse = {
 };
 
 type RenderHookOptions = {
+  state?: {
+    metamask?: {
+      passkeyRecord?: unknown;
+      passkeyPrfMigrationNoticeCounter?: number;
+    };
+  };
   uiMessenger?: UIMessenger;
   routeMessenger?: RouteMessenger | false;
 };
 
 function renderHook({
+  state = {},
   uiMessenger = createMockUIMessenger(),
   routeMessenger = createMockRouteMessenger(),
 }: RenderHookOptions = {}) {
   return renderHookWithProviderTyped(
     () => usePasskeyUnlock(),
-    {},
+    state,
     '/',
     undefined,
     jest.fn(),
@@ -101,6 +108,56 @@ describe('usePasskeyUnlock', () => {
     expect(forceUpdateMetamaskState).toHaveBeenCalledWith(store.dispatch);
     expect(showLoadingIndication).toHaveBeenCalledTimes(1);
     expect(hideLoadingIndication).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns migration eligibility and records the notice below the limit', async () => {
+    const incrementMigrationNoticeCounter = jest.fn();
+    const { result } = renderHook({
+      state: {
+        metamask: {
+          passkeyRecord: {
+            keyDerivation: { method: 'userHandle' },
+          },
+          passkeyPrfMigrationNoticeCounter: 1,
+        },
+      },
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:generateAuthenticationOptions':
+          generateAuthenticationOptions,
+        'LegacyBackgroundApiService:unlockWithPasskey': unlockWithPasskey,
+        'AppStateController:incrementPasskeyPrfMigrationNoticeCounter':
+          incrementMigrationNoticeCounter,
+      }),
+    });
+
+    await expect(result.current()).resolves.toBe(true);
+
+    expect(incrementMigrationNoticeCounter).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not return migration eligibility after the notice limit', async () => {
+    const incrementMigrationNoticeCounter = jest.fn();
+    const { result } = renderHook({
+      state: {
+        metamask: {
+          passkeyRecord: {
+            keyDerivation: { method: 'userHandle' },
+          },
+          passkeyPrfMigrationNoticeCounter: 2,
+        },
+      },
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:generateAuthenticationOptions':
+          generateAuthenticationOptions,
+        'LegacyBackgroundApiService:unlockWithPasskey': unlockWithPasskey,
+        'AppStateController:incrementPasskeyPrfMigrationNoticeCounter':
+          incrementMigrationNoticeCounter,
+      }),
+    });
+
+    await expect(result.current()).resolves.toBe(false);
+
+    expect(incrementMigrationNoticeCounter).not.toHaveBeenCalled();
   });
 
   it('hides loading and preserves unlock errors', async () => {

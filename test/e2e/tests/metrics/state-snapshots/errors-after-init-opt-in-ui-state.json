@@ -286,6 +286,7 @@
     "outdatedBrowserWarningLastShown": "object",
     "overrideContentSecurityPolicyHeader": true,
     "passkeyAutoUnlockSuppressed": "boolean",
+    "passkeyPrfMigrationNoticeCounter": "number",
     "passkeyRecord": null,
     "paymentMethods": "object",
     "pendingApprovalCount": "number",

@@ -135,8 +135,11 @@ export const UnlockPasskeySection = ({
             .build(),
         );
 
-        await unlockWithPasskey();
-        await onUnlockSuccess({ isPasskeyMigrationEligible });
+        const shouldShowMigrationNotice = await unlockWithPasskey();
+        await onUnlockSuccess({
+          isPasskeyMigrationEligible:
+            shouldShowMigrationNotice ?? isPasskeyMigrationEligible,
+        });
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.AppUnlocked)

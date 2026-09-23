@@ -70,6 +70,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "passkeyAutoUnlockSuppressed": "boolean",
+    "passkeyPrfMigrationNoticeCounter": "number",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingShieldCohortTxType": null,

@@ -65,6 +65,12 @@ export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
   handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
 };
 
+export type AppStateControllerIncrementPasskeyPrfMigrationNoticeCounterAction =
+  {
+    type: `AppStateController:incrementPasskeyPrfMigrationNoticeCounter`;
+    handler: AppStateController['incrementPasskeyPrfMigrationNoticeCounter'];
+  };
+
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
   handler: AppStateController['setNewPrivacyPolicyToastClickedOrClosed'];
@@ -588,6 +594,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AppStateControllerIncrementPasskeyPrfMigrationNoticeCounterAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
   | AppStateControllerSetArcUsageNoticeShownAction

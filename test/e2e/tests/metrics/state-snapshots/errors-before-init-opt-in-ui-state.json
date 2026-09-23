@@ -68,6 +68,7 @@
       "newPrivacyPolicyToastShownDate": "number",
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
+      "passkeyPrfMigrationNoticeCounter": "number",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": "boolean",
       "pna25Acknowledged": "boolean",

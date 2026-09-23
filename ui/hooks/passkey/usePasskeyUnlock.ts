@@ -3,8 +3,11 @@ import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
 } from '../../../shared/lib/passkey';
+import { PASSKEY_PRF_MIGRATION_NOTICE_MAX_COUNT } from '../../../shared/constants/passkey';
+import { getIsPasskeyUserHandleBased } from '../../selectors';
+import { getPasskeyPrfMigrationNoticeCounter } from '../../ducks/metamask/metamask';
 import type { RouteMessenger } from '../../messengers/route-messenger';
-import { useDispatch } from '../../store/hooks';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import {
   forceUpdateMetamaskState,
   hideLoadingIndication,
@@ -14,13 +17,20 @@ import { useMessenger } from '../useMessenger';
 
 type PasskeyUnlockMessenger = RouteMessenger<
   | 'PasskeyController:generateAuthenticationOptions'
-  | 'LegacyBackgroundApiService:unlockWithPasskey',
+  | 'LegacyBackgroundApiService:unlockWithPasskey'
+  | 'AppStateController:incrementPasskeyPrfMigrationNoticeCounter',
   never
 >;
 
 export function usePasskeyUnlock() {
   const dispatch = useDispatch();
   const messenger = useMessenger<PasskeyUnlockMessenger>();
+  const isPasskeyMigrationEligible = useAppSelector(
+    getIsPasskeyUserHandleBased,
+  );
+  const passkeyPrfMigrationNoticeCounter = useAppSelector(
+    getPasskeyPrfMigrationNoticeCounter,
+  );
 
   useEffect(
     () => () => {
@@ -44,8 +54,26 @@ export function usePasskeyUnlock() {
         authenticationResponse,
       );
       await forceUpdateMetamaskState(dispatch);
+
+      const shouldShowMigrationNotice =
+        isPasskeyMigrationEligible &&
+        passkeyPrfMigrationNoticeCounter <
+          PASSKEY_PRF_MIGRATION_NOTICE_MAX_COUNT;
+
+      if (shouldShowMigrationNotice) {
+        await messenger.call(
+          'AppStateController:incrementPasskeyPrfMigrationNoticeCounter',
+        );
+      }
+
+      return shouldShowMigrationNotice;
     } finally {
       dispatch(hideLoadingIndication());
     }
-  }, [dispatch, messenger]);
+  }, [
+    dispatch,
+    isPasskeyMigrationEligible,
+    messenger,
+    passkeyPrfMigrationNoticeCounter,
+  ]);
 }

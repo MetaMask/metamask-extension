@@ -80,6 +80,7 @@
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "passkeyPrfMigrationNoticeCounter": 0,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,

@@ -590,6 +590,17 @@ export function getPasskeyAutoUnlockSuppressed(state) {
 }
 
 /**
+ * Returns the number of times the legacy passkey PRF migration notice has
+ * been shown.
+ *
+ * @param {object} state - Redux root state
+ * @returns {number}
+ */
+export function getPasskeyPrfMigrationNoticeCounter(state) {
+  return state.metamask.passkeyPrfMigrationNoticeCounter ?? 0;
+}
+
+/**
  * True when a locked user should unlock before resuming the onboarding
  * completion page (return visit without tapping Done).
  *

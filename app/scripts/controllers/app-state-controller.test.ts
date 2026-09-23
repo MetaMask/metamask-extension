@@ -86,6 +86,20 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('incrementPasskeyPrfMigrationNoticeCounter', () => {
+    it('increments passkeyPrfMigrationNoticeCounter', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.passkeyPrfMigrationNoticeCounter).toBe(0);
+
+        controller.incrementPasskeyPrfMigrationNoticeCounter();
+        expect(controller.state.passkeyPrfMigrationNoticeCounter).toBe(1);
+
+        controller.incrementPasskeyPrfMigrationNoticeCounter();
+        expect(controller.state.passkeyPrfMigrationNoticeCounter).toBe(2);
+      });
+    });
+  });
+
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
       await withController(({ controller }) => {
@@ -862,6 +876,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
+              "passkeyPrfMigrationNoticeCounter": 0,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -951,6 +966,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
+              "passkeyPrfMigrationNoticeCounter": 0,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -1031,6 +1047,7 @@ describe('AppStateController', () => {
               "newPrivacyPolicyToastShownDate": null,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyPrfMigrationNoticeCounter": 0,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "perpsTabBadgeSeen": false,
@@ -1115,6 +1132,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
+              "passkeyPrfMigrationNoticeCounter": 0,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,

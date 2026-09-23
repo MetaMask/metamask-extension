@@ -8,6 +8,7 @@ export const UNLOCK_ROUTE_CAPABILITIES = defineAllowedRouteCapabilities({
     'PasskeyController:completePasskeyReplacement',
     'PasskeyController:cancelPasskeyReplacement',
     'LegacyBackgroundApiService:unlockWithPasskey',
+    'AppStateController:incrementPasskeyPrfMigrationNoticeCounter',
   ],
   events: [],
 });
