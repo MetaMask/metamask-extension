@@ -4,10 +4,14 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+} from '../../../helpers/constants/routes';
 import PasskeyPrfMigration from './passkey-prf-migration';
 
 const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 const mockSetupPasskeyContent = jest.fn(
   ({ onNext }: { onNext: () => void }) => (
     <button data-testid="mock-setup-passkey-content" onClick={onNext}>
@@ -19,6 +23,7 @@ const mockSetupPasskeyContent = jest.fn(
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
 }));
 
 jest.mock(
@@ -39,6 +44,12 @@ describe('PasskeyPrfMigration', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({
+      pathname: ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+      search: '',
+      hash: '',
+      state: undefined,
+    });
   });
 
   it('renders the migration prompt', () => {
@@ -68,6 +79,57 @@ describe('PasskeyPrfMigration', () => {
     );
 
     fireEvent.click(getByTestId('passkey-migration-remind-me-later-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
+  });
+
+  it('navigates to the wallet when the migration page is the redirect target', () => {
+    mockUseLocation.mockReturnValue({
+      pathname: ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+      search: '',
+      hash: '',
+      state: {
+        from: {
+          pathname: ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+          search: '?source=lock',
+          hash: '#migration',
+        },
+      },
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <PasskeyPrfMigration />,
+      store,
+      ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+    );
+
+    fireEvent.click(getByTestId('passkey-migration-remind-me-later-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
+  });
+
+  it('navigates to the wallet after replacement when the migration page is the redirect target', () => {
+    mockUseLocation.mockReturnValue({
+      pathname: ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+      search: '',
+      hash: '',
+      state: {
+        from: {
+          pathname: ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+          search: '?source=lock',
+          hash: '#migration',
+        },
+      },
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <PasskeyPrfMigration />,
+      store,
+      ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+    );
+
+    fireEvent.click(getByTestId('passkey-migration-replace-button'));
+    fireEvent.click(getByTestId('mock-setup-passkey-content'));
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
   });

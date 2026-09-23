@@ -20,7 +20,11 @@ import { BaseUrl } from '../../../../shared/constants/urls';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getRedirectAfterUnlock } from '../../../helpers/utils/redirect-after-unlock';
-import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+  UNLOCK_ROUTE,
+} from '../../../helpers/constants/routes';
 import SetupPasskeyContent from '../../../components/app/passkey-setup/setup-passkey-content';
 
 const supportedProvidersLinkClassName =
@@ -38,7 +42,17 @@ export default function PasskeyPrfMigration() {
   const [isReplacementStarted, setIsReplacementStarted] = useState(false);
 
   const navigateAfterMigration = useCallback(() => {
-    navigate(getRedirectAfterUnlock(location.state), { replace: true });
+    const redirectAfterUnlock = getRedirectAfterUnlock(location.state);
+
+    // When this page was locked, it is stored as the unlock redirect target.
+    // Do not navigate back to the migration page after the user completes or
+    // postpones the migration.
+    const redirectRoute =
+      location.state?.from?.pathname === ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE
+        ? DEFAULT_ROUTE
+        : redirectAfterUnlock;
+
+    navigate(redirectRoute, { replace: true });
   }, [location.state, navigate]);
 
   const startReplacement = useCallback(() => {
