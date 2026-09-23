@@ -158,6 +158,7 @@ import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '..
 import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import { ONBOARDING_ROUTE_CAPABILITIES } from '../onboarding-flow/messenger';
 import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
 import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
 import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
@@ -341,10 +342,11 @@ export const routeConfig = [
   {
     element: <LegacyLayout />,
     children: [
-      {
+      createRouteWithMessenger({
         path: `${ONBOARDING_ROUTE}/*`,
         element: <OnboardingFlow />,
-      },
+        capabilities: ONBOARDING_ROUTE_CAPABILITIES,
+      }),
       {
         path: LOCK_ROUTE,
         element: <Lock />,

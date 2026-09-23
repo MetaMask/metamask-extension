@@ -3044,8 +3044,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setLastVisitedRoute.bind(appStateController),
       removeDeferredDeepLink:
         appStateController.removeDeferredDeepLink.bind(appStateController),
-      setContinuityIdForTab:
-        appStateController.setContinuityIdForTab.bind(appStateController),
       setConnectedStatusPopoverHasBeenShown:
         appStateController.setConnectedStatusPopoverHasBeenShown.bind(
           appStateController,

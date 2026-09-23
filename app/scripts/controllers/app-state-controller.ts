@@ -762,6 +762,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setArcUsageNoticeShown',
   'setBrowserEnvironment',
   'setConnectedStatusPopoverHasBeenShown',
+  'setContinuityIdForTab',
   'setCurrentExtensionPopupId',
   'setCurrentPopupId',
   'setDappSwapComparisonData',

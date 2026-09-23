@@ -14,7 +14,6 @@ import {
   buildInterstitialRoute,
 } from '../../../../shared/lib/deep-links/utils';
 import { createEvent } from '../../../../shared/lib/deep-links/metrics';
-import { routes } from '../../../../shared/lib/deep-links/routes';
 import {
   DeferredDeepLink,
   DeferredDeepLinkRoute,
@@ -22,12 +21,15 @@ import {
 } from '../../../../shared/lib/deep-links/types';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useMessenger } from '../../../hooks/useMessenger';
+import type { OnboardingMessenger } from '../messenger';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
   getOptedIn,
+  getAnalyticsId,
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
   getIsSocialLoginFlow,
@@ -50,7 +52,6 @@ import {
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
-import { submitRequestToBackground } from '../../../store/background-connection';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -61,6 +62,7 @@ export function useOnboardingCompletion() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const messenger = useMessenger<OnboardingMessenger>();
   const isSidePanelEnabled = useSidePanelEnabled();
 
   const externalServicesOnboardingToggleState = useSelector(
@@ -76,6 +78,7 @@ export function useOnboardingCompletion() {
     getHasSeenOnboardingCompletionPage,
   );
   const isOptedIn = useSelector(getOptedIn);
+  const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
@@ -104,16 +107,22 @@ export function useOnboardingCompletion() {
 
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
         const url = new URL(deferredDeepLinkToUse.referringLink);
-        const route = routes.get(url.pathname.toLowerCase());
         let continuityId: string | undefined;
 
         try {
-          if (route?.handler(url.searchParams).trackContinuity) {
+          if (
+            isOptedIn &&
+            analyticsId &&
+            externalServicesOnboardingToggleState &&
+            deferredDeepLinkResult.type ===
+              DeferredDeepLinkRouteType.Navigate &&
+            deferredDeepLinkResult.trackContinuity
+          ) {
             const tab = await browser.tabs.getCurrent();
             if (tab?.id !== undefined) {
-              continuityId = await submitRequestToBackground<string>(
-                'setContinuityIdForTab',
-                [tab.id],
+              continuityId = await messenger.call(
+                'AppStateController:setContinuityIdForTab',
+                tab.id,
               );
             }
           }
@@ -159,7 +168,15 @@ export function useOnboardingCompletion() {
         navigate(DEFAULT_ROUTE);
       }
     },
-    [dispatch, navigate, trackEvent],
+    [
+      analyticsId,
+      dispatch,
+      externalServicesOnboardingToggleState,
+      isOptedIn,
+      messenger,
+      navigate,
+      trackEvent,
+    ],
   );
 
   const completeOnboardingWithSidePanel = useCallback(

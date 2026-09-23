@@ -577,6 +577,11 @@ export type AppStateControllerRemoveDeferredDeepLinkAction = {
   handler: AppStateController['removeDeferredDeepLink'];
 };
 
+export type AppStateControllerSetContinuityIdForTabAction = {
+  type: `AppStateController:setContinuityIdForTab`;
+  handler: AppStateController['setContinuityIdForTab'];
+};
+
 export type AppStateControllerAddAddressSecurityAlertResponseAction = {
   type: `AppStateController:addAddressSecurityAlertResponse`;
   handler: AppStateController['addAddressSecurityAlertResponse'];
@@ -657,5 +662,6 @@ export type AppStateControllerMethodActions =
   | AppStateControllerGetDappSwapComparisonDataAction
   | AppStateControllerSetDeferredDeepLinkAction
   | AppStateControllerRemoveDeferredDeepLinkAction
+  | AppStateControllerSetContinuityIdForTabAction
   | AppStateControllerAddAddressSecurityAlertResponseAction
   | AppStateControllerGetAddressSecurityAlertResponseAction;

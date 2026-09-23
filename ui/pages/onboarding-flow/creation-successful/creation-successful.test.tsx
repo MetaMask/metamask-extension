@@ -91,6 +91,11 @@ jest.mock('../../../../shared/lib/environment', () => ({
 // Mock background connection to prevent "Background connection not initialized" warnings
 const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
 const mockSetContinuityIdForTab = jest.fn().mockResolvedValue('continuity-id');
+jest.mock('../../../hooks/useMessenger', () => ({
+  useMessenger: () => ({
+    call: (_action: string, tabId: number) => mockSetContinuityIdForTab(tabId),
+  }),
+}));
 const mockSetIsBackupAndSyncFeatureEnabled = jest
   .fn()
   .mockResolvedValue(undefined);
@@ -102,7 +107,6 @@ const mockSetUseMultiAccountBalanceChecker = jest
 const backgroundConnectionMock = new Proxy(
   {
     removeDeferredDeepLink: mockRemoveDeferredDeepLink,
-    setContinuityIdForTab: mockSetContinuityIdForTab,
     setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
     toggleExternalServices: mockToggleExternalServices,
     setPreference: mockSetPreference,
@@ -825,12 +829,15 @@ describe('Wallet Ready Page', () => {
             type: DeferredDeepLinkRouteType.Navigate,
             route: '/?tab=perps',
             signature: VALID,
+            trackContinuity: true,
           },
         );
         const mockStore = configureMockStore([thunk])({
           ...mockState,
           metamask: {
             ...mockState.metamask,
+            optedIn: true,
+            analyticsId: 'analytics-id',
             deferredDeepLink: {
               createdAt: Date.now(),
               referringLink: 'https://link.metamask.io/perps',
@@ -857,6 +864,51 @@ describe('Wallet Ready Page', () => {
           );
         });
       });
+
+      for (const { optedIn, analyticsId, enabled } of [
+        { optedIn: false, analyticsId: 'analytics-id', enabled: true },
+        { optedIn: true, analyticsId: '', enabled: true },
+        { optedIn: true, analyticsId: 'analytics-id', enabled: false },
+      ]) {
+        it(`does not create an ID without analytics consent (${JSON.stringify({ optedIn, analyticsId, enabled })})`, async () => {
+          (
+            deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock
+          ).mockResolvedValue({
+            type: DeferredDeepLinkRouteType.Navigate,
+            route: '/?tab=perps',
+            signature: VALID,
+            trackContinuity: true,
+          });
+          const mockStore = configureMockStore([thunk])({
+            ...mockState,
+            appState: {
+              ...mockState.appState,
+              externalServicesOnboardingToggleState: enabled,
+            },
+            metamask: {
+              ...mockState.metamask,
+              optedIn,
+              analyticsId,
+              deferredDeepLink: {
+                createdAt: Date.now(),
+                referringLink: 'https://link.metamask.io/perps',
+              },
+            },
+          });
+          const { getByTestId } = renderWithProvider(
+            <CreationSuccessful />,
+            mockStore,
+          );
+
+          fireEvent.click(getByTestId('onboarding-complete-done'));
+
+          await waitFor(() => {
+            expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=perps');
+          });
+          expect(browser.tabs.getCurrent).not.toHaveBeenCalled();
+          expect(mockSetContinuityIdForTab).not.toHaveBeenCalled();
+        });
+      }
 
       it('tracks a deferred perps link without an ID when there is no tab', async () => {
         (browser.tabs.getCurrent as jest.Mock).mockResolvedValue(undefined);
@@ -910,12 +962,15 @@ describe('Wallet Ready Page', () => {
             type: DeferredDeepLinkRouteType.Navigate,
             route: '/?tab=perps',
             signature: VALID,
+            trackContinuity: true,
           },
         );
         const mockStore = configureMockStore([thunk])({
           ...mockState,
           metamask: {
             ...mockState.metamask,
+            optedIn: true,
+            analyticsId: 'analytics-id',
             deferredDeepLink: {
               createdAt: Date.now(),
               referringLink: 'https://link.metamask.io/perps',
