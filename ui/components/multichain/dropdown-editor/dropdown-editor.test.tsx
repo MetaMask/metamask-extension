@@ -60,10 +60,14 @@ describe('DropdownEditor', () => {
     renderEditor();
 
     const trigger = screen.getByRole('button', {
-      name: messages.defaultRpcUrl.message,
+      name: `${messages.defaultRpcUrl.message} First endpoint`,
     });
 
     expect(trigger).toHaveClass('bg-muted', 'border-muted');
+    expect(trigger).not.toHaveAttribute('aria-label');
+    expect(trigger).toHaveAccessibleName(
+      `${messages.defaultRpcUrl.message} First endpoint`,
+    );
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
     expect(trigger).toHaveAttribute('aria-haspopup', 'listbox');
     expect(screen.getByText('First endpoint')).toBeInTheDocument();

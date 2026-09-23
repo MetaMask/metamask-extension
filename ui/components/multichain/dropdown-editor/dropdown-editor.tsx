@@ -71,7 +71,9 @@ export const DropdownEditor = <Item,>({
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );
+  const labelId = useId();
   const listboxId = useId();
+  const selectedValueId = useId();
   const setDropdownRef = useCallback((node: HTMLElement | null) => {
     setReferenceElement(node);
   }, []);
@@ -176,7 +178,7 @@ export const DropdownEditor = <Item,>({
       onClick={() => {
         setIsDropdownOpen(!isDropdownOpen);
       }}
-      aria-label={title}
+      aria-labelledby={`${labelId} ${selectedValueId}`}
       aria-controls={listboxId}
       aria-expanded={isDropdownOpen}
       aria-haspopup="listbox"
@@ -195,7 +197,7 @@ export const DropdownEditor = <Item,>({
         color: IconColor.IconDefault,
       }}
     >
-      <Box className="min-w-0 flex-1">
+      <Box id={selectedValueId} className="min-w-0 flex-1">
         {selectedItem ? (
           renderItem(selectedItem, false)
         ) : (
@@ -213,7 +215,9 @@ export const DropdownEditor = <Item,>({
 
   return (
     <Box className="pt-4">
-      <Label className="mb-1">{title}</Label>
+      <Label id={labelId} className="mb-1">
+        {title}
+      </Label>
       {tooltip ? (
         <Tooltip title={tooltip} position="bottom">
           {box}
