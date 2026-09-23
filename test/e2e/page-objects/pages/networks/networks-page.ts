@@ -320,7 +320,9 @@ class NetworksPage {
     console.log(`Select RPC ${rpcName} for network`);
     await this.driver.waitForSelector(this.selectRpcMessage);
     await this.driver.clickElementAndWaitToDisappear({
-      xpath: `//button[.//*[contains(text(), ${quoteXPathText(rpcName)})]]`,
+      xpath: `//button[contains(normalize-space(.), ${quoteXPathText(
+        rpcName,
+      )})]`,
     });
   }
 
