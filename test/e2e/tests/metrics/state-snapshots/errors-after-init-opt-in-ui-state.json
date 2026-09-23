@@ -328,7 +328,7 @@
       "useSidePanelAsDefault": "boolean"
     },
     "previousAppVersion": "",
-    "previousMigrationVersion": 0,
+    "previousMigrationVersion": 228,
     "proLayoutPreferences": "object",
     "productTour": "accountIcon",
     "proofBackfillEnqueued": "boolean",
