@@ -14,14 +14,12 @@ import {
   IconColor,
   IconName,
   Label,
-  Popover,
-  PopoverPosition,
-  PopoverRole,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Popover, PopoverPosition } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 
 export enum DropdownEditorStyle {
@@ -227,15 +225,16 @@ export const DropdownEditor = <Item,>({
       )}
       {style === DropdownEditorStyle.PopoverStyle ? (
         <Popover
-          matchWidth
-          className="z-[1] p-0"
+          paddingTop={items && items.length > 0 ? 2 : 0}
+          paddingBottom={items && items.length > 0 ? 2 : 0}
+          paddingLeft={0}
+          matchWidth={true}
+          paddingRight={0}
+          className="z-[1]"
           referenceElement={referenceElement}
           position={PopoverPosition.Bottom}
-          role={PopoverRole.Dialog}
           isOpen={isDropdownOpen}
-          offset={[0, 4]}
           onClickOutside={() => setIsDropdownOpen(false)}
-          onPressEscKey={() => setIsDropdownOpen(false)}
         >
           {renderDropdownList()}
         </Popover>

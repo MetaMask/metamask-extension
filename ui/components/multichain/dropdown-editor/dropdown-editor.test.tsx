@@ -4,20 +4,18 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
 
-jest.mock('@metamask/design-system-react', () => {
-  const actual = jest.requireActual('@metamask/design-system-react');
+jest.mock('../../component-library', () => {
+  const actual = jest.requireActual('../../component-library');
   const react = jest.requireActual('react');
   return {
     ...actual,
     Popover: ({
       children,
       isOpen,
-      role,
     }: {
       children: React.ReactNode;
       isOpen: boolean;
-      role: React.AriaRole;
-    }) => (isOpen ? react.createElement('div', { role }, children) : null),
+    }) => (isOpen ? react.createElement('div', null, children) : null),
   };
 });
 
