@@ -28,17 +28,12 @@ import {
   hasUserTurnedOffNotificationsOnce,
 } from './notification-storage-keys';
 
-export type InitialFetchLifecycle = {
-  requestId: number;
-  status: 'idle' | 'pending' | 'success' | 'error';
-};
-
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
   notificationsData?: INotification[];
   isLoading: boolean;
   error?: unknown;
-  initialFetchLifecycle: InitialFetchLifecycle;
+  isInitialFetchPending: boolean;
 };
 
 const MetamaskNotificationsContext = createContext<
@@ -120,23 +115,17 @@ export function useFetchInitialNotificationsEffect() {
   const shouldRunInitialFetch =
     isBasicFunctionalityEnabled && shouldFetchNotifications && isUnlocked;
   const enableAndRefresh = useEnableAndRefresh();
-  const [lifecycle, setLifecycle] = useState<
-    InitialFetchLifecycle & { isEligible: boolean }
-  >(() => ({
-    isEligible: shouldRunInitialFetch,
-    requestId: 0,
-    status: shouldRunInitialFetch ? 'pending' : 'idle',
+  const [fetchState, setFetchState] = useState(() => ({
+    shouldRun: shouldRunInitialFetch,
+    isPending: shouldRunInitialFetch,
   }));
 
-  if (lifecycle.isEligible !== shouldRunInitialFetch) {
-    setLifecycle({
-      isEligible: shouldRunInitialFetch,
-      requestId: lifecycle.requestId + 1,
-      status: shouldRunInitialFetch ? 'pending' : 'idle',
+  if (fetchState.shouldRun !== shouldRunInitialFetch) {
+    setFetchState({
+      shouldRun: shouldRunInitialFetch,
+      isPending: shouldRunInitialFetch,
     });
   }
-
-  const { requestId } = lifecycle;
 
   useEffect(() => {
     let cancelled = false;
@@ -166,22 +155,15 @@ export function useFetchInitialNotificationsEffect() {
           await enableAndRefresh(await shouldEnableNotificationsOnStartup());
         }
       } catch {
-        if (!cancelled) {
-          setLifecycle((current) =>
-            current.requestId === requestId
-              ? { ...current, status: 'error' }
+        // Do nothing
+      } finally {
+        if (!cancelled && shouldRunInitialFetch) {
+          setFetchState((current) =>
+            current.shouldRun === shouldRunInitialFetch
+              ? { ...current, isPending: false }
               : current,
           );
         }
-        return;
-      }
-
-      if (!cancelled && shouldRunInitialFetch) {
-        setLifecycle((current) =>
-          current.requestId === requestId
-            ? { ...current, status: 'success' }
-            : current,
-        );
       }
     };
 
@@ -190,9 +172,9 @@ export function useFetchInitialNotificationsEffect() {
     return () => {
       cancelled = true;
     };
-  }, [dispatch, enableAndRefresh, requestId, shouldRunInitialFetch]);
+  }, [dispatch, enableAndRefresh, shouldRunInitialFetch]);
 
-  return lifecycle;
+  return fetchState.isPending;
 }
 
 export function useEnableNotificationsByDefaultEffect() {
@@ -256,7 +238,7 @@ export const MetamaskNotificationsProvider = ({
   useBasicFunctionalityDisableEffect();
 
   // Update subscriptions and fetch notifications
-  const initialFetchLifecycle = useFetchInitialNotificationsEffect();
+  const isInitialFetchPending = useFetchInitialNotificationsEffect();
 
   // Enable notifications by default for users
   useEnableNotificationsByDefaultEffect();
@@ -271,14 +253,14 @@ export const MetamaskNotificationsProvider = ({
       notificationsData,
       isLoading,
       error,
-      initialFetchLifecycle,
+      isInitialFetchPending,
     }),
     [
       listNotificationsCallback,
       notificationsData,
       isLoading,
       error,
-      initialFetchLifecycle,
+      isInitialFetchPending,
     ],
   );
 

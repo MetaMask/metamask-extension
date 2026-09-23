@@ -258,12 +258,12 @@ describe('useFetchInitialNotificationsEffect', () => {
       {},
     );
 
-    expect(result.current.status).toBe('pending');
+    expect(result.current).toBe(true);
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
       expect(mocks.hooks.listNotifications).toHaveBeenCalled();
-      expect(result.current.status).toBe('success');
+      expect(result.current).toBe(false);
     });
   });
 
@@ -383,7 +383,7 @@ describe('useFetchInitialNotificationsEffect', () => {
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
-      expect(result.current.status).toBe('error');
+      expect(result.current).toBe(false);
     });
     // Should not throw error
   });
@@ -420,7 +420,7 @@ describe('useFetchInitialNotificationsEffect', () => {
       () => useFetchInitialNotificationsEffect(),
       {},
     );
-    expect(result.current.status).toBe('idle');
+    expect(result.current).toBe(false);
 
     // Second render - conditions met
     mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
@@ -431,12 +431,12 @@ describe('useFetchInitialNotificationsEffect', () => {
     act(() => {
       store.dispatch({ type: 'FORCE_UPDATE' });
     });
-    expect(result.current.status).toBe('pending');
+    expect(result.current).toBe(true);
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
       expect(mocks.hooks.listNotifications).toHaveBeenCalled();
-      expect(result.current.status).toBe('success');
+      expect(result.current).toBe(false);
     });
   });
 });

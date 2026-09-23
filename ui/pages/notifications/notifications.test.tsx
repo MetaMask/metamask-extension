@@ -22,10 +22,7 @@ jest.mock(
       listNotifications: jest.fn(),
       isLoading: false,
       error: null,
-      initialFetchLifecycle: {
-        requestId: 0,
-        status: 'idle',
-      },
+      isInitialFetchPending: false,
     }),
   }),
 );
@@ -38,17 +35,6 @@ jest.mock('../../store/actions', () => ({
   })),
   getNotificationPreferences: jest.fn(() => () => Promise.resolve(null)),
 }));
-
-jest.mock(
-  '../../selectors/metamask-notifications/metamask-notifications',
-  () => ({
-    ...jest.requireActual(
-      '../../selectors/metamask-notifications/metamask-notifications',
-    ),
-    getIsUpdatingMetamaskNotifications: () => false,
-    isFetchingMetamaskNotifications: () => false,
-  }),
-);
 
 jest.mock(
   '../../hooks/metamask-notifications/useNotificationListPerformance',
@@ -114,11 +100,7 @@ describe('Notifications Component', () => {
       expect(mockUseNotificationListPerformance).toHaveBeenCalledWith(
         expect.objectContaining({
           enabled: expect.any(Boolean),
-          initialFetchLifecycle: {
-            requestId: 0,
-            status: 'idle',
-          },
-          isContentPending: false,
+          isPending: false,
           notificationCount: expect.any(Number),
         }),
       );
