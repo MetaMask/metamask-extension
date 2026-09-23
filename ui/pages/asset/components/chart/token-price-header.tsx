@@ -25,6 +25,13 @@ export type TokenPriceHeaderProps = {
   timestamp?: number;
   /** Whether data is currently loading */
   loading?: boolean;
+  /**
+   * Ambient color override for the percent change text.
+   * When provided, replaces the default SuccessDefault/ErrorDefault color
+   * with the ambient direction color (e.g. custom green or orange).
+   * Mirrors mobile's ambient price color A/B test.
+   */
+  ambientColor?: string;
 };
 
 /**
@@ -97,6 +104,7 @@ const getPercentChangeColor = (value: number | undefined): TextColor => {
  * @param options.currency - Currency code for formatting (e.g., 'USD')
  * @param options.timestamp - Timestamp for the price (shown as formatted date)
  * @param options.loading - Whether data is currently loading
+ * @param options.ambientColor
  * @returns The rendered TokenPriceHeader component
  */
 const TokenPriceHeader = ({
@@ -105,6 +113,7 @@ const TokenPriceHeader = ({
   currency,
   timestamp,
   loading = false,
+  ambientColor,
 }: TokenPriceHeaderProps) => {
   const { formatCurrencyTokenPrice, formatNumber } = useFormatters();
 
@@ -163,7 +172,10 @@ const TokenPriceHeader = ({
             data-testid="asset-price-percent-change"
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
-            color={getPercentChangeColor(percentChange)}
+            color={
+              ambientColor ? undefined : getPercentChangeColor(percentChange)
+            }
+            style={ambientColor ? { color: ambientColor } : undefined}
           >
             {formattedPercent || '-'}
           </Text>

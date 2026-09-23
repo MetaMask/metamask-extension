@@ -103,6 +103,7 @@ import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
+import { useTheme } from '../../../hooks/useTheme';
 import { AssetMarketDetails } from './asset-market-details';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
 import { AssetStickyActions } from './asset-sticky-actions';
@@ -117,6 +118,12 @@ import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences
 import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
 import { useOHLCVChart } from './chart/useOHLCVChart';
 import { useOHLCVPriceData } from './chart/useOHLCVPriceData';
+import {
+  ENABLE_AMBIENT_CHART_THEMING,
+  AMBIENT_NEGATIVE_COLOR,
+  getAmbientColor,
+  getAmbientSuccessColor,
+} from './chart/chart-theme-config';
 import TokenPriceHeader from './chart/token-price-header';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
@@ -378,6 +385,33 @@ const AssetPage = ({
     timestamp: ohlcvTimestamp,
   } = useOHLCVPriceData(mergedOhlcvData);
 
+  // Ambient chart theming — matches mobile's Price.advanced.tsx logic.
+  // Computes price direction from OHLCV data and derives candle/line colors.
+  const theme = useTheme();
+  const isDark = theme === 'dark';
+
+  const initialAmbientColor = useMemo(() => {
+    if (!ENABLE_AMBIENT_CHART_THEMING || !isAdvancedChartsEnabled) {
+      return undefined;
+    }
+    if (ohlcvPercentChange === undefined) {
+      return undefined;
+    }
+    const isPositive = ohlcvPercentChange >= 0;
+    return getAmbientColor(isPositive, isDark);
+  }, [ohlcvPercentChange, isDark, isAdvancedChartsEnabled]);
+
+  const ambientSuccessColor = useMemo(() => {
+    if (!initialAmbientColor) {
+      return undefined;
+    }
+    return getAmbientSuccessColor(isDark);
+  }, [initialAmbientColor, isDark]);
+
+  const ambientErrorColor = initialAmbientColor
+    ? AMBIENT_NEGATIVE_COLOR
+    : undefined;
+
   // Combine iframe and OHLCV errors for fallback decision
   const combinedChartError = advancedChartError || ohlcvError;
   const shouldShowAdvancedChart =
@@ -599,6 +633,7 @@ const AssetPage = ({
               currency={currency}
               timestamp={ohlcvTimestamp}
               loading={isOhlcvLoading}
+              ambientColor={initialAmbientColor}
             />
 
             <IntervalBar
@@ -617,6 +652,9 @@ const AssetPage = ({
               onError={setAdvancedChartError}
               onReady={handleAdvancedChartReady}
               realtimeBar={realtimeLatestBar ?? undefined}
+              lineColorOverride={initialAmbientColor}
+              successColorOverride={ambientSuccessColor}
+              errorColorOverride={ambientErrorColor}
             />
             {/* Candlestick-only: the selection is kept in preferences, but the
                 bar and the studies themselves are hidden on a line chart. */}
