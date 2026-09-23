@@ -5,7 +5,6 @@ import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from './constants';
 /**
  * Builds the legacy `/buy` destination: an external redirect to the Portfolio
  * web app with the deep link params forwarded verbatim.
- *
  * @param query - The deep link query params to forward.
  * @returns The external redirect destination.
  */
@@ -18,16 +17,11 @@ export function getBuyPortfolioRedirectDestination(query: URLSearchParams): {
 }
 
 /**
- * Resolves the final destination for a `/buy` deep link.
- *
- * The static `/buy` route redirects to the external Portfolio web app. When
- * the unified buy feature is enabled, the link is routed to the in-app buy
- * flow instead, with the deep link params forwarded to the entry page so the
- * token can be preselected (mobile parity).
- *
- * This intentionally does not change the interstitial policy: signature
- * verification and interstitial decisions are handled before the destination
- * is resolved.
+ * Resolves the final destination for a `/buy` deep link: with the unified buy
+ * feature enabled, route to the in-app entry page (params forwarded so the
+ * token can be preselected, mobile parity) instead of the external Portfolio
+ * redirect. Interstitial policy is unaffected: signature verification and
+ * interstitial decisions happen before the destination is resolved.
  *
  * @param options - The parsed deep link and the unified buy flag state.
  * @param options.route

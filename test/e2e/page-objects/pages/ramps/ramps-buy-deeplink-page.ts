@@ -2,14 +2,10 @@ import { Driver } from '../../../webdriver/driver';
 
 /**
  * Destination page for `/buy` deep links when the unified buy (`rampsEnabled`)
- * feature flag is on.
- *
- * The deep link router lands on the buy deep link entry screen
- * (`/ramps/buy-deeplink-entry`), which hands the link params to the in-app buy
- * flow. The flow then applies its eligibility gating; because the ramps APIs
- * are not mocked in these tests, the flow may either navigate to one of its
- * screens or surface an eligibility modal. Both outcomes prove the link was
- * routed into the in-app flow instead of the external Portfolio redirect.
+ * feature flag is on: the router lands on `/ramps/buy-deeplink-entry`, which
+ * hands the link params to the in-app buy flow. With ramps APIs unmocked, the
+ * flow either navigates to one of its screens or surfaces an eligibility
+ * modal — both prove routing into the in-app flow, not the external redirect.
  */
 class RampsBuyDeepLinkPage {
   private driver: Driver;
@@ -33,8 +29,8 @@ class RampsBuyDeepLinkPage {
         if (new URL(url).hash.includes(this.rampsFlowHashPath)) {
           return true;
         }
-        // An eligibility modal also proves the link was routed into the
-        // in-app flow (it may bounce back home after showing the modal).
+        // An eligibility modal also proves in-app routing (the flow may
+        // bounce back home after showing the modal).
         const hasEligibilityModal = await this.driver.executeScript(
           `return Boolean(document.querySelector('${this.rampsEligibilityModal.css}'));`,
         );
@@ -42,7 +38,6 @@ class RampsBuyDeepLinkPage {
       },
       { timeout: 15000, interval: 500 },
     );
-    console.log('Buy deep link routed into the in-app buy flow');
   }
 }
 

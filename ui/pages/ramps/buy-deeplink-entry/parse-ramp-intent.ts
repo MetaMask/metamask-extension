@@ -22,9 +22,9 @@ export type RampDeepLinkIntent = {
 const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 /**
- * Validates a link-provided CAIP-19 asset id. Deep link params are untrusted
- * input, and the buy flow's catalog lookup fails open while the catalog is
- * unsettled, so malformed asset ids are rejected here rather than passed on.
+ * Validates a link-provided CAIP-19 asset id and rejects malformed ones: deep
+ * link params are untrusted input, and the buy flow's catalog lookup fails
+ * open while the catalog is unsettled.
  *
  * @param value - The raw `assetId` query param.
  * @returns The validated asset id string, or undefined when malformed.
@@ -36,13 +36,10 @@ function validateCaipAssetId(value: string): CaipAssetType | undefined {
 }
 
 /**
- * Builds a buy intent from `/buy` deep link query params (ported from
- * mobile's `app/components/UI/Ramp/utils/parseRampIntent.ts`).
- *
- * Supports both a CAIP-19 `assetId` param and the EVM-style `address` +
- * `chainId` pair used by Portfolio links, which is converted to a CAIP-19
- * asset id. The native token is expressed as the zero address or a missing
- * address.
+ * Builds a buy intent from `/buy` deep link query params (mobile
+ * `parseRampIntent` parity). Supports both a CAIP-19 `assetId` param and the
+ * EVM-style `address` + `chainId` pair used by Portfolio links, converted to
+ * a CAIP-19 asset id; the native token is the zero address or no address.
  *
  * @param pathParams - The deep link query params.
  * @returns The intent, or undefined when no intent params survive.
