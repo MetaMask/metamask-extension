@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
 
@@ -39,11 +40,11 @@ describe('DropdownEditor', () => {
   const renderEditor = () =>
     render(
       <DropdownEditor
-        title="Default RPC URL"
+        title={messages.defaultRpcUrl.message}
         placeholder="Add a URL"
         items={ITEMS}
         selectedItemIndex={0}
-        addButtonText="Add RPC URL"
+        addButtonText={messages.addRpcUrl.message}
         style={DropdownEditorStyle.PopoverStyle}
         onItemSelected={onItemSelected}
         onItemDeleted={onItemDeleted}
@@ -59,7 +60,7 @@ describe('DropdownEditor', () => {
     renderEditor();
 
     const trigger = screen.getByRole('button', {
-      name: 'Default RPC URL',
+      name: messages.defaultRpcUrl.message,
     });
 
     expect(trigger).toHaveClass('bg-muted', 'border-muted');
@@ -100,7 +101,9 @@ describe('DropdownEditor', () => {
     renderEditor();
 
     fireEvent.click(screen.getByTestId('rpc-dropdown'));
-    fireEvent.click(screen.getByRole('button', { name: 'Add RPC URL' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.addRpcUrl.message }),
+    );
 
     expect(onItemAdd).toHaveBeenCalledTimes(1);
   });
