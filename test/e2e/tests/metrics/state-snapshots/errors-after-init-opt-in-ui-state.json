@@ -228,7 +228,7 @@
     "lastFetchedBlockNumbers": "object",
     "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
-    "lastShownPrfMigrationReminderAt": "null",
+    "lastShownPrfMigrationReminderAt": null,
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",

@@ -58,7 +58,7 @@
     "isWalletResetInProgress": "boolean",
     "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
-    "lastShownPrfMigrationReminderAt": "null",
+    "lastShownPrfMigrationReminderAt": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
