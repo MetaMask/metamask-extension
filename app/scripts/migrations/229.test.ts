@@ -48,12 +48,54 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers.has('AnalyticsController')).toBe(true);
   });
 
-  it('removes the marketing campaign cookie id without copying it when it is not a string', async () => {
+  it('removes the marketing campaign cookie id without copying it when it is null', async () => {
     const oldStorage: VersionedData = {
       meta: { version: OLD_VERSION },
       data: {
         MetaMetricsController: {
           marketingCampaignCookieId: null,
+        },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData.data.MetaMetricsController).toStrictEqual({});
+    expect(versionedData.data).not.toHaveProperty('AnalyticsController');
+    expect(changedControllers.has('MetaMetricsController')).toBe(true);
+    expect(changedControllers.has('AnalyticsController')).toBe(false);
+  });
+
+  it('moves a numeric marketing campaign cookie id from MetaMetricsController to AnalyticsController', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: OLD_VERSION },
+      data: {
+        MetaMetricsController: {
+          marketingCampaignCookieId: 12345,
+        },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData.data.MetaMetricsController).toStrictEqual({});
+    expect(versionedData.data.AnalyticsController).toStrictEqual({
+      marketingCampaignCookieId: 12345,
+    });
+    expect(changedControllers.has('MetaMetricsController')).toBe(true);
+    expect(changedControllers.has('AnalyticsController')).toBe(true);
+  });
+
+  it('removes an empty string marketing campaign cookie id without copying it', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: OLD_VERSION },
+      data: {
+        MetaMetricsController: {
+          marketingCampaignCookieId: '',
         },
       },
     };

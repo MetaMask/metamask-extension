@@ -8,6 +8,10 @@ export const version = 229;
  * `MetaMetricsController.marketingCampaignCookieId` to
  * `AnalyticsController.marketingCampaignCookieId`.
  *
+ * Both the string and numeric forms of the cookie id are preserved, as the
+ * runtime historically accepted numeric `ga_client_id` values. `null`,
+ * missing, and other unsupported types are dropped.
+ *
  * @param versionedData - The versioned data object to migrate.
  * @param changedControllers - A set used to record controllers that were modified.
  */
@@ -36,7 +40,11 @@ export const migrate = (async (versionedData, changedControllers) => {
   delete metaMetricsController.marketingCampaignCookieId;
   changedControllers.add('MetaMetricsController');
 
-  if (typeof marketingCampaignCookieId !== 'string') {
+  const isPreservedValue =
+    (typeof marketingCampaignCookieId === 'string' &&
+      marketingCampaignCookieId.length > 0) ||
+    typeof marketingCampaignCookieId === 'number';
+  if (!isPreservedValue) {
     return;
   }
 
