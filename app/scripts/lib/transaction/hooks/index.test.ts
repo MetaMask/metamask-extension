@@ -215,6 +215,27 @@ describe('Transaction Controller Hooks', () => {
       ).resolves.toStrictEqual({ isSponsored: false });
     });
 
+    it('uses explicit sponsorship metadata for money account deposits', async () => {
+      const request = buildMockRequest();
+      const { isSponsored } = getTransactionControllerHooks(request);
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        isGasFeeSponsored: true,
+        nestedTransactions: [
+          {
+            type: TransactionType.moneyAccountDeposit,
+          },
+        ],
+        type: TransactionType.batch,
+      };
+
+      await expect(isSponsored?.({ transactionMeta })).resolves.toStrictEqual({
+        isSponsored: true,
+      });
+      expect(sentinelApiModule.isSendBundleSupported).not.toHaveBeenCalled();
+      expect(isRelaySupported).not.toHaveBeenCalled();
+    });
+
     it('uses explicit sponsorship metadata for money account withdrawals', async () => {
       const request = buildMockRequest();
       const hooks = getTransactionControllerHooks(request);
@@ -586,6 +607,34 @@ describe('Transaction Controller Hooks', () => {
       expect(delegation7702HookFn).toHaveBeenCalledWith(
         expect.objectContaining({ isGasFeeSponsored: true }),
         undefined,
+      );
+    });
+
+    it('preserves explicit Money Account deposit sponsorship when publishing', async () => {
+      const messenger = buildMockMessenger();
+      const { publish } = getTransactionControllerHooks(
+        buildMockRequest({ messenger }),
+      );
+
+      await publish?.({
+        ...mockTransactionMeta,
+        isGasFeeSponsored: true,
+        nestedTransactions: [
+          {
+            type: TransactionType.moneyAccountDeposit,
+          },
+        ],
+        type: TransactionType.batch,
+      });
+
+      expect(payHookMock).toHaveBeenCalledWith(
+        expect.objectContaining({ isGasFeeSponsored: true }),
+        undefined,
+      );
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'TransactionController:updateTransaction',
+        expect.objectContaining({ isGasFeeSponsored: false }),
+        expect.any(String),
       );
     });
 
