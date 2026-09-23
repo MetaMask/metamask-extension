@@ -74,15 +74,16 @@ describe('BackupAndSyncFeaturesToggles', () => {
       const row = container.querySelector(
         `#backup-and-sync-features-toggles-${id}`,
       );
-      const icon = row?.querySelector('.mm-icon');
+      const icon = row?.querySelector('svg');
 
-      expect(row).toHaveClass('mm-box--align-items-center');
+      expect(row).toHaveClass('items-center');
       expect(icon).toHaveClass(
-        'mm-icon--size-md',
-        'mm-box--color-icon-alternative',
+        'w-5',
+        'h-5',
+        'text-icon-alternative',
         'shrink-0',
       );
-      expect(icon?.parentElement).toHaveClass('mm-box--align-items-center');
+      expect(icon?.parentElement).toHaveClass('items-center');
     }
   });
 
