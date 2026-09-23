@@ -893,6 +893,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
+    "lastShownPrfMigrationReminderAt": "null",
     "paymentMethods": {
       "data": [],
       "error": "null",
@@ -1326,6 +1327,9 @@
       "isOpen": "boolean",
       "title": "string"
     }
+  },
+  "sendMaxValue": {
+    "maxValueMode": {}
   },
   "smartAccounts": {
     "toggleStates": {}

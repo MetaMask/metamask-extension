@@ -205,6 +205,7 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
+      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,

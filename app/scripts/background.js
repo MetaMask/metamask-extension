@@ -12,7 +12,6 @@ import { persistenceManager } from './lib/setup-initial-state-hooks';
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
-import { lightTheme } from '@metamask/design-tokens';
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -36,8 +35,6 @@ import {
   BACKGROUND_INITIALIZED_METHOD,
 } from '../../shared/constants/ui-initialization';
 import {
-  REJECT_NOTIFICATION_CLOSE,
-  REJECT_NOTIFICATION_CLOSE_SIG,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
@@ -77,7 +74,6 @@ import {
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import {
   isPhishingWarningPageUrl,
@@ -88,20 +84,17 @@ import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
-import NotificationManager, {
-  NOTIFICATION_MANAGER_EVENTS,
-} from './lib/notification-manager';
-import MetamaskController, {
-  METAMASK_CONTROLLER_EVENTS,
-} from './metamask-controller';
+import NotificationManager from './lib/notification-manager';
+import MetamaskController from './metamask-controller';
 import { createEventBuilder, trackEvent } from './controllers/analytics';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
   getPlatform,
   initInstallType,
-  isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
+import { installActiveTabTracker } from './lib/active-tab/active-tab-tracker';
+import { createBadgeManager } from './lib/badge/badge-manager';
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
@@ -148,12 +141,6 @@ import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 // as it doesn't need them).
 const lazyListener =
   globalThis.stateHooks.lazyListener ?? new ExtensionLazyListener(browser);
-
-// eslint-disable-next-line @metamask/design-tokens/color-no-hex
-const BADGE_COLOR_APPROVAL = '#0376C9';
-const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
-const BADGE_MAX_COUNT = 9;
-const maxSeenFailedNonces = 99;
 
 const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
 
@@ -238,8 +225,6 @@ let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
-let failedTxCount = 0;
-const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -287,6 +272,20 @@ function setGlobalInitializers() {
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
+
+/**
+ * Helper function to refresh appActiveTab by querying the current active tab.
+ * This is used when the sidepanel opens to ensure it has the current tab info,
+ * and when the focused window changes to keep appActiveTab in sync.
+ *
+ * @type {import('./lib/active-tab/active-tab-tracker').ActiveTabTrackerApi['refreshAppActiveTab']}
+ */
+// Initialize appActiveTab by querying the current active tab on startup
+// Tab listeners to populate appActiveTab
+const { refreshAppActiveTab } = installActiveTabTracker({
+  getController: () => controller,
+  getIsInitialized: () => isInitialized,
+});
 
 /**
  * Install/update lifecycle dependencies. `controller` is accessed via a getter
@@ -930,71 +929,6 @@ function trackAppOpened(environment) {
 }
 
 /**
- * Helper function to refresh appActiveTab by querying the current active tab.
- * This is used when the sidepanel opens to ensure it has the current tab info,
- * and when the focused window changes to keep appActiveTab in sync.
- *
- * @param {number} [windowId] - If provided, queries the active tab in this
- * specific window. Otherwise queries the active tab in the current window.
- */
-const refreshAppActiveTab = async (windowId) => {
-  await isInitialized;
-  if (!controller) {
-    return;
-  }
-
-  try {
-    const queryOptions = windowId
-      ? { active: true, windowId }
-      : { active: true, currentWindow: true };
-
-    const tabs = await browser.tabs.query(queryOptions);
-    if (!tabs || tabs.length === 0) {
-      return;
-    }
-
-    const activeTab = tabs[0];
-    const { id, title, url, favIconUrl } = activeTab;
-
-    if (!url) {
-      // Clear appActiveTab when there's no URL (e.g., new blank tab)
-      controller.appStateController.clearAppActiveTab();
-      return;
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    if (!isWebOrigin(origin)) {
-      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
-      controller.appStateController.clearAppActiveTab();
-      return;
-    }
-
-    // Update appActiveTab with current active tab info
-    controller.appStateController.setAppActiveTab({
-      id,
-      title,
-      origin,
-      protocol,
-      url,
-      host,
-      href,
-      favIconUrl,
-    });
-
-    // Update subject metadata for permission system
-    controller.subjectMetadataController.addSubjectMetadata({
-      origin,
-      name: title || host || origin,
-      iconUrl: favIconUrl || null,
-      subjectType: 'website',
-    });
-  } catch (error) {
-    console.log('Error refreshing appActiveTab:', error.message);
-  }
-};
-
-/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -1218,6 +1152,23 @@ export function setupController(
     }
   };
 
+  //
+  // User Interface setup
+  //
+  const {
+    updateBadge,
+    clearFailedTxBadge,
+    getFailedTxCount,
+    setClientLandingTab,
+  } = createBadgeManager({
+    getController: () => controller,
+    browser,
+    notificationManager,
+    triggerUi,
+    hasPersistentUiOpen,
+    isOnlyNotificationOpen,
+  });
+
   connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
     if (BLOCKED_PORTS.includes(remotePort.name)) {
       return;
@@ -1308,7 +1259,7 @@ export function setupController(
         finished(portStream, () => {
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
-          if (failedTxCount > 0) {
+          if (getFailedTxCount() > 0) {
             setClientLandingTab(AccountOverviewTabKey.Activity);
           }
           updateBadge();
@@ -1437,188 +1388,7 @@ export function setupController(
       sender,
     });
   };
-
-  //
-  // User Interface setup
-  //
-  updateBadge();
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.ENCRYPTION_PUBLIC_KEY_MANAGER_UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.signatureController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.APP_STATE_UNLOCK_CHANGE,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_MARK_AS_READ,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    'TransactionController:transactionStatusUpdated',
-    onTransactionStatusUpdated,
-  );
-
-  function setClientLandingTab(tab) {
-    try {
-      controller.appStateController.setDefaultHomeActiveTabName(tab ?? null);
-    } catch (e) {
-      console.error('Error setting landing tab:', e);
-    }
-  }
-
-  function onTransactionStatusUpdated({ transactionMeta }) {
-    const { status, txParams, chainId } = transactionMeta ?? {};
-    if (status !== 'failed' && status !== 'dropped') {
-      return;
-    }
-
-    const { from, nonce } = txParams ?? {};
-    const nonceKey =
-      from && nonce !== undefined && chainId
-        ? `${chainId}:${from.toLowerCase()}:${nonce}`
-        : undefined;
-    if (nonceKey && seenFailedNonces.has(nonceKey)) {
-      return;
-    }
-
-    // Skip if a persistent UI is open, transaction status is in the Activity tab
-    if (hasPersistentUiOpen()) {
-      return;
-    }
-
-    if (nonceKey) {
-      if (seenFailedNonces.size >= maxSeenFailedNonces) {
-        seenFailedNonces.clear();
-      }
-      seenFailedNonces.add(nonceKey);
-    }
-
-    failedTxCount += 1;
-
-    // Defer landing page until notification closes; close handler re-applies
-    if (!isOnlyNotificationOpen()) {
-      setClientLandingTab(AccountOverviewTabKey.Activity);
-    }
-
-    updateBadge();
-  }
-
-  function clearFailedTxBadge() {
-    seenFailedNonces.clear();
-    failedTxCount = 0;
-    updateBadge();
-  }
-
-  /**
-   * Formats a count for display as a badge label.
-   *
-   * @param {number} count - The count to be formatted.
-   * @param {number} maxCount - The maximum count to display before using the '+' suffix.
-   * @returns {string} The formatted badge label.
-   */
-  function getBadgeLabel(count, maxCount) {
-    return count > maxCount ? `${maxCount}+` : String(count);
-  }
-
-  /**
-   * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
-   * Failed transactions take priority and show a red count badge.
-   * Pending approvals show the standard blue count badge.
-   */
-  function updateBadge() {
-    const pendingApprovalCount = getPendingApprovalCount();
-
-    let label = '';
-    let badgeColor = BADGE_COLOR_APPROVAL;
-
-    // Defer showing the failure badge until the notification closes
-    if (failedTxCount > 0 && !isOnlyNotificationOpen()) {
-      label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
-      badgeColor = BADGE_COLOR_FAILED;
-    } else if (pendingApprovalCount > 0) {
-      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    }
-
-    try {
-      const badgeText = { text: label };
-      const badgeBackgroundColor = { color: badgeColor };
-
-      if (isManifestV3) {
-        browser.action.setBadgeText(badgeText);
-        browser.action.setBadgeBackgroundColor(badgeBackgroundColor);
-      } else {
-        browser.browserAction.setBadgeText(badgeText);
-        browser.browserAction.setBadgeBackgroundColor(badgeBackgroundColor);
-      }
-    } catch (error) {
-      console.error('Error updating browser badge:', error);
-    }
-  }
-
-  function getPendingApprovalCount() {
-    try {
-      return getAttentionRequiredApprovalCount({
-        approvalController: controller.approvalController,
-      });
-    } catch (error) {
-      console.error('Failed to get pending approval count:', error);
-      return 0;
-    }
-  }
-
-  notificationManager.on(
-    NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
-    ({ automaticallyClosed }) => {
-      if (!automaticallyClosed) {
-        rejectUnapprovedNotifications();
-      } else if (getPendingApprovalCount() > 0) {
-        triggerUi();
-      }
-
-      updateBadge();
-    },
-  );
-
-  function rejectUnapprovedNotifications() {
-    controller.signatureController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE_SIG,
-    );
-    controller.decryptMessageController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE,
-    );
-    controller.encryptionPublicKeyController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE,
-    );
-
-    controller.legacyBackgroundApiService.rejectAllPendingApprovals();
-  }
 }
-
-//
-// Etc...
-//
 
 async function getCurrentTab() {
   const queryOptions = { active: true, lastFocusedWindow: true };
@@ -1733,182 +1503,6 @@ function onNavigateToTab() {
 setupSidePanelToolbarBehavior({
   getController: () => controller,
   waitUntilInitialized: async () => await isInitialized,
-});
-
-// Initialize appActiveTab by querying the current active tab on startup
-const initializeAppActiveTab = async () => {
-  await refreshAppActiveTab();
-};
-
-initializeAppActiveTab();
-
-// Tab listeners to populate appActiveTab
-browser.tabs.onActivated.addListener(async ({ tabId }) => {
-  // Wait for controller to be initialized
-  await isInitialized;
-  if (!controller) {
-    return {};
-  }
-
-  try {
-    const tabInfo = await browser.tabs.get(tabId);
-    const { id, title, url, favIconUrl } = tabInfo;
-
-    if (!url) {
-      // Clear appActiveTab when there's no URL (e.g., new blank tab)
-      controller.appStateController.clearAppActiveTab();
-      return {};
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    if (!isWebOrigin(origin)) {
-      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
-      controller.appStateController.clearAppActiveTab();
-      return {};
-    }
-
-    // Update the app active tab state
-    controller.appStateController.setAppActiveTab({
-      id,
-      title,
-      origin,
-      protocol,
-      url,
-      host,
-      href,
-      favIconUrl,
-    });
-
-    // Update subject metadata for permission system
-    controller.subjectMetadataController.addSubjectMetadata({
-      origin,
-      name: title || host || origin,
-      iconUrl: favIconUrl || null,
-      subjectType: 'website',
-    });
-  } catch (error) {
-    // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onActivated listener:', error.message);
-  }
-
-  return {};
-});
-
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  // Wait for controller to be initialized
-  await isInitialized;
-  if (!controller) {
-    return {};
-  }
-
-  // Only update when URL changes or when page finishes loading
-  // This prevents flickering from multiple updates during page load
-  const urlChanged = changeInfo.url !== undefined;
-  const statusComplete = changeInfo.status === 'complete';
-
-  if (!urlChanged && !statusComplete) {
-    return {};
-  }
-
-  try {
-    // Use tab from parameter if available, otherwise fetch it.
-    // The tab parameter is usually provided by Chrome, but may be undefined
-    // in edge cases (e.g., when a tab is being removed), so we fall back to
-    // fetching it explicitly.
-    const tabInfo = tab || (await browser.tabs.get(tabId));
-    const { id, title, url, favIconUrl } = tabInfo;
-
-    // Only update if this is the currently active tab
-    // This prevents updating with stale data from background tabs
-    const currentAppActiveTab =
-      controller.appStateController.state.appActiveTab;
-    const isActiveTab = currentAppActiveTab?.id === id;
-
-    if (!url) {
-      // Only clear if this is the currently active tab
-      if (isActiveTab) {
-        controller.appStateController.clearAppActiveTab();
-      }
-      return {};
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    // Skip if no origin, null origin, or extension pages
-    if (
-      !origin ||
-      origin === 'null' ||
-      origin.startsWith('chrome-extension://') ||
-      origin.startsWith('moz-extension://')
-    ) {
-      // Only clear if this is the currently active tab
-      if (isActiveTab) {
-        controller.appStateController.clearAppActiveTab();
-      }
-      return {};
-    }
-
-    // Also check if this tab is actually the active tab in the current window.
-    // This is needed because stored appActiveTab might be stale if the user
-    // switched tabs quickly, or if tabs were closed/reopened. Querying the
-    // browser ensures we only update for the truly active tab.
-    let isActuallyActive = false;
-    try {
-      const activeTabs = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      isActuallyActive = activeTabs.some((activeTab) => activeTab.id === id);
-    } catch (error) {
-      // Fallback to checking against stored active tab
-      isActuallyActive = isActiveTab;
-    }
-
-    // Only update if URL changed and it's the active tab, or if status is complete and it's the active tab
-    if ((urlChanged || statusComplete) && isActuallyActive) {
-      // Update the app active tab state
-      controller.appStateController.setAppActiveTab({
-        id,
-        title,
-        origin,
-        protocol,
-        url,
-        host,
-        href,
-        favIconUrl,
-      });
-
-      // Update subject metadata for permission system
-      controller.subjectMetadataController.addSubjectMetadata({
-        origin,
-        name: title || host || origin,
-        iconUrl: favIconUrl || null,
-        subjectType: 'website',
-      });
-    }
-  } catch (error) {
-    // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onUpdated listener:', error.message);
-  }
-
-  return {};
-});
-
-// Window focus listener to keep appActiveTab in sync across browser windows.
-// Without this, switching between Chrome windows can leave appActiveTab pointing
-// at the previously focused window's tab, causing
-// the connection bar [ui/components/multichain/dapp-connection-control-bar/dapp-connection-control-bar.tsx]
-// to disappear or appear on the wrong window.
-browser.windows.onFocusChanged.addListener(async (windowId) => {
-  // WINDOW_ID_NONE means all browser windows lost focus (e.g., user switched
-  // to another application). Keep appActiveTab unchanged so it stays correct
-  // when the user returns to Chrome.
-  if (windowId === browser.windows.WINDOW_ID_NONE) {
-    return;
-  }
-
-  await refreshAppActiveTab(windowId);
 });
 
 function setupSentryGetStateGlobal(store) {

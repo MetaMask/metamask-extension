@@ -228,6 +228,7 @@
     "lastFetchedBlockNumbers": "object",
     "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
+    "lastShownPrfMigrationReminderAt": null,
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
@@ -464,6 +465,7 @@
   "moneyBalance": "object",
   "perpsTutorial": "object",
   "rewards": "object",
+  "sendMaxValue": "object",
   "smartAccounts": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }
