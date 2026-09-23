@@ -246,6 +246,7 @@ import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiRef
 import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
 import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
 import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
+import { createPopupOpener } from './popup/background';
 
 import {
   diffMap,
@@ -2604,6 +2605,10 @@ export default class MetamaskController extends EventEmitter {
       getOpenMetamaskTabsIds: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
+      ),
+      closeNotificationPopup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:closeNotificationPopup',
       ),
       markNotificationPopupAsAutomaticallyClosed:
         this.controllerMessenger.call.bind(
@@ -5488,12 +5493,28 @@ export default class MetamaskController extends EventEmitter {
               remoteFeatureFlagController: this.remoteFeatureFlagController,
               signerAddress,
             }),
-          showDepositPrompt: ({ origin: promptOrigin, signerAddress }) =>
-            showHyperliquidDepositPromptApproval({
+          showDepositPrompt: ({
+            origin: promptOrigin,
+            signerAddress,
+            tabId: sourceTabId,
+          }) => {
+            const useSidePanelAsDefault =
+              this.preferencesController.state.preferences
+                ?.useSidePanelAsDefault ?? true;
+
+            return showHyperliquidDepositPromptApproval({
               approvalController: this.approvalController,
               origin: promptOrigin,
               selectedAddress: signerAddress,
-            }),
+              tabId: sourceTabId,
+              requestOpenPopup: useSidePanelAsDefault
+                ? undefined
+                : createPopupOpener({ extension: this.extension }),
+              closeNotification: useSidePanelAsDefault
+                ? undefined
+                : () => this.notificationManager.closePopup(),
+            });
+          },
         }),
       );
     }
@@ -7028,6 +7049,9 @@ export default class MetamaskController extends EventEmitter {
       updateTabUrl: async (tabId, url) => {
         await browser.tabs.update(tabId, { url });
       },
+      closeNotificationPopup: this.notificationManager.closePopup.bind(
+        this.notificationManager,
+      ),
       markNotificationPopupAsAutomaticallyClosed:
         this.notificationManager.markAsAutomaticallyClosed.bind(
           this.notificationManager,
