@@ -101,9 +101,19 @@ describe('DropdownEditor', () => {
     renderEditor();
 
     fireEvent.click(screen.getByTestId('rpc-dropdown'));
-    fireEvent.click(
-      screen.getByRole('button', { name: messages.addRpcUrl.message }),
-    );
+    const addButton = screen.getByRole('button', {
+      name: messages.addRpcUrl.message,
+    });
+    const xpathMatch = document.evaluate(
+      `//button[contains(text(), "${messages.addRpcUrl.message}")]`,
+      document,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null,
+    ).singleNodeValue;
+
+    expect(xpathMatch).toBe(addButton);
+    fireEvent.click(addButton);
 
     expect(onItemAdd).toHaveBeenCalledTimes(1);
   });

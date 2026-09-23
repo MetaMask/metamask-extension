@@ -150,12 +150,12 @@ export const DropdownEditor = <Item,>({
       })}
 
       <ButtonBase
-        type="button"
+        asChild
         onClick={onItemAdd}
         startIconName={IconName.Add}
         className="h-auto w-full justify-start rounded-none bg-transparent px-4 py-4 text-primary-default hover:bg-hover active:scale-100 active:bg-pressed"
       >
-        {addButtonText}
+        <button type="button">{addButtonText}</button>
       </ButtonBase>
     </Box>
   );
