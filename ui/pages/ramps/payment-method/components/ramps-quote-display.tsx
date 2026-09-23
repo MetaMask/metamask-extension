@@ -14,11 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-// NOSONAR: migrating this fallback to the design-system Popover would add @floating-ui to the bundle and require LavaMoat policy changes, which is deferred to a dedicated design-system follow-up
-import {
-  Popover,
-  PopoverPosition,
-} from '../../../../components/component-library';
+import { Popover } from '../../../../components/component-library'; // NOSONAR: migrating this fallback to the design-system Popover would add @floating-ui to the bundle and require LavaMoat policy changes, which is deferred to a dedicated design-system follow-up
 
 export type RampsQuoteDisplayProps = {
   cryptoAmount: string;
@@ -106,7 +102,6 @@ export function FallbackTooltip({
     <Popover // NOSONAR: see import note; legacy Popover migration is deferred to a design-system follow-up
       id={popoverId}
       isOpen={isOpen}
-      position={PopoverPosition.Auto}
       referenceElement={referenceElement}
       hasArrow
       isPortal
