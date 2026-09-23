@@ -348,9 +348,6 @@
   "currencySymbolDefinition": {
     "message": "Il simbolo del ticker visualizzato per la valuta di questa rete."
   },
-  "currentAccountNotConnected": {
-    "message": "Il tuo account corrente non è connesso"
-  },
   "currentExtension": {
     "message": "Pagina estensione corrente"
   },
@@ -542,9 +539,6 @@
   },
   "gasLimit": {
     "message": "Gas Limite"
-  },
-  "gasLimitTooLow": {
-    "message": "Il Gas Limite deve essere almeno 21000"
   },
   "gasUsed": {
     "message": "Gas Utilizzato"
@@ -792,9 +786,6 @@
   "privateKey": {
     "message": "Chiave Privata",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Attenzione: non dire a nessuno questa chiave! Chiunque con la tua chiave privata può rubare qualsiasi moneta contenuta nel tuo account."
   },
   "privateNetwork": {
     "message": "Rete Privata"

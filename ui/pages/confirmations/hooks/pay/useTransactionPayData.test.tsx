@@ -311,14 +311,47 @@ describe('useTransactionPayData', () => {
       expect(result.current).toBe(false);
     });
 
-    it('returns false for money-account withdraw before an amount is entered', () => {
+    it('returns true for money-account withdraw until the amount is committed to Pay', () => {
       const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
         wrapper: createWrapper(
           {
-            isLoading: true,
-            isPostQuote: false,
+            isLoading: false,
+            isPostQuote: true,
             tokens: [],
           },
+          TransactionType.moneyAccountWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false for money-account withdraw once the quote matches the committed amount', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: true },
+          TransactionType.moneyAccountWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+    });
+
+    it('returns true for money-account withdraw while quotes are loading', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: true, isPostQuote: true },
+          TransactionType.moneyAccountWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(true);
+    });
+
+    it('does not wait on post-quote setup for money-account withdraw', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: false },
           TransactionType.moneyAccountWithdraw,
         ),
       });

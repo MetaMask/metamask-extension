@@ -5,13 +5,10 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonIcon,
-  ButtonIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   FontWeight,
-  IconColor,
-  IconName,
+  Skeleton,
   Text,
   TextButton,
   TextButtonSize,
@@ -52,10 +49,7 @@ import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
-import {
-  TokenFiatDisplayInfo,
-  type TokenWithFiatAmount,
-} from '../../../components/app/assets/types';
+import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
@@ -92,6 +86,9 @@ import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
+import { useAssetPerpsMarket } from '../hooks/useAssetPerpsMarket';
+import { usePerpsPositionForAsset } from '../../../hooks/perps/usePerpsPositionForAsset';
+import { PerpsViewStreamBoundary } from '../../../components/app/perps/perps-view-stream-boundary';
 import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -102,6 +99,8 @@ import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
+import { AssetPageHeader } from './asset-page-header';
+import { AssetPerpsPositionSection } from './asset-perps-position-section';
 import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -116,6 +115,28 @@ import {
   AssetPageSecurityTrustProvider,
   AssetPageSecurityTrustSection,
 } from './security-trust';
+
+/**
+ * Activates live Perps stream emission while the asset page is resolving or
+ * showing Perps UI, so position lookup can run in parallel with the market
+ * match instead of waiting until Long / Short mount.
+ *
+ * @param props - Wrapper props
+ * @param props.enabled - Whether a Perps market is loading or already matched
+ * @param props.children - Action row and optional position section
+ */
+const MaybePerpsViewStreamBoundary = ({
+  enabled,
+  children,
+}: {
+  enabled: boolean;
+  children: ReactNode;
+}) => {
+  if (!enabled) {
+    return <>{children}</>;
+  }
+  return <PerpsViewStreamBoundary>{children}</PerpsViewStreamBoundary>;
+};
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -358,28 +379,15 @@ const AssetPage = ({
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
   const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
-  const assetDisplayName = useMemo(
-    () =>
-      name && symbol && name !== symbol
-        ? `${name} (${symbol})`
-        : (name ?? symbol),
-    [name, symbol],
-  );
-  const assetNameElement = (
+  const assetHeaderBadges = (
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={2}
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextAlternative}
-        data-testid="asset-name"
-      >
-        {assetDisplayName}
-      </Text>
       <AssetPageSecurityTrustHeaderBadge />
+      {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+      {isAssetInactive && <AssetInactiveBadge />}
     </Box>
   );
 
@@ -389,6 +397,18 @@ const AssetPage = ({
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
+  // Perps-eligible assets show Long / Short / Send / More instead of the
+  // regular action buttons (mobile Token Details parity).
+  const { market: perpsMarket, isLoading: isPerpsMarketLoading } =
+    useAssetPerpsMarket(symbol);
+  const { isLoading: isPerpsPositionLoading } = usePerpsPositionForAsset(
+    perpsMarket?.name ?? '',
+  );
+  // Hold the row until market *and* position lookups settle (no Buy/Swap →
+  // Long/Short flash). Stream-init failure is a settled "no position" state,
+  // so Send / Buy / Swap are not gated on an unbounded wait.
+  const isPerpsActionsLoading =
+    isPerpsMarketLoading || Boolean(perpsMarket && isPerpsPositionLoading);
   const isMusdAssetPage = useMemo(
     () =>
       type === AssetType.token &&
@@ -420,85 +440,90 @@ const AssetPage = ({
         className="asset__content"
         data-testid="parent-selector-asset-details"
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          paddingBottom={3}
-          paddingLeft={2}
-          paddingRight={4}
-          className="pt-4 sticky top-0 z-10 bg-background-default"
-        >
-          <Box flexDirection={BoxFlexDirection.Row}>
-            <ButtonIcon
-              color={IconColor.IconDefault}
-              size={ButtonIconSize.Md}
-              ariaLabel={t('back') as string}
-              iconName={IconName.ArrowLeft}
-              onClick={handleBack}
-              className="asset-page__back-button"
-            />
-          </Box>
-          {optionsButton}
-        </Box>
+        <AssetPageHeader
+          symbol={symbol}
+          image={image}
+          networkImage={tokenChainImage}
+          networkName={networkName}
+          contractAddress={contractAddress || undefined}
+          titleEndAccessory={assetHeaderBadges}
+          endAccessory={optionsButton}
+          onBack={handleBack}
+        />
         {isAssetInactive && (
           <AssetActivateCard
             asset={tokenAsset as Asset}
             chainName={networkName}
           />
         )}
-        <Box paddingLeft={4}>
-          {isStockToken || isAssetInactive ? (
-            <Box alignItems={BoxAlignItems.Center} gap={2}>
-              {assetNameElement}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
-                {isAssetInactive && <AssetInactiveBadge />}
-              </Box>
-            </Box>
-          ) : (
-            assetNameElement
-          )}
-        </Box>
         <AssetPageSecurityTrustBanner />
         <AssetChart
           chainId={chainId}
           address={address}
           currentPrice={currentPrice}
           currency={currency}
-          asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
         />
-        <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-          {isUpdatedAssetNative ? (
-            <CoinButtons
-              {...{
-                account: selectedAccount,
-                trackingLocation: 'asset-page',
-                isSigningEnabled,
-                isSwapsChain,
-                isBridgeChain,
-                chainId,
-                disableSendForNonEvm: true,
-                buyAssetId: caipAssetId,
-              }}
+        <MaybePerpsViewStreamBoundary
+          enabled={Boolean(isPerpsMarketLoading || perpsMarket)}
+        >
+          <Box marginTop={4} paddingLeft={4} paddingRight={4}>
+            {isPerpsActionsLoading ? (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                gap={3}
+                className="w-full"
+                data-testid="asset-perps-actions-skeleton"
+              >
+                {['long', 'short', 'send', 'more'].map((slot) => (
+                  <Skeleton key={slot} className="h-[52px] flex-1 rounded-lg" />
+                ))}
+              </Box>
+            ) : (
+              <>
+                {isUpdatedAssetNative ? (
+                  <CoinButtons
+                    {...{
+                      account: selectedAccount,
+                      trackingLocation: 'asset-page',
+                      isSigningEnabled,
+                      isSwapsChain,
+                      isBridgeChain,
+                      chainId,
+                      hasBalance: Boolean(
+                        updatedAsset.balance?.value &&
+                        updatedAsset.balance.value !== '0',
+                      ),
+                      disableSendForNonEvm: true,
+                      buyAssetId: caipAssetId,
+                      perpsMarketSymbol: perpsMarket?.name,
+                    }}
+                  />
+                ) : null}
+                {tokenAsset ? (
+                  <TokenButtons
+                    token={tokenAsset}
+                    disableSendForNonEvm
+                    isMarketClosed={isMarketClosed}
+                    perpsMarketSymbol={perpsMarket?.name}
+                  />
+                ) : null}
+                {isMarketClosed && tokenAsset ? (
+                  <Box marginTop={4}>
+                    <MarketClosedActionButton
+                      onClick={handleOpenMarketClosedModal}
+                    />
+                  </Box>
+                ) : null}
+              </>
+            )}
+          </Box>
+          {perpsMarket?.name ? (
+            <AssetPerpsPositionSection
+              marketSymbol={perpsMarket.name}
+              assetName={name ?? symbol}
             />
           ) : null}
-          {tokenAsset ? (
-            <TokenButtons
-              token={tokenAsset}
-              disableSendForNonEvm
-              isMarketClosed={isMarketClosed}
-            />
-          ) : null}
-          {isMarketClosed && tokenAsset ? (
-            <Box marginTop={4}>
-              <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
-            </Box>
-          ) : null}
-        </Box>
+        </MaybePerpsViewStreamBoundary>
         <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
           {showTronResources && (
             <Box>

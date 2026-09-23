@@ -113,7 +113,9 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   isDepositPrefillEnabled: false,
   isDepositPrefillLoading: false,
   isDepositPrefilled: false,
+  isDepositPrefillSkipped: false,
   isInputChanged: false,
+  isQuoteDerivedAmountLoading: false,
   updatePendingAmount: jest.fn(),
   updatePendingAmountPercentage: jest.fn(),
 };
@@ -130,11 +132,14 @@ const MOCK_AVAILABLE_TOKEN = {
 };
 
 const DEFAULT_ALERTS_HOOK_RETURN: {
+  alertContent?: React.ReactNode;
   alertMessage?: string;
+  hasAlert: boolean;
   hideResults: boolean;
   disableUpdate: boolean;
 } = {
   alertMessage: undefined,
+  hasAlert: false,
   hideResults: false,
   disableUpdate: false,
 };
@@ -243,13 +248,21 @@ function render(
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayTotals)
     .mockReturnValue(totals);
+  const isMoneyAccountWithdraw = Boolean(
+    transactionMeta.nestedTransactions?.some(
+      (nested) => nested.type === TransactionType.moneyAccountWithdraw,
+    ),
+  );
+  let isQuotePending = isQuotesLoading;
+  if (transactionMeta.type === TransactionType.perpsWithdraw) {
+    isQuotePending =
+      hasPositiveRequiredAmount && (isQuotesLoading || !isPostQuote);
+  } else if (isMoneyAccountWithdraw) {
+    isQuotePending = isQuotesLoading || !primaryRequiredToken;
+  }
   jest
     .mocked(useTransactionPayDataModule.useIsTransactionPayQuotePending)
-    .mockReturnValue(
-      transactionMeta.type === TransactionType.perpsWithdraw
-        ? hasPositiveRequiredAmount && (isQuotesLoading || !isPostQuote)
-        : isQuotesLoading,
-    );
+    .mockReturnValue(isQuotePending);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayHasExecutableQuote)
     .mockReturnValue(hasQuotes);
@@ -334,6 +347,25 @@ describe('CustomAmountInfo', () => {
     expect(queryByTestId('custom-amount')).not.toBeInTheDocument();
   });
 
+  it('shows $0 instead of the amount skeleton when deposit prefill is skipped', () => {
+    // A money-account deposit with no funded pay token can never commit a
+    // prefill, so the field must settle at $0 with a usable keypad rather than
+    // sitting behind the skeleton forever.
+    const { getByTestId, queryByTestId } = render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '0',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: false,
+        isDepositPrefilled: false,
+        isDepositPrefillSkipped: true,
+      },
+    });
+
+    expect(getByTestId('custom-amount')).toHaveTextContent('0');
+    expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
+  });
+
   it('does not show amount skeleton for deposit prefill loading when account has no funds', () => {
     const { getByTestId, queryByTestId } = render({
       accountNoFundsAlert: [{ key: 'accountNoFunds' }],
@@ -350,6 +382,41 @@ describe('CustomAmountInfo', () => {
     expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
   });
 
+  it('withholds the stale amount from alerts while deposit prefill is loading', () => {
+    // `amountFiat` still holds the previously selected token's amount while
+    // prefill recomputes. Passing it on would compare it against the new
+    // token's balance and momentarily show "Insufficient funds".
+    render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '100',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: true,
+        isDepositPrefilled: false,
+      },
+    });
+
+    expect(
+      useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+    ).toHaveBeenCalledWith({ pendingFiatAmount: undefined });
+  });
+
+  it('passes the amount to alerts once the field has settled', () => {
+    render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '100',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: false,
+        isDepositPrefilled: true,
+      },
+    });
+
+    expect(
+      useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+    ).toHaveBeenCalledWith({ pendingFiatAmount: '100' });
+  });
+
   it('keeps the amount visible when deposit prefill is enabled but not loading', () => {
     const { getByTestId, queryByTestId } = render({
       customAmountHookReturn: {
@@ -363,6 +430,18 @@ describe('CustomAmountInfo', () => {
 
     expect(getByTestId('custom-amount')).toHaveTextContent('123');
     expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
+  });
+
+  it('shows amount skeleton while the quote the amount comes from is loading', () => {
+    const { getByTestId, queryByTestId } = render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        isQuoteDerivedAmountLoading: true,
+      },
+    });
+
+    expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
+    expect(queryByTestId('custom-amount')).not.toBeInTheDocument();
   });
 
   it('renders amount details under the amount input', () => {
@@ -866,6 +945,29 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
     });
 
+    it('renders the money-account withdraw receive row as a skeleton until the typed amount reaches Pay', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        primaryRequiredToken: undefined,
+        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('receive-row-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the money-account withdraw receive row once the quoted amount is committed', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row-skeleton')).not.toBeInTheDocument();
+    });
+
     it('renders the total row for a withdraw when post-quote is disabled', () => {
       const { getByTestId, queryByTestId } = render({
         hasQuotes: true,
@@ -907,6 +1009,7 @@ describe('CustomAmountInfo', () => {
     const { queryByText } = render({
       alertsHookReturn: {
         alertMessage: undefined,
+        hasAlert: true,
         hideResults: true,
         disableUpdate: false,
       },
@@ -921,6 +1024,7 @@ describe('CustomAmountInfo', () => {
     const { getByText } = render({
       alertsHookReturn: {
         alertMessage: messages.alertNoPayTokenQuotesMessage.message,
+        hasAlert: true,
         hideResults: true,
         disableUpdate: false,
       },
@@ -929,6 +1033,23 @@ describe('CustomAmountInfo', () => {
     expect(
       getByText(messages.alertNoPayTokenQuotesMessage.message),
     ).toBeInTheDocument();
+  });
+
+  it('renders alert content instead of body text when provided', () => {
+    const { getByTestId, queryByText } = render({
+      alertsHookReturn: {
+        alertContent: <div data-testid="alert-content" />,
+        alertMessage: messages.alertNoPayTokenQuotesMessage.message,
+        hasAlert: true,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(getByTestId('alert-content')).toBeInTheDocument();
+    expect(
+      queryByText(messages.alertNoPayTokenQuotesMessage.message),
+    ).not.toBeInTheDocument();
   });
 
   describe('overrideCenterContent', () => {

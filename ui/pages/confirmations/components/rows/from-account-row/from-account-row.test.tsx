@@ -2,14 +2,17 @@ import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
+import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { FromAccountRow } from './from-account-row';
 
 jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/pay/useIsPayHardwareBlocked');
 jest.mock('../../../../../hooks/useDisplayName');
 jest.mock(
   '../../../../../store/controller-actions/transaction-pay-controller',
@@ -26,13 +29,21 @@ jest.mock('../../account-select-modal', () => ({
     selectedAddress,
     onSelect,
     onClose,
+    title,
+    excludeHardwareAccounts,
   }: {
     selectedAddress: string;
     onSelect: (address: string) => void;
     onClose: () => void;
+    title?: string;
+    excludeHardwareAccounts?: boolean;
   }) => (
     <div data-testid="account-select-modal">
       <span data-testid="selected-address">{selectedAddress}</span>
+      <span data-testid="modal-title">{title}</span>
+      <span data-testid="exclude-hardware-accounts">
+        {String(excludeHardwareAccounts)}
+      </span>
       <button
         data-testid="select-other"
         onClick={() => onSelect('0x1234567890abcdef1234567890abcdef12345678')}
@@ -112,9 +123,12 @@ describe('FromAccountRow', () => {
   const replaceAccountInNestedTransactionsMock = jest.mocked(
     replaceAccountInNestedTransactions,
   );
+  const useIsPayHardwareBlockedMock = jest.mocked(useIsPayHardwareBlocked);
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useIsPayHardwareBlockedMock.mockReturnValue(false);
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {
@@ -142,6 +156,108 @@ describe('FromAccountRow', () => {
     expect(screen.getByTestId('from-account-name')).toHaveTextContent(
       'Account 1',
     );
+  });
+
+  it('renders the "To" label for a money account withdraw, whose selected account receives the funds', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.moneyAccountWithdraw,
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    expect(screen.getByText('To Wallet 1')).toBeInTheDocument();
+    expect(screen.queryByText('From Wallet 1')).not.toBeInTheDocument();
+  });
+
+  it('renders the "To" label for a money account withdraw nested in a batch', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.moneyAccountWithdraw, data: '0xabc' },
+        ],
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    expect(screen.getByText('To Wallet 1')).toBeInTheDocument();
+  });
+
+  it('renders the "From" label for a money account deposit, which the selected account funds', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.moneyAccountDeposit,
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    expect(screen.getByText('From Wallet 1')).toBeInTheDocument();
+    expect(screen.queryByText('To Wallet 1')).not.toBeInTheDocument();
+  });
+
+  it('falls back to the bare direction label when there is no wallet subtitle', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: 'Account 1',
+      subtitle: undefined,
+    } as never);
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.moneyAccountWithdraw,
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    expect(screen.getByText('To')).toBeInTheDocument();
+  });
+
+  it('titles the account modal "Select recipient" for a money account withdraw', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.moneyAccountWithdraw,
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('modal-title')).toHaveTextContent(
+      'Select recipient',
+    );
+  });
+
+  it('leaves the account modal title at its default for funding flows', () => {
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('modal-title')).toBeEmptyDOMElement();
   });
 
   it('does not render a divider by default', () => {
@@ -269,6 +385,30 @@ describe('FromAccountRow', () => {
 
     expect(replaceAccountInNestedTransactionsMock).not.toHaveBeenCalled();
     expect(setAccountOverrideMock).not.toHaveBeenCalled();
+  });
+
+  it('excludes hardware accounts from the modal when the flow blocks them', () => {
+    useIsPayHardwareBlockedMock.mockReturnValue(true);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'true',
+    );
+  });
+
+  it('allows hardware accounts in the modal when the flow permits them', () => {
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'false',
+    );
   });
 
   it('renders nothing when there is no from address', () => {

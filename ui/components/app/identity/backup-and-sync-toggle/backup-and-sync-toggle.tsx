@@ -24,7 +24,7 @@ import {
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
 import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { showModal, toggleExternalServices } from '../../../../store/actions';
+import { enableBasicFunctionality, showModal } from '../../../../store/actions';
 import ToggleButton from '../../../ui/toggle-button';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import {
@@ -155,6 +155,10 @@ export const BackupAndSyncToggle = ({
             BACKUPANDSYNC_FEATURES.contactSyncing,
             false,
           );
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.rampsSyncing,
+            false,
+          );
         } catch (err) {
           console.error('Failed to disable backup and sync features:', err);
         }
@@ -214,6 +218,10 @@ export const BackupAndSyncToggle = ({
         BACKUPANDSYNC_FEATURES.contactSyncing,
         false,
       );
+      await setIsBackupAndSyncFeatureEnabled(
+        BACKUPANDSYNC_FEATURES.rampsSyncing,
+        false,
+      );
       return;
     }
 
@@ -224,7 +232,7 @@ export const BackupAndSyncToggle = ({
         showModal({
           name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
           enableBackupAndSync: async () => {
-            await dispatch(toggleExternalServices(true));
+            await dispatch(enableBasicFunctionality());
             await setIsBackupAndSyncFeatureEnabled(
               BACKUPANDSYNC_FEATURES.main,
               true,
@@ -235,6 +243,10 @@ export const BackupAndSyncToggle = ({
             );
             await setIsBackupAndSyncFeatureEnabled(
               BACKUPANDSYNC_FEATURES.contactSyncing,
+              true,
+            );
+            await setIsBackupAndSyncFeatureEnabled(
+              BACKUPANDSYNC_FEATURES.rampsSyncing,
               true,
             );
           },
@@ -250,6 +262,10 @@ export const BackupAndSyncToggle = ({
     );
     await setIsBackupAndSyncFeatureEnabled(
       BACKUPANDSYNC_FEATURES.contactSyncing,
+      true,
+    );
+    await setIsBackupAndSyncFeatureEnabled(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
       true,
     );
   };

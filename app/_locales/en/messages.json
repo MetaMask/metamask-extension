@@ -515,40 +515,44 @@
     "message": "Closed short - market"
   },
   "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Deposit failed"
   },
   "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Depositing"
+    "message": "Depositing $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Deposited"
+    "message": "Deposited $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Send failed"
+    "message": "Receive failed"
   },
   "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Sending"
+    "message": "Receiving $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Sent"
+    "message": "Received $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Buy failed"
@@ -1538,6 +1542,9 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Add less or use a different payment method."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "Insufficient funds"
   },
@@ -1569,8 +1576,8 @@
   "alertMessageGasFeeLow": {
     "message": "When choosing a low fee, expect slower transactions and longer wait times. For faster transactions, choose Market or Aggressive fee options."
   },
-  "alertMessageGasTooLow": {
-    "message": "To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "To continue with this transaction, you’ll need to increase the gas limit to 12000 or higher."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "You do not have enough $1 in your account to pay for network fees."
@@ -1933,6 +1940,9 @@
   },
   "backupAndSyncFeatureContacts": {
     "message": "Contacts"
+  },
+  "backupAndSyncFeatureRamps": {
+    "message": "Buy & sell orders"
   },
   "backupAndSyncManageWhatYouSync": {
     "message": "Manage what you sync"
@@ -3159,9 +3169,6 @@
   "copyAddressShort": {
     "message": "Copy address"
   },
-  "copyPrivateKey": {
-    "message": "Copy private key"
-  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -3217,8 +3224,20 @@
     "message": "If none of the above works, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Recover accounts"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "Reinstall MetaMask"
+  },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Reset MetaMask State"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "Recovering accounts will delete your current settings and preferences."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "Resetting MetaMask state will delete your current accounts, settings and preferences."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Still having issues?"
@@ -3241,9 +3260,6 @@
   },
   "current": {
     "message": "Current"
-  },
-  "currentAccountNotConnected": {
-    "message": "Your current account is not connected"
   },
   "currentEstimatedBaseFee": {
     "message": "Current: $1 GWEI"
@@ -4267,8 +4283,8 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitTooLow": {
-    "message": "Gas limit must be at least 21000"
+  "gasLimitBelowMinimum": {
+    "message": "Gas limit must be at least 12000"
   },
   "gasPrice": {
     "message": "Gas price"
@@ -4795,9 +4811,21 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Deposit any token. We'll swap it and send it to your Hyperliquid account automatically—no MetaMask fee.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "No thanks, deposit manually",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "Fund Hyperliquid with MetaMask",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Funds are ready to trade on Hyperliquid and MetaMask Perps.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Apply a MetaMask referral code to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
@@ -5088,9 +5116,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "For your safety, selecting this text is not available right now."
-  },
   "learnHow": {
     "message": "Learn how"
   },
@@ -5298,7 +5323,7 @@
     "message": "Log in"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "Your session has expired. Please log in again to continue."
+    "message": "Log in again to continue."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "Session has expired"
@@ -5327,8 +5352,8 @@
     "message": "low"
   },
   "lowValueAssets": {
-    "message": "Low value tokens ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "message": "Low balance tokens ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -5347,6 +5372,10 @@
   },
   "manage": {
     "message": "Manage"
+  },
+  "manageAccounts": {
+    "message": "Manage accounts",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Manage connected accounts"
@@ -5511,12 +5540,13 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Earn $1% APY",
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY info"
+  "moneyAccountApyPitchEarn": {
+    "message": "Earn $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed."
@@ -5528,15 +5558,15 @@
   "moneyAccountProjectedBalance": {
     "message": "Projected 1-year balance:"
   },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Projected 1-year balance"
-  },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed.",
     "description": "$1 is the APY percentage used in the one-year projection"
   },
   "moneyActivity": {
     "message": "Activity"
+  },
+  "moneyActivityCard": {
+    "message": "Card"
   },
   "moneyActivityConversionFailed": {
     "message": "Conversion failed"
@@ -5556,8 +5586,23 @@
   "moneyActivityDepositing": {
     "message": "Depositing"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "Paid to"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "Received from"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "Transaction ID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "You earned"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "You spent"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "You were refunded"
   },
   "moneyActivityEmpty": {
     "message": "No activity yet"
@@ -5565,17 +5610,26 @@
   "moneyActivityFilterAll": {
     "message": "All"
   },
+  "moneyActivityFilterCard": {
+    "message": "Card"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Deposits"
   },
   "moneyActivityFilterSends": {
     "message": "Sends"
   },
+  "moneyActivityLoadError": {
+    "message": "Couldn't load your activity"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD back"
+  },
   "moneyActivityPending": {
     "message": "Pending"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Your Money activity will appear here."
+  "moneyActivityPurchase": {
+    "message": "Purchase"
   },
   "moneyActivityReceived": {
     "message": "Received"
@@ -5586,6 +5640,12 @@
   "moneyActivityReceiving": {
     "message": "Receiving"
   },
+  "moneyActivityRefund": {
+    "message": "Refund"
+  },
+  "moneyActivityRetry": {
+    "message": "Retry"
+  },
   "moneyActivitySendFailed": {
     "message": "Send failed"
   },
@@ -5594,6 +5654,10 @@
   },
   "moneyActivitySent": {
     "message": "Sent"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "Conversion fees include network costs and may include provider fees.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
   },
   "moneyActivityViewAll": {
     "message": "View all"
@@ -5613,17 +5677,21 @@
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },
-  "moneyBalanceTitle": {
-    "message": "Money balance"
+  "moneyBalanceRetry": {
+    "message": "Retry"
   },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "We're temporarily unable to display your balance. Your funds are safe—please try again shortly."
   },
   "moneyBenefitAutoEarn": {
     "message": "Auto-earn yield on your Money balance"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Auto-earn up to ~$1 APY"
+    "message": "Auto-earn up to $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"
@@ -5636,6 +5704,12 @@
   },
   "moneyBenefits": {
     "message": "Benefits"
+  },
+  "moneyContactSupport": {
+    "message": "Contact support"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "Convert your crypto"
   },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
@@ -5658,6 +5732,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "No fee"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Projection assumes $1% Annual Percentage Yield (APY) remains unchanged for one year. APY is variable and is not guaranteed. No guarantee of return.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Earn on your balance"
   },
@@ -5673,15 +5751,99 @@
   "moneyFundDescriptionWithApy": {
     "message": "Fund your Money account and watch your balance grow with up to $1 APY."
   },
+  "moneyHomeApyTooltip": {
+    "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed. Funds go into a DeFi vault, administered by Veda with risk oversight by Steakhouse Financial, that generates returns across established lending markets."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Your Money account earns up to $1 automatically.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money account is powered by Monad."
+  },
   "moneyHowItWorks": {
     "message": "How it works"
   },
   "moneyHowItWorksDescription": {
     "message": "Add mUSD and your dollar-backed balance is ready to spend, trade, or send anytime."
   },
+  "moneyHowItWorksDescription1": {
+    "message": "Add mUSD into your Money account and earn up to $1 APY (variable) automatically. Funds go into a DeFi vault, administered by Veda with risk monitoring by Steakhouse Financial. The rate is generated by third-party DeFi platforms that deploy funds in blockchain protocols. No staking, no claiming, no lock-ups.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksDescription2": {
+    "message": "Your Money balance is your spending balance. Link your MetaMask Card to spend at 150M+ merchants worldwide. Your money keeps earning until the moment you use it."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Money account is powered by Monad."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Add mUSD and earn up to $1. Your balance is dollar-backed and ready to spend, trade, or send anytime.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money account is not a bank account, savings account, or insured deposit product. APY is variable and not guaranteed. Money account involves smart contract, protocol, liquidity, and other risks, and you may lose some or all of your funds. Subject to regional restrictions. Terms apply."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Risks and Disclosures"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Up to $1 APY. The rate is variable and fluctuates with market conditions. The current rate is always visible inside the Money account.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Does the APY rate change?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "You! MetaMask is a self-custodial wallet, meaning only the account holder's Private Keys control it. MetaMask can't access, freeze, or move your funds. This is what distinguishes us from traditional bank accounts and custodial crypto platforms—there's no third party holding your funds."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Who controls my money?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "There's no fee to open a Money account and no fee to deposit stablecoins. You will get charged fees when depositing non-stablecoin tokens. There are also fees associated with MetaMask Card transactions, ATM withdrawals, and local currency offramp costs. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "See the full Card fee breakdown here."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Are there any fees?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Yes. You can trade, send, spend, or withdraw your full balance at any time with no notice periods, no penalties, and no withdrawal fees from MetaMask. If liquidity is tight, there may be temporary delays."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Is my money locked? Can I withdraw anytime?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "An account that earns up to $1 variable APY. You deposit funds, which are held in the account as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. You can use or withdraw your funds anytime with no penalties. You can spend your funds via MetaMask Card at 150+ million Mastercard merchants worldwide.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "What is the Money account?"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD is MetaMask's 1:1 dollar-backed stablecoin. Your Money balance is held as mUSD and stays available to spend, send, or trade anytime.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "What is mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Your Money balance is your spending balance — it keeps earning until the moment you use it. Money account is not a bank account, savings account, or insured deposit product.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Is this a savings account or a spending account?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "FAQs"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "When you deposit funds, they're put in established DeFi protocols, like Aave and Morpho, where they earn returns from real economic activity. These returns are then delivered to you in the form of APY.\n\nA third-party service provider called Steakhouse Financial monitors how funds are allocated in the protocols. Veda, a third-party infrastructure provider, deploys and maintains the vault smart contracts that hold your funds.\n\nEarnings are not interest paid by MetaMask or by the issuer of mUSD. They are the onchain returns generated by positions in third-party DeFi protocols."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Where does the yield come from?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "How your money grows"
@@ -5692,8 +5854,14 @@
   "moneyLifetime": {
     "message": "Lifetime"
   },
+  "moneyLifetimeTooltip": {
+    "message": "The total you've earned on your Money account balance over time."
+  },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "The total you've earned on your Money account balance in the last 30 days."
   },
   "moneyMoreInformation": {
     "message": "More information"
@@ -5706,6 +5874,93 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Unable to add funds. Try again."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Unable to convert. Try again."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Deposit failed"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Failed to add funds"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Conversion failed"
+  },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Card orders may take a few minutes."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Adding funds"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Depositing"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Converting crypto"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 added to Money account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Added to Money account."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Funds added"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Deposit complete"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Conversion complete"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "This may take a few minutes."
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Unable to transfer funds. Try again."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Transfer failed"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "your account"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Transfer in progress"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 added to $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Added to $1.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Transfer complete"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Another account"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Coming soon"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Perps account"
+  },
+  "moneyTransferSendExternal": {
+    "message": "External address"
+  },
+  "moneyTransferTitle": {
+    "message": "Send funds to"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Bank account"
   },
   "month": {
     "message": "month"
@@ -6045,9 +6300,6 @@
   "networkFeeExplanationTitle": {
     "message": "Network fee"
   },
-  "networkMenu": {
-    "message": "Network menu"
-  },
   "networkMenuHeading": {
     "message": "Select a network"
   },
@@ -6351,18 +6603,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal ready"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "You can now withdraw your unstaked $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Your request to unstake $1 has been sent"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Received NFT from"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Sent NFT to"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6371,18 +6611,6 @@
   },
   "notificationItemReceived": {
     "message": "Received"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Received from"
-  },
-  "notificationItemSent": {
-    "message": "Sent"
-  },
-  "notificationItemSentTo": {
-    "message": "Sent to"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake completed"
   },
   "notificationItemStaked": {
     "message": "Staked"
@@ -6396,17 +6624,11 @@
   "notificationItemSwapped": {
     "message": "Swapped"
   },
-  "notificationItemSwappedFor": {
-    "message": "for"
-  },
   "notificationItemTo": {
     "message": "To"
   },
   "notificationItemTransactionId": {
     "message": "Transaction ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "UnStaking complete"
   },
   "notificationItemUnStaked": {
     "message": "Unstaked"
@@ -6910,7 +7132,7 @@
     "message": "Show password"
   },
   "passwordsDontMatch": {
-    "message": "Passwords don't match"
+    "message": "Passwords don't match."
   },
   "paste": {
     "message": "Paste"
@@ -7555,6 +7777,10 @@
   "perpsFilterAll": {
     "message": "All"
   },
+  "perpsFilterClear": {
+    "message": "$1, clear filter",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Commodities"
   },
@@ -7562,13 +7788,24 @@
     "message": "Crypto"
   },
   "perpsFilterEtf": {
-    "message": "ETF"
+    "message": "ETFs"
   },
   "perpsFilterForex": {
     "message": "Forex"
   },
   "perpsFilterIndex": {
-    "message": "Index"
+    "message": "Indices"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
+  "perpsFilterMore": {
+    "message": "More",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "More, $1 selected",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "New"
@@ -7665,6 +7902,18 @@
   },
   "perpsMarket": {
     "message": "Market"
+  },
+  "perpsMarketCategories": {
+    "message": "Market categories",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 markets",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 market",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Market not found"
@@ -7852,6 +8101,10 @@
   "perpsPositions": {
     "message": "Positions"
   },
+  "perpsProducts": {
+    "message": "Products",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "Too many requests. Please wait and try again."
   },
@@ -7966,14 +8219,8 @@
   "perpsSortByPriceChange": {
     "message": "Price change"
   },
-  "perpsSortByRank": {
-    "message": "Rank"
-  },
-  "perpsSortBySection": {
-    "message": "Sort by"
-  },
   "perpsSortByTitle": {
-    "message": "Filter"
+    "message": "Sort by"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -8157,6 +8404,10 @@
   "perpsToastSubmitInProgress": {
     "message": "Submitting your trade",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeEntryFailed": {
+    "message": "Couldn't open trade",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
   },
   "perpsToastTradeSuccess": {
     "message": "Position closed",
@@ -8427,10 +8678,6 @@
     "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Private key for $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "The private key is hidden",
     "description": "Explains that the private key input is hidden"
@@ -8442,9 +8689,6 @@
   "privateKeyShown": {
     "message": "This private key is being shown",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateKeys": {
     "message": "Private keys",
@@ -8598,8 +8842,12 @@
   "rampsChangeProvider": {
     "message": "Change provider."
   },
+  "rampsChangeProviders": {
+    "message": "change providers",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
-    "message": "Choose provider"
+    "message": "Choose providers"
   },
   "rampsCompleteBuyTitle": {
     "message": "Complete buy",
@@ -8770,7 +9018,7 @@
     "message": "Last used"
   },
   "rampsQuoteFetchError": {
-    "message": "Failed to fetch quote."
+    "message": "Error getting quotes. Enter a lower amount or"
   },
   "rampsQuoteUnavailable": {
     "message": "Quote unavailable."
@@ -8786,6 +9034,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Show all tokens"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "This token isn't available in your region.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token unavailable",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Buying crypto isn’t supported in your region yet."
@@ -8867,6 +9123,9 @@
   },
   "rejected": {
     "message": "Rejected"
+  },
+  "relayerFee": {
+    "message": "Relayer fee"
   },
   "remove": {
     "message": "Remove"
@@ -9210,6 +9469,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "This RPC provider is limiting requests. Try again later or use a different RPC URL."
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -9808,9 +10070,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "New address"
-  },
-  "sendBugReport": {
-    "message": "Send us a bug report."
   },
   "sendBundleHwGasPayment": {
     "message": "Paying network fee with $1",
@@ -10533,12 +10792,6 @@
   "showPermissions": {
     "message": "Show permissions"
   },
-  "showPrivateKey": {
-    "message": "Show private key"
-  },
-  "showSRP": {
-    "message": "Show Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -11145,38 +11398,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Your vault cannot be automatically recovered."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Your vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Internal error: database cannot be accessed"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Reset MetaMask State"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Resetting database…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restore accounts"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restoring database…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "these instructions",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "How to recover your Secret Recovery Phrase"
@@ -11502,6 +11736,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Auto"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Slippage tolerance was capped at 100%."
   },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
@@ -11982,9 +12219,6 @@
     "message": "The connection with $1 is unreliable. Update network connectivity details before continuing or try again later.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
-  },
   "unexpectedError": {
     "message": "An unexpected error occurred.",
     "description": "This is a fallback error message used for unexpected errors."
@@ -12026,7 +12260,7 @@
     "message": "Unlock"
   },
   "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Please try again."
+    "message": "Incorrect password. Try again."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
@@ -12299,7 +12533,7 @@
     "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "wrongPassword": {
-    "message": "Wrong password",
+    "message": "Incorrect password. Try again.",
     "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
