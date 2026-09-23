@@ -7420,6 +7420,23 @@ export function putNotificationPreferences(
 }
 
 /**
+ * Writes marketing consent to Authenticated User Storage.
+ *
+ * @param marketingConsent - Whether the user has opted in to marketing.
+ * @returns A thunk action that writes marketing consent.
+ */
+export function putMarketingConsent(
+  marketingConsent: boolean,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    // TODO: Call AuthenticatedUserStorageService:putMarketingConsent once AUS
+    // supports PUT /marketing-consent. Keep this asynchronous to match the
+    // notification-preferences write flow.
+    await Promise.resolve(marketingConsent);
+  };
+}
+
+/**
  * Enables MetaMask notifications.
  * This function dispatches a request to the background script to enable MetaMask notifications.
  * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
