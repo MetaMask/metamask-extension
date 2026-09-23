@@ -3152,9 +3152,6 @@
   "current": {
     "message": "Kasalukuyan"
   },
-  "currentAccountNotConnected": {
-    "message": "Hindi nakakonekta ang kasalukuyan mong account"
-  },
   "currentEstimatedBaseFee": {
     "message": "Kasalukuyan: $1 GWEI"
   },

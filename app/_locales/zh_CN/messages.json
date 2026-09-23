@@ -3155,9 +3155,6 @@
   "current": {
     "message": "当前"
   },
-  "currentAccountNotConnected": {
-    "message": "您的当前账户没有连接"
-  },
   "currentEstimatedBaseFee": {
     "message": "当前：$1 GWEI"
   },

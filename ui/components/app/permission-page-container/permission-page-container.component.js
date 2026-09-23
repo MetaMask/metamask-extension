@@ -56,8 +56,9 @@ function PermissionPageContainerBase({
 }) {
   const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
     useState(false);
+  const [hasHandledSnapsPrivacyWarning, setHasHandledSnapsPrivacyWarning] =
+    useState(false);
   const hasTrackedTabOpenedRef = useRef(false);
-  const hasHandledSnapsPrivacyWarningRef = useRef(false);
 
   const getDedupedSnapPermissions = useCallback(() => {
     const snapKeys = getDedupedSnaps(request, currentPermissions);
@@ -108,21 +109,14 @@ function PermissionPageContainerBase({
     });
   }, [trackEvent]);
 
-  useEffect(() => {
-    if (hasHandledSnapsPrivacyWarningRef.current) {
-      return;
-    }
-
-    if (!request.permissions?.[WALLET_SNAP_PERMISSION_KEY]) {
-      return;
-    }
-
-    hasHandledSnapsPrivacyWarningRef.current = true;
-
-    if (snapsInstallPrivacyWarningShown === false) {
-      setIsShowingSnapsPrivacyWarning(true);
-    }
-  }, [request.permissions, snapsInstallPrivacyWarningShown]);
+  if (
+    !hasHandledSnapsPrivacyWarning &&
+    request.permissions?.[WALLET_SNAP_PERMISSION_KEY] &&
+    snapsInstallPrivacyWarningShown === false
+  ) {
+    setHasHandledSnapsPrivacyWarning(true);
+    setIsShowingSnapsPrivacyWarning(true);
+  }
 
   const goBack = useCallback(() => {
     navigate(connectPath);
@@ -201,7 +195,7 @@ function PermissionPageContainerBase({
   }, [goBack, onCancel, requestedPermissions]);
 
   const confirmSnapsPrivacyWarning = useCallback(() => {
-    hasHandledSnapsPrivacyWarningRef.current = true;
+    setHasHandledSnapsPrivacyWarning(true);
     setIsShowingSnapsPrivacyWarning(false);
     setSnapsInstallPrivacyWarningShownStatus(true);
   }, [setSnapsInstallPrivacyWarningShownStatus]);

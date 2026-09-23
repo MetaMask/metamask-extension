@@ -3155,9 +3155,6 @@
   "current": {
     "message": "Hiện tại"
   },
-  "currentAccountNotConnected": {
-    "message": "Tài khoản hiện tại của bạn chưa được kết nối"
-  },
   "currentEstimatedBaseFee": {
     "message": "Hiện tại: $1 GWEI"
   },

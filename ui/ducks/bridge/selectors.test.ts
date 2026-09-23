@@ -37,6 +37,7 @@ import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { getBatchSellQuotes } from '../batch-sell/selectors';
+import { ARC_ERC20_USDC_BRIDGE_ASSET } from '../../components/app/assets/enablement/arc';
 import * as stellarAssetsSelectors from '../../selectors/stellar-assets';
 import {
   getBridgeQuotes,
@@ -3135,6 +3136,76 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
+      expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
+    it('should return isInsufficientNativeReserve=true on Arc USDC when source amount leaves less than the reserve', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromTokenInputValue: '10',
+          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          // 10 native Arc USDC in atomic units.
+          fromNativeBalance: '10000000000000000000',
+          fromTokenBalance: '10000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.ARC,
+            srcTokenAmount: '10000000',
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+      });
+      const result = getValidationErrors(state);
+      const nativeReserveError = getInsufficientNativeReserveError(state);
+
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '0.05',
+        maxSwappableNativeBalance: '9.95',
+      });
+      expect(getQuoteRequestInsufficientBal(state)).toBe(true);
+      expect(result.isInsufficientNativeReserve).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=false on Arc USDC when source amount keeps the reserve', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromTokenInputValue: '9.95000',
+          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          // 10 native Arc USDC in atomic units.
+          fromNativeBalance: '10000000000000000000',
+          fromTokenBalance: '10000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.ARC,
+            srcTokenAmount: '9950000',
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+      });
+      const result = getValidationErrors(state);
+
+      expect(getInsufficientNativeReserveError(state)).toBeUndefined();
+      expect(getQuoteRequestInsufficientBal(state)).toBe(false);
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
 

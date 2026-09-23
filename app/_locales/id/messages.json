@@ -3155,9 +3155,6 @@
   "current": {
     "message": "Saat ini"
   },
-  "currentAccountNotConnected": {
-    "message": "Akun Anda saat ini tidak terhubung"
-  },
   "currentEstimatedBaseFee": {
     "message": "Saat ini: $1 GWEI"
   },
