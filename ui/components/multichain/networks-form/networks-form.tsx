@@ -593,6 +593,7 @@ export const NetworksForm = ({
                   ...item,
                   failoverUrls,
                 }}
+                asButton={false}
               />
             ) : (
               // A custom (non Infura) endpoint never has a failover, so it just
@@ -810,7 +811,7 @@ export const NetworksForm = ({
           }}
           renderItem={(item) => (
             <Text
-              as="button"
+              as="span"
               paddingLeft={0}
               paddingRight={0}
               paddingTop={3}
