@@ -93,22 +93,16 @@ const getPercentChangeColor = (value: number | undefined): TextColor => {
  * @param options0
  * @param options0.price
  * @param options0.loading
- * @param options0.currency
- * @param options0.formatCurrencyTokenPrice
+ * @param options0.formattedPrice
  */
 const PriceDisplay = ({
   price,
   loading,
-  currency,
-  formatCurrencyTokenPrice,
+  formattedPrice,
 }: {
   price?: number;
   loading: boolean;
-  currency: string;
-  formatCurrencyTokenPrice: (
-    price: number | undefined,
-    currency: string,
-  ) => string;
+  formattedPrice: string;
 }) => {
   if (loading && price === undefined) {
     return <PriceLoading />;
@@ -123,7 +117,7 @@ const PriceDisplay = ({
         variant={TextVariant.DisplayMd}
         fontWeight={FontWeight.Medium}
       >
-        {formatCurrencyTokenPrice(price, currency)}
+        {formattedPrice}
       </Text>
     </Box>
   );
@@ -226,13 +220,15 @@ const TokenPriceHeader = ({
         })
       : '';
 
+  const formattedPrice =
+    price !== undefined ? formatCurrencyTokenPrice(price, currency) : '';
+
   return (
     <Box marginLeft={4} marginRight={4}>
       <PriceDisplay
         price={price}
         loading={loading}
-        currency={currency}
-        formatCurrencyTokenPrice={formatCurrencyTokenPrice}
+        formattedPrice={formattedPrice}
       />
       <PercentChangeDisplay
         percentChange={percentChange}
