@@ -28,16 +28,17 @@ import {
   hasUserTurnedOffNotificationsOnce,
 } from './notification-storage-keys';
 
+export type InitialFetchLifecycle = {
+  requestId: number;
+  status: 'idle' | 'pending' | 'success' | 'error';
+};
+
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
   notificationsData?: INotification[];
   isLoading: boolean;
   error?: unknown;
-  traceLifecycle: {
-    isPending: boolean;
-    error?: unknown;
-    clearError: () => void;
-  };
+  initialFetchLifecycle: InitialFetchLifecycle;
 };
 
 const MetamaskNotificationsContext = createContext<
@@ -119,21 +120,23 @@ export function useFetchInitialNotificationsEffect() {
   const shouldRunInitialFetch =
     isBasicFunctionalityEnabled && shouldFetchNotifications && isUnlocked;
   const enableAndRefresh = useEnableAndRefresh();
-  const [hasCompletedInitialFetch, setHasCompletedInitialFetch] =
-    useState(false);
-  const [traceError, setTraceError] = useState<unknown>();
-  const [previousShouldRunInitialFetch, setPreviousShouldRunInitialFetch] =
-    useState(shouldRunInitialFetch);
+  const [lifecycle, setLifecycle] = useState<
+    InitialFetchLifecycle & { isEligible: boolean }
+  >(() => ({
+    isEligible: shouldRunInitialFetch,
+    requestId: 0,
+    status: shouldRunInitialFetch ? 'pending' : 'idle',
+  }));
 
-  // Reset trace-only state before children observe a new eligibility cycle.
-  // React applies this guarded previous-value update before rendering children.
-  if (previousShouldRunInitialFetch !== shouldRunInitialFetch) {
-    setPreviousShouldRunInitialFetch(shouldRunInitialFetch);
-    if (!shouldRunInitialFetch) {
-      setHasCompletedInitialFetch(false);
-      setTraceError(undefined);
-    }
+  if (lifecycle.isEligible !== shouldRunInitialFetch) {
+    setLifecycle({
+      isEligible: shouldRunInitialFetch,
+      requestId: lifecycle.requestId + 1,
+      status: shouldRunInitialFetch ? 'pending' : 'idle',
+    });
   }
+
+  const { requestId } = lifecycle;
 
   useEffect(() => {
     let cancelled = false;
@@ -160,17 +163,25 @@ export function useFetchInitialNotificationsEffect() {
           return;
         }
         if (shouldRunInitialFetch) {
-          setTraceError(undefined);
           await enableAndRefresh(await shouldEnableNotificationsOnStartup());
         }
-      } catch (error) {
+      } catch {
         if (!cancelled) {
-          setTraceError(error);
+          setLifecycle((current) =>
+            current.requestId === requestId
+              ? { ...current, status: 'error' }
+              : current,
+          );
         }
-      } finally {
-        if (!cancelled && shouldRunInitialFetch) {
-          setHasCompletedInitialFetch(true);
-        }
+        return;
+      }
+
+      if (!cancelled && shouldRunInitialFetch) {
+        setLifecycle((current) =>
+          current.requestId === requestId
+            ? { ...current, status: 'success' }
+            : current,
+        );
       }
     };
 
@@ -179,15 +190,9 @@ export function useFetchInitialNotificationsEffect() {
     return () => {
       cancelled = true;
     };
-  }, [dispatch, enableAndRefresh, shouldRunInitialFetch]);
+  }, [dispatch, enableAndRefresh, requestId, shouldRunInitialFetch]);
 
-  const clearTraceError = useCallback(() => setTraceError(undefined), []);
-
-  return {
-    isPending: shouldRunInitialFetch && !hasCompletedInitialFetch,
-    error: traceError,
-    clearTraceError,
-  };
+  return lifecycle;
 }
 
 export function useEnableNotificationsByDefaultEffect() {
@@ -251,11 +256,7 @@ export const MetamaskNotificationsProvider = ({
   useBasicFunctionalityDisableEffect();
 
   // Update subscriptions and fetch notifications
-  const {
-    isPending: isInitialFetchPending,
-    error: initialFetchError,
-    clearTraceError,
-  } = useFetchInitialNotificationsEffect();
+  const initialFetchLifecycle = useFetchInitialNotificationsEffect();
 
   // Enable notifications by default for users
   useEnableNotificationsByDefaultEffect();
@@ -270,20 +271,14 @@ export const MetamaskNotificationsProvider = ({
       notificationsData,
       isLoading,
       error,
-      traceLifecycle: {
-        isPending: isInitialFetchPending,
-        error: initialFetchError,
-        clearError: clearTraceError,
-      },
+      initialFetchLifecycle,
     }),
     [
       listNotificationsCallback,
       notificationsData,
       isLoading,
       error,
-      initialFetchError,
-      isInitialFetchPending,
-      clearTraceError,
+      initialFetchLifecycle,
     ],
   );
 

@@ -258,12 +258,12 @@ describe('useFetchInitialNotificationsEffect', () => {
       {},
     );
 
-    expect(result.current.isPending).toBe(true);
+    expect(result.current.status).toBe('pending');
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
       expect(mocks.hooks.listNotifications).toHaveBeenCalled();
-      expect(result.current.isPending).toBe(false);
+      expect(result.current.status).toBe('success');
     });
   });
 
@@ -383,35 +383,9 @@ describe('useFetchInitialNotificationsEffect', () => {
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
-      expect(result.current.error).toEqual(new Error('Enable failed'));
+      expect(result.current.status).toBe('error');
     });
     // Should not throw error
-  });
-
-  it('keeps a failed initial-fetch error until it is explicitly cleared', async () => {
-    const mocks = arrange();
-    mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
-    mocks.selectors.mockGetUseExternalServices.mockReturnValue(true);
-    mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
-    mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
-    mocks.hooks.enableNotifications.mockRejectedValueOnce(
-      new Error('Enable failed'),
-    );
-
-    const { result } = renderHookWithProvider(
-      () => useFetchInitialNotificationsEffect(),
-      {},
-    );
-
-    await waitFor(() => {
-      expect(result.current.error).toEqual(new Error('Enable failed'));
-    });
-
-    act(() => {
-      result.current.clearTraceError();
-    });
-
-    expect(result.current.error).toBeUndefined();
   });
 
   it('should handle listNotifications error gracefully', async () => {
@@ -446,7 +420,7 @@ describe('useFetchInitialNotificationsEffect', () => {
       () => useFetchInitialNotificationsEffect(),
       {},
     );
-    expect(result.current.isPending).toBe(false);
+    expect(result.current.status).toBe('idle');
 
     // Second render - conditions met
     mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
@@ -457,12 +431,12 @@ describe('useFetchInitialNotificationsEffect', () => {
     act(() => {
       store.dispatch({ type: 'FORCE_UPDATE' });
     });
-    expect(result.current.isPending).toBe(true);
+    expect(result.current.status).toBe('pending');
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
       expect(mocks.hooks.listNotifications).toHaveBeenCalled();
-      expect(result.current.isPending).toBe(false);
+      expect(result.current.status).toBe('success');
     });
   });
 });

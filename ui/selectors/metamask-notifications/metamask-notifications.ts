@@ -250,7 +250,6 @@ export const selectIsFeatureAnnouncementsEnabled = createSelector(
  * Selector to determine if MetaMask notifications are currently being created.
  *
  * This selector checks the `isUpdatingMetamaskNotifications` property of the `metamask` state to see if the notifications are in the process of being created.
- * `getMetamask` spreads the defaults into a fresh object on every call, so memoizing this read would recompute anyway and would warn about unstable inputs.
  *
  * @param state - The current state of the Redux store.
  * @returns Returns true if MetaMask notifications are being created, false otherwise.
@@ -265,7 +264,6 @@ export const getIsUpdatingMetamaskNotifications = (
  * Selector to determine if MetaMask notifications are currently being fetched.
  *
  * This selector accesses the `isFetchingMetamaskNotifications` property from the `metamask` state to check if the notifications are currently being fetched.
- * `getMetamask` spreads the defaults into a fresh object on every call, so memoizing this read would recompute anyway and would warn about unstable inputs.
  *
  * @param state - The current state of the Redux store.
  * @returns Returns true if MetaMask notifications are being fetched, false otherwise.

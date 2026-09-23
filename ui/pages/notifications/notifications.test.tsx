@@ -15,8 +15,6 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-const mockClearTraceError = jest.fn();
-
 jest.mock(
   '../../contexts/metamask-notifications/metamask-notifications',
   () => ({
@@ -24,10 +22,9 @@ jest.mock(
       listNotifications: jest.fn(),
       isLoading: false,
       error: null,
-      traceLifecycle: {
-        isPending: false,
-        error: undefined,
-        clearError: mockClearTraceError,
+      initialFetchLifecycle: {
+        requestId: 0,
+        status: 'idle',
       },
     }),
   }),
@@ -102,43 +99,28 @@ const store = mockStore(initialState);
 describe('Notifications Component', () => {
   beforeEach(() => {
     mockDispatch.mockClear();
-    mockClearTraceError.mockClear();
     (deleteExpiredNotifications as jest.Mock).mockClear();
   });
 
-  it('renders correctly', async () => {
+  it('renders and traces settled notification content', async () => {
     const { getByTestId } = renderWithProvider(<Notifications />, store);
 
     expect(getByTestId('notifications-page')).toBeInTheDocument();
-    await waitFor(() => {
-      expect(mockUseNotificationListPerformance).toHaveBeenCalledWith(
-        expect.objectContaining({
-          enabled: expect.any(Boolean),
-          isPending: false,
-          notificationCount: expect.any(Number),
-        }),
-      );
-    });
-  });
-
-  it('clears a startup fetch error when leaving the page so later visits do not inherit it', async () => {
-    const { unmount } = renderWithProvider(<Notifications />, store);
-
-    expect(mockClearTraceError).not.toHaveBeenCalled();
-    unmount();
-    expect(mockClearTraceError).toHaveBeenCalledTimes(1);
-  });
-
-  it('dispatches deleteExpiredNotifications on mount', async () => {
-    renderWithProvider(<Notifications />, store);
-
     await waitFor(() => {
       expect(deleteExpiredNotifications).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'MOCK_DELETE_EXPIRED_NOTIFICATIONS',
       });
       expect(mockUseNotificationListPerformance).toHaveBeenCalledWith(
-        expect.objectContaining({ isPending: false }),
+        expect.objectContaining({
+          enabled: expect.any(Boolean),
+          initialFetchLifecycle: {
+            requestId: 0,
+            status: 'idle',
+          },
+          isContentPending: false,
+          notificationCount: expect.any(Number),
+        }),
       );
     });
   });

@@ -5,24 +5,31 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../shared/lib/trace';
+import type { InitialFetchLifecycle } from '../../contexts/metamask-notifications/metamask-notifications';
 
 export type NotificationListPerformanceOptions = {
   enabled: boolean;
-  isLoading: boolean;
-  isPending: boolean;
-  error?: unknown;
+  initialFetchLifecycle: InitialFetchLifecycle;
+  listFetchStatus: 'idle' | 'pending' | 'error';
+  isFetchPending: boolean;
+  isContentPending: boolean;
   notificationCount: number;
 };
 
 export function useNotificationListPerformance({
   enabled,
-  isLoading,
-  isPending,
-  error,
+  initialFetchLifecycle,
+  listFetchStatus,
+  isFetchPending,
+  isContentPending,
   notificationCount,
 }: NotificationListPerformanceOptions): void {
+  const { requestId: initialFetchRequestId, status: initialFetchStatus } =
+    initialFetchLifecycle;
   const traceIdRef = useRef<string | null>(null);
-  const sawLoadingRef = useRef(false);
+  const sawFetchRef = useRef(false);
+  const observedInitialFetchRequestRef = useRef<number | null>(null);
+  const observedListFetchRef = useRef(false);
   const latestCountRef = useRef(notificationCount);
 
   useEffect(() => {
@@ -53,7 +60,9 @@ export function useNotificationListPerformance({
 
     const id = crypto.randomUUID();
     traceIdRef.current = id;
-    sawLoadingRef.current = false;
+    sawFetchRef.current = false;
+    observedInitialFetchRequestRef.current = null;
+    observedListFetchRef.current = false;
     trace({
       name: TraceName.NotificationListTimeToContent,
       id,
@@ -75,11 +84,23 @@ export function useNotificationListPerformance({
       return;
     }
 
-    if (isLoading) {
-      sawLoadingRef.current = true;
+    if (isFetchPending) {
+      sawFetchRef.current = true;
     }
 
-    if (error) {
+    if (initialFetchStatus === 'pending') {
+      observedInitialFetchRequestRef.current = initialFetchRequestId;
+    }
+
+    if (listFetchStatus === 'pending') {
+      observedListFetchRef.current = true;
+    }
+
+    if (
+      (initialFetchStatus === 'error' &&
+        observedInitialFetchRequestRef.current === initialFetchRequestId) ||
+      (listFetchStatus === 'error' && observedListFetchRef.current)
+    ) {
       endNotificationTrace({
         success: false,
         reason: 'error',
@@ -89,13 +110,13 @@ export function useNotificationListPerformance({
       return;
     }
 
-    if (isPending) {
+    if (isContentPending) {
       return;
     }
 
     endNotificationTrace({
       success: true,
-      source: sawLoadingRef.current ? 'cold' : 'warm',
+      source: sawFetchRef.current ? 'cold' : 'warm',
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       notification_count: notificationCount,
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
@@ -104,9 +125,11 @@ export function useNotificationListPerformance({
   }, [
     enabled,
     endNotificationTrace,
-    error,
-    isLoading,
-    isPending,
+    initialFetchRequestId,
+    initialFetchStatus,
+    isContentPending,
+    isFetchPending,
+    listFetchStatus,
     notificationCount,
   ]);
 }

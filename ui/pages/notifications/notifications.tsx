@@ -195,54 +195,17 @@ export const filterNotifications = (
   return notifications;
 };
 
-export default function Notifications() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const runCloseTransition = useGlobalMenuRouteTransition();
-  const t = useI18nContext();
+const useNotificationContentState = (activeTab: TAB_KEYS) => {
   const dispatch = useDispatch();
-
-  const fromPath = searchParams.get('from') ?? undefined;
-
-  const handleBack = () => {
-    if (fromPath === DEFAULT_ROUTE) {
-      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
-    } else {
-      navigate(DEFAULT_ROUTE);
-    }
-  };
-
-  const {
-    isLoading,
-    error,
-    traceLifecycle = {
-      isPending: false,
-      error: undefined,
-      clearError: () => undefined,
-    },
-  } = useMetamaskNotificationsContext();
-  const { clearError: clearTraceError } = traceLifecycle;
-
-  useEffect(() => {
-    return () => {
-      clearTraceError();
-    };
-  }, [clearTraceError]);
-
-  const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
+  const { isLoading, error, initialFetchLifecycle } =
+    useMetamaskNotificationsContext();
   const { combinedNotifications, isFeatureAnnouncementPreferencePending } =
     useCombinedNotifications();
   const deferredCombinedNotifications = useDeferredValue(combinedNotifications);
-  const isDeferredListPending =
-    deferredCombinedNotifications !== combinedNotifications;
-  const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
     () => filterNotifications(activeTab, deferredCombinedNotifications),
     [activeTab, deferredCombinedNotifications],
   );
-
-  let hasNotifySnaps = false;
-  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -265,23 +228,62 @@ export default function Notifications() {
     deleteExpired();
   }, [dispatch, setIsExpirationCleanupPending]);
 
-  const isListLoading =
-    traceLifecycle.isPending ||
+  const isFetchPending =
+    initialFetchLifecycle.status === 'pending' ||
     isLoading ||
     isFetchingNotifications ||
     isUpdatingNotifications;
+  let listFetchStatus: 'idle' | 'pending' | 'error' = 'idle';
+  if (isLoading) {
+    listFetchStatus = 'pending';
+  } else if (error) {
+    listFetchStatus = 'error';
+  }
+  const isContentPending =
+    isFetchPending ||
+    isFeatureAnnouncementPreferencePending ||
+    isExpirationCleanupPending ||
+    deferredCombinedNotifications !== combinedNotifications;
 
   useNotificationListPerformance({
     enabled: isMetamaskNotificationsEnabled,
-    isLoading: isListLoading,
-    isPending:
-      isListLoading ||
-      isFeatureAnnouncementPreferencePending ||
-      isExpirationCleanupPending ||
-      isDeferredListPending,
-    error: traceLifecycle.error ?? error,
+    initialFetchLifecycle,
+    listFetchStatus,
+    isFetchPending,
+    isContentPending,
     notificationCount: filteredNotifications.length,
   });
+
+  return {
+    error,
+    filteredNotifications,
+    isLoading,
+  };
+};
+
+export default function Notifications() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
+  const t = useI18nContext();
+
+  const fromPath = searchParams.get('from') ?? undefined;
+
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
+  };
+
+  const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
+  const { error, filteredNotifications, isLoading } =
+    useNotificationContentState(activeTab);
+  const { notificationsUnreadCount } = useUnreadNotificationsCounter();
+
+  let hasNotifySnaps = false;
+  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
 
   return (
     <Page data-testid="notifications-page">
