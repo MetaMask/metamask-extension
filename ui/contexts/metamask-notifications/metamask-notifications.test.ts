@@ -388,6 +388,32 @@ describe('useFetchInitialNotificationsEffect', () => {
     // Should not throw error
   });
 
+  it('keeps a failed initial-fetch error until it is explicitly cleared', async () => {
+    const mocks = arrange();
+    mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
+    mocks.selectors.mockGetUseExternalServices.mockReturnValue(true);
+    mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
+    mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
+    mocks.hooks.enableNotifications.mockRejectedValueOnce(
+      new Error('Enable failed'),
+    );
+
+    const { result } = renderHookWithProvider(
+      () => useFetchInitialNotificationsEffect(),
+      {},
+    );
+
+    await waitFor(() => {
+      expect(result.current.error).toEqual(new Error('Enable failed'));
+    });
+
+    act(() => {
+      result.current.clearTraceError();
+    });
+
+    expect(result.current.error).toBeUndefined();
+  });
+
   it('should handle listNotifications error gracefully', async () => {
     const mocks = arrange();
     mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);

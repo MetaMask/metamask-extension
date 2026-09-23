@@ -36,6 +36,7 @@ type MetamaskNotificationsContextType = {
   traceLifecycle: {
     isPending: boolean;
     error?: unknown;
+    clearError: () => void;
   };
 };
 
@@ -259,12 +260,6 @@ export const MetamaskNotificationsProvider = ({
   // Enable notifications by default for users
   useEnableNotificationsByDefaultEffect();
 
-  useEffect(() => {
-    if (notificationsData !== undefined) {
-      clearTraceError();
-    }
-  }, [clearTraceError, notificationsData]);
-
   const listNotificationsCallback = useCallback(() => {
     listNotifications();
   }, [listNotifications]);
@@ -278,6 +273,7 @@ export const MetamaskNotificationsProvider = ({
       traceLifecycle: {
         isPending: isInitialFetchPending,
         error: initialFetchError,
+        clearError: clearTraceError,
       },
     }),
     [
@@ -287,6 +283,7 @@ export const MetamaskNotificationsProvider = ({
       error,
       initialFetchError,
       isInitialFetchPending,
+      clearTraceError,
     ],
   );
 

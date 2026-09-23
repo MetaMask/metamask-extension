@@ -215,8 +215,19 @@ export default function Notifications() {
   const {
     isLoading,
     error,
-    traceLifecycle = { isPending: false, error: undefined },
+    traceLifecycle = {
+      isPending: false,
+      error: undefined,
+      clearError: () => undefined,
+    },
   } = useMetamaskNotificationsContext();
+  const { clearError: clearTraceError } = traceLifecycle;
+
+  useEffect(() => {
+    return () => {
+      clearTraceError();
+    };
+  }, [clearTraceError]);
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
   const { combinedNotifications, isFeatureAnnouncementPreferencePending } =

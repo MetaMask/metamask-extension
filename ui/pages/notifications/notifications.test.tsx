@@ -15,6 +15,8 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
+const mockClearTraceError = jest.fn();
+
 jest.mock(
   '../../contexts/metamask-notifications/metamask-notifications',
   () => ({
@@ -22,6 +24,11 @@ jest.mock(
       listNotifications: jest.fn(),
       isLoading: false,
       error: null,
+      traceLifecycle: {
+        isPending: false,
+        error: undefined,
+        clearError: mockClearTraceError,
+      },
     }),
   }),
 );
@@ -95,6 +102,7 @@ const store = mockStore(initialState);
 describe('Notifications Component', () => {
   beforeEach(() => {
     mockDispatch.mockClear();
+    mockClearTraceError.mockClear();
     (deleteExpiredNotifications as jest.Mock).mockClear();
   });
 
@@ -111,6 +119,14 @@ describe('Notifications Component', () => {
         }),
       );
     });
+  });
+
+  it('clears a startup fetch error when leaving the page so later visits do not inherit it', async () => {
+    const { unmount } = renderWithProvider(<Notifications />, store);
+
+    expect(mockClearTraceError).not.toHaveBeenCalled();
+    unmount();
+    expect(mockClearTraceError).toHaveBeenCalledTimes(1);
   });
 
   it('dispatches deleteExpiredNotifications on mount', async () => {
