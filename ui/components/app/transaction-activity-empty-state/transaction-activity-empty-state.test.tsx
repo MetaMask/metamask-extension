@@ -235,74 +235,56 @@ describe('TransactionActivityEmptyState', () => {
       methods: [EthMethod.SignTransaction, 'personal_sign'],
     });
 
-    // TODO: Our jest describe is typed as Mocha this should be fixed
-    (describe as unknown as jest.Describe).each<
-      [
-        string,
-        InternalAccount,
-        ReturnType<typeof createStateOverrides> | Record<string, never>,
-      ]
-    >([
-      [
-        'the current chain is not a unified swaps/bridge chain',
-        accountWithSigning,
-        createNonBridgeChainState(),
-      ],
-      [
-        'external services are disabled',
-        accountWithSigning,
-        createStateWithoutExternalServices(),
-      ],
-      ['account cannot sign transactions', accountWithoutSigning, {}],
-    ])(
-      'disables swap button when %s',
-      (
-        _condition: string,
-        account: InternalAccount,
-        stateOverrides:
-          | ReturnType<typeof createStateOverrides>
-          | Record<string, never>,
-      ) => {
-        it(`should disable swap button`, () => {
-          renderComponent({}, stateOverrides, account);
-          expectSwapButtonState(false);
-        });
-      },
-    );
+    it('disables swap button when the current chain is not a unified swaps/bridge chain', () => {
+      renderComponent({}, createNonBridgeChainState(), accountWithSigning);
+      expectSwapButtonState(false);
+    });
 
-    it.each([
-      [
-        'EVM',
-        createAccount({
-          methods: [EthMethod.SignTransaction, 'personal_sign'],
-        }),
-      ],
-      [
-        'Solana',
-        createAccount({
-          methods: [SolMethod.SignTransaction],
-        }),
-      ],
-      [
-        'Bitcoin',
-        createAccount({
-          methods: [BtcMethod.SignPsbt],
-        }),
-      ],
-      [
-        'Tron',
-        createAccount({
-          type: TrxAccountType.Eoa,
-          methods: [],
-        }),
-      ],
-    ])(
-      'enables swap button for a %s account that can sign when the chain is supported and external services are enabled',
-      (_network, account) => {
-        renderComponent({}, createValidSwapState(), account);
-        expectSwapButtonState(true);
-      },
-    );
+    it('disables swap button when external services are disabled', () => {
+      renderComponent(
+        {},
+        createStateWithoutExternalServices(),
+        accountWithSigning,
+      );
+      expectSwapButtonState(false);
+    });
+
+    it('disables swap button when the account cannot sign transactions', () => {
+      renderComponent({}, {}, accountWithoutSigning);
+      expectSwapButtonState(false);
+    });
+
+    it('enables swap button for an EVM account that can sign', () => {
+      renderComponent({}, createValidSwapState(), accountWithSigning);
+      expectSwapButtonState(true);
+    });
+
+    it('enables swap button for a Solana account that can sign', () => {
+      renderComponent(
+        {},
+        createValidSwapState(),
+        createAccount({ methods: [SolMethod.SignTransaction] }),
+      );
+      expectSwapButtonState(true);
+    });
+
+    it('enables swap button for a Bitcoin account that can sign', () => {
+      renderComponent(
+        {},
+        createValidSwapState(),
+        createAccount({ methods: [BtcMethod.SignPsbt] }),
+      );
+      expectSwapButtonState(true);
+    });
+
+    it('enables swap button for a Tron account that can sign', () => {
+      renderComponent(
+        {},
+        createValidSwapState(),
+        createAccount({ type: TrxAccountType.Eoa, methods: [] }),
+      );
+      expectSwapButtonState(true);
+    });
 
     it('calls openBridgeExperience when swap button is clicked', () => {
       const stateOverrides = createValidSwapState();
