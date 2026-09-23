@@ -1,13 +1,11 @@
 import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { extractSignatureAddresses } from '@metamask/phishing-controller';
+import { SignatureRequestType } from '@metamask/signature-controller';
 import type { Hex } from '@metamask/utils';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { useConfirmContext } from '../../context/confirm';
-import { isSignatureTransactionType } from '../../utils';
-import { SignatureRequestType } from '../../types/confirm';
 import { parseTypedDataMessage } from '../../../../../shared/lib/transaction.utils';
 import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
@@ -19,6 +17,7 @@ import {
 } from '../../../../hooks/useTrustSignals';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+import { useSignatureRequestOptional } from '../signatures/useSignatureRequest';
 
 /**
  * Generate trust-signal alerts for the address fields of a typed-data
@@ -27,7 +26,7 @@ import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/
  */
 export function useSignatureAddressAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const signatureRequest = useSignatureRequestOptional();
 
   const {
     addresses: signatureAddresses,
@@ -41,23 +40,21 @@ export function useSignatureAddressAlerts(): Alert[] {
     };
 
     if (
-      !currentConfirmation ||
-      !isSignatureTransactionType(currentConfirmation) ||
-      currentConfirmation.type !== 'eth_signTypedData' ||
+      !signatureRequest ||
+      signatureRequest.type !== SignatureRequestType.TypedSign ||
       !isSecurityAlertsAPIEnabled()
     ) {
       return empty;
     }
 
-    const signatureRequest = currentConfirmation as SignatureRequestType;
-    const msgData = signatureRequest.msgParams?.data as string;
-    if (!msgData) {
+    const msgData = signatureRequest.messageParams?.data;
+    if (typeof msgData !== 'string' || !msgData) {
       return empty;
     }
 
     try {
       const parsed = parseTypedDataMessage(msgData);
-      const signer = signatureRequest.msgParams?.from as string | undefined;
+      const signer = signatureRequest.messageParams?.from;
       const isPermit = PRIMARY_TYPES_PERMIT.some(
         (type) => type === parsed.primaryType,
       );
@@ -68,13 +65,13 @@ export function useSignatureAddressAlerts(): Alert[] {
     } catch {
       return empty;
     }
-  }, [currentConfirmation]);
+  }, [signatureRequest]);
 
   const trustSignals = useTrustSignals(
     signatureAddresses.map((value) => ({
       value,
       type: NameType.ETHEREUM_ADDRESS,
-      chainId: currentConfirmation?.chainId as Hex | undefined,
+      chainId: signatureRequest?.chainId as Hex | undefined,
     })),
   );
 

@@ -1,3 +1,8 @@
+import type { SignatureRequest } from '@metamask/signature-controller';
+import {
+  SignatureRequestStatus,
+  SignatureRequestType as ControllerSignatureRequestType,
+} from '@metamask/signature-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
@@ -56,6 +61,43 @@ const makeTypedSignV4 = (messageOverrides: object) =>
     },
   }) as SignatureRequestType;
 
+function toControllerSignatureRequest(
+  request: SignatureRequestType,
+): SignatureRequest {
+  return {
+    id: request.id,
+    chainId: request.chainId ?? CHAIN_IDS.GOERLI,
+    networkClientId: 'goerli',
+    status: SignatureRequestStatus.Unapproved,
+    time: 0,
+    type: ControllerSignatureRequestType.TypedSign,
+    messageParams: {
+      from: request.msgParams?.from ?? '',
+      data: request.msgParams?.data ?? '',
+      origin: request.msgParams?.origin,
+    },
+  } as SignatureRequest;
+}
+
+function stateWithSignatureRequest(
+  request: SignatureRequestType = unapprovedTypedSignMsgV4,
+) {
+  const base =
+    request === unapprovedTypedSignMsgV4
+      ? getMockTypedSignConfirmState()
+      : getMockTypedSignConfirmStateForRequest(request);
+
+  return {
+    ...base,
+    metamask: {
+      ...base.metamask,
+      signatureRequests: {
+        [request.id]: toControllerSignatureRequest(request),
+      },
+    },
+  };
+}
+
 describe('useSignatureAddressAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -68,7 +110,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmState(),
+      stateWithSignatureRequest(),
     );
 
     expect(result.current).toEqual([]);
@@ -83,7 +125,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
+      stateWithSignatureRequest(request),
     );
 
     expect(result.current).toEqual([]);
@@ -104,7 +146,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
+      stateWithSignatureRequest(request),
     );
 
     expect(result.current).toHaveLength(1);
@@ -131,7 +173,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
+      stateWithSignatureRequest(request),
     );
 
     expect(result.current).toHaveLength(1);
@@ -151,7 +193,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
+      stateWithSignatureRequest(request),
     );
 
     expect(mockUseTrustSignals).toHaveBeenCalledWith([]);
@@ -172,7 +214,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
+      stateWithSignatureRequest(request),
     );
 
     expect(mockUseTrustSignals).toHaveBeenCalledWith([]);
@@ -201,7 +243,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
+      stateWithSignatureRequest(request),
     );
 
     expect(
@@ -230,7 +272,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
+      stateWithSignatureRequest(request),
     );
 
     expect(result.current).toEqual([]);
@@ -251,7 +293,7 @@ describe('useSignatureAddressAlerts', () => {
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmStateForRequest(request),
+      stateWithSignatureRequest(request),
     );
 
     expect(result.current).toEqual([]);
@@ -260,7 +302,7 @@ describe('useSignatureAddressAlerts', () => {
   it('passes all extracted addresses to useTrustSignals', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useSignatureAddressAlerts(),
-      getMockTypedSignConfirmState(),
+      stateWithSignatureRequest(),
     );
 
     expect(mockUseTrustSignals).toHaveBeenCalled();
