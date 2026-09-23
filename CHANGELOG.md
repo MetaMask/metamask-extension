@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed a bug where some social-login users did not see the Basic Functionality migration notice after importing their recovery phrase (#46602)
 - Disabled the Manage default settings button after opening the wallet to keep onboarding settings in sync (#46359)
 - Hid the Earn on your crypto section when no eligible deposit tokens are available (#46355)
 - Fixed Perps accounts with empty responses from showing a fabricated $0.00 balance (#46332)
