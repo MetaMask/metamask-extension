@@ -119,78 +119,97 @@ describe('useTransactionEventToasts', () => {
   });
 
   describe('EVM via TransactionController', () => {
-    it('shows a pending toast when a tx is submitted', () => {
+    it('shows a pending toast with a details link when hash is present', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'pending-submitted',
+          id: 'pending-with-hash',
           status: TransactionStatus.submitted,
           hash: '0xabc',
         }),
       });
 
       expect(mockShowPendingToast).toHaveBeenCalledWith(
-        'tx-pending-submitted',
+        'tx-pending-with-hash',
         {
-          transactionId: 'pending-submitted',
+          transactionId: 'pending-with-hash',
           to: '/tx/eip155:1/0xabc',
         },
       );
     });
 
-    it('shows a success toast when a pending tx confirms', () => {
+    it('shows a success toast with a details link when a pending tx confirms', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'submitted-then-confirmed',
+          id: 'success-with-hash',
           status: TransactionStatus.submitted,
           hash: '0xabc',
         }),
       });
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'submitted-then-confirmed',
+          id: 'success-with-hash',
           status: TransactionStatus.confirmed,
           hash: '0xabc',
         }),
       });
 
       expect(mockShowSuccessToast).toHaveBeenCalledWith(
-        'tx-submitted-then-confirmed',
+        'tx-success-with-hash',
         {
-          transactionId: 'submitted-then-confirmed',
+          transactionId: 'success-with-hash',
           to: '/tx/eip155:1/0xabc',
         },
       );
     });
 
-    it('shows a failed toast when a pending tx fails', () => {
+    it('shows a failed toast with a details link when a pending tx fails', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'submitted-then-failed',
+          id: 'failed-with-hash',
           status: TransactionStatus.submitted,
           hash: '0xabc',
         }),
       });
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'submitted-then-failed',
+          id: 'failed-with-hash',
           status: TransactionStatus.failed,
           hash: '0xabc',
         }),
       });
 
-      expect(mockShowFailedToast).toHaveBeenCalledWith(
-        'tx-submitted-then-failed',
-        {
-          transactionId: 'submitted-then-failed',
-          to: '/tx/eip155:1/0xabc',
-        },
-      );
+      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-failed-with-hash', {
+        transactionId: 'failed-with-hash',
+        to: '/tx/eip155:1/0xabc',
+      });
+    });
+
+    it('omits the details link when hash is missing', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'failed-no-hash',
+          status: TransactionStatus.submitted,
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'failed-no-hash',
+          status: TransactionStatus.failed,
+        }),
+      });
+
+      expect(mockShowFailedToast).toHaveBeenCalledWith('tx-failed-no-hash', {
+        transactionId: 'failed-no-hash',
+        to: undefined,
+      });
     });
 
     it('shows a failed toast when a tx fails before submit', () => {
