@@ -3512,6 +3512,28 @@
         "lodash": true
       }
     },
+    "@metamask/wallet>@metamask/claims-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "nock>debug": true,
+        "lodash": true
+      }
+    },
+    "@metamask/wallet>@metamask/config-registry-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
     "@metamask/assets-controller>@metamask/controller-utils>@metamask/utils": {
       "globals": {
         "Buffer": true,
@@ -3627,6 +3649,13 @@
         "@metamask/superstruct": true,
         "@scure/base": true,
         "buffer": true
+      }
+    },
+    "@metamask/wallet>@metamask/subscription-controller>@metamask/money-account-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
       }
     },
     "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/utils": {
