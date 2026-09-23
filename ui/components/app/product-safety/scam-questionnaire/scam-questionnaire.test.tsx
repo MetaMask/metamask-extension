@@ -5,6 +5,7 @@ import { getMockConfirmState } from '../../../../../test/data/confirmations/help
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
+import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 import { ScamQuestionnaire } from './scam-questionnaire';
 import { ScamQuestionnaireTrigger } from './scam-questionnaire.constants';
 
@@ -76,5 +77,20 @@ describe('ScamQuestionnaire', () => {
     answer(getByTestId, 'q3_no');
     fireEvent.click(getByTestId('scam-warning-stop'));
     expect(handlers.onReject).toHaveBeenCalledTimes(1);
+  });
+
+  it('opens Contact Support with the investment scam questionnaire campaign', () => {
+    const openTab = jest.fn();
+    global.platform = { openTab } as never;
+    const { getByTestId } = render();
+
+    answer(getByTestId, 'q1_yes');
+    answer(getByTestId, 'q2_goods');
+    answer(getByTestId, 'q3_no');
+    fireEvent.click(getByTestId('scam-warning-contact-support'));
+
+    expect(openTab).toHaveBeenCalledWith({
+      url: `${SUPPORT_LINK}?utm_campaign=investment_scam_questionnaire`,
+    });
   });
 });
