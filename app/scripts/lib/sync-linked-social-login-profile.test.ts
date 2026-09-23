@@ -6,9 +6,12 @@ import {
 } from './sync-linked-social-login-profile';
 
 describe('applyLinkedSocialLoginProfileDetection', () => {
-  it('persists the linked-social flag and repairs consolidation', () => {
+  it('persists the linked-social flag and repairs already-consolidated wallets', () => {
     const preferencesController = {
-      getPreferences: jest.fn(() => ({ hasLinkedSocialLoginProfile: false })),
+      getPreferences: jest.fn(() => ({
+        hasLinkedSocialLoginProfile: false,
+        isBasicFunctionalityConsolidatedEnabled: true,
+      })),
       setPreference: jest.fn(),
       consolidateBasicFunctionality: jest.fn(),
     } as unknown as PreferencesController;
@@ -22,6 +25,27 @@ describe('applyLinkedSocialLoginProfileDetection', () => {
     expect(
       preferencesController.consolidateBasicFunctionality,
     ).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not consolidate unmarked wallets so the remote kill switch still applies', () => {
+    const preferencesController = {
+      getPreferences: jest.fn(() => ({
+        hasLinkedSocialLoginProfile: false,
+        isBasicFunctionalityConsolidatedEnabled: false,
+      })),
+      setPreference: jest.fn(),
+      consolidateBasicFunctionality: jest.fn(),
+    } as unknown as PreferencesController;
+
+    applyLinkedSocialLoginProfileDetection(preferencesController, true);
+
+    expect(preferencesController.setPreference).toHaveBeenCalledWith(
+      'hasLinkedSocialLoginProfile',
+      true,
+    );
+    expect(
+      preferencesController.consolidateBasicFunctionality,
+    ).not.toHaveBeenCalled();
   });
 
   it('does nothing when linked social identifiers are absent', () => {
@@ -43,7 +67,10 @@ describe('applyLinkedSocialLoginProfileDetection', () => {
 describe('registerLinkedSocialLoginProfileSync', () => {
   it('reacts to profile sign-in events with social aliases', () => {
     const preferencesController = {
-      getPreferences: jest.fn(() => ({ hasLinkedSocialLoginProfile: false })),
+      getPreferences: jest.fn(() => ({
+        hasLinkedSocialLoginProfile: false,
+        isBasicFunctionalityConsolidatedEnabled: true,
+      })),
       setPreference: jest.fn(),
       consolidateBasicFunctionality: jest.fn(),
     } as unknown as PreferencesController;
@@ -79,7 +106,10 @@ describe('registerLinkedSocialLoginProfileSync', () => {
 
   it('reacts to auth state changes with paired identifiers on srp session profile', () => {
     const preferencesController = {
-      getPreferences: jest.fn(() => ({ hasLinkedSocialLoginProfile: false })),
+      getPreferences: jest.fn(() => ({
+        hasLinkedSocialLoginProfile: false,
+        isBasicFunctionalityConsolidatedEnabled: true,
+      })),
       setPreference: jest.fn(),
       consolidateBasicFunctionality: jest.fn(),
     } as unknown as PreferencesController;

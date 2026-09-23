@@ -22,8 +22,9 @@ type LinkedSocialLoginProfileSyncMessenger = RootMessenger<
 >;
 
 /**
- * Persists linked-social-login state and re-runs consolidation repair when Core
- * exposes social identifiers after `performSignIn`.
+ * Persists linked-social-login state. Re-runs consolidation only for wallets
+ * that are already consolidated, so unmarked wallets still go through
+ * `useBasicFunctionalityConsolidation` and the remote kill switch.
  *
  * @param preferencesController - Preferences controller used to persist the flag.
  * @param hasLinkedSocialLogin - Whether linked social identifiers were detected.
@@ -36,14 +37,18 @@ export function applyLinkedSocialLoginProfileDetection(
     return;
   }
 
-  const { hasLinkedSocialLoginProfile } =
-    preferencesController.getPreferences();
+  const {
+    hasLinkedSocialLoginProfile,
+    isBasicFunctionalityConsolidatedEnabled,
+  } = preferencesController.getPreferences();
 
   if (!hasLinkedSocialLoginProfile) {
     preferencesController.setPreference('hasLinkedSocialLoginProfile', true);
   }
 
-  preferencesController.consolidateBasicFunctionality();
+  if (isBasicFunctionalityConsolidatedEnabled) {
+    preferencesController.consolidateBasicFunctionality();
+  }
 }
 
 /**
