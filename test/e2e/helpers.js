@@ -626,7 +626,7 @@ async function withFixtures(options, testSuite) {
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     // This lets our catch (screenshots) and finally (server cleanup) run before Mocha moves on to the next test.
-    const ARTIFACT_DEADLINE_BUFFER_MS = 10_000;
+    const ARTIFACT_DEADLINE_BUFFER_MS = 5_000;
     const testPromise = testSuite({
       bundlerServer,
       contractRegistry,
