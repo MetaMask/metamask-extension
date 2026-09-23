@@ -346,7 +346,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
 <div>
   <div
     aria-disabled="true"
-    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent cursor-not-allowed opacity-50"
+    class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
     tabindex="-1"
@@ -401,7 +401,6 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
           <button
             class="border-0 bg-transparent p-0"
             data-testid="ramps-quote-display-warning-trigger"
-            interestfor=":r2:"
             type="button"
           >
             <svg
@@ -415,19 +414,6 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
               />
             </svg>
           </button>
-          <div
-            class="m-0 max-w-[250px] rounded-lg border border-border-muted bg-background-default p-4 text-text-default shadow-md [position-area:bottom]"
-            data-testid="ramps-quote-display-warning-tooltip"
-            hidden=""
-            id=":r2:"
-            popover="hint"
-          >
-            <p
-              class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-            >
-              Minimum purchase is $25.00
-            </p>
-          </div>
         </div>
       </div>
     </div>

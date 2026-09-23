@@ -889,7 +889,6 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                 <button
                   class="border-0 bg-transparent p-0"
                   data-testid="ramps-quote-display-warning-trigger"
-                  interestfor=":r3:"
                   type="button"
                 >
                   <svg
@@ -903,19 +902,6 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                     />
                   </svg>
                 </button>
-                <div
-                  class="m-0 max-w-[250px] rounded-lg border border-border-muted bg-background-default p-4 text-text-default shadow-md [position-area:bottom]"
-                  data-testid="ramps-quote-display-warning-tooltip"
-                  hidden=""
-                  id=":r3:"
-                  popover="hint"
-                >
-                  <p
-                    class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-                  >
-                    Quote unavailable.
-                  </p>
-                </div>
               </div>
             </div>
           </div>
@@ -1148,7 +1134,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >

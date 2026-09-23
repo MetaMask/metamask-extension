@@ -61,7 +61,6 @@ exports[`RampsQuoteDisplay matches snapshot with warning icon 1`] = `
     <button
       class="border-0 bg-transparent p-0"
       data-testid="ramps-quote-display-warning-trigger"
-      interestfor=":r2:"
       type="button"
     >
       <svg

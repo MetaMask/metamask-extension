@@ -105,9 +105,8 @@ export default function RampsPaymentMethodListItem({
   return (
     <ButtonBase
       asChild
-      className={`${getRampsListItemClassName(isSelected)}${
-        isDisabled ? ' cursor-not-allowed opacity-50' : ''
-      }`}
+      isDisabled={isDisabled}
+      className={getRampsListItemClassName(isSelected)}
     >
       <div
         role="button"
@@ -118,8 +117,18 @@ export default function RampsPaymentMethodListItem({
           if (isDisabled) {
             return;
           }
-          if (event.key === 'Enter' || event.key === ' ') {
+          if (event.key === 'Enter') {
             event.preventDefault();
+            onClick();
+          } else if (event.key === ' ') {
+            event.preventDefault();
+          }
+        }}
+        onKeyUp={(event) => {
+          if (isDisabled) {
+            return;
+          }
+          if (event.key === ' ') {
             onClick();
           }
         }}

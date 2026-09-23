@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
-import { act } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RampsPaymentMethodListItem from './ramps-payment-method-list-item';
@@ -154,7 +154,7 @@ describe('RampsPaymentMethodListItem', () => {
   });
 
   it('shows the quote error message when hovering the warning icon', async () => {
-    const { getByTestId } = renderWithProvider(
+    const { getByTestId, queryByTestId } = renderWithProvider(
       <RampsPaymentMethodListItem
         paymentMethod={debitCard}
         showQuote
@@ -170,9 +170,67 @@ describe('RampsPaymentMethodListItem', () => {
     );
 
     const trigger = getByTestId('ramps-quote-display-warning-trigger');
-    const tooltip = getByTestId('ramps-quote-display-warning-tooltip');
 
-    expect(trigger).toHaveAttribute('interestfor', tooltip.id);
+    expect(trigger).not.toHaveAttribute('interestfor');
+    expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull();
+
+    await act(async () => {
+      fireEvent.focus(trigger);
+    });
+
+    const tooltip = getByTestId('ramps-quote-display-warning-tooltip');
     expect(tooltip).toHaveTextContent('Minimum purchase is $25.00');
+    expect(trigger).toHaveAttribute('aria-describedby', tooltip.id);
+  });
+
+  it('activates on click, Enter keydown, and Space keyup but not while disabled', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={onClick}
+      />,
+      createStore(),
+    );
+
+    const row = getByTestId('ramps-payment-method-item-debit-credit-card');
+
+    fireEvent.click(row);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    fireEvent.keyDown(row, { key: 'Enter' });
+    expect(onClick).toHaveBeenCalledTimes(2);
+
+    fireEvent.keyDown(row, { key: ' ' });
+    expect(onClick).toHaveBeenCalledTimes(2);
+    fireEvent.keyUp(row, { key: ' ' });
+    expect(onClick).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not activate while disabled', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isDisabled
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={onClick}
+      />,
+      createStore(),
+    );
+
+    const row = getByTestId('ramps-payment-method-item-debit-credit-card');
+
+    expect(row).toHaveAttribute('aria-disabled', 'true');
+    expect(row).toHaveAttribute('tabindex', '-1');
+
+    fireEvent.click(row);
+    fireEvent.keyDown(row, { key: 'Enter' });
+    fireEvent.keyUp(row, { key: ' ' });
+
+    expect(onClick).not.toHaveBeenCalled();
   });
 });
