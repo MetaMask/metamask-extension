@@ -92,6 +92,7 @@ import {
   getPriceImpactNumber,
   getTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
+import { isArcTokenUSDC } from '../../components/app/assets/enablement/arc';
 import {
   getInternalAccountsByScope,
   getInternalAccountByAddress,
@@ -234,16 +235,29 @@ const getChainRanking = (state: BridgeAppState) =>
 const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
   {
     'eip155:143': '10',
+    // Arc: reserve pays gas only for ONE swap-or-bridge + its approve
+    // (~528k gas worst case). The 0.875% MetaMask fee is taken from the swap
+    // amount, not this native balance, so it's excluded here.
+    // 0.05 = ~5x base-fee-spike headroom over the 20 gwei floor.
+    'eip155:5042': '0.05',
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
 
 const getMinimumReserveBalanceForCaipAssetId = (
   caipAssetId?: CaipAssetType,
 ): string => {
-  if (!caipAssetId || !isNativeAddress(caipAssetId)) {
+  if (!caipAssetId) {
     return '0';
   }
   const { chainId } = parseCaipAssetType(caipAssetId);
+  if (isArcTokenUSDC(caipAssetId)) {
+    return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
+  }
+
+  if (!isNativeAddress(caipAssetId)) {
+    return '0';
+  }
+
   return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
 };
 
@@ -274,7 +288,7 @@ const buildInsufficientNativeReserveError = ({
     nativeBalance &&
     validatedSrcAmount &&
     fromToken &&
-    isNativeAddress(fromToken.assetId) &&
+    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId)) &&
     normalizedMaxSwappableNativeBalance.lt(validatedSrcAmount)
     ? {
         minimumNativeBalanceToBeKeptInAccount,
@@ -955,9 +969,14 @@ export const getInsufficientNativeReserveError = createSelector(
     const isBitcoinNativeReserveChain = Boolean(
       fromToken?.chainId && isBitcoinChainId(fromToken.chainId),
     );
+    const isArcUsdcReserveToken = Boolean(
+      fromToken?.assetId && isArcTokenUSDC(fromToken.assetId),
+    );
     const shouldApplyNativeReserve =
       minimumNativeReserveBalance !== '0' &&
-      (isNetworkGasSponsored || isBitcoinNativeReserveChain);
+      (isNetworkGasSponsored ||
+        isBitcoinNativeReserveChain ||
+        isArcUsdcReserveToken);
 
     const minimumNativeBalanceToBeKeptInAccount = shouldApplyNativeReserve
       ? minimumNativeReserveBalance
@@ -1057,7 +1076,7 @@ export const getQuoteRequestInsufficientBal = createSelector(
     ),
 );
 
-const getQuoteStreamComplete = (state: BridgeAppState) =>
+export const getQuoteStreamComplete = (state: BridgeAppState) =>
   state.metamask.quoteStreamComplete;
 
 /**

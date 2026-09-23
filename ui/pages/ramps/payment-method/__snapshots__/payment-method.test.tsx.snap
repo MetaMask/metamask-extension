@@ -1134,7 +1134,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full shadow-lg motion-safe:animate-slide-up max-w-[480px] rounded-[32px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -1147,7 +1147,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div

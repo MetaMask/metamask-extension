@@ -5,6 +5,10 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import {
+  registerMoneyBatchTransaction,
+  resetMoneyBatchRegistry,
+} from '../../../helpers/money/money-batch-registry';
+import {
   dismissToast,
   showFailedToast,
   showPendingToast,
@@ -80,6 +84,7 @@ function mountHook() {
 describe('useTransactionEventToasts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetMoneyBatchRegistry();
     mockGetState.mockReturnValue({
       metamask: { transactions: [] },
     });
@@ -387,6 +392,24 @@ describe('useTransactionEventToasts', () => {
             }),
           ],
         },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'relay-submitted',
+          status: TransactionStatus.submitted,
+          type: TransactionType.relayDeposit,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('does not toast pay funding txs registered as money-batch children', () => {
+      registerMoneyBatchTransaction({
+        id: 'money-deposit',
+        requiredTransactionIds: ['relay-submitted'],
       });
       const { handlers } = mountHook();
 
