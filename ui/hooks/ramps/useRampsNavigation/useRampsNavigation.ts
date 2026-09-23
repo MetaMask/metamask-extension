@@ -81,10 +81,8 @@ function isCatalogEmpty(
 }
 
 // Finds `assetId` in the catalog, resolving it to the catalog's canonical
-// spelling: callers may build asset ids from a checksummed address while the
-// API returns a mix of checksummed (USDC, USDT) and lowercase (mUSD) ids, and
-// deep link intents express native assets with the `slip44:.` placeholder
-// while the catalog uses `slip44:{coinType}` (e.g. `eip155:1/slip44:60`).
+// spelling: caller ids may differ in address casing, and deep link intents
+// use the `slip44:.` native placeholder vs the catalog's `slip44:{coinType}`.
 function findCatalogToken(
   tokensData: TokensResponse | null,
   assetId: CaipAssetType,

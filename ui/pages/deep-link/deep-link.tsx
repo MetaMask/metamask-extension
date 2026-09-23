@@ -109,9 +109,8 @@ async function updateStateFromUrl(
     if (parsed) {
       const { destination } = parsed;
 
-      // Route-specific destination resolution — e.g. routing `/buy` into the
-      // in-app unified buy flow when the `rampsEnabled` flag is on. The
-      // interstitial policy above is unaffected.
+      // Route-specific destination resolution (e.g. `/buy` into the in-app
+      // unified buy flow). The interstitial policy above is unaffected.
       const resolvedDestination = resolveBuyDeepLinkDestination({
         route: parsed.route,
         destination,
