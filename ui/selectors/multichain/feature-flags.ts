@@ -4,7 +4,10 @@ import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
-import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
+import {
+  TOKEN_DETAILS_ADVANCED_CHARTS_FLAG,
+  TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG,
+} from '../../../shared/lib/assets/advanced-charts-feature-flags';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 export {
@@ -190,6 +193,25 @@ export const getIsAdvancedChartsEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) => {
     const rawFlagValue = remoteFeatureFlags[TOKEN_DETAILS_ADVANCED_CHARTS_FLAG];
+    return getBooleanFeatureFlag(rawFlagValue, false);
+  },
+);
+
+/**
+ * Selector that returns whether ambient theming should be applied to
+ * advanced charts on the Token Details Page.
+ *
+ * When enabled, chart candles/line and price header percent text are colored
+ * based on price direction: green for bullish (up), orange for bearish (down).
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True when ambient chart theming should be applied.
+ */
+export const getIsAdvancedChartsThemingEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) => {
+    const rawFlagValue =
+      remoteFeatureFlags[TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG];
     return getBooleanFeatureFlag(rawFlagValue, false);
   },
 );

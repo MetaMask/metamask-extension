@@ -11,10 +11,6 @@
 
 import { brandColor } from '@metamask/design-tokens';
 
-// TODO: Replace with proper LaunchDarkly remote feature flag
-// matching mobile's `assetsASSETS3205AbtestAmbientPriceColor`
-export const ENABLE_AMBIENT_CHART_THEMING = true;
-
 /**
  * Amber/orange color for bearish (price decrease) direction.
  * Matches mobile's `AMBIENT_NEGATIVE_COLOR` from `abTestConfig.ts`.

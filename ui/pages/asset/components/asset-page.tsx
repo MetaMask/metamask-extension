@@ -73,7 +73,10 @@ import {
   getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
-import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
+import {
+  getIsAdvancedChartsEnabled,
+  getIsAdvancedChartsThemingEnabled,
+} from '../../../selectors/multichain/feature-flags';
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
@@ -119,7 +122,6 @@ import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
 import { useOHLCVChart } from './chart/useOHLCVChart';
 import { useOHLCVPriceData } from './chart/useOHLCVPriceData';
 import {
-  ENABLE_AMBIENT_CHART_THEMING,
   AMBIENT_NEGATIVE_COLOR,
   getAmbientColor,
   getAmbientSuccessColor,
@@ -198,6 +200,9 @@ const AssetPage = ({
 
   // Advanced chart state — preferences persisted via PreferencesController.
   const isAdvancedChartsEnabled = useSelector(getIsAdvancedChartsEnabled);
+  const isAdvancedChartsThemingEnabled = useSelector(
+    getIsAdvancedChartsThemingEnabled,
+  );
   const [advancedChartError, setAdvancedChartError] = useState<string | null>(
     null,
   );
@@ -391,7 +396,7 @@ const AssetPage = ({
   const isDark = theme === 'dark';
 
   const initialAmbientColor = useMemo(() => {
-    if (!ENABLE_AMBIENT_CHART_THEMING || !isAdvancedChartsEnabled) {
+    if (!isAdvancedChartsThemingEnabled || !isAdvancedChartsEnabled) {
       return undefined;
     }
     if (ohlcvPercentChange === undefined) {
@@ -399,7 +404,12 @@ const AssetPage = ({
     }
     const isPositive = ohlcvPercentChange >= 0;
     return getAmbientColor(isPositive, isDark);
-  }, [ohlcvPercentChange, isDark, isAdvancedChartsEnabled]);
+  }, [
+    ohlcvPercentChange,
+    isDark,
+    isAdvancedChartsEnabled,
+    isAdvancedChartsThemingEnabled,
+  ]);
 
   const ambientSuccessColor = useMemo(() => {
     if (!initialAmbientColor) {

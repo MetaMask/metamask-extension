@@ -1,7 +1,6 @@
 import { brandColor } from '@metamask/design-tokens';
 
 import {
-  ENABLE_AMBIENT_CHART_THEMING,
   AMBIENT_NEGATIVE_COLOR,
   LIGHT_MODE_SUCCESS_GREEN,
   DARK_MODE_SUCCESS_GREEN,
@@ -11,10 +10,6 @@ import {
 
 describe('chart-theme-config', () => {
   describe('constants', () => {
-    it('exports the ambient theming feature flag', () => {
-      expect(typeof ENABLE_AMBIENT_CHART_THEMING).toBe('boolean');
-    });
-
     it('exports AMBIENT_NEGATIVE_COLOR from design-system orange400', () => {
       expect(AMBIENT_NEGATIVE_COLOR).toBe(brandColor.orange400);
     });
