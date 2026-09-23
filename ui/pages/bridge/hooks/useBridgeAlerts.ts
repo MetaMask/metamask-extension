@@ -237,12 +237,22 @@ export const useBridgeAlerts = () => {
       insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
         '0',
     );
+    const shouldShowInsufficientGasAlert =
+      isInsufficientGasForQuote || hasArcInsufficientNativeReserve;
+    const insufficientNativeReserveAlert =
+      !isInsufficientBalance &&
+      !shouldShowInsufficientGasAlert &&
+      insufficientNativeReserveError &&
+      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+        '0'
+        ? insufficientNativeReserveError
+        : undefined;
 
     if (
       !isLoading &&
       activeQuote &&
       !isInsufficientBalance &&
-      (isInsufficientGasForQuote || hasArcInsufficientNativeReserve)
+      shouldShowInsufficientGasAlert
     ) {
       categorizeAlert({
         id: 'insufficient-gas',
@@ -313,22 +323,15 @@ export const useBridgeAlerts = () => {
       }
     }
 
-    if (
-      !isInsufficientBalance &&
-      !isInsufficientGasForQuote &&
-      !hasArcInsufficientNativeReserve &&
-      insufficientNativeReserveError &&
-      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
-        '0'
-    ) {
+    if (insufficientNativeReserveAlert) {
       categorizeAlert({
         id: 'insufficient-native-reserve',
         isDismissable: false,
         severity: 'warning',
         title: t('bridgeValidationInsufficientNativeReserveTitle', [ticker]),
         description: t('bridgeValidationInsufficientNativeReserveMessage', [
-          insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
-          insufficientNativeReserveError.maxSwappableNativeBalance,
+          insufficientNativeReserveAlert.minimumNativeBalanceToBeKeptInAccount,
+          insufficientNativeReserveAlert.maxSwappableNativeBalance,
           ticker,
         ]),
         isConfirmationAlert: false,
@@ -340,7 +343,7 @@ export const useBridgeAlerts = () => {
           actionButtonOnClick: () =>
             dispatch(
               setFromTokenInputValue(
-                insufficientNativeReserveError.maxSwappableNativeBalance,
+                insufficientNativeReserveAlert.maxSwappableNativeBalance,
               ),
             ),
         },

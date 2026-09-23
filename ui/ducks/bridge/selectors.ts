@@ -243,21 +243,20 @@ const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
 
+function isNativeAsset(assetId: CaipAssetType) {
+  return isNativeAddress(assetId) || isArcTokenUSDC(assetId);
+}
+
 const getMinimumReserveBalanceForCaipAssetId = (
   caipAssetId?: CaipAssetType,
 ): string => {
-  if (!caipAssetId) {
+  if (
+    !caipAssetId ||
+    (!isNativeAddress(caipAssetId) && !isArcTokenUSDC(caipAssetId))
+  ) {
     return '0';
   }
   const { chainId } = parseCaipAssetType(caipAssetId);
-  if (isArcTokenUSDC(caipAssetId)) {
-    return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
-  }
-
-  if (!isNativeAddress(caipAssetId)) {
-    return '0';
-  }
-
   return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
 };
 
@@ -288,7 +287,7 @@ const buildInsufficientNativeReserveError = ({
     nativeBalance &&
     validatedSrcAmount &&
     fromToken &&
-    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId)) &&
+    isNativeAsset(fromToken.assetId) &&
     normalizedMaxSwappableNativeBalance.lt(validatedSrcAmount)
     ? {
         minimumNativeBalanceToBeKeptInAccount,
