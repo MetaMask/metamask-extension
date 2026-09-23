@@ -221,7 +221,7 @@ const TokenPriceHeader = ({
       : '';
 
   const formattedPrice =
-    price !== undefined ? formatCurrencyTokenPrice(price, currency) : '';
+    price === undefined ? '' : formatCurrencyTokenPrice(price, currency);
 
   return (
     <Box marginLeft={4} marginRight={4}>
