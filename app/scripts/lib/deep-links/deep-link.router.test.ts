@@ -500,6 +500,7 @@ describe('DeepLinkRouter', () => {
       const BUY_URL = 'https://example.com/buy?address=0xabc&chainId=1';
       const BUY_PORTFOLIO_DESTINATION =
         'https://app.metamask.io/buy?address=0xabc&chainId=1';
+      const BUY_ENTRY_URL = `${EXTENSION_HOME}#/ramps/buy-deeplink-entry?address=0xabc&chainId=1`;
 
       const arrangeBuyLink = (): ParsedDeepLink =>
         ({
@@ -517,50 +518,36 @@ describe('DeepLinkRouter', () => {
         } as unknown as ReturnType<MetaMaskController['getState']>);
       };
 
+      const arrangeRequest = (url: string = BUY_URL) =>
+        onBeforeRequest?.({
+          tabId: 1,
+          url,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
       it.each([
-        ['a plain boolean', { rampsEnabled: true }],
+        ['a plain boolean', { rampsEnabled: true }, BUY_ENTRY_URL],
         [
           'a version-gated flag',
           { rampsEnabled: { enabled: true, minimumVersion: '13.48.0' } },
+          BUY_ENTRY_URL,
         ],
+        ['off', { rampsEnabled: false }, BUY_PORTFOLIO_DESTINATION],
+        ['missing from state', {}, BUY_PORTFOLIO_DESTINATION],
       ])(
-        'routes /buy to the in-app buy deep link entry when rampsEnabled is %s',
-        async (_label, remoteFeatureFlags) => {
+        'resolves /buy predictably when rampsEnabled is %s',
+        async (_label, remoteFeatureFlags, expectedUrl) => {
           arrangeState(remoteFeatureFlags);
           parseMock.mockResolvedValue(arrangeBuyLink());
 
-          await onBeforeRequest?.({
-            tabId: 1,
-            url: BUY_URL,
-          } as browser.WebRequest.OnBeforeRequestDetailsType);
+          await arrangeRequest();
 
           expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-            url: `${EXTENSION_HOME}#/ramps/buy-deeplink-entry?address=0xabc&chainId=1`,
+            url: expectedUrl,
           });
         },
       );
 
       it.each([
-        ['off', { rampsEnabled: false }],
-        ['missing from state', {}],
-      ])(
-        'keeps the external redirect for /buy when rampsEnabled is %s',
-        async (_label, remoteFeatureFlags) => {
-          arrangeState(remoteFeatureFlags);
-          parseMock.mockResolvedValue(arrangeBuyLink());
-
-          await onBeforeRequest?.({
-            tabId: 1,
-            url: BUY_URL,
-          } as browser.WebRequest.OnBeforeRequestDetailsType);
-
-          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-            url: BUY_PORTFOLIO_DESTINATION,
-          });
-        },
-      );
-
-      const otherRoutesCases: [string, ParsedDeepLink, string, string][] = [
         [
           'does not reroute other redirecting routes when rampsEnabled is on',
           {
@@ -579,23 +566,16 @@ describe('DeepLinkRouter', () => {
           BUY_URL,
           `${EXTENSION_HOME}#link?u=%2Fbuy%3Faddress%3D0xabc%26chainId%3D1`,
         ],
-      ];
-      it.each(otherRoutesCases)(
-        '%s',
-        async (_label, parsed, url, expectedUrl) => {
-          arrangeState({ rampsEnabled: true });
-          parseMock.mockResolvedValue(parsed);
+      ])('%s', async (_label, parsed, url, expectedUrl) => {
+        arrangeState({ rampsEnabled: true });
+        parseMock.mockResolvedValue(parsed);
 
-          await onBeforeRequest?.({
-            tabId: 1,
-            url,
-          } as browser.WebRequest.OnBeforeRequestDetailsType);
+        await arrangeRequest(url);
 
-          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-            url: expectedUrl,
-          });
-        },
-      );
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: expectedUrl,
+        });
+      });
     });
 
     describe('resolveRequestOrigin', () => {

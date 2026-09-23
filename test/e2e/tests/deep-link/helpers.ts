@@ -319,7 +319,6 @@ export const REDIRECT_ROUTES = [
  * Mocks the ramps catalog endpoints (region token and provider lists) with
  * empty results, so the buy flow's eligibility gate shows its unsupported
  * modal deterministically and no unmocked pass-through requests occur.
- *
  * @param server - The Mockttp server instance.
  */
 export const mockRampsEmptyCatalog = async (server: Mockttp): Promise<void> => {
