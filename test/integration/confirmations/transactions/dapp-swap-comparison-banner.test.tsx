@@ -35,19 +35,6 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-// This branch still calls usePureBlack / PureBlackProvider, which the
-// installed @metamask/design-system-react no longer exports.
-jest.mock('@metamask/design-system-react', () => {
-  const actual = jest.requireActual('@metamask/design-system-react');
-  return {
-    ...actual,
-    PureBlackProvider:
-      actual.PureBlackProvider ??
-      (({ children }: { children: unknown }) => children),
-    usePureBlack: actual.usePureBlack ?? jest.fn(() => false),
-  };
-});
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
