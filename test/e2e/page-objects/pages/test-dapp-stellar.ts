@@ -7,38 +7,29 @@ const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappStellar {
-  private readonly driver: Driver;
+  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
 
-  private readonly headerConnectionStateSelector = {
-    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
-    text: 'Connected',
-  };
+  private readonly driver: Driver;
 
   private readonly headerConnectionNotConnectedStateSelector = {
     css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
     text: 'Not connected',
   };
 
-  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
-
-  private readonly walletModalSelector = '.stellar-wallets-kit';
+  private readonly headerConnectionStateSelector = {
+    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
+    text: 'Connected',
+  };
 
   private readonly metaMaskWalletButtonSelector = {
     css: '.stellar-wallets-kit li',
     text: 'MetaMask',
   };
 
+  private readonly walletModalSelector = '.stellar-wallets-kit';
+
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async openTestDappPage({
-    url = DAPP_URL,
-  }: {
-    url?: string;
-  } = {}): Promise<void> {
-    await this.driver.openNewPage(url);
-    await this.checkPageIsLoaded();
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -56,11 +47,6 @@ export class TestDappStellar {
     console.log('Stellar Test Dapp page is loaded');
   }
 
-  async switchTo() {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.StellarTestDApp);
-    await this.checkPageIsLoaded();
-  }
-
   async connect() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.header.connect,
@@ -75,14 +61,11 @@ export class TestDappStellar {
     });
   }
 
-  async getWalletModal() {
-    await this.driver.waitForSelector(this.walletModalSelector);
-
-    return {
-      connectToMetaMaskWallet: async () => {
-        await this.driver.clickElement(this.metaMaskWalletButtonSelector);
-      },
-    };
+  async findConnectedAccount(account: string) {
+    await this.driver.findElement({
+      css: this.connectedAccountSelectorTestId,
+      text: account,
+    });
   }
 
   async findHeaderConnectedState() {
@@ -95,11 +78,50 @@ export class TestDappStellar {
     );
   }
 
-  async findConnectedAccount(account: string) {
-    await this.driver.findElement({
-      css: this.connectedAccountSelectorTestId,
-      text: account,
+  async getSignedAuthEntry(): Promise<string> {
+    const signedAuthEntryElement = await this.driver.waitForSelector(
+      `[data-testid="${dataTestIds.testPage.signAuthEntry.signedAuthEntry}"]`,
+    );
+    return signedAuthEntryElement.getText();
+  }
+
+  async getSignedMessage(): Promise<string> {
+    const signedMessageElement = await this.driver.waitForSelector(
+      `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`,
+    );
+    return signedMessageElement.getText();
+  }
+
+  async getSignedTransaction(): Promise<string> {
+    const signedTransactionElement = await this.driver.waitForSelector(
+      `[data-testid="${dataTestIds.testPage.signTransaction.signedTransaction}"]`,
+    );
+    return signedTransactionElement.getText();
+  }
+
+  async getWalletModal() {
+    await this.driver.waitForSelector(this.walletModalSelector);
+
+    return {
+      connectToMetaMaskWallet: async () => {
+        await this.driver.clickElement(this.metaMaskWalletButtonSelector);
+      },
+    };
+  }
+
+  async loadExampleXdr() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.signTransaction.loadExampleXdr,
     });
+  }
+
+  async openTestDappPage({
+    url = DAPP_URL,
+  }: {
+    url?: string;
+  } = {}): Promise<void> {
+    await this.driver.openNewPage(url);
+    await this.checkPageIsLoaded();
   }
 
   async selectNetwork(networkKey: 'pubnet' | 'testnet' | 'futurenet') {
@@ -115,49 +137,17 @@ export class TestDappStellar {
     );
   }
 
-  async setMessage(message: string) {
-    await this.driver.fill(
-      { testId: dataTestIds.testPage.signMessage.message },
-      message,
-    );
-  }
-
-  async signMessage() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signMessage.signMessage,
-    });
-  }
-
-  async getSignedMessage(): Promise<string> {
-    const signedMessageElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`,
-    );
-    return signedMessageElement.getText();
-  }
-
-  async loadExampleXdr() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signTransaction.loadExampleXdr,
-    });
-  }
-
-  async signTransaction() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signTransaction.signTransaction,
-    });
-  }
-
-  async getSignedTransaction(): Promise<string> {
-    const signedTransactionElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signTransaction.signedTransaction}"]`,
-    );
-    return signedTransactionElement.getText();
-  }
-
   async setAuthEntry(authEntry: string) {
     await this.driver.fill(
       { testId: dataTestIds.testPage.signAuthEntry.authEntry },
       authEntry,
+    );
+  }
+
+  async setMessage(message: string) {
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.signMessage.message },
+      message,
     );
   }
 
@@ -167,17 +157,21 @@ export class TestDappStellar {
     });
   }
 
-  async getSignedAuthEntry(): Promise<string> {
-    const signedAuthEntryElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signAuthEntry.signedAuthEntry}"]`,
-    );
-    return signedAuthEntryElement.getText();
+  async signMessage() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.signMessage.signMessage,
+    });
   }
 
-  async verifySignedTransactionDiffersFrom(unsignedXdr: string) {
-    const signedTransaction = await this.getSignedTransaction();
-    assert.ok(signedTransaction.length > 0);
-    assert.notStrictEqual(signedTransaction, unsignedXdr);
+  async signTransaction() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.signTransaction.signTransaction,
+    });
+  }
+
+  async switchTo() {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.StellarTestDApp);
+    await this.checkPageIsLoaded();
   }
 
   async verifySelectedNetwork(networkKey: 'pubnet' | 'testnet' | 'futurenet') {
@@ -186,5 +180,11 @@ export class TestDappStellar {
     });
     const value = await selectEl.getAttribute('value');
     assert.strictEqual(value, networkKey);
+  }
+
+  async verifySignedTransactionDiffersFrom(unsignedXdr: string) {
+    const signedTransaction = await this.getSignedTransaction();
+    assert.ok(signedTransaction.length > 0);
+    assert.notStrictEqual(signedTransaction, unsignedXdr);
   }
 }
