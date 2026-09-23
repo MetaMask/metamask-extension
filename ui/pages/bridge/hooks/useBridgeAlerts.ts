@@ -233,18 +233,18 @@ export const useBridgeAlerts = () => {
 
     const hasArcInsufficientNativeReserve = Boolean(
       fromChain?.chainId === ARC_NATIVE_CAIP_CHAIN_ID &&
-        insufficientNativeReserveError &&
-        insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
-          '0',
+      insufficientNativeReserveError &&
+      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+        '0',
     );
     const shouldShowInsufficientGasAlert =
       isInsufficientGasForQuote || hasArcInsufficientNativeReserve;
     const shouldShowInsufficientNativeReserveAlert = Boolean(
       !isInsufficientBalance &&
-        !shouldShowInsufficientGasAlert &&
-        insufficientNativeReserveError &&
-        insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
-          '0',
+      !shouldShowInsufficientGasAlert &&
+      insufficientNativeReserveError &&
+      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+        '0',
     );
 
     if (

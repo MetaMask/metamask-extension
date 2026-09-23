@@ -142,11 +142,6 @@
       "count": 1
     }
   },
-  "ui/components/ui/check-box/check-box.component.js": {
-    "react-hooks/immutability": {
-      "count": 1
-    }
-  },
   "ui/components/ui/form-combo-field/form-combo-field.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 3
