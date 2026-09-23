@@ -111,9 +111,14 @@ async function getTransactionApprovalDecision(
   });
   const { isHardwareWalletAccount, isSmartTransaction } =
     getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+  const isMoneyAccountDeposit = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountDeposit,
+  ]);
   const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
   ]);
+  const isMoneyAccountTransaction =
+    isMoneyAccountDeposit || isMoneyAccountWithdraw;
   const hasTransactionPayQuotes = Boolean(
     flatState.transactionData?.[transactionMeta.id]?.quotes?.some(
       (quote) => quote.strategy !== TransactionPayStrategy.None,
@@ -122,7 +127,7 @@ async function getTransactionApprovalDecision(
   const hasSelectedGasFeeToken =
     Boolean(transactionMeta.selectedGasFeeToken) &&
     !transactionMeta.isGasFeeTokenIgnoredIfBalance;
-  const isSponsorshipAvailable = isMoneyAccountWithdraw
+  const isSponsorshipAvailable = isMoneyAccountTransaction
     ? Boolean(transactionMeta.isGasFeeSponsored)
     : Boolean(transactionMeta.isGasFeeSponsoredAvailable);
   const isSponsorshipOptedOut = Boolean(
@@ -137,7 +142,7 @@ async function getTransactionApprovalDecision(
     (await isSendBundleSupported(transactionMeta.chainId));
   const shouldCheck7702AccountSupport =
     !isHardwareWalletAccount &&
-    !isMoneyAccountWithdraw &&
+    !isMoneyAccountTransaction &&
     (hasSelectedGasFeeToken ||
       (shouldCheckSponsorship && !isSmartTransactionAndBundleSupported));
   const is7702AccountSupported =
@@ -171,7 +176,7 @@ async function getTransactionApprovalDecision(
     shouldCheckSponsorship &&
     (isSmartTransactionAndBundleSupported ||
       is7702SponsorshipSupported ||
-      isMoneyAccountWithdraw);
+      isMoneyAccountTransaction);
 
   if (isMoneyAccountWithdraw && !sponsorshipEnabled) {
     throw new Error('Required transaction sponsorship is unavailable');
