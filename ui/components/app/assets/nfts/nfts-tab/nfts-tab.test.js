@@ -343,7 +343,7 @@ describe('NFT Items', () => {
   });
 
   describe('Sort control', () => {
-    it('renders the sort control when the account has NFTs', async () => {
+    it('does not render the sort control', async () => {
       await act(async () =>
         render({
           selectedAddress: ACCOUNT_1,
@@ -351,18 +351,6 @@ describe('NFT Items', () => {
           useNftDetection: true,
         }),
       );
-      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
-    });
-
-    it('does not render the sort control when the empty state is shown', async () => {
-      await act(async () =>
-        render({
-          selectedAddress: ACCOUNT_1,
-          nfts: [],
-          useNftDetection: true,
-        }),
-      );
-      expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
       expect(
         screen.queryByTestId('sort-by-popover-toggle'),
       ).not.toBeInTheDocument();

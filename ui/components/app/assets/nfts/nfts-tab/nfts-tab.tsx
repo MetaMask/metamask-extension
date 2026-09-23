@@ -72,7 +72,7 @@ export default function NftsTab({
     <>
       <Box>
         <AssetListControlBar
-          showSortControl={hasNftsToShow}
+          showSortControl={false}
           data-testid="parent-selector-nfts-tab"
         />
       </Box>
