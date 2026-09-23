@@ -120,6 +120,7 @@ export const CHAIN_IDS = {
   TEMPO_MAINNET: '0x1079',
   STABLE_MAINNET: '0x3dc',
   MANTLE: '0x1388',
+  BIGHIVE: '0x426',
   KONET: '0x4341',
   ARC: '0x13b2',
   ROBINHOOD_CHAIN: '0x1237',
