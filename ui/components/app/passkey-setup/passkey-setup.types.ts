@@ -1,3 +1,5 @@
+import type { PasskeyStage } from '../../../../shared/constants/passkey';
+
 export type SetupPasskeyContentProps = {
   readonly onNext: () => void | Promise<void>;
   readonly onSkip?: () => void | Promise<void>;
@@ -7,9 +9,7 @@ export type SetupPasskeyContentProps = {
   readonly isPrfMigration?: boolean;
 };
 
-export type PasskeySetupStage = 'register' | 'verify' | 'enroll';
-
 export type PasskeySetupOperation = (options: {
   password?: string;
-  onStageChange?: (stage: PasskeySetupStage) => void;
+  onStageChange?: (stage: PasskeyStage) => void;
 }) => Promise<void>;

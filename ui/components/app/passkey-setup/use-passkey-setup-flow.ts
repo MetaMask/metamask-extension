@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PASSKEY_STAGES } from '../../../../shared/constants/passkey';
 import {
   getFirstTimeFlowType,
   getIsPasskeyRegistered,
@@ -124,6 +125,26 @@ export function usePasskeySetupFlow({
     [accountTypeForMetrics],
   );
 
+  const trackPasskeyEvent = useCallback(
+    (
+      eventName: MetaMetricsEventName,
+      status: string,
+      additionalProperties: Record<string, unknown> = {},
+    ) => {
+      trackEvent(
+        createEventBuilder(eventName)
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .addProperties({
+            ...baseProperties,
+            status,
+            ...additionalProperties,
+          })
+          .build(),
+      );
+    },
+    [baseProperties, createEventBuilder, trackEvent],
+  );
+
   const goToNextStep = useCallback(() => {
     if (hasAdvancedRef.current) {
       return;
@@ -152,16 +173,8 @@ export function usePasskeySetupFlow({
     }
 
     hasTrackedView.current = true;
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyOnboardingSetup)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          ...baseProperties,
-          status: 'viewed',
-        })
-        .build(),
-    );
-  }, [baseProperties, isPasskeyRegistered, trackEvent, createEventBuilder]);
+    trackPasskeyEvent(MetaMetricsEventName.PasskeyOnboardingSetup, 'viewed');
+  }, [isPasskeyRegistered, trackPasskeyEvent]);
 
   useEffect(() => {
     if (!isPasskeyRegistered || isEnrollmentInProgress) {
@@ -172,15 +185,7 @@ export function usePasskeySetupFlow({
   }, [goToNextStep, isEnrollmentInProgress, isPasskeyRegistered]);
 
   const handleMaybeLater = () => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeyOnboardingSetup)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          ...baseProperties,
-          status: 'skipped',
-        })
-        .build(),
-    );
+    trackPasskeyEvent(MetaMetricsEventName.PasskeyOnboardingSetup, 'skipped');
 
     if (onSkip) {
       Promise.resolve(onSkip()).catch(() => undefined);
@@ -190,89 +195,24 @@ export function usePasskeySetupFlow({
     goToNextStep();
   };
 
-  const handleSetupPasskey = useCallback(async () => {
-    const enrollmentStartedAt = Date.now();
-    let currentStep = 'register';
+  const refreshPasskeySetupState = useCallback(async () => {
+    const newMetamaskState = await forceUpdateMetamaskState(dispatch);
+    setVerifyStepPhase('success');
+    return newMetamaskState;
+  }, [dispatch]);
 
-    setEnrollmentError(null);
-    setIsPrfMigrationError(false);
-    setRegisterStepPhase('loading');
-    setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
-    setIsEnrollmentInProgress(true);
-
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PasskeySetup)
-        .addCategory(MetaMetricsEventCategory.Onboarding)
-        .addProperties({
-          ...baseProperties,
-          status: 'started',
-        })
-        .build(),
-    );
-
-    try {
-      await setupPasskey({
-        password,
-        onStageChange: (stage) => {
-          currentStep = stage;
-          if (stage === 'verify') {
-            setRegisterStepPhase('success');
-            setVerifyStepPhase('loading');
-          }
-        },
-      });
-
-      const newMetamaskState = await forceUpdateMetamaskState(dispatch);
-      setVerifyStepPhase('success');
-
-      currentStep = 'complete';
-      const derivationMethod = getPasskeyDerivationMethod({
-        metamask: newMetamaskState,
-      });
-      const authenticatorId = getPasskeyAuthenticatorId({
-        metamask: newMetamaskState,
-      });
-
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasskeySetup)
-          .addCategory(MetaMetricsEventCategory.Onboarding)
-          .addProperties({
-            ...baseProperties,
-            status: 'completed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: derivationMethod,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            authenticator_id: authenticatorId,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - enrollmentStartedAt,
-          })
-          .build(),
-      );
-
-      await new Promise((resolve) => {
-        setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
-      });
-
-      if (isMountedRef.current) {
-        goToNextStep();
-      }
-    } catch (error) {
+  const handlePasskeySetupError = useCallback(
+    (error: unknown, currentStep: string, enrollmentStartedAt: number) => {
       const durationMs = Date.now() - enrollmentStartedAt;
+
       if (isPasskeyCeremonySilentError(error)) {
         log.debug('Passkey enrollment ceremony cancelled or timed out', error);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.PasskeySetup)
-            .addCategory(MetaMetricsEventCategory.Onboarding)
-            .addProperties({
-              ...baseProperties,
-              status: 'cancelled',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              current_step: currentStep,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              duration_ms: durationMs,
-            })
-            .build(),
-        );
+        trackPasskeyEvent(MetaMetricsEventName.PasskeySetup, 'cancelled', {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          current_step: currentStep,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: durationMs,
+        });
 
         if (isMountedRef.current) {
           setRegisterStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
@@ -299,20 +239,13 @@ export function usePasskeySetupFlow({
           extra: { currentStep, durationMs, errorCode },
         },
       );
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.PasskeySetup)
-          .addCategory(MetaMetricsEventCategory.Onboarding)
-          .addProperties({
-            ...baseProperties,
-            status: 'failed',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            error_step: currentStep,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: durationMs,
-            reason: errorCode,
-          })
-          .build(),
-      );
+      trackPasskeyEvent(MetaMetricsEventName.PasskeySetup, 'failed', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_step: currentStep,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        duration_ms: durationMs,
+        reason: errorCode,
+      });
 
       if (isMountedRef.current) {
         setEnrollmentError(
@@ -320,6 +253,62 @@ export function usePasskeySetupFlow({
             t('passkeyErrorRegistrationFailed', [passkeyMethodLabel]),
         );
       }
+    },
+    [isPrfMigration, passkeyMethodLabel, t, trackPasskeyEvent],
+  );
+
+  const handleSetupPasskey = useCallback(async () => {
+    const enrollmentStartedAt = Date.now();
+    let currentStep: string = PASSKEY_STAGES.REGISTER;
+
+    setEnrollmentError(null);
+    setIsPrfMigrationError(false);
+    setRegisterStepPhase('loading');
+    setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+    setIsEnrollmentInProgress(true);
+
+    trackPasskeyEvent(MetaMetricsEventName.PasskeySetup, 'started');
+
+    try {
+      await setupPasskey({
+        password,
+        onStageChange: (stage) => {
+          currentStep = stage;
+          if (stage === PASSKEY_STAGES.VERIFY) {
+            setRegisterStepPhase('success');
+            setVerifyStepPhase('loading');
+          }
+        },
+      });
+
+      const newMetamaskState = await refreshPasskeySetupState();
+
+      currentStep = PASSKEY_STAGES.COMPLETE;
+      const derivationMethod = getPasskeyDerivationMethod({
+        metamask: newMetamaskState,
+      });
+      const authenticatorId = getPasskeyAuthenticatorId({
+        metamask: newMetamaskState,
+      });
+
+      trackPasskeyEvent(MetaMetricsEventName.PasskeySetup, 'completed', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        derivation_method: derivationMethod,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        authenticator_id: authenticatorId,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        duration_ms: Date.now() - enrollmentStartedAt,
+      });
+
+      await new Promise((resolve) => {
+        setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
+      });
+
+      if (isMountedRef.current) {
+        goToNextStep();
+      }
+    } catch (error) {
+      handlePasskeySetupError(error, currentStep, enrollmentStartedAt);
     } finally {
       if (isMountedRef.current) {
         setIsEnrollmentInProgress(false);
@@ -328,16 +317,12 @@ export function usePasskeySetupFlow({
       }
     }
   }, [
-    baseProperties,
-    dispatch,
-    setupPasskey,
     goToNextStep,
-    t,
-    passkeyMethodLabel,
-    trackEvent,
-    createEventBuilder,
+    handlePasskeySetupError,
+    refreshPasskeySetupState,
     password,
-    isPrfMigration,
+    setupPasskey,
+    trackPasskeyEvent,
   ]);
 
   return {

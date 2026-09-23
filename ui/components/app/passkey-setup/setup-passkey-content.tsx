@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { PASSKEY_STAGES } from '../../../../shared/constants/passkey';
 import { usePasskeyEnrollment } from '../../../hooks/passkey/usePasskeyEnrollment';
 import { usePasskeyPrfMigration } from '../../../hooks/passkey/usePasskeyPrfMigration';
 import { PasskeySetupView } from './passkey-setup-view';
@@ -53,7 +54,7 @@ function PasskeyMigrationSetup(props: SetupPasskeyContentProps) {
     async ({ onStageChange }) => {
       await replacePasskey({
         onStageChange: (stage) => {
-          if (stage === 'complete') {
+          if (stage === PASSKEY_STAGES.COMPLETE) {
             return;
           }
 

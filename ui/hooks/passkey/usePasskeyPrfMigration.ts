@@ -9,6 +9,10 @@ import {
   startPasskeyRegistration,
 } from '../../../shared/lib/passkey';
 import {
+  PASSKEY_STAGES,
+  type PasskeyStage,
+} from '../../../shared/constants/passkey';
+import {
   hasPasskeyPRFResult,
   PasskeyPRFRequiredError,
 } from '../../../shared/lib/passkey/passkey-capabilities';
@@ -25,10 +29,8 @@ type PasskeyReplacementMessenger = RouteMessenger<
   never
 >;
 
-export type PasskeyReplacementStage = 'register' | 'verify' | 'complete';
-
 export type ReplacePasskeyParams = {
-  onStageChange?: (stage: PasskeyReplacementStage) => void;
+  onStageChange?: (stage: PasskeyStage) => void;
 };
 
 /**
@@ -68,7 +70,7 @@ export function usePasskeyPrfMigration() {
 
   const replacePasskey = useCallback(
     async ({ onStageChange }: ReplacePasskeyParams = {}) => {
-      onStageChange?.('register');
+      onStageChange?.(PASSKEY_STAGES.REGISTER);
 
       const registrationOptions = await messenger.call(
         'PasskeyController:generatePasskeyReplacementRegistrationOptions',
@@ -87,7 +89,7 @@ export function usePasskeyPrfMigration() {
           return;
         }
 
-        onStageChange?.('verify');
+        onStageChange?.(PASSKEY_STAGES.VERIFY);
         const authenticationOptions = await messenger.call(
           'PasskeyController:generatePostRegistrationAuthenticationOptions',
           { registrationResponse },
@@ -112,7 +114,7 @@ export function usePasskeyPrfMigration() {
           authenticationResponse,
         });
         activeRegistrationChallenge.current = null;
-        onStageChange?.('complete');
+        onStageChange?.(PASSKEY_STAGES.COMPLETE);
       } catch (error) {
         await cancelActiveReplacement();
         throw error;
