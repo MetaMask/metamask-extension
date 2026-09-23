@@ -49,11 +49,15 @@ type ListOfTextFieldRefs = {
 type SrpInputImportProps = {
   onChange: (srp: string) => void;
   onClearCallback?: () => void;
+  onClearClipboardRetry?: () => void;
+  onClipboardClearFailed?: () => void;
 };
 
 export default function SrpInputImport({
   onChange,
   onClearCallback,
+  onClearClipboardRetry,
+  onClipboardClearFailed,
 }: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
@@ -126,6 +130,18 @@ export default function SrpInputImport({
 
     checkForInvalidWords(newDraftSrp);
     setDraftSrp(newDraftSrp);
+    return isValidMnemonic(parsedSrp);
+  };
+
+  const handleAcceptedSrpPaste = async (rawSrp: string) => {
+    if (!onSrpPaste(rawSrp)) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText('');
+    } catch {
+      onClipboardClearFailed?.();
+    }
   };
 
   const setWordActive = (srp: DraftSrp[], wordId: string) => {
@@ -218,14 +234,13 @@ export default function SrpInputImport({
     }
   };
 
-  const handleOnPaste = (
+  const handleOnPaste = async (
     clipBoardEvent: React.ClipboardEvent<HTMLTextAreaElement>,
   ) => {
     clipBoardEvent.preventDefault();
     const newSrp = clipBoardEvent.clipboardData.getData('text');
     if (newSrp.trim().match(/\s/u)) {
-      clipBoardEvent.preventDefault();
-      onSrpPaste(newSrp);
+      await handleAcceptedSrpPaste(newSrp);
     }
   };
 
@@ -273,7 +288,7 @@ export default function SrpInputImport({
       textareaRef.current?.focus();
       const newSrp = await navigator.clipboard.readText();
       if (newSrp.trim().match(/\s/u)) {
-        onSrpPaste(newSrp);
+        await handleAcceptedSrpPaste(newSrp);
       }
     } catch (error) {
       console.error('Error requesting clipboard permission', error);
@@ -306,7 +321,7 @@ export default function SrpInputImport({
       ) {
         const newSrp = await navigator.clipboard.readText();
         if (newSrp.trim().match(/\s/u)) {
-          onSrpPaste(newSrp);
+          await handleAcceptedSrpPaste(newSrp);
         }
       }
     } catch (error) {
@@ -477,6 +492,7 @@ export default function SrpInputImport({
                 setDraftSrp([]);
                 setMisSpelledWords([]);
                 onClearCallback?.();
+                onClearClipboardRetry?.();
               }}
               size={ButtonSize.Md}
             >

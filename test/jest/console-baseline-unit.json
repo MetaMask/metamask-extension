@@ -308,9 +308,6 @@
     "ui/components/multichain-accounts/multichain-address-rows-triggered-list/multichain-triggered-address-rows-list.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.test.tsx": {
-      "React: Missing key props in lists": 1
-    },
     "ui/components/multichain-accounts/smart-contract-account-toggle-section/smart-contract-account-toggle-section.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
       "React: componentWill* lifecycle deprecations": 1
@@ -332,9 +329,6 @@
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "Reselect: Input stability warnings": 3
-    },
-    "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 16
     },
     "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
@@ -369,7 +363,11 @@
     "ui/components/multichain/notifications-settings-box/notifications-settings-box.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/components/multichain/pages/gator-permissions/components/review-gator-permission-item.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
+    },
     "ui/components/multichain/pages/gator-permissions/components/review-permission-renderer.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2,
       "React: DOM nesting violations": 1
     },
     "ui/components/multichain/product-tour-popover/product-tour-popover.test.js": {
@@ -517,8 +515,8 @@
     "ui/pages/bridge/quotes/multichain-bridge-quote-card.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.test.js": {
-      "React: Act warnings (component updates not wrapped)": 16
+    "ui/pages/bridge/token-insights-modal/token-insights-modal.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/UI/send-hero/send-hero.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 7,
@@ -723,9 +721,6 @@
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/pages/keychains/restore-vault.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6
-    },
     "ui/pages/multi-srp/import-srp/import-srp.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 519
     },
@@ -747,7 +742,7 @@
       "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/pages/networks/networks-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 78
+      "React: Act warnings (component updates not wrapped)": 46
     },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,

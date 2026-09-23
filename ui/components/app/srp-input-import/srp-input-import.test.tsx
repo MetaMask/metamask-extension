@@ -6,6 +6,8 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
+import { TEST_SEED_PHRASE } from '../../../../test/e2e/constants';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SrpInputImport from './srp-input-import';
 
 const mockPermissionsRequest = jest.fn().mockResolvedValue(true);
@@ -24,6 +26,7 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
 }));
 
 const mockClipboardReadText = jest.fn().mockResolvedValue('some mock text');
+const mockClipboardWriteText = jest.fn().mockResolvedValue(undefined);
 
 const COLLIDING_24_WORD_SRP =
   'tumble heart quit undo right legal salute lizard tape unveil art lava filter fee snack fragile duck impact oven come cram tourist casino sort';
@@ -31,6 +34,7 @@ const COLLIDING_24_WORD_SRP =
 Object.defineProperty(navigator, 'clipboard', {
   value: {
     readText: mockClipboardReadText,
+    writeText: mockClipboardWriteText,
   },
 });
 
@@ -38,6 +42,7 @@ describe('SrpInputImport', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetEnvironmentType.mockReturnValue('popup');
+    mockClipboardWriteText.mockResolvedValue(undefined);
     jest.spyOn(window, 'focus').mockImplementation(() => undefined);
   });
 
@@ -133,5 +138,70 @@ describe('SrpInputImport', () => {
       expect(focusSpy).toHaveBeenCalled();
       expect(mockClipboardReadText).toHaveBeenCalled();
     });
+  });
+
+  it('clears the clipboard after accepting an SRP paste', async () => {
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport onChange={jest.fn()} />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => TEST_SEED_PHRASE,
+      },
+    });
+
+    await waitFor(() => {
+      expect(mockClipboardWriteText).toHaveBeenCalledWith('');
+    });
+  });
+
+  it('reports a failed clear after accepting an SRP paste', async () => {
+    mockClipboardWriteText.mockRejectedValueOnce(new Error('Clipboard denied'));
+    const onClipboardClearFailed = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport
+        onChange={jest.fn()}
+        onClipboardClearFailed={onClipboardClearFailed}
+      />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => TEST_SEED_PHRASE,
+      },
+    });
+
+    await waitFor(() => {
+      expect(onClipboardClearFailed).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('only clears a clipboard cleanup retry when the phrase is cleared', async () => {
+    const onClearClipboardRetry = jest.fn();
+    const { getByTestId, getByText } = renderWithProvider(
+      <SrpInputImport
+        onChange={jest.fn()}
+        onClearClipboardRetry={onClearClipboardRetry}
+      />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => TEST_SEED_PHRASE,
+      },
+    });
+
+    await waitFor(() => {
+      expect(
+        getByText(messages.onboardingSrpInputClearAll.message),
+      ).toBeInTheDocument();
+    });
+
+    expect(onClearClipboardRetry).not.toHaveBeenCalled();
+
+    fireEvent.click(getByText(messages.onboardingSrpInputClearAll.message));
+
+    expect(onClearClipboardRetry).toHaveBeenCalledTimes(1);
   });
 });
