@@ -310,6 +310,31 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.amount).toBe('25');
     });
 
+    it('preserves a restored amount when the asset changes on a reused order page', () => {
+      const props = {
+        ...defaultOptions,
+        asset: 'BTC',
+        availableBalance: 100,
+        initialDraft: {
+          amount: '25',
+          leverage: 5,
+          type: 'market' as const,
+          direction: 'long' as const,
+        },
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      props.asset = 'ETH';
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('25');
+    });
+
     it('applies initialLeverage when it changes after initial render (async hydration)', () => {
       const props = {
         ...defaultOptions,
