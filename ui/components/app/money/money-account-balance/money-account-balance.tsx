@@ -50,39 +50,18 @@ export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
 export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
   'money-account-balance-add-button';
 
-const AddOrBalance = ({
+const Balance = ({
   fiatBalance,
-  showAddButton,
   isLoading,
   privacyMode,
-  onAddClick,
-  isDepositLoading,
   isLastKnown,
 }: {
   fiatBalance: string | undefined;
-  showAddButton: boolean;
   isLoading: boolean;
   privacyMode: boolean;
-  onAddClick: () => void;
-  isDepositLoading: boolean;
   isLastKnown: boolean;
 }) => {
   const t = useI18nContext();
-
-  if (showAddButton) {
-    return (
-      <Button
-        size={ButtonSize.Md}
-        variant={ButtonVariant.Primary}
-        className="shrink-0"
-        isLoading={isDepositLoading}
-        data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={onAddClick}
-      >
-        {t('moneyAdd')}
-      </Button>
-    );
-  }
 
   return (
     <>
@@ -99,11 +78,11 @@ const AddOrBalance = ({
         // padding via -mb-4 so the row keeps its height when it appears.
         <Box
           flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.End}
+          alignItems={BoxAlignItems.Start}
           className={isLastKnown ? '-mb-4 shrink-0' : 'shrink-0'}
         >
           <SensitiveText
-            variant={TextVariant.BodyMd}
+            variant={TextVariant.HeadingMd}
             isHidden={privacyMode}
             fontWeight={FontWeight.Medium}
             data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
@@ -124,6 +103,34 @@ const AddOrBalance = ({
         </Box>
       )}
     </>
+  );
+};
+
+const Add = ({
+  onAddClick,
+  isDepositLoading,
+  moneyAccountEmpty,
+}: {
+  onAddClick: () => void;
+  isDepositLoading: boolean;
+  moneyAccountEmpty: boolean;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <Button
+      size={ButtonSize.Md}
+      variant={
+        // If the user has no balance this is a primary CTA
+        moneyAccountEmpty ? ButtonVariant.Primary : ButtonVariant.Secondary
+      }
+      className="shrink-0"
+      isLoading={isDepositLoading}
+      data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
+      onClick={onAddClick}
+    >
+      {t('moneyAdd')}
+    </Button>
   );
 };
 
@@ -207,9 +214,8 @@ export const MoneyAccountBalance = () => {
     isHomeCardEnabled &&
     hasMoneyAccount &&
     (fiatBalance !== undefined || isLoading);
-  const hasLiveUnfundedBalance =
+  const moneyAccountEmpty =
     tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
-  const showAddButton = hasLiveUnfundedBalance && !privacyMode;
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -257,7 +263,7 @@ export const MoneyAccountBalance = () => {
             text={t('money')}
             position={PopoverPosition.Auto}
             data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
-            variant={TextVariant.BodyMd}
+            variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             onOpen={handleInfoOpen}
@@ -288,7 +294,7 @@ export const MoneyAccountBalance = () => {
           ) : (
             apyPercentFormatted && (
               <Text
-                variant={TextVariant.BodyMd}
+                variant={TextVariant.BodySm}
                 fontWeight={FontWeight.Medium}
                 color={TextColor.SuccessDefault}
                 data-testid={MONEY_ACCOUNT_BALANCE_APY_TEST_ID}
@@ -298,15 +304,18 @@ export const MoneyAccountBalance = () => {
             )
           )}
         </Box>
+        <Balance
+          fiatBalance={fiatBalance}
+          isLoading={isLoading}
+          privacyMode={privacyMode}
+          isLastKnown={isLastKnown}
+        />
       </Box>
-      <AddOrBalance
-        fiatBalance={fiatBalance}
-        showAddButton={showAddButton}
-        isLoading={isLoading}
-        privacyMode={privacyMode}
+
+      <Add
+        moneyAccountEmpty={moneyAccountEmpty}
         onAddClick={handleAddClick}
         isDepositLoading={isDepositLoading}
-        isLastKnown={isLastKnown}
       />
     </Box>
   );
