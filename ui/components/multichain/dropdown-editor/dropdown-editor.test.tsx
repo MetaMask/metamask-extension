@@ -86,13 +86,12 @@ describe('DropdownEditor', () => {
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it.each([
+  [
     { key: 'Enter', shouldSelect: true },
     { key: ' ', shouldSelect: true },
     { key: 'Escape', shouldSelect: false },
-  ])(
-    'handles the "$key" key when an item is focused',
-    ({ key, shouldSelect }) => {
+  ].forEach(({ key, shouldSelect }) => {
+    it(`handles the "${key}" key when an item is focused`, () => {
       renderEditor();
 
       fireEvent.click(screen.getByTestId('rpc-dropdown'));
@@ -106,8 +105,8 @@ describe('DropdownEditor', () => {
       } else {
         expect(onItemSelected).not.toHaveBeenCalled();
       }
-    },
-  );
+    });
+  });
 
   it('deletes an item without selecting it', () => {
     renderEditor();
