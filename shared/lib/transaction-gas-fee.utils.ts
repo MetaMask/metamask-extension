@@ -5,6 +5,22 @@ import {
 } from '@metamask/transaction-controller';
 
 /**
+ * Returns the latest gas-fee sponsorship availability reported by simulation.
+ * Falls back to the deprecated sponsorship property for transaction types and
+ * persisted records that have not migrated to the availability property.
+ *
+ * @param transaction - The transaction metadata to inspect.
+ * @returns Whether gas-fee sponsorship is currently available.
+ */
+export function isTransactionGasFeeSponsorshipAvailable(
+  transaction: TransactionMeta | undefined,
+): boolean {
+  return Boolean(
+    transaction?.isGasFeeSponsoredAvailable ?? transaction?.isGasFeeSponsored,
+  );
+}
+
+/**
  * Determines whether a transaction should be displayed as gas-fee sponsored.
  *
  * This mirrors the legacy transaction breakdown behavior: a transaction must

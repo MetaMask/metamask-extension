@@ -324,6 +324,35 @@ describe('Transaction Controller Hooks', () => {
       expect(isRelaySupported).not.toHaveBeenCalled();
     });
 
+    it('signs Smart Transaction gas fee token batches locally', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+      jest
+        .mocked(sentinelApiModule.isSendBundleSupported)
+        .mockResolvedValue(true);
+
+      const { shouldSign } = getTransactionControllerHooks(buildMockRequest());
+
+      await expect(
+        shouldSign?.({
+          transactionMeta: {
+            ...mockTransactionMeta,
+            selectedGasFeeToken: '0x0000000000000000000000000000000000000001',
+          },
+        }),
+      ).resolves.toStrictEqual({ shouldSign: true });
+    });
+
     it('signs sponsored hardware Smart Transactions locally', async () => {
       jest
         .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
@@ -587,6 +616,46 @@ describe('Transaction Controller Hooks', () => {
         expect.objectContaining({ isGasFeeSponsored: false }),
         undefined,
       );
+    });
+
+    it('normalizes an empty Smart Transaction signature before publishing', async () => {
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+      jest
+        .mocked(sentinelApiModule.isSendBundleSupported)
+        .mockResolvedValue(true);
+      jest
+        .mocked(smartTransactionsModule.submitSmartTransactionHook)
+        .mockResolvedValue({ transactionHash: '0xstxHash' });
+
+      const { publish } = getTransactionControllerHooks(buildMockRequest());
+      const publishHook = publish as PublishHook;
+
+      const result = await publishHook(
+        {
+          ...mockTransactionMeta,
+          selectedGasFeeToken: '0x0000000000000000000000000000000000000001',
+        },
+        '0x',
+      );
+
+      expect(Delegation7702PublishHook).not.toHaveBeenCalled();
+      expect(
+        smartTransactionsModule.submitSmartTransactionHook,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ signedTransactionInHex: undefined }),
+      );
+      expect(result).toStrictEqual({ transactionHash: '0xstxHash' });
     });
 
     it('passes sponsorship metadata to locally signed hardware Smart Transactions', async () => {

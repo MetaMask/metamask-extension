@@ -286,18 +286,5 @@ describe('TransactionController wallet instance options', () => {
       const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
       expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
-
-    it('returns true when a gas fee token is selected', async () => {
-      getIsSmartTransactionMock.mockReturnValue(true);
-      isSendBundleSupportedMock.mockResolvedValue(true);
-
-      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
-      expect(
-        await optionFn?.({
-          ...mockTransactionMeta,
-          selectedGasFeeToken: '0x0000000000000000000000000000000000000001',
-        }),
-      ).toBe(true);
-    });
   });
 });

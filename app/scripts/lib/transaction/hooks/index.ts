@@ -96,6 +96,7 @@ function afterAddHook({ messenger }: TransactionControllerHookRequest) {
 
 type TransactionApprovalDecision = {
   isSponsored: boolean;
+  publishVia7702: boolean;
   signingMode: 'local' | 'external';
   sponsorshipEnabled: boolean;
 };
@@ -157,7 +158,15 @@ async function getTransactionApprovalDecision(
   const requiresExternalSigning =
     hasTransactionPayQuotes ||
     isMoneyAccountWithdraw ||
-    (hasSelectedGasFeeToken && is7702AccountSupported);
+    (hasSelectedGasFeeToken &&
+      !isHardwareWalletAccount &&
+      !isSmartTransactionAndBundleSupported &&
+      is7702AccountSupported);
+  const publishVia7702 =
+    isMoneyAccountWithdraw ||
+    (!isSmartTransactionAndBundleSupported &&
+      (is7702SponsorshipSupported ||
+        (hasSelectedGasFeeToken && is7702AccountSupported)));
   const sponsorshipEnabled =
     shouldCheckSponsorship &&
     (isSmartTransactionAndBundleSupported ||
@@ -182,6 +191,7 @@ async function getTransactionApprovalDecision(
 
   return {
     isSponsored,
+    publishVia7702,
     signingMode,
     sponsorshipEnabled,
   };
@@ -264,7 +274,7 @@ function publishHook({
 }: TransactionControllerHookRequest): PublishHook {
   return async (transactionMeta: TransactionMeta, signedTx: string) => {
     const flatState = getFlatState();
-    const { signingMode, sponsorshipEnabled } =
+    const { publishVia7702, sponsorshipEnabled } =
       await getTransactionApprovalDecision(
         { getFlatState, getTransactionMetricsRequest, messenger },
         transactionMeta,
@@ -323,7 +333,7 @@ function publishHook({
       (isSwapGasIncluded7702 ||
         !isSmartTransaction ||
         !sendBundleSupport ||
-        signingMode === 'external')
+        publishVia7702)
     ) {
       attemptedHook = true;
       const hook = new Delegation7702PublishHook({
@@ -357,7 +367,8 @@ function publishHook({
 
       const result = await submitSmartTransactionHook({
         transactionMeta: transactionMetaForPublish,
-        signedTransactionInHex: signedTx as Hex,
+        signedTransactionInHex:
+          signedTx === '0x' ? undefined : (signedTx as Hex),
         transactionController,
         smartTransactionsController: getSmartTransactionsController(messenger),
         controllerMessenger: messenger,
