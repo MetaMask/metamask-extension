@@ -29,6 +29,7 @@ exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
     </div>
     <button
       class="select-rpc-url__item flex w-full items-center px-4 text-left select-rpc-url__item--selected"
+      data-testid="network-rpc-option-0"
       type="button"
     >
       <div
@@ -50,6 +51,7 @@ exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
     </button>
     <button
       class="select-rpc-url__item flex w-full items-center px-4 text-left"
+      data-testid="network-rpc-option-1"
       type="button"
     >
       <div
