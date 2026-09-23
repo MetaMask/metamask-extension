@@ -181,6 +181,19 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
     scheduleFallbackClose();
   }, [scheduleFallbackClose]);
 
+  // Escape unmounts the tooltip without a mouseleave, so the mirrored
+  // interaction refs must be reset here or they go stale and block later
+  // close scheduling.
+  const dismissFallbackTooltip = useCallback(() => {
+    isPointerOverRef.current = false;
+    isTriggerFocusedRef.current = false;
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setIsFallbackTooltipOpen(false);
+  }, []);
+
   useEffect(
     () => () => {
       if (closeTimeoutRef.current) {
@@ -235,7 +248,7 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
           isOpen={isFallbackTooltipOpen}
           message={warningMessage}
           referenceElement={triggerElement}
-          onDismiss={() => setIsFallbackTooltipOpen(false)}
+          onDismiss={dismissFallbackTooltip}
           onMouseEnter={handlePointerEnter}
           onMouseLeave={handlePointerLeave}
         />

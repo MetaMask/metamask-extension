@@ -148,6 +148,44 @@ describe('RampsQuoteDisplay', () => {
     );
   });
 
+  it('closes the fallback tooltip on blur after Escape dismissed it while hovered', async () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <RampsQuoteDisplay
+        cryptoAmount=""
+        fiatAmount={null}
+        showWarningIcon
+        warningMessage="Quote unavailable."
+      />,
+      createStore(),
+    );
+
+    const trigger = getByTestId('ramps-quote-display-warning-trigger');
+    const warning = getByTestId('ramps-quote-display-warning');
+
+    // Pointer is over the tooltip (hovering the icon, then onto the tooltip).
+    fireEvent.mouseEnter(warning);
+    const tooltip = getByTestId('ramps-quote-display-warning-tooltip');
+    fireEvent.mouseEnter(tooltip);
+    fireEvent.focus(trigger);
+
+    // Escape dismisses the tooltip; it unmounts without a mouseleave, so the
+    // hover state must be reset by the dismissal.
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await waitFor(() =>
+      expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull(),
+    );
+
+    // Re-opening via focus and then blurring must be able to close it again.
+    fireEvent.focus(trigger);
+    expect(
+      getByTestId('ramps-quote-display-warning-tooltip'),
+    ).toHaveTextContent('Quote unavailable.');
+    fireEvent.blur(trigger);
+    await waitFor(() =>
+      expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull(),
+    );
+  });
+
   it('associates the warning icon with a native tooltip when interest invokers are supported', () => {
     interestInvokerSupport.detected = true;
     try {
