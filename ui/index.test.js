@@ -20,9 +20,6 @@ const enMessages = {
   stillGettingMessage: {
     message: 'Still getting this message?',
   },
-  sendBugReport: {
-    message: 'Send us a bug report.',
-  },
 };
 
 const esMessages = {
@@ -32,9 +29,6 @@ const esMessages = {
   },
   restartMetamask: {
     message: 'Reiniciar metamáscara',
-  },
-  sendBugReport: {
-    message: 'Envíenos un informe de errores.',
   },
 };
 
@@ -79,8 +73,6 @@ describe('Index Tests', () => {
       enMessages.stillGettingMessage,
     );
 
-    expect(clm.sendBugReport).toStrictEqual(enMessages.sendBugReport);
-
     result = await setupLocale('es_419');
 
     const { currentLocaleMessages: clm2, enLocaleMessages: elm2 } = result;
@@ -95,8 +87,6 @@ describe('Index Tests', () => {
     expect(elm2.stillGettingMessage).toStrictEqual(
       enMessages.stillGettingMessage,
     );
-
-    expect(clm2.sendBugReport).toStrictEqual(esMessages.sendBugReport);
   });
 
   it('should get clean app state with socialLoginEmail undefined', async () => {

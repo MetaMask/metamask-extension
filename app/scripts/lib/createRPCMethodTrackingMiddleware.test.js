@@ -214,19 +214,15 @@ messenger.registerActionHandler('MetaMetricsController:getState', () => ({
   marketingCampaignCookieId: null,
 }));
 messenger.registerActionHandler(
-  'MetaMetricsController:trackTracesAfterMetricsOptIn',
+  'SentryTracingService:trackTracesAfterMetricsOptIn',
   () => undefined,
 );
 messenger.registerActionHandler(
-  'MetaMetricsController:clearTracesAfterMetricsOptIn',
+  'SentryTracingService:clearTracesAfterMetricsOptIn',
   () => undefined,
 );
 messenger.registerActionHandler(
   'MetaMetricsController:setMarketingCampaignCookieId',
-  () => undefined,
-);
-messenger.registerActionHandler(
-  'MetaMetricsController:updateExtensionUninstallUrl',
   () => undefined,
 );
 

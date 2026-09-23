@@ -90,7 +90,10 @@ describe('Send - Edit Transaction', function () {
         await transactionConfirmation.checkGasFeeFiat('$0.29');
 
         // confirms the transaction
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
         await activityTab.goToActivityList();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
@@ -155,7 +158,10 @@ describe('Send - Edit Transaction', function () {
         await transactionConfirmation.checkGasFeeFiat('$0.29');
 
         // confirms the transaction
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
         await activityTab.goToActivityList();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);

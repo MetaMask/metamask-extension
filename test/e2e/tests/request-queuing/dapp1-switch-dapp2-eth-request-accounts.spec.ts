@@ -75,7 +75,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         // Reject the pending confirmation from the first dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await transactionConfirmation.clickFooterCancelButton();
+        await transactionConfirmation.clickFooterButton({ button: 'cancel' });
 
         // Wait for switch confirmation to close then request accounts confirmation to show for the second dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
