@@ -12,7 +12,6 @@ import { persistenceManager } from './lib/setup-initial-state-hooks';
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
-import { lightTheme } from '@metamask/design-tokens';
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -36,8 +35,6 @@ import {
   BACKGROUND_INITIALIZED_METHOD,
 } from '../../shared/constants/ui-initialization';
 import {
-  REJECT_NOTIFICATION_CLOSE,
-  REJECT_NOTIFICATION_CLOSE_SIG,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
@@ -72,7 +69,6 @@ import {
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import {
   isPhishingWarningPageUrl,
@@ -83,18 +79,15 @@ import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
-import NotificationManager, {
-  NOTIFICATION_MANAGER_EVENTS,
-} from './lib/notification-manager';
-import MetamaskController, {
-  METAMASK_CONTROLLER_EVENTS,
-} from './metamask-controller';
+import NotificationManager from './lib/notification-manager';
+import MetamaskController from './metamask-controller';
 import { createEventBuilder, trackEvent } from './controllers/analytics';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
 import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
 import { createDappMetrics } from './lib/metrics/dapp-metrics';
 import { installActiveTabTracker } from './lib/active-tab/active-tab-tracker';
+import { createBadgeManager } from './lib/badge/badge-manager';
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
@@ -139,12 +132,6 @@ import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 // as it doesn't need them).
 const lazyListener =
   globalThis.stateHooks.lazyListener ?? new ExtensionLazyListener(browser);
-
-// eslint-disable-next-line @metamask/design-tokens/color-no-hex
-const BADGE_COLOR_APPROVAL = '#0376C9';
-const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
-const BADGE_MAX_COUNT = 9;
-const maxSeenFailedNonces = 99;
 
 const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
 
@@ -229,8 +216,6 @@ let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
-let failedTxCount = 0;
-const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1000,6 +985,23 @@ export function setupController(
     }
   };
 
+  //
+  // User Interface setup
+  //
+  const {
+    updateBadge,
+    clearFailedTxBadge,
+    getFailedTxCount,
+    setClientLandingTab,
+  } = createBadgeManager({
+    getController: () => controller,
+    browser,
+    notificationManager,
+    triggerUi,
+    hasPersistentUiOpen,
+    isOnlyNotificationOpen,
+  });
+
   connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
     if (BLOCKED_PORTS.includes(remotePort.name)) {
       return;
@@ -1090,7 +1092,7 @@ export function setupController(
         finished(portStream, () => {
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
-          if (failedTxCount > 0) {
+          if (getFailedTxCount() > 0) {
             setClientLandingTab(AccountOverviewTabKey.Activity);
           }
           updateBadge();
@@ -1219,188 +1221,7 @@ export function setupController(
       sender,
     });
   };
-
-  //
-  // User Interface setup
-  //
-  updateBadge();
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.ENCRYPTION_PUBLIC_KEY_MANAGER_UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.signatureController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.APP_STATE_UNLOCK_CHANGE,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_MARK_AS_READ,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    'TransactionController:transactionStatusUpdated',
-    onTransactionStatusUpdated,
-  );
-
-  function setClientLandingTab(tab) {
-    try {
-      controller.appStateController.setDefaultHomeActiveTabName(tab ?? null);
-    } catch (e) {
-      console.error('Error setting landing tab:', e);
-    }
-  }
-
-  function onTransactionStatusUpdated({ transactionMeta }) {
-    const { status, txParams, chainId } = transactionMeta ?? {};
-    if (status !== 'failed' && status !== 'dropped') {
-      return;
-    }
-
-    const { from, nonce } = txParams ?? {};
-    const nonceKey =
-      from && nonce !== undefined && chainId
-        ? `${chainId}:${from.toLowerCase()}:${nonce}`
-        : undefined;
-    if (nonceKey && seenFailedNonces.has(nonceKey)) {
-      return;
-    }
-
-    // Skip if a persistent UI is open, transaction status is in the Activity tab
-    if (hasPersistentUiOpen()) {
-      return;
-    }
-
-    if (nonceKey) {
-      if (seenFailedNonces.size >= maxSeenFailedNonces) {
-        seenFailedNonces.clear();
-      }
-      seenFailedNonces.add(nonceKey);
-    }
-
-    failedTxCount += 1;
-
-    // Defer landing page until notification closes; close handler re-applies
-    if (!isOnlyNotificationOpen()) {
-      setClientLandingTab(AccountOverviewTabKey.Activity);
-    }
-
-    updateBadge();
-  }
-
-  function clearFailedTxBadge() {
-    seenFailedNonces.clear();
-    failedTxCount = 0;
-    updateBadge();
-  }
-
-  /**
-   * Formats a count for display as a badge label.
-   *
-   * @param {number} count - The count to be formatted.
-   * @param {number} maxCount - The maximum count to display before using the '+' suffix.
-   * @returns {string} The formatted badge label.
-   */
-  function getBadgeLabel(count, maxCount) {
-    return count > maxCount ? `${maxCount}+` : String(count);
-  }
-
-  /**
-   * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
-   * Failed transactions take priority and show a red count badge.
-   * Pending approvals show the standard blue count badge.
-   */
-  function updateBadge() {
-    const pendingApprovalCount = getPendingApprovalCount();
-
-    let label = '';
-    let badgeColor = BADGE_COLOR_APPROVAL;
-
-    // Defer showing the failure badge until the notification closes
-    if (failedTxCount > 0 && !isOnlyNotificationOpen()) {
-      label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
-      badgeColor = BADGE_COLOR_FAILED;
-    } else if (pendingApprovalCount > 0) {
-      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    }
-
-    try {
-      const badgeText = { text: label };
-      const badgeBackgroundColor = { color: badgeColor };
-
-      if (isManifestV3) {
-        browser.action.setBadgeText(badgeText);
-        browser.action.setBadgeBackgroundColor(badgeBackgroundColor);
-      } else {
-        browser.browserAction.setBadgeText(badgeText);
-        browser.browserAction.setBadgeBackgroundColor(badgeBackgroundColor);
-      }
-    } catch (error) {
-      console.error('Error updating browser badge:', error);
-    }
-  }
-
-  function getPendingApprovalCount() {
-    try {
-      return getAttentionRequiredApprovalCount({
-        approvalController: controller.approvalController,
-      });
-    } catch (error) {
-      console.error('Failed to get pending approval count:', error);
-      return 0;
-    }
-  }
-
-  notificationManager.on(
-    NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
-    ({ automaticallyClosed }) => {
-      if (!automaticallyClosed) {
-        rejectUnapprovedNotifications();
-      } else if (getPendingApprovalCount() > 0) {
-        triggerUi();
-      }
-
-      updateBadge();
-    },
-  );
-
-  function rejectUnapprovedNotifications() {
-    controller.signatureController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE_SIG,
-    );
-    controller.decryptMessageController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE,
-    );
-    controller.encryptionPublicKeyController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE,
-    );
-
-    controller.legacyBackgroundApiService.rejectAllPendingApprovals();
-  }
 }
-
-//
-// Etc...
-//
 
 async function getCurrentTab() {
   const queryOptions = { active: true, lastFocusedWindow: true };
