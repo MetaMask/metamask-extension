@@ -893,6 +893,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
+    "lastShownPrfMigrationReminderAt": "null",
     "paymentMethods": {
       "data": [],
       "error": "null",
