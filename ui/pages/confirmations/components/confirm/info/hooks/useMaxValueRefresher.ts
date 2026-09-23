@@ -13,6 +13,7 @@ import {
   multiplyHexes,
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
+import { isTransactionGasFeeSponsorshipAvailable } from '../../../../../../../shared/lib/transaction-gas-fee.utils';
 import { updateEditableParams } from '../../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../../store/store';
 import { useConfirmContext } from '../../../../context/confirm';
@@ -88,7 +89,10 @@ export const useMaxValueRefresher = () => {
 
     // Gas Sponsorship means the user has no native gas to pay at all.
     // This will allow to send the full max value of the native balance.
-    if (!transactionMeta.isGasFeeSponsored || !isGaslessSupported) {
+    if (
+      !isTransactionGasFeeSponsorshipAvailable(transactionMeta) ||
+      !isGaslessSupported
+    ) {
       gasFeeInHex = multiplyHexes(
         gas,
         supportsEIP1559 ? maxFeePerGas : gasPrice,

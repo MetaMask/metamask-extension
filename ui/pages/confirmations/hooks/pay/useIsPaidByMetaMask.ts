@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
+import { isTransactionGasFeeSponsorshipAvailable } from '../../../../../shared/lib/transaction-gas-fee.utils';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -39,7 +40,7 @@ export function useSponsoredNetworkFeeFlags(): SponsoredNetworkFeeFlags {
 
   const isSupported = hasTransactionType(transactionMeta, SUPPORTED_TYPES);
   const isGasSponsored =
-    isSupported && Boolean(transactionMeta?.isGasFeeSponsored);
+    isSupported && isTransactionGasFeeSponsorshipAvailable(transactionMeta);
 
   const isSameChainPayRoute = Boolean(
     isGasSponsored &&

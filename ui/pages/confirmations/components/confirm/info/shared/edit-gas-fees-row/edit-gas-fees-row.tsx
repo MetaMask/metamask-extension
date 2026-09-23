@@ -20,6 +20,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
+import { isTransactionGasFeeSponsorshipAvailable } from '../../../../../../../../shared/lib/transaction-gas-fee.utils';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import Tooltip from '../../../../../../../components/ui/tooltip';
@@ -64,12 +65,7 @@ export const EditGasFeesRow = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const {
-    chainId,
-    isGasFeeSponsored: doesSentinelAllowSponsorship,
-    simulationData,
-    type: transactionType,
-  } = transactionMeta;
+  const { chainId, simulationData, type: transactionType } = transactionMeta;
 
   const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();
@@ -90,7 +86,7 @@ export const EditGasFeesRow = ({
 
   const isSponsorshipEligible =
     isGaslessSupported &&
-    doesSentinelAllowSponsorship &&
+    isTransactionGasFeeSponsorshipAvailable(transactionMeta) &&
     transactionType !== TransactionType.revokeDelegation;
 
   const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;

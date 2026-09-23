@@ -294,7 +294,7 @@ async function isEIP7702GasFeeTokensEnabled(
     return false;
   }
 
-  const { chainId, selectedGasFeeToken } = transactionMeta;
+  const { chainId } = transactionMeta;
   const uiState = getUIState(getFlatState());
 
   const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
@@ -303,13 +303,8 @@ async function isEIP7702GasFeeTokensEnabled(
 
   // EIP7702 gas fee tokens are enabled when:
   // - Smart transactions are NOT enabled, OR
-  // - Send bundle is NOT supported, OR
-  // - Gas fee token was provided when creating transaction
-  return (
-    !isSmartTransactionEnabled ||
-    !isSendBundleSupportedChain ||
-    Boolean(selectedGasFeeToken)
-  );
+  // - Send bundle is NOT supported
+  return !isSmartTransactionEnabled || !isSendBundleSupportedChain;
 }
 
 function getKeyringController(messenger: TransactionControllerInitMessenger) {

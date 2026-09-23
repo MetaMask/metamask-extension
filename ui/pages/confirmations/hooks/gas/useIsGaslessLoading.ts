@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { getMoneyAccountFlow } from '../../../../../shared/lib/money/money-account-flow';
+import { isTransactionGasFeeSponsorshipAvailable } from '../../../../../shared/lib/transaction-gas-fee.utils';
 import { useConfirmContext } from '../../context/confirm';
 import { getUseTransactionSimulations } from '../../../../selectors';
 import { useHasInsufficientBalance } from '../useHasInsufficientBalance';
@@ -54,7 +55,7 @@ export function useIsGaslessLoading() {
   // sponsored, so `gasFeeTokens` never arrives. Waiting on them leaves the
   // confirm button spinning after quotes (and "Paid by MetaMask") are ready.
   const skipsGaslessTokenWait =
-    Boolean(transactionMeta?.isGasFeeSponsored) ||
+    isTransactionGasFeeSponsorshipAvailable(transactionMeta) ||
     Boolean(getMoneyAccountFlow(transactionMeta));
 
   const isGaslessLoading = Boolean(

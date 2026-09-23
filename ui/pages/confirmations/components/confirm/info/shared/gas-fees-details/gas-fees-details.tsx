@@ -11,6 +11,7 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
+import { isTransactionGasFeeSponsorshipAvailable } from '../../../../../../../../shared/lib/transaction-gas-fee.utils';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -63,7 +64,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
 
   const isSponsorshipEligible =
     isGaslessSupported &&
-    transactionMeta?.isGasFeeSponsored &&
+    isTransactionGasFeeSponsorshipAvailable(transactionMeta) &&
     transactionMeta?.type !== TransactionType.revokeDelegation;
 
   const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;
