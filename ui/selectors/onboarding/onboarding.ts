@@ -6,14 +6,11 @@ import {
 } from '../../../shared/constants/onboarding';
 import { isBasicFunctionalitySocialLoginUser } from '../../../shared/lib/basic-functionality-consolidation';
 import { OnboardingControllerState } from '../../../shared/types/onboarding';
-import type { Preferences } from '../../../shared/types/preferences';
 import { getIsSocialLoginFlow } from '../first-time-flow';
 
 export type OnboardingState = {
   metamask: Partial<SeedlessOnboardingControllerState> &
-    OnboardingControllerState & {
-      preferences?: Partial<Preferences>;
-    };
+    OnboardingControllerState;
 };
 
 export function getSocialLoginType(
@@ -33,8 +30,6 @@ export function getIsBasicFunctionalitySocialLoginUser(
   return isBasicFunctionalitySocialLoginUser({
     firstTimeFlowType: state.metamask.firstTimeFlowType ?? undefined,
     authConnection: state.metamask.authConnection,
-    hasLinkedSocialLoginProfile:
-      state.metamask.preferences?.hasLinkedSocialLoginProfile,
   });
 }
 

@@ -1,6 +1,7 @@
 import type { ProfileAlias } from '@metamask/profile-sync-controller/auth';
 import {
   authenticationStateIncludesLinkedSocialLogin,
+  getPairedIdentifierIdsFromAuthState,
   pairedIdentifiersIncludeSocialLogin,
   profileAliasesIncludeSocialLogin,
   shouldRepairBasicFunctionalitySocialMigrationNotice,
@@ -44,19 +45,53 @@ describe('pairedIdentifiersIncludeSocialLogin', () => {
   });
 });
 
-describe('authenticationStateIncludesLinkedSocialLogin', () => {
-  it('reads linked social identifier types from Core state', () => {
+describe('getPairedIdentifierIdsFromAuthState', () => {
+  it('reads paired identifier ids from the primary srp session profile', () => {
     expect(
-      authenticationStateIncludesLinkedSocialLogin({
-        linkedSocialIdentifierTypes: ['SRP', 'TELEGRAM'],
+      getPairedIdentifierIdsFromAuthState({
+        isSignedIn: true,
+        srpSessionData: {
+          'entropy-1': {
+            profile: {
+              identifierId: 'id-1',
+              metaMetricsId: 'mm-1',
+              profileId: 'profile-1',
+              canonicalProfileId: 'profile-1',
+              pairedIdentifierIds: [{ type: 'GOOGLE' }, { type: 'SRP' }],
+            },
+            token: {
+              accessToken: 'token',
+              expiresIn: 3600,
+              obtainedAt: 1,
+            },
+          },
+        },
       }),
-    ).toBe(true);
+    ).toStrictEqual([{ type: 'GOOGLE' }, { type: 'SRP' }]);
   });
+});
 
-  it('reads paired identifier ids from Core state', () => {
+describe('authenticationStateIncludesLinkedSocialLogin', () => {
+  it('reads paired identifier ids from srpSessionData profile', () => {
     expect(
       authenticationStateIncludesLinkedSocialLogin({
-        pairedIdentifierIds: [{ type: 'GOOGLE' }],
+        isSignedIn: true,
+        srpSessionData: {
+          'entropy-1': {
+            profile: {
+              identifierId: 'id-1',
+              metaMetricsId: 'mm-1',
+              profileId: 'profile-1',
+              canonicalProfileId: 'profile-1',
+              pairedIdentifierIds: [{ type: 'GOOGLE' }],
+            },
+            token: {
+              accessToken: 'token',
+              expiresIn: 3600,
+              obtainedAt: 1,
+            },
+          },
+        },
       }),
     ).toBe(true);
   });

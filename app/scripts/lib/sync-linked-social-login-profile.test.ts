@@ -76,4 +76,48 @@ describe('registerLinkedSocialLoginProfileSync', () => {
       true,
     );
   });
+
+  it('reacts to auth state changes with paired identifiers on srp session profile', () => {
+    const preferencesController = {
+      getPreferences: jest.fn(() => ({ hasLinkedSocialLoginProfile: false })),
+      setPreference: jest.fn(),
+      consolidateBasicFunctionality: jest.fn(),
+    } as unknown as PreferencesController;
+    const handlers: Record<string, (payload: unknown) => void> = {};
+    const messenger = {
+      subscribe: jest.fn((event, handler) => {
+        handlers[event] = handler;
+      }),
+    };
+
+    registerLinkedSocialLoginProfileSync(
+      messenger as never,
+      preferencesController,
+    );
+
+    handlers['AuthenticationController:stateChange']({
+      isSignedIn: true,
+      srpSessionData: {
+        'entropy-1': {
+          profile: {
+            identifierId: 'id-1',
+            metaMetricsId: 'mm-1',
+            profileId: 'profile-1',
+            canonicalProfileId: 'profile-1',
+            pairedIdentifierIds: [{ type: 'APPLE' }],
+          },
+          token: {
+            accessToken: 'token',
+            expiresIn: 3600,
+            obtainedAt: 1,
+          },
+        },
+      },
+    });
+
+    expect(preferencesController.setPreference).toHaveBeenCalledWith(
+      'hasLinkedSocialLoginProfile',
+      true,
+    );
+  });
 });

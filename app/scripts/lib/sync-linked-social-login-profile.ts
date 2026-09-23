@@ -6,7 +6,6 @@ import type { PreferencesController } from '../controllers/preferences-controlle
 import {
   authenticationStateIncludesLinkedSocialLogin,
   profileAliasesIncludeSocialLogin,
-  type AuthenticationControllerStateWithLinkedSocial,
 } from '../../../shared/lib/linked-social-login-profile';
 import type { RootMessenger } from './messenger';
 
@@ -51,8 +50,8 @@ export function applyLinkedSocialLoginProfileDetection(
  * Registers background listeners that mirror Core auth signals into the
  * `hasLinkedSocialLoginProfile` preference.
  *
- * Depends on Core exposing `pairedIdentifierIds` / `linkedSocialIdentifierTypes`
- * on `AuthenticationController` state after SRP login, and on
+ * Depends on Core exposing `profile.pairedIdentifierIds` on the primary SRP
+ * session in `srpSessionData` after SRP login (Core PR #10394), and on
  * `AuthenticationController:profileSignIn` for multi-SRP alias events.
  *
  * @param messenger - Root controller messenger.
@@ -77,9 +76,7 @@ export function registerLinkedSocialLoginProfileSync(
     (authState: AuthenticationControllerState) => {
       applyLinkedSocialLoginProfileDetection(
         preferencesController,
-        authenticationStateIncludesLinkedSocialLogin(
-          authState as AuthenticationControllerStateWithLinkedSocial,
-        ),
+        authenticationStateIncludesLinkedSocialLogin(authState),
       );
     },
   );

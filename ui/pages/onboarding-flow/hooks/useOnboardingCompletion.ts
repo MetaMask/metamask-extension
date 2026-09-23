@@ -273,12 +273,6 @@ export function useOnboardingCompletion() {
           );
         }
 
-        if (isSocialLoginFlow) {
-          await dispatch(
-            setPreference('hasLinkedSocialLoginProfile', true, false),
-          );
-        }
-
         // Social-login wallets must keep Basic Functionality enabled once the
         // consolidated experience is on. Remote flags are not reliable during
         // onboarding, so this uses the build-time consolidation gate.

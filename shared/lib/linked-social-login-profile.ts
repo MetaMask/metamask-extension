@@ -1,4 +1,7 @@
-import type { ProfileAlias } from '@metamask/profile-sync-controller/auth';
+import type {
+  AuthenticationControllerState,
+  ProfileAlias,
+} from '@metamask/profile-sync-controller/auth';
 
 export const SOCIAL_LOGIN_IDENTIFIER_TYPES = new Set([
   'GOOGLE',
@@ -14,15 +17,6 @@ export type SocialLoginIdentifierType = 'GOOGLE' | 'APPLE' | 'TELEGRAM';
 
 export type PairedIdentifier = {
   type: string;
-};
-
-/**
- * Extension-side view of {@link AuthenticationControllerState} once Core exposes
- * linked social identifiers from the SRP login response.
- */
-export type AuthenticationControllerStateWithLinkedSocial = {
-  linkedSocialIdentifierTypes?: readonly string[];
-  pairedIdentifierIds?: readonly PairedIdentifier[];
 };
 
 /**
@@ -62,23 +56,45 @@ export function pairedIdentifiersIncludeSocialLogin(
 }
 
 /**
+ * Reads `pairedIdentifierIds` from the primary SRP session profile in
+ * `srpSessionData`, as exposed by Core after SRP login / pairing.
+ *
+ * @param authState - AuthenticationController state after `performSignIn`.
+ */
+export function getPairedIdentifierIdsFromAuthState(
+  authState: AuthenticationControllerState,
+): readonly PairedIdentifier[] | undefined {
+  const { srpSessionData } = authState;
+  if (!srpSessionData) {
+    return undefined;
+  }
+
+  for (const session of Object.values(srpSessionData)) {
+    // Core PR #10394 adds this field to `UserProfile`; cast until the
+    // `@metamask/profile-sync-controller` bump lands in Extension.
+    const pairedIdentifierIds = (
+      session.profile as { pairedIdentifierIds?: readonly PairedIdentifier[] }
+    ).pairedIdentifierIds;
+    if (pairedIdentifierIds?.length) {
+      return pairedIdentifierIds;
+    }
+  }
+
+  return undefined;
+}
+
+/**
  * Returns whether linked social identifiers are present on AuthenticationController
  * state once Core exposes them after `performSignIn`.
  *
  * @param authState - AuthenticationController state, including optional Core fields.
  */
 export function authenticationStateIncludesLinkedSocialLogin(
-  authState: AuthenticationControllerStateWithLinkedSocial,
+  authState: AuthenticationControllerState,
 ): boolean {
-  if (
-    authState.linkedSocialIdentifierTypes?.some((identifierType) =>
-      SOCIAL_LOGIN_IDENTIFIER_TYPES.has(identifierType),
-    )
-  ) {
-    return true;
-  }
-
-  return pairedIdentifiersIncludeSocialLogin(authState.pairedIdentifierIds);
+  return pairedIdentifiersIncludeSocialLogin(
+    getPairedIdentifierIdsFromAuthState(authState),
+  );
 }
 
 /**
