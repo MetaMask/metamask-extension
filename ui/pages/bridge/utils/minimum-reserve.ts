@@ -13,10 +13,18 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
+import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
+
+const isNativeOrArcUsdc = (assetId: CaipAssetType) =>
+  isNativeAddress(assetId) || isArcTokenUSDC(assetId);
 
 const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
   {
     'eip155:143': '10',
+    // Arc: reserve pays gas only for ONE swap-or-bridge + its approve
+    // (~528k gas worst case). The 0.875% MetaMask fee is taken from the swap
+    // amount, not this native balance, so it's excluded here.
+    // 0.05 = ~5x base-fee-spike headroom over the 20 gwei floor.
     'eip155:5042': '0.05',
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
@@ -24,7 +32,7 @@ const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
 export const resolveMinimumReserveBalanceForCaipAssetId = (
   caipAssetId?: CaipAssetType,
 ): string => {
-  if (!caipAssetId || !isNativeAddress(caipAssetId)) {
+  if (!caipAssetId || !isNativeOrArcUsdc(caipAssetId)) {
     return '0';
   }
   const { chainId } = parseCaipAssetType(caipAssetId);
@@ -88,7 +96,7 @@ export const buildInsufficientNativeReserveError = ({
     nativeBalance &&
     validatedSrcAmount &&
     fromToken &&
-    isNativeAddress(fromToken.assetId) &&
+    isNativeOrArcUsdc(fromToken.assetId) &&
     normalizedMaxSwappableNativeBalance.lt(validatedSrcAmount)
     ? {
         minimumNativeBalanceToBeKeptInAccount,
