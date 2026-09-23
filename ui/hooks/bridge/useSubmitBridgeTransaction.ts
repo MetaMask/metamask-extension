@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useMemo, useRef, useState } from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
-  formatChainIdToCaip,
   getQuotesReceivedProperties,
   isCrossChain,
 } from '@metamask/bridge-controller';
-import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { useNavigate } from 'react-router-dom';
+import type {
+  InputPrimaryDenomination,
+  QuoteResponse,
+} from '@metamask/bridge-controller';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -19,9 +20,14 @@ import {
 } from '../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
+  getFromAmountInCurrency,
   getFromAccount,
+  getFromToken,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getIsSlippageUserOverride,
+  getInputPrimaryDenomination,
+  getSlippage,
   getToToken,
   getWarningLabels,
   type BridgeAppState,
@@ -29,37 +35,47 @@ import {
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
+  useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { type MetaMaskReduxDispatch } from '../../store/store';
+import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
+import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
+import { getDestChainId } from '../../pages/bridge/utils/quote';
+import {
+  CHAIN_VALUE_ORDER_AB_KEY,
+  CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+} from '../../../shared/lib/ab-testing/configs/chain-value-order';
+import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
+import { useABTest } from '../useABTest';
 import { useBridgeNavigation } from './useBridgeNavigation';
 import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
-const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
-const APPROVAL_TX_ERROR = 'Approve transaction failed';
-
-export const isAllowanceResetError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(ALLOWANCE_RESET_ERROR);
-};
-
-export const isApprovalTxError = (error: unknown): boolean => {
-  const errorMessage = (error as Error).message ?? '';
-  return errorMessage.includes(APPROVAL_TX_ERROR);
-};
-
-export default function useSubmitBridgeTransaction() {
-  const navigate = useNavigate();
-  const { navigateToBridgePage, navigateToHwSigningPage } =
-    useBridgeNavigation();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+export default function useSubmitBridgeTransaction(
+  inputPrimaryDenominationOverride?: InputPrimaryDenomination,
+) {
+  const {
+    navigateToBridgePage,
+    navigateToHwSigningPage,
+    navigateToDefaultRoute,
+    isHardwareWalletSigningPage,
+  } = useBridgeNavigation();
+  const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+  const persistedInputPrimaryDenomination = useSelector(
+    getInputPrimaryDenomination,
+  );
+  const inputPrimaryDenomination =
+    inputPrimaryDenominationOverride ?? persistedInputPrimaryDenomination;
   const fromAccount = useSelector(getFromAccount);
+  const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
+  const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+  const slippage = useSelector(getSlippage);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
@@ -70,15 +86,143 @@ export default function useSubmitBridgeTransaction() {
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
+  const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    variantName: chainValueOrderVariantName,
+    isActive: isChainValueOrderExperimentActive,
+  } = useABTest(
+    CHAIN_VALUE_ORDER_AB_KEY,
+    CHAIN_VALUE_ORDER_AB_TEST_VARIANTS,
+    undefined,
+    { trackExposure: false },
+  );
+  const activeAbTests = useMemo(
+    () =>
+      isChainValueOrderExperimentActive
+        ? [
+            createActiveABTestAssignment(
+              CHAIN_VALUE_ORDER_AB_KEY,
+              chainValueOrderVariantName,
+            ),
+          ]
+        : undefined,
+    [chainValueOrderVariantName, isChainValueOrderExperimentActive],
+  );
+  // Tracks an in-flight submitBridgeTx so Promise.race timeouts cannot leave a
+  // live dispatch that a hardware-wallet retry would duplicate.
+  const inFlightSubmitBridgeTxRef = useRef<{
+    requestId: string;
+    promise: Promise<unknown>;
+  } | null>(null);
+
+  const submitQuote = async (
+    quoteResponse: QuoteResponse,
+    options?: { rpcTimeoutMs?: number },
+  ) => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    try {
+      const location = await getBridgeLocation();
+      const intentData = quoteResponse.quote.intent;
+      const quotesReceivedContext = getQuotesReceivedProperties(
+        quoteResponse,
+        warnings,
+        true,
+        recommendedQuote,
+        fromTokenBalanceInUsd,
+        getHasSufficientGasForQuote(quoteResponse),
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          custom_slippage: isSlippageUserOverride,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          slippage_limit: slippage === undefined ? undefined : Number(slippage),
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          usd_amount_source: fromAmountInCurrency.usd.toNumber() || undefined,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          token_symbol_source: fromToken?.symbol,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          token_symbol_destination: toToken?.symbol,
+        },
+      );
+
+      if (intentData) {
+        await dispatch(
+          submitBridgeIntent({
+            quoteResponse,
+            accountAddress: fromAccount.address,
+            location,
+            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
+            activeAbTests,
+            inputPrimaryDenomination,
+            quotesReceivedContext,
+          }),
+        );
+        return;
+      }
+
+      const { requestId } = quoteResponse.quote;
+      let rpcPromise =
+        inFlightSubmitBridgeTxRef.current?.requestId === requestId
+          ? inFlightSubmitBridgeTxRef.current?.promise
+          : null;
+
+      if (!rpcPromise) {
+        rpcPromise = dispatch(
+          submitBridgeTx(
+            fromAccount.address,
+            quoteResponse,
+            smartTransactionsEnabled,
+            quotesReceivedContext,
+            location,
+            toToken?.securityData?.type ?? null,
+            activeAbTests,
+            inputPrimaryDenomination,
+          ),
+        );
+        const tracked = { requestId, promise: rpcPromise };
+        inFlightSubmitBridgeTxRef.current = tracked;
+        // Clear the guard when the dispatch settles, and swallow late rejections
+        // after a timeout so they do not become unhandled.
+        rpcPromise
+          .catch(() => undefined)
+          .finally(() => {
+            if (inFlightSubmitBridgeTxRef.current === tracked) {
+              inFlightSubmitBridgeTxRef.current = null;
+            }
+          });
+      }
+
+      if (options?.rpcTimeoutMs) {
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => {
+            reject(new Error('Bridge transaction RPC timed out'));
+          }, options.rpcTimeoutMs);
+        });
+        await Promise.race([rpcPromise, timeoutPromise]);
+      } else {
+        await rpcPromise;
+      }
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    }
+  };
 
   const submitBridgeTransaction = async (
-    quoteResponse: QuoteResponse & QuoteMetadata,
+    quoteResponse: QuoteResponse,
+    options?: { rpcTimeoutMs?: number },
   ) => {
     setIsSubmitting(true);
 
     try {
-      if (isHardwareWalletAccount) {
+      if (
+        !inE2e &&
+        isHardwareWalletAccount &&
+        connectionState.status !== ConnectionStatus.Ready
+      ) {
         const isDeviceReady = await ensureDeviceReady();
         if (!isDeviceReady) {
           throw new Error('Hardware wallet device is not ready');
@@ -91,74 +235,49 @@ export default function useSubmitBridgeTransaction() {
         );
       }
 
-      if (
-        isCrossChain(
-          quoteResponse.quote.srcChainId,
-          quoteResponse.quote.destChainId,
-        )
-      ) {
-        enableMissingNetwork(
-          formatChainIdToCaip(quoteResponse.quote.destChainId),
-        );
+      const destChainId = getDestChainId(quoteResponse);
+
+      if (isCrossChain(quoteResponse.chainId, destChainId)) {
+        enableMissingNetwork(destChainId);
       }
     } catch {
       setIsSubmitting(false);
       return;
     }
 
-    const intentData = quoteResponse.quote.intent;
-
-    if (hardwareWalletUsed) {
+    if (hardwareWalletUsed && !isHardwareWalletSigningPage) {
       navigateToHwSigningPage();
       setIsSubmitting(false);
+      return;
     }
 
     try {
-      const location = await getBridgeLocation();
-
-      if (intentData) {
-        await dispatch(
-          submitBridgeIntent({
-            quoteResponse,
-            accountAddress: fromAccount.address,
-            location,
-            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
-          }),
-        );
-      } else {
-        await dispatch(
-          submitBridgeTx(
-            fromAccount.address,
-            quoteResponse,
-            smartTransactionsEnabled,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-              getHasSufficientGasForQuote(quoteResponse),
-            ),
-            location,
-            toToken?.securityData?.type ?? null,
-          ),
-        );
-      }
+      await submitQuote(quoteResponse, options);
     } catch (e) {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
+        // Only user rejection should set wasTxDeclined; timeouts/disconnects must not.
         dispatch(setWasTxDeclined(true));
-        navigateToBridgePage();
-        return;
+        if (!isHardwareWalletSigningPage) {
+          navigateToBridgePage();
+        }
+        throw e;
+      }
+
+      if (hardwareWalletUsed) {
+        throw e;
       }
     } finally {
       setIsSubmitting(false);
     }
 
-    navigate(DEFAULT_ROUTE, {
-      state: { stayOnHomePage: true },
-      replace: true,
-    });
+    // Stay on the hardware-wallet signing page after submit; progress is
+    // tracked by the signing-page state machine / sign tracker.
+    if (isHardwareWalletSigningPage) {
+      return;
+    }
+
+    await navigateToDefaultRoute({ replace: true }, false);
   };
 
   return {

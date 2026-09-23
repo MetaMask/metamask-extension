@@ -8,16 +8,14 @@
 }
 
 .multichain-edit-accounts-page {
-  &.multichain-page__inner-container {
-    position: relative;
-    height: 100vh !important;
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
+  position: relative;
+  height: 100vh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
 
   // For snap flows - use flex to fit within parent flex container
-  &.multichain-edit-accounts-page--snap.multichain-page__inner-container {
+  &.multichain-edit-accounts-page--snap {
     height: 100% !important;
     flex: 1 !important;
     overflow: hidden !important;

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention, camelcase -- Segment analytics payload keys */
+/* eslint-disable @typescript-eslint/naming-convention -- Segment analytics payload keys */
 import {
   Category,
   ErrorCode,

@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
@@ -19,6 +19,8 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentLocale } from '../../ducks/locale/locale';
 import { isMaintainedLocale } from '../../../shared/constants/locales';
+import { useDispatch } from '../../store/hooks';
+import type { MetaMaskReduxState } from '../../store/types';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
@@ -95,6 +97,7 @@ export const useCarouselManagement = ({
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
+  const store = useStore<MetaMaskReduxState>();
   const slides = useSelector(getSlides);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
@@ -102,8 +105,7 @@ export const useCarouselManagement = ({
   const useExternalServices = useSelector(getUseExternalServices);
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
-  const slidesRef = useRef(slides);
-  slidesRef.current = slides;
+
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
   );
@@ -111,21 +113,31 @@ export const useCarouselManagement = ({
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
+  const eligibilityNeeded =
+    contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
+
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
   const [downloadEligibilityReady, setDownloadEligibilityReady] =
-    useState<boolean>(false);
+    useState<boolean>(() => !eligibilityNeeded);
+  const [prevEligibilityKey, setPrevEligibilityKey] = useState(
+    `${selectedAccount.address}:${eligibilityNeeded}`,
+  );
+  const eligibilityKey = `${selectedAccount.address}:${eligibilityNeeded}`;
 
-  useEffect(() => {
-    const eligibilityNeeded =
-      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
-
-    if (!eligibilityNeeded) {
+  if (eligibilityKey !== prevEligibilityKey) {
+    setPrevEligibilityKey(eligibilityKey);
+    if (eligibilityNeeded) {
+      setDownloadEligibilityReady(false);
+    } else {
       setDownloadEligible(false);
       setDownloadEligibilityReady(true);
-      return () => undefined;
     }
+  }
 
-    setDownloadEligibilityReady(false);
+  useEffect(() => {
+    if (!eligibilityNeeded) {
+      return undefined;
+    }
 
     let cancelled = false;
 
@@ -156,6 +168,7 @@ export const useCarouselManagement = ({
     useExternalServices,
     showDownloadMobileAppSlide,
     contentfulEnabled,
+    eligibilityNeeded,
   ]);
 
   useEffect(() => {
@@ -204,7 +217,7 @@ export const useCarouselManagement = ({
 
         const normalizeList = (list: CarouselSlide[]) =>
           list
-            .map((s) => normalize(s, slidesRef.current ?? []))
+            .map((s) => normalize(s, getSlides(store.getState())))
             .filter((s): s is CarouselSlide => Boolean(s))
             .filter(isNowActive);
 
@@ -261,12 +274,14 @@ export const useCarouselManagement = ({
   }, [
     enabled,
     dispatch,
+    store,
     hasZeroBalance,
     contentfulEnabled,
     currentLocale,
     testDate,
     inTest,
     downloadEligibilityReady,
+    downloadEligible,
   ]);
 
   return { slides };

@@ -81,9 +81,6 @@
   "back": {
     "message": "Nazaj"
   },
-  "backupApprovalInfo": {
-    "message": "Ta skrivna koda je potrebna za obnovitev denarnice, če izgubite napravo, pozabite geslo, ponovno namestite MetaMask ali želite dostopati do denarnice v drugi napravi."
-  },
   "backupApprovalNotice": {
     "message": "Varnostno kopirajte kodo Secret Recovery, da ohranite denarnico in sredstva varna."
   },
@@ -224,9 +221,6 @@
   "from": {
     "message": "Od"
   },
-  "gasLimitTooLow": {
-    "message": "Gas limit mora biti vsaj 21000"
-  },
   "gasUsed": {
     "message": "Uporabljen gas"
   },
@@ -337,9 +331,6 @@
   "networks": {
     "message": "Omrežja"
   },
-  "nevermind": {
-    "message": "Pozabi"
-  },
   "newAccountNumberName": {
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
@@ -408,9 +399,6 @@
   "privateKey": {
     "message": "Zasebni lljuč",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Opozorilo: Nikoli ne razkrijte tega ključa. Kdorkoli lahko z njim ukrade vse vaše premoženje v računu."
   },
   "privateNetwork": {
     "message": "Zasebno omrežje"

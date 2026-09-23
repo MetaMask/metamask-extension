@@ -4,10 +4,11 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -54,8 +55,10 @@ import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
+import { useDispatch } from '../../../store/hooks';
 import { TemplateAlertContextProvider } from './alerts/TemplateAlertContext';
 import ConfirmationFooter from './components/confirmation-footer';
+
 import {
   getTemplateValues,
   getTemplateAlerts,
@@ -64,6 +67,10 @@ import {
 
 const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
+const SNAP_DIALOG_TYPE = [
+  ...Object.values(DIALOG_APPROVAL_TYPES),
+  ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
+];
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -248,7 +255,8 @@ export default function ConfirmationPage({
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
-  const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
+  const approvalFlowLoadingText =
+    approvalFlows[approvalFlows.length - 1]?.loadingText ?? null;
 
   const { id } = useParams();
 
@@ -287,12 +295,6 @@ export default function ConfirmationPage({
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
-
-  const SNAP_DIALOG_TYPE = Object.values(DIALOG_APPROVAL_TYPES);
-
-  SNAP_DIALOG_TYPE.push(
-    ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
-  );
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
@@ -360,18 +362,13 @@ export default function ConfirmationPage({
     }
   }, [templatedValues]);
 
-  const [lastConfirmationType, setLastConfirmationType] = useState(null);
+  const lastConfirmationTypeRef = useRef(null);
 
   useEffect(() => {
     if (pendingConfirmation?.type) {
-      setLastConfirmationType(pendingConfirmation.type);
+      lastConfirmationTypeRef.current = pendingConfirmation.type;
     }
-  }, [pendingConfirmation?.type]);
 
-  // send-tron.spec expects Activity tab
-  const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);
-
-  useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
@@ -384,6 +381,9 @@ export default function ConfirmationPage({
       redirectToHomeOnZeroConfirmations;
 
     if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
+      const shouldShowActivity = SNAP_DIALOG_TYPE.includes(
+        lastConfirmationTypeRef.current,
+      );
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;
@@ -391,20 +391,14 @@ export default function ConfirmationPage({
       navigate(to);
     }
   }, [
+    pendingConfirmation?.type,
     pendingConfirmations,
     approvalFlows,
     totalUnapprovedCount,
     navigate,
     redirectToHomeOnZeroConfirmations,
-    shouldShowActivity,
     isHardwareWalletErrorModalVisible,
   ]);
-
-  useEffect(() => {
-    const childFlow = approvalFlows[approvalFlows.length - 1];
-
-    setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
-  }, [approvalFlows]);
 
   useEffect(() => {
     async function fetchSafeChainsList(_pendingConfirmation) {
@@ -559,7 +553,14 @@ export default function ConfirmationPage({
         confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
-        <div className="confirmation-page h-full">
+        <div
+          className="confirmation-page h-full"
+          data-testid={
+            isSnapCustomUIDialog
+              ? 'parent-selector-snap-confirmation-page'
+              : 'parent-selector-template-confirmation-page'
+          }
+        >
           <Header
             confirmation={pendingConfirmation}
             isSnapCustomUIDialog={isSnapCustomUIDialog}

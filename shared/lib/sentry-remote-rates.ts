@@ -1,0 +1,283 @@
+/**
+ * Remote-flag-driven Sentry sample rates.
+ *
+ * Both `tracesSampleRate` and `WRAPPER_SAMPLE_RATE` are compile-time
+ * constants, so changing either requires a release train plus population
+ * rollover (roughly weeks). This module reads overrides from the persisted
+ * `RemoteFeatureFlagController` state once at Sentry init, letting sampling
+ * react to quota pressure or validation step-ups without a build.
+ *
+ * Manifest `_flags.remoteFeatureFlags.sentry` overrides are merged on top
+ * (for local/E2E `.manifest-overrides.json` testing) so a build-time value
+ * wins over the persisted remote flag.
+ *
+ * The compile-time constants remain the fallbacks whenever the flag is
+ * absent or malformed.
+ *
+ * Adding a rate is a two-sided change, not a client-only one. LaunchDarkly
+ * stores this flag's `variationJsonSchema` with `additionalProperties: false`
+ * and enforces it on write, so a new key (`persistenceWriteSampleRate`, say)
+ * has to be added to that schema before any value carrying it can be published.
+ * Landing the client half first looks complete and reads nothing.
+ */
+
+import { getManifestFlags } from './manifestFlags';
+
+export type SentryRemoteRates = {
+  tracesSampleRate?: number;
+  wrapperSampleRate?: number;
+  transactionSampleRates?: Record<string, number>;
+  /**
+   * Sample rate for measuring split-state persistence write size/frequency
+   * before emitting a Sentry `state.write` span. Gates the extra
+   * `JSON.stringify` cost.
+   */
+  persistenceWriteSampleRate?: number;
+};
+
+/**
+ * Default probability of measuring a successful split-state persist write when
+ * `sentry.persistenceWriteSampleRate` is absent or malformed.
+ * Off by default until a remote rate is published.
+ */
+export const PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE = 0;
+
+type ControllerFlagState = {
+  remoteFeatureFlags?: { sentry?: Record<string, unknown> };
+};
+
+let remoteRates: SentryRemoteRates = {};
+
+/**
+ * Validate a per-transaction-name rate map: keep only entries whose value is a
+ * valid rate. A non-object, an empty result, or no valid entries yields
+ * undefined so the build-time overrides apply unchanged.
+ *
+ * @param value - Candidate map from the remote flag.
+ * @returns The validated map, or undefined when invalid or empty.
+ */
+function asValidRateMap(value: unknown): Record<string, number> | undefined {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+  const rates: Record<string, number> = {};
+  for (const [name, rate] of Object.entries(value)) {
+    const validRate = asValidRate(rate);
+    if (validRate !== undefined) {
+      rates[name] = validRate;
+    }
+  }
+  return Object.keys(rates).length > 0 ? rates : undefined;
+}
+
+/**
+ * A valid rate is a finite number in [0, 1]; anything else is treated as
+ * absent so the compile-time fallback applies.
+ *
+ * @param value - Candidate rate from the remote flag.
+ * @returns The rate, or undefined when invalid.
+ */
+function asValidRate(value: unknown): number | undefined {
+  return typeof value === 'number' &&
+    Number.isFinite(value) &&
+    value >= 0 &&
+    value <= 1
+    ? value
+    : undefined;
+}
+
+/**
+ * Narrow an unknown `sentry` flag value to a plain object.
+ *
+ * @param value - Candidate flag value.
+ * @returns The object, or undefined when invalid.
+ */
+function asSentryFlagObject(
+  value: unknown,
+): Record<string, unknown> | undefined {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+  return value as Record<string, unknown>;
+}
+
+/**
+ * `sentry` overrides from `_flags.remoteFeatureFlags` in the extension
+ * manifest (including `.manifest-overrides.json`).
+ *
+ * @returns The manifest sentry flag object, or undefined when absent.
+ */
+function getManifestSentryRemoteFlag(): Record<string, unknown> | undefined {
+  return asSentryFlagObject(getManifestFlags().remoteFeatureFlags?.sentry);
+}
+
+/**
+ * Merge persisted remote `sentry` rates with manifest overrides. Manifest
+ * keys win so local/E2E builds can force a rate without LaunchDarkly.
+ *
+ * @param persisted - Rates from persisted `RemoteFeatureFlagController` state.
+ * @param manifest - Rates from `getManifestFlags().remoteFeatureFlags.sentry`.
+ * @returns The merged flag object, or undefined when both are absent.
+ */
+function mergeSentryFlags(
+  persisted: Record<string, unknown> | undefined,
+  manifest: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!persisted && !manifest) {
+    return undefined;
+  }
+  return { ...persisted, ...manifest };
+}
+
+/**
+ * The remote `wrapperSampleRate` override, when a valid one was read at init.
+ *
+ * @returns The override, or undefined so callers fall back to the constant.
+ */
+export function getRemoteWrapperSampleRate(): number | undefined {
+  return remoteRates.wrapperSampleRate;
+}
+
+/**
+ * The remote per-transaction-name sample-rate overrides
+ * (`sentry.transactionSampleRates`), when a valid map was read at init.
+ * Consumed by the `tracesSampler` ahead of the build-time per-name overrides,
+ * so a newly-noisy custom transaction can be re-budgeted without a build.
+ *
+ * @returns The validated name -> rate map, or undefined when absent.
+ */
+export function getRemoteTransactionSampleRates():
+  | Record<string, number>
+  | undefined {
+  return remoteRates.transactionSampleRates;
+}
+
+/**
+ * The remote `tracesSampleRate` override, when a valid one was read at init.
+ * Consumed by the `tracesSampler` as both the default rate and a hard ceiling
+ * across all transactions. Release scoping, when needed, is resolved by the
+ * controller from the flag's `versions` ladder before the value reaches here.
+ *
+ * @returns The override, or undefined so callers fall back to the build-time rate.
+ */
+export function getRemoteTracesSampleRate(): number | undefined {
+  return remoteRates.tracesSampleRate;
+}
+
+/**
+ * Effective sample rate for measuring split-state persistence writes.
+ * Uses `sentry.persistenceWriteSampleRate` when a valid remote override was
+ * applied, otherwise {@link PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE}.
+ * Capped by the remote `tracesSampleRate` when set, so quota throttles drop
+ * writes before measurement instead of after a `State Persist` span is created.
+ *
+ * @returns A sample rate in [0, 1].
+ */
+export function getPersistenceWriteTelemetrySampleRate(): number {
+  return Math.min(
+    remoteRates.persistenceWriteSampleRate ??
+      PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
+    remoteRates.tracesSampleRate ?? 1,
+  );
+}
+
+/**
+ * Test-only reset of the cached rates.
+ */
+export function resetSentryRemoteRates(): void {
+  remoteRates = {};
+}
+
+type PersistedStateHook = (options: {
+  reportErrors: boolean;
+}) => Promise<unknown>;
+
+/**
+ * Resolve once `globalThis.stateHooks.getPersistedState` is registered.
+ *
+ * `setup-initial-state-hooks` registers the hook synchronously at module
+ * evaluation, but that module loads *after* `sentry-install` invokes
+ * `applySentryRemoteRates`, so the hook is absent for the first ticks of a
+ * session. Without this wait the read optional-chains through an undefined
+ * hook and silently falls back to the compile-time rate — the remote flag
+ * would never apply. Poll briefly instead, then give up to the fallback.
+ *
+ * @param attempts - Max poll attempts before giving up.
+ * @param intervalMs - Delay between attempts.
+ * @returns The hook once available, or undefined if it never registers.
+ */
+async function waitForPersistedStateHook(
+  attempts = 50,
+  intervalMs = 100,
+): Promise<PersistedStateHook | undefined> {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const hook = globalThis.stateHooks?.getPersistedState;
+    if (typeof hook === 'function') {
+      return hook as PersistedStateHook;
+    }
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+  // The hook may have registered during the final wait; check once more before
+  // giving up so a registration on the last interval isn't missed.
+  const hook = globalThis.stateHooks?.getPersistedState;
+  return typeof hook === 'function' ? (hook as PersistedStateHook) : undefined;
+}
+
+/**
+ * Reads the `sentry` remote feature flag from persisted state (merged with
+ * any `_flags.remoteFeatureFlags.sentry` manifest overrides) and applies
+ * valid overrides: `tracesSampleRate` onto the live client's options (the
+ * sampler consults options per event, so a post-init update takes effect
+ * without re-init), `wrapperSampleRate` into the module cache consumed by
+ * `shouldSampleWrappers`, and `persistenceWriteSampleRate` for split-state
+ * write-size telemetry sampling.
+ *
+ * Read once, after waiting for the persisted-state hook to register (see
+ * {@link waitForPersistedStateHook}): no per-call lookups afterward.
+ *
+ * @param client - The initialized Sentry client, when available.
+ * @param client.getOptions
+ * @returns The rates that were applied.
+ */
+export async function applySentryRemoteRates(client?: {
+  getOptions: () => { tracesSampleRate?: number };
+}): Promise<SentryRemoteRates> {
+  let persistedSentry: Record<string, unknown> | undefined;
+  try {
+    const getPersistedState = await waitForPersistedStateHook();
+    if (getPersistedState) {
+      const persistedState = (await getPersistedState({
+        reportErrors: false,
+      })) as
+        | { data?: Record<string, ControllerFlagState | undefined> }
+        | undefined;
+      persistedSentry = asSentryFlagObject(
+        persistedState?.data?.RemoteFeatureFlagController?.remoteFeatureFlags
+          ?.sentry,
+      );
+    }
+  } catch {
+    // Persisted state unavailable (fresh install, storage error): continue
+    // with manifest overrides only when present.
+  }
+
+  const sentryFlag = mergeSentryFlags(
+    persistedSentry,
+    getManifestSentryRemoteFlag(),
+  );
+
+  const applied: SentryRemoteRates = {
+    tracesSampleRate: asValidRate(sentryFlag?.tracesSampleRate),
+    wrapperSampleRate: asValidRate(sentryFlag?.wrapperSampleRate),
+    transactionSampleRates: asValidRateMap(sentryFlag?.transactionSampleRates),
+    persistenceWriteSampleRate: asValidRate(
+      sentryFlag?.persistenceWriteSampleRate,
+    ),
+  };
+  remoteRates = applied;
+
+  if (client && applied.tracesSampleRate !== undefined) {
+    client.getOptions().tracesSampleRate = applied.tracesSampleRate;
+  }
+  return applied;
+}

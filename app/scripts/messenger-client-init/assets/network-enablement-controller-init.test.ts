@@ -330,9 +330,9 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the controller with the correct networks for test environment', () => {
+  it('initialises the controller with the correct networks for testing environment', () => {
     process.env.METAMASK_DEBUG = '';
-    process.env.METAMASK_ENVIRONMENT = 'test';
+    process.env.METAMASK_ENVIRONMENT = 'testing';
     process.env.IN_TEST = '';
 
     NetworkEnablementControllerInit(getInitRequestMock());

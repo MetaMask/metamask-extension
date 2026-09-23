@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   forceUpdateMetamaskState,
   resetOnboarding,

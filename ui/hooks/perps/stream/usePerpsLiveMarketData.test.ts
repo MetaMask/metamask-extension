@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 import { usePerpsLiveMarketData } from './usePerpsLiveMarketData';
 import { usePerpsStreamManager } from './usePerpsStreamManager';

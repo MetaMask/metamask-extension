@@ -6,7 +6,11 @@ import {
   Severity,
 } from '@metamask/hw-wallet-sdk';
 
-import { serializeError, serializeLedgerError } from './ledger-utils';
+import {
+  serializeError,
+  serializeLedgerError,
+  isSerializedLedgerError,
+} from './ledger-utils';
 
 describe('ledger-utils', () => {
   describe('serializeError', () => {
@@ -119,6 +123,39 @@ describe('ledger-utils', () => {
       it('coerces non-Error inputs', () => {
         expect(serializeLedgerError(42)).toEqual({ message: '42' });
       });
+    });
+  });
+
+  describe('isSerializedLedgerError', () => {
+    it('accepts an object with a string `message`', () => {
+      expect(isSerializedLedgerError({ message: 'boom' })).toBe(true);
+    });
+
+    it('accepts an object with optional fields alongside `message`', () => {
+      expect(
+        isSerializedLedgerError({
+          message: 'boom',
+          name: 'HardwareWalletError',
+          statusCode: 0x6985,
+          code: 2000,
+        }),
+      ).toBe(true);
+    });
+
+    it('rejects an object whose `message` is not a string', () => {
+      expect(isSerializedLedgerError({ message: 42 })).toBe(false);
+      expect(isSerializedLedgerError({ message: undefined })).toBe(false);
+    });
+
+    it('rejects an object without a `message` field', () => {
+      expect(isSerializedLedgerError({ statusCode: 0x6fff })).toBe(false);
+    });
+
+    it('rejects primitives and null', () => {
+      expect(isSerializedLedgerError(null)).toBe(false);
+      expect(isSerializedLedgerError(undefined)).toBe(false);
+      expect(isSerializedLedgerError('boom')).toBe(false);
+      expect(isSerializedLedgerError(42)).toBe(false);
     });
   });
 });

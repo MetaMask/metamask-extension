@@ -5,10 +5,20 @@ import {
 } from '@metamask/messenger';
 import type {
   AnalyticsControllerMessenger,
+  AnalyticsControllerCreateEventFragmentAction,
+  AnalyticsControllerFinalizeEventFragmentAction,
+  AnalyticsControllerGetEventFragmentByIdAction,
   AnalyticsControllerGetStateAction,
   AnalyticsControllerIdentifyAction,
+  AnalyticsControllerOptInAction,
+  AnalyticsControllerOptInToMarketingAction,
+  AnalyticsControllerOptOutAction,
+  AnalyticsControllerOptOutOfMarketingAction,
+  AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
+  AnalyticsControllerUpdateEventFragmentAction,
+  AnalyticsControllerUpsertEventFragmentAction,
 } from '@metamask/analytics-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
 import type {
@@ -17,7 +27,12 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MetaMetricsControllerGetStateAction } from '../../controllers/metametrics-controller';
+import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../../controllers/metametrics-controller-method-action-types';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import type {
+  SentryTracingServiceClearTracesAfterMetricsOptInAction,
+  SentryTracingServiceTrackTracesAfterMetricsOptInAction,
+} from '../../services/sentry/sentry-tracing-service-method-action-types';
 import type { RootMessenger } from '../../lib/messenger';
 
 type InitActions =
@@ -27,10 +42,23 @@ type InitActions =
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | MetaMetricsControllerGetStateAction
+  | MetaMetricsControllerSetMarketingCampaignCookieIdAction
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerTrackEventAction
   | AnalyticsControllerIdentifyAction
-  | AnalyticsControllerTrackViewAction;
+  | AnalyticsControllerTrackViewAction
+  | AnalyticsControllerOptInAction
+  | AnalyticsControllerOptInToMarketingAction
+  | AnalyticsControllerOptOutAction
+  | AnalyticsControllerOptOutOfMarketingAction
+  | AnalyticsControllerResetConsentDecisionAction
+  | AnalyticsControllerCreateEventFragmentAction
+  | AnalyticsControllerUpsertEventFragmentAction
+  | AnalyticsControllerUpdateEventFragmentAction
+  | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerFinalizeEventFragmentAction
+  | SentryTracingServiceTrackTracesAfterMetricsOptInAction
+  | SentryTracingServiceClearTracesAfterMetricsOptInAction;
 
 type InitEvents = never;
 
@@ -54,7 +82,7 @@ export function getAnalyticsControllerMessenger(
     });
   messenger.delegate({
     messenger: analyticsControllerMessenger,
-    actions: [],
+    actions: ['GeolocationController:getGeolocationData'],
     events: [],
   });
   return analyticsControllerMessenger;
@@ -92,10 +120,23 @@ export function getAnalyticsControllerInitMessenger(
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
       'MetaMetricsController:getState',
+      'MetaMetricsController:setMarketingCampaignCookieId',
       'AnalyticsController:getState',
       'AnalyticsController:trackEvent',
       'AnalyticsController:identify',
       'AnalyticsController:trackView',
+      'AnalyticsController:optIn',
+      'AnalyticsController:optInToMarketing',
+      'AnalyticsController:optOut',
+      'AnalyticsController:optOutOfMarketing',
+      'AnalyticsController:resetConsentDecision',
+      'AnalyticsController:createEventFragment',
+      'AnalyticsController:upsertEventFragment',
+      'AnalyticsController:updateEventFragment',
+      'AnalyticsController:getEventFragmentById',
+      'AnalyticsController:finalizeEventFragment',
+      'SentryTracingService:trackTracesAfterMetricsOptIn',
+      'SentryTracingService:clearTracesAfterMetricsOptIn',
     ],
     events: [],
   });

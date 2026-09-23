@@ -50,7 +50,7 @@ export async function createProductionMwpStack(
  */
 export async function createE2eMwpStack(): Promise<DappClient> {
   // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
-  /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
+  /* eslint-disable @typescript-eslint/no-require-imports */
   const {
     E2eMwpMockClient,
   } = require('../../../../test/e2e/helpers/qr-sync/e2e-mwp-mock-client');
@@ -60,7 +60,7 @@ export async function createE2eMwpStack(): Promise<DappClient> {
   const {
     registerQrSyncE2eBridge,
   } = require('../../../../test/e2e/helpers/qr-sync/qr-sync-e2e-bridge');
-  /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
+  /* eslint-enable @typescript-eslint/no-require-imports */
 
   const client = new E2eMwpMockClient();
   const simulator = new MobileWalletSimulator(client);

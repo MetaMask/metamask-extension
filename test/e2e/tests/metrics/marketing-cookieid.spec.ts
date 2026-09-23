@@ -50,7 +50,7 @@ describe('Marketing cookieId', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             dataCollectionForMarketing: true,
           })
@@ -97,7 +97,7 @@ describe('Marketing cookieId', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -183,7 +183,7 @@ describe('Marketing cookieId', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
             dataCollectionForMarketing: true,
           })
@@ -233,7 +233,8 @@ describe('Marketing cookieId', function (this: Suite) {
         await driver.delay(5000);
 
         uiState = await getCleanAppState(driver);
-        assert.equal(uiState.metamask.dataCollectionForMarketing, false);
+        assert.equal(uiState.metamask.optedInToMarketing, false);
+        assert.equal(uiState.metamask.marketingConsentDecisionMade, true);
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
       },
     );

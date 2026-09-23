@@ -39,7 +39,7 @@ describe('Gasless swap tests', function (this: Suite) {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
         await activityTab.checkTxAction({
-          action: 'Swapped ETH to USDC',
+          action: 'Swapped',
           confirmedTx: 1,
         });
       },
@@ -74,7 +74,7 @@ describe('Gasless swap tests', function (this: Suite) {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(2);
         await activityTab.checkTxAction({
-          action: 'Swapped USDC to DAI',
+          action: 'Swapped',
           confirmedTx: 0,
           txIndex: 1,
         });
@@ -114,7 +114,7 @@ describe('Gasless swap tests', function (this: Suite) {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
         await activityTab.checkTxAction({
-          action: 'Swapped ETH to USDC',
+          action: 'Swapped',
           confirmedTx: 1,
         });
       },

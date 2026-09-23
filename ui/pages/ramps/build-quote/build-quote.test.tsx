@@ -11,6 +11,8 @@ import { RampsBuildQuoteScreen } from './build-quote';
 const QUOTE_DEBOUNCE_MS = 500;
 
 const mockNavigate = jest.fn();
+const mockGetBuyWidgetData = jest.fn();
+const mockWatchRampsCheckoutTab = jest.fn();
 let mockLocationState: { assetId?: string } | null = null;
 
 jest.mock('react-router-dom', () => ({
@@ -18,6 +20,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
   useLocation: () => ({
     pathname: '/ramps/build-quote',
+    search: '',
     state: mockLocationState,
   }),
 }));
@@ -37,11 +40,29 @@ jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
   useRampsQuotes: jest.fn(),
 }));
 
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(() => null),
+}));
+
+jest.mock('../../../store/controller-actions/ramps-controller', () => ({
+  watchRampsCheckoutTab: (...args: unknown[]) =>
+    mockWatchRampsCheckoutTab(...args),
+}));
+
+const mockUseRampsScreenViewed = jest.fn();
+jest.mock('../../../hooks/ramps/useRampsScreenViewed', () => ({
+  useRampsScreenViewed: (...args: unknown[]) =>
+    mockUseRampsScreenViewed(...args),
+}));
+
 const { useRampsController } = jest.requireMock(
   '../../../hooks/ramps/useRampsController',
 );
 const { useRampsQuotes } = jest.requireMock(
   '../../../hooks/ramps/useRampsQuotes',
+);
+const { getInternalAccountBySelectedAccountGroupAndCaip } = jest.requireMock(
+  '../../../selectors/multichain-accounts/account-tree',
 );
 
 const createStore = () =>
@@ -106,10 +127,15 @@ const mockControllerState = ({
   userRegion,
   selectedToken,
   tokensLoading,
+  providers: [],
+  providersLoading: false,
+  providersError: null,
+  setSelectedProvider: jest.fn().mockResolvedValue(undefined),
   selectedProvider: { id: 'transak', name: 'Transak' },
   selectedPaymentMethod: { id: 'debit-credit-card', name: 'Debit card' },
   paymentMethods: [{ id: 'debit-credit-card', name: 'Debit card' }],
   paymentMethodsStatus: 'success',
+  getBuyWidgetData: mockGetBuyWidgetData,
 });
 
 describe('RampsBuildQuoteScreen', () => {
@@ -139,6 +165,25 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('sizes the amount input from an inaccessible text twin', () => {
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+    const amountSizeContainer = amountInput.parentElement;
+    const amountSizeTwin = amountSizeContainer?.querySelector(
+      '[aria-hidden="true"]',
+    );
+
+    expect(amountSizeContainer).toHaveClass('relative', 'w-max', 'min-w-[1ch]');
+    expect(amountSizeTwin).toHaveTextContent('100');
+    expect(amountInput).toHaveClass('absolute', 'inset-0');
+    expect(amountInput).not.toHaveAttribute('size');
   });
 
   it('matches snapshot while quote is loading', () => {
@@ -173,6 +218,24 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('matches snapshot when quote fetch fails with a technical HTTP error', () => {
+    useRampsQuotes.mockReturnValue({
+      data: null,
+      loading: false,
+      error: new Error(
+        "Fetching 'https://on-ramp.dev-api.cx.metamask.io/v2/quotes?action=buy&region=us-ut' failed with status '401'",
+      ),
+    });
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('disables continue until a quote is available', () => {
     useRampsQuotes.mockReturnValue({
       data: { success: [], error: [] },
@@ -194,6 +257,33 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
+  it('shows a quote error with a change-provider action when no provider returns a quote', () => {
+    useRampsQuotes.mockReturnValue({
+      data: { success: [], error: [] },
+      loading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsQuoteFetchError.message,
+    );
+    expect(
+      screen.getByTestId('ramps-build-quote-change-provider'),
+    ).toHaveTextContent(messages.rampsChangeProviders.message);
+
+    fireEvent.click(screen.getByTestId('ramps-build-quote-change-provider'));
+
+    expect(
+      screen.getByTestId('ramps-provider-selection-empty'),
+    ).toBeInTheDocument();
+  });
+
   it('disables continue while amount debounce has not settled', () => {
     jest.useFakeTimers();
 
@@ -210,6 +300,137 @@ describe('RampsBuildQuoteScreen', () => {
     });
 
     expect(screen.getByTestId('ramps-build-quote-continue')).toBeDisabled();
+  });
+
+  it('does not fetch a quote for a stale debounced amount', () => {
+    jest.useFakeTimers();
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    fireEvent.change(screen.getByTestId('ramps-build-quote-amount-input'), {
+      target: { value: '25' },
+    });
+    fireEvent.change(screen.getByTestId('ramps-build-quote-amount-input'), {
+      target: { value: '100' },
+    });
+
+    expect(useRampsQuotes).not.toHaveBeenCalledWith(
+      expect.objectContaining({ amount: 25 }),
+    );
+  });
+
+  it('opens the provider widget via background watch and navigates to complete buy on continue', async () => {
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+      orderId: 'order-123',
+    });
+    mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockGetBuyWidgetData).toHaveBeenCalledWith({
+      provider: 'transak',
+      id: 'quote-1',
+    });
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: 'https://provider.example/checkout',
+        providerCode: 'transak',
+        walletAddress: '0xabc123',
+        orderCode: 'order-123',
+        checkoutSessionId: expect.any(String),
+        region: 'us-ca',
+        providerName: 'Transak',
+      }),
+    );
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/complete-buy', {
+      state: {
+        checkoutUrl: 'https://provider.example/checkout',
+        providerName: 'Transak',
+        amountOut: undefined,
+        tokenSymbol: 'mUSD',
+        tokenIconUrl: 'https://example.com/musd.png',
+        tokenChainId: 'eip155:1',
+        walletAddress: '0xabc123',
+        createdAt: expect.any(Number),
+      },
+    });
+  });
+
+  it('watches redirect-only checkouts without an order code', async () => {
+    mockGetBuyWidgetData.mockResolvedValue({
+      url: 'https://provider.example/checkout',
+    });
+    mockWatchRampsCheckoutTab.mockResolvedValue(undefined);
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockWatchRampsCheckoutTab).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: 'https://provider.example/checkout',
+        providerCode: 'transak',
+        walletAddress: '0xabc123',
+        orderCode: undefined,
+        checkoutSessionId: expect.any(String),
+        region: 'us-ca',
+        providerName: 'Transak',
+      }),
+    );
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/complete-buy', {
+      state: {
+        checkoutUrl: 'https://provider.example/checkout',
+        providerName: 'Transak',
+        amountOut: undefined,
+        tokenSymbol: 'mUSD',
+        tokenIconUrl: 'https://example.com/musd.png',
+        tokenChainId: 'eip155:1',
+        walletAddress: '0xabc123',
+        createdAt: expect.any(Number),
+      },
+    });
+  });
+
+  it('surfaces an error and does not navigate when the widget has no url', async () => {
+    mockGetBuyWidgetData.mockResolvedValue(null);
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('ramps-build-quote-continue'));
+    });
+
+    expect(mockWatchRampsCheckoutTab).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsBuyWidgetError.message,
+    );
+    expect(
+      screen.getByTestId('ramps-build-quote-change-provider'),
+    ).toHaveTextContent(messages.rampsChangeProvider.message);
   });
 
   it('matches snapshot with provider quote error', () => {
@@ -291,6 +512,34 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('does not fire screen-viewed on the redirect path', () => {
+    mockLocationState = null;
+    useRampsController.mockReturnValue(
+      mockControllerState({
+        selectedToken: null,
+        tokensLoading: false,
+      }),
+    );
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(mockUseRampsScreenViewed).not.toHaveBeenCalled();
+  });
+
+  it('fires screen-viewed when the amount input is shown', () => {
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(mockUseRampsScreenViewed).toHaveBeenCalledWith('Amount Input');
   });
 
   it('matches snapshot with regional default amount', () => {
@@ -405,5 +654,43 @@ describe('RampsBuildQuoteScreen', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/ramps/payment-method', {
       state: { amount: expect.any(Number) },
     });
+  });
+
+  it('uses the chain-matching account address for non-EVM assets', () => {
+    const solanaAccount = {
+      id: 'sol-account-1',
+      address: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+      metadata: { name: 'Solana Account' },
+    };
+    const solanaToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      name: 'Solana',
+      symbol: 'SOL',
+      decimals: 9,
+      iconUrl: 'https://example.com/sol.png',
+      tokenSupported: true,
+    };
+
+    jest
+      .mocked(getInternalAccountBySelectedAccountGroupAndCaip)
+      .mockReturnValue(solanaAccount);
+
+    useRampsController.mockReturnValue(
+      mockControllerState({ selectedToken: solanaToken }),
+    );
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(useRampsQuotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        walletAddress: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      }),
+    );
   });
 });

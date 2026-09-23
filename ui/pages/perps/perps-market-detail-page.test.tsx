@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -17,6 +18,7 @@ import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/uti
 import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
@@ -101,6 +103,7 @@ jest.mock('@metamask/perps-controller', () => ({
   },
   MARKET_CATEGORIES: [
     'crypto',
+    'memecoin',
     'stock',
     'pre-ipo',
     'index',
@@ -256,15 +259,47 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+// Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
+// properties the page constructs.
+const mockPerpsScreenViewedOptions: {
+  eventName?: unknown;
+  properties?: Record<string, unknown>;
+}[] = [];
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: jest.fn() }),
+  usePerpsEventTracking: (options?: {
+    eventName?: unknown;
+    properties?: Record<string, unknown>;
+  }) => {
+    if (options) {
+      mockPerpsScreenViewedOptions.push(options);
+      return undefined;
+    }
+    return { track: jest.fn() };
+  },
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
-  usePerpsMarketInfo: jest.fn(),
+  usePerpsMarketInfo: jest.fn(() => ({
+    market: undefined,
+    isLoading: false,
+  })),
+}));
+// Cancel/close/reverse/TP-SL modals call usePerpsAttribution; keep them
+// renderable without mounting PerpsAttributionProvider in this page suite.
+const mockSetFlowAttribution = jest.fn();
+jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
+  usePerpsAttribution: () => ({
+    buildTrackingData: (input: Record<string, unknown>) => ({
+      ...input,
+      entryPoint: 'homescreen_tab',
+      discoverySource: 'market_list',
+    }),
+    buildTpslTrackingData: (input: Record<string, unknown>) => input,
+    setFlowAttribution: mockSetFlowAttribution,
+  }),
 }));
 jest.mock(
   '../../components/app/perps/hooks/usePerpsDepositConfirmation',
@@ -350,6 +385,8 @@ jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
         mockReact.createElement('div', {
           'data-testid': 'perps-candlestick-chart',
           'data-price-lines': JSON.stringify(props.priceLines ?? []),
+          'data-visible-candle-count': props.initialVisibleCandleCount,
+          onClick: () => props.onVisibleCandleCountChange?.(75),
         }),
     ),
   };
@@ -377,6 +414,150 @@ jest.mock('react-router-dom', () => ({
 
 // eslint-disable-next-line import-x/first
 import PerpsMarketDetailPage from './perps-market-detail-page';
+
+type FakeIntersectionObserver = {
+  callback: IntersectionObserverCallback;
+  root: Element | Document | null;
+  rootMargin: string;
+  observed: Element[];
+};
+
+type FakeResizeObserver = {
+  callback: ResizeObserverCallback;
+  observed: Element[];
+};
+
+/**
+ * Restores a window global, deleting it when jsdom never defined it. Assigning
+ * `undefined` back would leave an own property that `in` checks still see.
+ *
+ * @param key - Name of the global to restore.
+ * @param original - Value captured before the global was replaced.
+ */
+function restoreWindowGlobal(key: string, original: unknown) {
+  if (original === undefined) {
+    Reflect.deleteProperty(window, key);
+    return;
+  }
+
+  Reflect.set(window, key, original);
+}
+
+/**
+ * Replaces the jsdom `IntersectionObserver`/`ResizeObserver` stubs with fakes
+ * that expose their callbacks, so tests can drive the market header's
+ * scroll-linked price crossfade and its sticky-header measurement.
+ *
+ * @returns Handles for inspecting observers and simulating scroll/resize.
+ */
+function installHeaderObserverHarness() {
+  const intersectionObservers: FakeIntersectionObserver[] = [];
+  const resizeObservers: FakeResizeObserver[] = [];
+  const originalIntersectionObserver = window.IntersectionObserver;
+  const originalResizeObserver = window.ResizeObserver;
+
+  window.IntersectionObserver = class {
+    // Read back by `useIntersectionObserver` when evaluating entries.
+    thresholds: readonly number[];
+
+    constructor(
+      callback: IntersectionObserverCallback,
+      options?: IntersectionObserverInit,
+    ) {
+      const threshold = options?.threshold ?? 0;
+      this.thresholds = Array.isArray(threshold) ? threshold : [threshold];
+      intersectionObservers.push({
+        callback,
+        root: options?.root ?? null,
+        rootMargin: options?.rootMargin ?? '0px',
+        observed: [],
+      });
+    }
+
+    observe(element: Element) {
+      intersectionObservers[intersectionObservers.length - 1].observed.push(
+        element,
+      );
+    }
+
+    unobserve() {
+      return undefined;
+    }
+
+    disconnect() {
+      return undefined;
+    }
+  } as unknown as typeof IntersectionObserver;
+
+  window.ResizeObserver = class {
+    constructor(callback: ResizeObserverCallback) {
+      resizeObservers.push({ callback, observed: [] });
+    }
+
+    observe(element: Element) {
+      resizeObservers[resizeObservers.length - 1].observed.push(element);
+    }
+
+    unobserve() {
+      return undefined;
+    }
+
+    disconnect() {
+      return undefined;
+    }
+  } as unknown as typeof ResizeObserver;
+
+  const latestIntersectionObserver = () =>
+    intersectionObservers[intersectionObservers.length - 1];
+
+  return {
+    latestIntersectionObserver,
+    /**
+     * Reports the observed price row as (in)visible below the sticky header.
+     * @param isIntersecting
+     */
+    setPriceRowVisible(isIntersecting: boolean) {
+      const observer = latestIntersectionObserver();
+      act(() => {
+        observer.callback(
+          [
+            {
+              isIntersecting,
+              intersectionRatio: isIntersecting ? 1 : 0,
+              target: observer.observed[0],
+            } as IntersectionObserverEntry,
+          ],
+          observer as unknown as IntersectionObserver,
+        );
+      });
+    },
+    /**
+     * Emits a resize for the sticky header, optionally with a border box.
+     * @param options0
+     * @param options0.borderBoxBlockSize
+     */
+    resizeHeader({ borderBoxBlockSize }: { borderBoxBlockSize?: number }) {
+      const observer = resizeObservers[resizeObservers.length - 1];
+      act(() => {
+        observer.callback(
+          [
+            {
+              target: observer.observed[0],
+              ...(borderBoxBlockSize === undefined
+                ? {}
+                : { borderBoxSize: [{ blockSize: borderBoxBlockSize }] }),
+            } as unknown as ResizeObserverEntry,
+          ],
+          observer as unknown as ResizeObserver,
+        );
+      });
+    },
+    restore() {
+      restoreWindowGlobal('IntersectionObserver', originalIntersectionObserver);
+      restoreWindowGlobal('ResizeObserver', originalResizeObserver);
+    },
+  };
+}
 
 async function renderPage(
   store: ReturnType<ReturnType<typeof configureMockStore>>,
@@ -409,6 +590,7 @@ describe('PerpsMarketDetailPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockPerpsScreenViewedOptions.length = 0;
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockReplacePerpsToastByKey.mockReset();
     mockTriggerDeposit.mockClear();
@@ -438,12 +620,132 @@ describe('PerpsMarketDetailPage', () => {
   });
 
   describe('when perps feature is enabled', () => {
+    it('reports watchlisted false on the asset_detail screen view for an unwatchlisted market', async () => {
+      await renderPage(mockStore(createMockState(true)));
+
+      const assetDetailView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'asset_details',
+      );
+
+      expect(assetDetailView?.properties?.watchlisted).toBe(false);
+    });
+
+    it('reports watchlisted true when the market is in the watchlist', async () => {
+      const state = createMockState(true);
+      (state.metamask as Record<string, unknown>).watchlistMarkets = {
+        testnet: [],
+        mainnet: ['ETH'],
+      };
+
+      await renderPage(mockStore(state));
+
+      const assetDetailView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'asset_details',
+      );
+
+      expect(assetDetailView?.properties?.watchlisted).toBe(true);
+    });
+
+    it('emits the error screen view when the market is not found', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
+        isInitialLoading: false,
+      });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as
+        | { conditions?: boolean; properties?: Record<string, unknown> }
+        | undefined;
+
+      expect(errorView).toBeDefined();
+      expect(errorView?.conditions).toBe(true);
+      expect(errorView?.properties).toMatchObject({
+        error_type: 'market_not_found',
+        screen_name: 'perps_market_details',
+      });
+    });
+
+    it('emits exactly one error screen view and no asset_details view for an unknown symbol', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'DOESNOTEXIST' });
+      await renderPage(mockStore(createMockState(true)));
+
+      type ScreenViewOption = {
+        conditions?: boolean;
+        properties?: Record<string, unknown>;
+      };
+      const activeErrorViews = (
+        mockPerpsScreenViewedOptions as ScreenViewOption[]
+      ).filter(
+        (option) =>
+          option.properties?.screen_type === 'error' &&
+          option.conditions === true,
+      );
+      const activeAssetDetailViews = (
+        mockPerpsScreenViewedOptions as ScreenViewOption[]
+      ).filter(
+        (option) =>
+          option.properties?.screen_type === 'asset_details' &&
+          option.conditions === true,
+      );
+
+      expect(activeErrorViews).toHaveLength(1);
+      // asset_details is gated on `market`, so an unknown symbol must not also
+      // fire it (one rendered error screen => one screen-view event).
+      expect(activeAssetDetailViews).toHaveLength(0);
+    });
+
+    it('does not emit a market-not-found view for an empty initial snapshot', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [],
+        isInitialLoading: false,
+      });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as { conditions?: boolean } | undefined;
+
+      expect(errorView?.conditions).toBe(false);
+    });
+
+    it('re-arms the error screen view per symbol via resetKey', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
+        isInitialLoading: false,
+      });
+      mockUseParams.mockReturnValue({ symbol: 'BADONE' });
+      await renderPage(mockStore(createMockState(true)));
+
+      const errorView = mockPerpsScreenViewedOptions.find(
+        (option) => option.properties?.screen_type === 'error',
+      ) as { resetKey?: unknown } | undefined;
+
+      // resetKey keyed on the symbol lets consecutive invalid symbols each track.
+      expect(errorView?.resetKey).toBe('BADONE');
+    });
+
+    it('re-asserts the asset_details entry point on mount', async () => {
+      await renderPage(mockStore(createMockState(true)));
+
+      expect(mockSetFlowAttribution).toHaveBeenCalledWith({
+        entryPoint: 'asset_detail_screen',
+      });
+    });
+
     it('renders market detail page for ETH', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsActivatePriceStream',
         [{ symbols: ['ETH'], includeMarketData: true }],
@@ -699,6 +1001,120 @@ describe('PerpsMarketDetailPage', () => {
       );
     });
 
+    describe('sticky header price crossfade', () => {
+      let harness: ReturnType<typeof installHeaderObserverHarness>;
+
+      beforeEach(() => {
+        harness = installHeaderObserverHarness();
+      });
+
+      afterEach(() => {
+        harness.restore();
+      });
+
+      it('shows the market pair subtitle while the large price row is visible', async () => {
+        const store = mockStore(createMockState(true));
+
+        const { getByTestId } = await renderPage(store);
+
+        expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
+          'aria-hidden',
+          'false',
+        );
+        expect(
+          getByTestId('perps-market-detail-header-price-layer'),
+        ).toHaveAttribute('aria-hidden', 'true');
+      });
+
+      it('crossfades the subtitle to compact price when the large price row scrolls away', async () => {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
+
+        harness.setPriceRowVisible(false);
+
+        expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
+          'aria-hidden',
+          'true',
+        );
+        expect(
+          getByTestId('perps-market-detail-header-price-layer'),
+        ).toHaveAttribute('aria-hidden', 'false');
+        // The compact header mirrors the large row it replaces.
+        expect(
+          getByTestId('perps-market-detail-header-price'),
+        ).toHaveTextContent(
+          getByTestId('perps-market-detail-price').textContent as string,
+        );
+        expect(
+          getByTestId('perps-market-detail-header-change'),
+        ).toHaveTextContent(
+          getByTestId('perps-market-detail-change').textContent as string,
+        );
+      });
+
+      it('restores the subtitle when the large price row scrolls back into view', async () => {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
+
+        harness.setPriceRowVisible(false);
+        harness.setPriceRowVisible(true);
+
+        expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
+          'aria-hidden',
+          'false',
+        );
+        expect(
+          getByTestId('perps-market-detail-header-price-layer'),
+        ).toHaveAttribute('aria-hidden', 'true');
+      });
+
+      it('observes the large price row inside the page scroll container', async () => {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
+
+        const observer = harness.latestIntersectionObserver();
+
+        expect(observer.root).toBe(
+          getByTestId('parent-selector-perps-market-detail'),
+        );
+        expect(observer.observed).toContain(
+          getByTestId('perps-market-detail-summary'),
+        );
+      });
+
+      it('offsets the crossfade threshold by the sticky header border box height', async () => {
+        const store = mockStore(createMockState(true));
+        await renderPage(store);
+
+        expect(harness.latestIntersectionObserver().rootMargin).toBe('0px');
+
+        harness.resizeHeader({ borderBoxBlockSize: 72 });
+
+        expect(harness.latestIntersectionObserver().rootMargin).toBe(
+          '-72px 0px 0px 0px',
+        );
+      });
+
+      it('falls back to the measured bounding rect when borderBoxSize is unavailable', async () => {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
+
+        jest
+          .spyOn(
+            getByTestId('perps-market-detail-back-button')
+              .parentElement as HTMLElement,
+            'getBoundingClientRect',
+          )
+          .mockReturnValue({ height: 56 } as DOMRect);
+
+        harness.resizeHeader({});
+
+        expect(harness.latestIntersectionObserver().rootMargin).toBe(
+          '-56px 0px 0px 0px',
+        );
+      });
+    });
+
     it('displays the market max leverage pill in the header', async () => {
       const store = mockStore(createMockState(true));
 
@@ -732,7 +1148,9 @@ describe('PerpsMarketDetailPage', () => {
 
       const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
       expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
         'Bitcoin',
       );
@@ -792,7 +1210,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
 
       Object.defineProperty(window.history, 'length', {
         value: originalLength,
@@ -892,6 +1310,21 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByTestId('perps-candlestick-chart')).toBeInTheDocument();
     });
 
+    it('restores and updates the visible candle count', async () => {
+      const state = createMockState(true);
+      (state.metamask as Record<string, unknown>).visibleCandleCount = 60;
+      const { getByTestId } = await renderPage(mockStore(state));
+
+      const chart = getByTestId('perps-candlestick-chart');
+      expect(chart).toHaveAttribute('data-visible-candle-count', '60');
+      fireEvent.click(chart);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetVisibleCandleCount',
+        [75],
+      );
+    });
+
     it('passes a Liq price line to the chart when position has a liquidationPrice', async () => {
       // ETH mock position has liquidationPrice: '2400.00'
       mockLivePositions.mockReturnValue({
@@ -959,7 +1392,9 @@ describe('PerpsMarketDetailPage', () => {
 
       const { getByTestId } = await renderPage(store);
 
-      expect(getByTestId('perps-market-detail-page')).toBeInTheDocument();
+      expect(
+        getByTestId('parent-selector-perps-market-detail'),
+      ).toBeInTheDocument();
       // Should display the full name and the ticker-collateral pair (stripped display name)
       expect(getByTestId('perps-market-detail-name')).toHaveTextContent(
         'Tesla',
@@ -1845,7 +2280,16 @@ describe('PerpsMarketDetailPage', () => {
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsCancelOrder',
-          [{ orderId: 'order-001', symbol: 'ETH' }],
+          [
+            expect.objectContaining({
+              orderId: 'order-001',
+              symbol: 'ETH',
+              trackingData: expect.objectContaining({
+                entryPoint: 'homescreen_tab',
+                discoverySource: 'market_list',
+              }),
+            }),
+          ],
         );
       });
     });

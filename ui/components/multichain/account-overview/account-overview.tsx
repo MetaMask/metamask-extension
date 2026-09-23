@@ -5,6 +5,7 @@ import {
   EthAccountType,
   SolAccountType,
   TrxAccountType,
+  XlmAccountType,
 } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { AccountOverviewEth } from './account-overview-eth';
@@ -16,8 +17,6 @@ export type AccountOverviewProps = AccountOverviewCommonProps & {
   useExternalServices: boolean;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AccountOverview(props: AccountOverviewProps) {
   const account = useSelector(getSelectedInternalAccount);
 
@@ -32,6 +31,7 @@ export function AccountOverview(props: AccountOverviewProps) {
       case BtcAccountType.P2tr:
       case SolAccountType.DataAccount:
       case TrxAccountType.Eoa:
+      case XlmAccountType.Account:
         return <AccountOverviewNonEvm {...props}></AccountOverviewNonEvm>;
       default:
         return <AccountOverviewUnknown {...props}></AccountOverviewUnknown>;

@@ -4,7 +4,13 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -17,7 +23,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -36,6 +42,7 @@ import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
 } from '../../../shared/constants/metametrics';
 import {
   getMultichainNetworkConfigurationsByChainId,
@@ -43,10 +50,10 @@ import {
 } from '../../selectors/multichain/networks';
 import { getIsChainlistEnabled } from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { SettingsHeader } from '../settings/shared/settings-header';
+import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import {
   ChainlistNetworkPicker,
@@ -206,6 +213,21 @@ export const NetworksPage = () => {
     setView('add');
   }, [setView]);
 
+  const handleAddCustomNetworkClick = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          source_connection_method:
+            MetaMetricsNetworkEventSource.CustomNetworkForm,
+        })
+        .build(),
+    );
+    handleNewNetwork();
+  }, [createEventBuilder, handleNewNetwork, trackEvent]);
+
   const handleAddFromChainlist = useCallback(() => {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
@@ -352,15 +374,37 @@ export const NetworksPage = () => {
     return () => clearTimeout(timeoutId);
   }, [dismissPageToast, pageToast]);
 
+  const editCompletedToastKey =
+    view === '' && rawEditedNetwork?.editCompleted
+      ? `${rawEditedNetwork.chainId}:${rawEditedNetwork.nickname ?? ''}:${Boolean(rawEditedNetwork.newNetwork)}`
+      : null;
+  const consumedEditCompletedToastKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!editCompletedToastKey) {
+      consumedEditCompletedToastKeyRef.current = null;
+      return;
+    }
+    if (
+      editCompletedToastKey === consumedEditCompletedToastKeyRef.current ||
+      !rawEditedNetwork
+    ) {
+      return;
+    }
+    consumedEditCompletedToastKeyRef.current = editCompletedToastKey;
+    queueMicrotask(() => {
+      setPageToast({
+        chainId: rawEditedNetwork.chainId,
+        nickname: rawEditedNetwork.nickname ?? '',
+        newNetwork: Boolean(rawEditedNetwork.newNetwork),
+      });
+    });
+  }, [editCompletedToastKey, rawEditedNetwork]);
+
   useEffect(() => {
     if (view !== '' || !rawEditedNetwork?.editCompleted) {
       return;
     }
-    setPageToast({
-      chainId: rawEditedNetwork.chainId,
-      nickname: rawEditedNetwork.nickname ?? '',
-      newNetwork: Boolean(rawEditedNetwork.newNetwork),
-    });
     dispatch(setEditedNetwork());
   }, [dispatch, rawEditedNetwork, view]);
 
@@ -413,9 +457,9 @@ export const NetworksPage = () => {
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
       {view === '' ? (
         <>
-          <SettingsHeader
+          <PageHeaderWithSearch
             title={t('manageNetworksMenuHeading')}
-            onClose={handleRootBack}
+            onBack={handleRootBack}
             isSearchOpen={isSearchOpen}
             onOpenSearch={() => setIsSearchOpen(true)}
             onCloseSearch={() => setIsSearchOpen(false)}
@@ -426,7 +470,7 @@ export const NetworksPage = () => {
           />
           <NetworksPageList
             searchQuery={searchValue}
-            onAddCustomNetwork={handleNewNetwork}
+            onAddCustomNetwork={handleAddCustomNetworkClick}
             footerContent={
               pageToast ? (
                 <Box

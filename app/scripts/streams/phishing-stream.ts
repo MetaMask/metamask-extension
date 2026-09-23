@@ -1,11 +1,11 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error @types/readable-stream does not export pipeline
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
+import { isObject } from '@metamask/utils';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
@@ -19,7 +19,7 @@ import {
   PHISHING_STREAM,
   PHISHING_WARNING_PAGE,
 } from '../constants/stream';
-import { logStreamDisconnectWarning, MessageType } from './stream-utils';
+import { logStreamDisconnectWarning } from './stream-utils';
 
 const phishingPageUrl = new URL(
   process.env.PHISHING_WARNING_PAGE_URL as string,
@@ -192,8 +192,6 @@ const onDisconnectDestroyPhishingStreams = (): void => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupPhishingExtStreams, 1000);
   }
@@ -207,9 +205,9 @@ const onDisconnectDestroyPhishingStreams = (): void => {
  * @param msg.name - Custom property and name to identify the message received
  */
 const onMessageSetUpPhishingStreams = (
-  msg: MessageType,
-): Promise<string | undefined> | undefined => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
+  msg: unknown,
+): Promise<string> | undefined => {
+  if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!phishingExtStream) {
       setupPhishingExtStreams();
     }
@@ -217,6 +215,7 @@ const onMessageSetUpPhishingStreams = (
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
     );
   }
+  // A Promise would claim the response channel from other message listeners.
   return undefined;
 };
 
@@ -233,8 +232,6 @@ export function redirectToPhishingWarning(): void {
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
 
   const querystring = new URLSearchParams({ hostname, href });
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   window.location.href = `${baseUrl}#${querystring}`;
   // eslint-disable-next-line no-constant-condition
   while (1) {

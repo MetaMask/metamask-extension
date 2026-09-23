@@ -1,4 +1,10 @@
-import React, { useMemo, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   twMerge,
@@ -14,6 +20,7 @@ import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import { getDisplaySymbol } from '../utils';
+import type { OrderType } from '../types';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -55,11 +62,15 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.onCalculationsChange
  * @param props.onAddFunds
  * @param props.initialLeverage
+ * @param props.initialDraft
+ * @param props.onLeverageChange
  * @param props.sizeDecimals
  * @param props.markPrice
  * @param props.autoFocusUsd
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
+ * @param props.limitPricePrefill
+ * @param props.onInputMethodChange
  */
 export const OrderEntry = ({
   asset,
@@ -69,6 +80,7 @@ export const OrderEntry = ({
   initialDirection = 'long',
   onSubmit,
   onFormStateChange,
+  onInputMethodChange,
   onCalculationsChange,
   showSubmitButton = true,
   showOrderSummary = true,
@@ -79,17 +91,20 @@ export const OrderEntry = ({
   onOrderTypeChange,
   onAddFunds,
   initialLeverage,
+  initialDraft,
+  onLeverageChange,
   sizeDecimals,
   markPrice,
   autoFocusUsd = false,
   autoFocusLimitPrice = false,
   usdPlaceholder,
+  limitPricePrefill,
 }: OrderEntryProps) => {
   const t = useI18nContext();
   const activeProvider = useSelector(selectPerpsActiveProvider);
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
-  const marketInfo = usePerpsMarketInfo(asset);
+  const { market: marketInfo } = usePerpsMarketInfo(asset);
 
   // Fetch dynamic fee rates from the controller (user-specific, with discounts)
   const {
@@ -130,12 +145,22 @@ export const OrderEntry = ({
     onSubmit,
     orderType,
     initialLeverage,
+    initialDraft,
     sizeDecimals,
     maxLeverage,
     szDecimals: marketInfo?.szDecimals,
     markPrice,
     feeRate,
+    limitPricePrefill,
   });
+
+  const handlePersistedLeverageChange = useCallback(
+    (leverage: number) => {
+      handleLeverageChange(leverage);
+      onLeverageChange?.(leverage);
+    },
+    [handleLeverageChange, onLeverageChange],
+  );
 
   const isLong = formState.direction === 'long';
 
@@ -157,7 +182,10 @@ export const OrderEntry = ({
       : t('perpsFeesTooltipProviderFee');
 
   const onCalculationsChangeRef = useRef(onCalculationsChange);
-  onCalculationsChangeRef.current = onCalculationsChange;
+
+  useLayoutEffect(() => {
+    onCalculationsChangeRef.current = onCalculationsChange;
+  }, [onCalculationsChange]);
 
   const prevCalculationsRef = useRef<OrderCalculations | null>(null);
 
@@ -166,13 +194,16 @@ export const OrderEntry = ({
       if (a === null) {
         return true;
       }
+      // `Object.is` rather than `!==`: a market price of 0 makes the fee and
+      // liquidation figures NaN, and `NaN !== NaN` reports a change on every
+      // render, so the effect below would re-notify the page without end.
       return (
-        a.positionSize !== b.positionSize ||
-        a.marginRequired !== b.marginRequired ||
-        a.liquidationPrice !== b.liquidationPrice ||
-        a.liquidationPriceRaw !== b.liquidationPriceRaw ||
-        a.orderValue !== b.orderValue ||
-        a.estimatedFees !== b.estimatedFees
+        !Object.is(a.positionSize, b.positionSize) ||
+        !Object.is(a.marginRequired, b.marginRequired) ||
+        !Object.is(a.liquidationPrice, b.liquidationPrice) ||
+        !Object.is(a.liquidationPriceRaw, b.liquidationPriceRaw) ||
+        !Object.is(a.orderValue, b.orderValue) ||
+        !Object.is(a.estimatedFees, b.estimatedFees)
       );
     },
     [],
@@ -185,7 +216,7 @@ export const OrderEntry = ({
     }
   }, [calculations, hasCalculationsChanged]);
 
-  const handleOrderTypeClick = (type: 'market' | 'limit') => {
+  const handleOrderTypeClick = (type: OrderType) => {
     handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };
@@ -286,6 +317,7 @@ export const OrderEntry = ({
             positionSize={positionSize}
             closePercent={closePercent}
             onClosePercentChange={handleClosePercentChange}
+            onInputMethodChange={onInputMethodChange}
             asset={asset}
             currentPrice={currentPrice}
             sizeDecimals={sizeDecimals}
@@ -310,6 +342,7 @@ export const OrderEntry = ({
           <AmountInput
             amount={formState.amount}
             onAmountChange={handleAmountChange}
+            onInputMethodChange={onInputMethodChange}
             balancePercent={formState.balancePercent}
             onBalancePercentChange={handleBalancePercentChange}
             availableBalance={availableBalance}
@@ -331,7 +364,7 @@ export const OrderEntry = ({
         {mode !== 'close' && (
           <LeverageSlider
             leverage={formState.leverage}
-            onLeverageChange={handleLeverageChange}
+            onLeverageChange={handlePersistedLeverageChange}
             maxLeverage={maxLeverage}
             minLeverage={
               mode === 'modify' && existingPosition

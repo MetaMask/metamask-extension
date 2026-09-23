@@ -15,6 +15,7 @@ import {
 import { createMockNotificationPreferences } from '../../../ui/hooks/metamask-notifications/mocks';
 import {
   ethSentNotification,
+  ethSentNotificationTemplate,
   featureNotification,
   getMockedNotificationsState,
 } from './data/notification-state';
@@ -94,9 +95,10 @@ describe('Notifications List', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -129,12 +131,16 @@ describe('Notifications List', () => {
       ).toBeInTheDocument();
 
       // Eth sent notification details
-      const sentToElement =
-        await within(notificationsList).findByText('Sent to');
-      expect(sentToElement).toBeInTheDocument();
-
-      const addressElement = sentToElement.nextElementSibling;
-      expect(addressElement).toHaveTextContent('0x881D4...D300D');
+      expect(
+        await within(notificationsList).findByText(
+          ethSentNotificationTemplate.title,
+        ),
+      ).toBeInTheDocument();
+      expect(
+        await within(notificationsList).findByText(
+          ethSentNotificationTemplate.body,
+        ),
+      ).toBeInTheDocument();
 
       // Read all button
       expect(
@@ -191,29 +197,28 @@ describe('Notifications List', () => {
         preloadedState: mockedState,
         backgroundConnection: backgroundConnectionMocked,
       });
+    });
 
-      fireEvent.click(await screen.findByTestId('account-options-menu-button'));
+    fireEvent.click(await screen.findByTestId('account-options-menu-button'));
 
-      await waitFor(async () => {
-        expect(
-          await screen.findByTestId('notifications-menu-item'),
-        ).toBeInTheDocument();
-        fireEvent.click(await screen.findByTestId('notifications-menu-item'));
-      });
+    await waitFor(async () => {
+      expect(
+        await screen.findByTestId('notifications-menu-item'),
+      ).toBeInTheDocument();
+      fireEvent.click(await screen.findByTestId('notifications-menu-item'));
+    });
 
-      await waitFor(async () => {
-        const notificationsList =
-          await screen.findByTestId('notifications-list');
-        expect(notificationsList).toBeInTheDocument();
+    await waitFor(async () => {
+      const notificationsList = await screen.findByTestId('notifications-list');
+      expect(notificationsList).toBeInTheDocument();
 
-        expect(notificationsList.childElementCount).toBe(2);
+      expect(notificationsList.childElementCount).toBe(2);
 
-        expect(
-          screen.queryByTestId('notifications-list-read-all-button'),
-        ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('notifications-list-read-all-button'),
+      ).not.toBeInTheDocument();
 
-        expect(screen.queryAllByTestId('unread-dot')).toHaveLength(0);
-      });
+      expect(screen.queryAllByTestId('unread-dot')).toHaveLength(0);
     });
   });
 
@@ -260,6 +265,70 @@ describe('Notifications List', () => {
           },
         ],
       ]);
+    });
+  });
+
+  it('tracks Notification Clicked when a notification item is clicked', async () => {
+    const mockedState = getStateWithTwoUnreadNotifications();
+    const unreadEthSentNotification = {
+      ...ethSentNotification,
+      isRead: false,
+    };
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: {
+          ...mockedState,
+          consentDecisionMade: true,
+          optedIn: true,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
+        },
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('account-options-menu-button'));
+
+    const notificationsMenuItem = await screen.findByTestId(
+      'notifications-menu-item',
+    );
+    fireEvent.click(notificationsMenuItem);
+
+    const notificationListItem = await screen.findByTestId(
+      `notification-list-item-${unreadEthSentNotification.id}`,
+    );
+    fireEvent.click(within(notificationListItem).getByRole('button'));
+
+    await waitFor(() => {
+      const notificationClickedEvent =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) =>
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.name === MetaMetricsEventName.NotificationClicked,
+        );
+
+      expect(notificationClickedEvent?.[0]).toBe('trackAnalyticsEvent');
+      const [metricsEvent] = notificationClickedEvent?.[1] as unknown as [
+        {
+          name: string;
+          properties: Record<string, unknown>;
+        },
+      ];
+
+      expect(metricsEvent?.name).toBe(MetaMetricsEventName.NotificationClicked);
+      expect(metricsEvent?.properties?.category).toBe(
+        MetaMetricsEventCategory.NotificationInteraction,
+      );
+      expect(metricsEvent.properties).toMatchObject({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        /* eslint-disable @typescript-eslint/naming-convention */
+        notification_id: unreadEthSentNotification.id,
+        notification_type: 'wallet_activity',
+        notification_subtype: 'eth_sent',
+        chain_id: unreadEthSentNotification.payload.chain_id,
+        /* eslint-enable @typescript-eslint/naming-convention */
+      });
     });
   });
 });

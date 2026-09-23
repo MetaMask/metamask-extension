@@ -101,7 +101,6 @@ export const TextField: TextFieldComponent = React.forwardRef(
       if (inputRef && 'current' in inputRef) {
         // Assign the input element reference to the external ref
         // TODO: Use `ref` prop instead. `forwardRef` is deprecated in React v19.
-        // eslint-disable-next-line react-compiler/react-compiler
         inputRef.current = inputElementRef;
       }
       // Check if an external ref (inputRef) is a callback function
@@ -129,7 +128,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
         backgroundColor={BackgroundColor.backgroundDefault}
         alignItems={AlignItems.center}
         borderWidth={1}
-        borderRadius={BorderRadius.LG}
+        borderRadius={BorderRadius.XL}
         paddingLeft={startAccessory ? 4 : 0}
         paddingRight={endAccessory ? 4 : 0}
         onClick={handleClick}

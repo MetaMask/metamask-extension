@@ -6,11 +6,6 @@ import {
   StaticAssetsControllerMessenger,
   StaticAssetsPollingFeatureFlagOptions,
 } from '../controllers/static-assets-controller';
-import {
-  isAssetsUnifyStateFeatureEnabled,
-  ASSETS_UNIFY_STATE_VERSION_1,
-  type AssetsUnifyStateFeatureFlag,
-} from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { MessengerClientInitFunction } from './types';
 import { StaticAssetsControllerInitMessenger } from './messengers';
@@ -46,19 +41,10 @@ export const StaticAssetsControllerInit: MessengerClientInitFunction<
       const topX = getRemoteFeatureFlagControllerState(initMessenger)?.topX;
       return topX ? Number(topX) : DEFAULT_TOP_X;
     },
-    getIsAssetsUnifyStateEnabled: (): boolean => {
-      if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-        return false;
-      }
-      const state = initMessenger.call('RemoteFeatureFlagController:getState');
-      return isAssetsUnifyStateFeatureEnabled(
-        state?.remoteFeatureFlags?.assetsUnifyState as
-          | AssetsUnifyStateFeatureFlag
-          | null
-          | undefined,
-        ASSETS_UNIFY_STATE_VERSION_1,
-      );
-    },
+    // Write path: treat the runtime rollout flag as always-on; only the
+    // compile-time build gate decides whether StaticAssets writes go through
+    // AssetsController vs TokensController.
+    getIsAssetsUnifyStateEnabled: getIsAssetsUnifiedStateIncludedInBuild,
   });
   return {
     messengerClient,

@@ -13,7 +13,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 
 import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
@@ -234,7 +234,7 @@ const DappSwapComparisonInner = ({
         <>
           <QuoteSwapSimulationDetails
             fiatRates={fiatRates}
-            quote={selectedQuote as QuoteResponse}
+            quote={selectedQuote as QuoteResponseV1}
             tokenDetails={tokenDetails}
             sourceTokenAmount={sourceTokenAmount}
             tokenAmountDifference={tokenAmountDifference}

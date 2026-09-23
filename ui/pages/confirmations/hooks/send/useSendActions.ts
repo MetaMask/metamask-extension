@@ -2,7 +2,6 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { errorCodes } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -12,6 +11,7 @@ import {
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value';
 import { SendPages } from '../../constants/send';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
@@ -21,6 +21,7 @@ import {
   submitEvmTransaction,
 } from '../../utils/send';
 import { useSendContext } from '../../context/send';
+import { useDispatch } from '../../../../store/hooks';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
 
@@ -57,7 +58,7 @@ export const useSendActions = () => {
     updateNonEVMSubmitError(undefined);
 
     if (isEvmSendType) {
-      dispatch(
+      const transactionPromise = dispatch(
         await submitEvmTransaction({
           asset,
           chainId: chainId as Hex,
@@ -68,12 +69,20 @@ export const useSendActions = () => {
         }),
       );
       const params = new URLSearchParams();
-      if (maxValueMode) {
-        params.set('maxValueMode', String(maxValueMode));
-      }
       params.set('loader', ConfirmationLoader.Send);
       const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
+
+      const transactionMeta = await transactionPromise;
+
+      if (maxValueMode && transactionMeta) {
+        dispatch(
+          setMaxValueMode({
+            transactionId: transactionMeta.id,
+            enabled: true,
+          }),
+        );
+      }
     } else {
       navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
       try {
@@ -93,7 +102,7 @@ export const useSendActions = () => {
             ? mapSnapErrorCodeIntoTranslation(result.errors[0].code, t)
             : t('transactionError');
           updateNonEVMSubmitError(errorMessage);
-          navigate(-1);
+          navigate(PREVIOUS_ROUTE);
           return;
         }
 
@@ -112,7 +121,7 @@ export const useSendActions = () => {
           // Actual snap/internal error - display error message to user
           updateNonEVMSubmitError(t('transactionError'));
         }
-        navigate(-1);
+        navigate(PREVIOUS_ROUTE);
       }
     }
   }, [

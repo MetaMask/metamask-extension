@@ -8,7 +8,6 @@ import DebugContent from '.';
 
 const mockPerpsToggleTestnet = jest.fn().mockResolvedValue(undefined);
 const mockRemoteFeatureFlags = { feature1: 'value1' };
-// eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 

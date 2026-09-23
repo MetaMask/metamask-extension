@@ -2,7 +2,11 @@ import {
   SnapController,
   SnapControllerMessenger,
 } from '@metamask/snaps-controllers';
-import { createDeferredPromise, Json } from '@metamask/utils';
+import {
+  createDeferredPromise,
+  Duration,
+  inMilliseconds,
+} from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -104,6 +108,7 @@ export const SnapControllerInit: MessengerClientInitFunction<
     state: persistedState.SnapController,
 
     messenger: controllerMessenger,
+    maxIdleTime: inMilliseconds(2, Duration.Minute),
     featureFlags: {
       allowLocalSnaps,
       requireAllowlist,
@@ -126,6 +131,15 @@ export const SnapControllerInit: MessengerClientInitFunction<
 
     ensureOnboardingComplete,
   });
+
+  // SnapController lists `clearState` in MESSENGER_EXPOSED_METHODS but still uses
+  // a legacy manual registration list that omits it. Register so vault wipe /
+  // restore can call `SnapController:clearState` via messenger.
+  // TODO: Remove once @metamask/snaps-controllers registers clearState itself.
+  controllerMessenger.registerActionHandler(
+    'SnapController:clearState',
+    messengerClient.clearState.bind(messengerClient),
+  );
 
   initMessenger.subscribe('KeyringController:lock', () => {
     initMessenger.call('SnapController:setClientActive', false);

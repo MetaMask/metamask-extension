@@ -18,6 +18,39 @@ jest.mock('../store/actions', () => ({
   tokenListStopPollingByPollingToken: jest.fn(),
 }));
 
+const getBaseState = (
+  overrides: Record<string, unknown> = {},
+  enabledNetworkMap: Record<string, Record<string, boolean>> = {
+    eip155: {
+      '0x1': true,
+    },
+  },
+) => ({
+  metamask: {
+    isUnlocked: true,
+    completedOnboarding: true,
+    useExternalServices: true,
+    useTokenDetection: true,
+    selectedNetworkClientId: 'selectedNetworkClientId',
+    enabledNetworkMap,
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId',
+          },
+        ],
+      },
+    },
+    multichainNetworkConfigurationsByChainId:
+      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+    selectedMultichainNetworkChainId: BtcScope.Mainnet,
+    isEvmSelected: true,
+    ...overrides,
+  },
+});
+
 describe('useTokenListPolling', () => {
   beforeEach(() => {
     mockPromises = [];
@@ -25,38 +58,9 @@ describe('useTokenListPolling', () => {
   });
 
   it('should poll the selected network when enabled, and stop on dismount', async () => {
-    const state = {
-      metamask: {
-        isUnlocked: true,
-        completedOnboarding: true,
-        useExternalServices: true,
-        useTokenDetection: true,
-        selectedNetworkClientId: 'selectedNetworkClientId',
-        enabledNetworkMap: {
-          eip155: {
-            '0x1': true,
-          },
-        },
-        networkConfigurationsByChainId: {
-          '0x1': {
-            chainId: '0x1',
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId',
-              },
-            ],
-          },
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: BtcScope.Mainnet,
-        isEvmSelected: true,
-      },
-    };
-
     const { unmount } = renderHookWithProvider(
       () => useTokenListPolling(),
-      state,
+      getBaseState(),
     );
 
     // Should poll each chain
@@ -73,24 +77,10 @@ describe('useTokenListPolling', () => {
   });
 
   it('should not poll before onboarding is completed', async () => {
-    const state = {
-      metamask: {
-        isUnlocked: true,
-        completedOnboarding: false,
-        useExternalServices: true,
-        useTokenDetection: true,
-        networkConfigurationsByChainId: {
-          '0x1': {},
-          '0x89': {},
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: BtcScope.Mainnet,
-        isEvmSelected: true,
-      },
-    };
-
-    renderHookWithProvider(() => useTokenListPolling(), state);
+    renderHookWithProvider(
+      () => useTokenListPolling(),
+      getBaseState({ completedOnboarding: false }),
+    );
 
     await Promise.all(mockPromises);
     expect(tokenListStartPolling).toHaveBeenCalledTimes(0);
@@ -98,24 +88,10 @@ describe('useTokenListPolling', () => {
   });
 
   it('should not poll when locked', async () => {
-    const state = {
-      metamask: {
-        isUnlocked: false,
-        completedOnboarding: true,
-        useExternalServices: true,
-        useTokenDetection: true,
-        networkConfigurationsByChainId: {
-          '0x1': {},
-          '0x89': {},
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: BtcScope.Mainnet,
-        isEvmSelected: true,
-      },
-    };
-
-    renderHookWithProvider(() => useTokenListPolling(), state);
+    renderHookWithProvider(
+      () => useTokenListPolling(),
+      getBaseState({ isUnlocked: false }),
+    );
 
     await Promise.all(mockPromises);
     expect(tokenListStartPolling).toHaveBeenCalledTimes(0);
@@ -124,25 +100,13 @@ describe('useTokenListPolling', () => {
 
   it('should not poll when disabled', async () => {
     // disabled when detection, petnames, and simulations are all disabled
-    const state = {
-      metamask: {
-        isUnlocked: true,
-        completedOnboarding: true,
-        useExternalServices: true,
+    renderHookWithProvider(
+      () => useTokenListPolling(),
+      getBaseState({
         useTokenDetection: false,
         useTransactionSimulations: false,
-        networkConfigurationsByChainId: {
-          '0x1': {},
-          '0x89': {},
-        },
-        multichainNetworkConfigurationsByChainId:
-          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-        selectedMultichainNetworkChainId: BtcScope.Mainnet,
-        isEvmSelected: true,
-      },
-    };
-
-    renderHookWithProvider(() => useTokenListPolling(), state);
+      }),
+    );
 
     await Promise.all(mockPromises);
     expect(tokenListStartPolling).toHaveBeenCalledTimes(0);

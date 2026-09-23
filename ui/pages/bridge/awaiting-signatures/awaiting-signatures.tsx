@@ -34,15 +34,13 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNavigateOnQrScanComplete } from '../hooks/useNavigateOnQrScanComplete';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AwaitingSignatures() {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
 
   // Navigate to activity tab when QR scan is completed
   useNavigateOnQrScanComplete();
-  const fromAmount = activeQuote?.sentAmount?.amount;
+  const { src, dest } = activeQuote?.quote ?? {};
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChain = useSelector(getFromChain);
@@ -76,10 +74,10 @@ export default function AwaitingSignatures() {
         .addSensitiveProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_from_amount: activeQuote?.quote?.srcTokenAmount ?? '',
+          token_from_amount: src?.amount ?? '',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
+          token_to_amount: dest?.amount ?? '',
         })
         .build(),
     );
@@ -128,11 +126,7 @@ export default function AwaitingSignatures() {
                   isSwap
                     ? 'unifiedSwapAllowSwappingOf'
                     : 'bridgeAllowSwappingOf',
-                  [
-                    activeQuote.sentAmount?.amount,
-                    fromToken?.symbol,
-                    fromChain?.name,
-                  ],
+                  [src?.normalizedAmount, fromToken?.symbol, fromChain?.name],
                 )}
               </li>
               <li>
@@ -145,7 +139,7 @@ export default function AwaitingSignatures() {
                   2
                 </AvatarBase>
                 {t(isSwap ? 'unifiedSwapFromTo' : 'bridgeFromTo', [
-                  fromAmount,
+                  src?.normalizedAmount,
                   fromToken?.symbol,
                   isSwap ? toToken?.symbol : toChain?.name,
                 ])}

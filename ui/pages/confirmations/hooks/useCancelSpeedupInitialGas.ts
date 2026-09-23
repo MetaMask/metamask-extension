@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   EthGasPriceEstimate,
@@ -9,6 +8,7 @@ import {
 import { PriorityLevels } from '../../../../shared/constants/gas';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import { updatePreviousGasParams } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 
 export type UseCancelSpeedupInitialGasParams = {
   effectiveTransaction: TransactionMeta;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { strict as assert } from 'assert';
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
@@ -29,7 +28,7 @@ describe('Metrics', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -55,7 +54,7 @@ describe('Metrics', function () {
         );
         await deploymentConfirmation.checkTitle();
         await deploymentConfirmation.checkDeploymentSiteInfo();
-        await deploymentConfirmation.clickFooterConfirmButton();
+        await deploymentConfirmation.clickFooterButton({ button: 'confirm' });
 
         // check activity list
         await driver.switchToWindowWithTitle(
@@ -99,7 +98,10 @@ describe('Metrics', function () {
         );
 
         await assertAdvancedGasDetails(driver);
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

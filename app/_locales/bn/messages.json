@@ -81,9 +81,6 @@
   "back": {
     "message": "ফিরুন"
   },
-  "backupApprovalInfo": {
-    "message": "আপনি আপনার ডিভাইস হারিয়ে ফেললে, পাসওয়ার্ড ভুলে গেলে, MetaMask রিইনস্টল করতে হলে বা অন্য ডিভাইসে আপনার ওয়ালেট অ্যাক্সেস করার ক্ষেত্রে আপনার ওয়ালেট পুনরুদ্ধার করতে এই গোপন কোডটি প্রয়োজন।"
-  },
   "backupApprovalNotice": {
     "message": "আপনার ওয়ালেট এবং তহবিল সুরক্ষিত রাখতে আপনার গোপন পুনরুদ্ধারের কোড ব্যাক আপ করুন।"
   },
@@ -224,9 +221,6 @@
   "gasLimit": {
     "message": "গ্যাসের সীমা"
   },
-  "gasLimitTooLow": {
-    "message": "গ্যাসের সীমা অবশ্যই অন্তত 21000 এ থাকতে হবে"
-  },
   "gasUsed": {
     "message": "গ্যাস ব্যবহার করা হয়েছে"
   },
@@ -346,9 +340,6 @@
   "networks": {
     "message": "নেটওয়ার্কসমূহ"
   },
-  "nevermind": {
-    "message": "কিছু মনে করবেন না"
-  },
   "newAccountNumberName": {
     "message": "অ্যাকাউন্ট $1",
     "description": "Default name of next account to be created on create account screen"
@@ -417,9 +408,6 @@
   "privateKey": {
     "message": "ব্যক্তিগত কী",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "সতর্কতা: কখনও এই কী টি প্রকাশ করবেন না। আপনার গোপন কী কারোর কাছে থাকলে তিনি যে কোনো সময় আপনার অ্যাকাউন্টে থাকা যে কোনো সম্পদ চুরি করে নিতে পারবেন।"
   },
   "privateNetwork": {
     "message": "ব্যক্তিগত নেটওয়ার্ক"

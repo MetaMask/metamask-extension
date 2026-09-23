@@ -1,0 +1,44 @@
+name: Install Playwright browsers
+description: >-
+  Install Playwright browser binaries with a per-version cache so we don't
+  re-download ~100MB+ of browser tarballs on every CI run.
+
+  Cache key is keyed on the runner OS, the installed `@playwright/test`
+  version (read from package.json), and the requested browser(s) — so a
+  package bump or browser-set change correctly invalidates the cache.
+
+inputs:
+  browsers:
+    description: >-
+      Space-separated Playwright browser names to install (e.g. `chromium`,
+      `firefox`, `webkit`, or `chromium firefox`). Defaults to `chromium`.
+    required: false
+    default: chromium
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve Playwright version and browsers slug
+      id: pw-version
+      shell: bash
+      env:
+        BROWSERS: ${{ inputs.browsers }}
+      run: |
+        version=$(node -p "require('@playwright/test/package.json').version")
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+        # Normalize the (space-separated) browsers input into a stable slug so
+        # equivalent whitespace variants share one cache key.
+        slug=$(printf '%s' "$BROWSERS" | tr -s ' ' | tr ' ' '-' | sed 's/^-*//; s/-*$//')
+        echo "browsers-slug=$slug" >> "$GITHUB_OUTPUT"
+
+    - name: Restore Playwright browser cache
+      id: pw-cache
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}-${{ steps.pw-version.outputs.browsers-slug }}
+
+    - name: Install browsers (cache miss only)
+      if: steps.pw-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: yarn playwright install ${{ inputs.browsers }}

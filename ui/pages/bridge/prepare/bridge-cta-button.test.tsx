@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  QuoteResponse,
   RequestStatus,
   getNativeAssetForChainId,
   formatChainIdToCaip,
@@ -14,7 +13,7 @@ import {
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
@@ -253,7 +252,7 @@ describe('BridgeCTAButton', () => {
         ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -324,7 +323,7 @@ describe('BridgeCTAButton', () => {
         ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -374,7 +373,7 @@ describe('BridgeCTAButton', () => {
         ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -464,7 +463,7 @@ describe('BridgeCTAButton', () => {
           ),
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
         },
@@ -476,6 +475,7 @@ describe('BridgeCTAButton', () => {
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
+            inputPrimaryDenomination="fiat_value"
             onOpenAlertModals={
               isAlertModalProvided
                 ? mockOnOpenPriceImpactWarningModal
@@ -505,6 +505,7 @@ describe('BridgeCTAButton', () => {
       expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(
         expectedSubmitBridgeTransactionCalls,
       );
+      expect(useSubmitSpy).toHaveBeenCalledWith('fiat_value');
 
       useSubmitSpy.mockRestore();
     },
@@ -621,7 +622,7 @@ describe('BridgeCTAButton', () => {
           ...bridgeSliceOverrides,
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
           ...bridgeStateOverrides,
@@ -638,9 +639,11 @@ describe('BridgeCTAButton', () => {
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
         isStockMarketClosed: false,
+        isInOffHoursTrading: false,
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         isQuoteExpired: false,
+        isDestAssetRequireActivate: false,
         ...validationErrors,
       });
       const { findByRole, getByText } = renderWithProvider(
@@ -709,7 +712,9 @@ describe('BridgeCTAButton', () => {
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         isStockMarketClosed: true,
+        isInOffHoursTrading: false,
         isQuoteExpired: false,
+        isDestAssetRequireActivate: false,
       });
       const { container } = renderWithProvider(
         <HardwareWalletProvider>
@@ -777,7 +782,7 @@ describe('BridgeCTAButton', () => {
           wasTxDeclined,
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesNativeErc20,
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quoteRequest: {
@@ -813,7 +818,7 @@ describe('BridgeCTAButton', () => {
         wasTxDeclined: false,
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now() - 35000,
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
@@ -835,7 +840,9 @@ describe('BridgeCTAButton', () => {
       isPriceImpactWarning: false,
       isPriceImpactError: false,
       isStockMarketClosed: true,
+      isInOffHoursTrading: false,
       isQuoteExpired: true,
+      isDestAssetRequireActivate: false,
     });
     const { getByText } = renderWithProvider(
       <HardwareWalletProvider>
@@ -871,7 +878,7 @@ describe('BridgeCTAButton', () => {
         ),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotes: mockBridgeQuotesNativeErc20,
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.LOADING,
       },
@@ -892,7 +899,7 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
     expect(getByRole('button')).toMatchInlineSnapshot(`
       <button
-        class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+        class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
         data-testid="bridge-cta-button"
         role="button"
         style="box-shadow: none;"
@@ -942,9 +949,15 @@ describe('BridgeCTAButton', () => {
             ...quote,
             quote: {
               ...quote.quote,
-              priceData: { ...quote.quote.priceData, priceImpact },
+              priceData: {
+                ...quote.quote.priceData,
+                priceImpact: {
+                  ...quote.quote.priceData?.priceImpact,
+                  amount: priceImpact,
+                },
+              },
             },
-          })) as unknown as QuoteResponse[],
+          })),
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
         },

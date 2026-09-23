@@ -15,7 +15,10 @@ const { FeatureFlagNames } = featureFlagsModule;
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
-  Object.entries(FeatureFlagNames).map(([k, v]) => [`FeatureFlagNames.${k}`, v]),
+  Object.entries(FeatureFlagNames).map(([k, v]) => [
+    `FeatureFlagNames.${k}`,
+    v,
+  ]),
 );
 
 /**
@@ -53,9 +56,69 @@ const FILE_SOURCES: Array<{
     exportName: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
   },
   {
+    key: 'ENABLE_DMK_FEATURE_FLAG',
+    file: 'shared/lib/hardware-wallets/feature-flags.ts',
+    exportName: 'ENABLE_DMK_FEATURE_FLAG',
+  },
+  {
     key: 'PAY_EXTENDED_FEATURE_FLAG',
     file: 'shared/lib/transaction/pay-prefill.ts',
     exportName: 'PAY_EXTENDED_FEATURE_FLAG',
+  },
+  {
+    key: 'DEFI_CONTROLLER_V2_FLAG',
+    file: 'shared/lib/defi-controller-v2/remote-feature-flag.ts',
+    exportName: 'DEFI_CONTROLLER_V2_FLAG',
+  },
+  {
+    key: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
+    file: 'shared/lib/assets/security-trust-feature-flags.ts',
+    exportName: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
+  },
+  {
+    key: 'TOKEN_DETAILS_ADVANCED_CHARTS_FLAG',
+    file: 'shared/lib/assets/advanced-charts-feature-flags.ts',
+    exportName: 'TOKEN_DETAILS_ADVANCED_CHARTS_FLAG',
+  },
+  {
+    key: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/vault-config.ts',
+    exportName: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/chomp-config.ts',
+    exportName: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
   },
 ];
 
@@ -72,7 +135,8 @@ function resolveConstantFromFile(
     const content = fs.readFileSync(fullPath, 'utf-8');
     const escaped = constantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const re = new RegExp(
-      `export\\s+const\\s+${escaped}(?:\\s*:[^=]+)?\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` + '`([^`]+)`)',
+      `export\\s+const\\s+${escaped}(?:\\s*:[^=]+)?\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` +
+        '`([^`]+)`)',
     );
     const match = re.exec(content);
     return match?.[1] ?? match?.[2] ?? match?.[3];

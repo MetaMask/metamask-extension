@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Text } from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
@@ -9,7 +9,8 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
+  getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
 import { setDataCollectionForMarketing } from '../../../store/actions';
@@ -32,18 +33,17 @@ import {
 } from '../../../helpers/constants/design-system';
 import { METAMETRICS_SETTINGS_LINK } from '../../../helpers/constants/common';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 
 export function MetaMetricsConsentContainer() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
 
-  const dataCollectionForMarketing = useSelector(
-    (state: MetaMaskReduxState) => state.metamask.dataCollectionForMarketing,
-  );
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const isMetaMetricsEnabled = useSelector(
     (state: MetaMaskReduxState) =>
-      getCompletedMetaMetricsOnboarding(state) && getOptedIn(state),
+      getConsentDecisionMade(state) && getOptedIn(state),
   );
 
   const handleClose = useCallback(() => {

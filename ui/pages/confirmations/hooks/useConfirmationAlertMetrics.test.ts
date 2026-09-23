@@ -1,7 +1,7 @@
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 /* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
@@ -86,6 +86,17 @@ beforeEach(() => {
 });
 
 describe('useConfirmationAlertMetrics', () => {
+  it('reports an unreadable Perps balance under its own metrics name', () => {
+    // The key was split from InsufficientPayTokenBalance so alert_triggered /
+    // alert_resolved stop conflating the two. `getAlertName` falls back to the
+    // raw key, so dropping or renaming the entry does not fail anything — it
+    // just silently changes the metric's shape mid-flight, emitting the
+    // camelCase `perpsWithdrawBalanceUnavailable` among snake_case names.
+    expect(
+      ALERTS_NAME_METRICS[AlertsName.PerpsWithdrawBalanceUnavailable],
+    ).toBe('perps_withdraw_balance_unavailable');
+  });
+
   it('initializes metrics properties correctly', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationAlertMetrics(),

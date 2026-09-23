@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/react';
 import * as FetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
 import {
@@ -137,15 +138,14 @@ describe('useSafeChains', () => {
   };
 
   it('fetches safe chains when useSafeChainsListValidation is enabled', async () => {
-    const { result, mockFetchWithCache, waitFor } = arrangeAct();
+    const { result, mockFetchWithCache } = arrangeAct();
 
     await waitFor(() => expect(result.current.safeChains).toHaveLength(1));
     expect(mockFetchWithCache).toHaveBeenCalled();
   });
 
   it('reuses cached safe chains across hook mounts', async () => {
-    const { result, mockFetchWithCache, mockState, unmount, waitFor } =
-      arrangeAct();
+    const { result, mockFetchWithCache, mockState, unmount } = arrangeAct();
 
     await waitFor(() => expect(result.current.safeChains).toHaveLength(1));
     unmount();
@@ -169,12 +169,42 @@ describe('useSafeChains', () => {
   });
 
   it('returns an error result when fetching fails', async () => {
-    const { result, mockFetchWithCache, waitFor } = arrangeAct((mocks) => {
+    const { result, mockFetchWithCache } = arrangeAct((mocks) => {
       mocks.mockFetchWithCache.mockRejectedValue(new Error('MOCK ERROR'));
     });
 
     await waitFor(() => expect(result.current.error).toBeDefined());
     expect(result.current.safeChains).toBeUndefined();
     expect(mockFetchWithCache).toHaveBeenCalled();
+  });
+
+  it('syncs cached safe chains when another instance loaded before effect runs', async () => {
+    const { mockFetchWithCache, mockState, mockSafeChain } = arrange();
+    let resolveFetch!: (value: SafeChain[]) => void;
+    mockFetchWithCache.mockReturnValue(
+      new Promise<SafeChain[]>((resolve) => {
+        resolveFetch = resolve;
+      }),
+    );
+
+    const firstHook = renderHookWithProviderTyped(
+      () => useSafeChains(),
+      mockState,
+    );
+    const secondHook = renderHookWithProviderTyped(
+      () => useSafeChains(),
+      mockState,
+    );
+
+    expect(secondHook.result.current.safeChains).toHaveLength(0);
+
+    resolveFetch([mockSafeChain]);
+    await waitFor(() =>
+      expect(firstHook.result.current.safeChains).toHaveLength(1),
+    );
+    await waitFor(() =>
+      expect(secondHook.result.current.safeChains).toHaveLength(1),
+    );
+    expect(mockFetchWithCache).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import {
@@ -38,6 +38,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const TURN_ON_BACKUP_AND_SYNC_MODAL_NAME = 'TURN_ON_BACKUP_AND_SYNC';
 export const turnOnBackupAndSyncModalTestIds = {
@@ -45,8 +46,6 @@ export const turnOnBackupAndSyncModalTestIds = {
   button: 'turn-on-backup-and-sync-button',
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TurnOnBackupAndSyncModal() {
   const { hideModal } = useModalProps();
   const navigate = useNavigate();
@@ -178,8 +177,6 @@ export function TurnOnBackupAndSyncModal() {
         </ModalBody>
         <ModalFooter
           paddingTop={4}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={() => handleTurnOnBackupAndSync()}
           containerProps={{
             flexDirection: FlexDirection.Column,

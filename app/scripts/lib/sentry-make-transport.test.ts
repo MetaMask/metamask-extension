@@ -10,7 +10,6 @@ const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
 // observable after a microtask drain with no timers involved.
 async function flushMicrotasks(depth = 5): Promise<void> {
   for (let i = 0; i < depth; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
     await new Promise<void>((resolve) => queueMicrotask(resolve));
   }
 }
@@ -121,9 +120,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'transport-test-id',
               optedIn: false,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -161,9 +158,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'transport-test-id',
               optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -198,9 +193,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'app-state-id',
               optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -238,9 +231,7 @@ describe('sentry-make-transport', () => {
           AnalyticsController: {
             analyticsId: 'backup-id',
             optedIn: true,
-          },
-          MetaMetricsController: {
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
           },
         }),
       };
@@ -314,9 +305,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'init-session-test-id',
               optedIn: false,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),
@@ -361,9 +350,7 @@ describe('sentry-make-transport', () => {
             AnalyticsController: {
               analyticsId: 'init-session-test-id',
               optedIn: true,
-            },
-            MetaMetricsController: {
-              completedMetaMetricsOnboarding: true,
+              consentDecisionMade: true,
             },
           },
         }),

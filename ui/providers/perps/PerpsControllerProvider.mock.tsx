@@ -56,7 +56,6 @@ export type PerpsControllerProviderProps = {
  * </PerpsControllerProvider>
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function PerpsControllerProvider({
   children,
   controller: providedController,
@@ -66,6 +65,15 @@ export function PerpsControllerProvider({
     providedController ?? null,
   );
   const [error, setError] = useState<Error | null>(null);
+  const [prevProvidedController, setPrevProvidedController] =
+    useState(providedController);
+
+  if (providedController !== prevProvidedController) {
+    setPrevProvidedController(providedController);
+    // Clear when the prop is removed so children do not keep a stale instance
+    // while async init (or the loading fallback) takes over.
+    setController(providedController ?? null);
+  }
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -73,7 +81,6 @@ export function PerpsControllerProvider({
   useEffect(() => {
     // If a controller was provided, skip initialization
     if (providedController) {
-      setController(providedController);
       return;
     }
 

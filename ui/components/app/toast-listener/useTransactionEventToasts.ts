@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
+import type { Hex } from 'viem';
 import {
   TransactionStatus,
   TransactionType,
@@ -9,14 +10,22 @@ import type {
   AccountTransactionsUpdatedEventPayload,
   Transaction,
 } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
   isPerpsWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
+import {
+  isMoneyAccountChildTx,
+  isMoneyAccountTx,
+} from '../../../helpers/money/money-transaction-guards';
+import { isKnownMoneyBatchChild } from '../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { selectTransactions } from '../../../selectors/transactionController';
 import {
   dismissToast,
   showPendingToast,
@@ -26,6 +35,7 @@ import {
 import {
   clearToastPhase,
   shouldShowPendingToast,
+  shouldShowFailedToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
 
@@ -56,15 +66,28 @@ const earlyPendingToastTypes = new Set([
   TransactionType.musdClaim,
 ]);
 
-function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
-  // Top-level only — nested swapApproval inside batch txs must still toast.
+// Separate batch txs that share one toast with the main send/swap/bridge tx.
+export const batchHelperTransactionTypes = [
+  TransactionType.bridgeApproval,
+  TransactionType.swapApproval,
+  TransactionType.gasPayment,
+];
+
+function isExcludedTransactionType(
+  transactionMeta: TransactionMeta,
+  transactions: TransactionMeta[],
+): boolean {
   if (
-    transactionMeta.type === TransactionType.bridgeApproval ||
-    transactionMeta.type === TransactionType.swapApproval
+    transactionMeta.type &&
+    batchHelperTransactionTypes.includes(transactionMeta.type)
   ) {
     return true;
   }
-  return hasTransactionType(transactionMeta, excludedTransactionTypes);
+  return (
+    hasTransactionType(transactionMeta, excludedTransactionTypes) ||
+    isMoneyAccountTx(transactionMeta) ||
+    isMoneyAccountChildTx(transactionMeta, transactions)
+  );
 }
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
@@ -96,6 +119,14 @@ const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
   Array.isArray(raw) ? raw[0] : raw;
 
+function getDetailsRoute(chainId?: Hex, hash?: string) {
+  if (!chainId || !hash) {
+    return undefined;
+  }
+
+  return `${TX_DETAILS_ROUTE}/${toEvmCaipChainId(chainId)}/${hash}`;
+}
+
 function isSpeedUpReplacement(
   replacedById: string,
   transactions: TransactionMeta[],
@@ -125,7 +156,7 @@ function handleAccountsControllerTx(tx: Transaction) {
     showPendingToast(toastId);
   } else if (tx.status === 'confirmed' && shouldShowTerminalToast(tx.id)) {
     showSuccessToast(toastId);
-  } else if (tx.status === 'failed' && shouldShowTerminalToast(tx.id)) {
+  } else if (tx.status === 'failed' && shouldShowFailedToast(tx.id)) {
     showFailedToast(toastId);
   }
 }
@@ -149,17 +180,24 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      const { id, status } = transactionMeta;
+      const { id, status, hash, chainId } = transactionMeta;
       if (!id || !status) {
         return;
       }
 
-      if (isExcludedTransactionType(transactionMeta)) {
+      const transactions = selectTransactions(store.getState());
+      if (
+        isKnownMoneyBatchChild(id) ||
+        isExcludedTransactionType(transactionMeta, transactions)
+      ) {
         return;
       }
 
       const toastId = generateToastId(id);
-      const props = { transactionId: id };
+      const props = {
+        transactionId: id,
+        to: getDetailsRoute(chainId, hash),
+      };
 
       if (isPendingToastStatus(transactionMeta, status)) {
         if (shouldShowPendingToast(id)) {
@@ -168,17 +206,17 @@ export function useTransactionEventToasts(): void {
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
         showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
-        if (transactionMeta.replacedById) {
-          const transactions = store.getState().metamask?.transactions ?? [];
-          if (
-            isSpeedUpReplacement(transactionMeta.replacedById, transactions)
-          ) {
-            dismissToast(toastId);
-            clearToastPhase(id);
-          } else if (shouldShowTerminalToast(id)) {
-            showFailedToast(toastId, props);
-          }
-        } else if (shouldShowTerminalToast(id)) {
+        if (
+          transactionMeta.replacedById &&
+          isSpeedUpReplacement(transactionMeta.replacedById, transactions)
+        ) {
+          dismissToast(toastId);
+          clearToastPhase(id);
+        } else if (
+          status === TransactionStatus.failed
+            ? shouldShowFailedToast(id)
+            : shouldShowTerminalToast(id)
+        ) {
           showFailedToast(toastId, props);
         }
       }

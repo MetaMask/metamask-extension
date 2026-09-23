@@ -1,10 +1,46 @@
+import { processNotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  createMockFeatureAnnouncementRaw,
+  createMockNotificationEthSent,
+  createMockPlatformNotification,
+  createMockSnapNotification,
+} from '@metamask/notification-services-controller/notification-services/mocks';
 import {
   formatAmount,
   formatMenuItemDate,
   getLeadingZeroCount,
+  getNotificationTypeForAnalytics,
   getRandomKey,
   getUsdAmount,
 } from './notification.util';
+
+describe('getNotificationTypeForAnalytics', () => {
+  it('returns notification_type for on-chain notifications', () => {
+    const notification = processNotification(createMockNotificationEthSent());
+    expect(getNotificationTypeForAnalytics(notification)).toBe(
+      'wallet_activity',
+    );
+  });
+
+  it('returns notification_type for platform notifications', () => {
+    const notification = processNotification(createMockPlatformNotification());
+    expect(getNotificationTypeForAnalytics(notification)).toBe('perps');
+  });
+
+  it('falls back to the top-level type for snap notifications', () => {
+    const notification = processNotification(createMockSnapNotification());
+    expect(getNotificationTypeForAnalytics(notification)).toBe('snap');
+  });
+
+  it('falls back to the top-level type for feature announcements', () => {
+    const notification = processNotification(
+      createMockFeatureAnnouncementRaw(),
+    );
+    expect(getNotificationTypeForAnalytics(notification)).toBe(
+      'features_announcement',
+    );
+  });
+});
 
 describe('formatMenuItemDate', () => {
   beforeAll(() => {

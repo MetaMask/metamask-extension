@@ -11,8 +11,6 @@ const path = require('path');
 require('../../helpers/setup-helper');
 
 // Fetch
-// fetch is part of node js in future versions, thus triggering no-shadow
-// eslint-disable-next-line no-shadow
 const { default: fetch, Headers, Request, Response } = require('node-fetch');
 
 const handleRelativePathRequest = async (url, localeRelativePathRequest) => {

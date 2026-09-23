@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import {
   TransactionMeta,
   TransactionType,
@@ -176,6 +175,10 @@ function addPayTypeProperties(
     transactionMetricsRequest.getTransactionUIMetricsFragment(
       transactionId,
     )?.properties;
+
+  if (fragmentProperties?.mm_pay_entry_point !== undefined) {
+    properties.mm_pay_entry_point = fragmentProperties.mm_pay_entry_point;
+  }
 
   const prefilledAmount = fragmentProperties?.mm_pay_prefilled_amount;
 

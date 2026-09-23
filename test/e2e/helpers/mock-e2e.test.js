@@ -1,4 +1,4 @@
-/* eslint-env jest */
+/* global describe, expect, it -- Globals defined by Jest */
 
 import { setupMocking } from '../mock-e2e';
 
@@ -112,6 +112,46 @@ function findRule(server, kind, predicate) {
 }
 
 describe('setupMocking', () => {
+  it('registers stateful notification Trigger API mocks', async () => {
+    const server = createMockServerStub();
+
+    await setupMocking(server, async () => [], { chainId: '0x1' });
+
+    const queryRule = findRule(
+      server,
+      'forPost',
+      (matcher) =>
+        matcher ===
+        'https://trigger.api.cx.metamask.io/api/v2/notifications/query',
+    );
+    const updateRule = findRule(
+      server,
+      'forPost',
+      (matcher) =>
+        matcher === 'https://trigger.api.cx.metamask.io/api/v2/notifications',
+    );
+    const request = (body) => ({
+      body: {
+        getJson: async () => body,
+      },
+    });
+
+    expect(queryRule).toBeDefined();
+    expect(updateRule).toBeDefined();
+    expect(await queryRule.callback(request([{ address: '0xAbC' }]))).toEqual({
+      statusCode: 200,
+      json: [{ address: '0xabc', enabled: false }],
+    });
+
+    expect(
+      await updateRule.callback(request([{ address: '0xAbC', enabled: true }])),
+    ).toEqual({ statusCode: 204 });
+    expect(await queryRule.callback(request([{ address: '0xAbC' }]))).toEqual({
+      statusCode: 200,
+      json: [{ address: '0xabc', enabled: true }],
+    });
+  });
+
   it('registers Bitcoin discovery mocks that return valid empty-scan responses', async () => {
     const server = createMockServerStub();
 
@@ -224,5 +264,37 @@ describe('setupMocking', () => {
         result: [],
       },
     });
+  });
+
+  it('uses the Monad native asset ID for unified EVM balances', async () => {
+    const server = createMockServerStub();
+    const accountId = 'eip155:143:0xabc';
+    const nativeAssetId = 'eip155:143/slip44:268435779';
+
+    await setupMocking(server, async () => [], {
+      chainId: '0x8f',
+      unifiedEvmAccountsApiBalances: {
+        nativeBalance: '25',
+      },
+    });
+
+    const balancesRule = findRule(
+      server,
+      'forGet',
+      (matcher) =>
+        matcher ===
+        'https://accounts.api.cx.metamask.io/v5/multiaccount/balances',
+    );
+    const response = balancesRule.callback({
+      url: `https://accounts.api.cx.metamask.io/v5/multiaccount/balances?accountIds=${accountId}`,
+    });
+
+    expect(response.json.balances).toEqual([
+      {
+        accountId,
+        assetId: nativeAssetId,
+        balance: '25',
+      },
+    ]);
   });
 });

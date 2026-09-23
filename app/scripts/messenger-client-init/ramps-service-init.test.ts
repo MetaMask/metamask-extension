@@ -9,7 +9,7 @@ import { getRampsServiceMessenger } from './messengers';
 import { RampsServiceInit } from './ramps-service-init';
 
 jest.mock('@metamask/ramps-controller');
-jest.mock('./ramps-environment', () => ({
+jest.mock('../../../shared/lib/ramps/environment', () => ({
   getRampsEnvironment: jest.fn(() => 'staging'),
 }));
 
@@ -42,8 +42,10 @@ describe('RampsServiceInit', () => {
     expect(serviceMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       environment: 'staging',
-      context: 'extension',
+      context: 'browser',
       fetch: expect.any(Function),
+      clientProduct: 'metamask-extension',
+      clientVersion: process.env.METAMASK_VERSION,
     });
   });
 

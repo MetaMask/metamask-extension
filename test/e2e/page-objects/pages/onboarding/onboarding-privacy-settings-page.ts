@@ -1,18 +1,39 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Default privacy settings opened from the onboarding completion screen.
+ *
+ * Screen: `#/onboarding/privacy-settings`
+ * Owns: General / Assets / Security category navigation, basic-functionality
+ * and assets toggles, and adding a custom network during onboarding.
+ * Boundaries: this settings detour only. Returning to completion is via
+ * `navigateBackToOnboardingCompletePage`; finishing onboarding remains on
+ * `OnboardingCompletePage`.
+ * Related: entered from `OnboardingCompletePage.navigateToDefaultPrivacySettings`;
+ * returns to `OnboardingCompletePage`; `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/privacy-settings/privacy-settings.tsx
+ */
 class OnboardingPrivacySettingsPage {
-  private driver: Driver;
+  // General settings - add custom network section
+  private readonly addCustomNetworkButton = {
+    text: 'Add a network',
+    tag: 'p',
+  };
+
+  private readonly addRpcUrlButton = {
+    text: 'Add RPC URL',
+    tag: 'button',
+  };
+
+  private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
+
+  // Assets settings
+  private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
 
   private readonly assetsSettings = '[data-testid="category-item-Assets"]';
 
-  private readonly categoryBackButton = '[data-testid="category-back-button"]';
-
-  private readonly generalSettings = '[data-testid="category-item-General"]';
-
-  private readonly privacySettingsBackButton =
-    '[data-testid="privacy-settings-back-button"]';
-
-  private readonly securitySettings = '[data-testid="category-item-Security"]';
+  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h4' };
 
   // General settings
   private readonly basicFunctionalityCheckbox =
@@ -32,65 +53,40 @@ class OnboardingPrivacySettingsPage {
     tag: 'h4',
   };
 
-  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
-
-  // General settings - add custom network section
-  private readonly addCustomNetworkButton = {
-    text: 'Add a network',
-    tag: 'p',
-  };
-
-  private readonly addRpcUrlButton = {
-    text: 'Add RPC URL',
-    tag: 'button',
-  };
-
-  private readonly addRpcUrlDropDown = '[data-testid="test-add-rpc-drop-down"]';
+  private readonly categoryBackButton = '[data-testid="category-back-button"]';
 
   private readonly chainIdInput = '[data-testid="network-form-chain-id"]';
 
   private readonly confirmAddCustomNetworkButton = {
-    text: 'Save',
-    tag: 'button',
+    testId: 'page-container-footer-next',
   };
 
   private readonly confirmAddRpcUrlButton = {
-    text: 'Add URL',
-    tag: 'button',
+    testId: 'add-rpc-url-button',
   };
 
   private readonly currencySymbolInput =
     '[data-testid="network-form-ticker-input"]';
 
+  private driver: Driver;
+
+  private readonly generalSettings = '[data-testid="category-item-General"]';
+
+  private readonly generalSettingsMessage = { text: 'General', tag: 'h4' };
+
   private readonly networkNameInput =
     '[data-testid="network-form-network-name"]';
 
+  private readonly page =
+    '[data-testid="parent-selector-onboarding-privacy-settings"]';
+
+  private readonly privacySettingsBackButton =
+    '[data-testid="privacy-settings-back-button"]';
+
   private readonly rpcUrlInput = '[data-testid="rpc-url-input-test"]';
-
-  // Assets settings
-  private readonly assetsPrivacyToggle = '.toggle-button.toggle-button--on';
-
-  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.generalSettings,
-        this.assetsSettings,
-        this.securitySettings,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for onboarding privacy settings page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Onboarding privacy settings page is loaded');
   }
 
   /**
@@ -130,6 +126,26 @@ class OnboardingPrivacySettingsPage {
     );
     // Navigate back to default privacy settings
     await this.navigateBackToSettingsPage();
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      // The Security category is deliberately omitted: when Basic Functionality
+      // consolidation is enabled it is only rendered for the social login flow,
+      // so it cannot identify this page.
+      await this.driver.waitForMultipleSelectors([
+        this.page,
+        this.generalSettings,
+        this.assetsSettings,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for onboarding privacy settings page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Onboarding privacy settings page is loaded');
   }
 
   /**
@@ -182,11 +198,20 @@ class OnboardingPrivacySettingsPage {
     await this.checkPageIsLoaded();
     await this.driver.clickElement(this.assetsSettings);
     await this.driver.waitForSelector(this.assetsSettingsMessage);
-    await Promise.all(
-      (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
-        (toggle) => toggle.click(),
-      ),
-    );
+    // When Basic Functionality consolidation is enabled these toggles are owned
+    // by the Basic Functionality setting and are not rendered here, so there can
+    // be nothing to switch off. The toggles render in the same commit as the
+    // heading awaited above, so a missing toggle means it is genuinely absent
+    // rather than still pending.
+    if (
+      await this.driver.isElementPresentAndVisible(this.assetsPrivacyToggle)
+    ) {
+      await Promise.all(
+        (await this.driver.findClickableElements(this.assetsPrivacyToggle)).map(
+          (toggle) => toggle.click(),
+        ),
+      );
+    }
     console.log('Verify all asset privacy toggles are off');
     await this.driver.assertElementNotPresent(this.assetsPrivacyToggle);
 

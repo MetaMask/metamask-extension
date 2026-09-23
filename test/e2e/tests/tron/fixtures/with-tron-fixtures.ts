@@ -10,18 +10,23 @@ import {
 } from '../../../seeder/tron/assets';
 import { TronNode } from '../../../seeder/tron/node';
 import { TronSeeder } from '../../../seeder/tron/tron-seeder';
+import { mockTokensV2SupportedNetworks } from '../../btc/mocks/tokens-api';
 import {
   TRON_ACCOUNT_ADDRESS,
   TRON_CHAIN_ID,
   TRON_RECIPIENT_ADDRESS,
+  SUN_PER_TRX,
+  mockAccountsApiV2WithTron,
+  mockBridgeGetTronTokens,
   mockExchangeRates,
   mockFiatExchangeRates,
   mockTronFeatureFlags,
+  mockTronGetReward,
 } from '../mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
 
 const TRON_PROVIDER_ANY_ACCOUNT_RE =
-  /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/nile\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
+  /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/shasta\.api\.trongrid\.io|https:\/\/nile\.trongrid\.io|https:\/\/nile\.api\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
@@ -63,7 +68,6 @@ export type TronTrc20FixtureAsset = {
 export type TronFixtureAccount = {
   address: string;
   assets?: TronFixtureAsset[];
-  stakedTrxBalance?: string;
   transactions?: {
     raw?: unknown[];
     trc20?: unknown[];
@@ -79,6 +83,7 @@ export type WithTronFixturesOptions = Omit<
     localNodes: unknown[];
   }) => Promise<void> | void;
   fixtures?: unknown;
+  ignoredConsoleErrors?: string[];
   includeAnvil?: boolean;
   testSpecificMock?: (
     mockServer: Mockttp,
@@ -99,8 +104,6 @@ export function buildTronNodeOptions(
     string,
     Partial<Record<TronTrc20Symbol, string>>
   > = {};
-  const stakedTrxBalances: Record<string, string> = {};
-
   for (const account of accounts) {
     for (const asset of account.assets ?? []) {
       if (asset.type === 'native') {
@@ -117,19 +120,23 @@ export function buildTronNodeOptions(
         };
       }
     }
-
-    if (account.stakedTrxBalance) {
-      stakedTrxBalances[account.address] = account.stakedTrxBalance;
-    }
   }
 
   return {
     ...(Object.keys(initialBalances).length ? { initialBalances } : {}),
     ...(Object.keys(trc10Balances).length ? { trc10Balances } : {}),
     ...(Object.keys(trc20Balances).length ? { trc20Balances } : {}),
-    ...(Object.keys(stakedTrxBalances).length ? { stakedTrxBalances } : {}),
   };
 }
+
+/**
+ * Temporary unblock for Snap RPC noise that masked assertion results during
+ * background-page console capture. Remove once the Snap stops emitting these.
+ */
+const DEFAULT_TRON_IGNORED_CONSOLE_ERRORS = [
+  'getSubscriptions',
+  'Unexpected end of JSON input',
+];
 
 export async function withTronFixtures(
   options: WithTronFixturesOptions,
@@ -140,6 +147,7 @@ export async function withTronFixtures(
     accounts,
     includeAnvil = true,
     testSpecificMock,
+    ignoredConsoleErrors,
     ...withFixtureOptions
   } = options;
   const nodeOptions = buildTronNodeOptions(accounts);
@@ -153,6 +161,10 @@ export async function withTronFixtures(
   await withFixtures(
     {
       ...withFixtureOptions,
+      ignoredConsoleErrors: [
+        ...DEFAULT_TRON_IGNORED_CONSOLE_ERRORS,
+        ...(ignoredConsoleErrors ?? []),
+      ],
       localNodeOptions: [
         ...(includeAnvil ? ['anvil'] : []),
         {
@@ -238,11 +250,24 @@ async function mockTronFixtureApis(
   ].filter((v, i, arr) => arr.indexOf(v) === i);
 
   return [
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockAccountsApiV2WithTron(mockServer),
+    await mockTronFixtureAccountsApiV5(mockServer, accounts, tronNode),
     await mockTronFeatureFlags(mockServer),
     await mockExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
     await mockTronFixtureSpotPrices(mockServer, accounts, tronNode),
     await mockTronFixtureAssets(mockServer, accounts, tronNode),
+    // Empty catch-all bodies made `fetchPopularTokens` throw
+    // 'Unexpected end of JSON input' during the Tron network switch.
+    ...(await mockBridgeGetTronTokens(mockServer)),
+    await mockTronGetReward(mockServer),
+    // NOTE: do not register static getblock/getnowblock/getblockbynum or
+    // broadcasttransaction mocks here. mockttp serves the first matching
+    // `.always()` rule, so a static block mock makes the snap sign against a
+    // stale ref block and java-tron rejects the broadcast with TAPOS_ERROR.
+    // `proxyTronBlockchainCalls` proxies those endpoints to the local node and
+    // replays successful broadcasts as confirmed history.
     ...fixtureHistoryEndpoints,
     ...(await proxyTronBlockchainCalls(mockServer, tronNode, allAddresses)),
     await mockWildcardTronAccountApis(mockServer, tronNode, accountByAddress),
@@ -316,25 +341,95 @@ async function mockWildcardTronAccountApis(
     });
 }
 
+function formatFixtureBalanceForAccountsApi(asset: TronFixtureAsset): string {
+  if (asset.type === 'native') {
+    return String(asset.balance / SUN_PER_TRX);
+  }
+
+  return String(Number(asset.balance) / 10 ** asset.decimals);
+}
+
+function buildFixtureTokenMetadata(
+  accounts: TronFixtureAccount[],
+  tronNode: TronNode,
+) {
+  const nativeTrx = {
+    assetId: `${TRON_CHAIN_ID}/slip44:195`,
+    decimals: 6,
+    name: 'Tron',
+    symbol: 'TRX',
+  };
+
+  const fixtureAssets = getUniqueAssets(accounts).map((asset) => ({
+    assetId: getAssetId(asset, tronNode),
+    decimals: asset.decimals,
+    name: asset.name,
+    symbol: asset.symbol,
+  }));
+
+  const assetsById = new Map(
+    [nativeTrx, ...fixtureAssets].map((asset) => [asset.assetId, asset]),
+  );
+
+  return [...assetsById.values()];
+}
+
+async function mockTronFixtureAccountsApiV5(
+  mockServer: Mockttp,
+  accounts: TronFixtureAccount[],
+  tronNode: TronNode,
+): Promise<MockedEndpoint> {
+  const balances = accounts.flatMap((account) => {
+    const assetBalances = (account.assets ?? []).map((asset) => ({
+      accountId: `${TRON_CHAIN_ID}:${account.address}`,
+      assetId: getAssetId(asset, tronNode),
+      balance: formatFixtureBalanceForAccountsApi(asset),
+    }));
+
+    return assetBalances;
+  });
+
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: balances.length,
+        unprocessedNetworks: [],
+        balances,
+      },
+    }));
+}
+
 async function mockTronFixtureAssets(
   mockServer: Mockttp,
   accounts: TronFixtureAccount[],
   tronNode: TronNode,
 ): Promise<MockedEndpoint> {
+  const knownAssets = buildFixtureTokenMetadata(accounts, tronNode);
+
   return mockServer
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: getUniqueAssets(accounts)
-        .filter((asset) => asset.type !== 'native')
-        .map((asset) => ({
-          assetId: getAssetId(asset, tronNode),
-          decimals: asset.decimals,
-          name: asset.name,
-          symbol: asset.symbol,
-        })),
-    }));
+    .thenCallback((request) => {
+      const assetIdsParam =
+        new URL(request.url).searchParams.get('assetIds') ?? '';
+
+      const json =
+        assetIdsParam.length > 0
+          ? knownAssets.filter((asset) => assetIdsParam.includes(asset.assetId))
+          : knownAssets.filter(
+              (asset) => !asset.assetId.endsWith('/slip44:195'),
+            );
+
+      return {
+        statusCode: 200,
+        json,
+      };
+    });
 }
 
 async function mockTronFixtureSpotPrices(
@@ -425,7 +520,7 @@ function getUniqueAssets(accounts: TronFixtureAccount[]): TronFixtureAsset[] {
 
 function tronProviderUrl(path: string): RegExp {
   return new RegExp(
-    `^(https://tron-mainnet\\.infura\\.io/v3/[^/]+|https://api\\.trongrid\\.io|https://api\\.shasta\\.trongrid\\.io|https://nile\\.trongrid\\.io)${path}(\\?[^#]*)?$`,
+    `^(https://tron-mainnet\\.infura\\.io/v3/[^/]+|https://api\\.trongrid\\.io|https://api\\.shasta\\.trongrid\\.io|https://shasta\\.api\\.trongrid\\.io|https://nile\\.trongrid\\.io|https://nile\\.api\\.trongrid\\.io)${path}(\\?[^#]*)?$`,
     'u',
   );
 }

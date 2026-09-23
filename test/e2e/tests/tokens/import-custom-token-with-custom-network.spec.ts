@@ -1,14 +1,15 @@
 import type { Mockttp } from 'mockttp';
+import { utils as ethersUtils } from 'ethers';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
+import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
+import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import TokenManagementPage from '../../page-objects/pages/token-management/token-management-page';
 import CustomTokenImportPage from '../../page-objects/pages/token-management/custom-token-import-page';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -60,6 +61,18 @@ const SELECTOR_SUPPORTS_INTERFACE = '0x01ffc9a7';
 const SELECTOR_BALANCE_OF = '0x70a08231';
 const SELECTOR_DECIMALS = '0x313ce567';
 
+// PulseChain is in the Multicall3 chain list in `@metamask/assets-controllers`,
+// so token balances arrive as a single `aggregate3` call rather than as
+// individual `balanceOf` calls. The ERC-20 selectors above only ever appear as
+// inner call data, never at the start of the request.
+const SELECTOR_AGGREGATE3 = '0x82ad56cb';
+// Multicall3's own `getEthBalance(address)`, used for the native balance leg.
+const SELECTOR_GET_ETH_BALANCE = '0x4d2301cc';
+
+const AGGREGATE3_CALLS_TYPE =
+  'tuple(address target, bool allowFailure, bytes callData)[]';
+const AGGREGATE3_RESULTS_TYPE = 'tuple(bool success, bytes returnData)[]';
+
 // bool(false) — supportsInterface() must return false so the token is not
 // classified as an NFT (ERC-721 / ERC-1155).
 const ABI_BOOL_FALSE =
@@ -79,6 +92,51 @@ const ABI_STRING_UFO =
   '0000000000000000000000000000000000000000000000000000000000000020' +
   '0000000000000000000000000000000000000000000000000000000000000003' +
   '55464f0000000000000000000000000000000000000000000000000000000000';
+
+/**
+ * Resolves a single `eth_call` payload to its ABI-encoded return value.
+ *
+ * @param data - The call's `data` field.
+ * @returns The ABI-encoded result.
+ */
+function resolveEthCall(data: string): string {
+  if (data.startsWith(SELECTOR_SUPPORTS_INTERFACE)) {
+    return ABI_BOOL_FALSE;
+  }
+  if (
+    data.startsWith(SELECTOR_BALANCE_OF) ||
+    data.startsWith(SELECTOR_GET_ETH_BALANCE)
+  ) {
+    return ABI_UINT256_100;
+  }
+  if (data.startsWith(SELECTOR_DECIMALS)) {
+    return ABI_UINT8_18;
+  }
+  return ABI_STRING_UFO;
+}
+
+/**
+ * Answers a Multicall3 `aggregate3` call by resolving each inner call.
+ *
+ * @param data - The aggregate3 call's `data` field.
+ * @returns The ABI-encoded `(bool success, bytes returnData)[]` result.
+ */
+function resolveAggregate3(data: string): string {
+  const [calls] = ethersUtils.defaultAbiCoder.decode(
+    [AGGREGATE3_CALLS_TYPE],
+    `0x${data.slice(SELECTOR_AGGREGATE3.length)}`,
+  );
+
+  return ethersUtils.defaultAbiCoder.encode(
+    [AGGREGATE3_RESULTS_TYPE],
+    [
+      (calls as { callData: string }[]).map((call) => [
+        true,
+        resolveEthCall(call.callData),
+      ]),
+    ],
+  );
+}
 
 async function mockPulseChainRpc(mockServer: Mockttp): Promise<void> {
   await mockServer
@@ -109,16 +167,10 @@ async function mockPulseChainRpc(mockServer: Mockttp): Promise<void> {
             return respond(id, '0x3b9aca00');
           case 'eth_call': {
             const data = (params?.[0] as { data?: string })?.data ?? '';
-            if (data.startsWith(SELECTOR_SUPPORTS_INTERFACE)) {
-              return respond(id, ABI_BOOL_FALSE);
+            if (data.startsWith(SELECTOR_AGGREGATE3)) {
+              return respond(id, resolveAggregate3(data));
             }
-            if (data.startsWith(SELECTOR_BALANCE_OF)) {
-              return respond(id, ABI_UINT256_100);
-            }
-            if (data.startsWith(SELECTOR_DECIMALS)) {
-              return respond(id, ABI_UINT8_18);
-            }
-            return respond(id, ABI_STRING_UFO);
+            return respond(id, resolveEthCall(data));
           }
           default:
             return respond(id, null);
@@ -304,43 +356,39 @@ describe('Import custom token on a custom network', function () {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
 
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkNameInputField(
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkNameInputField(
           PULSECHAIN_NETWORK_NAME,
         );
-        await addEditNetworkModal.fillNetworkChainIdInputField(
+        await addEditNetworkPage.fillNetworkChainIdInputField(
           PULSECHAIN_CHAIN_ID_DECIMAL.toString(),
         );
-        await addEditNetworkModal.fillCurrencySymbolInputField(
+        await addEditNetworkPage.fillCurrencySymbolInputField(
           PULSECHAIN_CURRENCY_SYMBOL,
         );
-        await addEditNetworkModal.openAddRpcUrlModal();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput(PULSECHAIN_RPC_URL);
-        await addRpcUrlModal.fillAddRpcNameInput(PULSECHAIN_NETWORK_NAME);
-        await addRpcUrlModal.saveAddRpcUrl();
-        await addEditNetworkModal.saveEditedNetwork(SAVE_NETWORK_TIMEOUT);
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput(PULSECHAIN_RPC_URL);
+        await addEditRpcUrlPage.fillAddRpcNameInput(PULSECHAIN_NETWORK_NAME);
+        await addEditRpcUrlPage.saveAddRpcUrl();
+        await addEditNetworkPage.saveEditedNetwork(SAVE_NETWORK_TIMEOUT);
 
-        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+        await networksPage.checkAddNetworkMessageIsDisplayed(
           PULSECHAIN_NETWORK_NAME,
         );
-        await selectNetworkDialog.clickCloseButton();
+        await networksPage.clickCloseButton();
         await homePage.checkPageIsLoaded();
 
         // Switch the active network to PulseChain so the "Add a custom token"
         // page defaults to it.
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          PULSECHAIN_NETWORK_NAME,
-        );
+        await switchToNetworkFromNetworkSelect(driver, PULSECHAIN_NETWORK_NAME);
         await homePage.checkPageIsLoaded();
 
         const tokensTab = new TokensTab(driver);

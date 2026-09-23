@@ -12,6 +12,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -105,7 +106,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .withAppStateController({
@@ -130,6 +131,8 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
+        const txToastNotification = new TxToastNotification(driver);
+        await txToastNotification.closeToastNotification();
         await activityTab.clickOnActivity(1);
         await activityTab.clickCopyTransactionHashButton();
         const txHash = await driver.getClipboardContent();

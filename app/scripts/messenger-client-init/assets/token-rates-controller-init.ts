@@ -3,6 +3,7 @@ import {
   TokenRatesController,
   TokenRatesControllerMessenger,
 } from '@metamask/assets-controllers';
+import { getIsDeprecatedController } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MessengerClientInitFunction } from '../types';
 import { TokenRatesControllerInitMessenger } from '../messengers/assets';
 import { previousValueComparator } from '../../lib/util';
@@ -28,6 +29,15 @@ export const TokenRatesControllerInit: MessengerClientInitFunction<
     state: persistedState.TokenRatesController,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
     disabled: !preferencesState.useCurrencyRateCheck,
+    isDeprecated: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      return getIsDeprecatedController(
+        remoteFeatureFlags,
+        'TokenRatesController',
+      );
+    },
   });
 
   initMessenger.subscribe(

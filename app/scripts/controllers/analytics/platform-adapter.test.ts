@@ -33,6 +33,7 @@ const DEFAULT_ENRICHMENT_CONTEXT: PlatformAdapterEnrichmentContext = {
   hasMarketingConsent: () => false,
   hasBasicFunctionalityEnabled: () => true,
   getRemoteFeatureFlags: () => ({}),
+  getFeatureFlagThresholdGroups: () => ({}),
   appVersion: '1.0.0',
   userAgent: '',
 };
@@ -40,7 +41,6 @@ const DEFAULT_ENRICHMENT_CONTEXT: PlatformAdapterEnrichmentContext = {
 const DEFAULT_APP_CONTEXT = {
   app: { name: 'MetaMask Extension', version: '1.0.0' },
   userAgent: '',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   marketingCampaignCookieId: null,
 };
 
@@ -114,7 +114,6 @@ describe('createPlatformAdapter', () => {
       expect(segment.track).toHaveBeenCalledWith(
         expect.objectContaining({
           context: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: null,
           }),
         }),
@@ -132,7 +131,6 @@ describe('createPlatformAdapter', () => {
       expect(segment.track).toHaveBeenCalledWith(
         expect.objectContaining({
           context: expect.objectContaining({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: 'campaign-cookie-id',
           }),
         }),
@@ -186,7 +184,6 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: null,
           },
           messageId: 'msg-1',
@@ -344,7 +341,6 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: null,
           },
           messageId: 'id-1',
@@ -401,7 +397,6 @@ describe('createPlatformAdapter', () => {
           context: {
             app: { name: 'MetaMask Extension', version: '1.0.0' },
             userAgent: '',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             marketingCampaignCookieId: null,
           },
           messageId: 'page-1',
@@ -613,6 +608,71 @@ describe('createPlatformAdapter', () => {
           properties: expect.not.objectContaining({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             utm_source: 'newsletter',
+          }),
+        }),
+        undefined,
+      );
+    });
+
+    it('preserves UTM parameters when marketing consent is granted', () => {
+      const { adapter, segment } = buildAdapter(
+        createMockEnrichmentContext({
+          hasMarketingConsent: () => true,
+        }),
+      );
+
+      adapter.track('Campaign Event', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        utm_source: 'newsletter',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        utm_medium: 'email',
+        foo: 'bar',
+      });
+
+      expect(segment.track).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            utm_source: 'newsletter',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            utm_medium: 'email',
+            foo: 'bar',
+          }),
+        }),
+        undefined,
+      );
+    });
+
+    it('removes UTM parameters when marketing consent is explicitly denied', () => {
+      const { adapter, segment } = buildAdapter(
+        createMockEnrichmentContext({
+          hasMarketingConsent: () => false,
+        }),
+      );
+
+      adapter.track('Campaign Event', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        utm_source: 'newsletter',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        utm_campaign: 'summer_sale',
+        foo: 'bar',
+      });
+
+      expect(segment.track).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            foo: 'bar',
+          }),
+        }),
+        undefined,
+      );
+      expect(segment.track).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.not.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            utm_source: 'newsletter',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            utm_campaign: 'summer_sale',
           }),
         }),
         undefined,

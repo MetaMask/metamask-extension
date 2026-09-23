@@ -2,14 +2,15 @@ import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { hasProperty } from '@metamask/utils';
 import {
-  isOnChainNotification,
   type INotification,
+  isOnChainNotification,
 } from '@metamask/notification-services-controller/notification-services';
-import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { getNotificationTypeForAnalytics } from '../../helpers/utils/notification.util';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -25,8 +26,6 @@ import {
   hasNotificationComponents,
 } from './notification-components';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsListItem({
   notification,
 }: {
@@ -60,10 +59,9 @@ export function NotificationsListItem({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           /* eslint-disable @typescript-eslint/naming-convention */
           notification_id: notification.id,
-          notification_type: notification.type,
+          notification_type: getNotificationTypeForAnalytics(notification),
+          notification_subtype: notification.notification_subtype,
           ...otherNotificationProperties(),
-          previously_read: notification.isRead,
-          data: notification, // data blob for feature teams to analyse their notification shapes
           /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
@@ -93,8 +91,8 @@ export function NotificationsListItem({
       navigate(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
     }
   }, [
-    createEventBuilder,
     trackEvent,
+    createEventBuilder,
     notification,
     markNotificationAsRead,
     navigate,

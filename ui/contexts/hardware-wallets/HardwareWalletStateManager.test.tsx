@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -260,8 +260,8 @@ describe('HardwareWalletStateManager', () => {
       });
     });
 
-    describe('ref synchronization during render', () => {
-      it('syncs walletTypeRef with current wallet type on initial render', () => {
+    describe('wallet type ref synchronization', () => {
+      it('syncs walletTypeRef with current wallet type after mount', () => {
         const store = mockStore(createMockState(KeyringTypes.ledger));
 
         const { result } = renderHook(() => useHardwareWalletStateManager(), {

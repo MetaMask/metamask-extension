@@ -4,7 +4,8 @@
   &__container {
     @include design-system.H6;
 
-    background: var(--color-background-default);
+    // Background is applied via utility classes in menu.js so theme tokens
+    // (bg-default / bg-section) are not overridden by this shorthand rule.
     box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     border-radius: 8px;
     width: 225px;

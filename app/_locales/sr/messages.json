@@ -81,9 +81,6 @@
   "back": {
     "message": "Назад"
   },
-  "backupApprovalInfo": {
-    "message": "Potreban je tajni kôd za oporavak vašeg novčanika u slučaju da izgubite uređaj, zaboravite lozinku, morate ponovo da instalirate MetaMask ili želite da pristupite novčaniku sa drugog uređaja."
-  },
   "backupApprovalNotice": {
     "message": "Napravite rezervnu kopiju tajnog kôda za oporavak da bi vaš novčanik i sredstva bili bezbedni."
   },
@@ -224,9 +221,6 @@
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitTooLow": {
-    "message": "Limit za gas mora da bude najmanje 21 000"
-  },
   "gasUsed": {
     "message": "Korišćen gas"
   },
@@ -340,9 +334,6 @@
   "networks": {
     "message": "Mreže"
   },
-  "nevermind": {
-    "message": "Nema veze"
-  },
   "newAccountNumberName": {
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"
@@ -411,9 +402,6 @@
   "privateKey": {
     "message": "Privatni ključ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Upozorenje: Nikada ne otkrivajte ovaj ključ. Svako sa vašim privatnim ključevima može ukrasti bilo koju imovinu na vašem nalogu."
   },
   "privateNetwork": {
     "message": "Privatna mreža"

@@ -1,0 +1,230 @@
+name: Adjust CWS rollout percentage
+
+# INFRA-3651 — workflow_dispatch rollout adjustment via CWS API v2.
+#
+# Publish-to-users is intentionally separate from upload-extension-to-cws.yml
+# (RAPID + threat model § Upload scope): upload = Runway + WIF, draft only;
+# rollout = human judgment after monitoring (docs/sensitive-release.md 1% protocol).
+#
+# Authorization (NOT Runway):
+#   Primary human gate — dedicated GitHub Environments with required reviewers
+#   (same class as break-glass build via release-branch; see INFRA-3676 / RAPID § Security ops).
+#   Platform configures approvers on cws-rollout-{dev,production,flask} in repo Settings.
+#   Technical gate — WIF CEL on cws-rollout-* environments + adjust-cws-rollout.yml
+#   workflow_ref; must NOT pin Runway actor (human OIDC only).
+#
+# Targets align with upload-extension-to-cws.yml (INFRA-3734): dev, production, flask.
+# Listing vars (*_DEV, prod, EXTENSION_ID_FLASK) match upload; OIDC environment differs.
+#
+# CWS v2: :fetchStatus (current deployPercentage) → :setPublishedDeployPercentage
+# Version input is release semver X.Y.Z; crxVersion is derived per target via cws-target-config.sh
+# (prod/dev → X.Y.Z.0, flask → X.Y.Z.150 — same as upload and publish workflows).
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release semver X.Y.Z (e.g. 13.43.0) — crxVersion is derived per target (prod/dev → X.Y.Z.0, flask → X.Y.Z.150)'
+        required: true
+        type: string
+      desired_percentage:
+        description: 'Target rollout percentage (1–100)'
+        required: true
+        type: number
+      target:
+        description: 'CWS target — dev (UAT), production (PRD main), flask (PRD Flask build)'
+        required: true
+        type: choice
+        default: production
+        options:
+          - dev
+          - production
+          - flask
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  adjust-rollout:
+    name: Adjust CWS rollout (${{ inputs.target }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: ${{ github.workflow }}-${{ inputs.target }}
+      cancel-in-progress: false
+    environment: ${{ inputs.target == 'production' && 'cws-rollout-production' || inputs.target == 'flask' && 'cws-rollout-flask' || inputs.target == 'dev' && 'cws-rollout-dev' || null }}
+    env:
+      VERSION: ${{ inputs.version }}
+      DESIRED_PERCENTAGE: ${{ inputs.desired_percentage }}
+      TARGET: ${{ inputs.target }}
+      ROLLOUT_ENV: ${{ inputs.target == 'production' && 'cws-rollout-production' || inputs.target == 'flask' && 'cws-rollout-flask' || inputs.target == 'dev' && 'cws-rollout-dev' || '' }}
+    steps:
+      # Defense-in-depth: rollout is human-initiated. Runway/bot dispatch belongs on upload, not here.
+      - name: Reject non-human dispatch
+        env:
+          SENDER_TYPE: ${{ github.event.sender.type }}
+          SENDER_LOGIN: ${{ github.event.sender.login }}
+        run: |
+          set -euo pipefail
+          echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender=${SENDER_LOGIN}"
+          if [[ "${SENDER_TYPE}" == "Bot" ]]; then
+            echo "::error::CWS rollout is human-initiated with GitHub Environment reviewer approval (cws-rollout-*). Bot dispatch is not permitted — use upload-extension-to-cws.yml for automated store upload."
+            exit 1
+          fi
+          echo "Human dispatch confirmed. Environment reviewer approval is recorded by GitHub before this job runs."
+
+      - name: Checkout scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github/scripts/cws-target-config.sh
+            .github/scripts/adjust-cws-rollout-guardrails.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Resolve target configuration
+        id: config
+        env:
+          WIF_PROVIDER_DEV: ${{ vars.WIF_PROVIDER_DEV }}
+          WIF_SERVICE_ACCOUNT_DEV: ${{ vars.WIF_SERVICE_ACCOUNT_DEV }}
+          EXTENSION_ID_DEV: ${{ vars.EXTENSION_ID_DEV }}
+          PUBLISHER_ID_DEV: ${{ vars.PUBLISHER_ID_DEV }}
+          WIF_PROVIDER_PROD: ${{ vars.WIF_PROVIDER }}
+          WIF_SERVICE_ACCOUNT_PROD: ${{ vars.WIF_SERVICE_ACCOUNT }}
+          EXTENSION_ID_PROD: ${{ vars.EXTENSION_ID }}
+          EXTENSION_ID_FLASK: ${{ vars.EXTENSION_ID_FLASK }}
+          PUBLISHER_ID_PROD: ${{ vars.PUBLISHER_ID }}
+          PUBLISHER_ID_FLASK: ${{ vars.PUBLISHER_ID_FLASK }}
+        run: |
+          set -euo pipefail
+          GITHUB_REF="${{ github.ref }}"
+          if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "::error::CWS rollout must run from refs/heads/main (current: ${GITHUB_REF})"
+            exit 1
+          fi
+          # Sets GITHUB_ENV and same-step vars: WIF_*, EXTENSION_ID, PUBLISHER_ID, CRX_VERSION.
+          # shellcheck disable=SC1091
+          source .github/scripts/cws-target-config.sh
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
+
+      - name: Fetch current CWS rollout state
+        id: current
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        run: |
+          set -euo pipefail
+          FETCH_STATUS_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:fetchStatus"
+          http_code=$(curl -sS \
+            -o /tmp/cws-fetch-status.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            "${FETCH_STATUS_URL}")
+          if [[ "${http_code}" != "200" ]]; then
+            echo "::error::fetchStatus failed with HTTP ${http_code}"
+            cat /tmp/cws-fetch-status.json
+            exit 1
+          fi
+          # setPublishedDeployPercentage only affects the live published revision.
+          # Match publishedItemRevisionStatus.crxVersion against derived CRX_VERSION
+          # (4-part manifest version from cws-target-config.sh).
+          published_channel=$(jq -c --arg ver "${CRX_VERSION}" '
+            (.publishedItemRevisionStatus.distributionChannels // [])
+            | map(select(.crxVersion == $ver))
+            | first // empty
+          ' /tmp/cws-fetch-status.json)
+          if [[ -z "${published_channel}" || "${published_channel}" == "null" ]]; then
+            live_version=$(jq -r '
+              (.publishedItemRevisionStatus.distributionChannels // [])[0].crxVersion // "unknown"
+            ' /tmp/cws-fetch-status.json)
+            echo "::error::Version ${CRX_VERSION} is not the live published revision on target ${TARGET} (published: ${live_version}). setPublishedDeployPercentage only affects the published revision — confirm the version input."
+            cat /tmp/cws-fetch-status.json
+            exit 1
+          fi
+          current_pct=$(jq -r '.deployPercentage // empty' <<< "${published_channel}")
+          if [[ -z "${current_pct}" || "${current_pct}" == "null" ]]; then
+            echo "::error::Published revision for version ${CRX_VERSION} has no deployPercentage on target ${TARGET}."
+            cat /tmp/cws-fetch-status.json
+            exit 1
+          fi
+          echo "current_percentage=${current_pct}" >> "${GITHUB_OUTPUT}"
+          echo "Current rollout for crxVersion ${CRX_VERSION}: ${current_pct}%"
+
+      - name: Validate rollout guardrails
+        id: guardrails
+        env:
+          CURRENT_PERCENTAGE: ${{ steps.current.outputs.current_percentage }}
+        run: bash .github/scripts/adjust-cws-rollout-guardrails.sh
+
+      - name: Apply rollout percentage
+        id: apply
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          CURRENT_PERCENTAGE: ${{ steps.current.outputs.current_percentage }}
+        run: |
+          set -euo pipefail
+          if [[ "${DESIRED_PERCENTAGE}" == "${CURRENT_PERCENTAGE}" ]]; then
+            echo "No-op: desired percentage (${DESIRED_PERCENTAGE}%) already matches current (${CURRENT_PERCENTAGE}%)."
+            echo "applied=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          ROLLOUT_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:setPublishedDeployPercentage"
+          http_code=$(curl -sS \
+            -o /tmp/cws-rollout-response.json -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"deployPercentage\": ${DESIRED_PERCENTAGE}}" \
+            "${ROLLOUT_URL}")
+          echo "http_code=${http_code}" >> "${GITHUB_OUTPUT}"
+          if [[ "${http_code}" != "200" ]]; then
+            echo "::error::setPublishedDeployPercentage failed with HTTP ${http_code}"
+            cat /tmp/cws-rollout-response.json
+            exit 1
+          fi
+          echo "applied=true" >> "${GITHUB_OUTPUT}"
+          echo "Rollout updated: ${CURRENT_PERCENTAGE}% → ${DESIRED_PERCENTAGE}%"
+
+      - name: Audit summary
+        if: always()
+        env:
+          CONFIG_OK: ${{ steps.config.outcome }}
+          AUTH_OK: ${{ steps.auth.outcome }}
+          FETCH_OK: ${{ steps.current.outcome }}
+          GUARDRAILS_OK: ${{ steps.guardrails.outcome }}
+          APPLY_OK: ${{ steps.apply.outcome }}
+          CURRENT_PCT: ${{ steps.current.outputs.current_percentage }}
+          APPLIED: ${{ steps.apply.outputs.applied }}
+          HTTP_CODE: ${{ steps.apply.outputs.http_code }}
+        run: |
+          {
+            echo "### CWS rollout adjustment audit (INFRA-3651)"
+            echo ""
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| GitHub Environment | \`${{ env.ROLLOUT_ENV }}\` (required reviewers — configure in repo Settings) |"
+            echo "| Triggered by | \`${{ github.actor }}\` (sender: \`${{ github.event.sender.login }}\`, type=\`${{ github.event.sender.type }}\`) |"
+            echo "| Target | \`${{ inputs.target }}\` |"
+            echo "| Version input | \`${{ inputs.version }}\` |"
+            echo "| crxVersion | \`${{ env.CRX_VERSION }}\` |"
+            echo "| Branch | \`${{ github.ref }}\` |"
+            echo "| Previous percentage | \`${CURRENT_PCT:-n/a}\` |"
+            echo "| Requested percentage | \`${{ inputs.desired_percentage }}\` |"
+            echo "| Config step | \`${CONFIG_OK:-skipped}\` |"
+            echo "| GCP auth step | \`${AUTH_OK:-skipped}\` |"
+            echo "| fetchStatus step | \`${FETCH_OK:-skipped}\` |"
+            echo "| Guardrails | \`${GUARDRAILS_OK}\` |"
+            echo "| Apply step | \`${APPLY_OK:-skipped}\` |"
+            echo "| Applied change | \`${APPLIED:-n/a}\` |"
+            echo "| CWS HTTP status | \`${HTTP_CODE:-n/a}\` |"
+            echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+          if [[ "${{ job.status }}" == "failure" ]]; then
+            exit 1
+          fi

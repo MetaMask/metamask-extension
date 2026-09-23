@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { CaipAccountId } from '@metamask/utils';
 import type { Funding } from '@metamask/perps-controller';
 import {
@@ -6,6 +13,7 @@ import {
   transformOrdersToTransactions,
   transformFundingToTransactions,
   transformUserHistoryToTransactions,
+  dedupeWalletTransactionsByTxHash,
 } from '../../components/app/perps/utils/transactionTransforms';
 import type {
   Order,
@@ -20,6 +28,8 @@ import {
   invalidateCoalescedRequest,
 } from './coalesceBackgroundRequest';
 import { usePerpsCacheKey } from './usePerpsCacheKey';
+import { useWalletPerpsDepositTransactions } from './useWalletPerpsDepositTransactions';
+import { useWalletPerpsWithdrawalTransactions } from './useWalletPerpsWithdrawalTransactions';
 
 /**
  * Parameters for the usePerpsTransactionHistory hook
@@ -141,6 +151,14 @@ export function usePerpsTransactionHistory({
   // This ensures new trades appear immediately without waiting for REST refetch
   const { fills: liveFills } = usePerpsLiveFills({ throttleMs: 0 });
 
+  // Wallet-tracked deposits/withdrawals (perpsDeposit / perpsDepositAndOrder /
+  // perpsWithdraw), used as a fallback so a just-completed deposit or
+  // withdrawal is visible immediately even before HyperLiquid's user-history
+  // ledger reflects it. De-duplicated against userHistoryTransactions by
+  // txHash below.
+  const walletDepositTransactions = useWalletPerpsDepositTransactions();
+  const walletWithdrawalTransactions = useWalletPerpsWithdrawalTransactions();
+
   // Store userHistory in ref to avoid recreating fetchAllTransactions callback
   const userHistoryRef = useRef(userHistory);
   // Last scope fingerprint we fetched for. Used to re-fire the initial/refresh
@@ -163,9 +181,6 @@ export function usePerpsTransactionHistory({
     fetchGenerationRef.current += 1;
     const generation = fetchGenerationRef.current;
     try {
-      setIsLoading(true);
-      setError(null);
-
       const [fillsResult, ordersResult, funding] = await Promise.all([
         coalesceBackgroundRequest<OrderFill[]>(coalesceKeys.fills, () =>
           submitRequestToBackground<OrderFill[]>('perpsGetOrderFills', [
@@ -254,6 +269,8 @@ export function usePerpsTransactionHistory({
     // Pull-to-refresh must bypass the short-TTL coalesce cache. Drop the three
     // keys fetchAllTransactions consumes (refetchUserHistory invalidates its
     // own key internally).
+    setIsLoading(true);
+    setError(null);
     invalidateCoalescedRequest(coalesceKeys.fills);
     invalidateCoalescedRequest(coalesceKeys.orders);
     invalidateCoalescedRequest(coalesceKeys.funding);
@@ -262,7 +279,9 @@ export function usePerpsTransactionHistory({
     await fetchAllTransactions();
   }, [fetchAllTransactions, refetchUserHistory, coalesceKeys]);
 
-  useEffect(() => {
+  const scopeFingerprint = `${perpsScopeKey}:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}:${forceFreshOnMount ? '1' : '0'}`;
+
+  useLayoutEffect(() => {
     if (skipInitialFetch) {
       return;
     }
@@ -271,27 +290,31 @@ export function usePerpsTransactionHistory({
     // that stays mounted across a scope transition never renders the previous
     // session's transactions. The fingerprint gate keeps unrelated re-renders
     // from triggering redundant fetches.
-    const scopeFingerprint = `${perpsScopeKey}:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}:${forceFreshOnMount ? '1' : '0'}`;
     if (lastFetchedScopeRef.current === scopeFingerprint) {
       return;
     }
     lastFetchedScopeRef.current = scopeFingerprint;
+    fetchGenerationRef.current += 1;
+    setIsLoading(true);
+    setError(null);
+    setTransactions([]);
     // Activity surfaces that open on user intent (e.g. PerpsActivityPage)
     // must force a fresh fetch so they never surface a stale snapshot held
     // by a sibling consumer inside the TTL window. Passive previews (e.g.
     // Recent Activity on the perps home) still share the cached snapshot.
-    if (forceFreshOnMount) {
-      refetch();
-    } else {
-      initialFetch();
-    }
+    // Defer so nested fetch helpers' synchronous loading resets are not in
+    // the effect body (react-hooks/set-state-in-effect).
+    queueMicrotask(() => {
+      if (forceFreshOnMount) {
+        refetch();
+      } else {
+        initialFetch();
+      }
+    });
   }, [
     skipInitialFetch,
     forceFreshOnMount,
-    perpsScopeKey,
-    accountId,
-    startTime,
-    endTime,
+    scopeFingerprint,
     initialFetch,
     refetch,
   ]);
@@ -325,9 +348,16 @@ export function usePerpsTransactionHistory({
     // Note: transformFillsToTransactions now aggregates split stop loss/TP fills
     const liveTransactions = transformFillsToTransactions(liveFills);
 
-    // If no REST transactions yet, return only live fills
+    // If no REST transactions yet, return live fills plus wallet
+    // deposits/withdrawals (deduped against nothing, since there's no
+    // user-history yet)
     if (transactions.length === 0) {
-      return liveTransactions;
+      const allTransactions = [
+        ...liveTransactions,
+        ...dedupeWalletTransactionsByTxHash(walletDepositTransactions, []),
+        ...dedupeWalletTransactionsByTxHash(walletWithdrawalTransactions, []),
+      ];
+      return allTransactions.sort((a, b) => b.timestamp - a.timestamp);
     }
 
     // Separate trade transactions from non-trade transactions (orders, funding, deposits)
@@ -359,15 +389,29 @@ export function usePerpsTransactionHistory({
       tradeMap.set(dedupKey, tx);
     }
 
-    // Combine deduplicated trades with non-trade transactions
+    // Combine deduplicated trades with non-trade transactions and any
+    // wallet-sourced deposits/withdrawals not yet reflected in user history
     const allTransactions = [
       ...Array.from(tradeMap.values()),
       ...nonTradeTransactions,
+      ...dedupeWalletTransactionsByTxHash(
+        walletDepositTransactions,
+        nonTradeTransactions,
+      ),
+      ...dedupeWalletTransactionsByTxHash(
+        walletWithdrawalTransactions,
+        nonTradeTransactions,
+      ),
     ];
 
     // Sort by timestamp descending
     return allTransactions.sort((a, b) => b.timestamp - a.timestamp);
-  }, [liveFills, transactions]);
+  }, [
+    liveFills,
+    transactions,
+    walletDepositTransactions,
+    walletWithdrawalTransactions,
+  ]);
 
   return {
     transactions: mergedTransactions,

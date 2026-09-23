@@ -41,5 +41,3 @@ export {
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
 } from './tpslValidation';
-
-export { buildPerpsVipTrackingData } from './trackingData';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Button, Text, TextVariant } from '@metamask/design-system-react';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
@@ -16,12 +16,6 @@ const meta: Meta<typeof GlobalMenuDrawer> = {
     },
     showCloseButton: {
       control: 'boolean',
-    },
-    onClickOutside: {
-      control: 'boolean',
-    },
-    width: {
-      control: 'text',
     },
   },
 };
@@ -89,30 +83,6 @@ const WithoutCloseButtonWrapper = () => {
 
 export const WithoutCloseButton: Story = {
   render: WithoutCloseButtonWrapper,
-};
-
-const CustomWidthWrapper = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <>
-      <Button onClick={() => setIsOpen(true)}>Open Wide Drawer</Button>
-      <GlobalMenuDrawer
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        width="600px"
-        title="Wide Drawer"
-      >
-        <div className="p-4">
-          <Text>This drawer has a custom width of 600px.</Text>
-        </div>
-      </GlobalMenuDrawer>
-    </>
-  );
-};
-
-export const CustomWidth: Story = {
-  render: CustomWidthWrapper,
 };
 
 const store = configureStore(testData);

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
@@ -55,6 +55,7 @@ import ViewOnBlockExplorer from '../view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useDispatch } from '../../../store/hooks';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -267,33 +268,6 @@ export default function SmartTransactionStatusPage() {
   const showCancelSwapLink =
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
-  const CancelSwap = () => {
-    return (
-      <Box marginBottom={0}>
-        <a
-          className="smart-transaction-status__cancel-swap-link"
-          href="#"
-          onClick={(e) => {
-            e?.preventDefault();
-            setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.
-            trackEvent(
-              createEventBuilder('Cancel STX')
-                .addCategory(MetaMetricsEventCategory.Swaps)
-                .addSensitiveProperties(sensitiveProperties)
-                .addProperties({
-                  hd_entropy_index: hdEntropyIndex,
-                })
-                .build(),
-            );
-            dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
-          }}
-        >
-          {t('attemptToCancelSwapForFree')}
-        </a>
-      </Box>
-    );
-  };
-
   return (
     <div className="smart-transaction-status">
       <Box
@@ -465,7 +439,33 @@ export default function SmartTransactionStatusPage() {
       </Box>
       {showCancelSwapLink &&
         latestSmartTransactionUuid &&
-        isSmartTransactionPending && <CancelSwap />}
+        isSmartTransactionPending && (
+          <Box marginBottom={0}>
+            <a
+              className="smart-transaction-status__cancel-swap-link"
+              href="#"
+              onClick={(e) => {
+                e?.preventDefault();
+                // Hide the link after a user clicks on it.
+                setCancelSwapLinkClicked(true);
+                trackEvent(
+                  createEventBuilder('Cancel STX')
+                    .addCategory(MetaMetricsEventCategory.Swaps)
+                    .addSensitiveProperties(sensitiveProperties)
+                    .addProperties({
+                      hd_entropy_index: hdEntropyIndex,
+                    })
+                    .build(),
+                );
+                dispatch(
+                  cancelSwapsSmartTransaction(latestSmartTransactionUuid),
+                );
+              }}
+            >
+              {t('attemptToCancelSwapForFree')}
+            </a>
+          </Box>
+        )}
       {smartTransactionStatus === SmartTransactionStatus.success ? (
         <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
       ) : null}

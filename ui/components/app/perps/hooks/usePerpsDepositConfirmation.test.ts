@@ -1,8 +1,11 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
-import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import {
+  ConfirmationLoader,
+  PayWithOption,
+} from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
@@ -23,6 +26,13 @@ jest.mock('./usePerpsNetworkManagement', () => ({
   usePerpsNetworkManagement: () => ({
     ensureArbitrumNetworkExists: mockEnsureArbitrumNetworkExists,
   }),
+}));
+
+const mockSetLastPerpsDepositEntryPoint = jest.fn();
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
+  setLastPerpsDepositEntryPoint: (...args: unknown[]) =>
+    mockSetLastPerpsDepositEntryPoint(...args),
 }));
 
 const mockCreatePerpsDepositTransaction =
@@ -151,6 +161,32 @@ describe('usePerpsDepositConfirmation', () => {
     expect(onCreated).toHaveBeenCalledWith('tx-789');
   });
 
+  it('includes payWithOption in the confirmation URL when provided', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-money',
+    });
+
+    const { result } = renderHookWithProvider(
+      () =>
+        usePerpsDepositConfirmation({
+          payWithOption: PayWithOption.MoneyAccount,
+        }),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      {
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-money`,
+        search: `loader=${ConfirmationLoader.CustomAmount}&payWithOption=${PayWithOption.MoneyAccount}`,
+      },
+      { replace: true },
+    );
+  });
+
   it('returns null when there is no selected account', async () => {
     const stateWithoutSelectedAccount = {
       ...mockState,
@@ -219,5 +255,44 @@ describe('usePerpsDepositConfirmation', () => {
       resolveCreate?.({ transactionId: 'tx-001' });
       await firstTriggerPromise;
     });
+  });
+
+  it('sets entry point to null when not provided', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-no-entry',
+    });
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsDepositConfirmation(),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockSetLastPerpsDepositEntryPoint).toHaveBeenCalledWith(null);
+  });
+
+  it('sets entry point when provided', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-with-entry',
+    });
+
+    const { result } = renderHookWithProvider(
+      () =>
+        usePerpsDepositConfirmation({
+          entryPoint: 'hyperliquid_deposit_prompt',
+        }),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockSetLastPerpsDepositEntryPoint).toHaveBeenCalledWith(
+      'hyperliquid_deposit_prompt',
+    );
   });
 });

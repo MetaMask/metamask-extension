@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { useFiatFormatter } from './useFiatFormatter';

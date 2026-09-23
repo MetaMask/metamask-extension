@@ -5,9 +5,27 @@ import {
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type {
+  TraceCallback as ControllerTraceCallback,
+  TraceContext as ControllerTraceContext,
+  TraceRequest as ControllerTraceRequest,
+} from '@metamask/controller-utils';
 import { type MessengerClientInitFunction } from '../types';
 import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
+import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import {
+  getBackendApiUrlsOption,
+  isBackendAuthDisabled,
+} from '../../../../shared/lib/core-backend-api-urls';
+import {
+  ASSETS_UNIFY_STATE_FLAG,
+  ASSETS_UNIFY_STATE_VERSION_1,
+  isAssetsUnifyStateTracesEnabled,
+  type AssetsUnifyStateFeatureFlag,
+} from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 
 /**
  * Cached API client instance.
@@ -23,6 +41,9 @@ let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
 async function safeGetBearerToken(
   initMessenger: AssetsControllerInitMessenger,
 ): Promise<string | undefined> {
+  if (isBackendAuthDisabled()) {
+    return undefined;
+  }
   try {
     return await initMessenger.call('AuthenticationController:getBearerToken');
   } catch {
@@ -80,6 +101,55 @@ function getIsBasicFunctionality(
 }
 
 /**
+ * Whether AssetsController Sentry tracing is enabled via
+ * `assetsUnifyState.tracesEnabled` (requires unify itself to be enabled).
+ *
+ * @param initMessenger - The initialization messenger.
+ * @returns True when tracing should run, false otherwise.
+ */
+function isAssetsControllerTracesEnabled(
+  initMessenger: AssetsControllerInitMessenger,
+): boolean {
+  try {
+    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+      return false;
+    }
+    const { remoteFeatureFlags } = initMessenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    return isAssetsUnifyStateTracesEnabled(
+      remoteFeatureFlags?.[ASSETS_UNIFY_STATE_FLAG] as
+        | AssetsUnifyStateFeatureFlag
+        | undefined,
+      ASSETS_UNIFY_STATE_VERSION_1,
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Trace callback gated by `assetsUnifyState.tracesEnabled`.
+ * When the flag is off, runs `fn` (if provided) without creating a Sentry span.
+ *
+ * @param initMessenger - The initialization messenger used to read the flag.
+ * @returns A {@link ControllerTraceCallback} suitable for AssetsController.
+ */
+function createAssetsControllerTrace(
+  initMessenger: AssetsControllerInitMessenger,
+): ControllerTraceCallback {
+  return <Result>(
+    req: ControllerTraceRequest,
+    fn?: (ctx?: ControllerTraceContext) => Result,
+  ): Promise<Result> => {
+    if (!isAssetsControllerTracesEnabled(initMessenger)) {
+      return Promise.resolve(fn?.() as Result);
+    }
+    return traceAsControllerCallback(req, fn);
+  };
+}
+
+/**
  * Gets or creates the API platform client.
  *
  * @param initMessenger - The initialization messenger.
@@ -93,6 +163,7 @@ function getApiClient(
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
+      ...getBackendApiUrlsOption(),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;
@@ -191,6 +262,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
       TokensController: persistedState.TokensController,
       AccountsController: persistedState.AccountsController,
     }),
+    trace: createAssetsControllerTrace(initMessenger),
   });
 
   return { messengerClient };

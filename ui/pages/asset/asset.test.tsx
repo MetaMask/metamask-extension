@@ -8,6 +8,7 @@ import mockState from '../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getFungibleAssetForRoute } from '../../selectors/assets';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { Token } from '../../components/app/assets/types';
 import Asset from './asset';
@@ -90,6 +91,11 @@ jest.mock('../../selectors/assets', () => ({
   getFungibleAssetForRoute: jest.fn(),
 }));
 
+jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual('../../selectors/multichain-accounts/account-tree'),
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(),
+}));
+
 jest.mock('./hooks/useRouteAssetToken', () => ({
   ...jest.requireActual('./hooks/useRouteAssetToken'),
   useRouteAssetToken: jest.fn(),
@@ -168,6 +174,11 @@ describe('Asset', () => {
 
     jest.mocked(getNFTsByChainId).mockReturnValue([]);
     jest.mocked(getFungibleAssetForRoute).mockReturnValue(undefined);
+    jest
+      .mocked(getInternalAccountBySelectedAccountGroupAndCaip)
+      .mockReturnValue({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      } as ReturnType<typeof getInternalAccountBySelectedAccountGroupAndCaip>);
   });
 
   describe('token routes', () => {
@@ -342,6 +353,20 @@ describe('Asset', () => {
       const redirect = screen.getByTestId('navigate-redirect');
       expect(redirect).toBeInTheDocument();
       expect(redirect).toHaveAttribute('data-to', DEFAULT_ROUTE);
+    });
+
+    it('redirects to the default route when no account exists for the asset chain', () => {
+      jest
+        .mocked(getInternalAccountBySelectedAccountGroupAndCaip)
+        .mockReturnValue(null);
+
+      renderAssetPage();
+
+      const redirect = screen.getByTestId('navigate-redirect');
+      expect(redirect).toBeInTheDocument();
+      expect(redirect).toHaveAttribute('data-to', DEFAULT_ROUTE);
+      expect(screen.queryByTestId('token-asset')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('native-asset')).not.toBeInTheDocument();
     });
   });
 

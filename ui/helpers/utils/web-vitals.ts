@@ -8,7 +8,7 @@
  * `PerformancePaintTiming` (`first-paint`, `first-contentful-paint`) or
  * `largest-contentful-paint` entries. `PerformanceNavigationTiming.responseStart`
  * is also 0 for local extension files. As a result,
- * `browserTracingIntegration` in `setupSentry.js` cannot capture LCP, FCP,
+ * `browserTracingIntegration` in `setupSentry.ts` cannot capture LCP, FCP,
  * CLS, or TTFB on production extension pages (confirmed: 19.5M pageload
  * transactions with zero web vitals measurements in Sentry). The
  * `onLCP`/`onCLS` callbacks below may not fire in production either, as
@@ -33,9 +33,7 @@ import type {
   LCPMetricWithAttribution,
   CLSMetricWithAttribution,
   FCPMetricWithAttribution,
-  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'web-vitals/attribution';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { onINP, onLCP, onCLS, onFCP } from 'web-vitals/attribution';
 import type { WebVitalsMetrics } from '../../../shared/constants/benchmarks';
 

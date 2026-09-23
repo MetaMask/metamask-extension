@@ -1,10 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import copyToClipboard from 'copy-to-clipboard';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import SelectedAccount from '.';
 
 const mockSelectedAccount = {
@@ -26,8 +24,6 @@ const mockSelectedAccount = {
   ],
   type: 'eip155:eoa',
 };
-
-jest.mock('copy-to-clipboard');
 
 jest.mock('../../../selectors', () => {
   const mockGetAccountType = jest.fn(() => undefined);
@@ -51,6 +47,11 @@ jest.mock('../../../../shared/lib/selectors/keyring', () => ({
 
 describe('SelectedAccount Component', () => {
   const mockStore = configureMockStore()(mockState);
+  const mockWriteText = globalThis.navigator.clipboard.writeText;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(<SelectedAccount />, mockStore);
@@ -72,7 +73,7 @@ describe('SelectedAccount Component', () => {
     expect(getByTestId('selected-account-copy')).toBeInTheDocument();
   });
 
-  it('should copy checksum address to clipboard when button is clicked', () => {
+  it('should copy checksum address to clipboard when button is clicked', async () => {
     const { queryByTestId } = renderWithProvider(
       <SelectedAccount />,
       mockStore,
@@ -82,9 +83,10 @@ describe('SelectedAccount Component', () => {
 
     fireEvent.click(button);
 
-    expect(copyToClipboard).toHaveBeenCalledWith(
-      '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-      COPY_OPTIONS,
-    );
+    await waitFor(() => {
+      expect(mockWriteText).toHaveBeenCalledWith(
+        '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+      );
+    });
   });
 });

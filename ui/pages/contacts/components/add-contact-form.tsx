@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import {
   Box,
@@ -21,6 +21,7 @@ import {
 } from '@metamask/design-system-react';
 import { addHexPrefix } from 'ethereumjs-util';
 import { isHexString } from '@metamask/utils';
+import { useDispatch } from '../../../store/hooks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FormTextField,
@@ -136,21 +137,26 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   }, [selectedChainId, enteredDomainName, input, dispatch]);
 
   useEffect(() => {
-    if (qrCodeData?.type === 'address' && qrCodeData?.values?.address) {
-      const scannedAddress = qrCodeData.values.address.toLowerCase();
-      const addresses = [
-        ...(domainResolutions?.map(
-          (r: { resolvedAddress: string }) => r.resolvedAddress,
-        ) ?? []),
-        selectedAddress,
-      ]
-        .filter(Boolean)
-        .map((addr: string) => addr.toLowerCase());
-      if (!addresses.includes(scannedAddress)) {
+    if (qrCodeData?.type !== 'address' || !qrCodeData?.values?.address) {
+      return;
+    }
+
+    const scannedAddress = qrCodeData.values.address.toLowerCase();
+    const addresses = [
+      ...(domainResolutions?.map(
+        (r: { resolvedAddress: string }) => r.resolvedAddress,
+      ) ?? []),
+      selectedAddress,
+    ]
+      .filter(Boolean)
+      .map((addr: string) => addr.toLowerCase());
+
+    if (!addresses.includes(scannedAddress)) {
+      queueMicrotask(() => {
         setInput(scannedAddress);
         validate(scannedAddress);
-        dispatch(qrCodeDetected(null as never));
-      }
+      });
+      dispatch(qrCodeDetected(null as never));
     }
   }, [qrCodeData, domainResolutions, selectedAddress, validate, dispatch]);
 
@@ -403,7 +409,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={onCancel}
-          className="flex-1 rounded-xl border border-border-default"
+          className="flex-1"
           data-testid="page-container-footer-cancel"
         >
           {t('cancel')}
@@ -413,7 +419,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
           size={ButtonSize.Lg}
           isDisabled={isSaveDisabled}
           onClick={handleSubmit}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="page-container-footer-next"
         >
           {t('save')}

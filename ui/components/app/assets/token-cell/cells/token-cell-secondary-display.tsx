@@ -87,11 +87,13 @@ export const TokenCellSecondaryDisplay = React.memo(
     return (
       <Skeleton
         hideChildren={
-          !anyEnabledNetworksAreAvailable &&
-          isZeroAmount(secondaryDisplayText) &&
-          secondaryDisplayText !== '—'
+          token.isFiatLoading ||
+          (!anyEnabledNetworksAreAvailable &&
+            isZeroAmount(secondaryDisplayText) &&
+            secondaryDisplayText !== '—')
         }
-        className="mb-1"
+        className="h-3.5"
+        data-testid="multichain-token-list-item-secondary-value-skeleton"
       >
         <SensitiveText
           fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}
@@ -113,5 +115,6 @@ export const TokenCellSecondaryDisplay = React.memo(
   },
   (prevProps, nextProps) =>
     prevProps.token.secondary === nextProps.token.secondary &&
+    prevProps.token.isFiatLoading === nextProps.token.isFiatLoading &&
     prevProps.privacyMode === nextProps.privacyMode,
 );

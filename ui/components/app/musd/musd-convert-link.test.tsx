@@ -4,14 +4,15 @@
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { MusdConvertLink } from './musd-convert-link';
 
 // Mock useI18nContext
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, values?: string[]) => {
-    if (key === 'musdGetBonusPercentage') {
-      return `Get ${values?.[0] || '3'}% bonus`;
+  useI18nContext: () => (key: string) => {
+    if (key === 'musdGetMusd') {
+      return 'Get mUSD';
     }
     return key;
   },
@@ -33,13 +34,9 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
-let mockEducationSeen = false;
 jest.mock('../../../hooks/musd', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
-    get educationSeen() {
-      return mockEducationSeen;
-    },
   }),
   useMusdGeoBlocking: () => ({
     isBlocked: false,
@@ -71,7 +68,6 @@ const mockStore = configureStore({
 describe('MusdConvertLink', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockEducationSeen = false;
   });
 
   it('renders the CTA text correctly', () => {
@@ -84,7 +80,7 @@ describe('MusdConvertLink', () => {
       mockStore,
     );
 
-    expect(screen.getByText('Get 3% bonus')).toBeInTheDocument();
+    expect(screen.getByText(messages.musdGetMusd.message)).toBeInTheDocument();
   });
 
   it('calls startConversionFlow on click', async () => {
@@ -155,7 +151,7 @@ describe('MusdConvertLink', () => {
           category: expect.any(String),
           location: 'token_list_item',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          redirects_to: 'conversion_education_screen',
+          redirects_to: 'custom_amount_screen',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           network_chain_id: '0x1',
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -164,32 +160,6 @@ describe('MusdConvertLink', () => {
           asset_symbol: 'USDC',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           cta_click_target: 'cta_text_link',
-        }),
-      }),
-    );
-  });
-
-  it('tracks redirects_to custom_amount_screen when conversion education was seen', async () => {
-    mockEducationSeen = true;
-    renderWithProvider(
-      <MusdConvertLink
-        tokenAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-        chainId="0x1"
-        tokenSymbol="USDC"
-      />,
-      mockStore,
-    );
-
-    const ctaButton = screen.getByTestId('musd-convert-link-0x1');
-    await act(async () => {
-      fireEvent.click(ctaButton);
-    });
-
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          redirects_to: 'custom_amount_screen',
         }),
       }),
     );

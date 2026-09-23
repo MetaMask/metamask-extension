@@ -21,7 +21,7 @@ import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   getFirstTimeFlowType,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getIsSocialLoginFlow,
   getIsSocialLoginUserAuthenticated,
 } from '../../../selectors';
@@ -33,10 +33,7 @@ import {
   isMain,
 } from '../../../../shared/lib/build-types';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingFlowSwitch() {
-  /* eslint-disable prefer-const */
   const isFirefox = useIsFirefox();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
@@ -48,9 +45,7 @@ export default function OnboardingFlowSwitch() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isUnlocked = useSelector(getIsUnlocked);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
 
   if (completedOnboarding) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -60,7 +55,7 @@ export default function OnboardingFlowSwitch() {
     return (
       <Navigate
         to={
-          completedMetaMetricsOnboarding
+          consentDecisionMade
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS
         }

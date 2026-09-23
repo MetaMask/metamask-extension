@@ -1,9 +1,20 @@
 import { writeFile, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { argv, exit } from 'node:process';
-import sharp from 'sharp';
+import sharp, {
+  type AvifOptions,
+  type HeifOptions,
+  type JpegOptions,
+  type Jp2Options,
+  type JxlOptions,
+  type OutputOptions,
+  type PngOptions,
+  type TiffOptions,
+  type WebpOptions,
+} from 'sharp';
 import globby from 'globby';
 import yargs from 'yargs/yargs';
+import { validateSvg } from './validate-svg.mts';
 
 /**
  * Images the optimizer shouldn't modify for whatever reason. Paths must
@@ -41,15 +52,15 @@ const supportedFileFormats = [
 ];
 
 type SupportedSharpFileOptions =
-  | sharp.OutputOptions
-  | sharp.JpegOptions
-  | sharp.PngOptions
-  | sharp.WebpOptions
-  | sharp.AvifOptions
-  | sharp.HeifOptions
-  | sharp.JxlOptions
-  | sharp.Jp2Options
-  | sharp.TiffOptions;
+  | OutputOptions
+  | JpegOptions
+  | PngOptions
+  | WebpOptions
+  | AvifOptions
+  | HeifOptions
+  | JxlOptions
+  | Jp2Options
+  | TiffOptions;
 
 /**
  * Optimizes an image file if its format is supported and if optimization reduces file size.
@@ -84,8 +95,8 @@ async function optimizeImage(filePath: string, fix = true) {
         } satisfies SupportedSharpFileOptions)
         .toBuffer();
 
-      if (optimizedBuffer.byteLength < originalSize) {
-        // if we saved some bytes, write the optimized image back to disk
+      if (originalSize - optimizedBuffer.byteLength > 1000) {
+        // if we saved at least 1KB, write the optimized image back to disk
         if (fix) {
           await writeFile(filePath, optimizedBuffer);
         }
@@ -127,14 +138,35 @@ export async function optimizeImages({
   fix = fix || false;
 
   const projectRoot = resolve(import.meta.dirname, '../');
-  const glob = `**/*.{${supportedFileFormats.join(',')}}`;
   const options = {
     cwd: projectRoot,
     gitignore: true,
     ignore: blocklist,
   };
-  const filePaths = await globby(glob, options);
-  const tasks = filePaths.map((file) =>
+  const [svgFilePaths, rasterFilePaths] = await Promise.all([
+    globby('**/*.svg', options),
+    globby(`**/*.{${supportedFileFormats.join(',')}}`, options),
+  ]);
+
+  // Validate all SVGs even after finding an error, so one lint run identifies
+  // every embedded raster image instead of stopping at the first one.
+  const svgValidationResults = await Promise.allSettled(
+    svgFilePaths.map((file) => validateSvg(join(projectRoot, file), file)),
+  );
+
+  // allSettled preserves the outcome of each validation, allowing the caller
+  // to receive one actionable error message for every invalid SVG.
+  const svgValidationErrors = svgValidationResults
+    .filter((result) => result.status === 'rejected')
+    .map((result) => result.reason as Error);
+  if (svgValidationErrors.length > 0) {
+    throw new Error(
+      `SVG validation failed:\n${svgValidationErrors
+        .map((error) => `- ${error.message}`)
+        .join('\n')}`,
+    );
+  }
+  const tasks = rasterFilePaths.map((file) =>
     optimizeImage(join(projectRoot, file), fix),
   );
   const results = await Promise.all(tasks);
@@ -157,7 +189,10 @@ export async function optimizeImages({
     }
   }
 
-  return { optimizedCount, filesCount: filePaths.length };
+  return {
+    optimizedCount,
+    filesCount: svgFilePaths.length + rasterFilePaths.length,
+  };
 }
 
 export async function main() {

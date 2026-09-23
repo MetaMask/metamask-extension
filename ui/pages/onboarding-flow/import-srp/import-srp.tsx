@@ -38,8 +38,6 @@ const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ImportSRP({
   submitSecretRecoveryPhrase,
 }: ImportSRPProps) {
@@ -100,9 +98,10 @@ export default function ImportSRP({
     submitSecretRecoveryPhrase,
   ]);
 
-  useEffect(() => {
+  const handleSecretRecoveryPhraseChange = useCallback((phrase: string) => {
+    setSecretRecoveryPhrase(phrase);
     setSrpError('');
-  }, [secretRecoveryPhrase]);
+  }, []);
 
   return (
     <Box
@@ -110,7 +109,7 @@ export default function ImportSRP({
       justifyContent={BoxJustifyContent.Between}
       className="import-srp h-full"
       gap={4}
-      data-testid="import-srp"
+      data-testid="parent-selector-onboarding-srp"
     >
       <Box>
         <Box marginBottom={4}>
@@ -128,7 +127,7 @@ export default function ImportSRP({
         </Box>
         <SrpInputForm
           error={srpError}
-          setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+          setSecretRecoveryPhrase={handleSecretRecoveryPhraseChange}
           onClearCallback={() => setSrpError('')}
         />
       </Box>

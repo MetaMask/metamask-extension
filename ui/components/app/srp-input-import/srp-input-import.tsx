@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { isValidMnemonic } from '@ethersproject/hdnode';
@@ -17,6 +23,7 @@ import {
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldType } from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -44,8 +51,6 @@ type SrpInputImportProps = {
   onClearCallback?: () => void;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SrpInputImport({
   onChange,
   onClearCallback,
@@ -54,7 +59,6 @@ export default function SrpInputImport({
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
   const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
-  const [hasInvalidChecksum, setHasInvalidChecksum] = useState(false);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -158,11 +162,7 @@ export default function SrpInputImport({
         checkForInvalidWords();
       }
 
-      if (
-        (SRP_LENGTHS.includes(draftSrp.length) &&
-          isValidMnemonic(draftSrp.map((word) => word.word).join(' '))) ||
-        draftSrp.length === MAX_SRP_LENGTH
-      ) {
+      if (draftSrp.length === MAX_SRP_LENGTH) {
         return;
       }
 
@@ -314,6 +314,25 @@ export default function SrpInputImport({
     }
   };
 
+  const hasInvalidChecksum = useMemo(() => {
+    if (
+      !SRP_LENGTHS.includes(draftSrp.length) ||
+      draftSrp.some((word) => word.word.length === 0)
+    ) {
+      return false;
+    }
+
+    const hasInvalidWords = draftSrp.some(
+      (word) => word.word !== '' && !wordlist.includes(word.word),
+    );
+    if (hasInvalidWords) {
+      return false;
+    }
+
+    const stringSrp = draftSrp.map((word) => word.word).join(' ');
+    return !isValidMnemonic(stringSrp);
+  }, [draftSrp]);
+
   useEffect(() => {
     const activeWord = draftSrp.find((word) => word.active);
     if (activeWord) {
@@ -331,21 +350,17 @@ export default function SrpInputImport({
 
       if (hasInvalidWords) {
         onChangeRef.current('');
-        setHasInvalidChecksum(false);
       } else {
         const stringSrp = draftSrp.map((word) => word.word).join(' ');
         // Only pass valid mnemonic (with correct checksum) to parent
         if (isValidMnemonic(stringSrp)) {
           onChangeRef.current(stringSrp);
-          setHasInvalidChecksum(false);
         } else {
           onChangeRef.current('');
-          setHasInvalidChecksum(true);
         }
       }
     } else {
       onChangeRef.current('');
-      setHasInvalidChecksum(false);
     }
   }, [draftSrp]);
 
@@ -359,11 +374,13 @@ export default function SrpInputImport({
       <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Box
           flexDirection={BoxFlexDirection.Column}
-          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          backgroundColor={
+            draftSrp.length > 0 ? undefined : BoxBackgroundColor.BackgroundMuted
+          }
           className="srp-input-import__container rounded-lg"
         >
           {draftSrp.length > 0 ? (
-            <Box padding={4} style={{ flex: 1 }}>
+            <Box style={{ flex: 1 }}>
               <Box className="srp-input-import__words-list grid" gap={2}>
                 {draftSrp.map((word, index) => {
                   return (
@@ -375,6 +392,7 @@ export default function SrpInputImport({
                           }
                         },
                       }}
+                      backgroundColor={BackgroundColor.backgroundMuted}
                       testId={`import-srp__srp-word-${index}`}
                       key={word.id}
                       error={
@@ -437,7 +455,7 @@ export default function SrpInputImport({
                 data-testid="srp-input-import__srp-note"
                 className="srp-input-import__initial-input"
                 placeholder={t('onboardingSrpInputPlaceholder')}
-                rows={7}
+                rows={5}
                 value={firstWord}
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}
@@ -458,7 +476,6 @@ export default function SrpInputImport({
               onClick={async () => {
                 setDraftSrp([]);
                 setMisSpelledWords([]);
-                setHasInvalidChecksum(false);
                 onClearCallback?.();
               }}
               size={ButtonSize.Md}

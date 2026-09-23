@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Icon,
@@ -15,14 +15,21 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
-import useBridging from '../../../hooks/bridge/useBridging';
-import { resetBridgeController } from '../../../ducks/bridge/actions';
 import { transitionForward } from '../../ui/transition';
+import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
+import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../../pages/money/constants/money-events';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -68,62 +75,66 @@ const NavTab = ({
 
 export function BottomNavBar() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const { availability: moneyAccountAvailability } =
+    useMoneyAccountAvailability();
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
-  const { openBridgeExperience } = useBridging();
+  const { trackButtonClicked: trackMoneyButtonClicked } = useMoneyAnalytics({
+    componentName: MoneyComponentName.HomeTab,
+  });
 
-  const { isHome, isPerps, isSwaps, isActivity } =
+  const { isHome, isPerps, isMoney, isActivity } =
     getActiveBottomNavTabs(pathname);
 
-  // Mirrors the back-button behaviour in bridge/index.tsx: reset the bridge
-  // controller (clears quotes + cache) and pass stayOnHomePage:true so that
-  // ConfirmationRouter doesn't redirect back during the async reset window.
-  const resetBridgeIfNeeded = useCallback(() => {
-    if (isSwaps) {
-      dispatch(resetBridgeController());
-    }
-  }, [dispatch, isSwaps]);
-
   const handleHomeClick = useCallback(() => {
-    resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(
         lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
-        { state: { stayOnHomePage: true } },
+        {
+          state: {
+            entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+            stayOnHomePage: true,
+          },
+        },
       ),
     );
-  }, [navigate, lastActiveTab, resetBridgeIfNeeded]);
+  }, [navigate, lastActiveTab]);
 
   const handlePerpsClick = useCallback(() => {
-    resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
     );
-  }, [navigate, resetBridgeIfNeeded]);
+  }, [navigate]);
 
-  const handleSwapsClick = useCallback(() => {
-    if (isSwaps) {
-      return;
-    }
+  const handleMoneyClick = useCallback(() => {
+    trackMoneyButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+      labelKey: 'money',
+      redirectTarget: MoneyScreenName.MoneyHome,
+    });
     transitionForward(() =>
-      openBridgeExperience(MetaMetricsSwapsEventSource.BottomNavBar),
+      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
     );
-  }, [openBridgeExperience, isSwaps]);
+  }, [navigate, trackMoneyButtonClicked]);
 
   const handleActivityClick = useCallback(() => {
-    resetBridgeIfNeeded();
     transitionForward(() =>
-      navigate(ACTIVITY_ROUTE, { state: { stayOnHomePage: true } }),
+      navigate(ACTIVITY_ROUTE, {
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
+      }),
     );
-  }, [navigate, resetBridgeIfNeeded]);
+  }, [navigate]);
 
   return (
     <nav
-      data-testid="bottom-nav-bar"
-      className="bottom-nav-bar w-full bg-background-default border-t border-border-muted flex flex-row justify-between p-2 gap-2 z-[100]"
+      data-testid="parent-selector-bottom-nav-bar"
+      className="bottom-nav-bar sticky bottom-0 mt-auto w-full shrink-0 bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100] transition-[background-color,backdrop-filter] duration-200"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
       <NavTab
@@ -142,13 +153,15 @@ export function BottomNavBar() {
           data-testid="bottom-nav-perps"
         />
       )}
-      <NavTab
-        isActive={isSwaps}
-        icon={IconName.SwapVertical}
-        label={t('swap')}
-        onClick={handleSwapsClick}
-        data-testid="bottom-nav-swaps"
-      />
+      {moneyAccountAvailability.isAvailable && (
+        <NavTab
+          isActive={isMoney}
+          icon={isMoney ? IconName.MusdFilled : IconName.Musd}
+          label={t('money')}
+          onClick={handleMoneyClick}
+          data-testid="bottom-nav-money"
+        />
+      )}
       <NavTab
         isActive={isActivity}
         icon={isActivity ? IconName.ClockFilled : IconName.Clock}

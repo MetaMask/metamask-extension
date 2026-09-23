@@ -5,15 +5,15 @@ on:
     types: [opened, edited, labeled, unlabeled, reopened]
   pull_request_target:
     types: [opened, edited, labeled, unlabeled, reopened, synchronize]
+  # Required checks must be reported on merge queue refs. The job is skipped
+  # for this event below because the script expects an issue or PR payload.
   merge_group:
 
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    if: >
-      github.event_name == 'issues' ||
-      (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository)
+    timeout-minutes: 2
+    if: ${{ github.event_name != 'merge_group' }}
     permissions:
       contents: read
       id-token: write
@@ -26,7 +26,10 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Get access token
-        id: get-token
+        id: label-token
+        # pull_request_target runs can include cross-repo PRs. This token is safe here
+        # because we only checkout and run trusted workflow-repository scripts,
+        # never code from the PR branch.
         uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
@@ -35,14 +38,43 @@ jobs:
             members: read
             pull_requests: write
 
-        # This is effectively `node .github/scripts/check-template-and-add-labels.mts`.
-        # github-script supplies the authenticated github/context/core objects so
-        # we do not have to install @actions packages at runtime.
+      - name: Get planning token
+        id: planning-token
+        # Team labels come from MetaMask-planning topology and only apply to
+        # internal same-repo PRs. Cross-repo PRs use external-contributor instead.
+        if: >-
+          ${{
+            github.event_name == 'pull_request_target'
+            && github.event.action == 'opened'
+            && github.event.pull_request.head.repo.full_name == github.repository
+          }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/MetaMask-planning
+          permissions: |
+            contents: read
+
+      - name: Add team label
+        if: >-
+          ${{
+            github.event_name == 'pull_request_target'
+            && github.event.action == 'opened'
+            && github.event.pull_request.head.repo.full_name == github.repository
+          }}
+        uses: MetaMask/github-tools/.github/actions/add-team-label@v1
+        with:
+          planning-token: ${{ steps.planning-token.outputs.token }}
+          team-label-token: ${{ steps.label-token.outputs.token }}
+
+      # This is effectively `node .github/scripts/check-template-and-add-labels.mts`.
+      # github-script supplies the authenticated github/context/core objects so
+      # we do not have to install @actions packages at runtime.
       - name: Check template and add labels
         id: check-template-and-add-labels
         uses: actions/github-script@v9
         with:
-          github-token: ${{ steps.get-token.outputs.token }}
+          github-token: ${{ steps.label-token.outputs.token }}
           script: |
             const { join } = await import('node:path');
             const { pathToFileURL } = await import('node:url');

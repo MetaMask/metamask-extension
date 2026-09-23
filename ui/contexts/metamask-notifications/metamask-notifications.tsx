@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
 import {
   useDisableNotifications,
@@ -20,6 +20,8 @@ import { getNotificationPreferences } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import { useDispatch } from '../../store/hooks';
+
 import {
   hasNotificationSubscriptionExpired,
   hasUserTurnedOffNotificationsOnce,

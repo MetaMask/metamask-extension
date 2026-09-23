@@ -1,10 +1,11 @@
 import type { RequestSnapsParams } from '@metamask/snaps-sdk';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useMessenger } from '../../../../hooks/useMessenger';
 import type { RouteMessengerInstance } from '../messenger';
 import { forceUpdateMetamaskState } from '../../../../store/actions';
 import { getFirstSnapInstallOrUpdateRequest } from '../../../../selectors';
+import { useDispatch } from '../../../../store/hooks';
 
 type UpdateFunction = (snaps: RequestSnapsParams) => void;
 

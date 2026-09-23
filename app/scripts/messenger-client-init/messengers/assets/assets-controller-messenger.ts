@@ -6,6 +6,7 @@ import {
 import type { AssetsControllerMessenger } from '@metamask/assets-controller';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
@@ -19,6 +20,63 @@ import type { PreferencesControllerGetStateAction } from '../../../controllers/p
 export type AssetsControllerInitMessenger = ReturnType<
   typeof getAssetsControllerInitMessenger
 >;
+
+/**
+ * Actions delegated to the AssetsController messenger.
+ */
+export const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
+  'AccountTreeController:getAccountsFromSelectedAccountGroup',
+  'AccountTreeController:isInitialized',
+  'ClientController:getState',
+  'KeyringController:isUnlocked',
+  'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
+  'NetworkEnablementController:getState',
+  'NetworkController:getState',
+  'NetworkController:getNetworkClientById',
+  'AccountsController:getSelectedAccount',
+  'SnapController:handleRequest',
+  'SnapController:getRunnableSnaps',
+  'PermissionController:getPermissions',
+  'PhishingController:bulkScanTokens',
+  'RemoteFeatureFlagController:getState',
+] as const;
+
+/**
+ * Events delegated to the AssetsController messenger.
+ */
+export const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
+  'AccountTreeController:selectedAccountGroupChange',
+  'AccountTreeController:initialized',
+  'AccountTreeController:uninitialized',
+  'NetworkEnablementController:stateChange',
+  'ClientController:stateChange',
+  'KeyringController:lock',
+  'KeyringController:unlock',
+  'NetworkController:networkDidChange',
+  'NetworkController:networkAdded',
+  'NetworkController:networkRemoved',
+  'NetworkController:stateChange',
+  'AccountsController:accountBalancesUpdated',
+  'PermissionController:stateChange',
+  'SnapController:snapInstalled',
+  'PreferencesController:stateChange',
+  'TransactionController:transactionConfirmed',
+  'TransactionController:unapprovedTransactionAdded',
+  'AccountActivityService:balanceUpdated',
+  'AccountActivityService:statusChanged',
+  'RemoteFeatureFlagController:stateChange',
+] as const;
+
+/**
+ * Actions delegated to the AssetsController initialization messenger.
+ */
+export const ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS = [
+  'AuthenticationController:getBearerToken',
+  'SnapController:handleRequest',
+  'PreferencesController:getState',
+  'OnboardingController:getState',
+  'RemoteFeatureFlagController:getState',
+] as const;
 
 /**
  * Get a messenger for the AssetsController.
@@ -46,52 +104,8 @@ export function getAssetsControllerMessenger(
 
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: [
-      // Account group + network context for RpcDataSource (core#9388)
-      'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      'NetworkEnablementController:getState',
-      'NetworkController:getState',
-      'NetworkController:getNetworkClientById',
-      'AccountsController:getSelectedAccount',
-      'BackendWebSocketService:subscribe',
-      'BackendWebSocketService:getConnectionInfo',
-      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-      'BackendWebSocketService:addChannelCallback',
-      'BackendWebSocketService:removeChannelCallback',
-      'SnapController:handleRequest',
-      'SnapController:getRunnableSnaps',
-      'PermissionController:getPermissions',
-      'PhishingController:bulkScanTokens',
-    ],
-    events: [
-      // core#9388: RPC balance refresh on account-group switch / tree updates
-      'AccountTreeController:selectedAccountGroupChange',
-      // core#9478: use exported :stateChange (not local :stateChanged aliases)
-      'AccountTreeController:stateChange',
-      // core#9388: RPC balance refresh when enabling custom RPC networks (e.g. DXC)
-      // StakedBalanceDataSource also listens to this
-      'NetworkEnablementController:stateChange',
-      // UI + keyring lifecycle (RpcDataSource only runs when UI open + unlocked)
-      'ClientController:stateChange',
-      'KeyringController:lock',
-      'KeyringController:unlock',
-      // Network picker (EVM selected network switch)
-      'NetworkController:networkDidChange',
-      'NetworkController:networkAdded',
-      'NetworkController:networkRemoved',
-      // RpcDataSource + StakedBalanceDataSource
-      'NetworkController:stateChange',
-      // Snap + WS + tx + preferences
-      'BackendWebSocketService:connectionStateChanged',
-      'AccountsController:accountBalancesUpdated',
-      'PermissionController:stateChange',
-      'SnapController:snapInstalled',
-      'PreferencesController:stateChange',
-      'TransactionController:transactionConfirmed',
-      'TransactionController:unapprovedTransactionAdded',
-      // Real-time post-tx balances (AccountActivityService WS path)
-      'AccountActivityService:balanceUpdated',
-    ],
+    actions: [...ASSETS_CONTROLLER_DELEGATED_ACTIONS],
+    events: [...ASSETS_CONTROLLER_DELEGATED_EVENTS],
   });
 
   return controllerMessenger;
@@ -104,7 +118,8 @@ type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
   | SnapControllerHandleRequestAction
   | PreferencesControllerGetStateAction
-  | OnboardingControllerGetStateAction;
+  | OnboardingControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 /**
  * Events needed during AssetsController initialization.
@@ -136,12 +151,7 @@ export function getAssetsControllerInitMessenger(
 
   messenger.delegate({
     messenger: initMessenger,
-    actions: [
-      'AuthenticationController:getBearerToken',
-      'SnapController:handleRequest',
-      'PreferencesController:getState',
-      'OnboardingController:getState',
-    ],
+    actions: [...ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS],
     events: ['OnboardingController:stateChange'],
   });
 

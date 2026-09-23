@@ -41,6 +41,7 @@ describe('Token List Sorting', function () {
           symbol: customTokenSymbol,
           name: customTokenSymbol,
           decimals: 18,
+          balance: '1',
         },
       ])),
       await mockSpotPrices(mockServer, {
@@ -77,13 +78,6 @@ describe('Token List Sorting', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          mainnetChainId,
-          customTokenAddress,
-          customTokenSymbol,
-          '18',
-        );
-        await tokensTab.dismissTokenImportedMessage();
 
         await tokensTab.checkTokenExistsInList(customTokenSymbol);
         await tokensTab.sortTokenList('alphabetically');

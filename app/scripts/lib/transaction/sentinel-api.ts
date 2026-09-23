@@ -87,6 +87,7 @@ export type SentinelNetwork = {
   relayTransactions: boolean;
   hidden: boolean;
   sendBundle: boolean;
+  simulationIncludeFees: boolean;
 };
 
 export type SentinelNetworkMap = Record<string, SentinelNetwork>;

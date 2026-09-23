@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { completeOnboardingWithPasskey } from '../../page-objects/flows/onboarding.flow';
 import {
@@ -15,7 +15,7 @@ import {
   closeSettings,
   navigateToSecurityAndPassword,
 } from '../../page-objects/flows/settings.flow';
-import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
+import { MOCK_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 
 describe('Passkey settings', function () {
   it('Turns off biometrics with passkey fallback to password', async function () {
@@ -27,7 +27,7 @@ describe('Passkey settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withPasskeyController({ passkeyRecord: DUMMY_PASSKEY_RECORD })
+          .withPasskeyController({ passkeyRecord: MOCK_PASSKEY_RECORD })
           .build(),
         title: this.test?.fullTitle(),
         virtualAuthenticator: true,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -6,6 +6,7 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import {
   HelpText,
@@ -39,17 +40,8 @@ export const SnapUIRadioGroup = ({
 }: SnapUIRadioGroupProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue(name, form) as string;
-
-  const [value, setValue] = useState(initialValue ?? '');
-
-  useEffect(() => {
-    if (initialValue) {
-      setValue((currentValue) =>
-        currentValue === initialValue ? currentValue : initialValue,
-      );
-    }
-  }, [initialValue]);
+  const initialValue = getValue(name, form) as string | undefined;
+  const [value, setValue] = useSnapUiFieldState(initialValue, '');
 
   const handleChange = (newValue: string) => {
     setValue(newValue);
@@ -72,15 +64,11 @@ export const SnapUIRadioGroup = ({
             checked={value === option.value}
             onChange={() => handleChange(option.value)}
             style={{ margin: '0' }} // radio buttons have default margins that need to be stripped to ensure proper centering
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             disabled={disabled || option.disabled}
           />
           <Text
             className={classnames({
               'snap-ui-renderer__radio-label--disabled':
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 disabled || option.disabled,
             })}
             as="label"

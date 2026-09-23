@@ -1,12 +1,11 @@
 import { WALLET_PASSWORD } from '../../constants';
 import { type Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
-import HeaderNavbar from '../pages/header-navbar';
-import AccountListPage from '../pages/account-list-page';
-import AccountAddressModal from '../pages/multichain/account-address-modal';
-import AddressListModal from '../pages/multichain/address-list-modal';
-import CriticalErrorPage from '../pages/critical-error-page';
-import VaultRecoveryPage from '../pages/vault-recovery-page';
+import HeaderNavbar from '../pages/home/header-navbar';
+import AccountListPage from '../pages/accounts/list-page';
+import AccountAddressModal from '../pages/accounts/address-modal';
+import AccountAddressListPage from '../pages/accounts/address-list-page';
+import CriticalErrorPage from '../pages/vault/critical-error-page';
 import {
   completeCreateNewWalletOnboardingFlow,
   type OnboardingMetricsFlowOptions,
@@ -40,13 +39,13 @@ export async function getFirstAddress(
 
   await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
-  const addressListModal = new AddressListModal(driver);
-  await addressListModal.clickQRbutton();
+  const accountAddressListPage = new AccountAddressListPage(driver);
+  await accountAddressListPage.clickQRbutton();
 
   const accountAddressModal = new AccountAddressModal(driver);
   const accountAddress = await accountAddressModal.getAccountAddress();
   await accountAddressModal.goBack();
-  await addressListModal.goBack();
+  await accountAddressListPage.goBack();
   await accountListPage.closeMultichainAccountsPage();
 
   return accountAddress;
@@ -137,7 +136,7 @@ export async function waitForBackupVault(
  * 3. Gets the first account's address
  * 4. Locks the wallet
  * 5. Executes the corruption script
- * 6. Waits for the vault recovery page to appear
+ * 6. Waits for the critical error page to appear
  *
  * @param driver - The WebDriver instance.
  * @param script - The script to run (e.g. corruption script, or simpleReloadScript).
@@ -197,7 +196,7 @@ export async function onboardThenExecuteScript(
  * 1. Opens a spare tab (to prevent browser from closing when extension reloads)
  * 2. Completes new wallet onboarding
  * 3. Calls onboardThenExecuteScript to get address, lock, run script, switch back
- * 4. Waits for the vault recovery page to appear
+ * 4. Waits for the critical error page to appear
  *
  * @param driver - The WebDriver instance.
  * @param script - The script to break the DB (or simpleReloadScript when manifest flags handle it).
@@ -215,8 +214,8 @@ export async function onboardThenTriggerCorruptionFlow(
   // wait for the background page to reload
   // Since reloading the background restarts the extension the UI isn't
   // available immediately. So we just keep reloading the UI until it is.
-  const vaultRecoveryPage = new VaultRecoveryPage(driver);
-  await vaultRecoveryPage.waitForPageAfterExtensionReload();
+  const criticalErrorPage = new CriticalErrorPage(driver);
+  await criticalErrorPage.waitForPageAfterExtensionReload();
 
   return firstAddress;
 }

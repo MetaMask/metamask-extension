@@ -7,13 +7,41 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  SWAP_PATH,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
+import type { MoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
+import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../../hooks/money/useMoneyAnalytics.mock';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../../pages/money/constants/money-events';
 import { BottomNavBar } from './bottom-nav-bar';
 
 const mockNavigate = jest.fn();
+const mockUseMoneyAccountAvailability: jest.MockedFunction<
+  () => { availability: MoneyAccountAvailability }
+> = jest.fn(() => ({
+  availability: {
+    isAvailable: true,
+    address: '0x0000000000000000000000000000000000000001',
+  },
+}));
+
+jest.mock('../../../hooks/money/use-money-account-availability', () => ({
+  useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
+}));
+
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
@@ -23,21 +51,6 @@ jest.mock('../../../hooks/bridge/useBridgeNavigation', () => ({
   useBridgeNavigation: () => ({
     navigateToDefaultRoute: jest.fn(),
   }),
-}));
-
-const mockOpenBridgeExperience = jest.fn();
-jest.mock('../../../hooks/bridge/useBridging', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => ({
-    openBridgeExperience: mockOpenBridgeExperience,
-  }),
-}));
-
-const mockResetBridgeController = jest.fn(() => ({ type: 'RESET_BRIDGE' }));
-jest.mock('../../../ducks/bridge/actions', () => ({
-  ...jest.requireActual('../../../ducks/bridge/actions'),
-  resetBridgeController: () => mockResetBridgeController(),
 }));
 
 jest.mock('../../../../shared/lib/environment', () => ({
@@ -82,27 +95,47 @@ function renderBottomNavBar(state = baseState, pathname = DEFAULT_ROUTE) {
 describe('BottomNavBar', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
   });
 
   describe('renders all tabs', () => {
-    it('renders Home, Swaps, Perps, and Activity tabs when Perps is available', () => {
-      const { getByTestId } = renderBottomNavBar();
+    it('renders Home, Perps, Money, and Activity when available', () => {
+      const { getByTestId, getAllByRole } = renderBottomNavBar();
 
       expect(getByTestId('bottom-nav-home')).toBeInTheDocument();
-      expect(getByTestId('bottom-nav-swaps')).toBeInTheDocument();
       expect(getByTestId('bottom-nav-perps')).toBeInTheDocument();
+      expect(getByTestId('bottom-nav-money')).toBeInTheDocument();
       expect(getByTestId('bottom-nav-activity')).toBeInTheDocument();
+      expect(
+        getAllByRole('button').map((button) =>
+          button.getAttribute('data-testid'),
+        ),
+      ).toStrictEqual([
+        'bottom-nav-home',
+        'bottom-nav-perps',
+        'bottom-nav-money',
+        'bottom-nav-activity',
+      ]);
     });
 
-    it('renders Home, Swaps, and Activity tabs when Perps is unavailable', () => {
+    it('renders Home, Money, and Activity tabs when Perps is unavailable', () => {
       const { getByTestId, queryByTestId } = renderBottomNavBar(
         stateWithPerpsDisabled,
       );
 
       expect(getByTestId('bottom-nav-home')).toBeInTheDocument();
-      expect(getByTestId('bottom-nav-swaps')).toBeInTheDocument();
       expect(queryByTestId('bottom-nav-perps')).not.toBeInTheDocument();
       expect(getByTestId('bottom-nav-activity')).toBeInTheDocument();
+    });
+
+    it('hides Money when the Money Account is unavailable', () => {
+      mockUseMoneyAccountAvailability.mockReturnValueOnce({
+        availability: { isAvailable: false },
+      });
+
+      const { queryByTestId } = renderBottomNavBar();
+
+      expect(queryByTestId('bottom-nav-money')).not.toBeInTheDocument();
     });
   });
 
@@ -149,10 +182,10 @@ describe('BottomNavBar', () => {
       );
     });
 
-    it('marks Swaps as active on the swaps route', () => {
-      const { getByTestId } = renderBottomNavBar(baseState, SWAP_PATH);
+    it('marks Money as active on the Money home route', () => {
+      const { getByTestId } = renderBottomNavBar(baseState, MONEY_HOME_ROUTE);
 
-      expect(getByTestId('bottom-nav-swaps')).toHaveAttribute(
+      expect(getByTestId('bottom-nav-money')).toHaveAttribute(
         'aria-current',
         'page',
       );
@@ -168,7 +201,10 @@ describe('BottomNavBar', () => {
 
       fireEvent.click(getByTestId('bottom-nav-home'));
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        state: { stayOnHomePage: true },
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
       });
     });
 
@@ -180,7 +216,10 @@ describe('BottomNavBar', () => {
 
       fireEvent.click(getByTestId('bottom-nav-home'));
       expect(mockNavigate).toHaveBeenCalledWith(`${DEFAULT_ROUTE}?tab=nfts`, {
-        state: { stayOnHomePage: true },
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
       });
     });
 
@@ -193,13 +232,22 @@ describe('BottomNavBar', () => {
       });
     });
 
-    it('navigates to the swaps route when Swaps is clicked', () => {
+    it('navigates to Money Home when Money is clicked', () => {
       const { getByTestId } = renderBottomNavBar();
 
-      fireEvent.click(getByTestId('bottom-nav-swaps'));
-      expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
-        MetaMetricsSwapsEventSource.BottomNavBar,
-      );
+      fireEvent.click(getByTestId('bottom-nav-money'));
+      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+        state: { stayOnHomePage: true },
+      });
+      expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+        componentName: MoneyComponentName.HomeTab,
+      });
+      expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+        labelKey: 'money',
+        redirectTarget: MoneyScreenName.MoneyHome,
+      });
     });
 
     it('navigates to the activity route when Activity is clicked', () => {
@@ -207,38 +255,11 @@ describe('BottomNavBar', () => {
 
       fireEvent.click(getByTestId('bottom-nav-activity'));
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
-        state: { stayOnHomePage: true },
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
       });
-    });
-
-    it('does not call Swaps when the Swaps tab is already active', () => {
-      const { getByTestId } = renderBottomNavBar(baseState, SWAP_PATH);
-
-      fireEvent.click(getByTestId('bottom-nav-swaps'));
-      expect(mockOpenBridgeExperience).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('bridge reset on navigate away from Swaps', () => {
-    it.each([
-      ['Home', 'bottom-nav-home'],
-      ['Activity', 'bottom-nav-activity'],
-      ['Perps', 'bottom-nav-perps'],
-    ])(
-      'resets the bridge controller when navigating to %s from swaps',
-      (_label, testId) => {
-        const { getByTestId } = renderBottomNavBar(baseState, SWAP_PATH);
-
-        fireEvent.click(getByTestId(testId));
-        expect(mockResetBridgeController).toHaveBeenCalledTimes(1);
-      },
-    );
-
-    it('does not reset the bridge controller when not on the swaps route', () => {
-      const { getByTestId } = renderBottomNavBar(baseState, ACTIVITY_ROUTE);
-
-      fireEvent.click(getByTestId('bottom-nav-home'));
-      expect(mockResetBridgeController).not.toHaveBeenCalled();
     });
   });
 });

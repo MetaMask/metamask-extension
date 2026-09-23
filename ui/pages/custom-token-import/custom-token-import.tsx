@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
@@ -50,12 +50,15 @@ import { checkExistingAddresses } from '../../helpers/utils/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
+import { useDispatch } from '../../store/hooks';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
 
@@ -150,6 +153,13 @@ export const CustomTokenImportPage = () => {
 
   const [selectedNetwork, setSelectedNetwork] =
     useState<string>(currentChainId);
+  const [prevCurrentChainId, setPrevCurrentChainId] =
+    useState<string>(currentChainId);
+
+  if (currentChainId !== prevCurrentChainId) {
+    setPrevCurrentChainId(currentChainId);
+    setSelectedNetwork(currentChainId);
+  }
 
   const availableNetworks = useMemo<CustomTokenImportNetworkOption[]>(
     () =>
@@ -415,11 +425,18 @@ export const CustomTokenImportPage = () => {
     [t],
   );
 
-  useEffect(() => {
-    setSelectedNetwork(currentChainId);
-  }, [currentChainId]);
+  const prevSelectedNetworkForClearRef = useRef<string | null>(null);
 
   useEffect(() => {
+    const previousNetwork = prevSelectedNetworkForClearRef.current;
+    prevSelectedNetworkForClearRef.current = selectedNetwork;
+
+    // Skip the initial mount: the form starts empty and clearing here (especially
+    // via a microtask) races with the first address entry in tests and in fast UX.
+    if (previousNetwork === null || previousNetwork === selectedNetwork) {
+      return;
+    }
+
     // Bump the lookup token so any address lookup started on the previous
     // network can't apply its result here.
     addressLookupRef.current += 1;
@@ -510,10 +527,11 @@ export const CustomTokenImportPage = () => {
         ),
       );
 
-      // When assets-unify-state is enabled, the manage-tokens list reads from
-      // AssetsController (customAssets + assetsInfo) rather than
-      // TokensController.allTokens.
-      if (assetsUnifyStateFeatureEnabled && selectedAccount?.id) {
+      // Write path: seed AssetsController whenever the unified assets state is
+      // included in the build. The runtime rollout flag is treated as always-on
+      // for writes so the manage-tokens list (customAssets + assetsInfo) stays
+      // in sync; read/display gating still uses assetsUnifyStateFeatureEnabled.
+      if (getIsAssetsUnifiedStateIncludedInBuild() && selectedAccount?.id) {
         const assetId = toAssetId(
           address as Hex,
           selectedNetwork as CaipChainId | Hex,
@@ -547,14 +565,14 @@ export const CustomTokenImportPage = () => {
       }
 
       trackSubmitAttempt(1);
-      navigate(TOKEN_MANAGEMENT_ROUTE, {
-        state: {
-          tokenManagementToast: {
-            type: 'customTokenAdded',
-            symbol,
-          },
-        },
-      });
+      // The toaster is mounted globally, so the toast survives this navigation.
+      toast.success(
+        <ToastContent
+          title={t('newCustomTokenAdded', [symbol])}
+          dataTestId="token-management-custom-token-success-toast"
+        />,
+      );
+      navigate(TOKEN_MANAGEMENT_ROUTE);
     } catch (error) {
       trackSubmitAttempt(0);
       throw error;
@@ -564,7 +582,6 @@ export const CustomTokenImportPage = () => {
   }, [
     address,
     assetPreferences,
-    assetsUnifyStateFeatureEnabled,
     dispatch,
     isSubmitting,
     isValid,
@@ -575,6 +592,7 @@ export const CustomTokenImportPage = () => {
     selectedAccount?.id,
     selectedNetwork,
     symbol,
+    t,
     trackSubmitAttempt,
   ]);
 

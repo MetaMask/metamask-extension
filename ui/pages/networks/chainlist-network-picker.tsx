@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
@@ -9,7 +9,6 @@ import {
   Text,
   TextButton,
   TextFieldSearch,
-  TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import {
@@ -110,9 +109,11 @@ export const ChainlistNetworkPicker = ({
   const showNoSearchResults =
     searchValue.trim().length > 0 && chainlistNetworks.length === 0;
 
-  useEffect(() => {
+  const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
+  if (searchValue !== prevSearchValue) {
+    setPrevSearchValue(searchValue);
     setVisibleNetworkCount(CHAINLIST_PAGE_SIZE);
-  }, [searchValue]);
+  }
 
   const handleLearnHowToStaySafe = useCallback(() => {
     global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });
@@ -136,24 +137,23 @@ export const ChainlistNetworkPicker = ({
 
   return (
     <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
+      <Box className="px-4 pb-4">
+        <TextFieldSearch
+          className="w-full"
+          clearButtonOnClick={() => setSearchValue('')}
+          data-testid="networks-page-chainlist-search"
+          onChange={(event) => setSearchValue(event.target.value)}
+          placeholder={t('searchNetworkNameOrChainId')}
+          value={searchValue}
+        />
+      </Box>
       <Box
         className="min-h-0 flex-1 overflow-y-auto"
         data-testid="networks-page-chainlist-network-list"
         onScroll={handleChainlistScroll}
       >
         <Box className="px-4 pb-4">
-          <TextFieldSearch
-            clearButtonOnClick={() => setSearchValue('')}
-            clearButtonProps={{ ariaLabel: t('clear') }}
-            className="mm-text-field-search w-full rounded-full border border-border-muted bg-background-default"
-            data-testid="networks-page-chainlist-search"
-            onChange={(event) => setSearchValue(event.target.value)}
-            placeholder={t('searchNetworkNameOrChainId')}
-            size={TextFieldSize.Lg}
-            value={searchValue}
-          />
           <BannerAlert
-            className="mt-4"
             severity={BannerAlertSeverity.Info}
             data-testid="networks-page-chainlist-source-banner"
             description={t('chainlistNetworkDataSourceBanner', [

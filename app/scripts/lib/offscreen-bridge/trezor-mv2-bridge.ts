@@ -15,6 +15,7 @@ import type {
   Features,
 } from '@trezor/connect-web';
 import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../../../shared/constants/hardware-wallets';
+import { withTrezorDeviceTimeout } from './with-trezor-device-timeout';
 
 // The resolved value type of TrezorResponse<T> = Promise<SuccessWithDevice<T> | Unsuccessful>.
 // `.then()` callbacks receive this type, not the Promise itself.
@@ -140,68 +141,60 @@ export class TrezorMv2Bridge implements TrezorBridge {
     path: string;
     coin: string;
   }): TrezorResponse<{ publicKey: string; chainCode: string }> {
-    return (
+    return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
         .getPublicKey(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((r: any) =>
           mapError<{ publicKey: string; chainCode: string }>(r),
-        ) as unknown as TrezorResponse<{ publicKey: string; chainCode: string }>
-    );
+        ),
+    ) as unknown as TrezorResponse<{ publicKey: string; chainCode: string }>;
   }
 
   ethereumSignTransaction(
     params: Params<EthereumSignTransaction>,
   ): TrezorResponse<EthereumSignedTx> {
-    return (
+    return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
         .ethereumSignTransaction(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) =>
-          mapError<EthereumSignedTx>(r),
-        ) as unknown as TrezorResponse<EthereumSignedTx>
-    );
+        .then((r: any) => mapError<EthereumSignedTx>(r)),
+    ) as unknown as TrezorResponse<EthereumSignedTx>;
   }
 
   ethereumSignMessage(
     params: Params<EthereumSignMessage>,
   ): TrezorResponse<PROTO.MessageSignature> {
-    return (
+    return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
         .ethereumSignMessage(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) =>
-          mapError<PROTO.MessageSignature>(r),
-        ) as unknown as TrezorResponse<PROTO.MessageSignature>
-    );
+        .then((r: any) => mapError<PROTO.MessageSignature>(r)),
+    ) as unknown as TrezorResponse<PROTO.MessageSignature>;
   }
 
   ethereumSignTypedData<TypedDataType extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<TypedDataType>>,
   ): TrezorResponse<PROTO.EthereumTypedDataSignature> {
-    return (
+    return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
         .ethereumSignTypedData(params)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) =>
-          mapError<PROTO.EthereumTypedDataSignature>(r),
-        ) as unknown as TrezorResponse<PROTO.EthereumTypedDataSignature>
-    );
+        .then((r: any) => mapError<PROTO.EthereumTypedDataSignature>(r)),
+    ) as unknown as TrezorResponse<PROTO.EthereumTypedDataSignature>;
   }
 
   getFeatures(): TrezorResponse<Features> {
-    return (
+    return withTrezorDeviceTimeout(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (SuiteDesktopConnect as any)
         .getFeatures()
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((r: any) =>
-          mapError<Features>(r),
-        ) as unknown as TrezorResponse<Features>
-    );
+        .then((r: any) => mapError<Features>(r)),
+    ) as unknown as TrezorResponse<Features>;
   }
 }

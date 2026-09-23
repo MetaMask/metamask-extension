@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import log from 'loglevel';
 import {
@@ -11,17 +11,17 @@ import { useAnalytics } from '../useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import {
   rewardsOptIn,
   rewardsLinkAccountsToSubscriptionCandidate,
-  updateMetaMetricsTraits,
   linkRewardToShieldSubscription,
 } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { isHardwareAccount } from '../../components/app/rewards/utils/isHardwareAccount';
 import { useI18nContext } from '../useI18nContext';
+import { useDispatch } from '../../store/hooks';
+import { EMPTY_ARRAY } from '../../selectors/shared';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 export type UseOptinResult = {
@@ -64,7 +64,7 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
           state,
           selectedAccountGroupId as AccountGroupId,
         )
-      : [],
+      : EMPTY_ARRAY,
   );
 
   // Get accounts for the primary account group
@@ -134,19 +134,6 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
               .addProperties(metricsProps)
               .build(),
           );
-
-          // Update user traits
-          try {
-            await updateMetaMetricsTraits({
-              [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
-              ...(referralCode && {
-                [MetaMetricsUserTrait.RewardsReferred]: true,
-                [MetaMetricsUserTrait.RewardsReferralCodeUsed]: referralCode,
-              }),
-            });
-          } catch {
-            // Silently fail - traits update should not block opt-in
-          }
 
           // Link the reward to the shield subscription if opt in from the shield subscription
           if (options?.rewardPoints && options?.shieldSubscriptionId) {

@@ -10,6 +10,7 @@ export const RegressionStage = {
 
 export type RegressionStage =
   (typeof RegressionStage)[keyof typeof RegressionStage];
+
 export interface Label {
   name: string;
   color: string;

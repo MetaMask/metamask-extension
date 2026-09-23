@@ -5,6 +5,8 @@ import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
+import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
@@ -13,6 +15,16 @@ import {
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
+import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
+import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
+import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
+import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
+import {
+  getShieldApiServiceInstanceOptions,
+  getShieldControllerInstanceOptions,
+} from './instance-options/shield-controller';
+import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -31,8 +43,42 @@ jest.mock('./instance-options/connectivity-controller', () => ({
     () => 'connectivity-options',
   ),
 }));
+jest.mock('./instance-options/claims-service', () => ({
+  getClaimsServiceInstanceOptions: jest.fn(() => 'claims-options'),
+}));
+jest.mock('./instance-options/config-registry-api-service', () => ({
+  getConfigRegistryApiServiceInstanceOptions: jest.fn(
+    () => 'config-registry-api-service-options',
+  ),
+}));
+jest.mock('./instance-options/shield-controller', () => ({
+  getShieldApiServiceInstanceOptions: jest.fn(
+    () => 'shield-api-service-options',
+  ),
+  getShieldControllerInstanceOptions: jest.fn(
+    () => 'shield-controller-options',
+  ),
+}));
+jest.mock('./instance-options/subscription-service', () => ({
+  getSubscriptionServiceInstanceOptions: jest.fn(
+    () => 'subscription-service-options',
+  ),
+}));
+jest.mock('./instance-options/gas-fee-controller', () => ({
+  getGasFeeControllerInstanceOptions: jest.fn(
+    () => 'gas-fee-controller-options',
+  ),
+}));
 jest.mock('./instance-options/keyring-controller', () => ({
   getKeyringControllerInstanceOptions: jest.fn(() => 'keyring-options'),
+}));
+jest.mock('./instance-options/passkey-controller', () => ({
+  getPasskeyControllerInstanceOptions: jest.fn(() => 'passkey-options'),
+}));
+jest.mock('./instance-options/seedless-onboarding-controller', () => ({
+  getSeedlessOnboardingControllerInstanceOptions: jest.fn(
+    () => 'seedless-onboarding-options',
+  ),
 }));
 jest.mock('./instance-options/remote-feature-flag-controller', () => ({
   getRemoteFeatureFlagControllerInstanceOptions: jest.fn(() => 'rffc-options'),
@@ -51,12 +97,27 @@ jest.mock('./messengers/transaction-controller-messenger', () => ({
     () => 'transaction-controller-init-messenger',
   ),
 }));
+jest.mock('./messengers/gas-fee-controller-messenger', () => ({
+  getGasFeeControllerInitMessenger: jest.fn(
+    () => 'gas-fee-controller-init-messenger',
+  ),
+}));
+jest.mock('./messengers/seedless-onboarding-controller-messenger', () => ({
+  getSeedlessOnboardingControllerInitMessenger: jest.fn(
+    () => 'seedless-onboarding-controller-init-messenger',
+  ),
+}));
 
 const MockWallet = jest.mocked(Wallet);
 const connectivityAdapter = {} as unknown as ConnectivityAdapter;
 const getFlatState = jest.fn(() => ({}) as never);
 const getPermittedAccounts = jest.fn(() => []);
 const getTransactionMetricsRequest = jest.fn(() => ({}) as never);
+const platform = {
+  runtime: {
+    getURL: jest.fn().mockReturnValue('chrome-extension://mock-id/'),
+  },
+} as never;
 
 describe('initializeWallet', () => {
   beforeEach(() => {
@@ -75,20 +136,28 @@ describe('initializeWallet', () => {
       getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
       messenger,
+      platform,
       state,
     });
 
     expect(MockWallet).toHaveBeenCalledWith({
       instanceOptions: {
         approvalController: 'approval-options',
+        claimsService: 'claims-options',
+        configRegistryApiService: 'config-registry-api-service-options',
         connectivityController: 'connectivity-options',
+        gasFeeController: 'gas-fee-controller-options',
         keyringController: 'keyring-options',
         networkController: {
           infuraProjectId: 'fake-infura-project-id',
           failoverUrls: {
             '0x1': [],
+            '0x10e6': [],
+            '0x1237': [],
             '0x13b2': [],
+            '0x144': [],
             '0x2105': [],
+            '0x38': [],
             '0x3e7': [],
             '0x531': [],
             '0x89': [],
@@ -98,9 +167,18 @@ describe('initializeWallet', () => {
             '0xa86a': [],
             '0xe708': [],
           },
+          analyticsOptions: {
+            isRpcEndpointUrlPublic: expect.any(Function),
+            rpcServiceEventsSampleRate: expect.any(Number),
+          },
         },
+        passkeyController: 'passkey-options',
+        seedlessOnboardingController: 'seedless-onboarding-options',
+        shieldApiService: 'shield-api-service-options',
+        shieldController: 'shield-controller-options',
         remoteFeatureFlagController: 'rffc-options',
         storageService: 'storage-options',
+        subscriptionService: 'subscription-service-options',
         transactionController: 'transaction-controller-options',
       },
       messenger,
@@ -122,6 +200,7 @@ describe('initializeWallet', () => {
       getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
       messenger,
+      platform,
       showApprovalRequest,
       state,
     });
@@ -129,8 +208,29 @@ describe('initializeWallet', () => {
     expect(getApprovalControllerInstanceOptions).toHaveBeenCalledWith({
       showApprovalRequest,
     });
+    expect(getClaimsServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getConfigRegistryApiServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
+    expect(getSubscriptionServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getPasskeyControllerInstanceOptions).toHaveBeenCalledWith({
+      messenger,
+      platform,
+    });
+    expect(getSeedlessOnboardingControllerInitMessenger).toHaveBeenCalledWith(
+      messenger,
+    );
+    expect(getSeedlessOnboardingControllerInstanceOptions).toHaveBeenCalledWith(
+      {
+        initMessenger: 'seedless-onboarding-controller-init-messenger',
+      },
+    );
     expect(getConnectivityControllerInstanceOptions).toHaveBeenCalledWith({
       connectivityAdapter,
+    });
+    expect(getGasFeeControllerInitMessenger).toHaveBeenCalledWith(messenger);
+    expect(getGasFeeControllerInstanceOptions).toHaveBeenCalledWith({
+      initMessenger: 'gas-fee-controller-init-messenger',
     });
     expect(getKeyringControllerInstanceOptions).toHaveBeenCalledWith({
       encryptor,
@@ -155,6 +255,29 @@ describe('initializeWallet', () => {
       messenger: 'transaction-controller-init-messenger',
     });
   });
+
+  it('sets up TransactionController listeners before constructing the Wallet, so the TransactionController can emit events to the wallet messenger during initialization', () => {
+    const messenger = createMockMessenger();
+    const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
+
+    initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
+      messenger,
+      platform,
+      state,
+    });
+
+    const setupListenersCallOrder = jest.mocked(
+      setupTransactionControllerListeners,
+    ).mock.invocationCallOrder[0];
+    const walletConstructorCallOrder = MockWallet.mock.invocationCallOrder[0];
+
+    expect(setupListenersCallOrder).toBeLessThan(walletConstructorCallOrder);
+  });
 });
 
 describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
@@ -175,6 +298,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
       messenger,
+      platform,
       state: { OnboardingController: { completedOnboarding: true } },
     });
 
@@ -184,6 +308,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       // `useExternalServices` is absent, so it defaults to on, matching the
       // live `PreferencesController` default.
       preferencesState: { useExternalServices: true },
+      authenticationState: { srpSessionData: undefined },
     });
   });
 
@@ -195,6 +320,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       getTransactionMetricsRequest,
       infuraProjectId: 'fake-infura-project-id',
       messenger: createMockMessenger(),
+      platform,
       state: { PreferencesController: { useExternalServices: false } },
     });
 
@@ -202,6 +328,29 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       expect.objectContaining({
         onboardingState: { completedOnboarding: false },
         preferencesState: { useExternalServices: false },
+      }),
+    );
+  });
+
+  it('seeds the canonical-id comparison from persisted AuthenticationController state', () => {
+    const srpSessionData = {
+      'srp-1': { profile: { canonicalProfileId: 'canonical-id' } },
+    };
+
+    initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
+      messenger: createMockMessenger(),
+      platform,
+      state: { AuthenticationController: { srpSessionData } },
+    });
+
+    expect(mockSetupToggle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        authenticationState: { srpSessionData },
       }),
     );
   });

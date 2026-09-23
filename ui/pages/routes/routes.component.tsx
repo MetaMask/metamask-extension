@@ -1,16 +1,15 @@
-/* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
-import { useAppSelector } from '../../store/store';
+import { MainLayout } from '#ui/layouts/main-layout';
+import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -18,7 +17,9 @@ import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
-  ASSET_ROUTE,
+  ASSET_DETAILS_ROUTE,
+  ASSET_SECURITY_TRUST_ROUTE,
+  ASSET_IMAGE_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -28,7 +29,7 @@ import {
   NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
-  SEND_ROUTE,
+  SEND_PAGE_ROUTE,
   LEGACY_SETTINGS_V2_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
@@ -41,6 +42,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
   BASIC_FUNCTIONALITY_OFF_ROUTE,
@@ -48,7 +50,7 @@ import {
   RAMPS_BUILD_QUOTE_ROUTE,
   RAMPS_TOKEN_SELECTION_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
-  RAMPS_PROVIDER_SELECTION_ROUTE,
+  RAMPS_COMPLETE_BUY_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -60,11 +62,12 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
-  TOKEN_TRANSFER_ROUTE,
-  REVIEW_GATOR_PERMISSIONS_ROUTE,
+  TOKEN_TRANSFER_DETAILS_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
   REWARDS_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
@@ -72,9 +75,15 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_ACTIVITY_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
+  MONEY_HOME_ROUTE,
+  MONEY_ACTIVITY_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
+  MONEY_TRANSACTION_DETAILS_ROUTE,
+  MONEY_EARN_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -88,6 +97,7 @@ import {
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
 } from '../../selectors';
+import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
@@ -116,6 +126,7 @@ import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
+import { BasicFunctionalityMigrationModal } from '../../components/app/basic-functionality-migration-modal';
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
 import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
@@ -127,7 +138,9 @@ import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/mult
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
+import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
+import { useBasicFunctionalityConsolidation } from '../../hooks/useBasicFunctionalityConsolidation';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
@@ -142,8 +155,15 @@ import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/se
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
+import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
+import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
+import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
+import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
+import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
+import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -165,6 +185,7 @@ const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
 );
+const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
 const CustomTokenImportPage = mmLazy(
   () => import('../custom-token-import/index.ts'),
 );
@@ -183,6 +204,9 @@ const ConfirmDecryptMessage = mmLazy(
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
+const HardwareWalletSignaturesPage = mmLazy(
+  () => import('../hardware-wallets/swap/hardware-wallet-signatures-page.tsx'),
+);
 const PermissionsConnect = mmLazy(
   () => import('../permissions-connect/index.js'),
 );
@@ -203,7 +227,12 @@ const NftFullImage = mmLazy(
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
 const Asset = mmLazy(() => import('../asset/index.js'));
-const DeFiPage = mmLazy(() => import('../defi/index.ts'));
+const SecurityTrustPage = mmLazy(
+  () => import('../asset/security-trust/index.ts'),
+);
+const DeFiPage = mmLazy(
+  () => import('../defi/components/defi-details-page.tsx'),
+);
 const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
 const RampsTokenSelection = mmLazy(
   () => import('../ramps/token-selection/index.ts'),
@@ -211,9 +240,7 @@ const RampsTokenSelection = mmLazy(
 const RampsPaymentMethod = mmLazy(
   () => import('../ramps/payment-method/index.ts'),
 );
-const RampsProviderSelection = mmLazy(
-  () => import('../ramps/provider-selection/index.ts'),
-);
+const RampsCompleteBuy = mmLazy(() => import('../ramps/complete-buy/index.ts'));
 const PermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/permissions-page/permissions-page.js'),
@@ -250,8 +277,22 @@ const MarketListView = mmLazy(() => import('../perps/market-list/index.tsx'));
 const PerpsActivityPage = mmLazy(
   () => import('../perps/perps-activity-page.tsx'),
 );
+const PerpsTransactionDetailsPage = mmLazy(
+  () => import('../perps/perps-transaction-details-page.tsx'),
+);
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
+const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
+const MoneyActivityPage = mmLazy(
+  () => import('../money/money-activity-page.tsx'),
+);
+const MoneyHowItWorksPage = mmLazy(
+  () => import('../money/money-how-it-works-page.tsx'),
+);
+const MoneyTransactionDetailsPage = mmLazy(
+  () => import('../money/money-transaction-details-page.tsx'),
+);
+const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -282,6 +323,16 @@ export const TokenManagementFeatureRoute = () => {
   return <TokenManagementPage />;
 };
 
+export const DiscoverSearchFeatureRoute = () => {
+  const isDiscoverSearchEnabled = useAppSelector(getIsDiscoverSearchEnabled);
+
+  if (!isDiscoverSearchEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <DiscoverSearchPage />;
+};
+
 export const CustomTokenImportFeatureRoute = () => {
   return <CustomTokenImportPage />;
 };
@@ -301,10 +352,11 @@ export const routeConfig = [
       {
         element: <RequireOnboarded />,
         children: [
-          {
+          createRouteWithMessenger({
             path: UNLOCK_ROUTE,
             element: <UnlockPage />,
-          },
+            capabilities: UNLOCK_ROUTE_CAPABILITIES,
+          }),
         ],
       },
       {
@@ -315,19 +367,21 @@ export const routeConfig = [
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,
         element: <BasicFunctionalityOff />,
       },
-      {
+      createRouteWithMessenger({
         path: RESTORE_VAULT_ROUTE,
         element: <RestoreVaultPage />,
-      },
+        capabilities: RESTORE_VAULT_ROUTE_CAPABILITIES,
+      }),
     ],
   },
   {
     element: <RequireAuthenticated />,
     children: [
-      {
+      createRouteWithMessenger({
         path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
         element: <RevealSeedConfirmation />,
-      },
+        capabilities: REVEAL_SEED_ROUTE_CAPABILITIES,
+      }),
       {
         path: HARDWARE_WALLET_REPAIR_ROUTE,
         element: <HardwareWalletRepair />,
@@ -349,6 +403,14 @@ export const routeConfig = [
         element: (
           <GlobalMenuRouteTransition>
             <TokenManagementFeatureRoute />
+          </GlobalMenuRouteTransition>
+        ),
+      },
+      {
+        path: DISCOVER_SEARCH_ROUTE,
+        element: (
+          <GlobalMenuRouteTransition>
+            <DiscoverSearchFeatureRoute />
           </GlobalMenuRouteTransition>
         ),
       },
@@ -377,7 +439,7 @@ export const routeConfig = [
         element: <SettingsV2LegacyRedirect />,
       },
       {
-        path: `${SEND_ROUTE}/:page?`,
+        path: SEND_PAGE_ROUTE,
         element: <SendPage />,
       },
       {
@@ -391,6 +453,10 @@ export const routeConfig = [
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         element: <Confirm />,
+      },
+      {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        element: <HardwareWalletSignaturesPage />,
       },
       {
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -413,11 +479,15 @@ export const routeConfig = [
         element: <PermissionsConnect />,
       },
       {
-        path: `${ASSET_ROUTE}/image/:asset/:id`,
+        path: ASSET_IMAGE_ROUTE,
         element: <NftFullImage />,
       },
       {
-        path: `${ASSET_ROUTE}/:chainId/:asset?/:id?`,
+        path: ASSET_SECURITY_TRUST_ROUTE,
+        element: <SecurityTrustPage />,
+      },
+      {
+        path: ASSET_DETAILS_ROUTE,
         element: <Asset />,
       },
       {
@@ -437,11 +507,11 @@ export const routeConfig = [
         ),
       },
       {
-        path: `${TOKEN_TRANSFER_ROUTE}/:origin?`,
+        path: TOKEN_TRANSFER_DETAILS_ROUTE,
         element: <GatorPermissionsTokenTransferPermissionsPage />,
       },
       {
-        path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin?`,
+        path: REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
         element: <GatorPermissionsReviewPermissionsPage />,
       },
       {
@@ -456,10 +526,11 @@ export const routeConfig = [
         path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
         element: <MultichainAccountAddressListPage />,
       },
-      {
+      createRouteWithMessenger({
         path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
         element: <MultichainAccountPrivateKeyListPage />,
-      },
+        capabilities: PRIVATE_KEY_LIST_ROUTE_CAPABILITIES,
+      }),
       {
         path: ADD_WALLET_PAGE_ROUTE,
         element: <AddWalletPage />,
@@ -488,10 +559,6 @@ export const routeConfig = [
           </GlobalMenuRouteTransition>
         ),
         children: contactsRoutes,
-      },
-      {
-        path: DEFAULT_ROUTE,
-        element: <Home />,
       },
       {
         path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
@@ -542,20 +609,25 @@ export const routeConfig = [
             element: <DeFiPage />,
           },
           {
-            path: RAMPS_BUILD_QUOTE_ROUTE,
-            element: <RampsBuildQuote />,
+            element: <RampsFlowLayout />,
+            children: [
+              {
+                path: RAMPS_BUILD_QUOTE_ROUTE,
+                element: <RampsBuildQuote />,
+              },
+              {
+                path: RAMPS_TOKEN_SELECTION_ROUTE,
+                element: <RampsTokenSelection />,
+              },
+              {
+                path: RAMPS_PAYMENT_METHOD_ROUTE,
+                element: <RampsPaymentMethod />,
+              },
+            ],
           },
           {
-            path: RAMPS_TOKEN_SELECTION_ROUTE,
-            element: <RampsTokenSelection />,
-          },
-          {
-            path: RAMPS_PAYMENT_METHOD_ROUTE,
-            element: <RampsPaymentMethod />,
-          },
-          {
-            path: RAMPS_PROVIDER_SELECTION_ROUTE,
-            element: <RampsProviderSelection />,
+            path: RAMPS_COMPLETE_BUY_ROUTE,
+            element: <RampsCompleteBuy />,
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
@@ -585,6 +657,10 @@ export const routeConfig = [
                 element: <PerpsActivityPage />,
               },
               {
+                path: PERPS_TRANSACTION_DETAILS_ROUTE,
+                element: <PerpsTransactionDetailsPage />,
+              },
+              {
                 path: PERPS_MARKET_LIST_ROUTE,
                 element: <MarketListView />,
               },
@@ -594,13 +670,53 @@ export const routeConfig = [
               },
             ],
           },
+        ],
+      },
+      {
+        element: <MainLayout />,
+        children: [
+          createRouteWithMessenger({
+            path: DEFAULT_ROUTE,
+            capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <Home />,
+          }),
           {
-            path: ACTIVITY_ROUTE,
-            element: <ActivityPage />,
-          },
-          {
-            path: PERPS_HOME_PAGE_ROUTE,
-            element: <PerpsPage />,
+            element: <RequireBasicFunctionality />,
+            children: [
+              {
+                path: ACTIVITY_ROUTE,
+                element: <ActivityPage />,
+              },
+              {
+                path: PERPS_HOME_PAGE_ROUTE,
+                element: <PerpsPage />,
+              },
+              createRouteWithMessenger({
+                path: MONEY_HOME_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHomePage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_ACTIVITY_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyActivityPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_HOW_IT_WORKS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHowItWorksPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_TRANSACTION_DETAILS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyTransactionDetailsPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_EARN_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyEarnPage />,
+              }),
+            ],
           },
         ],
       },
@@ -608,7 +724,6 @@ export const routeConfig = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -674,6 +789,9 @@ export default function Routes() {
   // Redux store, so an unlocked-but-not-onboarded panel can race second-pass
   // onboarding and trigger the onboarding lock trap.
   useCloseSidePanelOnWalletReset();
+
+  useNavigateRouteListener();
+  useBasicFunctionalityConsolidation();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
@@ -801,6 +919,7 @@ export default function Routes() {
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}
       {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
+      {isUnlocked ? <BasicFunctionalityMigrationModal /> : null}
       {isDeprecatedNetworkModalOpen ? (
         <DeprecatedNetworkModal
           onClose={() => dispatch(hideDeprecatedNetworkModal())}

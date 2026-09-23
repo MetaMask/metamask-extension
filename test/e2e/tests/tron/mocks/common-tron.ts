@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { createHash } from 'crypto';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -21,6 +21,9 @@ const MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR = new Date(
 export const TRX_BALANCE = 106072392; // ~106.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
+
+export const BROADCAST_TXID =
+  '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5';
 
 const TRON_BLOCK_RESPONSE = {
   blockID: '0000000004b6f733ff89d72ddc1ce1eabd6045d84cbc4eb0a7e88d9223c12c5e',
@@ -108,6 +111,7 @@ export const BIP44_STAGE_TWO = {
     enabled: true,
     minimumVersion: '13.6.0',
   },
+  tronTestnetsEnabled: true,
 };
 
 export const TRON_SWAP_TOKEN_REGISTRY = {
@@ -190,7 +194,19 @@ export async function mockTronFeatureFlags(
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: [BIP44_STAGE_TWO],
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        BIP44_STAGE_TWO,
+        // The Tron mocks answer `getQuote`, not the SSE `getQuoteStream` that
+        // the production bridge config turns on. An unparseable `bridgeConfig`
+        // resolves to the bridge controller's built-in default, which is what
+        // these tests already ran against when the flag was absent entirely.
+        { bridgeConfig: {} },
+        // Account discovery queries every popular EVM chain, and these fixtures
+        // only mock the Infura endpoint, which are not mocked/redirected as Anvil is off.
+        // Disabling the failover feature to avoid new privacy hosts
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
     }));
 }
 
@@ -203,7 +219,7 @@ export async function mockBroadTransaction(
       statusCode: 200,
       json: {
         result: true,
-        txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
+        txid: BROADCAST_TXID,
       },
     }));
 }
@@ -463,7 +479,7 @@ export async function createStatefulTronAccountMock(
         statusCode: 200,
         json: {
           result: true,
-          txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
+          txid: BROADCAST_TXID,
         },
       };
     });
@@ -1017,14 +1033,25 @@ export async function mockTronSpotPrices(
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
     .always()
     .thenCallback((request) => {
-      const assetIds = new URL(request.url).searchParams
-        .get('assetIds')
-        ?.split(',');
+      const { searchParams } = new URL(request.url);
+      const assetIds = searchParams.get('assetIds')?.split(',');
+      // Without `includeMarketData` the API answers with prices keyed by the
+      // requested currency instead of market data. The bridge controller relies
+      // on that form to populate `assetExchangeRates` for the quoted assets.
+      const includeMarketData =
+        searchParams.get('includeMarketData') === 'true';
+      const vsCurrency = searchParams.get('vsCurrency') ?? 'usd';
       const requestedPrices = Object.fromEntries(
-        (assetIds ?? Object.keys(pricesByAssetId)).map((assetId) => [
-          assetId,
-          pricesByAssetId[assetId as keyof typeof pricesByAssetId] ?? null,
-        ]),
+        (assetIds ?? Object.keys(pricesByAssetId)).map((assetId) => {
+          const marketData =
+            pricesByAssetId[assetId as keyof typeof pricesByAssetId] ?? null;
+
+          if (includeMarketData || !marketData) {
+            return [assetId, marketData];
+          }
+
+          return [assetId, { [vsCurrency]: marketData.price }];
+        }),
       );
 
       return {
@@ -1218,82 +1245,15 @@ function buildMockTronBlock() {
 const TRON_SWAP_CONTRACT_DATA =
   '14d08fca00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588c5216750cceaad16cf5a757e3f7b32835a5e1000000000000000000000000000000000678810ea08142469ddb483ccf2d999e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c00000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222e0000000000000000000000003c067dcd94cb563404b312f3114ecd307feaf53100000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003e9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084d6574614d61736b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd00000000000000000000000018ff186cb1973d4b29700f2aac6b1eec9e55ffbd0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000404cef95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000f201200000000000000000000000000000000000000000000000000000000000468ba000000000000000000000000f742f4589459f0923fa579600815763d1646bec30000000000000000000000000000000000000000000000000000000069612c2c000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487b63d30b5b2c87fb7ffa8bcfade38eaac1abe00000000000000000000000094f24e992ca04b49c6f2a2753076ef8938ed4daa000000000000000000000000a614f803b6fd780986a42c78ec9c7f77e6ded13c0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706f6f6c747573647573647400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
-function encodeProtobufVarint(value: number): Buffer {
-  let remaining = BigInt(value);
-  const bytes: number[] = [];
-
-  do {
-    let byte = Number(remaining % 128n);
-    remaining /= 128n;
-    if (remaining > 0n) {
-      byte += 128;
-    }
-    bytes.push(byte);
-  } while (remaining > 0n);
-
-  return Buffer.from(bytes);
-}
-
-function encodeProtobufVarintField(fieldNumber: number, value: number): Buffer {
-  return Buffer.concat([
-    encodeProtobufVarint(fieldNumber * 8),
-    encodeProtobufVarint(value),
-  ]);
-}
-
-function encodeProtobufBytesField(fieldNumber: number, value: Buffer): Buffer {
-  return Buffer.concat([
-    encodeProtobufVarint(fieldNumber * 8 + 2),
-    encodeProtobufVarint(value.length),
-    value,
-  ]);
-}
-
-function buildTronSwapRawDataHex(callValue: number): string {
-  const triggerSmartContract = Buffer.concat([
-    encodeProtobufBytesField(
-      1,
-      Buffer.from('41588c5216750cceaad16cf5a757e3f7b32835a5e1', 'hex'),
-    ),
-    encodeProtobufBytesField(
-      2,
-      Buffer.from('41f742f4589459f0923fa579600815763d1646bec3', 'hex'),
-    ),
-    encodeProtobufVarintField(3, callValue),
-    encodeProtobufBytesField(4, Buffer.from(TRON_SWAP_CONTRACT_DATA, 'hex')),
-  ]);
-  const parameter = Buffer.concat([
-    encodeProtobufBytesField(
-      1,
-      Buffer.from('type.googleapis.com/protocol.TriggerSmartContract'),
-    ),
-    encodeProtobufBytesField(2, triggerSmartContract),
-  ]);
-  const contract = Buffer.concat([
-    encodeProtobufVarintField(1, 31),
-    encodeProtobufBytesField(2, parameter),
-  ]);
-  const timestamp = MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR;
-
-  return Buffer.concat([
-    encodeProtobufBytesField(1, Buffer.from('f733', 'hex')),
-    encodeProtobufBytesField(4, Buffer.from('ff89d72ddc1ce1ea', 'hex')),
-    encodeProtobufVarintField(8, timestamp),
-    encodeProtobufBytesField(11, contract),
-    encodeProtobufVarintField(14, timestamp),
-    encodeProtobufVarintField(18, 300000),
-  ]).toString('hex');
-}
+const TRON_SWAP_RAW_DATA_HEX =
+  '0A02F7332208FF89D72DDC1CE1EA4090AD9AD68D375AF40F081F12EF0F0A31747970652E676F6F676C65617069732E636F6D2F70726F746F636F6C2E54726967676572536D617274436F6E747261637412B90F0A1541588C5216750CCEAAD16CF5A757E3F7B32835A5E1121541F742F4589459F0923FA579600815763D1646BEC318C0843D22840F14D08FCA00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000588C5216750CCEAAD16CF5A757E3F7B32835A5E1000000000000000000000000000000000678810EA08142469DDB483CCF2D999E0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C00000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222E0000000000000000000000003C067DCD94CB563404B312F3114ECD307FEAF53100000000000000000000000000000000000000000000000000000000000468BA000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000003E9000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000000084D6574614D61736B0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000018FF186CB1973D4B29700F2AAC6B1EEC9E55FFBD00000000000000000000000018FF186CB1973D4B29700F2AAC6B1EEC9E55FFBD0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000000E00000000000000000000000000000000000000000000000000000000000000404CEF95229000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001A000000000000000000000000000000000000000000000000000000000000002E0000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000F201200000000000000000000000000000000000000000000000000000000000468BA000000000000000000000000F742F4589459F0923FA579600815763D1646BEC30000000000000000000000000000000000000000000000000000000069612C2C000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000003487B63D30B5B2C87FB7FFA8BCFADE38EAAC1ABE00000000000000000000000094F24E992CA04B49C6F2A2753076EF8938ED4DAA000000000000000000000000A614F803B6FD780986A42C78EC9C7F77E6DED13C0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000A000000000000000000000000000000000000000000000000000000000000000E0000000000000000000000000000000000000000000000000000000000000000276310000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002763200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000117573646432706F6F6C74757364757364740000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000070B0D896D68D379001E0A712';
 
 function buildTronTrxToUsdtTrade(grossSrcAmount: string) {
   const callValue = Number(grossSrcAmount);
-  const rawDataHex = buildTronSwapRawDataHex(callValue);
 
   return {
     visible: false,
-    txID: createHash('sha256')
-      .update(Buffer.from(rawDataHex, 'hex'))
-      .digest('hex'),
+    txID: '51f819579ad7c0a02bf428c0128ba7430b670526a560e31649dfb818e4ad4740',
     raw_data: {
       contract: [
         {
@@ -1315,7 +1275,7 @@ function buildTronTrxToUsdtTrade(grossSrcAmount: string) {
       fee_limit: 300000,
       timestamp: MOCK_TRON_BLOCK_TIMESTAMP_NOW_PLUS_A_YEAR,
     },
-    raw_data_hex: rawDataHex,
+    raw_data_hex: TRON_SWAP_RAW_DATA_HEX,
     payload: {
       owner_address: '41588c5216750cceaad16cf5a757e3f7b32835a5e1',
       call_value: callValue,
@@ -1331,7 +1291,7 @@ function buildTronTrxToUsdtTrade(grossSrcAmount: string) {
   };
 }
 
-function buildTronQuoteResponse(fixture: TronQuoteFixture) {
+function buildTronQuoteResponseV1(fixture: TronQuoteFixture) {
   const srcAsset = buildTronAsset(fixture.src);
   const destAsset = buildTronAsset(fixture.dest);
   const feeSun = fixture.feeSun ?? 8_750;
@@ -1411,7 +1371,7 @@ export async function mockBridgeGetTronQuoteFor(
     .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u)
     .thenCallback(() => ({
       statusCode: 200,
-      json: [buildTronQuoteResponse(fixture)],
+      json: [buildTronQuoteResponseV1(fixture)],
     }));
 }
 
@@ -1485,22 +1445,28 @@ const MOCK_TRON_TOKENS = [
 
 export async function mockBridgeGetTronTokens(
   mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
-    statusCode: 200,
-    json: {
-      pageInfo: {
-        hasNextPage: false,
-        endCursor: null,
+): Promise<MockedEndpoint[]> {
+  const searchEndpoint = await mockServer
+    .forPost(/getTokens\/search/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+        data: MOCK_TRON_TOKENS,
       },
-      data: MOCK_TRON_TOKENS,
-    },
-  }));
+    }));
 
-  return mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
-    statusCode: 200,
-    json: MOCK_TRON_TOKENS,
-  }));
+  const popularEndpoint = await mockServer
+    .forPost(/getTokens\/popular/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: MOCK_TRON_TOKENS,
+    }));
+
+  return [searchEndpoint, popularEndpoint];
 }
 
 // Backwards-compatible default for existing tests (1 TRX → ~0.295 USDT)
@@ -1625,8 +1591,18 @@ export async function mockAccountsApiV2WithTron(
     .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
-      fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
-      partialSupport: { balances: [42220, 43114] },
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+        'eip155:1337',
+      ],
+      partialSupport: ['eip155:42220', 'eip155:43114'],
     });
 }
 
@@ -1703,7 +1679,7 @@ export async function mockTronSwapApis(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuote(mockServer),
     await mockTronGetChainParameters(mockServer),
     await mockTronGetNextMaintenanceTime(mockServer),
@@ -1718,7 +1694,7 @@ export async function mockTronSwapApisNoQuotes(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuoteEmpty(mockServer),
   ];
 }
@@ -1729,7 +1705,23 @@ export async function mockTronSwapApisWithoutFeeEstimation(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuote(mockServer),
+    await mockServer
+      .forGet(tronInfuraUrl('/wallet/getchainparameters'))
+      .always()
+      .thenCallback(() => ({ statusCode: 200 })),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/getnextmaintenancetime'))
+      .always()
+      .thenCallback(() => ({ statusCode: 200 })),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/triggerconstantcontract'))
+      .always()
+      .thenCallback(() => ({ statusCode: 200 })),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/getcontract'))
+      .always()
+      .thenCallback(() => ({ statusCode: 200 })),
   ];
 }

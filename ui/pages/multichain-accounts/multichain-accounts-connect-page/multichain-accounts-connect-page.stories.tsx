@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import {
   Caip25CaveatType,
@@ -132,7 +132,6 @@ const store = configureStore({
       mockState.metamask.networkConfigurationsByChainId,
     permissionHistory: {
       'https://test.dapp': {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_accounts: {
           accounts: {
             '0x123': 1709225290848,

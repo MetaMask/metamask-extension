@@ -10,15 +10,15 @@ import SetupPasskeyPage from '../pages/onboarding/setup-passkey-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
-import LoginPage from '../pages/login-page';
+import LoginPage from '../pages/onboarding/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 
 export type OnboardingMetricsFlowOptions = {
   optedIn?: boolean;
-  completedMetaMetricsOnboarding?: boolean;
+  consentDecisionMade?: boolean;
   dataCollectionForMarketing?: boolean;
 };
 
@@ -41,8 +41,14 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  // Give the onboarding completion time to process (needed for sidepanel)
-  await driver.delay(2000);
+  // waitUntil completedOnboarding is true, then navigate once
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return Boolean(uiState?.metamask?.completedOnboarding);
+    },
+    { timeout: 30000, interval: 500 },
+  );
 
   // Navigate directly to home page in current window
   // With sidepanel enabled, this ensures we load home page in the test window
@@ -160,20 +166,23 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
-  const originalWindowHandle = await driver.getCurrentWindowHandle();
   await assertTermsOfUsageAndPrivacyLinksOnCreateLoginOptions(
     startOnboardingPage,
   );
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
+  const handlesBeforeAuthTab = await driver.getAllWindowHandles();
+  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await startOnboardingPage.clickCreateWalletSocialLoginButton(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
       driver,
       originalWindowHandle,
+      handlesBeforeAuthTab,
+      isOnboardingReady: () => onboardingPasswordPage.isPageLoaded(),
     });
   }
 
-  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
 
   await onboardingPasswordPage.createWalletPassword(password);
@@ -213,20 +222,23 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
-  const originalWindowHandle = await driver.getCurrentWindowHandle();
   await assertTermsOfUsageAndPrivacyLinksOnImportLoginOptions(
     startOnboardingPage,
   );
+  const originalWindowHandle = await driver.getCurrentWindowHandle();
+  const handlesBeforeAuthTab = await driver.getAllWindowHandles();
+  const loginPage = new LoginPage(driver);
   await startOnboardingPage.clickImportWalletSocialLoginButton(authConnection);
 
   if (authConnection === AuthConnection.Telegram) {
     await recoverFromTelegramAuthTab({
       driver,
       originalWindowHandle,
+      handlesBeforeAuthTab,
+      isOnboardingReady: () => loginPage.isPageLoaded(),
     });
   }
 
-  const loginPage = new LoginPage(driver);
   await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(password);
 
@@ -238,16 +250,57 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   // }
 };
 
+/**
+ * Restores the original onboarding window after Telegram login.
+ *
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param options.originalWindowHandle - Handle of the onboarding window to restore.
+ * @param options.handlesBeforeAuthTab - Window handles present before the Telegram auth tab opens.
+ * @param options.isOnboardingReady - Returns true when the post-login onboarding screen is visible.
+ */
 async function recoverFromTelegramAuthTab({
   driver,
   originalWindowHandle,
+  handlesBeforeAuthTab,
+  isOnboardingReady,
 }: {
   driver: Driver;
   originalWindowHandle: string;
+  handlesBeforeAuthTab: string[];
+  isOnboardingReady: () => Promise<boolean>;
 }): Promise<void> {
-  // OAuthService resolves after the redirect is handled and the auth tab close
-  // is already in flight, so the E2E flow only needs to restore focus.
-  await driver.switchToWindow(originalWindowHandle);
+  let authTabHandle: string | undefined;
+  let switchedToOriginal = false;
+
+  await driver.waitUntil(
+    async () => {
+      const handles = await driver.getAllWindowHandles();
+      const extraHandle = handles.find(
+        (handle) => !handlesBeforeAuthTab.includes(handle),
+      );
+
+      if (extraHandle) {
+        authTabHandle = extraHandle;
+        if (!switchedToOriginal) {
+          await driver.switchToWindow(originalWindowHandle);
+          switchedToOriginal = true;
+        }
+        return false;
+      }
+
+      if (authTabHandle) {
+        return true;
+      }
+
+      return await isOnboardingReady();
+    },
+    { timeout: 30000, interval: 50 },
+  );
+
+  if (!switchedToOriginal) {
+    await driver.switchToWindow(originalWindowHandle);
+  }
 }
 
 /**

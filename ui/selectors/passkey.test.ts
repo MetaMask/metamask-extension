@@ -1,8 +1,11 @@
 import { DEVICE_TYPE } from '../../shared/constants/app';
 import {
   getIsPasskeyFeatureAvailable,
+  getIsPasskeyPRFBased,
   getIsPasskeyRegistered,
+  getIsPasskeyUserHandleBased,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
 } from './selectors';
 
@@ -184,6 +187,89 @@ describe('getPasskeyDerivationMethod', () => {
       },
     };
     expect(getPasskeyDerivationMethod(state)).toBe('userHandle');
+  });
+});
+
+describe('getIsPasskeyUserHandleBased', () => {
+  it('returns true when the record uses userHandle key derivation', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          keyDerivation: { method: 'userHandle' as const },
+        },
+      },
+    };
+
+    expect(getIsPasskeyUserHandleBased(state)).toBe(true);
+  });
+
+  it('returns false when the record uses PRF key derivation', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          keyDerivation: { method: 'prf' as const },
+        },
+      },
+    };
+
+    expect(getIsPasskeyUserHandleBased(state)).toBe(false);
+  });
+
+  it('returns false when no passkey record exists', () => {
+    const state = { metamask: { passkeyRecord: null } };
+    expect(getIsPasskeyUserHandleBased(state)).toBe(false);
+  });
+});
+
+describe('getIsPasskeyPRFBased', () => {
+  it('returns true when the record uses PRF key derivation', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          keyDerivation: { method: 'prf' as const },
+        },
+      },
+    };
+
+    expect(getIsPasskeyPRFBased(state)).toBe(true);
+  });
+
+  it('returns false when the record uses userHandle key derivation', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          keyDerivation: { method: 'userHandle' as const },
+        },
+      },
+    };
+
+    expect(getIsPasskeyPRFBased(state)).toBe(false);
+  });
+
+  it('returns false when no passkey record exists', () => {
+    const state = { metamask: { passkeyRecord: null } };
+    expect(getIsPasskeyPRFBased(state)).toBe(false);
+  });
+});
+
+describe('getPasskeyAuthenticatorType', () => {
+  it('returns the enrolled passkey credential AAGUID', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          credential: { aaguid: GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID },
+        },
+      },
+    };
+
+    expect(getPasskeyAuthenticatorId(state)).toBe(
+      GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID,
+    );
+  });
+
+  it('returns undefined when no passkey record exists', () => {
+    const state = { metamask: { passkeyRecord: null } };
+    expect(getPasskeyAuthenticatorId(state)).toBeUndefined();
   });
 });
 

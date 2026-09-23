@@ -369,6 +369,20 @@ describe('Perps Utils', () => {
       return translations[key] || key;
     };
 
+    /** Midday local time — avoids midnight boundary flakes with Date.now() offsets. */
+    const middayToday = () => {
+      const date = new Date();
+      date.setHours(12, 0, 0, 0);
+      return date.getTime();
+    };
+
+    const middayYesterday = () => {
+      const date = new Date();
+      date.setHours(12, 0, 0, 0);
+      date.setDate(date.getDate() - 1);
+      return date.getTime();
+    };
+
     const createMockTransaction = (
       overrides: Partial<PerpsTransaction> = {},
     ): PerpsTransaction => ({
@@ -378,14 +392,15 @@ describe('Perps Utils', () => {
       symbol: 'ETH',
       title: 'Opened long',
       subtitle: '2.5 ETH @ $2,850.00',
-      timestamp: Date.now(),
+      timestamp: middayToday(),
       ...overrides,
     });
 
     it('groups transactions from today with "Today" label', () => {
+      const today = middayToday();
       const transactions = [
-        createMockTransaction({ id: 'tx-1', timestamp: Date.now() - 1000 }),
-        createMockTransaction({ id: 'tx-2', timestamp: Date.now() - 2000 }),
+        createMockTransaction({ id: 'tx-1', timestamp: today - 1000 }),
+        createMockTransaction({ id: 'tx-2', timestamp: today - 2000 }),
       ];
 
       const result = groupTransactionsByDate(transactions, mockT);
@@ -396,7 +411,7 @@ describe('Perps Utils', () => {
     });
 
     it('groups transactions from yesterday with "Yesterday" label', () => {
-      const yesterday = Date.now() - 86400000; // 24 hours ago
+      const yesterday = middayYesterday();
       const transactions = [
         createMockTransaction({ id: 'tx-1', timestamp: yesterday }),
         createMockTransaction({ id: 'tx-2', timestamp: yesterday - 1000 }),
@@ -410,8 +425,8 @@ describe('Perps Utils', () => {
     });
 
     it('groups transactions from different days separately', () => {
-      const today = Date.now();
-      const yesterday = Date.now() - 86400000;
+      const today = middayToday();
+      const yesterday = middayYesterday();
       const transactions = [
         createMockTransaction({ id: 'tx-today', timestamp: today }),
         createMockTransaction({ id: 'tx-yesterday', timestamp: yesterday }),
@@ -425,14 +440,16 @@ describe('Perps Utils', () => {
     });
 
     it('sorts transactions by timestamp within groups (newest first)', () => {
+      const today = middayToday();
       const transactions = [
-        createMockTransaction({ id: 'tx-old', timestamp: Date.now() - 5000 }),
-        createMockTransaction({ id: 'tx-new', timestamp: Date.now() - 1000 }),
-        createMockTransaction({ id: 'tx-mid', timestamp: Date.now() - 3000 }),
+        createMockTransaction({ id: 'tx-old', timestamp: today - 5000 }),
+        createMockTransaction({ id: 'tx-new', timestamp: today - 1000 }),
+        createMockTransaction({ id: 'tx-mid', timestamp: today - 3000 }),
       ];
 
       const result = groupTransactionsByDate(transactions, mockT);
 
+      expect(result[0].transactions).toHaveLength(3);
       expect(result[0].transactions[0].id).toBe('tx-new');
       expect(result[0].transactions[1].id).toBe('tx-mid');
       expect(result[0].transactions[2].id).toBe('tx-old');

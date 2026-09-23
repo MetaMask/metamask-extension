@@ -756,6 +756,98 @@ describe('PerpsStreamManager', () => {
       expect(cb).toHaveBeenCalledWith(orderBook);
     });
 
+    it('routes orderBookAggregated channel to orderBookAggregated.pushData', () => {
+      const aggregatedCb = jest.fn();
+      const rawCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.orderBook.subscribe(rawCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-1');
+
+      const aggregated = { bids: [{ price: '1750' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: aggregated,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(aggregated);
+      // The raw channel must not receive aggregated data.
+      expect(rawCb).not.toHaveBeenCalled();
+    });
+
+    it('rejects aggregated packets when no subscription is active', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: { bids: [{ price: '1750' }], asks: [] },
+        subscriptionId: 'agg-closed',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('discards aggregated packets that do not match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const staleBook = { bids: [{ price: '73775' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: staleBook,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('accepts aggregated packets that match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const book = { bids: [{ price: '73770' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: book,
+        subscriptionId: 'agg-2',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(book);
+    });
+
+    it('discards aggregated status updates that do not match the active identity', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'connected',
+        subscriptionId: 'agg-1',
+      });
+
+      expect(statusCb).not.toHaveBeenCalledWith('connected');
+    });
+
+    it('routes orderBookAggregatedStatus to orderBookAggregatedStatus.pushData', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-status');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'error',
+        subscriptionId: 'agg-status',
+      });
+
+      expect(statusCb).toHaveBeenLastCalledWith('error');
+    });
+
     it('routes candles channel to candles.pushFromBackground', () => {
       const pushFromBackground = jest.fn();
       (
@@ -1203,33 +1295,122 @@ describe('PerpsStreamManager', () => {
         expect.anything(),
       );
     });
+  });
 
-    it('notifies subscribers with null when REST fallback fails without cache', async () => {
-      const consoleErrorSpy = jest
+  describe('account fetch failure', () => {
+    /**
+     * Rejects `perpsGetAccountState` the way a total HyperLiquid outage does —
+     * the TAT-3832 report's `Failed to fetch account state
+     * (failedDexs=[main,xyz], spotError=WebSocket connection permanently
+     * terminated)`.
+     *
+     * @param error - The rejection surfaced to the account channel.
+     */
+    function rejectAccountStateWith(error: Error) {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetAccountState') {
+          return Promise.reject(error);
+        }
+        return Promise.resolve(undefined);
+      });
+    }
+
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
+    });
 
-      try {
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetAccountState') {
-            return Promise.reject(new Error('network'));
-          }
-          return Promise.resolve(undefined);
-        });
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+    });
 
-        const onData = jest.fn();
-        manager.account.subscribe(onData);
+    it('does not notify subscribers when the REST fallback fails without cache', async () => {
+      rejectAccountStateWith(
+        new Error(
+          'Failed to fetch account state (failedDexs=[main,xyz], spotError=WebSocket connection permanently terminated)',
+        ),
+      );
 
-        await jest.advanceTimersByTimeAsync(3_000);
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
 
-        expect(onData).toHaveBeenCalledWith(null);
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[PerpsStreamManager] Failed to fetch account',
-          expect.any(Error),
-        );
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      // A failed fetch is not data. Notifying here is what let the balance
+      // header leave its loading state and render a funded account as $0.00.
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[PerpsStreamManager] Failed to fetch account',
+        expect.any(Error),
+      );
+    });
+
+    // Pre-existing-behaviour guard, not proof of this fix: the old code's
+    // `!hasCachedData()` check already suppressed the push once a cache
+    // existed, so this passes with or without the fix. Kept to pin the
+    // behaviour that a later failure must never clobber a good balance.
+    it('keeps previously cached account data when a later REST fallback fails', async () => {
+      const cachedAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: cachedAccount,
+      });
+
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(manager.account.getCachedData()).toBe(cachedAccount);
+      // Subscribing with a cache present already fires once with that cache.
+      // Pinning the exact call count and payload proves nothing *else*
+      // notified — a bare `not.toHaveBeenCalledWith(null)` would pass even if
+      // the failure path had pushed something.
+      expect(onData).toHaveBeenCalledTimes(1);
+      expect(onData).toHaveBeenCalledWith(cachedAccount);
+    });
+
+    it('does not notify subscribers when the REST fallback settles empty', async () => {
+      // The messenger can settle with no payload instead of rejecting. `null`
+      // is this channel's initialValue, so pushing it notifies without setting
+      // a cache — the same fabricated `$0.00` as an outright rejection.
+      mockSubmitRequestToBackground.mockImplementation(() =>
+        Promise.resolve(undefined),
+      );
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('still delivers account data pushed after an account fetch failure', async () => {
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+
+      const recoveredAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: recoveredAccount,
+      });
+
+      expect(onData).toHaveBeenCalledWith(recoveredAccount);
+      expect(manager.account.hasCachedData()).toBe(true);
     });
   });
 

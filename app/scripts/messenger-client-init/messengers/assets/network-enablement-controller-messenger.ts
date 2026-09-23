@@ -25,6 +25,7 @@ export function getNetworkEnablementControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      'ConfigRegistryController:getState',
       'NetworkController:getState',
       'MultichainNetworkController:getState',
     ],

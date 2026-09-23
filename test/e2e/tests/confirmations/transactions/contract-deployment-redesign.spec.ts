@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { WINDOW_TITLES } from '../../../constants';
 import { login } from '../../../page-objects/flows/login.flow';
 import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/deploy-confirmation';
@@ -32,7 +31,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         );
         await deploymentConfirmation.checkTitle();
         await deploymentConfirmation.checkDeploymentSiteInfo();
-        await deploymentConfirmation.clickFooterConfirmButton();
+        await deploymentConfirmation.clickFooterButton({ button: 'confirm' });
 
         // check activity list
         await driver.switchToWindowWithTitle(

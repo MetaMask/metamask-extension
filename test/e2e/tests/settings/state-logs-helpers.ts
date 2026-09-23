@@ -230,7 +230,6 @@ const getIgnoredKeys = (): string[] => [
   'metamask.nativeAssetIdentifiers.eip155:143',
   'metamask.accountsByChainId.0x8f',
   'metamask.marketData.0x8f',
-  'metamask.eventsBeforeMetricsOptIn',
 ];
 
 const findMissingKeys = (

@@ -2,9 +2,11 @@ import {
   BtcAccountType,
   SolAccountType,
   TrxAccountType,
+  XlmAccountType,
 } from '@metamask/keyring-api';
 import { BITCOIN_WALLET_SNAP_ID } from '../../lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../lib/accounts/solana-wallet-snap';
+import { STELLAR_WALLET_SNAP_ID } from '../../lib/accounts/stellar-wallet-snap';
 import { TRON_WALLET_SNAP_ID } from '../../lib/accounts/tron-wallet-snap';
 
 export const MULTICHAIN_ACCOUNT_TYPE_TO_SNAP_ID = {
@@ -14,6 +16,7 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_SNAP_ID = {
   [BtcAccountType.P2tr]: BITCOIN_WALLET_SNAP_ID,
   [SolAccountType.DataAccount]: SOLANA_WALLET_SNAP_ID,
   [TrxAccountType.Eoa]: TRON_WALLET_SNAP_ID,
+  [XlmAccountType.Account]: STELLAR_WALLET_SNAP_ID,
 };
 
 export const MULTICHAIN_ACCOUNT_TYPE_TO_NAME = {

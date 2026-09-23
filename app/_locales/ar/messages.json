@@ -85,9 +85,6 @@
   "back": {
     "message": "الرجوع إلى الوراء"
   },
-  "backupApprovalInfo": {
-    "message": "هذا الرمز السري مطلوب لاسترداد محفظتك في حالة فقد جهازك أو نسيان كلمة مرورك أو إعادة تثبيت MetaMask أو الرغبة في الوصول إلى محفظتك عبر جهاز آخر."
-  },
   "backupApprovalNotice": {
     "message": "قم بالنسخ الاحتياطي لرمز الاسترداد السري للحفاظ على محفظتك وأموالك بأمان."
   },
@@ -231,9 +228,6 @@
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
   },
-  "gasLimitTooLow": {
-    "message": "يجب أن يكون حد وحدات الجاس على الأقل 21000"
-  },
   "gasUsed": {
     "message": "وحدات جاس المستخدمة"
   },
@@ -350,9 +344,6 @@
   "networks": {
     "message": "الشبكات"
   },
-  "nevermind": {
-    "message": "لا يهم"
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
@@ -421,9 +412,6 @@
   "privateKey": {
     "message": "المفتاح الخاص",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "تنبيه: لا تكشف عن هذا المفتاح مطلقًا. يمكن لأي شخص لديه مفاتيحك الخاصة سرقة أي أصول تحتفظ بها في حسابك."
   },
   "privateNetwork": {
     "message": "شبكة خاصة"

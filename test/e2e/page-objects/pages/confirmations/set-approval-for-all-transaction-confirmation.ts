@@ -3,12 +3,26 @@ import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 import TransactionConfirmation from './transaction-confirmation';
 
+/**
+ * SetApprovalForAll (and revoke) confirmation on the redesigned confirm
+ * screen.
+ *
+ * Screen: `#/confirmation` for setApprovalForAll transaction types.
+ * Owns: set-approval-for-all / revoke titles and approve-transaction
+ * subtitle checks.
+ * Boundaries: inherits gas and shared transaction helpers from
+ * `TransactionConfirmation`. ERC-20 spending-cap approvals are
+ * `ERC20ApproveTransactionConfirmation`.
+ * Related: `TransactionConfirmation`, `ERC20ApproveTransactionConfirmation`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/set-approval-for-all-info/set-approval-for-all-info.tsx
+ */
 class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
-  private setApprovalForAllTitleElement: RawLocator;
+  private revokeSetApprovalForAllTitleElement: RawLocator;
 
   private setApprovalForAllSubHeadingElement: RawLocator;
 
-  private revokeSetApprovalForAllTitleElement: RawLocator;
+  private setApprovalForAllTitleElement: RawLocator;
 
   constructor(driver: Driver) {
     super(driver);
@@ -29,16 +43,16 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
     };
   }
 
-  async checkSetApprovalForAllTitle() {
-    await this.driver.waitForSelector(this.setApprovalForAllTitleElement);
+  async checkRevokeSetApprovalForAllTitle() {
+    await this.driver.waitForSelector(this.revokeSetApprovalForAllTitleElement);
   }
 
   async checkSetApprovalForAllSubHeading() {
     await this.driver.waitForSelector(this.setApprovalForAllSubHeadingElement);
   }
 
-  async checkRevokeSetApprovalForAllTitle() {
-    await this.driver.waitForSelector(this.revokeSetApprovalForAllTitleElement);
+  async checkSetApprovalForAllTitle() {
+    await this.driver.waitForSelector(this.setApprovalForAllTitleElement);
   }
 }
 

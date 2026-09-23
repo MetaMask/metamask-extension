@@ -4,7 +4,6 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   type ReactNode,
 } from 'react';
 import { resetHardwareWalletRecoveryInlineCtaViewCount } from '../../../shared/lib/hardware-wallet-recovery-metrics';
@@ -215,32 +214,12 @@ export const HardwareWalletProvider = ({
     updateConnectionState(ConnectionState.ready());
   }, [updateConnectionState]);
 
-  const setSigningInProgress = useCallback((value: boolean) => {
-    refs.isSigningInProgressRef.current = value;
-  }, []);
-
-  const stableActionsRef = useRef({
-    connect,
-    disconnect,
-    clearError,
-    setConnectionReady,
-    checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
-    requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
-    ensureDeviceReady,
-    setSigningInProgress,
-  });
-
-  // Update the ref when dependencies change
-  stableActionsRef.current = {
-    connect,
-    disconnect,
-    clearError,
-    setConnectionReady,
-    checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
-    requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
-    ensureDeviceReady,
-    setSigningInProgress,
-  };
+  const setSigningInProgress = useCallback(
+    (value: boolean) => {
+      refs.isSigningInProgressRef.current = value;
+    },
+    [refs],
+  );
 
   useHardwareWalletAutoConnect({
     state,
@@ -257,13 +236,12 @@ export const HardwareWalletProvider = ({
 
   // Abort controller lifecycle
   useEffect(() => {
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/immutability
     refs.abortControllerRef.current = new AbortController();
     return () => {
       refs.abortControllerRef.current?.abort();
       refs.adapterRef.current?.destroy();
     };
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -276,7 +254,6 @@ export const HardwareWalletProvider = ({
     updateConnectionState(ConnectionState.disconnected());
     resetConnectionRefs();
     resetAutoConnectState();
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetAutoConnectState, resetConnectionRefs, updateConnectionState]);
 
@@ -288,7 +265,6 @@ export const HardwareWalletProvider = ({
     ) {
       resetHardwareWalletConnection();
     }
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHardwareWalletAccount, resetHardwareWalletConnection]);
 
@@ -310,7 +286,6 @@ export const HardwareWalletProvider = ({
     ) {
       resetHardwareWalletConnection();
     }
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHardwareWalletAccount, walletType, resetHardwareWalletConnection]);
 
@@ -325,17 +300,14 @@ export const HardwareWalletProvider = ({
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
-
       // Actions (stable)
-      connect: stableActionsRef.current.connect,
-      disconnect: stableActionsRef.current.disconnect,
-      clearError: stableActionsRef.current.clearError,
-      setConnectionReady: stableActionsRef.current.setConnectionReady,
-      checkHardwareWalletPermission:
-        stableActionsRef.current.checkHardwareWalletPermission,
-      requestHardwareWalletPermission:
-        stableActionsRef.current.requestHardwareWalletPermission,
-      ensureDeviceReady: stableActionsRef.current.ensureDeviceReady,
+      connect,
+      disconnect,
+      clearError,
+      setConnectionReady,
+      checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
+      ensureDeviceReady,
     }),
     [
       isHardwareWalletAccount,
@@ -345,7 +317,13 @@ export const HardwareWalletProvider = ({
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
-      stableActionsRef,
+      connect,
+      disconnect,
+      clearError,
+      setConnectionReady,
+      checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermissionAction,
+      ensureDeviceReady,
     ],
   );
 
@@ -378,19 +356,25 @@ export const HardwareWalletProvider = ({
 
   const actionsValue = useMemo<HardwareWalletActionsContextType>(
     () => ({
-      connect: stableActionsRef.current.connect,
-      disconnect: stableActionsRef.current.disconnect,
-      clearError: stableActionsRef.current.clearError,
-      setConnectionReady: stableActionsRef.current.setConnectionReady,
-      checkHardwareWalletPermission:
-        stableActionsRef.current.checkHardwareWalletPermission,
-      requestHardwareWalletPermission:
-        stableActionsRef.current.requestHardwareWalletPermission,
-      ensureDeviceReady: stableActionsRef.current.ensureDeviceReady,
-      setSigningInProgress: stableActionsRef.current.setSigningInProgress,
+      connect,
+      disconnect,
+      clearError,
+      setConnectionReady,
+      checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
+      ensureDeviceReady,
+      setSigningInProgress,
     }),
-    // Actions are stable, so this memo only runs once
-    [],
+    [
+      connect,
+      disconnect,
+      clearError,
+      setConnectionReady,
+      checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermissionAction,
+      ensureDeviceReady,
+      setSigningInProgress,
+    ],
   );
 
   return (

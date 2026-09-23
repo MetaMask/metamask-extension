@@ -1,16 +1,13 @@
 import React from 'react';
+import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 
 import { NotificationDetail } from '../notification-detail';
 import {
-  AvatarTokenSize,
-  AvatarToken,
   BadgeWrapper,
   BadgeWrapperPosition,
   Text,
 } from '../../component-library';
 import {
-  BackgroundColor,
-  BorderColor,
   FontWeight,
   TextVariant,
   TextColor,
@@ -68,30 +65,24 @@ export const NotificationDetailAsset = ({
     <AvatarToken
       src={icon.badge?.src}
       size={AvatarTokenSize.Sm}
-      backgroundColor={BackgroundColor.infoDefault}
-      borderColor={BorderColor.backgroundDefault}
-      borderWidth={2}
+      className="bg-info-default border-2 border-background-default"
     />
   );
 
   const badgeWrapper = icon.badge ? (
     <BadgeWrapper
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       position={icon.badge.position || BadgeWrapperPosition.topRight}
       badge={badgeIcon}
     >
       <AvatarToken
         src={icon.src}
-        borderColor={BorderColor.borderMuted}
-        className="notification-detail-asset__icon"
+        className="notification-detail-asset__icon border-solid border-border-muted"
       />
     </BadgeWrapper>
   ) : (
     <AvatarToken
       src={icon.src}
-      borderColor={BorderColor.borderMuted}
-      className="notification-detail-asset__icon"
+      className="notification-detail-asset__icon border-solid border-border-muted"
     />
   );
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act } from 'react-dom/test-utils';
+import { screen, waitFor } from '@testing-library/react';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../../test/lib/confirmations/render-helpers';
 import {
   permitNFTSignatureMsg,
   permitSignatureMsg,
+  permitSignatureMsgWithUnsignedFields,
 } from '../../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../../utils/token';
 import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-helpers';
@@ -35,32 +36,56 @@ describe('PermitSimulation', () => {
     const state = getMockTypedSignConfirmStateForRequest(permitSignatureMsg);
     const mockStore = configureMockStore([])(state);
 
-    await act(async () => {
-      const { container, findByText } = renderWithConfirmContextProvider(
-        <PermitSimulation />,
-        mockStore,
-      );
+    const { container } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
 
-      expect(await findByText('30')).toBeInTheDocument();
-      expect(container).toMatchSnapshot();
+    await waitFor(() => {
+      expect(screen.getByText('30')).toBeInTheDocument();
     });
+    expect(container).toMatchSnapshot();
+  });
+
+  it('ignores unsigned fields and displays the signed unlimited ERC-20 permit', async () => {
+    const state = getMockTypedSignConfirmStateForRequest(
+      permitSignatureMsgWithUnsignedFields,
+    );
+    const mockStore = configureMockStore([])(state);
+
+    renderWithConfirmContextProvider(<PermitSimulation />, mockStore);
+
+    expect(
+      await screen.findByText(messages.unlimited.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText(messages.spendingCap.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.permitSimulationDetailInfo.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.permitSimulationChange_revoke2.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.revokeSimulationDetailsDesc.message),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('#0')).not.toBeInTheDocument();
   });
 
   it('renders correctly for NFT permit', async () => {
     const state = getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg);
     const mockStore = configureMockStore([])(state);
 
-    await act(async () => {
-      const { container, findByText } = renderWithConfirmContextProvider(
-        <PermitSimulation />,
-        mockStore,
-      );
+    const { container } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
 
+    await waitFor(() => {
       expect(
-        await findByText(messages.perpsWithdraw.message),
+        screen.getByText(messages.perpsWithdraw.message),
       ).toBeInTheDocument();
-      expect(await findByText('#3606393')).toBeInTheDocument();
-      expect(container).toMatchSnapshot();
+      expect(screen.getByText('#3606393')).toBeInTheDocument();
     });
+    expect(container).toMatchSnapshot();
   });
 });

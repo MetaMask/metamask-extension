@@ -14,6 +14,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  Tag,
   Text,
   TextColor,
   TextVariant,
@@ -22,7 +23,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
-import { Tag } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -327,10 +327,10 @@ const AccountListItem = ({
                   <Tag
                     data-testid={`account-list-item-tag-${account.id}-${label}`}
                     key={label}
-                    label={label}
-                    textVariant={TextVariant.BodyXs}
-                    startIconName={icon}
-                  />
+                    startIconName={icon ? IconName.Snaps : undefined}
+                  >
+                    {label}
+                  </Tag>
                 );
               })}
             </Box>

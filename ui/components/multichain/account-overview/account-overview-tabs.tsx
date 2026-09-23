@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
   Box,
@@ -13,14 +13,11 @@ import {
 } from '@metamask/design-system-react';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
   AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
-import { useAnalytics } from '../../../hooks/useAnalytics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
@@ -28,17 +25,18 @@ import { useSafeChains } from '../networks-form/use-safe-chains';
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
+  getIsDefiPositionsEnabled,
 } from '../../../selectors';
 import {
   getIsPerpsExperienceAvailable,
   getPerpsTabBadgeSeen,
 } from '../../../selectors/perps';
-import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import {
   detectNfts,
   setDefaultHomeActiveTabName,
   setPerpsTabBadgeSeen,
 } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
@@ -55,14 +53,15 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../../../pages/activity/activity-list';
 import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
-  showTokens: boolean;
   showTokensLinks?: boolean;
-  showNfts: boolean;
-  showActivity: boolean;
+  showTokens?: boolean;
+  showNfts?: boolean;
   showDefi?: boolean;
+  showActivity?: boolean;
 };
 
 /**
@@ -85,22 +84,34 @@ const TokenBalancesPoller = ({ chainIds }: { chainIds: Hex[] }) => {
 };
 
 export const AccountOverviewTabs = ({
-  showTokens,
   showTokensLinks,
-  showNfts,
-  showActivity,
-  showDefi,
+  showTokens = true,
+  showNfts = true,
+  showDefi = true,
+  showActivity = true,
 }: AccountOverviewTabsProps) => {
   const persistedTab = useSelector(getDefaultHomeActiveTabName);
   const [urlTab, setActiveTabKey] = useTabState();
   const activeTabKey = urlTab || persistedTab;
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Tracks how the currently active tab was reached so screen-viewed events
+  // can distinguish a bottom-nav click (arriving at home) from a subtab click.
+  const [tabEntryPoint, setTabEntryPoint] = useState<
+    ScreenViewedEntryPoint | undefined
+  >(
+    location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick
+      ? ScreenViewedEntryPoint.BottomNavClick
+      : undefined,
+  );
+
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
   const prefetchTransactions = usePrefetchTransactions();
+  const defiPositionsEnabled = useSelector(getIsDefiPositionsEnabled);
 
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
@@ -132,7 +143,7 @@ export const AccountOverviewTabs = ({
     ...(isPerpsExperienceAvailable && !showBottomNav
       ? [AccountOverviewTabKey.Perps]
       : []),
-    ...(showDefi ? [AccountOverviewTabKey.DeFi] : []),
+    ...(showDefi && defiPositionsEnabled ? [AccountOverviewTabKey.DeFi] : []),
     ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
     ...(showActivity && !showBottomNav ? [AccountOverviewTabKey.Activity] : []),
   ]);
@@ -157,10 +168,6 @@ export const AccountOverviewTabs = ({
     }
   }, [showPerpsTabBadge, perpsIsEffectiveActiveTab, dispatch]);
 
-  const networkFilterForMetrics = useSelector(
-    selectEnabledNetworksAsCaipChainIds,
-  );
-
   // EVM token-balance polling is handled by TokenBalancesPoller (rendered below).
   // Keeping it in an isolated child prevents balance updates from re-rendering
   // this entire subtree every ~30 s.
@@ -173,29 +180,11 @@ export const AccountOverviewTabs = ({
         });
       }
 
+      setTabEntryPoint(ScreenViewedEntryPoint.SubtabClick);
       setActiveTabKey(tabName);
 
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
-      }
-
-      if (
-        tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP &&
-        tabName !== AccountOverviewTabKey.Activity
-      ) {
-        trackEvent(
-          createEventBuilder(
-            ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
-              tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
-            ],
-          )
-            .addCategory(MetaMetricsEventCategory.Home)
-            .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              network_filter: networkFilterForMetrics,
-            })
-            .build(),
-        );
       }
       if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
         trace({
@@ -203,15 +192,7 @@ export const AccountOverviewTabs = ({
         });
       }
     },
-    [
-      activeTabKey,
-      createEventBuilder,
-      networkFilterForMetrics,
-      setActiveTabKey,
-      dispatch,
-      selectedChainIds,
-      trackEvent,
-    ],
+    [activeTabKey, setActiveTabKey, dispatch, selectedChainIds],
   );
 
   const onClickAsset = useCallback(
@@ -254,6 +235,7 @@ export const AccountOverviewTabs = ({
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
+                entryPoint={tabEntryPoint}
               />
             </ErrorBoundary>
           </Tab>
@@ -304,7 +286,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {showDefi && (
+        {showDefi && defiPositionsEnabled && (
           <Tab
             name={t('defi')}
             tabKey={AccountOverviewTabKey.DeFi}
@@ -315,6 +297,7 @@ export const AccountOverviewTabs = ({
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
+                entryPoint={tabEntryPoint}
               />
             </ErrorBoundary>
           </Tab>
@@ -327,7 +310,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__nfts-tab"
           >
             <ErrorBoundary key="nfts">
-              <NftsTab />
+              <NftsTab entryPoint={tabEntryPoint} />
             </ErrorBoundary>
           </Tab>
         )}
@@ -340,7 +323,7 @@ export const AccountOverviewTabs = ({
             onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              <ActivityList />
+              <ActivityList entryPoint={tabEntryPoint} />
             </ErrorBoundary>
           </Tab>
         )}

@@ -21,17 +21,15 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 });
 
-// eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 
 export const parameters = {
   backgrounds: {
-    default: 'default',
-    values: [
-      { name: 'default', value: 'var(--color-background-default)' },
-      { name: 'alternative', value: 'var(--color-background-alternative)' },
-    ],
+    options: {
+      default: { name: 'default', value: 'var(--color-background-default)' },
+      alternative: { name: 'alternative', value: 'var(--color-background-alternative)' }
+    }
   },
   options: {
     storySort: {
@@ -204,3 +202,9 @@ const withColorScheme = (Story, context) => {
 };
 
 export const decorators = [metamaskDecorator, withColorScheme];
+
+export const initialGlobals = {
+  backgrounds: {
+    value: 'default',
+  },
+};
