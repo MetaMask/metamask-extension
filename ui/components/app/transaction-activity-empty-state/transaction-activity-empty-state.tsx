@@ -11,7 +11,7 @@ import {
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
-import { getUseExternalServices, getIsBridgeChain } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   MetaMetricsEventCategory,
@@ -54,7 +54,6 @@ export const TransactionActivityEmptyState = ({
     account.type === TrxAccountType.Eoa;
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const chainId = useSelector(getCurrentChainId);
-  const isBridgeChain = useSelector(getIsBridgeChain);
 
   const { openBridgeExperience } = useBridging();
 
@@ -99,8 +98,7 @@ export const TransactionActivityEmptyState = ({
     }
   }, [navigate, selectedAccountGroup]);
 
-  const isSwapButtonEnabled =
-    isBridgeChain && isSigningEnabled && isExternalServicesEnabled;
+  const isSwapButtonEnabled = isSigningEnabled && isExternalServicesEnabled;
 
   return (
     <>

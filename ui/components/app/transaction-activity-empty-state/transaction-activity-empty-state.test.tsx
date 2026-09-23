@@ -235,11 +235,6 @@ describe('TransactionActivityEmptyState', () => {
       methods: [EthMethod.SignTransaction, 'personal_sign'],
     });
 
-    it('disables swap button when the current chain is not a unified swaps/bridge chain', () => {
-      renderComponent({}, createNonBridgeChainState(), accountWithSigning);
-      expectSwapButtonState(false);
-    });
-
     it('disables swap button when external services are disabled', () => {
       renderComponent(
         {},
