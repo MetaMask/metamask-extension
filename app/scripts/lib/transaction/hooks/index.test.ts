@@ -258,6 +258,21 @@ describe('Transaction Controller Hooks', () => {
       ).resolves.toStrictEqual({ shouldSign: false });
     });
 
+    it('signs Money Account deposits locally even with a gas fee token selected', async () => {
+      const { shouldSign } = getTransactionControllerHooks(buildMockRequest());
+
+      await expect(
+        shouldSign?.({
+          transactionMeta: {
+            ...mockTransactionMeta,
+            nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+            selectedGasFeeToken: '0x0000000000000000000000000000000000000001',
+            type: TransactionType.batch,
+          },
+        }),
+      ).resolves.toStrictEqual({ shouldSign: true });
+    });
+
     it('rejects a money account withdrawal when required sponsorship is unavailable', async () => {
       const { isSponsored } = getTransactionControllerHooks(buildMockRequest());
 
@@ -275,6 +290,22 @@ describe('Transaction Controller Hooks', () => {
           },
         }),
       ).rejects.toThrow('Required transaction sponsorship is unavailable');
+    });
+
+    it('checks signing independently of sponsorship when there is no gas fee token', async () => {
+      const request = buildMockRequest();
+      const { shouldSign } = getTransactionControllerHooks(request);
+
+      await expect(
+        shouldSign?.({
+          transactionMeta: {
+            ...mockTransactionMeta,
+            isGasFeeSponsoredAvailable: true,
+          },
+        }),
+      ).resolves.toStrictEqual({ shouldSign: true });
+      expect(sentinelApiModule.isSendBundleSupported).not.toHaveBeenCalled();
+      expect(isRelaySupported).not.toHaveBeenCalled();
     });
 
     it('does not sign locally when Transaction Pay has quotes', async () => {
@@ -606,6 +637,37 @@ describe('Transaction Controller Hooks', () => {
       );
       expect(delegation7702HookFn).toHaveBeenCalledWith(
         expect.objectContaining({ isGasFeeSponsored: true }),
+        undefined,
+      );
+    });
+
+    it('routes gas fee token transactions through 7702 without sponsorship', async () => {
+      const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
+      delegation7702HookFn.mockResolvedValue({ transactionHash: '0xdelHash' });
+      jest.mocked(Delegation7702PublishHook).mockImplementation(
+        () =>
+          ({
+            getHook: () => delegation7702HookFn,
+          }) as unknown as Delegation7702PublishHook,
+      );
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockImplementation((action: string) =>
+        action === 'KeyringController:getKeyringForAccount'
+          ? { type: 'HD Key Tree' }
+          : undefined,
+      );
+      const { publish } = getTransactionControllerHooks(
+        buildMockRequest({ messenger }),
+      );
+
+      await publish?.({
+        ...mockTransactionMeta,
+        isGasFeeSponsoredAvailable: false,
+        selectedGasFeeToken: '0x0000000000000000000000000000000000000001',
+      });
+
+      expect(delegation7702HookFn).toHaveBeenCalledWith(
+        expect.objectContaining({ isGasFeeSponsored: false }),
         undefined,
       );
     });
