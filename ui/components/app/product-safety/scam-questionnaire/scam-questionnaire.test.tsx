@@ -90,7 +90,7 @@ describe('ScamQuestionnaire', () => {
     fireEvent.click(getByTestId('scam-warning-contact-support'));
 
     expect(openTab).toHaveBeenCalledWith({
-      url: `${SUPPORT_LINK}?utm_campaign=investment_scam_questionnaire`,
+      url: `${SUPPORT_LINK}&utm_campaign=investment_scam_questionnaire`,
     });
   });
 });

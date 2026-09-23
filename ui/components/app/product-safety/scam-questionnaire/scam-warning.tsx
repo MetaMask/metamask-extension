@@ -18,7 +18,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PROCEED_DELAY_SECONDS } from './scam-questionnaire.constants';
 
 const INVESTMENT_SCAM_QUESTIONNAIRE_SUPPORT_CAMPAIGN =
-  'utm_campaign=investment_scam_questionnaire';
+  'investment_scam_questionnaire';
 
 export type ScamWarningProps = {
   onStop: () => void;
@@ -53,8 +53,13 @@ export const ScamWarning: React.FC<ScamWarningProps> = ({
   const handleContactSupport = useCallback(() => {
     onContactSupport();
     if (SUPPORT_LINK) {
+      const supportUrl = new URL(SUPPORT_LINK);
+      supportUrl.searchParams.set(
+        'utm_campaign',
+        INVESTMENT_SCAM_QUESTIONNAIRE_SUPPORT_CAMPAIGN,
+      );
       global.platform?.openTab({
-        url: `${SUPPORT_LINK}?${INVESTMENT_SCAM_QUESTIONNAIRE_SUPPORT_CAMPAIGN}`,
+        url: supportUrl.href,
       });
     }
   }, [onContactSupport]);
