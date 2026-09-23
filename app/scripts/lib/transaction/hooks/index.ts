@@ -1,8 +1,10 @@
 import type { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import {
+  type IsGasSponsoredHook,
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
   PublishHook,
+  type ShouldSignHook,
   TransactionController,
   TransactionControllerOptions,
   TransactionMeta,
@@ -44,18 +46,6 @@ export type TransactionControllerHookRequest = {
   getTransactionMetricsRequest: () => TransactionMetricsRequest;
   messenger: TransactionControllerInitMessenger;
 };
-
-type TransactionApprovalMeta = TransactionMeta & {
-  isGasFeeSponsoredAvailable?: boolean;
-};
-
-type IsGasSponsoredHook = (request: {
-  transactionMeta: TransactionApprovalMeta;
-}) => Promise<{ isSponsored: boolean }>;
-
-type ShouldSignHook = (request: {
-  transactionMeta: TransactionApprovalMeta;
-}) => Promise<{ shouldSign: boolean }>;
 
 type TransactionControllerHooks = NonNullable<
   TransactionControllerOptions['hooks']
@@ -105,13 +95,14 @@ function afterAddHook({ messenger }: TransactionControllerHookRequest) {
 }
 
 type TransactionApprovalDecision = {
+  isSponsored: boolean;
   signingMode: 'local' | 'external';
   sponsorshipEnabled: boolean;
 };
 
 async function getTransactionApprovalDecision(
-  { getFlatState }: TransactionControllerHookRequest,
-  transactionMeta: TransactionApprovalMeta,
+  { getFlatState, messenger }: TransactionControllerHookRequest,
+  transactionMeta: TransactionMeta,
 ): Promise<TransactionApprovalDecision> {
   const flatState = getFlatState();
   const { gasSponsorshipOptOutByChainId } = getPreferences({
@@ -119,20 +110,6 @@ async function getTransactionApprovalDecision(
   });
   const { isHardwareWalletAccount, isSmartTransaction } =
     getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
-
-  const isSmartTransactionAndBundleSupported =
-    isSmartTransaction &&
-    (await isSendBundleSupported(transactionMeta.chainId));
-
-  const shouldCheck7702Eligibility =
-    !isHardwareWalletAccount && !isSmartTransactionAndBundleSupported;
-
-  const is7702Supported = Boolean(
-    shouldCheck7702Eligibility &&
-    (await isRelaySupported(transactionMeta.chainId)) &&
-    transactionMeta.txParams?.to !== undefined,
-  );
-
   const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
   ]);
@@ -141,23 +118,51 @@ async function getTransactionApprovalDecision(
       (quote) => quote.strategy !== TransactionPayStrategy.None,
     ),
   );
-  const requiresExternalSigning =
-    hasTransactionPayQuotes ||
-    isMoneyAccountWithdraw ||
-    (Boolean(transactionMeta.selectedGasFeeToken) &&
-      !transactionMeta.isGasFeeTokenIgnoredIfBalance &&
-      !isHardwareWalletAccount &&
-      !isSmartTransactionAndBundleSupported);
-
+  const hasSelectedGasFeeToken =
+    Boolean(transactionMeta.selectedGasFeeToken) &&
+    !transactionMeta.isGasFeeTokenIgnoredIfBalance;
   const isSponsorshipAvailable = isMoneyAccountWithdraw
     ? Boolean(transactionMeta.isGasFeeSponsored)
     : Boolean(transactionMeta.isGasFeeSponsoredAvailable);
+  const isSponsorshipOptedOut = Boolean(
+    gasSponsorshipOptOutByChainId?.[transactionMeta.chainId],
+  );
+  const shouldCheckSponsorship =
+    isSponsorshipAvailable && !isSponsorshipOptedOut;
+  const shouldCheckBundleSupport =
+    isSmartTransaction && (shouldCheckSponsorship || hasSelectedGasFeeToken);
+  const isSmartTransactionAndBundleSupported =
+    shouldCheckBundleSupport &&
+    (await isSendBundleSupported(transactionMeta.chainId));
+  const shouldCheck7702AccountSupport =
+    !isHardwareWalletAccount &&
+    !isMoneyAccountWithdraw &&
+    (hasSelectedGasFeeToken ||
+      (shouldCheckSponsorship && !isSmartTransactionAndBundleSupported));
+  const is7702AccountSupported =
+    shouldCheck7702AccountSupport &&
+    (await accountSupports7702ForRelay(
+      transactionMeta.txParams?.from,
+      getKeyringController(messenger),
+    ));
+  const shouldCheck7702Sponsorship =
+    shouldCheckSponsorship &&
+    !isHardwareWalletAccount &&
+    !isSmartTransactionAndBundleSupported &&
+    is7702AccountSupported &&
+    transactionMeta.txParams?.to !== undefined;
+  const is7702SponsorshipSupported =
+    shouldCheck7702Sponsorship &&
+    (await isRelaySupported(transactionMeta.chainId));
+  const requiresExternalSigning =
+    hasTransactionPayQuotes ||
+    isMoneyAccountWithdraw ||
+    (hasSelectedGasFeeToken && is7702AccountSupported);
   const sponsorshipEnabled =
-    isSponsorshipAvailable &&
-    !gasSponsorshipOptOutByChainId?.[transactionMeta.chainId] &&
+    shouldCheckSponsorship &&
     (isSmartTransactionAndBundleSupported ||
-      is7702Supported ||
-      (isMoneyAccountWithdraw && requiresExternalSigning));
+      is7702SponsorshipSupported ||
+      isMoneyAccountWithdraw);
 
   if (isMoneyAccountWithdraw && !sponsorshipEnabled) {
     throw new Error('Required transaction sponsorship is unavailable');
@@ -166,8 +171,17 @@ async function getTransactionApprovalDecision(
   const signingMode: 'local' | 'external' = requiresExternalSigning
     ? 'external'
     : 'local';
+  // Hardware Smart Transactions are sponsored but still need the device to
+  // produce a standard EIP-1559 signature before the Smart Transaction hook
+  // publishes them. Core treats `isSponsored: true` as an instruction to skip
+  // signing, so keep the lifecycle result false while retaining sponsorship
+  // metadata for the publisher and activity UI.
+  const isSponsored =
+    sponsorshipEnabled &&
+    !(isHardwareWalletAccount && isSmartTransactionAndBundleSupported);
 
   return {
+    isSponsored,
     signingMode,
     sponsorshipEnabled,
   };
@@ -177,12 +191,12 @@ function isSponsoredHook(
   request: TransactionControllerHookRequest,
 ): IsGasSponsoredHook {
   return async ({ transactionMeta }) => {
-    const { sponsorshipEnabled } = await getTransactionApprovalDecision(
+    const { isSponsored } = await getTransactionApprovalDecision(
       request,
       transactionMeta,
     );
 
-    return { isSponsored: sponsorshipEnabled };
+    return { isSponsored };
   };
 }
 
@@ -250,9 +264,6 @@ function publishHook({
 }: TransactionControllerHookRequest): PublishHook {
   return async (transactionMeta: TransactionMeta, signedTx: string) => {
     const flatState = getFlatState();
-    const transactionController = {
-      state: messenger.call('TransactionController:getState'),
-    } as unknown as TransactionController;
     const { signingMode, sponsorshipEnabled } =
       await getTransactionApprovalDecision(
         { getFlatState, getTransactionMetricsRequest, messenger },
@@ -262,6 +273,21 @@ function publishHook({
       ...transactionMeta,
       isGasFeeSponsored: sponsorshipEnabled,
     };
+
+    if (
+      transactionMeta.isGasFeeSponsored !== sponsorshipEnabled &&
+      (transactionMeta.isGasFeeSponsored !== undefined || sponsorshipEnabled)
+    ) {
+      messenger.call(
+        'TransactionController:updateTransaction',
+        transactionMetaForPublish,
+        'Update effective gas fee sponsorship metadata before publish',
+      );
+    }
+
+    const transactionController = {
+      state: messenger.call('TransactionController:getState'),
+    } as unknown as TransactionController;
 
     const { isSmartTransaction, featureFlags } =
       getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
