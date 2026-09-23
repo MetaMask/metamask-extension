@@ -13,6 +13,4 @@ export const mockStellarStaticAssets = (mockServer: Mockttp) =>
     .thenReply(200, '');
 
 export const mockStellarWalletIcons = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(/^https:\/\/stellar\.creit\.tech\//u)
-    .thenReply(200, '');
+  mockServer.forGet(/^https:\/\/stellar\.creit\.tech\//u).thenReply(200, '');

@@ -1,9 +1,6 @@
 import { TestDappStellar } from '../../page-objects/pages/test-dapp-stellar';
 import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.flow';
-import {
-  DEFAULT_STELLAR_ADDRESS_SHORT,
-  WINDOW_TITLES,
-} from '../../constants';
+import { DEFAULT_STELLAR_ADDRESS_SHORT, WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
