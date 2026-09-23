@@ -3103,7 +3103,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@creit.tech/stellar-wallets-kit@npm:^2.1.0":
+"@creit.tech/stellar-wallets-kit@npm:^2.6.0":
   version: 2.6.0
   resolution: "@creit.tech/stellar-wallets-kit@npm:2.6.0"
   dependencies:
@@ -7949,7 +7949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/devices@npm:8.14.1, @ledgerhq/devices@npm:^8.4.4":
+"@ledgerhq/devices@npm:8.14.1":
   version: 8.14.1
   resolution: "@ledgerhq/devices@npm:8.14.1"
   dependencies:
@@ -7961,7 +7961,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/devices@npm:8.18.0":
+"@ledgerhq/devices@npm:8.18.0, @ledgerhq/devices@npm:^8.4.4":
   version: 8.18.0
   resolution: "@ledgerhq/devices@npm:8.18.0"
   dependencies:
@@ -8240,14 +8240,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lit-labs/ssr-dom-shim@npm:^1.2.0":
-  version: 1.3.0
-  resolution: "@lit-labs/ssr-dom-shim@npm:1.3.0"
-  checksum: 10/a15c5d145a20f367a392cff91f2091ffe54457119ac26569670bbbe32760f86d1e250f865dc1bd0604641106376776c4862a8fff9adb44f9881b510747c08680
-  languageName: node
-  linkType: hard
-
-"@lit-labs/ssr-dom-shim@npm:^1.5.0":
+"@lit-labs/ssr-dom-shim@npm:^1.2.0, @lit-labs/ssr-dom-shim@npm:^1.5.0":
   version: 1.6.0
   resolution: "@lit-labs/ssr-dom-shim@npm:1.6.0"
   checksum: 10/144432432e1749c4878a59baf41b2afaadef565675d64b2a8e088c6f54e36f26f67ef43aa93e49d3e6dd38a5e27c41059e981c33accdb4e8c6d47c1048696b80
@@ -9192,12 +9185,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connect-stellar@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/connect-stellar@npm:0.2.0"
+"@metamask/connect-stellar@npm:0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/connect-stellar@npm:0.3.0"
   dependencies:
     "@metamask/multichain-api-client": "npm:^0.12.0"
-  checksum: 10/042b3078f09b76a7006371016b802f48c4ed3db6820b5598586fd76bb9e5e176fa6ea244189a6b0146e9ce79e998b677b1f46fcf90fc52376230af109ea91a91
+  checksum: 10/7867ac3392551936e0193260146a38e5cc3b638e9b956df5d6f69602569bd98e5d194574411871abaa643d783337d1397d8051f3bc4390e74e8634df816a7f7a
   languageName: node
   linkType: hard
 
@@ -12081,18 +12074,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp-stellar@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/test-dapp-stellar@npm:0.2.0"
+"@metamask/test-dapp-stellar@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/test-dapp-stellar@npm:0.3.0"
   dependencies:
-    "@creit.tech/stellar-wallets-kit": "npm:^2.1.0"
-    "@metamask/connect-stellar": "npm:^0.2.0"
+    "@creit.tech/stellar-wallets-kit": "npm:^2.6.0"
+    "@metamask/connect-stellar": "npm:0.3.0"
     "@reown/appkit": "npm:^1.8.19"
-    "@stellar/stellar-sdk": "npm:^15.0.1"
-    "@walletconnect/sign-client": "npm:^2.23.9"
-    "@walletconnect/types": "npm:^2.23.9"
+    "@stellar/stellar-sdk": "npm:^17.1.0"
+    "@walletconnect/sign-client": "npm:^2.25.0"
+    "@walletconnect/types": "npm:^2.25.0"
     depcheck: "npm:^1.4.7"
-  checksum: 10/6966a9c9ad921fcbe4bfd97dca576a2f8c0ac82b5c9abe2d2c223aed463ec3d183e1757ad13f05820d49302ce05e870842333e8e6eaeec21faf8406291230140
+  checksum: 10/60c09905995cc20045bb205d42e8c7a6fa07ca2dbcacafd939d5732682ce2b0e1dab0494830b1b35730184b5e368946cf0bf4e9db98297e93377949fdd285ab9
   languageName: node
   linkType: hard
 
@@ -18441,13 +18434,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/js-xdr@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@stellar/js-xdr@npm:4.0.0"
-  checksum: 10/d300c723e18f9d99c666499f8744a31981390ef8d780b2a321e019cbd23436a2de5b3d999e7af5e9ed334b14801497c0a19ad86ab052aff420415f2d89785a7b
-  languageName: node
-  linkType: hard
-
 "@stellar/js-xdr@npm:^5.0.0":
   version: 5.0.0
   resolution: "@stellar/js-xdr@npm:5.0.0"
@@ -18473,20 +18459,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-base@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@stellar/stellar-base@npm:15.0.0"
-  dependencies:
-    "@noble/curves": "npm:^1.9.7"
-    "@stellar/js-xdr": "npm:^4.0.0"
-    base32.js: "npm:^0.1.0"
-    bignumber.js: "npm:^9.3.1"
-    buffer: "npm:^6.0.3"
-    sha.js: "npm:^2.4.12"
-  checksum: 10/7a0a485395a27082adba4ab601311a25933eced065c81abbbec6d1bdf184ef9f5d42c3393fdf55f00f061da672e2511820436261c4dcc4b4eed4f3766a0b9c6c
-  languageName: node
-  linkType: hard
-
 "@stellar/stellar-sdk@npm:^13.3.0":
   version: 13.3.0
   resolution: "@stellar/stellar-sdk@npm:13.3.0"
@@ -18503,26 +18475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:^15.0.1":
-  version: 15.1.0
-  resolution: "@stellar/stellar-sdk@npm:15.1.0"
-  dependencies:
-    "@stellar/stellar-base": "npm:^15.0.0"
-    axios: "npm:1.15.0"
-    bignumber.js: "npm:^9.3.1"
-    commander: "npm:^14.0.3"
-    eventsource: "npm:^2.0.2"
-    feaxios: "npm:^0.0.23"
-    randombytes: "npm:^2.1.0"
-    toml: "npm:^3.0.0"
-    urijs: "npm:^1.19.11"
-  bin:
-    stellar-js: bin/stellar-js
-  checksum: 10/5c1138eddf1a4c261f578853aa9a2600d7e8f3e413f90f8b1bd48279d1c3f599315aff0a0876fca840deb3116a00518ac5ea7554a94015e8f1d2a60aa904b024
-  languageName: node
-  linkType: hard
-
-"@stellar/stellar-sdk@npm:^17.0.0":
+"@stellar/stellar-sdk@npm:^17.0.0, @stellar/stellar-sdk@npm:^17.1.0":
   version: 17.1.0
   resolution: "@stellar/stellar-sdk@npm:17.1.0"
   dependencies:
@@ -22433,7 +22386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/sign-client@npm:^2.23.9":
+"@walletconnect/sign-client@npm:^2.25.0":
   version: 2.25.0
   resolution: "@walletconnect/sign-client@npm:2.25.0"
   dependencies:
@@ -22542,7 +22495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/types@npm:2.25.0, @walletconnect/types@npm:^2.23.9":
+"@walletconnect/types@npm:2.25.0, @walletconnect/types@npm:^2.25.0":
   version: 2.25.0
   resolution: "@walletconnect/types@npm:2.25.0"
   dependencies:
@@ -37582,18 +37535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lit-element@npm:^4.0.0":
-  version: 4.2.0
-  resolution: "lit-element@npm:4.2.0"
-  dependencies:
-    "@lit-labs/ssr-dom-shim": "npm:^1.2.0"
-    "@lit/reactive-element": "npm:^2.1.0"
-    lit-html: "npm:^3.3.0"
-  checksum: 10/0760140f9cf7eb71e327f04d51a41e3ae4c3fca2ddccca05fa3458d67124a2008044ef3d3812d021e2297ba8b3af7c06fa56b03860877bc09567c334b9d390ad
-  languageName: node
-  linkType: hard
-
-"lit-element@npm:^4.2.0":
+"lit-element@npm:^4.0.0, lit-element@npm:^4.2.0":
   version: 4.2.2
   resolution: "lit-element@npm:4.2.2"
   dependencies:
@@ -38959,7 +38901,7 @@ __metadata:
     "@metamask/test-dapp-bitcoin": "npm:^0.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
-    "@metamask/test-dapp-stellar": "npm:^0.2.0"
+    "@metamask/test-dapp-stellar": "npm:^0.3.0"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.6.0"
     "@metamask/transaction-controller": "npm:^72.0.1"
@@ -47470,7 +47412,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sha.js@npm:^2.3.6, sha.js@npm:^2.4.0, sha.js@npm:^2.4.11, sha.js@npm:^2.4.12, sha.js@npm:^2.4.8":
+"sha.js@npm:^2.3.6, sha.js@npm:^2.4.0, sha.js@npm:^2.4.11, sha.js@npm:^2.4.8":
   version: 2.4.12
   resolution: "sha.js@npm:2.4.12"
   dependencies:
@@ -51042,7 +50984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"urijs@npm:^1.19.1, urijs@npm:^1.19.11":
+"urijs@npm:^1.19.1":
   version: 1.19.11
   resolution: "urijs@npm:1.19.11"
   checksum: 10/2aa5547b53c37ebee03a8ad70feae1638a37cc4c7e543abbffb14fc86b17f84f303d08e45c501441410c025bab22aa84673c97604b7b2619967f1dd49f69931f
