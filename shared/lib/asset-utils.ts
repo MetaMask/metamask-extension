@@ -75,6 +75,27 @@ function isNativeTokenAddressForChain(
   );
 }
 
+/**
+ * Rewrites chain-specific native token addresses to `NATIVE_TOKEN_ADDRESS` so
+ * they share one asset id with `0x0` (Send otherwise treats them as ERC-20).
+ *
+ * @param address - Token address or asset reference.
+ * @param chainId - Chain id in CAIP or hex form.
+ * @returns `NATIVE_TOKEN_ADDRESS` when `address` is the chain native, else `address`.
+ */
+function normalizeNativeTokenAddress(
+  address: Hex | CaipAssetType | string,
+  chainId: CaipChainId | Hex | string,
+): Hex | CaipAssetType | string {
+  if (
+    typeof address === 'string' &&
+    isNativeTokenAddressForChain(address, chainId)
+  ) {
+    return NATIVE_TOKEN_ADDRESS;
+  }
+  return address;
+}
+
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
   chainId?: CaipChainId | Hex,
@@ -95,14 +116,7 @@ export const toAssetId = (
     return undefined;
   }
 
-  // Non-zero native addresses (Polygon, Mantle, Metis, …) must share the same
-  // asset id as `0x0`, otherwise Send routes them as ERC-20 transfers.
-  if (
-    typeof addressToUse === 'string' &&
-    isNativeTokenAddressForChain(addressToUse, chainIdToUse)
-  ) {
-    addressToUse = NATIVE_TOKEN_ADDRESS;
-  }
+  addressToUse = normalizeNativeTokenAddress(addressToUse, chainIdToUse);
 
   if (isNativeAddress(addressToUse)) {
     try {
