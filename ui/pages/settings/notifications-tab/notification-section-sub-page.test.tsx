@@ -12,6 +12,10 @@ import {
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
+import {
+  putMarketingConsent,
+  setDataCollectionForMarketing,
+} from '../../../store/actions';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -91,6 +95,12 @@ jest.mock(
     }),
   }),
 );
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  setDataCollectionForMarketing: jest.fn(() => () => Promise.resolve()),
+  putMarketingConsent: jest.fn(() => () => Promise.resolve()),
+}));
 
 const mockStore = configureMockStore([thunk]);
 
@@ -912,6 +922,8 @@ describe('NotificationSectionSubPage', () => {
           isNotificationServicesEnabled: true,
           isUpdatingMetamaskNotifications: false,
           isUpdatingMetamaskNotificationsAccount: [],
+          marketingConsentDecisionMade: true,
+          optedInToMarketing: false,
           subscriptionAccountsSeen: [],
           accountTree: { selectedAccountGroup: '', wallets: {} },
           internalAccounts: { selectedAccount: '', accounts: {} },
@@ -980,6 +992,99 @@ describe('NotificationSectionSubPage', () => {
       expect(
         screen.queryByTestId('walletActivity-push-notifications-toggle-input'),
       ).not.toBeInTheDocument();
+    });
+
+    it('shows marketing consent before enabling a marketing channel when both channels are off', () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+
+      expect(screen.getByTestId('marketing-consent-sheet')).toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      'marketing-consent-sheet-cancel',
+      'marketing-consent-sheet-close',
+    ])('dismisses marketing consent when %s is clicked', (dismissTestId) => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+      fireEvent.click(screen.getByTestId(dismissTestId));
+
+      expect(
+        screen.queryByTestId('marketing-consent-sheet'),
+      ).not.toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
+    it('dismisses marketing consent when clicking outside the sheet', () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+      fireEvent.mouseDown(document.body);
+
+      expect(
+        screen.queryByTestId('marketing-consent-sheet'),
+      ).not.toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
+    it('opts in to marketing and enables only the selected channel', async () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-in-app-notifications-toggle-input'),
+      );
+      fireEvent.click(screen.getByTestId('marketing-consent-sheet-opt-in'));
+
+      await waitFor(() => {
+        expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
+        expect(putMarketingConsent).toHaveBeenCalledWith(true);
+        expect(updatePreference).toHaveBeenCalledWith(
+          'marketing',
+          'inAppNotificationsEnabled',
+          true,
+        );
+      });
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
