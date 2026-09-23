@@ -5,7 +5,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import Homepage from '../../page-objects/pages/home/homepage';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { DAPP_PATH } from '../../constants';
 import {
   mockExchangeRates,
