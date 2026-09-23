@@ -16,14 +16,14 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BaseUrl } from '../../../../shared/constants/urls';
 
-type PasskeySetupPromptProps = {
+type PasskeySetupPromptProps = Readonly<{
   enrollmentError: string | null;
   isPrfMigrationError: boolean;
   passkeyMethodLabel: string;
   passkeyMethodSpecificLabel: string;
   onSetup: () => void;
   onSkip: () => void;
-};
+}>;
 
 /**
  * Shows the passkey setup prompt, including the PRF migration retry state.

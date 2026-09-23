@@ -75,11 +75,11 @@ export function usePasskeyPrfMigration() {
       const registrationOptions = await messenger.call(
         'PasskeyController:generatePasskeyReplacementRegistrationOptions',
       );
+      activeRegistrationChallenge.current = registrationOptions.challenge;
       if (isUnmounted.current) {
         await cancelActiveReplacement();
         return;
       }
-      activeRegistrationChallenge.current = registrationOptions.challenge;
 
       try {
         const registrationResponse: PasskeyRegistrationResponse =

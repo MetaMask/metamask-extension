@@ -185,6 +185,39 @@ describe('usePasskeyPrfMigration', () => {
     );
   });
 
+  it('cancels the controller ceremony when unmount happens before the registration challenge is stored', async () => {
+    let resolveGenerate: (options: typeof registrationOptions) => void = () =>
+      undefined;
+    generatePasskeyReplacementRegistrationOptions.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveGenerate = resolve;
+      }),
+    );
+    const { result, unmount } = renderReplacementFlow();
+
+    act(() => {
+      result.current.replacePasskey().catch(() => undefined);
+    });
+    await waitFor(() => {
+      expect(generatePasskeyReplacementRegistrationOptions).toHaveBeenCalled();
+    });
+
+    unmount();
+
+    expect(cancelPasskeyReplacement).not.toHaveBeenCalled();
+
+    await act(async () => {
+      resolveGenerate(registrationOptions);
+    });
+
+    await waitFor(() => {
+      expect(cancelPasskeyReplacement).toHaveBeenCalledWith(
+        registrationOptions.challenge,
+      );
+    });
+    expect(startPasskeyRegistration).not.toHaveBeenCalled();
+  });
+
   it('cancels active replacement when the hook unmounts', async () => {
     let resolveRegistration: (
       response: PasskeyRegistrationResponse,

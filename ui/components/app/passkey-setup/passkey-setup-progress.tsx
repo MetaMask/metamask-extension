@@ -11,12 +11,12 @@ import {
   type PasskeyEnrollmentStepStatus,
 } from '../passkey-enrollment-steps';
 
-type PasskeySetupProgressProps = {
+type PasskeySetupProgressProps = Readonly<{
   passkeyMethodLabel: string;
   passkeyMethodSpecificLabel: string;
   registerStatus: PasskeyEnrollmentStepStatus;
   verifyStatus: PasskeyEnrollmentStepStatus;
-};
+}>;
 
 /**
  * Shows passkey registration and verification progress.
