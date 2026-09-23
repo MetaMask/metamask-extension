@@ -13,7 +13,6 @@ const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
 const mockToastDismiss = jest.fn();
 const mockUseToastLabel = jest.fn();
-const mockUseTransactionDetailsRoute = jest.fn();
 
 jest.mock('../../ui/toast/toast', () => ({
   toast: {
@@ -43,11 +42,6 @@ jest.mock('./useToastLabel', () => ({
     mockUseToastLabel(status, transactionId),
 }));
 
-jest.mock('./useTransactionDetailsRoute', () => ({
-  useTransactionDetailsRoute: (transactionId?: string) =>
-    mockUseTransactionDetailsRoute(transactionId),
-}));
-
 jest.mock('react-router-dom', () => ({
   Link: ({
     to,
@@ -70,7 +64,6 @@ describe('toast-listener/shared', () => {
     mockUseToastLabel.mockReturnValue({
       title: messages.transactionConfirmed.message,
     });
-    mockUseTransactionDetailsRoute.mockReturnValue(undefined);
   });
 
   it('shows pending, success, and failed toasts with the given id', () => {
@@ -99,9 +92,11 @@ describe('toast-listener/shared', () => {
     expect(mockToastError).toHaveBeenCalledTimes(1);
   });
 
-  it('renders a details link on success toasts when the transaction has a details route', () => {
-    mockUseTransactionDetailsRoute.mockReturnValue('/tx/eip155:1/0xabc');
-    showSuccessToast('toast-id', { transactionId: 'tx-1' });
+  it('renders a details link on success toasts when to is provided', () => {
+    showSuccessToast('toast-id', {
+      transactionId: 'tx-1',
+      to: '/tx/eip155:1/0xabc',
+    });
 
     render(mockToastSuccess.mock.calls[0][0]);
 
@@ -114,7 +109,7 @@ describe('toast-listener/shared', () => {
     expect(mockToastDismiss).toHaveBeenCalledWith('toast-id');
   });
 
-  it('does not render a details link when the transaction has no details route', () => {
+  it('does not render a details link when to is omitted', () => {
     showSuccessToast('toast-id', { transactionId: 'tx-1' });
 
     render(mockToastSuccess.mock.calls[0][0]);

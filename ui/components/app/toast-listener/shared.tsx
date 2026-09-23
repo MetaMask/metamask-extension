@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { toast, ToastContent } from '../../ui/toast/toast';
 import { useToastLabel } from './useToastLabel';
-import { useTransactionDetailsRoute } from './useTransactionDetailsRoute';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
@@ -15,15 +14,16 @@ const transactionToastTestIds: Record<ToastStatus, string> = {
 type Props = {
   toastId?: string;
   transactionId?: string;
+  to?: string;
 };
 
 const TransactionToastContent = ({
   toastId,
   status,
   transactionId,
+  to,
 }: { status: ToastStatus } & Props) => {
   const { title, description } = useToastLabel(status, transactionId);
-  const to = useTransactionDetailsRoute(transactionId);
 
   return (
     <>

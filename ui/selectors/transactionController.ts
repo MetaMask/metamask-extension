@@ -49,17 +49,6 @@ export const selectTransactionById = createSelector(
     id ? transactions.find((tx) => tx.id === id) : undefined,
 );
 
-export const selectTransactionChainIdAndHash = createSelector(
-  selectTransactionById,
-  (transaction) => {
-    const { chainId, hash } = transaction ?? {};
-    if (!chainId || !hash) {
-      return undefined;
-    }
-    return { chainId, hash };
-  },
-);
-
 export const selectUnapprovedTransactionById = createSelector(
   selectTransactions,
   (_state: TransactionState, id: string | undefined) => id,
