@@ -897,7 +897,21 @@ export class PerpsStreamBridge {
         throw new Error('Perps preload was released');
       }
       this.#preloadReady = true;
-      this.#controller.startMarketDataPreload();
+      await Promise.resolve()
+        .then(() => {
+          if (isCurrent()) {
+            return this.#controller.startMarketDataPreload();
+          }
+        })
+        .catch((error) => {
+          console.debug(
+            '[PerpsStreamBridge] startMarketDataPreload failed',
+            error,
+          );
+        });
+      if (!isCurrent()) {
+        throw new Error('Perps preload was released');
+      }
       const useTerminalApi = this.#isTerminalBackendEnabled();
       const markets = await this.#controller.getMarketDataWithPrices({
         useTerminalApi,

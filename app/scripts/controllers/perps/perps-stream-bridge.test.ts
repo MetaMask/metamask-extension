@@ -4151,6 +4151,32 @@ describe('wallet-root Perps preload', () => {
     bridge.destroy();
   });
 
+  it.each(['throws', 'rejects'])(
+    'finishes wallet preload when optional cache warming %s',
+    async (failure) => {
+      const { api, controller, controllerApi, bridge, emit } = setup();
+      controller.startMarketDataPreload.mockImplementation(() => {
+        const error = new Error('cache unavailable');
+        if (failure === 'throws') {
+          throw error;
+        }
+        return Promise.reject(error);
+      });
+      try {
+        await expect(api.perpsStartPreload('home')).resolves.toBeUndefined();
+        expect(emit).toHaveBeenCalledWith(
+          'markets',
+          [{ symbol: 'BTC' }, { symbol: 'ETH' }],
+          { live: true },
+        );
+        expect(controller.subscribeToPrices).toHaveBeenCalled();
+        expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+      } finally {
+        bridge.dispose();
+      }
+    },
+  );
+
   it('continues initialization after best-effort cache preload throws', async () => {
     const { api, controller, controllerApi, bridge } = setup();
     controller.startMarketDataPreload.mockImplementation(() => {
