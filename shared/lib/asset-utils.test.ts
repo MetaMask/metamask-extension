@@ -184,6 +184,7 @@ describe('asset-utils', () => {
       ]);
     });
 
+    // @ts-expect-error - each is a valid test function
     it.each([
       {
         name: 'Mantle',
@@ -197,7 +198,13 @@ describe('asset-utils', () => {
       },
     ])(
       'returns native asset ID for $name non-zero native token address',
-      ({ chainId, nativeAddress }) => {
+      ({
+        chainId,
+        nativeAddress,
+      }: {
+        chainId: CaipChainId;
+        nativeAddress: string;
+      }) => {
         const zeroAddress = '0x0000000000000000000000000000000000000000';
 
         const result = toAssetId(nativeAddress, chainId);
@@ -212,6 +219,7 @@ describe('asset-utils', () => {
 
     // These chains are not in the swaps native-asset map, so toAssetId falls
     // back to the zero-address ERC-20 id rather than a distinct token contract.
+    // @ts-expect-error - each is a valid test function
     it.each([
       {
         name: 'Gnosis',
@@ -230,7 +238,7 @@ describe('asset-utils', () => {
       },
     ])(
       'returns zero-address ERC-20 asset ID for $name native token',
-      ({ chainId, expected }) => {
+      ({ chainId, expected }: { chainId: CaipChainId; expected: string }) => {
         const zeroAddress = '0x0000000000000000000000000000000000000000';
 
         const result = toAssetId(zeroAddress, chainId);
