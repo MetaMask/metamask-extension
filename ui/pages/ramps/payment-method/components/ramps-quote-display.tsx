@@ -134,6 +134,11 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
     useState<HTMLButtonElement | null>(null);
   const [isFallbackTooltipOpen, setIsFallbackTooltipOpen] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Mirrors of hover/focus state, read by the close scheduler so that one
+  // trigger going away (e.g. blur) does not close the tooltip while the
+  // other (e.g. pointer over the tooltip) is still active.
+  const isPointerOverRef = useRef(false);
+  const isTriggerFocusedRef = useRef(false);
 
   const openFallbackTooltip = useCallback(() => {
     if (closeTimeoutRef.current) {
@@ -144,6 +149,9 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
   }, []);
 
   const scheduleFallbackClose = useCallback(() => {
+    if (isPointerOverRef.current || isTriggerFocusedRef.current) {
+      return;
+    }
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
     }
@@ -152,6 +160,26 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
       setIsFallbackTooltipOpen(false);
     }, FALLBACK_TOOLTIP_CLOSE_DELAY_MS);
   }, []);
+
+  const handlePointerEnter = useCallback(() => {
+    isPointerOverRef.current = true;
+    openFallbackTooltip();
+  }, [openFallbackTooltip]);
+
+  const handlePointerLeave = useCallback(() => {
+    isPointerOverRef.current = false;
+    scheduleFallbackClose();
+  }, [scheduleFallbackClose]);
+
+  const handleTriggerFocus = useCallback(() => {
+    isTriggerFocusedRef.current = true;
+    openFallbackTooltip();
+  }, [openFallbackTooltip]);
+
+  const handleTriggerBlur = useCallback(() => {
+    isTriggerFocusedRef.current = false;
+    scheduleFallbackClose();
+  }, [scheduleFallbackClose]);
 
   useEffect(
     () => () => {
@@ -173,8 +201,8 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
       {...(isNativeTooltip
         ? {}
         : {
-            onMouseEnter: openFallbackTooltip,
-            onMouseLeave: scheduleFallbackClose,
+            onMouseEnter: handlePointerEnter,
+            onMouseLeave: handlePointerLeave,
           })}
     >
       <button
@@ -182,8 +210,8 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
         ref={setTriggerElement}
         className="border-0 bg-transparent p-0"
         onClick={(event) => event.stopPropagation()}
-        onFocus={isNativeTooltip ? undefined : openFallbackTooltip}
-        onBlur={isNativeTooltip ? undefined : scheduleFallbackClose}
+        onFocus={isNativeTooltip ? undefined : handleTriggerFocus}
+        onBlur={isNativeTooltip ? undefined : handleTriggerBlur}
         aria-describedby={
           !isNativeTooltip && isFallbackTooltipOpen
             ? fallbackPopoverId
@@ -208,8 +236,8 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
           message={warningMessage}
           referenceElement={triggerElement}
           onDismiss={() => setIsFallbackTooltipOpen(false)}
-          onMouseEnter={openFallbackTooltip}
-          onMouseLeave={scheduleFallbackClose}
+          onMouseEnter={handlePointerEnter}
+          onMouseLeave={handlePointerLeave}
         />
       )}
     </Box>

@@ -114,6 +114,40 @@ describe('RampsQuoteDisplay', () => {
     expect(trigger).not.toHaveAttribute('aria-describedby');
   });
 
+  it('keeps the fallback tooltip open when the trigger blurs while hovered', async () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <RampsQuoteDisplay
+        cryptoAmount=""
+        fiatAmount={null}
+        showWarningIcon
+        warningMessage="Quote unavailable."
+      />,
+      createStore(),
+    );
+
+    const trigger = getByTestId('ramps-quote-display-warning-trigger');
+    const warning = getByTestId('ramps-quote-display-warning');
+
+    fireEvent.focus(trigger);
+    const tooltip = getByTestId('ramps-quote-display-warning-tooltip');
+
+    // Pointer moves onto the tooltip while the trigger is still focused.
+    fireEvent.mouseEnter(tooltip);
+
+    // Clicking the tooltip blurs the trigger, but the pointer is still over
+    // the tooltip, so it stays open.
+    fireEvent.blur(trigger);
+    expect(
+      getByTestId('ramps-quote-display-warning-tooltip'),
+    ).toHaveTextContent('Quote unavailable.');
+
+    // Once the pointer leaves too, the tooltip closes after the grace period.
+    fireEvent.mouseLeave(tooltip);
+    await waitFor(() =>
+      expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull(),
+    );
+  });
+
   it('associates the warning icon with a native tooltip when interest invokers are supported', () => {
     interestInvokerSupport.detected = true;
     try {
