@@ -593,6 +593,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -641,6 +642,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         browser: browserPolyfillMock,
@@ -970,6 +972,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -1010,6 +1013,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -2419,6 +2423,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -2763,6 +2768,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3562,6 +3568,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3607,6 +3614,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3745,7 +3753,10 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
-          notificationManager: { markAsAutomaticallyClosed: jest.fn() },
+          notificationManager: {
+            closePopup: jest.fn(),
+            markAsAutomaticallyClosed: jest.fn(),
+          },
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
@@ -3792,6 +3803,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3859,6 +3871,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3928,6 +3941,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3981,6 +3995,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -4506,6 +4521,7 @@ describe('MetaMaskController', () => {
       getRequestAccountTabIds: () => ({}),
       getOpenMetamaskTabsIds: () => ({}),
       notificationManager: {
+        closePopup: jest.fn(),
         markAsAutomaticallyClosed: jest.fn(),
       },
       infuraProjectId: 'foo',
@@ -4579,6 +4595,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -4614,6 +4631,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -4656,6 +4674,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -4844,6 +4863,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -4975,6 +4995,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -5112,6 +5133,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -5272,6 +5294,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
