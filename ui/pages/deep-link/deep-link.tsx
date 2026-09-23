@@ -123,7 +123,7 @@ async function updateStateFromUrl(
           ? resolvedDestination.redirectTo.toString()
           : getExtensionURL(
               resolvedDestination.path,
-              resolvedDestination.query.toString() ?? null,
+              resolvedDestination.query.toString(),
             );
       const title = parsed.route.getTitle(url.searchParams);
 

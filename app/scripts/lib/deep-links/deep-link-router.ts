@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import type { FeatureFlags } from '@metamask/remote-feature-flag-controller';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   type ParsedDeepLink,
@@ -59,7 +60,7 @@ export class DeepLinkRouter extends EventEmitter<{
    */
   private isUnifiedBuyEnabled(): boolean {
     const state = this.getState() as {
-      remoteFeatureFlags?: Record<string, unknown>;
+      remoteFeatureFlags?: FeatureFlags;
     };
     // Resolve through the same manifest-merged path as the UI selector
     // (`getIsRampsEnabled`). Reading raw controller state here would ignore
@@ -67,9 +68,9 @@ export class DeepLinkRouter extends EventEmitter<{
     // in-app buy flow in the UI while deep links kept redirecting externally.
     const flags = getRemoteFeatureFlags({
       metamask: {
-        remoteFeatureFlags: state.remoteFeatureFlags,
+        remoteFeatureFlags: state.remoteFeatureFlags ?? {},
       },
-    } as never);
+    });
     return getBooleanFeatureFlag(flags.rampsEnabled, false);
   }
 
