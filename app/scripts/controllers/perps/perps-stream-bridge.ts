@@ -7,6 +7,7 @@ import type {
   OrderFill,
 } from '@metamask/perps-controller';
 import type { Patch } from 'immer';
+import { captureException } from '../../../../shared/lib/sentry';
 
 // Defined locally to avoid a value import from @metamask/perps-controller,
 // which transitively pulls in the Hyperliquid SDK (ESM-only) and breaks Jest.
@@ -351,10 +352,7 @@ export class PerpsStreamBridge {
             }
           })
           .catch((error) => {
-            console.debug(
-              '[PerpsStreamBridge] startMarketDataPreload failed',
-              error,
-            );
+            captureException(error);
           });
         if (
           generation !== this.#destroyGeneration ||
@@ -904,10 +902,7 @@ export class PerpsStreamBridge {
           }
         })
         .catch((error) => {
-          console.debug(
-            '[PerpsStreamBridge] startMarketDataPreload failed',
-            error,
-          );
+          captureException(error);
         });
       if (!isCurrent()) {
         throw new Error('Perps preload was released');
