@@ -465,6 +465,7 @@
   "moneyBalance": "object",
   "perpsTutorial": "object",
   "rewards": "object",
+  "sendMaxValue": "object",
   "smartAccounts": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }

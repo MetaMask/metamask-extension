@@ -1328,6 +1328,9 @@
       "title": "string"
     }
   },
+  "sendMaxValue": {
+    "maxValueMode": {}
+  },
   "smartAccounts": {
     "toggleStates": {}
   },
