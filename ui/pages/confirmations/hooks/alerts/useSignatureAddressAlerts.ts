@@ -55,7 +55,12 @@ export function useSignatureAddressAlerts(): Alert[] {
     }
 
     try {
-      const parsed = parseTypedDataMessage(msgData);
+      // Stringify objects first so parseTypedDataMessage mutates a copy.
+      // Passing the live messageParams.data object rewrites message.value
+      // on the stored signature request.
+      const parsed = parseTypedDataMessage(
+        typeof msgData === 'string' ? msgData : JSON.stringify(msgData),
+      );
       const signer = signatureRequest.messageParams?.from;
       const isPermit = PRIMARY_TYPES_PERMIT.some(
         (type) => type === parsed.primaryType,

@@ -163,6 +163,33 @@ describe('useSignatureAddressAlerts', () => {
     });
   });
 
+  it('does not mutate a stored typed-data object while parsing', () => {
+    const request = makeTypedSignV4({
+      types: {
+        Transfer: [{ name: 'recipient', type: 'address' }],
+      },
+      primaryType: 'Transfer',
+      message: { recipient: MALICIOUS_ADDRESS, value: 12345 },
+    });
+
+    const state = stateWithSignatureRequest(request);
+    const stored = state.metamask.signatureRequests[request.id];
+    const data = JSON.parse(request.msgParams?.data as string) as {
+      message: { value: number };
+    };
+    stored.messageParams = {
+      ...stored.messageParams,
+      data,
+    };
+
+    renderHookWithConfirmContextProvider(
+      () => useSignatureAddressAlerts(),
+      state,
+    );
+
+    expect(data.message.value).toBe(12345);
+  });
+
   it('returns a danger alert for a malicious address field', () => {
     const request = makeTypedSignV4({
       types: {
