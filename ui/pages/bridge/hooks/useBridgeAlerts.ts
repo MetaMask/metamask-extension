@@ -239,13 +239,14 @@ export const useBridgeAlerts = () => {
     );
     const shouldShowInsufficientGasAlert =
       isInsufficientGasForQuote || hasArcInsufficientNativeReserve;
-    const shouldShowInsufficientNativeReserveAlert = Boolean(
+    const insufficientNativeReserveAlert =
       !isInsufficientBalance &&
       !shouldShowInsufficientGasAlert &&
       insufficientNativeReserveError &&
       insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
-        '0',
-    );
+        '0'
+        ? insufficientNativeReserveError
+        : undefined;
 
     if (
       !isLoading &&
@@ -322,15 +323,15 @@ export const useBridgeAlerts = () => {
       }
     }
 
-    if (shouldShowInsufficientNativeReserveAlert) {
+    if (insufficientNativeReserveAlert) {
       categorizeAlert({
         id: 'insufficient-native-reserve',
         isDismissable: false,
         severity: 'warning',
         title: t('bridgeValidationInsufficientNativeReserveTitle', [ticker]),
         description: t('bridgeValidationInsufficientNativeReserveMessage', [
-          insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
-          insufficientNativeReserveError.maxSwappableNativeBalance,
+          insufficientNativeReserveAlert.minimumNativeBalanceToBeKeptInAccount,
+          insufficientNativeReserveAlert.maxSwappableNativeBalance,
           ticker,
         ]),
         isConfirmationAlert: false,
@@ -342,7 +343,7 @@ export const useBridgeAlerts = () => {
           actionButtonOnClick: () =>
             dispatch(
               setFromTokenInputValue(
-                insufficientNativeReserveError.maxSwappableNativeBalance,
+                insufficientNativeReserveAlert.maxSwappableNativeBalance,
               ),
             ),
         },

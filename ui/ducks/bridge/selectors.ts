@@ -243,7 +243,7 @@ const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
 
-function isNativeAsset(assetId: string) {
+function isNativeAsset(assetId: CaipAssetType) {
   return isNativeAddress(assetId) || isArcTokenUSDC(assetId);
 }
 
