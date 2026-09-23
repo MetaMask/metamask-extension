@@ -5680,6 +5680,9 @@
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
+  },
   "moneyBalanceRetry": {
     "message": "Retry"
   },
