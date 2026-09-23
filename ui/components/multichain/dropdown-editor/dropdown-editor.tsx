@@ -45,6 +45,7 @@ export const DropdownEditor = <Item,>({
   onItemAdd,
   onDropdownOpened,
   itemKey,
+  itemDataTestId,
   itemIsDeletable = () => true,
   renderItem,
   renderTooltip,
@@ -62,6 +63,7 @@ export const DropdownEditor = <Item,>({
   onItemAdd: () => void;
   onDropdownOpened?: () => void;
   itemKey: (item: Item) => string;
+  itemDataTestId?: (item: Item, index: number) => string | undefined;
   itemIsDeletable?: (item: Item, items: Item[]) => boolean;
   renderItem: (item: Item, isList: boolean) => string | ReactNode;
   renderTooltip: (item: Item, isList: boolean) => string | undefined;
@@ -109,7 +111,10 @@ export const DropdownEditor = <Item,>({
               role="option"
               aria-selected={index === selectedItemIndex}
               className="min-w-0 flex-1 text-left"
-              data-testid={`dropdown-editor-option-${index}`}
+              data-testid={
+                itemDataTestId?.(item, index) ??
+                `dropdown-editor-option-${index}`
+              }
               onClick={selectItem}
             >
               {renderItem(item, true)}
@@ -234,6 +239,8 @@ export const DropdownEditor = <Item,>({
         box
       )}
       {style === DropdownEditorStyle.PopoverStyle ? (
+        // The MMDS Popover uses Floating UI, which accesses globalThis.parent.
+        // LavaMoat blocks that global in scuttling mode, crashing production.
         <Popover
           paddingTop={items && items.length > 0 ? 2 : 0}
           paddingBottom={items && items.length > 0 ? 2 : 0}

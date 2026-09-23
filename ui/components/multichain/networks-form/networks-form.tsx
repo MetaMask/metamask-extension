@@ -579,6 +579,11 @@ export const NetworksForm = ({
           style={DropdownEditorStyle.PopoverStyle}
           items={rpcUrls.rpcEndpoints}
           itemKey={(endpoint) => endpoint.url}
+          itemDataTestId={(endpoint, index) =>
+            `network-form-rpc-option-${encodeURIComponent(
+              endpoint.name ?? String(index),
+            )}`
+          }
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
