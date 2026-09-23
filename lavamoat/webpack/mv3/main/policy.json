@@ -1044,8 +1044,7 @@
         "@metamask/assets-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
-        "@metamask/assets-controller>lodash-es": true,
-        "@metamask/assets-controller>p-limit": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/assets-controllers": {
@@ -6810,11 +6809,6 @@
         "viem>ox>@noble/curves": true,
         "@noble/hashes": true,
         "viem>abitype": true
-      }
-    },
-    "@metamask/assets-controller>p-limit": {
-      "packages": {
-        "@metamask/assets-controller>p-limit>yocto-queue": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
