@@ -32,7 +32,7 @@ export function profileAliasesIncludeSocialLogin(
   }
 
   return profileAliases.some((alias) =>
-    alias.identifierIds.some((identifier) =>
+    alias.identifierIds.some((identifier: { type: string }) =>
       SOCIAL_LOGIN_IDENTIFIER_TYPES.has(identifier.type),
     ),
   );
@@ -72,9 +72,9 @@ export function getPairedIdentifierIdsFromAuthState(
   for (const session of Object.values(srpSessionData)) {
     // Core PR #10394 adds this field to `UserProfile`; cast until the
     // `@metamask/profile-sync-controller` bump lands in Extension.
-    const pairedIdentifierIds = (
-      session.profile as { pairedIdentifierIds?: readonly PairedIdentifier[] }
-    ).pairedIdentifierIds;
+    const { pairedIdentifierIds } = session.profile as {
+      pairedIdentifierIds?: readonly PairedIdentifier[];
+    };
     if (pairedIdentifierIds?.length) {
       return pairedIdentifierIds;
     }
