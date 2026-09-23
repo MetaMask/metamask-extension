@@ -3,9 +3,9 @@ import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
 } from '../../../shared/lib/passkey';
-import { PASSKEY_PRF_MIGRATION_NOTICE_MAX_COUNT } from '../../../shared/constants/passkey';
+import { WEEK } from '../../../shared/constants/time';
 import { getIsPasskeyUserHandleBased } from '../../selectors';
-import { getPasskeyPrfMigrationNoticeCounter } from '../../ducks/metamask/metamask';
+import { getLastShownPrfMigrationReminderAt } from '../../ducks/metamask/metamask';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import {
@@ -18,7 +18,7 @@ import { useMessenger } from '../useMessenger';
 type PasskeyUnlockMessenger = RouteMessenger<
   | 'PasskeyController:generateAuthenticationOptions'
   | 'LegacyBackgroundApiService:unlockWithPasskey'
-  | 'AppStateController:incrementPasskeyPrfMigrationNoticeCounter',
+  | 'AppStateController:setLastShownPrfMigrationReminderAt',
   never
 >;
 
@@ -28,8 +28,8 @@ export function usePasskeyUnlock() {
   const isPasskeyMigrationEligible = useAppSelector(
     getIsPasskeyUserHandleBased,
   );
-  const passkeyPrfMigrationNoticeCounter = useAppSelector(
-    getPasskeyPrfMigrationNoticeCounter,
+  const lastShownPrfMigrationReminderAt = useAppSelector(
+    getLastShownPrfMigrationReminderAt,
   );
 
   useEffect(
@@ -55,14 +55,16 @@ export function usePasskeyUnlock() {
       );
       await forceUpdateMetamaskState(dispatch);
 
+      const now = Date.now();
       const shouldShowMigrationNotice =
         isPasskeyMigrationEligible &&
-        passkeyPrfMigrationNoticeCounter <
-          PASSKEY_PRF_MIGRATION_NOTICE_MAX_COUNT;
+        (lastShownPrfMigrationReminderAt === null ||
+          now - lastShownPrfMigrationReminderAt >= WEEK);
 
       if (shouldShowMigrationNotice) {
         await messenger.call(
-          'AppStateController:incrementPasskeyPrfMigrationNoticeCounter',
+          'AppStateController:setLastShownPrfMigrationReminderAt',
+          now,
         );
       }
 
@@ -74,6 +76,6 @@ export function usePasskeyUnlock() {
     dispatch,
     isPasskeyMigrationEligible,
     messenger,
-    passkeyPrfMigrationNoticeCounter,
+    lastShownPrfMigrationReminderAt,
   ]);
 }

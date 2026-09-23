@@ -194,9 +194,9 @@ export type AppStateControllerState = {
    */
   passkeyAutoUnlockSuppressed: boolean;
   /**
-   * Number of times the legacy passkey PRF migration notice has been shown.
+   * Timestamp when the legacy passkey PRF migration reminder was last shown.
    */
-  passkeyPrfMigrationNoticeCounter: number;
+  lastShownPrfMigrationReminderAt: number | null;
 
   /**
    * The entry point that initiated the last Perps deposit flow (e.g.
@@ -337,7 +337,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
-  passkeyPrfMigrationNoticeCounter: 0,
+  lastShownPrfMigrationReminderAt: null,
   lastPerpsDepositEntryPoint: null,
   ...getInitialStateOverrides(),
 });
@@ -703,7 +703,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  passkeyPrfMigrationNoticeCounter: {
+  lastShownPrfMigrationReminderAt: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -770,7 +770,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setOnboardingDate',
   'setOutdatedBrowserWarningLastShown',
   'setPasskeyAutoUnlockSuppressed',
-  'incrementPasskeyPrfMigrationNoticeCounter',
+  'setLastShownPrfMigrationReminderAt',
   'setPendingExtensionVersion',
   'setPendingRedirectRoute',
   'setPendingShieldCohort',
@@ -975,9 +975,14 @@ export class AppStateController extends BaseController<
     });
   }
 
-  incrementPasskeyPrfMigrationNoticeCounter(): void {
+  /**
+   * Records when the legacy passkey PRF migration reminder was last shown.
+   *
+   * @param lastShown - Timestamp when the reminder was shown.
+   */
+  setLastShownPrfMigrationReminderAt(lastShown: number): void {
     this.update((state) => {
-      state.passkeyPrfMigrationNoticeCounter += 1;
+      state.lastShownPrfMigrationReminderAt = lastShown;
     });
   }
 

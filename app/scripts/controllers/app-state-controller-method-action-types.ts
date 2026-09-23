@@ -65,11 +65,15 @@ export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
   handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
 };
 
-export type AppStateControllerIncrementPasskeyPrfMigrationNoticeCounterAction =
-  {
-    type: `AppStateController:incrementPasskeyPrfMigrationNoticeCounter`;
-    handler: AppStateController['incrementPasskeyPrfMigrationNoticeCounter'];
-  };
+/**
+ * Records when the legacy passkey PRF migration reminder was last shown.
+ *
+ * @param lastShown - Timestamp when the reminder was shown.
+ */
+export type AppStateControllerSetLastShownPrfMigrationReminderAtAction = {
+  type: `AppStateController:setLastShownPrfMigrationReminderAt`;
+  handler: AppStateController['setLastShownPrfMigrationReminderAt'];
+};
 
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
@@ -594,7 +598,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
-  | AppStateControllerIncrementPasskeyPrfMigrationNoticeCounterAction
+  | AppStateControllerSetLastShownPrfMigrationReminderAtAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
   | AppStateControllerSetArcUsageNoticeShownAction

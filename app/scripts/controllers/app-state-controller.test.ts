@@ -86,16 +86,17 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('incrementPasskeyPrfMigrationNoticeCounter', () => {
-    it('increments passkeyPrfMigrationNoticeCounter', async () => {
+  describe('setLastShownPrfMigrationReminderAt', () => {
+    it('sets lastShownPrfMigrationReminderAt', async () => {
       await withController(({ controller }) => {
-        expect(controller.state.passkeyPrfMigrationNoticeCounter).toBe(0);
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBeNull();
 
-        controller.incrementPasskeyPrfMigrationNoticeCounter();
-        expect(controller.state.passkeyPrfMigrationNoticeCounter).toBe(1);
+        const timestamp = Date.now();
+        controller.setLastShownPrfMigrationReminderAt(timestamp);
 
-        controller.incrementPasskeyPrfMigrationNoticeCounter();
-        expect(controller.state.passkeyPrfMigrationNoticeCounter).toBe(2);
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBe(
+          timestamp,
+        );
       });
     });
   });
@@ -863,6 +864,7 @@ describe('AppStateController', () => {
               },
               "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -876,7 +878,6 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
-              "passkeyPrfMigrationNoticeCounter": 0,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -954,6 +955,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastPerpsDepositEntryPoint": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -966,7 +968,6 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
-              "passkeyPrfMigrationNoticeCounter": 0,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
@@ -1038,6 +1039,7 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -1047,7 +1049,6 @@ describe('AppStateController', () => {
               "newPrivacyPolicyToastShownDate": null,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
-              "passkeyPrfMigrationNoticeCounter": 0,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "perpsTabBadgeSeen": false,
@@ -1119,6 +1120,7 @@ describe('AppStateController', () => {
               },
               "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
@@ -1132,7 +1134,6 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "passkeyAutoUnlockSuppressed": false,
-              "passkeyPrfMigrationNoticeCounter": 0,
               "pendingExtensionVersion": null,
               "pendingRedirectRoute": null,
               "pendingShieldCohort": null,

@@ -5,7 +5,7 @@ export const ONBOARDING_UNLOCK_ROUTE_CAPABILITIES =
     actions: [
       'PasskeyController:generateAuthenticationOptions',
       'LegacyBackgroundApiService:unlockWithPasskey',
-      'AppStateController:incrementPasskeyPrfMigrationNoticeCounter',
+      'AppStateController:setLastShownPrfMigrationReminderAt',
     ],
     events: [],
   });

@@ -13,6 +13,7 @@ import {
   hideLoadingIndication,
   showLoadingIndication,
 } from '../../store/actions';
+import { WEEK } from '../../../shared/constants/time';
 import { usePasskeyUnlock } from './usePasskeyUnlock';
 
 jest.mock('../../store/actions', () => {
@@ -50,7 +51,7 @@ type RenderHookOptions = {
   state?: {
     metamask?: {
       passkeyRecord?: unknown;
-      passkeyPrfMigrationNoticeCounter?: number;
+      lastShownPrfMigrationReminderAt?: number | null;
     };
   };
   uiMessenger?: UIMessenger;
@@ -110,54 +111,80 @@ describe('usePasskeyUnlock', () => {
     expect(hideLoadingIndication).toHaveBeenCalledTimes(1);
   });
 
-  it('returns migration eligibility and records the notice below the limit', async () => {
-    const incrementMigrationNoticeCounter = jest.fn();
+  it('returns migration eligibility and records the reminder timestamp', async () => {
+    const setLastShownPrfMigrationReminderAt = jest.fn();
     const { result } = renderHook({
       state: {
         metamask: {
           passkeyRecord: {
             keyDerivation: { method: 'userHandle' },
           },
-          passkeyPrfMigrationNoticeCounter: 1,
         },
       },
       routeMessenger: createMockRouteMessenger({
         'PasskeyController:generateAuthenticationOptions':
           generateAuthenticationOptions,
         'LegacyBackgroundApiService:unlockWithPasskey': unlockWithPasskey,
-        'AppStateController:incrementPasskeyPrfMigrationNoticeCounter':
-          incrementMigrationNoticeCounter,
+        'AppStateController:setLastShownPrfMigrationReminderAt':
+          setLastShownPrfMigrationReminderAt,
       }),
     });
 
     await expect(result.current()).resolves.toBe(true);
 
-    expect(incrementMigrationNoticeCounter).toHaveBeenCalledTimes(1);
+    expect(setLastShownPrfMigrationReminderAt).toHaveBeenCalledWith(
+      expect.any(Number),
+    );
   });
 
-  it('does not return migration eligibility after the notice limit', async () => {
-    const incrementMigrationNoticeCounter = jest.fn();
+  it('does not return migration eligibility before the weekly reminder interval', async () => {
+    const setLastShownPrfMigrationReminderAt = jest.fn();
     const { result } = renderHook({
       state: {
         metamask: {
           passkeyRecord: {
             keyDerivation: { method: 'userHandle' },
           },
-          passkeyPrfMigrationNoticeCounter: 2,
+          lastShownPrfMigrationReminderAt: Date.now() - WEEK + 1_000,
         },
       },
       routeMessenger: createMockRouteMessenger({
         'PasskeyController:generateAuthenticationOptions':
           generateAuthenticationOptions,
         'LegacyBackgroundApiService:unlockWithPasskey': unlockWithPasskey,
-        'AppStateController:incrementPasskeyPrfMigrationNoticeCounter':
-          incrementMigrationNoticeCounter,
+        'AppStateController:setLastShownPrfMigrationReminderAt':
+          setLastShownPrfMigrationReminderAt,
       }),
     });
 
     await expect(result.current()).resolves.toBe(false);
 
-    expect(incrementMigrationNoticeCounter).not.toHaveBeenCalled();
+    expect(setLastShownPrfMigrationReminderAt).not.toHaveBeenCalled();
+  });
+
+  it('returns migration eligibility after the weekly reminder interval', async () => {
+    const setLastShownPrfMigrationReminderAt = jest.fn();
+    const { result } = renderHook({
+      state: {
+        metamask: {
+          passkeyRecord: {
+            keyDerivation: { method: 'userHandle' },
+          },
+          lastShownPrfMigrationReminderAt: Date.now() - WEEK,
+        },
+      },
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:generateAuthenticationOptions':
+          generateAuthenticationOptions,
+        'LegacyBackgroundApiService:unlockWithPasskey': unlockWithPasskey,
+        'AppStateController:setLastShownPrfMigrationReminderAt':
+          setLastShownPrfMigrationReminderAt,
+      }),
+    });
+
+    await expect(result.current()).resolves.toBe(true);
+
+    expect(setLastShownPrfMigrationReminderAt).toHaveBeenCalledTimes(1);
   });
 
   it('hides loading and preserves unlock errors', async () => {

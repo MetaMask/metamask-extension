@@ -590,14 +590,13 @@ export function getPasskeyAutoUnlockSuppressed(state) {
 }
 
 /**
- * Returns the number of times the legacy passkey PRF migration notice has
- * been shown.
+ * Returns when the legacy passkey PRF migration reminder was last shown.
  *
  * @param {object} state - Redux root state
- * @returns {number}
+ * @returns {number|null}
  */
-export function getPasskeyPrfMigrationNoticeCounter(state) {
-  return state.metamask.passkeyPrfMigrationNoticeCounter ?? 0;
+export function getLastShownPrfMigrationReminderAt(state) {
+  return state.metamask.lastShownPrfMigrationReminderAt ?? null;
 }
 
 /**
