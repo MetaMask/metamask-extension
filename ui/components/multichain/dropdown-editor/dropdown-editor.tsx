@@ -224,8 +224,7 @@ export const DropdownEditor = <Item,>({
       {style === DropdownEditorStyle.PopoverStyle ? (
         <Popover
           matchWidth
-          padding={0}
-          className="z-[1]"
+          className="z-[1] p-0"
           referenceElement={referenceElement}
           position={PopoverPosition.Bottom}
           role={PopoverRole.Dialog}
