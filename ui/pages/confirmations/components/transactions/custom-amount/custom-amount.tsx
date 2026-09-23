@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { Skeleton } from '@metamask/design-system-react';
@@ -16,6 +16,9 @@ import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 
 const FIAT_DISPLAY_DECIMALS = 2;
+
+// The field is a fiat amount, so keystrokes past the cent are rejected.
+const FIAT_INPUT_PATTERN = /^[0-9]*[.,]?[0-9]{0,2}$/u;
 
 export type CustomAmountProps = {
   amountFiat: string;
@@ -48,23 +51,6 @@ function getAmountFiatDisplay(amountFiat: string): string {
   }
 
   return display.toString(10);
-}
-
-/**
- * Matches `useTransactionCustomAmount` so a typed value can be compared with
- * the amount the parent stores after normalization.
- *
- * @param value - Raw input value.
- * @returns Normalized fiat string.
- */
-function normalizeFiatInput(value: string): string {
-  let newAmount = value.replace(',', '.').replace(/^0+/u, '') || '0';
-
-  if (newAmount.startsWith('.')) {
-    newAmount = `0${newAmount}`;
-  }
-
-  return newAmount;
 }
 
 function getFontSize(displayWidth: number): string {
@@ -133,12 +119,8 @@ export const CustomAmount = React.memo(
     const currency = currencyProp ?? selectedCurrency;
     const fiatSymbol = getCurrencySymbol(currency);
     // Parent-driven amounts (Max / percentage) may be full precision for
-    // submit; show cents only until the user types a new value.
-    const [lastTypedAmount, setLastTypedAmount] = useState<string | null>(null);
-    const amountFiatDisplay =
-      lastTypedAmount === amountFiat
-        ? amountFiat
-        : getAmountFiatDisplay(amountFiat);
+    // submit; the field shows cents only.
+    const amountFiatDisplay = getAmountFiatDisplay(amountFiat);
     const amountLength = amountFiatDisplay.length;
     const decimalSeparatorCount = (amountFiatDisplay.match(/[.,]/gu) || [])
       .length;
@@ -152,8 +134,7 @@ export const CustomAmount = React.memo(
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-        if (/^[0-9]*[.,]?[0-9]*$/u.test(value)) {
-          setLastTypedAmount(normalizeFiatInput(value));
+        if (FIAT_INPUT_PATTERN.test(value)) {
           onChange?.(value);
         }
       },
