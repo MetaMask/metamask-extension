@@ -99,7 +99,8 @@ export function authenticationStateIncludesLinkedSocialLogin(
 
 /**
  * Whether a consolidated social-linked wallet still needs the one-time migration
- * modal scheduled.
+ * modal scheduled. A pending SRP toast is upgraded to the social modal; an
+ * existing social modal or a dismissed notice is left alone.
  * @param options0
  * @param options0.hasConsolidationMarker
  * @param options0.useExternalServices
@@ -125,6 +126,6 @@ export function shouldRepairBasicFunctionalitySocialMigrationNotice({
     useExternalServices &&
     isSocialLogin &&
     !migrationNotificationDismissed &&
-    migrationNotification === null
+    migrationNotification !== 'modal'
   );
 }
