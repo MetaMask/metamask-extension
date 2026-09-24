@@ -948,8 +948,14 @@ const PerpsOrderEntryPage = () => {
     // Only once the order form actually renders. The component returns early
     // for the feature-disabled, still-loading and market-not-found paths, and
     // leaving one of those screens is not an abandoned order — it also keeps
-    // market-loading time out of `time_on_screen_ms`.
-    active: Boolean(isPerpsExperienceAvailable && !marketsLoading && market),
+    // market-loading time out of `time_on_screen_ms`. A mis-cased route
+    // redirects before the form renders, so gate on the exact symbol too.
+    active: Boolean(
+      isPerpsExperienceAvailable &&
+      !marketsLoading &&
+      market &&
+      market.symbol === decodedSymbol,
+    ),
   });
 
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(

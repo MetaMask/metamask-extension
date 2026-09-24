@@ -3363,6 +3363,27 @@ describe('PerpsOrderEntryPage', () => {
       ).toBe(false);
     });
 
+    it('does not report abandonment when a mis-cased symbol redirects', async () => {
+      // The redirect render never shows the order form.
+      mockUseParams.mockReturnValue({ symbol: 'eth' });
+
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+      expect(mockNavigateComponent).toHaveBeenCalled();
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(
+        mockAnalyticsTrackEvent.mock.calls.some(
+          ([arg]) => arg?.properties?.action === 'abandon_order',
+        ),
+      ).toBe(false);
+    });
+
     it('emits abandon_order with the form snapshot when the page is left uncommitted', async () => {
       const { unmount } = renderWithProvider(
         <PerpsOrderEntryPage />,
