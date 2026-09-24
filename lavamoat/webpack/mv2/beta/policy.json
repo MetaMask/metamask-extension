@@ -705,7 +705,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@ledgerhq/errors": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "buffer": true,
         "webpack>events": true
@@ -3860,14 +3859,6 @@
         "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "viem>ox>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
-      }
-    },
     "viem>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -6532,7 +6523,7 @@
         "crypto.getRandomValues": true
       },
       "packages": {
-        "viem>ox>@noble/curves": true,
+        "viem>@noble/curves": true,
         "@noble/hashes": true,
         "viem>abitype": true
       }
@@ -7909,6 +7900,7 @@
     "viem": {
       "globals": {
         "AbortController": true,
+        "DOMException": true,
         "Image": true,
         "Request": true,
         "TextDecoder": true,
