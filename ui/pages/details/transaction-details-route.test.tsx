@@ -1,7 +1,9 @@
 import React from 'react';
 import { describe, expect, it, jest, beforeEach } from '@jest/globals';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { ACTIVITY_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { ACTIVITY_TAB_ROUTE } from '../../hooks/useActivityHomeRoute';
+import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import TransactionDetailsRoute from './transaction-details-route';
 
 const mockNavigate = jest.fn();
@@ -17,10 +19,21 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock('../../hooks/useActivityHomeRoute', () => {
+  const actual = jest.requireActual('../../hooks/useActivityHomeRoute');
+  return {
+    ...actual,
+    useActivityHomeRoute: () => actual.ACTIVITY_TAB_ROUTE,
+  };
+});
+
 jest.mock('./transaction-details', () => ({
-  TransactionDetails: ({ onBack }: { onBack: () => void }) => (
-    <button onClick={onBack}>Back</button>
-  ),
+  TransactionDetails: ({ onBack }: { onBack: () => void }) => {
+    const { enLocale } = jest.requireActual(
+      '../../../test/lib/i18n-helpers',
+    );
+    return <button onClick={onBack}>{enLocale.back.message}</button>;
+  },
 }));
 
 describe('TransactionDetailsRoute', () => {
@@ -32,7 +45,7 @@ describe('TransactionDetailsRoute', () => {
     mockUseLocation.mockReturnValue({ key: 'in-app-entry' });
     render(<TransactionDetailsRoute />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    fireEvent.click(screen.getByRole('button', { name: messages.back.message }));
 
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
@@ -41,9 +54,9 @@ describe('TransactionDetailsRoute', () => {
     mockUseLocation.mockReturnValue({ key: 'default' });
     render(<TransactionDetailsRoute />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    fireEvent.click(screen.getByRole('button', { name: messages.back.message }));
 
-    expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
+    expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_TAB_ROUTE, {
       replace: true,
     });
   });
