@@ -34,13 +34,16 @@ import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
+/** Chain id as CAIP-2, hex, or loose string (e.g. decimal). */
+type ChainIdInput = CaipChainId | Hex | string;
+
 /**
  * Convert a CAIP-2 or hex chain id to hex for `getNativeTokenAddress`.
  *
  * @param chainId - Chain id in CAIP or hex form.
  * @returns Hex chain id, or `undefined` when the input is not an EVM chain.
  */
-function toHexChainId(chainId: CaipChainId | Hex | string): Hex | undefined {
+function toHexChainId(chainId: ChainIdInput): Hex | undefined {
   if (isStrictHexString(chainId)) {
     return chainId;
   }
@@ -64,7 +67,7 @@ function toHexChainId(chainId: CaipChainId | Hex | string): Hex | undefined {
  */
 function isNativeTokenAddressForChain(
   address: string,
-  chainId: CaipChainId | Hex | string,
+  chainId: ChainIdInput,
 ): boolean {
   const hexChainId = toHexChainId(chainId);
   if (!hexChainId) {
@@ -85,7 +88,7 @@ function isNativeTokenAddressForChain(
  */
 function normalizeNativeTokenAddress(
   address: Hex | CaipAssetType | string,
-  chainId: CaipChainId | Hex | string,
+  chainId: ChainIdInput,
 ): Hex | CaipAssetType | string {
   if (
     typeof address === 'string' &&
