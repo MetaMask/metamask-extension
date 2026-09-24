@@ -1949,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "थर्ड-पार्टी API अब बेसिक फंक्शनैलिटी का हिस्सा हैं। आपकी पिछली पसंद के आधार पर, यह सेटिंग $1 है। इसे कभी भी $2 में बदलें",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "बंद किया गया"
