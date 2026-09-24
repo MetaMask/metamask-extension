@@ -14,8 +14,8 @@ import {
 } from '../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
-import { BasicFunctionalityMigrationToast } from './basic-functionality-migration-toast';
 import { BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK } from '../basic-functionality-migration-modal/constants';
+import { BasicFunctionalityMigrationToast } from './basic-functionality-migration-toast';
 import {
   BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
   BasicFunctionalityMixedToastAction,
