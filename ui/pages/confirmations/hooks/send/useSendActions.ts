@@ -11,6 +11,7 @@ import {
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value';
 import { SendPages } from '../../constants/send';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
@@ -57,7 +58,7 @@ export const useSendActions = () => {
     updateNonEVMSubmitError(undefined);
 
     if (isEvmSendType) {
-      dispatch(
+      const transactionPromise = dispatch(
         await submitEvmTransaction({
           asset,
           chainId: chainId as Hex,
@@ -68,12 +69,20 @@ export const useSendActions = () => {
         }),
       );
       const params = new URLSearchParams();
-      if (maxValueMode) {
-        params.set('maxValueMode', String(maxValueMode));
-      }
       params.set('loader', ConfirmationLoader.Send);
       const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
+
+      const transactionMeta = await transactionPromise;
+
+      if (maxValueMode && transactionMeta) {
+        dispatch(
+          setMaxValueMode({
+            transactionId: transactionMeta.id,
+            enabled: true,
+          }),
+        );
+      }
     } else {
       navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
       try {

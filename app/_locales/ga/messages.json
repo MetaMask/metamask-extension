@@ -1174,9 +1174,6 @@
   "copyAddressShort": {
     "message": "Cóipeáil an seoladh"
   },
-  "copyPrivateKey": {
-    "message": "Cóipeáil eochair phríobháideach"
-  },
   "copyToClipboard": {
     "message": "Cóipeáil chuig an ghearrthaisce"
   },
@@ -1222,6 +1219,9 @@
   "creatorAddress": {
     "message": "Seoladh an chruthaitheora"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Athshocraigh Stádas Meitea-Masc"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -1237,9 +1237,6 @@
   },
   "currencySymbolDefinition": {
     "message": "An tsiombail ticéir a thaispeántar d’airgeadra an líonra seo."
-  },
-  "currentAccountNotConnected": {
-    "message": "Níl do chuntas reatha ceangailte"
   },
   "currentExtension": {
     "message": "Leathanach síneadh reatha"
@@ -2420,9 +2417,6 @@
   "lastSold": {
     "message": "Díolta go deireanach"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Ar mhaithe le do shábháilteacht, ní féidir an téacs seo a roghnú faoi láthair."
-  },
   "learnHow": {
     "message": "Foghlaim conas"
   },
@@ -3178,18 +3172,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Réidh le Tarraingt Siar"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Is féidir leat do $1 neamh-gheallta a tharraingt siar anois"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Tá d’iarratas chun $1 a bhaint den gheall seolta"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Fuarthas NFT ó"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFT seolta chuig"
-  },
   "notificationItemNetwork": {
     "message": "Líonra"
   },
@@ -3198,18 +3180,6 @@
   },
   "notificationItemReceived": {
     "message": "Faighte"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Fuarthas ó"
-  },
-  "notificationItemSent": {
-    "message": "Seolta"
-  },
-  "notificationItemSentTo": {
-    "message": "Seolta chuig"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Geall críochnaithe"
   },
   "notificationItemStaked": {
     "message": "Geallta"
@@ -3223,17 +3193,11 @@
   "notificationItemSwapped": {
     "message": "Malartaithe"
   },
-  "notificationItemSwappedFor": {
-    "message": "do"
-  },
   "notificationItemTo": {
     "message": "Chuig"
   },
   "notificationItemTransactionId": {
     "message": "Aitheantas Idirbhirt"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Dí-Geallchur críochnaithe"
   },
   "notificationItemUnStaked": {
     "message": "Gan Geallta"
@@ -3865,10 +3829,6 @@
     "message": "Eochair phríobháideach",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Eochair phríobháideach ar $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Tá an eochair phríobháideach i bhfolach",
     "description": "Explains that the private key input is hidden"
@@ -3880,9 +3840,6 @@
   "privateKeyShown": {
     "message": "Tá an eochair phríobháideach seo á taispeáint",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Rabhadh: Ná nocht an eochair seo choíche. Is féidir le duine ar bith a bhfuil d’eochracha príobháideacha aige aon sócmhainní atá i do chuntas a ghoid."
   },
   "privateKeys": {
     "message": "Eochracha príobháideacha",
@@ -4280,9 +4237,6 @@
   "send": {
     "message": "Seol"
   },
-  "sendBugReport": {
-    "message": "Seol tuairisc fabht chugainn."
-  },
   "sendSelectReceiveAsset": {
     "message": "Roghnaigh sócmhainn le fáil"
   },
@@ -4542,12 +4496,6 @@
   },
   "showPermissions": {
     "message": "Taispeáin ceadanna"
-  },
-  "showPrivateKey": {
-    "message": "Taispeáin eochair phríobháideach"
-  },
-  "showSRP": {
-    "message": "Taispeáin Frása Rúnda Aisghabhála"
   },
   "showTestnetNetworks": {
     "message": "Taispeáin líonraí tástála"
@@ -5056,38 +5004,19 @@
   "stateCorruptionAreYouSure": {
     "message": "An bhfuil tú cinnte gur mian leat dul ar aghaidh?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Is féidir leat iarracht a dhéanamh do chomhad stáit a chóipeáil agus a athchóiriú de láimh sula ndéanann tú cinneadh do chruinneachán a athchóiriú trí $1 a leanúint.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Is féidir leat iarracht a dhéanamh do chomhad stáit a chóipeáil agus a athchóiriú de láimh sula ndéanann tú cinneadh MetaMask a athshocrú trí $1 a leanúint.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ní féidir do chruinneachán a aisghabháil go huathoibríoch."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Is féidir do chruinneachán a aisghabháil ó chúltaca uathoibrithe. Scriosfaidh aisghabháil uathoibríoch do shocruithe agus do chuid sainroghanna reatha, agus ní athchóireofar ach do chruinneachán."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Earráid Inmheánach: Ní féidir rochtain a fháil ar an mbunachar sonraí"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Athshocraigh Stádas Meitea-Masc"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Ag athshocrú an bhunachair shonraí…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Athchóirigh Cuntais"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Ag athchóiriú bunachar sonraí…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "na treoracha seo",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Conas do Rún Aisghabhála Frása a aisghabháil"
@@ -5721,9 +5650,6 @@
   },
   "unapproved": {
     "message": "Gan cheadú"
-  },
-  "unexpectedBehavior": {
-    "message": "Ní raibh súil leis an iompraíocht seo agus ba chóir í a thuairisciú mar fhabht, fiú má athchóirítear do chuntais."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Ceadaigh rochtain chruinn ar $1 $2 ar $3 le haghaidh malartú"

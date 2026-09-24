@@ -235,7 +235,14 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByText(messages.moneyBenefits.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Auto-earn up to ~4.2% APY')).toBeInTheDocument();
+    expect(screen.getByTestId('money-benefit-auto-earn')).toHaveTextContent(
+      'Auto-earn up to ~4.2% APY',
+    );
+    expect(
+      within(screen.getByTestId('money-benefit-auto-earn')).getByText(
+        '~4.2% APY',
+      ),
+    ).toHaveClass('text-success-default');
     expect(
       screen.getByText(messages.moneyBenefitStablecoin.message),
     ).toBeInTheDocument();
@@ -247,7 +254,7 @@ describe('MoneyHomePage', () => {
     ).toBeInTheDocument();
     expect(
       screen
-        .getByText('Auto-earn up to ~4.2% APY')
+        .getByTestId('money-benefit-auto-earn')
         .closest('li')
         ?.querySelector('svg'),
     ).toHaveClass('shrink-0');

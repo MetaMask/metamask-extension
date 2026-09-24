@@ -515,40 +515,44 @@
     "message": "Closed short - market"
   },
   "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Deposit failed"
   },
   "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Depositing"
+    "message": "Depositing $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Deposited"
+    "message": "Deposited $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Send failed"
+    "message": "Receive failed"
   },
   "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Sending"
+    "message": "Receiving $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Sent"
+    "message": "Received $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Buy failed"
@@ -3159,14 +3163,14 @@
   "copiedToClipboard": {
     "message": "Copied to clipboard"
   },
+  "copy": {
+    "message": "Copy"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
   "copyAddressShort": {
     "message": "Copy address"
-  },
-  "copyPrivateKey": {
-    "message": "Copy private key"
   },
   "copyToClipboard": {
     "message": "Copy to clipboard"
@@ -3223,8 +3227,20 @@
     "message": "If none of the above works, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Recover accounts"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "Reinstall MetaMask"
+  },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Reset MetaMask State"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "Recovering accounts will delete your current settings and preferences."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "Resetting MetaMask state will delete your current accounts, settings and preferences."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Still having issues?"
@@ -3247,9 +3263,6 @@
   },
   "current": {
     "message": "Current"
-  },
-  "currentAccountNotConnected": {
-    "message": "Your current account is not connected"
   },
   "currentEstimatedBaseFee": {
     "message": "Current: $1 GWEI"
@@ -5106,9 +5119,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "For your safety, selecting this text is not available right now."
-  },
   "learnHow": {
     "message": "Learn how"
   },
@@ -5603,6 +5613,9 @@
   "moneyActivityFilterAll": {
     "message": "All"
   },
+  "moneyActivityFilterCard": {
+    "message": "Card"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Deposits"
   },
@@ -5680,7 +5693,8 @@
     "message": "Auto-earn yield on your Money balance"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "Auto-earn up to ~$1 APY"
+    "message": "Auto-earn up to $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Get full liquidity with no lockups, so you can trade or withdraw anytime"
@@ -6592,18 +6606,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal ready"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "You can now withdraw your unstaked $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Your request to unstake $1 has been sent"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Received NFT from"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Sent NFT to"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6612,18 +6614,6 @@
   },
   "notificationItemReceived": {
     "message": "Received"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Received from"
-  },
-  "notificationItemSent": {
-    "message": "Sent"
-  },
-  "notificationItemSentTo": {
-    "message": "Sent to"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake completed"
   },
   "notificationItemStaked": {
     "message": "Staked"
@@ -6637,17 +6627,11 @@
   "notificationItemSwapped": {
     "message": "Swapped"
   },
-  "notificationItemSwappedFor": {
-    "message": "for"
-  },
   "notificationItemTo": {
     "message": "To"
   },
   "notificationItemTransactionId": {
     "message": "Transaction ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "UnStaking complete"
   },
   "notificationItemUnStaked": {
     "message": "Unstaked"
@@ -7069,6 +7053,42 @@
   "passkeyErrorVerificationFailed": {
     "message": "We couldn't verify your $1. Try again or use your password.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationDescription1": {
+    "message": "The way your passkey was saved can't fully protect your wallet key. Replace it to keep using Biometrics feature.",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "When your browser asks where to save it, choose Google Password Manager, not this device. $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Your current passkey works until you replace it.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "It was saved to this device, which can't protect your wallet key. Try again and choose Google Password Manager when your browser asks where to save it. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Keep my current passkey for now",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "That passkey won't work",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Try again",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "See supported providers",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Your passkey needs an update",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "Register $1",
@@ -7540,6 +7560,13 @@
   },
   "perpsAddFunds": {
     "message": "Add funds"
+  },
+  "perpsAddFundsHint": {
+    "message": "Add at least $1 to your Perps account to place this order.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Add funds to trade"
   },
   "perpsAddMargin": {
     "message": "Add margin"
@@ -8697,10 +8724,6 @@
     "message": "Private key",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Private key for $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "The private key is hidden",
     "description": "Explains that the private key input is hidden"
@@ -8712,9 +8735,6 @@
   "privateKeyShown": {
     "message": "This private key is being shown",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateKeys": {
     "message": "Private keys",
@@ -8873,7 +8893,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Choose provider"
+    "message": "Choose providers"
   },
   "rampsCompleteBuyTitle": {
     "message": "Complete buy",
@@ -9153,6 +9173,10 @@
   "relayerFee": {
     "message": "Relayer fee"
   },
+  "remindMeLater": {
+    "message": "Remind me later",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Remove"
   },
@@ -9215,6 +9239,10 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "replacePasskey": {
+    "message": "Replace passkey",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Report an issue"
@@ -9495,6 +9523,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "This RPC provider is limiting requests. Try again later or use a different RPC URL."
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -10093,9 +10124,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "New address"
-  },
-  "sendBugReport": {
-    "message": "Send us a bug report."
   },
   "sendBundleHwGasPayment": {
     "message": "Paying network fee with $1",
@@ -10818,12 +10846,6 @@
   "showPermissions": {
     "message": "Show permissions"
   },
-  "showPrivateKey": {
-    "message": "Show private key"
-  },
-  "showSRP": {
-    "message": "Show Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -11430,38 +11452,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Your vault cannot be automatically recovered."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Your vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Internal error: database cannot be accessed"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Reset MetaMask State"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Resetting database…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restore accounts"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restoring database…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "these instructions",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "How to recover your Secret Recovery Phrase"
@@ -11787,6 +11790,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Auto"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Slippage tolerance was capped at 100%."
   },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
@@ -12266,9 +12272,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "The connection with $1 is unreliable. Update network connectivity details before continuing or try again later.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
   "unexpectedError": {
     "message": "An unexpected error occurred.",

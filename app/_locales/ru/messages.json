@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "Короткая позиция закрыта — рынок"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "Ошибка депозита"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "Внесение депозита"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "Внесено"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Не удалось отправить"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Отправляется"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "Отправлено"
-  },
   "activity_nftBuy_failed_title": {
     "message": "Ошибка покупки"
   },
@@ -1877,6 +1841,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "Контакты"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "Ордера на покупку и продажу"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Управляйте тем, что вы синхронизируете"
   },
@@ -3102,9 +3069,6 @@
   "copyAddressShort": {
     "message": "Копировать адрес"
   },
-  "copyPrivateKey": {
-    "message": "Копировать закрытый ключ"
-  },
   "copyToClipboard": {
     "message": "Копировать в буфер обмена"
   },
@@ -3163,6 +3127,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Переустановите MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Сброс состояния MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Проблема не устранена?"
   },
@@ -3184,9 +3151,6 @@
   },
   "current": {
     "message": "Текущая"
-  },
-  "currentAccountNotConnected": {
-    "message": "Ваша текущий счет не подключен"
   },
   "currentEstimatedBaseFee": {
     "message": "Текущая: $1 Гвей"
@@ -5020,9 +4984,6 @@
     "message": "Решетка",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "В целях вашей безопасности выбор этого текста в данный момент недоступен."
-  },
   "learnHow": {
     "message": "Узнайте как"
   },
@@ -5257,6 +5218,10 @@
   },
   "lowLowercase": {
     "message": "низкая"
+  },
+  "lowValueAssets": {
+    "message": "Токены с низким балансом ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Мейн-нет Ethereum"
@@ -5505,6 +5470,9 @@
   "moneyActivityFilterAll": {
     "message": "Все"
   },
+  "moneyActivityFilterCard": {
+    "message": "Карта"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Депозиты"
   },
@@ -5581,9 +5549,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Автоматически получайте доход на ваш баланс Money"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Автоматически зарабатывайте до ~$1 годовых"
-  },
   "moneyBenefitLiquidity": {
     "message": "Получите полную ликвидность без блокировок, чтобы вы могли торговать или выводить средства в любое время"
   },
@@ -5638,11 +5603,21 @@
   "moneyFundDescriptionWithApy": {
     "message": "Пополните свой счет Money Account и наблюдайте, как растет ваш баланс с доходностью до $1 годовых."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Указанная ставка — это ориентировочная годовая процентная доходность (APY), основанная на текущих рыночных условиях. APY является переменной и не гарантируется. Средства поступают в хранилище DeFi, управляемое Veda с контролем рисков от Steakhouse Financial, которое генерирует доходность на устоявшихся рынках кредитования."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money Account работает на базе Monad."
+  },
   "moneyHowItWorks": {
     "message": "Как это работает"
   },
   "moneyHowItWorksDescription": {
     "message": "Внесите mUSD, и ваш баланс, обеспеченный долларами, будет готов к тратам, торговле или отправке в любое время."
+  },
+  "moneyHowItWorksDescription1": {
+    "message": "Добавьте mUSD на свой счет Money Account и автоматически зарабатывайте до $1 годовых (переменная ставка). Средства поступают в DeFi-хранилище, управляемое Veda с мониторингом рисков от Steakhouse Financial. Ставка генерируется сторонними DeFi-платформами, которые размещают средства в блокчейн-протоколах. Никакого стейкинга, никаких требований к выводу, никаких блокировок.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescription2": {
     "message": "Ваш Денежный баланс — это ваш баланс для расходов. Привяжите свою карту MetaMask, чтобы расплачиваться в более чем 150 млн магазинов по всему миру. Ваши деньги продолжают приносить доход до того момента, пока вы их не потратите."
@@ -5656,6 +5631,13 @@
   },
   "moneyHowItWorksDisclosuresBody": {
     "message": "Money Account не является банковским счетом, сберегательным счетом или застрахованным депозитным продуктом. Годовая процентная ставка (APY) является переменной величиной и не гарантируется. Использование Money Account сопряжено с рисками смарт-контрактов, протоколов, ликвидности и другими рисками, и вы можете потерять часть или все свои средства. Действуют региональные ограничения. Применяются Условия использования."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Риски и раскрытие информации"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "До $1 годовых. Ставка является переменной и колеблется в зависимости от рыночных условий. Текущая ставка всегда видна внутри счета Money Account.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Меняется ли годовая процентная ставка?"
@@ -5681,11 +5663,23 @@
   "moneyHowItWorksFaqLockedQuestion": {
     "message": "Заблокированы ли мои деньги? Могу ли я вывести их в любое время?"
   },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Счет, который приносит до $1 по переменой годовой ставке. Вы вносите средства, которые хранятся на счете в виде mUSD, и зарабатываете до $1 годовых. mUSD — это обеспеченный долларами стейблкоин MetaMask. Вы можете использовать или вывести свои средства в любое время без штрафов. Вы можете тратить свои средства с помощью карты MetaMask Card в более чем 150 миллионах торговых точек Mastercard по всему миру.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Что такое Денежный счет?"
   },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD — это стейблкоин MetaMask, обеспеченный долларами в соотношении 1:1. Ваш баланс Money хранится в mUSD и остается доступным для трат, отправки или торговли в любое время.",
+    "description": "Drafted from existing Money copy for content review."
+  },
   "moneyHowItWorksFaqMusdQuestion": {
     "message": "Что такое mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Ваш баланс Money — это ваш баланс для трат: он продолжает приносить доход до того момента, пока вы его не используете. Счет Money Account не является банковским счетом, сберегательным счетом или застрахованным депозитным продуктом.",
+    "description": "Drafted from existing Money copy for content review."
   },
   "moneyHowItWorksFaqSpendingQuestion": {
     "message": "Это сберегательный или расчетный счет?"
@@ -5708,8 +5702,14 @@
   "moneyLifetime": {
     "message": "За всё время"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Общая сумма, заработанная на балансе вашего счета Money Account за всё время."
+  },
   "moneyMeetMusd": {
     "message": "Познакомьтесь с mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Общая сумма, заработанная на балансе вашего счета Money Account за последние 30 дней."
   },
   "moneyMoreInformation": {
     "message": "Дополнительная информация"
@@ -5750,6 +5750,10 @@
   "moneyToastDepositInProgressTitleConvert": {
     "message": "Конвертация криптовалюты"
   },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 добавлено на счет Money Account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
   "moneyToastDepositSuccessDescriptionNoAmount": {
     "message": "Внесено на Money Account."
   },
@@ -5776,6 +5780,14 @@
   },
   "moneyToastWithdrawInProgressTitle": {
     "message": "Перевод в процессе"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 добавлено на $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Добавлено на $1.",
+    "description": "$1 is the destination account name"
   },
   "moneyToastWithdrawSuccessTitle": {
     "message": "Перевод завершен"
@@ -6439,18 +6451,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Вывод выполнен"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Теперь вы можете вывести свои $1, не используемые в стейкинге"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Ваш запрос на отмену стейкинга $1 отправлен"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Получил(-а) NFT от"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Отправил(-а) NFT в адрес"
-  },
   "notificationItemNetwork": {
     "message": "Сеть"
   },
@@ -6459,18 +6459,6 @@
   },
   "notificationItemReceived": {
     "message": "Получено"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Получено от"
-  },
-  "notificationItemSent": {
-    "message": "Отправлено"
-  },
-  "notificationItemSentTo": {
-    "message": "Отправлено в адрес"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Стейкинг завершен"
   },
   "notificationItemStaked": {
     "message": "В стейкинге"
@@ -6484,17 +6472,11 @@
   "notificationItemSwapped": {
     "message": "Обмен выполнен"
   },
-  "notificationItemSwappedFor": {
-    "message": "на"
-  },
   "notificationItemTo": {
     "message": "Место назначения"
   },
   "notificationItemTransactionId": {
     "message": "ID транзакции"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Отмена стейкинга завершена"
   },
   "notificationItemUnStaked": {
     "message": "Стейкинг отменен"
@@ -7637,6 +7619,10 @@
   "perpsFilterAll": {
     "message": "Все"
   },
+  "perpsFilterClear": {
+    "message": "$1, очистить фильтр",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Товары"
   },
@@ -7653,11 +7639,15 @@
     "message": "Индексы"
   },
   "perpsFilterMemecoins": {
-    "message": "Memecoins"
+    "message": "Мемкоины"
   },
   "perpsFilterMore": {
     "message": "Еще",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Еще, выбрано $1",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Новые"
@@ -7754,6 +7744,18 @@
   },
   "perpsMarket": {
     "message": "Рынок"
+  },
+  "perpsMarketCategories": {
+    "message": "Категории рынков",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 рынка(-ов)",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 рынок",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Рынок не найден"
@@ -8514,10 +8516,6 @@
     "message": "Закрытый ключ",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Закрытый ключ за $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Закрытый ключ скрыт",
     "description": "Explains that the private key input is hidden"
@@ -8529,9 +8527,6 @@
   "privateKeyShown": {
     "message": "Этот закрытый ключ отображается",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Предупреждение: никогда не раскрывайте этот ключ. Любой, у кого есть ваши закрытые ключи, может украсть любые активы, хранящиеся на вашем счете."
   },
   "privateKeys": {
     "message": "Закрытые ключи",
@@ -8684,6 +8679,10 @@
   },
   "rampsChangeProvider": {
     "message": "Изменить поставщика."
+  },
+  "rampsChangeProviders": {
+    "message": "сменить провайдеров",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
     "message": "Выберите провайдера"
@@ -8856,6 +8855,9 @@
   "rampsPreviouslyUsed": {
     "message": "Использовалось последним"
   },
+  "rampsQuoteFetchError": {
+    "message": "Ошибка при получении котировок. Введите меньшую сумму или "
+  },
   "rampsQuoteUnavailable": {
     "message": "Котировка недоступна."
   },
@@ -8870,6 +8872,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Показать все токены"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Этот токен недоступен в вашем регионе.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Токен недоступен",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Покупка криптовалюты в вашем регионе пока не поддерживается."
@@ -9896,9 +9906,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Новый адрес"
   },
-  "sendBugReport": {
-    "message": "Отправьте нам отчет об ошибке."
-  },
   "sendBundleHwGasPayment": {
     "message": "Оплата комиссии сети с помощью $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10620,12 +10627,6 @@
   "showPermissions": {
     "message": "Показать разрешения"
   },
-  "showPrivateKey": {
-    "message": "Показать закрытый ключ"
-  },
-  "showSRP": {
-    "message": "Показать секретную фразу для восстановления"
-  },
   "showTestnetNetworks": {
     "message": "Показать тестовые сети"
   },
@@ -11232,38 +11233,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Уверены, что хотите продолжить?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Прежде чем вы решите восстановить свое хранилище, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Прежде чем вы решите сбросить MetaMask, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ваше хранилище нельзя восстановить автоматически."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Ваше хранилище можно восстановить из автоматизированной резервной копии. Автоматическое восстановление удалит ваши текущие настройки и предпочтения и восстановит только ваше хранилище."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Внутренняя ошибка: невозможно получить доступ к базе данных"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Сброс состояния MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Сброс базы данных…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Восстановить счета"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Восстановление базы данных…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "этим инструкциям",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Как восстановить вашу секретную фразу для восстановления"
@@ -12068,9 +12050,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Подключение к $1 ненадежно. Обновите данные о подключении к сети, прежде чем продолжить, или повторите попытку позже.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Такое поведение является неожиданным, и о нем следует сообщить как об ошибке, даже если ваши счета восстановлены."
   },
   "unexpectedError": {
     "message": "Произошла неожиданная ошибка.",

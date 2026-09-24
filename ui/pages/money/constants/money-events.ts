@@ -24,6 +24,7 @@ export enum MoneyComponentName {
   ActivityFilterAll = 'money_activity_filter_all',
   ActivityFilterDeposits = 'money_activity_filter_deposits',
   ActivityFilterTransfers = 'money_activity_filter_transfers',
+  ActivityFilterCard = 'money_activity_filter_card',
   TransferMoneySheetBetweenAccounts = 'money_transfer_money_sheet_between_accounts',
   TransferMoneySheetPerpsAccount = 'money_transfer_money_sheet_perps_account',
   MoreSheetWhatYouGet = 'money_more_sheet_what_you_get',

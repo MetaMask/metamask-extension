@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "Naisara ang short - market"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "Nabigo ang pagdeposito"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "Idinideposito"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "Naideposito"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Nabigong ipadala"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Ipinapadala"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "Ipinadala"
-  },
   "activity_nftBuy_failed_title": {
     "message": "Nabigo ang pagbili"
   },
@@ -1514,6 +1478,9 @@
   },
   "alertMessageGasFeeLow": {
     "message": "Kapag pumipili ng mababang bayad, asahan ang mas mabagal na mga transaksyon at mas matagal na paghihintay. Para sa mas mabilis na transaksyon, piliin ang Market o Aggressive na mga pagpipilian sa bayad."
+  },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 12000 o mas mataas."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga bayarin sa network."
@@ -3102,9 +3069,6 @@
   "copyAddressShort": {
     "message": "Kopyahin ang address"
   },
-  "copyPrivateKey": {
-    "message": "Kopyahin ang pribadong key"
-  },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
   },
@@ -3163,6 +3127,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "I-reinstall ang MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "I-reset ang Estado ng MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Nakakaranas ka pa rin ng mga isyu?"
   },
@@ -3184,9 +3151,6 @@
   },
   "current": {
     "message": "Kasalukuyan"
-  },
-  "currentAccountNotConnected": {
-    "message": "Hindi nakakonekta ang kasalukuyan mong account"
   },
   "currentEstimatedBaseFee": {
     "message": "Kasalukuyan: $1 GWEI"
@@ -4210,6 +4174,9 @@
   "gasLimit": {
     "message": "Gas limit"
   },
+  "gasLimitBelowMinimum": {
+    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 12000"
+  },
   "gasPrice": {
     "message": "Presyo ng gas (GWEI)"
   },
@@ -5020,9 +4987,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Para sa iyong kaligtasan, ang pagpil ng tekstong ito ay hindi available ngayon."
-  },
   "learnHow": {
     "message": "Alamin kung paano"
   },
@@ -5505,6 +5469,9 @@
   "moneyActivityFilterAll": {
     "message": "Lahat"
   },
+  "moneyActivityFilterCard": {
+    "message": "Card"
+  },
   "moneyActivityFilterDeposits": {
     "message": "Mga deposito"
   },
@@ -5581,9 +5548,6 @@
   "moneyBenefitAutoEarn": {
     "message": "Awtomatikong kumita ng yield sa balanse mo sa Money"
   },
-  "moneyBenefitAutoEarnWithApy": {
-    "message": "Awtomatikong kumita ng hanggang ~$1 APY"
-  },
   "moneyBenefitLiquidity": {
     "message": "Makakuha ng ganap na liquidity nang walang lockup, kaya maaari kang mag-trade o mag-withdraw anumang oras"
   },
@@ -5637,6 +5601,12 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo ng hanggang $1 APY."
+  },
+  "moneyHomeApyTooltip": {
+    "message": "Ang rate na ipinapakita ay tinantyang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng merkado. Nag-iiba-iba ang APY at hindi ito garantisado. Napupunta ang pondo sa isang DeFi vault, na pinapangasiwaan ng Veda at sinusubaybayan ng Steakhouse Financial ang panganib, at tumutubo ito sa mga kilalang merkado ng pagpapautang."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Ang Money account ay pinapagana ng Monad."
   },
   "moneyHowItWorks": {
     "message": "Paano ito gumagana"
@@ -5708,8 +5678,14 @@
   "moneyLifetime": {
     "message": "Panghabambuhay"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Ang kabuuang kinita mo sa iyong balanse ng Money account sa paglipas ng panahon."
+  },
   "moneyMeetMusd": {
     "message": "Kilalanin ang mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Ang kabuuang kinita mo sa balanse ng iyong Money account sa nakalipas na 30 araw."
   },
   "moneyMoreInformation": {
     "message": "Higit pang impormasyon"
@@ -6439,18 +6415,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Handa na ang Pag-withdraw"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Maaari mo ng i-withdraw ang iyong in-unstake na $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Ang iyong hiling na i-unstake ang $1 ay naipadala na"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Nakatanggap ng NFT mula kay/sa"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Ipinadala ang NFT kay/sa"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6459,18 +6423,6 @@
   },
   "notificationItemReceived": {
     "message": "Natanggap"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Natanggap mula kay/sa"
-  },
-  "notificationItemSent": {
-    "message": "Ipinadala"
-  },
-  "notificationItemSentTo": {
-    "message": "Ipinadala kay/sa"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Nakumpleto ang pag-stake"
   },
   "notificationItemStaked": {
     "message": "Naka-stake"
@@ -6484,17 +6436,11 @@
   "notificationItemSwapped": {
     "message": "Nai-swap"
   },
-  "notificationItemSwappedFor": {
-    "message": "sa"
-  },
   "notificationItemTo": {
     "message": "Sa/Kay"
   },
   "notificationItemTransactionId": {
     "message": "ID ng Transaksyon"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Nakumpleto ang pag-unstake"
   },
   "notificationItemUnStaked": {
     "message": "Na-unstake"
@@ -7653,7 +7599,7 @@
     "message": "Mga Index"
   },
   "perpsFilterMemecoins": {
-    "message": "Memecoins"
+    "message": "Mga Memecoin"
   },
   "perpsFilterMore": {
     "message": "Higit pa",
@@ -8514,10 +8460,6 @@
     "message": "Pribadong Key",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Pribadong key para sa $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Ang pribadong key ay nakatago",
     "description": "Explains that the private key input is hidden"
@@ -8529,9 +8471,6 @@
   "privateKeyShown": {
     "message": "Ang pribadong key ay na ito ay ipinapakita",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Babala: Huwag ipaalam ang key na ito. Ang sinumang mayroon ng iyong mga pribadong key ay maaaring magnakaw ng anumang asset sa iyong account."
   },
   "privateKeys": {
     "message": "Mga pribadong key",
@@ -9896,9 +9835,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Bagong address"
   },
-  "sendBugReport": {
-    "message": "Padalhan kami ng ulat ng bug."
-  },
   "sendBundleHwGasPayment": {
     "message": "Magbayad sa network gamit ang $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10620,12 +10556,6 @@
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
   },
-  "showPrivateKey": {
-    "message": "Ipakita ang pribadong key"
-  },
-  "showSRP": {
-    "message": "Ipakita ang Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test network"
   },
@@ -11232,38 +11162,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Sigurado ka bang gusto mong magpatuloy?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang ibalik ang iyong vault sa pamamagitan ng pagsunod sa $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang i-reset ang MetaMask sa pamamagitan ng pagsunod sa $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Hindi awtomatikong mababawi ang iyong vault."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Puwedeng mabawi ang iyong vault mula sa isang naka-automate na backup. Tatanggalin ng awtomatikong pagbawi ang iyong mga kasalukuyang setting at kagustuhan, at ibabalik lang ang vault mo."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Panloob na error: hindi ma-access ang database"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "I-reset ang Estado ng MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Nire-reset ang database…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Ibalik ang mga account"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Ibinabalik ang database…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "ang mga tagubiling ito",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Paano makuha ulit ang iyong Lihim na Parirala sa Pagbawi"
@@ -12068,9 +11979,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Hindi maaasahan ang koneksyon sa $1. I-update ang mga detalye ng pagkakakonekta sa network bago magpatuloy o subukan muli mamaya.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Hindi inaasahan ang pangyayaring ito at dapat itong iulat bilang bug, kahit na maibalik ang iyong mga account."
   },
   "unexpectedError": {
     "message": "Nagkaroon ng hindi inaasahang error.",

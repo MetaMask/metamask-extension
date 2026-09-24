@@ -181,6 +181,8 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
+export const ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE =
+  '/onboarding/passkey-prf-migration';
 export const BATCH_SELL_ROOT_ROUTE = '/batch-sell';
 export const BATCH_SELL_SELECT_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/select`;
 export const BATCH_SELL_REVIEW_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/review`;
