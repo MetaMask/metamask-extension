@@ -178,6 +178,7 @@ describe('PerpsTransactionDetailsPage', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE, {
         replace: true,
+        state: { fromFreshTab: true },
       });
     });
   });

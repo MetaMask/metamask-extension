@@ -33,6 +33,22 @@ describe('useInAppBack', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
       replace: true,
+      state: { fromFreshTab: true },
+    });
+  });
+
+  it('replaces with the fallback when an earlier back already replaced the entry', () => {
+    mockUseLocation.mockReturnValue({
+      key: 'replaced-entry',
+      state: { fromFreshTab: true },
+    });
+
+    const { result } = renderHook(() => useInAppBack(MONEY_HOME_ROUTE));
+    result.current();
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+      state: { fromFreshTab: true },
     });
   });
 

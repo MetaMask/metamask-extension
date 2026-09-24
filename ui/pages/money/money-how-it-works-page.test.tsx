@@ -178,6 +178,7 @@ describe('MoneyHowItWorksPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
       replace: true,
+      state: { fromFreshTab: true },
     });
   });
 

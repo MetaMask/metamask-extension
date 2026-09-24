@@ -60,6 +60,7 @@ describe('TransactionDetailsRoute', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_TAB_ROUTE, {
       replace: true,
+      state: { fromFreshTab: true },
     });
   });
 });

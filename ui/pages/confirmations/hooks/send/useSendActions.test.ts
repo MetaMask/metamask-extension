@@ -73,6 +73,7 @@ describe('useSendQueryParams', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
       replace: true,
+      state: { fromFreshTab: true },
     });
   });
 

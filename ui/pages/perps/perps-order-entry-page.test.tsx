@@ -31,6 +31,7 @@ import {
 } from '../../components/app/perps/utils/unfunded-deposit-funnel';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -383,11 +384,18 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn().mockReturnValue({
+  key: 'in-app-entry',
+  pathname: '/perps/trade/ETH',
+  search: '',
+  state: null,
+});
 const mockNavigateComponent = jest.fn();
 const mockSearchParams = new URLSearchParams();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+  useLocation: () => mockUseLocation(),
   useParams: () => mockUseParams(),
   useSearchParams: () => [mockSearchParams],
   Navigate: (props: { to: string; replace?: boolean }) => {
@@ -485,6 +493,12 @@ describe('PerpsOrderEntryPage', () => {
     mockTriggerDeposit.mockClear();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
+    mockUseLocation.mockReturnValue({
+      key: 'in-app-entry',
+      pathname: '/perps/trade/ETH',
+      search: '',
+      state: null,
+    });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
     mockSearchParams.delete('orderType');
@@ -1966,9 +1980,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
 
     it('navigates back in history for encoded symbol markets', () => {
@@ -1977,8 +1989,23 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA', {
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    });
+
+    it('navigates back to the market when opened directly', () => {
+      mockUseLocation.mockReturnValue({
+        key: 'default',
+        pathname: '/perps/trade/ETH',
+        search: '',
+        state: null,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
         replace: true,
+        state: { fromFreshTab: true },
       });
     });
   });
@@ -3520,9 +3547,7 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',
@@ -3584,9 +3609,7 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/xyz%3ATSLA', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',
@@ -3683,9 +3706,7 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastCloseInProgress',
@@ -3728,9 +3749,7 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastPartialCloseInProgress',
@@ -3765,9 +3784,7 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastCloseInProgress',
@@ -3802,9 +3819,7 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastCloseInProgress',
@@ -3838,9 +3853,7 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastCloseInProgress',
@@ -3874,9 +3887,7 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastUpdateInProgress',
@@ -3919,9 +3930,7 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ]),
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',
@@ -4183,9 +4192,7 @@ describe('PerpsOrderEntryPage', () => {
           key: 'perpsToastUpdateFailed',
         }),
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
@@ -4229,9 +4236,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/UNKNOWN', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
   });
 
@@ -4551,9 +4556,7 @@ describe('PerpsOrderEntryPage', () => {
           }),
         ],
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',
@@ -4622,9 +4625,7 @@ describe('PerpsOrderEntryPage', () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
       });
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
           key: 'perpsToastSubmitInProgress',

@@ -1234,6 +1234,7 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_HOME_TAB_ROUTE, {
         replace: true,
+        state: { fromFreshTab: true },
       });
     });
 

@@ -226,6 +226,7 @@ describe('MoneyActivityPage', () => {
     fireEvent.click(screen.getByTestId('money-activity-back-button'));
     expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
       replace: true,
+      state: { fromFreshTab: true },
     });
   });
 
