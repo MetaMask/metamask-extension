@@ -183,7 +183,9 @@ describe('buildBundleSizeDiffSection', () => {
 
     const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
 
-    expect(result).toContain('| ✅ | unzipped | 0 Bytes | -5.66 KiB | -100.00% |');
+    expect(result).toContain(
+      '| ✅ | unzipped | 0 Bytes | -5.66 KiB | -100.00% |',
+    );
     expect(result).toContain('| ✅ | zip | 0 Bytes | -3.91 KiB | -100.00% |');
   });
 
