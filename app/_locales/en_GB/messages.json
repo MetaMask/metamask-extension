@@ -3163,6 +3163,9 @@
   "copiedToClipboard": {
     "message": "Copied to clipboard"
   },
+  "copy": {
+    "message": "Copy"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
@@ -7051,6 +7054,42 @@
     "message": "We couldn't verify your $1. Try again or use your password.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationDescription1": {
+    "message": "The way your passkey was saved can't fully protect your wallet key. Replace it to keep using Biometrics feature.",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "When your browser asks where to save it, choose Google Password Manager, not this device. $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Your current passkey works until you replace it.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "It was saved to this device, which can't protect your wallet key. Try again and choose Google Password Manager when your browser asks where to save it. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Keep my current passkey for now",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "That passkey won't work",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Try again",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "See supported providers",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Your passkey needs an update",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
+  },
   "passkeySetupStepRegister": {
     "message": "Register $1",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -7521,6 +7560,13 @@
   },
   "perpsAddFunds": {
     "message": "Add funds"
+  },
+  "perpsAddFundsHint": {
+    "message": "Add at least $1 to your Perps account to place this order.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Add funds to trade"
   },
   "perpsAddMargin": {
     "message": "Add margin"
@@ -9127,6 +9173,10 @@
   "relayerFee": {
     "message": "Relayer fee"
   },
+  "remindMeLater": {
+    "message": "Remind me later",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Remove"
   },
@@ -9189,6 +9239,10 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "replacePasskey": {
+    "message": "Replace passkey",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Report an issue"
