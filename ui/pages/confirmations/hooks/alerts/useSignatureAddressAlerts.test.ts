@@ -191,7 +191,7 @@ describe('useSignatureAddressAlerts', () => {
     };
     stored.messageParams = {
       ...stored.messageParams,
-      data: data as SignatureRequest['messageParams']['data'],
+      data: data as unknown as SignatureRequest['messageParams']['data'],
     };
 
     renderHookWithConfirmContextProvider(
