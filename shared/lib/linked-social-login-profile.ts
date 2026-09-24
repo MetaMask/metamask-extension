@@ -22,18 +22,6 @@ export type ProfileAliasWithIdentifiers = {
 };
 
 /**
- * AuthenticationController state including the paired-identifier fields Core
- * writes at runtime but does not yet declare on its published state type.
- */
-export type AuthStateWithPairedIdentifiers = AuthenticationControllerState & {
-  pairedIdentifierIds?: readonly PairedIdentifier[];
-  srpSessionData?: Record<
-    string,
-    { pairedIdentifierIds?: readonly PairedIdentifier[] }
-  >;
-};
-
-/**
  * Returns whether any profile alias includes a social identifier type.
  *
  * @param profileAliases - Aliases returned by profile pair or sign-in events.
@@ -72,32 +60,26 @@ export function pairedIdentifiersIncludeSocialLogin(
 /**
  * Reads `pairedIdentifierIds` as exposed by Core after SRP login / pairing.
  *
- * The auth API nests `paired_identifier_ids` inside `profile` on the wire, but
- * the SDK hoists it out, so controller state never has `profile.pairedIdentifierIds`.
- * `performSignIn` writes it to the top level of state and, via the login-response
- * spread, alongside (not inside) the profile of each `srpSessionData` entry. The
- * persisted top-level copy is the primary read; the session copy is the fallback.
+ * `performSignIn` and the pair calls store the identifiers on the profile of
+ * each `srpSessionData` entry, preserving the last known value when the API
+ * omits them. Only the primary SRP profile is populated by pair responses, so
+ * scan every session rather than assuming a particular entropy source.
  *
  * @param authState - AuthenticationController state after `performSignIn`.
  */
 export function getPairedIdentifierIdsFromAuthState(
   authState: AuthenticationControllerState,
 ): readonly PairedIdentifier[] | undefined {
-  // Core writes these fields but has not added them to its published types.
-  const { pairedIdentifierIds, srpSessionData } =
-    authState as AuthStateWithPairedIdentifiers;
-
-  if (pairedIdentifierIds?.length) {
-    return pairedIdentifierIds;
-  }
+  const { srpSessionData } = authState;
 
   if (!srpSessionData) {
     return undefined;
   }
 
   for (const session of Object.values(srpSessionData)) {
-    if (session?.pairedIdentifierIds?.length) {
-      return session.pairedIdentifierIds;
+    const pairedIdentifierIds = session?.profile?.pairedIdentifierIds;
+    if (pairedIdentifierIds?.length) {
+      return pairedIdentifierIds;
     }
   }
 
