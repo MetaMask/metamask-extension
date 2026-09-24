@@ -454,9 +454,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               })}
             </Box>
           )}
-          <Suspense fallback={null}>
-            {children}
-          </Suspense>
+          <Suspense fallback={null}>{children}</Suspense>
         </Box>
       </Box>
     );
