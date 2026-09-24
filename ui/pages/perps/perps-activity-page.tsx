@@ -28,6 +28,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
 import { useInAppBack } from '../../hooks/use-in-app-back';
+import { usePerpsHomeRoute } from '../../hooks/perps/usePerpsHomeRoute';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
 import { getPerpsTransactionDestination } from '../../components/app/perps/utils/getPerpsTransactionDestination';
 import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -142,7 +143,8 @@ const PerpsActivityPage = () => {
   );
 
   // Navigation handlers
-  const handleBackClick = useInAppBack(`${DEFAULT_ROUTE}?tab=perps`);
+  const perpsHomeRoute = usePerpsHomeRoute();
+  const handleBackClick = useInAppBack(perpsHomeRoute);
 
   // Navigate to the transaction's details view. Orders/trades/funding open
   // the dedicated Perps transaction details page; deposits/withdrawals open

@@ -75,6 +75,7 @@ import {
   usePerpsMarketInfo,
 } from '../../hooks/perps';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
+import { usePerpsHomeRoute } from '../../hooks/perps/usePerpsHomeRoute';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
@@ -827,7 +828,8 @@ const PerpsMarketDetailPage = () => {
     );
   }, []);
 
-  const handleBackClick = useInAppBack(`${DEFAULT_ROUTE}?tab=perps`);
+  const perpsHomeRoute = usePerpsHomeRoute();
+  const handleBackClick = useInAppBack(perpsHomeRoute);
 
   const handleMarketListClick = useCallback(() => {
     navigate(PERPS_MARKET_LIST_ROUTE);
