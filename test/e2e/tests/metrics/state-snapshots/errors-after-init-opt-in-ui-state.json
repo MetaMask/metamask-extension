@@ -148,6 +148,7 @@
       "stellar": "object",
       "tron": "object"
     },
+    "enrolledCredentials": "object",
     "error": null,
     "estimatedGasFeeTimeBounds": {},
     "etag": null,
@@ -309,6 +310,7 @@
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "gasSponsorshipOptOutByChainId": "object",
+      "hasLinkedSocialLoginProfile": "boolean",
       "hideZeroBalanceTokens": false,
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
