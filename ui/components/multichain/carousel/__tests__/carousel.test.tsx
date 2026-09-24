@@ -17,9 +17,20 @@ jest.mock('../../../../../shared/lib/environment', () => ({
   isProduction: jest.fn().mockReturnValue(false),
 }));
 
-// Mock Redux hooks
+// Mock Redux hooks. `getIsRampsEnabled` (StackCard) reads the flag from
+// `metamask.remoteFeatureFlags`; every other selector falls back to a stubbed
+// selected account.
 jest.mock('react-redux', () => ({
-  useSelector: jest.fn(() => ({ address: '0x123' })), // Mock selected account
+  useSelector: jest.fn((selector: (state: unknown) => unknown) => {
+    try {
+      const value = selector({
+        metamask: { remoteFeatureFlags: {}, internalAccounts: {} },
+      });
+      return value ?? { address: '0x123' };
+    } catch {
+      return { address: '0x123' };
+    }
+  }),
 }));
 
 const mockUseNavigate = jest.fn();

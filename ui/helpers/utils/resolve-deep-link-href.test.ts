@@ -27,4 +27,32 @@ describe('resolveTrustedDeepLinkHref', () => {
 
     await expect(resolveTrustedDeepLinkHref(href)).resolves.toBe(href);
   });
+
+  it('returns internal route hrefs unchanged', async () => {
+    await expect(resolveTrustedDeepLinkHref('/buy?chainId=1')).resolves.toBe(
+      '/buy?chainId=1',
+    );
+  });
+
+  it('resolves /buy to the Portfolio redirect with the unified buy flag off', async () => {
+    await expect(
+      resolveTrustedDeepLinkHref('https://link.metamask.io/buy?chainId=1'),
+    ).resolves.toBe('https://app.metamask.io/buy?chainId=1');
+  });
+
+  it('routes /buy into the in-app entry route with the unified buy flag on', async () => {
+    await expect(
+      resolveTrustedDeepLinkHref('https://link.metamask.io/buy?chainId=1', true),
+    ).resolves.toBe('/ramps/buy-deeplink-entry?chainId=1');
+  });
+
+  it('falls back to the original href when the link cannot be parsed', async () => {
+    const href = 'https://link.metamask.io/unknown';
+    await expect(resolveTrustedDeepLinkHref(href)).resolves.toBe(href);
+  });
+
+  it('falls back to the original href for an invalid URL', async () => {
+    const href = 'not a url';
+    await expect(resolveTrustedDeepLinkHref(href)).resolves.toBe(href);
+  });
 });
