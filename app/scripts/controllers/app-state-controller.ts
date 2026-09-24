@@ -171,6 +171,12 @@ export type AppStateControllerState = {
   deferredDeepLink?: DeferredDeepLink;
 
   /**
+   * Deep-link continuity context IDs keyed by browser tab ID.
+   * Kept in memory only and synchronized to UI state for continuity handling.
+   */
+  continuityIdsByTabId: Record<string, string>;
+
+  /**
    * The properties for the Shield subscription metrics.
    * Since we can't access some of these properties in the background, we need to get them from the UI.
    */
@@ -337,6 +343,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
+  continuityIdsByTabId: {},
   lastShownPrfMigrationReminderAt: null,
   lastPerpsDepositEntryPoint: null,
   ...getInitialStateOverrides(),
@@ -715,6 +722,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  continuityIdsByTabId: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
   lastPerpsDepositEntryPoint: {
     includeInStateLogs: true,
     persist: false,
@@ -749,6 +762,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setArcUsageNoticeShown',
   'setBrowserEnvironment',
   'setConnectedStatusPopoverHasBeenShown',
+  'setContinuityIdForTab',
   'setCurrentExtensionPopupId',
   'setCurrentPopupId',
   'setDappSwapComparisonData',
@@ -835,6 +849,10 @@ export class AppStateController extends BaseController<
         },
       );
     }
+
+    this.#extension.tabs?.onRemoved?.addListener?.((tabId) => {
+      this.removeContinuityIdForTab(tabId);
+    });
 
     this.waitingForUnlock = [];
 
@@ -1834,6 +1852,40 @@ export class AppStateController extends BaseController<
   removeDeferredDeepLink(): void {
     this.update((state) => {
       state.deferredDeepLink = undefined;
+    });
+  }
+
+  /**
+   * Stores or updates a deep-link continuity context ID for a browser tab.
+   *
+   * @param tabId - The browser tab ID where the deep link was handled.
+   */
+  setContinuityIdForTab(tabId: number): string {
+    const contextId = crypto.randomUUID();
+    this.update((state) => {
+      state.continuityIdsByTabId = {
+        ...state.continuityIdsByTabId,
+        [String(tabId)]: contextId,
+      };
+    });
+    return contextId;
+  }
+
+  /**
+   * Removes a deep-link continuity context ID for a browser tab.
+   *
+   * @param tabId - The browser tab ID to clear.
+   */
+  removeContinuityIdForTab(tabId: number): void {
+    const key = String(tabId);
+    if (!(key in this.state.continuityIdsByTabId)) {
+      return;
+    }
+
+    this.update((state) => {
+      const nextMap = { ...state.continuityIdsByTabId };
+      delete nextMap[key];
+      state.continuityIdsByTabId = nextMap;
     });
   }
 }

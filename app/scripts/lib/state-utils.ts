@@ -61,6 +61,11 @@ const REMOVE_PATHS: (string | true)[][] = [
   ['srpSessionData', true, 'token', 'accessToken'],
 ];
 
+const STATE_LOG_EXCLUDED_KEYS = [
+  ...QR_SYNC_STATE_LOG_KEYS,
+  'continuityIdsByTabId',
+];
+
 export function sanitizePatches(patches: Patch[]): Patch[] {
   return patches.filter((patch) => {
     if (REMOVE_KEYS.includes(patch.path[0] as string)) {
@@ -92,7 +97,8 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
 }
 
 /**
- * Removes controller state that must not appear in downloaded state logs.
+ * Removes controller state that must not appear in downloaded state logs or
+ * UI Sentry snapshots.
  * This is separate from {@link sanitizeUIState}, which only scrubs sensitive
  * values while keeping the rest of the UI state intact.
  *
@@ -101,11 +107,25 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
 export function sanitizeStateLogs(state: FlattenedUIState): FlattenedUIState {
   const newState = { ...state };
 
-  for (const key of QR_SYNC_STATE_LOG_KEYS) {
+  for (const key of STATE_LOG_EXCLUDED_KEYS) {
     delete newState[key];
   }
 
   return newState;
+}
+
+/**
+ * Removes controller state that must not appear in background Sentry snapshots.
+ *
+ * @param state - The background state to sanitize.
+ */
+export function sanitizeSentryBackgroundState(
+  state: FlattenedUIState,
+): FlattenedUIState {
+  return {
+    ...state,
+    AppStateController: sanitizeStateLogs(state.AppStateController),
+  };
 }
 
 function sanitizeSnapData(state: FlattenedUIState) {

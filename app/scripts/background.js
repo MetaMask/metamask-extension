@@ -60,10 +60,7 @@ import {
   isStateCorruptionErrorType,
 } from '../../shared/constants/critical-error';
 import { hasAnalyticsConsent } from '../../shared/lib/analytics';
-import {
-  createEvent,
-  shouldTrackDeepLinkNavigation,
-} from '../../shared/lib/deep-links/metrics';
+import { shouldTrackDeepLinkNavigation } from '../../shared/lib/deep-links/metrics';
 import {
   backedUpStateKeys,
   hasVault,
@@ -81,7 +78,11 @@ import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
 import NotificationManager from './lib/notification-manager';
 import MetamaskController from './metamask-controller';
-import { createEventBuilder, trackEvent } from './controllers/analytics';
+import {
+  canSubmitAnalytics,
+  createEventBuilder,
+  trackEvent,
+} from './controllers/analytics';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
 import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
@@ -105,7 +106,9 @@ import {
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { trackDeepLinkNavigation } from './lib/deep-links/track-deep-link-navigation';
 import { getRequestSafeReload } from './lib/safe-reload';
+import { sanitizeSentryBackgroundState } from './lib/state-utils';
 import {
   readCriticalErrorRepairSession,
   clearCriticalErrorRepairSession,
@@ -736,10 +739,20 @@ async function initialize(backup) {
     getExtensionURL: platform.getExtensionURL,
     getState: controller.getState.bind(controller),
   })
-    .on('navigate', async ({ url, parsed }) => {
+    .on('navigate', async ({ tabId, url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (shouldTrackDeepLinkNavigation(parsed)) {
-        trackEvent(createEvent({ signature: parsed.signature, url }));
+        trackDeepLinkNavigation({
+          canSubmitAnalytics,
+          parsed,
+          setContinuityIdForTab:
+            controller.appStateController.setContinuityIdForTab.bind(
+              controller.appStateController,
+            ),
+          tabId,
+          trackEvent,
+          url,
+        });
       }
     })
     .on('error', (error) => sentry?.captureException(error))
@@ -1291,7 +1304,9 @@ setupSidePanelToolbarBehavior({
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
-    const backgroundState = store.memStore.getState();
+    const backgroundState = sanitizeSentryBackgroundState(
+      store.memStore.getState(),
+    );
     return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }

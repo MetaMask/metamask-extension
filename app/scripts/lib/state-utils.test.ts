@@ -7,6 +7,7 @@ import { KeyringControllerState } from '@metamask/keyring-controller';
 import { Patch } from 'immer';
 import {
   sanitizePatches,
+  sanitizeSentryBackgroundState,
   sanitizeStateLogs,
   sanitizeUIState,
 } from './state-utils';
@@ -425,9 +426,12 @@ describe('State Utils', () => {
   });
 
   describe('sanitizeStateLogs', () => {
-    it('removes QR sync controller state from downloaded state logs', () => {
+    it('removes excluded controller state from downloaded state logs', () => {
       const state = {
         completedOnboarding: true,
+        continuityIdsByTabId: {
+          123: 'continuity-id',
+        },
         qrSyncPhase: 'displaying-qr',
         qrSyncConnectionStatus: 'connected',
         qrSyncSessionId: 'session-123',
@@ -441,6 +445,34 @@ describe('State Utils', () => {
 
       expect(sanitizeStateLogs(state)).toStrictEqual({
         completedOnboarding: true,
+      });
+    });
+  });
+
+  describe('sanitizeSentryBackgroundState', () => {
+    it('removes continuity IDs from AppStateController snapshots', () => {
+      const state = {
+        AppStateController: {
+          continuityIdsByTabId: {
+            123: 'continuity-id',
+          },
+          unlocked: true,
+        },
+        OtherController: {
+          value: 'preserved',
+        },
+      };
+
+      expect(sanitizeSentryBackgroundState(state)).toStrictEqual({
+        AppStateController: {
+          unlocked: true,
+        },
+        OtherController: {
+          value: 'preserved',
+        },
+      });
+      expect(state.AppStateController.continuityIdsByTabId).toStrictEqual({
+        123: 'continuity-id',
       });
     });
   });

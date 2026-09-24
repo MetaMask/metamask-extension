@@ -21,12 +21,15 @@ import {
 } from '../../../../shared/lib/deep-links/types';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useMessenger } from '../../../hooks/useMessenger';
+import type { OnboardingMessenger } from '../messenger';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
   getOptedIn,
+  getAnalyticsId,
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
   getIsSocialLoginFlow,
@@ -59,6 +62,7 @@ export function useOnboardingCompletion() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const messenger = useMessenger<OnboardingMessenger>();
   const isSidePanelEnabled = useSidePanelEnabled();
 
   const externalServicesOnboardingToggleState = useSelector(
@@ -74,6 +78,7 @@ export function useOnboardingCompletion() {
     getHasSeenOnboardingCompletionPage,
   );
   const isOptedIn = useSelector(getOptedIn);
+  const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
@@ -101,10 +106,35 @@ export function useOnboardingCompletion() {
       }
 
       if (deferredDeepLinkResult && deferredDeepLinkToUse?.referringLink) {
+        const url = new URL(deferredDeepLinkToUse.referringLink);
+        let continuityId: string | undefined;
+
+        try {
+          if (
+            isOptedIn &&
+            analyticsId &&
+            externalServicesOnboardingToggleState &&
+            deferredDeepLinkResult.type ===
+              DeferredDeepLinkRouteType.Navigate &&
+            deferredDeepLinkResult.trackContinuity
+          ) {
+            const tab = await browser.tabs.getCurrent();
+            if (tab?.id !== undefined) {
+              continuityId = await messenger.call(
+                'AppStateController:setContinuityIdForTab',
+                tab.id,
+              );
+            }
+          }
+        } catch (error) {
+          console.error('Failed to set deep link continuity ID:', error);
+        }
+
         await trackEvent(
           createEvent({
+            continuityId,
             signature: deferredDeepLinkResult.signature,
-            url: new URL(deferredDeepLinkToUse.referringLink),
+            url,
           }),
         );
       }
@@ -138,7 +168,15 @@ export function useOnboardingCompletion() {
         navigate(DEFAULT_ROUTE);
       }
     },
-    [dispatch, navigate, trackEvent],
+    [
+      analyticsId,
+      dispatch,
+      externalServicesOnboardingToggleState,
+      isOptedIn,
+      messenger,
+      navigate,
+      trackEvent,
+    ],
   );
 
   const completeOnboardingWithSidePanel = useCallback(
