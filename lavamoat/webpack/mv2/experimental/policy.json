@@ -2488,6 +2488,7 @@
         "URLSearchParams": true,
         "addEventListener": true,
         "atob": true,
+        "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
         "dispatchEvent": true,
@@ -2499,12 +2500,14 @@
         "@metamask/base-controller": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/profile-sync-controller>@metamask/keyring-controller": true,
-        "@metamask/utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/profile-sync-controller>@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/profile-sync-controller>@signinwithethereum/siwe": true,
-        "buffer": true
+        "buffer": true,
+        "loglevel": true
       }
     },
     "@metamask/providers": {

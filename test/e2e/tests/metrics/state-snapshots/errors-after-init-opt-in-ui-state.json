@@ -149,6 +149,7 @@
       "stellar": "object",
       "tron": "object"
     },
+    "enrolledCredentials": "object",
     "error": null,
     "estimatedGasFeeTimeBounds": {},
     "etag": null,
