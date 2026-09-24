@@ -5625,12 +5625,6 @@
     "message": "अपने Money Account में mUSD जोड़ें और स्वचालित रूप से $1 तक APY (वेरिएबल) कमाएं। फंड्स एक DeFi वॉल्ट में जाते हैं, जिसे Veda द्वारा प्रबंधित किया जाता है और Steakhouse Financial द्वारा जोखिम की निगरानी की जाती है। यह दर थर्ड पार्टी के DeFi प्लेटफॉर्म्स द्वारा उत्पन्न होती है जो फंड्स को ब्लॉकचेन प्रोटोकॉल्स में लगाते हैं। कोई स्टेकिंग नहीं, कोई क्लेम नहीं, कोई लॉक-अप्स नहीं।",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "आपका Money बैलेंस आपका खर्च करने का बैलेंस है। दुनिया भर में 150M+ मर्चेंट पर खर्च करने के लिए अपना MetaMask कार्ड लिंक करें। आपका पैसा तब तक कमाता रहता है जब तक आप इसका इस्तेमाल नहीं करते।"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account Monad द्वारा संचालित है।"
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD जोड़ें और $1 तक कमाएं। आपका बैलेंस डॉलर-बैक्ड है और कभी भी खर्च करने, ट्रेड करने या भेजने के लिए तैयार है।",
     "description": "$1 is the current mUSD APY."
@@ -5648,17 +5642,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "क्या APY रेट बदलता है?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "आप! MetaMask एक सेल्फ-कस्टोडियल वॉलेट है, जिसका मतलब है कि सिर्फ़ अकाउंट होल्डर की प्राइवेट कीज़ ही इसे कंट्रोल करती हैं। MetaMask आपके फंड्स को एक्सेस, फ्रीज़ या मूव नहीं कर सकता। यही बात हमें ट्रेडिशनल बैंक अकाउंट्स और कस्टोडियल क्रिप्टो प्लेटफॉर्म्स से अलग करती है—कोई थर्ड पार्टी आपके फंड्स को होल्ड नहीं करती है।"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "मेरे पैसे को कौन कंट्रोल करता है?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money Account खोलने की कोई फीस नहीं है और स्टेबलकॉइन्स डिपॉज़िट करने की भी कोई फीस नहीं है। नॉन-स्टेबलकॉइन टोकन डिपॉजिट करने पर आपसे फीस ली जाएगी। MetaMask कार्ड ट्रांसेक्शन, ATM विड्रॉल और लोकल करेंसी ऑफरैंप कॉस्ट से जुड़ी फीस भी हैं। "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "कार्ड फीस का पूरा ब्रेकडाउन यहाँ देखें।"
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "क्या कोई फीस है?"
@@ -5675,20 +5660,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Money अकाउंट क्या है?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD, MetaMask का 1:1 डॉलर-बैक्ड स्टेबलकॉइन है। आपका Money बैलेंस mUSD के तौर पर रखा जाता है और कभी भी खर्च करने, भेजने या ट्रेड करने के लिए उपलब्ध रहता है।",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD क्या है?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "आपका Money बैलेंस आपका खर्च करने का बैलेंस है — यह तब तक कमाता रहता है जब तक आप इसका इस्तेमाल नहीं करते। Money अकाउंट कोई बैंक अकाउंट, सेविंग्स अकाउंट या इंश्योर्ड डिपॉज़िट प्रोडक्ट नहीं है।",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "क्या यह सेविंग्स अकाउंट है या स्पेंडिंग अकाउंट?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "सामान्य प्रश्न"
