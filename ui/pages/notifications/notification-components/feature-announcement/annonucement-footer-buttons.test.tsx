@@ -274,7 +274,11 @@ describe('Feature announcement footer buttons', () => {
 
     fireEvent.click(screen.getByRole('link', { name: linkText }));
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/ramps/buy-deeplink-entry?amount=100'));
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/ramps/buy-deeplink-entry?amount=100',
+      ),
+    );
     expect(global.platform.openTab).not.toHaveBeenCalled();
   });
 
@@ -313,7 +317,10 @@ describe('Feature announcement footer buttons', () => {
       secondUrl,
     );
     await waitFor(() =>
-      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(secondUrl, false),
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(
+        secondUrl,
+        false,
+      ),
     );
 
     fireEvent.click(screen.getByRole('link', { name: linkText }));
@@ -358,13 +365,19 @@ describe('Feature announcement footer buttons', () => {
     const { rerender } = renderExternalLinkButton(firstUrl);
 
     await waitFor(() =>
-      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(firstUrl, false),
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(
+        firstUrl,
+        false,
+      ),
     );
 
     rerender(createExternalLinkButton(secondUrl));
 
     await waitFor(() =>
-      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(secondUrl, false),
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(
+        secondUrl,
+        false,
+      ),
     );
     expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledTimes(2);
 

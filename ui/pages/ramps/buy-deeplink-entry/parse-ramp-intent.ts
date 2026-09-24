@@ -63,7 +63,8 @@ export function parseRampIntent(
   }
   if (isValidHexAddress(address)) {
     return {
-      assetId: `${evmChainId}/erc20:${toChecksumHexAddress(address)}` as CaipAssetType,
+      assetId:
+        `${evmChainId}/erc20:${toChecksumHexAddress(address)}` as CaipAssetType,
     };
   }
   // Invalid address — drop the asset intent.

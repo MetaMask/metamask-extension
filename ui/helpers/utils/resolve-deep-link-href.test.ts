@@ -74,7 +74,9 @@ describe('resolveTrustedDeepLinkHref', () => {
   });
 
   it('falls back to the original href when the link cannot be parsed', async () => {
-    parseMock.mockResolvedValue(false as unknown as Awaited<ReturnType<typeof parse>>);
+    parseMock.mockResolvedValue(
+      false as unknown as Awaited<ReturnType<typeof parse>>,
+    );
 
     const href = 'https://link.metamask.io/unknown';
     expect(await resolveTrustedDeepLinkHref(href)).toBe(href);

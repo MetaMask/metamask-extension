@@ -12,11 +12,11 @@ class RampsBuyDeepLinkPage {
   private driver: Driver;
 
   // Private selector properties (sorted alphabetically)
+  private readonly rampsBuildQuoteHashPath = '/ramps/build-quote';
+
   private readonly rampsBuildQuoteScreen = {
     css: '[data-testid="ramps-build-quote-screen"]',
   };
-
-  private readonly rampsBuildQuoteHashPath = '/ramps/build-quote';
 
   constructor(driver: Driver) {
     this.driver = driver;

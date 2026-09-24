@@ -27,7 +27,8 @@ describe('Deep Link - /buy Route (unified buy)', function () {
   // one it opens token selection.
   const buyScenarios = [
     {
-      route: '/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
+      route:
+        '/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
       DestinationPage: RampsBuyDeepLinkPage,
     },
     {
