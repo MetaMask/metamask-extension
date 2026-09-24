@@ -30,8 +30,9 @@ export default class ChangePasswordPage {
 
   private readonly newPasswordInput = '[data-testid="change-password-input"]';
 
-  private readonly passwordChangedWarning =
-    '[data-testid="change-password-warning-modal"]';
+  private readonly passwordChangedWarning = {
+    testId: 'change-password-warning-modal',
+  };
 
   private readonly passwordTerms = '[data-testid="change-password-terms"]';
 

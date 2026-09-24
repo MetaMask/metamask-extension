@@ -10,6 +10,8 @@ import {
 } from '../../../tests/identity/account-syncing/helpers';
 import HeaderNavbar from './header-navbar';
 
+type ReceiveButton = 'default' | 'row';
+
 export type CheckExpectedBalanceOptions = {
   expectedBalance?: string;
   symbol?: string;
@@ -105,8 +107,6 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
-  private readonly moreButton = '[data-testid$="-overview-more"]';
-
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -122,10 +122,6 @@ class HomePage {
   private readonly privacyBalanceToggle = {
     testId: 'account-value-and-suffix',
   };
-
-  private readonly receiveEntryPointProbeTimeoutMs = 250;
-
-  private readonly receiveInMore = '[data-testid$="-overview-more-receive"]';
 
   private readonly receiveOnRow = '[data-testid$="-overview-receive"]';
 
@@ -491,35 +487,10 @@ class HomePage {
     );
   }
 
-  async clickOnReceiveButton(): Promise<void> {
-    const receiveEntryPoints = `${this.receiveOnRow}, ${this.singleActionButton}, ${this.moreButton}`;
-    const receiveInMenu = `${this.receiveInMore}, ${this.receiveOnRow}`;
-
-    await this.driver.waitForSelector(receiveEntryPoints);
-
-    if (
-      await this.driver.isElementPresentAndVisible(
-        this.receiveOnRow,
-        this.receiveEntryPointProbeTimeoutMs,
-      )
-    ) {
-      await this.driver.clickElement(this.receiveOnRow);
-      return;
-    }
-
-    if (
-      await this.driver.isElementPresentAndVisible(
-        this.singleActionButton,
-        this.receiveEntryPointProbeTimeoutMs,
-      )
-    ) {
-      await this.driver.clickElement(this.singleActionButton);
-      return;
-    }
-
-    await this.driver.clickElement(this.moreButton);
-    await this.driver.waitForSelector(receiveInMenu);
-    await this.driver.clickElement(receiveInMenu);
+  async clickOnReceiveButton(receiveButton: ReceiveButton): Promise<void> {
+    const selector =
+      receiveButton === 'default' ? this.singleActionButton : this.receiveOnRow;
+    await this.driver.clickElement(selector);
   }
 
   async clickOnSendButton(): Promise<void> {

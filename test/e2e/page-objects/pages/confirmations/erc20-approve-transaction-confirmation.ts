@@ -26,36 +26,41 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   private readonly editSpendingCapIcon: RawLocator =
     '[data-testid="edit-spending-cap-icon"]';
 
-  private readonly estimatedChangesSection =
-    '[data-testid="confirmation__simulation_section"]';
+  private readonly estimatedChangesSection = {
+    testId: 'confirmation__simulation_section',
+  };
 
-  private readonly interactingWithSection =
-    '[data-testid="transaction-details-recipient-row"]';
+  private readonly interactingWithSection = {
+    testId: 'transaction-details-recipient-row',
+  };
 
-  private readonly methodSection =
-    '[data-testid="transaction-details-method-data-row"]';
+  private readonly methodSection = {
+    testId: 'transaction-details-method-data-row',
+  };
 
   private readonly nftTokenValue: RawLocator =
     '[data-testid="simulation-token-value"]';
 
-  private readonly requestFromSection =
-    '[data-testid="transaction-details-origin-row"]';
+  private readonly requestFromSection = {
+    testId: 'transaction-details-origin-row',
+  };
 
   private readonly revokeTitle = {
-    css: '[data-testid="confirm-title-text"]',
+    testId: 'confirm-title-text',
     text: tEn('confirmTitleRevokeApproveTransaction'),
   };
 
-  private readonly spenderSection =
-    '[data-testid="confirmation__approve-spender"]';
+  private readonly spenderSection = {
+    testId: 'confirmation__approve-spender',
+  };
 
   private readonly spendingCapPermissionDescription = {
-    css: '[data-testid="confirm-title-description"]',
+    testId: 'confirm-title-description',
     text: tEn('confirmTitleDescERC20ApproveTransaction'),
   };
 
   private readonly spendingCapRequestTitle = {
-    css: '[data-testid="confirm-title-text"]',
+    testId: 'confirm-title-text',
     text: tEn('confirmTitlePermitTokens'),
   };
 
