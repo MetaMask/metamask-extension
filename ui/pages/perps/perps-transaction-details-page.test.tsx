@@ -85,12 +85,8 @@ const createMockStore = () =>
 // `renderWithProvider`'s JS/JSDoc signature types its `pathname` param as a
 // plain string, but `createMemoryRouter`'s `initialEntries` also accepts a
 // location descriptor object (needed here to carry `state`), hence the cast.
-const renderWithTransaction = (
-  transaction?: PerpsTransaction,
-  key = 'in-app-entry',
-) =>
+const renderWithTransaction = (transaction?: PerpsTransaction) =>
   renderWithProvider(<PerpsTransactionDetailsPage />, createMockStore(), {
-    key,
     pathname: PERPS_TRANSACTION_DETAILS_ROUTE,
     state: transaction ? { transaction } : null,
   } as unknown as string);
@@ -167,19 +163,6 @@ describe('PerpsTransactionDetailsPage', () => {
       );
 
       expect(mockNavigate).toHaveBeenCalledWith(-1);
-    });
-
-    it('back button navigates to activity when opened directly', () => {
-      renderWithTransaction(findTransaction('tx-004'), 'default');
-
-      fireEvent.click(
-        screen.getByTestId('perps-transaction-details-back-button'),
-      );
-
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE, {
-        replace: true,
-        state: { fromFreshTab: true },
-      });
     });
   });
 

@@ -12,7 +12,7 @@ import {
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { PERPS_HOME_TAB_ROUTE } from '../../../hooks/perps/usePerpsHomeRoute';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { MarketListView } from '.';
 
 jest.mock('../../../store/background-connection', () => ({
@@ -50,14 +50,6 @@ jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
   usePerpsLiveAccount: () => ({ account: null }),
 }));
-
-jest.mock('../../../hooks/perps/usePerpsHomeRoute', () => {
-  const actual = jest.requireActual('../../../hooks/perps/usePerpsHomeRoute');
-  return {
-    ...actual,
-    usePerpsHomeRoute: () => actual.PERPS_HOME_TAB_ROUTE,
-  };
-});
 
 const mockStore = configureStore({
   metamask: {
@@ -239,16 +231,13 @@ describe('MarketListView', () => {
   });
 
   describe('navigation', () => {
-    it('navigates to the Perps tab when opened directly', () => {
+    it('navigates back when back button is clicked', () => {
       renderWithProvider(<MarketListView />, mockStore);
 
       const backButton = screen.getByTestId('back-button');
       fireEvent.click(backButton);
 
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_TAB_ROUTE, {
-        replace: true,
-        state: { fromFreshTab: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     });
 
     it('renders market rows that are clickable', async () => {

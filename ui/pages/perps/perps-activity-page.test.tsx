@@ -8,12 +8,12 @@ import {
   PERPS_TRANSACTION_DETAILS_ROUTE,
   TX_DETAILS_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
 import type { PerpsTransaction } from '../../components/app/perps/types';
-import { PERPS_HOME_TAB_ROUTE } from '../../hooks/perps/usePerpsHomeRoute';
 import PerpsActivityPage from './perps-activity-page';
 
 const mockNavigate = jest.fn();
@@ -44,14 +44,6 @@ const mockUsePerpsTransactionHistory = jest.fn().mockReturnValue({
 jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
   usePerpsTransactionHistory: () => mockUsePerpsTransactionHistory(),
 }));
-
-jest.mock('../../hooks/perps/usePerpsHomeRoute', () => {
-  const actual = jest.requireActual('../../hooks/perps/usePerpsHomeRoute');
-  return {
-    ...actual,
-    usePerpsHomeRoute: () => actual.PERPS_HOME_TAB_ROUTE,
-  };
-});
 
 const mockGetIsPerpsExperienceAvailable =
   getIsPerpsExperienceAvailable as jest.MockedFunction<
@@ -150,16 +142,13 @@ describe('PerpsActivityPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('back button navigates to the Perps tab when opened directly', () => {
+  it('back button navigates to previous page', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
     const backButton = screen.getByTestId('perps-activity-back-button');
     fireEvent.click(backButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_TAB_ROUTE, {
-      replace: true,
-      state: { fromFreshTab: true },
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('redirects when perps experience is unavailable', () => {

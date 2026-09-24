@@ -20,7 +20,6 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import { PERPS_HOME_TAB_ROUTE } from '../../hooks/perps/usePerpsHomeRoute';
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -266,13 +265,6 @@ const mockPerpsScreenViewedOptions: {
   eventName?: unknown;
   properties?: Record<string, unknown>;
 }[] = [];
-jest.mock('../../hooks/perps/usePerpsHomeRoute', () => {
-  const actual = jest.requireActual('../../hooks/perps/usePerpsHomeRoute');
-  return {
-    ...actual,
-    usePerpsHomeRoute: () => actual.PERPS_HOME_TAB_ROUTE,
-  };
-});
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
   usePerpsEventTracking: (options?: {
@@ -403,7 +395,6 @@ jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn().mockReturnValue({
-  key: 'in-app-entry',
   pathname: '/perps/market/ETH',
   search: '',
   state: null,
@@ -622,7 +613,6 @@ describe('PerpsMarketDetailPage', () => {
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     latestPriceSubscriber = undefined;
     mockUseLocation.mockReturnValue({
-      key: 'in-app-entry',
       pathname: '/perps/market/ETH',
       search: '',
       state: null,
@@ -1207,22 +1197,10 @@ describe('PerpsMarketDetailPage', () => {
     });
 
     it('navigates back in history when back button is clicked', async () => {
-      const store = mockStore(createMockState(true));
-
-      const { getByTestId } = await renderPage(store);
-
-      const backButton = getByTestId('perps-market-detail-back-button');
-      backButton.click();
-
-      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
-    });
-
-    it('falls back to Perps tab when opened directly', async () => {
-      mockUseLocation.mockReturnValue({
-        key: 'default',
-        pathname: '/perps/market/ETH',
-        search: '',
-        state: null,
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 2,
+        configurable: true,
       });
 
       const store = mockStore(createMockState(true));
@@ -1232,9 +1210,36 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_HOME_TAB_ROUTE, {
-        replace: true,
-        state: { fromFreshTab: true },
+      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
+      });
+    });
+
+    it('falls back to Perps tab when history is empty', async () => {
+      const originalLength = window.history.length;
+      Object.defineProperty(window.history, 'length', {
+        value: 1,
+        configurable: true,
+      });
+
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      const backButton = getByTestId('perps-market-detail-back-button');
+      backButton.click();
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        { pathname: '/', search: 'tab=perps' },
+        { replace: true },
+      );
+
+      Object.defineProperty(window.history, 'length', {
+        value: originalLength,
+        configurable: true,
       });
     });
 

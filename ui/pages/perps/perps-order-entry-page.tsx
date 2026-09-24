@@ -66,8 +66,8 @@ import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import { useInAppBack } from '../../hooks/use-in-app-back';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -1437,11 +1437,24 @@ const PerpsOrderEntryPage = () => {
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 
-  const navigateBack = useInAppBack(
-    decodedSymbol
-      ? `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`
-      : DEFAULT_ROUTE,
-  );
+  // Visible header back button: pop the history stack so the user returns to
+  // wherever they came from. Pushing marketDetailPath instead would create a
+  // market-detail -> order-entry -> market-detail loop, since the
+  // market-detail back button uses navigate(-1).
+  const navigateBack = useCallback(() => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      navigate(PREVIOUS_ROUTE);
+      return;
+    }
+    if (decodedSymbol) {
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(decodedSymbol)}`,
+        { replace: true },
+      );
+      return;
+    }
+    navigate(DEFAULT_ROUTE, { replace: true });
+  }, [decodedSymbol, navigate]);
 
   const handleBackClick = useCallback(
     (extraState?: Partial<PerpsToastRouteState>) => {

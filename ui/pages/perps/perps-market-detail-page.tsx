@@ -60,8 +60,8 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import { useInAppBack } from '../../hooks/use-in-app-back';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -75,7 +75,6 @@ import {
   usePerpsMarketInfo,
 } from '../../hooks/perps';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
-import { usePerpsHomeRoute } from '../../hooks/perps/usePerpsHomeRoute';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
@@ -828,8 +827,13 @@ const PerpsMarketDetailPage = () => {
     );
   }, []);
 
-  const perpsHomeRoute = usePerpsHomeRoute();
-  const handleBackClick = useInAppBack(perpsHomeRoute);
+  const handleBackClick = useCallback(() => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      navigate(PREVIOUS_ROUTE);
+      return;
+    }
+    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
+  }, [navigate]);
 
   const handleMarketListClick = useCallback(() => {
     navigate(PERPS_MARKET_LIST_ROUTE);
