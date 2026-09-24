@@ -1876,11 +1876,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае MetaMask. Это похоже на посещенеи вами любого веб-сайта. MetaMask временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с MetaMask. Чтобы узнать больше, прочитайте нашу $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Включает в себя основные функции, такие как информация о токене и настройки газа. Оставьте эту функцию включенной для удобства использования. Прочитайте нашу $1, чтобы узнать больше.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationLabel": {
     "message": "Базовый функционал"

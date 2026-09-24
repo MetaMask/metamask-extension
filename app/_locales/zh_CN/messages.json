@@ -1879,11 +1879,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask 通过互联网服务提供代币详情、Gas 设置等基本功能。当您使用这些服务时，您的 IP 地址会被共享，在此插件中是共享给 MetaMask，这与您访问任何网站时的情况类似。MetaMask 仅会临时使用这些数据，且绝不会出售您的数据。您可以选择使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 使用体验。更多信息，请参阅我们的$1。",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "包含代币详情和燃料设置等基本功能。为获得最佳体验，请保持此功能开启。请参阅我们的 $1，了解更多信息。",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationLabel": {
     "message": "基本功能"

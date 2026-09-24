@@ -1879,11 +1879,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask इंटरनेट सेवाओं के ज़रिए टोकन की जानकारी और गैस सेटिंग्स जैसे बुनियादी फ़ीचर्स उपलब्ध कराता है। इंटरनेट सेवाओं का इस्तेमाल करते समय आपका IP एड्रेस MetaMask के साथ शेयर किया जाता है, ठीक वैसे ही जैसे किसी वेबसाइट को खोलते समय होता है। MetaMask इस डेटा को थोड़े समय के लिए इस्तेमाल करता है और इसे कभी बेचता नहीं है। ज़रूरत के मुताबिक VPN का इस्तेमाल किया जा सकता है या इन सेवाओं को बंद किया जा सकता है, लेकिन याद रहे इससे MetaMask के संबंध में आपके अनुभव पर असर पड़ सकता है। ज़्यादा जानकारी के लिए हमारी $1 पढ़ें।",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "इसमें टोकन डिटेल्स और गैस सेटिंग जैसे बेसिक फ़ीचर्स शामिल हैं। सबसे अच्छे अनुभव के लिए इस फ़ीचर को चालू रखें। ज़्यादा जानने के लिए हमारा $1 पढ़ें।",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationLabel": {
     "message": "बुनियादी सुविधाएं"

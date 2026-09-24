@@ -1879,11 +1879,11 @@
   },
   "basicConfigurationDescription": {
     "message": "A MetaMask oferece recursos básicos como detalhes de token e configurações de gás por meio de serviços de internet. Quando você usa serviços de internet, seu endereço IP é compartilhado, neste caso com a MetaMask. É exatamente igual a quando você visita qualquer site. A MetaMask usa esses dados temporariamente e nunca os vende. Você pode usar uma VPN ou desligar esses serviços, mas isso poderá afetar sua experiência com a MetaMask. Para saber mais, leia nossa $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Inclui recursos básicos como detalhes do token e configurações de gas. Mantenha este recurso ativado para melhorar sua experiência. Leia nosso $1 para saber mais.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationLabel": {
     "message": "Funcionalidade básica"
