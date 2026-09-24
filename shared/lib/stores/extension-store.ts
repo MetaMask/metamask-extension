@@ -155,6 +155,13 @@ export default class ExtensionStore implements BaseStore {
     }
   }
 
+  /**
+   * Returns the number of bytes each key occupies in local extension storage.
+   *
+   * @param keys - The storage keys to measure.
+   * @returns A Map from key to byte count.
+   * @throws If local storage is unsupported or `getBytesInUse` is unavailable.
+   */
   async getBytesInUseByKey(keys: string[]): Promise<Map<string, number>> {
     if (!this.isSupported) {
       throw new Error(

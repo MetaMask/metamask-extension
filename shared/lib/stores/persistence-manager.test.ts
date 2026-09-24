@@ -104,7 +104,6 @@ describe('PersistenceManager', () => {
   beforeEach(() => {
     process.env.IN_TEST = 'true';
     jest.clearAllMocks();
-    mockStoreGetBytesInUseByKey.mockReset();
     mockedGetManifestFlags.mockReturnValue({});
     manager = new PersistenceManager({
       getPersistenceWriteSampleRate: () => 0,
@@ -905,6 +904,27 @@ describe('PersistenceManager', () => {
           ]),
           sizeMeasurementSource: 'storage_get_bytes_in_use',
           totalBytes: 40,
+        }),
+      );
+    });
+
+    it('falls back to string length estimates when getBytesInUseByKey returns an empty Map', async () => {
+      mockStoreGetBytesInUseByKey.mockResolvedValue(new Map());
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sizeMeasurementSource: 'json_string_length_estimate',
         }),
       );
     });

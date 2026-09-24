@@ -807,7 +807,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     try {
       const storageBytes =
         await this.#localStore.getBytesInUseByKey?.(controllerKeys);
-      if (storageBytes) {
+      if (storageBytes && storageBytes.size > 0) {
         bytesByController = storageBytes;
         sizeMeasurementSource = 'storage_get_bytes_in_use';
         totalBytes = [...bytesByController.values()].reduce(

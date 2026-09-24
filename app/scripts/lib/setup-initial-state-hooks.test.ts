@@ -234,7 +234,7 @@ describe('setup-initial-state-hooks', () => {
         measurementDurationMs: 0.2,
         sampleRate: 0,
         sizeMeasurementSource: 'json_string_length_estimate',
-        totalBytes: 31,
+        totalBytes: 13,
         writeDurationMs: 4,
       };
       const splitStateWriteHandler = mockPersistenceOn.mock.calls.find(
