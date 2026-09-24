@@ -488,23 +488,19 @@
     "message": "デポジット失敗"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "$1をデポジットしています",
-    "description": "$1 is the token symbol"
+    "message": "入金中"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "$1をデポジットしました",
-    "description": "$1 is the token symbol"
+    "message": "デポジット"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "受取に失敗しました"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "$1を受け取っています",
-    "description": "$1 is the token symbol"
+    "message": "送信中"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "$1を受け取りました",
-    "description": "$1 is the token symbol"
+    "message": "送信完了"
   },
   "activity_nftBuy_failed_title": {
     "message": "購入に失敗しました"

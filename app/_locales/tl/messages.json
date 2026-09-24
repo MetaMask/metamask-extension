@@ -488,23 +488,19 @@
     "message": "Nabigo ang pagdeposito"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Nagdedeposito ng $1",
-    "description": "$1 is the token symbol"
+    "message": "Idinideposito"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Naideposito ang $1",
-    "description": "$1 is the token symbol"
+    "message": "Naideposito"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Nabigong matanggap"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Tinatanggap ang $1",
-    "description": "$1 is the token symbol"
+    "message": "Ipinapadala"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Natanggap ang $1",
-    "description": "$1 is the token symbol"
+    "message": "Ipinadala"
   },
   "activity_nftBuy_failed_title": {
     "message": "Nabigo ang pagbili"

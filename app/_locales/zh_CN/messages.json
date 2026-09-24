@@ -484,7 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "已市价平空"
   },
-<<<<<<< HEAD
   "activity_moneyAccountDeposit_failed_description": {
     "message": "Money Account"
   },
@@ -520,29 +519,6 @@
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "已发送"
-=======
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "存款失败"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "正在存入 $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "已存入 $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "接收失败"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "正在接收 $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "已接收 $1",
-    "description": "$1 is the token symbol"
->>>>>>> b11264e482 (chore: New Crowdin Translations by GitHub Action cp-13.50.0 (#46512))
   },
   "activity_nftBuy_failed_title": {
     "message": "购买失败"
@@ -3125,9 +3101,6 @@
   },
   "copiedToClipboard": {
     "message": "已复制到剪贴板"
-  },
-  "copy": {
-    "message": "复制"
   },
   "copyAddress": {
     "message": "复制地址到剪贴板"
@@ -6994,10 +6967,6 @@
     "message": "我们无法验证您的 $1。请重试或使用您的密码。",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
-  "passkeyMigrationReplacementTryAgain": {
-    "message": "请重试",
-    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
-  },
   "passkeySetupStepRegister": {
     "message": "注册 $1",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -9077,10 +9046,6 @@
   "relayerFee": {
     "message": "中继器费用"
   },
-  "remindMeLater": {
-    "message": "明白了",
-    "description": "Secondary action to postpone replacing a legacy passkey."
-  },
   "remove": {
     "message": "删除"
   },
@@ -9423,9 +9388,6 @@
   },
   "rpcUrl": {
     "message": "RPC（远程过程调用）URL"
-  },
-  "rpcUrlRateLimited": {
-    "message": "此远程过程调用（RPC）提供商正在限制请求。请稍后再试，或使用其他 RPC 网址。\n\n"
   },
   "safeTransferFrom": {
     "message": "安全转账来自"
@@ -11718,9 +11680,6 @@
   },
   "swapSlippageAutoDescription": {
     "message": "自动"
-  },
-  "swapSlippageCappedDescription": {
-    "message": "滑移容差上限为 100%。"
   },
   "swapSlippageHighDescription": {
     "message": "输入的滑点（$1%）被认为是很高的，可能会因而得到较差的汇率",

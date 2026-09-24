@@ -488,23 +488,19 @@
     "message": "Deposit gagal"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Mendeposit $1",
-    "description": "$1 is the token symbol"
+    "message": "Mendeposit"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "$1 dideposit",
-    "description": "$1 is the token symbol"
+    "message": "Didepositkan"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Penerimaan gagal"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Menerima $1",
-    "description": "$1 is the token symbol"
+    "message": "Mengirim"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Menerima $1",
-    "description": "$1 is the token symbol"
+    "message": "Terkirim"
   },
   "activity_nftBuy_failed_title": {
     "message": "Pembelian gagal"

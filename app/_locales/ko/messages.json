@@ -488,23 +488,19 @@
     "message": "예치 실패"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "$1 예치 중",
-    "description": "$1 is the token symbol"
+    "message": "예치 중"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "$1 예치 완료",
-    "description": "$1 is the token symbol"
+    "message": "입금됨"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "받기 실패"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "$1 받는 중",
-    "description": "$1 is the token symbol"
+    "message": "전송 중"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "$1 받음",
-    "description": "$1 is the token symbol"
+    "message": "전송됨"
   },
   "activity_nftBuy_failed_title": {
     "message": "매수 실패"

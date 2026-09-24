@@ -488,23 +488,19 @@
     "message": "Le dépôt a échoué"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Déposer en $1",
-    "description": "$1 is the token symbol"
+    "message": "Dépôt"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "$1 déposé",
-    "description": "$1 is the token symbol"
+    "message": "Déposé"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Échec de réception"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Recevoir en $1",
-    "description": "$1 is the token symbol"
+    "message": "Envoi"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "A reçu en $1",
-    "description": "$1 is the token symbol"
+    "message": "Envoyé"
   },
   "activity_nftBuy_failed_title": {
     "message": "Échec de l’achat"

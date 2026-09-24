@@ -488,23 +488,19 @@
     "message": "Η κατάθεση απέτυχε"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Κατάθεση $1",
-    "description": "$1 is the token symbol"
+    "message": "Κατάθεση σε εξέλιξη"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Κατατέθηκαν $1",
-    "description": "$1 is the token symbol"
+    "message": "Κατατέθηκε"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Η λήψη απέτυχε"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Λήψη $1",
-    "description": "$1 is the token symbol"
+    "message": "Αποστολή"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Ελήφθη $1",
-    "description": "$1 is the token symbol"
+    "message": "Εστάλη"
   },
   "activity_nftBuy_failed_title": {
     "message": "Η αγορά απέτυχε"

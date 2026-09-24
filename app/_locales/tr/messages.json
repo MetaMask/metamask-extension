@@ -488,23 +488,19 @@
     "message": "Para yatırma işlemi başarısız oldu"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "$1 yatırılıyor",
-    "description": "$1 is the token symbol"
+    "message": "Yatırılıyor"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "$1 yatırıldı",
-    "description": "$1 is the token symbol"
+    "message": "Yatırıldı"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Alınamadı"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "$1 alınıyor",
-    "description": "$1 is the token symbol"
+    "message": "Gönderiliyor"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "$1 alındı",
-    "description": "$1 is the token symbol"
+    "message": "Gönderildi"
   },
   "activity_nftBuy_failed_title": {
     "message": "Alış işlemi başarısız oldu"

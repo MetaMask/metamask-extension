@@ -488,23 +488,19 @@
     "message": "Falha no depósito"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Depositando $1",
-    "description": "$1 is the token symbol"
+    "message": "Depositando"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Depositado $1",
-    "description": "$1 is the token symbol"
+    "message": "Depositado"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Falha ao receber"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Recebendo $1",
-    "description": "$1 is the token symbol"
+    "message": "Enviando"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Recebido $1",
-    "description": "$1 is the token symbol"
+    "message": "Enviado"
   },
   "activity_nftBuy_failed_title": {
     "message": "Comprar falhou"
