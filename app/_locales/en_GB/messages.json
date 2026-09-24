@@ -2004,7 +2004,7 @@
     "message": "Turn on basic functionality"
   },
   "basicFunctionalityMigrationModalTitle": {
-    "message": "Your privacy settings have changed"
+    "message": "We've updated our settings"
   },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "blog post"
@@ -2023,14 +2023,17 @@
     "message": "Updates for social login"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "We've updated our settings. Your privacy toggles are now one setting, Basic Functionality. It's turned $1 based on your previous settings. Adjust anytime in $2. Learn more.",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "message": "Your privacy toggles are now one setting, Basic Functionality. It's turned $1 based on your previous settings. Adjust anytime in $2. $3.",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "off"
   },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "on"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "Learn more"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Settings > Privacy"
