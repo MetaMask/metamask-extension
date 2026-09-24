@@ -334,7 +334,10 @@ describe('useRampsNavigation goToBuy', () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
     expect(opened).toBe('native');
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
@@ -420,10 +423,46 @@ describe('useRampsNavigation goToBuy', () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
     expect(opened).toBe('native');
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(openTab).not.toHaveBeenCalled();
     expect(mockHasAttemptedPortfolioBuyMigration).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
+  });
+
+  it('replace option → in-app navigations replace instead of push', async () => {
+    const assetId = 'eip155:1/erc20:0xabc';
+    const { result } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    await act(async () => {
+      await result.current.goToBuy({ assetId }, { replace: true });
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+      replace: true,
+    });
+
+    await act(async () => {
+      await result.current.goToBuy(undefined, { replace: true });
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: true,
+    });
   });
 
   it('providers fetch errored → fails open and navigates to token selection', async () => {
@@ -438,7 +477,10 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+        RAMPS_TOKEN_SELECTION_ROUTE,
+        undefined,
+      );
     expect(getModalName()).toBeNull();
   });
 
@@ -454,7 +496,10 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+        RAMPS_TOKEN_SELECTION_ROUTE,
+        undefined,
+      );
     expect(getModalName()).toBeNull();
   });
 
@@ -468,7 +513,10 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+        RAMPS_TOKEN_SELECTION_ROUTE,
+        undefined,
+      );
     expect(getModalName()).toBeNull();
   });
 

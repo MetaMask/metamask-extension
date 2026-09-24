@@ -50,6 +50,19 @@ export type RampIntent = {
 
 export type RampsNavigationResult = 'native' | 'portfolio' | false;
 
+/**
+ * Options for {@link useRampsNavigation}.goToBuy.
+ */
+export type GoToBuyOptions = {
+  /**
+   * Replace, rather than push, the history entry for the in-app navigations
+   * `goToBuy` performs. Callers that intercept a navigation (the `/buy`
+   * deep-link entry page) must replace so the intercepting page cannot be
+   * navigated back to; regular in-app entry points keep pushing.
+   */
+  replace?: boolean;
+};
+
 type ProvidersState = ResourceState<Provider[], Provider | null>;
 type TokensState = ResourceState<TokensResponse | null, unknown>;
 
@@ -124,9 +137,10 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
- * {@link RampIntent}. It runs the gate and either shows a blocking modal or
- * opens the buy destination. Resolves to the destination when it proceeded and
- * `false` when a blocking modal was shown.
+ * {@link RampIntent} and an optional {@link GoToBuyOptions}. It runs the gate
+ * and either shows a blocking modal or opens the buy destination. Resolves to
+ * the destination when it proceeded and `false` when a blocking modal was
+ * shown.
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -145,7 +159,10 @@ export default function useRampsNavigation() {
   const portfolioMigrationRef = useRef<Promise<boolean> | null>(null);
 
   const goToBuy = useCallback(
-    async (intent?: RampIntent): Promise<RampsNavigationResult> => {
+    async (
+      intent?: RampIntent,
+      { replace = false }: GoToBuyOptions = {},
+    ): Promise<RampsNavigationResult> => {
       // Returning Portfolio users get one migration visit before native Buy.
       // This precedes native eligibility gates because Portfolio performs the
       // migration from its app shell, independently of native Buy support.
@@ -243,10 +260,15 @@ export default function useRampsNavigation() {
         return false;
       }
 
+      // A `replace` request swaps the caller's history entry instead of
+      // pushing, so an intercepting page (deep-link entry) cannot be returned
+      // to via the back button.
+      const historyOptions = replace ? { replace: true } : undefined;
+
       // 6. Route into the native buy flow.
       if (!assetId) {
         // No specific asset → token selection page (it loads the catalog).
-        navigate(RAMPS_TOKEN_SELECTION_ROUTE);
+        navigate(RAMPS_TOKEN_SELECTION_ROUTE, historyOptions);
         return 'native';
       }
 
@@ -274,6 +296,7 @@ export default function useRampsNavigation() {
       }
       navigate(RAMPS_BUILD_QUOTE_ROUTE, {
         state: { assetId: selectedAssetId },
+        ...historyOptions,
       });
       return 'native';
     },
