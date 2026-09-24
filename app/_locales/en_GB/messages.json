@@ -2004,26 +2004,26 @@
     "message": "Turn on basic functionality"
   },
   "basicFunctionalityMigrationModalTitle": {
-    "message": "Your settings have changed"
+    "message": "Your privacy settings have changed"
   },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "blog post"
   },
   "basicFunctionalityMigrationSocialModalBody1": {
-    "message": "We’re updating how MetaMask works for social login. To enable a seamless experience across MetaMask, your social login identifier (email or handle) will now be securely linked to your user profile and associated account addresses. As part of this update, Basic Functionality and other default settings will always be enabled."
+    "message": "Because you sign in with Google, Apple or Telegram, your email (or Telegram handle) is now saved to your MetaMask profile with your wallet addresses. This keeps your account working consistently across MetaMask features. Basic Functionality stays on for social login accounts. Your keys are still only yours."
   },
   "basicFunctionalityMigrationSocialModalBody2": {
-    "message": "We never sell your data to third parties. Read more about what we collect and why in our $1 and updated $2.",
+    "message": "Read more in our $1 and $2.",
     "description": "$1 is the blog post link, $2 is the Privacy Notice link"
   },
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "Privacy Notice"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Privacy and product updates"
+    "message": "Updates for social login"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Basic functionality now includes third-party APIs. It’s turned $1 based on your previous settings. Adjust anytime in $2.",
+    "message": "We've updated our settings. Your privacy toggles are now one setting, Basic Functionality. It's turned $1 based on your previous settings. Adjust anytime in $2. Learn more.",
     "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
   },
   "basicFunctionalityMigrationToastDisabled": {

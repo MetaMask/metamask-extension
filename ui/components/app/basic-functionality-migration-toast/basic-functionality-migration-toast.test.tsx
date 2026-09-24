@@ -99,7 +99,7 @@ describe('BasicFunctionalityMigrationToast', () => {
 
     expect(
       getByTestId('basic-functionality-migration-toast'),
-    ).toHaveTextContent('It’s turned on based on your previous settings.');
+    ).toHaveTextContent("It's turned on based on your previous settings.");
   });
 
   it('shows the disabled Basic Functionality state', () => {
@@ -109,7 +109,7 @@ describe('BasicFunctionalityMigrationToast', () => {
 
     expect(
       getByTestId('basic-functionality-migration-toast'),
-    ).toHaveTextContent('It’s turned off based on your previous settings.');
+    ).toHaveTextContent("It's turned off based on your previous settings.");
   });
 
   it('does not render when no toast is scheduled', () => {
