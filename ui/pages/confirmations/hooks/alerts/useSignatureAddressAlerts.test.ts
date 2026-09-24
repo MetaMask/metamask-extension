@@ -158,7 +158,9 @@ describe('useSignatureAddressAlerts', () => {
     const stored = state.metamask.signatureRequests[request.id];
     stored.messageParams = {
       ...stored.messageParams,
-      data: JSON.parse(request.msgParams?.data as string),
+      data: JSON.parse(
+        request.msgParams?.data as string,
+      ) as SignatureRequest['messageParams']['data'],
     };
 
     const { result } = renderHookWithConfirmContextProvider(
@@ -189,7 +191,7 @@ describe('useSignatureAddressAlerts', () => {
     };
     stored.messageParams = {
       ...stored.messageParams,
-      data,
+      data: data as SignatureRequest['messageParams']['data'],
     };
 
     renderHookWithConfirmContextProvider(
