@@ -5,12 +5,12 @@ import {
 } from '@metamask/transaction-controller';
 import {
   isCaipAssetType,
+  KnownCaipNamespace,
   parseCaipAssetType,
   type CaipAssetType,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { selectLocalTransactionsByHash } from '../../selectors/activity';
 import {
@@ -26,14 +26,23 @@ export type ActivityListFilter =
   | { networks: string[] };
 
 /**
- * Converts a CAIP asset ID to the canonical asset ID used by the asset system
- * when possible.
+ * Normalizes legacy EVM `token` asset namespaces to `erc20` while preserving
+ * CAIP format.
  *
  * @param assetId - The CAIP asset ID to normalize.
- * @returns The canonical asset ID, or the original asset ID when it cannot be normalized.
+ * @returns The normalized CAIP asset ID.
  */
-function normalizeActivityAssetId(assetId: CaipAssetType) {
-  return toAssetId(assetId) ?? assetId;
+function normalizeActivityAssetId(assetId: CaipAssetType): CaipAssetType {
+  const { assetNamespace, assetReference, chain, chainId } =
+    parseCaipAssetType(assetId);
+
+  if (chain.namespace !== KnownCaipNamespace.Eip155) {
+    return assetId;
+  }
+
+  return assetNamespace === 'token'
+    ? (`${chainId}/erc20:${assetReference}` as CaipAssetType)
+    : assetId;
 }
 
 /**
