@@ -5625,12 +5625,6 @@
     "message": "Adicione mUSD à sua conta Money e ganhe automaticamente até $1 de APY (variável). Os fundos são direcionados para um cofre DeFi, administrado pela Veda e com monitoramento de risco pela Steakhouse Financial. A taxa é gerada por plataformas DeFi terceirizadas que alocam fundos em protocolos blockchain. Sem necessidade de staking, resgates manuais ou períodos de carência.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "O saldo da sua conta Money é o seu saldo disponível para gastos. Vincule seu cartão MetaMask para gastar em mais de 150 milhões de estabelecimentos comerciais em todo o mundo. Seu dinheiro continua rendendo até o momento em que você o utiliza."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "A Money Account tem tecnologia da Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Adicione mUSD e ganhe até $1. Seu saldo é lastreado em dólar e está pronto para você gastar, negociar ou enviar quando você quiser.",
     "description": "$1 is the current mUSD APY."
@@ -5648,17 +5642,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "A taxa APY muda?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Você! A MetaMask é uma carteira autocustodiada, ou seja, somente as chaves privadas do titular da conta a controlam. A MetaMask não pode acessar, congelar ou movimentar seus fundos. Isso é o que nos distingue de contas bancárias tradicionais e plataformas de criptomoedas custodiadas — não há terceiros retendo seus fundos."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Quem controla meu dinheiro?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Não há taxa para abrir uma Money Account nem para depositar stablecoins. Serão cobradas taxas quando você depositar tokens que não sejam stablecoins. Há também taxas associadas às transações no cartão MetaMask, saques em caixas eletrônicos e custos de off-ramp de moeda local. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Veja o detalhamento completo de taxas do cartão aqui."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Há alguma taxa?"
@@ -5675,20 +5660,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "O que é a conta Money?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD é a moeda estável da MetaMask pareada com o dólar dos EUA. O saldo da sua conta Money é mantido em mUSD e permanece disponível para gastar, enviar ou negociar quando você quiser.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "O que é mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "O saldo da sua conta Money é o seu saldo para gastos — ele continua rendendo até o momento em que você o utiliza. A conta Money não é uma conta bancária, conta de poupança ou um produto de depósito segurado.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Trata-se de uma conta poupança ou é uma conta corrente?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Perguntas Frequentes (FAQs)"

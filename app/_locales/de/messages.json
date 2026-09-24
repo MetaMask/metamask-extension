@@ -5622,12 +5622,6 @@
     "message": "Fügen Sie mUSD zu Ihrem Money Account hinzu und verdienen Sie automatisch bis zu $1 Effektivertrag (variabel). Die Gelder fließen in einen DeFi-Tresor, der von Veda verwaltet und dessen Risiko von Steakhouse Financial überwacht wird. Der Zinssatz wird von DeFi-Plattformen Dritter generiert, die Gelder in Blockchain-Protokollen bereitstellen. Kein Staking, keine Ansprüche, keine Lock-ups.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Ihr Geldguthaben ist Ihr Ausgabensaldo. Verknüpfen Sie Ihre MetaMask Card, um bei mehr als 150 Millionen Händlern weltweit zu bezahlen. Ihr Geld verdient so lange, bis Sie es nutzen."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Das Money Account wird durch Monad betrieben."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Fügen Sie mUSD hinzu und verdienen Sie bis zu $1. Ihr Guthaben ist durch US-Dollar gedeckt und jederzeit bereit zum Ausgeben, Handeln oder Versenden.",
     "description": "$1 is the current mUSD APY."
@@ -5645,17 +5639,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Ändert sich der APY-Satz?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Sie! MetaMask ist eine Wallet zur Eigenverwahrung; das bedeutet, dass ausschließlich die privaten Schlüssel des Kontoinhabers die Kontrolle darüber haben. MetaMask kann weder auf Ihre Gelder zugreifen noch diese einfrieren oder verschieben. Genau das unterscheidet uns von herkömmlichen Bankkonten und Krypto-Plattformen mit Fremdverwahrung: Es gibt keinen Drittanbieter, der Ihre Gelder verwahrt."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Wer kontrolliert mein Geld?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Für die Eröffnung eines Money Accounts und die Einzahlung von Stablecoins fallen keine Gebühren an. Bei der Einzahlung von Token, die keine Stablecoins sind, werden Gebühren berechnet. Zudem fallen Gebühren für Transaktionen mit der MetaMask Card, Bargeldabhebungen am Geldautomaten sowie Kosten für die Auszahlung in Lokalwährung an. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Hier finden Sie die vollständige Aufschlüsselung der Kartengebühren."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Fallen Gebühren an?"
@@ -5672,20 +5657,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Was ist das Geldkonto?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD ist der 1:1 durch den Dollar gedeckten Stablecoin von MetaMask. Ihr Saldo wird in mUSD geführt und steht Ihnen jederzeit zum Ausgeben, Versenden oder Handeln zur Verfügung.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Was ist mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Ihr „Money“-Guthaben ist Ihr Ausgabenguthaben – es bringt so lange Erträge ein, bis Sie es verwenden. Das „Money“-Konto ist weder ein Bankkonto noch ein Sparkonto noch ein Produkt mit Einlagensicherung.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Ist dies ein Sparkonto oder ein Ausgabenkonto?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQs"
