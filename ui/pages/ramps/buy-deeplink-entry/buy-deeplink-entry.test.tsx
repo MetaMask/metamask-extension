@@ -11,8 +11,11 @@ const DAI_SEARCH =
 
 const mockNavigate = jest.fn();
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
+const globalMockPlatformOpenTab = jest.fn();
 let mockOpensBuyInPortfolioTab = false;
 let mockSearch = '';
+let mockEnvironmentType = 'fullscreen';
+let mockEnvironmentType = 'fullscreen';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -20,8 +23,17 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => ({ search: mockSearch }),
 }));
 
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  ENVIRONMENT_TYPE_FULLSCREEN: 'fullscreen',
+  getEnvironmentType: () => mockEnvironmentType,
+}));
+
 // jsdom environment: `global` is the ambient window; give it a platform mock.
-(global as { platform?: object }).platform = {};
+(global as { platform?: object }).platform = {
+  openTab: globalMockPlatformOpenTab,
+};
 
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -41,6 +53,7 @@ describe('BuyDeepLinkEntry', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockOpensBuyInPortfolioTab = false;
+    mockEnvironmentType = 'fullscreen';
     mockGoToBuy.mockResolvedValue(true);
   });
 
@@ -128,7 +141,7 @@ describe('BuyDeepLinkEntry', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('opens the legacy Portfolio redirect with verbatim params when the Portfolio fallback applies', async () => {
+  it('opens the legacy Portfolio redirect with verbatim params in a fullscreen tab', async () => {
     mockOpensBuyInPortfolioTab = true;
     const originalLocation = window.location;
     const locationMock: { href: string } = { href: '' };
@@ -152,6 +165,23 @@ describe('BuyDeepLinkEntry', () => {
       });
     }
 
+    expect(globalMockPlatformOpenTab).not.toHaveBeenCalled();
+    expect(mockGoToBuy).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('opens the legacy Portfolio redirect in a new tab from the popup', async () => {
+    // The popup must not navigate itself to a full website: it opens
+    // Portfolio in a tab instead and simply dismisses.
+    mockOpensBuyInPortfolioTab = true;
+    mockEnvironmentType = 'popup';
+    renderEntry(DAI_SEARCH);
+
+    await waitFor(() => {
+      expect(globalMockPlatformOpenTab).toHaveBeenCalledWith({
+        url: 'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
+      });
+    });
     expect(mockGoToBuy).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
   });
