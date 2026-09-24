@@ -496,9 +496,9 @@ describe('useRampsNavigation goToBuy', () => {
     );
     await goToBuy(result);
     expect(mockNavigate).toHaveBeenCalledWith(
-        RAMPS_TOKEN_SELECTION_ROUTE,
-        undefined,
-      );
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(getModalName()).toBeNull();
   });
 
@@ -515,9 +515,9 @@ describe('useRampsNavigation goToBuy', () => {
     );
     await goToBuy(result);
     expect(mockNavigate).toHaveBeenCalledWith(
-        RAMPS_TOKEN_SELECTION_ROUTE,
-        undefined,
-      );
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(getModalName()).toBeNull();
   });
 
@@ -532,9 +532,9 @@ describe('useRampsNavigation goToBuy', () => {
     );
     await goToBuy(result);
     expect(mockNavigate).toHaveBeenCalledWith(
-        RAMPS_TOKEN_SELECTION_ROUTE,
-        undefined,
-      );
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(getModalName()).toBeNull();
   });
 
@@ -791,7 +791,10 @@ describe('useRampsNavigation goToBuy', () => {
     const opened = await goToBuy(result, { assetId });
 
     expect(opened).toBe(true);
-    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', ['us', 'buy']);
+    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+      'us',
+      'buy',
+    ]);
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       catalogAssetId,
     ]);
