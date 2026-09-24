@@ -218,7 +218,7 @@ describe('MoneyActivityPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
-  it('navigates to Money home when the page was opened directly by URL', () => {
+  it('back button navigates to Money home when the page was opened directly by URL', () => {
     mockUseLocation.mockReturnValue({ key: 'default' });
 
     renderWithLocalization(<MoneyActivityPage />);
