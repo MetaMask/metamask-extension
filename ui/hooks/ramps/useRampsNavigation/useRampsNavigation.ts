@@ -202,6 +202,7 @@ export default function useRampsNavigation() {
       // resolved geolocation.
       const assetId = intent?.assetId;
       let tokensState: TokensState = tokens;
+      let didFetchCatalog = false;
       if (assetId && !tokens.data) {
         try {
           const fetchedTokens = await getRampsTokens(
@@ -215,6 +216,7 @@ export default function useRampsNavigation() {
               isLoading: false,
               error: null,
             };
+            didFetchCatalog = true;
           }
         } catch {
           // Failed fetch: keep the rendered (unsettled) token state below and
@@ -222,13 +224,17 @@ export default function useRampsNavigation() {
         }
       }
 
-      // 5. Providers/tokens fetched but empty. A null `tokensState.data` means
+      // 5. Providers/tokens fetched but empty. A null `tokens.data` means
       // providers/tokens haven't been fetched yet (fetched together by the
       // native flow), so fail open and skip this check entirely until then.
       // A fetch error also fails open (mobile parity) — an empty result only
       // counts once the catalog has actually settled, not on a failed fetch.
-      const catalogSettled = isCatalogSettled(providers, tokensState);
-      const catalogData = catalogSettled ? tokensState.data : null;
+      // Deliberately evaluated on the state the hook rendered with: a catalog
+      // freshly fetched above must not be gated by this closure's providers
+      // snapshot, which can still be the never-fetched default even while the
+      // controller is already fetching providers.
+      const catalogSettled = isCatalogSettled(providers, tokens);
+      const catalogData = catalogSettled ? tokens.data : null;
       if (catalogData && isCatalogEmpty(providers, catalogData)) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
@@ -246,12 +252,14 @@ export default function useRampsNavigation() {
         return true;
       }
 
-      // Resolve against the catalog. Only block on a settled catalog that
-      // definitively lacks/unsupports the token — an unsettled catalog fails
-      // open (proceed with it selected, page re-resolves).
+      // Resolve against the catalog. Block on one that definitively lacks or
+      // does not support the token — either the rendered catalog settled
+      // (checked above), or the catalog we just fetched. A rendered catalog
+      // that is still unsettled with no fresh fetch fails open (proceed with
+      // it selected, page re-resolves).
       const catalogToken = findCatalogToken(tokensState.data, assetId);
       if (
-        catalogData &&
+        (catalogData || didFetchCatalog) &&
         (!catalogToken || catalogToken.tokenSupported === false)
       ) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));

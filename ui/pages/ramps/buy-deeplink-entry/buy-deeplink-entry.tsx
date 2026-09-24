@@ -10,7 +10,10 @@ import Spinner from '../../../components/ui/spinner';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-links/buy-flow';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-links/buy-flow';
 import { parseRampIntent } from './parse-ramp-intent';
 
 /**
@@ -66,18 +69,23 @@ export function BuyDeepLinkEntry() {
     };
 
     if (opensBuyInPortfolioTab) {
-      // Legacy redirect: navigate this tab to Portfolio with the deep link
-      // params forwarded verbatim (the pre-UB2 `/buy` behavior, where the
-      // deep-link host itself redirected). Intentionally NOT
-      // `openBuyCryptoInPdapp` (the `goToBuy` Portfolio path) — that builder
-      // drops the link's token/amount params and appends analytics params.
-      // Navigating in place (rather than opening a new tab and sending this
-      // one home) keeps returning Portfolio buyers from accumulating stray
-      // extension tabs they didn't ask for.
+      // Legacy redirect: forward the deep link params verbatim (the pre-UB2
+      // `/buy` behavior), preserving the link's token/amount. Intentionally
+      // NOT `openBuyCryptoInPdapp` (the `goToBuy` Portfolio path) — that
+      // builder drops the link's token/amount params and appends analytics
+      // params. In a fullscreen tab this navigates in place: the deep-link
+      // tab itself used to BE the external redirect, so no stray extension
+      // tab is left behind. Other surfaces (popup, side panel, notification
+      // windows) must not navigate themselves to a full website, so they open
+      // Portfolio in a new tab instead.
       const { redirectTo } = getBuyPortfolioRedirectDestination(
         new URLSearchParams(location.search),
       );
-      window.location.href = redirectTo.toString();
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
+        window.location.href = redirectTo.toString();
+      } else {
+        global.platform.openTab({ url: redirectTo.toString() });
+      }
       return;
     }
 

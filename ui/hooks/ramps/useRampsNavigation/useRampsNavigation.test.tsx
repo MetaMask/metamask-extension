@@ -500,6 +500,15 @@ describe('useRampsNavigation goToBuy', () => {
 
   it('intent with assetId and loading catalog fails open to build quote', async () => {
     const assetId = 'eip155:143/erc20:0xabc';
+    mockBackground.mockImplementation(async (method: string) => {
+      if (method === 'getGeolocation') {
+        return 'US-CA';
+      }
+      if (method === 'getRampsTokens') {
+        return undefined;
+      }
+      return undefined;
+    });
     const { result, getModalName } = run(
       buildState({
         providers: {
@@ -649,9 +658,12 @@ describe('useRampsNavigation goToBuy', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('cold catalog fetched but providers never fetched → shows RAMPS_UNSUPPORTED', async () => {
-    // A settled catalog with no providers is unsupported even when the tokens
-    // half of the catalog was just fetched by the navigation gate itself.
+  it('cold catalog fetch is not gated by the never-fetched providers snapshot', async () => {
+    // The service-worker-restart case: the hook's closure still holds the
+    // default providers state (data: [], isLoading: false) even while the
+    // controller is fetching providers, so the freshly fetched catalog must
+    // not be judged "settled empty" by that stale snapshot — the deep link
+    // must proceed to build-quote.
     const assetId = 'eip155:1/erc20:0xabc';
     mockBackground.mockImplementation(async (method: string) => {
       if (method === 'getGeolocation') {
@@ -674,6 +686,43 @@ describe('useRampsNavigation goToBuy', () => {
 
     const opened = await goToBuy(result, { assetId });
 
+    expect(opened).toBe(true);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      assetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+    });
+    expect(getModalName()).toBeNull();
+  });
+
+  it('freshly fetched catalog that lacks the token → shows RAMPS_UNSUPPORTED', async () => {
+    // A catalog we just fetched is authoritative: when it definitively does
+    // not contain the token, fail closed rather than routing to build-quote
+    // with an unresolvable intent.
+    const assetId = 'eip155:1/erc20:0xmissing';
+    mockBackground.mockImplementation(async (method: string) => {
+      if (method === 'getGeolocation') {
+        return 'US-CA';
+      }
+      if (method === 'getRampsTokens') {
+        return {
+          topTokens: [],
+          allTokens: [
+            { assetId: 'eip155:1/erc20:0xother', tokenSupported: true } as RampsToken,
+          ],
+        };
+      }
+      return undefined;
+    });
+    const { result, getModalName } = run(
+      buildState({
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
     expect(opened).toBe(false);
     expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
   });
@@ -683,6 +732,15 @@ describe('useRampsNavigation goToBuy', () => {
     // catalog is still unsettled, so fail open and proceed with the token
     // pre-selected rather than blocking.
     const assetId = 'eip155:1/erc20:0xabc';
+    mockBackground.mockImplementation(async (method: string) => {
+      if (method === 'getGeolocation') {
+        return 'US-CA';
+      }
+      if (method === 'getRampsTokens') {
+        return undefined;
+      }
+      return undefined;
+    });
     const { result, getModalName } = run(
       buildState({
         tokens: { data: null, selected: null, isLoading: false, error: null },
