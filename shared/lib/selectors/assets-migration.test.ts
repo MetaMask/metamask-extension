@@ -1123,9 +1123,9 @@ describe('getTokenBalancesControllerTokenBalances', () => {
       ).not.toThrow();
       const result = getTokenBalancesControllerTokenBalances(state);
       const nativeAddress = getNativeAssetForChainId('0x1').address;
-      expect(
-        Object.keys(result[mockAccountAddressLowercase]),
-      ).toStrictEqual(['0x1']);
+      expect(Object.keys(result[mockAccountAddressLowercase])).toStrictEqual([
+        '0x1',
+      ]);
       expect(
         result[mockAccountAddressLowercase]['0x1'][nativeAddress],
       ).toBeDefined();
