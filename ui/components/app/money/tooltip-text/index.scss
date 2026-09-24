@@ -1,0 +1,22 @@
+.money-tooltip-text {
+  &::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: calc(var(--tooltip-arrow-left, 50%) - 4px);
+    width: 8px;
+    height: 8px;
+    background: inherit;
+    border: 1px solid var(--color-border-muted);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-radius: 2px 0 0 0;
+    transform: rotate(45deg);
+  }
+
+  &[data-placement='top']::before {
+    top: auto;
+    bottom: -5px;
+    transform: rotate(-135deg);
+  }
+}

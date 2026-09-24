@@ -34,7 +34,6 @@ import {
   MONEY_ACTIVITY_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../shared/lib/money/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -169,8 +168,8 @@ export function MoneyTransactionDetailsPage() {
   const recordedSourceNetworkFee = onchainTx?.metamaskPay?.networkFeeFiat;
   const hasUserPaidSourceNetworkFee = Boolean(
     recordedSourceNetworkFee !== undefined &&
-    recordedSourceNetworkFee.trim() !== '' &&
-    Number(recordedSourceNetworkFee) > 0,
+      recordedSourceNetworkFee.trim() !== '' &&
+      Number(recordedSourceNetworkFee) > 0,
   );
   const showSponsoredNetworkFeeInTooltip =
     isNetworkFeePaidByMetaMask &&
@@ -382,7 +381,7 @@ export function MoneyTransactionDetailsPage() {
                 text={t('transactionFee')}
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
-                position={PopoverPosition.BottomStart}
+                position="bottom-start"
                 data-testid="money-transaction-details-fee-info"
               >
                 <Text variant={TextVariant.BodyMd}>
