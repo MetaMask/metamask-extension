@@ -484,38 +484,20 @@
   "activity_marketShort_success_title": {
     "message": "Posição short fechada - mercado"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Falha no depósito"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Depositando"
   },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Depositado"
   },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Falha ao enviar"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "Falha ao receber"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Enviando"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Enviado"
@@ -5456,6 +5438,14 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% de APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Ganhe $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "A taxa apresentada é uma estimativa da Taxa Anual Efetiva (APY) com base nas condições atuais do mercado. A APY é variável e não é garantida."
   },
@@ -5597,6 +5587,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Receba rendimentos automaticamente sobre o saldo em sua conta Money"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Ganhe automaticamente até $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Obtenha liquidez total sem períodos de bloqueio, permitindo que você possa negociar ou sacar quando quiser"
   },
@@ -5636,6 +5630,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Nenhuma taxa"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "A projeção pressupõe que o Rendimento Percentual Anual (APY) de $1% permanece inalterado por um ano. O APY é variável e não é garantido. Não há garantia de retorno.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Ganhe com o seu saldo"
   },
@@ -5653,6 +5651,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "A taxa exibida representa um Rendimento Percentual Anual (APY) estimado, calculado com base nas condições atuais do mercado. O APY é variável e não é garantido. Os fundos são alocados em um cofre DeFi, administrado pela Veda com supervisão de risco pela Steakhouse Financial, que gera rendimentos em mercados de empréstimo consolidados."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Sua conta Money rende até $1 automaticamente.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "A Money Account tem tecnologia da Monad."
@@ -8740,7 +8742,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Escolher provedor"
+    "message": "Escolher provedores"
   },
   "rampsCompleteBuyTitle": {
     "message": "Compra concluída",

@@ -484,38 +484,20 @@
   "activity_marketShort_success_title": {
     "message": "Η θέση πώλησης έκλεισε – αγορά"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Η κατάθεση απέτυχε"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Κατάθεση σε εξέλιξη"
   },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Κατατέθηκε"
   },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Η αποστολή απέτυχε"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "Η λήψη απέτυχε"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Αποστολή"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Εστάλη"
@@ -5456,6 +5438,14 @@
   "money": {
     "message": "Οικονομικά"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Κερδίστε $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Το επιτόκιο που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Ποσοστιαία Απόδοση (APY) με βάση τις τρέχουσες συνθήκες της αγοράς. Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
   },
@@ -5597,6 +5587,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Κερδίστε αυτόματα απόδοση στο υπόλοιπό σας στον Money account"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Κερδίστε έως $1 αυτόματα",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Πλήρης ρευστότητα χωρίς δεσμεύσεις, ώστε να μπορείτε να κάνετε συναλλαγές ή ανάληψη οποιαδήποτε στιγμή"
   },
@@ -5636,6 +5630,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Χωρίς τέλος συναλλαγής"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Η εκτίμηση βασίζεται στην υπόθεση ότι η ετήσια ποσοστιαία απόδοση (APY) του $1% παραμένει αμετάβλητη για ένα έτος. Το APY είναι μεταβλητό και δεν είναι εγγυημένο. Δεν υπάρχει εγγύηση απόδοσης.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Κερδίστε από το υπόλοιπό σας"
   },
@@ -5653,6 +5651,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "Η απόδοση που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Απόδοση (APY), βάσει των τρεχουσών συνθηκών της αγοράς. Το APY είναι κυμαινόμενο και δεν εγγυάται απόδοση. Τα κεφάλαια τοποθετούνται σε ένα DeFi vault, με διαχείριση από τη Veda και εποπτεία κινδύνου από τη Steakhouse Financial, το οποίο αποφέρει αποδόσεις σε καθιερωμένες αγορές δανεισμού."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Ο Money account σας αποδίδει αυτόματα έως $1.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Ο Money Account υποστηρίζεται από την Monad."
@@ -8740,7 +8742,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Επιλέξτε πάροχο"
+    "message": "Επιλέξτε παρόχους"
   },
   "rampsCompleteBuyTitle": {
     "message": "Ολοκλήρωση αγοράς",

@@ -484,38 +484,20 @@
   "activity_marketShort_success_title": {
     "message": "Posición corta cerrada: mercado"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Depósito fallido"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Depositando"
   },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Depositado"
   },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Error al enviar"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "Error al recibir"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Enviando"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Enviado"
@@ -4216,6 +4198,9 @@
   "gasLimit": {
     "message": "Límite de gas"
   },
+  "gasLimitBelowMinimum": {
+    "message": "El límite de gas debe ser al menos 12.000"
+  },
   "gasPrice": {
     "message": "Precio del gas"
   },
@@ -5457,6 +5442,14 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1 % de APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Gana $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "La tasa mostrada es un rendimiento porcentual anual (APY) estimado basado en las condiciones actuales del mercado. El APY es variable y no está garantizado."
   },
@@ -5598,6 +5591,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Obtén rendimiento automático en tu saldo de Money"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Gana automáticamente hasta $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Obtén liquidez total sin bloqueos, para que puedas operar o retirar fondos en cualquier momento"
   },
@@ -5637,6 +5634,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Sin tarifa"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "La proyección asume que el $1 % de rendimiento porcentual anual (APY) se mantiene sin cambios durante un año. El APY es variable y no está garantizado. No hay garantía de rendimiento.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Gana en tu saldo"
   },
@@ -5654,6 +5655,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "La tasa mostrada es un rendimiento porcentual anual (APY) estimado basado en las condiciones actuales del mercado. El APY es variable y no está garantizado. Los fondos se depositan en una bóveda DeFi, administrada por Veda con supervisión de riesgos a cargo de Steakhouse Financial, que genera rendimientos en mercados de préstamos establecidos."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Tu Money Account gana hasta $1 automáticamente.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money Account cuenta con la tecnología de Monad."
@@ -8751,7 +8756,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Elegir proveedor"
+    "message": "Elegir proveedores"
   },
   "rampsCompleteBuyTitle": {
     "message": "Completar compra",
