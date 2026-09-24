@@ -100,6 +100,27 @@ function toNativeLookupAddress(
   return address;
 }
 
+/**
+ * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
+ * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
+ * custom/unsupported networks).
+ *
+ * @param chainId - The chain id in caip or hex format.
+ * @returns The native asset id, or `undefined` when it can't be resolved.
+ */
+export const getNativeAssetId = (
+  chainId?: CaipChainId | Hex,
+): CaipAssetType | undefined => {
+  if (!chainId) {
+    return undefined;
+  }
+  try {
+    return getNativeAssetForChainId(chainId).assetId;
+  } catch {
+    return undefined;
+  }
+};
+
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
   chainId?: CaipChainId | Hex,
@@ -125,15 +146,9 @@ export const toAssetId = (
   // are not in that map; rewriting them first produced `erc20:0x0`, which
   // misses balances, prices, and metadata stored under the dead address.
   if (isNativeAddress(toNativeLookupAddress(addressToUse, chainIdToUse))) {
-    try {
-      const nativeAssetId = getNativeAssetForChainId(chainIdToUse)?.assetId;
-      if (nativeAssetId) {
-        return nativeAssetId;
-      }
-    } catch {
-      // Skip error for unsupported chains (e.g., custom networks) so we obtain the assetId in another way
-      // This allows the send flow to work for custom networks even if they're not in the swaps map
-      // Format normalization in isEvmChainId should prevent most errors, but this is a defensive fallback
+    const nativeAssetId = getNativeAssetId(chainIdToUse);
+    if (nativeAssetId) {
+      return nativeAssetId;
     }
   }
   if (chainIdToUse === MultichainNetworks.SOLANA) {
@@ -165,27 +180,6 @@ export const toAssetId = (
     );
   }
   return undefined;
-};
-
-/**
- * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
- * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
- * custom/unsupported networks).
- *
- * @param chainId - The chain id in caip or hex format.
- * @returns The native asset id, or `undefined` when it can't be resolved.
- */
-export const getNativeAssetId = (
-  chainId?: CaipChainId | Hex,
-): CaipAssetType | undefined => {
-  if (!chainId) {
-    return undefined;
-  }
-  try {
-    return getNativeAssetForChainId(chainId).assetId;
-  } catch {
-    return undefined;
-  }
 };
 
 export const isNativeCaipAssetId = (assetId: CaipAssetType) => {
