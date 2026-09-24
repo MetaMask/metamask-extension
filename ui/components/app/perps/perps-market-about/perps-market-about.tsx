@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import {
   Box,
-  ButtonBase,
   FontWeight,
   Text,
+  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -54,8 +54,8 @@ const PerpsMarketAboutContent = ({
       </Text>
       {!isExpanded && isOverflowing && (
         <Box paddingTop={2}>
-          <ButtonBase
-            className="w-fit h-auto min-h-0 p-0 bg-transparent"
+          <TextButton
+            className="w-fit !text-inherit underline underline-offset-2 [text-decoration-skip-ink:none] hover:!text-inherit hover:![text-decoration-color:inherit] hover:!underline-offset-2"
             onClick={() => setIsExpanded(true)}
             aria-label={
               trimmedAssetName
@@ -64,10 +64,8 @@ const PerpsMarketAboutContent = ({
             }
             data-testid="perps-market-about-read-more"
           >
-            <Text fontWeight={FontWeight.Bold} className="underline">
-              {t('perpsReadMore')}
-            </Text>
-          </ButtonBase>
+            {t('perpsReadMore')}
+          </TextButton>
         </Box>
       )}
     </Box>
