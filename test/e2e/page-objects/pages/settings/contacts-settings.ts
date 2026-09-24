@@ -28,6 +28,11 @@ class ContactsSettings {
     testId: 'page-container-footer-next',
   };
 
+  private readonly contactDetailsHeader = {
+    tag: 'p',
+    text: 'Contact details',
+  };
+
   private readonly contactListItem = '[data-testid="contact-list-item"]';
 
   private readonly contactListItemAddress =
@@ -38,11 +43,6 @@ class ContactsSettings {
 
   private readonly contactsPage = {
     testId: 'parent-selector-contacts-page',
-  };
-
-  private readonly contactDetailsHeader = {
-    tag: 'p',
-    text: 'Contact details',
   };
 
   private readonly contactDetailsName = (contactName: string) => {
