@@ -43,6 +43,11 @@ export type {
   UsePerpsEstimatedSlippageReturn,
 } from './usePerpsEstimatedSlippage';
 export { usePerpsEventTracking } from './usePerpsEventTracking';
+export { usePerpsMarketAboutTracking } from './usePerpsMarketAboutTracking';
+export type {
+  UsePerpsMarketAboutTrackingOptions,
+  UsePerpsMarketAboutTrackingReturn,
+} from './usePerpsMarketAboutTracking';
 export { usePerpsAttribution } from './usePerpsAttribution';
 export type {
   PerpsTrackEventFn,

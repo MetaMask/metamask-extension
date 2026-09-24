@@ -72,6 +72,7 @@ import {
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
+  usePerpsMarketAboutTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
@@ -80,6 +81,7 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { OrderCard } from '../../components/app/perps/order-card';
+import { PerpsMarketAbout } from '../../components/app/perps/perps-market-about';
 import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -412,6 +414,12 @@ const PerpsMarketDetailPage = () => {
     );
   }, [decodedSymbol, allMarkets]);
   const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
+  const { hasDescription: hasAboutDescription, aboutRef } =
+    usePerpsMarketAboutTracking({
+      symbol: market?.symbol,
+      marketType: market?.marketType,
+      description: market?.description,
+    });
 
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
@@ -1973,6 +1981,17 @@ const PerpsMarketDetailPage = () => {
             </Box>
           </Box>
         </Box>
+
+        {hasAboutDescription && (
+          <div ref={aboutRef}>
+            {/* Keying the section remounts its mount-only overflow measurement per market. */}
+            <PerpsMarketAbout
+              key={market.symbol}
+              description={market.description}
+              assetName={market.name}
+            />
+          </div>
+        )}
 
         {/* Recent Activity Section - always visible */}
         <Box paddingTop={4} paddingBottom={4}>
