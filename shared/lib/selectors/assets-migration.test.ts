@@ -2412,8 +2412,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
 });
 
 describe('getRatesControllerRates', () => {
-  const solanaNativeAssetId =
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
   const solanaSplMissingSymbolAssetId =
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2NzMQx8TiDFbw5p3oMNVBh59UkKAPLHoa62YV6vXNmmG';
 
