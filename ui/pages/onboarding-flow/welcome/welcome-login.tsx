@@ -8,12 +8,16 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/lib/environment';
+import {
+  getIsCL24BenchmarkEnabled,
+  getIsSeedlessOnboardingFeatureEnabled,
+} from '../../../../shared/lib/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { useDispatch } from '../../../store/hooks';
+import CL24BenchmarkPanel from './cl24-benchmark';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -156,6 +160,7 @@ export default function WelcomeLogin({
                 ? t('onboardingImportWallet')
                 : t('onboardingSrpImport')}
             </Button>
+            {getIsCL24BenchmarkEnabled() && <CL24BenchmarkPanel />}
           </Box>
         )}
       </Box>

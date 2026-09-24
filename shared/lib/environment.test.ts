@@ -5,6 +5,7 @@ import {
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
+  getIsCL24BenchmarkEnabled,
   getIsBasicFunctionalityConsolidationEnabledInBuild,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
@@ -61,6 +62,33 @@ describe('getIsSeedlessOnboardingFeatureEnabled', () => {
   it('returns false when SEEDLESS_ONBOARDING_ENABLED is undefined', () => {
     delete process.env.SEEDLESS_ONBOARDING_ENABLED;
     expect(getIsSeedlessOnboardingFeatureEnabled()).toBe(false);
+  });
+});
+
+describe('getIsCL24BenchmarkEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.CL24_BENCHMARK_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.CL24_BENCHMARK_ENABLED = originalValue;
+  });
+
+  it('returns true when CL24_BENCHMARK_ENABLED is "true"', () => {
+    process.env.CL24_BENCHMARK_ENABLED = 'true';
+    expect(getIsCL24BenchmarkEnabled()).toBe(true);
+  });
+
+  it('returns false when CL24_BENCHMARK_ENABLED is "false"', () => {
+    process.env.CL24_BENCHMARK_ENABLED = 'false';
+    expect(getIsCL24BenchmarkEnabled()).toBe(false);
+  });
+
+  it('returns false when CL24_BENCHMARK_ENABLED is undefined', () => {
+    delete process.env.CL24_BENCHMARK_ENABLED;
+    expect(getIsCL24BenchmarkEnabled()).toBe(false);
   });
 });
 

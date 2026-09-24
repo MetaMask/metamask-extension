@@ -91,4 +91,19 @@ describe('Welcome login', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  it('renders the CL24 benchmark when the compile-time flag is enabled', () => {
+    jest
+      .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+      .mockReturnValue(false);
+    jest.spyOn(Environment, 'getIsCL24BenchmarkEnabled').mockReturnValue(true);
+
+    const store = configureStore({});
+    const { getByTestId } = renderWithProvider(
+      <WelcomeLogin onLogin={jest.fn()} isAnimationComplete={true} />,
+      store,
+    );
+
+    expect(getByTestId('onboarding-cl24-benchmark-button')).toBeInTheDocument();
+  });
 });
