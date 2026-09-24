@@ -338,7 +338,6 @@ export default function CreatePassword({
           .addCategory(MetaMetricsEventCategory.Onboarding)
           .build(),
       );
-      setNewAccountCreationInProgress(false);
     } finally {
       setIsSubmitting(false);
     }
