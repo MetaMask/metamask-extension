@@ -91,6 +91,7 @@ import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import {
   safeAmountForCalc,
   getPriceImpactNumber,
+  getNativeReserve,
   getTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
 import { isArcTokenUSDC } from '../../components/app/assets/enablement/arc';
@@ -129,6 +130,7 @@ import { getCurrentCurrency } from '../metamask/metamask';
 import type { MetaMaskReduxState } from '../../store/store';
 import {
   buildInsufficientNativeReserveError,
+  resolveGasCheckMinimumBalance,
   resolveMinimumBalanceToKeep,
   resolveMinimumReserveBalanceForCaipAssetId,
 } from '../../pages/bridge/utils/minimum-reserve';
@@ -990,10 +992,11 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     );
 
     const totalNetworkFee = getTotalNetworkFee(activeQuote)?.normalizedAmount;
+    const quoteNativeReserve = getNativeReserve(activeQuote)?.normalizedAmount;
     const sentAmountString = activeQuote?.quote.src.normalizedAmount;
 
     if (
-      isBitcoinNativeReserveChain &&
+      (isBitcoinNativeReserveChain || quoteNativeReserve) &&
       totalNetworkFee &&
       sentAmountString &&
       nativeBalance &&
@@ -1002,7 +1005,13 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     ) {
       const nativeBalanceInNativeUnits = new BigNumber(nativeBalance);
       const sentAmount = new BigNumber(sentAmountString);
+      const minimumNativeBalanceToBeKeptInAccount =
+        quoteNativeReserve ??
+        resolveMinimumReserveBalanceForCaipAssetId(fromToken?.assetId);
 
+      // Fee + sent amount already fails the gas check, which hides this banner.
+      // Do not also bail out when balance - fee - reserve <= 0: that is the
+      // case this banner exists to show.
       if (
         nativeBalanceInNativeUnits.sub(totalNetworkFee).sub(sentAmount).lte(0)
       ) {
@@ -1014,8 +1023,6 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
         0,
       );
 
-      const minimumNativeBalanceToBeKeptInAccount =
-        resolveMinimumReserveBalanceForCaipAssetId(fromToken?.assetId);
       const maxSwappableNativeBalance = nativeBalanceInNativeUnits
         .sub(totalNetworkFee)
         .sub(minimumNativeBalanceToBeKeptInAccount)
@@ -1043,10 +1050,10 @@ export const getQuoteRequestInsufficientBal = createSelector(
   (fromTokenBalance, validatedSrcAmount, insufficientNativeReserveError) =>
     Boolean(
       insufficientNativeReserveError ||
-        (validatedSrcAmount &&
-          fromTokenBalance &&
-          !Number.isNaN(Number(fromTokenBalance)) &&
-          new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
+      (validatedSrcAmount &&
+        fromTokenBalance &&
+        !Number.isNaN(Number(fromTokenBalance)) &&
+        new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
     ),
 );
 
@@ -1102,9 +1109,9 @@ export const computeQuoteValidationErrors = (
   const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
   const isNetworkFeeUnavailable = Boolean(
     quote &&
-      srcChainId &&
-      (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
-      !hasNetworkFee(quote?.quote),
+    srcChainId &&
+    (isBitcoinChainId(srcChainId) || isTronChainId(srcChainId)) &&
+    !hasNetworkFee(quote?.quote),
   );
 
   const priceImpactNumber = getPriceImpactNumber(quote);
@@ -1115,30 +1122,33 @@ export const computeQuoteValidationErrors = (
     // Shown prior to fetching quotes (native reserve error takes precedence)
     isInsufficientGasBalance: Boolean(
       nativeBalance &&
-        !quote &&
-        validatedSrcAmount &&
-        fromToken &&
-        !isGasless &&
-        (isNativeAddress(fromToken.assetId)
-          ? new BigNumber(nativeBalance)
-              .sub(minimumBalanceToKeep?.normalizedAmount ?? '0')
-              .lte(validatedSrcAmount)
-          : new BigNumber(nativeBalance).lte(0)),
+      !quote &&
+      validatedSrcAmount &&
+      fromToken &&
+      !isGasless &&
+      (isNativeAddress(fromToken.assetId)
+        ? new BigNumber(nativeBalance)
+            .sub(minimumBalanceToKeep?.normalizedAmount ?? '0')
+            .lte(validatedSrcAmount)
+        : new BigNumber(nativeBalance).lte(0)),
     ),
     isInsufficientNativeReserve,
     isNetworkFeeUnavailable,
     // Shown after fetching quotes
     isInsufficientGasForQuote: Boolean(
       !isNetworkFeeUnavailable &&
-        nativeBalance &&
-        quote &&
-        fromTokenInputValue &&
-        !hasSufficientGasForQuote({
-          balances,
-          quote: quote.quote,
-          minimumBalance: minimumBalanceToKeep,
-          ignoreGasLessFlags: isHardwareWalletAccount && !gasIncluded,
-        }),
+      nativeBalance &&
+      quote &&
+      fromTokenInputValue &&
+      !hasSufficientGasForQuote({
+        balances,
+        quote: quote.quote,
+        minimumBalance: resolveGasCheckMinimumBalance(
+          quote,
+          minimumBalanceToKeep,
+        ),
+        ignoreGasLessFlags: isHardwareWalletAccount && !gasIncluded,
+      }),
     ),
     isInsufficientBalance:
       validatedSrcAmount &&
@@ -1158,8 +1168,8 @@ export const computeQuoteValidationErrors = (
         : false,
     isPriceImpactWarning: Boolean(
       priceImpactNumber &&
-        priceImpactNumber > warning &&
-        priceImpactNumber <= error,
+      priceImpactNumber > warning &&
+      priceImpactNumber <= error,
     ),
     isPriceImpactError: Boolean(priceImpactNumber && priceImpactNumber > error),
   };
@@ -1308,10 +1318,10 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         quoteStreamCompleteData?.hasQuotes === false ||
         Boolean(
           !activeQuote &&
-            isValidQuoteRequest(quoteRequest) &&
-            quotesLastFetchedMs &&
-            !isLoading &&
-            quotesRefreshCount > 0,
+          isValidQuoteRequest(quoteRequest) &&
+          quotesLastFetchedMs &&
+          !isLoading &&
+          quotesRefreshCount > 0,
         ),
       isDestAssetRequireActivate,
     };
