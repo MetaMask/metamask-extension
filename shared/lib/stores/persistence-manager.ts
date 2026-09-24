@@ -75,7 +75,7 @@ export type SplitStateWriteEvent = {
    * {@link sizeMeasurementSource} is `storage_get_bytes_in_use`; otherwise
    * estimates from `JSON.stringify(value).length`.
    */
-  bytesByController: Record<string, number>;
+  bytesByController: Map<string, number>;
   coalescedUpdates: number;
   controllerKeys: string[];
   idleStatus: 'active' | 'idle' | 'unknown';
@@ -785,18 +785,22 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     pairs: Map<string, unknown>,
     controllerKeys: string[],
   ): Promise<{
-    bytesByController: Record<string, number>;
+    bytesByController: Map<string, number>;
     sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'];
     totalBytes: number;
   }> {
     try {
-      const bytesByController =
+      const bytesRecord =
         await this.#localStore.getBytesInUseByKey?.(controllerKeys);
-      if (bytesByController) {
+      if (bytesRecord) {
+        // Build in sorted controllerKeys order for deterministic Map iteration.
+        const bytesByController = new Map(
+          controllerKeys.map((key) => [key, bytesRecord[key] ?? 0]),
+        );
         return {
           bytesByController,
           sizeMeasurementSource: 'storage_get_bytes_in_use',
-          totalBytes: Object.values(bytesByController).reduce(
+          totalBytes: [...bytesByController.values()].reduce(
             (total, bytes) => total + bytes,
             0,
           ),
@@ -807,7 +811,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // unavailable or fail. Telemetry must not fail a successful write.
     }
 
-    const bytesByController: Record<string, number> = {};
+    const bytesByController: Map<string, number> = new Map();
     let totalBytes = 0;
     for (const key of controllerKeys) {
       const value = pairs.get(key);
@@ -816,7 +820,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       const serializedValue = JSON.stringify(value);
       const serializedLength =
         serializedValue === undefined ? 0 : serializedValue.length;
-      bytesByController[key] = serializedLength;
+      bytesByController.set(key, serializedLength);
       totalBytes += serializedLength;
     }
 
@@ -855,7 +859,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     controllerKeys.sort((leftKey, rightKey) => leftKey.localeCompare(rightKey));
     const { bytesByController, sizeMeasurementSource, totalBytes } =
       await this.#getSplitStateWriteSizes(pairs, controllerKeys);
-
 
     const isIdle = this.#getIsIdle();
     let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';

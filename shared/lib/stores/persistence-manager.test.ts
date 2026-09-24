@@ -856,12 +856,12 @@ describe('PersistenceManager', () => {
       }).length;
       const barControllerLength = JSON.stringify({ enabled: true }).length;
       expect(event).toStrictEqual({
-        bytesByController: {
-          BarController: barControllerLength,
-          FooController: fooControllerLength,
-        },
+        bytesByController: new Map([
+          ['BarController', barControllerLength],
+          ['FooController', fooControllerLength],
+        ]),
         coalescedUpdates: 3,
-        controllerKeys: ['FooController', 'BarController'],
+        controllerKeys: ['BarController', 'FooController'],
         idleStatus: 'idle',
         measurementDurationMs: expect.any(Number),
         sampleRate: 1,
@@ -901,10 +901,10 @@ describe('PersistenceManager', () => {
       ]);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          bytesByController: {
-            BarController: 11,
-            FooController: 29,
-          },
+          bytesByController: new Map([
+            ['BarController', 11],
+            ['FooController', 29],
+          ]),
           controllerKeys: ['BarController', 'FooController'],
           sizeMeasurementSource: 'storage_get_bytes_in_use',
           totalBytes: 40,
@@ -949,9 +949,9 @@ describe('PersistenceManager', () => {
 
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          bytesByController: {
-            FooController: JSON.stringify({ foo: 'bar' }).length,
-          },
+          bytesByController: new Map([
+            ['FooController', JSON.stringify({ foo: 'bar' }).length],
+          ]),
           sizeMeasurementSource: 'json_string_length_estimate',
           totalBytes: JSON.stringify({ foo: 'bar' }).length,
         }),
