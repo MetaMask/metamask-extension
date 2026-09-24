@@ -3,6 +3,7 @@ import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
 import {
   DEEP_LINK_HOST,
+  RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
   SIG_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
@@ -575,6 +576,42 @@ describe('DeepLinkRouter', () => {
         expect(browser.tabs.update).toHaveBeenCalledWith(1, {
           url: expectedUrl,
         });
+      });
+
+      it('emits the resolved internal destination for /buy when rampsEnabled is on', async () => {
+        arrangeState({ rampsEnabled: true });
+        parseMock.mockResolvedValue(arrangeBuyLink());
+
+        const navigateListener = jest.fn();
+        router.on('navigate', navigateListener);
+        await arrangeRequest();
+
+        expect(navigateListener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            url: expect.any(URL),
+            destination: {
+              path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
+              query: expect.any(URLSearchParams),
+            },
+          }),
+        );
+      });
+
+      it('emits the external redirect destination for /buy when rampsEnabled is off', async () => {
+        arrangeState({});
+        parseMock.mockResolvedValue(arrangeBuyLink());
+
+        const navigateListener = jest.fn();
+        router.on('navigate', navigateListener);
+        await arrangeRequest();
+
+        expect(navigateListener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            destination: {
+              redirectTo: new URL(BUY_PORTFOLIO_DESTINATION),
+            },
+          }),
+        );
       });
     });
 

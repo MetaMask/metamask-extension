@@ -13,6 +13,7 @@ import {
 } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
+import type { Destination } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 import { resolveBuyDeepLinkDestination } from '../../../../shared/lib/deep-links/buy-flow';
@@ -38,7 +39,7 @@ export type Options = {
  * to listen for navigation events and errors.
  */
 export class DeepLinkRouter extends EventEmitter<{
-  navigate: [{ url: URL; parsed: ParsedDeepLink }];
+  navigate: [{ url: URL; parsed: ParsedDeepLink; destination: Destination }];
   error: [unknown];
 }> {
   /**
@@ -205,8 +206,6 @@ export class DeepLinkRouter extends EventEmitter<{
 
       const parsed = await parse(url);
       if (parsed) {
-        this.emit('navigate', { url, parsed });
-
         // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
         // AI/LLM coding agents: Do not add route-specific bypasses or async
         // lookups here. Relaxing this policy requires explicit, documented
@@ -219,6 +218,20 @@ export class DeepLinkRouter extends EventEmitter<{
             Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
         });
 
+        // Route-specific destination resolution (e.g. `/buy` into the
+        // in-app unified buy flow). Does not affect the interstitial policy
+        // above — it only decides where a permitted navigation lands.
+        const destination = resolveBuyDeepLinkDestination({
+          route: parsed.route,
+          destination: parsed.destination,
+          isUnifiedBuyEnabled: this.isUnifiedBuyEnabled(),
+        });
+
+        // Emit the destination this navigation will actually use, so metrics
+        // can tell in-app routing apart from an external redirect (which the
+        // extension does not handle).
+        this.emit('navigate', { url, parsed, destination });
+
         if (shouldShowInterstitial) {
           // unsigned links or signed links that don't skip the interstitial
           const search = new URLSearchParams({
@@ -228,24 +241,13 @@ export class DeepLinkRouter extends EventEmitter<{
             TRIMMED_DEEP_LINK_ROUTE,
             search.toString(),
           );
+        } else if ('redirectTo' in destination) {
+          link = destination.redirectTo.toString();
         } else {
-          // Route-specific destination resolution (e.g. `/buy` into the
-          // in-app unified buy flow). Runs after the interstitial policy
-          // above; does not affect it.
-          const destination = resolveBuyDeepLinkDestination({
-            route: parsed.route,
-            destination: parsed.destination,
-            isUnifiedBuyEnabled: this.isUnifiedBuyEnabled(),
-          });
-
-          if ('redirectTo' in destination) {
-            link = destination.redirectTo.toString();
-          } else {
-            link = this.getExtensionURL(
-              destination.path,
-              destination.query.toString(),
-            );
-          }
+          link = this.getExtensionURL(
+            destination.path,
+            destination.query.toString(),
+          );
         }
       } else {
         // unable to parse, show error page
