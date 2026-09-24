@@ -8,6 +8,7 @@ import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value';
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
 import * as SendContext from '../../context/send';
@@ -33,14 +34,18 @@ beforeEach(() => {
   mockUseLocation.mockReturnValue({ key: 'in-app-entry' });
 });
 
+const mockDispatch = jest.fn((action) =>
+  typeof action === 'function' ? action() : action,
+);
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: () => (fn: () => void) => {
-    if (fn) {
-      fn();
-    }
-  },
+  useDispatch: () => mockDispatch,
 }));
+
+beforeEach(() => {
+  mockUseNavigate.mockClear();
+  mockDispatch.mockClear();
+});
 
 function renderHook() {
   const { result } = renderHookWithProvider(useSendActions, mockState);
@@ -86,7 +91,7 @@ describe('useSendQueryParams', () => {
       .spyOn(SendUtils, 'submitEvmTransaction')
       .mockImplementation(() =>
         Promise.resolve(() =>
-          Promise.resolve({} as unknown as TransactionMeta),
+          Promise.resolve({ id: 'tx123' } as unknown as TransactionMeta),
         ),
       );
 
@@ -97,9 +102,67 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/confirm-transaction?maxValueMode=true&loader=send',
+        '/confirm-transaction?loader=send',
       );
     });
+  });
+
+  it('enables max value mode for the submitted transaction only', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: EVM_ASSET,
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      to: MOCK_ADDRESS_2,
+      value: 10,
+      maxValueMode: true,
+      updateNonEVMSubmitError: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+
+    jest
+      .spyOn(SendUtils, 'submitEvmTransaction')
+      .mockImplementation(() =>
+        Promise.resolve(() =>
+          Promise.resolve({ id: 'tx123' } as unknown as TransactionMeta),
+        ),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_2);
+
+    await waitFor(() => {
+      expect(mockDispatch).toHaveBeenCalledWith(
+        setMaxValueMode({ transactionId: 'tx123', enabled: true }),
+      );
+    });
+  });
+
+  it('does not enable max value mode when the amount is not the max', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: EVM_ASSET,
+      chainId: '0x5',
+      from: MOCK_ADDRESS_1,
+      to: MOCK_ADDRESS_2,
+      value: 10,
+      updateNonEVMSubmitError: jest.fn(),
+    } as unknown as SendContext.SendContextType);
+
+    jest
+      .spyOn(SendUtils, 'submitEvmTransaction')
+      .mockImplementation(() =>
+        Promise.resolve(() =>
+          Promise.resolve({ id: 'tx123' } as unknown as TransactionMeta),
+        ),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_2);
+
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalled();
+    });
+    expect(mockDispatch).not.toHaveBeenCalledWith(
+      setMaxValueMode({ transactionId: 'tx123', enabled: true }),
+    );
   });
 
   it('normalizes trailing dot values before submitting evm transaction', async () => {

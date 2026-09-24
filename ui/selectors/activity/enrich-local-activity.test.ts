@@ -195,7 +195,7 @@ describe('enrichLocalActivity', () => {
         from: '0x1111111111111111111111111111111111111111',
         fiat: { amount: '5' },
         token: {
-          direction: 'in',
+          direction: 'out',
           symbol: 'mUSD',
           decimals: 6,
           amount: '5000000',
@@ -316,7 +316,7 @@ describe('enrichLocalActivity', () => {
         from: '0x1111111111111111111111111111111111111111',
         fiat: { amount: '5' },
         token: {
-          direction: 'out',
+          direction: 'in',
           symbol: 'mUSD',
           decimals: 6,
           amount: '5000000',

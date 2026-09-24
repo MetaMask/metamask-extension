@@ -14,6 +14,16 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { MarketListView } from '.';
 
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest
+    .fn()
+    .mockImplementation((method: string) =>
+      Promise.resolve(
+        method === 'perpsGetLifecycleContext' ? 'cold_process' : undefined,
+      ),
+    ),
+}));
+
 const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -63,6 +73,7 @@ describe('MarketListView', () => {
     jest.clearAllMocks();
     // Default mock returns loaded state with markets
     mockUsePerpsLiveMarketListData.mockReturnValue({
+      areMarketsLive: jest.fn().mockReturnValue(false),
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
       cryptoMarkets: mockCryptoMarkets,
       hip3Markets: mockHip3Markets,
@@ -115,6 +126,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        areMarketsLive: jest.fn().mockReturnValue(false),
       });
 
       renderWithProvider(<MarketListView />, mockStore);
@@ -160,6 +172,7 @@ describe('MarketListView', () => {
     it('renders live price and change values from the list hook', async () => {
       const [firstMarket] = mockCryptoMarkets;
       mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
         markets: [
           {
             ...firstMarket,
@@ -189,6 +202,7 @@ describe('MarketListView', () => {
     it('shows loading skeletons initially', () => {
       // Override mock to return loading state
       mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
         markets: [],
         cryptoMarkets: [],
         hip3Markets: [],
@@ -367,6 +381,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        areMarketsLive: jest.fn().mockReturnValue(false),
       });
 
       renderWithProvider(
@@ -539,6 +554,7 @@ describe('MarketListView', () => {
     priceChangeSortCases.forEach(([queryDirection, expectedOrder]) => {
       it(`ranks the list by ${queryDirection} price change from the query params`, async () => {
         mockUsePerpsLiveMarketListData.mockReturnValue({
+          areMarketsLive: jest.fn().mockReturnValue(false),
           markets: [
             {
               ...mockCryptoMarkets[0],
@@ -663,6 +679,7 @@ describe('MarketListView', () => {
       };
 
       mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
         markets: [
           mockCryptoMarkets[0],
           dogeMarket,

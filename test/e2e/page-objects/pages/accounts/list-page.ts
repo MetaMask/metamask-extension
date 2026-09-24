@@ -914,7 +914,7 @@ class AccountListPage {
       throw e;
     }
     if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted(timeout);
+      await this.waitUntilSyncingIsCompleted();
     }
     console.log('Account list is loaded');
   }
