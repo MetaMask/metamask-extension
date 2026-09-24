@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -12,6 +13,7 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { getIsRampsEnabled } from '../../../../selectors/ramps-feature-flags';
 import {
   isInternalRouteHref,
   resolveCarouselHref,
@@ -27,6 +29,7 @@ export const StackCard = ({
   className = '',
 }: StackCardProps) => {
   const t = useI18nContext();
+  const isRampsEnabled = useSelector(getIsRampsEnabled);
   const isContentfulContent = slide.id.startsWith('contentful-');
 
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -53,7 +56,7 @@ export const StackCard = ({
     }
 
     if (slide.href) {
-      const href = await resolveCarouselHref(slide.href);
+      const href = await resolveCarouselHref(slide.href, isRampsEnabled);
 
       if (isInternalRouteHref(href)) {
         navigate(href);
