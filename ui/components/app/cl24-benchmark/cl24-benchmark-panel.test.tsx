@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
-import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import CL24BenchmarkPanel, {
   CL24_BENCHMARK_BUTTON_TEST_ID,
   CL24_BENCHMARK_COPY_BUTTON_TEST_ID,
@@ -10,7 +10,7 @@ import CL24BenchmarkPanel, {
 } from './cl24-benchmark-panel';
 import { type CL24BenchmarkResult, runCL24Benchmark } from './cl24-benchmark';
 
-jest.mock('../../../../hooks/useCopyToClipboard', () => ({
+jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
 

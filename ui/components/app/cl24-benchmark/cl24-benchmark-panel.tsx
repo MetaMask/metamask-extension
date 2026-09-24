@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   BoxAlignItems,
+  BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -9,7 +10,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
   type CL24BenchmarkMetadata,
   type CL24BenchmarkResult,
@@ -100,7 +101,11 @@ export const CL24BenchmarkPanel = () => {
   }, [copyToClipboard, result]);
 
   return (
-    <Box gap={2} alignItems={BoxAlignItems.Center}>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={2}
+      alignItems={BoxAlignItems.Center}
+    >
       <Button
         variant={ButtonVariant.Secondary}
         size={ButtonSize.Md}
@@ -133,7 +138,11 @@ export const CL24BenchmarkPanel = () => {
       )}
 
       {result && (
-        <Box gap={2} alignItems={BoxAlignItems.Center}>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={2}
+          alignItems={BoxAlignItems.Center}
+        >
           <Text
             variant={TextVariant.BodyXs}
             className="text-center whitespace-pre-wrap"

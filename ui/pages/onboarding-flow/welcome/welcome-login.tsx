@@ -17,7 +17,7 @@ import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import { useDispatch } from '../../../store/hooks';
-import CL24BenchmarkPanel from './cl24-benchmark';
+import CL24BenchmarkPanel from '../../../components/app/cl24-benchmark';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 

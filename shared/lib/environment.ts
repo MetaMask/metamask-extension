@@ -23,8 +23,8 @@ export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
 
 /**
  * Compile-time gate (`CL24_BENCHMARK_ENABLED`): expose the CL24 compute
- * benchmark on the onboarding welcome screen. Use only in optimized
- * internal/performance builds; development timings are distorted.
+ * benchmark on the onboarding welcome screen and in Settings > Debug. Use only
+ * in optimized internal/performance builds; development timings are distorted.
  */
 export const getIsCL24BenchmarkEnabled = (): boolean => {
   return process.env.CL24_BENCHMARK_ENABLED?.toString() === 'true';

@@ -439,9 +439,9 @@ env:
   - FORCE_ENFORCED_SIMULATIONS: false
 
   - SEEDLESS_ONBOARDING_ENABLED: 'true'
-  # Optional: expose the CL24 compute benchmark on the onboarding screen.
-  # Use only in optimized internal/performance builds; development timings
-  # are distorted.
+  # Optional: expose the CL24 compute benchmark on the onboarding screen and in
+  # Settings > Debug. Use only in optimized internal/performance builds;
+  # development timings are distorted.
   - CL24_BENCHMARK_ENABLED: false
 
   # Metamask Shield
