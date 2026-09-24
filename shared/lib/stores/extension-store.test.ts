@@ -151,10 +151,12 @@ describe('ExtensionStore', () => {
 
       await expect(
         localStore.getBytesInUseByKey(['FooController', 'BarController']),
-      ).resolves.toStrictEqual({
-        BarController: 7,
-        FooController: 42,
-      });
+      ).resolves.toStrictEqual(
+        new Map([
+          ['FooController', 42],
+          ['BarController', 7],
+        ]),
+      );
       expect(getBytesInUse).toHaveBeenCalledTimes(2);
       expect(getBytesInUse).toHaveBeenNthCalledWith(1, 'FooController');
       expect(getBytesInUse).toHaveBeenNthCalledWith(2, 'BarController');

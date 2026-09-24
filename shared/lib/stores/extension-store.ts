@@ -155,7 +155,7 @@ export default class ExtensionStore implements BaseStore {
     }
   }
 
-  async getBytesInUseByKey(keys: string[]): Promise<Record<string, number>> {
+  async getBytesInUseByKey(keys: string[]): Promise<Map<string, number>> {
     if (!this.isSupported) {
       throw new Error(
         'MetaMask - cannot measure state size in local store as this browser does not support this action',
@@ -172,7 +172,7 @@ export default class ExtensionStore implements BaseStore {
     const entries = await Promise.all(
       keys.map(async (key) => [key, await local.getBytesInUse(key)] as const),
     );
-    return Object.fromEntries(entries);
+    return new Map(entries);
   }
 
   /**

@@ -874,10 +874,12 @@ describe('PersistenceManager', () => {
     });
 
     it('uses exact storage byte measurements when available', async () => {
-      mockStoreGetBytesInUseByKey.mockResolvedValue({
-        BarController: 11,
-        FooController: 29,
-      });
+      mockStoreGetBytesInUseByKey.mockResolvedValue(
+        new Map([
+          ['BarController', 11],
+          ['FooController', 29],
+        ]),
+      );
       manager = new PersistenceManager({
         getPersistenceWriteSampleRate: () => 1,
         localStore: new ExtensionStore(),

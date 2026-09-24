@@ -64,7 +64,7 @@ export type MetaMaskStorageStructure = {
 export type BaseStore = {
   setKeyValues: (pairs: Map<string, unknown>) => Promise<void>;
 
-  getBytesInUseByKey?: (keys: string[]) => Promise<Record<string, number>>;
+  getBytesInUseByKey?: (keys: string[]) => Promise<Map<string, number>>;
 
   set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;
 
