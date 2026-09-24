@@ -396,7 +396,7 @@
     "@metamask/chomp-api-service": "^4.0.2",
     "@metamask/claims-controller": "^0.6.1",
     "@metamask/client-controller": "^1.0.0",
-    "@metamask/client-utils": "^2.0.2",
+    "@metamask/client-utils": "npm:@metamask-previews/client-utils@3.0.2-preview-28f02608f",
     "@metamask/compliance-controller": "^2.1.0",
     "@metamask/config-registry-controller": "^3.0.0",
     "@metamask/connectivity-controller": "^0.3.0",

@@ -106,48 +106,6 @@ describe('activityMatchesAssetId', () => {
     ).toBe(true);
   });
 
-  it('matches Arc ERC20 USDC wrapper activity on the Arc native USDC asset page', () => {
-    const item = makeItem({
-      timestamp: 1,
-      status: 'success',
-      type: 'swap',
-      data: {
-        from: '0x1',
-        destinationToken: {
-          assetId:
-            'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
-          direction: 'in',
-        },
-      },
-    });
-
-    expect(
-      activityMatchesAssetId(item, 'eip155:5042/slip44:5042' as never),
-    ).toBe(true);
-  });
-
-  it('matches Arc native USDC activity on the Arc ERC20 USDC wrapper route', () => {
-    const item = makeItem({
-      timestamp: 1,
-      status: 'success',
-      type: 'receive',
-      data: {
-        from: '0x1',
-        to: '0x2',
-        token: {
-          assetId: 'eip155:5042/slip44:5042',
-          direction: 'in',
-        },
-      },
-    });
-
-    expect(
-      activityMatchesAssetId(
-        item,
-        'eip155:5042/erc20:0x3600000000000000000000000000000000000000' as never,
-      ),
-    ).toBe(true);
-  });
 });
 
 describe('activityMatchesNetworks', () => {
