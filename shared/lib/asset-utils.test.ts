@@ -197,7 +197,7 @@ describe('asset-utils', () => {
         nativeAddress: '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
       },
     ])(
-      'returns native asset ID for $name non-zero native token address',
+      'keeps the dead-address ERC-20 asset ID for $name (not in native-asset map)',
       ({
         chainId,
         nativeAddress,
@@ -208,8 +208,8 @@ describe('asset-utils', () => {
         const zeroAddress = '0x0000000000000000000000000000000000000000';
 
         const result = toAssetId(nativeAddress, chainId);
-        expect(result).toBe(toAssetId(zeroAddress, chainId));
-        expect(result).not.toBe(`${chainId}/erc20:${nativeAddress}`);
+        expect(result).toBe(`${chainId}/erc20:${nativeAddress}`);
+        expect(result).not.toBe(toAssetId(zeroAddress, chainId));
         expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
           undefined,
           result,

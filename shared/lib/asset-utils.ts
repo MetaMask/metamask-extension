@@ -79,14 +79,15 @@ function isNativeTokenAddressForChain(
 }
 
 /**
- * Rewrites chain-specific native token addresses to `NATIVE_TOKEN_ADDRESS` so
- * they share one asset id with `0x0` (Send otherwise treats them as ERC-20).
+ * Maps chain-specific native token addresses (Polygon `0x…1010`, Mantle/Metis
+ * `0xdead…0000`) to `NATIVE_TOKEN_ADDRESS` so `isNativeAddress` can recognize
+ * them. The original address is kept when native lookup does not succeed.
  *
  * @param address - Token address or asset reference.
  * @param chainId - Chain id in CAIP or hex form.
  * @returns `NATIVE_TOKEN_ADDRESS` when `address` is the chain native, else `address`.
  */
-function normalizeNativeTokenAddress(
+function toNativeLookupAddress(
   address: Hex | CaipAssetType | string,
   chainId: ChainIdInput,
 ): Hex | CaipAssetType | string {
@@ -119,11 +120,16 @@ export const toAssetId = (
     return undefined;
   }
 
-  addressToUse = normalizeNativeTokenAddress(addressToUse, chainIdToUse);
-
-  if (isNativeAddress(addressToUse)) {
+  // Only treat a chain-specific native as `0x0` when the bridge native-asset
+  // map actually has an entry. Mantle/Metis natives live at `0xdead…0000` and
+  // are not in that map; rewriting them first produced `erc20:0x0`, which
+  // misses balances, prices, and metadata stored under the dead address.
+  if (isNativeAddress(toNativeLookupAddress(addressToUse, chainIdToUse))) {
     try {
-      return getNativeAssetForChainId(chainIdToUse)?.assetId;
+      const nativeAssetId = getNativeAssetForChainId(chainIdToUse)?.assetId;
+      if (nativeAssetId) {
+        return nativeAssetId;
+      }
     } catch {
       // Skip error for unsupported chains (e.g., custom networks) so we obtain the assetId in another way
       // This allows the send flow to work for custom networks even if they're not in the swaps map
