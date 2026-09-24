@@ -12,6 +12,10 @@ import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { fetchPriceHistory, resolveTicker } from './lib/data';
 import type { Controller } from './lib/types';
+import {
+  createWidgetFrameAuthorization,
+  type WidgetFrameAuthorization,
+} from './widget/authorization';
 
 const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
 const xTabUrlPatterns = ['*://x.com/*', '*://www.x.com/*'];
@@ -67,20 +71,34 @@ function isWidgetFrameSender(sender: chrome.runtime.MessageSender) {
 }
 
 export function isAllowedCashtagSender(
-  messageType: unknown,
+  message: CashtagMessage | null | undefined,
   sender: chrome.runtime.MessageSender,
+  authorization: WidgetFrameAuthorization,
 ) {
+  const messageType = message?.type;
   if (messageType === EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED) {
     return isXPageSender(sender);
   }
+  if (
+    messageType === EXTENSION_MESSAGES.REGISTER_X_WIDGET_FRAME ||
+    messageType === EXTENSION_MESSAGES.REVOKE_X_WIDGET_FRAME
+  ) {
+    return isXContentScriptSender(sender);
+  }
+  if (messageType === EXTENSION_MESSAGES.CLAIM_X_WIDGET_FRAME) {
+    return isWidgetFrameSender(sender);
+  }
   if (messageType === EXTENSION_MESSAGES.GET_DATA) {
-    return isXContentScriptSender(sender) || isWidgetFrameSender(sender);
+    return (
+      isXContentScriptSender(sender) ||
+      authorization.isAuthorized(message?.body?.authToken, sender)
+    );
   }
   if (
     messageType === EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED ||
     messageType === EXTENSION_MESSAGES.OPEN_EXTENSION
   ) {
-    return isWidgetFrameSender(sender);
+    return authorization.isAuthorized(message?.body?.authToken, sender);
   }
   return false;
 }
@@ -481,10 +499,34 @@ export function createCashtagResponse(
   message: CashtagMessage,
   sender: chrome.runtime.MessageSender,
   getController: GetController,
+  authorization: WidgetFrameAuthorization,
 ) {
   switch (message.type) {
     case EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED:
       return handleGetWidgetEnabled(getController, sender);
+    case EXTENSION_MESSAGES.REGISTER_X_WIDGET_FRAME:
+      return Promise.resolve({
+        type: EXTENSION_MESSAGES.REGISTER_X_WIDGET_FRAME,
+        body: {
+          ok:
+            isTickerWidgetEnabled(getController()) &&
+            authorization.register(message.body?.authToken, sender),
+        },
+      });
+    case EXTENSION_MESSAGES.CLAIM_X_WIDGET_FRAME:
+      return Promise.resolve({
+        type: EXTENSION_MESSAGES.CLAIM_X_WIDGET_FRAME,
+        body: {
+          ok:
+            isTickerWidgetEnabled(getController()) &&
+            authorization.claim(message.body?.authToken, sender),
+        },
+      });
+    case EXTENSION_MESSAGES.REVOKE_X_WIDGET_FRAME:
+      return Promise.resolve({
+        type: EXTENSION_MESSAGES.REVOKE_X_WIDGET_FRAME,
+        body: { ok: authorization.revoke(message.body?.authToken, sender) },
+      });
     case EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED:
       return handleSetWidgetEnabled(message, getController);
     case EXTENSION_MESSAGES.GET_DATA:
@@ -527,15 +569,22 @@ export function registerCashtagBackgroundBridge({
     return;
   }
   registered = true;
+  const authorization = createWidgetFrameAuthorization();
 
   bindTickerWidgetEnabledBroadcasts(getController);
+  chrome.tabs.onRemoved.addListener(authorization.removeTab);
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (!isAllowedCashtagSender(message?.type, sender)) {
+    if (!isAllowedCashtagSender(message, sender, authorization)) {
       return false;
     }
 
-    const response = createCashtagResponse(message, sender, getController);
+    const response = createCashtagResponse(
+      message,
+      sender,
+      getController,
+      authorization,
+    );
 
     if (response === undefined) {
       return false;

@@ -6,6 +6,7 @@ import {
   bindTickerWidgetEnabledBroadcasts,
 } from './background';
 import type { Controller } from './lib/types';
+import { createWidgetFrameAuthorization } from './widget/authorization';
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -20,7 +21,8 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 const extensionId = 'testid';
-const widgetUrl = `chrome-extension://${extensionId}/cashtag-widget.html?symbol=ETH`;
+const widgetUrl = `chrome-extension://${extensionId}/cashtag-widget.html`;
+const authToken = 'a'.repeat(64);
 const xTab = { id: 1, url: 'https://x.com/home' } as chrome.tabs.Tab;
 
 function sender(
@@ -33,6 +35,11 @@ function sender(
 }
 
 describe('isAllowedCashtagSender', () => {
+  const authorization = createWidgetFrameAuthorization();
+  const message = (type: string, token?: string) => ({
+    type,
+    body: { authToken: token },
+  });
   beforeEach(() => {
     Object.assign(chrome.runtime, {
       id: extensionId,
@@ -40,11 +47,22 @@ describe('isAllowedCashtagSender', () => {
     });
   });
 
+  it('rejects malformed runtime messages', () => {
+    expect(
+      isAllowedCashtagSender(
+        null,
+        sender({ frameId: 0, url: 'https://x.com/home' }),
+        authorization,
+      ),
+    ).toBe(false);
+  });
+
   it('allows data requests from the top-frame X content script', () => {
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.GET_DATA,
+        message(EXTENSION_MESSAGES.GET_DATA),
         sender({ frameId: 0, url: 'https://x.com/home' }),
+        authorization,
       ),
     ).toBe(true);
   });
@@ -52,8 +70,9 @@ describe('isAllowedCashtagSender', () => {
   it('allows enabled-state requests from X subframes', () => {
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
+        message(EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED),
         sender({ frameId: 2, url: 'https://x.com/embed' }),
+        authorization,
       ),
     ).toBe(true);
   });
@@ -61,8 +80,9 @@ describe('isAllowedCashtagSender', () => {
   it('rejects enabled-state requests from another website', () => {
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
+        message(EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED),
         sender({ frameId: 0, url: 'https://example.com/' }),
+        authorization,
       ),
     ).toBe(false);
   });
@@ -70,29 +90,61 @@ describe('isAllowedCashtagSender', () => {
   it('rejects data requests from another website or an X subframe', () => {
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.GET_DATA,
+        message(EXTENSION_MESSAGES.GET_DATA),
         sender({ frameId: 0, url: 'https://example.com/' }),
+        authorization,
       ),
     ).toBe(false);
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.GET_DATA,
+        message(EXTENSION_MESSAGES.GET_DATA),
         sender({ frameId: 2, url: 'https://x.com/embed' }),
+        authorization,
       ),
     ).toBe(false);
   });
 
-  it('allows widget actions only from the widget frame', () => {
+  it('rejects an X-created widget frame without a registered token', () => {
+    const unregistered = createWidgetFrameAuthorization();
+    const frameSender = sender({ frameId: 1, tab: xTab, url: widgetUrl });
+
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.OPEN_EXTENSION,
+        message(EXTENSION_MESSAGES.GET_DATA, authToken),
+        frameSender,
+        unregistered,
+      ),
+    ).toBe(false);
+    expect(
+      isAllowedCashtagSender(
+        message(EXTENSION_MESSAGES.OPEN_EXTENSION, authToken),
+        frameSender,
+        unregistered,
+      ),
+    ).toBe(false);
+  });
+
+  it('allows widget actions only from the authorized widget frame', () => {
+    authorization.register(
+      authToken,
+      sender({ frameId: 0, tab: xTab, url: xTab.url }),
+    );
+    authorization.claim(
+      authToken,
+      sender({ frameId: 1, tab: xTab, url: widgetUrl }),
+    );
+    expect(
+      isAllowedCashtagSender(
+        message(EXTENSION_MESSAGES.OPEN_EXTENSION, authToken),
         sender({ frameId: 1, tab: xTab, url: widgetUrl }),
+        authorization,
       ),
     ).toBe(true);
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
+        message(EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED, authToken),
         sender({ frameId: 1, tab: xTab, url: widgetUrl }),
+        authorization,
       ),
     ).toBe(true);
   });
@@ -100,12 +152,13 @@ describe('isAllowedCashtagSender', () => {
   it('rejects widget actions from other extension pages', () => {
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.OPEN_EXTENSION,
+        message(EXTENSION_MESSAGES.OPEN_EXTENSION, authToken),
         sender({
           frameId: 1,
           tab: xTab,
           url: `chrome-extension://${extensionId}/home.html`,
         }),
+        authorization,
       ),
     ).toBe(false);
   });
@@ -113,7 +166,7 @@ describe('isAllowedCashtagSender', () => {
   it('rejects the widget frame when its parent tab is not X', () => {
     expect(
       isAllowedCashtagSender(
-        EXTENSION_MESSAGES.OPEN_EXTENSION,
+        message(EXTENSION_MESSAGES.OPEN_EXTENSION, authToken),
         sender({
           frameId: 1,
           tab: {
@@ -122,6 +175,7 @@ describe('isAllowedCashtagSender', () => {
           } as chrome.tabs.Tab,
           url: widgetUrl,
         }),
+        authorization,
       ),
     ).toBe(false);
   });
@@ -131,14 +185,20 @@ describe('createCashtagResponse', () => {
   const caipAssetId = 'eip155:1/slip44:60';
   const swapHash =
     '#/cross-chain/swaps/prepare-bridge-page?to=eip155%3A1%2Fslip44%3A60';
+  const authorization = createWidgetFrameAuthorization();
   const widgetSender = sender({
     frameId: 1,
     tab: { ...xTab, windowId: 7 } as chrome.tabs.Tab,
     url: widgetUrl,
   });
+  authorization.register(
+    authToken,
+    sender({ frameId: 0, tab: xTab, url: xTab.url }),
+  );
+  authorization.claim(authToken, widgetSender);
   const openSwapMessage = {
     type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-    body: { page: 'swap', caipAssetId },
+    body: { page: 'swap', caipAssetId, authToken },
   };
 
   function getController() {
@@ -180,7 +240,12 @@ describe('createCashtagResponse', () => {
       sidePanel: { open, setOptions: jest.fn(pending) },
     });
 
-    createCashtagResponse(openSwapMessage, widgetSender, getController);
+    createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      getController,
+      authorization,
+    );
 
     expect(open).toHaveBeenCalledWith({ windowId: 7 });
   });
@@ -191,13 +256,23 @@ describe('createCashtagResponse', () => {
       action: { openPopup, setPopup: jest.fn(pending) },
     });
 
-    createCashtagResponse(openSwapMessage, widgetSender, getController);
+    createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      getController,
+      authorization,
+    );
 
     expect(openPopup).toHaveBeenCalledTimes(1);
   });
 
   it('opens a tab when neither the side panel nor the popup API exists', async () => {
-    await createCashtagResponse(openSwapMessage, widgetSender, getController);
+    await createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      getController,
+      authorization,
+    );
 
     expect(browser.tabs.create).toHaveBeenCalledWith({
       url: `chrome-extension://${extensionId}/home.html${swapHash}`,

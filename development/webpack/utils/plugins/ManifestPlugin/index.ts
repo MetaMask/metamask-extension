@@ -739,11 +739,11 @@ export class ManifestPlugin<Z extends boolean> {
       this.isolatedHtmlEntries.add(parsedFileName);
 
       // `cashtag-widget.html` is the web-accessible HTML entry, but HtmlBundler
-      // names its imported frame script `frame`. Both entries must be isolated so
-      // Webpack does not split the iframe bundle.
+      // names its bootstrap script `frame-bootstrap`. Keep it isolated from
+      // other extension pages while its widget code loads on demand.
       if (parsedFileName === 'cashtag-widget') {
-        this.selfContainedScripts.add('frame');
-        this.isolatedHtmlEntries.add('frame');
+        this.selfContainedScripts.add('frame-bootstrap');
+        this.isolatedHtmlEntries.add('frame-bootstrap');
       }
     }
   };

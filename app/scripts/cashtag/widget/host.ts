@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { findCashtagAnchors, symbolFromCashtagAnchor } from '../lib/helpers';
 import type { ResolvedTicker } from '../lib/types';
 import {
@@ -22,14 +24,47 @@ export type WidgetHandle = {
   stop: () => void;
 };
 
-function frameUrl(symbol: string, theme: 'light' | 'dark') {
-  const url = new URL(chrome.runtime.getURL(widgetFramePath));
-  url.searchParams.set('symbol', symbol);
-  url.searchParams.set('theme', theme);
-  return url.href;
+type WidgetInitMessage = {
+  type: 'METAMASK_X_WIDGET_INIT';
+  authToken: string;
+  symbol: string;
+  theme: 'light' | 'dark';
+};
+
+function newAuthToken() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
+    byte.toString(16).padStart(2, '0'),
+  ).join('');
+}
+
+async function registerFrame(authToken: string) {
+  try {
+    const response = (await browser.runtime.sendMessage({
+      type: EXTENSION_MESSAGES.REGISTER_X_WIDGET_FRAME,
+      body: { authToken },
+    })) as { body?: { ok?: boolean } } | undefined;
+    return response?.body?.ok === true;
+  } catch {
+    return false;
+  }
+}
+
+function revokeFrame(authToken: string | null) {
+  if (!authToken) {
+    return;
+  }
+  browser.runtime
+    .sendMessage({
+      type: EXTENSION_MESSAGES.REVOKE_X_WIDGET_FRAME,
+      body: { authToken },
+    })
+    .catch(() => undefined);
 }
 
 export async function injectWidget(): Promise<WidgetHandle> {
+  const frameUrl = chrome.runtime.getURL(widgetFramePath);
+  const frameUrlParts = new URL(frameUrl);
+  const frameOrigin = `${frameUrlParts.protocol}//${frameUrlParts.host}`;
   injectPageStyles(widgetPageStyles, widgetPageStyleAttr);
 
   const host = document.createElement('div');
@@ -52,13 +87,42 @@ export async function injectWidget(): Promise<WidgetHandle> {
 
   let theme: 'light' | 'dark' = 'light';
   let symbol: string | null = null;
+  let authToken: string | null = null;
+  let generation = 0;
+  let registrationQueue = Promise.resolve();
+
+  const onFrameLoad = () => {
+    if (!authToken || !symbol) {
+      return;
+    }
+    const message: WidgetInitMessage = {
+      type: 'METAMASK_X_WIDGET_INIT',
+      authToken,
+      symbol,
+      theme,
+    };
+    frame.contentWindow?.postMessage(message, frameOrigin);
+  };
+  frame.addEventListener('load', onFrameLoad);
 
   const unbindColorScheme = bindHostColorScheme(host, (next) => {
     theme = next;
-    if (symbol) {
-      frame.src = frameUrl(symbol, theme);
+    if (authToken) {
+      frame.contentWindow?.postMessage(
+        { type: 'METAMASK_X_WIDGET_THEME', authToken, theme },
+        frameOrigin,
+      );
     }
   });
+
+  function reset() {
+    generation += 1;
+    const oldToken = authToken;
+    authToken = null;
+    symbol = null;
+    frame.removeAttribute('src');
+    revokeFrame(oldToken);
+  }
 
   return {
     shadowHost: host,
@@ -66,14 +130,26 @@ export async function injectWidget(): Promise<WidgetHandle> {
       if (symbol === nextSymbol) {
         return;
       }
+      reset();
       symbol = nextSymbol;
-      frame.src = frameUrl(symbol, theme);
+      const requestGeneration = generation;
+      const nextToken = newAuthToken();
+      authToken = nextToken;
+      const registration = registrationQueue.then(() =>
+        registerFrame(nextToken),
+      );
+      registrationQueue = registration.then(() => undefined);
+      registration.then((ok) => {
+        if (!ok || generation !== requestGeneration) {
+          return;
+        }
+        frame.src = frameUrl;
+      });
     },
-    reset() {
-      symbol = null;
-      frame.removeAttribute('src');
-    },
+    reset,
     stop() {
+      reset();
+      frame.removeEventListener('load', onFrameLoad);
       unbindColorScheme();
       host.remove();
       removePageStyles(widgetPageStyleAttr);

@@ -6,8 +6,8 @@ import {
   type IChartApi,
   type UTCTimestamp,
 } from 'lightweight-charts';
-import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import { sendWidgetMessage } from '../widget-runtime';
 import { formatChartTime, formatUsd } from '../../lib/helpers';
 import type { PricePoint } from '../../lib/types';
 
@@ -42,14 +42,10 @@ function isPricePoint(point: unknown): point is PricePoint {
 }
 
 function loadPriceHistory(caipAssetId: string) {
-  return browser.runtime
-    .sendMessage({
-      type: EXTENSION_MESSAGES.GET_DATA,
-      body: {
-        caipAssetId,
-        fields: ['priceHistory'],
-      },
-    })
+  return sendWidgetMessage(EXTENSION_MESSAGES.GET_DATA, {
+    caipAssetId,
+    fields: ['priceHistory'],
+  })
     .then((response) => {
       const result = response as
         | { body?: { priceHistory?: unknown } }
