@@ -37,7 +37,7 @@ import {
   getIsSocialLoginFlow,
 } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import SetupPasskeyContent from '../../components/app/setup-passkey-content';
+import SetupPasskeyContent from '../../components/app/passkey-setup/setup-passkey-content';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../srp-input-form';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
