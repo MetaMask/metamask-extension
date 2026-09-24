@@ -20,6 +20,10 @@ class ContactsSettings {
   private readonly addContactButton =
     '[data-testid="contacts-add-contact-button"]';
 
+  private readonly closeContactUpdatedToast = {
+    testId: 'toast-close-button',
+  };
+
   private readonly confirmAddContactButton = {
     testId: 'page-container-footer-next',
   };
@@ -36,9 +40,16 @@ class ContactsSettings {
     testId: 'parent-selector-contacts-page',
   };
 
-  private readonly contactUpdatedToast = {
-    tag: 'div',
-    text: 'Contact updated',
+  private readonly contactDetailsHeader = {
+    tag: 'p',
+    text: 'Contact details',
+  };
+
+  private readonly contactDetailsName = (contactName: string) => {
+    return {
+      testId: 'address-book-name',
+      text: contactName,
+    };
   };
 
   private readonly createContactAddressInput = '#contact-address';
@@ -182,6 +193,8 @@ class ContactsSettings {
       css: this.contactListItem,
     });
     await this.driver.clickElement(this.deleteContactButton);
+    await this.driver.waitForSelector(this.contactDetailsHeader);
+    await this.driver.waitForSelector(this.contactDetailsName(contactName));
     await this.driver.clickElementAndWaitToDisappear(
       this.deleteContactConfirmButton,
     );
@@ -222,7 +235,9 @@ class ContactsSettings {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
     );
-    await this.driver.clickElement(this.contactUpdatedToast);
+    await this.driver.clickElementSafe(
+      this.closeContactUpdatedToast,
+    );
   }
 }
 
