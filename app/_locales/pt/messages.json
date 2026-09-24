@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "Posição short fechada - mercado"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Falha no depósito"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Depositando $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Depositado $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Falha ao receber"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Recebendo $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Recebido $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "Comprar falhou"
   },
@@ -3066,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "Copiado para a área de transferência"
   },
+  "copy": {
+    "message": "Copiar"
+  },
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
@@ -5414,6 +5439,14 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% de APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Ganhe $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "A taxa apresentada é uma estimativa da Taxa Anual Efetiva (APY) com base nas condições atuais do mercado. A APY é variável e não é garantida."
   },
@@ -5555,6 +5588,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Receba rendimentos automaticamente sobre o saldo em sua conta Money"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Ganhe automaticamente até $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Obtenha liquidez total sem períodos de bloqueio, permitindo que você possa negociar ou sacar quando quiser"
   },
@@ -5594,6 +5631,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Nenhuma taxa"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "A projeção pressupõe que o Rendimento Percentual Anual (APY) de $1% permanece inalterado por um ano. O APY é variável e não é garantido. Não há garantia de retorno.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Ganhe com o seu saldo"
   },
@@ -5611,6 +5652,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "A taxa exibida representa um Rendimento Percentual Anual (APY) estimado, calculado com base nas condições atuais do mercado. O APY é variável e não é garantido. Os fundos são alocados em um cofre DeFi, administrado pela Veda com supervisão de risco pela Steakhouse Financial, que gera rendimentos em mercados de empréstimo consolidados."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Sua conta Money rende até $1 automaticamente.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "A Money Account tem tecnologia da Monad."
@@ -6875,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Não foi possível verificar sua $1. Tente novamente ou use sua senha.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Tentar novamente",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Cadastrar $1",
@@ -8662,7 +8711,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Escolher provedor"
+    "message": "Escolher provedores"
   },
   "rampsCompleteBuyTitle": {
     "message": "Compra concluída",
@@ -8941,6 +8990,10 @@
   },
   "relayerFee": {
     "message": "Taxa do relayer"
+  },
+  "remindMeLater": {
+    "message": "Entendi",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Remover"
@@ -9284,6 +9337,9 @@
   },
   "rpcUrl": {
     "message": "URL da RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Este provedor de RPC está limitando as solicitações. Tente novamente mais tarde ou use um URL de RPC diferente."
   },
   "safeTransferFrom": {
     "message": "Transferência segura de"
@@ -11548,6 +11604,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Automático"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "A tolerância a slippage foi limitada a 100%."
   },
   "swapSlippageHighDescription": {
     "message": "O slippage inserido ($1%) é considerado muito alto e pode resultar em uma taxa ruim",

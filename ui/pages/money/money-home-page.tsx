@@ -384,7 +384,7 @@ export function MoneyHomePage() {
           </div>
         ) : null}
 
-        <div className="flex flex-col items-center gap-2 px-4 pt-2">
+        <div className="flex flex-col items-center gap-2 px-4 pt-2 mb-5">
           <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
             <Text
               variant={TextVariant.DisplayLg}
@@ -440,7 +440,7 @@ export function MoneyHomePage() {
             </div>
           </div>
 
-          <div className="mt-2 flex w-full max-w-[389px] gap-2 py-2">
+          <div className="mt-2 flex w-full max-w-[389px] gap-2 pt-2">
             <MoneyActionCard
               icon={IconName.Add}
               label={t('moneyAdd')}

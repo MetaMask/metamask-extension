@@ -2023,14 +2023,14 @@
     "message": "Privacy and product updates"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Third-party APIs are now part of Basic Functionality. Based on your previous preferences, this setting is $1. Change it any time in $2",
+    "message": "Basic functionality now includes third-party APIs. It’s turned $1 based on your previous settings. Adjust anytime in $2.",
     "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
   },
   "basicFunctionalityMigrationToastDisabled": {
-    "message": "disabled"
+    "message": "off"
   },
   "basicFunctionalityMigrationToastEnabled": {
-    "message": "enabled"
+    "message": "on"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Settings > Privacy"
@@ -2731,6 +2731,9 @@
   "clearActivityDescription": {
     "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "clearClipboard": {
+    "message": "Clear clipboard"
+  },
   "clearFilters": {
     "message": "Clear filters"
   },
@@ -2740,6 +2743,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "Couldn't clear clipboard. Try again."
+  },
+  "clipboardCleared": {
+    "message": "Clipboard cleared"
   },
   "close": {
     "message": "Close"
@@ -10140,6 +10149,9 @@
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "This sensitive information remains on your clipboard."
   },
   "sent": {
     "message": "Sent"
