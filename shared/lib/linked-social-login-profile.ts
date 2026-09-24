@@ -22,6 +22,18 @@ export type ProfileAliasWithIdentifiers = {
 };
 
 /**
+ * AuthenticationController state including the paired-identifier fields Core
+ * writes at runtime but does not yet declare on its published state type.
+ */
+export type AuthStateWithPairedIdentifiers = AuthenticationControllerState & {
+  pairedIdentifierIds?: readonly PairedIdentifier[];
+  srpSessionData?: Record<
+    string,
+    { pairedIdentifierIds?: readonly PairedIdentifier[] }
+  >;
+};
+
+/**
  * Returns whether any profile alias includes a social identifier type.
  *
  * @param profileAliases - Aliases returned by profile pair or sign-in events.
@@ -58,27 +70,33 @@ export function pairedIdentifiersIncludeSocialLogin(
 }
 
 /**
- * Reads `pairedIdentifierIds` from the primary SRP session profile in
- * `srpSessionData`, as exposed by Core after SRP login / pairing.
+ * Reads `pairedIdentifierIds` as exposed by Core after SRP login / pairing.
+ *
+ * `performSignIn` writes the identifiers both at the top level of state and
+ * alongside (not inside) the profile of each `srpSessionData` entry. The
+ * top-level copy is the primary read; the session copy is the fallback for
+ * state persisted before the top-level field existed.
  *
  * @param authState - AuthenticationController state after `performSignIn`.
  */
 export function getPairedIdentifierIdsFromAuthState(
   authState: AuthenticationControllerState,
 ): readonly PairedIdentifier[] | undefined {
-  const { srpSessionData } = authState;
+  // Core writes these fields but has not added them to its published types.
+  const { pairedIdentifierIds, srpSessionData } =
+    authState as AuthStateWithPairedIdentifiers;
+
+  if (pairedIdentifierIds?.length) {
+    return pairedIdentifierIds;
+  }
+
   if (!srpSessionData) {
     return undefined;
   }
 
   for (const session of Object.values(srpSessionData)) {
-    // Core PR #10394 adds this field to `UserProfile`; cast until the
-    // `@metamask/profile-sync-controller` bump lands in Extension.
-    const { pairedIdentifierIds } = session.profile as {
-      pairedIdentifierIds?: readonly PairedIdentifier[];
-    };
-    if (pairedIdentifierIds?.length) {
-      return pairedIdentifierIds;
+    if (session?.pairedIdentifierIds?.length) {
+      return session.pairedIdentifierIds;
     }
   }
 
