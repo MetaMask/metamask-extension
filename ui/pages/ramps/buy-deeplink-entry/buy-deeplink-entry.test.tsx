@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { BuyDeepLinkEntry } from './buy-deeplink-entry';
 
@@ -86,6 +86,48 @@ describe('BuyDeepLinkEntry', () => {
       });
     });
   }
+
+  it('does not cancel the in-flight navigation when dependencies change mid-flight', async () => {
+    // `goToBuy`'s identity changes when the user's region/catalog resolve.
+    // The cleanup must be unmount-only: a dep change cancels the in-flight
+    // navigation and the effect re-runs into the hasInitiatedRef guard,
+    // stranding the user on the spinner.
+    let resolveGoToBuy: (value: boolean) => void = () => undefined;
+    mockGoToBuy.mockImplementation(
+      () =>
+        new Promise<boolean>((resolve) => {
+          resolveGoToBuy = resolve;
+        }),
+    );
+    const { rerender } = renderEntry(DAI_SEARCH);
+    rerender(<BuyDeepLinkEntry />);
+
+    resolveGoToBuy(false);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+    });
+  });
+
+  it('does not navigate after unmount', async () => {
+    let resolveGoToBuy: (value: boolean) => void = () => undefined;
+    mockGoToBuy.mockImplementation(
+      () =>
+        new Promise<boolean>((resolve) => {
+          resolveGoToBuy = resolve;
+        }),
+    );
+    const { unmount } = renderEntry(DAI_SEARCH);
+    unmount();
+
+    await act(async () => {
+      resolveGoToBuy(false);
+    });
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
 
   it('opens the legacy Portfolio redirect with verbatim params when the Portfolio fallback applies', async () => {
     mockOpensBuyInPortfolioTab = true;

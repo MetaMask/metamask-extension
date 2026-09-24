@@ -34,14 +34,27 @@ export function BuyDeepLinkEntry() {
   const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
   const hasInitiatedRef = useRef(false);
 
+  // Drop navigations that land after unmount (React Router warns). This is
+  // unmount-only on purpose: the effect below must not cancel on dependency
+  // changes — `goToBuy`'s identity changes mid-flight when the user's
+  // region/catalog resolve, and a cancelled in-flight navigation would strand
+  // the user on this spinner (the effect re-runs into the `hasInitiatedRef`
+  // guard and never re-arms the flag). Resetting on setup keeps this correct
+  // under the dev-only StrictMode double-invoke, whose simulated remount runs
+  // the cleanup while the ref survives.
+  const isCancelledRef = useRef(false);
+  useEffect(() => {
+    isCancelledRef.current = false;
+    return () => {
+      isCancelledRef.current = true;
+    };
+  }, []);
+
   useEffect(() => {
     if (hasInitiatedRef.current) {
       return;
     }
     hasInitiatedRef.current = true;
-
-    // Drop navigations that land after unmount (React Router warns).
-    let isCancelled = false;
 
     const searchParams = new URLSearchParams(location.search);
     const params: Record<string, string | undefined> = {
@@ -72,19 +85,15 @@ export function BuyDeepLinkEntry() {
     )
       .then((didNavigate) => {
         // No navigation was possible (an eligibility modal was shown instead).
-        if (!isCancelled && !didNavigate) {
+        if (!isCancelledRef.current && !didNavigate) {
           navigate(DEFAULT_ROUTE, { replace: true });
         }
       })
       .catch(() => {
-        if (!isCancelled) {
+        if (!isCancelledRef.current) {
           navigate(DEFAULT_ROUTE, { replace: true });
         }
       });
-
-    return () => {
-      isCancelled = true;
-    };
   }, [goToBuy, navigate, opensBuyInPortfolioTab, location.search]);
 
   return (
