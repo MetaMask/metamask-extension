@@ -71,7 +71,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
     mockIsAddressScanSupportedChainId.mockReturnValue(true);
   });
 
-  it('scans extracted address fields after PPOM passes', () => {
+  it('scans extracted address fields', () => {
     const cache = makeCache();
     scanUnvalidatedSignatureAddresses({
       request: makeRequest(
@@ -189,7 +189,7 @@ describe('scanUnvalidatedSignatureAddresses', () => {
     expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
   });
 
-  it('does not exclude permit spender when verifyingContract is absent', () => {
+  it('excludes permit spender when verifyingContract is absent', () => {
     const data = {
       types: { Permit: [{ name: 'spender', type: 'address' }] },
       primaryType: 'Permit',
@@ -204,13 +204,30 @@ describe('scanUnvalidatedSignatureAddresses', () => {
       phishingController,
     });
 
-    expect(mockScanAddressAndAddToCache).toHaveBeenCalledWith(
-      MALICIOUS_ADDRESS,
-      expect.any(Function),
-      expect.any(Function),
-      CHAIN_ID,
+    expect(mockScanAddressAndAddToCache).not.toHaveBeenCalled();
+  });
+
+  it('scans up to the 50-address ceiling', () => {
+    const message: Record<string, string> = {};
+    const fields: { name: string; type: string }[] = [];
+    for (let index = 1; index <= 12; index += 1) {
+      const name = `recipient${index}`;
+      message[name] = `0x${index.toString(16).padStart(40, '0')}`;
+      fields.push({ name, type: 'address' });
+    }
+
+    scanUnvalidatedSignatureAddresses({
+      request: makeRequest('eth_signTypedData_v4', SIGNER_ADDRESS, {
+        types: { Transfer: fields },
+        primaryType: 'Transfer',
+        message,
+      }),
+      chainId: CHAIN_ID as `0x${string}`,
+      appStateController: makeCache(),
       phishingController,
-    );
+    });
+
+    expect(mockScanAddressAndAddToCache).toHaveBeenCalledTimes(12);
   });
 
   it('handles malformed typed data without throwing', () => {

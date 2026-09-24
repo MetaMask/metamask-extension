@@ -320,7 +320,7 @@ describe('useSignatureAddressAlerts', () => {
   it('returns overflow caution alert when address cap is exceeded', () => {
     const addresses: Record<string, string> = {};
     const types: { name: string; type: string }[] = [];
-    for (let i = 0; i < 12; i += 1) {
+    for (let i = 0; i < 52; i += 1) {
       const name = `addr${i}`;
       const addr = `0x${String(i).padStart(40, '0')}`;
       addresses[name] = addr;
@@ -334,7 +334,7 @@ describe('useSignatureAddressAlerts', () => {
     });
 
     mockUseTrustSignals.mockReturnValue(
-      new Array(10).fill({ state: TrustSignalDisplayState.Unknown }),
+      new Array(50).fill({ state: TrustSignalDisplayState.Unknown }),
     );
 
     const { result } = renderHookWithConfirmContextProvider(

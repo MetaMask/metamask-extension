@@ -10,7 +10,7 @@ import type { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { parseTypedDataMessage } from '../../../../../shared/lib/transaction.utils';
-import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
+import { getSignatureAddressExtractionOptions } from '../../../../../shared/lib/signature-addresses';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
@@ -67,13 +67,10 @@ export function useSignatureAddressAlerts(): Alert[] {
         typeof msgData === 'string' ? msgData : JSON.stringify(msgData),
       );
       const signer = signatureRequest.messageParams?.from;
-      const isPermit = PRIMARY_TYPES_PERMIT.some(
-        (type) => type === parsed.primaryType,
+      return extractSignatureAddresses(
+        parsed,
+        getSignatureAddressExtractionOptions(parsed, signer),
       );
-      return extractSignatureAddresses(parsed, {
-        exclude: signer ? [signer] : [],
-        excludeFields: isPermit ? ['spender'] : [],
-      });
     } catch {
       return empty;
     }

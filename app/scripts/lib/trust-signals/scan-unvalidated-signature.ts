@@ -7,7 +7,7 @@ import {
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
+import { getSignatureAddressExtractionOptions } from '../../../../shared/lib/signature-addresses';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 
@@ -18,9 +18,9 @@ type AppStateCache = Pick<
 
 /**
  * Scan the address fields of a typed-data signature request against the
- * real-time security-alerts API. Called after PPOM when PPOM has not flagged
- * the request, since PPOM's threat data is refreshed on a delay. Results are
- * cached so addresses scanned elsewhere are not re-requested.
+ * real-time security-alerts API. Called when the request arrives, and may be
+ * retried after a non-flagged PPOM result. Results are cached so addresses
+ * scanned elsewhere are not re-requested.
  *
  * @param options - Request, chain, and cache used to scan signature addresses.
  * @param options.request - JSON-RPC signature request.
@@ -69,17 +69,10 @@ export function scanUnvalidatedSignatureAddresses(options: {
 
   const signerAddress = typeof params[0] === 'string' ? params[0] : undefined;
 
-  const isPermit = PRIMARY_TYPES_PERMIT.some(
-    (type) => type === typedDataMessage.primaryType,
+  const { addresses } = extractSignatureAddresses(
+    typedDataMessage,
+    getSignatureAddressExtractionOptions(typedDataMessage, signerAddress),
   );
-  const hasVerifyingContract = Boolean(
-    typedDataMessage.domain?.verifyingContract,
-  );
-
-  const { addresses } = extractSignatureAddresses(typedDataMessage, {
-    exclude: signerAddress ? [signerAddress] : [],
-    excludeFields: isPermit && hasVerifyingContract ? ['spender'] : [],
-  });
 
   for (const address of addresses) {
     scanAddressAndAddToCache(
