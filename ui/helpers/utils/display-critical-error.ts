@@ -1,16 +1,19 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
-import { ErrorLike } from '../../../shared/constants/errors';
+import { type ErrorLike } from '../../../shared/constants/errors';
+import { hasAnalyticsConsent } from '../../../shared/lib/analytics';
 import {
   getErrorHtml,
   maybeGetLocaleContext,
 } from '../../../shared/lib/error-utils';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import {
+  CriticalErrorRepairAction,
   CriticalErrorType,
-  METHOD_REPAIR_DATABASE_TIMEOUT,
-} from '../../../shared/constants/state-corruption';
+  isStateCorruptionErrorType,
+  METHOD_REPAIR_DATABASE,
+} from '../../../shared/constants/critical-error';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import {
   hasVault,
@@ -18,6 +21,8 @@ import {
 } from '../../../shared/lib/stores/persistence-manager';
 
 const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
+const REPAIR_BUTTON_ENABLE_DELAY_MS = 5_000;
+const SENTRY_REPORT_TIMEOUT_MS = 2_000;
 
 /**
  * Reads backup with a timeout so a hanging IndexedDB cannot block the critical error UI.
@@ -173,6 +178,7 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
         'Content-Type': 'application/x-sentry-envelope',
       },
       body: envelope,
+      keepalive: true,
     });
   } catch (e) {
     console.error('Error sending report to Sentry:', e);
@@ -198,6 +204,18 @@ async function handleRestartAction(
 }
 
 /**
+ * Optional context for {@link displayCriticalErrorMessage}.
+ */
+export type DisplayCriticalErrorMessageOptions = {
+  currentLocale?: string;
+  port?: browser.Runtime.Port;
+  criticalErrorType?: CriticalErrorType;
+  repairActionFromBackground?: CriticalErrorRepairAction;
+  analyticsConsentFromBackground?: boolean;
+  backgroundCaptureAttempted?: boolean;
+};
+
+/**
  * Displays a critical error message in the given container.
  *
  * This function always throws the error after displaying the message.
@@ -205,9 +223,13 @@ async function handleRestartAction(
  * @param container - The HTML element to display the error in.
  * @param errorKey - The key for the error message to display.
  * @param error - The error object to log.
- * @param currentLocale - Optional locale context for translations.
- * @param port - Optional port for background communication (needed for vault recovery functionality).
- * @param criticalErrorType - Optional type of critical error (for analytics). Defaults to Other.
+ * @param options - Optional display context.
+ * @param options.currentLocale - Locale context for translations.
+ * @param options.port - Port for background communication (needed for vault recovery).
+ * @param options.criticalErrorType - Type of critical error (for analytics). Defaults to Other.
+ * @param options.repairActionFromBackground - Repair action derived by the background.
+ * @param options.analyticsConsentFromBackground - Analytics consent derived by the background.
+ * @param options.backgroundCaptureAttempted - Whether background already passed the error to Sentry.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -215,20 +237,39 @@ export async function displayCriticalErrorMessage(
   container: HTMLElement,
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
-  currentLocale?: string,
-  port?: browser.Runtime.Port,
-  criticalErrorType?: CriticalErrorType,
+  {
+    currentLocale,
+    port,
+    criticalErrorType,
+    repairActionFromBackground,
+    analyticsConsentFromBackground,
+    backgroundCaptureAttempted = false,
+  }: DisplayCriticalErrorMessageOptions = {},
 ): Promise<never> {
-  const backup = port ? await safeGetVaultBackup() : null;
-  const canTriggerRestore = port && hasVault(backup);
+  let repairAction =
+    repairActionFromBackground ?? CriticalErrorRepairAction.None;
+  let analyticsOptedIn = analyticsConsentFromBackground ?? false;
+
+  if (
+    port &&
+    (repairActionFromBackground === undefined ||
+      analyticsConsentFromBackground === undefined)
+  ) {
+    const backup = await safeGetVaultBackup();
+    if (hasVault(backup)) {
+      repairAction = CriticalErrorRepairAction.Recover;
+    } else if (isStateCorruptionErrorType(criticalErrorType)) {
+      repairAction = CriticalErrorRepairAction.Reset;
+    }
+    analyticsOptedIn = hasAnalyticsConsent(backup);
+  }
 
   try {
     port?.postMessage({
       data: {
         method: CRITICAL_ERROR_SCREEN_VIEWED,
         params: {
-          backup,
-          canTriggerRestore,
+          repairAction,
           criticalErrorType,
         },
       },
@@ -243,7 +284,9 @@ export async function displayCriticalErrorMessage(
     error,
     localeContext,
     SUPPORT_LINK,
-    canTriggerRestore,
+    repairAction,
+    criticalErrorType,
+    !analyticsOptedIn,
   );
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
@@ -256,35 +299,81 @@ export async function displayCriticalErrorMessage(
       criticalErrorContainer.querySelector<HTMLInputElement>(
         '#critical-error-checkbox',
       );
+    const shouldReportError = () =>
+      analyticsOptedIn
+        ? !backgroundCaptureAttempted
+        : (reportCheckbox?.checked ?? false);
 
     // Restart button: report error and restart MetaMask
     restartButton?.addEventListener('click', async () => {
-      const shouldReport = reportCheckbox?.checked ?? false;
-      await handleRestartAction(error, shouldReport);
+      await handleRestartAction(error, shouldReportError());
     });
 
-    // Attempt recovery button: trigger vault recovery flow.
-    if (canTriggerRestore) {
-      const restoreButton =
+    // Recovery/reset button: trigger the critical error repair flow.
+    if (port && repairAction !== CriticalErrorRepairAction.None) {
+      const repairButton =
         criticalErrorContainer.querySelector<HTMLButtonElement>(
-          '#critical-error-restore-link',
+          '#critical-error-repair-button',
         );
 
-      restoreButton?.addEventListener('click', (event: Event) => {
+      if (repairButton) {
+        repairButton.disabled = true;
+        setTimeout(() => {
+          repairButton.disabled = false;
+          // Wait a while before enabling the button to try to prevent accidental
+          // or rush clicks.
+        }, REPAIR_BUTTON_ENABLE_DELAY_MS);
+      }
+
+      const handleRepairClick = async (event: Event) => {
         event.preventDefault();
+        if (!repairButton || repairButton.disabled) {
+          return;
+        }
+
         // eslint-disable-next-line no-alert
         const confirmed = confirm(
           localeContext.t('stateCorruptionAreYouSure') ?? '',
         );
         if (confirmed) {
-          port.postMessage({
-            data: {
-              method: METHOD_REPAIR_DATABASE_TIMEOUT,
-              params: { criticalErrorType, backup },
-            },
-          });
+          const originalLabel = repairButton.textContent;
+          repairButton.removeEventListener('click', handleRepairClick);
+          repairButton.disabled = true;
+          repairButton.textContent =
+            localeContext.t(
+              repairAction === CriticalErrorRepairAction.Recover
+                ? 'stateCorruptionRestoringDatabase'
+                : 'stateCorruptionResettingDatabase',
+            ) ?? '';
+
+          try {
+            if (shouldReportError()) {
+              await Promise.race([
+                sendErrorToSentry(error),
+                new Promise<void>((resolve) => {
+                  setTimeout(resolve, SENTRY_REPORT_TIMEOUT_MS);
+                }),
+              ]);
+            }
+            port.postMessage({
+              data: {
+                method: METHOD_REPAIR_DATABASE,
+                params: {
+                  repairAction,
+                  criticalErrorType,
+                },
+              },
+            });
+          } catch (e) {
+            log.warn('Failed to start critical error repair', e);
+            repairButton.textContent = originalLabel;
+            repairButton.disabled = false;
+            repairButton.addEventListener('click', handleRepairClick);
+          }
         }
-      });
+      };
+
+      repairButton?.addEventListener('click', handleRepairClick);
     }
   }
 

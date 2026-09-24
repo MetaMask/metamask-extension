@@ -233,7 +233,8 @@ describe('Marketing cookieId', function (this: Suite) {
         await driver.delay(5000);
 
         uiState = await getCleanAppState(driver);
-        assert.equal(uiState.metamask.dataCollectionForMarketing, false);
+        assert.equal(uiState.metamask.optedInToMarketing, false);
+        assert.equal(uiState.metamask.marketingConsentDecisionMade, true);
         assert.equal(uiState.metamask.marketingCampaignCookieId, null);
       },
     );

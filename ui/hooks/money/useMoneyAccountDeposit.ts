@@ -70,12 +70,15 @@ const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
  * because the surface is supposed to be hidden entirely.
  *
  * The funding account is resolved by `selectMoneyFundingAccount`: the globally
- * selected account when it is eligible, otherwise the user's first eligible
- * EVM account. A hardware account cannot sign the deposit batch, so a user on
- * a hardware wallet funds from their first eligible account rather than being
- * blocked at the confirmation. Fails fast only when no eligible account
- * exists. That address is passed as Pay's `accountOverride` so the
- * confirmation defaults the From row — and quotes — to that account instead of
+ * selected account when it is eligible, otherwise the EVM account of the
+ * selected account group (a non-EVM network filter switches the selected
+ * account to e.g. a Solana account, but the group still holds the EVM
+ * account the user expects), otherwise the user's first eligible EVM
+ * account. A hardware account cannot sign the batch, so a user on a
+ * hardware wallet funds from their first eligible account rather than
+ * being blocked at the confirmation. Fails fast only when no eligible
+ * account exists. That address is passed as Pay's `accountOverride` so
+ * the confirmation defaults the From row — and quotes — to that account instead of
  * the money account that executes the batch.
  *
  * The current location is passed as `goBackTo` so closing the confirmation
