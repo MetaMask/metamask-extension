@@ -130,6 +130,30 @@ describe('useIntersectionObserver', () => {
     expect(instances[0].observed).toStrictEqual([target]);
   });
 
+  it('uses rootRef.current after it is populated on a later render', () => {
+    const instances = mockIntersectionObserver();
+    const target = document.createElement('div');
+    const scrollRoot = document.createElement('div');
+    const rootRef: MutableRefObject<Element | null> = { current: null };
+
+    const { result, rerender } = renderHook(() =>
+      useIntersectionObserver({ rootRef }),
+    );
+
+    act(() => {
+      result.current.ref(target);
+    });
+
+    expect(instances[0].options?.root).toBeNull();
+
+    rootRef.current = scrollRoot;
+    rerender();
+
+    expect(instances).toHaveLength(2);
+    expect(instances[1].options?.root).toBe(scrollRoot);
+    expect(instances[1].observed).toStrictEqual([target]);
+  });
+
   it('prefers rootRef.current over root when both are provided', () => {
     const instances = mockIntersectionObserver();
     const target = document.createElement('div');
@@ -146,6 +170,35 @@ describe('useIntersectionObserver', () => {
     });
 
     expect(instances[0].options?.root).toBe(scrollRoot);
+  });
+
+  it('invokes the latest onChange after the callback changes', () => {
+    const instances = mockIntersectionObserver();
+    const first = jest.fn();
+    const second = jest.fn();
+    const element = document.createElement('div');
+
+    const { result, rerender } = renderHook(
+      ({ onChange }: { onChange: typeof first }) =>
+        useIntersectionObserver({ onChange }),
+      { initialProps: { onChange: first } },
+    );
+
+    act(() => {
+      result.current.ref(element);
+    });
+    rerender({ onChange: second });
+    emit(instances[0], {
+      isIntersecting: true,
+      intersectionRatio: 1,
+      target: element,
+    });
+
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledWith(
+      true,
+      expect.objectContaining({ target: element }),
+    );
   });
 
   it('updates state and calls onChange when an entry intersects', () => {

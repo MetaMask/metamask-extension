@@ -1,5 +1,4 @@
 import { zeroAddress } from 'ethereumjs-util';
-import { BigNumber } from 'bignumber.js';
 import {
   ChainId,
   type QuoteResponse,
@@ -34,11 +33,12 @@ import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
-import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { getBatchSellQuotes } from '../batch-sell/selectors';
+import { ARC_ERC20_USDC_BRIDGE_ASSET } from '../../components/app/assets/enablement/arc';
 import * as stellarAssetsSelectors from '../../selectors/stellar-assets';
+import { resolveMinimumBalanceToKeep } from '../../pages/bridge/utils/minimum-reserve';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -72,7 +72,6 @@ import {
   getToAccounts,
   getHardwareWalletName,
   getActiveQuoteInsufficientNativeReserveError,
-  isNativeBalanceInsufficientForQuote,
   getInsufficientNativeReserveError,
   getQuoteRequestInsufficientBal,
   getFromTokenBalanceInUsd,
@@ -83,7 +82,6 @@ import {
   getIsInOffHoursTrading,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
-  resolveMinimumBalanceToKeep,
   getChainValueOrderOverride,
   getIsDestSameAsActiveAccount,
   getDestAccountDisplayName,
@@ -103,13 +101,11 @@ describe('Bridge selectors', () => {
     fromTokenInputValue = '1',
     fromNativeBalance = '1',
     nonEvmFeesInNative,
-    quoteNativeReserve,
     srcTokenAmount = '100000000',
   }: {
     fromTokenInputValue?: string;
     fromNativeBalance?: string;
     nonEvmFeesInNative?: string;
-    quoteNativeReserve?: string;
     srcTokenAmount?: string;
   } = {}) => {
     const btcAsset = getNativeAssetForChainId(ChainId.BTC);
@@ -146,18 +142,6 @@ describe('Bridge selectors', () => {
             estimatedProcessingTimeInSeconds: 600,
             nonEvmFeesInNative,
           };
-    const quote = btcQuote ? toQuoteResponseV2(btcQuote) : undefined;
-    if (quote && quoteNativeReserve) {
-      quote.quote.feeData.reserve = [
-        {
-          amount: new BigNumber(quoteNativeReserve)
-            .times(10 ** btcAsset.decimals)
-            .toFixed(0),
-          normalizedAmount: quoteNativeReserve,
-          asset: btcAsset,
-        },
-      ];
-    }
 
     return createBridgeMockStore({
       bridgeSliceOverrides: {
@@ -171,7 +155,7 @@ describe('Bridge selectors', () => {
           srcChainId: ChainId.BTC,
           srcTokenAmount,
         },
-        quotes: quote ? [quote] : [],
+        quotes: btcQuote ? [toQuoteResponseV2(btcQuote)] : [],
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -2551,8 +2535,8 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             decimals: 18,
-            chainId: 'eip155:1',
-            assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
+            chainId: 'eip155:10',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM).assetId,
           },
           fromNativeBalance: '1000000000000000000',
         },
@@ -3154,6 +3138,76 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
 
+    it('should return isInsufficientNativeReserve=true on Arc USDC when source amount leaves less than the reserve', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromTokenInputValue: '10',
+          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          // 10 native Arc USDC in atomic units.
+          fromNativeBalance: '10000000000000000000',
+          fromTokenBalance: '10000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.ARC,
+            srcTokenAmount: '10000000',
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+      });
+      const result = getValidationErrors(state);
+      const nativeReserveError = getInsufficientNativeReserveError(state);
+
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '0.05',
+        maxSwappableNativeBalance: '9.95',
+      });
+      expect(getQuoteRequestInsufficientBal(state)).toBe(true);
+      expect(result.isInsufficientNativeReserve).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=false on Arc USDC when source amount keeps the reserve', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromTokenInputValue: '9.95000',
+          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          // 10 native Arc USDC in atomic units.
+          fromNativeBalance: '10000000000000000000',
+          fromTokenBalance: '10000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.ARC,
+            srcTokenAmount: '9950000',
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+      });
+      const result = getValidationErrors(state);
+
+      expect(getInsufficientNativeReserveError(state)).toBeUndefined();
+      expect(getQuoteRequestInsufficientBal(state)).toBe(false);
+      expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
     it('should return isInsufficientNativeReserve=true on Bitcoin when native balance after trade leaves less than 3000 sats', () => {
       const state = createBtcBridgeState({
         fromTokenInputValue: '0.999995',
@@ -3247,123 +3301,6 @@ describe('Bridge selectors', () => {
       );
       expect(result.isInsufficientNativeReserve).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
-    });
-
-    it('uses a quote-carried reserve instead of the chain fallback', () => {
-      const state = createBtcBridgeState({
-        fromTokenInputValue: '0.9',
-        fromNativeBalance: '1',
-        nonEvmFeesInNative: '0.00000001',
-        quoteNativeReserve: '0.1',
-        srcTokenAmount: '90000000',
-      });
-
-      const error = getActiveQuoteInsufficientNativeReserveError(state);
-
-      expect(error?.minimumNativeBalanceToBeKeptInAccount).toBe('0.1');
-      expect(error?.maxSwappableNativeBalance).toBe('0.89999999');
-    });
-
-    it('uses a quote-carried reserve on Stellar', () => {
-      const asset = getNativeAssetForChainId(ChainId.STELLAR);
-      const activeQuote = {
-        quote: {
-          src: { normalizedAmount: '9' },
-          feeData: {
-            network: [
-              {
-                amount: '100',
-                normalizedAmount: '0.00001',
-                asset,
-              },
-            ],
-            reserve: [
-              {
-                amount: '15000000',
-                normalizedAmount: '1.5',
-                asset,
-              },
-            ],
-          },
-        },
-      } as unknown as QuoteResponse;
-
-      const error = getActiveQuoteInsufficientNativeReserveError.resultFunc(
-        undefined,
-        toBridgeToken(asset),
-        '10',
-        '9',
-        { activeQuote } as Parameters<
-          typeof getActiveQuoteInsufficientNativeReserveError.resultFunc
-        >[4],
-      );
-
-      expect(error).toStrictEqual({
-        minimumNativeBalanceToBeKeptInAccount: '1.5',
-        maxSwappableNativeBalance: '8.49999',
-      });
-    });
-
-    it('shows a quote-carried reserve error when the balance cannot cover the reserve', () => {
-      const asset = getNativeAssetForChainId(ChainId.STELLAR);
-      const activeQuote = {
-        quote: {
-          src: { normalizedAmount: '0.2' },
-          feeData: {
-            network: [
-              {
-                amount: '100',
-                normalizedAmount: '0.00001',
-                asset,
-              },
-            ],
-            reserve: [
-              {
-                amount: '15000000',
-                normalizedAmount: '1.5',
-                asset,
-              },
-            ],
-          },
-        },
-      } as unknown as QuoteResponse;
-
-      const error = getActiveQuoteInsufficientNativeReserveError.resultFunc(
-        undefined,
-        toBridgeToken(asset),
-        '1',
-        '0.2',
-        { activeQuote } as Parameters<
-          typeof getActiveQuoteInsufficientNativeReserveError.resultFunc
-        >[4],
-      );
-
-      expect(error).toStrictEqual({
-        minimumNativeBalanceToBeKeptInAccount: '1.5',
-        maxSwappableNativeBalance: '0',
-      });
-    });
-
-    it('flags insufficient native gas for a token source that cannot cover the quote reserve', () => {
-      const native = getNativeAssetForChainId(ChainId.STELLAR);
-      const usdcAssetId =
-        'stellar:pubnet/credit_alphanum4:USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as const;
-      const quote = {
-        quote: {
-          src: { normalizedAmount: '10', asset: { assetId: usdcAssetId } },
-          feeData: {
-            network: [{ normalizedAmount: '0.00001', asset: native }],
-            reserve: [{ normalizedAmount: '1.5', asset: native }],
-          },
-        },
-      } as unknown as QuoteResponse;
-
-      expect(
-        isNativeBalanceInsufficientForQuote(quote, '0.4', usdcAssetId, '0'),
-      ).toBe(true);
-      expect(
-        isNativeBalanceInsufficientForQuote(quote, '2', usdcAssetId, '0'),
-      ).toBe(false);
     });
 
     it('should return isInsufficientGasForQuote=true and isInsufficientNativeReserve=false on Bitcoin when the quote fee cannot be paid', () => {
@@ -5405,28 +5342,37 @@ describe('Bridge selectors', () => {
   });
 
   describe('resolveMinimumBalanceToKeep', () => {
-    const SOL_RESERVE = '890880';
+    const LAMPORT_RESERVE = '890880';
 
     it('returns the SOL rent-exemption reserve for a Solana chain id', () => {
-      expect(resolveMinimumBalanceToKeep(SolScope.Mainnet, SOL_RESERVE)).toBe(
-        SOL_RESERVE,
-      );
-    });
-
-    it("returns '0' for a non-Solana EVM chain id", () => {
-      expect(resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, SOL_RESERVE)).toBe(
-        '0',
-      );
-    });
-
-    it("returns '0' for a non-Solana non-EVM (Bitcoin) chain id", () => {
       expect(
-        resolveMinimumBalanceToKeep(MultichainNetworks.BITCOIN, SOL_RESERVE),
-      ).toBe('0');
+        resolveMinimumBalanceToKeep(SolScope.Mainnet, LAMPORT_RESERVE),
+      ).toStrictEqual({
+        amount: LAMPORT_RESERVE,
+        normalizedAmount: '0.00089088',
+        asset: getNativeAssetForChainId(SolScope.Mainnet),
+      });
     });
 
-    it("returns '0' when the chain id is undefined", () => {
-      expect(resolveMinimumBalanceToKeep(undefined, SOL_RESERVE)).toBe('0');
+    it('returns undefined for a non-Solana EVM chain id', () => {
+      expect(
+        resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, LAMPORT_RESERVE),
+      ).toBe(undefined);
+    });
+
+    it('returns undefined for a non-Solana non-EVM (Bitcoin) chain id', () => {
+      expect(
+        resolveMinimumBalanceToKeep(
+          MultichainNetworks.BITCOIN,
+          LAMPORT_RESERVE,
+        ),
+      ).toBe(undefined);
+    });
+
+    it('returns undefined when the chain id is undefined', () => {
+      expect(resolveMinimumBalanceToKeep(undefined, LAMPORT_RESERVE)).toBe(
+        undefined,
+      );
     });
   });
 });
