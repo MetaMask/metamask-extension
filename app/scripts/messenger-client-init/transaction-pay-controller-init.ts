@@ -27,6 +27,7 @@ import {
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
+import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
 import type {
   MoneyPayMessenger,
   PaymentOverrideMessenger,
@@ -76,6 +77,8 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });
+
+  subscribePersistPayMetadata(controllerMessenger);
 
   const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 
