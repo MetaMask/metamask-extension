@@ -20,7 +20,9 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('../../hooks/useActivityHomeRoute', () => {
-  const actual = jest.requireActual('../../hooks/useActivityHomeRoute');
+  const actual = jest.requireActual(
+    '../../hooks/useActivityHomeRoute',
+  ) as typeof import('../../hooks/useActivityHomeRoute');
   return {
     ...actual,
     useActivityHomeRoute: () => actual.ACTIVITY_TAB_ROUTE,
@@ -29,7 +31,9 @@ jest.mock('../../hooks/useActivityHomeRoute', () => {
 
 jest.mock('./transaction-details', () => ({
   TransactionDetails: ({ onBack }: { onBack: () => void }) => {
-    const { enLocale } = jest.requireActual('../../../test/lib/i18n-helpers');
+    const { enLocale } = jest.requireActual(
+      '../../../test/lib/i18n-helpers',
+    ) as typeof import('../../../test/lib/i18n-helpers');
     return <button onClick={onBack}>{enLocale.back.message}</button>;
   },
 }));
