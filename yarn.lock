@@ -7180,6 +7180,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-controller@npm:28.0.0":
+  version: 28.0.0
+  resolution: "@metamask/keyring-controller@npm:28.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/eth-hd-keyring": "npm:^15.0.0"
+    "@metamask/eth-sig-util": "npm:^9.0.0"
+    "@metamask/eth-simple-keyring": "npm:^13.0.0"
+    "@metamask/keyring-api": "npm:^24.0.0"
+    "@metamask/keyring-internal-api": "npm:^12.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.12.0"
+    async-mutex: "npm:^0.5.0"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+    lodash-es: "npm:^4.17.21"
+    ulid: "npm:^2.3.0"
+  checksum: 10/7e84334bd40c20bf94f030f03dc679188eb0ea0abbbffab36e24e424ccea6271f7702fc12266c37c29ebed72b750ab2bde3fd99a670e3ac8455e5bbe3372bb86
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-controller@npm:^27.0.0, @metamask/keyring-controller@npm:^27.1.0, @metamask/keyring-controller@npm:^27.1.1":
   version: 27.1.1
   resolution: "@metamask/keyring-controller@npm:27.1.1"
@@ -7204,9 +7228,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^28.0.0":
+"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A28.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-28.0.0-01c2790193.patch":
   version: 28.0.0
-  resolution: "@metamask/keyring-controller@npm:28.0.0"
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A28.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-28.0.0-01c2790193.patch::version=28.0.0&hash=6a2af7"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^10.0.0"
@@ -7224,7 +7248,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash-es: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/7e84334bd40c20bf94f030f03dc679188eb0ea0abbbffab36e24e424ccea6271f7702fc12266c37c29ebed72b750ab2bde3fd99a670e3ac8455e5bbe3372bb86
+  checksum: 10/4c01028108bf1b5201723c16ba6790a2648a0d52bac9aa754fd77556acae302397c5a563237cc0371b96c28c19136cb8102a2594d30bbca0cadfd15546f17105
   languageName: node
   linkType: hard
 

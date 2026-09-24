@@ -1,0 +1,66 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 289412a8cda6dcf65329bdc27016465c7734ecdc..fb62362c2cd9fae29685d893471434cfdba29593 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -3,4 +3,5 @@ export type { KeyringControllerAddNewAccountAction, KeyringControllerCreateNewVa
+ export type * from './types.js';
+ export * from './errors.js';
+ export { KeyringControllerErrorMessage } from './constants.js';
++export { selectHdKeyringEntropySourceIds, selectPrimaryHdKeyringEntropySourceId, } from './selectors.js';
+ //# sourceMappingURL=index.d.ts.map
+\ No newline at end of file
+diff --git a/dist/index.js b/dist/index.js
+index 7da245f73c96c79637afbfa2690b5e4efc261bb5..500e4f931a222a16ccf3aeb51d6a7f2ba81ff830 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1,4 +1,5 @@
+ export * from './KeyringController.js';
+ export * from './errors.js';
+ export { KeyringControllerErrorMessage } from './constants.js';
++export { selectHdKeyringEntropySourceIds, selectPrimaryHdKeyringEntropySourceId, } from './selectors.js';
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/dist/selectors.d.ts b/dist/selectors.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..569fc34d57a0fc0fe33c00853d7c9b673b7d86d2
+--- /dev/null
++++ b/dist/selectors.d.ts
+@@ -0,0 +1,15 @@
++import type { KeyringControllerState } from './KeyringController.js';
++/**
++ * Select all HD keyring entropy source IDs.
++ *
++ * @param state - KeyringController state
++ * @returns A list of HD keyring entropy source IDs.
++ */
++export declare const selectHdKeyringEntropySourceIds: (state: KeyringControllerState) => string[];
++/**
++ * Select the primary HD keyring entropy source ID.
++ *
++ * @param state - KeyringController state
++ * @returns The primary HD keyring entropy source ID.
++ */
++export declare const selectPrimaryHdKeyringEntropySourceId: (state: KeyringControllerState) => string | undefined;
+diff --git a/dist/selectors.js b/dist/selectors.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..44354f7abc6bb5e30e67e2cb439ccbb20a22b45f
+--- /dev/null
++++ b/dist/selectors.js
+@@ -0,0 +1,17 @@
++import { KeyringTypes } from './KeyringController.js';
++/**
++ * Select all HD keyring entropy source IDs.
++ *
++ * @param state - KeyringController state
++ * @returns A list of HD keyring entropy source IDs.
++ */
++export const selectHdKeyringEntropySourceIds = (state) => state.keyrings
++    .filter((keyring) => keyring.type === KeyringTypes.hd.toString())
++    .map((keyring) => keyring.metadata.id);
++/**
++ * Select the primary HD keyring entropy source ID.
++ *
++ * @param state - KeyringController state
++ * @returns The primary HD keyring entropy source ID.
++ */
++export const selectPrimaryHdKeyringEntropySourceId = (state) => selectHdKeyringEntropySourceIds(state)[0];
