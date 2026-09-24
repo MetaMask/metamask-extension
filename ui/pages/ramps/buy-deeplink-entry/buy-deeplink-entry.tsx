@@ -83,8 +83,11 @@ export function BuyDeepLinkEntry() {
 
     const intent = parseRampIntent(params);
 
+    // Replace this page in history: it exists only to intercept the deep link,
+    // and back-buttoning into it would re-run the interception forever.
     goToBuy(
       intent ? { assetId: intent.assetId, chainId: intent.chainId } : undefined,
+      { replace: true },
     )
       .then((didNavigate) => {
         // No navigation was possible (an eligibility modal was shown instead).

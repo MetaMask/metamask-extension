@@ -52,10 +52,13 @@ describe('BuyDeepLinkEntry', () => {
       screen.getByTestId('ramps-buy-deeplink-entry-loading'),
     ).toBeInTheDocument();
     expect(mockGoToBuy).toHaveBeenCalledTimes(1);
-    expect(mockGoToBuy).toHaveBeenCalledWith({
-      assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
-      chainId: 'eip155:1',
-    });
+    expect(mockGoToBuy).toHaveBeenCalledWith(
+      {
+        assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        chainId: 'eip155:1',
+      },
+      { replace: true },
+    );
   });
 
   it('calls goToBuy with no intent when there are no intent params', async () => {
@@ -64,7 +67,7 @@ describe('BuyDeepLinkEntry', () => {
     await waitFor(() => {
       expect(mockGoToBuy).toHaveBeenCalledTimes(1);
     });
-    expect(mockGoToBuy).toHaveBeenCalledWith(undefined);
+    expect(mockGoToBuy).toHaveBeenCalledWith(undefined, { replace: true });
   });
 
   const navigateHomeCases: [string, () => void][] = [
