@@ -2,17 +2,27 @@ import {
   getRemoteTracesSampleRate,
   getRemoteTransactionSampleRates,
 } from '../../../shared/lib/sentry-remote-rates';
+import { TraceName } from '../../../shared/lib/trace';
 
 /**
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
  * high-volume custom transaction can be capped without lowering visibility
  * elsewhere. Seeded with the two assets-controller transactions pinned to `0`.
+ *
+ * Perps preload and market-fetch transactions use a 0.1% starting rate,
+ * including initial loads and periodic refreshes. Remote overrides can adjust it.
  */
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
 > = Object.freeze({
   AssetsDataSourceTiming: 0,
   AssetsUpdatePipeline: 0,
+  // Literals, not `TraceName`: this module is loaded by the Sentry bootstrap,
+  // which must not pull in `shared/lib/trace` (it imports `./sentry`).
+  // `sentry-traces-sampler.test.ts` asserts these against the enum.
+  'Perps Market Data Preload': 0.001,
+  'Perps User Data Preload': 0.001,
+  'Perps Get Market Data With Prices': 0.001,
 });
 
 /**
@@ -176,6 +186,13 @@ export function createTracesSampler({
     : DEFAULT_TRANSACTION_SAMPLE_RATES;
 
   return (samplingContext) => {
+    // `State Persist` is sampled upstream, before its bytes are measured
+    // (`getPersistenceWriteTelemetrySampleRate`, which also applies the remote
+    // ceiling). Any rate below 1 here would drop writes we already measured.
+    if (samplingContext?.name === TraceName.StatePersist) {
+      return 1;
+    }
+
     // Read per call so a remote value applied after `Sentry.init` takes effect
     // without rebuilding the sampler; the read is a cached module field, not a
     // storage lookup. The same value is passed as BOTH default and ceiling, so

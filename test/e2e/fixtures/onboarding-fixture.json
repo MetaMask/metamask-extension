@@ -34,7 +34,9 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": false,
+      "marketingConsentDecisionMade": false,
       "optedIn": false,
+      "optedInToMarketing": false,
       "preConsentEventQueue": {
         "00000000-0000-4000-8000-000000000000": {
           "eventName": "App Installed",
@@ -49,11 +51,12 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 224,
+      "currentMigrationVersion": 228,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
       },
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -77,6 +80,7 @@
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -160,23 +164,7 @@
       "logs": {}
     },
     "MetaMetricsController": {
-      "dataCollectionForMarketing": null,
-      "fragments": {},
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": [
-        {
-          "request": {
-            "name": "Onboarding - Overall Journey",
-            "op": "onboarding.user_journey",
-            "startTime": 1764061390458
-          },
-          "type": "start"
-        }
-      ],
-      "traits": {
-        "install_date_ext": "2026-01-22",
-        "storage_kind": "split"
-      }
+      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -184,6 +172,9 @@
     },
     "MoneyAccountController": {
       "moneyAccounts": {}
+    },
+    "MoneyAccountUpgradeController": {
+      "upgradedAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
@@ -2019,10 +2010,13 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
+        "hasLinkedSocialLoginProfile": false,
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
@@ -2071,11 +2065,14 @@
       "watchEthereumAccountEnabled": false
     },
     "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
+      "reportedAccounts": [],
       "syncQueue": {}
     },
     "RampsController": {
+      "autoramps": [],
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null
@@ -2249,12 +2246,13 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": {}
   },
   "meta": {
     "storageKind": "split",
-    "version": 224
+    "version": 228
   }
 }

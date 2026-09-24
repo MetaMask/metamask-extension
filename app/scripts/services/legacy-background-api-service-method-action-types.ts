@@ -135,6 +135,15 @@ export type LegacyBackgroundApiServiceGetPhishingResultAction = {
 };
 
 /**
+ * Closes the notification popup window if one is open.
+ * Marks it as automatically closed so triggerUi knows not to reopen it.
+ */
+export type LegacyBackgroundApiServiceCloseNotificationPopupAction = {
+  type: `LegacyBackgroundApiService:closeNotificationPopup`;
+  handler: LegacyBackgroundApiService['closeNotificationPopup'];
+};
+
+/**
  * Marks the notification popup as having been automatically closed.
  *
  * This lets us differentiate between the cases where we close the
@@ -636,8 +645,12 @@ export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
 /**
  * Creates or updates the UI metrics fragment for a given transaction.
  *
+ * This fragment declares no events: the UI writes properties into it as the
+ * user interacts with a confirmation, and the transaction metrics builders
+ * read them back when they emit their own events.
+ *
  * @param transactionId - The id of the transaction.
- * @param payload - The fragment settings and properties to store.
+ * @param payload - The fragment properties to store.
  */
 export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
   {
@@ -712,6 +725,9 @@ export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
  * and the shield service is stopped if applicable.
  *
  * @param useExternal - Whether external services should be enabled.
+ * @param ownedPreferences - Optional per-preference values forwarded to
+ * PreferencesController so enabling can preserve granular onboarding choices
+ * in one write.
  */
 export type LegacyBackgroundApiServiceToggleExternalServicesAction = {
   type: `LegacyBackgroundApiService:toggleExternalServices`;
@@ -1157,6 +1173,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRequestSafeReloadAction
   | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
   | LegacyBackgroundApiServiceGetPhishingResultAction
+  | LegacyBackgroundApiServiceCloseNotificationPopupAction
   | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction

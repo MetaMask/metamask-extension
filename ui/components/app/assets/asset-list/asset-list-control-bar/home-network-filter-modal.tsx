@@ -316,7 +316,7 @@ export const NetworkSelectionModal = ({
             <Box className="px-4 pt-4">
               <Button
                 data-testid={footerButton.testId}
-                className="h-12 w-full rounded-xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
+                className="h-12 w-full border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
                 size={ButtonSize.Md}
                 variant={ButtonVariant.Secondary}
                 onClick={footerButton.onClick}
@@ -638,6 +638,7 @@ const HomeNetworkFilterModalContent = ({
     <NetworkSelectionModal
       isOpen
       onClose={handleClose}
+      data-testid="home-network-filter-modal"
       title={t('bridgeSelectNetwork')}
       topItem={{
         key: 'all-default-networks',

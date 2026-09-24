@@ -2,6 +2,7 @@ import {
   applySentryRemoteRates,
   resetSentryRemoteRates,
 } from '../../../shared/lib/sentry-remote-rates';
+import { TraceName } from '../../../shared/lib/trace';
 import {
   DEFAULT_TRANSACTION_SAMPLE_RATES,
   createTracesSampler,
@@ -120,6 +121,31 @@ describe('createTracesSampler', () => {
       DEFAULT_TRANSACTION_SAMPLE_RATES,
     )) {
       expect(sampler({ name })).toBe(rate);
+    }
+  });
+
+  it('keeps already-measured State Persist writes at full sample rate', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name: 'State Persist' })).toBe(1);
+    expect(sampler({ name: 'State Persist' })).toBeGreaterThan(
+      defaultSampleRate,
+    );
+  });
+
+  it('samples Perps preload transactions at 0.1% even with a sampled parent', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    for (const name of [
+      TraceName.PerpsMarketDataPreload,
+      TraceName.PerpsUserDataPreload,
+      TraceName.PerpsGetMarketDataWithPrices,
+    ]) {
+      expect(sampler({ name })).toBe(0.001);
+      // A pinned rate must not be bypassed by a sampled parent transaction.
+      expect(sampler({ name, parentSampled: true })).toBe(0.001);
     }
   });
 
@@ -305,6 +331,13 @@ describe('createTracesSampler with the remote tracesSampleRate flag', () => {
     expect(sampler({ name: 'AssetsDataSourceTiming' })).toBe(0);
   });
 
+  it('keeps State Persist at 1 under a remote tracesSampleRate ceiling', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteTracesSampleRate(0.001);
+
+    expect(sampler({ name: 'State Persist' })).toBe(1);
+  });
+
   it('falls back to build-time behavior when no remote rate is set', () => {
     const sampler = createTracesSampler({ defaultSampleRate });
 
@@ -396,6 +429,16 @@ describe('createTracesSampler with the remote transactionSampleRates flag', () =
     });
 
     expect(sampler({ name: 'Boosted Transaction' })).toBe(0.001);
+  });
+
+  it('keeps State Persist at 1 under a remote per-name rate', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({
+      tracesSampleRate: 0.01,
+      transactionSampleRates: { 'State Persist': 0.5 },
+    });
+
+    expect(sampler({ name: 'State Persist' })).toBe(1);
   });
 
   it('ignores a malformed flag value (safe no-op, build-time fallback)', async () => {

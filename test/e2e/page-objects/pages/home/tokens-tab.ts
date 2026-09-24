@@ -17,6 +17,23 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
   MUSD: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
 };
 
+/**
+ * Home Tokens tab: asset list, import/manage tokens, sort, and token details.
+ *
+ * Screen: `#/` Tokens tab (`account-overview__asset-tab`), the default home
+ * tab; also reached via `HomePage.goToTokensTab()`.
+ * Owns: token rows (name, balance, fiat, position), low-value expand/sort,
+ * import via search or custom address, manage-tokens toggles, hide token,
+ * and opening a row for price/chart/address checks.
+ * Boundaries: homepage balance and Send/Swap/Bridge CTAs stay on `HomePage`.
+ * Network filter control-bar chrome belongs to `NetworkFilter` /
+ * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
+ * outside this object.
+ * Related: `HomePage` (`goToTokensTab`), `NonEvmHomepage`, `NetworkFilter`,
+ * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
+ *
+ * @see ui/components/app/assets/asset-list/asset-list.tsx
+ */
 class TokensTab extends HomePage {
   private readonly assetMarketCapInDetailsModal =
     '[data-testid="asset-market-cap"]';
@@ -25,8 +42,6 @@ class TokensTab extends HomePage {
 
   private readonly assetPriceInDetailsModal =
     '[data-testid="asset-hovered-price"]';
-
-  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
 
   private readonly coinOverviewSendButton =
     '[data-testid="coin-overview-send"]';
@@ -169,6 +184,9 @@ class TokensTab extends HomePage {
   private readonly tokenManagementCustomTokenSuccessToast =
     '[data-testid="token-management-custom-token-success-toast"]';
 
+  private readonly tokenManagementCustomTokenSuccessToastClose =
+    '[data-testid="toast-close-button"]';
+
   private readonly tokenManagementPage =
     '[data-testid="parent-selector-token-management-page"]';
 
@@ -206,11 +224,6 @@ class TokensTab extends HomePage {
       css: this.tokenName,
       text: symbol,
     });
-  }
-
-  async checkBuySellButtonIsPresent(): Promise<void> {
-    console.log(`Verify the buy/sell button is displayed`);
-    await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
   /**
@@ -267,7 +280,7 @@ class TokensTab extends HomePage {
     );
     await this.driver.waitForSelector({
       css: this.lowValueAssetsToggle,
-      text: `Low value tokens (${expectedCount})`,
+      text: `Low balance tokens (${expectedCount})`,
     });
   }
 
@@ -375,6 +388,7 @@ class TokensTab extends HomePage {
    */
   async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: this.tokenAmountValue,
       text: tokenAmount,
@@ -734,17 +748,25 @@ class TokensTab extends HomePage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    // If the low value assets section is already expanded, no action is required.
     try {
       await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
         timeout: 1000,
       });
       return;
     } catch {
-      // Not expanded yet (or low value section not present), attempt to expand it below.
+      // Not expanded yet (or section not present)
     }
 
-    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+    const togglePresent = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggle,
+      1000,
+    );
+    if (!togglePresent) {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
@@ -850,6 +872,9 @@ class TokensTab extends HomePage {
 
     await this.driver.waitForSelector(
       this.tokenManagementCustomTokenSuccessToast,
+    );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.tokenManagementCustomTokenSuccessToastClose,
     );
     await this.returnFromTokenManagementToHome();
   }

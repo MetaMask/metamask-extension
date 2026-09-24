@@ -12,7 +12,6 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
-const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
@@ -106,8 +105,8 @@ const {
 } = require('./tests/phishing-controller/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
 const {
-  mockAuthenticatedUserStorageNotificationPreferences,
-} = require('./helpers/authenticated-user-storage/mocks');
+  MockttpNotificationTriggerServer,
+} = require('./helpers/notifications/mock-notification-trigger-server');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -222,6 +221,37 @@ const TRON_JSONRPC_URL_RE = new RegExp(
   `^${TRON_PROVIDER_HOSTS}\\/jsonrpc$`,
   'u',
 );
+
+// EIP-1559 gas estimates served for every chain. Tests that predict on-chain
+// costs (e.g. bridge quote fees) derive them from these values, so keep them in
+// sync rather than duplicating the numbers.
+const MOCK_SUGGESTED_GAS_FEES = {
+  low: {
+    suggestedMaxPriorityFeePerGas: '1',
+    suggestedMaxFeePerGas: '20.44436136',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 30000,
+  },
+  medium: {
+    suggestedMaxPriorityFeePerGas: '1.5',
+    suggestedMaxFeePerGas: '25.80554517',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 45000,
+  },
+  high: {
+    suggestedMaxPriorityFeePerGas: '2',
+    suggestedMaxFeePerGas: '27.277766977',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 60000,
+  },
+  estimatedBaseFee: '19.444436136',
+  networkCongestion: 0.14685,
+  latestPriorityFeeRange: ['0.378818859', '6.555563864'],
+  historicalPriorityFeeRange: ['0.1', '248.262969261'],
+  historicalBaseFeeRange: ['14.146999781', '28.825256275'],
+  priorityFeeTrend: 'down',
+  baseFeeTrend: 'up',
+};
 
 // Zero-balance TronGrid account, mirroring the shape produced by
 // `createTronGridAccountResponse` in `test/e2e/seeder/tron/assets.ts`, which
@@ -444,6 +474,215 @@ const privateHostMatchers = [
   },
 ];
 
+/** Well above TokenDataSource's default ERC-20 occurrence floor of 3. */
+const TOKEN_METADATA_OCCURRENCES = 100;
+
+const WELL_KNOWN_MAINNET_ERC20_ASSETS = [
+  {
+    assetId: 'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
+    decimals: 18,
+  },
+  {
+    assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    name: 'USD Coin',
+    symbol: 'USDC',
+    decimals: 6,
+  },
+  {
+    assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    decimals: 6,
+  },
+  {
+    assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    name: 'Dai Stablecoin',
+    symbol: 'DAI',
+    decimals: 18,
+  },
+];
+
+/**
+ * Default Tokens / Token API metadata for natives and well-known ERC-20s.
+ *
+ * ERC-20s include `occurrences` so TokenDataSource's spam filter (core 15)
+ * does not drop them when `includeOccurrences=true`.
+ *
+ * @param {string} assetIds - Concatenated `assetIds` query values.
+ * @returns {object[]}
+ */
+function getWellKnownTokenAssetMetadata(assetIds) {
+  const results = [];
+  const includesAssetId = (assetId) =>
+    assetIds.includes(assetId) || assetIds.includes(assetId.toLowerCase());
+
+  if (assetIds.includes('eip155:1/slip44:60')) {
+    results.push({
+      assetId: 'eip155:1/slip44:60',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    });
+  }
+
+  if (
+    assetIds.includes('eip155:11155111/slip44:60') ||
+    assetIds.includes('eip155:11155111')
+  ) {
+    results.push({
+      assetId: 'eip155:11155111/slip44:60',
+      name: 'Sepolia Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    });
+  }
+
+  if (
+    assetIds.includes(
+      'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+    )
+  ) {
+    results.push({
+      assetId:
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+      name: 'Sepolia Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    });
+  }
+
+  // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+  // Support both slip44:1 and slip44:60 requests for backward compat.
+  if (
+    assetIds.includes('eip155:1337/slip44:1') ||
+    assetIds.includes('eip155:1337/slip44:60')
+  ) {
+    results.push({
+      assetId: 'eip155:1337/slip44:1',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    });
+  }
+
+  // Monad native is slip44:268435779 (not ETH slip44:60).
+  if (
+    assetIds.includes('eip155:143/slip44:268435779') ||
+    assetIds.includes('eip155:143/slip44:60')
+  ) {
+    results.push({
+      assetId: 'eip155:143/slip44:268435779',
+      name: 'Monad',
+      symbol: 'MON',
+      decimals: 18,
+    });
+  }
+
+  for (const token of WELL_KNOWN_MAINNET_ERC20_ASSETS) {
+    if (includesAssetId(token.assetId)) {
+      results.push({
+        ...token,
+        occurrences: TOKEN_METADATA_OCCURRENCES,
+      });
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Builds Accounts API v5/v6 multi-account balance rows for unified assets E2E.
+ *
+ * @param {object} req - Mockttp request.
+ * @param {object} unifiedEvmAccountsApiBalances - withFixtures overrides.
+ * @returns {object[]}
+ */
+function buildUnifiedEvmAccountsApiBalances(
+  req,
+  unifiedEvmAccountsApiBalances,
+) {
+  const url = new URL(req.url);
+  const accountIdsParam = url.searchParams.get('accountIds') ?? '';
+  const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
+
+  const mainnetNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
+      ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
+      : null;
+  const localhostNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman === 'string'
+      ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
+      : null;
+  const defaultNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
+      ? unifiedEvmAccountsApiBalances.nativeBalance
+      : null;
+  const mainnetAdditional = Array.isArray(
+    unifiedEvmAccountsApiBalances.mainnetAdditionalBalances,
+  )
+    ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
+    : [];
+
+  const balances = [];
+  for (const id of accountIds) {
+    const parts = id.split(':');
+    if (parts[0] !== 'eip155' || parts.length < 3) {
+      continue;
+    }
+    const chainRef = parts[1];
+    const accountAddress = parts.slice(2).join(':').toLowerCase();
+    const isKnownFundedTestAccount =
+      accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
+      accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
+    // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
+    // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
+    let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
+    if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
+      nativeBalance = '0';
+    } else if (chainRef === '1' && mainnetNativeOverride !== null) {
+      nativeBalance = mainnetNativeOverride;
+    } else if (
+      chainRef === '1337' &&
+      localhostNativeOverride !== null &&
+      isKnownFundedTestAccount
+    ) {
+      nativeBalance = localhostNativeOverride;
+    } else if (defaultNativeOverride !== null) {
+      nativeBalance = defaultNativeOverride;
+    }
+
+    // Native CAIP-19 slip44 must match AssetsController / nativeAssetIdentifiers.
+    // Localhost (1337) uses slip44:1; Monad (143) uses slip44:268435779; others use 60 (ETH).
+    let slip44 = '60';
+    if (chainRef === '1337') {
+      slip44 = '1';
+    } else if (chainRef === '143') {
+      slip44 = '268435779';
+    }
+    balances.push({
+      accountId: id,
+      assetId: `eip155:${chainRef}/slip44:${slip44}`,
+      balance: nativeBalance,
+    });
+
+    if (chainRef === '1' && mainnetAdditional.length > 0) {
+      for (const row of mainnetAdditional) {
+        if (row?.assetId && row.balance !== undefined) {
+          balances.push({
+            accountId: id,
+            assetId: row.assetId,
+            balance: String(row.balance),
+          });
+        }
+      }
+    }
+  }
+
+  return balances;
+}
+
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
  * @typedef {import('mockttp').MockedEndpoint} MockedEndpoint
@@ -534,11 +773,25 @@ async function setupMocking(
       client: 'extension',
       distribution: 'main',
     })
+    .asPriority(RulePriority.FALLBACK)
     .thenCallback(() => {
+      // E2E has no canonical profile id, so threshold flags stay unresolved
+      // arrays and BackendWebSocketService treats them as off. Pin a boolean
+      // here (not in production code). Tests can still override this mock.
+      const flags = getProductionRemoteFlagApiResponse().map((entry) => {
+        if (
+          entry &&
+          typeof entry === 'object' &&
+          'backendWebSocketConnection' in entry
+        ) {
+          return { backendWebSocketConnection: true };
+        }
+        return entry;
+      });
       return {
         ok: true,
         statusCode: 200,
-        json: getProductionRemoteFlagApiResponse(),
+        json: flags,
       };
     });
 
@@ -605,6 +858,36 @@ async function setupMocking(
           ],
           created_at: '2025-07-16T10:03:57Z',
           profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
+        },
+      };
+    });
+
+  // Chomp API service
+  await server
+    .forGet('https://chomp.api.cx.metamask.io/v1/chomp')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          auth: { message: '' },
+          chains: {
+            '0x8f': {
+              autoDepositDelegate: '0x0000000000000000000000000000000000000001',
+              protocol: {
+                vedaProtocol: {
+                  supportedTokens: [
+                    {
+                      tokenAddress:
+                        '0x00000000000000000000000000000000000000aa',
+                      tokenDecimals: 6,
+                    },
+                  ],
+                  adapterAddress: '0x0000000000000000000000000000000000000002',
+                  intentTypes: ['cash-deposit', 'cash-withdrawal'],
+                },
+              },
+            },
+          },
         },
       };
     });
@@ -774,38 +1057,13 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          low: {
-            suggestedMaxPriorityFeePerGas: '1',
-            suggestedMaxFeePerGas: '20.44436136',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 30000,
-          },
-          medium: {
-            suggestedMaxPriorityFeePerGas: '1.5',
-            suggestedMaxFeePerGas: '25.80554517',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 45000,
-          },
-          high: {
-            suggestedMaxPriorityFeePerGas: '2',
-            suggestedMaxFeePerGas: '27.277766977',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 60000,
-          },
-          estimatedBaseFee: '19.444436136',
-          networkCongestion: 0.14685,
-          latestPriorityFeeRange: ['0.378818859', '6.555563864'],
-          historicalPriorityFeeRange: ['0.1', '248.262969261'],
-          historicalBaseFeeRange: ['14.146999781', '28.825256275'],
-          priorityFeeTrend: 'down',
-          baseFeeTrend: 'up',
-        },
+        json: MOCK_SUGGESTED_GAS_FEES,
       };
     });
 
-  // This endpoint returns metadata for "transaction simulation" supported networks.
-  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+  // STX v26 always routes to per-network tx-sentinel hosts. Default mocks cover
+  // all sentinel subdomains so startup/liveness/polling does not hang in E2E.
+  const txSentinelNetworksRegistry = {
     1: {
       name: 'Mainnet',
       group: 'ethereum',
@@ -817,18 +1075,13 @@ async function setupMocking(
       smartTransactions: true,
       hidden: false,
     },
-  });
-  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
-    name: 'Mainnet',
-    group: 'ethereum',
-    chainID: 1,
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    network: 'ethereum-mainnet',
-    explorer: 'https://etherscan.io',
-    confirmations: true,
-    smartTransactions: true,
-    hidden: false,
-  });
+  };
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
+    .thenJson(200, txSentinelNetworksRegistry);
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
+    .thenJson(200, txSentinelNetworksRegistry[1]);
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
@@ -1315,6 +1568,44 @@ async function setupMocking(
       };
     });
 
+  // Sepolia native — TokenDataSource / Price API request either slip44:60 or
+  // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
+  const sepoliaSpotPrice = {
+    id: 'ethereum',
+    price: ethConversionInUsd,
+    marketCap: 382623505141,
+    pricePercentChange1d: 0,
+  };
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:11155111/slip44:60',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:11155111/slip44:60': sepoliaSpotPrice,
+      },
+    }));
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds:
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
+          sepoliaSpotPrice,
+        'eip155:11155111/slip44:60': sepoliaSpotPrice,
+      },
+    }));
+
   // Localhost (chain 1337) native ETH — slip44:1 per nativeAssetIdentifiers in fixtures.
   // assets-unify requests this with cacheOnly=false; extra query params are allowed by mockttp.
   await server
@@ -1335,6 +1626,143 @@ async function setupMocking(
         },
       },
     }));
+
+  // Monad native — slip44:268435779 (not ETH slip44:60).
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:143/slip44:268435779',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:143/slip44:268435779': {
+          id: 'monad',
+          price: ethConversionInUsd,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .flatMap((value) => value.split(','))
+        .filter(Boolean);
+      return {
+        statusCode: 200,
+        json: Object.fromEntries(
+          assetIds.map((assetId) => [
+            assetId,
+            { price: 0, marketCap: 0, pricePercentChange1d: 0 },
+          ]),
+        ),
+      };
+    });
+
+  // The price API client only caches this response when it contains both
+  // `fullSupport` and `partialSupport`; anything else (such as the empty-200
+  // catch-all this used to land on) makes it silently fall back to its
+  // hardcoded list without caching, so every later price fetch re-requests the
+  // endpoint. The lists below are that same hardcoded fallback
+  // (`SPOT_PRICES_SUPPORT_INFO` in @metamask/assets-controllers), so supported
+  // chains are unchanged and only the repeated requests go away.
+  const spotPricesSupportedChains = [
+    'eip155:1',
+    'eip155:10',
+    'eip155:25',
+    'eip155:30',
+    'eip155:42',
+    'eip155:50',
+    'eip155:56',
+    'eip155:57',
+    'eip155:82',
+    'eip155:88',
+    'eip155:100',
+    'eip155:106',
+    'eip155:122',
+    'eip155:128',
+    'eip155:137',
+    'eip155:143',
+    'eip155:146',
+    'eip155:196',
+    'eip155:232',
+    'eip155:250',
+    'eip155:252',
+    'eip155:288',
+    'eip155:321',
+    'eip155:324',
+    'eip155:336',
+    'eip155:361',
+    'eip155:747',
+    'eip155:988',
+    'eip155:999',
+    'eip155:1088',
+    'eip155:1101',
+    'eip155:1284',
+    'eip155:1285',
+    'eip155:1329',
+    'eip155:1776',
+    'eip155:1868',
+    'eip155:2525',
+    'eip155:2741',
+    'eip155:4217',
+    'eip155:4326',
+    'eip155:5000',
+    'eip155:5031',
+    'eip155:5042',
+    'eip155:7000',
+    'eip155:8453',
+    'eip155:4663',
+    'eip155:9745',
+    'eip155:10000',
+    'eip155:33139',
+    'eip155:41923',
+    'eip155:42161',
+    'eip155:42220',
+    'eip155:42262',
+    'eip155:42431',
+    'eip155:42793',
+    'eip155:43111',
+    'eip155:43114',
+    'eip155:57073',
+    'eip155:59144',
+    'eip155:60808',
+    'eip155:68414',
+    'eip155:73115',
+    'eip155:80094',
+    'eip155:81457',
+    'eip155:88888',
+    'eip155:97741',
+    'eip155:98866',
+    'eip155:167000',
+    'eip155:333999',
+    'eip155:534352',
+    'eip155:747474',
+    'eip155:984122',
+    'eip155:1440000',
+    'eip155:1313161554',
+    'eip155:1666600000',
+    'eip155:16661',
+  ];
+  await server
+    .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenJson(200, {
+      fullSupport: spotPricesSupportedChains.slice(0, 11),
+      partialSupport: {
+        spotPricesV2: spotPricesSupportedChains,
+        spotPricesV3: spotPricesSupportedChains,
+      },
+    });
 
   // Native SOL + BTC v3 spot (multichain portfolio / assets unify). Without these,
   // Tron-only or default E2E flows still request these URLs but only ETH was mocked above.
@@ -1543,8 +1971,8 @@ async function setupMocking(
   // Identity APIs
   await mockIdentityServices(server);
 
-  // Authenticated User Storage APIs
-  mockAuthenticatedUserStorageNotificationPreferences(server);
+  // Trigger API and Authenticated User Storage notification preferences
+  new MockttpNotificationTriggerServer().setupServer(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
@@ -1596,92 +2024,13 @@ async function setupMocking(
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
     .thenCallback((request) => {
-      const url = new URL(request.url);
-      const assetIds = url.searchParams.getAll('assetIds').join(',');
-
-      const results = [];
-
-      const pushIf = (predicate, entry) => {
-        if (predicate) {
-          results.push(entry);
-        }
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .join(',');
+      return {
+        statusCode: 200,
+        json: getWellKnownTokenAssetMetadata(assetIds),
       };
-
-      pushIf(assetIds.includes('eip155:1/slip44:60'), {
-        assetId: 'eip155:1/slip44:60',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-      });
-
-      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
-      // Support both slip44:1 and slip44:60 requests for backward compat.
-      pushIf(
-        assetIds.includes('eip155:1337/slip44:1') ||
-          assetIds.includes('eip155:1337/slip44:60'),
-        {
-          assetId: 'eip155:1337/slip44:1',
-          name: 'Ethereum',
-          symbol: 'ETH',
-          decimals: 18,
-        },
-      );
-
-      const wethMainnet =
-        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-      const usdcMainnet =
-        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-      const usdtMainnet =
-        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
-      const daiMainnet =
-        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
-
-      if (
-        assetIds.includes(wethMainnet) ||
-        assetIds.includes(wethMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: wethMainnet,
-          name: 'Wrapped Ether',
-          symbol: 'WETH',
-          decimals: 18,
-        });
-      }
-      if (
-        assetIds.includes(usdcMainnet) ||
-        assetIds.includes(usdcMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdcMainnet,
-          name: 'USD Coin',
-          symbol: 'USDC',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(usdtMainnet) ||
-        assetIds.includes(usdtMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdtMainnet,
-          name: 'Tether USD',
-          symbol: 'USDT',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(daiMainnet) ||
-        assetIds.includes(daiMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: daiMainnet,
-          name: 'Dai Stablecoin',
-          symbol: 'DAI',
-          decimals: 18,
-        });
-      }
-
-      return { statusCode: 200, json: results };
     });
 
   // Token API assets: used by fetchTokenAssets (TokenAsset cache / TDP deep links).
@@ -1689,92 +2038,13 @@ async function setupMocking(
     .forGet('https://token.api.cx.metamask.io/assets')
     .always()
     .thenCallback((request) => {
-      const url = new URL(request.url);
-      const assetIds = url.searchParams.getAll('assetIds').join(',');
-
-      const results = [];
-
-      const pushIf = (predicate, entry) => {
-        if (predicate) {
-          results.push(entry);
-        }
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .join(',');
+      return {
+        statusCode: 200,
+        json: getWellKnownTokenAssetMetadata(assetIds),
       };
-
-      pushIf(assetIds.includes('eip155:1/slip44:60'), {
-        assetId: 'eip155:1/slip44:60',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-      });
-
-      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
-      // Support both slip44:1 and slip44:60 requests for backward compat.
-      pushIf(
-        assetIds.includes('eip155:1337/slip44:1') ||
-          assetIds.includes('eip155:1337/slip44:60'),
-        {
-          assetId: 'eip155:1337/slip44:1',
-          name: 'Ethereum',
-          symbol: 'ETH',
-          decimals: 18,
-        },
-      );
-
-      const wethMainnet =
-        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-      const usdcMainnet =
-        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-      const usdtMainnet =
-        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
-      const daiMainnet =
-        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
-
-      if (
-        assetIds.includes(wethMainnet) ||
-        assetIds.includes(wethMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: wethMainnet,
-          name: 'Wrapped Ether',
-          symbol: 'WETH',
-          decimals: 18,
-        });
-      }
-      if (
-        assetIds.includes(usdcMainnet) ||
-        assetIds.includes(usdcMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdcMainnet,
-          name: 'USD Coin',
-          symbol: 'USDC',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(usdtMainnet) ||
-        assetIds.includes(usdtMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdtMainnet,
-          name: 'Tether USD',
-          symbol: 'USDT',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(daiMainnet) ||
-        assetIds.includes(daiMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: daiMainnet,
-          name: 'Dai Stablecoin',
-          symbol: 'DAI',
-          decimals: 18,
-        });
-      }
-
-      return { statusCode: 200, json: results };
     });
 
   // Tokens API: v2 supported networks — mocked globally so all tests work.
@@ -1851,10 +2121,17 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
-          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
-          partialSupport: {
-            balances: [42220, 43114],
-          },
+          fullSupport: [
+            'eip155:1',
+            'eip155:137',
+            'eip155:56',
+            'eip155:59144',
+            'eip155:8453',
+            'eip155:10',
+            'eip155:42161',
+            'eip155:534352',
+          ],
+          partialSupport: ['eip155:42220', 'eip155:43114'],
         },
       };
     });
@@ -1902,84 +2179,17 @@ async function setupMocking(
       };
     });
 
-  // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
-  // Default: 25 ETH native per requested chain for the default fixture account. Override via
-  // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.
-  await server
-    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
-    .always()
-    .thenCallback((req) => {
-      const url = new URL(req.url);
-      const accountIdsParam = url.searchParams.get('accountIds') ?? '';
-      const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
-
-      const mainnetNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
-          ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
-          : null;
-      const localhostNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman ===
-        'string'
-          ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
-          : null;
-      const defaultNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
-          ? unifiedEvmAccountsApiBalances.nativeBalance
-          : null;
-      const mainnetAdditional = Array.isArray(
-        unifiedEvmAccountsApiBalances.mainnetAdditionalBalances,
-      )
-        ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
-        : [];
-
-      const balances = [];
-      for (const id of accountIds) {
-        const parts = id.split(':');
-        if (parts[0] !== 'eip155' || parts.length < 3) {
-          continue;
-        }
-        const chainRef = parts[1];
-        const accountAddress = parts.slice(2).join(':').toLowerCase();
-        const isKnownFundedTestAccount =
-          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
-          accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
-        // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
-        // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
-        let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
-        if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
-          nativeBalance = '0';
-        } else if (chainRef === '1' && mainnetNativeOverride !== null) {
-          nativeBalance = mainnetNativeOverride;
-        } else if (
-          chainRef === '1337' &&
-          localhostNativeOverride !== null &&
-          isKnownFundedTestAccount
-        ) {
-          nativeBalance = localhostNativeOverride;
-        } else if (defaultNativeOverride !== null) {
-          nativeBalance = defaultNativeOverride;
-        }
-
-        // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
-        const slip44 = chainRef === '1337' ? '1' : '60';
-        balances.push({
-          accountId: id,
-          assetId: `eip155:${chainRef}/slip44:${slip44}`,
-          balance: nativeBalance,
-        });
-
-        if (chainRef === '1' && mainnetAdditional.length > 0) {
-          for (const row of mainnetAdditional) {
-            if (row?.assetId && row.balance !== undefined) {
-              balances.push({
-                accountId: id,
-                assetId: row.assetId,
-                balance: String(row.balance),
-              });
-            }
-          }
-        }
-      }
+  // Accounts API: v5/v6 multi-account balances (used by AccountsApiDataSource
+  // when assetsUnifyState is enabled). Default: 25 ETH native per requested
+  // chain for the default fixture account. Override via
+  // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a
+  // custom fiat total. v6 rows include `object: 'token'` (core 15).
+  const respondWithUnifiedEvmAccountsApiBalances = (includeObjectField) => {
+    return (req) => {
+      const balances = buildUnifiedEvmAccountsApiBalances(
+        req,
+        unifiedEvmAccountsApiBalances,
+      ).map((row) => (includeObjectField ? { ...row, object: 'token' } : row));
 
       return {
         statusCode: 200,
@@ -1989,7 +2199,18 @@ async function setupMocking(
           unprocessedNetworks: [],
         },
       };
-    });
+    };
+  };
+
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .always()
+    .thenCallback(respondWithUnifiedEvmAccountsApiBalances(false));
+
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v6/multiaccount/balances')
+    .always()
+    .thenCallback(respondWithUnifiedEvmAccountsApiBalances(true));
 
   // Accounts API: tokens
   const ACCOUNTS_API_TOKENS = fs.readFileSync(ACCOUNTS_API_TOKENS_PATH);
@@ -2676,4 +2897,4 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking, emptyHtmlPage };
+module.exports = { setupMocking, emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES };

@@ -2,10 +2,6 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
-import {
-  MetaMetricsController,
-  getDefaultMetaMetricsControllerState,
-} from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -111,24 +107,102 @@ messenger.registerActionHandler(
 messenger.registerActionHandler('AnalyticsController:identify', jest.fn());
 messenger.registerActionHandler('AnalyticsController:trackView', jest.fn());
 
-const controllerMessenger = new Messenger({
-  namespace: 'MetaMetricsController',
-  parent: messenger,
-});
+// Stands in for the event fragment store owned by the AnalyticsController, so
+// that the events the signature funnel emits through its fragment can be
+// asserted on alongside the events tracked directly.
+const eventFragments = new Map();
 
-messenger.delegate({
-  messenger: controllerMessenger,
-  actions: [
-    'AnalyticsController:getState',
-    'PreferencesController:getState',
-    'NetworkController:getState',
-    'NetworkController:getNetworkClientById',
-  ],
-  events: [
-    'PreferencesController:stateChange',
-    'NetworkController:networkDidChange',
-  ],
-});
+function mergeFragmentContext(base, override) {
+  if (base === undefined && override === undefined) {
+    return undefined;
+  }
+  return { ...base, ...override };
+}
+
+function emitFragmentEvent(fragment, name, context) {
+  const properties = { ...(fragment.properties ?? {}) };
+  const sensitiveProperties = { ...(fragment.sensitiveProperties ?? {}) };
+
+  messenger.call(
+    'AnalyticsController:trackEvent',
+    {
+      name,
+      properties,
+      sensitiveProperties,
+      saveDataRecording: false,
+      hasProperties:
+        Object.keys(properties).length > 0 ||
+        Object.keys(sensitiveProperties).length > 0,
+    },
+    context,
+  );
+}
+
+messenger.registerActionHandler(
+  'AnalyticsController:createEventFragment',
+  (options = {}) => {
+    const fragment = {
+      ...options,
+      properties: { ...(options.properties ?? {}) },
+      sensitiveProperties: { ...(options.sensitiveProperties ?? {}) },
+    };
+
+    eventFragments.set(fragment.id, fragment);
+
+    if (fragment.initialEvent) {
+      emitFragmentEvent(fragment, fragment.initialEvent, fragment.context);
+    }
+
+    return fragment;
+  },
+);
+
+messenger.registerActionHandler(
+  'AnalyticsController:updateEventFragment',
+  (id, payload = {}) => {
+    const fragment = eventFragments.get(id);
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    eventFragments.set(id, {
+      ...fragment,
+      properties: {
+        ...(fragment.properties ?? {}),
+        ...(payload.properties ?? {}),
+      },
+      sensitiveProperties: {
+        ...(fragment.sensitiveProperties ?? {}),
+        ...(payload.sensitiveProperties ?? {}),
+      },
+      context: mergeFragmentContext(fragment.context, payload.context),
+    });
+  },
+);
+
+messenger.registerActionHandler(
+  'AnalyticsController:finalizeEventFragment',
+  (id, { abandoned = false, context } = {}) => {
+    const fragment = eventFragments.get(id);
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    const name = abandoned ? fragment.failureEvent : fragment.successEvent;
+
+    if (name) {
+      emitFragmentEvent(
+        fragment,
+        name,
+        mergeFragmentContext(fragment.context, context),
+      );
+    }
+
+    eventFragments.delete(id);
+  },
+);
 
 const analyticsController = {
   get state() {
@@ -136,21 +210,21 @@ const analyticsController = {
   },
 };
 
-const metaMetricsController = new MetaMetricsController({
-  state: {
-    ...getDefaultMetaMetricsControllerState(),
-    fragments: {},
-  },
-  messenger: controllerMessenger,
-  version: '0.0.1',
-  environment: 'test',
-  extension: {
-    runtime: {
-      id: 'testid',
-      setUninstallURL: () => undefined,
-    },
-  },
-});
+messenger.registerActionHandler('MetaMetricsController:getState', () => ({
+  marketingCampaignCookieId: null,
+}));
+messenger.registerActionHandler(
+  'SentryTracingService:trackTracesAfterMetricsOptIn',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'SentryTracingService:clearTracesAfterMetricsOptIn',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'MetaMetricsController:setMarketingCampaignCookieId',
+  () => undefined,
+);
 
 messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
   isEvmSelected: true,
@@ -183,7 +257,6 @@ const createHandler = (opts) =>
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
-    metaMetricsController,
     analyticsController,
     getHDEntropyIndex: jest.fn(),
     ...opts,
@@ -232,6 +305,7 @@ jest.mock('@metamask/controller-utils', () => {
 describe('createRPCMethodTrackingMiddleware', () => {
   beforeEach(() => {
     trackEventSpy.mockClear();
+    eventFragments.clear();
   });
   afterEach(async () => {
     jest.resetAllMocks();
@@ -1449,7 +1523,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
 
-      it('should track wallet_invokeMethod events with multichain_api category, api_source, and chain_id_caip properties', async () => {
+      it('tracks nested EIP-712 properties on requested and approved wallet_invokeMethod events', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1457,7 +1531,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           params: {
             request: {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-              params: [],
+              params: [undefined, permitSignatureMsg.msgParams.data],
             },
             scope: 'eip155:10',
           },
@@ -1478,6 +1552,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
             address_alert_response: ResultType.Loading,
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1489,12 +1571,20 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
       });
 
-      it('should track wallet_invokeMethod rejections with multichain_api category, api_source, and chain_id_caip properties', async () => {
+      it('tracks nested EIP-712 properties on requested and rejected wallet_invokeMethod events', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1502,7 +1592,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           params: {
             request: {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-              params: [],
+              params: [undefined, permitSignatureMsg.msgParams.data],
             },
             scope: 'eip155:137',
           },
@@ -1528,6 +1618,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
             address_alert_response: ResultType.Loading,
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1539,6 +1637,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });

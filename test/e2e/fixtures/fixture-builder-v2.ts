@@ -29,6 +29,7 @@ import type {
   PermissionControllerState,
   SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
@@ -136,6 +137,8 @@ type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
   optedIn?: boolean;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   consentDecisionMade?: boolean;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  dataCollectionForMarketing?: boolean;
 };
 
 type StorageServiceNamespaceMap = {
@@ -284,6 +287,13 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAuthenticationController(
+    data: Partial<AuthenticationControllerState>,
+  ): this {
+    merge(this.fixture.data.AuthenticationController, data);
+    return this;
+  }
+
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
     return this;
@@ -304,6 +314,7 @@ class FixtureBuilderV2 {
       analyticsId,
       optedIn,
       consentDecisionMade,
+      dataCollectionForMarketing,
       ...metaMetricsControllerPatch
     } = data;
 
@@ -312,7 +323,8 @@ class FixtureBuilderV2 {
     if (
       analyticsId !== undefined ||
       optedIn !== undefined ||
-      consentDecisionMade !== undefined
+      consentDecisionMade !== undefined ||
+      dataCollectionForMarketing !== undefined
     ) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
@@ -331,6 +343,10 @@ class FixtureBuilderV2 {
       }
       if (consentDecisionMade !== undefined) {
         analyticsPatch.consentDecisionMade = consentDecisionMade;
+      }
+      if (dataCollectionForMarketing !== undefined) {
+        analyticsPatch.optedInToMarketing = dataCollectionForMarketing;
+        analyticsPatch.marketingConsentDecisionMade = true;
       }
       merge(analyticsController, analyticsPatch);
     }
@@ -1441,6 +1457,7 @@ class FixtureBuilderV2 {
       isAccountSyncingEnabled: false,
       isBackupAndSyncEnabled: false,
       isContactSyncingEnabled: false,
+      isRampsSyncingEnabled: false,
     });
   }
 
@@ -1618,6 +1635,19 @@ class FixtureBuilderV2 {
   withUseBasicFunctionalityDisabled(): this {
     return this.withPreferencesController({
       useExternalServices: false,
+    });
+  }
+
+  /**
+   * Uses the pre-consolidation settings layout (Assets autodetect toggles,
+   * Privacy → Third-party APIs, etc.). Required for E2E tests that exercise
+   * those surfaces when `default-fixture.json` marks the wallet consolidated.
+   */
+  withBasicFunctionalityConsolidationDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        isBasicFunctionalityConsolidatedEnabled: false,
+      },
     });
   }
 
