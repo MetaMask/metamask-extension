@@ -4,6 +4,7 @@ import { withFixtures } from '../../helpers';
 import { assertAccountVisible } from '../../page-objects/flows/account-list.flow';
 import { reloadAndUnlock } from '../../page-objects/flows/login.flow';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/tron-account-derivation.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -48,6 +49,7 @@ async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
         distribution: 'main',
         environment: 'dev',
       })
+      .always()
       .thenCallback(() => ({
         statusCode: 200,
         json: [...prodFlags, ...NON_EVM_ACCOUNT_FLAG_OVERRIDES],
@@ -119,6 +121,8 @@ describe('State Persistence', function () {
           await driver.delay(5000); // ensure things have settled before proceeding
           console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
+
+          await waitUntilAccountTreeSyncIdle(driver);
 
           console.log('headerNavbar.checkPageIsLoaded');
           await headerNavbar.checkPageIsLoaded();

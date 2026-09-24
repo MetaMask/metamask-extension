@@ -63,18 +63,22 @@ export type BasicFunctionalityConsolidationPlan = {
  * @param params - Social-login signals from onboarding state.
  * @param params.firstTimeFlowType - Onboarding first-time flow type.
  * @param params.authConnection - Seedless social login provider, if any.
+ * @param params.hasLinkedSocialLoginProfile
  */
 export function isBasicFunctionalitySocialLoginUser({
   firstTimeFlowType,
   authConnection,
+  hasLinkedSocialLoginProfile,
 }: {
   firstTimeFlowType?: string;
   authConnection?: string;
+  hasLinkedSocialLoginProfile?: boolean;
 }): boolean {
   return (
     firstTimeFlowType === FirstTimeFlowType.socialCreate ||
     firstTimeFlowType === FirstTimeFlowType.socialImport ||
-    Boolean(authConnection)
+    Boolean(authConnection) ||
+    hasLinkedSocialLoginProfile === true
   );
 }
 
