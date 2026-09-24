@@ -12,6 +12,7 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOME_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
@@ -441,7 +442,7 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
-  it('navigates to Money activity when the page was opened directly by URL', () => {
+  it('navigates back to Money home when the page was opened directly by URL', () => {
     mockUseLocation.mockReturnValue({ key: 'default' });
 
     renderWithLocalization(<MoneyTransactionDetailsPage />);
@@ -449,7 +450,7 @@ describe('MoneyTransactionDetailsPage', () => {
     fireEvent.click(
       screen.getByTestId('money-transaction-details-back-button'),
     );
-    expect(mockNavigate).toHaveBeenCalledWith(MONEY_ACTIVITY_ROUTE, {
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
       replace: true,
     });
   });

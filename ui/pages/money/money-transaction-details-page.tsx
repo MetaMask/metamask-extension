@@ -26,6 +26,7 @@ import {
 import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOME_ROUTE,
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
@@ -144,7 +145,7 @@ export function MoneyTransactionDetailsPage() {
       ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
       : undefined;
 
-  const handleBack = useInAppBack(MONEY_ACTIVITY_ROUTE);
+  const handleBack = useInAppBack(MONEY_HOME_ROUTE);
   const formattedFee =
     feeUsd === undefined
       ? '-'
