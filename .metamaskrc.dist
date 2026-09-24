@@ -7,6 +7,11 @@ INFURA_PROJECT_ID=00000000000
 ; Set this to `true` to enable Seedless onboarding (Social login flow)
 SEEDLESS_ONBOARDING_ENABLED='false'
 
+; Optional: expose the CL24 compute benchmark on the onboarding welcome screen
+; and in Settings > Debug.
+; Use only in optimized internal/performance builds; development timings are distorted.
+; CL24_BENCHMARK_ENABLED='true'
+
 ; Set this to `true` to enable Metamask Shield
 METAMASK_SHIELD_ENABLED='false'
 

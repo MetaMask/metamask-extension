@@ -2339,6 +2339,17 @@
         "console.error": true
       }
     },
+    "@metamask/mfa-wallet-cl24": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/mfa-wallet-cl24>@msgpack/msgpack": true,
+        "@noble/curves": true,
+        "@noble/hashes": true
+      }
+    },
     "@metamask/mobile-wallet-protocol-core": {
       "globals": {
         "Buffer.from": true,
@@ -3758,6 +3769,12 @@
         "@metamask/wallet>@metamask/subscription-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/wallet>@metamask/utils": true
+      }
+    },
+    "@metamask/mfa-wallet-cl24>@msgpack/msgpack": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@mui/material": {

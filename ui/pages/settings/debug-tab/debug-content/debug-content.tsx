@@ -37,6 +37,7 @@ import ToggleRow from './toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
 import MigrateToSplitStateTest from './migrate-to-split-state-test';
+import CL24BenchmarkSection from './cl24-benchmark-section';
 
 const PAGE_CRASH_ERROR_MESSAGE =
   'Unable to find value of key "debug" for locale "en"';
@@ -271,6 +272,7 @@ const DebugContent = () => {
       <MigrateToSplitStateTest />
       <hr />
       <ConfirmationsDeveloperOptions />
+      <CL24BenchmarkSection />
     </div>
   );
 };

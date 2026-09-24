@@ -445,6 +445,8 @@
     "@metamask/message-signing-snap": "1.1.4",
     "@metamask/messenger": "^3.0.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
+    "@metamask/mfa-wallet-cl24": "file:./vendor/mfa-wallet-sdk/mfa-wallet-cl24-0.0.0.tgz",
+    "@metamask/mfa-wallet-interface": "file:./vendor/mfa-wallet-sdk/mfa-wallet-interface-0.0.0.tgz",
     "@metamask/mobile-wallet-protocol-core": "^0.4.0",
     "@metamask/mobile-wallet-protocol-dapp-client": "^0.3.0",
     "@metamask/money-account-api-data-service": "^0.4.1",
