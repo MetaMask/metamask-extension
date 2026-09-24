@@ -36,6 +36,11 @@ class ContactsSettings {
     testId: 'parent-selector-contacts-page',
   };
 
+  private readonly contactUpdatedToast = {
+    tag: 'div',
+    text: 'Contact updated',
+  };
+
   private readonly createContactAddressInput = '#contact-address';
 
   private readonly createContactNicknameInput = '#contact-nickname';
@@ -216,6 +221,9 @@ class ContactsSettings {
 
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
+    );
+    await this.driver.clickElementSafe(
+      this.contactUpdatedToast,
     );
   }
 }
