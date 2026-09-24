@@ -5629,12 +5629,6 @@
     "message": "mUSD를 Money Account에 입금하면 최대 $1 APY(변동형)의 수익을 자동으로 적립할 수 있습니다. 자금은 Veda가 운용하고 Steakhouse Financial이 위험을 모니터링하는 디파이 볼트에 예치됩니다. 수익률은 블록체인 프로토콜에서 자금을 운용하는 제삼자 디파이 플랫폼을 통해 발생합니다. 스테이킹, 수동 수령, 락업은 필요하지 않습니다.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Money 잔액은 결제에 사용할 수 있는 잔액입니다. MetaMask 카드를 연결하면 전 세계 1억 5천만 개 이상의 가맹점에서 사용할 수 있습니다. 자금은 사용하는 순간까지 계속 수익을 냅니다."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account는 Monad에서 제공합니다."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD를 추가하면 최대 $1의 수익이 적립됩니다. 잔액은 달러 연동 방식으로 유지되며 언제든지 결제 또는 거래에 사용하거나 송금할 수 있습니다.",
     "description": "$1 is the current mUSD APY."
@@ -5652,17 +5646,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "APY 비율은 변경되나요?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "사용자 본인입니다! MetaMask는 셀프 커스터디 지갑이므로, 계정 소유자의 개인 키만이 계정을 제어할 수 있습니다. MetaMask는 머니 계정 잔액에 액세스하거나 이를 동결 또는 이동할 수 없습니다. 이 점이 바로 기존 은행 계좌 및 커스터디형 암호화폐 플랫폼과 MetaMask를 구분하는 차이점입니다. 사용자의 자금을 보관하는 제삼자는 없습니다."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "제 자금은 누가 관리하나요?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money Account 개설에는 수수료가 없으며, 스테이블코인을 예치하는 데도 수수료가 없습니다. 비스테이블코인 토큰을 예치하는 경우 수수료가 부과됩니다. 또한 MetaMask 카드 거래, ATM 출금, 현지 통화 오프램프 비용과 관련된 수수료가 있습니다. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "전체 카드 수수료 세부 내역은 여기에서 확인하세요."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "수수료가 있나요?"
@@ -5679,20 +5664,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Money 계정이란 무엇인가요?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD는 미국 달러와 1:1로 연동되는 MetaMask의 달러 기반 스테이블코인입니다. Money 잔액은 mUSD로 보관되며 언제든지 결제, 송금 또는 거래에 사용할 수 있습니다.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD란 무엇인가요?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Money 잔액은 결제에 사용할 수 있는 잔액으로, 실제로 사용하는 순간까지 계속 수익이 발생합니다. Money 계정은 은행 계좌, 저축 계좌 또는 예금보험이 적용되는 예금 상품이 아닙니다.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "이 계정은 저축 계정인가요, 결제 계정인가요?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"
