@@ -237,7 +237,6 @@ export const getChainValueOrderOverride = createSelector(
 const getChainRanking = (state: BridgeAppState) =>
   getBridgeFeatureFlags(state)?.chainRanking;
 
-
 export const getPriceImpactThresholds = createDeepEqualSelector(
   [
     (state: BridgeAppState) =>
