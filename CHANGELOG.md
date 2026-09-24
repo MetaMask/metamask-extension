@@ -7,6 +7,122 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.51.0]
+
+### Uncategorized
+
+- Showed an inline message and settings link on the NFTs tab when basic functionality is turned off (#46629)
+- Increase spacing between money balance and earning section (#46619)
+- Showed an inline message and settings link on the NFTs tab when basic functionality is turned off (#46557)
+- Allowed deeplinking to money home (#46589)
+- Implemented now money balance widget design (#46598)
+- Enabled Add funds to trade on the Perps order screen when the account has no balance, so unfunded users can start a deposit from the primary button (#45986)
+- Preloaded Perps market data when the wallet unlocks (#46123)
+- Support switching from notification window to popup for Hyperliquid deposit prompt popup users (#46222)
+- Don’t show no fee label next to tokens without a no-fee route (#46552)
+- MUSD-1415 MUSD-1417 (#46514)
+- Redesign vault recovery screen (#42740)
+- @metamask/delegation-deployments from ^1.3.0 to ^2.0.0 (#46194)
+- Moved token name, avatar, and contract address into the Token Details page header (#46433)
+- Revert forced fetch for Arc assets (#46416)
+- Notification titles and descriptions for wallet activity are now provided by the notifications API and translated server-side (#46388)
+- Chore (#46412)
+- Created and use tooltip text component in money experience (#46381)
+- Enabled View all for Earn on your crypto on Money Home and added a full token list page with Convert your crypto (#46354)
+- Tapping Send on Money now opens the send screen directly instead of a destination menu (#46377)
+- Disabled the Manage default settings button on the wallet-ready screen after opening the wallet, to prevent onboarding settings from getting out of sync (#46359)
+- Hid the Earn on your crypto section on Money Home when no eligible deposit tokens are available (#46355)
+- Made Meet mUSD and Explore your benefits on Money Home open their matching MetaMask web pages (#46232)
+- Perps: an account fetch that resolves empty no longer renders a fabricated $0.00 balance (#46332)
+- Stopped showing Linea ETH in a hardcoded second position in the Tokens list for new users with zero balances (#46327)
+- Instrument tracking for money account (#46316)
+- Hid the Money Home activity section when there is no activity to display (#46323)
+- Updated buttons to rounded in preparation for brand migration (#46163)
+- Implemented earn on your crypto add button functionality (#46258)
+- De-duplicated money account toasts and show the correct copy (#45996)
+- Use correct colours in money info section (#46278)
+- Persisted Perps order form, order book, and chart preferences (#46059)
+- Implemented money kebab menu (#46156)
+
+### Added
+
+- Validate swap quotes with multi-asset fees (#46406)
+- Added an unlock prompt that asks users with an older passkey to replace it with a supported provider (#46560)
+- Added XDC Network to the additional networks list (#46543)
+- Added Arc USDC reserve for swaps and bridges to prevent full-balance transactions from reverting (#46517)
+- Added a Card filter on Money Account Activity and highlighted APY in the Money Home benefits list (#46404)
+- Added how it works link to money menu (#46421)
+- Added a Memecoins category on Perps markets so users can filter to memecoin perps (#46415)
+- Fixed home header (#46353)
+- Added a How it works page for Money Account with FAQs and disclosures (#46374)
+- Added "Paid by MetaMask" labeling when MetaMask sponsors network fees on Money account deposits and withdrawals (#46344)
+- Added an explanation when a token is unavailable in a user's region (#46347)
+- Added transaction details for MetaMask Card purchases, cashback, and refunds in Money activity (#46348)
+- Added a Products section to the Perps tab and replaced the market list category dropdown with a filter rail (#45956)
+- Added a flag to control visibility of money account balance on home (#46265)
+- Added Backup & Sync support for buy and sell order history (#46044)
+- Added `tokenDetailsAdvancedCharts` feature flag for gating advanced charts on the Token Details Page (#46270)
+
+### Changed
+
+- Improved the reliability of the buy flow when a provider checkout URL is malformed (#46504)
+- Updated money account copy (#46617)
+- Improved the private key screen by grouping EVM networks and masking the key until tapped (#46331)
+- Updated the buy flow's provider selection screen to read "Choose providers" and to show the "Most reliable" tag in blue (#46507)
+- Bumped Stellar Snap from 0.1.0 to 1.0.0 (#46336)
+- Changed "low value tokens" to "low balance tokens" in the asset list (#46349)
+- Updated Money activity details to show the icon of the asset used in the transaction (#46343)
+
+### Removed
+
+- Removed the clipboardWrite permission from the manifest file (#46603)
+- Removed the "Sort by" button from the NFTs tab and DeFi tab when there is nothing to show (#46559)
+
+### Fixed
+
+- Fixed a bug where the Buy flow pay-with page did not explain why a quote was unavailable when hovering the warning icon (#46505)
+- Fixed a bug that prevented the scam questionnaire from appearing for configured malicious websites (#46568)
+- Fixed the Money account activity list showing the swap icon on Sent rows instead of the up-right arrow (#46457)
+- Fixed push notifications stopping for every source when wallet activity was turned off, and not being registered again when notifications were re-enabled with every account's wallet activity disabled (#46616)
+- Fixed ledger account box alignment (#46588)
+- Fixed misaligned icons on the Backup & Sync settings page (#46599)
+- Fixed a bug where some social-login users did not see the Basic Functionality migration notice after importing their recovery phrase (#46602)
+- Fixed a bug where some social-login users did not see the Basic Functionality migration notice after importing their recovery phrase (#46585)
+- Fixed the Activity tab empty-state Swap button not enabling on supported unified swaps/bridge networks (#46587)
+- Fixed the Perps tab's Top movers section so all eight markets wrap onto multiple rows instead of running off the right edge behind a horizontal scroll (#46555)
+- Fixed missing fiat prices for Tempo tokens (#46129)
+- Fixed a bug that hid the failed-transaction toast when a transaction failed before it was submitted (#46556)
+- Fixed a layout issue in a Snap confirmation popup (#46533)
+- Fixed the unread notifications count so it appears on the menu icon in the wallet header instead of beside it (#46442)
+- Fixed carousel overlapping dapp control bar network menu (#46551)
+- Fixed bug where selecting a non-evm network made it impossible to deposit or withdraw from money account (#46553)
+- Fixed duplicated toast shown upon custom token import (#46516)
+- Fixed duplicate notifications shown during Money Account deposits (#46486)
+- Fixed a bug where clicking "View on explorer" for a token would open the wrong network's block explorer (#46508)
+- Fixed misleading errors when adding a custom network whose RPC provider is rate limiting requests or uses RouteMesh (`lb.routeme.sh`) (#46095)
+- Fixed a bug that could show the `Best rate` label on a provider whose displayed quote was not the best rate (#46414)
+- Fixed Activity showing hugely inflated token and fiat amounts when transfer decimals were missing (#46420)
+- Fixed duplicate "Transaction submitted" toasts for gasless sends (#46434)
+- Fixed the blank page shown when returning to MetaMask from a provider order page (#46394)
+- Fixed gas-limit validation and blocking alerts to support valid limits as low as 12,000 (#46385)
+- Fixed block explorer button missing for some providers on the Buy order details page (#46398)
+- Fixed Basic Functionality migration notices disappearing after a feature-flag rollback, and repaired social-login wallets that were locked with Basic Functionality off (#46264)
+- Fixed EVM RPC requests failing under LavaMoat (#46339)
+- Fixed the buy flow resetting a user's entered amount when they picked a payment method (#46351)
+- Updated useNftImageUrl hook to handle non-strings (#46274)
+- Fixed a bug where the Continue button in the Buy flow was disabled without an explanation when quotes were unavailable (#46345)
+- Fixed recipient validation (including ENS names) never resolving in the send flow, and blocked submit until validation completes (#46295)
+- Fixed the spacing around the network avatars and the "Show default address" section in the account address menu (#46329)
+- Fixed Money Account deposits so a typed amount deposits exactly that amount (#46231)
+- Fixed a bug where a failed Perps account fetch could show a funded account as $0.00 and hide the Withdraw button (#45994)
+- Fixed transaction fees and totals shown in Money activity details (#46313)
+- Fixed the Money Benefits menu icon so it shows an outlink instead of a share icon (#46311)
+- Fixed the Money balance info popover colors (#46251)
+- Fixed icon buttons shrinking when placed in flex layouts (#46246)
+- Fixed inconsistent icon sizing and spacing in the Add funds menu (#46250)
+- Fixed missing explorer links for Arc and Robinhood Chain on the Receive QR screen (#46160)
+- Fixed the focus style being cut off on the new password fields in Settings > Security and password > Password (#46090)
+
 ## [13.49.0]
 
 ### Added
@@ -3253,7 +3369,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.51.0...HEAD
+[13.51.0]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...v13.51.0
 [13.49.0]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...v13.49.0
 [13.48.0]: https://github.com/MetaMask/metamask-extension/compare/v13.47.1...v13.48.0
 [13.47.1]: https://github.com/MetaMask/metamask-extension/compare/v13.47.0...v13.47.1
