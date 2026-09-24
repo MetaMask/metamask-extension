@@ -343,6 +343,7 @@ import {
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
+import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
@@ -855,6 +856,11 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', (update) => {
       this.userTraitsService.handleMetaMaskStateUpdate(update);
     });
+
+    registerLinkedSocialLoginProfileSync(
+      this.controllerMessenger,
+      this.preferencesController,
+    );
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),
@@ -1745,6 +1751,10 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
+      PerpsStreamBridge.invalidateController(
+        this.messengerClientsByName.PerpsController,
+      );
+
       if (
         this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
       ) {
@@ -1846,6 +1856,9 @@ export default class MetamaskController extends EventEmitter {
       previousValueComparator((prevState, currState) => {
         const { useExternalServices: prev } = prevState;
         const { useExternalServices: curr } = currState;
+        if (prev !== curr && !curr) {
+          this.#disconnectPerpsIfActive();
+        }
         if (
           getIsPerpsIncludedInBuild() &&
           prev !== curr &&
@@ -4831,6 +4844,12 @@ export default class MetamaskController extends EventEmitter {
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
+          // `getSelectedAccount` returns the last selected *EVM* account: it
+          // falls back to `listAccounts()`, which filters to EVM types. So a
+          // selected Bitcoin or Tron account still yields the EVM address the
+          // UI sends, and `#initForAccount` does not reject the preload.
+          getSelectedAddress: () =>
+            this.accountsController.getSelectedAccount().address,
           onControllerStateChange: (cb) => {
             this.controllerMessenger.subscribe(
               'PerpsController:stateChange',
@@ -4857,6 +4876,21 @@ export default class MetamaskController extends EventEmitter {
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          isPreloadAllowed: () => {
+            const { remoteFeatureFlags } = this.controllerMessenger.call(
+              'RemoteFeatureFlagController:getState',
+            );
+            const flags = getRemoteFeatureFlags({
+              metamask: { remoteFeatureFlags },
+            });
+            return (
+              this.keyringController.state.isUnlocked &&
+              this.onboardingController.state.completedOnboarding &&
+              this.preferencesController.state.useExternalServices &&
+              getIsPerpsIncludedInBuild() &&
+              isPerpsRemoteConfigSatisfied(flags.perpsEnabledVersion)
+            );
+          },
           subscribeAggregatedOrderBook: (params) =>
             aggregatedOrderBookConnection.subscribe(params),
           isTerminalBackendEnabled: () => {
@@ -4876,7 +4910,7 @@ export default class MetamaskController extends EventEmitter {
             );
           },
           emit: (channel, data, extra) => {
-            if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+            if (!perpsStream.canEmit(channel) || !isStreamWritable(outStream)) {
               return;
             }
             outStream.write({
@@ -4953,7 +4987,7 @@ export default class MetamaskController extends EventEmitter {
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
-        perpsStream?.destroy();
+        perpsStream?.dispose();
         aggregatedOrderBookConnection?.close();
         if (this.activeControllerConnections === 0) {
           // Defer the controller-owned Perps WS teardown so a brief close/reopen

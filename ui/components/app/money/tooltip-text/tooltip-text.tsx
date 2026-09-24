@@ -72,7 +72,7 @@ export function TooltipText({
         {...textProps}
         asChild
         className={classnames(
-          'underline decoration-dotted underline-offset-4',
+          'underline decoration-dotted underline-offset-[32%] decoration-[8%]',
           className,
         )}
       >
