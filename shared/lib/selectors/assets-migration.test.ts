@@ -1127,8 +1127,8 @@ describe('getTokenBalancesControllerTokenBalances', () => {
         '0x1',
       ]);
       expect(
-        result[mockAccountAddressLowercase]['0x1'][nativeAddress],
-      ).toBeDefined();
+        Object.keys(result[mockAccountAddressLowercase]['0x1']),
+      ).toStrictEqual([nativeAddress]);
     });
 
     it('handles multiple EVM accounts', () => {
