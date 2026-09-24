@@ -12,8 +12,8 @@ import { normalizeAssetIdForApi } from './normalizeAssetIdForApi';
  * @returns The matching catalog token, or undefined when none matches.
  */
 export function resolveRampControllerToken<
-  T extends Pick<RampsToken, 'assetId' | 'chainId'>,
->(assetId: string, allTokens: T[]): T | undefined {
+  Token extends Pick<RampsToken, 'assetId' | 'chainId'>,
+>(assetId: string, allTokens: Token[]): Token | undefined {
   const [chainId, assetReference = ''] = assetId.split('/');
   const [namespace, reference = ''] = assetReference.split(':');
 
