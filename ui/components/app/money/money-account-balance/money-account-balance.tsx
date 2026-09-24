@@ -240,7 +240,6 @@ export const MoneyAccountBalance = () => {
     (fiatBalance !== undefined || isLoading);
   const moneyAccountEmpty =
     tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
-  const showAddButton = moneyAccountEmpty && !privacyMode;
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -329,24 +328,20 @@ export const MoneyAccountBalance = () => {
             )
           )}
         </Box>
-        {showAddButton ? null : (
-          <Balance
-            fiatBalance={fiatBalance}
-            isLoading={isLoading}
-            privacyMode={privacyMode}
-            isLastKnown={isLastKnown}
-            showMusdLabel={showMusdLabel}
-          />
-        )}
+        <Balance
+          fiatBalance={fiatBalance}
+          isLoading={isLoading}
+          privacyMode={privacyMode}
+          isLastKnown={isLastKnown}
+          showMusdLabel={showMusdLabel}
+        />
       </Box>
 
-      {showAddButton && (
-        <Add
-          moneyAccountEmpty={moneyAccountEmpty}
-          onAddClick={handleAddClick}
-          isDepositLoading={isDepositLoading}
-        />
-      )}
+      <Add
+        moneyAccountEmpty={moneyAccountEmpty}
+        onAddClick={handleAddClick}
+        isDepositLoading={isDepositLoading}
+      />
     </Box>
   );
 };
