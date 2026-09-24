@@ -66,6 +66,8 @@ const erc20AssetAddressChecksummed = toChecksumHexAddress(
 const erc20AssetId = `eip155:1/erc20:${erc20AssetAddressLowercase}`;
 const solanaTokenAssetId =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+const solanaNativeAssetId =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 
 const nativePolygonAssetId = 'eip155:137/slip44:966';
 const bitcoinNativeAssetId = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
@@ -418,6 +420,46 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
         '0x3a98',
       );
     });
+
+    it('skips a non-EVM native asset stored under an EVM account', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [solanaNativeAssetId]: { type: 'native', decimals: 9 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [solanaNativeAssetId]: { amount: '2' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result).toStrictEqual({
+        '0x1': {
+          [mockAccountAddressChecksummed]: {
+            balance: '0xde0b6b3a7640000',
+          },
+        },
+      });
+    });
   });
 });
 
@@ -657,6 +699,62 @@ describe('getTokensControllerAllTokens', () => {
       const result = getTokensControllerAllTokens(state);
 
       expect(result).toStrictEqual({});
+    });
+
+    it('skips a non-EVM token stored under an EVM account', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allTokens: {},
+          allIgnoredTokens: {},
+          assetsInfo: {
+            [erc20AssetId]: {
+              type: 'erc20',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+            },
+            [solanaTokenAssetId]: {
+              type: 'spl',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+            },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [erc20AssetId]: { amount: '1' },
+              [solanaTokenAssetId]: { amount: '2' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      expect(() => getTokensControllerAllTokens(state)).not.toThrow();
+      const result = getTokensControllerAllTokens(state);
+      expect(result).toStrictEqual({
+        '0x1': {
+          [mockAccountAddressLowercase]: [
+            {
+              address: erc20AssetAddressChecksummed,
+              symbol: 'USDC',
+              decimals: 6,
+              name: 'USD Coin',
+              image: undefined,
+            },
+          ],
+        },
+      });
     });
   });
 });
@@ -990,6 +1088,47 @@ describe('getTokenBalancesControllerTokenBalances', () => {
       expect(
         Object.keys(result[mockAccountAddressLowercase]['0x1']),
       ).toStrictEqual([nativeAddress]);
+    });
+
+    it('skips a non-EVM asset stored under an EVM account', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [solanaNativeAssetId]: { type: 'native', decimals: 9 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [solanaNativeAssetId]: { amount: '2' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      expect(() =>
+        getTokenBalancesControllerTokenBalances(state),
+      ).not.toThrow();
+      const result = getTokenBalancesControllerTokenBalances(state);
+      const nativeAddress = getNativeAssetForChainId('0x1').address;
+      expect(
+        Object.keys(result[mockAccountAddressLowercase]),
+      ).toStrictEqual(['0x1']);
+      expect(
+        result[mockAccountAddressLowercase]['0x1'][nativeAddress],
+      ).toBeDefined();
     });
 
     it('handles multiple EVM accounts', () => {
