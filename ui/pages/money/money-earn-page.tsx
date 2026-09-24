@@ -15,7 +15,7 @@ import {
 } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
-import { useInAppBack } from '../../hooks/use-in-app-back';
+import { useInAppBack } from '../../hooks/useInAppBack';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAddDepositToken } from '../../hooks/money/use-money-add-deposit-token';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';

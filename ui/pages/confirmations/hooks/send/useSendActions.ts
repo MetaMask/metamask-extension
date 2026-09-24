@@ -11,7 +11,7 @@ import {
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useInAppBack } from '../../../../hooks/use-in-app-back';
+import { useInAppBack } from '../../../../hooks/useInAppBack';
 import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value';
 import { SendPages } from '../../constants/send';
 import { ConfirmationLoader } from '../useConfirmationNavigation';

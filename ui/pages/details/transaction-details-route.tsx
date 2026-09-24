@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useActivityHomeRoute } from '../../hooks/useActivityHomeRoute';
-import { useInAppBack } from '../../hooks/use-in-app-back';
+import { useInAppBack } from '../../hooks/useInAppBack';
 import { TransactionDetails } from './transaction-details';
 
 export default function TransactionDetailsRoute() {

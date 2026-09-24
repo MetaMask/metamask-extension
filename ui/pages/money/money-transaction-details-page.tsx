@@ -35,7 +35,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
-import { useInAppBack } from '../../hooks/use-in-app-back';
+import { useInAppBack } from '../../hooks/useInAppBack';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';

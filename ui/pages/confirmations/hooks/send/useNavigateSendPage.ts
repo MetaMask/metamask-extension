@@ -5,7 +5,7 @@ import {
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { useInAppBack } from '../../../../hooks/use-in-app-back';
+import { useInAppBack } from '../../../../hooks/useInAppBack';
 import { SendPages } from '../../constants/send';
 
 export const useNavigateSendPage = () => {

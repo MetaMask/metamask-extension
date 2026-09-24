@@ -29,11 +29,6 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-beforeEach(() => {
-  mockUseNavigate.mockClear();
-  mockUseLocation.mockReturnValue({ key: 'in-app-entry' });
-});
-
 const mockDispatch = jest.fn((action) =>
   typeof action === 'function' ? action() : action,
 );
@@ -45,6 +40,7 @@ jest.mock('react-redux', () => ({
 beforeEach(() => {
   mockUseNavigate.mockClear();
   mockDispatch.mockClear();
+  mockUseLocation.mockReturnValue({ key: 'in-app-entry' });
 });
 
 function renderHook() {

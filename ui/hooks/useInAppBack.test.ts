@@ -1,7 +1,7 @@
 import { describe, expect, it, jest, beforeEach } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
 import { MONEY_HOME_ROUTE, PREVIOUS_ROUTE } from '../helpers/constants/routes';
-import { useInAppBack } from './use-in-app-back';
+import { useInAppBack } from './useInAppBack';
 
 const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
