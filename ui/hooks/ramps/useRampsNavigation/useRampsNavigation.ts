@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { getRampsTokens } from '../../../store/controller-actions/ramps-controller';
 import {
   getIsRampsEnabled,
   getIsRampsServiceDisruptionActive,
@@ -24,6 +25,7 @@ import { getIsRampRegionUnsupported } from '../../../selectors/ramps';
 import {
   selectProviders,
   selectTokens,
+  selectUserRegion,
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
 import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
@@ -137,6 +139,7 @@ export default function useRampsNavigation() {
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
+  const userRegion = useSelector(selectUserRegion);
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
 
   const goToBuy = useCallback(
@@ -179,22 +182,50 @@ export default function useRampsNavigation() {
         return false;
       }
 
-      // 4. Providers/tokens fetched but empty. `tokens.data === null` means
+      // 4. Cold catalog: `tokens` is not persisted, so after an MV3
+      // service-worker restart (the normal state when someone clicks a `/buy`
+      // link from email) `tokens.data` is `null`, and the controller's
+      // `setSelectedToken` throws until tokens are fetched. Fetch them before
+      // gating or preselecting — preferring the persisted region the
+      // controller gates its state writes on, falling back to the freshly
+      // resolved geolocation.
+      const assetId = intent?.assetId;
+      let tokensState: TokensState = tokens;
+      if (assetId && !tokens.data) {
+        try {
+          const fetchedTokens = await getRampsTokens(
+            userRegion?.regionCode ?? location,
+            'buy',
+          );
+          if (fetchedTokens) {
+            tokensState = {
+              data: fetchedTokens,
+              selected: null,
+              isLoading: false,
+              error: null,
+            };
+          }
+        } catch {
+          // Failed fetch: keep the rendered (unsettled) token state below and
+          // fail open, as before.
+        }
+      }
+
+      // 5. Providers/tokens fetched but empty. A null `tokensState.data` means
       // providers/tokens haven't been fetched yet (fetched together by the
       // native flow), so fail open and skip this check entirely until then.
       // A fetch error also fails open (mobile parity) — an empty result only
       // counts once the catalog has actually settled, not on a failed fetch.
-      const catalogSettled = isCatalogSettled(providers, tokens);
-      const catalogData = catalogSettled ? tokens.data : null;
+      const catalogSettled = isCatalogSettled(providers, tokensState);
+      const catalogData = catalogSettled ? tokensState.data : null;
       if (catalogData && isCatalogEmpty(providers, catalogData)) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
       }
 
-      // 5. Route into the native buy flow.
-      const assetId = intent?.assetId;
+      // 6. Route into the native buy flow.
       if (!assetId) {
-        // No specific asset → token selection page.
+        // No specific asset → token selection page (it loads the catalog).
         navigate(RAMPS_TOKEN_SELECTION_ROUTE);
         return true;
       }
@@ -202,7 +233,7 @@ export default function useRampsNavigation() {
       // Resolve against the catalog. Only block on a settled catalog that
       // definitively lacks/unsupports the token — an unsettled catalog fails
       // open (proceed with it selected, page re-resolves).
-      const catalogToken = findCatalogToken(tokens.data, assetId);
+      const catalogToken = findCatalogToken(tokensState.data, assetId);
       if (
         catalogData &&
         (!catalogToken || catalogToken.tokenSupported === false)
@@ -232,6 +263,7 @@ export default function useRampsNavigation() {
       isRegionUnsupported,
       providers,
       tokens,
+      userRegion,
       everConnectedToPortfolio,
       dispatch,
       navigate,
