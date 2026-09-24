@@ -15,12 +15,12 @@ describe('parseRampIntent', () => {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         chainId: '1',
       },
-      { assetId: DAI, chainId: 'eip155:1' },
+      { assetId: DAI },
     ],
     [
       'defaults the chain to Ethereum mainnet when only an address is given',
       { address: '0x6b175474e89094c44da98b954eedeac495271d0f' },
-      { assetId: DAI, chainId: 'eip155:1' },
+      { assetId: DAI },
     ],
     [
       'builds a native assetId for the zero address',
@@ -28,12 +28,12 @@ describe('parseRampIntent', () => {
         address: '0x0000000000000000000000000000000000000000',
         chainId: '137',
       },
-      { assetId: 'eip155:137/slip44:.', chainId: 'eip155:137' },
+      { assetId: 'eip155:137/slip44:.' },
     ],
     [
       'builds a native assetId when no address is given',
       { chainId: '137' },
-      { assetId: 'eip155:137/slip44:.', chainId: 'eip155:137' },
+      { assetId: 'eip155:137/slip44:.' },
     ],
     [
       'drops address and chainId when assetId takes precedence',
@@ -45,27 +45,18 @@ describe('parseRampIntent', () => {
       { assetId: 'eip155:137/erc20:0xabc' },
     ],
     [
-      'passes amount and currency through',
+      'drops amount and currency, which the in-app flow does not consume',
       {
         assetId: 'eip155:1/slip44:.',
         amount: '100',
         currency: 'usd',
       },
-      {
-        assetId: 'eip155:1/slip44:.',
-        amount: '100',
-        currency: 'usd',
-      },
+      { assetId: 'eip155:1/slip44:.' },
     ],
     [
-      'keeps only the defaulted chain when the address is invalid',
-      { address: 'not-an-address' },
-      { chainId: 'eip155:1' },
-    ],
-    [
-      'keeps the chain and remaining params when the address is invalid',
+      'returns undefined when the address is invalid',
       { address: 'not-an-address', chainId: '137', amount: '50' },
-      { chainId: 'eip155:137', amount: '50' },
+      undefined,
     ],
     [
       'returns undefined when the chainId is invalid and nothing else resolves',
@@ -80,7 +71,7 @@ describe('parseRampIntent', () => {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         chainId: '1',
       },
-      { assetId: DAI, chainId: 'eip155:1' },
+      { assetId: DAI },
     ],
   ];
   for (const [label, params, expected] of cases) {
