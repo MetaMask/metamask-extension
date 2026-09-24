@@ -36,12 +36,9 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  DEFAULT_ROUTE,
-  PREVIOUS_ROUTE,
-} from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
@@ -58,6 +55,7 @@ import { ActivityList } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useInAppBack } from '../../../hooks/use-in-app-back';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
 import {
@@ -147,8 +145,6 @@ const AssetPage = ({
   optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
-  const navigate = useNavigate();
-  const location = useLocation();
   const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
   const isEvm = isEvmChainId(asset.chainId);
@@ -423,13 +419,7 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   }, []);
 
-  const handleBack = useCallback(() => {
-    if (location.key === 'default') {
-      navigate(DEFAULT_ROUTE, { replace: true });
-    } else {
-      transitionBack(() => navigate(PREVIOUS_ROUTE));
-    }
-  }, [location.key, navigate]);
+  const handleBack = useInAppBack(DEFAULT_ROUTE, transitionBack);
 
   return (
     <AssetPageSecurityTrustProvider

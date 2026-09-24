@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -39,7 +34,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
-import { useMoneyBackNavigation } from '../../hooks/money/use-money-back-navigation';
+import { useInAppBack } from '../../hooks/use-in-app-back';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
@@ -149,7 +144,7 @@ export function MoneyTransactionDetailsPage() {
       ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
       : undefined;
 
-  const handleBack = useMoneyBackNavigation(MONEY_ACTIVITY_ROUTE);
+  const handleBack = useInAppBack(MONEY_ACTIVITY_ROUTE);
   const formattedFee =
     feeUsd === undefined
       ? '-'

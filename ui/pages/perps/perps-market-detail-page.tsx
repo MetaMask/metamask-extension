@@ -60,8 +60,8 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
-  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
+import { useInAppBack } from '../../hooks/use-in-app-back';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -819,13 +819,7 @@ const PerpsMarketDetailPage = () => {
     );
   }, []);
 
-  const handleBackClick = useCallback(() => {
-    if (typeof window !== 'undefined' && window.history.length > 1) {
-      navigate(PREVIOUS_ROUTE);
-      return;
-    }
-    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
-  }, [navigate]);
+  const handleBackClick = useInAppBack(`${DEFAULT_ROUTE}?tab=perps`);
 
   const handleMarketListClick = useCallback(() => {
     navigate(PERPS_MARKET_LIST_ROUTE);

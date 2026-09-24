@@ -29,7 +29,7 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
-import { useMoneyBackNavigation } from '../../hooks/money/use-money-back-navigation';
+import { useInAppBack } from '../../hooks/use-in-app-back';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
@@ -144,7 +144,7 @@ export function MoneyActivityPage() {
     [filteredItems, t],
   );
 
-  const handleBack = useMoneyBackNavigation(MONEY_HOME_ROUTE);
+  const handleBack = useInAppBack(MONEY_HOME_ROUTE);
 
   const scrollSentinel = hasMore ? (
     <div ref={sentinelRef} data-testid="money-activity-scroll-sentinel" />

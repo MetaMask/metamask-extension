@@ -18,7 +18,7 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
-import { useMoneyBackNavigation } from '../../hooks/money/use-money-back-navigation';
+import { useInAppBack } from '../../hooks/use-in-app-back';
 import { MoneyFaqItem } from './components/money-faq-item';
 import { MoneySectionDivider } from './components/money-section-divider';
 import { MONEY_CARD_FEES_URL } from './constants/urls';
@@ -249,7 +249,7 @@ export function MoneyHowItWorksPage() {
     resetOverflowAncestorScroll(pageRef.current);
   }, []);
 
-  const handleBack = useMoneyBackNavigation(MONEY_HOME_ROUTE);
+  const handleBack = useInAppBack(MONEY_HOME_ROUTE);
 
   if (isAvailabilityLoading) {
     return (

@@ -8,7 +8,6 @@ import {
   PERPS_TRANSACTION_DETAILS_ROUTE,
   TX_DETAILS_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
-  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
@@ -142,13 +141,15 @@ describe('PerpsActivityPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('back button navigates to previous page', () => {
+  it('back button navigates to the Perps tab when opened directly', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
     const backButton = screen.getByTestId('perps-activity-back-button');
     fireEvent.click(backButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith('/?tab=perps', {
+      replace: true,
+    });
   });
 
   it('redirects when perps experience is unavailable', () => {

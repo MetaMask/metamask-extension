@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import {
   AvatarTokenSize,
   Box,
@@ -16,6 +16,7 @@ import {
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useInAppBack } from '../../hooks/use-in-app-back';
 import { useFormatters } from '../../hooks/useFormatters';
 import {
   DEFAULT_ROUTE,
@@ -220,14 +221,11 @@ const FundingDetailRows = ({
  */
 const PerpsTransactionDetailsPage = () => {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const location = useLocation();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const { formatDateTime } = useFormatters();
 
-  const handleBackClick = useCallback(() => {
-    navigate(-1);
-  }, [navigate]);
+  const handleBackClick = useInAppBack(PERPS_ACTIVITY_ROUTE);
 
   if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;

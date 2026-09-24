@@ -15,7 +15,7 @@ import {
 } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
-import { useMoneyBackNavigation } from '../../hooks/money/use-money-back-navigation';
+import { useInAppBack } from '../../hooks/use-in-app-back';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAddDepositToken } from '../../hooks/money/use-money-add-deposit-token';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
@@ -63,7 +63,7 @@ export function MoneyEarnPage() {
     trackScreenViewed,
   );
 
-  const handleBack = useMoneyBackNavigation(MONEY_HOME_ROUTE);
+  const handleBack = useInAppBack(MONEY_HOME_ROUTE);
 
   const handleConvert = useCallback(() => {
     trackButtonClicked({

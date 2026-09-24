@@ -395,6 +395,7 @@ jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn().mockReturnValue({
+  key: 'in-app-entry',
   pathname: '/perps/market/ETH',
   search: '',
   state: null,
@@ -613,6 +614,7 @@ describe('PerpsMarketDetailPage', () => {
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     latestPriceSubscriber = undefined;
     mockUseLocation.mockReturnValue({
+      key: 'in-app-entry',
       pathname: '/perps/market/ETH',
       search: '',
       state: null,
@@ -1197,12 +1199,6 @@ describe('PerpsMarketDetailPage', () => {
     });
 
     it('navigates back in history when back button is clicked', async () => {
-      const originalLength = window.history.length;
-      Object.defineProperty(window.history, 'length', {
-        value: 2,
-        configurable: true,
-      });
-
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -1211,18 +1207,14 @@ describe('PerpsMarketDetailPage', () => {
       backButton.click();
 
       expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
-
-      Object.defineProperty(window.history, 'length', {
-        value: originalLength,
-        configurable: true,
-      });
     });
 
-    it('falls back to Perps tab when history is empty', async () => {
-      const originalLength = window.history.length;
-      Object.defineProperty(window.history, 'length', {
-        value: 1,
-        configurable: true,
+    it('falls back to Perps tab when opened directly', async () => {
+      mockUseLocation.mockReturnValue({
+        key: 'default',
+        pathname: '/perps/market/ETH',
+        search: '',
+        state: null,
       });
 
       const store = mockStore(createMockState(true));
@@ -1232,14 +1224,8 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        { pathname: '/', search: 'tab=perps' },
-        { replace: true },
-      );
-
-      Object.defineProperty(window.history, 'length', {
-        value: originalLength,
-        configurable: true,
+      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=perps', {
+        replace: true,
       });
     });
 

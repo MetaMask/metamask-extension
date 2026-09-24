@@ -1,11 +1,12 @@
 import React from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import { Navigate, useParams } from 'react-router-dom';
+import { ACTIVITY_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { useInAppBack } from '../../hooks/use-in-app-back';
 import { TransactionDetails } from './transaction-details';
 
 export default function TransactionDetailsRoute() {
-  const navigate = useNavigate();
   const { caipChainId, txIdentifier } = useParams();
+  const handleBack = useInAppBack(ACTIVITY_ROUTE);
 
   if (!caipChainId || !txIdentifier) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -16,7 +17,7 @@ export default function TransactionDetailsRoute() {
       <TransactionDetails
         chainId={caipChainId}
         txIdentifier={txIdentifier}
-        onBack={() => navigate(PREVIOUS_ROUTE)}
+        onBack={handleBack}
       />
     </div>
   );

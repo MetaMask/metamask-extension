@@ -45,8 +45,8 @@ import {
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
-  PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
+import { useInAppBack } from '../../../hooks/use-in-app-back';
 import {
   getIsPerpsExperienceAvailable,
   getHip3AllowedSourcesSet,
@@ -573,9 +573,7 @@ export const MarketListView = () => {
   }, [flushPendingSearchQuery, emitSearchAbandoned]);
 
   // Handlers
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
+  const handleBack = useInAppBack(`${DEFAULT_ROUTE}?tab=perps`);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
