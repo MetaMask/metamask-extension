@@ -799,9 +799,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       return;
     }
 
-    let bytesByController: Map<string, number>;
-    let sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'];
-    let totalBytes: number;
+    let bytesByController: Map<string, number> | undefined;
+    let sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'] =
+      'json_string_length_estimate';
+    let totalBytes = 0;
 
     try {
       const storageBytes =
