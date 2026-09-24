@@ -66,7 +66,7 @@ type StateHooks = {
   hasConsoleAccess?: () => boolean;
 
   /**
-   * This is initialized by the service worker in MV3. It is handled in `background.js`.
+   * This is initialized by the service worker in MV3. It is handled in `background.ts`.
    */
   lazyListener?: ExtensionLazyListener<typeof chrome>;
   /**
@@ -123,6 +123,11 @@ type StateHooks = {
 };
 
 declare global {
+  /**
+   * Debug helper to log encrypted vault state
+   */
+  var logEncryptedVault: () => void;
+
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: Sentry | undefined;
