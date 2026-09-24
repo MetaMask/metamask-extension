@@ -71,8 +71,9 @@ import { SettingsRoot, SettingsSearchResults } from './shared';
 import { useSettingsSearch, MIN_SEARCH_LENGTH } from './useSettingsSearch';
 import { useSettingsI18n } from './useSettingsI18n';
 
-const FIRST_TAB_PATH = SETTINGS_TABS[0]?.path;
-const FirstTabComponent = SETTINGS_TABS[0]?.component;
+const firstTab = SETTINGS_TABS.find((tab) => tab.index) ?? SETTINGS_TABS[0];
+const FIRST_TAB_PATH = firstTab?.path;
+const FirstTabComponent = firstTab?.component;
 const SIDEPANEL_COMPACT_SETTINGS_MAX_WIDTH = 575;
 
 const normalizeSettingsPath = (path: string) =>
@@ -454,13 +455,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
             </Box>
           )}
           <Suspense fallback={null}>
-            {isOnSettingsRoot &&
-            !usesCompactSettingsLayout &&
-            FirstTabComponent ? (
-              <FirstTabComponent />
-            ) : (
-              children
-            )}
+            {children}
           </Suspense>
         </Box>
       </Box>
@@ -507,32 +502,36 @@ const Settings = () => {
   return (
     <RouterRoutes>
       {SETTINGS_RENDERABLE_ROUTES.map(
-        ({ path, component: Component, messengerCapabilities }) => {
+        ({ path, component: Component, messengerCapabilities, index }) => {
           const component = <Component />;
+          const element = (
+            <SettingsLayout>
+              {messengerCapabilities ? (
+                <RouteMessengerProvider
+                  // Remount when the settings sub-route changes. Sibling
+                  // routes share this component type, so without a key
+                  // React reuses the instance and keeps the previous
+                  // route's messenger capabilities.
+                  key={path}
+                  path={path}
+                  capabilities={messengerCapabilities}
+                >
+                  {component}
+                </RouteMessengerProvider>
+              ) : (
+                component
+              )}
+            </SettingsLayout>
+          );
+
           return (
-            <Route
-              key={path}
-              path={toRelativeRoutePath(path, SETTINGS_ROUTE)}
-              element={
-                <SettingsLayout>
-                  {messengerCapabilities ? (
-                    <RouteMessengerProvider
-                      // Remount when the settings sub-route changes. Sibling
-                      // routes share this component type, so without a key
-                      // React reuses the instance and keeps the previous
-                      // route's messenger capabilities.
-                      key={path}
-                      path={path}
-                      capabilities={messengerCapabilities}
-                    >
-                      {component}
-                    </RouteMessengerProvider>
-                  ) : (
-                    component
-                  )}
-                </SettingsLayout>
-              }
-            />
+            <Fragment key={path}>
+              {index && <Route index element={element} />}
+              <Route
+                path={toRelativeRoutePath(path, SETTINGS_ROUTE)}
+                element={element}
+              />
+            </Fragment>
           );
         },
       )}
