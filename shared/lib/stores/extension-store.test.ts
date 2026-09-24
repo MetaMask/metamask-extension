@@ -13,7 +13,12 @@ jest.mock('webextension-polyfill', () => ({
 const setup = (
   options: {
     localMock?:
-      | { get?: unknown; getBytesInUse?: unknown; set?: unknown; remove?: unknown }
+      | {
+          get?: unknown;
+          getBytesInUse?: unknown;
+          set?: unknown;
+          remove?: unknown;
+        }
       | false;
   } = {},
 ) => {

@@ -230,7 +230,6 @@ describe('setup-initial-state-hooks', () => {
       const event: SplitStateWriteEvent = {
         bytesByController: new Map([['FooController', 13]]),
         coalescedUpdates: 1,
-        controllerKeys: ['FooController'],
         idleStatus: 'unknown',
         measurementDurationMs: 0.2,
         sampleRate: 0,
