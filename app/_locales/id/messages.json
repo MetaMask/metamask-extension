@@ -3088,9 +3088,6 @@
   "copiedToClipboard": {
     "message": "Disalin ke papan klip"
   },
-  "copy": {
-    "message": "Salin"
-  },
   "copyAddress": {
     "message": "Salin alamat ke papan klip"
   },
@@ -6960,10 +6957,6 @@
     "message": "Kami tidak dapat memverifikasi $1 Anda. Coba lagi atau gunakan kata sandi Anda.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
-  "passkeyMigrationReplacementTryAgain": {
-    "message": "Coba lagi",
-    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
-  },
   "passkeySetupStepRegister": {
     "message": "Daftar $1",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -9041,10 +9034,6 @@
   "relayerFee": {
     "message": "Biaya relayer"
   },
-  "remindMeLater": {
-    "message": "Ingatkan saya nanti",
-    "description": "Secondary action to postpone replacing a legacy passkey."
-  },
   "remove": {
     "message": "Hapus"
   },
@@ -9387,9 +9376,6 @@
   },
   "rpcUrl": {
     "message": "URL RPC"
-  },
-  "rpcUrlRateLimited": {
-    "message": "Penyedia RPC ini membatasi permintaan. Coba lagi nanti atau gunakan URL RPC yang berbeda."
   },
   "safeTransferFrom": {
     "message": "Transfer aman dari"
@@ -11682,9 +11668,6 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Otomatis"
-  },
-  "swapSlippageCappedDescription": {
-    "message": "Toleransi selip dibatasi hingga 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Selip yang dimasukkan ($1%) dianggap sangat tinggi dan dapat mengakibatkan tarif yang tidak efektif",

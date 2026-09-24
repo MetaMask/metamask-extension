@@ -3088,9 +3088,6 @@
   "copiedToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी किया गया"
   },
-  "copy": {
-    "message": "कॉपी करें"
-  },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर एड्रेस कॉपी करें"
   },
@@ -6956,10 +6953,6 @@
     "message": "हम आपके $1 को सत्यापित नहीं कर सके। फिर से प्रयास करें या अपने पासवर्ड का उपयोग करें।",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
-  "passkeyMigrationReplacementTryAgain": {
-    "message": "फिर से प्रयास करें",
-    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
-  },
   "passkeySetupStepRegister": {
     "message": "$1 रजिस्टर करें",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -9033,10 +9026,6 @@
   "relayerFee": {
     "message": "रीलेयर (relayer) फीस"
   },
-  "remindMeLater": {
-    "message": "मुझे बाद में याद दिलाएं",
-    "description": "Secondary action to postpone replacing a legacy passkey."
-  },
   "remove": {
     "message": "हटाएं"
   },
@@ -9379,9 +9368,6 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
-  },
-  "rpcUrlRateLimited": {
-    "message": "यह RPC प्रोवाइडर अनुरोधों को सीमित कर रहा है। बाद में फिर से कोशिश करें या कोई दूसरा RPC URL इस्तेमाल करें।"
   },
   "safeTransferFrom": {
     "message": "से सुरक्षित ट्रांसफर"
@@ -11674,9 +11660,6 @@
   },
   "swapSlippageAutoDescription": {
     "message": "ऑटो"
-  },
-  "swapSlippageCappedDescription": {
-    "message": "स्लिपेज टॉलरेंस 100% पर कैप किया गया था।"
   },
   "swapSlippageHighDescription": {
     "message": "दर्ज की गई स्लिपेज ($1%) को बहुत अधिक माना जाता है और इसकी वजह से खराब दर हो सकती है",

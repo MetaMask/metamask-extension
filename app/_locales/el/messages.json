@@ -3088,9 +3088,6 @@
   "copiedToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
   },
-  "copy": {
-    "message": "Αντιγραφή"
-  },
   "copyAddress": {
     "message": "Αντιγραφή διεύθυνσης στο πρόχειρο"
   },
@@ -6956,10 +6953,6 @@
     "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά ή χρησιμοποιήστε τον κωδικό πρόσβασής σας.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
-  "passkeyMigrationReplacementTryAgain": {
-    "message": "Προσπαθήστε ξανά",
-    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
-  },
   "passkeySetupStepRegister": {
     "message": "Εγγραφή με $1",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -9033,10 +9026,6 @@
   "relayerFee": {
     "message": "Χρέωση αποδέκτη"
   },
-  "remindMeLater": {
-    "message": "Υπενθυμίστε μου αργότερα",
-    "description": "Secondary action to postpone replacing a legacy passkey."
-  },
   "remove": {
     "message": "Διαγραφή"
   },
@@ -9379,9 +9368,6 @@
   },
   "rpcUrl": {
     "message": "Διεύθυνση URL του RPC"
-  },
-  "rpcUrlRateLimited": {
-    "message": "Αυτός ο πάροχος RPC έχει θέσει περιορισμό στα αιτήματα. Προσπαθήστε ξανά αργότερα ή χρησιμοποιήστε διαφορετική διεύθυνση URL RPC."
   },
   "safeTransferFrom": {
     "message": "Ασφαλής μεταφορά από"
@@ -11674,9 +11660,6 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Αυτόματα"
-  },
-  "swapSlippageCappedDescription": {
-    "message": "Η ανοχή απόκλισης περιορίστηκε στο 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Η απόκλιση που καταχωρήσατε ($1%) θεωρείται πολύ υψηλή και μπορεί να επιφέρει χαμηλό επιτόκιο",

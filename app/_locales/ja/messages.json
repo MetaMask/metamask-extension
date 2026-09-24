@@ -3088,9 +3088,6 @@
   "copiedToClipboard": {
     "message": "クリップボードにコピーしました"
   },
-  "copy": {
-    "message": "コピー"
-  },
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
   },
@@ -6948,10 +6945,6 @@
     "message": "$1を確認できませんでした。もう一度試すか、パスワードを使用してください。",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
-  "passkeyMigrationReplacementTryAgain": {
-    "message": "もう一度お試しください",
-    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
-  },
   "passkeySetupStepRegister": {
     "message": "$1の登録",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -9025,10 +9018,6 @@
   "relayerFee": {
     "message": "リレイヤー手数料"
   },
-  "remindMeLater": {
-    "message": "了解",
-    "description": "Secondary action to postpone replacing a legacy passkey."
-  },
   "remove": {
     "message": "削除"
   },
@@ -9371,9 +9360,6 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
-  },
-  "rpcUrlRateLimited": {
-    "message": "このRPCプロバイダーはリクエストを制限しています。後でもう一度試すか、別のRPC URLをご利用ください。"
   },
   "safeTransferFrom": {
     "message": "安全な送金元:"
@@ -11666,9 +11652,6 @@
   },
   "swapSlippageAutoDescription": {
     "message": "自動"
-  },
-  "swapSlippageCappedDescription": {
-    "message": "スリッページ許容範囲は100%に制限されました。"
   },
   "swapSlippageHighDescription": {
     "message": "入力されたスリッページ ($1%) は非常に高いもののため、不利なレートに繋がる可能性があります",

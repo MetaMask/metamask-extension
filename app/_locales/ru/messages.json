@@ -3088,9 +3088,6 @@
   "copiedToClipboard": {
     "message": "Скопировано в буфер обмена"
   },
-  "copy": {
-    "message": "Копировать"
-  },
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
   },
@@ -6956,10 +6953,6 @@
     "message": "Нам не удалось проверить ваш $1. Попробуйте еще раз или используйте пароль.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
-  "passkeyMigrationReplacementTryAgain": {
-    "message": "Повторить попытку",
-    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
-  },
   "passkeySetupStepRegister": {
     "message": "Зарегистрировать $1",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -9033,10 +9026,6 @@
   "relayerFee": {
     "message": "Комиссия ретранслятора"
   },
-  "remindMeLater": {
-    "message": "Понятно",
-    "description": "Secondary action to postpone replacing a legacy passkey."
-  },
   "remove": {
     "message": "Удалить"
   },
@@ -9379,9 +9368,6 @@
   },
   "rpcUrl": {
     "message": "URL-адрес RPC"
-  },
-  "rpcUrlRateLimited": {
-    "message": "Этот поставщик RPC ограничивает запросы. Повторите попытку позже или используйте другой URL-адрес RPC."
   },
   "safeTransferFrom": {
     "message": "Безопасный перевод из"
@@ -11674,9 +11660,6 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Авто"
-  },
-  "swapSlippageCappedDescription": {
-    "message": "Допуск на проскальзывание ограничен 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Введенное проскальзывание ($1%) считается очень высоким и может привести к использованию плохого курса",

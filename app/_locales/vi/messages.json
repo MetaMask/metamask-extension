@@ -3088,9 +3088,6 @@
   "copiedToClipboard": {
     "message": "Đã sao chép vào bộ nhớ đệm"
   },
-  "copy": {
-    "message": "Sao chép"
-  },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào bộ nhớ đệm"
   },
@@ -6960,10 +6957,6 @@
     "message": "Chúng tôi không thể xác minh $1 của bạn. Hãy thử lại hoặc sử dụng mật khẩu.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
-  "passkeyMigrationReplacementTryAgain": {
-    "message": "Thử lại",
-    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
-  },
   "passkeySetupStepRegister": {
     "message": "Đăng ký $1",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -9047,10 +9040,6 @@
   "relayerFee": {
     "message": "Phí sàn chuyển tiếp"
   },
-  "remindMeLater": {
-    "message": "Nhắc tôi sau",
-    "description": "Secondary action to postpone replacing a legacy passkey."
-  },
   "remove": {
     "message": "Xóa"
   },
@@ -9393,9 +9382,6 @@
   },
   "rpcUrl": {
     "message": "URL RPC"
-  },
-  "rpcUrlRateLimited": {
-    "message": "Nhà cung cấp RPC này đang giới hạn số lượng yêu cầu. Hãy thử lại sau hoặc sử dụng một URL RPC khác."
   },
   "safeTransferFrom": {
     "message": "Chuyển khoản an toàn từ"
@@ -11688,9 +11674,6 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Tự động"
-  },
-  "swapSlippageCappedDescription": {
-    "message": "Mức trượt giá cho phép đã được giới hạn ở mức 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Mức trượt giá đã nhập ($1%) được xem là quá cao và có thể dẫn đến tỷ giá không sinh lời",

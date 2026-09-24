@@ -3088,9 +3088,6 @@
   "copiedToClipboard": {
     "message": "Copiado para a área de transferência"
   },
-  "copy": {
-    "message": "Copiar"
-  },
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
@@ -6956,10 +6953,6 @@
     "message": "Não foi possível verificar sua $1. Tente novamente ou use sua senha.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
-  "passkeyMigrationReplacementTryAgain": {
-    "message": "Tentar novamente",
-    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
-  },
   "passkeySetupStepRegister": {
     "message": "Cadastrar $1",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -9033,10 +9026,6 @@
   "relayerFee": {
     "message": "Taxa do relayer"
   },
-  "remindMeLater": {
-    "message": "Entendi",
-    "description": "Secondary action to postpone replacing a legacy passkey."
-  },
   "remove": {
     "message": "Remover"
   },
@@ -9379,9 +9368,6 @@
   },
   "rpcUrl": {
     "message": "URL da RPC"
-  },
-  "rpcUrlRateLimited": {
-    "message": "Este provedor de RPC está limitando as solicitações. Tente novamente mais tarde ou use um URL de RPC diferente."
   },
   "safeTransferFrom": {
     "message": "Transferência segura de"
@@ -11674,9 +11660,6 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Automático"
-  },
-  "swapSlippageCappedDescription": {
-    "message": "A tolerância a slippage foi limitada a 100%."
   },
   "swapSlippageHighDescription": {
     "message": "O slippage inserido ($1%) é considerado muito alto e pode resultar em uma taxa ruim",
