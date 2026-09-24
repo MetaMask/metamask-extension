@@ -7551,6 +7551,13 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsAbout": {
+    "message": "About"
+  },
+  "perpsAboutAsset": {
+    "message": "About $1",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "Activity"
   },
@@ -8158,6 +8165,13 @@
   },
   "perpsRateLimitExceeded": {
     "message": "Too many requests. Please wait and try again."
+  },
+  "perpsReadMore": {
+    "message": "Read more"
+  },
+  "perpsReadMoreAbout": {
+    "message": "Read more about $1",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "Recent activity"

@@ -259,6 +259,12 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockUsePerpsMarketAboutTracking = jest.fn(
+  ({ description }: { description?: string }) => ({
+    hasDescription: Boolean(description?.trim()),
+    aboutRef: jest.fn(),
+  }),
+);
 // Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
 // properties the page constructs.
 const mockPerpsScreenViewedOptions: {
@@ -277,6 +283,8 @@ jest.mock('../../hooks/perps', () => ({
     }
     return { track: jest.fn() };
   },
+  usePerpsMarketAboutTracking: (options: { description?: string }) =>
+    mockUsePerpsMarketAboutTracking(options),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
@@ -1458,6 +1466,43 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByText(messages.perpsStats.message)).toBeInTheDocument();
       expect(getByText(messages.perps24hVolume.message)).toBeInTheDocument();
+    });
+
+    it('displays the About section between Stats and Recent Activity', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH'
+            ? { ...market, description: 'Ethereum market description.' }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState(true));
+      const { getByTestId, getByText } = await renderPage(store);
+
+      const statsHeader = getByTestId('perps-stats-section-header');
+      const aboutSection = getByTestId('perps-market-about-section');
+      const recentActivityHeader = getByText(
+        messages.perpsRecentActivity.message,
+      );
+
+      expect(statsHeader.compareDocumentPosition(aboutSection)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(aboutSection.compareDocumentPosition(recentActivityHeader)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    it('does not render the About section without a description', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { queryByTestId } = await renderPage(store);
+
+      expect(
+        queryByTestId('perps-market-about-section'),
+      ).not.toBeInTheDocument();
     });
 
     it('displays recent activity section', async () => {
