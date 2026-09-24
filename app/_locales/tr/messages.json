@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "Short kapatıldı - piyasa"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Para yatırma işlemi başarısız oldu"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "$1 yatırılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "$1 yatırıldı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Alınamadı"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "$1 alındı",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "Alış işlemi başarısız oldu"
   },
@@ -3066,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "Panoya kopyalandı"
   },
+  "copy": {
+    "message": "Kopyala"
+  },
   "copyAddress": {
     "message": "Adresi panoya kopyala"
   },
@@ -5418,6 +5443,14 @@
   "money": {
     "message": "Bakiye"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "%$1 APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "$1 kazanın",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiridir (APY). APY değişken olup garanti edilmemektedir."
   },
@@ -5559,6 +5592,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Para bakiyeniz üzerinden otomatik getiri elde edin"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Otomatik olarak $1 orana kadar kazanın",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Kilitleme olmadan tam likidite alarak dilediğiniz zaman işlem yapabilir veya para çekebilirsiniz"
   },
@@ -5598,6 +5635,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Ücret yok"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Tahmin, %$1 Yıllık Yüzde Getirinin (APY) bir yıl boyunca değişmeden kalacağı varsayımına dayanır. APY değişkendir ve garanti edilmez. Getiri garantisi yoktur.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Bakiyeniz üzerinden kazanın"
   },
@@ -5615,6 +5656,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiri (APY) oranıdır. APY değişkendir ve garanti edilmez. Fonlar, Veda tarafından yönetilen ve Steakhouse Financial tarafından risk denetimi yapılan, yerleşik kredi piyasalarında getiri sağlayan bir DeFi kasasına yatırılır."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Money account hesabınız otomatik olarak $1 orana kadar kazanır.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money account, Monad tarafından desteklenmektedir."
@@ -6879,6 +6924,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "$1 doğrulanamadı. Tekrar deneyin veya şifrenizi kullanın.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Tekrar deneyin",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 Kaydet",
@@ -8676,7 +8725,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Sağlayıcı seç"
+    "message": "Sağlayıcıları seçin"
   },
   "rampsCompleteBuyTitle": {
     "message": "Satın alma işlemini tamamla",
@@ -8955,6 +9004,10 @@
   },
   "relayerFee": {
     "message": "Relayer ücreti"
+  },
+  "remindMeLater": {
+    "message": "Daha sonra hatırlat",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Kaldır"
@@ -9298,6 +9351,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL adresi"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Bu RPC sağlayıcısı talepleri sınırlandırıyor. Daha sonra tekrar deneyin veya farklı bir RPC URL kullanın."
   },
   "safeTransferFrom": {
     "message": "Güvenli transfer kaynağı"
@@ -11562,6 +11618,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Otomatik"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Kayma toleransı %100 olarak sınırlandırıldı."
   },
   "swapSlippageHighDescription": {
     "message": "Girilen kayma ($1%) çok yüksek kabul edilir ve kötü bir oranla sonuçlanabilir",

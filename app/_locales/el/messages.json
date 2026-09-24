@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "Η θέση πώλησης έκλεισε – αγορά"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Η κατάθεση απέτυχε"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Κατάθεση $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Κατατέθηκαν $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Η λήψη απέτυχε"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Λήψη $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Ελήφθη $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "Η αγορά απέτυχε"
   },
@@ -3066,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
   },
+  "copy": {
+    "message": "Αντιγραφή"
+  },
   "copyAddress": {
     "message": "Αντιγραφή διεύθυνσης στο πρόχειρο"
   },
@@ -5414,6 +5439,14 @@
   "money": {
     "message": "Οικονομικά"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Κερδίστε $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Το επιτόκιο που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Ποσοστιαία Απόδοση (APY) με βάση τις τρέχουσες συνθήκες της αγοράς. Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
   },
@@ -5555,6 +5588,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Κερδίστε αυτόματα απόδοση στο υπόλοιπό σας στον Money account"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Κερδίστε έως $1 αυτόματα",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Πλήρης ρευστότητα χωρίς δεσμεύσεις, ώστε να μπορείτε να κάνετε συναλλαγές ή ανάληψη οποιαδήποτε στιγμή"
   },
@@ -5594,6 +5631,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Χωρίς τέλος συναλλαγής"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Η εκτίμηση βασίζεται στην υπόθεση ότι η ετήσια ποσοστιαία απόδοση (APY) του $1% παραμένει αμετάβλητη για ένα έτος. Το APY είναι μεταβλητό και δεν είναι εγγυημένο. Δεν υπάρχει εγγύηση απόδοσης.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Κερδίστε από το υπόλοιπό σας"
   },
@@ -5611,6 +5652,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "Η απόδοση που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Απόδοση (APY), βάσει των τρεχουσών συνθηκών της αγοράς. Το APY είναι κυμαινόμενο και δεν εγγυάται απόδοση. Τα κεφάλαια τοποθετούνται σε ένα DeFi vault, με διαχείριση από τη Veda και εποπτεία κινδύνου από τη Steakhouse Financial, το οποίο αποφέρει αποδόσεις σε καθιερωμένες αγορές δανεισμού."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Ο Money account σας αποδίδει αυτόματα έως $1.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Ο Money Account υποστηρίζεται από την Monad."
@@ -6875,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά ή χρησιμοποιήστε τον κωδικό πρόσβασής σας.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Προσπαθήστε ξανά",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Εγγραφή με $1",
@@ -8662,7 +8711,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Επιλέξτε πάροχο"
+    "message": "Επιλέξτε παρόχους"
   },
   "rampsCompleteBuyTitle": {
     "message": "Ολοκλήρωση αγοράς",
@@ -8941,6 +8990,10 @@
   },
   "relayerFee": {
     "message": "Χρέωση αποδέκτη"
+  },
+  "remindMeLater": {
+    "message": "Υπενθυμίστε μου αργότερα",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Διαγραφή"
@@ -9284,6 +9337,9 @@
   },
   "rpcUrl": {
     "message": "Διεύθυνση URL του RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Αυτός ο πάροχος RPC έχει θέσει περιορισμό στα αιτήματα. Προσπαθήστε ξανά αργότερα ή χρησιμοποιήστε διαφορετική διεύθυνση URL RPC."
   },
   "safeTransferFrom": {
     "message": "Ασφαλής μεταφορά από"
@@ -11548,6 +11604,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Αυτόματα"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Η ανοχή απόκλισης περιορίστηκε στο 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Η απόκλιση που καταχωρήσατε ($1%) θεωρείται πολύ υψηλή και μπορεί να επιφέρει χαμηλό επιτόκιο",

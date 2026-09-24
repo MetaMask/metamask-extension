@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "已市价平空"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "存款失败"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "正在存入 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "已存入 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "接收失败"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "正在接收 $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "已接收 $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "购买失败"
   },
@@ -3066,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "已复制到剪贴板"
   },
+  "copy": {
+    "message": "复制"
+  },
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },
@@ -5414,6 +5439,14 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% 年化收益率",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "赚取 $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
   },
@@ -5555,6 +5588,10 @@
   "moneyBenefitAutoEarn": {
     "message": "为您的 Money 余额自动赚取收益"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "自动赚取高达 $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "享受完全流动性，无锁仓期限制，可随时交易或提现"
   },
@@ -5594,6 +5631,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "不收费"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "预测假设 $1% 的年化收益率（APY）在一年内保持不变。年化收益率会浮动，不作保证。收益不作保证。",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "为余额赚取收益"
   },
@@ -5611,6 +5652,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "所示收益率为基于当前市场状况的预估年化收益率（APY）。APY 会浮动变化，不作保证。资金将存入一个去中心化金融金库，该金库由 Veda 管理并由 Steakhouse Financial 进行风险监督，通过在成熟的借贷市场中运作来产生收益。"
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "您的 Money Account 可自动赚取最高 $1 的收益。",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money Account 由 Monad 提供支持。"
@@ -6875,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "我们无法验证您的 $1。请重试或使用您的密码。",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "请重试",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "注册 $1",
@@ -8948,6 +8997,10 @@
   "relayerFee": {
     "message": "中继器费用"
   },
+  "remindMeLater": {
+    "message": "明白了",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "删除"
   },
@@ -9290,6 +9343,9 @@
   },
   "rpcUrl": {
     "message": "RPC（远程过程调用）URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "此远程过程调用（RPC）提供商正在限制请求。请稍后再试，或使用其他 RPC 网址。\n\n"
   },
   "safeTransferFrom": {
     "message": "安全转账来自"
@@ -11554,6 +11610,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "自动"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "滑移容差上限为 100%。"
   },
   "swapSlippageHighDescription": {
     "message": "输入的滑点（$1%）被认为是很高的，可能会因而得到较差的汇率",
