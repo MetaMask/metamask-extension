@@ -2041,7 +2041,7 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/keyring-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/base-data-service>lodash-es": true,
@@ -2058,7 +2058,7 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
+        "@metamask/profile-metrics-controller>@metamask/keyring-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/base-data-service>lodash-es": true,
@@ -2075,7 +2075,7 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
+        "@metamask/profile-sync-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/base-data-service>lodash-es": true,
@@ -2671,6 +2671,7 @@
         "URLSearchParams": true,
         "addEventListener": true,
         "atob": true,
+        "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
         "dispatchEvent": true,
@@ -2682,12 +2683,14 @@
         "@metamask/base-controller": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/profile-sync-controller>@metamask/keyring-controller": true,
-        "@metamask/utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/profile-sync-controller>@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/profile-sync-controller>@signinwithethereum/siwe": true,
-        "buffer": true
+        "buffer": true,
+        "loglevel": true
       }
     },
     "@metamask/providers": {
@@ -3226,6 +3229,34 @@
         "lodash": true
       }
     },
+    "@metamask/bridge-status-controller>@metamask/keyring-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
+      }
+    },
+    "@metamask/profile-metrics-controller>@metamask/keyring-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
+      }
+    },
     "@metamask/mobile-wallet-protocol-dapp-client>@metamask/utils": {
       "globals": {
         "Buffer": true,
@@ -3241,6 +3272,20 @@
     "@metamask/notification-services-controller>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true
+      }
+    },
+    "@metamask/profile-sync-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
       }
     },
     "@metamask/wallet": {

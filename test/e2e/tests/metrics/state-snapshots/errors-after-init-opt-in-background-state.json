@@ -98,6 +98,7 @@
   },
   "AssetsController": "object",
   "AuthenticationController": {
+    "enrolledCredentials": "object",
     "isSignedIn": "boolean",
     "needsProfilePairing": "boolean",
     "needsSocialPairing": "boolean"

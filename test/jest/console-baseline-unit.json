@@ -190,7 +190,7 @@
       "error: The above error occurred in": 3
     },
     "ui/components/app/assets/nfts/nfts-tab/nfts-tab.test.js": {
-      "React: Act warnings (component updates not wrapped)": 41,
+      "React: Act warnings (component updates not wrapped)": 49,
       "React: DOM nesting violations": 1
     },
     "ui/components/app/basic-configuration-modal/basic-configuration-modal.test.tsx": {
