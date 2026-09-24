@@ -188,13 +188,13 @@ class ContactsSettings {
    */
   async deleteContact(contactName: string): Promise<void> {
     console.log('Deleting contact on contacts page');
-    await this.driver.findScrollToAndClickElement({
+    await this.driver.clickElement({
       text: contactName,
       css: this.contactListItem,
     });
-    await this.driver.clickElement(this.deleteContactButton);
     await this.driver.waitForSelector(this.contactDetailsHeader);
     await this.driver.waitForSelector(this.contactDetailsName(contactName));
+    await this.driver.clickElement(this.deleteContactButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.deleteContactConfirmButton,
     );
