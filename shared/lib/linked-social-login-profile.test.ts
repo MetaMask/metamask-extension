@@ -9,25 +9,32 @@ import {
 } from './linked-social-login-profile';
 
 /**
- * Builds auth state with paired identifiers on the primary SRP session
- * profile. Core PR #10394 adds `pairedIdentifierIds` to `UserProfile`; cast
- * until that lands in the installed `@metamask/profile-sync-controller`.
+ * Builds auth state as `performSignIn` writes it: paired identifiers at the
+ * top level and alongside (not inside) each SRP session profile. Cast because
+ * Core does not declare these fields on its published state type.
  *
- * @param pairedIdentifierIds - Paired identifiers to attach to the profile.
+ * @param options - Placement of the paired identifiers.
+ * @param options.topLevel - Identifiers on `state.pairedIdentifierIds`.
+ * @param options.session - Identifiers on the SRP session entry.
  */
-function buildAuthState(
-  pairedIdentifierIds: PairedIdentifier[],
-): AuthenticationControllerState {
+function buildAuthState({
+  topLevel,
+  session,
+}: {
+  topLevel?: PairedIdentifier[];
+  session?: PairedIdentifier[];
+}): AuthenticationControllerState {
   return {
     isSignedIn: true,
+    pairedIdentifierIds: topLevel,
     srpSessionData: {
       'entropy-1': {
+        pairedIdentifierIds: session,
         profile: {
           identifierId: 'id-1',
           metaMetricsId: 'mm-1',
           profileId: 'profile-1',
           canonicalProfileId: 'profile-1',
-          pairedIdentifierIds,
         },
         token: {
           accessToken: 'token',
@@ -68,20 +75,42 @@ describe('pairedIdentifiersIncludeSocialLogin', () => {
 });
 
 describe('getPairedIdentifierIdsFromAuthState', () => {
-  it('reads paired identifier ids from the primary srp session profile', () => {
+  it('reads paired identifier ids from the top level of auth state', () => {
     expect(
       getPairedIdentifierIdsFromAuthState(
-        buildAuthState([{ type: 'GOOGLE' }, { type: 'SRP' }]),
+        buildAuthState({ topLevel: [{ type: 'GOOGLE' }, { type: 'SRP' }] }),
       ),
     ).toStrictEqual([{ type: 'GOOGLE' }, { type: 'SRP' }]);
+  });
+
+  it('falls back to the srp session entry when the top level is unset', () => {
+    expect(
+      getPairedIdentifierIdsFromAuthState(
+        buildAuthState({ session: [{ type: 'GOOGLE' }] }),
+      ),
+    ).toStrictEqual([{ type: 'GOOGLE' }]);
+  });
+
+  it('returns undefined when no paired identifiers are present', () => {
+    expect(
+      getPairedIdentifierIdsFromAuthState(buildAuthState({})),
+    ).toBeUndefined();
   });
 });
 
 describe('authenticationStateIncludesLinkedSocialLogin', () => {
-  it('reads paired identifier ids from srpSessionData profile', () => {
+  it('detects a social login from top-level paired identifiers', () => {
     expect(
       authenticationStateIncludesLinkedSocialLogin(
-        buildAuthState([{ type: 'GOOGLE' }]),
+        buildAuthState({ topLevel: [{ type: 'GOOGLE' }] }),
+      ),
+    ).toBe(true);
+  });
+
+  it('detects a social login from srp session paired identifiers', () => {
+    expect(
+      authenticationStateIncludesLinkedSocialLogin(
+        buildAuthState({ session: [{ type: 'APPLE' }] }),
       ),
     ).toBe(true);
   });
@@ -89,7 +118,7 @@ describe('authenticationStateIncludesLinkedSocialLogin', () => {
   it('returns false when paired identifiers are only SRP', () => {
     expect(
       authenticationStateIncludesLinkedSocialLogin(
-        buildAuthState([{ type: 'SRP' }]),
+        buildAuthState({ topLevel: [{ type: 'SRP' }] }),
       ),
     ).toBe(false);
   });

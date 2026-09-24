@@ -72,10 +72,11 @@ export function pairedIdentifiersIncludeSocialLogin(
 /**
  * Reads `pairedIdentifierIds` as exposed by Core after SRP login / pairing.
  *
- * `performSignIn` writes the identifiers both at the top level of state and
- * alongside (not inside) the profile of each `srpSessionData` entry. The
- * top-level copy is the primary read; the session copy is the fallback for
- * state persisted before the top-level field existed.
+ * The auth API nests `paired_identifier_ids` inside `profile` on the wire, but
+ * the SDK hoists it out, so controller state never has `profile.pairedIdentifierIds`.
+ * `performSignIn` writes it to the top level of state and, via the login-response
+ * spread, alongside (not inside) the profile of each `srpSessionData` entry. The
+ * persisted top-level copy is the primary read; the session copy is the fallback.
  *
  * @param authState - AuthenticationController state after `performSignIn`.
  */
