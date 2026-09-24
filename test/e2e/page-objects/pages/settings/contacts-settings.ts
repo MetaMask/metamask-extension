@@ -33,6 +33,13 @@ class ContactsSettings {
     text: 'Contact details',
   };
 
+  private readonly contactDetailsName = (contactName: string) => {
+    return {
+      testId: 'address-book-name',
+      text: contactName,
+    };
+  };
+
   private readonly contactListItem = '[data-testid="contact-list-item"]';
 
   private readonly contactListItemAddress =
@@ -43,13 +50,6 @@ class ContactsSettings {
 
   private readonly contactsPage = {
     testId: 'parent-selector-contacts-page',
-  };
-
-  private readonly contactDetailsName = (contactName: string) => {
-    return {
-      testId: 'address-book-name',
-      text: contactName,
-    };
   };
 
   private readonly createContactAddressInput = '#contact-address';
