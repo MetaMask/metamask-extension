@@ -20,6 +20,7 @@ import {
   PERPS_MARKET_LIST_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
+import { PERPS_HOME_TAB_ROUTE } from '../../hooks/perps/usePerpsHomeRoute';
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -265,6 +266,13 @@ const mockPerpsScreenViewedOptions: {
   eventName?: unknown;
   properties?: Record<string, unknown>;
 }[] = [];
+jest.mock('../../hooks/perps/usePerpsHomeRoute', () => {
+  const actual = jest.requireActual('../../hooks/perps/usePerpsHomeRoute');
+  return {
+    ...actual,
+    usePerpsHomeRoute: () => actual.PERPS_HOME_TAB_ROUTE,
+  };
+});
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
   usePerpsEventTracking: (options?: {
@@ -1224,7 +1232,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=perps', {
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_HOME_TAB_ROUTE, {
         replace: true,
       });
     });

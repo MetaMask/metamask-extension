@@ -13,6 +13,7 @@ import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-fla
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
 import type { PerpsTransaction } from '../../components/app/perps/types';
+import { PERPS_HOME_TAB_ROUTE } from '../../hooks/perps/usePerpsHomeRoute';
 import PerpsActivityPage from './perps-activity-page';
 
 const mockNavigate = jest.fn();
@@ -43,6 +44,14 @@ const mockUsePerpsTransactionHistory = jest.fn().mockReturnValue({
 jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
   usePerpsTransactionHistory: () => mockUsePerpsTransactionHistory(),
 }));
+
+jest.mock('../../hooks/perps/usePerpsHomeRoute', () => {
+  const actual = jest.requireActual('../../hooks/perps/usePerpsHomeRoute');
+  return {
+    ...actual,
+    usePerpsHomeRoute: () => actual.PERPS_HOME_TAB_ROUTE,
+  };
+});
 
 const mockGetIsPerpsExperienceAvailable =
   getIsPerpsExperienceAvailable as jest.MockedFunction<
@@ -147,7 +156,7 @@ describe('PerpsActivityPage', () => {
     const backButton = screen.getByTestId('perps-activity-back-button');
     fireEvent.click(backButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/?tab=perps', {
+    expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_TAB_ROUTE, {
       replace: true,
     });
   });

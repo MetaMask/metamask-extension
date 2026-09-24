@@ -12,6 +12,7 @@ import {
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { PERPS_HOME_TAB_ROUTE } from '../../../hooks/perps/usePerpsHomeRoute';
 import { MarketListView } from '.';
 
 jest.mock('../../../store/background-connection', () => ({
@@ -49,6 +50,14 @@ jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
   usePerpsLiveAccount: () => ({ account: null }),
 }));
+
+jest.mock('../../../hooks/perps/usePerpsHomeRoute', () => {
+  const actual = jest.requireActual('../../../hooks/perps/usePerpsHomeRoute');
+  return {
+    ...actual,
+    usePerpsHomeRoute: () => actual.PERPS_HOME_TAB_ROUTE,
+  };
+});
 
 const mockStore = configureStore({
   metamask: {
@@ -236,7 +245,7 @@ describe('MarketListView', () => {
       const backButton = screen.getByTestId('back-button');
       fireEvent.click(backButton);
 
-      expect(mockNavigate).toHaveBeenCalledWith('/?tab=perps', {
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_TAB_ROUTE, {
         replace: true,
       });
     });
