@@ -11,7 +11,6 @@ const DAI_SEARCH =
 
 const mockNavigate = jest.fn();
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
-const globalMockPlatformOpenTab = jest.fn();
 let mockOpensBuyInPortfolioTab = false;
 let mockSearch = '';
 
@@ -22,9 +21,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 // jsdom environment: `global` is the ambient window; give it a platform mock.
-(global as { platform?: object }).platform = {
-  openTab: globalMockPlatformOpenTab,
-};
+(global as { platform?: object }).platform = {};
 
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -131,16 +128,29 @@ describe('BuyDeepLinkEntry', () => {
 
   it('opens the legacy Portfolio redirect with verbatim params when the Portfolio fallback applies', async () => {
     mockOpensBuyInPortfolioTab = true;
-    renderEntry(DAI_SEARCH);
+    const originalLocation = window.location;
+    const locationMock: { href: string } = { href: '' };
+    Object.defineProperty(window, 'location', {
+      value: locationMock,
+      writable: true,
+    });
 
-    await waitFor(() => {
-      expect(globalMockPlatformOpenTab).toHaveBeenCalledWith({
-        url: 'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
+    try {
+      renderEntry(DAI_SEARCH);
+
+      await waitFor(() => {
+        expect(locationMock.href).toBe(
+          'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
+        );
       });
-    });
+    } finally {
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+      });
+    }
+
     expect(mockGoToBuy).not.toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-      replace: true,
-    });
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

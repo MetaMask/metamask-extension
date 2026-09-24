@@ -66,15 +66,18 @@ export function BuyDeepLinkEntry() {
     };
 
     if (opensBuyInPortfolioTab) {
-      // Legacy redirect: forward the deep link params verbatim (the pre-UB2
-      // `/buy` behavior), then send this tab home. Intentionally NOT
+      // Legacy redirect: navigate this tab to Portfolio with the deep link
+      // params forwarded verbatim (the pre-UB2 `/buy` behavior, where the
+      // deep-link host itself redirected). Intentionally NOT
       // `openBuyCryptoInPdapp` (the `goToBuy` Portfolio path) — that builder
       // drops the link's token/amount params and appends analytics params.
+      // Navigating in place (rather than opening a new tab and sending this
+      // one home) keeps returning Portfolio buyers from accumulating stray
+      // extension tabs they didn't ask for.
       const { redirectTo } = getBuyPortfolioRedirectDestination(
         new URLSearchParams(location.search),
       );
-      global.platform.openTab({ url: redirectTo.toString() });
-      navigate(DEFAULT_ROUTE, { replace: true });
+      window.location.href = redirectTo.toString();
       return;
     }
 
