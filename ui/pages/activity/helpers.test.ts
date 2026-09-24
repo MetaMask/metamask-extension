@@ -105,7 +105,6 @@ describe('activityMatchesAssetId', () => {
       ),
     ).toBe(true);
   });
-
 });
 
 describe('activityMatchesNetworks', () => {
