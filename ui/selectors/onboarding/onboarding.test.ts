@@ -68,6 +68,20 @@ describe('social-sync selectors', () => {
       expect(getIsBasicFunctionalitySocialLoginUser(MOCK_STATE)).toBe(true);
     });
 
+    it('returns true for an SRP import of a socially paired profile', () => {
+      expect(
+        getIsBasicFunctionalitySocialLoginUser({
+          ...MOCK_STATE,
+          metamask: {
+            ...MOCK_STATE.metamask,
+            authConnection: undefined,
+            firstTimeFlowType: FirstTimeFlowType.import,
+            preferences: { hasLinkedSocialLoginProfile: true },
+          },
+        }),
+      ).toBe(true);
+    });
+
     it('returns false for a non-social flow without an auth connection', () => {
       expect(
         getIsBasicFunctionalitySocialLoginUser({
