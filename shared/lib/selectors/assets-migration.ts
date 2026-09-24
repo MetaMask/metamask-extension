@@ -37,6 +37,7 @@ import {
 } from '../assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import { AssetType } from '../../constants/transaction';
+import { augmentTempoCurrencyRates } from '../assets/enablement/tempo';
 import { createDeepEqualSelector } from './selector-creators';
 
 // Old state controllers and fields status
@@ -723,7 +724,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       };
     }
 
-    return result;
+    return augmentTempoCurrencyRates(result, assetsPrice);
   },
 ) as unknown as ControllerStateSelector<CurrencyRateState, 'currencyRates'>;
 

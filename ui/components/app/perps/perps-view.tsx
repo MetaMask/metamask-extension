@@ -10,6 +10,7 @@ import type { Order, Position } from '@metamask/perps-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { usePerpsEntryTrace } from '../../../hooks/perps/usePerpsEntryTrace';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -114,6 +115,7 @@ export const PerpsView = () => {
     watchlistMarkets,
     watchlistCount,
     isInitialLoading: marketsLoading,
+    isLive: marketsLive,
   } = usePerpsTabExploreData();
 
   const {
@@ -391,6 +393,19 @@ export const PerpsView = () => {
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
 
+  let entryVariant: 'empty' | 'position' | 'order' = 'empty';
+  if (orders.length > 0) {
+    entryVariant = 'order';
+  } else if (positions.length > 0) {
+    entryVariant = 'position';
+  }
+  usePerpsEntryTrace(
+    'home',
+    exploreMarkets,
+    isLoading,
+    marketsLive,
+    entryVariant,
+  );
   usePerpsMeasurement('PerpsTabLoaded', !isLoading);
 
   usePerpsEventTracking({
