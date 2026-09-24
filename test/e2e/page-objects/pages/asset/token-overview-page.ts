@@ -16,7 +16,7 @@ import { readResolvedAssetActionsLayout } from './asset-actions-layout';
 class TokenOverviewPage {
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
-  private readonly backButton = '.asset-page__back-button';
+  private readonly backButton = '[data-testid="asset-page-back-button"]';
 
   private driver: Driver;
 

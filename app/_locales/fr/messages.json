@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "Position courte fermée - marché"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "Le dépôt a échoué"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "Dépôt"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "Déposé"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Échec de l’envoi"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Envoi"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "Envoyé"
-  },
   "activity_nftBuy_failed_title": {
     "message": "Échec de l’achat"
   },
@@ -3105,9 +3069,6 @@
   "copyAddressShort": {
     "message": "Copier l’adresse"
   },
-  "copyPrivateKey": {
-    "message": "Copier la clé privée"
-  },
   "copyToClipboard": {
     "message": "Copier dans le presse-papiers"
   },
@@ -3166,6 +3127,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Réinstallez MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Réinitialiser l’état de MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Vous rencontrez toujours des problèmes ?"
   },
@@ -3187,9 +3151,6 @@
   },
   "current": {
     "message": "Actuel"
-  },
-  "currentAccountNotConnected": {
-    "message": "Votre compte actuel n’est pas connecté"
   },
   "currentEstimatedBaseFee": {
     "message": "Actuel : $1 GWEI"
@@ -5025,9 +4986,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Pour votre sécurité, vous ne pouvez pas sélectionner ce texte actuellement."
   },
   "learnHow": {
     "message": "Découvrir comment"
@@ -8561,10 +8519,6 @@
     "message": "Clé privée",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Clé privée pour $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "La clé privée est masquée",
     "description": "Explains that the private key input is hidden"
@@ -8576,9 +8530,6 @@
   "privateKeyShown": {
     "message": "Cette clé privée est affichée",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Avertissement : ne divulguez jamais cette clé, quiconque possède vos clés privées peut voler tous les actifs de votre compte."
   },
   "privateKeys": {
     "message": "Clés privées",
@@ -9958,9 +9909,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Nouvelle adresse"
   },
-  "sendBugReport": {
-    "message": "Envoyez-nous un rapport de bogue."
-  },
   "sendBundleHwGasPayment": {
     "message": "Paiement des frais de réseau avec $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10682,12 +10630,6 @@
   "showPermissions": {
     "message": "Afficher les autorisations"
   },
-  "showPrivateKey": {
-    "message": "Afficher la clé privée"
-  },
-  "showSRP": {
-    "message": "Afficher la phrase secrète de récupération"
-  },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"
   },
@@ -11294,38 +11236,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Voulez-vous vraiment continuer ?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Vous pouvez essayer de copier et de restaurer votre fichier d’état manuellement avant de restaurer votre coffre-fort en suivant $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Vous pouvez essayer de copier et de restaurer votre fichier d’état manuellement avant de réinitialiser MetaMask en suivant $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Votre coffre-fort ne peut pas être restauré automatiquement."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Votre coffre-fort peut être restauré à partir d’une sauvegarde automatique. La restauration automatique supprimera vos paramètres et préférences actuels et ne restaurera que votre coffre-fort."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Erreur interne : impossible d’accéder à la base de données"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Réinitialiser l’état de MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Réinitialisation de la base de données…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restaurer les comptes"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restauration de la base de données…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "ces instructions ",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Comment récupérer votre phrase secrète de récupération ?"
@@ -12130,9 +12053,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "La connexion à $1 n’est pas fiable. Vérifiez la configuration de votre connexion réseau avant de continuer ou réessayez plus tard.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Ce comportement est inattendu et doit être signalé comme un bogue, même si vos comptes ont été restaurés."
   },
   "unexpectedError": {
     "message": "Une erreur inattendue s’est produite.",

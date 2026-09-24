@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "Short-Position geschlossen ‒ Markt"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "Einzahlung fehlgeschlagen"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "Einzahlung"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "Eingezahlt"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Senden fehlgeschlagen"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Senden"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "Gesendet"
-  },
   "activity_nftBuy_failed_title": {
     "message": "Kauf fehlgeschlagen"
   },
@@ -3105,9 +3069,6 @@
   "copyAddressShort": {
     "message": "Adresse kopieren"
   },
-  "copyPrivateKey": {
-    "message": "Privaten Schlüssel kopieren"
-  },
   "copyToClipboard": {
     "message": "In die Zwischenablage kopieren"
   },
@@ -3166,6 +3127,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask neu installieren"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask-Status zurücksetzen"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Haben Sie immer noch Probleme?"
   },
@@ -3187,9 +3151,6 @@
   },
   "current": {
     "message": "Aktuell"
-  },
-  "currentAccountNotConnected": {
-    "message": "Ihr aktuelles Konto ist nicht verbunden."
   },
   "currentEstimatedBaseFee": {
     "message": "Aktuell: $1 GWEI"
@@ -5025,9 +4986,6 @@
   "lattice": {
     "message": "Gitter",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Zu Ihrer Sicherheit ist die Auswahl dieses Textes im Moment nicht möglich."
   },
   "learnHow": {
     "message": "Erfahren Sie, wie es funktioniert"
@@ -8561,10 +8519,6 @@
     "message": "Privater Schlüssel",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Privater Schlüssel für $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Der private Schlüssel ist verborgen",
     "description": "Explains that the private key input is hidden"
@@ -8576,9 +8530,6 @@
   "privateKeyShown": {
     "message": "Dieser private Schlüssel wird angezeigt",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Warnung: Niemals jemandem ihren privaten Key mitteilen. Jeder der im Besitz Ihres privaten Keys ist, kann jegliches Guthaben Ihres Kontos stehlen."
   },
   "privateKeys": {
     "message": "Private Schlüssel",
@@ -9958,9 +9909,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Neue Adresse"
   },
-  "sendBugReport": {
-    "message": "Übermitteln Sie uns einen Fehlerbericht."
-  },
   "sendBundleHwGasPayment": {
     "message": "Netzwerkgebühr mit $1 bezahlen",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10682,12 +10630,6 @@
   "showPermissions": {
     "message": "Genehmigungen anzeigen"
   },
-  "showPrivateKey": {
-    "message": "Privaten Schlüssel anzeigen"
-  },
-  "showSRP": {
-    "message": "Geheime Wiederherstellungsphrase anzeigen"
-  },
   "showTestnetNetworks": {
     "message": "Testnetzwerke anzeigen"
   },
@@ -11294,38 +11236,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Möchten Sie wirklich fortfahren?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, Ihren Tresor wiederherzustellen, indem Sie $1 befolgen.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, MetaMask zurückzusetzen, indem Sie $1 befolgen.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ihr Tresor kann nicht automatisch wiederhergestellt werden."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Ihr Tresor kann aus einer automatischen Sicherung wiederhergestellt werden. Bei der automatischen Wiederherstellung werden Ihre aktuellen Einstellungen und Präferenzen gelöscht und nur Ihr Tresor wiederhergestellt."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Interner Fehler: Auf die Datenbank kann nicht zugegriffen werden"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask-Status zurücksetzen"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Datenbank wird zurückgesetzt …"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Konten wiederherstellen"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Datenbank wird wiederhergestellt …"
   },
   "stateCorruptionTheseInstructions": {
     "message": "diese Anweisungen",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "So stellen Sie Ihre geheime Wiederherstellungsphrase wieder her"
@@ -12130,9 +12053,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Die Verbindung mit $1 ist unzuverlässig. Aktualisieren Sie die Details zur Netzwerkverbindung, bevor Sie fortfahren, oder versuchen Sie es später erneut.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Dieses Verhalten ist unerwartet und sollte als Fehler gemeldet werden, auch wenn Ihre Konten wiederhergestellt werden."
   },
   "unexpectedError": {
     "message": "Ein unerwarteter Fehler ist aufgetreten.",

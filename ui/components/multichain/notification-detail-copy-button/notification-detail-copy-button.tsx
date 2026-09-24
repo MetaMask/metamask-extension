@@ -80,7 +80,7 @@ export const NotificationDetailCopyButton: FC<
       };
 
       trackEvent(
-        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+        createEventBuilder(MetaMetricsEventName.NotificationDetailItemClicked)
           .addCategory(MetaMetricsEventCategory.NotificationInteraction)
           .addProperties({
             /* eslint-disable @typescript-eslint/naming-convention */

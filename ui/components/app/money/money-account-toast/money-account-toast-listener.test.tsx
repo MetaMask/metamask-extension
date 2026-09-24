@@ -11,6 +11,12 @@ import {
   getMoneyAccountDepositIntent,
   setMoneyAccountDepositIntent,
 } from '../../../../helpers/money/deposit-intent';
+import {
+  isKnownMoneyBatchChild,
+  isMoneyBatchInFlight,
+  registerMoneyBatchTransaction,
+  resetMoneyBatchRegistry,
+} from '../../../../helpers/money/money-batch-registry';
 import { useMoneyAccountToasts } from './money-account-toast-listener';
 
 const EVENT = 'TransactionController:transactionStatusUpdated';
@@ -118,6 +124,7 @@ describe('useMoneyAccountToasts', () => {
     jest.clearAllMocks();
     mockUseMoneyAccountToastLabel.mockReturnValue(undefined);
     mockTransactions = [];
+    resetMoneyBatchRegistry();
     [
       'approved-1',
       'lifecycle-1',
@@ -126,6 +133,8 @@ describe('useMoneyAccountToasts', () => {
       'sped-up',
       'cancelled',
       'intent-1',
+      'registry-1',
+      'registry-orphan',
     ].forEach(clearToastPhase);
     clearMoneyAccountDepositIntent('0xbatch');
   });
@@ -255,6 +264,45 @@ describe('useMoneyAccountToasts', () => {
       'intent-1',
       'card',
     );
+  });
+
+  it('registers the money batch on pending and clears it on terminal toasts', () => {
+    const { emit } = mountHook();
+    const meta = (status: TransactionStatus, required?: string[]) =>
+      createMoneyDeposit({
+        id: 'registry-1',
+        status,
+        requiredTransactionIds: required,
+      });
+
+    emit({
+      transactionMeta: meta(TransactionStatus.approved, ['pay-child']),
+    });
+    expect(isMoneyBatchInFlight()).toBe(true);
+    expect(isKnownMoneyBatchChild('pay-child')).toBe(true);
+
+    emit({ transactionMeta: meta(TransactionStatus.confirmed) });
+    expect(isMoneyBatchInFlight()).toBe(false);
+    expect(isKnownMoneyBatchChild('pay-child')).toBe(false);
+  });
+
+  it('clears the money batch registry on terminal status even without a pending toast', () => {
+    const { emit } = mountHook();
+    registerMoneyBatchTransaction({
+      id: 'registry-orphan',
+      requiredTransactionIds: ['orphan-child'],
+    });
+    clearToastPhase('registry-orphan');
+
+    emit({
+      transactionMeta: createMoneyDeposit({
+        id: 'registry-orphan',
+        status: TransactionStatus.confirmed,
+      }),
+    });
+
+    expect(isMoneyBatchInFlight()).toBe(false);
+    expect(mockToastSuccess).not.toHaveBeenCalled();
   });
 
   it('renders the money label with a details link, falling back to generic copy', () => {

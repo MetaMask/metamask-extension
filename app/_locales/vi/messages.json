@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "Đã đóng vị thế bán khống - giá thị trường"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "Nạp tiền thất bại"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "Đang gửi tiền"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "Đã nạp"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Gửi thất bại"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Đang gửi"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "Đã gửi"
-  },
   "activity_nftBuy_failed_title": {
     "message": "Mua thất bại"
   },
@@ -3108,9 +3072,6 @@
   "copyAddressShort": {
     "message": "Sao chép địa chỉ"
   },
-  "copyPrivateKey": {
-    "message": "Sao chép khóa riêng tư"
-  },
   "copyToClipboard": {
     "message": "Sao chép vào bộ nhớ đệm"
   },
@@ -3169,6 +3130,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Cài đặt lại MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Đặt lại trạng thái MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Vẫn gặp sự cố?"
   },
@@ -3190,9 +3154,6 @@
   },
   "current": {
     "message": "Hiện tại"
-  },
-  "currentAccountNotConnected": {
-    "message": "Tài khoản hiện tại của bạn chưa được kết nối"
   },
   "currentEstimatedBaseFee": {
     "message": "Hiện tại: $1 GWEI"
@@ -5032,9 +4993,6 @@
   "lattice": {
     "message": "Lattice",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "Vì sự an toàn của bạn, việc chọn văn bản này hiện không khả dụng."
   },
   "learnHow": {
     "message": "Tìm hiểu cách thức"
@@ -8578,10 +8536,6 @@
     "message": "Khóa riêng tư",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Khóa riêng tư cho $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Khóa riêng tư bị ẩn",
     "description": "Explains that the private key input is hidden"
@@ -8593,9 +8547,6 @@
   "privateKeyShown": {
     "message": "Khóa riêng tư này đang được hiển thị",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Cảnh báo: Tuyệt đối không để lộ khóa này. Bất kỳ ai có khóa riêng tư cũng có thể đánh cắp tài sản được lưu giữ trong tài khoản của bạn."
   },
   "privateKeys": {
     "message": "Khóa riêng tư",
@@ -9975,9 +9926,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Địa chỉ mới"
   },
-  "sendBugReport": {
-    "message": "Gửi báo cáo lỗi."
-  },
   "sendBundleHwGasPayment": {
     "message": "Thanh toán phí mạng bằng $1",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10699,12 +10647,6 @@
   "showPermissions": {
     "message": "Hiển thị quyền"
   },
-  "showPrivateKey": {
-    "message": "Hiển thị khóa riêng tư"
-  },
-  "showSRP": {
-    "message": "Hiển thị Cụm mật khẩu khôi phục bí mật"
-  },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"
   },
@@ -11311,38 +11253,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Bạn có chắc chắn muốn tiếp tục không?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định khôi phục két an toàn bằng cách làm theo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định đặt lại MetaMask bằng cách làm theo $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Không thể tự động khôi phục két an toàn."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Két an toàn có thể được khôi phục từ bản sao lưu tự động. Việc khôi phục tự động sẽ xóa chế độ cài đặt và tùy chọn hiện tại của bạn và chỉ khôi phục két an toàn."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Lỗi nội bộ: không thể truy cập cơ sở dữ liệu"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Đặt lại trạng thái MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Đang đặt lại cơ sở dữ liệu…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Khôi phục tài khoản"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Đang khôi phục cơ sở dữ liệu…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "các hướng dẫn này",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Cách khôi phục Cụm từ khôi phục bí mật của bạn"
@@ -12147,9 +12070,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Kết nối với $1 không ổn định. Hãy cập nhật thông tin kết nối mạng trước khi tiếp tục hoặc thử lại sau.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
   },
   "unexpectedError": {
     "message": "Đã xảy ra lỗi không mong muốn.",

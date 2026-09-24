@@ -11,7 +11,9 @@ import type {
   AnalyticsControllerGetStateAction,
   AnalyticsControllerIdentifyAction,
   AnalyticsControllerOptInAction,
+  AnalyticsControllerOptInToMarketingAction,
   AnalyticsControllerOptOutAction,
+  AnalyticsControllerOptOutOfMarketingAction,
   AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
@@ -46,7 +48,9 @@ type InitActions =
   | AnalyticsControllerIdentifyAction
   | AnalyticsControllerTrackViewAction
   | AnalyticsControllerOptInAction
+  | AnalyticsControllerOptInToMarketingAction
   | AnalyticsControllerOptOutAction
+  | AnalyticsControllerOptOutOfMarketingAction
   | AnalyticsControllerResetConsentDecisionAction
   | AnalyticsControllerCreateEventFragmentAction
   | AnalyticsControllerUpsertEventFragmentAction
@@ -122,7 +126,9 @@ export function getAnalyticsControllerInitMessenger(
       'AnalyticsController:identify',
       'AnalyticsController:trackView',
       'AnalyticsController:optIn',
+      'AnalyticsController:optInToMarketing',
       'AnalyticsController:optOut',
+      'AnalyticsController:optOutOfMarketing',
       'AnalyticsController:resetConsentDecision',
       'AnalyticsController:createEventFragment',
       'AnalyticsController:upsertEventFragment',

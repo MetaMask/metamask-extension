@@ -24,6 +24,51 @@ export const BRIDGE_ETH_USD_SPOT_PRICE =
 export const BRIDGE_L2_ETH_USD_SPOT_PRICE =
   BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_L2_TOTAL_ETH_BALANCE_HUMAN;
 
+export const BRIDGE_SOLANA_USD_SPOT_PRICE = 112.87;
+
+/**
+ * Non-native USD spot prices served by the price API mock. Assets missing here
+ * have no price, which is what makes the bridge UI fall back to showing a
+ * quote's Total cost as a native network fee instead of a fiat amount.
+ */
+export const BRIDGE_MOCK_TOKEN_SPOT_PRICES: Record<
+  string,
+  { id: string; price: number }
+> = {
+  'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
+    id: 'dai',
+    price: 1.0,
+  },
+  'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
+    id: 'dai',
+    price: 1.0,
+  },
+  'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': {
+    id: 'musd',
+    price: 0.9999,
+  },
+};
+
+/**
+ * Resolves the USD spot price the price API mock serves for an asset, or
+ * `undefined` when the asset is unpriced.
+ *
+ * @param assetId - CAIP-19 asset id.
+ * @param ethUsdSpotPrice - Native ETH price for the fixture set in use.
+ */
+export function getBridgeMockUsdSpotPrice(
+  assetId: string,
+  ethUsdSpotPrice: number = BRIDGE_ETH_USD_SPOT_PRICE,
+): number | undefined {
+  if (assetId.endsWith('/slip44:60') || assetId.endsWith('/slip44:1')) {
+    return ethUsdSpotPrice;
+  }
+  if (assetId.startsWith('solana:')) {
+    return BRIDGE_SOLANA_USD_SPOT_PRICE;
+  }
+  return BRIDGE_MOCK_TOKEN_SPOT_PRICES[assetId.toLowerCase()]?.price;
+}
+
 export const BRIDGE_MOCK_CURRENCY_RATES = {
   currencyRates: {
     ETH: {

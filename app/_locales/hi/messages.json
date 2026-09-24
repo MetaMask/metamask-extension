@@ -484,42 +484,6 @@
   "activity_marketShort_success_title": {
     "message": "शॉर्ट क्लोज़ किया जा रहा है - मार्केट क्लोज़"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_failed_title": {
-    "message": "डिपॉज़िट नहीं हो पाया"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_pending_title": {
-    "message": "डिपॉज़िट कर रहे हैं"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountDeposit_success_title": {
-    "message": "डिपॉज़िट किया गया"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_failed_title": {
-    "message": "भेजना नहीं हो पाया"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_pending_title": {
-    "message": "भेजा जा रहा है"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
-  },
-  "activity_moneyAccountWithdraw_success_title": {
-    "message": "भेजा गया"
-  },
   "activity_nftBuy_failed_title": {
     "message": "खरीदना नहीं हो पाया"
   },
@@ -3108,9 +3072,6 @@
   "copyAddressShort": {
     "message": "एड्रेस कॉपी करें"
   },
-  "copyPrivateKey": {
-    "message": "प्राइवेट की (key) को कॉपी करें"
-  },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी करें"
   },
@@ -3169,6 +3130,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask को दोबारा इंस्टॉल करें"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask स्टेट रीसेट करें"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "अभी भी समस्या आ रही है?"
   },
@@ -3190,9 +3154,6 @@
   },
   "current": {
     "message": "मौजूदा"
-  },
-  "currentAccountNotConnected": {
-    "message": "आपका चालू अकाउंट कनेक्ट नहीं है"
   },
   "currentEstimatedBaseFee": {
     "message": "वर्तमान: $1 GWEI"
@@ -5028,9 +4989,6 @@
   "lattice": {
     "message": "लैटिस",
     "description": "Hardware device name"
-  },
-  "lavaDomeCopyWarning": {
-    "message": "सुरक्षा कारणों से, इस टेक्स्ट को चुनने का विकल्प अभी उपलब्ध नहीं है।"
   },
   "learnHow": {
     "message": "अधिक जानें"
@@ -8564,10 +8522,6 @@
     "message": "प्राइवेट की (key)",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 के लिए प्राइवेट की (key)",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "प्राइवेट की (key) छिपी हुई है",
     "description": "Explains that the private key input is hidden"
@@ -8579,9 +8533,6 @@
   "privateKeyShown": {
     "message": "प्राइवेट की (key) दिखाई जा रही है",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "चेतावनी: इस कुंजी का खुलासा कभी न करें। आपकी निजी कुंजियों के साथ कोई भी व्यक्ति आपके अकाउंट में रखी कोई भी एसेट चुरा सकता है।"
   },
   "privateKeys": {
     "message": "प्राइवेट कीज़ (keys)",
@@ -9961,9 +9912,6 @@
   "sendAlertNewAddressTitle": {
     "message": "नया एड्रेस"
   },
-  "sendBugReport": {
-    "message": "हमें एक बग रिपोर्ट भेजें।"
-  },
   "sendBundleHwGasPayment": {
     "message": "नेटवर्क फीस $1 से पे की जा रही है",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10685,12 +10633,6 @@
   "showPermissions": {
     "message": "अनुमतियां दिखाएं"
   },
-  "showPrivateKey": {
-    "message": "प्राइवेट की (key) दिखाएं"
-  },
-  "showSRP": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
-  },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
   },
@@ -11297,38 +11239,19 @@
   "stateCorruptionAreYouSure": {
     "message": "क्या आप वाकई आगे बढ़ना चाहते हैं?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "आप $1 को फॉलो करके अपनी वॉल्ट को रिस्टोर करने से पहले, मैन्युअली अपना स्टेट फ़ाइल कॉपी और रिस्टोर कर सकते हैं।",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "आप $1 को फॉलो करके अपने MetaMask को रीसेट करने से पहले, मैन्युअली अपना स्टेट फ़ाइल कॉपी और रिस्टोर कर सकते हैं।",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "आपकी वॉल्ट स्वचालित रूप से रिकवर नहीं की जा सकती।"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "आपका वॉल्ट स्वचालित बैकअप से रिकवर किया जा सकता है। स्वचालित रिकवरी आपकी वर्तमान सेटिंग्स और प्राथमिकताओं को हटा देगी, और केवल आपके वॉल्ट को रिस्टोर करेगी।"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "आंतरिक गड़बड़ी: डेटाबेस को ऐक्सेस नहीं किया जा सकता"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask स्टेट रीसेट करें"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "डेटाबेस रीसेट किया जा रहा है…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "एकाउंट्स रिस्टोर करें"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "डेटाबेस रिस्टोर किया जा रहा है…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "इन निर्देशों",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ कैसे रिकवर करें"
@@ -12133,9 +12056,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1 के साथ कनेक्शन विश्वसनीय नहीं है। आगे बढ़ने से पहले नेटवर्क कनेक्टिविटी विवरण अपडेट करें या बाद में फिर से प्रयास करें।",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "यह व्यवहार अप्रत्याशित है और इसे बग के रूप में रिपोर्ट किया जाना चाहिए, भले ही आपके एकाउंट्स रिस्टोर कर दिए गए हों।"
   },
   "unexpectedError": {
     "message": "एक अनपेक्षित गड़बड़ी हुई।",
