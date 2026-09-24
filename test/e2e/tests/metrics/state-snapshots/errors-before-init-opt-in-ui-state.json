@@ -48,7 +48,7 @@
       "firstTimeInfo": "object",
       "installAttribution": null,
       "previousAppVersion": "",
-      "previousMigrationVersion": 228
+      "previousMigrationVersion": 0
     },
     "AppStateController": {
       "arcUsageNoticeShown": "boolean",
