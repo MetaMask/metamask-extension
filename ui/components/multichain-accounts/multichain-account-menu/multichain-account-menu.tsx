@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -44,7 +50,14 @@ export const MultichainAccountMenu = ({
 }: MultichainAccountMenuProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null,
+  );
+  const setPopoverRef = useCallback((node: HTMLDivElement | null) => {
+    popoverRef.current = node;
+    setReferenceElement((previous) => (previous === node ? previous : node));
+  }, []);
   const accountTree = useSelector(getAccountTree);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const disconnectAccountGroup = useDisconnectAccountGroup();
@@ -267,7 +280,7 @@ export const MultichainAccountMenu = ({
     <>
       <Box
         className="flex multichain-account-cell-popover-menu-button rounded-lg"
-        ref={popoverRef}
+        ref={setPopoverRef}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
         backgroundColor={
@@ -285,7 +298,7 @@ export const MultichainAccountMenu = ({
         className="multichain-account-cell-popover-menu"
         isOpen={isOpen}
         position={PopoverPosition.LeftStart}
-        referenceElement={popoverRef.current}
+        referenceElement={referenceElement}
         matchWidth={false}
         borderRadius={BorderRadius.LG}
         isPortal

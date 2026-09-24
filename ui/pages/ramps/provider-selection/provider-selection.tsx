@@ -381,6 +381,7 @@ export function RampsProviderSelectionModal({
           'data-testid': testId,
           paddingLeft: 0,
           paddingRight: 0,
+          className: 'rounded-[32px]',
         }}
       >
         <ModalHeader

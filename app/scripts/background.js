@@ -12,12 +12,10 @@ import { persistenceManager } from './lib/setup-initial-state-hooks';
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
-import { lightTheme } from '@metamask/design-tokens';
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject } from '@metamask/utils';
-import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -36,15 +34,9 @@ import {
   BACKGROUND_INITIALIZED_METHOD,
 } from '../../shared/constants/ui-initialization';
 import {
-  REJECT_NOTIFICATION_CLOSE,
-  REJECT_NOTIFICATION_CLOSE_SIG,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import {
-  getActiveTabDomainAllowlist,
-  getActiveTabDomainForMetrics,
-} from '../../shared/lib/active-tab-domain-metrics';
 import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import { maskObject } from '../../shared/lib/object.utils';
@@ -52,25 +44,24 @@ import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
-import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { createCaipStream } from '../../shared/lib/caip-stream';
-import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
-import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
+import { getErrorBackup, getErrorLike } from '../../shared/lib/error-like';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
-import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import {
+  CriticalErrorRepairAction,
+  getStateCorruptionErrorType,
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  isStateCorruptionErrorType,
+} from '../../shared/constants/critical-error';
+import { hasAnalyticsConsent } from '../../shared/lib/analytics';
 import {
   createEvent,
   shouldTrackDeepLinkNavigation,
 } from '../../shared/lib/deep-links/metrics';
-import {
-  backedUpStateKeys,
-  hasVault,
-} from '../../shared/lib/stores/persistence-manager';
-import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
-import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import { hasVault } from '../../shared/lib/stores/persistence-manager';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import {
@@ -82,24 +73,22 @@ import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
-import NotificationManager, {
-  NOTIFICATION_MANAGER_EVENTS,
-} from './lib/notification-manager';
-import MetamaskController, {
-  METAMASK_CONTROLLER_EVENTS,
-} from './metamask-controller';
+import NotificationManager from './lib/notification-manager';
+import MetamaskController from './metamask-controller';
 import { createEventBuilder, trackEvent } from './controllers/analytics';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import {
-  getPlatform,
-  initInstallType,
-  isWebOrigin,
-  shouldEmitDappViewedEvent,
-} from './lib/util';
+import { getPlatform, initInstallType } from './lib/util';
+import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
+import { createDappMetrics } from './lib/metrics/dapp-metrics';
+import { installActiveTabTracker } from './lib/active-tab/active-tab-tracker';
+import { createBadgeManager } from './lib/badge/badge-manager';
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { loadStateFromPersistence } from './lib/startup/load-state-from-persistence';
+import { wireStatePersistence } from './lib/startup/wire-state-persistence';
+import { parsePortInfo } from './lib/parse-port-info';
+import { loadPreinstalledSnaps } from './lib/load-preinstalled-snaps';
 import {
   handleOnInstalled,
   onUpdateAvailable,
@@ -110,16 +99,16 @@ import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
-import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { getRequestSafeReload } from './lib/safe-reload';
 import {
-  readCriticalErrorRestoreSession,
-  clearCriticalErrorRestoreSession,
+  readCriticalErrorRepairSession,
+  clearCriticalErrorRepairSession,
   handoffRestoringTabToExtension,
   openRestoringTabAndReload,
 } from './lib/critical-error/critical-error-tab-handoff';
+import { repairStateCorruptionInPlace } from './lib/critical-error/repair-state-corruption-in-place';
 import { requestRepair } from './lib/repair';
 import {
   createSidepanelOpener,
@@ -128,8 +117,6 @@ import {
 } from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { ReferralTriggerType } from './lib/defi-referrals/createDefiReferralMiddleware';
-import { getIframeProperties } from './lib/getIframeProperties';
 import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 
 /**
@@ -141,12 +128,6 @@ import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 // as it doesn't need them).
 const lazyListener =
   globalThis.stateHooks.lazyListener ?? new ExtensionLazyListener(browser);
-
-// eslint-disable-next-line @metamask/design-tokens/color-no-hex
-const BADGE_COLOR_APPROVAL = '#0376C9';
-const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
-const BADGE_MAX_COUNT = 9;
-const maxSeenFailedNonces = 99;
 
 const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
 
@@ -168,7 +149,7 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * `null` in production builds so we do not keep loose mutable test globals.
  */
 const inTestState = process.env.IN_TEST
-  ? { restoreInProgress: false, hasVaultAtStartup: null }
+  ? { recoverInProgress: false, hasVaultAtStartup: null }
   : null;
 
 const { safePersist, requestSafeReload, evacuate } =
@@ -192,53 +173,39 @@ global.logEncryptedVault = () => {
 
 const { sentry } = global;
 
-const metamaskInternalProcessHash = {
-  [ENVIRONMENT_TYPE_POPUP]: true,
-  [ENVIRONMENT_TYPE_NOTIFICATION]: true,
-  [ENVIRONMENT_TYPE_FULLSCREEN]: true,
-};
-
 log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
-/**
- * Parses port connection info for routing decisions.
- * Determines if the port is from the MetaMask UI (popup, notification, fullscreen)
- * vs a contentscript injected into a regular web page.
- *
- * @param {browser.Runtime.Port} port - The port to parse.
- * @returns {{ processName: string, senderUrl: URL | null, isMetaMaskUIPort: boolean }} Parsed port info.
- */
-function parsePortInfo(port) {
-  const processName = port.name;
-  const senderUrl = port.sender?.url ? new URL(port.sender.url) : null;
-
-  let isMetaMaskUIPort;
-  if (isFirefox) {
-    isMetaMaskUIPort = Boolean(metamaskInternalProcessHash[processName]);
-  } else {
-    isMetaMaskUIPort =
-      senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
-  }
-
-  return { processName, senderUrl, isMetaMaskUIPort };
-}
-
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 let openSidePanelCount = 0;
-let failedTxCount = 0;
-const seenFailedNonces = new Set();
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-const senderOriginMapping = {};
-const tabOriginMapping = {};
-const frameIdMapping = {};
+
+const uiPresence = createUiPresenceTracker({
+  getOpenMetamaskTabsIDs: () => openMetamaskTabsIDs,
+  getOpenPopupCount: () => openPopupCount,
+  getOpenSidePanelCount: () => openSidePanelCount,
+  getNotificationIsOpen: () => notificationIsOpen,
+});
+
+// DappViewed / AppOpened metrics, tab→origin registries, and onNavigateToTab
+// (see app/scripts/lib/metrics/dapp-metrics.ts).
+const {
+  trackDappView,
+  emitAppOpenedMetricEvent,
+  shouldEmitAppOpened,
+  trackAppOpened,
+  installOnNavigateToTabListener,
+} = createDappMetrics({
+  getController: () => controller,
+  isAnyUiOpen: uiPresence.isAnyUiOpen,
+});
 
 const requestOpenSidepanel = createSidepanelOpener();
 
@@ -280,6 +247,20 @@ function setGlobalInitializers() {
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
+
+/**
+ * Helper function to refresh appActiveTab by querying the current active tab.
+ * This is used when the sidepanel opens to ensure it has the current tab info,
+ * and when the focused window changes to keep appActiveTab in sync.
+ *
+ * @type {import('./lib/active-tab/active-tab-tracker').ActiveTabTrackerApi['refreshAppActiveTab']}
+ */
+// Initialize appActiveTab by querying the current active tab on startup
+// Tab listeners to populate appActiveTab
+const { refreshAppActiveTab } = installActiveTabTracker({
+  getController: () => controller,
+  getIsInitialized: () => isInitialized,
+});
 
 /**
  * Install/update lifecycle dependencies. `controller` is accessed via a getter
@@ -396,8 +377,8 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
-const corruptionHandler = new CorruptionHandler();
 const criticalErrorHandler = new CriticalErrorHandler();
+
 /**
  * Handles the onConnect event.
  *
@@ -441,9 +422,36 @@ const handleOnConnect = async (port) => {
   let removeCriticalErrorListeners;
   if (isMetaMaskUIPort) {
     criticalErrorHandler.registerPortForCriticalError({
+      getBackup: async () =>
+        (await persistenceManager.getBackup().catch(() => null)) ?? null,
       port,
-      repairCallback: () =>
-        requestRepair(() => openRestoringTabAndReload(requestSafeReload)),
+      repairCallback: async ({
+        repairAction,
+        criticalErrorType,
+        backup,
+        connectedPorts,
+      }) =>
+        requestRepair(async () => {
+          if (isStateCorruptionErrorType(criticalErrorType)) {
+            await repairStateCorruptionInPlace({
+              repairAction,
+              backup,
+              connectedPorts,
+              initBackground,
+              backgroundIsInitialized: () => isInitialized,
+              persistenceManager,
+              setGlobalInitializers,
+              setRestoreFlowType: () => {
+                controller.onboardingController.setFirstTimeFlowType(
+                  FirstTimeFlowType.restore,
+                );
+              },
+              tryPostMessage,
+            });
+          } else {
+            await openRestoringTabAndReload(requestSafeReload, repairAction);
+          }
+        }),
     });
     removeCriticalErrorListeners = () =>
       criticalErrorHandler.removeListenersForPort(port);
@@ -465,12 +473,12 @@ const handleOnConnect = async (port) => {
 
     // For testing: skip connectWindowPostMessage to simulate state sync hang.
     // Only when backup pre-existed at startup (i.e. after a runtime.reload(),
-    // not during the initial onboarding session) and we're not in the restore
+    // not during the initial onboarding session) and we're not in the recover
     // flow (so recovery can complete).
     if (
       process.env.IN_TEST &&
       getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
-      !inTestState?.restoreInProgress &&
+      !inTestState?.recoverInProgress &&
       hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
     ) {
       return;
@@ -479,6 +487,7 @@ const handleOnConnect = async (port) => {
     // This is set in `setupController`, which is called as part of initialization
     connectWindowPostMessage(port, removeCriticalErrorListeners);
   } catch (error) {
+    let criticalErrorMessageSent = false;
     try {
       sentry?.captureException(error);
 
@@ -486,59 +495,39 @@ const handleOnConnect = async (port) => {
       // not for contentscripts injected into regular web pages.
       // Contentscripts can't display error screens and would create hanging promises.
       if (isMetaMaskUIPort) {
-        // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
-        // restore from a backup, if we have one.
-        if (isStateCorruptionError(error)) {
-          await corruptionHandler.handleStateCorruptionError({
-            port,
-            error,
-            database: persistenceManager,
-            repairCallback: async (backup) => {
-              // we are going to reinitialize the background script, so we need to
-              // reset the initialization promises. this is gross since it is
-              // possible the original references could have been passed to other
-              // functions, and we can't update those references from here.
-              // right now, that isn't the case though.
-              setGlobalInitializers();
-
-              if (hasVault(backup)) {
-                await initBackground(backup);
-                controller.onboardingController.setFirstTimeFlowType(
-                  FirstTimeFlowType.restore,
-                );
-              } else {
-                // if we don't have a backup we need to make sure we clear the state
-                // from the database, and then reinitialize the background script
-                // with the first time state.
-                await persistenceManager.reset();
-                await initBackground(null);
-              }
-            },
-          });
-        } else {
-          // General errors
-          const errorLike = isObject(error)
-            ? {
-                message: error.message ?? 'Unknown error',
-                name: error.name ?? 'UnknownError',
-                stack: error.stack,
-                // Preserve sentryTags for searchable/filterable fields in Sentry UI
-                ...(error.sentryTags && { sentryTags: error.sentryTags }),
-              }
-            : {
-                message: String(error),
-                name: 'UnknownError',
-                stack: '',
-              };
-          tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+        const errorLike = getErrorLike(error);
+        const stateCorruptionErrorType = getStateCorruptionErrorType(errorLike);
+        const isStateCorruption = stateCorruptionErrorType !== undefined;
+        const backup = isStateCorruption ? getErrorBackup(error) : undefined;
+        if (isObject(backup)) {
+          criticalErrorHandler.cacheBackup(backup);
+        }
+        const repairAction = hasVault(backup)
+          ? CriticalErrorRepairAction.Recover
+          : CriticalErrorRepairAction.Reset;
+        criticalErrorMessageSent = tryPostMessage(
+          port,
+          isStateCorruption
+            ? METHOD_DISPLAY_STATE_CORRUPTION_ERROR
+            : DISPLAY_GENERAL_STARTUP_ERROR,
+          {
             error: errorLike,
+            ...(isStateCorruption
+              ? {
+                  analyticsConsent: hasAnalyticsConsent(backup),
+                  criticalErrorType: stateCorruptionErrorType,
+                  repairAction,
+                }
+              : {}),
             currentLocale:
               controller?.preferencesController?.state?.currentLocale,
-          });
-        }
+          },
+        );
       }
     } finally {
-      removeCriticalErrorListeners?.();
+      if (!criticalErrorMessageSent) {
+        removeCriticalErrorListeners?.();
+      }
     }
   }
 };
@@ -725,261 +714,6 @@ async function initialize(backup) {
 }
 
 /**
- * Loads the preinstalled snaps from urls and returns them as an array.
- * It fails if any Snap fails to load in the expected time range.
- * Supports .json.gz files using gzip decompression.
- */
-async function loadPreinstalledSnaps() {
-  const fetchWithTimeout = getFetchWithTimeout();
-  const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
-    const response = await fetchWithTimeout(url);
-
-    // If the Snap is compressed, decompress it
-    if (url.pathname.endsWith('.json.gz')) {
-      const ds = new DecompressionStream('gzip');
-      const decompressedStream = response.body.pipeThrough(ds);
-      return await new Response(decompressedStream).json();
-    }
-
-    return await response.json();
-  });
-
-  return Promise.all(promises);
-}
-
-/**
- * Emit event of DappViewed,
- * which should only be tracked only after a user opts into metrics and connected to the dapp
- *
- * @param {string} origin - URL of visited dapp
- * @param {string} [mainFrameOrigin] - The top-level frame origin (if sender is an iframe, this differs from origin)
- * @param {number} [frameId] - The frame ID from chrome.runtime.MessageSender (0 = top-level, >0 = iframe)
- */
-function emitDappViewedMetricEvent(origin, mainFrameOrigin, frameId) {
-  const { analyticsId } = controller.getState();
-  if (!shouldEmitDappViewedEvent(analyticsId)) {
-    return;
-  }
-
-  const numberOfConnectedAccounts =
-    controller.getPermittedAccounts(origin).length;
-  if (numberOfConnectedAccounts === 0) {
-    return;
-  }
-
-  const accountsState = controller.controllerMessenger.call(
-    'AccountsController:getState',
-  );
-  const numberOfTotalAccounts = Object.keys(
-    accountsState.internalAccounts.accounts,
-  ).length;
-
-  const iframeProps = getIframeProperties({ frameId, origin, mainFrameOrigin });
-
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.DappViewed)
-      .addCategory(MetaMetricsEventCategory.InpageProvider)
-      .addProperties({
-        is_first_visit: false,
-        number_of_accounts: numberOfTotalAccounts,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-        ...iframeProps,
-      })
-      .build({
-        referrer: {
-          url: origin,
-        },
-        excludeMetaMetricsId: true,
-      }),
-  );
-}
-
-/**
- * Track dapp connection when loaded and permissioned
- *
- * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
- */
-function trackDappView(remotePort) {
-  if (
-    !remotePort.sender?.tab ||
-    !remotePort.sender?.url ||
-    !remotePort.sender?.tab?.url
-  ) {
-    return;
-  }
-  const tabId = remotePort.sender.tab.id;
-  const url = new URL(remotePort.sender.url);
-  const { origin } = url;
-  const tabUrl = new URL(remotePort.sender.tab.url);
-  const { origin: tabOrigin } = tabUrl;
-  const { frameId } = remotePort.sender;
-
-  // store the origin to corresponding tab so it can provide info for onActivated listener
-  if (!Object.keys(senderOriginMapping).includes(tabId)) {
-    senderOriginMapping[tabId] = origin;
-  }
-  // do the same for tab origin, which can be different to sender origin
-  if (!(tabId in tabOriginMapping)) {
-    tabOriginMapping[tabId] = tabOrigin;
-  }
-  if (!(tabId in frameIdMapping)) {
-    frameIdMapping[tabId] = frameId;
-  }
-
-  const isConnectedToDapp = controller.controllerMessenger.call(
-    'PermissionController:hasPermissions',
-    origin,
-  );
-
-  // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
-  const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
-
-  // *** Emit DappViewed metric event when ***
-  // - refresh the dapp
-  // - open dapp in a new tab
-  if (isConnectedToDapp && isTabLoaded) {
-    emitDappViewedMetricEvent(origin, tabOrigin, frameId);
-  }
-}
-
-/**
- * Emit App Opened event
- *
- * @param {string} environmentType - The environment type where the app is opening
- */
-function emitAppOpenedMetricEvent(environmentType) {
-  const { consentDecisionMade, optedIn } = controller.getState();
-
-  // Skip if user hasn't opted into metrics
-  if (!consentDecisionMade || !optedIn) {
-    return;
-  }
-
-  const activeTabOrigin =
-    controller.appStateController.state.appActiveTab?.origin;
-  const allowlist = getActiveTabDomainAllowlist(
-    controller.remoteFeatureFlagController.state,
-  );
-  const activeTabDomain = getActiveTabDomainForMetrics(
-    activeTabOrigin,
-    allowlist,
-  );
-
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.AppOpened)
-      .addCategory(MetaMetricsEventCategory.App)
-      .addProperties(
-        activeTabDomain ? { active_tab_domain: activeTabDomain } : {},
-      )
-      .build({ environmentType }),
-  );
-}
-
-/**
- * Returns true if the App Opened metric event should fire for the given env.
- *
- * @param {string} environment - The environment type where the app is opening
- * @returns {boolean}
- */
-function shouldEmitAppOpened(environment) {
-  // List of valid environment types to track
-  const environmentTypeList = [
-    ENVIRONMENT_TYPE_POPUP,
-    ENVIRONMENT_TYPE_NOTIFICATION,
-    ENVIRONMENT_TYPE_FULLSCREEN,
-    ENVIRONMENT_TYPE_SIDEPANEL,
-  ];
-
-  // Check if any UI instances are currently open
-  const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
-  const isAlreadyOpen =
-    isFullscreenOpen ||
-    notificationIsOpen ||
-    openPopupCount > 0 ||
-    openSidePanelCount > 0;
-
-  // Only emit event if no UI is open and environment is valid
-  return !isAlreadyOpen && environmentTypeList.includes(environment);
-}
-
-/**
- * This function checks if the app is being opened
- * and emits an event only if no other UI instances are currently open.
- *
- * @param {string} environment - The environment type where the app is opening
- */
-function trackAppOpened(environment) {
-  if (shouldEmitAppOpened(environment)) {
-    emitAppOpenedMetricEvent(environment);
-  }
-}
-
-/**
- * Helper function to refresh appActiveTab by querying the current active tab.
- * This is used when the sidepanel opens to ensure it has the current tab info,
- * and when the focused window changes to keep appActiveTab in sync.
- *
- * @param {number} [windowId] - If provided, queries the active tab in this
- * specific window. Otherwise queries the active tab in the current window.
- */
-const refreshAppActiveTab = async (windowId) => {
-  await isInitialized;
-  if (!controller) {
-    return;
-  }
-
-  try {
-    const queryOptions = windowId
-      ? { active: true, windowId }
-      : { active: true, currentWindow: true };
-
-    const tabs = await browser.tabs.query(queryOptions);
-    if (!tabs || tabs.length === 0) {
-      return;
-    }
-
-    const activeTab = tabs[0];
-    const { id, title, url, favIconUrl } = activeTab;
-
-    if (!url) {
-      // Clear appActiveTab when there's no URL (e.g., new blank tab)
-      controller.appStateController.clearAppActiveTab();
-      return;
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    if (!isWebOrigin(origin)) {
-      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
-      controller.appStateController.clearAppActiveTab();
-      return;
-    }
-
-    // Update appActiveTab with current active tab info
-    controller.appStateController.setAppActiveTab({
-      id,
-      title,
-      origin,
-      protocol,
-      url,
-      host,
-      href,
-      favIconUrl,
-    });
-
-    // Update subject metadata for permission system
-    controller.subjectMetadataController.addSubjectMetadata({
-      origin,
-      name: title || host || origin,
-      iconUrl: favIconUrl || null,
-      subjectType: 'website',
-    });
-  } catch (error) {
-    console.log('Error refreshing appActiveTab:', error.message);
-  }
-};
-
-/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -1037,119 +771,12 @@ export function setupController(
     controller.appStateController.setStorageWriteErrorType(errorType);
   });
 
-  /**
-   * @type {Array<string>} List of controller store keys that have changed since initialization.
-   */
-  const changedControllerKeys = [];
-  const currentState = controller.store.getState();
-  for (const key of Object.keys(currentState)) {
-    const initialControllerState = initState[key] || {};
-    const newControllerState = currentState[key];
-    if (newControllerState === null || typeof newControllerState !== 'object') {
-      captureException(
-        new Error(
-          `Invalid controller state for '${key}' of type '${newControllerState === null ? 'null' : typeof newControllerState}'`,
-        ),
-      );
-      continue;
-    }
-    const newControllerStateKeys = Object.keys(newControllerState);
-
-    // if the number of keys has changed, we need to persist the new state
-    if (
-      newControllerStateKeys.length ===
-      Object.keys(initialControllerState).length
-    ) {
-      // if any of the controller's own top-level keys have changed
-      // (via reference comparison) we need to persist the new state.
-      for (const subKey of newControllerStateKeys) {
-        if (newControllerState[subKey] !== initialControllerState[subKey]) {
-          changedControllerKeys.push(key);
-          break;
-        }
-      }
-    } else {
-      changedControllerKeys.push(key);
-    }
-  }
-
-  if (persistenceManager.storageKind === 'split') {
-    if (changedControllerKeys.length > 0) {
-      log.info(
-        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
-      );
-      // update the new state
-      changedControllerKeys.forEach((key) => {
-        persistenceManager.update(key, currentState[key]);
-      });
-      // then persist it
-      safePersist().catch((error) => {
-        log.error('Error persisting updated state:', error);
-        sentry?.captureException(error);
-      });
-    }
-
-    controller.store.on(
-      'stateChange',
-      async ({ controllerKey, newState, _oldState, _patches }) => {
-        persistenceManager.update(controllerKey, newState);
-
-        // if this key is one of the `backedUpStateKeys` we must always
-        // re-persist all of the other `backedUpStateKeys`, as they must always
-        // stored in the backup DB together.
-        if (backedUpStateKeys.includes(controllerKey)) {
-          backedUpStateKeys.forEach((key) => {
-            if (key === controllerKey) {
-              // already updated this one
-              return;
-            }
-            // Get the state for this backed-up key using messenger.
-            // We filter to only persistent properties using deriveStateFromMetadata
-            // to match what ComposableObservableStore does in stateChange events.
-            // This ensures non-persistent properties (e.g., KeyringController's
-            // isUnlocked, keyrings, encryptionKey) are not written to storage.
-            const controllerConfig = controller.store.config[key];
-            if (!controllerConfig?.metadata) {
-              throw new Error(
-                `Cannot backup ${key}: controller metadata is required but not found. ` +
-                  `All controllers in backedUpStateKeys must extend BaseController and define metadata.`,
-              );
-            }
-            const fullState = controller.controllerMessenger.call(
-              `${key}:getState`,
-            );
-            const state = deriveStateFromMetadata(
-              fullState,
-              controllerConfig.metadata,
-              'persist',
-            );
-            persistenceManager.update(key, state);
-          });
-        }
-        try {
-          await safePersist();
-        } catch (error) {
-          log.error('Error persisting state change:', error);
-          sentry?.captureException(error);
-        }
-      },
-    );
-  } else {
-    if (changedControllerKeys.length > 0) {
-      log.info(
-        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
-      );
-      // persist the new state
-      safePersist(currentState).catch((error) => {
-        log.error('Error persisting updated controller state:', error);
-        sentry?.captureException(error);
-      });
-    }
-    controller.store.on('update', safePersist);
-  }
-  controller.store.on('error', (error) => {
-    log.error('MetaMask controller.store error:', error);
-    sentry?.captureException(error);
+  wireStatePersistence({
+    controller,
+    persistenceManager,
+    initState,
+    safePersist,
+    sentry,
   });
 
   setupEnsIpfsResolver({
@@ -1165,15 +792,7 @@ export function setupController(
 
   setupSentryGetStateGlobal(controller);
 
-  const isClientOpenStatus = () => {
-    return (
-      openPopupCount > 0 ||
-      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen ||
-      openSidePanelCount > 0 ||
-      false
-    );
-  };
+  const isClientOpenStatus = uiPresence.isClientOpen;
 
   const hasPersistentUiOpen = () => {
     return openPopupCount > 0 || openSidePanelCount > 0;
@@ -1202,6 +821,23 @@ export function setupController(
       controller.onEnvironmentTypeClosed(environmentType);
     }
   };
+
+  //
+  // User Interface setup
+  //
+  const {
+    updateBadge,
+    clearFailedTxBadge,
+    getFailedTxCount,
+    setClientLandingTab,
+  } = createBadgeManager({
+    getController: () => controller,
+    browser,
+    notificationManager,
+    triggerUi,
+    hasPersistentUiOpen,
+    isOnlyNotificationOpen,
+  });
 
   connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
     if (BLOCKED_PORTS.includes(remotePort.name)) {
@@ -1293,7 +929,7 @@ export function setupController(
         finished(portStream, () => {
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
-          if (failedTxCount > 0) {
+          if (getFailedTxCount() > 0) {
             setClientLandingTab(AccountOverviewTabKey.Activity);
           }
           updateBadge();
@@ -1422,188 +1058,7 @@ export function setupController(
       sender,
     });
   };
-
-  //
-  // User Interface setup
-  //
-  updateBadge();
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.DECRYPT_MESSAGE_MANAGER_UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.ENCRYPTION_PUBLIC_KEY_MANAGER_UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.signatureController.hub.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.APP_STATE_UNLOCK_CHANGE,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_MARK_AS_READ,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    'TransactionController:transactionStatusUpdated',
-    onTransactionStatusUpdated,
-  );
-
-  function setClientLandingTab(tab) {
-    try {
-      controller.appStateController.setDefaultHomeActiveTabName(tab ?? null);
-    } catch (e) {
-      console.error('Error setting landing tab:', e);
-    }
-  }
-
-  function onTransactionStatusUpdated({ transactionMeta }) {
-    const { status, txParams, chainId } = transactionMeta ?? {};
-    if (status !== 'failed' && status !== 'dropped') {
-      return;
-    }
-
-    const { from, nonce } = txParams ?? {};
-    const nonceKey =
-      from && nonce !== undefined && chainId
-        ? `${chainId}:${from.toLowerCase()}:${nonce}`
-        : undefined;
-    if (nonceKey && seenFailedNonces.has(nonceKey)) {
-      return;
-    }
-
-    // Skip if a persistent UI is open, transaction status is in the Activity tab
-    if (hasPersistentUiOpen()) {
-      return;
-    }
-
-    if (nonceKey) {
-      if (seenFailedNonces.size >= maxSeenFailedNonces) {
-        seenFailedNonces.clear();
-      }
-      seenFailedNonces.add(nonceKey);
-    }
-
-    failedTxCount += 1;
-
-    // Defer landing page until notification closes; close handler re-applies
-    if (!isOnlyNotificationOpen()) {
-      setClientLandingTab(AccountOverviewTabKey.Activity);
-    }
-
-    updateBadge();
-  }
-
-  function clearFailedTxBadge() {
-    seenFailedNonces.clear();
-    failedTxCount = 0;
-    updateBadge();
-  }
-
-  /**
-   * Formats a count for display as a badge label.
-   *
-   * @param {number} count - The count to be formatted.
-   * @param {number} maxCount - The maximum count to display before using the '+' suffix.
-   * @returns {string} The formatted badge label.
-   */
-  function getBadgeLabel(count, maxCount) {
-    return count > maxCount ? `${maxCount}+` : String(count);
-  }
-
-  /**
-   * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
-   * Failed transactions take priority and show a red count badge.
-   * Pending approvals show the standard blue count badge.
-   */
-  function updateBadge() {
-    const pendingApprovalCount = getPendingApprovalCount();
-
-    let label = '';
-    let badgeColor = BADGE_COLOR_APPROVAL;
-
-    // Defer showing the failure badge until the notification closes
-    if (failedTxCount > 0 && !isOnlyNotificationOpen()) {
-      label = getBadgeLabel(failedTxCount, BADGE_MAX_COUNT);
-      badgeColor = BADGE_COLOR_FAILED;
-    } else if (pendingApprovalCount > 0) {
-      label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    }
-
-    try {
-      const badgeText = { text: label };
-      const badgeBackgroundColor = { color: badgeColor };
-
-      if (isManifestV3) {
-        browser.action.setBadgeText(badgeText);
-        browser.action.setBadgeBackgroundColor(badgeBackgroundColor);
-      } else {
-        browser.browserAction.setBadgeText(badgeText);
-        browser.browserAction.setBadgeBackgroundColor(badgeBackgroundColor);
-      }
-    } catch (error) {
-      console.error('Error updating browser badge:', error);
-    }
-  }
-
-  function getPendingApprovalCount() {
-    try {
-      return getAttentionRequiredApprovalCount({
-        approvalController: controller.approvalController,
-      });
-    } catch (error) {
-      console.error('Failed to get pending approval count:', error);
-      return 0;
-    }
-  }
-
-  notificationManager.on(
-    NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
-    ({ automaticallyClosed }) => {
-      if (!automaticallyClosed) {
-        rejectUnapprovedNotifications();
-      } else if (getPendingApprovalCount() > 0) {
-        triggerUi();
-      }
-
-      updateBadge();
-    },
-  );
-
-  function rejectUnapprovedNotifications() {
-    controller.signatureController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE_SIG,
-    );
-    controller.decryptMessageController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE,
-    );
-    controller.encryptionPublicKeyController.rejectUnapproved(
-      REJECT_NOTIFICATION_CLOSE,
-    );
-
-    controller.legacyBackgroundApiService.rejectAllPendingApprovals();
-  }
 }
-
-//
-// Etc...
-//
 
 async function getCurrentTab() {
   const queryOptions = { active: true, lastFocusedWindow: true };
@@ -1666,234 +1121,9 @@ browser.runtime.onUpdateAvailable.addListener((details) => {
   onUpdateAvailable(details, getInstallLifecycleDeps());
 });
 
-function onNavigateToTab() {
-  browser.tabs.onActivated.addListener((onActivatedTab) => {
-    if (controller) {
-      const { tabId } = onActivatedTab;
-      const currentOrigin = senderOriginMapping[tabId];
-      const currentTabOrigin = tabOriginMapping[tabId];
-      // *** Emit DappViewed metric event when ***
-      // - navigate to a connected dapp
-      if (currentOrigin) {
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[currentOrigin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        if (isConnectedToDapp) {
-          emitDappViewedMetricEvent(
-            currentOrigin,
-            currentTabOrigin,
-            frameIdMapping[tabId],
-          );
-        }
-      }
-
-      // If the connected dApp is a referral partner, trigger the referral flow
-      const partner = getPartnerByOrigin(currentTabOrigin);
-      if (partner) {
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[currentTabOrigin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        if (isConnectedToDapp) {
-          controller.controllerMessenger
-            .call(
-              'LegacyBackgroundApiService:handleDefiReferral',
-              partner,
-              tabId,
-              ReferralTriggerType.OnNavigateConnectedTab,
-            )
-            .catch((error) => {
-              log.error(
-                `Failed to handle ${partner.name} referral after navigation to connected tab: `,
-                error,
-              );
-            });
-        }
-      }
-    }
-  });
-}
-
 setupSidePanelToolbarBehavior({
   getController: () => controller,
   waitUntilInitialized: async () => await isInitialized,
-});
-
-// Initialize appActiveTab by querying the current active tab on startup
-const initializeAppActiveTab = async () => {
-  await refreshAppActiveTab();
-};
-
-initializeAppActiveTab();
-
-// Tab listeners to populate appActiveTab
-browser.tabs.onActivated.addListener(async ({ tabId }) => {
-  // Wait for controller to be initialized
-  await isInitialized;
-  if (!controller) {
-    return {};
-  }
-
-  try {
-    const tabInfo = await browser.tabs.get(tabId);
-    const { id, title, url, favIconUrl } = tabInfo;
-
-    if (!url) {
-      // Clear appActiveTab when there's no URL (e.g., new blank tab)
-      controller.appStateController.clearAppActiveTab();
-      return {};
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    if (!isWebOrigin(origin)) {
-      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
-      controller.appStateController.clearAppActiveTab();
-      return {};
-    }
-
-    // Update the app active tab state
-    controller.appStateController.setAppActiveTab({
-      id,
-      title,
-      origin,
-      protocol,
-      url,
-      host,
-      href,
-      favIconUrl,
-    });
-
-    // Update subject metadata for permission system
-    controller.subjectMetadataController.addSubjectMetadata({
-      origin,
-      name: title || host || origin,
-      iconUrl: favIconUrl || null,
-      subjectType: 'website',
-    });
-  } catch (error) {
-    // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onActivated listener:', error.message);
-  }
-
-  return {};
-});
-
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  // Wait for controller to be initialized
-  await isInitialized;
-  if (!controller) {
-    return {};
-  }
-
-  // Only update when URL changes or when page finishes loading
-  // This prevents flickering from multiple updates during page load
-  const urlChanged = changeInfo.url !== undefined;
-  const statusComplete = changeInfo.status === 'complete';
-
-  if (!urlChanged && !statusComplete) {
-    return {};
-  }
-
-  try {
-    // Use tab from parameter if available, otherwise fetch it.
-    // The tab parameter is usually provided by Chrome, but may be undefined
-    // in edge cases (e.g., when a tab is being removed), so we fall back to
-    // fetching it explicitly.
-    const tabInfo = tab || (await browser.tabs.get(tabId));
-    const { id, title, url, favIconUrl } = tabInfo;
-
-    // Only update if this is the currently active tab
-    // This prevents updating with stale data from background tabs
-    const currentAppActiveTab =
-      controller.appStateController.state.appActiveTab;
-    const isActiveTab = currentAppActiveTab?.id === id;
-
-    if (!url) {
-      // Only clear if this is the currently active tab
-      if (isActiveTab) {
-        controller.appStateController.clearAppActiveTab();
-      }
-      return {};
-    }
-
-    const { origin, protocol, host, href } = new URL(url);
-
-    // Skip if no origin, null origin, or extension pages
-    if (
-      !origin ||
-      origin === 'null' ||
-      origin.startsWith('chrome-extension://') ||
-      origin.startsWith('moz-extension://')
-    ) {
-      // Only clear if this is the currently active tab
-      if (isActiveTab) {
-        controller.appStateController.clearAppActiveTab();
-      }
-      return {};
-    }
-
-    // Also check if this tab is actually the active tab in the current window.
-    // This is needed because stored appActiveTab might be stale if the user
-    // switched tabs quickly, or if tabs were closed/reopened. Querying the
-    // browser ensures we only update for the truly active tab.
-    let isActuallyActive = false;
-    try {
-      const activeTabs = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      isActuallyActive = activeTabs.some((activeTab) => activeTab.id === id);
-    } catch (error) {
-      // Fallback to checking against stored active tab
-      isActuallyActive = isActiveTab;
-    }
-
-    // Only update if URL changed and it's the active tab, or if status is complete and it's the active tab
-    if ((urlChanged || statusComplete) && isActuallyActive) {
-      // Update the app active tab state
-      controller.appStateController.setAppActiveTab({
-        id,
-        title,
-        origin,
-        protocol,
-        url,
-        host,
-        href,
-        favIconUrl,
-      });
-
-      // Update subject metadata for permission system
-      controller.subjectMetadataController.addSubjectMetadata({
-        origin,
-        name: title || host || origin,
-        iconUrl: favIconUrl || null,
-        subjectType: 'website',
-      });
-    }
-  } catch (error) {
-    // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onUpdated listener:', error.message);
-  }
-
-  return {};
-});
-
-// Window focus listener to keep appActiveTab in sync across browser windows.
-// Without this, switching between Chrome windows can leave appActiveTab pointing
-// at the previously focused window's tab, causing
-// the connection bar [ui/components/multichain/dapp-connection-control-bar/dapp-connection-control-bar.tsx]
-// to disappear or appear on the wrong window.
-browser.windows.onFocusChanged.addListener(async (windowId) => {
-  // WINDOW_ID_NONE means all browser windows lost focus (e.g., user switched
-  // to another application). Keep appActiveTab unchanged so it stays correct
-  // when the user returns to Chrome.
-  if (windowId === browser.windows.WINDOW_ID_NONE) {
-    return;
-  }
-
-  await refreshAppActiveTab(windowId);
 });
 
 function setupSentryGetStateGlobal(store) {
@@ -1908,7 +1138,7 @@ function setupSentryGetStateGlobal(store) {
  * @param {Backup | null} backup
  */
 async function initBackground(backup) {
-  onNavigateToTab();
+  installOnNavigateToTabListener();
   try {
     await initialize(backup);
     if (process.env.IN_TEST) {
@@ -1925,7 +1155,7 @@ async function initBackground(backup) {
     persistenceManager.cleanUpMostRecentRetrievedState();
 
     // For testing: simulate initialization hang. Only when backup exists in
-    // IndexedDB and we're not already in the restore flow (backup param is
+    // IndexedDB and we're not already in the recover flow (backup param is
     // null). Skip when backup param is non-null so vault recovery can complete.
     if (
       process.env.IN_TEST &&
@@ -1950,16 +1180,17 @@ async function initBackground(backup) {
 }
 /**
  * Service worker entry for background startup: normal init, or critical-error
- * restore (when a session and vault backup exist).
+ * repair when a session exists.
  */
 async function initOrRestoreBackground() {
   if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
     return;
   }
 
-  const restoreSession = await readCriticalErrorRestoreSession(browser);
+  const repairSession = await readCriticalErrorRepairSession(browser);
+  const repairAction = repairSession?.repairAction;
 
-  // Fetch the backup once, shared by the restore path below and by
+  // Fetch the backup once, shared by the recover path below and by
   // the simulateBackground*Hang test flags (which need to know whether a
   // backup already existed at startup, before onboarding can create one).
   const testingFlags = process.env.IN_TEST
@@ -1967,7 +1198,7 @@ async function initOrRestoreBackground() {
     : undefined;
   let backup = null;
   if (
-    restoreSession ||
+    repairSession ||
     testingFlags?.simulateBackgroundStateSyncHang ||
     testingFlags?.simulateBackgroundInitializationHang
   ) {
@@ -1985,16 +1216,27 @@ async function initOrRestoreBackground() {
     }
   }
 
-  if (restoreSession) {
-    await clearCriticalErrorRestoreSession(browser);
-    if (backupHasVault) {
-      if (inTestState) {
-        inTestState.restoreInProgress = true;
+  if (repairSession) {
+    await clearCriticalErrorRepairSession(browser);
+
+    if (repairAction === CriticalErrorRepairAction.Reset && !backupHasVault) {
+      await persistenceManager.reset();
+      initBackground(null);
+      try {
+        await isInitialized;
+      } catch (error) {
+        log.error('critical-error-reset: initialization failed', error);
+        return;
       }
-      const handoffPayload = {
-        tabId: restoreSession.tabId,
-        tabUrl: restoreSession.tabUrl,
-      };
+
+      await handoffRestoringTabToExtension(platform, repairSession);
+      return;
+    }
+
+    if (repairAction === CriticalErrorRepairAction.Recover && backupHasVault) {
+      if (inTestState) {
+        inTestState.recoverInProgress = true;
+      }
       initBackground(backup);
       try {
         await isInitialized;
@@ -2007,7 +1249,7 @@ async function initOrRestoreBackground() {
         FirstTimeFlowType.restore,
       );
 
-      await handoffRestoringTabToExtension(platform, handoffPayload);
+      await handoffRestoringTabToExtension(platform, repairSession);
       return;
     }
   }

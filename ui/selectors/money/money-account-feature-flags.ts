@@ -173,3 +173,15 @@ export const selectMoneyActivityDetailsEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyActivityDetailsEnabled,
 );
+
+/**
+ * Selects whether the Money balance card should show the "mUSD" text label
+ * next to the fiat balance.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the mUSD label is enabled.
+ */
+export const selectMoneyBalanceShowMusdLabelEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (flags) => getBooleanFeatureFlag(flags?.moneyBalanceShowMusdLabel, false),
+);

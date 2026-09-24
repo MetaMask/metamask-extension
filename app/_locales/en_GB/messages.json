@@ -515,40 +515,44 @@
     "message": "Closed short - market"
   },
   "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Deposit failed"
   },
   "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Depositing"
+    "message": "Depositing $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_description": {
-    "message": "Money account"
+    "message": "To: Money account"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Deposited"
+    "message": "Deposited $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Send failed"
+    "message": "Receive failed"
   },
   "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Sending"
+    "message": "Receiving $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money account"
+    "message": "From: Money account"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Sent"
+    "message": "Received $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Buy failed"
@@ -2019,14 +2023,14 @@
     "message": "Privacy and product updates"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Third-party APIs are now part of Basic Functionality. Based on your previous preferences, this setting is $1. Change it any time in $2",
+    "message": "Basic functionality now includes third-party APIs. It’s turned $1 based on your previous settings. Adjust anytime in $2.",
     "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
   },
   "basicFunctionalityMigrationToastDisabled": {
-    "message": "disabled"
+    "message": "off"
   },
   "basicFunctionalityMigrationToastEnabled": {
-    "message": "enabled"
+    "message": "on"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Settings > Privacy"
@@ -3159,6 +3163,9 @@
   "copiedToClipboard": {
     "message": "Copied to clipboard"
   },
+  "copy": {
+    "message": "Copy"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
@@ -3220,8 +3227,20 @@
     "message": "If none of the above works, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Recover accounts"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "Reinstall MetaMask"
+  },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Reset MetaMask State"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "Recovering accounts will delete your current settings and preferences."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "Resetting MetaMask state will delete your current accounts, settings and preferences."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Still having issues?"
@@ -3244,9 +3263,6 @@
   },
   "current": {
     "message": "Current"
-  },
-  "currentAccountNotConnected": {
-    "message": "Your current account is not connected"
   },
   "currentEstimatedBaseFee": {
     "message": "Current: $1 GWEI"
@@ -5656,13 +5672,16 @@
     "message": "$1 APY"
   },
   "moneyBalanceInfoBody": {
-    "message": "Your dollar-backed mUSD balance that's always available to spend, send, or trade anytime. We don't calculate this into your total account balance."
+    "message": "Your dollar-backed mUSD balance that's always earning. We don't calculate this into your total account balance."
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "Withdrawals process immediately, subject to standard network confirmation times on the relevant blockchain. If liquidity is tight, there may be temporary delays."
   },
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
+  },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
   },
   "moneyBalanceRetry": {
     "message": "Retry"
@@ -5739,10 +5758,10 @@
     "message": "Fund your Money account and watch your balance grow with up to $1 APY."
   },
   "moneyHomeApyTooltip": {
-    "message": "The rate shown is an estimated Annual Percentage Yield (APY) based on current market conditions. APY is variable and is not guaranteed. Funds go into a DeFi vault, administered by Veda with risk oversight by Steakhouse Financial, that generates returns across established lending markets."
+    "message": "The rate shown is the current Annual Percentage Yield (APY). APY is variable and is not guaranteed."
   },
   "moneyHomeApyTooltipEarning": {
-    "message": "Your Money account earns up to $1 automatically.",
+    "message": "Your Money account earns up to $1 APY automatically.",
     "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
@@ -5755,14 +5774,8 @@
     "message": "Add mUSD and your dollar-backed balance is ready to spend, trade, or send anytime."
   },
   "moneyHowItWorksDescription1": {
-    "message": "Add mUSD into your Money account and earn up to $1 APY (variable) automatically. Funds go into a DeFi vault, administered by Veda with risk monitoring by Steakhouse Financial. The rate is generated by third-party DeFi platforms that deploy funds in blockchain protocols. No staking, no claiming, no lock-ups.",
+    "message": "Convert any crypto into your Money account and earn up to $1 APY (variable) automatically. Funds go into a DeFi vault, administered by Veda with risk monitoring by Steakhouse Financial. The rate is generated by third-party DeFi platforms that deploy funds in blockchain protocols. No staking, no claiming, no lock-ups.",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Your Money balance is your spending balance. Link your MetaMask Card to spend at 150M+ merchants worldwide. Your money keeps earning until the moment you use it."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money account is powered by Monad."
   },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Add mUSD and earn up to $1. Your balance is dollar-backed and ready to spend, trade, or send anytime.",
@@ -5772,59 +5785,55 @@
     "message": "Money account is not a bank account, savings account, or insured deposit product. APY is variable and not guaranteed. Money account involves smart contract, protocol, liquidity, and other risks, and you may lose some or all of your funds. Subject to regional restrictions. Terms apply."
   },
   "moneyHowItWorksDisclosuresTitle": {
-    "message": "Risks and Disclosures"
+    "message": "Risk and Disclosures"
   },
   "moneyHowItWorksFaqApyAnswer": {
     "message": "Up to $1 APY. The rate is variable and fluctuates with market conditions. The current rate is always visible inside the Money account.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "Does the APY rate change?"
+    "message": "How much can I earn with a MetaMask Money account?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "You! MetaMask is a self-custodial wallet, meaning only the account holder's Private Keys control it. MetaMask can't access, freeze, or move your funds. This is what distinguishes us from traditional bank accounts and custodial crypto platforms—there's no third party holding your funds."
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "Most places! We currently aren't available in the UK and countries on the USA sanctions list."
   },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Who controls my money?"
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "Which countries is MetaMask Money account available in?"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "There's no fee to open a Money account and no fee to deposit stablecoins. You will get charged fees when depositing non-stablecoin tokens. There are also fees associated with MetaMask Card transactions, ATM withdrawals, and local currency offramp costs. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "See the full Card fee breakdown here."
+    "message": "There's no fee to open a Money account and no fee to deposit stablecoins. You will get charged fees when depositing non-stablecoin tokens."
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Are there any fees?"
+    "message": "What are MetaMask Money account fees?"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "No, opening a Money account doesn't require identity verification. However, certain features, including Card and Ramps, do require verification. Checks are carried out by third-party providers that operate regulated services, not by MetaMask. If needed, you will be guided through the process inside the app during sign-up."
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "Do I need to complete identity verification to use MetaMask Money account?"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Yes. You can trade, send, spend, or withdraw your full balance at any time with no notice periods, no penalties, and no withdrawal fees from MetaMask. If liquidity is tight, there may be temporary delays."
+    "message": "Yes. You can send or withdraw your full balance at any time with no notice periods, no penalties, and no withdrawal fees from MetaMask. If liquidity is tight, there may be temporary delays."
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Is my money locked? Can I withdraw anytime?"
+    "message": "Can I withdraw from the MetaMask Money account anytime?"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "An account that earns up to $1 variable APY. You deposit funds, which are held in the account as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. You can use or withdraw your funds anytime with no penalties. You can spend your funds via MetaMask Card at 150+ million Mastercard merchants worldwide.",
+    "message": "An account that earns up to $1 variable APY. You deposit funds, which are held in the account as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. You can use or withdraw your funds anytime with no penalties.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "What is the Money account?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD is MetaMask's 1:1 dollar-backed stablecoin. Your Money balance is held as mUSD and stays available to spend, send, or trade anytime.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "What is mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Your Money balance is your spending balance — it keeps earning until the moment you use it. Money account is not a bank account, savings account, or insured deposit product.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Is this a savings account or a spending account?"
+    "message": "What is a MetaMask Money account?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQs"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "You can deposit the following stablecoins and aTokens into your Money account with no conversion fees:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nAll other EVM tokens can be deposited into the Money account, but standard fees may apply. You can also fund your Money account using a debit card, credit card, bank account, PayPal, Apple Pay, or Google Pay.\n\nNote: There's an initial max deposit of $1 per token to ensure liquidity.",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "What tokens can I deposit into the Money account?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "When you deposit funds, they're put in established DeFi protocols, like Aave and Morpho, where they earn returns from real economic activity. These returns are then delivered to you in the form of APY.\n\nA third-party service provider called Steakhouse Financial monitors how funds are allocated in the protocols. Veda, a third-party infrastructure provider, deploys and maintains the vault smart contracts that hold your funds.\n\nEarnings are not interest paid by MetaMask or by the issuer of mUSD. They are the onchain returns generated by positions in third-party DeFi protocols."
@@ -7038,6 +7047,42 @@
     "message": "We couldn't verify your $1. Try again or use your password.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationDescription1": {
+    "message": "The way your passkey was saved can't fully protect your wallet key. Replace it to keep using Biometrics feature.",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "When your browser asks where to save it, choose Google Password Manager, not this device. $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Your current passkey works until you replace it.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "It was saved to this device, which can't protect your wallet key. Try again and choose Google Password Manager when your browser asks where to save it. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Keep my current passkey for now",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "That passkey won't work",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Try again",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "See supported providers",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Your passkey needs an update",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
+  },
   "passkeySetupStepRegister": {
     "message": "Register $1",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -7508,6 +7553,13 @@
   },
   "perpsAddFunds": {
     "message": "Add funds"
+  },
+  "perpsAddFundsHint": {
+    "message": "Add at least $1 to your Perps account to place this order.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Add funds to trade"
   },
   "perpsAddMargin": {
     "message": "Add margin"
@@ -8834,7 +8886,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Choose provider"
+    "message": "Choose providers"
   },
   "rampsCompleteBuyTitle": {
     "message": "Complete buy",
@@ -9114,6 +9166,10 @@
   "relayerFee": {
     "message": "Relayer fee"
   },
+  "remindMeLater": {
+    "message": "Remind me later",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Remove"
   },
@@ -9176,6 +9232,10 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "replacePasskey": {
+    "message": "Replace passkey",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Report an issue"
@@ -9456,6 +9516,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "This RPC provider is limiting requests. Try again later or use a different RPC URL."
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -10054,9 +10117,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "New address"
-  },
-  "sendBugReport": {
-    "message": "Send us a bug report."
   },
   "sendBundleHwGasPayment": {
     "message": "Paying network fee with $1",
@@ -11385,38 +11445,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Your vault cannot be automatically recovered."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Your vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Internal error: database cannot be accessed"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Reset MetaMask State"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Resetting database…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restore accounts"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restoring database…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "these instructions",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "How to recover your Secret Recovery Phrase"
@@ -12224,9 +12265,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "The connection with $1 is unreliable. Update network connectivity details before continuing or try again later.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
   "unexpectedError": {
     "message": "An unexpected error occurred.",

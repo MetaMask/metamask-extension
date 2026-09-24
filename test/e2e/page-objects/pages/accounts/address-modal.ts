@@ -37,6 +37,8 @@ class AccountAddressModal {
         this.accountAddress,
         this.viewOnEtherscanLink,
       ]);
+      // Wait for modal animation to complete
+      await this.driver.waitForElementToStopMoving(this.parentSelector);
     } catch (e) {
       console.log(
         'Timeout while waiting for account address modal to be loaded',
@@ -44,7 +46,6 @@ class AccountAddressModal {
       );
       throw e;
     }
-    await this.driver.delay(1000);
     console.log('Account address modal is loaded');
   }
 
@@ -61,10 +62,8 @@ class AccountAddressModal {
    */
   async getAccountAddress(): Promise<string> {
     console.log('Getting the address from the modal');
-    // This delay is needed to wait for the animation to complete
-    // as we don't have a mechanism to wait for the anumation to complete.
-    // If we remove it will introduce flakiness
-    await this.driver.delay(1000);
+    // Wait for animation to complete before reading the address
+    await this.driver.waitForElementToStopMoving(this.accountAddress);
     await this.driver.waitForSelector(this.accountAddress);
     const element = await this.driver.findElement(this.accountAddress);
     await this.driver.waitForNonEmptyElement(element);
