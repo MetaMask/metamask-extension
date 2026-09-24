@@ -5674,12 +5674,6 @@
     "message": "Nạp mUSD vào Money Account của bạn và tự động sinh lời với lãi suất APY lên đến $1 (có thể thay đổi). Tiền sẽ được đưa vào một kho DeFi do Veda quản lý và được giám sát rủi ro bởi Steakhouse Financial. Mức lãi suất được tạo ra từ các nền tảng DeFi bên thứ ba triển khai vốn vào các giao thức chuỗi khối. Không cần ký gửi, không cần nhận, không bị khóa tài sản.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Số dư Tài chính của bạn là số dư để chi tiêu. Liên kết Thẻ MetaMask để chi tiêu tại hơn 150 triệu cửa hàng trên toàn cầu. Tiền của bạn vẫn sinh lời cho đến thời điểm bạn sử dụng."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account được hỗ trợ bởi Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Nạp mUSD và sinh lời lên đến $1. Số dư của bạn được bảo chứng theo đô-la, sẵn sàng để chi tiêu, giao dịch hoặc gửi bất cứ lúc nào.",
     "description": "$1 is the current mUSD APY."
@@ -5697,17 +5691,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Tỷ lệ APY có thay đổi không?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Chính bạn! MetaMask là ví tự lưu ký, nghĩa là chỉ có Khóa riêng tư của chủ tài khoản mới có quyền kiểm soát tài khoản. MetaMask không thể truy cập, đóng băng hoặc di chuyển tiền của bạn. Đây là điểm khác biệt giữa chúng tôi với tài khoản ngân hàng truyền thống và các nền tảng tiền mã hóa lưu ký — không có bên thứ ba nào nắm giữ tiền của bạn."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Ai kiểm soát tiền của tôi?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Không có phí khi mở Money Account và không có phí khi nạp đồng ổn định. Bạn sẽ phải trả phí khi nạp các token không phải là đồng ổn định. Ngoài ra còn có các khoản phí liên quan đến giao dịch bằng MetaMask Card, rút tiền tại ATM và chi phí chuyển đổi ngược sang đồng tiền nội tệ. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Xem chi tiết đầy đủ về các khoản phí của Thẻ tại đây."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Có phí nào không?"
@@ -5724,20 +5709,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Tài khoản Tài chính là gì?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD là đồng ổn định được bảo chứng bằng đô-la theo tỷ lệ 1:1 của MetaMask. Số dư Money Account của bạn được giữ dưới dạng mUSD và luôn sẵn sàng để chi tiêu, gửi hoặc giao dịch bất kỳ lúc nào.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD là gì?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Số dư Money Account là số dư chi tiêu của bạn — số dư này tiếp tục sinh lời cho đến thời điểm bạn sử dụng. Money Account không phải là tài khoản ngân hàng, tài khoản tiết kiệm hoặc sản phẩm tiền gửi được bảo hiểm.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Đây là tài khoản tiết kiệm hay tài khoản chi tiêu?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Câu hỏi thường gặp"

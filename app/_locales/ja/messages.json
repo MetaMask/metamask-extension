@@ -5670,16 +5670,6 @@
   "moneyHowItWorksDescription": {
     "message": "mUSDを追加しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。"
   },
-  "moneyHowItWorksDescription1": {
-    "message": "Money AccountにmUSDを追加すると、最大$1のAPY (変動制) を自動的に獲得できます。資金はDeFiヴォールトに入金され、Steakhouse Financialのリスクモニタリングと共に、Vedaによって管理されます。レートは、ブロックチェーンプロトコルの資金を表示するサードパーティDeFiプラットフォームにより生成されています。ステーキングや請求は不要で、ロックアップもありません。",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "マネー残高は使用可能な残高です。MetaMaskカードをリンクすれば、世界中の1億5千万以上のマーチャントで使用できます。資金は使うまで収益を生み続けます。"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money AccountはMonadにより運用されています。"
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSDを追加して、最大$1を獲得しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。",
     "description": "$1 is the current mUSD APY."
@@ -5697,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "APYは変動しますか？"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "ユーザー自身です。MetaMaskはセルフカストディウォレットであるため、アカウント所有者の秘密鍵でのみ管理できます。MetaMaskがユーザーの資金にアクセスしたり、凍結したり、移動させたりすることはできません。これが、第三者がユーザーの資金を保管する従来の銀行口座やカストディ型暗号資産プラットフォームとの違いです。"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "資金は誰が管理するのですか？"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money Accountは無料で開設でき、ステーブルコインの入金には手数料がかかりません。ステーブルコイン以外のトークンを入金する場合は、手数料がかかります。それ以外にも、MetaMask Cardの取引手数料、ATM引き出し手数料、現地通貨へのオフランプ手数料がかかります。"
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "カード手数料の詳細については、こちらをご覧ください。"
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "手数料はかかりますか？"
@@ -5724,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "マネーアカウントとは？"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSDは、ドルと1対1で裏付けられたMetaMaskのステーブルコインです。Money残高はmUSDで保持され、いつでも支払い、送金、取引に利用できます。",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSDとは？"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Money残高は支出用の残高で、支出される瞬間まで利回りが得られます。Money Accountは、銀行口座、普通預金口座、または保険対象の預金商品ではありません。",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "これは貯蓄用アカウントですか？それとも使用用アカウントですか？"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"

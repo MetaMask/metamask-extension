@@ -5666,16 +5666,6 @@
   "moneyHowItWorksDescription": {
     "message": "Magdagdag ng mUSD at ang iyong balanse na sinusuportahan ng dolyar ay handa na para gastusin, i-trade, o ipadala anumang oras."
   },
-  "moneyHowItWorksDescription1": {
-    "message": "Magdagdag ng mUSD sa Money account mo at awtomatikong kumita ng hanggang $1 APY (variable). Napupunta ang mga pondo sa isang DeFi vault, na pinangangasiwaan ng Veda at may pagsubaybay sa panganib mula sa Steakhouse Financial. Binubuo ang rate ng mga third-party na platform ng DeFi na naglalagay ng mga pondo sa mga blockchain protocol. Walang pag-stake, walang pag-claim, walang mga lock-up.",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Ang balanse mo sa Money ang balanseng puwede mong gastusin. I-link ang MetaMask Card mo para magamit ito sa 150M+ merchant sa buong mundo. Patuloy na kikita ang pera mo hanggang sa gastusin mo ito."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Ang Money account ay pinapagana ng Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Magdagdag ng mUSD at kumita ng hanggang $1. Ang iyong balanse ay sinusuportahan ng dolyar at handa na para gastusin, i-trade, o ipadala anumang oras.",
     "description": "$1 is the current mUSD APY."
@@ -5693,17 +5683,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Nagbabago ba ang rate ng APY?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Ikaw! Ang MetaMask ay isang self-custodial na wallet, ibig sabihin tanging ang mga Private Key ng may hawak ng account ang may kontrol dito. Hindi maaaring i-access, i-freeze, o galawin ng MetaMask ang mga pondo mo. Ito ang ipinagkaiba namin mula sa mga tradisyonal na account sa bangko at mga custodial crypto platform—walang third party na humahawak sa mga pondo mo."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Sino ang kumokontrol sa pera ko?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Walang bayad sa pagbubukas ng Money account at walang bayad sa pagdedeposito ng mga stablecoin. Sisingilin ka ng mga bayarin kapag nagdedeposito ng mga non-stablecoin token. Walang mga nauugnay na mga bayarin sa mga transaksyon sa MetaMask Card, pagwi-withdraw sa ATM, at mga gastos sa local currency offramp. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Tingnan ang kabuuan ng breakdown ng bayad sa Card dito."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "May mga kailangan bang bayaran?"
@@ -5720,20 +5701,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Ano ang Money account?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "Ang mUSD ay stablecoin ng MetaMask na 1:1 suportado ng dolyar. Inilalagay ang balanse ng Money mo bilang mUSD at nananatiling available para gastusin, ipadala, o i-trade anumang oras.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Ano ang mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Ang balanse ng iyong Money ay ang balanse na gagastusin mo — patuloy itong kumikita hanggang sa gamitin mo ito. Ang Money account ay hindi isang bank account, savings account, o naka-insure na produktong deposito.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Isa ba itong savings account o spending account?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Mga FAQ"
