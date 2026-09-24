@@ -17,7 +17,7 @@ import type { Destination } from '../../../../shared/lib/deep-links/routes/route
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 import { resolveBuyDeepLinkDestination } from '../../../../shared/lib/deep-links/buy-flow';
-import { getBooleanFeatureFlag } from '../../../../shared/lib/remote-feature-flag-utils';
+import { getIsUnifiedBuyEnabled } from '../../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
@@ -54,7 +54,7 @@ export class DeepLinkRouter extends EventEmitter<{
 
   /**
    * Whether the unified buy feature is enabled: the `rampsEnabled` remote
-   * flag, resolved through the same manifest-merged path as the
+   * flag, resolved through the same manifest-merged shared predicate as the
    * `getIsRampsEnabled` UI selector.
    *
    * @returns True if the unified buy feature is enabled.
@@ -72,7 +72,7 @@ export class DeepLinkRouter extends EventEmitter<{
         remoteFeatureFlags: state.remoteFeatureFlags ?? {},
       },
     });
-    return getBooleanFeatureFlag(flags.rampsEnabled, false);
+    return getIsUnifiedBuyEnabled(flags);
   }
 
   constructor({ getExtensionURL, getState }: Options) {

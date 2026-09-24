@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
-import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { getIsUnifiedBuyEnabled } from '../../shared/lib/remote-feature-flag-utils';
 
 /**
  * Selector to determine if the ramps feature is enabled.
@@ -13,7 +13,7 @@ import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-util
  */
 export const getIsRampsEnabled = createSelector(
   getRemoteFeatureFlags,
-  (flags) => getBooleanFeatureFlag(flags?.rampsEnabled, false),
+  getIsUnifiedBuyEnabled,
 );
 
 /**
