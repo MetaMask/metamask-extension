@@ -35,8 +35,7 @@ import {
   hasEverConnectedToPortfolio,
   markPortfolioBuyMigrationAttempted,
 } from '../utils/portfolioConnection';
-import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
-import { resolveRampControllerAssetId } from '../utils/resolveRampControllerAssetId';
+import { resolveRampControllerToken } from '../utils/resolveRampControllerToken';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -103,9 +102,9 @@ function isCatalogEmpty(
   return providersEmpty || tokensEmpty;
 }
 
-// Finds `assetId` in the catalog, resolving it to the catalog's canonical
-// spelling: caller ids may differ in address casing, and deep link intents
-// use the `slip44:.` native placeholder vs the catalog's `slip44:{coinType}`.
+// Finds `assetId` in the catalog, returning the catalog's own token: caller
+// ids may differ in address casing, and deep link intents use the
+// `slip44:.` native placeholder vs the catalog's `slip44:{coinType}`.
 function findCatalogToken(
   tokensData: TokensResponse | null,
   assetId: CaipAssetType,
@@ -114,12 +113,7 @@ function findCatalogToken(
     ...(tokensData?.topTokens ?? []),
     ...(tokensData?.allTokens ?? []),
   ];
-  const canonicalAssetId = resolveRampControllerAssetId(assetId, catalog);
-  return catalog.find(
-    (token) =>
-      normalizeAssetIdForApi(token.assetId) ===
-      normalizeAssetIdForApi(canonicalAssetId),
-  );
+  return resolveRampControllerToken(assetId, catalog);
 }
 
 // Pre-select the token before navigating to build-quote. Fail closed so a
