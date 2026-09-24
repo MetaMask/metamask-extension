@@ -42,6 +42,19 @@ export type RampIntent = {
   chainId?: Hex | CaipChainId;
 };
 
+/**
+ * Options for {@link useRampsNavigation}.goToBuy.
+ */
+export type GoToBuyOptions = {
+  /**
+   * Replace, rather than push, the history entry for the in-app navigations
+   * `goToBuy` performs. Callers that intercept a navigation (the `/buy`
+   * deep-link entry page) must replace so the intercepting page cannot be
+   * navigated back to; regular in-app entry points keep pushing.
+   */
+  replace?: boolean;
+};
+
 type ProvidersState = ResourceState<Provider[], Provider | null>;
 type TokensState = ResourceState<TokensResponse | null, unknown>;
 
@@ -124,10 +137,11 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
- * {@link RampIntent}. It runs the gate and either shows a blocking modal or
- * opens the buy destination. Resolves to `true` when it proceeded and `false`
- * when a blocking modal was shown, plus `opensBuyInPortfolioTab` so callers can
- * gate follow-up UI (e.g. a "tab opened" toast).
+ * {@link RampIntent} and an optional {@link GoToBuyOptions}. It runs the gate
+ * and either shows a blocking modal or opens the buy destination. Resolves to
+ * `true` when it proceeded and `false` when a blocking modal was shown, plus
+ * `opensBuyInPortfolioTab` so callers can gate follow-up UI (e.g. a "tab
+ * opened" toast).
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -143,7 +157,10 @@ export default function useRampsNavigation() {
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
 
   const goToBuy = useCallback(
-    async (intent?: RampIntent): Promise<boolean> => {
+    async (
+      intent?: RampIntent,
+      { replace = false }: GoToBuyOptions = {},
+    ): Promise<boolean> => {
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
@@ -223,10 +240,15 @@ export default function useRampsNavigation() {
         return false;
       }
 
+      // A `replace` request swaps the caller's history entry instead of
+      // pushing, so an intercepting page (deep-link entry) cannot be returned
+      // to via the back button.
+      const historyOptions = replace ? { replace: true } : undefined;
+
       // 6. Route into the native buy flow.
       if (!assetId) {
         // No specific asset → token selection page (it loads the catalog).
-        navigate(RAMPS_TOKEN_SELECTION_ROUTE);
+        navigate(RAMPS_TOKEN_SELECTION_ROUTE, historyOptions);
         return true;
       }
 
@@ -254,6 +276,7 @@ export default function useRampsNavigation() {
       }
       navigate(RAMPS_BUILD_QUOTE_ROUTE, {
         state: { assetId: selectedAssetId },
+        ...historyOptions,
       });
       return true;
     },
