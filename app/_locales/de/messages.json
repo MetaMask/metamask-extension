@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "Short-Position geschlossen ‒ Markt"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Einzahlung fehlgeschlagen"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "$1 einzahlen",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "$1 eingezahlt",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Empfangen fehlgeschlagen"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "$1 empfangen",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "$1 empfangen",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "Kauf fehlgeschlagen"
   },
@@ -1478,6 +1500,9 @@
   },
   "alertMessageGasFeeLow": {
     "message": "Wenn Sie eine niedrige Gebühr wählen, müssen Sie mit langsameren Transaktionen und längeren Wartezeiten rechnen. Für schnellere Transaktionen wählen Sie die Gebührenoptionen Markt oder Aggressiv."
+  },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 12000 oder mehr erhöhen."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
@@ -3062,6 +3087,9 @@
   },
   "copiedToClipboard": {
     "message": "In die Zwischenablage kopiert"
+  },
+  "copy": {
+    "message": "Kopieren"
   },
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
@@ -5411,6 +5439,14 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1 % APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Verdienen Sie $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Der angegebene effektive Jahreszins (APY) ist ein auf den aktuellen Marktbedingungen basierender Schätzwert. Der effektive Jahreszins ist variabel und wird nicht garantiert."
   },
@@ -5552,6 +5588,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Erzielen Sie automatisch Zinsen auf Ihr Guthaben"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Verdienen Sie automatisch bis zu $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Erhalten Sie volle Liquidität ohne Sperrfristen, sodass Sie jederzeit handeln oder auszahlen können"
   },
@@ -5591,6 +5631,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Keine Gebühr"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Die Prognose geht davon aus, dass der $1 % Effektivertrag (APY) über einen Zeitraum von einem Jahr unverändert bleibt. Der Effektivertrag ist variabel und wird nicht garantiert. Keine Garantie für die Rendite.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Verdienen Sie auf Ihrem Guthaben"
   },
@@ -5608,6 +5652,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "Der angegebene effektive Jahreszins (APY) ist ein Schätzwert, der auf den aktuellen Marktbedingungen basiert. Der APY ist variabel und nicht garantiert. Die Gelder fließen in einen DeFi-Tresor, der von Veda verwaltet und von Steakhouse Financial risikoüberwacht wird und Renditen auf den etablierten Kreditmärkten erwirtschaftet."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Ihr Money Account verdient automatisch bis zu $1.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Das Money Account wird durch Monad betrieben."
@@ -6901,6 +6949,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Wir konnten Ihr $1 nicht verifizieren. Versuchen Sie es erneut oder verwenden Sie Ihr Passwort.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Erneut versuchen",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 registrieren",
@@ -8968,6 +9020,10 @@
   "relayerFee": {
     "message": "Relayer-Gebühr"
   },
+  "remindMeLater": {
+    "message": "Später erinnern",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Entfernen"
   },
@@ -9310,6 +9366,9 @@
   },
   "rpcUrl": {
     "message": "RPC-URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Dieser RPC-Anbieter begrenzt die Anzahl der Anfragen. Bitte versuchen Sie es später erneut oder verwenden Sie eine andere RPC-URL."
   },
   "safeTransferFrom": {
     "message": "Sichere Übertragung von"
@@ -11574,6 +11633,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Automatisch"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Die Slippage-Toleranz wurde auf 100 % begrenzt."
   },
   "swapSlippageHighDescription": {
     "message": "Die eingegebene Slippage ($1%) wird als sehr hoch angesehen und kann zu einem schlechten Kurs führen.",

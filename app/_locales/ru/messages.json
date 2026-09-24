@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "Короткая позиция закрыта — рынок"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Ошибка депозита"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Внесение $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Внесено $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Ошибка получения"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Получение $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Получено $1",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "Ошибка покупки"
   },
@@ -1478,6 +1500,9 @@
   },
   "alertMessageGasFeeLow": {
     "message": "При выборе низкой комиссии транзакций будут медленнее, а время ожидания — дольше. Для более быстрых транзакций выберите вариант комиссии «Рыночная» или «Агрессивная»."
+  },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Чтобы продолжить эту транзакцию, вам необходимо увеличить лимит газа до 12 000 или выше."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "У вас на счету недостаточно $1 для оплаты комиссий сети."
@@ -3063,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "Скопировано в буфер обмена"
   },
+  "copy": {
+    "message": "Копировать"
+  },
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
   },
@@ -4173,6 +4201,9 @@
   },
   "gasLimit": {
     "message": "Лимит газа"
+  },
+  "gasLimitBelowMinimum": {
+    "message": "Лимит газа должен быть не менее 12 000"
   },
   "gasPrice": {
     "message": "Цена газа (Гвей)"
@@ -5408,6 +5439,14 @@
   "money": {
     "message": "Финансы"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% годовых",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Заработайте $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Указанная ставка является предполагаемой годовой процентной доходностью (APY), основанной на текущих рыночных условиях. APY может меняться и не гарантируется."
   },
@@ -5549,6 +5588,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Автоматически получайте доход на ваш баланс Money"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Автоматически зарабатывайте до $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Получите полную ликвидность без блокировок, чтобы вы могли торговать или выводить средства в любое время"
   },
@@ -5588,6 +5631,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Без платы"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Прогноз предполагает, что годовая процентная доходность (APY) в размере $1 % останется неизменной в течение одного года. APY является плавающей и не гарантируется. Доходность не гарантируется.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Зарабатывайте на своем балансе"
   },
@@ -5605,6 +5652,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "Указанная ставка — это ориентировочная годовая процентная доходность (APY), основанная на текущих рыночных условиях. APY является переменной и не гарантируется. Средства поступают в хранилище DeFi, управляемое Veda с контролем рисков от Steakhouse Financial, которое генерирует доходность на устоявшихся рынках кредитования."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Ваш Money Account автоматически зарабатывает до $1.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money Account работает на базе Monad."
@@ -6898,6 +6949,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Нам не удалось проверить ваш $1. Попробуйте еще раз или используйте пароль.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Повторить попытку",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Зарегистрировать $1",
@@ -8685,7 +8740,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Выберите провайдера"
+    "message": "Выберите поставщиков"
   },
   "rampsCompleteBuyTitle": {
     "message": "Завершение покупки",
@@ -8964,6 +9019,10 @@
   },
   "relayerFee": {
     "message": "Комиссия ретранслятора"
+  },
+  "remindMeLater": {
+    "message": "Понятно",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Удалить"
@@ -9307,6 +9366,9 @@
   },
   "rpcUrl": {
     "message": "URL-адрес RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Этот поставщик RPC ограничивает запросы. Повторите попытку позже или используйте другой URL-адрес RPC."
   },
   "safeTransferFrom": {
     "message": "Безопасный перевод из"
@@ -11571,6 +11633,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Авто"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Допуск на проскальзывание ограничен 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Введенное проскальзывание ($1%) считается очень высоким и может привести к использованию плохого курса",
