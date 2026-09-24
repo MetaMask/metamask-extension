@@ -154,6 +154,39 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('| ✅ | zip | 4.1 KiB | +200 Bytes | +5.00% |');
   });
 
+  it('shows unavailable current zip metrics without reporting a size decrease', async () => {
+    const { unzipped, zip, ...summaryWithoutZip } = webpackSummary;
+    mockSuccessfulFetches({ webpack: summaryWithoutZip });
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('|  | unzipped | n/a | n/a | n/a |');
+    expect(result).toContain('|  | zip | n/a | n/a | n/a |');
+    expect(result).not.toContain('| unzipped | 0 Bytes |');
+    expect(result).not.toContain('| zip | 0 Bytes |');
+  });
+
+  it('shows unavailable current zip metrics when no baseline is available', async () => {
+    const { unzipped, zip, ...summaryWithoutZip } = webpackSummary;
+    mockSuccessfulFetches({ webpack: summaryWithoutZip });
+
+    const result = await buildBundleSizeDiffSection(artifacts);
+
+    expect(result).toContain('|  | unzipped | n/a | n/a | n/a |');
+    expect(result).toContain('|  | zip | n/a | n/a | n/a |');
+  });
+
+  it('keeps a real zero-byte zip size distinct from a missing size', async () => {
+    mockSuccessfulFetches({
+      webpack: { ...webpackSummary, unzipped: 0, zip: 0 },
+    });
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('| ✅ | unzipped | 0 Bytes | -5.66 KiB | -100.00% |');
+    expect(result).toContain('| ✅ | zip | 0 Bytes | -3.91 KiB | -100.00% |');
+  });
+
   it('uses the first baseline candidate found in history data', async () => {
     mockSuccessfulFetches();
 
