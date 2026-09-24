@@ -158,6 +158,8 @@
     "audit": "yarn tsx .github/scripts/yarn-audit-local.mts",
     "audit:legacy": "yarn npm audit --recursive --environment production --severity moderate",
     "download-builds": "tsx .devcontainer/download-builds.ts",
+    "docs:platform-api:build": "platform-api-docs --build --project-label Extension --strategy root-messenger --root-actions 'app/scripts/lib/messenger.ts#RootMessengerActions' --root-events 'app/scripts/lib/messenger.ts#RootMessengerEvents'",
+    "docs:platform-api:serve": "platform-api-docs --serve --project-label Extension --site-base-url / --strategy root-messenger --root-actions 'app/scripts/lib/messenger.ts#RootMessengerActions' --root-events 'app/scripts/lib/messenger.ts#RootMessengerEvents'",
     "stable-sync-legacy": "node development/stable-sync-legacy.js",
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "update-snaps-registry": "tsx test/e2e/mock-response-data/snaps/update-snaps-registry.ts",
@@ -632,6 +634,7 @@
     "@metamask/java-tron-up": "^1.0.0",
     "@metamask/messenger-cli": "^0.2.0",
     "@metamask/phishing-warning": "^5.1.0",
+    "@metamask/platform-api-docs": "^0.1.0",
     "@metamask/preferences-controller": "^23.0.0",
     "@metamask/skills": "^0.1.0",
     "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",
@@ -884,7 +887,8 @@
       "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false,
       "sass-loader>sass>@parcel/watcher#2.5.6": false,
       "eslint-plugin-import-x>unrs-resolver#1.12.2": false,
-      "@storybook/test-runner>@swc/core#1.16.1": true
+      "@storybook/test-runner>@swc/core#1.16.1": true,
+      "@metamask/platform-api-docs>@docusaurus/core>core-js#3.50.0": false
     }
   },
   "packageManager": "yarn@4.14.1+sha256.5c7a0c5ea1c5b690df603c8e16b3742f87169b814d56bb5e63881145e8a84033",
