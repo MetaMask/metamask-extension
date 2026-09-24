@@ -9,7 +9,6 @@ const EVENT: SplitStateWriteEvent = {
     ['FooController', 13],
   ]),
   coalescedUpdates: 3,
-  controllerKeys: ['BarController', 'FooController'],
   idleStatus: 'idle',
   measurementDurationMs: 0.25,
   sampleRate: 0.01,

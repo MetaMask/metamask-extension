@@ -861,7 +861,6 @@ describe('PersistenceManager', () => {
           ['FooController', fooControllerLength],
         ]),
         coalescedUpdates: 3,
-        controllerKeys: ['BarController', 'FooController'],
         idleStatus: 'idle',
         measurementDurationMs: expect.any(Number),
         sampleRate: 1,
@@ -869,9 +868,6 @@ describe('PersistenceManager', () => {
         totalBytes: barControllerLength + fooControllerLength,
         writeDurationMs: expect.any(Number),
       });
-      expect([...event.bytesByController.keys()]).toStrictEqual(
-        event.controllerKeys,
-      );
       expect(JSON.stringify(event)).not.toContain(
         'latest controller state value',
       );
@@ -896,16 +892,15 @@ describe('PersistenceManager', () => {
       await manager.persist();
 
       expect(mockStoreGetBytesInUseByKey).toHaveBeenCalledWith([
-        'BarController',
         'FooController',
+        'BarController',
       ]);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
           bytesByController: new Map([
-            ['BarController', 11],
             ['FooController', 29],
+            ['BarController', 11],
           ]),
-          controllerKeys: ['BarController', 'FooController'],
           sizeMeasurementSource: 'storage_get_bytes_in_use',
           totalBytes: 40,
         }),

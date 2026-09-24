@@ -77,7 +77,6 @@ export type SplitStateWriteEvent = {
    */
   bytesByController: Map<string, number>;
   coalescedUpdates: number;
-  controllerKeys: string[];
   idleStatus: 'active' | 'idle' | 'unknown';
   measurementDurationMs: number;
   sampleRate: number;
@@ -793,7 +792,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       const bytesRecord =
         await this.#localStore.getBytesInUseByKey?.(controllerKeys);
       if (bytesRecord) {
-        // Build in sorted controllerKeys order for deterministic Map iteration.
         const bytesByController = new Map(
           controllerKeys.map((key) => [key, bytesRecord[key] ?? 0]),
         );
@@ -842,21 +840,14 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     }
 
     const measurementStartedAt = performance.now();
-    const controllerKeys: string[] = [];
-
-    for (const key of pairs.keys()) {
-      if (key === 'data' || key === 'manifest' || key === 'meta') {
-        continue;
-      }
-
-      controllerKeys.push(key);
-    }
+    const controllerKeys = [...pairs.keys()].filter(
+      (key) => key !== 'data' && key !== 'manifest' && key !== 'meta',
+    );
 
     if (controllerKeys.length === 0) {
       return;
     }
 
-    controllerKeys.sort((leftKey, rightKey) => leftKey.localeCompare(rightKey));
     const { bytesByController, sizeMeasurementSource, totalBytes } =
       await this.#getSplitStateWriteSizes(pairs, controllerKeys);
 
@@ -871,7 +862,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.emit('splitStateWrite', {
       bytesByController,
       coalescedUpdates,
-      controllerKeys,
       idleStatus,
       measurementDurationMs: performance.now() - measurementStartedAt,
       sampleRate,
