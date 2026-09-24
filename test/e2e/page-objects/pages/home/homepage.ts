@@ -105,6 +105,8 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
+  private readonly moreButton = '[data-testid$="-overview-more"]';
+
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -121,6 +123,12 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
+  private readonly receiveEntryPointProbeTimeoutMs = 250;
+
+  private readonly receiveInMore = '[data-testid$="-overview-more-receive"]';
+
+  private readonly receiveOnRow = '[data-testid$="-overview-receive"]';
+
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
   protected readonly sendButton = '[data-testid$="-overview-send"]';
@@ -132,6 +140,8 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
+
+  private readonly singleActionButton = '[data-testid$="-overview-default"]';
 
   private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
@@ -482,37 +492,32 @@ class HomePage {
   }
 
   async clickOnReceiveButton(): Promise<void> {
-    const receiveOnRow = '[data-testid$="-overview-receive"]';
-    const moreButton = '[data-testid$="-overview-more"]';
-    const receiveInMore = '[data-testid$="-overview-more-receive"]';
-    const singleActionButton = '[data-testid$="-overview-default"]';
-    const receiveEntryPoints = `${receiveOnRow}, ${singleActionButton}, ${moreButton}`;
-    const receiveInMenu = `${receiveInMore}, ${receiveOnRow}`;
-    const actionProbeTimeoutMs = 250;
+    const receiveEntryPoints = `${this.receiveOnRow}, ${this.singleActionButton}, ${this.moreButton}`;
+    const receiveInMenu = `${this.receiveInMore}, ${this.receiveOnRow}`;
 
     await this.driver.waitForSelector(receiveEntryPoints);
 
     if (
       await this.driver.isElementPresentAndVisible(
-        receiveOnRow,
-        actionProbeTimeoutMs,
+        this.receiveOnRow,
+        this.receiveEntryPointProbeTimeoutMs,
       )
     ) {
-      await this.driver.clickElement(receiveOnRow);
+      await this.driver.clickElement(this.receiveOnRow);
       return;
     }
 
     if (
       await this.driver.isElementPresentAndVisible(
-        singleActionButton,
-        actionProbeTimeoutMs,
+        this.singleActionButton,
+        this.receiveEntryPointProbeTimeoutMs,
       )
     ) {
-      await this.driver.clickElement(singleActionButton);
+      await this.driver.clickElement(this.singleActionButton);
       return;
     }
 
-    await this.driver.clickElement(moreButton);
+    await this.driver.clickElement(this.moreButton);
     await this.driver.waitForSelector(receiveInMenu);
     await this.driver.clickElement(receiveInMenu);
   }
