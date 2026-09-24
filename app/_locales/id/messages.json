@@ -484,41 +484,27 @@
   "activity_marketShort_success_title": {
     "message": "Posisi short ditutup - pasar"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Deposit gagal"
   },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Mendeposit"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
+    "message": "Mendeposit $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Didepositkan"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
+    "message": "$1 dideposit",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Pengiriman gagal"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "Penerimaan gagal"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Mengirim"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
+    "message": "Menerima $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Terkirim"
+    "message": "Menerima $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Pembelian gagal"
@@ -3102,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "Disalin ke papan klip"
   },
+  "copy": {
+    "message": "Salin"
+  },
   "copyAddress": {
     "message": "Salin alamat ke papan klip"
   },
@@ -5460,6 +5449,14 @@
   "money": {
     "message": "Dana"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Dapatkan $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin."
   },
@@ -5601,6 +5598,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Persentase hasil otomatis pada saldo Money Anda"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Hasil otomatis hingga $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"
   },
@@ -5640,6 +5641,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Tidak ada biaya"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Proyeksi ini mengasumsikan Persentase Hasil Tahunan (APY) sebesar $1% tetap tidak berubah selama satu tahun. APY bersifat variabel dan tidak dijamin. Tidak ada jaminan pengembalian.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Hasilkan pada saldo Anda"
   },
@@ -5657,6 +5662,10 @@
   },
   "moneyHomeApyTooltip": {
     "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin. Dana masuk ke brankas DeFi, yang dikelola oleh Veda dengan pengawasan risiko oleh Steakhouse Financial, yang menghasilkan pengembalian di pasar pinjaman yang sudah mapan."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Money account menghasilkan hingga $1 secara otomatis.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money Account didukung oleh Monad."
@@ -6950,6 +6959,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Kami tidak dapat memverifikasi $1 Anda. Coba lagi atau gunakan kata sandi Anda.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Coba lagi",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Daftar $1",
@@ -9028,6 +9041,10 @@
   "relayerFee": {
     "message": "Biaya relayer"
   },
+  "remindMeLater": {
+    "message": "Ingatkan saya nanti",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Hapus"
   },
@@ -9370,6 +9387,9 @@
   },
   "rpcUrl": {
     "message": "URL RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Penyedia RPC ini membatasi permintaan. Coba lagi nanti atau gunakan URL RPC yang berbeda."
   },
   "safeTransferFrom": {
     "message": "Transfer aman dari"
@@ -11662,6 +11682,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Otomatis"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Toleransi selip dibatasi hingga 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Selip yang dimasukkan ($1%) dianggap sangat tinggi dan dapat mengakibatkan tarif yang tidak efektif",
