@@ -508,7 +508,7 @@ class BridgeQuotePage {
           quote.tokenTo,
         );
         // Wait for search results to load before clicking
-        await this.driver.waitForSelector({
+        await this.driver.waitForElementToStopMoving({
           text: quote.tokenTo,
           css: this.tokenButton,
         });
