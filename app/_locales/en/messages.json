@@ -7561,6 +7561,13 @@
   "perpsAddFunds": {
     "message": "Add funds"
   },
+  "perpsAddFundsHint": {
+    "message": "Add at least $1 to your Perps account to place this order.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Add funds to trade"
+  },
   "perpsAddMargin": {
     "message": "Add margin"
   },
