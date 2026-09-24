@@ -55,7 +55,6 @@ describe('BuyDeepLinkEntry', () => {
     expect(mockGoToBuy).toHaveBeenCalledWith(
       {
         assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
-        chainId: 'eip155:1',
       },
       { replace: true },
     );
