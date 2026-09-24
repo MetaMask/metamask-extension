@@ -5614,12 +5614,6 @@
   "moneyHowItWorksDescription": {
     "message": "Magdagdag ng mUSD at ang iyong balanse na sinusuportahan ng dolyar ay handa na para gastusin, i-trade, o ipadala anumang oras."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Ang balanse mo sa Money ang balanseng puwede mong gastusin. I-link ang MetaMask Card mo para magamit ito sa 150M+ merchant sa buong mundo. Patuloy na kikita ang pera mo hanggang sa gastusin mo ito."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Ang Money account ay pinapagana ng Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Magdagdag ng mUSD at kumita ng hanggang $1. Ang iyong balanse ay sinusuportahan ng dolyar at handa na para gastusin, i-trade, o ipadala anumang oras.",
     "description": "$1 is the current mUSD APY."
@@ -5630,17 +5624,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Nagbabago ba ang rate ng APY?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Ikaw! Ang MetaMask ay isang self-custodial na wallet, ibig sabihin tanging ang mga Private Key ng may hawak ng account ang may kontrol dito. Hindi maaaring i-access, i-freeze, o galawin ng MetaMask ang mga pondo mo. Ito ang ipinagkaiba namin mula sa mga tradisyonal na account sa bangko at mga custodial crypto platform—walang third party na humahawak sa mga pondo mo."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Sino ang kumokontrol sa pera ko?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Walang bayad sa pagbubukas ng Money account at walang bayad sa pagdedeposito ng mga stablecoin. Sisingilin ka ng mga bayarin kapag nagdedeposito ng mga non-stablecoin token. Walang mga nauugnay na mga bayarin sa mga transaksyon sa MetaMask Card, pagwi-withdraw sa ATM, at mga gastos sa local currency offramp. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Tingnan ang kabuuan ng breakdown ng bayad sa Card dito."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "May mga kailangan bang bayaran?"
@@ -5653,12 +5638,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Ano ang Money account?"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Ano ang mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Isa ba itong savings account o spending account?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Mga FAQ"

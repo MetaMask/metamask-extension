@@ -5626,12 +5626,6 @@
     "message": "Agrega mUSD a tu Money Account y gana hasta$1 de APY (variable) automáticamente. Los fondos se depositan en una bóveda DeFi, administrada por Veda con monitoreo de riesgos por parte de Steakhouse Financial. La tasa la generan plataformas DeFi de terceros que invierten fondos en protocolos de cadena de bloques. Sin staking, sin reclamaciones, sin bloqueos.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Tu saldo Money es tu saldo para gastar. Vincula tu tarjeta MetaMask para comprar en más de 150 millones de comercios en todo el mundo. Tu dinero sigue generando intereses hasta el momento en que lo uses."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account cuenta con la tecnología de Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Agrega mUSD y gana hasta $1. Tu saldo está respaldado por dólares y disponible para gastar, operar o enviar en cualquier momento.",
     "description": "$1 is the current mUSD APY."
@@ -5649,17 +5643,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "¿Cambia la tasa APY?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "¡Tú! MetaMask es una billetera de autocustodia, lo que significa que solo las claves privadas del titular de la cuenta pueden controlarla. MetaMask no puede acceder a tus fondos, congelarlos ni transferirlos. Esto es lo que nos diferencia de las cuentas bancarias tradicionales y de las plataformas de criptomonedas con custodia: no hay ningún tercero que tenga el control de tus fondos."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "¿Quién controla mi dinero?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "No hay ninguna tarifa por abrir una Money Account ni por depositar monedas estables. Se aplican tarifas al depositar tokens que no sean monedas estables. También hay tarifas asociadas con las transacciones de la tarjeta MetaMask, los retiros en cajeros automáticos y los costos por convertir fondos a moneda local. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Consulta aquí el desglose completo de las tarifas de la tarjeta."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "¿Hay algún cargo?"
@@ -5676,20 +5661,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "¿Qué es la cuenta Money?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD es la moneda estable de MetaMask respaldada 1:1 por dólares. Tu saldo de Money Account se mantiene en mUSD y está disponible para gastar, enviar u operar en cualquier momento.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "¿Qué es mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Tu saldo de Money Account es tu saldo para gastos: sigue generando intereses hasta el momento en que lo uses. Money Account no es una cuenta bancaria, una cuenta de ahorros ni un producto de depósito asegurado.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "¿Es una cuenta de ahorros o una cuenta de gastos?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Preguntas frecuentes"

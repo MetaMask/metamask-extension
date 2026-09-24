@@ -5622,12 +5622,6 @@
     "message": "Ajoutez des mUSD sur votre compte Money et gagnez automatiquement jusqu’à $1 de RMP (variable). Les fonds sont placés dans un coffre-fort DeFi, géré par Veda et dont le suivi des risques est assuré par Steakhouse Financial. Le taux est généré par des plateformes DeFi tierces qui déploient les fonds dans des protocoles blockchain. Pas de staking, pas de réclamation, pas de blocage de fonds.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Le solde de votre compte Money correspond à votre solde disponible. Associez votre carte MetaMask Card pour effectuer des achats auprès de plus de 150 millions de commerçants dans le monde entier. Votre argent continue de générer des revenus jusqu’à ce que vous le dépensiez."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Le Money Account est propulsé par Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Ajoutez des mUSD et gagnez jusqu'à $1. Votre solde est adossé au dollar et vous pouvez l’utiliser à tout moment pour effectuer des achats, des transferts ou des opérations de Bourse.",
     "description": "$1 is the current mUSD APY."
@@ -5645,17 +5639,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Le taux de rendement annuel varie-t-il ?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Vous ! MetaMask est un portefeuille de détention en propre, ce qui signifie que seules les clés privées du titulaire du compte permettent de le contrôler. MetaMask ne peut ni accéder à vos fonds, ni les bloquer, ni les transférer. C’est ce qui nous distingue des comptes bancaires traditionnels et des plateformes de crypto-monnaies avec gestion de fonds : aucun tiers ne détient vos fonds."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Qui gère mon argent ?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "L’ouverture d’un Money Account est gratuite, tout comme le dépôt de stablecoins. Des frais vous seront facturés lors du dépôt de jetons non-stablecoins. Des frais s’appliquent également aux transactions effectuées avec la MetaMask Card, aux retraits aux distributeurs automatiques et aux opérations de conversion en monnaie locale. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Découvrez ici tous les frais liés au compte MetaMask Card."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Y a-t-il des frais à payer ?"
@@ -5672,20 +5657,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Qu’est-ce qu’un compte Money ?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "Le mUSD est le stablecoin de MetaMask adossé au dollar à parité 1:1. Le solde de votre compte « Money » est détenu sous forme de mUSD et vous pouvez l’utiliser à tout moment pour effectuer des achats, des transferts ou des opérations de Bourse.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Qu’est-ce que le mUSD ?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Votre solde « Money » correspond à votre solde disponible : il continue de générer des intérêts jusqu’au moment où vous l’utilisez. Le compte « Money » n’est ni un compte bancaire, ni un compte d’épargne, ni un produit de dépôt assuré.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "S’agit-il d’un compte d’épargne ou d’un compte courant ?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"

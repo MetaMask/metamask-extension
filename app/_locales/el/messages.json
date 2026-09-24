@@ -5625,12 +5625,6 @@
     "message": "Προσθέστε mUSD στον Money account σας και κερδίστε αυτόματα έως και $1 APY (μεταβλητό). Τα κεφάλαιά σας τοποθετούνται σε ένα DeFi vault, το οποίο διαχειρίζεται η Veda, με παρακολούθηση κινδύνου από τη Steakhouse Financial. Το επιτόκιο προκύπτει από πλατφόρμες DeFi τρίτων, οι οποίες επενδύουν κεφάλαια σε πρωτόκολλα blockchain. Χωρίς δέσμευση κεφαλαίων, χωρίς διεκδίκηση ανταμοιβών και χωρίς περιορισμοί ανάληψης.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Το υπόλοιπο του λογαριασμού σας είναι το διαθέσιμο υπόλοιπο για δαπάνες. Συνδέστε την MetaMask Card για να πραγματοποιείτε συναλλαγές σε περισσότερους από 150 εκατομμύρια εμπόρους παγκοσμίως. Τα χρήματά σας συνεχίζουν να αποδίδουν μέχρι τη στιγμή που θα τα χρησιμοποιήσετε."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Ο Money Account υποστηρίζεται από την Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Προσθέστε mUSD και κερδίστε έως και $1. Το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή.",
     "description": "$1 is the current mUSD APY."
@@ -5648,17 +5642,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Μπορεί να αλλάξει το ποσοστό APY;"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Εσείς! Το MetaMask είναι ένα πορτοφόλι με αυτοδιαχείριση κεφαλαίων, δηλαδή μόνο ο κάτοχος των ιδιωτικών κλειδιών ελέγχει τον λογαριασμό. Το MetaMask δεν μπορεί να έχει πρόσβαση, να παγώσει ή να μεταφέρει τα χρήματά σας. Αυτό μας διαφοροποιεί από τους παραδοσιακούς τραπεζικούς λογαριασμούς και τις πλατφόρμες φύλαξης κρυπτονομισμάτων — δεν υπάρχουν τρίτοι να διαχειρίζονται τα χρήματά σας."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Ποιος ελέγχει τα χρήματά μου;"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Δεν υπάρχει χρέωση για την δημιουργία ενός Money Account ούτε για την κατάθεση stablecoins. Θα επιβαρυνθείτε με χρεώσεις όταν καταθέτετε tokens που δεν είναι stablecoins. Υπάρχουν επίσης χρεώσεις που σχετίζονται με συναλλαγές της MetaMask Card, αναλήψεις από ATM και τέλη μετατροπής σε τοπικό νόμισμα. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Δείτε αναλυτικά τις χρεώσεις της κάρτας εδώ."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Υπάρχουν χρεώσεις;"
@@ -5675,20 +5660,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Τι είναι ο λογαριασμός Money;"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "Το mUSD είναι το stablecoin της MetaMask, με αναλογία 1:1 προς το δολάριο ΗΠΑ. Το υπόλοιπό σας στον Money account διατηρείται σε mUSD και παραμένει διαθέσιμο για αγορές, αποστολή ή συναλλαγές οποιαδήποτε στιγμή.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Τι είναι τα mUSD;"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Το υπόλοιπό σας στον Money account είναι το διαθέσιμο υπόλοιπό σας για αγορές — συνεχίζει να αποφέρει απόδοση μέχρι τη στιγμή που θα το χρησιμοποιήσετε. Ο Money account δεν είναι τραπεζικός λογαριασμός, λογαριασμός ταμιευτηρίου ή ασφαλισμένο καταθετικό προϊόν.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Είναι αυτός λογαριασμός αποταμίευσης ή λογαριασμός δαπανών;"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Συχνές Ερωτήσεις"
