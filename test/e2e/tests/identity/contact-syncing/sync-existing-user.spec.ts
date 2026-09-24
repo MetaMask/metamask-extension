@@ -104,7 +104,7 @@ describe('Contact Syncing - Existing User', function () {
     };
   };
 
-  describe('from inside MetaMask TEST', function () {
+  describe('from inside MetaMask', function () {
     it('performs complete lifecycle: remote→local contact sync, add, modify, delete, verify sync on other device', async function () {
       skipOnFirefox(this);
 

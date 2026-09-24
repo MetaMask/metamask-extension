@@ -235,9 +235,7 @@ class ContactsSettings {
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
     );
-    await this.driver.clickElementSafe(
-      this.closeContactUpdatedToast,
-    );
+    await this.driver.clickElementSafe(this.closeContactUpdatedToast);
   }
 }
 
