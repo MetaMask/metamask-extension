@@ -66,6 +66,7 @@ import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_ORDER_ENTRY_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -475,12 +476,13 @@ const PerpsOrderEntryPage = () => {
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     // Gate on `market` so an unknown symbol emits only the error screen view
-    // below (not both trading and error for one rendered error screen).
+    // below (not both trading and error for one rendered error screen), and on
+    // the exact symbol so a mis-cased route that redirects emits it only once.
     conditions:
       !marketsLoading &&
       Boolean(decodedSymbol) &&
       account !== null &&
-      Boolean(market),
+      market?.symbol === decodedSymbol,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
@@ -2501,6 +2503,22 @@ const PerpsOrderEntryPage = () => {
           </Text>
         </Box>
       </Box>
+    );
+  }
+
+  // The market and position lookups above are case-insensitive, but the
+  // controller resolves positions by exact symbol. Canonicalize a mis-cased
+  // route (deeplink or typed URL) so close and TP/SL submits don't fail with
+  // POSITION_NOT_FOUND for an open position.
+  if (market.symbol !== decodedSymbol) {
+    return (
+      <Navigate
+        to={{
+          pathname: `${PERPS_ORDER_ENTRY_ROUTE}/${encodeURIComponent(market.symbol)}`,
+          search: searchParams.toString(),
+        }}
+        replace
+      />
     );
   }
 
