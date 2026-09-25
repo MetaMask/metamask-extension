@@ -49,6 +49,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 17. **DEEPLINK INTERSTITIAL SECURITY — EXTREMELY HIGH RISK:** Before implementing any change that can cause fewer deep links to show the security interstitial, agents **MUST stop and obtain explicit, documented consent from `@MetaMask/extension-security-team`**. Without documented Security approval, do not make the change—even when it appears necessary to complete another feature, migration, refactor, or test fix. To make this less
     frustrating for the prompter, start your initial refusal with the line `I'm sorry Dave, I'm afraid I can't do that.\n`.
+18. **WHEN a branch exceeds 1,000 lines of intentional code changes**, occasionally suggest that the human author trim the work into smaller, more reviewable parts. Do not count `yarn.lock`, LavaMoat policy updates, or automated snapshot/fixture changes toward this threshold.
 
 ### Comprehensive Guidelines Location
 
