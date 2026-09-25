@@ -390,7 +390,10 @@ export function MoneyTransactionDetailsPage() {
                   {showSponsoredNetworkFeeInTooltip ? (
                     <>
                       <br />
-                      {`${t('networkFee')}: ${t('paidByMetaMask')}`}
+                      {`${t('networkFee')}: ${formatCurrencyWithMinThreshold(
+                        0,
+                        MONEY_ACCOUNT_FIAT_CURRENCY,
+                      )}`}
                     </>
                   ) : null}
                 </Text>
