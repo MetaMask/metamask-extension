@@ -6,6 +6,7 @@
  */
 
 import type { Hex } from '@metamask/utils';
+import { MUSD_TOKEN } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 /**
@@ -34,13 +35,11 @@ export const MUSD_TOKEN_ADDRESS: Hex =
   '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 
 /**
- * mUSD token metadata
+ * mUSD token metadata — re-exported from @metamask/money-account-utils,
+ * the shared single source of truth for mUSD token metadata across clients
+ * (symbol "mUSD", name "MetaMask USD", matching the on-chain token).
  */
-export const MUSD_TOKEN = {
-  symbol: 'MUSD',
-  name: 'MUSD',
-  decimals: 6,
-} as const;
+export { MUSD_TOKEN };
 
 /**
  * mUSD token decimals (derived from MUSD_TOKEN for single source of truth)
