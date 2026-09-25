@@ -300,7 +300,7 @@ describe('NetworkEnablementControllerInit', () => {
     });
   });
 
-  it('initialises the controller with the correct networks for DEBUG environment', () => {
+  it('initialises the controller with production networks for DEBUG environment', () => {
     process.env.METAMASK_DEBUG = 'true';
     process.env.METAMASK_ENVIRONMENT = 'production';
     process.env.IN_TEST = '';
@@ -313,16 +313,16 @@ describe('NetworkEnablementControllerInit', () => {
       state: {
         enabledNetworkMap: {
           [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.MAINNET]: false,
-            [CHAIN_IDS.POLYGON]: false,
-            [CHAIN_IDS.SEPOLIA]: true,
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.SEPOLIA]: false,
             [CHAIN_IDS.LOCALHOST]: false,
           },
           [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: false,
+            [SolScope.Mainnet]: true,
           },
           [KnownCaipNamespace.Bip122]: {
-            [BtcScope.Mainnet]: false,
+            [BtcScope.Mainnet]: true,
           },
         },
         nativeAssetIdentifiers: {},
