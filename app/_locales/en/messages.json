@@ -8035,7 +8035,7 @@
     "description": "Order book buy-side depth percentage label. $1 is the buy percentage."
   },
   "perpsOrderBookConfigTitle": {
-    "message": "Listed by & Group by"
+    "message": "Listed by and Group by"
   },
   "perpsOrderBookConnectionError": {
     "message": "Order book connection lost"
@@ -9726,7 +9726,7 @@
     "message": "New password saved"
   },
   "securityDefaultSettingsSocialLogin": {
-    "message": "Security & privacy"
+    "message": "Security and privacy"
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
