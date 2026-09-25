@@ -11,7 +11,7 @@ import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
 import { login } from './login.flow';
 import { TRON_HOMEPAGE_TOKEN_TIMEOUT_MS } from './tron-assets.flow';
 import { selectTronNetwork } from './tron-network.flow';
-import { waitUntilAccountTreeSyncIdle } from './tron-account-derivation.flow';
+import { waitUntilAccountTreeSyncIdle } from './account-derivation.flow';
 
 const TRON_CONFIRM_TIMEOUT_MS = 30_000;
 
