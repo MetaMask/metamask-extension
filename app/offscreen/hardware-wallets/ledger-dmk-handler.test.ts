@@ -141,6 +141,11 @@ describe('LedgerDmkBridgeHandler', () => {
     ]);
     mockOnSessionStateChangeSubject = new Subject();
     mockTransports = [];
+    // `clearAllMocks()` clears calls but not implementations, and the Jest
+    // config only sets `restoreMocks` (which covers spies, not `jest.fn()`).
+    // Reset explicitly so a persistent `mockImplementation` in one test cannot
+    // leak into the next.
+    mockBridgeDestroy.mockReset();
     (LedgerDmkBridge as jest.Mock).mockImplementation((opts) =>
       createMockBridge(opts),
     );
@@ -1046,6 +1051,67 @@ describe('LedgerDmkBridgeHandler', () => {
         mockOnSessionStateChangeSubject.next({ connected: true });
       }, 0);
       await expect(secondAction).resolves.toBe(true);
+
+      consoleErrorSpy.mockRestore();
+      consoleLogSpy.mockRestore();
+    });
+
+    it('does not let a discarded in-flight bridge overwrite the live permitted-device snapshot', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const consoleLogSpy = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+
+      const deviceA = { vendorId: Number(LEDGER_USB_VENDOR_ID) };
+      const deviceB = { vendorId: Number(LEDGER_USB_VENDOR_ID) };
+      const deviceStale = { vendorId: Number(LEDGER_USB_VENDOR_ID) };
+      mockHidGetDevices.mockResolvedValue([deviceA]);
+
+      // Start construction A, paused at connect().
+      let resolveFirstConnect: ((sessionId: string) => void) | undefined;
+      mockBridgeConnect.mockImplementationOnce(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveFirstConnect = resolve;
+          }),
+      );
+      const firstAction = handler.handleAction(LedgerAction.makeApp);
+      firstAction.catch(() => undefined);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveFirstConnect).toBeDefined();
+
+      // Retire construction A mid-flight.
+      handler.forceReset();
+
+      // Construction B completes and becomes the live bridge, snapshotting deviceB.
+      mockHidGetDevices.mockResolvedValue([deviceB]);
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+
+      // Finish discarded construction A while a *different* device set is
+      // permitted. Its snapshot must not be published over bridge B's.
+      mockHidGetDevices.mockResolvedValue([deviceStale]);
+      resolveFirstConnect?.('orphan-session-id');
+      await expect(firstAction).rejects.toMatchObject({
+        code: ErrorCode.DeviceInvalidSession,
+      });
+
+      // Bridge B is still healthy: its device is permitted, so the liveness
+      // check must reuse it rather than tear it down against deviceStale.
+      mockHidGetDevices.mockResolvedValue([deviceB]);
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(2);
+      // Only the orphaned construction A was destroyed.
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
 
       consoleErrorSpy.mockRestore();
       consoleLogSpy.mockRestore();

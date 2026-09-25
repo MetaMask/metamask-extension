@@ -333,7 +333,7 @@ export class LedgerDmkBridgeHandler {
 
     const generation = this.#bridgeGeneration;
     const pending = this.#constructBridge()
-      .then(async ({ bridge, transport }) => {
+      .then(async ({ bridge, transport, sessionId, hidDevices }) => {
         // `destroy()` may have cleared state while construction was in flight.
         // Discard the orphaned bridge instead of resurrecting a torn-down handler.
         if (generation !== this.#bridgeGeneration) {
@@ -357,6 +357,12 @@ export class LedgerDmkBridgeHandler {
         this.#setupDisconnectMonitoring(bridge);
         this.#bridge = bridge;
         this.#bridgeTransport = transport;
+        // Published here, not in `constructBridge`, so a discarded in-flight
+        // construction can never overwrite a newer live bridge's session id or
+        // permitted-device snapshot (which later liveness checks compare
+        // against).
+        this.#sessionId = sessionId;
+        this.#bridgeHidDevices = hidDevices;
         return bridge;
       })
       .catch((error: unknown) => {
@@ -432,16 +438,24 @@ export class LedgerDmkBridgeHandler {
    * Constructs a fresh `LedgerDmkBridge`, discovers a permitted device,
    * connects, and waits for session readiness.
    *
-   * The transport is returned alongside the bridge rather than assigned to
-   * `#bridgeTransport` here: concurrent constructions (e.g. a stale-bridge
-   * rebuild racing a `destroy()`) would otherwise overwrite each other's
-   * transport reference and leak the loser's `navigator.hid` listeners.
+   * Nothing is assigned to instance fields here — the transport, session id,
+   * and HID device snapshot are all returned to the caller, which publishes
+   * them only after its generation check passes. Writing them here would let a
+   * construction that is later discarded (a stale-bridge rebuild racing
+   * `destroy()`/`forceReset()`) clobber a newer live bridge's state: the loser's
+   * transport reference would leak its `navigator.hid` listeners, and the
+   * overwritten `#bridgeHidDevices` snapshot would make later liveness checks
+   * compare the live bridge against the wrong `HIDDevice` set — tearing down a
+   * healthy bridge or keeping a dead one.
    *
-   * @returns A connected `LedgerDmkBridge` and the transport its DMK created.
+   * @returns The connected `LedgerDmkBridge` plus the transport its DMK
+   * created, the session id, and the permitted-device snapshot.
    */
   async #constructBridge(): Promise<{
     bridge: LedgerDmkBridge;
     transport: DestroyableTransport | null;
+    sessionId: string;
+    hidDevices: Set<HIDDevice> | null;
   }> {
     console.log('[LedgerDMK] constructBridge: creating LedgerDmkBridge');
     let transport: DestroyableTransport | null = null;
@@ -462,10 +476,10 @@ export class LedgerDmkBridgeHandler {
       console.log('[LedgerDMK] constructBridge: finding permitted device');
       const device = await this.#findPermittedDevice(bridge);
       console.log('[LedgerDMK] constructBridge: connecting to device');
-      this.#sessionId = await bridge.connect({ device });
+      const sessionId = await bridge.connect({ device });
 
       // Save device identities to detect revoke and re-grant.
-      this.#bridgeHidDevices = await this.#getPermittedLedgerHidDevices();
+      const hidDevices = await this.#getPermittedLedgerHidDevices();
 
       // `connect()` sets isConnected synchronously and starts session monitoring.
       // The bridge's signing methods handle device-action completion internally
@@ -473,10 +487,10 @@ export class LedgerDmkBridgeHandler {
       // (onSessionStateChange is a Subject, not BehaviorSubject — subscribing
       // after connect() would miss the initial emission.)
       console.log('[LedgerDMK] constructBridge: session ready', {
-        sessionId: this.#sessionId,
+        sessionId,
       });
 
-      return { bridge, transport };
+      return { bridge, transport, sessionId, hidDevices };
     } catch (error) {
       // Discovery/connect failures must not leave an orphaned DMK instance in
       // the long-lived offscreen document (HID state, transports, etc.).
