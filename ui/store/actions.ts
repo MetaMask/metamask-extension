@@ -7605,12 +7605,8 @@ export async function setLastInteractedConfirmationInfo(
     [info],
   );
 }
-// Immer's patch support is an opt-in plugin, and the plugin registry is
-// module-global rather than per-Immer-instance. We enable it here because this
-// is the only place the UI applies patches itself. Do not rely on another
-// package having enabled it: `@metamask/base-controller` calls `enablePatches`
-// too, but only on whichever copy of immer it resolves, which is not
-// necessarily the copy this file imports.
+// Required for `applyPatches` below. The plugin registry is per copy of immer,
+// so don't rely on another package having enabled it.
 enablePatches();
 
 function applyPatches(
