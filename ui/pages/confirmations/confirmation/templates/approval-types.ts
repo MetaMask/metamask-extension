@@ -6,6 +6,7 @@ import {
   GMX_APPROVAL_TYPE,
   VARIATIONAL_APPROVAL_TYPE,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  STATE_LOG_EXPORT_APPROVAL_TYPE,
 } from '../../../../../shared/constants/app';
 import type { IsEquivalent } from '../../../../../shared/types/type-level-utils';
 import type { Expect } from '../../../../../shared/types/type-test-utils';
@@ -33,6 +34,7 @@ export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES = [
   GMX_APPROVAL_TYPE,
   VARIATIONAL_APPROVAL_TYPE,
   HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
+  STATE_LOG_EXPORT_APPROVAL_TYPE,
 ] as const;
 
 // ──────────────────────────────────────────────────────────────────────────

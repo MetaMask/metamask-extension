@@ -130,6 +130,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
   PLATFORM_FIREFOX,
+  STATE_LOG_EXPORT_APPROVAL_TYPE,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -4486,6 +4487,25 @@ export default class MetamaskController extends EventEmitter {
     );
   };
 
+  handleGetStateLogsRequest = async (origin) => {
+    // The confirmation resolves with the serialized logs, built in the UI so
+    // the payload matches the Settings download byte for byte.
+    const stateLogs = await this.approvalController.addAndShowApprovalRequest({
+      id: crypto.randomUUID(),
+      origin,
+      type: STATE_LOG_EXPORT_APPROVAL_TYPE,
+      requestData: {},
+    });
+
+    if (typeof stateLogs !== 'string') {
+      throw rpcErrors.internal({
+        message: 'State logs were not provided by the confirmation',
+      });
+    }
+
+    return stateLogs;
+  };
+
   handleWatchAssetRequest = async ({
     asset,
     type,
@@ -5193,6 +5213,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       // Miscellaneous
       getProviderState: this.getProviderState.bind(this),
+      handleGetStateLogsRequest: this.handleGetStateLogsRequest.bind(this),
       handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
       requestUserApproval:
         this.approvalController.addAndShowApprovalRequest.bind(

@@ -5,6 +5,7 @@ import ethAccounts, { type EthAccountsHooks } from './eth-accounts';
 import getProviderState, {
   type GetProviderStateHooks,
 } from './get-provider-state';
+import getStateLogs, { type GetStateLogsHooks } from './get-state-logs';
 import logWeb3ShimUsage, {
   type LogWeb3ShimUsageHooks,
 } from './log-web3-shim-usage';
@@ -28,12 +29,14 @@ import revokePermissions, {
 
 export type HandlerHooks = AddEthereumChainHooks &
   GetProviderStateHooks &
+  GetStateLogsHooks &
   LogWeb3ShimUsageHooks &
   WatchAssetHooks;
 
 export const handlers = {
   ...addEthereumChain,
   ...getProviderState,
+  ...getStateLogs,
   ...logWeb3ShimUsage,
   ...sendMetadata,
   ...watchAsset,
