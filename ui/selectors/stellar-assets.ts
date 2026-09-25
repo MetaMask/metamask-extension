@@ -96,7 +96,8 @@ const selectAssetsBalance = getAssetsBalance as (
   state: unknown,
 ) => AssetsControllerState['assetsBalance'];
 
-type AssetBalanceEntry = AssetsControllerState['assetsBalance'][string][string];
+type AssetBalanceEntry =
+  AssetsControllerState['assetsBalance'][string][CaipAssetType];
 
 /**
  * Whether the asset supports trustline activation (Stellar classic assets).
