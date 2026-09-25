@@ -3694,7 +3694,7 @@
     "message": "Disconnect all?"
   },
   "disconnectAllSitesSuccess": {
-    "message": "All dapps disconnected."
+    "message": "All dapps successfully disconnected."
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
@@ -3707,7 +3707,7 @@
     "description": "$1 is the site hostname"
   },
   "disconnectSiteSuccess": {
-    "message": "Disconnected from $1.",
+    "message": "Successfully disconnected from $1.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4686,7 +4686,7 @@
     "message": "Unlock Your Device"
   },
   "hardwareWalletRepairSuccessDescription": {
-    "message": "Your device has been reconnected. You can close this tab."
+    "message": "Your device has been reconnected successfully. You can close this tab."
   },
   "hardwareWalletRepairSuccessTitle": {
     "message": "Device Connected"
@@ -6398,7 +6398,7 @@
     "message": "New contract"
   },
   "newCustomTokenAdded": {
-    "message": "“$1” was added!"
+    "message": "“$1” was successfully added!"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Assets"
@@ -6414,13 +6414,13 @@
     "message": "NFT autodetection"
   },
   "newNetworkAdded": {
-    "message": "“$1” was added!"
+    "message": "“$1” was successfully added!"
   },
   "newNetworkEdited": {
-    "message": "“$1” was edited!"
+    "message": "“$1” was successfully edited!"
   },
   "newNftAddedMessage": {
-    "message": "NFT was added!"
+    "message": "NFT was successfully added!"
   },
   "newPassword": {
     "message": "New password"
@@ -6435,7 +6435,7 @@
     "message": "We’ve updated our privacy policy"
   },
   "newTokensImportedMessage": {
-    "message": "You've imported $1.",
+    "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
   },
   "newTokensImportedTitle": {
@@ -8473,7 +8473,7 @@
     "description": "In-progress toast text shown while updating TP/SL settings"
   },
   "perpsToastUpdateSuccess": {
-    "message": "TP/SL updated",
+    "message": "TP/SL updated successfully",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTopMovers": {
@@ -9220,7 +9220,7 @@
     "message": "We could not remove this NFT."
   },
   "removeNftMessage": {
-    "message": "NFT was removed!"
+    "message": "NFT was successfully removed!"
   },
   "removeSnap": {
     "message": "Remove Snap"
@@ -9326,7 +9326,7 @@
     "message": "Success"
   },
   "resultPageSuccessDefaultMessage": {
-    "message": "The operation completed."
+    "message": "The operation completed successfully."
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
