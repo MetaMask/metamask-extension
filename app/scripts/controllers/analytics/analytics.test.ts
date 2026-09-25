@@ -8,8 +8,11 @@ import type {
   AnalyticsControllerGetStateAction,
   AnalyticsControllerIdentifyAction,
   AnalyticsControllerOptInAction,
+  AnalyticsControllerOptInToMarketingAction,
   AnalyticsControllerOptOutAction,
+  AnalyticsControllerOptOutOfMarketingAction,
   AnalyticsControllerResetConsentDecisionAction,
+  AnalyticsControllerSetMarketingCampaignCookieIdAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
 } from '@metamask/analytics-controller';
@@ -23,8 +26,6 @@ import type { Browser } from 'webextension-polyfill';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
-import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
-import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../metametrics-controller-method-action-types';
 import type {
   SentryTracingServiceClearTracesAfterMetricsOptInAction,
   SentryTracingServiceTrackTracesAfterMetricsOptInAction,
@@ -34,6 +35,7 @@ import {
   configureAnalytics,
   getProfileIdentityProperties,
   identify,
+  setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
   trackEvent,
   updateProfileSessionData,
@@ -55,9 +57,8 @@ function createConfiguredMessenger({
     analyticsId: TEST_ANALYTICS_ID,
     optedIn,
     consentDecisionMade,
-  };
-  const metaMetricsControllerState = {
-    dataCollectionForMarketing: false,
+    optedInToMarketing: false,
+    marketingConsentDecisionMade: false,
     marketingCampaignCookieId,
   };
   const trackEventHandler = jest.fn();
@@ -70,6 +71,16 @@ function createConfiguredMessenger({
   const optOutHandler = jest.fn(() => {
     analyticsControllerState.optedIn = false;
     analyticsControllerState.consentDecisionMade = true;
+  });
+  const optInToMarketingHandler = jest.fn(async () => {
+    analyticsControllerState.optedInToMarketing = true;
+    analyticsControllerState.marketingConsentDecisionMade = true;
+  });
+  const optOutOfMarketingHandler = jest.fn(() => {
+    analyticsControllerState.optedInToMarketing = false;
+    analyticsControllerState.marketingConsentDecisionMade = true;
+    // Core's optOutOfMarketing auto-clears the cookie ID; mirror that here.
+    analyticsControllerState.marketingCampaignCookieId = null;
   });
   const resetConsentDecisionHandler = jest.fn(() => {
     analyticsControllerState.optedIn = false;
@@ -91,8 +102,6 @@ function createConfiguredMessenger({
     | NetworkControllerGetStateAction
     | NetworkControllerGetNetworkClientByIdAction
     | RemoteFeatureFlagControllerGetStateAction
-    | MetaMetricsControllerGetStateAction
-    | MetaMetricsControllerSetMarketingCampaignCookieIdAction
     | SentryTracingServiceTrackTracesAfterMetricsOptInAction
     | SentryTracingServiceClearTracesAfterMetricsOptInAction
     | AnalyticsControllerGetStateAction
@@ -100,8 +109,11 @@ function createConfiguredMessenger({
     | AnalyticsControllerIdentifyAction
     | AnalyticsControllerTrackViewAction
     | AnalyticsControllerOptInAction
+    | AnalyticsControllerOptInToMarketingAction
     | AnalyticsControllerOptOutAction
+    | AnalyticsControllerOptOutOfMarketingAction
     | AnalyticsControllerResetConsentDecisionAction
+    | AnalyticsControllerSetMarketingCampaignCookieIdAction
     | ActionConstraint,
     never
   >({
@@ -148,13 +160,9 @@ function createConfiguredMessenger({
       }) as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:getState',
-    () => metaMetricsControllerState as never,
-  );
-  rootMessenger.registerActionHandler(
-    'MetaMetricsController:setMarketingCampaignCookieId',
+    'AnalyticsController:setMarketingCampaignCookieId',
     ((cookieId: string | null) => {
-      metaMetricsControllerState.marketingCampaignCookieId = cookieId;
+      analyticsControllerState.marketingCampaignCookieId = cookieId;
       setMarketingCampaignCookieIdHandler(cookieId);
     }) as never,
   );
@@ -191,6 +199,14 @@ function createConfiguredMessenger({
     optOutHandler as never,
   );
   rootMessenger.registerActionHandler(
+    'AnalyticsController:optInToMarketing',
+    optInToMarketingHandler as never,
+  );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:optOutOfMarketing',
+    optOutOfMarketingHandler as never,
+  );
+  rootMessenger.registerActionHandler(
     'AnalyticsController:resetConsentDecision',
     resetConsentDecisionHandler as never,
   );
@@ -208,13 +224,14 @@ function createConfiguredMessenger({
     trackViewHandler,
     optInHandler,
     optOutHandler,
+    optInToMarketingHandler,
+    optOutOfMarketingHandler,
     resetConsentDecisionHandler,
     trackTracesHandler,
     clearTracesHandler,
     setMarketingCampaignCookieIdHandler,
     setUninstallURL,
     analyticsControllerState,
-    metaMetricsControllerState,
   };
 }
 
@@ -380,33 +397,64 @@ describe('analytics', () => {
       expect(analyticsControllerState.consentDecisionMade).toBe(false);
     });
 
-    it('does not nullify the analyticsId when set to false', async () => {
+    it('preserves the analyticsId when opting out and back in', async () => {
       const { analyticsControllerState } = createConfiguredMessenger();
 
-      const analyticsId = await setParticipateInMetaMetrics(false);
+      const analyticsIdAfterOptOut = await setParticipateInMetaMetrics(false);
 
-      expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(analyticsIdAfterOptOut).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(analyticsControllerState.analyticsId).toStrictEqual(
+        TEST_ANALYTICS_ID,
+      );
+
+      const analyticsIdAfterOptIn = await setParticipateInMetaMetrics(true);
+
+      expect(analyticsIdAfterOptIn).toStrictEqual(TEST_ANALYTICS_ID);
       expect(analyticsControllerState.analyticsId).toStrictEqual(
         TEST_ANALYTICS_ID,
       );
     });
 
-    it('nullifies the marketingCampaignCookieId when participation is toggled off', async () => {
+    it('retains the marketingCampaignCookieId when participation is toggled off', async () => {
+      const { analyticsControllerState, setMarketingCampaignCookieIdHandler } =
+        createConfiguredMessenger({
+          marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+        });
+
+      expect(analyticsControllerState.marketingCampaignCookieId).toStrictEqual(
+        TEST_GA_COOKIE_ID,
+      );
+
+      await setParticipateInMetaMetrics(false);
+
+      expect(setMarketingCampaignCookieIdHandler).not.toHaveBeenCalled();
+      expect(analyticsControllerState.marketingCampaignCookieId).toStrictEqual(
+        TEST_GA_COOKIE_ID,
+      );
+    });
+
+    it('updates AnalyticsController marketing consent', async () => {
       const {
-        metaMetricsControllerState,
-        setMarketingCampaignCookieIdHandler,
+        analyticsControllerState,
+        optInToMarketingHandler,
+        optOutOfMarketingHandler,
       } = createConfiguredMessenger({
         marketingCampaignCookieId: TEST_GA_COOKIE_ID,
       });
 
-      expect(
-        metaMetricsControllerState.marketingCampaignCookieId,
-      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      const analyticsId = await setDataCollectionForMarketing(true);
 
-      await setParticipateInMetaMetrics(false);
+      expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
+      expect(optInToMarketingHandler).toHaveBeenCalledTimes(1);
+      expect(analyticsControllerState.optedInToMarketing).toBe(true);
+      expect(analyticsControllerState.marketingConsentDecisionMade).toBe(true);
 
-      expect(setMarketingCampaignCookieIdHandler).toHaveBeenCalledWith(null);
-      expect(metaMetricsControllerState.marketingCampaignCookieId).toBeNull();
+      await setDataCollectionForMarketing(false);
+
+      expect(optOutOfMarketingHandler).toHaveBeenCalledTimes(1);
+      expect(analyticsControllerState.optedInToMarketing).toBe(false);
+      expect(analyticsControllerState.marketingConsentDecisionMade).toBe(true);
+      expect(analyticsControllerState.marketingCampaignCookieId).toBeNull();
     });
 
     describe('the extension uninstall URL', () => {

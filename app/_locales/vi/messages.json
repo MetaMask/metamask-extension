@@ -488,19 +488,23 @@
     "message": "Nạp tiền thất bại"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Đang gửi tiền"
+    "message": "Đang gửi $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Đã nạp"
+    "message": "Đã gửi $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Nhận thất bại"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Đang gửi"
+    "message": "Đang nhận $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Đã gửi"
+    "message": "Đã nhận $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Mua thất bại"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "Đã sao chép vào bộ nhớ đệm"
   },
+  "copy": {
+    "message": "Sao chép"
+  },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào bộ nhớ đệm"
   },
   "copyAddressShort": {
     "message": "Sao chép địa chỉ"
-  },
-  "copyPrivateKey": {
-    "message": "Sao chép khóa riêng tư"
   },
   "copyToClipboard": {
     "message": "Sao chép vào bộ nhớ đệm"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Cài đặt lại MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Đặt lại trạng thái MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Vẫn gặp sự cố?"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "Hiện tại"
-  },
-  "currentAccountNotConnected": {
-    "message": "Tài khoản hiện tại của bạn chưa được kết nối"
   },
   "currentEstimatedBaseFee": {
     "message": "Hiện tại: $1 GWEI"
@@ -5015,9 +5019,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Vì sự an toàn của bạn, việc chọn văn bản này hiện không khả dụng."
-  },
   "learnHow": {
     "message": "Tìm hiểu cách thức"
   },
@@ -5673,12 +5674,6 @@
     "message": "Nạp mUSD vào Money Account của bạn và tự động sinh lời với lãi suất APY lên đến $1 (có thể thay đổi). Tiền sẽ được đưa vào một kho DeFi do Veda quản lý và được giám sát rủi ro bởi Steakhouse Financial. Mức lãi suất được tạo ra từ các nền tảng DeFi bên thứ ba triển khai vốn vào các giao thức chuỗi khối. Không cần ký gửi, không cần nhận, không bị khóa tài sản.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Số dư Tài chính của bạn là số dư để chi tiêu. Liên kết Thẻ MetaMask để chi tiêu tại hơn 150 triệu cửa hàng trên toàn cầu. Tiền của bạn vẫn sinh lời cho đến thời điểm bạn sử dụng."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account được hỗ trợ bởi Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Nạp mUSD và sinh lời lên đến $1. Số dư của bạn được bảo chứng theo đô-la, sẵn sàng để chi tiêu, giao dịch hoặc gửi bất cứ lúc nào.",
     "description": "$1 is the current mUSD APY."
@@ -5696,17 +5691,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Tỷ lệ APY có thay đổi không?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Chính bạn! MetaMask là ví tự lưu ký, nghĩa là chỉ có Khóa riêng tư của chủ tài khoản mới có quyền kiểm soát tài khoản. MetaMask không thể truy cập, đóng băng hoặc di chuyển tiền của bạn. Đây là điểm khác biệt giữa chúng tôi với tài khoản ngân hàng truyền thống và các nền tảng tiền mã hóa lưu ký — không có bên thứ ba nào nắm giữ tiền của bạn."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Ai kiểm soát tiền của tôi?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Không có phí khi mở Money Account và không có phí khi nạp đồng ổn định. Bạn sẽ phải trả phí khi nạp các token không phải là đồng ổn định. Ngoài ra còn có các khoản phí liên quan đến giao dịch bằng MetaMask Card, rút tiền tại ATM và chi phí chuyển đổi ngược sang đồng tiền nội tệ. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Xem chi tiết đầy đủ về các khoản phí của Thẻ tại đây."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Có phí nào không?"
@@ -5723,20 +5709,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Tài khoản Tài chính là gì?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD là đồng ổn định được bảo chứng bằng đô-la theo tỷ lệ 1:1 của MetaMask. Số dư Money Account của bạn được giữ dưới dạng mUSD và luôn sẵn sàng để chi tiêu, gửi hoặc giao dịch bất kỳ lúc nào.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD là gì?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Số dư Money Account là số dư chi tiêu của bạn — số dư này tiếp tục sinh lời cho đến thời điểm bạn sử dụng. Money Account không phải là tài khoản ngân hàng, tài khoản tiết kiệm hoặc sản phẩm tiền gửi được bảo hiểm.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Đây là tài khoản tiết kiệm hay tài khoản chi tiêu?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Câu hỏi thường gặp"
@@ -6952,6 +6924,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Chúng tôi không thể xác minh $1 của bạn. Hãy thử lại hoặc sử dụng mật khẩu.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Thử lại",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Đăng ký $1",
@@ -8580,10 +8556,6 @@
     "message": "Khóa riêng tư",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Khóa riêng tư cho $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Khóa riêng tư bị ẩn",
     "description": "Explains that the private key input is hidden"
@@ -8595,9 +8567,6 @@
   "privateKeyShown": {
     "message": "Khóa riêng tư này đang được hiển thị",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Cảnh báo: Tuyệt đối không để lộ khóa này. Bất kỳ ai có khóa riêng tư cũng có thể đánh cắp tài sản được lưu giữ trong tài khoản của bạn."
   },
   "privateKeys": {
     "message": "Khóa riêng tư",
@@ -8941,9 +8910,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Tính năng mua tạm thời không khả dụng"
   },
-  "rampsShowAllTokens": {
-    "message": "Hiển thị tất cả token"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Token này không khả dụng tại khu vực của bạn.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9035,6 +9001,10 @@
   },
   "relayerFee": {
     "message": "Phí sàn chuyển tiếp"
+  },
+  "remindMeLater": {
+    "message": "Nhắc tôi sau",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Xóa"
@@ -9378,6 +9348,9 @@
   },
   "rpcUrl": {
     "message": "URL RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Nhà cung cấp RPC này đang giới hạn số lượng yêu cầu. Hãy thử lại sau hoặc sử dụng một URL RPC khác."
   },
   "safeTransferFrom": {
     "message": "Chuyển khoản an toàn từ"
@@ -9976,9 +9949,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Địa chỉ mới"
-  },
-  "sendBugReport": {
-    "message": "Gửi báo cáo lỗi."
   },
   "sendBundleHwGasPayment": {
     "message": "Thanh toán phí mạng bằng $1",
@@ -10701,12 +10671,6 @@
   "showPermissions": {
     "message": "Hiển thị quyền"
   },
-  "showPrivateKey": {
-    "message": "Hiển thị khóa riêng tư"
-  },
-  "showSRP": {
-    "message": "Hiển thị Cụm mật khẩu khôi phục bí mật"
-  },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"
   },
@@ -11313,38 +11277,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Bạn có chắc chắn muốn tiếp tục không?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định khôi phục két an toàn bằng cách làm theo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định đặt lại MetaMask bằng cách làm theo $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Không thể tự động khôi phục két an toàn."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Két an toàn có thể được khôi phục từ bản sao lưu tự động. Việc khôi phục tự động sẽ xóa chế độ cài đặt và tùy chọn hiện tại của bạn và chỉ khôi phục két an toàn."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Lỗi nội bộ: không thể truy cập cơ sở dữ liệu"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Đặt lại trạng thái MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Đang đặt lại cơ sở dữ liệu…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Khôi phục tài khoản"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Đang khôi phục cơ sở dữ liệu…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "các hướng dẫn này",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Cách khôi phục Cụm từ khôi phục bí mật của bạn"
@@ -11670,6 +11615,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Tự động"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Mức trượt giá cho phép đã được giới hạn ở mức 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Mức trượt giá đã nhập ($1%) được xem là quá cao và có thể dẫn đến tỷ giá không sinh lời",
@@ -12149,9 +12097,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Kết nối với $1 không ổn định. Hãy cập nhật thông tin kết nối mạng trước khi tiếp tục hoặc thử lại sau.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
   },
   "unexpectedError": {
     "message": "Đã xảy ra lỗi không mong muốn.",

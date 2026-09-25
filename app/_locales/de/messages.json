@@ -488,19 +488,23 @@
     "message": "Einzahlung fehlgeschlagen"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Einzahlung"
+    "message": "$1 einzahlen",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Eingezahlt"
+    "message": "$1 eingezahlt",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Empfangen fehlgeschlagen"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Senden"
+    "message": "$1 empfangen",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Gesendet"
+    "message": "$1 empfangen",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Kauf fehlgeschlagen"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "In die Zwischenablage kopiert"
   },
+  "copy": {
+    "message": "Kopieren"
+  },
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
   },
   "copyAddressShort": {
     "message": "Adresse kopieren"
-  },
-  "copyPrivateKey": {
-    "message": "Privaten Schlüssel kopieren"
   },
   "copyToClipboard": {
     "message": "In die Zwischenablage kopieren"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask neu installieren"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask-Status zurücksetzen"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Haben Sie immer noch Probleme?"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "Aktuell"
-  },
-  "currentAccountNotConnected": {
-    "message": "Ihr aktuelles Konto ist nicht verbunden."
   },
   "currentEstimatedBaseFee": {
     "message": "Aktuell: $1 GWEI"
@@ -5011,9 +5015,6 @@
     "message": "Gitter",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Zu Ihrer Sicherheit ist die Auswahl dieses Textes im Moment nicht möglich."
-  },
   "learnHow": {
     "message": "Erfahren Sie, wie es funktioniert"
   },
@@ -5669,12 +5670,6 @@
     "message": "Fügen Sie mUSD zu Ihrem Money Account hinzu und verdienen Sie automatisch bis zu $1 Effektivertrag (variabel). Die Gelder fließen in einen DeFi-Tresor, der von Veda verwaltet und dessen Risiko von Steakhouse Financial überwacht wird. Der Zinssatz wird von DeFi-Plattformen Dritter generiert, die Gelder in Blockchain-Protokollen bereitstellen. Kein Staking, keine Ansprüche, keine Lock-ups.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Ihr Geldguthaben ist Ihr Ausgabensaldo. Verknüpfen Sie Ihre MetaMask Card, um bei mehr als 150 Millionen Händlern weltweit zu bezahlen. Ihr Geld verdient so lange, bis Sie es nutzen."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Das Money Account wird durch Monad betrieben."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Fügen Sie mUSD hinzu und verdienen Sie bis zu $1. Ihr Guthaben ist durch US-Dollar gedeckt und jederzeit bereit zum Ausgeben, Handeln oder Versenden.",
     "description": "$1 is the current mUSD APY."
@@ -5692,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Ändert sich der APY-Satz?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Sie! MetaMask ist eine Wallet zur Eigenverwahrung; das bedeutet, dass ausschließlich die privaten Schlüssel des Kontoinhabers die Kontrolle darüber haben. MetaMask kann weder auf Ihre Gelder zugreifen noch diese einfrieren oder verschieben. Genau das unterscheidet uns von herkömmlichen Bankkonten und Krypto-Plattformen mit Fremdverwahrung: Es gibt keinen Drittanbieter, der Ihre Gelder verwahrt."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Wer kontrolliert mein Geld?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Für die Eröffnung eines Money Accounts und die Einzahlung von Stablecoins fallen keine Gebühren an. Bei der Einzahlung von Token, die keine Stablecoins sind, werden Gebühren berechnet. Zudem fallen Gebühren für Transaktionen mit der MetaMask Card, Bargeldabhebungen am Geldautomaten sowie Kosten für die Auszahlung in Lokalwährung an. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Hier finden Sie die vollständige Aufschlüsselung der Kartengebühren."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Fallen Gebühren an?"
@@ -5719,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Was ist das Geldkonto?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD ist der 1:1 durch den Dollar gedeckten Stablecoin von MetaMask. Ihr Saldo wird in mUSD geführt und steht Ihnen jederzeit zum Ausgeben, Versenden oder Handeln zur Verfügung.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Was ist mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Ihr „Money“-Guthaben ist Ihr Ausgabenguthaben – es bringt so lange Erträge ein, bis Sie es verwenden. Das „Money“-Konto ist weder ein Bankkonto noch ein Sparkonto noch ein Produkt mit Einlagensicherung.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Ist dies ein Sparkonto oder ein Ausgabenkonto?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQs"
@@ -6948,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Wir konnten Ihr $1 nicht verifizieren. Versuchen Sie es erneut oder verwenden Sie Ihr Passwort.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Erneut versuchen",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 registrieren",
@@ -8566,10 +8542,6 @@
     "message": "Privater Schlüssel",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Privater Schlüssel für $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Der private Schlüssel ist verborgen",
     "description": "Explains that the private key input is hidden"
@@ -8581,9 +8553,6 @@
   "privateKeyShown": {
     "message": "Dieser private Schlüssel wird angezeigt",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Warnung: Niemals jemandem ihren privaten Key mitteilen. Jeder der im Besitz Ihres privaten Keys ist, kann jegliches Guthaben Ihres Kontos stehlen."
   },
   "privateKeys": {
     "message": "Private Schlüssel",
@@ -8927,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Kaufen ist vorübergehend nicht möglich"
   },
-  "rampsShowAllTokens": {
-    "message": "Alle Token anzeigen"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Dieses Token ist in Ihrer Region nicht verfügbar.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9021,6 +8987,10 @@
   },
   "relayerFee": {
     "message": "Relayer-Gebühr"
+  },
+  "remindMeLater": {
+    "message": "Später erinnern",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Entfernen"
@@ -9364,6 +9334,9 @@
   },
   "rpcUrl": {
     "message": "RPC-URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Dieser RPC-Anbieter begrenzt die Anzahl der Anfragen. Bitte versuchen Sie es später erneut oder verwenden Sie eine andere RPC-URL."
   },
   "safeTransferFrom": {
     "message": "Sichere Übertragung von"
@@ -9962,9 +9935,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Neue Adresse"
-  },
-  "sendBugReport": {
-    "message": "Übermitteln Sie uns einen Fehlerbericht."
   },
   "sendBundleHwGasPayment": {
     "message": "Netzwerkgebühr mit $1 bezahlen",
@@ -10687,12 +10657,6 @@
   "showPermissions": {
     "message": "Genehmigungen anzeigen"
   },
-  "showPrivateKey": {
-    "message": "Privaten Schlüssel anzeigen"
-  },
-  "showSRP": {
-    "message": "Geheime Wiederherstellungsphrase anzeigen"
-  },
   "showTestnetNetworks": {
     "message": "Testnetzwerke anzeigen"
   },
@@ -11299,38 +11263,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Möchten Sie wirklich fortfahren?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, Ihren Tresor wiederherzustellen, indem Sie $1 befolgen.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, MetaMask zurückzusetzen, indem Sie $1 befolgen.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ihr Tresor kann nicht automatisch wiederhergestellt werden."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Ihr Tresor kann aus einer automatischen Sicherung wiederhergestellt werden. Bei der automatischen Wiederherstellung werden Ihre aktuellen Einstellungen und Präferenzen gelöscht und nur Ihr Tresor wiederhergestellt."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Interner Fehler: Auf die Datenbank kann nicht zugegriffen werden"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask-Status zurücksetzen"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Datenbank wird zurückgesetzt …"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Konten wiederherstellen"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Datenbank wird wiederhergestellt …"
   },
   "stateCorruptionTheseInstructions": {
     "message": "diese Anweisungen",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "So stellen Sie Ihre geheime Wiederherstellungsphrase wieder her"
@@ -11656,6 +11601,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Automatisch"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Die Slippage-Toleranz wurde auf 100 % begrenzt."
   },
   "swapSlippageHighDescription": {
     "message": "Die eingegebene Slippage ($1%) wird als sehr hoch angesehen und kann zu einem schlechten Kurs führen.",
@@ -12135,9 +12083,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Die Verbindung mit $1 ist unzuverlässig. Aktualisieren Sie die Details zur Netzwerkverbindung, bevor Sie fortfahren, oder versuchen Sie es später erneut.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Dieses Verhalten ist unerwartet und sollte als Fehler gemeldet werden, auch wenn Ihre Konten wiederhergestellt werden."
   },
   "unexpectedError": {
     "message": "Ein unerwarteter Fehler ist aufgetreten.",

@@ -488,19 +488,23 @@
     "message": "डिपॉज़िट नहीं हो पाया"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "डिपॉज़िट कर रहे हैं"
+    "message": "$1 डिपॉज़िट कर रहे हैं",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "डिपॉज़िट किया गया"
+    "message": "$1 डिपॉज़िट किया गया",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "प्राप्त नहीं हो पाया"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "भेजा जा रहा है"
+    "message": "$1 प्राप्त कर रहे हैं",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "भेजा गया"
+    "message": "$1 प्राप्त किया गया",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "खरीदना नहीं हो पाया"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी किया गया"
   },
+  "copy": {
+    "message": "कॉपी करें"
+  },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर एड्रेस कॉपी करें"
   },
   "copyAddressShort": {
     "message": "एड्रेस कॉपी करें"
-  },
-  "copyPrivateKey": {
-    "message": "प्राइवेट की (key) को कॉपी करें"
   },
   "copyToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी करें"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask को दोबारा इंस्टॉल करें"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask स्टेट रीसेट करें"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "अभी भी समस्या आ रही है?"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "मौजूदा"
-  },
-  "currentAccountNotConnected": {
-    "message": "आपका चालू अकाउंट कनेक्ट नहीं है"
   },
   "currentEstimatedBaseFee": {
     "message": "वर्तमान: $1 GWEI"
@@ -5011,9 +5015,6 @@
     "message": "लैटिस",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "सुरक्षा कारणों से, इस टेक्स्ट को चुनने का विकल्प अभी उपलब्ध नहीं है।"
-  },
   "learnHow": {
     "message": "अधिक जानें"
   },
@@ -5669,12 +5670,6 @@
     "message": "अपने Money Account में mUSD जोड़ें और स्वचालित रूप से $1 तक APY (वेरिएबल) कमाएं। फंड्स एक DeFi वॉल्ट में जाते हैं, जिसे Veda द्वारा प्रबंधित किया जाता है और Steakhouse Financial द्वारा जोखिम की निगरानी की जाती है। यह दर थर्ड पार्टी के DeFi प्लेटफॉर्म्स द्वारा उत्पन्न होती है जो फंड्स को ब्लॉकचेन प्रोटोकॉल्स में लगाते हैं। कोई स्टेकिंग नहीं, कोई क्लेम नहीं, कोई लॉक-अप्स नहीं।",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "आपका Money बैलेंस आपका खर्च करने का बैलेंस है। दुनिया भर में 150M+ मर्चेंट पर खर्च करने के लिए अपना MetaMask कार्ड लिंक करें। आपका पैसा तब तक कमाता रहता है जब तक आप इसका इस्तेमाल नहीं करते।"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account Monad द्वारा संचालित है।"
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD जोड़ें और $1 तक कमाएं। आपका बैलेंस डॉलर-बैक्ड है और कभी भी खर्च करने, ट्रेड करने या भेजने के लिए तैयार है।",
     "description": "$1 is the current mUSD APY."
@@ -5692,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "क्या APY रेट बदलता है?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "आप! MetaMask एक सेल्फ-कस्टोडियल वॉलेट है, जिसका मतलब है कि सिर्फ़ अकाउंट होल्डर की प्राइवेट कीज़ ही इसे कंट्रोल करती हैं। MetaMask आपके फंड्स को एक्सेस, फ्रीज़ या मूव नहीं कर सकता। यही बात हमें ट्रेडिशनल बैंक अकाउंट्स और कस्टोडियल क्रिप्टो प्लेटफॉर्म्स से अलग करती है—कोई थर्ड पार्टी आपके फंड्स को होल्ड नहीं करती है।"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "मेरे पैसे को कौन कंट्रोल करता है?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money Account खोलने की कोई फीस नहीं है और स्टेबलकॉइन्स डिपॉज़िट करने की भी कोई फीस नहीं है। नॉन-स्टेबलकॉइन टोकन डिपॉजिट करने पर आपसे फीस ली जाएगी। MetaMask कार्ड ट्रांसेक्शन, ATM विड्रॉल और लोकल करेंसी ऑफरैंप कॉस्ट से जुड़ी फीस भी हैं। "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "कार्ड फीस का पूरा ब्रेकडाउन यहाँ देखें।"
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "क्या कोई फीस है?"
@@ -5719,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Money अकाउंट क्या है?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD, MetaMask का 1:1 डॉलर-बैक्ड स्टेबलकॉइन है। आपका Money बैलेंस mUSD के तौर पर रखा जाता है और कभी भी खर्च करने, भेजने या ट्रेड करने के लिए उपलब्ध रहता है।",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD क्या है?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "आपका Money बैलेंस आपका खर्च करने का बैलेंस है — यह तब तक कमाता रहता है जब तक आप इसका इस्तेमाल नहीं करते। Money अकाउंट कोई बैंक अकाउंट, सेविंग्स अकाउंट या इंश्योर्ड डिपॉज़िट प्रोडक्ट नहीं है।",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "क्या यह सेविंग्स अकाउंट है या स्पेंडिंग अकाउंट?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "सामान्य प्रश्न"
@@ -6948,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "हम आपके $1 को सत्यापित नहीं कर सके। फिर से प्रयास करें या अपने पासवर्ड का उपयोग करें।",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "फिर से प्रयास करें",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 रजिस्टर करें",
@@ -8566,10 +8542,6 @@
     "message": "प्राइवेट की (key)",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 के लिए प्राइवेट की (key)",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "प्राइवेट की (key) छिपी हुई है",
     "description": "Explains that the private key input is hidden"
@@ -8581,9 +8553,6 @@
   "privateKeyShown": {
     "message": "प्राइवेट की (key) दिखाई जा रही है",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "चेतावनी: इस कुंजी का खुलासा कभी न करें। आपकी निजी कुंजियों के साथ कोई भी व्यक्ति आपके अकाउंट में रखी कोई भी एसेट चुरा सकता है।"
   },
   "privateKeys": {
     "message": "प्राइवेट कीज़ (keys)",
@@ -8927,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "खरीदारी अस्थायी रूप से उपलब्ध नहीं है"
   },
-  "rampsShowAllTokens": {
-    "message": "सभी टोकन दिखाएं"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "यह टोकन आपके क्षेत्र में उपलब्ध नहीं है।",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9021,6 +8987,10 @@
   },
   "relayerFee": {
     "message": "रीलेयर (relayer) फीस"
+  },
+  "remindMeLater": {
+    "message": "मुझे बाद में याद दिलाएं",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "हटाएं"
@@ -9364,6 +9334,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "यह RPC प्रोवाइडर अनुरोधों को सीमित कर रहा है। बाद में फिर से कोशिश करें या कोई दूसरा RPC URL इस्तेमाल करें।"
   },
   "safeTransferFrom": {
     "message": "से सुरक्षित ट्रांसफर"
@@ -9962,9 +9935,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "नया एड्रेस"
-  },
-  "sendBugReport": {
-    "message": "हमें एक बग रिपोर्ट भेजें।"
   },
   "sendBundleHwGasPayment": {
     "message": "नेटवर्क फीस $1 से पे की जा रही है",
@@ -10687,12 +10657,6 @@
   "showPermissions": {
     "message": "अनुमतियां दिखाएं"
   },
-  "showPrivateKey": {
-    "message": "प्राइवेट की (key) दिखाएं"
-  },
-  "showSRP": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
-  },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
   },
@@ -11299,38 +11263,19 @@
   "stateCorruptionAreYouSure": {
     "message": "क्या आप वाकई आगे बढ़ना चाहते हैं?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "आप $1 को फॉलो करके अपनी वॉल्ट को रिस्टोर करने से पहले, मैन्युअली अपना स्टेट फ़ाइल कॉपी और रिस्टोर कर सकते हैं।",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "आप $1 को फॉलो करके अपने MetaMask को रीसेट करने से पहले, मैन्युअली अपना स्टेट फ़ाइल कॉपी और रिस्टोर कर सकते हैं।",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "आपकी वॉल्ट स्वचालित रूप से रिकवर नहीं की जा सकती।"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "आपका वॉल्ट स्वचालित बैकअप से रिकवर किया जा सकता है। स्वचालित रिकवरी आपकी वर्तमान सेटिंग्स और प्राथमिकताओं को हटा देगी, और केवल आपके वॉल्ट को रिस्टोर करेगी।"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "आंतरिक गड़बड़ी: डेटाबेस को ऐक्सेस नहीं किया जा सकता"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask स्टेट रीसेट करें"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "डेटाबेस रीसेट किया जा रहा है…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "एकाउंट्स रिस्टोर करें"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "डेटाबेस रिस्टोर किया जा रहा है…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "इन निर्देशों",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ कैसे रिकवर करें"
@@ -11656,6 +11601,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "ऑटो"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "स्लिपेज टॉलरेंस 100% पर कैप किया गया था।"
   },
   "swapSlippageHighDescription": {
     "message": "दर्ज की गई स्लिपेज ($1%) को बहुत अधिक माना जाता है और इसकी वजह से खराब दर हो सकती है",
@@ -12135,9 +12083,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1 के साथ कनेक्शन विश्वसनीय नहीं है। आगे बढ़ने से पहले नेटवर्क कनेक्टिविटी विवरण अपडेट करें या बाद में फिर से प्रयास करें।",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "यह व्यवहार अप्रत्याशित है और इसे बग के रूप में रिपोर्ट किया जाना चाहिए, भले ही आपके एकाउंट्स रिस्टोर कर दिए गए हों।"
   },
   "unexpectedError": {
     "message": "एक अनपेक्षित गड़बड़ी हुई।",

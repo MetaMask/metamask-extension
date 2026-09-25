@@ -488,19 +488,23 @@
     "message": "Para yatırma işlemi başarısız oldu"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Yatırılıyor"
+    "message": "$1 yatırılıyor",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Yatırıldı"
+    "message": "$1 yatırıldı",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Alınamadı"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Gönderiliyor"
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Gönderildi"
+    "message": "$1 alındı",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Alış işlemi başarısız oldu"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "Panoya kopyalandı"
   },
+  "copy": {
+    "message": "Kopyala"
+  },
   "copyAddress": {
     "message": "Adresi panoya kopyala"
   },
   "copyAddressShort": {
     "message": "Adresi kopyala"
-  },
-  "copyPrivateKey": {
-    "message": "Özel anahtarı kopyala"
   },
   "copyToClipboard": {
     "message": "Panoya kopyala"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask'i geri yükleyin"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask Durumunu Sıfırla"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Hala sorun mu yaşıyorsunuz?"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "Mevcut"
-  },
-  "currentAccountNotConnected": {
-    "message": "Mevcut hesabınız bağlı değil"
   },
   "currentEstimatedBaseFee": {
     "message": "Geçerli: $1 GWEI"
@@ -5015,9 +5019,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Güvenliğiniz için bu metin şu anda seçilemez."
-  },
   "learnHow": {
     "message": "Nasıl olduğunu öğrenin"
   },
@@ -5673,12 +5674,6 @@
     "message": "Money account hesabınıza mUSD ekleyin ve otomatik olarak $1 APY (değişkendir) kazanın. Fonlar, Steakhouse Financial risk izlemesi ile Veda tarafından yönetilen bir DeFi kasasına gider. Oran, blokzinciri protokollerinde fon dağıtan üçüncü taraf DeFi platformları tarafından oluşturulur. Stake yok, hak talebinde bulunma yok, kilitleme yok.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Para bakiyeniz, bakiyenizi harcıyor. MetaMask Card'ınızı bağlayarak dünya çapında 150 milyondan fazla satıcıda harcama yapabilirsiniz. Kullandığınız ana kadar para kazanmaya devam eder."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money account, Monad tarafından desteklenmektedir."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD ekleyin ve en fazla $1 kazanın. Bakiyeniz dolara endekslidir ve her zaman harcamaya, işlem yapmaya veya gönderime hazırdır.",
     "description": "$1 is the current mUSD APY."
@@ -5696,17 +5691,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "APY oranı değişir mi?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Sizin! MetaMask, self-custodial bir cüzdandır, yani yalnızca hesap sahibinin Özel Anahtarları ile kontrol edilir. MetaMask fonlarınıza erişemez, donduramaz veya taşıyamaz. Bu, bizi geleneksel banka hesaplarından ve custodial kripto platformlarından ayıran özelliktir. Fonlarınızı tutan üçüncü taraf yoktur."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Paramın kontrolü kimde?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money account açmak ve stabil kripto para yatırmak ücretsizdir. Stabil kripto para dışındaki tokenları yatırırken sizden işlem ücreti alınır. MetaMask Card işlemleri, ATM'den para çekme işlemleri ve yerel para birimi offramp maliyetleri ile ilişkili ücretler de bulunmaktadır. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Kart ücretlerinin tam dökümünü burada görebilirsiniz."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Ücretler var mı?"
@@ -5723,20 +5709,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Para hesabı nedir?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD, MetaMask'in 1:1 dolara endeksli stabil kripto parasıdır. Para bakiyeniz mUSD olarak tutulur ve dilediğiniz zaman harcamaya, gönderilmeye veya işleme hazırdır.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD nedir?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Para bakiyeniz harcama bakiyenizdir; siz kullanana kadar kazanmaya devam eder. Money account hesabı bir banka hesabı, birikim hesabı veya sigortalı mevduat ürünü değildir.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Bu bir tasarruf hesabı mı yoksa harcama hesabı mı?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "SSS"
@@ -6952,6 +6924,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "$1 doğrulanamadı. Tekrar deneyin veya şifrenizi kullanın.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Tekrar deneyin",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 Kaydet",
@@ -8580,10 +8556,6 @@
     "message": "Özel anahtar",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 için özel anahtar",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Özel anahtar gizli",
     "description": "Explains that the private key input is hidden"
@@ -8595,9 +8567,6 @@
   "privateKeyShown": {
     "message": "Özel anahtar gösteriliyor",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Uyarı: Bu anahtarı kimse ile paylaşmayın. Özel anahtarlarınıza sahip herkes hesaplarınızıdaki tüm varlığınızı çalabilir."
   },
   "privateKeys": {
     "message": "Özel anahtarlar",
@@ -8941,9 +8910,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Alış işlemi geçici olarak kullanılamıyor"
   },
-  "rampsShowAllTokens": {
-    "message": "Tüm tokenları göster"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Bu token bölgenizde kullanılamıyor.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9035,6 +9001,10 @@
   },
   "relayerFee": {
     "message": "Relayer ücreti"
+  },
+  "remindMeLater": {
+    "message": "Daha sonra hatırlat",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Kaldır"
@@ -9378,6 +9348,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL adresi"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Bu RPC sağlayıcısı talepleri sınırlandırıyor. Daha sonra tekrar deneyin veya farklı bir RPC URL kullanın."
   },
   "safeTransferFrom": {
     "message": "Güvenli transfer kaynağı"
@@ -9976,9 +9949,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Yeni adres"
-  },
-  "sendBugReport": {
-    "message": "Bize bir hata raporu gönderin."
   },
   "sendBundleHwGasPayment": {
     "message": "Ağ ücreti $1 ile ödeniyor",
@@ -10701,12 +10671,6 @@
   "showPermissions": {
     "message": "İzinleri göster"
   },
-  "showPrivateKey": {
-    "message": "Özel anahtarı göster"
-  },
-  "showSRP": {
-    "message": "Gizli Kurtarma İfadesini Göster"
-  },
   "showTestnetNetworks": {
     "message": "Test ağlarını göster"
   },
@@ -11313,38 +11277,19 @@
   "stateCorruptionAreYouSure": {
     "message": "İlerlemek istediğinizden emin misiniz?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1 izleyerek kasanızı geri yüklemeye karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "$1 izleyerek MetaMask'i sıfırlamaya karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Kasanız otomatik olarak kurtarılamaz."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Kasanız otomatik bir yedeklemeden kurtarılabilir. Otomatik kurtarma, mevcut ayar ve tercihlerinizi silerek yalnızca kasanızı geri yükleyecektir."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Dahili hata: Veri tabanına erişim sağlanamıyor"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask Durumunu Sıfırla"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Veri tabanı sıfırlanıyor…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Hesapları geri yükle"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Veri tabanı geri yükleniyor…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "bu talimatları",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Gizli Kurtarma İfadeniz nasıl kurtarılır"
@@ -11670,6 +11615,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Otomatik"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Kayma toleransı %100 olarak sınırlandırıldı."
   },
   "swapSlippageHighDescription": {
     "message": "Girilen kayma ($1%) çok yüksek kabul edilir ve kötü bir oranla sonuçlanabilir",
@@ -12149,9 +12097,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1 ile bağlantı güvenilir değil. Devam etmeden önce ağ bağlantı bilgilerini güncelleyin veya daha sonra tekrar deneyin.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Bu davranış beklenmedik bir durumdur ve hesaplarınız geri yüklense bile hata olarak bildirilmelidir."
   },
   "unexpectedError": {
     "message": "Beklenmedik bir hata oluştu.",

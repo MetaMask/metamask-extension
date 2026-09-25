@@ -23,11 +23,14 @@ export type PerpsTopMoverPillProps = {
 
 // A content-width lozenge: logo, ticker and change sit inline on one row,
 // matching mobile's `ExplorePill` (`rounded-full`, muted background, p-2).
-// `w-auto`/`shrink-0` override ButtonBase's full-width default so each pill
-// hugs its label the way mobile's do; `h-auto` prevents the fixed `h-12` from
-// stretching the capsule.
+// `w-auto` overrides ButtonBase's full-width default so each pill hugs its
+// label the way mobile's do; `h-auto` prevents the fixed `h-12` from stretching
+// the capsule. Deliberately not `shrink-0`: the list wraps instead of
+// scrolling, so a pill wider than the whole row has to be able to shrink and
+// truncate rather than push the section sideways. `max-w-full` caps it at the
+// row, `min-w-0` lets the ticker inside actually give way.
 const PILL_STYLES =
-  'w-auto shrink-0 h-auto justify-center gap-1.5 rounded-full bg-muted px-2 py-1.5 cursor-pointer hover:bg-hover active:bg-pressed';
+  'w-auto max-w-full min-w-0 h-auto justify-center gap-1.5 rounded-full bg-muted px-2 py-1.5 cursor-pointer hover:bg-hover active:bg-pressed';
 
 /**
  * PerpsTopMoverPill renders one ranked market as a horizontal pill: token
@@ -64,7 +67,7 @@ export const PerpsTopMoverPill = ({
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
-        className="whitespace-nowrap"
+        className="min-w-0 truncate"
       >
         {displaySymbol}
       </Text>
@@ -72,7 +75,7 @@ export const PerpsTopMoverPill = ({
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={changeColor}
-        className="whitespace-nowrap"
+        className="shrink-0 whitespace-nowrap"
       >
         {changeLabel}
       </Text>

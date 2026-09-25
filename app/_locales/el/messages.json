@@ -488,19 +488,23 @@
     "message": "Η κατάθεση απέτυχε"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Κατάθεση σε εξέλιξη"
+    "message": "Κατάθεση $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Κατατέθηκε"
+    "message": "Κατατέθηκαν $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Η λήψη απέτυχε"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Αποστολή"
+    "message": "Λήψη $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Εστάλη"
+    "message": "Ελήφθη $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Η αγορά απέτυχε"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
   },
+  "copy": {
+    "message": "Αντιγραφή"
+  },
   "copyAddress": {
     "message": "Αντιγραφή διεύθυνσης στο πρόχειρο"
   },
   "copyAddressShort": {
     "message": "Αντιγραφή διεύθυνσης"
-  },
-  "copyPrivateKey": {
-    "message": "Αντιγραφή ιδιωτικού κλειδιού"
   },
   "copyToClipboard": {
     "message": "Αντιγραφή στο πρόχειρο"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Εγκαταστήστε ξανά το MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Επαναφορά κατάστασης του MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Ακόμα αντιμετωπίζετε προβλήματα;"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "Τρέχουσα"
-  },
-  "currentAccountNotConnected": {
-    "message": "Ο τρέχων λογαριασμός σας δεν είναι συνδεδεμένος"
   },
   "currentEstimatedBaseFee": {
     "message": "Τρέχον: $1 GWEI"
@@ -5011,9 +5015,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Για την ασφάλειά σας, η επιλογή αυτού του κειμένου δεν είναι διαθέσιμη αυτή τη στιγμή."
-  },
   "learnHow": {
     "message": "Μάθετε πώς"
   },
@@ -5669,12 +5670,6 @@
     "message": "Προσθέστε mUSD στον Money account σας και κερδίστε αυτόματα έως και $1 APY (μεταβλητό). Τα κεφάλαιά σας τοποθετούνται σε ένα DeFi vault, το οποίο διαχειρίζεται η Veda, με παρακολούθηση κινδύνου από τη Steakhouse Financial. Το επιτόκιο προκύπτει από πλατφόρμες DeFi τρίτων, οι οποίες επενδύουν κεφάλαια σε πρωτόκολλα blockchain. Χωρίς δέσμευση κεφαλαίων, χωρίς διεκδίκηση ανταμοιβών και χωρίς περιορισμοί ανάληψης.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Το υπόλοιπο του λογαριασμού σας είναι το διαθέσιμο υπόλοιπο για δαπάνες. Συνδέστε την MetaMask Card για να πραγματοποιείτε συναλλαγές σε περισσότερους από 150 εκατομμύρια εμπόρους παγκοσμίως. Τα χρήματά σας συνεχίζουν να αποδίδουν μέχρι τη στιγμή που θα τα χρησιμοποιήσετε."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Ο Money Account υποστηρίζεται από την Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Προσθέστε mUSD και κερδίστε έως και $1. Το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή.",
     "description": "$1 is the current mUSD APY."
@@ -5692,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Μπορεί να αλλάξει το ποσοστό APY;"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Εσείς! Το MetaMask είναι ένα πορτοφόλι με αυτοδιαχείριση κεφαλαίων, δηλαδή μόνο ο κάτοχος των ιδιωτικών κλειδιών ελέγχει τον λογαριασμό. Το MetaMask δεν μπορεί να έχει πρόσβαση, να παγώσει ή να μεταφέρει τα χρήματά σας. Αυτό μας διαφοροποιεί από τους παραδοσιακούς τραπεζικούς λογαριασμούς και τις πλατφόρμες φύλαξης κρυπτονομισμάτων — δεν υπάρχουν τρίτοι να διαχειρίζονται τα χρήματά σας."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Ποιος ελέγχει τα χρήματά μου;"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Δεν υπάρχει χρέωση για την δημιουργία ενός Money Account ούτε για την κατάθεση stablecoins. Θα επιβαρυνθείτε με χρεώσεις όταν καταθέτετε tokens που δεν είναι stablecoins. Υπάρχουν επίσης χρεώσεις που σχετίζονται με συναλλαγές της MetaMask Card, αναλήψεις από ATM και τέλη μετατροπής σε τοπικό νόμισμα. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Δείτε αναλυτικά τις χρεώσεις της κάρτας εδώ."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Υπάρχουν χρεώσεις;"
@@ -5719,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Τι είναι ο λογαριασμός Money;"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "Το mUSD είναι το stablecoin της MetaMask, με αναλογία 1:1 προς το δολάριο ΗΠΑ. Το υπόλοιπό σας στον Money account διατηρείται σε mUSD και παραμένει διαθέσιμο για αγορές, αποστολή ή συναλλαγές οποιαδήποτε στιγμή.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Τι είναι τα mUSD;"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Το υπόλοιπό σας στον Money account είναι το διαθέσιμο υπόλοιπό σας για αγορές — συνεχίζει να αποφέρει απόδοση μέχρι τη στιγμή που θα το χρησιμοποιήσετε. Ο Money account δεν είναι τραπεζικός λογαριασμός, λογαριασμός ταμιευτηρίου ή ασφαλισμένο καταθετικό προϊόν.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Είναι αυτός λογαριασμός αποταμίευσης ή λογαριασμός δαπανών;"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Συχνές Ερωτήσεις"
@@ -6948,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά ή χρησιμοποιήστε τον κωδικό πρόσβασής σας.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Προσπαθήστε ξανά",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Εγγραφή με $1",
@@ -8566,10 +8542,6 @@
     "message": "Ιδιωτικό κλειδί",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Ιδιωτικό κλειδί για $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Το ιδιωτικό κλειδί είναι κρυφό",
     "description": "Explains that the private key input is hidden"
@@ -8581,9 +8553,6 @@
   "privateKeyShown": {
     "message": "Αυτό το ιδιωτικό κλειδί είναι ορατό",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Προειδοποίηση: Ποτέ μην αποκαλύπτετε αυτό το κλειδί. Οποιοσδήποτε έχει τα ιδιωτικά σας κλειδιά μπορεί να κλέψει όλα τα περιουσιακά στοιχεία που βρίσκονται στον λογαριασμό σας."
   },
   "privateKeys": {
     "message": "Ιδιωτικά κλειδιά",
@@ -8927,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Η δυνατότητα αγοράς δεν είναι προσωρινά διαθέσιμη"
   },
-  "rampsShowAllTokens": {
-    "message": "Εμφάνιση όλων των tokens"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Αυτό το token δεν είναι διαθέσιμο στην περιοχή σας.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9021,6 +8987,10 @@
   },
   "relayerFee": {
     "message": "Χρέωση αποδέκτη"
+  },
+  "remindMeLater": {
+    "message": "Υπενθυμίστε μου αργότερα",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Διαγραφή"
@@ -9364,6 +9334,9 @@
   },
   "rpcUrl": {
     "message": "Διεύθυνση URL του RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Αυτός ο πάροχος RPC έχει θέσει περιορισμό στα αιτήματα. Προσπαθήστε ξανά αργότερα ή χρησιμοποιήστε διαφορετική διεύθυνση URL RPC."
   },
   "safeTransferFrom": {
     "message": "Ασφαλής μεταφορά από"
@@ -9962,9 +9935,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Νέα διεύθυνση"
-  },
-  "sendBugReport": {
-    "message": "Στείλτε μας μια αναφορά σφαλμάτων."
   },
   "sendBundleHwGasPayment": {
     "message": "Πληρωμή τέλη δικτύου με $1",
@@ -10687,12 +10657,6 @@
   "showPermissions": {
     "message": "Εμφάνιση αδειών"
   },
-  "showPrivateKey": {
-    "message": "Εμφάνιση ιδιωτικού κλειδιού"
-  },
-  "showSRP": {
-    "message": "Εμφάνιση της Μυστικής Φράσης Ανάκτησης"
-  },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
   },
@@ -11299,38 +11263,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Είστε σίγουροι ότι θέλετε να συνεχίσετε;"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το εικονικό σας \"θησαυροφυλάκιο\", ακολουθώντας $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το MetaMask, ακολουθώντας $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Δεν είναι δυνατή η αυτόματη επαναφορά του εικονικού σας \"θησαυροφυλακίου\"."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Δεν είναι δυνατή η επαναφορά του εικονικού σας \"θησαυροφυλακίου\" από ένα αυτόματο αντίγραφο ασφαλείας. Η αυτόματη ανάκτηση θα διαγράψει τις τρέχουσες ρυθμίσεις και προτιμήσεις σας, επαναφέροντας μόνο το εικονικό σας \"θησαυροφυλάκιο\"."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Εσωτερικό σφάλμα: δεν είναι δυνατή η πρόσβαση στη βάση δεδομένων"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Επαναφορά κατάστασης του MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Γίνεται επαναφορά της βάσης δεδομένων…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Επαναφορά λογαριασμών"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Γίνεται ανάκτηση της βάσης δεδομένων…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "αυτές τις οδηγίες",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Πώς να ανακτήσετε τη Μυστική Φράση Ανάκτησής σας"
@@ -11656,6 +11601,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Αυτόματα"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Η ανοχή απόκλισης περιορίστηκε στο 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Η απόκλιση που καταχωρήσατε ($1%) θεωρείται πολύ υψηλή και μπορεί να επιφέρει χαμηλό επιτόκιο",
@@ -12135,9 +12083,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Η σύνδεση στο $1 δεν είναι αξιόπιστη. Ενημερώστε τα στοιχεία σύνδεσης δικτύου πριν συνεχίσετε ή προσπαθήστε ξανά αργότερα.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Αυτή η συμπεριφορά είναι απρόβλεπτη και πρέπει να αναφερθεί ως σφάλμα, ακόμη κι αν οι λογαριασμοί σας έχουν αποκατασταθεί."
   },
   "unexpectedError": {
     "message": "Παρουσιάστηκε απρόσμενο σφάλμα.",

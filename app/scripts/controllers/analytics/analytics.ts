@@ -367,7 +367,9 @@ export function trackEvent(
         analyticsId,
         event: MetaMetricsEventName.MetricsOptOut,
         properties: eventPayload.properties as Record<string, Json> | undefined,
-        context: eventPayload.context as AnalyticsContext | undefined,
+        context: eventPayload.context as
+          | Partial<MetaMetricsContext>
+          | undefined,
       });
       return;
     }
@@ -443,25 +445,13 @@ export async function setParticipateInMetaMetrics(
     analyticsMessenger.call(
       'SentryTracingService:clearTracesAfterMetricsOptIn',
     );
-  } else {
-    if (participateInMetaMetrics === false) {
-      analyticsMessenger.call('AnalyticsController:optOut');
-      analyticsMessenger.call(
-        'SentryTracingService:clearTracesAfterMetricsOptIn',
-      );
-    } else {
-      analyticsMessenger.call('AnalyticsController:resetConsentDecision');
-    }
-
-    const { marketingCampaignCookieId } = analyticsMessenger.call(
-      'MetaMetricsController:getState',
+  } else if (participateInMetaMetrics === false) {
+    analyticsMessenger.call('AnalyticsController:optOut');
+    analyticsMessenger.call(
+      'SentryTracingService:clearTracesAfterMetricsOptIn',
     );
-    if (marketingCampaignCookieId) {
-      analyticsMessenger.call(
-        'MetaMetricsController:setMarketingCampaignCookieId',
-        null,
-      );
-    }
+  } else {
+    analyticsMessenger.call('AnalyticsController:resetConsentDecision');
   }
 
   if (
@@ -470,6 +460,23 @@ export async function setParticipateInMetaMetrics(
     participateInMetaMetrics !== null
   ) {
     updateExtensionUninstallUrl(participateInMetaMetrics === true, analyticsId);
+  }
+
+  return analyticsId;
+}
+
+export async function setDataCollectionForMarketing(
+  dataCollectionForMarketing: boolean,
+): Promise<string> {
+  const analyticsMessenger = getMessenger();
+  const { analyticsId } = analyticsMessenger.call(
+    'AnalyticsController:getState',
+  );
+
+  if (dataCollectionForMarketing) {
+    await analyticsMessenger.call('AnalyticsController:optInToMarketing');
+  } else {
+    analyticsMessenger.call('AnalyticsController:optOutOfMarketing');
   }
 
   return analyticsId;

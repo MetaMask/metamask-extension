@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import configureStore from '../../../../../store/store';
@@ -258,6 +258,7 @@ describe('NFT Items', () => {
   setBackgroundConnection({
     detectNfts: detectNftsStub,
     getState: getStateStub,
+    getStatePatches: jest.fn().mockResolvedValue([]),
     checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
@@ -405,6 +406,21 @@ describe('NFT Items', () => {
       );
 
       expect(mockNavigate).toHaveBeenCalledWith(PRIVACY_ROUTE);
+    });
+  });
+
+  describe('Sort control', () => {
+    it('does not render the sort control', async () => {
+      await act(async () =>
+        render({
+          selectedAddress: ACCOUNT_1,
+          nfts: NFTS,
+          useNftDetection: true,
+        }),
+      );
+      expect(
+        screen.queryByTestId('sort-by-popover-toggle'),
+      ).not.toBeInTheDocument();
     });
   });
 });

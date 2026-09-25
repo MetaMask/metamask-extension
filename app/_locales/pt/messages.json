@@ -488,19 +488,23 @@
     "message": "Falha no depósito"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Depositando"
+    "message": "Depositando $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Depositado"
+    "message": "Depositado $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Falha ao receber"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Enviando"
+    "message": "Recebendo $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Enviado"
+    "message": "Recebido $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Comprar falhou"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "Copiado para a área de transferência"
   },
+  "copy": {
+    "message": "Copiar"
+  },
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
   "copyAddressShort": {
     "message": "Copiar endereço"
-  },
-  "copyPrivateKey": {
-    "message": "Copiar chave privada"
   },
   "copyToClipboard": {
     "message": "Copiar para a área de transferência"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Reinstalar MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Redefinir estado da MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Ainda está com problemas?"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "Atual"
-  },
-  "currentAccountNotConnected": {
-    "message": "Sua conta atual não está conectada"
   },
   "currentEstimatedBaseFee": {
     "message": "Atual: $1 GWEI"
@@ -5011,9 +5015,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Para sua segurança, não é possível selecionar este texto no momento."
-  },
   "learnHow": {
     "message": "Saiba como"
   },
@@ -5669,12 +5670,6 @@
     "message": "Adicione mUSD à sua conta Money e ganhe automaticamente até $1 de APY (variável). Os fundos são direcionados para um cofre DeFi, administrado pela Veda e com monitoramento de risco pela Steakhouse Financial. A taxa é gerada por plataformas DeFi terceirizadas que alocam fundos em protocolos blockchain. Sem necessidade de staking, resgates manuais ou períodos de carência.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "O saldo da sua conta Money é o seu saldo disponível para gastos. Vincule seu cartão MetaMask para gastar em mais de 150 milhões de estabelecimentos comerciais em todo o mundo. Seu dinheiro continua rendendo até o momento em que você o utiliza."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "A Money Account tem tecnologia da Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Adicione mUSD e ganhe até $1. Seu saldo é lastreado em dólar e está pronto para você gastar, negociar ou enviar quando você quiser.",
     "description": "$1 is the current mUSD APY."
@@ -5692,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "A taxa APY muda?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Você! A MetaMask é uma carteira autocustodiada, ou seja, somente as chaves privadas do titular da conta a controlam. A MetaMask não pode acessar, congelar ou movimentar seus fundos. Isso é o que nos distingue de contas bancárias tradicionais e plataformas de criptomoedas custodiadas — não há terceiros retendo seus fundos."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Quem controla meu dinheiro?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Não há taxa para abrir uma Money Account nem para depositar stablecoins. Serão cobradas taxas quando você depositar tokens que não sejam stablecoins. Há também taxas associadas às transações no cartão MetaMask, saques em caixas eletrônicos e custos de off-ramp de moeda local. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Veja o detalhamento completo de taxas do cartão aqui."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Há alguma taxa?"
@@ -5719,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "O que é a conta Money?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD é a moeda estável da MetaMask pareada com o dólar dos EUA. O saldo da sua conta Money é mantido em mUSD e permanece disponível para gastar, enviar ou negociar quando você quiser.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "O que é mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "O saldo da sua conta Money é o seu saldo para gastos — ele continua rendendo até o momento em que você o utiliza. A conta Money não é uma conta bancária, conta de poupança ou um produto de depósito segurado.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Trata-se de uma conta poupança ou é uma conta corrente?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Perguntas Frequentes (FAQs)"
@@ -6948,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Não foi possível verificar sua $1. Tente novamente ou use sua senha.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Tentar novamente",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Cadastrar $1",
@@ -8566,10 +8542,6 @@
     "message": "Chave Privada",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Chave privada de $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "A chave privada está oculta",
     "description": "Explains that the private key input is hidden"
@@ -8581,9 +8553,6 @@
   "privateKeyShown": {
     "message": "Esta chave privada está sendo exibida",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Advertência: jamais revele essa chave. Qualquer pessoa com suas chaves privadas poderá roubar os ativos mantidos na sua conta."
   },
   "privateKeys": {
     "message": "Chaves privadas",
@@ -8927,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "A opção Comprar está temporariamente indisponível"
   },
-  "rampsShowAllTokens": {
-    "message": "Mostrar todos os tokens"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Este token não está disponível em sua região.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9021,6 +8987,10 @@
   },
   "relayerFee": {
     "message": "Taxa do relayer"
+  },
+  "remindMeLater": {
+    "message": "Entendi",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Remover"
@@ -9364,6 +9334,9 @@
   },
   "rpcUrl": {
     "message": "URL da RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Este provedor de RPC está limitando as solicitações. Tente novamente mais tarde ou use um URL de RPC diferente."
   },
   "safeTransferFrom": {
     "message": "Transferência segura de"
@@ -9962,9 +9935,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Novo endereço"
-  },
-  "sendBugReport": {
-    "message": "Envie-nos um relatório de bugs."
   },
   "sendBundleHwGasPayment": {
     "message": "Pagar taxa de rede com $1",
@@ -10687,12 +10657,6 @@
   "showPermissions": {
     "message": "Exibir permissões"
   },
-  "showPrivateKey": {
-    "message": "Exibir chave privada"
-  },
-  "showSRP": {
-    "message": "Mostrar Frase de Recuperação Secreta"
-  },
   "showTestnetNetworks": {
     "message": "Exibir redes de teste"
   },
@@ -11299,38 +11263,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Tem certeza de que deseja prosseguir?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Você pode tentar copiar e restaurar seu arquivo de estado manualmente antes de decidir restaurar seu cofre seguindo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Você pode tentar copiar e restaurar seu arquivo de estado manualmente antes de decidir redinifir a MetaMask seguindo $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Seu cofre não pode ser recuperado automaticamente."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Seu cofre pode ser recuperado a partir de um backup automatizado. A recuperação automática excluirá suas configurações e preferências atuais e restaurará apenas o seu cofre."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Erro interno: não foi possível acessar banco de dados"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Redefinir estado da MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Redefinindo banco de dados…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restaurar contas"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restaurando banco de dados…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "essas instruções",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Como recuperar sua Frase de Recuperação Secreta"
@@ -11656,6 +11601,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Automático"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "A tolerância a slippage foi limitada a 100%."
   },
   "swapSlippageHighDescription": {
     "message": "O slippage inserido ($1%) é considerado muito alto e pode resultar em uma taxa ruim",
@@ -12135,9 +12083,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "A conexão com $1 não é confiável. Atualize os detalhes de conectividade da rede antes de continuar ou tente novamente mais tarde.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Esse comportamento é inesperado e deve ser relatado como um bug, mesmo que suas contas sejam restauradas."
   },
   "unexpectedError": {
     "message": "Ocorreu um erro inesperado.",

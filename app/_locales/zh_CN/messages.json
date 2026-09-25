@@ -484,41 +484,27 @@
   "activity_marketShort_success_title": {
     "message": "已市价平空"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "存款失败"
   },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "正在存入"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
+    "message": "正在存入 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "已存款"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
+    "message": "已存入 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "发送失败"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "接收失败"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "发送中"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
+    "message": "正在接收 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "已发送"
+    "message": "已接收 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "购买失败"
@@ -3102,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "已复制到剪贴板"
   },
+  "copy": {
+    "message": "复制"
+  },
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },
   "copyAddressShort": {
     "message": "复制地址"
-  },
-  "copyPrivateKey": {
-    "message": "复制私钥"
   },
   "copyToClipboard": {
     "message": "复制到剪贴板"
@@ -3169,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "重新安装 MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "重设 MetaMask 状态"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "仍有问题吗？"
   },
@@ -3190,9 +3179,6 @@
   },
   "current": {
     "message": "当前"
-  },
-  "currentAccountNotConnected": {
-    "message": "您的当前账户没有连接"
   },
   "currentEstimatedBaseFee": {
     "message": "当前：$1 GWEI"
@@ -5029,9 +5015,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "为了您的安全，现在无法选择此文本。"
-  },
   "learnHow": {
     "message": "了解操作方法"
   },
@@ -5687,12 +5670,6 @@
     "message": "将 mUSD 存入 Money Account，即可自动赚取最高 $1 的浮动 APY。资金会存入由 Veda 管理、Steakhouse Financial 负责风险监控的 DeFi 金库。该收益率由第三方 DeFi 平台通过将资金部署到区块链协议中产生。无需质押，无需领取收益，也无锁定期。",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "您的 Money 账户余额即您的消费余额。关联您的 MetaMask 卡，即可在全球超过 1.5 亿家商户消费。您的资金在您使用之前会持续赚取收益。"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account 由 Monad 提供支持。"
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "添加 mUSD，赚取最高 $1 年化收益率。您的余额与美元挂钩，可随时消费、交易或转账。",
     "description": "$1 is the current mUSD APY."
@@ -5710,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "年化收益率会变化吗？"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "您自己！MetaMask 是一款自托管钱包，意味着只有账户持有人的私钥才能控制它。MetaMask 无法访问、冻结或转移您的资金。这正是我们区别于传统银行账户和托管式加密平台之处——没有任何第三方持有您的资金。"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "谁控制我的资金？"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "开设 Money Account 无需费用，存入稳定币也无需费用。存入非稳定币代币时会产生费用。此外，MetaMask 卡交易、ATM 取款及本币出金也会产生相应费用。 "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "在此查看完整的卡费用明细。"
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "是否需要支付任何费用？"
@@ -5737,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "什么是 Money 账户？"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD 是 MetaMask 推出的、与美元 1:1 锚定的稳定币。您的 Money 余额以 mUSD 形式持有，可随时用于消费、转账或交易。",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "什么是 mUSD？"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "您的 Money 余额就是可用消费余额——在您实际使用之前，它会持续产生收益。Money Account 并非银行账户、储蓄账户或受保险保障的存款产品。",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "这是储蓄账户还是消费账户？"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "常见问题"
@@ -6966,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "我们无法验证您的 $1。请重试或使用您的密码。",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "请重试",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "注册 $1",
@@ -8590,10 +8548,6 @@
     "message": "私钥",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 的私钥",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "私钥已隐藏",
     "description": "Explains that the private key input is hidden"
@@ -8605,9 +8559,6 @@
   "privateKeyShown": {
     "message": "正在显示此私钥",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "警告：切勿泄露此私钥。任何拥有您私钥的人都可以窃取您账户中持有的任何资产。"
   },
   "privateKeys": {
     "message": "私钥",
@@ -8951,9 +8902,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "购买功能暂时不可用"
   },
-  "rampsShowAllTokens": {
-    "message": "显示所有代币"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "您所在的地区暂不支持此代币。",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9045,6 +8993,10 @@
   },
   "relayerFee": {
     "message": "中继器费用"
+  },
+  "remindMeLater": {
+    "message": "明白了",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "删除"
@@ -9388,6 +9340,9 @@
   },
   "rpcUrl": {
     "message": "RPC（远程过程调用）URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "此远程过程调用（RPC）提供商正在限制请求。请稍后再试，或使用其他 RPC 网址。\n\n"
   },
   "safeTransferFrom": {
     "message": "安全转账来自"
@@ -9986,9 +9941,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "新地址"
-  },
-  "sendBugReport": {
-    "message": "向我们发送错误报告."
   },
   "sendBundleHwGasPayment": {
     "message": "正在使用 $1 支付网络费用",
@@ -10711,12 +10663,6 @@
   "showPermissions": {
     "message": "显示权限"
   },
-  "showPrivateKey": {
-    "message": "显示私钥"
-  },
-  "showSRP": {
-    "message": "显示私钥助记词"
-  },
   "showTestnetNetworks": {
     "message": "显示测试网络"
   },
@@ -11323,38 +11269,19 @@
   "stateCorruptionAreYouSure": {
     "message": "您确定要继续吗？"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "在决定恢复您的保管库之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "在决定重设 MetaMask 之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "您的保管库无法自动恢复。"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "您的保管库可通过自动备份恢复。自动恢复将删除当前设置和偏好，仅恢复保管库内容。​"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "内部错误：无法访问数据库"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "重设 MetaMask 状态"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "正在重设数据库…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "恢复账户"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "正在恢复数据库…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "这些说明",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "如何恢复私钥助记词"
@@ -11680,6 +11607,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "自动"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "滑移容差上限为 100%。"
   },
   "swapSlippageHighDescription": {
     "message": "输入的滑点（$1%）被认为是很高的，可能会因而得到较差的汇率",
@@ -12159,9 +12089,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "与 $1 的连接不稳定。请先更新网络连接详情再继续，或稍后重试。",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "该行为属异常行为，即使账户已成功恢复，仍须作为漏洞提交报告。"
   },
   "unexpectedError": {
     "message": "发生意外错误。",
