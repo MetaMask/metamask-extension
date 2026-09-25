@@ -166,17 +166,19 @@ describe('useAsyncCallback', () => {
       result.current[0]();
     });
 
-    // Resolve both promises in order
-    await act(async () => {
-      r1('test1');
-      await p1;
-    });
+    // Resolve the latest execution first, followed by the stale execution.
     await act(async () => {
       r2('test2');
       await p2;
     });
+    expect(result.current[1]).toEqual(successState('test2'));
 
-    // Latest result should win
+    await act(async () => {
+      r1('test1');
+      await p1;
+    });
+
+    // The stale result must not overwrite the latest result.
     expect(result.current[1]).toEqual(successState('test2'));
   });
 

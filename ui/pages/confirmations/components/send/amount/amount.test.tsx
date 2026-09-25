@@ -237,6 +237,9 @@ describe('Amount', () => {
     } as unknown as SendContext.SendContextType);
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
       getMaxAmount: () => '5',
+      isMaxAmountAvailable: true,
+      isMaxAmountError: false,
+      isMaxAmountPending: false,
     });
 
     const { getByRole, getByText } = render();
@@ -246,12 +249,59 @@ describe('Amount', () => {
     expect(mockUpdateValue).toHaveBeenCalledWith('5', true);
   });
 
+  it('disables the max button while the gas estimate is pending', () => {
+    jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
+      getMaxAmount: () => undefined,
+      isMaxAmountAvailable: false,
+      isMaxAmountError: false,
+      isMaxAmountPending: true,
+    });
+
+    const { getByText } = render();
+
+    expect(getByText(messages.max.message).closest('button')).toBeDisabled();
+  });
+
+  it('disables the max button without an error before estimation starts', () => {
+    jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
+      getMaxAmount: () => undefined,
+      isMaxAmountAvailable: false,
+      isMaxAmountError: false,
+      isMaxAmountPending: false,
+    });
+
+    const { getByText } = render();
+
+    expect(
+      getByText(messages.max.message).closest('button'),
+    ).not.toHaveAttribute('title');
+  });
+
+  it('disables the max button and explains when estimation fails', () => {
+    jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
+      getMaxAmount: () => undefined,
+      isMaxAmountAvailable: false,
+      isMaxAmountError: true,
+      isMaxAmountPending: false,
+    });
+
+    const { getByText } = render();
+
+    expect(getByText(messages.max.message).closest('button')).toHaveAttribute(
+      'title',
+      messages.maxAmountUnavailable.message,
+    );
+  });
+
   it('capture metrics when max button is clicked', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateValue: jest.fn(),
     } as unknown as SendContext.SendContextType);
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
       getMaxAmount: () => '5',
+      isMaxAmountAvailable: true,
+      isMaxAmountError: false,
+      isMaxAmountPending: false,
     });
     const mockSetAmountInputMethodPressedMax = jest.fn();
     jest
