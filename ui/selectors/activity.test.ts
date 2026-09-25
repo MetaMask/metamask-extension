@@ -265,6 +265,8 @@ describe('selectLocalActivityItems', () => {
     typedMockState.metamask.internalAccounts.accounts[
       typedMockState.metamask.internalAccounts.selectedAccount
     ].address;
+  const arcEurcAddress = '0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1';
+  const arcUsdcAddress = '0x3600000000000000000000000000000000000000';
   const eurcAddress = '0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1';
   const usdcAddress = '0x3600000000000000000000000000000000000000';
   const txHash =
@@ -336,6 +338,76 @@ describe('selectLocalActivityItems', () => {
       },
       destinationToken: {
         assetId: toAssetId(usdcAddress, 'eip155:8453'),
+      },
+    });
+  });
+
+  it('maps Arc USDC wrapper asset ids from bridge history to the native asset id', () => {
+    const state = structuredClone(
+      typedMockState,
+    ) as unknown as MetaMaskReduxState & MultichainAccountsState;
+
+    state.metamask.transactions = [
+      {
+        id: 'arc-swap-tx',
+        chainId: '0x13b2',
+        networkClientId: 'arc',
+        status: EvmTransactionStatus.confirmed,
+        time: 1,
+        hash: txHash,
+        type: EvmTransactionType.swap,
+        txParams: {
+          from: selectedAddress,
+          to: '0xrouter',
+          nonce: '0x1',
+          value: '0x0',
+        },
+      } as TransactionMeta,
+    ];
+    (
+      state.metamask as MetaMaskReduxState['metamask'] & {
+        txHistory: Record<string, BridgeHistoryItem>;
+      }
+    ).txHistory = {
+      'arc-swap-tx': {
+        quote: {
+          srcChainId: 5042,
+          destChainId: 5042,
+          srcTokenAmount: '1000000',
+          destTokenAmount: '999000',
+          srcAsset: {
+            address: arcUsdcAddress,
+            chainId: 5042,
+            symbol: 'USDC',
+            assetId: `eip155:5042/token:${arcUsdcAddress}`,
+            decimals: 6,
+          },
+          destAsset: {
+            address: arcEurcAddress,
+            chainId: 5042,
+            symbol: 'EURC',
+            assetId: `eip155:5042/token:${arcEurcAddress}`,
+            decimals: 6,
+          },
+        },
+        status: {
+          status: StatusTypes.COMPLETE,
+          srcChain: { txHash },
+          destChain: { amount: '999000' },
+        },
+        startTime: 1,
+      } as unknown as BridgeHistoryItem,
+    };
+
+    const [activity] = selectLocalActivityItems(state);
+
+    expect(activity.type).toBe('swap');
+    expect(activity.data).toMatchObject({
+      sourceToken: {
+        assetId: 'eip155:5042/slip44:5042',
+      },
+      destinationToken: {
+        assetId: toAssetId(arcEurcAddress, 'eip155:5042'),
       },
     });
   });

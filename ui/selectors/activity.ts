@@ -23,6 +23,7 @@ import {
 import {
   mapKeyringTransaction,
   mapLocalTransaction,
+  resolveNativeAssetIdForTokenAddress,
 } from '@metamask/client-utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
@@ -462,6 +463,7 @@ function getBridgeAssetId(asset: BridgeHistoryItem['quote']['srcAsset']) {
   ) as CaipChainId;
 
   return (
+    resolveNativeAssetIdForTokenAddress(caipChainId, asset.address) ??
     toAssetId(asset.address, caipChainId) ??
     (asset.assetId as CaipAssetType | undefined)
   );
@@ -606,7 +608,10 @@ export const selectLocalActivityItems = createSelector(
           : undefined;
         const sourceTokenAssetId =
           payTokenAddress && sourceTokenCaipChainId
-            ? toAssetId(payTokenAddress, sourceTokenCaipChainId)
+            ? (resolveNativeAssetIdForTokenAddress(
+                sourceTokenCaipChainId,
+                payTokenAddress,
+              ) ?? toAssetId(payTokenAddress, sourceTokenCaipChainId))
             : undefined;
         const sourceTokenSymbol =
           sourceTokenMetadata?.symbol ?? paymentToken?.symbol;
