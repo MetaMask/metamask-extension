@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import type { ManifestFlags } from '../../../../../shared/lib/manifestFlags';
 import { withFixtures } from '../../../helpers';
 import {
   TronLocalNodeOptions,
@@ -86,6 +87,7 @@ export type WithTronFixturesOptions = Omit<
   fixtures?: unknown;
   ignoredConsoleErrors?: string[];
   includeAnvil?: boolean;
+  manifestFlags?: ManifestFlags;
   testSpecificMock?: (
     mockServer: Mockttp,
     context: { localNodes: unknown[] },
@@ -381,6 +383,10 @@ async function mockTronFixtureAccountsApiV5(
   accounts: TronFixtureAccount[],
   tronNode: TronNode,
 ): Promise<MockedEndpoint> {
+  // NOTE: mockttp rule-priority gotcha — a plain (non-`.always()`) custom
+  // endpoint registered before the Tron defaults wins exactly one request and
+  // then falls through to this default. Custom overrides of these endpoints
+  // must use `.always()`.
   const balances = accounts.flatMap((account) => {
     const assetBalances = (account.assets ?? []).map((asset) => ({
       accountId: `${TRON_CHAIN_ID}:${account.address}`,
@@ -396,14 +402,27 @@ async function mockTronFixtureAccountsApiV5(
       /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
     )
     .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: balances.length,
-        unprocessedNetworks: [],
-        balances,
-      },
-    }));
+    .thenCallback((request) => {
+      // Honor the requested `accountIds` (multi-value, comma-split) so each
+      // account only receives its own balances.
+      const requestedAccountIds = new Set(
+        new URL(request.url).searchParams
+          .getAll('accountIds')
+          .flatMap((accountIds) => accountIds.split(',')),
+      );
+      const requestedBalances = balances.filter(
+        ({ accountId }) =>
+          requestedAccountIds.size === 0 || requestedAccountIds.has(accountId),
+      );
+      return {
+        statusCode: 200,
+        json: {
+          count: requestedBalances.length,
+          unprocessedNetworks: [],
+          balances: requestedBalances,
+        },
+      };
+    });
 }
 
 async function mockTronFixtureAssets(
