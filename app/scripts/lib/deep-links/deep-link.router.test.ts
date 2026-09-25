@@ -3,6 +3,7 @@ import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
 import {
   DEEP_LINK_HOST,
+  RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
   SIG_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
@@ -492,6 +493,125 @@ describe('DeepLinkRouter', () => {
 
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
+      });
+    });
+
+    describe('unified buy routing (rampsEnabled)', () => {
+      const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
+      const BUY_URL = 'https://example.com/buy?address=0xabc&chainId=1';
+      const BUY_PORTFOLIO_DESTINATION =
+        'https://app.metamask.io/buy?address=0xabc&chainId=1';
+      const BUY_ENTRY_URL = `${EXTENSION_HOME}#/ramps/buy-deeplink-entry?address=0xabc&chainId=1`;
+
+      const arrangeBuyLink = (): ParsedDeepLink =>
+        ({
+          signature: 'valid',
+          route: { pathname: '/buy' },
+          destination: {
+            redirectTo: new URL(BUY_PORTFOLIO_DESTINATION),
+          },
+        }) as ParsedDeepLink;
+
+      const arrangeState = (remoteFeatureFlags: Record<string, unknown>) => {
+        getState.mockReturnValue({
+          preferences: { skipDeepLinkInterstitial: true },
+          remoteFeatureFlags,
+        } as unknown as ReturnType<MetaMaskController['getState']>);
+      };
+
+      const arrangeRequest = (url: string = BUY_URL) =>
+        onBeforeRequest?.({
+          tabId: 1,
+          url,
+        } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      it.each([
+        ['a plain boolean', { rampsEnabled: true }, BUY_ENTRY_URL],
+        [
+          'a version-gated flag',
+          { rampsEnabled: { enabled: true, minimumVersion: '13.48.0' } },
+          BUY_ENTRY_URL,
+        ],
+        ['off', { rampsEnabled: false }, BUY_PORTFOLIO_DESTINATION],
+        ['missing from state', {}, BUY_PORTFOLIO_DESTINATION],
+      ])(
+        'resolves /buy predictably when rampsEnabled is %s',
+        async (_label, remoteFeatureFlags, expectedUrl) => {
+          arrangeState(remoteFeatureFlags);
+          parseMock.mockResolvedValue(arrangeBuyLink());
+
+          await arrangeRequest();
+
+          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+            url: expectedUrl,
+          });
+        },
+      );
+
+      it.each([
+        [
+          'does not reroute other redirecting routes when rampsEnabled is on',
+          {
+            signature: 'valid',
+            route: { pathname: '/sell' },
+            destination: {
+              redirectTo: new URL('https://example.com/sell-route'),
+            },
+          } as ParsedDeepLink,
+          'https://example.com/sell',
+          'https://example.com/sell-route',
+        ],
+        [
+          'still shows the interstitial for unsigned /buy links from untrusted origins when rampsEnabled is on',
+          { ...arrangeBuyLink(), signature: 'missing' } as ParsedDeepLink,
+          BUY_URL,
+          `${EXTENSION_HOME}#link?u=%2Fbuy%3Faddress%3D0xabc%26chainId%3D1`,
+        ],
+      ])('%s', async (_label, parsed, url, expectedUrl) => {
+        arrangeState({ rampsEnabled: true });
+        parseMock.mockResolvedValue(parsed);
+
+        await arrangeRequest(url);
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: expectedUrl,
+        });
+      });
+
+      it('emits the resolved internal destination for /buy when rampsEnabled is on', async () => {
+        arrangeState({ rampsEnabled: true });
+        parseMock.mockResolvedValue(arrangeBuyLink());
+
+        const navigateListener = jest.fn();
+        router.on('navigate', navigateListener);
+        await arrangeRequest();
+
+        expect(navigateListener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            url: expect.any(URL),
+            destination: {
+              path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
+              query: expect.any(URLSearchParams),
+            },
+          }),
+        );
+      });
+
+      it('emits the external redirect destination for /buy when rampsEnabled is off', async () => {
+        arrangeState({});
+        parseMock.mockResolvedValue(arrangeBuyLink());
+
+        const navigateListener = jest.fn();
+        router.on('navigate', navigateListener);
+        await arrangeRequest();
+
+        expect(navigateListener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            destination: {
+              redirectTo: new URL(BUY_PORTFOLIO_DESTINATION),
+            },
+          }),
+        );
       });
     });
 

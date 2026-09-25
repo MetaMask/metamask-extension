@@ -703,9 +703,12 @@ async function initialize(backup) {
     getExtensionURL: platform.getExtensionURL,
     getState: controller.getState.bind(controller),
   })
-    .on('navigate', async ({ url, parsed }) => {
-      // don't track deep links that are immediately redirected (like /buy)
-      if (shouldTrackDeepLinkNavigation(parsed)) {
+    .on('navigate', async ({ url, parsed, destination }) => {
+      // Don't track deep links that end in an external redirect: the
+      // extension does not handle the resulting navigation. Links routed into
+      // the extension — including `/buy` with the unified buy flow on — count
+      // as used.
+      if (shouldTrackDeepLinkNavigation({ destination })) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }
     })

@@ -6,6 +6,7 @@ import type {
   Quote,
   QuotesResponse,
   RampsOrder,
+  TokensResponse,
   UserRegion,
 } from '@metamask/ramps-controller';
 import { submitRequestToBackground } from '../background-connection';
@@ -42,7 +43,7 @@ export async function setRampsSelectedPaymentMethod(
 export async function getRampsTokens(
   region: string,
   action: 'buy' | 'sell' = 'buy',
-): Promise<void> {
+): Promise<TokensResponse | null> {
   return submitRequestToBackground('getRampsTokens', [region, action]);
 }
 

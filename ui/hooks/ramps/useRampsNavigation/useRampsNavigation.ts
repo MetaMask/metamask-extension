@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { getRampsTokens } from '../../../store/controller-actions/ramps-controller';
 import {
   getIsRampsEnabled,
   getIsRampsServiceDisruptionActive,
@@ -24,10 +25,11 @@ import { getIsRampRegionUnsupported } from '../../../selectors/ramps';
 import {
   selectProviders,
   selectTokens,
+  selectUserRegion,
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
 import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
-import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
+import { resolveRampControllerToken } from '../utils/resolveRampControllerToken';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -37,6 +39,19 @@ export type RampIntent = {
   assetId?: CaipAssetType;
   /** Chain for the flag-off Portfolio fallback deeplink only. */
   chainId?: Hex | CaipChainId;
+};
+
+/**
+ * Options for {@link useRampsNavigation}.goToBuy.
+ */
+export type GoToBuyOptions = {
+  /**
+   * Replace, rather than push, the history entry for the in-app navigations
+   * `goToBuy` performs. Callers that intercept a navigation (the `/buy`
+   * deep-link entry page) must replace so the intercepting page cannot be
+   * navigated back to; regular in-app entry points keep pushing.
+   */
+  replace?: boolean;
 };
 
 type ProvidersState = ResourceState<Provider[], Provider | null>;
@@ -79,9 +94,9 @@ function isCatalogEmpty(
   return providersEmpty || tokensEmpty;
 }
 
-// Finds `assetId` in the catalog, ignoring EVM address casing: callers build
-// asset ids from a checksummed address while the API returns a mix of
-// checksummed (USDC, USDT) and lowercase (mUSD) ids.
+// Finds `assetId` in the catalog, returning the catalog's own token: caller
+// ids may differ in address casing, and deep link intents use the
+// `slip44:.` native placeholder vs the catalog's `slip44:{coinType}`.
 function findCatalogToken(
   tokensData: TokensResponse | null,
   assetId: CaipAssetType,
@@ -90,10 +105,7 @@ function findCatalogToken(
     ...(tokensData?.topTokens ?? []),
     ...(tokensData?.allTokens ?? []),
   ];
-  return catalog.find(
-    (token) =>
-      normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
-  );
+  return resolveRampControllerToken(assetId, catalog);
 }
 
 // Pre-select the token before navigating to build-quote. Fail closed so a
@@ -119,10 +131,11 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
- * {@link RampIntent}. It runs the gate and either shows a blocking modal or
- * opens the buy destination. Resolves to `true` when it proceeded and `false`
- * when a blocking modal was shown, plus `opensBuyInPortfolioTab` so callers can
- * gate follow-up UI (e.g. a "tab opened" toast).
+ * {@link RampIntent} and an optional {@link GoToBuyOptions}. It runs the gate
+ * and either shows a blocking modal or opens the buy destination. Resolves to
+ * `true` when it proceeded and `false` when a blocking modal was shown, plus
+ * `opensBuyInPortfolioTab` so callers can gate follow-up UI (e.g. a "tab
+ * opened" toast).
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -134,10 +147,14 @@ export default function useRampsNavigation() {
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
+  const userRegion = useSelector(selectUserRegion);
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
 
   const goToBuy = useCallback(
-    async (intent?: RampIntent): Promise<boolean> => {
+    async (
+      intent?: RampIntent,
+      { replace = false }: GoToBuyOptions = {},
+    ): Promise<boolean> => {
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
@@ -176,30 +193,63 @@ export default function useRampsNavigation() {
         return false;
       }
 
-      // 4. Providers/tokens fetched but empty. `tokens.data === null` means
+      // 4. Cold catalog: `tokens` is not persisted, so after an MV3
+      // service-worker restart (the normal state when someone clicks a `/buy`
+      // link from email) `tokens.data` is `null`, and the controller's
+      // `setSelectedToken` throws until tokens are fetched. Fetch them before
+      // gating or preselecting — preferring the persisted region the
+      // controller gates its state writes on, falling back to the freshly
+      // resolved geolocation.
+      const assetId = intent?.assetId;
+      let tokensState: TokensState = tokens;
+      if (assetId && !tokens.data) {
+        try {
+          const fetchedTokens = await getRampsTokens(
+            userRegion?.regionCode ?? location,
+            'buy',
+          );
+          if (fetchedTokens) {
+            tokensState = {
+              data: fetchedTokens,
+              selected: null,
+              isLoading: false,
+              error: null,
+            };
+          }
+        } catch {
+          // Failed fetch: keep the rendered (unsettled) token state below and
+          // fail open, as before.
+        }
+      }
+
+      // 5. Providers/tokens fetched but empty. A null `tokensState.data` means
       // providers/tokens haven't been fetched yet (fetched together by the
       // native flow), so fail open and skip this check entirely until then.
       // A fetch error also fails open (mobile parity) — an empty result only
       // counts once the catalog has actually settled, not on a failed fetch.
-      const catalogSettled = isCatalogSettled(providers, tokens);
-      const catalogData = catalogSettled ? tokens.data : null;
+      const catalogSettled = isCatalogSettled(providers, tokensState);
+      const catalogData = catalogSettled ? tokensState.data : null;
       if (catalogData && isCatalogEmpty(providers, catalogData)) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
       }
 
-      // 5. Route into the native buy flow.
-      const assetId = intent?.assetId;
+      // A `replace` request swaps the caller's history entry instead of
+      // pushing, so an intercepting page (deep-link entry) cannot be returned
+      // to via the back button.
+      const historyOptions = replace ? { replace: true } : undefined;
+
+      // 6. Route into the native buy flow.
       if (!assetId) {
-        // No specific asset → token selection page.
-        navigate(RAMPS_TOKEN_SELECTION_ROUTE);
+        // No specific asset → token selection page (it loads the catalog).
+        navigate(RAMPS_TOKEN_SELECTION_ROUTE, historyOptions);
         return true;
       }
 
       // Resolve against the catalog. Only block on a settled catalog that
       // definitively lacks/unsupports the token — an unsettled catalog fails
       // open (proceed with it selected, page re-resolves).
-      const catalogToken = findCatalogToken(tokens.data, assetId);
+      const catalogToken = findCatalogToken(tokensState.data, assetId);
       if (
         catalogData &&
         (!catalogToken || catalogToken.tokenSupported === false)
@@ -220,6 +270,7 @@ export default function useRampsNavigation() {
       }
       navigate(RAMPS_BUILD_QUOTE_ROUTE, {
         state: { assetId: selectedAssetId },
+        ...historyOptions,
       });
       return true;
     },
@@ -229,6 +280,7 @@ export default function useRampsNavigation() {
       isRegionUnsupported,
       providers,
       tokens,
+      userRegion,
       everConnectedToPortfolio,
       dispatch,
       navigate,

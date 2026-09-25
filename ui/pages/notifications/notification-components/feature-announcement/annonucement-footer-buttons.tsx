@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -12,6 +13,7 @@ import {
   resolveTrustedDeepLinkHref,
 } from '../../../../helpers/utils/resolve-deep-link-href';
 import { getNotificationTypeForAnalytics } from '../../../../helpers/utils/notification.util';
+import { getIsRampsEnabled } from '../../../../selectors/ramps-feature-flags';
 import { FeatureAnnouncementNotification } from './types';
 
 type ResolvedHref = {
@@ -124,6 +126,7 @@ export const ExternalLinkButton = (props: {
   notification: FeatureAnnouncementNotification;
 }) => {
   const navigate = useNavigate();
+  const isRampsEnabled = useSelector(getIsRampsEnabled);
   const { notification } = props;
   const analyticCallback = useAnalyticEventCallback({
     notification,
@@ -157,13 +160,15 @@ export const ExternalLinkButton = (props: {
       return pendingResolvedHref.promise;
     }
 
-    const promise = resolveTrustedDeepLinkHref(linkUrl).catch((error) => {
-      console.error(
-        '[ExternalLinkButton] error resolving external link',
-        error,
-      );
-      return linkUrl;
-    });
+    const promise = resolveTrustedDeepLinkHref(linkUrl, isRampsEnabled).catch(
+      (error) => {
+        console.error(
+          '[ExternalLinkButton] error resolving external link',
+          error,
+        );
+        return linkUrl;
+      },
+    );
 
     pendingResolvedHrefRef.current = {
       promise,
@@ -171,7 +176,7 @@ export const ExternalLinkButton = (props: {
     };
 
     return promise;
-  }, [externalLinkUrl]);
+  }, [externalLinkUrl, isRampsEnabled]);
 
   useEffect(() => {
     if (!externalLinkUrl) {

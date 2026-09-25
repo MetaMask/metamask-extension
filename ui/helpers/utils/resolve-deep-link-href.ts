@@ -1,5 +1,6 @@
 import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { NavigationOrigin, parse } from '../../../shared/lib/deep-links/parse';
+import { resolveBuyDeepLinkDestination } from '../../../shared/lib/deep-links/buy-flow';
 
 export function isInternalRouteHref(href: string): boolean {
   return href.startsWith('/') && !href.startsWith('//');
@@ -25,10 +26,15 @@ function isDeepLinkHost(hostname: string): boolean {
  * content without explicit, documented approval from the MetaMask Extension
  * Security team.
  *
- * @param href
+ * @param href - The link href to resolve.
+ * @param isUnifiedBuyEnabled - Whether the unified buy (native in-app buy)
+ * feature is enabled. With it on, `/buy` links resolve to the in-app entry
+ * route instead of the external Portfolio redirect — matching how the
+ * background deep-link router treats the same link.
  */
 export async function resolveTrustedDeepLinkHref(
   href: string,
+  isUnifiedBuyEnabled = false,
 ): Promise<string> {
   if (isInternalRouteHref(href)) {
     return href;
@@ -51,11 +57,20 @@ export async function resolveTrustedDeepLinkHref(
       return href;
     }
 
-    if ('redirectTo' in parsed.destination) {
-      return parsed.destination.redirectTo.toString();
+    // Route-specific destination resolution (e.g. `/buy` into the in-app
+    // unified buy flow), so a trusted surface's `/buy` link behaves the same
+    // no matter which surface it is clicked from.
+    const destination = resolveBuyDeepLinkDestination({
+      route: parsed.route,
+      destination: parsed.destination,
+      isUnifiedBuyEnabled,
+    });
+
+    if ('redirectTo' in destination) {
+      return destination.redirectTo.toString();
     }
 
-    return toInternalHref(parsed.destination.path, parsed.destination.query);
+    return toInternalHref(destination.path, destination.query);
   } catch {
     return href;
   }

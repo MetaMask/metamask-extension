@@ -181,7 +181,10 @@ describe('useRampsNavigation goToBuy', () => {
     const opened = await goToBuy(result);
     expect(opened).toBe(true);
     expect(result.current.opensBuyInPortfolioTab).toBe(false);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
@@ -251,9 +254,46 @@ describe('useRampsNavigation goToBuy', () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
     expect(opened).toBe(true);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(result.current.opensBuyInPortfolioTab).toBe(false);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
+  });
+
+  it('replace option → in-app navigations replace instead of push', async () => {
+    const assetId = 'eip155:1/erc20:0xabc';
+    const { result } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    await act(async () => {
+      await result.current.goToBuy({ assetId }, { replace: true });
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId },
+      replace: true,
+    });
+
+    await act(async () => {
+      await result.current.goToBuy(undefined, { replace: true });
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: true,
+    });
   });
 
   it('providers fetch errored → fails open and navigates to token selection', async () => {
@@ -268,7 +308,10 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(getModalName()).toBeNull();
   });
 
@@ -284,7 +327,10 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(getModalName()).toBeNull();
   });
 
@@ -298,7 +344,10 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(mockNavigate).toHaveBeenCalledWith(
+      RAMPS_TOKEN_SELECTION_ROUTE,
+      undefined,
+    );
     expect(getModalName()).toBeNull();
   });
 
@@ -524,9 +573,115 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
   });
 
+  it('cold catalog fetches tokens for the persisted region, then pre-selects and navigates to build quote', async () => {
+    // `tokens` is not persisted: after a service-worker restart (the normal
+    // state when someone clicks a `/buy` link from email) tokens.data is null
+    // and the controller's setSelectedToken throws until tokens are fetched.
+    // goToBuy must fetch the catalog first, then pre-select with the freshly
+    // fetched catalog's spelling.
+    const assetId = 'eip155:1/erc20:0xabc';
+    const catalogAssetId = 'eip155:1/erc20:0xABC';
+    mockBackground.mockImplementation(async (method: string) => {
+      if (method === 'getGeolocation') {
+        return 'US-CA';
+      }
+      if (method === 'getRampsTokens') {
+        return {
+          topTokens: [],
+          allTokens: [
+            { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+          ],
+        };
+      }
+      return undefined;
+    });
+    const { result, getModalName } = run(
+      buildState({
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(true);
+    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+      'us',
+      'buy',
+    ]);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      catalogAssetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: catalogAssetId },
+    });
+    expect(getModalName()).toBeNull();
+  });
+
+  it('cold catalog fetch that fails and a controller that cannot pre-select → shows RAMPS_UNSUPPORTED', async () => {
+    // Real-controller parity for the deep-link cold start: without a fetched
+    // catalog, setSelectedToken throws "Tokens not loaded" — the entry page
+    // must surface the unsupported modal rather than navigate.
+    const assetId = 'eip155:1/erc20:0xabc';
+    mockBackground.mockImplementation(async (method: string) => {
+      if (method === 'getGeolocation') {
+        return 'US-CA';
+      }
+      if (method === 'getRampsTokens') {
+        throw new Error('network down');
+      }
+      if (method === 'setRampsSelectedToken') {
+        throw new Error(
+          'Tokens not loaded. Cannot set selected token before tokens are fetched.',
+        );
+      }
+      return undefined;
+    });
+    const { result, getModalName } = run(
+      buildState({
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('cold catalog fetched but providers never fetched → shows RAMPS_UNSUPPORTED', async () => {
+    // A settled catalog with no providers is unsupported even when the tokens
+    // half of the catalog was just fetched by the navigation gate itself.
+    const assetId = 'eip155:1/erc20:0xabc';
+    mockBackground.mockImplementation(async (method: string) => {
+      if (method === 'getGeolocation') {
+        return 'US-CA';
+      }
+      if (method === 'getRampsTokens') {
+        return {
+          topTokens: [],
+          allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+        };
+      }
+      return undefined;
+    });
+    const { result, getModalName } = run(
+      buildState({
+        providers: { data: [], selected: null, isLoading: false, error: null },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+  });
+
   it('intent with assetId but catalog not settled → fails open to build quote', async () => {
-    // tokens.data === null (never fetched): cannot verify the token, so fail
-    // open and proceed with it pre-selected rather than blocking.
+    // tokens.data === null and the on-demand fetch resolves without data: the
+    // catalog is still unsettled, so fail open and proceed with the token
+    // pre-selected rather than blocking.
     const assetId = 'eip155:1/erc20:0xabc';
     const { result, getModalName } = run(
       buildState({
