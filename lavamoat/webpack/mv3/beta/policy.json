@@ -3043,17 +3043,10 @@
     },
     "@metamask/seedless-onboarding-controller": {
       "packages": {
-        "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
-        "@metamask/utils": true,
-        "@noble/ciphers": true
-      }
-    },
-    "@metamask/wallet>@metamask/seedless-onboarding-controller": {
-      "packages": {
         "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
         "@metamask/base-controller": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
-        "@metamask/wallet>@metamask/utils": true,
+        "@metamask/seedless-onboarding-controller>@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
         "async-mutex": true
@@ -3754,6 +3747,21 @@
         "lodash": true
       }
     },
+    "@metamask/seedless-onboarding-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "nock>debug": true,
+        "lodash": true
+      }
+    },
     "@metamask/wallet>@metamask/shield-controller>@metamask/utils": {
       "packages": {
         "nock>debug": true
@@ -3812,7 +3820,7 @@
         "@metamask/network-controller": true,
         "@metamask/passkey-controller": true,
         "@metamask/remote-feature-flag-controller": true,
-        "@metamask/wallet>@metamask/seedless-onboarding-controller": true,
+        "@metamask/seedless-onboarding-controller": true,
         "@metamask/wallet>@metamask/shield-controller": true,
         "@metamask/wallet>@metamask/storage-service": true,
         "@metamask/wallet>@metamask/subscription-controller": true,

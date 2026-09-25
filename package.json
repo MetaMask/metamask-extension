@@ -484,7 +484,7 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/seedless-onboarding-controller": "^10.1.1",
+    "@metamask/seedless-onboarding-controller": "^11.0.1",
     "@metamask/selected-network-controller": "^26.1.4",
     "@metamask/sentinel-api-service": "^1.0.1",
     "@metamask/shield-controller": "^6.0.1",
