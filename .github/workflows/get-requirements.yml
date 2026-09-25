@@ -85,9 +85,9 @@ jobs:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
         if: ${{ env.EVENT_NAME == 'merge_group' }}
-        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
+        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         with:
           fetch-depth: 1
@@ -100,7 +100,7 @@ jobs:
       - name: Check E2E overrides (skip / force)
         id: e2e-override
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             core.setOutput('skip', 'false');
@@ -182,7 +182,7 @@ jobs:
       - name: Compute build-source hash
         id: compute-build-hash
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             // Directories that never affect the production build output.
@@ -268,7 +268,7 @@ jobs:
       - name: Check build overrides
         id: build-overrides
         if: ${{ env.EVENT_NAME == 'pull_request' }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             const { stdout: msg } = await exec.getExecOutput(
@@ -318,7 +318,7 @@ jobs:
             steps.check-skip-merge-queue.outputs.up-to-date != 'true' &&
             steps.build-overrides.outputs.force != 'true'
           }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
           BASE_BRANCH: ${{ env.BASE_BRANCH }}
@@ -440,7 +440,7 @@ jobs:
       - name: Post build-source-hash commit status
         if: ${{ steps.compute-build-hash.outputs.build-hash }}
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           BUILD_HASH: ${{ steps.compute-build-hash.outputs.build-hash }}
           HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
@@ -466,7 +466,7 @@ jobs:
       - name: Post builds-from-run commit status
         if: ${{ steps.compute-build-hash.outputs.build-hash }}
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           BUILDS_FROM_RUN: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
           HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}

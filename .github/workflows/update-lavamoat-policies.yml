@@ -41,7 +41,7 @@ jobs:
       - name: Get token
         if: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR == 'false' }}
         id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -143,7 +143,7 @@ jobs:
     steps:
       - name: Get token
         id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -153,7 +153,7 @@ jobs:
 
       - name: Checkout repository
         if: ${{ env.VALIDATION_FAILED == 'true' }}
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           token: ${{ steps.token.outputs.token }}
 
@@ -165,7 +165,7 @@ jobs:
 
       - name: Download policy diffs from CI
         if: ${{ env.VALIDATION_FAILED == 'true' }}
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           path: lavamoat-policy-diffs
           pattern: lavamoat-policy-diff-*

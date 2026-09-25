@@ -86,7 +86,7 @@ jobs:
       RUN_ATTEMPT: ${{ github.run_attempt }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -103,7 +103,7 @@ jobs:
         if: ${{ inputs.build-artifact != '' }}
         id: download-build-artifact
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: ${{ inputs.build-artifact }}
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
@@ -117,7 +117,7 @@ jobs:
         if: ${{ env.BRANCH != 'main' }}
         id: download-changed-files
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: changed-files
           path: ./changed-files/
@@ -127,7 +127,7 @@ jobs:
         if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
       - name: Download test-runs-for-splitting
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         continue-on-error: true
         with:
           name: test-runs-for-splitting
@@ -138,7 +138,7 @@ jobs:
         if: ${{ github.run_attempt > 1 }}
         id: download-previous-results
         continue-on-error: true
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
@@ -177,7 +177,7 @@ jobs:
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ${{ env.JOB_NAME }}
           path: ${{ inputs.test-artifacts-path }}

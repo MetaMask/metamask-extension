@@ -19,7 +19,7 @@ jobs:
       contents: write
     steps:
       - name: 'CLA Signature Bot'
-        uses: MetaMask/cla-signature-bot@v4.0.0
+        uses: MetaMask/cla-signature-bot@0d4feeb5b43f372dc51e5e1400ade66b81bce6b3 # v4.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

@@ -13,7 +13,7 @@ jobs:
     name: Get release timelines
     runs-on: ubuntu-latest
     steps:
-      - uses: MetaMask/github-tools/.github/actions/get-release-timelines@v1
+      - uses: MetaMask/github-tools/.github/actions/get-release-timelines@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           version: ${{ inputs.version }}
           runway-app-id: ${{ secrets.RUNWAY_APP_ID }}

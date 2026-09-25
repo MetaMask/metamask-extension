@@ -47,7 +47,7 @@ jobs:
       # We use 'checkResult' to avoid that collision.
       - name: Check that all jobs have passed
         id: check
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           NEEDS_JSON: ${{ inputs.needs-json }}
           SKIP_BUILDS: ${{ inputs.skip-builds }}
@@ -171,7 +171,7 @@ jobs:
         # regular All jobs pass status is deferred for merge-queue triage. It
         # uses one context for both automatic-retry withholding policies.
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           E2E_RETRY_WITHHELD_DESCRIPTION: ${{ steps.check.outputs.e2eRetryWithheldDescription }}
         with:
@@ -303,7 +303,7 @@ jobs:
             steps.retry-gate.outputs.skip-status != 'true' &&
             (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
           }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           STATUS_STATE: ${{ steps.check.outputs.checkResult || 'failure' }}
         with:
@@ -335,7 +335,7 @@ jobs:
       - name: Emit Sentry events
         if: ${{ !cancelled() }}
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           SENTRY_DSN: ${{ vars.SENTRY_DSN_PERFORMANCE }}
           CI_RESULT: ${{ steps.check.outputs.checkResult || 'failure' }}
@@ -502,7 +502,7 @@ jobs:
       # This reporting method has probably been superseded by the Sentry logging, and may be removed later.
       - name: Log merge group failure
         if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
-        uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
+        uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           google-application-credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
