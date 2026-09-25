@@ -110,9 +110,10 @@ export function getIsTrialedSubscription(
  * @returns True if cancellation is not allowed, false otherwise.
  */
 export function getIsSubscriptionCancelNotAllowed(
-  cancelType: CancelType,
+  cancelType: CancelType | undefined,
 ): boolean {
   return (
+    !cancelType ||
     cancelType === CANCEL_TYPES.NOT_ALLOWED ||
     cancelType === CANCEL_TYPES.NOT_ALLOWED_PENDING_VERIFICATION
   );

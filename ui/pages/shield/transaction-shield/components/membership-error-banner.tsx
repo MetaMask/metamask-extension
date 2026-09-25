@@ -5,8 +5,7 @@ import {
   BannerAlertSeverity,
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../../asset/util';
+import { formatSubscriptionDate } from '../format-subscription-date';
 
 type MembershipErrorBannerProps = {
   isPaused: boolean;
@@ -52,13 +51,11 @@ const MembershipErrorBanner = ({
     );
   }
 
-  if (currentShieldSubscription && isSubscriptionEndingSoon) {
+  if (currentShieldSubscription?.currentPeriodEnd && isSubscriptionEndingSoon) {
     return (
       <BannerAlert
         description={t('shieldTxMembershipErrorInsufficientFunds', [
-          getShortDateFormatterV2().format(
-            new Date(currentShieldSubscription.currentPeriodEnd),
-          ),
+          formatSubscriptionDate(currentShieldSubscription.currentPeriodEnd),
         ])}
         severity={BannerAlertSeverity.Warning}
         marginBottom={4}

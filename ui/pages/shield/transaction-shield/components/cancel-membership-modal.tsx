@@ -11,8 +11,7 @@ import {
 } from '../../../../components/component-library';
 import { AlignItems } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../../asset/util';
+import { formatSubscriptionDate } from '../format-subscription-date';
 import {
   getIsShieldSubscriptionPaused,
   getIsSubscriptionCancelNotAllowed,
@@ -31,7 +30,10 @@ export default function CancelMembershipModal({
   const isPaused = getIsShieldSubscriptionPaused(subscription);
   const { cancelType } = subscription;
 
-  const isCancelAllowed = !getIsSubscriptionCancelNotAllowed(cancelType);
+  const isCancelAllowed =
+    !getIsSubscriptionCancelNotAllowed(cancelType) &&
+    (cancelType !== CANCEL_TYPES.ALLOWED_AT_PERIOD_END ||
+      Boolean(subscription.currentPeriodEnd));
 
   const getModalContent = () => {
     if (isPaused) {
@@ -46,7 +48,9 @@ export default function CancelMembershipModal({
       case CANCEL_TYPES.ALLOWED_IMMEDIATE:
         return t('shieldTxCancelImmediateDetails');
       case CANCEL_TYPES.ALLOWED_AT_PERIOD_END:
-      default:
+        if (!subscription.currentPeriodEnd) {
+          return t('shieldTxCancelNotAllowed');
+        }
         return t('shieldTxCancelDetails', [
           <Text
             asChild
@@ -54,13 +58,11 @@ export default function CancelMembershipModal({
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
           >
-            <span>
-              {getShortDateFormatterV2().format(
-                new Date(subscription.currentPeriodEnd),
-              )}
-            </span>
+            <span>{formatSubscriptionDate(subscription.currentPeriodEnd)}</span>
           </Text>,
         ]);
+      default:
+        return t('shieldTxCancelNotAllowed');
     }
   };
 

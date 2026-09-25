@@ -29,6 +29,19 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
+  it('delegates RampsController:getQuoteWithFees for fiat payment quotes', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getTransactionPayControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining(['RampsController:getQuoteWithFees']),
+      }),
+    );
+  });
+
   it('delegates SentinelApiService:simulateTransactions', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');

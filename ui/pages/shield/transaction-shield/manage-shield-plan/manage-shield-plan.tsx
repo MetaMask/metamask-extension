@@ -25,8 +25,10 @@ import CancelMembershipModal from '../components/cancel-membership-modal';
 import ApiErrorHandler from '../../../../components/app/api-error-handler';
 import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../../shared/constants/subscriptions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../../asset/util';
+import {
+  formatSubscriptionDate,
+  formatSubscriptionPeriod,
+} from '../format-subscription-date';
 import { PaymentMethodRow } from '../payment-method-row';
 import { useSubscriptionPricing } from '../../../../hooks/subscription/useSubscriptionPricing';
 import { useHandlePayment } from '../../../../hooks/subscription/useHandlePayment';
@@ -152,15 +154,14 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     }
 
     const isYearly =
-      displayedShieldSubscription?.interval === RECURRING_INTERVALS.year;
-    if (isPastPlan) {
-      return isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly');
+      displayedShieldSubscription.interval === RECURRING_INTERVALS.year;
+    const interval = isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly');
+    if (isPastPlan || !displayedShieldSubscription.currentPeriodEnd) {
+      return interval;
     }
     return t('shieldTxDetails2Description', [
-      isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly'),
-      getShortDateFormatterV2().format(
-        new Date(displayedShieldSubscription?.currentPeriodEnd),
-      ),
+      interval,
+      formatSubscriptionDate(displayedShieldSubscription.currentPeriodEnd),
     ]);
   }, [displayedShieldSubscription, isPastPlan, t]);
 
@@ -199,9 +200,10 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
             {isPastPlan && (
               <ButtonRow
                 title={t('shieldTxDetails1Title')}
-                description={`${getShortDateFormatterV2().format(new Date(displayedShieldSubscription?.currentPeriodStart))} - ${getShortDateFormatterV2().format(
-                  new Date(displayedShieldSubscription?.currentPeriodEnd),
-                )}`}
+                description={formatSubscriptionPeriod(
+                  displayedShieldSubscription.currentPeriodStart,
+                  displayedShieldSubscription.currentPeriodEnd,
+                )}
               />
             )}
             <ButtonRow

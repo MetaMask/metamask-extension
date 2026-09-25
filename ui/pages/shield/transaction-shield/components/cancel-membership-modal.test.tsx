@@ -44,4 +44,32 @@ describe('Cancel Membership Modal', () => {
     const cancelMembershipModal = getByTestId('cancel-membership-modal');
     expect(cancelMembershipModal).toBeInTheDocument();
   });
+
+  it('does not offer cancellation when the API omits the cancel type', () => {
+    const { queryByTestId } = renderWithProvider(
+      <CancelMembershipModal
+        onClose={onCloseStub}
+        onConfirm={onConfirmStub}
+        subscription={{ ...mockSubscription, cancelType: undefined }}
+      />,
+    );
+
+    expect(
+      queryByTestId('cancel-membership-modal-submit-button'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not offer cancellation at period end when the end date is missing', () => {
+    const { queryByTestId } = renderWithProvider(
+      <CancelMembershipModal
+        onClose={onCloseStub}
+        onConfirm={onConfirmStub}
+        subscription={{ ...mockSubscription, currentPeriodEnd: undefined }}
+      />,
+    );
+
+    expect(
+      queryByTestId('cancel-membership-modal-submit-button'),
+    ).not.toBeInTheDocument();
+  });
 });

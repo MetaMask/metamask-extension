@@ -39,8 +39,6 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../asset/util';
 import {
   DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
@@ -75,6 +73,10 @@ import { useDispatch } from '../../../store/hooks';
 import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
+import {
+  formatSubscriptionDate,
+  formatSubscriptionPeriod,
+} from './format-subscription-date';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import {
   ButtonRow,
@@ -174,6 +176,10 @@ const TransactionShield = () => {
   const isPaused = getIsShieldSubscriptionPaused(subscriptions);
   const isTrialing = getIsShieldSubscriptionTrialing(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
+  const billingInterval =
+    displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
+      ? t('shieldPlanYearly')
+      : t('shieldPlanMonthly');
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
 
@@ -457,21 +463,22 @@ const TransactionShield = () => {
       className="transaction-shield-page flex flex-col w-full pb-4 overflow-y-auto"
       data-testid="transaction-shield-page"
     >
-      {currentShieldSubscription?.cancelAtPeriodEnd && (
-        <Box
-          className="transaction-shield-page__notification-banner flex items-center px-4 py-1 gap-2 mb-4"
-          backgroundColor={BoxBackgroundColor.WarningMuted}
-        >
-          <Icon name={IconName.Info} size={IconSize.Lg} />
-          <Text variant={TextVariant.BodySm}>
-            {t('shieldTxMembershipCancelNotification', [
-              getShortDateFormatterV2().format(
-                new Date(currentShieldSubscription.currentPeriodEnd),
-              ),
-            ])}
-          </Text>
-        </Box>
-      )}
+      {currentShieldSubscription?.cancelAtPeriodEnd &&
+        currentShieldSubscription.currentPeriodEnd && (
+          <Box
+            className="transaction-shield-page__notification-banner flex items-center px-4 py-1 gap-2 mb-4"
+            backgroundColor={BoxBackgroundColor.WarningMuted}
+          >
+            <Icon name={IconName.Info} size={IconSize.Lg} />
+            <Text variant={TextVariant.BodySm}>
+              {t('shieldTxMembershipCancelNotification', [
+                formatSubscriptionDate(
+                  currentShieldSubscription.currentPeriodEnd,
+                ),
+              ])}
+            </Text>
+          </Box>
+        )}
       <MembershipErrorBanner
         isPaused={isPaused}
         isCryptoPayment={isCryptoPayment ?? false}
@@ -535,15 +542,16 @@ const TransactionShield = () => {
                 <ButtonRow
                   startIconName={IconName.Calendar}
                   title={t('shieldTxDetails2Title')}
-                  description={t('shieldTxDetails2Description', [
-                    displayedShieldSubscription?.interval ===
-                    RECURRING_INTERVALS.year
-                      ? t('shieldPlanYearly')
-                      : t('shieldPlanMonthly'),
-                    getShortDateFormatterV2().format(
-                      new Date(displayedShieldSubscription?.currentPeriodEnd),
-                    ),
-                  ])}
+                  description={
+                    displayedShieldSubscription.currentPeriodEnd
+                      ? t('shieldTxDetails2Description', [
+                          billingInterval,
+                          formatSubscriptionDate(
+                            displayedShieldSubscription.currentPeriodEnd,
+                          ),
+                        ])
+                      : billingInterval
+                  }
                   descriptionTestId="shield-detail-next-billing"
                   loading={showSkeletonLoader}
                 />
@@ -672,9 +680,10 @@ const TransactionShield = () => {
                       ? t('shieldTxPastPlansYearly')
                       : t('shieldTxPastPlansMonthly')
                   }
-                  description={`${getShortDateFormatterV2().format(new Date(lastShieldSubscription.currentPeriodStart))} - ${getShortDateFormatterV2().format(
-                    new Date(lastShieldSubscription.currentPeriodEnd),
-                  )}`}
+                  description={formatSubscriptionPeriod(
+                    lastShieldSubscription.currentPeriodStart,
+                    lastShieldSubscription.currentPeriodEnd,
+                  )}
                   loading={showSkeletonLoader}
                   onClick={() => {
                     navigate(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE);

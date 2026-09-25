@@ -7,7 +7,10 @@ import {
   Env as SubscriptionEnv,
   CANCEL_TYPES,
 } from '@metamask/subscription-controller';
-import { getShieldGatewayConfig } from './shield';
+import {
+  getIsSubscriptionCancelNotAllowed,
+  getShieldGatewayConfig,
+} from './shield';
 
 const mockLoadShieldConfig = jest.fn();
 
@@ -68,6 +71,12 @@ const setup = ({
     targetUrl: 'https://example.com',
   };
 };
+
+describe('getIsSubscriptionCancelNotAllowed', () => {
+  it('does not allow cancellation without a cancel type', () => {
+    expect(getIsSubscriptionCancelNotAllowed(undefined)).toBe(true);
+  });
+});
 
 describe('getShieldGatewayConfig', () => {
   beforeEach(() => {

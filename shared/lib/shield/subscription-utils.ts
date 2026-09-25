@@ -163,6 +163,9 @@ export function getSubscriptionDurationInDays(
   if (subscription.endDate) {
     subscriptionEndDate = new Date(subscription.endDate);
   }
+  if (!subscription.currentPeriodStart) {
+    return 0;
+  }
   const subscriptionStartDate = new Date(subscription.currentPeriodStart);
 
   const diff = subscriptionEndDate.getTime() - subscriptionStartDate.getTime();
