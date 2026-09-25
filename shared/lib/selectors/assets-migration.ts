@@ -39,6 +39,7 @@ import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import { AssetType } from '../../constants/transaction';
 import { augmentTempoCurrencyRates } from '../assets/enablement/tempo';
 import { createDeepEqualSelector } from './selector-creators';
+import { fromStateLog } from './dev-state-log';
 
 // Old state controllers and fields status
 //
@@ -87,7 +88,7 @@ type ControllerStateSelector<
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
 
-export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
+const getIsAssetsUnifyStateEnabledFromState = createDeepEqualSelector(
   [
     (state: { metamask: RemoteFeatureFlagControllerState }) =>
       state.metamask?.remoteFeatureFlags ?? {},
@@ -105,6 +106,10 @@ export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
       ASSETS_UNIFY_STATE_VERSION_1,
     );
   },
+);
+
+export const getIsAssetsUnifyStateEnabled = fromStateLog(
+  getIsAssetsUnifyStateEnabledFromState,
 );
 
 // ChainId (hex) -> AccountAddress (hex checksummed) -> Balance (hex)
