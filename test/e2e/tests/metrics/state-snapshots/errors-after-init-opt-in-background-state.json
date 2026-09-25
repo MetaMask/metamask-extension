@@ -54,6 +54,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isWalletResetInProgress": "boolean",
+    "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
@@ -97,6 +98,7 @@
   },
   "AssetsController": "object",
   "AuthenticationController": {
+    "enrolledCredentials": "object",
     "isSignedIn": "boolean",
     "needsProfilePairing": "boolean",
     "needsSocialPairing": "boolean"
@@ -172,8 +174,7 @@
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "dataCollectionForMarketing": "boolean",
-    "marketingCampaignCookieId": null,
-    "tracesBeforeMetricsOptIn": "object"
+    "marketingCampaignCookieId": null
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -288,6 +289,7 @@
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "gasSponsorshipOptOutByChainId": "object",
+      "hasLinkedSocialLoginProfile": "boolean",
       "hideZeroBalanceTokens": false,
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
@@ -326,9 +328,17 @@
     "useTransactionSimulations": true,
     "watchEthereumAccountEnabled": "boolean"
   },
-  "ProfileMetricsController": "object",
+  "ProfileMetricsController": {
+    "accountSourceBackfillEnqueued": true,
+    "initialDelayEndTimestamp": "number",
+    "initialEnqueueCompleted": "boolean",
+    "proofBackfillEnqueued": "boolean",
+    "reportedAccounts": "object",
+    "syncQueue": "object"
+  },
   "QrSyncController": "object",
   "RampsController": {
+    "autoramps": "object",
     "countries": "object",
     "nativeProviders": "object",
     "orders": "object",
@@ -423,6 +433,7 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean",
+    "isRampsSyncingEnabled": true
   }
 }

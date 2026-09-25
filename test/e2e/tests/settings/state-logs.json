@@ -155,6 +155,7 @@
     "accountIdByAddress": {
       "*": "string"
     },
+    "accountSourceBackfillEnqueued": "boolean",
     "accountsAssets": {
       "*": "array"
     },
@@ -288,6 +289,7 @@
         "lastUpdated": "number"
       }
     },
+    "autoramps": [],
     "balances": {
       "*": {
         "*": {
@@ -422,6 +424,7 @@
         "tron:2494104990": "boolean"
       }
     },
+    "enrolledCredentials": [],
     "nativeAssetIdentifiers": {
       "eip155:1": "string",
       "eip155:11155111": "string",
@@ -677,6 +680,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
+    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -708,6 +712,7 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
+    "lastPerpsDepositEntryPoint": "null",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
@@ -922,6 +927,7 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "hasLinkedSocialLoginProfile": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "basicFunctionalityMigrationNotification": "null",
@@ -1010,6 +1016,7 @@
       "variational": {}
     },
     "region": "string",
+    "reportedAccounts": ["string"],
     "requests": {
       "*": {
         "status": "string",
@@ -1081,18 +1088,7 @@
     "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
-    "syncQueue": {
-      "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
-        {
-          "address": "string",
-          "scopes": ["string"]
-        },
-        {
-          "address": "string",
-          "scopes": ["string", "string", "string"]
-        }
-      ]
-    },
+    "syncQueue": {},
     "slides": [],
     "smartTransactionsState": {
       "fees": {
@@ -1247,7 +1243,6 @@
       "testnet": {},
       "mainnet": {}
     },
-    "tracesBeforeMetricsOptIn": [],
     "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},

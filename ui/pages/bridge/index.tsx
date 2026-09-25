@@ -5,10 +5,7 @@ import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
   ButtonIconSize,
-  FontWeight,
   IconName,
-  Text,
-  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 import {
@@ -30,7 +27,6 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import { useBottomNavBar } from '../../hooks/useBottomNavBar';
 import { getFromChain } from '../../ducks/bridge/selectors';
 import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
@@ -89,29 +85,23 @@ const CrossChainSwap = () => {
       clearAllBridgeCacheItems();
     };
   }, [fetchTokens]);
-
-  const showBottomBar = useBottomNavBar();
-
   const handleBack = () => {
     transitionBack(() => navigateToDefaultRoute());
   };
 
-  const swapHeader = showBottomBar ? (
-    <div className="flex items-center justify-between p-4 gap-4">
-      <Text variant={DsTextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-        {t('swap')}
-      </Text>
-      <ButtonIcon
-        iconName={IconName.Setting}
-        size={ButtonIconSize.Md}
-        ariaLabel={t('settings')}
-        data-testid="bridge__header-settings-button"
-        onClick={() => {
-          setIsSettingsModalOpen(true);
+  const prepareBody = (
+    <>
+      <BridgeTransactionSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => {
+          setIsSettingsModalOpen(false);
         }}
       />
-    </div>
-  ) : (
+      <PrepareBridgePage onOpenSettings={() => setIsSettingsModalOpen(true)} />
+    </>
+  );
+
+  const swapHeader = (
     <Header
       textProps={{ variant: TextVariant.headingSm }}
       startAccessory={
@@ -154,17 +144,7 @@ const CrossChainSwap = () => {
         element={
           <Page className="bridge__container">
             {swapHeader}
-            <Content padding={0}>
-              <BridgeTransactionSettingsModal
-                isOpen={isSettingsModalOpen}
-                onClose={() => {
-                  setIsSettingsModalOpen(false);
-                }}
-              />
-              <PrepareBridgePage
-                onOpenSettings={() => setIsSettingsModalOpen(true)}
-              />
-            </Content>
+            <Content padding={0}>{prepareBody}</Content>
           </Page>
         }
       />

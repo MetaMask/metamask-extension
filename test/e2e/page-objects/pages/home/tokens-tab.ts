@@ -17,6 +17,23 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
   MUSD: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
 };
 
+/**
+ * Home Tokens tab: asset list, import/manage tokens, sort, and token details.
+ *
+ * Screen: `#/` Tokens tab (`account-overview__asset-tab`), the default home
+ * tab; also reached via `HomePage.goToTokensTab()`.
+ * Owns: token rows (name, balance, fiat, position), low-value expand/sort,
+ * import via search or custom address, manage-tokens toggles, hide token,
+ * and opening a row for price/chart/address checks.
+ * Boundaries: homepage balance and Send/Swap/Bridge CTAs stay on `HomePage`.
+ * Network filter control-bar chrome belongs to `NetworkFilter` /
+ * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
+ * outside this object.
+ * Related: `HomePage` (`goToTokensTab`), `NonEvmHomepage`, `NetworkFilter`,
+ * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
+ *
+ * @see ui/components/app/assets/asset-list/asset-list.tsx
+ */
 class TokensTab extends HomePage {
   private readonly assetMarketCapInDetailsModal =
     '[data-testid="asset-market-cap"]';
@@ -167,6 +184,9 @@ class TokensTab extends HomePage {
   private readonly tokenManagementCustomTokenSuccessToast =
     '[data-testid="token-management-custom-token-success-toast"]';
 
+  private readonly tokenManagementCustomTokenSuccessToastClose =
+    '[data-testid="toast-close-button"]';
+
   private readonly tokenManagementPage =
     '[data-testid="parent-selector-token-management-page"]';
 
@@ -260,7 +280,7 @@ class TokensTab extends HomePage {
     );
     await this.driver.waitForSelector({
       css: this.lowValueAssetsToggle,
-      text: `Low value tokens (${expectedCount})`,
+      text: `Low balance tokens (${expectedCount})`,
     });
   }
 
@@ -853,11 +873,10 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(
       this.tokenManagementCustomTokenSuccessToast,
     );
-    await this.returnFromTokenManagementToHome();
-    await this.driver.assertElementNotPresent(
-      this.tokenManagementCustomTokenSuccessToast,
-      { findElementGuard: this.tokenListItem },
+    await this.driver.clickElementAndWaitToDisappear(
+      this.tokenManagementCustomTokenSuccessToastClose,
     );
+    await this.returnFromTokenManagementToHome();
   }
 
   /**

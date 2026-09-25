@@ -36,7 +36,7 @@ export function useGasTooLowAlerts(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'gasTooLow',
-        message: t('alertMessageGasTooLow'),
+        message: t('alertMessageGasLimitBelowMinimum'),
         reason: t('alertReasonGasTooLow'),
         severity: Severity.Warning,
       },

@@ -484,38 +484,20 @@
   "activity_marketShort_success_title": {
     "message": "Naisara ang short - market"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Nabigo ang pagdeposito"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Idinideposito"
   },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money account"
-  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Naideposito"
   },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money account"
-  },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Nabigong ipadala"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money account"
+    "message": "Nabigong matanggap"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Ipinapadala"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Ipinadala"
@@ -1481,6 +1463,9 @@
   "alertDisableTooltip": {
     "message": "Puwede itong baguhin sa \"Mga Setting > Mga Alerto\""
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Magdagdag ng mas mababa o gumamit ng ibang paraan ng pagbabayad."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "Hindi sapat ang mga pondo"
   },
@@ -1511,6 +1496,9 @@
   },
   "alertMessageGasFeeLow": {
     "message": "Kapag pumipili ng mababang bayad, asahan ang mas mabagal na mga transaksyon at mas matagal na paghihintay. Para sa mas mabilis na transaksyon, piliin ang Market o Aggressive na mga pagpipilian sa bayad."
+  },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Para magpatuloy sa transaksyong ito, kakailanganin mong dagdagan ang gas limit sa 12000 o mas mataas."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga bayarin sa network."
@@ -1874,6 +1862,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "Mga Kontak"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "Bumili at magbenta ng mga order"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Pamahalaan ang na-sync mo"
   },
@@ -1954,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "Ang mga Third-party API ay bahagi na ngayon ng Basic Functionality. Batay sa iyong mga kagustuhan sa nakaraan, ang setting na ito ay $1. Baguhin ito anumang oras sa $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "i-disable"
@@ -4207,6 +4198,9 @@
   "gasLimit": {
     "message": "Gas limit"
   },
+  "gasLimitBelowMinimum": {
+    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 12000"
+  },
   "gasPrice": {
     "message": "Presyo ng gas (GWEI)"
   },
@@ -5255,6 +5249,10 @@
   "lowLowercase": {
     "message": "low"
   },
+  "lowValueAssets": {
+    "message": "Mga token na mababa ang balanse ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -5440,12 +5438,13 @@
   "money": {
     "message": "Pera"
   },
-  "moneyAccountApyPitch": {
-    "message": "Kumita ng $1% APY",
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "Impormasyon ng APY"
+  "moneyAccountApyPitchEarn": {
+    "message": "Kumita ng $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "Ang rate na ipinapakita ay ang tinatayang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng market. Nagbabago ang APY at hindi ito garantisado."
@@ -5456,9 +5455,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Tinatayang balanse sa 1 taon:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Tinatayang balanse sa 1 taon"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Ipinagpapalagay sa pagtatantiya na ang $1% Annual Percentage Yield (APY) ay hindi nagbabago sa loob ng isang taon. Nagbabago ang APY at hindi ito garantisado.",
@@ -5488,14 +5484,32 @@
   "moneyActivityDepositing": {
     "message": "Idinideposito"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "Ibinayad sa"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "Natanggap mula sa/kay"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "ID ng Transaksyon"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "Kumita ka"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "Gumastos ka ng"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "Nabigyan ka ng refund"
   },
   "moneyActivityEmpty": {
     "message": "Wala pang aktibidad"
   },
   "moneyActivityFilterAll": {
     "message": "Lahat"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Card"
   },
   "moneyActivityFilterDeposits": {
     "message": "Mga deposito"
@@ -5539,6 +5553,10 @@
   "moneyActivitySent": {
     "message": "Ipinadala"
   },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "Kasama sa mga bayarin sa palitan ang mga gastos sa network at maaaring may kasamang bayarin sa provider.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
+  },
   "moneyActivityViewAll": {
     "message": "Tingnan lahat"
   },
@@ -5560,9 +5578,6 @@
   "moneyBalanceRetry": {
     "message": "Subukang muli"
   },
-  "moneyBalanceTitle": {
-    "message": "Balanse sa Money"
-  },
   "moneyBalanceUnavailable": {
     "message": "Hindi available ang balanse"
   },
@@ -5571,6 +5586,10 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Awtomatikong kumita ng yield sa balanse mo sa Money"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Awtomatikong kumita nang hanggang $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Makakuha ng ganap na liquidity nang walang lockup, kaya maaari kang mag-trade o mag-withdraw anumang oras"
@@ -5583,6 +5602,12 @@
   },
   "moneyBenefits": {
     "message": "Mga Benepisyo"
+  },
+  "moneyContactSupport": {
+    "message": "Kontakin ang suporta"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "I-convert ang iyong crypto"
   },
   "moneyEarnApyTitle": {
     "message": "Kumita ng hanggang $1 APY"
@@ -5605,6 +5630,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Walang bayarin"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Ipinagpapalagay sa projection na ang $1% Annual Percentage Yield (APY) ay hindi nagbabago sa loob ng isang taon. Nagbabago ang APY at hindi ito garantisado. Walang garantiya ng return.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Kumita sa iyong balanse"
   },
@@ -5620,15 +5649,87 @@
   "moneyFundDescriptionWithApy": {
     "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo ng hanggang $1 APY."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Ang rate na ipinapakita ay tinantyang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng merkado. Nag-iiba-iba ang APY at hindi ito garantisado. Napupunta ang pondo sa isang DeFi vault, na pinapangasiwaan ng Veda at sinusubaybayan ng Steakhouse Financial ang panganib, at tumutubo ito sa mga kilalang merkado ng pagpapautang."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Awtomatikong kumikita ang Money account mo ng hanggang $1.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Ang Money account ay pinapagana ng Monad."
+  },
   "moneyHowItWorks": {
     "message": "Paano ito gumagana"
   },
   "moneyHowItWorksDescription": {
     "message": "Magdagdag ng mUSD at ang iyong balanse na sinusuportahan ng dolyar ay handa na para gastusin, i-trade, o ipadala anumang oras."
   },
+  "moneyHowItWorksDescription2": {
+    "message": "Ang balanse mo sa Money ang balanseng puwede mong gastusin. I-link ang MetaMask Card mo para magamit ito sa 150M+ merchant sa buong mundo. Patuloy na kikita ang pera mo hanggang sa gastusin mo ito."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Ang Money account ay pinapagana ng Monad."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Magdagdag ng mUSD at kumita ng hanggang $1. Ang iyong balanse ay sinusuportahan ng dolyar at handa na para gastusin, i-trade, o ipadala anumang oras.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Ang Money account ay hindi isang bank account, savings account, o produktong deposito na naka-insure. Ang APY ay variable at hindi iginagarantiya. Ang Money account ay may kaugnay na smart contract, protocol, liquidity, at iba pang panganib, at maaaring mawala sa iyo ang bahagi o ang lahat ng iyong pondo. Sasailalim sa mga paghihigpit ng rehiyon. Nalalapat ang mga tuntunin."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Mga Panganib at Mga Pagpapahayag"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Hanggang $1 APY. Nagbabago at tumataas-baba ang rate ayon sa mga kondisyon ng market. Laging makikita ang kasalukuyang rate sa loob ng Money account.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Nagbabago ba ang rate ng APY?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "Ikaw! Ang MetaMask ay isang self-custodial na wallet, ibig sabihin tanging ang mga Private Key ng may hawak ng account ang may kontrol dito. Hindi maaaring i-access, i-freeze, o galawin ng MetaMask ang mga pondo mo. Ito ang ipinagkaiba namin mula sa mga tradisyonal na account sa bangko at mga custodial crypto platform—walang third party na humahawak sa mga pondo mo."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Sino ang kumokontrol sa pera ko?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Walang bayad sa pagbubukas ng Money account at walang bayad sa pagdedeposito ng mga stablecoin. Sisingilin ka ng mga bayarin kapag nagdedeposito ng mga non-stablecoin token. Walang mga nauugnay na mga bayarin sa mga transaksyon sa MetaMask Card, pagwi-withdraw sa ATM, at mga gastos sa local currency offramp. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "Tingnan ang kabuuan ng breakdown ng bayad sa Card dito."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "May mga kailangan bang bayaran?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Oo. Maaari mong i-trade, ipadala, gastusin, o i-withdraw ang buong balanse mo anumang oras nang walang mga abiso sa panahon, walang mga penalty, at walang mga bayarin sa pag-withdraw mula sa MetaMask. Kung hirap sa liquidity, maaaring magkaroon ng pansamantalang mga pagkaantala."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Naka-lock ba ang pera ko? Puwede ba akong mag-withdraw anumang oras?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Isang account na kumikita ng hanggang $1 variable APY. Nagdedeposito ka ng pondo, na inilalagay sa account bilang mUSD, at kikita ng hanggang $1 APY. Ang mUSD ay stablecoin ng MetaMask na suportado ng dolyar. Maaari mong gamitin o i-withdraw ang mga pondo mo anumang oras nang walang mga penalty. Maaari mong gastusin ang mga pondo mo gamit ang MetaMask Card sa higit 150 milyong Mastercard merchant sa buong mundo.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Ano ang Money account?"
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "Ano ang mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Isa ba itong savings account o spending account?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "Mga FAQ"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Kapag nagdeposito ka ng mga pondo, inilalagay ang mga iyon sa mga magagandang DeFi protocol, gaya ng Aave at Morpho, kung saan kumikita sila ng tubo mula sa totoong aktibidad pang-ekonomiya. Ibinibigay sa iyo ang tubo na ito bilang APY.\n\nSinusubaybayan ng third-party service provider na tinatawag na Steakhouse Financial kung paano inilalaan ang mga pondo sa mga protocol. Ang Veda, isang third-party infrastructure provider, ang nagde-deploy at nagpapanatili ng mga vault smart contract na may hawak sa mga pondo mo.\n\nAng kinikita ay hindi interes na binabayaran ng MetaMask o ng nag-issue mUSD. Ang mga ito ay tinubo onchain na nilikha ng mga posisyon sa mga third-party DeFi protocol."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Saan nanggagaling ang yield?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Paano lumalago ang pera mo"
@@ -5639,8 +5740,14 @@
   "moneyLifetime": {
     "message": "Panghabambuhay"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Ang kabuuang kinita mo sa iyong balanse ng Money account sa paglipas ng panahon."
+  },
   "moneyMeetMusd": {
     "message": "Kilalanin ang mUSD"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Ang kabuuang kinita mo sa balanse ng iyong Money account sa nakalipas na 30 araw."
   },
   "moneyMoreInformation": {
     "message": "Higit pang impormasyon"
@@ -5669,11 +5776,59 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Pumalya ang pag-convert"
   },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Maaaring tumagal ng ilang minuto ang mga order sa card."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Nagdagdag ng pondo"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Idinideposito"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Pag-convert ng crypto"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "Naidagdag ang $1 sa Money account.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Naidagdag sa Money account."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Nagdagdag ng mga pondo"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Nakumpleto ang deposito"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Kumpleto na ang pag-convert"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Posibleng magtagal ito nang ilang minuto."
+  },
   "moneyToastWithdrawFailedBody": {
     "message": "Hindi makapaglipat ng mga pondo. Subukan ulit."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Pumalya ang paglilipat"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "iyong account"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Isinasagawa ang paglilipat"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "Idinagdag ang $1 sa $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Idinagdag sa $1.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Kumpleto na ang paglilipat"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Iba pang account"
@@ -6031,9 +6186,6 @@
   "networkFeeExplanationTitle": {
     "message": "Bayad sa network"
   },
-  "networkMenu": {
-    "message": "Network Menu"
-  },
   "networkMenuHeading": {
     "message": "Pumili ng network"
   },
@@ -6337,18 +6489,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Handa na ang Pag-withdraw"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Maaari mo ng i-withdraw ang iyong in-unstake na $1"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Ang iyong hiling na i-unstake ang $1 ay naipadala na"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Nakatanggap ng NFT mula kay/sa"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "Ipinadala ang NFT kay/sa"
-  },
   "notificationItemNetwork": {
     "message": "Network"
   },
@@ -6357,18 +6497,6 @@
   },
   "notificationItemReceived": {
     "message": "Natanggap"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Natanggap mula kay/sa"
-  },
-  "notificationItemSent": {
-    "message": "Ipinadala"
-  },
-  "notificationItemSentTo": {
-    "message": "Ipinadala kay/sa"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Nakumpleto ang pag-stake"
   },
   "notificationItemStaked": {
     "message": "Naka-stake"
@@ -6382,17 +6510,11 @@
   "notificationItemSwapped": {
     "message": "Nai-swap"
   },
-  "notificationItemSwappedFor": {
-    "message": "sa"
-  },
   "notificationItemTo": {
     "message": "Sa/Kay"
   },
   "notificationItemTransactionId": {
     "message": "ID ng Transaksyon"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Nakumpleto ang pag-unstake"
   },
   "notificationItemUnStaked": {
     "message": "Na-unstake"
@@ -7535,6 +7657,10 @@
   "perpsFilterAll": {
     "message": "Lahat"
   },
+  "perpsFilterClear": {
+    "message": "$1, i-clear ang filter",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Mga Commodity"
   },
@@ -7549,6 +7675,17 @@
   },
   "perpsFilterIndex": {
     "message": "Mga Index"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Mga Memecoin"
+  },
+  "perpsFilterMore": {
+    "message": "Higit pa",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Iba pa, pinili ang $1",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Bago"
@@ -7645,6 +7782,18 @@
   },
   "perpsMarket": {
     "message": "Market"
+  },
+  "perpsMarketCategories": {
+    "message": "Mga kategorya ng market",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 (na) market",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 market",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Hindi nahanap ang market"
@@ -7832,6 +7981,10 @@
   "perpsPositions": {
     "message": "Mga Posisyon"
   },
+  "perpsProducts": {
+    "message": "Mga Produkto",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "Masyado nang maraming kahilingan. Pakihintayin at subukang muli."
   },
@@ -7945,12 +8098,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "Pagbabago ng presyo"
-  },
-  "perpsSortByRank": {
-    "message": "Rank"
-  },
-  "perpsSortBySection": {
-    "message": "I-sort ayon sa"
   },
   "perpsSortByTitle": {
     "message": "I-sort ayon sa"
@@ -8578,8 +8725,12 @@
   "rampsChangeProvider": {
     "message": "Magpalit ng provider."
   },
+  "rampsChangeProviders": {
+    "message": "magpalit ng mga provider",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
-    "message": "Pumili ng provider"
+    "message": "Pumili ng mga provider"
   },
   "rampsCompleteBuyTitle": {
     "message": "Kumpletuhin ang pagbili",
@@ -8750,7 +8901,7 @@
     "message": "Huling ginamit"
   },
   "rampsQuoteFetchError": {
-    "message": "Nabigong kunin ang quote."
+    "message": "Nagka-error sa pagkuha ng mga quote. Maglagay ng mas mababang halaga o"
   },
   "rampsQuoteUnavailable": {
     "message": "Hindi available ang quote."
@@ -8766,6 +8917,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Ipakita ang lahat ng token"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Hindi available ang token na ito sa iyong rehiyon.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Hindi available ang token",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Hindi pa suportado sa iyong rehiyon ang pagbili ng crypto."

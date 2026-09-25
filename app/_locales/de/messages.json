@@ -484,38 +484,20 @@
   "activity_marketShort_success_title": {
     "message": "Short-Position geschlossen ‒ Markt"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Einzahlung fehlgeschlagen"
-  },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Einzahlung"
   },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Eingezahlt"
   },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Senden fehlgeschlagen"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "Empfangen fehlgeschlagen"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Senden"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Gesendet"
@@ -1481,6 +1463,9 @@
   "alertDisableTooltip": {
     "message": "Dies kann in „Einstellungen“ > „Warnungen“ geändert werden"
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Weniger hinzufügen oder eine andere Zahlungsmethode verwenden."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "Unzureichende Gelder"
   },
@@ -1512,8 +1497,8 @@
   "alertMessageGasFeeLow": {
     "message": "Wenn Sie eine niedrige Gebühr wählen, müssen Sie mit langsameren Transaktionen und längeren Wartezeiten rechnen. Für schnellere Transaktionen wählen Sie die Gebührenoptionen Markt oder Aggressiv."
   },
-  "alertMessageGasTooLow": {
-    "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 21.000 oder mehr erhöhen."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 12000 oder mehr erhöhen."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
@@ -1877,6 +1862,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "Kontakte"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "Orders kaufen und verkaufen"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Verwalten Sie, was Sie synchronisieren"
   },
@@ -1957,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "APIs von Drittanbietern sind nun Teil der Grundfunktionen. Basierend auf Ihren bisherigen Einstellungen ist diese Option $1. Sie können dies jederzeit ändern unter $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "deaktiviert"
@@ -4210,6 +4198,9 @@
   "gasLimit": {
     "message": "Gas-Limit"
   },
+  "gasLimitBelowMinimum": {
+    "message": "Gas-Limit muss mindestens 12000 betragen."
+  },
   "gasPrice": {
     "message": "Gas-Preis"
   },
@@ -5260,7 +5251,7 @@
   },
   "lowValueAssets": {
     "message": "Token mit geringem Saldo ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "Ethereum-Hauptnetz"
@@ -5447,12 +5438,13 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1 % Effektivertrag verdienen",
+  "moneyAccountApyPitchApy": {
+    "message": "$1 % APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "Info zum effektiven Jahreszins (APY)"
+  "moneyAccountApyPitchEarn": {
+    "message": "Verdienen Sie $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "Der angegebene effektive Jahreszins (APY) ist ein auf den aktuellen Marktbedingungen basierender Schätzwert. Der effektive Jahreszins ist variabel und wird nicht garantiert."
@@ -5463,9 +5455,6 @@
   },
   "moneyAccountProjectedBalance": {
     "message": "Prognostizierter 1-Jahres-Saldo:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Prognostizierter 1-Jahres-Saldo"
   },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "Die Prognose geht davon aus, dass der effektive Jahreszins (APY) von $1 % über einen Zeitraum von einem Jahr unverändert bleibt. Der Effektivertrag ist variabel und wird nicht garantiert. Keine Garantie für die Rendite.",
@@ -5495,14 +5484,32 @@
   "moneyActivityDepositing": {
     "message": "Einzahlung"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "Bezahlt an"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "Empfangen von"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "Transaktions-ID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "Sie haben verdient"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "Sie haben ausgegeben"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "Sie haben eine Rückerstattung erhalten"
   },
   "moneyActivityEmpty": {
     "message": "Noch keine Aktivität"
   },
   "moneyActivityFilterAll": {
     "message": "Alle"
+  },
+  "moneyActivityFilterCard": {
+    "message": "Karte"
   },
   "moneyActivityFilterDeposits": {
     "message": "Einzahlungen"
@@ -5546,6 +5553,10 @@
   "moneyActivitySent": {
     "message": "Gesendet"
   },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "Die Konvertierungsgebühren umfassen Netzwerkkosten und können Anbietergebühren beinhalten.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
+  },
   "moneyActivityViewAll": {
     "message": "Alle anzeigen"
   },
@@ -5567,9 +5578,6 @@
   "moneyBalanceRetry": {
     "message": "Erneut versuchen"
   },
-  "moneyBalanceTitle": {
-    "message": "Money-Saldo"
-  },
   "moneyBalanceUnavailable": {
     "message": "Kontostand nicht verfügbar"
   },
@@ -5578,6 +5586,10 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Erzielen Sie automatisch Zinsen auf Ihr Guthaben"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Verdienen Sie automatisch bis zu $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Erhalten Sie volle Liquidität ohne Sperrfristen, sodass Sie jederzeit handeln oder auszahlen können"
@@ -5590,6 +5602,12 @@
   },
   "moneyBenefits": {
     "message": "Vorteile"
+  },
+  "moneyContactSupport": {
+    "message": "Support kontaktieren"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "Wandeln Sie Ihr Krypto um"
   },
   "moneyEarnApyTitle": {
     "message": "Verdienen Sie bis zu $1 effektiven Jahreszins"
@@ -5612,6 +5630,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Keine Gebühr"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Die Prognose geht davon aus, dass der $1 % Effektivertrag (APY) über einen Zeitraum von einem Jahr unverändert bleibt. Der Effektivertrag ist variabel und wird nicht garantiert. Keine Garantie für die Rendite.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Verdienen Sie auf Ihrem Guthaben"
   },
@@ -5627,15 +5649,99 @@
   "moneyFundDescriptionWithApy": {
     "message": "Finanzieren Sie Ihren Money Account und beobachten Sie, wie Ihr Saldo mit bis zu $1 APY wächst."
   },
+  "moneyHomeApyTooltip": {
+    "message": "Der angegebene effektive Jahreszins (APY) ist ein Schätzwert, der auf den aktuellen Marktbedingungen basiert. Der APY ist variabel und nicht garantiert. Die Gelder fließen in einen DeFi-Tresor, der von Veda verwaltet und von Steakhouse Financial risikoüberwacht wird und Renditen auf den etablierten Kreditmärkten erwirtschaftet."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Ihr Money Account verdient automatisch bis zu $1.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Das Money Account wird durch Monad betrieben."
+  },
   "moneyHowItWorks": {
     "message": "Wie es funktioniert"
   },
   "moneyHowItWorksDescription": {
     "message": "Fügen Sie mUSD hinzu, und Ihr durch US-Dollar gedecktes Guthaben steht Ihnen jederzeit zum Ausgeben, Handeln oder Versenden bereit."
   },
+  "moneyHowItWorksDescription1": {
+    "message": "Fügen Sie mUSD zu Ihrem Money Account hinzu und verdienen Sie automatisch bis zu $1 Effektivertrag (variabel). Die Gelder fließen in einen DeFi-Tresor, der von Veda verwaltet und dessen Risiko von Steakhouse Financial überwacht wird. Der Zinssatz wird von DeFi-Plattformen Dritter generiert, die Gelder in Blockchain-Protokollen bereitstellen. Kein Staking, keine Ansprüche, keine Lock-ups.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksDescription2": {
+    "message": "Ihr Geldguthaben ist Ihr Ausgabensaldo. Verknüpfen Sie Ihre MetaMask Card, um bei mehr als 150 Millionen Händlern weltweit zu bezahlen. Ihr Geld verdient so lange, bis Sie es nutzen."
+  },
+  "moneyHowItWorksDescription3": {
+    "message": "Das Money Account wird durch Monad betrieben."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Fügen Sie mUSD hinzu und verdienen Sie bis zu $1. Ihr Guthaben ist durch US-Dollar gedeckt und jederzeit bereit zum Ausgeben, Handeln oder Versenden.",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Das Money Account ist kein Bankkonto, kein Sparkonto und kein versichertes Einlagenprodukt. Der Effektivertrag ist variabel und nicht garantiert. Das Money Account ist mit Risiken im Zusammenhang mit Smart Contracts, Protokollen, Liquidität und anderen Faktoren verbunden; es besteht die Gefahr, dass Sie einen Teil oder das gesamte Guthaben verlieren. Es gelten regionale Beschränkungen sowie die entsprechenden Nutzungsbedingungen."
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "Risiken und Offenlegungen"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "Bis zu $1 Effektivertrag. Der Zinssatz ist variabel und schwankt mit den Marktbedingungen. Der aktuelle Zinssatz ist immer im Money Account sichtbar.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "Ändert sich der APY-Satz?"
+  },
+  "moneyHowItWorksFaqControlAnswer": {
+    "message": "Sie! MetaMask ist eine Wallet zur Eigenverwahrung; das bedeutet, dass ausschließlich die privaten Schlüssel des Kontoinhabers die Kontrolle darüber haben. MetaMask kann weder auf Ihre Gelder zugreifen noch diese einfrieren oder verschieben. Genau das unterscheidet uns von herkömmlichen Bankkonten und Krypto-Plattformen mit Fremdverwahrung: Es gibt keinen Drittanbieter, der Ihre Gelder verwahrt."
+  },
+  "moneyHowItWorksFaqControlQuestion": {
+    "message": "Wer kontrolliert mein Geld?"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Für die Eröffnung eines Money Accounts und die Einzahlung von Stablecoins fallen keine Gebühren an. Bei der Einzahlung von Token, die keine Stablecoins sind, werden Gebühren berechnet. Zudem fallen Gebühren für Transaktionen mit der MetaMask Card, Bargeldabhebungen am Geldautomaten sowie Kosten für die Auszahlung in Lokalwährung an. "
+  },
+  "moneyHowItWorksFaqFeesLink": {
+    "message": "Hier finden Sie die vollständige Aufschlüsselung der Kartengebühren."
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "Fallen Gebühren an?"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "Ja. Sie können Ihr gesamtes Guthaben jederzeit handeln, versenden, ausgeben oder abheben – ohne Kündigungsfristen, Strafgebühren oder Auszahlungsgebühren seitens MetaMask. Bei geringer Liquidität kann es zu vorübergehenden Verzögerungen kommen."
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "Ist mein Geld gesperrt? Kann ich es jederzeit auszahlen lassen?"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "Ein Konto, das einen Effektivvertrag von bis zu $1 verdient. Sie zahlen Gelder ein – das auf dem Konto als mUSD gehalten wird – und erzielen einen Effektivvertrag von bis zu $1. mUSD ist der durch den US-Dollar gedeckte Stablecoin von MetaMask. Sie können jederzeit ohne Strafen über Ihre Gelder verfügen oder sie abheben. Zudem können Sie Ihre Gelder mit der MetaMask Card bei weltweit mehr als 150 Millionen Mastercard-Akzeptanzstellen ausgeben.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "Was ist das Geldkonto?"
+  },
+  "moneyHowItWorksFaqMusdAnswer": {
+    "message": "mUSD ist der 1:1 durch den Dollar gedeckten Stablecoin von MetaMask. Ihr Saldo wird in mUSD geführt und steht Ihnen jederzeit zum Ausgeben, Versenden oder Handeln zur Verfügung.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqMusdQuestion": {
+    "message": "Was ist mUSD?"
+  },
+  "moneyHowItWorksFaqSpendingAnswer": {
+    "message": "Ihr „Money“-Guthaben ist Ihr Ausgabenguthaben – es bringt so lange Erträge ein, bis Sie es verwenden. Das „Money“-Konto ist weder ein Bankkonto noch ein Sparkonto noch ein Produkt mit Einlagensicherung.",
+    "description": "Drafted from existing Money copy for content review."
+  },
+  "moneyHowItWorksFaqSpendingQuestion": {
+    "message": "Ist dies ein Sparkonto oder ein Ausgabenkonto?"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "FAQs"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "Wenn Sie Gelder einzahlen, werden diese in etablierten DeFi-Protokollen wie Aave und Morpho angelegt, wo sie durch reale wirtschaftliche Aktivitäten Erträge erwirtschaften. Diese Erträge werden Ihnen in Form einem Effektivvertrag gutgeschrieben.\n\nEin externer Dienstleister namens Steakhouse Financial überwacht die Mittelallokation innerhalb der Protokolle. Veda, ein externer Infrastrukturanbieter, implementiert und wartet die Smart Contracts der Vaults, in denen Ihre Gelder verwahrt werden.\n\nBei den Erträgen handelt es sich nicht um Zinsen, die von MetaMask oder dem Emittenten von mUSD gezahlt werden. Vielmehr sind es On-Chain-Renditen, die durch Positionen in DeFi-Protokollen von Drittanbietern generiert werden."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "Woher kommt die Rendite?"
   },
   "moneyHowYourMoneyGrows": {
     "message": "Wie Ihr Geld wächst"
@@ -5646,8 +5752,14 @@
   "moneyLifetime": {
     "message": "Lebenslang"
   },
+  "moneyLifetimeTooltip": {
+    "message": "Der Gesamtbetrag, den Sie mit der Zeit auf Ihrem Money-Account-Guthaben verdient haben."
+  },
   "moneyMeetMusd": {
     "message": "mUSD entdecken"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "Der Gesamtbetrag, den Sie in den letzten 30 Tagen auf Ihrem Money-Account-Guthaben verdient haben."
   },
   "moneyMoreInformation": {
     "message": "Mehr Informationen"
@@ -5676,11 +5788,59 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Konvertierung fehlgeschlagen"
   },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "Kartenbestellungen können einige Minuten dauern."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "Gelder hinzufügen"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "Einzahlung"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "Krypto wird konvertiert"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1 zum Money Account hinzugefügt.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Zum Money Account hinzugefügt."
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "Gelder hinzugefügt"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "Einzahlung abgeschlossen"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "Konvertierung abgeschlossen"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "Das könnte ein paar Minuten dauern."
+  },
   "moneyToastWithdrawFailedBody": {
     "message": "Gelder können nicht überwiesen werden. Versuchen Sie es erneut."
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Überweisung fehlgeschlagen"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "Ihr Konto"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Transfer läuft"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 zu $2 hinzugefügt.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Zu $1 hinzugefügt.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Transfer abgeschlossen"
   },
   "moneyTransferBetweenAccounts": {
     "message": "Ein anderes Konto"
@@ -6038,9 +6198,6 @@
   "networkFeeExplanationTitle": {
     "message": "Netzwerkgebühr"
   },
-  "networkMenu": {
-    "message": "Netzwerkmenü"
-  },
   "networkMenuHeading": {
     "message": "Netzwerk wählen"
   },
@@ -6344,18 +6501,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Auszahlung bereit"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Sie können sich nun Ihre Unstaked $1 auszahlen lassen"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Ihre Anfrage zum Unstake von $1 wurde gesendet"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFT empfangen von"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFT gesendet an"
-  },
   "notificationItemNetwork": {
     "message": "Netzwerk"
   },
@@ -6364,18 +6509,6 @@
   },
   "notificationItemReceived": {
     "message": "Empfangen"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Empfangen von"
-  },
-  "notificationItemSent": {
-    "message": "Gesendet"
-  },
-  "notificationItemSentTo": {
-    "message": "Gesendet an"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Stake vervollständigt"
   },
   "notificationItemStaked": {
     "message": "Eingesetzt"
@@ -6389,17 +6522,11 @@
   "notificationItemSwapped": {
     "message": "Geswappt"
   },
-  "notificationItemSwappedFor": {
-    "message": "für"
-  },
   "notificationItemTo": {
     "message": "Bis"
   },
   "notificationItemTransactionId": {
     "message": "Transaktions-ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "UnStaking abgeschlossen"
   },
   "notificationItemUnStaked": {
     "message": "Unstaked"
@@ -7542,6 +7669,10 @@
   "perpsFilterAll": {
     "message": "Alle"
   },
+  "perpsFilterClear": {
+    "message": "$1, filter löschen",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Rohstoffe"
   },
@@ -7556,6 +7687,17 @@
   },
   "perpsFilterIndex": {
     "message": "Indizes"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoins"
+  },
+  "perpsFilterMore": {
+    "message": "Mehr",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "Mehr, $1 ausgewählt",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "Neu"
@@ -7652,6 +7794,18 @@
   },
   "perpsMarket": {
     "message": "Markt"
+  },
+  "perpsMarketCategories": {
+    "message": "Marktkategorien",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 Märkte",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1 Markt",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "Markt nicht gefunden"
@@ -7839,6 +7993,10 @@
   "perpsPositions": {
     "message": "Positionen"
   },
+  "perpsProducts": {
+    "message": "Produkte",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "Zu viele Anfragen. Bitte warten Sie und versuchen Sie es erneut."
   },
@@ -7952,12 +8110,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "Preisänderung"
-  },
-  "perpsSortByRank": {
-    "message": "Rang"
-  },
-  "perpsSortBySection": {
-    "message": "Sortieren nach"
   },
   "perpsSortByTitle": {
     "message": "Sortieren nach"
@@ -8585,6 +8737,10 @@
   "rampsChangeProvider": {
     "message": "Anbieter wechseln."
   },
+  "rampsChangeProviders": {
+    "message": "Anbieter wechseln",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "Anbieter auswählen"
   },
@@ -8773,6 +8929,14 @@
   },
   "rampsShowAllTokens": {
     "message": "Alle Token anzeigen"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "Dieses Token ist in Ihrer Region nicht verfügbar.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "Token nicht verfügbar",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "Der Kauf von Krypto wird in Ihrer Region noch nicht unterstützt."
