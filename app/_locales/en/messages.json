@@ -6722,6 +6722,15 @@
   "notificationsSettingsMarketingConsent": {
     "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
   },
+  "notificationsSettingsMarketingConsentSheetDescription": {
+    "message": "Turning on Updates and rewards requires enabling Marketing updates, so we can send you more relevant product news and rewards."
+  },
+  "notificationsSettingsMarketingConsentSheetOptIn": {
+    "message": "Opt in"
+  },
+  "notificationsSettingsMarketingConsentSheetTitle": {
+    "message": "Data collection"
+  },
   "notificationsSettingsMarketingDescription": {
     "message": "Product updates, feature announcements, and new releases"
   },
