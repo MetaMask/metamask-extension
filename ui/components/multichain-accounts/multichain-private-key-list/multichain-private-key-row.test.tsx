@@ -10,16 +10,23 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 
 const CHAIN_ID = 'eip155:1';
 const PRIVATE_KEY = 'private-key-mock';
-const mockOnCopy = jest.fn();
+const mockOnCopy = jest.fn().mockResolvedValue(true);
+const mockOnClearClipboard = jest.fn();
 
-const renderComponent = () =>
+const renderComponent = ({
+  sensitiveClipboardState = 'idle',
+}: {
+  sensitiveClipboardState?: 'idle' | 'ready' | 'cleared' | 'error';
+} = {}) =>
   render(
     <MultichainPrivateKeyRow
       address="0x1234567890abcdef1234567890abcdef12345678"
       chainId={CHAIN_ID}
       networkName={messages.ethereumAndEvms.message}
       onCopy={mockOnCopy}
+      onClearClipboard={mockOnClearClipboard}
       privateKey={PRIVATE_KEY}
+      sensitiveClipboardState={sensitiveClipboardState}
     />,
   );
 
@@ -72,7 +79,7 @@ describe('MultichainPrivateKeyRow', () => {
     expect(privateKey).toHaveTextContent(PRIVATE_KEY);
   });
 
-  it('copies the private key without revealing it', () => {
+  it('copies the private key without revealing it', async () => {
     renderComponent();
 
     const copyButton = screen.getByTestId(
@@ -85,12 +92,14 @@ describe('MultichainPrivateKeyRow', () => {
 
     expect(mockOnCopy).toHaveBeenCalledTimes(1);
     expect(
-      screen.getByText('multichainAccountPrivateKeyCopied'),
+      await screen.findByText('multichainAccountPrivateKeyCopied'),
     ).toBeInTheDocument();
     expect(copyButton).toHaveClass('bg-success-muted', 'text-success-default');
     expect(
       screen.getByTestId(`multichain-private-key-value-${CHAIN_ID}`),
-    ).toHaveStyle({ filter: 'blur(8px)' });
+    ).toHaveStyle({
+      filter: 'blur(8px)',
+    });
 
     act(() => {
       jest.advanceTimersByTime(1000);
@@ -101,5 +110,19 @@ describe('MultichainPrivateKeyRow', () => {
       'bg-success-muted',
       'text-success-default',
     );
+  });
+
+  it('renders the clipboard cleanup action inside the copied key row', () => {
+    renderComponent({ sensitiveClipboardState: 'ready' });
+
+    const row = screen.getByTestId(`multichain-private-key-row-${CHAIN_ID}`);
+    const warning = screen.getByTestId('sensitive-clipboard-warning');
+
+    expect(row).toContainElement(warning);
+    expect(warning).toHaveClass('bg-warning-muted');
+
+    fireEvent.click(screen.getByTestId('clear-sensitive-clipboard'));
+
+    expect(mockOnClearClipboard).toHaveBeenCalledTimes(1);
   });
 });
