@@ -11,6 +11,7 @@ import {
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useInAppBack } from '../../../../hooks/useInAppBack';
 import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value';
 import { SendPages } from '../../constants/send';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
@@ -47,6 +48,7 @@ export const useSendActions = () => {
     value,
   } = useSendContext();
   const { isEvmSendType } = useSendType();
+  const handleBack = useInAppBack(DEFAULT_ROUTE);
 
   const handleSubmit = useCallback(async () => {
     if (!asset) {
@@ -139,10 +141,6 @@ export const useSendActions = () => {
     updateNonEVMSubmitError,
     value,
   ]);
-
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
 
   const handleCancel = useCallback(() => {
     navigate(DEFAULT_ROUTE);
