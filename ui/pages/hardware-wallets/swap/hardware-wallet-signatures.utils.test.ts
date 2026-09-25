@@ -1508,6 +1508,30 @@ describe('hardware-wallet-signatures utils', () => {
       });
     });
 
+    it('returns null for DeviceStateEthAppClosed so signing stays on the awaiting path', () => {
+      const error = new HardwareWalletError('Ethereum app is not open', {
+        code: ErrorCode.DeviceStateEthAppClosed,
+        severity: Severity.Err,
+        category: Category.DeviceState,
+        userMessage: 'Ethereum app is not open',
+      });
+
+      expect(getHardwareWalletSignatureErrorEvent(error)).toBeNull();
+    });
+
+    it('returns null for KeyringControllerError wrapping DeviceStateEthAppClosed on cause', () => {
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: new HardwareWalletError('Ethereum app is not open', {
+          code: ErrorCode.DeviceStateEthAppClosed,
+          severity: Severity.Err,
+          category: Category.DeviceState,
+          userMessage: 'Ethereum app is not open',
+        }),
+      });
+
+      expect(getHardwareWalletSignatureErrorEvent(error)).toBeNull();
+    });
+
     it('returns TransactionFailed for an unknown error code', () => {
       expect(
         getHardwareWalletSignatureErrorEvent({
