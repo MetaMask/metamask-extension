@@ -115,6 +115,12 @@ describe('LedgerDmkBridgeHandler', () => {
     delete mockChromeRuntime.onMessage;
     mockOnSessionStateChangeSubject = new Subject();
     (LedgerDmkBridge as jest.Mock).mockImplementation(() => createMockBridge());
+    // Default to a permitted Ledger device so the cached-bridge liveness
+    // check in ensureBridge() (see the stale-bridge tests below) keeps the
+    // bridge cached in existing tests; individual tests override as needed.
+    mockHidGetDevices.mockResolvedValue([
+      { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+    ]);
     mockListenToAvailableDevices.mockReturnValue(
       of([{ name: 'MockLedgerDevice' }]),
     );
@@ -196,7 +202,7 @@ describe('LedgerDmkBridgeHandler', () => {
       expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
     });
 
-    it('wraps non-Error discovery failures as HardwareWalletError without JSON.stringify', async () => {
+    it('wraps non-Error discovery failures as HardwareWalletError with a JSON-stringified message', async () => {
       mockBridgeStartDiscovering.mockReturnValue(
         throwError(() => ({ nested: { circular: true } })),
       );
@@ -206,7 +212,7 @@ describe('LedgerDmkBridgeHandler', () => {
       ).rejects.toMatchObject({
         name: 'HardwareWalletError',
         code: ErrorCode.Unknown,
-        message: '[object Object]',
+        message: JSON.stringify({ nested: { circular: true } }),
       });
     });
 
@@ -978,6 +984,102 @@ describe('LedgerDmkBridgeHandler', () => {
 
       consoleErrorSpy.mockRestore();
       consoleLogSpy.mockRestore();
+    });
+  });
+
+  describe('stale bridge / permission revocation', () => {
+    let handler: LedgerDmkBridgeHandler;
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      handler = new LedgerDmkBridgeHandler();
+      // Liveness-check failures are logged; silence for deterministic output.
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+    });
+
+    afterEach(async () => {
+      consoleErrorSpy.mockRestore();
+      await handler.destroy();
+    });
+
+    it('reuses the cached bridge when a permitted Ledger device is still present', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+      await handler.handleAction(LedgerAction.makeApp);
+
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(1);
+      expect(mockBridgeDestroy).not.toHaveBeenCalled();
+    });
+
+    it('tears down and rebuilds the bridge when the WebHID permission grant is revoked', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+      expect(mockBridgeDestroy).not.toHaveBeenCalled();
+
+      // Simulate the user revoking the WebHID permission grant (e.g. via
+      // chrome://settings): the device disappears from getDevices() without
+      // any native disconnect event firing.
+      mockHidGetDevices.mockResolvedValue([]);
+
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // The stale bridge was torn down and a fresh one constructed.
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(2);
+    });
+
+    it('keeps the cached bridge when the liveness check throws (fail open)', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+
+      mockHidGetDevices.mockRejectedValue(new Error('getDevices blew up'));
+
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // Inconclusive check → cached bridge must survive untouched.
+      expect(mockBridgeDestroy).not.toHaveBeenCalled();
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(1);
+      expect(mockBridgeGetAppNameAndVersion).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not run the liveness check before any bridge is cached', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // No cached bridge existed, so there was nothing to liveness-check.
+      expect(mockHidGetDevices).not.toHaveBeenCalled();
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
     });
   });
 });

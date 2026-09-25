@@ -211,9 +211,47 @@ export class LedgerDmkBridgeHandler {
    * Lazily creates and caches the `LedgerDmkBridge` instance.
    * Deduplicates concurrent calls via `bridgePromise`.
    *
+   * Cached bridges are liveness-checked first: revoking the WebHID permission
+   * grant (e.g. from browser settings) does not fire a native `disconnect`
+   * event, so without this check a stale bridge would survive and every later
+   * action would fail against it instead of re-running device discovery.
+   *
    * @returns A connected `LedgerDmkBridge`.
    */
   async #ensureBridge(): Promise<LedgerDmkBridge> {
+    // Detect a stale cached bridge. Revoking the WebHID permission grant
+    // (e.g. removing the device in chrome://settings) does NOT fire a native
+    // `disconnect` event, so `#setupDisconnectMonitoring` never tears the
+    // bridge down in that case.
+    //
+    // Why tear down rather than leave it cached:
+    // 1. The bridge is already dead, not just unauthorized — its captured
+    //    `HIDDevice` can no longer send/receive reports, so it will fail on
+    //    the very next APDU call regardless. Keeping it cached preserves
+    //    nothing useful.
+    // 2. Leaving it alive leaks resources: its `onSessionStateChange`
+    //    subscription and the DMK's internal `DeviceConnectionStateMachine`
+    //    reconnect timers keep running against a device that no longer
+    //    exists from our side.
+    // 3. If the user later re-grants permission, the browser hands back a
+    //    *new* `HIDDevice` object — the old bridge's captured device
+    //    reference can never be revived, so it has to be rebuilt from
+    //    scratch either way. Tearing down now just makes that explicit.
+    //
+    // Falling through to the normal construction path after teardown lets
+    // discovery re-run, reusing the existing `#findPermittedDevice()` path
+    // (yielding the canonical "No permitted Ledger device found" error when
+    // no device is actually available, instead of duplicating that error
+    // construction here).
+    if (this.#bridge) {
+      const hasPermittedDevice = await this.#hasPermittedLedgerDevice();
+      // Re-check after the await: a concurrent teardown or `destroy()` may
+      // already have cleared the cached bridge.
+      if (!hasPermittedDevice && this.#bridge) {
+        await this.#tearDownBridge();
+      }
+    }
+
     if (this.#bridge) {
       return this.#bridge;
     }
@@ -258,6 +296,43 @@ export class LedgerDmkBridgeHandler {
 
     this.#bridgePromise = pending;
     return pending;
+  }
+
+  /**
+   * Checks whether at least one permitted Ledger device is still visible to
+   * WebHID.
+   *
+   * Used to detect WebHID permission revocation (e.g. the user removes the
+   * device from browser settings), which does not fire a native `disconnect`
+   * event and therefore leaves a cached bridge pointing at a dead device —
+   * a gap `#setupDisconnectMonitoring` cannot catch.
+   *
+   * Fails open: returns `true` when WebHID is unavailable or `getDevices()`
+   * throws, treating the result as inconclusive rather than tearing down a
+   * possibly healthy bridge (matching the conservative error handling in
+   * `init()`).
+   *
+   * @returns True if a permitted Ledger device is present or the check is
+   * inconclusive; false only when WebHID is supported and no Ledger device
+   * is permitted.
+   */
+  async #hasPermittedLedgerDevice(): Promise<boolean> {
+    if (!isWebHIDSupported()) {
+      return true;
+    }
+
+    try {
+      const devices = await navigator.hid.getDevices();
+      return devices.some(
+        (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+      );
+    } catch (error) {
+      console.error(
+        '[LedgerDMK] Error checking for permitted Ledger devices:',
+        error,
+      );
+      return true;
+    }
   }
 
   /**
