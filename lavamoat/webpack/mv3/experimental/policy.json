@@ -5323,15 +5323,6 @@
         "buffer>ieee754": true
       }
     },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
-      "globals": {
-        "process.version": true
-      },
-      "packages": {
-        "process": true,
-        "semver": true
-      }
-    },
     "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
       "packages": {
         "string.prototype.matchall>es-errors": true,
@@ -8222,11 +8213,6 @@
         "Intl.Segmenter": true,
         "TextEncoder": true,
         "URL": true
-      }
-    },
-    "@metamask/snaps-utils>validate-npm-package-name": {
-      "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
       }
     },
     "react-markdown>vfile>vfile-message": {
