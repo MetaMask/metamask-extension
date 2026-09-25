@@ -3021,6 +3021,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyBalanceShowMusdLabel: {
+    inProd: false,
+    name: 'moneyBalanceShowMusdLabel',
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   moneyEnableActivityDetails: {
     inProd: true,
     name: 'moneyEnableActivityDetails',

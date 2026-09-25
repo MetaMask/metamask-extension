@@ -49,7 +49,7 @@ type AssetPageHeaderProps = {
 const AssetPageHeaderAddress = ({ address }: { address: string }) => {
   const t = useI18nContext();
   // useCopyToClipboard analysis: Copies a public token contract address
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
 
   return (
     <button

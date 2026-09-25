@@ -173,6 +173,7 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
+      "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
       "optedIn": false,
       "optedInToMarketing": false
@@ -405,9 +406,6 @@
     },
     "LoggingController": {
       "logs": {}
-    },
-    "MetaMetricsController": {
-      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,

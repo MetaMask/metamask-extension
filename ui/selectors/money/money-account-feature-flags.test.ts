@@ -7,6 +7,7 @@ import {
   selectMoneyAccountVaultConfig,
   selectMoneyActivityDetailsEnabled,
   selectMoneyActivityMockDataEnabled,
+  selectMoneyBalanceShowMusdLabelEnabled,
   selectMoneyEarningSectionEnabled,
   selectMoneyHomeScreenCardEnabled,
   selectMoneyDepositMinBalance,
@@ -315,6 +316,28 @@ describe('selectMoneyAccountDepositQuotePipelineEnabled', () => {
             minimumVersion: '9999.0.0',
           },
         }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('selectMoneyBalanceShowMusdLabelEnabled', () => {
+  it('defaults to false', () => {
+    expect(selectMoneyBalanceShowMusdLabelEnabled(mockState())).toBe(false);
+  });
+
+  it('is true when the remote flag is true', () => {
+    expect(
+      selectMoneyBalanceShowMusdLabelEnabled(
+        mockState({ moneyBalanceShowMusdLabel: true }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false when the remote flag is false', () => {
+    expect(
+      selectMoneyBalanceShowMusdLabelEnabled(
+        mockState({ moneyBalanceShowMusdLabel: false }),
       ),
     ).toBe(false);
   });
