@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   Button,
-  ButtonIcon,
-  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
   Icon,
@@ -20,6 +18,7 @@ import {
 } from '../../lib/helpers';
 import { getSecurityStatusBadge } from '../../lib/security-badge';
 import type { AssetData } from '../../lib/types';
+import { OverflowMenu } from '../../../../../shared/components/overflow-menu';
 import { PriceChart } from './price-chart';
 import { TokenAvatar } from './token-avatar';
 
@@ -93,12 +92,10 @@ export function TokenDetail({
             width={28}
             height={28}
           />
-          <ButtonIcon
-            iconName={IconName.MoreVertical}
-            size={ButtonIconSize.Md}
-            ariaLabel="More options"
-            className="text-icon-alternative hover:bg-muted-hover hover:text-icon-default"
-            onClick={onWidgetClick(onDisable)}
+          <OverflowMenu
+            items={[
+              { key: 'disable', label: 'Disable widget', onClick: onDisable },
+            ]}
           />
         </div>
       </header>
