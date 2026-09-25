@@ -74,6 +74,7 @@ import {
   getHardwareWalletName,
   getActiveQuoteInsufficientNativeReserveError,
   computeQuoteValidationErrors,
+  getFromBalances,
   getInsufficientNativeReserveError,
   getQuoteRequestInsufficientBal,
   getFromTokenBalanceInUsd,
@@ -3189,6 +3190,54 @@ describe('Bridge selectors', () => {
       });
       expect(getQuoteRequestInsufficientBal(state)).toBe(true);
       expect(result.isInsufficientNativeReserve).toBe(true);
+    });
+
+    it('matches an Arc network fee denominated as the zero-address ERC-20 against the native balance', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          // 1.32 native Arc USDC in atomic units.
+          fromNativeBalance: '1320000000000000000',
+          fromTokenBalance: '1320000',
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+        },
+      });
+      const zeroAddressNativeAssetId =
+        'eip155:5042/erc20:0x0000000000000000000000000000000000000000' as const;
+      const quote = {
+        quote: {
+          src: {
+            normalizedAmount: '1',
+            asset: { assetId: ARC_ERC20_USDC_BRIDGE_ASSET.assetId },
+          },
+          feeData: {
+            network: [
+              {
+                normalizedAmount: '0.0388609715',
+                asset: { assetId: zeroAddressNativeAssetId, decimals: 18 },
+              },
+            ],
+          },
+        },
+      } as unknown as QuoteResponse;
+
+      const balances = getFromBalances(state);
+
+      expect(balances[zeroAddressNativeAssetId]).toBe('1.32');
+      expect(
+        computeQuoteValidationErrors(quote, {
+          priceImpactThresholds: { warning: 0.05, error: 0.25 },
+          isHardwareWalletAccount: false,
+          minimumBalanceForRentExemptionInLamports: null,
+          fromTokenInputValue: '1',
+          validatedSrcAmount: '1',
+          nativeBalance: '1.32',
+          fromTokenBalance: '1.32',
+          balances,
+        }).isInsufficientGasForQuote,
+      ).toBe(false);
     });
 
     it('should return isInsufficientNativeReserve=false on Arc USDC when source amount keeps the reserve', () => {
