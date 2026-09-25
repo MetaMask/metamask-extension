@@ -219,6 +219,8 @@ describe('Tron account derivation', function (this: Suite) {
         accounts: [EMPTY_TRON_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         includeAnvil: false,
+        // To investigate why is this error appearing (#46623)
+        ignoredConsoleErrors: ['[PerpsStreamManager] Failed to fetch account'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

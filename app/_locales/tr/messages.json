@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "Short kapatıldı - piyasa"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Para yatırma işlemi başarısız oldu"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "$1 yatırılıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "$1 yatırıldı",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Alınamadı"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "$1 alındı",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "Alış işlemi başarısız oldu"
   },
@@ -1927,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "Üçüncü taraf API'ler artık Temel İşlevselliğin bir parçasıdır. Önceki tercihlerinize göre bu ayar $1. Dilediğiniz zaman şurada değiştirebilirsiniz:$2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "devre dışı"
@@ -3065,6 +3087,9 @@
   },
   "copiedToClipboard": {
     "message": "Panoya kopyalandı"
+  },
+  "copy": {
+    "message": "Kopyala"
   },
   "copyAddress": {
     "message": "Adresi panoya kopyala"
@@ -5418,6 +5443,14 @@
   "money": {
     "message": "Bakiye"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "%$1 APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "$1 kazanın",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiridir (APY). APY değişken olup garanti edilmemektedir."
   },
@@ -5559,6 +5592,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Para bakiyeniz üzerinden otomatik getiri elde edin"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Otomatik olarak $1 orana kadar kazanın",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Kilitleme olmadan tam likidite alarak dilediğiniz zaman işlem yapabilir veya para çekebilirsiniz"
   },
@@ -5598,6 +5635,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Ücret yok"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Tahmin, %$1 Yıllık Yüzde Getirinin (APY) bir yıl boyunca değişmeden kalacağı varsayımına dayanır. APY değişkendir ve garanti edilmez. Getiri garantisi yoktur.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Bakiyeniz üzerinden kazanın"
   },
@@ -5616,6 +5657,10 @@
   "moneyHomeApyTooltip": {
     "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiri (APY) oranıdır. APY değişkendir ve garanti edilmez. Fonlar, Veda tarafından yönetilen ve Steakhouse Financial tarafından risk denetimi yapılan, yerleşik kredi piyasalarında getiri sağlayan bir DeFi kasasına yatırılır."
   },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Money account hesabınız otomatik olarak $1 orana kadar kazanır.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money account, Monad tarafından desteklenmektedir."
   },
@@ -5628,12 +5673,6 @@
   "moneyHowItWorksDescription1": {
     "message": "Money account hesabınıza mUSD ekleyin ve otomatik olarak $1 APY (değişkendir) kazanın. Fonlar, Steakhouse Financial risk izlemesi ile Veda tarafından yönetilen bir DeFi kasasına gider. Oran, blokzinciri protokollerinde fon dağıtan üçüncü taraf DeFi platformları tarafından oluşturulur. Stake yok, hak talebinde bulunma yok, kilitleme yok.",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Para bakiyeniz, bakiyenizi harcıyor. MetaMask Card'ınızı bağlayarak dünya çapında 150 milyondan fazla satıcıda harcama yapabilirsiniz. Kullandığınız ana kadar para kazanmaya devam eder."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money account, Monad tarafından desteklenmektedir."
   },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD ekleyin ve en fazla $1 kazanın. Bakiyeniz dolara endekslidir ve her zaman harcamaya, işlem yapmaya veya gönderime hazırdır.",
@@ -5652,17 +5691,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "APY oranı değişir mi?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Sizin! MetaMask, self-custodial bir cüzdandır, yani yalnızca hesap sahibinin Özel Anahtarları ile kontrol edilir. MetaMask fonlarınıza erişemez, donduramaz veya taşıyamaz. Bu, bizi geleneksel banka hesaplarından ve custodial kripto platformlarından ayıran özelliktir. Fonlarınızı tutan üçüncü taraf yoktur."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Paramın kontrolü kimde?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money account açmak ve stabil kripto para yatırmak ücretsizdir. Stabil kripto para dışındaki tokenları yatırırken sizden işlem ücreti alınır. MetaMask Card işlemleri, ATM'den para çekme işlemleri ve yerel para birimi offramp maliyetleri ile ilişkili ücretler de bulunmaktadır. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Kart ücretlerinin tam dökümünü burada görebilirsiniz."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Ücretler var mı?"
@@ -5679,20 +5709,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Para hesabı nedir?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD, MetaMask'in 1:1 dolara endeksli stabil kripto parasıdır. Para bakiyeniz mUSD olarak tutulur ve dilediğiniz zaman harcamaya, gönderilmeye veya işleme hazırdır.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD nedir?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Para bakiyeniz harcama bakiyenizdir; siz kullanana kadar kazanmaya devam eder. Money account hesabı bir banka hesabı, birikim hesabı veya sigortalı mevduat ürünü değildir.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Bu bir tasarruf hesabı mı yoksa harcama hesabı mı?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "SSS"
@@ -6908,6 +6924,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "$1 doğrulanamadı. Tekrar deneyin veya şifrenizi kullanın.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Tekrar deneyin",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 Kaydet",
@@ -8705,7 +8725,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Sağlayıcı seç"
+    "message": "Sağlayıcıları seçin"
   },
   "rampsCompleteBuyTitle": {
     "message": "Satın alma işlemini tamamla",
@@ -8984,6 +9004,10 @@
   },
   "relayerFee": {
     "message": "Relayer ücreti"
+  },
+  "remindMeLater": {
+    "message": "Daha sonra hatırlat",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Kaldır"
@@ -9327,6 +9351,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL adresi"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Bu RPC sağlayıcısı talepleri sınırlandırıyor. Daha sonra tekrar deneyin veya farklı bir RPC URL kullanın."
   },
   "safeTransferFrom": {
     "message": "Güvenli transfer kaynağı"
@@ -11591,6 +11618,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Otomatik"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Kayma toleransı %100 olarak sınırlandırıldı."
   },
   "swapSlippageHighDescription": {
     "message": "Girilen kayma ($1%) çok yüksek kabul edilir ve kötü bir oranla sonuçlanabilir",
