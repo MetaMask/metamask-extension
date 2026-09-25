@@ -62,10 +62,16 @@ function isWebHIDSupported(): boolean {
  * `startDiscovering` emits `DiscoveredDevice` (individual). We flatten the
  * array with `mergeMap` + `from` so the observable contract matches what
  * the DMK's `startDiscovering` use-case expects.
- * @param originalFactory
+ * @param originalFactory - The upstream WebHID transport factory.
+ * @param onTransportCreated - Invoked with each transport the DMK builds, so
+ * the caller can destroy it during teardown. The DMK never destroys its
+ * transports, and `WebHidTransport` registers `navigator.hid` listeners in its
+ * constructor, so without this hook every rebuilt bridge permanently leaks a
+ * listener pair into the long-lived offscreen document.
  */
 function createOffscreenTransportFactory(
   originalFactory: typeof webHidTransportFactory,
+  onTransportCreated: (transport: DestroyableTransport) => void,
 ): typeof webHidTransportFactory {
   return ((deps: Parameters<typeof originalFactory>[0]) => {
     const transport = originalFactory(deps);
@@ -73,11 +79,49 @@ function createOffscreenTransportFactory(
       transport
         .listenToAvailableDevices()
         .pipe(mergeMap((devices) => from(devices)));
+    onTransportCreated(transport as DestroyableTransport);
     return transport;
   }) as typeof webHidTransportFactory;
 }
 
 type LedgerDevice = Parameters<DeviceManagementKit['connect']>[0]['device'];
+
+/**
+ * A DMK transport that may expose a synchronous `destroy()`.
+ *
+ * `destroy()` is not part of the DMK `Transport` interface, but
+ * `WebHidTransport` implements it and it is the only way to abort the
+ * `navigator.hid` connect/disconnect listeners that the transport registers
+ * in its constructor. Neither `bridge.destroy()` (which only calls
+ * `dmk.disconnect({ sessionId })`) nor `dmk.close()` (which only closes
+ * device *sessions*) tears those listeners down.
+ */
+type DestroyableTransport = ReturnType<typeof webHidTransportFactory> & {
+  destroy?: () => void;
+};
+
+/**
+ * Destroys a DMK transport if it supports it, swallowing any failure.
+ *
+ * `WebHidTransport.destroy()` is synchronous and non-throwing (it aborts an
+ * `AbortController` and calls `closeConnection()` on each device connection,
+ * which internally catches `HIDDevice.close()` rejections), but the DMK
+ * `Transport` interface makes no such guarantee, so failures are contained
+ * here rather than surfacing into a teardown path.
+ *
+ * @param transport - The transport created for a bridge, if captured.
+ */
+function destroyTransport(transport: DestroyableTransport | null): void {
+  if (typeof transport?.destroy !== 'function') {
+    return;
+  }
+
+  try {
+    transport.destroy();
+  } catch (error) {
+    console.error('[LedgerDMK] Error destroying transport', error);
+  }
+}
 
 /**
  * Creates a structured `HardwareWalletError` for handler-owned failure paths
@@ -211,7 +255,15 @@ export class LedgerDmkBridgeHandler {
 
   #sessionId: string | null = null;
 
+  // Devices permitted when the cached bridge connected.
+  // Re-granting permission creates new HIDDevice objects.
+  #bridgeHidDevices: Set<HIDDevice> | null = null;
+
   #sessionStateSubscription: Subscription | null = null;
+
+  // Transport created by the cached bridge's DMK. Held so teardown can call
+  // `destroy()` on it; see `destroyTransport`.
+  #bridgeTransport: DestroyableTransport | null = null;
 
   // Stored references to `navigator.hid` listeners so `destroy()` can remove
   // them. Without these references the listeners leak for the lifetime of the
@@ -225,9 +277,61 @@ export class LedgerDmkBridgeHandler {
    * Lazily creates and caches the `LedgerDmkBridge` instance.
    * Deduplicates concurrent calls via `bridgePromise`.
    *
+   * Cached bridges are liveness-checked first: revoking the WebHID permission
+   * grant (e.g. from browser settings) does not fire a native `disconnect`
+   * event, so without this check a stale bridge would survive and every later
+   * action would fail against it instead of re-running device discovery.
+   *
    * @returns A connected `LedgerDmkBridge`.
    */
   async #ensureBridge(): Promise<LedgerDmkBridge> {
+    // Set when the liveness check below already established that no permitted
+    // Ledger device exists. The rebuild must then skip the fast-fail probe in
+    // `#constructBridge` — the probe would deterministically throw against the
+    // same empty `getDevices()` result — and instead re-run full discovery,
+    // which yields the same canonical "No permitted Ledger device found"
+    // error via its timeout when no device is actually available.
+    let skipPermittedDeviceProbe = false;
+    // Detect a stale cached bridge. Revoking the WebHID permission grant
+    // (e.g. removing the device in chrome://settings) does NOT fire a native
+    // `disconnect` event, so `#setupDisconnectMonitoring` never tears the
+    // bridge down in that case.
+    //
+    // Why tear down rather than leave it cached:
+    // 1. The bridge is already dead, not just unauthorized — its captured
+    //    `HIDDevice` can no longer send/receive reports, so it will fail on
+    //    the very next APDU call regardless. Keeping it cached preserves
+    //    nothing useful.
+    // 2. Leaving it alive leaks resources: its `onSessionStateChange`
+    //    subscription and the DMK's internal `DeviceConnectionStateMachine`
+    //    reconnect timers keep running against a device that no longer
+    //    exists from our side.
+    // 3. If the user later re-grants permission, the browser hands back a
+    //    *new* `HIDDevice` object — the old bridge's captured device
+    //    reference can never be revived, so it has to be rebuilt from
+    //    scratch either way. Tearing down now just makes that explicit.
+    //
+    // Falling through to the normal construction path after teardown lets
+    // discovery re-run, reusing the existing `#findPermittedDevice()` path
+    // (yielding the canonical "No permitted Ledger device found" error when
+    // no device is actually available, instead of duplicating that error
+    // construction here).
+    if (this.#bridge) {
+      // Apply the result only to the bridge being checked.
+      const checkedBridge = this.#bridge;
+      const hasPermittedDevice = await this.#hasPermittedLedgerDevice();
+      if (!hasPermittedDevice && this.#bridge === checkedBridge) {
+        skipPermittedDeviceProbe = true;
+        // Do not wait for cleanup of an unresponsive device.
+        const bridgeToDestroy = this.#clearBridgeState();
+        if (bridgeToDestroy) {
+          Promise.resolve(bridgeToDestroy.destroy()).catch(() => {
+            // Best-effort cleanup of the stale bridge.
+          });
+        }
+      }
+    }
+
     if (this.#bridge) {
       return this.#bridge;
     }
@@ -236,11 +340,12 @@ export class LedgerDmkBridgeHandler {
     }
 
     const generation = this.#bridgeGeneration;
-    const pending = this.#constructBridge()
-      .then(async (bridge) => {
+    const pending = this.#constructBridge({ skipPermittedDeviceProbe })
+      .then(async ({ bridge, transport, sessionId, hidDevices }) => {
         // `destroy()` may have cleared state while construction was in flight.
         // Discard the orphaned bridge instead of resurrecting a torn-down handler.
         if (generation !== this.#bridgeGeneration) {
+          destroyTransport(transport);
           try {
             await bridge.destroy();
           } catch {
@@ -259,6 +364,13 @@ export class LedgerDmkBridgeHandler {
         // in-flight `bridgePromise`.
         this.#setupDisconnectMonitoring(bridge);
         this.#bridge = bridge;
+        this.#bridgeTransport = transport;
+        // Published here, not in `constructBridge`, so a discarded in-flight
+        // construction can never overwrite a newer live bridge's session id or
+        // permitted-device snapshot (which later liveness checks compare
+        // against).
+        this.#sessionId = sessionId;
+        this.#bridgeHidDevices = hidDevices;
         return bridge;
       })
       .catch((error: unknown) => {
@@ -266,6 +378,8 @@ export class LedgerDmkBridgeHandler {
         if (generation === this.#bridgeGeneration) {
           this.#bridgePromise = null;
           this.#sessionId = null;
+          this.#bridgeHidDevices = null;
+          this.#bridgeTransport = null;
         }
         throw toHardwareWalletError(error, HardwareWalletType.Ledger);
       });
@@ -275,15 +389,96 @@ export class LedgerDmkBridgeHandler {
   }
 
   /**
+   * Checks whether a device used by the cached bridge is still permitted.
+   * Falls back to the vendor ID when no device snapshot is available.
+   *
+   * @returns Whether the bridge may still be valid.
+   */
+  async #hasPermittedLedgerDevice(): Promise<boolean> {
+    if (!isWebHIDSupported()) {
+      return true;
+    }
+
+    try {
+      const devices = await navigator.hid.getDevices();
+      const bridgeDevices = this.#bridgeHidDevices;
+      if (bridgeDevices) {
+        return devices.some((device) => bridgeDevices.has(device));
+      }
+      return devices.some(
+        (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+      );
+    } catch (error) {
+      console.error(
+        '[LedgerDMK] Error checking for permitted Ledger devices:',
+        error,
+      );
+      return true;
+    }
+  }
+
+  /**
+   * Gets permitted Ledger devices for identity checks.
+   *
+   * @returns The devices, or null when unavailable.
+   */
+  async #getPermittedLedgerHidDevices(): Promise<Set<HIDDevice> | null> {
+    if (!isWebHIDSupported()) {
+      return null;
+    }
+
+    try {
+      const devices = await navigator.hid.getDevices();
+      const ledgerDevices = devices.filter(
+        (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+      );
+      return ledgerDevices.length > 0 ? new Set(ledgerDevices) : null;
+    } catch (error) {
+      console.error(
+        '[LedgerDMK] Error capturing permitted Ledger devices:',
+        error,
+      );
+      return null;
+    }
+  }
+
+  /**
    * Constructs a fresh `LedgerDmkBridge`, discovers a permitted device,
    * connects, and waits for session readiness.
    *
-   * @returns A connected `LedgerDmkBridge`.
+   * Nothing is assigned to instance fields here — the transport, session id,
+   * and HID device snapshot are all returned to the caller, which publishes
+   * them only after its generation check passes. Writing them here would let a
+   * construction that is later discarded (a stale-bridge rebuild racing
+   * `destroy()`/`forceReset()`) clobber a newer live bridge's state: the loser's
+   * transport reference would leak its `navigator.hid` listeners, and the
+   * overwritten `#bridgeHidDevices` snapshot would make later liveness checks
+   * compare the live bridge against the wrong `HIDDevice` set — tearing down a
+   * healthy bridge or keeping a dead one.
+   *
+   * @param options - Construction options.
+   * @param options.skipPermittedDeviceProbe - Skips the fast-fail
+   * `getDevices()` probe. Used only on the liveness-check rebuild path, where
+   * `#ensureBridge` just observed an empty `getDevices()` result and the probe
+   * would deterministically throw instead of letting discovery re-run.
+   * @returns The connected `LedgerDmkBridge` plus the transport its DMK
+   * created, the session id, and the permitted-device snapshot.
    */
-  async #constructBridge(): Promise<LedgerDmkBridge> {
+  async #constructBridge(
+    options: { skipPermittedDeviceProbe?: boolean } = {},
+  ): Promise<{
+    bridge: LedgerDmkBridge;
+    transport: DestroyableTransport | null;
+    sessionId: string;
+    hidDevices: Set<HIDDevice> | null;
+  }> {
     console.log('[LedgerDMK] constructBridge: creating LedgerDmkBridge');
+    let transport: DestroyableTransport | null = null;
     const offscreenTransportFactory = createOffscreenTransportFactory(
       webHidTransportFactory,
+      (createdTransport) => {
+        transport = createdTransport;
+      },
     );
     const bridge = new LedgerDmkBridge({
       // Wrapped so `startDiscovering` uses already-permitted devices via
@@ -294,9 +489,22 @@ export class LedgerDmkBridgeHandler {
 
     try {
       console.log('[LedgerDMK] constructBridge: finding permitted device');
+
+      // Snapshot the permitted devices with a single `getDevices()` call:
+      // - Probe path (default): the probe doubles as the snapshot and
+      //   fast-fails when no Ledger device is granted — discovery could not
+      //   succeed anyway.
+      // - Rebuild path (`skipPermittedDeviceProbe`): the liveness check in
+      //   `#ensureBridge` just read an empty `getDevices()` result, so there
+      //   is nothing to probe — capture fail-open instead and let discovery
+      //   surface the canonical error via its timeout.
+      const hidDevices = options.skipPermittedDeviceProbe
+        ? await this.#getPermittedLedgerHidDevices()
+        : await this.#assertPermittedDevicePresent();
+
       const device = await this.#findPermittedDevice(bridge);
       console.log('[LedgerDMK] constructBridge: connecting to device');
-      this.#sessionId = await bridge.connect({ device });
+      const sessionId = await bridge.connect({ device });
 
       // `connect()` sets isConnected synchronously and starts session monitoring.
       // The bridge's signing methods handle device-action completion internally
@@ -304,13 +512,20 @@ export class LedgerDmkBridgeHandler {
       // (onSessionStateChange is a Subject, not BehaviorSubject — subscribing
       // after connect() would miss the initial emission.)
       console.log('[LedgerDMK] constructBridge: session ready', {
-        sessionId: this.#sessionId,
+        sessionId,
       });
 
-      return bridge;
+      return { bridge, transport, sessionId, hidDevices };
     } catch (error) {
       // Discovery/connect failures must not leave an orphaned DMK instance in
       // the long-lived offscreen document (HID state, transports, etc.).
+      //
+      // Destroy the transport *before* awaiting `bridge.destroy()`: this
+      // transport was never published to `#bridgeTransport`, so
+      // `#clearBridgeState()` cannot abort it, and `bridge.destroy()` can hang
+      // indefinitely against a permission-revoked device — leaving the
+      // transport's `navigator.hid` listeners registered forever.
+      destroyTransport(transport);
       try {
         await bridge.destroy();
       } catch {
@@ -348,7 +563,8 @@ export class LedgerDmkBridgeHandler {
   }
 
   /**
-   * Fails fast when the extension holds no WebHID grant for a Ledger device.
+   * Fails fast when the extension holds no WebHID grant for a Ledger device,
+   * returning the granted devices as the snapshot for later liveness checks.
    *
    * `navigator.hid.getDevices()` resolves to `[]` when the origin has not been
    * granted access. The transport's `listenToAvailableDevices()` observable
@@ -358,20 +574,25 @@ export class LedgerDmkBridgeHandler {
    *
    * The grant itself must originate from a user-gesture context (see
    * `requestWebHidDevices`); this probe only consumes it.
+   *
+   * @returns The currently permitted Ledger devices, or null when WebHID is
+   * unavailable (leaving later liveness checks on their vendor-ID fallback).
    */
-  async #assertPermittedDevicePresent(): Promise<void> {
+  async #assertPermittedDevicePresent(): Promise<Set<HIDDevice> | null> {
     if (!isWebHIDSupported()) {
-      return;
+      return null;
     }
 
     const devices = await navigator.hid.getDevices();
-    const hasLedger = devices.some(
+    const ledgerDevices = devices.filter(
       (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
     );
 
-    if (!hasLedger) {
+    if (ledgerDevices.length === 0) {
       throw createNoPermittedDeviceError();
     }
+
+    return new Set(ledgerDevices);
   }
 
   /**
@@ -382,15 +603,14 @@ export class LedgerDmkBridgeHandler {
    * `startDiscovering` uses `navigator.hid.getDevices()` (already-permitted
    * devices, no user gesture) instead of `requestDevice()` (picker dialog).
    *
-   * The permitted-device probe above fails fast when the extension holds no
-   * grant, so this only runs once at least one Ledger device is permitted.
+   * The caller (`#constructBridge`) runs the permitted-device probe first, so
+   * this only runs once at least one Ledger device is permitted — except on
+   * the liveness-check rebuild path, where the probe is deliberately skipped.
    *
    * @param bridge - The `LedgerDmkBridge` instance to discover through.
    * @returns The first discovered device.
    */
   async #findPermittedDevice(bridge: LedgerDmkBridge): Promise<LedgerDevice> {
-    await this.#assertPermittedDevicePresent();
-
     return firstValueFrom(
       bridge.startDiscovering({}).pipe(
         timeoutOperator(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS),
@@ -599,20 +819,22 @@ export class LedgerDmkBridgeHandler {
   }
 
   /**
-   * Tears down the cached bridge and session state without removing the
-   * HID device-event listeners.
+   * Synchronously clears the cached bridge, session id, pending
+   * bridge-construction promise, and session-state subscription, and bumps
+   * `bridgeGeneration` so in-flight `constructBridge()` calls are discarded.
    *
-   * Used on device disconnect: the router keeps the same handler instance,
-   * so the HID listeners must stay registered to detect replug. Bumping
-   * `bridgeGeneration` also discards any in-flight `constructBridge()`
-   * result so it cannot resurrect the torn-down bridge.
+   * Shared by every teardown path (`#tearDownBridge`, `forceReset`, the
+   * liveness-check rebuild in `#ensureBridge`) so `ensureBridge()` never
+   * returns a mid-destroy bridge, regardless of how destroy is awaited.
    *
-   * Bridge references are cleared synchronously before awaiting
-   * `bridge.destroy()`, matching the legacy handler's `closeTransport()`.
-   * That way `ensureBridge()` never returns a mid-destroy bridge, and a
-   * hung `destroy()` cannot permanently stick callers on a dead instance.
+   * The transport is destroyed here too, synchronously, so the
+   * `navigator.hid` listeners it registered are gone even on the paths that
+   * fire-and-forget `bridge.destroy()`. A later `dmk.disconnect()` against the
+   * destroyed transport is a no-op, not an error.
+   *
+   * @returns The bridge that was cached, if any, for the caller to destroy.
    */
-  async #tearDownBridge(): Promise<void> {
+  #clearBridgeState(): LedgerDmkBridge | null {
     this.#bridgeGeneration += 1;
     if (this.#sessionStateSubscription) {
       this.#sessionStateSubscription.unsubscribe();
@@ -620,11 +842,27 @@ export class LedgerDmkBridgeHandler {
     }
 
     const bridgeToDestroy = this.#bridge;
-    // Clear synchronously before the first await so concurrent ensureBridge()
+    destroyTransport(this.#bridgeTransport);
+    // Clear synchronously before any await so concurrent ensureBridge()
     // callers construct a fresh bridge instead of reusing one mid-destroy.
     this.#bridge = null;
     this.#bridgePromise = null;
     this.#sessionId = null;
+    this.#bridgeHidDevices = null;
+    this.#bridgeTransport = null;
+
+    return bridgeToDestroy;
+  }
+
+  /**
+   * Tears down the cached bridge and session state without removing the
+   * HID device-event listeners.
+   *
+   * Used on device disconnect: the router keeps the same handler instance,
+   * so the HID listeners must stay registered to detect replug.
+   */
+  async #tearDownBridge(): Promise<void> {
+    const bridgeToDestroy = this.#clearBridgeState();
 
     if (!bridgeToDestroy) {
       return;
@@ -639,23 +877,11 @@ export class LedgerDmkBridgeHandler {
 
   /**
    * Best-effort synchronous reset of the cached bridge, invoked when a router
-   * action has wedged past its timeout.
-   *
-   * Clears bridge references immediately (same as the start of
-   * `#tearDownBridge`) so the next action opens a fresh bridge instead of
-   * queuing behind a hung `destroy()`. Async destroy is fire-and-forget.
+   * action has wedged past its timeout. Destroy is fire-and-forget so the
+   * next action doesn't queue behind a hung `destroy()`.
    */
   forceReset(): void {
-    this.#bridgeGeneration += 1;
-    if (this.#sessionStateSubscription) {
-      this.#sessionStateSubscription.unsubscribe();
-      this.#sessionStateSubscription = null;
-    }
-
-    const bridgeToDestroy = this.#bridge;
-    this.#bridge = null;
-    this.#bridgePromise = null;
-    this.#sessionId = null;
+    const bridgeToDestroy = this.#clearBridgeState();
 
     if (!bridgeToDestroy) {
       return;
