@@ -323,12 +323,12 @@ export class LedgerDmkBridgeHandler {
         // `destroy()` may have cleared state while construction was in flight.
         // Discard the orphaned bridge instead of resurrecting a torn-down handler.
         if (generation !== this.#bridgeGeneration) {
+          destroyTransport(transport);
           try {
             await bridge.destroy();
           } catch {
             // Best-effort cleanup of the orphaned bridge.
           }
-          destroyTransport(transport);
           throw createLedgerError(
             'Ledger bridge was destroyed during construction',
             ErrorCode.DeviceInvalidSession,
@@ -466,12 +466,18 @@ export class LedgerDmkBridgeHandler {
     } catch (error) {
       // Discovery/connect failures must not leave an orphaned DMK instance in
       // the long-lived offscreen document (HID state, transports, etc.).
+      //
+      // Destroy the transport *before* awaiting `bridge.destroy()`: this
+      // transport was never published to `#bridgeTransport`, so
+      // `#clearBridgeState()` cannot abort it, and `bridge.destroy()` can hang
+      // indefinitely against a permission-revoked device — leaving the
+      // transport's `navigator.hid` listeners registered forever.
+      destroyTransport(transport);
       try {
         await bridge.destroy();
       } catch {
         // Best-effort cleanup of a partially constructed bridge.
       }
-      destroyTransport(transport);
       throw error;
     }
   }

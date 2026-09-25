@@ -1355,6 +1355,88 @@ describe('LedgerDmkBridgeHandler', () => {
       expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
     });
 
+    // The in-flight transport is not yet stored on `#bridgeTransport`, so
+    // `#clearBridgeState()` cannot abort it. If `destroyTransport` waited on
+    // `bridge.destroy()` — which hangs against a permission-revoked device —
+    // the transport's `navigator.hid` listeners would leak for the lifetime
+    // of the offscreen document.
+    it('destroys the transport without awaiting bridge.destroy() when construction fails', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      mockBridgeConnect.mockRejectedValueOnce(new Error('connect failed'));
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        async () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
+      actionPromise.catch(() => undefined);
+
+      // Let construction reach its failure path and hang on bridge.destroy().
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveDestroy).toBeDefined();
+
+      // Listeners must already be gone even though destroy() never settled.
+      expect(mockTransports).toHaveLength(1);
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+
+      resolveDestroy?.();
+      await expect(actionPromise).rejects.toThrow();
+    });
+
+    it('destroys the transport without awaiting bridge.destroy() when an in-flight bridge is discarded', async () => {
+      const consoleLogSpy = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+
+      let resolveConnect: ((sessionId: string) => void) | undefined;
+      mockBridgeConnect.mockImplementationOnce(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveConnect = resolve;
+          }),
+      );
+
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
+      actionPromise.catch(() => undefined);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveConnect).toBeDefined();
+
+      // Retire the handler so the in-flight construction is orphaned.
+      await handler.destroy();
+
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        async () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      resolveConnect?.('orphan-session-id');
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveDestroy).toBeDefined();
+
+      // The orphaned transport must be destroyed even though the orphaned
+      // bridge's destroy() is still hanging.
+      expect(mockTransports).toHaveLength(1);
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+
+      resolveDestroy?.();
+      await expect(actionPromise).rejects.toMatchObject({
+        code: ErrorCode.DeviceInvalidSession,
+      });
+      consoleLogSpy.mockRestore();
+    });
+
     it('does not destroy the transport twice across repeated teardown', async () => {
       await connectBridge();
 
