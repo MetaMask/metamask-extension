@@ -76,7 +76,6 @@ import {
 import { getDelegationControllerMessenger } from './delegation/delegation-controller-messenger';
 import {
   getAccountTreeControllerMessenger,
-  getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
   getSnapAccountServiceMessenger,
@@ -705,7 +704,7 @@ export const MESSENGER_FACTORIES = {
   },
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,
-    getInitMessenger: getAccountTreeControllerInitMessenger,
+    getInitMessenger: noop,
   },
   WebSocketService: {
     getMessenger: getWebSocketServiceMessenger,
