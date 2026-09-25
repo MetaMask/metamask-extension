@@ -27,6 +27,7 @@ const WRITE_RETRY_DELAY_MS =
 
 const mockStoreSet = jest.fn();
 const mockStoreSetKeyValues = jest.fn();
+const mockStoreGetBytesInUseByKey = jest.fn();
 const mockStoreGet = jest.fn();
 const mockStoreReset = jest.fn();
 
@@ -35,6 +36,7 @@ jest.mock('./extension-store', () => {
     return {
       set: mockStoreSet,
       setKeyValues: mockStoreSetKeyValues,
+      getBytesInUseByKey: mockStoreGetBytesInUseByKey,
       get: mockStoreGet,
       reset: mockStoreReset,
     };
@@ -854,22 +856,76 @@ describe('PersistenceManager', () => {
       const barControllerLength = JSON.stringify({ enabled: true }).length;
       expect(event).toStrictEqual({
         bytesByController: new Map([
-          ['FooController', fooControllerLength],
           ['BarController', barControllerLength],
+          ['FooController', fooControllerLength],
         ]),
         coalescedUpdates: 3,
-        controllerKeys: ['FooController', 'BarController'],
         idleStatus: 'idle',
         measurementDurationMs: expect.any(Number),
         sampleRate: 1,
+        sizeMeasurementSource: 'json_string_length_estimate',
         totalBytes: barControllerLength + fooControllerLength,
         writeDurationMs: expect.any(Number),
       });
-      expect([...event.bytesByController.keys()]).toStrictEqual(
-        event.controllerKeys,
-      );
       expect(JSON.stringify(event)).not.toContain(
         'latest controller state value',
+      );
+    });
+
+    it('uses exact storage byte measurements when available', async () => {
+      mockStoreGetBytesInUseByKey.mockResolvedValue(
+        new Map([
+          ['BarController', 11],
+          ['FooController', 29],
+        ]),
+      );
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      manager.update('BarController', { bar: 'baz' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(mockStoreGetBytesInUseByKey).toHaveBeenCalledWith([
+        'FooController',
+        'BarController',
+      ]);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bytesByController: new Map([
+            ['FooController', 29],
+            ['BarController', 11],
+          ]),
+          sizeMeasurementSource: 'storage_get_bytes_in_use',
+          totalBytes: 40,
+        }),
+      );
+    });
+
+    it('falls back to string length estimates when getBytesInUseByKey returns an empty Map', async () => {
+      mockStoreGetBytesInUseByKey.mockResolvedValue(new Map());
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sizeMeasurementSource: 'json_string_length_estimate',
+        }),
       );
     });
 
@@ -883,12 +939,40 @@ describe('PersistenceManager', () => {
       await manager.persist();
 
       expect(listener).not.toHaveBeenCalled();
+      expect(mockStoreGetBytesInUseByKey).not.toHaveBeenCalled();
       expect(stringifySpy).not.toHaveBeenCalledWith(
         expect.objectContaining({
           FooController: expect.anything(),
         }),
       );
       stringifySpy.mockRestore();
+    });
+
+    it('falls back to string length estimates when exact storage byte measurement fails', async () => {
+      mockStoreGetBytesInUseByKey.mockRejectedValue(
+        new Error('getBytesInUse failed'),
+      );
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bytesByController: new Map([
+            ['FooController', JSON.stringify({ foo: 'bar' }).length],
+          ]),
+          sizeMeasurementSource: 'json_string_length_estimate',
+          totalBytes: JSON.stringify({ foo: 'bar' }).length,
+        }),
+      );
     });
 
     it('reports unknown idle status when no idle source is configured', async () => {
