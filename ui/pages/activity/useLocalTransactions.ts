@@ -9,7 +9,11 @@ import {
   selectLocalTransactionsByHash,
 } from '../../selectors/activity';
 import { selectRampsSettlementHashes } from '../../selectors/rampsController';
-import { activityMatchesAssetId, type ActivityListFilter } from './helpers';
+import {
+  activityMatchesAssetId,
+  activityMatchesNetworks,
+  type ActivityListFilter,
+} from './helpers';
 
 export function useLocalTransactions(filters: ActivityListFilter) {
   const localItems = useSelector(selectLocalActivityItems);
@@ -24,8 +28,7 @@ export function useLocalTransactions(filters: ActivityListFilter) {
     if (assetId) {
       items = items.filter((item) => activityMatchesAssetId(item, assetId));
     } else if (networks?.length) {
-      const selectedNetworks = new Set(networks);
-      items = items.filter((item) => selectedNetworks.has(item.chainId));
+      items = items.filter((item) => activityMatchesNetworks(item, networks));
     } else {
       return [];
     }

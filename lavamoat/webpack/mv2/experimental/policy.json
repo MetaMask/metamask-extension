@@ -1096,12 +1096,12 @@
       },
       "packages": {
         "@metamask/contract-metadata": true,
-        "@metamask/controller-utils": true,
+        "@metamask/client-utils>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/client-utils>@metamask/transaction-controller": true,
-        "@metamask/utils": true,
-        "eth-chainlist": true
+        "@metamask/client-utils>@metamask/utils": true,
+        "@metamask/client-utils>eth-chainlist": true
       }
     },
     "@metamask/compliance-controller": {
@@ -1247,6 +1247,23 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/bridge-status-controller>@metamask/controller-utils>@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/client-utils>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/client-utils>@metamask/controller-utils>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
@@ -3344,6 +3361,13 @@
         "lodash": true
       }
     },
+    "@metamask/client-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
     "@metamask/wallet>@metamask/config-registry-controller>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -3387,6 +3411,13 @@
       }
     },
     "@metamask/bridge-status-controller>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
+    "@metamask/client-utils>@metamask/controller-utils>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
@@ -5043,15 +5074,6 @@
       "packages": {
         "base64-js": true,
         "buffer>ieee754": true
-      }
-    },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
-      "globals": {
-        "process.version": true
-      },
-      "packages": {
-        "process": true,
-        "semver": true
       }
     },
     "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
@@ -7871,11 +7893,6 @@
         "Intl.Segmenter": true,
         "TextEncoder": true,
         "URL": true
-      }
-    },
-    "@metamask/snaps-utils>validate-npm-package-name": {
-      "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
       }
     },
     "react-markdown>vfile>vfile-message": {

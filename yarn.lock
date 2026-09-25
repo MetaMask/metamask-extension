@@ -6032,19 +6032,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-utils@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "@metamask/client-utils@npm:2.0.2"
+"@metamask/client-utils@npm:@metamask-previews/client-utils@3.0.3-preview-c8ffe7b0e":
+  version: 3.0.3-preview-c8ffe7b0e
+  resolution: "@metamask-previews/client-utils@npm:3.0.3-preview-c8ffe7b0e"
   dependencies:
     "@metamask/contract-metadata": "npm:^2.4.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^8.1.1"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/core-backend": "npm:^11.0.0"
     "@metamask/keyring-api": "npm:^24.0.0"
     "@metamask/slip44": "npm:^4.3.0"
-    "@metamask/transaction-controller": "npm:^69.5.2"
-    "@metamask/utils": "npm:^11.11.0"
-    eth-chainlist: "npm:^0.0.795"
-  checksum: 10/ca3a3f1c2f4d9a88c6cb67327616b7fa99d2bb2c52ec77328dd70e1803976105944a158c34ed4e56ae80747ed9f3d5c372e7083c18d50001546acdb3e5685ae9
+    "@metamask/transaction-controller": "npm:^72.0.0"
+    "@metamask/utils": "npm:^12.0.0"
+    eth-chainlist: "npm:^0.0.840"
+  checksum: 10/3681f3f970adc25391eb49fbe01fa66bbd775917757942f41b885b0fc66a0a71012bb9ae10a6bef4309a588c26ccfb7950dfcf28e5d1268685ebe467d785fd65
   languageName: node
   linkType: hard
 
@@ -6223,25 +6223,6 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     uuid: "npm:^8.3.2"
   checksum: 10/d728bd8db6f832b479811288f00b8f2fd78561d42046ee08ceee6068632e72bcf2fdd229f3a7077518a2766f9eacef14b3e224dc0bdcc27d3cd5d2f6d81eb55c
-  languageName: node
-  linkType: hard
-
-"@metamask/core-backend@npm:^8.1.1":
-  version: 8.1.2
-  resolution: "@metamask/core-backend@npm:8.1.2"
-  dependencies:
-    "@metamask/account-tree-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/keyring-controller": "npm:^27.1.1"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^29.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^5.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^5.62.16"
-    async-mutex: "npm:^0.5.0"
-    cockatiel: "npm:^3.1.2"
-    uuid: "npm:^8.3.2"
-  checksum: 10/d8dffe22b270bc4e47f188b2314eda02ffeead162149889c6a69b11a05053d7d482228ccf38aa79caf72a5007ce2d7b14da9f3b89b7f87d2fda0d99dc7a3592f
   languageName: node
   linkType: hard
 
@@ -8406,19 +8387,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:5.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    uuid: "npm:^8.3.2"
-  checksum: 10/8d8b713def28721ade47a9106aef22d885c1d41006ad558b26ae38fffeda8a57e7a972fcbd87f73c2f1fdfdd2a53a9d9d716654770671aca245398684fcb7a52
-  languageName: node
-  linkType: hard
-
 "@metamask/remote-feature-flag-controller@npm:^6.0.0, @metamask/remote-feature-flag-controller@npm:^6.1.0, @metamask/remote-feature-flag-controller@npm:^6.1.1":
   version: 6.1.1
   resolution: "@metamask/remote-feature-flag-controller@npm:6.1.1"
@@ -9201,7 +9169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^69.5.2, @metamask/transaction-controller@npm:^69.6.1, @metamask/transaction-controller@npm:^69.7.0, @metamask/transaction-controller@npm:^69.8.0, @metamask/transaction-controller@npm:^69.8.1":
+"@metamask/transaction-controller@npm:^69.6.1, @metamask/transaction-controller@npm:^69.7.0, @metamask/transaction-controller@npm:^69.8.0, @metamask/transaction-controller@npm:^69.8.1":
   version: 69.8.1
   resolution: "@metamask/transaction-controller@npm:69.8.1"
   dependencies:
@@ -9276,6 +9244,45 @@ __metadata:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
   checksum: 10/bb12db5f7922f6c5f7d36389b10f2847634b43dd2ae84fe3245fed5c886297def59701b6875f115853047afe80327f55684bdc63a7a7075b4286ab096fcb40cf
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@npm:^72.0.0":
+  version: 72.0.0
+  resolution: "@metamask/transaction-controller@npm:72.0.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
+    "@metamask/accounts-controller": "npm:^40.0.0"
+    "@metamask/approval-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/core-backend": "npm:^11.0.0"
+    "@metamask/gas-fee-controller": "npm:^27.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/network-controller": "npm:^37.0.0"
+    "@metamask/nonce-tracker": "npm:^6.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^12.0.0"
+    async-mutex: "npm:^0.5.0"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.5"
+    eth-method-registry: "npm:^4.0.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fast-json-patch: "npm:^3.1.1"
+    lodash-es: "npm:^4.17.21"
+    uuid: "npm:^11.1.1"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+  checksum: 10/91d53d14a3245acb641a41b69db2f22bb782e1f1e9b6eb3d195279e323a8171d27f5e5ae19108749e094ce99c2ad3c9ec6fef8bac7e7e04f40e77c28223f2596
   languageName: node
   linkType: hard
 
@@ -20476,15 +20483,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"builtins@npm:^5.0.0":
-  version: 5.0.1
-  resolution: "builtins@npm:5.0.1"
-  dependencies:
-    semver: "npm:^7.0.0"
-  checksum: 10/90136fa0ba98b7a3aea33190b1262a5297164731efb6a323b0231acf60cc2ea0b2b1075dbf107038266b8b77d6045fa9631d1c3f90efc1c594ba61218fbfbb4c
-  languageName: node
-  linkType: hard
-
 "bundle-name@npm:^4.1.0":
   version: 4.1.0
   resolution: "bundle-name@npm:4.1.0"
@@ -24786,6 +24784,13 @@ __metadata:
   version: 0.0.795
   resolution: "eth-chainlist@npm:0.0.795"
   checksum: 10/1bdc634d107fd114c4b5567fba2003acc740c3e4e877dcc56db2b00071842003a2b918da1601c07451ae497291b63c923c89429d4f77dc41faf04cd186725a5e
+  languageName: node
+  linkType: hard
+
+"eth-chainlist@npm:^0.0.840":
+  version: 0.0.840
+  resolution: "eth-chainlist@npm:0.0.840"
+  checksum: 10/b4511e61eec45432594cd18e07decd830e5100293340b307f21d02fd61a425612d070d5e295242507b50cd51e2a97e7fe7c4636c146646f28d7438884734b682
   languageName: node
   linkType: hard
 
@@ -32051,7 +32056,7 @@ __metadata:
     "@metamask/claims-controller": "npm:^0.6.1"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.10.0"
-    "@metamask/client-utils": "npm:^2.0.2"
+    "@metamask/client-utils": "npm:@metamask-previews/client-utils@3.0.3-preview-c8ffe7b0e"
     "@metamask/compliance-controller": "npm:^2.1.0"
     "@metamask/config-registry-controller": "npm:^3.0.0"
     "@metamask/connectivity-controller": "npm:^0.3.0"
@@ -38438,7 +38443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.2, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3, semver@npm:^7.8.5":
+"semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.2, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3, semver@npm:^7.8.5":
   version: 7.8.5
   resolution: "semver@npm:7.8.5"
   bin:
@@ -42165,16 +42170,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"validate-npm-package-name@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "validate-npm-package-name@npm:5.0.0"
-  dependencies:
-    builtins: "npm:^5.0.0"
-  checksum: 10/5342a994986199b3c28e53a8452a14b2bb5085727691ea7aa0d284a6606b127c371e0925ae99b3f1ef7cc7d2c9de75f52eb61a3d1cc45e39bca1e3a9444cbb4e
-  languageName: node
-  linkType: hard
-
-"validate-npm-package-name@npm:^7.0.0":
+"validate-npm-package-name@npm:^7.0.0, validate-npm-package-name@npm:^7.0.2":
   version: 7.0.2
   resolution: "validate-npm-package-name@npm:7.0.2"
   checksum: 10/2a9bdc6fd5e4284c8e02279446bfd3c38c0c01222555fd3b00b4765d9d47b217d4a200910be71b80b958f6baf40d2d32e812a8632633a2ce376a9b3b74811072
