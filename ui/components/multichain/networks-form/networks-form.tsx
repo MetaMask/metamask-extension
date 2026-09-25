@@ -5,9 +5,12 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  FormTextField,
   IconName,
   TextButton,
   TextButtonSize,
+  TextFieldSize,
+  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -52,19 +55,11 @@ import {
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../store/actions';
-import {
-  Box,
-  FormTextField,
-  FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
-  Text,
-} from '../../component-library';
+import { Box, HelpText, HelpTextSeverity, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -525,44 +520,10 @@ export const NetworksForm = ({
 
         <FormTextField
           id="networkName"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
           autoFocus
-          helpText={
-            ((name && warnings?.name?.msg) || suggestedName) && (
-              <>
-                {name && warnings?.name?.msg && (
-                  <HelpText
-                    variant={TextVariant.bodySm}
-                    severity={HelpTextSeverity.Warning}
-                  >
-                    {warnings.name.msg}
-                  </HelpText>
-                )}
-
-                {suggestedName && (
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textDefault}
-                    data-testid="network-form-name-suggestion"
-                  >
-                    {t('suggestedTokenName')}
-                    <TextButton
-                      size={TextButtonSize.BodySm}
-                      onClick={() => {
-                        setName(suggestedName);
-                      }}
-                      className="px-1 align-baseline"
-                    >
-                      {suggestedName}
-                    </TextButton>
-                  </Text>
-                )}
-              </>
-            )
-          }
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
@@ -570,23 +531,57 @@ export const NetworksForm = ({
           }}
           label={t('networkName')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-network-name',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            {
+              'data-testid': 'network-form-network-name',
+            } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={name}
         />
+        {(name && warnings?.name?.msg) || suggestedName ? (
+          <Box marginTop={1}>
+            {name && warnings?.name?.msg ? (
+              <HelpText
+                variant={TextVariant.bodySm}
+                severity={HelpTextSeverity.Warning}
+              >
+                {warnings.name.msg}
+              </HelpText>
+            ) : null}
+
+            {suggestedName ? (
+              <Text
+                as="span"
+                variant={TextVariant.bodySm}
+                color={TextColor.textDefault}
+                data-testid="network-form-name-suggestion"
+              >
+                {t('suggestedTokenName')}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    setName(suggestedName);
+                  }}
+                  className="px-1 align-baseline"
+                >
+                  {suggestedName}
+                </TextButton>
+              </Text>
+            ) : null}
+          </Box>
+        ) : null}
         <DropdownEditor
           title={t('defaultRpcUrl')}
           placeholder={t('addAUrl')}
           style={DropdownEditorStyle.PopoverStyle}
           items={rpcUrls.rpcEndpoints}
           itemKey={(endpoint) => endpoint.url}
+          itemDataTestId={(endpoint, index) =>
+            `network-form-rpc-option-${endpoint.name ?? String(index)}`
+          }
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
@@ -659,44 +654,40 @@ export const NetworksForm = ({
         {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
-            size={FormTextFieldSize.Lg}
-            paddingTop={4}
+            size={TextFieldSize.Lg}
+            className="pt-4"
             label={t('failoverRpcUrl')}
             labelProps={{
-              children: undefined,
-              variant: TextVariant.bodyMdMedium,
+              variant: DsTextVariant.BodyMd,
             }}
-            textFieldProps={{
-              borderRadius: BorderRadius.LG,
-            }}
+            textFieldProps={{ className: 'rounded-lg' }}
             value={onlyKeepHost(defaultFailoverUrls[0])}
-            disabled={true}
+            isDisabled
           />
         ) : null}
 
         <FormTextField
           id="chainId"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterChainId')}
-          paddingTop={4}
+          className="pt-4"
           data-testid="network-form-chain-id-input"
           onChange={(e) => {
             setChainId(e.target?.value.trim());
           }}
-          error={Boolean(errors?.chainId)}
+          isError={Boolean(errors?.chainId)}
           label={t('chainId')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-chain-id',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            {
+              'data-testid': 'network-form-chain-id',
+            } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={chainId}
-          disabled={Boolean(existingNetwork)}
+          isDisabled={Boolean(existingNetwork)}
         />
 
         {errors.chainId?.msg ? (
@@ -736,31 +727,10 @@ export const NetworksForm = ({
         ) : null}
         <FormTextField
           id="nativeCurrency"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterSymbol')}
-          paddingTop={4}
+          className="pt-4"
           data-testid="network-form-ticker"
-          helpText={
-            suggestedTicker ? (
-              <Text
-                as="span"
-                variant={TextVariant.bodySm}
-                color={TextColor.textDefault}
-                data-testid="network-form-ticker-suggestion"
-              >
-                {t('suggestedCurrencySymbol')}
-                <TextButton
-                  size={TextButtonSize.BodySm}
-                  onClick={() => {
-                    setTicker(suggestedTicker);
-                  }}
-                  className="px-1 align-baseline"
-                >
-                  {suggestedTicker}
-                </TextButton>
-              </Text>
-            ) : null
-          }
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
@@ -768,17 +738,36 @@ export const NetworksForm = ({
           }}
           label={t('currencySymbol')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-ticker-input',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            {
+              'data-testid': 'network-form-ticker-input',
+            } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={ticker}
         />
+        {suggestedTicker ? (
+          <Text
+            as="span"
+            variant={TextVariant.bodySm}
+            color={TextColor.textDefault}
+            marginTop={1}
+            data-testid="network-form-ticker-suggestion"
+          >
+            {t('suggestedCurrencySymbol')}
+            <TextButton
+              size={TextButtonSize.BodySm}
+              onClick={() => {
+                setTicker(suggestedTicker);
+              }}
+              className="px-1 align-baseline"
+            >
+              {suggestedTicker}
+            </TextButton>
+          </Text>
+        ) : null}
         {ticker && warnings.ticker?.msg ? (
           <HelpText
             variant={TextVariant.bodySm}
@@ -824,7 +813,7 @@ export const NetworksForm = ({
           }}
           renderItem={(item) => (
             <Text
-              as="button"
+              as="span"
               paddingLeft={0}
               paddingRight={0}
               paddingTop={3}
