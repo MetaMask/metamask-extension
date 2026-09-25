@@ -123,7 +123,20 @@ describe('<WalletInitiatedHeader />', () => {
   });
 
   it('shows sendToPerps as the header title for perpsDeposit from money account', () => {
-    const store = configureStore(getPerpsDepositState());
+    const state = getPerpsDepositState();
+    const store = configureStore({
+      ...state,
+      metamask: {
+        ...state.metamask,
+        remoteFeatureFlags: {
+          ...state.metamask.remoteFeatureFlags,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          confirmations_pay_extended: {
+            enableMoneyAccountTransactions: { perpsDeposit: true },
+          },
+        },
+      },
+    });
     const { getByText } = renderWithConfirmContextProvider(
       <WalletInitiatedHeader />,
       store,
@@ -131,6 +144,17 @@ describe('<WalletInitiatedHeader />', () => {
     );
 
     expect(getByText(tEn('sendToPerps'))).toBeInTheDocument();
+  });
+
+  it('keeps perpsDepositFundsTitle when Money Account pay is not enabled for perps deposit', () => {
+    const store = configureStore(getPerpsDepositState());
+    const { getByText } = renderWithConfirmContextProvider(
+      <WalletInitiatedHeader />,
+      store,
+      '/?payWithOption=money_account',
+    );
+
+    expect(getByText(tEn('perpsDepositFundsTitle'))).toBeInTheDocument();
   });
 
   it('hides AdvancedDetailsButton visually for perpsDeposit', () => {
