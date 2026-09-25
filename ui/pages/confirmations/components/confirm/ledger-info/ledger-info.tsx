@@ -4,7 +4,6 @@ import { getEnvironmentType } from '../../../../../../shared/lib/environment-typ
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import {
   HardwareTransportStates,
-  LEDGER_USB_VENDOR_ID,
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
@@ -29,14 +28,16 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useLedgerConnection from '../../../hooks/useLedgerConnection';
 import { useDispatch } from '../../../../../store/hooks';
+import { isInE2eTest } from '../../../../../contexts/hardware-wallets/is-in-e2e-test';
+import { requestWebHidDevices } from '../../../../../contexts/hardware-wallets/webConnectionUtils';
+import { HardwareWalletType } from '../../../../../contexts/hardware-wallets/types';
 
 const LedgerInfo = () => {
   const { isLedgerWallet } = useLedgerConnection();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const inE2eTest =
-    process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
+  const inE2eTest = isInE2eTest();
   const ledgerWebHidConnectedStatus = useSelector(
     getLedgerWebHidConnectedStatus,
   );
@@ -96,21 +97,12 @@ const LedgerInfo = () => {
             fontWeight={FontWeight.Normal}
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
-                let connectedDevices: HIDDevice[] = [];
-                if (!inE2eTest) {
-                  connectedDevices = await window.navigator.hid.requestDevice({
-                    filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
-                  });
-                }
-                const webHidIsConnected =
-                  inE2eTest ||
-                  connectedDevices.some(
-                    (device) =>
-                      device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-                  );
+                const connectedDevices = inE2eTest
+                  ? []
+                  : await requestWebHidDevices(HardwareWalletType.Ledger);
                 dispatch(
                   setLedgerWebHidConnectedStatus(
-                    webHidIsConnected
+                    inE2eTest || connectedDevices.length > 0
                       ? WebHIDConnectedStatuses.connected
                       : WebHIDConnectedStatuses.notConnected,
                   ),

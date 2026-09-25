@@ -1,4 +1,4 @@
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import {
   MultichainAccountList,
@@ -73,6 +73,22 @@ WithCheckboxes.parameters = {
     description: {
       story:
         'MultichainAccountList with checkboxes enabled for account selection. Checkboxes appear as start accessories on each account row.',
+    },
+  },
+};
+
+export const EditMode: Story = {
+  args: {
+    ...defaultArgs,
+    isEditMode: true,
+  },
+};
+
+EditMode.parameters = {
+  docs: {
+    description: {
+      story:
+        'MultichainAccountList in edit mode. Entropy and other non-private-key wallets show visibility icons, imported private-key wallets show delete icons, account menus are suppressed, and hidden accounts move inline under their own wallet.',
     },
   },
 };

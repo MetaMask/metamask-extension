@@ -8,8 +8,9 @@ import { ACCOUNT_TYPE } from '../../../constants';
  *
  * Screen: `#/account-list`, usually opened from `HeaderNavbar.openAccountMenu`.
  * Owns: listing and selecting accounts/wallets, add-wallet / choose-wallet-type
- * flows, pin/hide/remove account actions, SRP export entry, search, and balance
- * assertions on list items.
+ * flows, pin/hide/remove account actions, manage-mode delete for imported
+ * private-key accounts, SRP export entry, search, and balance assertions on
+ * list items.
  * Boundaries: the account list surface only. Account details, wallet details,
  * hardware connect, and confirmation dialogs belong to their own page objects
  * once navigated away.
@@ -50,10 +51,38 @@ class AccountListPage {
   }) =>
     `${anchor}/following-sibling::*[preceding-sibling::*[.//*[@data-testid='multichain-account-tree-wallet-header']][1]//*[@data-testid='multichain-account-tree-wallet-header' and contains(., ${quoteXPathText(wallet)})]]//*[contains(@class, 'multichain-account-cell') and .//*[contains(@class, 'multichain-account-cell__account-name') and contains(text(), ${quoteXPathText(account)})]]`;
 
+  private readonly accountDeleteConfirmCancelButton =
+    '[data-testid="account-delete-confirm-modal-cancel-button"]';
+
+  private readonly accountDeleteConfirmModal =
+    '[data-testid="account-delete-confirm-modal"]';
+
+  private readonly accountDeleteConfirmRemoveButton =
+    '[data-testid="account-delete-confirm-modal-remove-button"]';
+
   private readonly accountDetailsTab = {
     text: 'Account details',
     tag: 'button',
   };
+
+  /**
+   * Edit-mode control (hide or delete) inside the account cell whose name
+   * matches `accountLabel`.
+   *
+   * @param accountLabel - Visible account name on the cell.
+   * @param testId - Data-testid of the edit-mode icon to match.
+   * @returns Locator for that icon within the named account cell.
+   */
+  private readonly accountEditModeControl = (
+    accountLabel: string,
+    testId: string,
+  ) => ({
+    xpath: `//*[@data-testid=${quoteXPathText(
+      `multichain-account-cell-name-${accountLabel}`,
+    )}]/ancestor::*[contains(@class, 'multichain-account-cell')]//*[@data-testid=${quoteXPathText(
+      testId,
+    )}]`,
+  });
 
   private readonly accountListBalance =
     '[data-testid="first-currency-display"]';
@@ -103,6 +132,9 @@ class AccountListPage {
   private readonly addSnapAccountButton =
     '[data-testid="choose-wallet-type-snap-account"]';
 
+  private readonly addWalletButtonEnabled =
+    '[data-testid="account-list-add-wallet-button"]:not([disabled])';
+
   private readonly addWalletButtonReady = {
     tag: 'p',
     text: 'Add wallet',
@@ -129,6 +161,18 @@ class AccountListPage {
 
   private readonly driver: Driver;
 
+  private readonly editModeDeleteIconForAccount = (accountLabel: string) =>
+    this.accountEditModeControl(
+      accountLabel,
+      'multichain-account-cell-edit-mode-delete-icon',
+    );
+
+  private readonly editModeVisibleIconForAccount = (accountLabel: string) =>
+    this.accountEditModeControl(
+      accountLabel,
+      'multichain-account-cell-edit-mode-visible-icon',
+    );
+
   private readonly exportSrpButton = {
     text: 'Show Secret Recovery Phrase',
     tag: 'button',
@@ -137,8 +181,8 @@ class AccountListPage {
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
 
-  private readonly hiddenAccountsList =
-    '[data-testid="multichain-account-tree-hidden-header"]';
+  private readonly hiddenAccountRevealButton =
+    '[data-testid="multichain-account-cell-edit-mode-hidden-icon"]';
 
   private readonly hideAccountButton =
     '[data-testid="multichain-account-menu-item-hideAccount"]';
@@ -174,6 +218,9 @@ class AccountListPage {
 
   private readonly importWalletFromMultichainWalletModalButton =
     '[data-testid="choose-wallet-type-import-wallet"]';
+
+  private readonly manageAccountsButton =
+    '[data-testid="account-list-page-manage-button"]';
 
   private readonly multichainAccountListItem = '.multichain-account-cell';
 
@@ -255,9 +302,6 @@ class AccountListPage {
     tag: 'button',
   };
 
-  private readonly unhideAccountButton =
-    '[data-testid="multichain-account-menu-item-showAccount"]';
-
   private readonly unpinAccountButton =
     '[data-testid="multichain-account-menu-item-unpin"]';
 
@@ -302,7 +346,7 @@ class AccountListPage {
     expectedErrorMessage: string = '',
   ): Promise<void> {
     console.log(`Watch EOA account with address ${address}`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.chooseWalletTypeWatchEthereumAccountButton,
     );
@@ -345,7 +389,7 @@ class AccountListPage {
    */
   async addMultichainWallet(): Promise<void> {
     console.log(`Adding new multichain wallet`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
   }
 
   /**
@@ -361,7 +405,7 @@ class AccountListPage {
     expectedErrorMessage?: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -436,6 +480,42 @@ class AccountListPage {
       css: this.accountListItem,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Checks that the named account is in delete mode (imported private-key
+   * wallets). The account list must be in manage accounts mode.
+   *
+   * @param accountLabel - The label of the account that should show delete.
+   */
+  async checkAccountHasDeleteControl(accountLabel: string): Promise<void> {
+    console.log(
+      `Check that account ${accountLabel} shows the delete control in manage accounts mode`,
+    );
+    await this.driver.waitForSelector(
+      this.editModeDeleteIconForAccount(accountLabel),
+    );
+    await this.driver.assertElementNotPresent(
+      this.editModeVisibleIconForAccount(accountLabel),
+    );
+  }
+
+  /**
+   * Checks that the named account is in visibility mode (non-private-key
+   * wallets). The account list must be in manage accounts mode.
+   *
+   * @param accountLabel - The label of the account that should show hide/show.
+   */
+  async checkAccountHasVisibilityControl(accountLabel: string): Promise<void> {
+    console.log(
+      `Check that account ${accountLabel} shows the visibility control in manage accounts mode`,
+    );
+    await this.driver.waitForSelector(
+      this.editModeVisibleIconForAccount(accountLabel),
+    );
+    await this.driver.assertElementNotPresent(
+      this.editModeDeleteIconForAccount(accountLabel),
+    );
   }
 
   /**
@@ -556,7 +636,7 @@ class AccountListPage {
         expectedAvailability ? 'displayed ' : 'not displayed'
       }`,
     );
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     if (expectedAvailability) {
       await this.driver.waitForSelector(
         this.chooseWalletTypeWatchEthereumAccountButton,
@@ -574,11 +654,6 @@ class AccountListPage {
       css: this.currentSelectedAccount,
       text: 'Imported',
     });
-  }
-
-  async checkHiddenAccountsListExists(): Promise<void> {
-    console.log(`Check that hidden accounts list is displayed in account list`);
-    await this.driver.waitForSelector(this.hiddenAccountsList);
   }
 
   /**
@@ -839,7 +914,7 @@ class AccountListPage {
       throw e;
     }
     if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted(timeout);
+      await this.waitUntilSyncingIsCompleted();
     }
     console.log('Account list is loaded');
   }
@@ -874,6 +949,14 @@ class AccountListPage {
       css: this.walletHeader,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Click the Add wallet footer button once it is enabled and not syncing.
+   */
+  async clickAddWalletButton(): Promise<void> {
+    await this.waitForAddWalletButtonStablyReady();
+    await this.driver.clickElement(this.addMultichainWalletButton);
   }
 
   /**
@@ -925,6 +1008,65 @@ class AccountListPage {
     );
   }
 
+  /**
+   * Delete an imported private-key account from manage accounts mode.
+   *
+   * Opens the delete confirmation from the cell's delete icon. Confirming
+   * removes the account; cancelling leaves it in the list.
+   *
+   * @param accountLabel - The label of the private-key account to delete.
+   * @param confirmRemoval - Whether to confirm deletion. Defaults to true.
+   */
+  async deletePrivateKeyAccount(
+    accountLabel: string,
+    confirmRemoval: boolean = true,
+  ): Promise<void> {
+    console.log(
+      `Delete private-key account ${accountLabel} from manage accounts mode`,
+    );
+    await this.driver.clickElement(
+      this.editModeDeleteIconForAccount(accountLabel),
+    );
+    await this.driver.waitForSelector(this.accountDeleteConfirmModal);
+    await this.driver.waitForSelector({
+      text: `Remove ${accountLabel}`,
+    });
+    if (confirmRemoval) {
+      console.log('Confirm deletion of private-key account');
+      await this.driver.clickElementAndWaitToDisappear(
+        this.accountDeleteConfirmRemoveButton,
+      );
+      await this.driver.assertElementNotPresent(
+        this.editModeDeleteIconForAccount(accountLabel),
+      );
+    } else {
+      console.log('Cancel deletion of private-key account');
+      await this.driver.clickElementAndWaitToDisappear(
+        this.accountDeleteConfirmCancelButton,
+      );
+    }
+  }
+
+  /**
+   * Enter the manage accounts mode of the account list. Hidden accounts are
+   * listed under their wallet and can be revealed again. Imported private-key
+   * accounts show a delete control instead of hide/show.
+   */
+  async enterManageAccountsMode(): Promise<void> {
+    console.log(`Enter manage accounts mode in account list`);
+    await this.driver.clickElement(this.manageAccountsButton);
+  }
+
+  /**
+   * Leave the manage accounts mode of the account list. The manage button is
+   * hidden while managing, so the back button is what closes the mode.
+   */
+  async exitManageAccountsMode(): Promise<void> {
+    console.log(`Exit manage accounts mode in account list`);
+    await this.driver.clickElement(this.closeMultichainAccountsPageButton);
+    await this.driver.waitForSelector(this.manageAccountsButton);
+  }
+
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
     await this.openAccountOptionsMenu();
@@ -944,7 +1086,7 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -1000,7 +1142,7 @@ class AccountListPage {
 
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(this.addHardwareWalletButton);
     // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
@@ -1010,11 +1152,6 @@ class AccountListPage {
   async openHiddenAccountOptions(): Promise<void> {
     console.log(`Open hidden accounts options menu`);
     await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
-  }
-
-  async openHiddenAccountsList(): Promise<void> {
-    console.log(`Open hidden accounts option menu`);
-    await this.driver.clickElement(this.hiddenAccountsList);
   }
 
   /**
@@ -1074,6 +1211,15 @@ class AccountListPage {
     }
   }
 
+  /**
+   * Reveal the first hidden account. The account list must be in manage
+   * accounts mode.
+   */
+  async revealHiddenAccount(): Promise<void> {
+    console.log(`Reveal hidden account in account list`);
+    await this.driver.clickElement(this.hiddenAccountRevealButton);
+  }
+
   async selectAccount(accountLabel: string): Promise<void> {
     console.log(`Select account with label ${accountLabel} in account list`);
     await this.driver.clickElement({
@@ -1092,7 +1238,7 @@ class AccountListPage {
   async startImportSecretPhrase(srp: string): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
 
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importWalletFromMultichainWalletModalButton,
     );
@@ -1119,12 +1265,6 @@ class AccountListPage {
     console.log(`Type "${text}" into the import SRP input`);
     const srpInput = await this.driver.findVisibleElement(this.importSrpInput);
     await srpInput.sendKeys(text);
-  }
-
-  async unhideAccount(): Promise<void> {
-    console.log(`Unhide account in account list`);
-    await this.openAccountOptionsMenu();
-    await this.driver.clickElement(this.unhideAccountButton);
   }
 
   async unpinAccount(): Promise<void> {
@@ -1175,17 +1315,40 @@ class AccountListPage {
   }
 
   /**
+   * Wait for the add wallet button to be enabled and not showing a syncing label.
+   *
+   * @param timeout - Maximum time in ms to wait for the button to stay ready.
+   */
+  async waitForAddWalletButtonStablyReady(
+    timeout: number = 15000,
+  ): Promise<void> {
+    console.log('Waiting for add wallet button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        const syncing = await this.driver.isElementPresentAndVisible(
+          this.addWalletButtonSyncing,
+          500,
+        );
+        if (syncing) {
+          return false;
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.addWalletButtonEnabled,
+          1000,
+        );
+      },
+      { timeout, interval: 500, stableFor: 2000 },
+    );
+  }
+
+  /**
    * Waiting until syncing is completed.
    *
    * @param timeout - Maximum time in ms to wait for syncing to finish.
    */
-  async waitUntilSyncingIsCompleted(timeout: number = 10000): Promise<void> {
+  async waitUntilSyncingIsCompleted(timeout: number = 15000): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent(this.addWalletButtonSyncing, {
-      timeout,
-      waitAtLeastGuard: largeDelayMs,
-    });
-    await this.checkAddWalletButtonIsDisplayed();
+    await this.waitForAddWalletButtonStablyReady(timeout);
   }
 }
 

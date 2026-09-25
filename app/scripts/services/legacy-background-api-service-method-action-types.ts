@@ -135,6 +135,15 @@ export type LegacyBackgroundApiServiceGetPhishingResultAction = {
 };
 
 /**
+ * Closes the notification popup window if one is open.
+ * Marks it as automatically closed so triggerUi knows not to reopen it.
+ */
+export type LegacyBackgroundApiServiceCloseNotificationPopupAction = {
+  type: `LegacyBackgroundApiService:closeNotificationPopup`;
+  handler: LegacyBackgroundApiService['closeNotificationPopup'];
+};
+
+/**
  * Marks the notification popup as having been automatically closed.
  *
  * This lets us differentiate between the cases where we close the
@@ -708,26 +717,6 @@ export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
 };
 
 /**
- * One-time Basic Functionality consolidation when the remote FF turns on.
- * Aligns child preferences, schedules the modal/toast notice, and syncs
- * TokenDetection / GasFee / Shield / subscription controllers when
- * consolidation actually ran.
- */
-export type LegacyBackgroundApiServiceConsolidateBasicFunctionalityAction = {
-  type: `LegacyBackgroundApiService:consolidateBasicFunctionality`;
-  handler: LegacyBackgroundApiService['consolidateBasicFunctionality'];
-};
-
-/**
- * Dismisses the one-time Basic Functionality migration modal or toast.
- */
-export type LegacyBackgroundApiServiceDismissBasicFunctionalityMigrationNotificationAction =
-  {
-    type: `LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification`;
-    handler: LegacyBackgroundApiService['dismissBasicFunctionalityMigrationNotification'];
-  };
-
-/**
  * Toggles external services on or off.
  *
  * When enabled, token detection and non-RPC gas fee APIs are started, and the
@@ -736,6 +725,9 @@ export type LegacyBackgroundApiServiceDismissBasicFunctionalityMigrationNotifica
  * and the shield service is stopped if applicable.
  *
  * @param useExternal - Whether external services should be enabled.
+ * @param ownedPreferences - Optional per-preference values forwarded to
+ * PreferencesController so enabling can preserve granular onboarding choices
+ * in one write.
  */
 export type LegacyBackgroundApiServiceToggleExternalServicesAction = {
   type: `LegacyBackgroundApiService:toggleExternalServices`;
@@ -1181,6 +1173,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRequestSafeReloadAction
   | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
   | LegacyBackgroundApiServiceGetPhishingResultAction
+  | LegacyBackgroundApiServiceCloseNotificationPopupAction
   | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
@@ -1226,8 +1219,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceResolvePendingApprovalAction
   | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
-  | LegacyBackgroundApiServiceConsolidateBasicFunctionalityAction
-  | LegacyBackgroundApiServiceDismissBasicFunctionalityMigrationNotificationAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
   | LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction

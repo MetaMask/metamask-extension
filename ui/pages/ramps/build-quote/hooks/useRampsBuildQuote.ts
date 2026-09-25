@@ -21,6 +21,7 @@ import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
+import { validateBuyWidgetUrl } from '../../../../hooks/ramps/utils/validateBuyUrl';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
@@ -31,6 +32,7 @@ import {
   resolvePaymentMethodLabel,
 } from '../utils/build-quote';
 import { getProviderLimitMessage } from '../../utils/getProviderLimitMessage';
+import { getRampsTokenDisplaySymbol } from '../../utils/token-display';
 import { useBuildQuoteAmount } from './useBuildQuoteAmount';
 
 type BuildQuoteLocationState = {
@@ -47,6 +49,7 @@ export type RampsBuildQuoteReadyViewModel = {
   paymentMethodLabel: string;
   showPaymentMethodSpinner: boolean;
   displayedQuoteError: string | null;
+  isQuoteUnavailableError: boolean;
   providerStatusLabel: string;
   isQuoteLoading: boolean;
   canContinue: boolean;
@@ -91,8 +94,8 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       : null,
   );
 
-  const intentAssetId = (location.state as BuildQuoteLocationState | null)
-    ?.assetId;
+  const locationState = location.state as BuildQuoteLocationState | null;
+  const intentAssetId = locationState?.assetId;
   const tokenStateIsSettled = isTokenStateSettled(
     intentAssetId,
     selectedToken?.assetId,
@@ -181,6 +184,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     hasQuoteFetchError,
     quotesResponse,
     selectedQuote,
+    quoteUnavailableMessage: t('rampsQuoteFetchError'),
   });
   const providerQuoteError = quotesResponse?.error?.find(
     (error) => error.provider === selectedProvider?.id && error.error,
@@ -197,7 +201,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           formatCurrency,
           t,
           backendError: providerQuoteError,
-        }) ?? t('rampsQuoteUnavailable'))
+        }) ?? t('rampsQuoteFetchError'))
       : displayedQuoteError);
 
   const paymentMethodLabel = useMemo(
@@ -216,9 +220,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
   const handlePaymentMethodPress = useCallback(() => {
     navigate(RAMPS_PAYMENT_METHOD_ROUTE, {
-      state: { amount: debouncedAmount },
+      state: { amount: amountAsNumber },
     });
-  }, [debouncedAmount, navigate]);
+  }, [amountAsNumber, navigate]);
 
   const canContinue = resolveCanContinue({
     hasAmount,
@@ -239,6 +243,16 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     setIsContinuing(true);
     const checkoutSessionId = uuidV4();
     try {
+      // TRAM-3947 hardening: reject a mangled buyURL (e.g. server-side string
+      // concatenation gluing the callback fragment onto cryptoCurrencyId)
+      // before fetching — fail fast with no doomed network round-trip, and
+      // keep the extension from fetching arbitrary URLs that carry the wallet
+      // address if the quotes API misbehaves.
+      if (!validateBuyWidgetUrl(selectedQuote.quote?.buyURL).isValid) {
+        setContinueError(t('rampsBuyWidgetError'));
+        return;
+      }
+
       const widget = await getBuyWidgetData(selectedQuote);
       if (!widget?.url) {
         setContinueError(t('rampsBuyWidgetError'));
@@ -271,7 +285,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           checkoutUrl: widget.url,
           providerName: selectedProvider?.name ?? '',
           amountOut: selectedQuote.quote?.amountOut,
-          tokenSymbol: selectedToken?.symbol ?? '',
+          tokenSymbol: getRampsTokenDisplaySymbol(selectedToken),
           tokenIconUrl: selectedToken?.iconUrl,
           tokenChainId: selectedToken?.chainId,
           walletAddress,
@@ -323,7 +337,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   return {
     kind: 'ready',
     pageTitle: selectedToken.symbol
-      ? t('rampsBuyToken', [selectedToken.symbol])
+      ? t('rampsBuyToken', [getRampsTokenDisplaySymbol(selectedToken)])
       : t('buy'),
     pageSubtitle: networkName ? t('rampsOnNetwork', [networkName]) : undefined,
     currencySymbol,
@@ -337,6 +351,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
     displayedQuoteError: continueError ?? displayedError,
+    // The inline "change providers" fragment is written to finish the generic
+    // quote-error sentence; other errors are complete sentences and get a
+    // standalone "Change provider." action instead.
+    isQuoteUnavailableError:
+      !continueError && displayedError === t('rampsQuoteFetchError'),
     providerStatusLabel: providerLabel,
     isQuoteLoading: isQuoteLoading || isContinuing,
     canContinue,

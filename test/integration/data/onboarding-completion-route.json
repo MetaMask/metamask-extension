@@ -454,8 +454,6 @@
   "tokenList": {},
   "tokens": [],
   "tokensChainsCache": {},
-  "tracesBeforeMetricsOptIn": [],
-  "traits": {},
   "transactions": [],
   "trezorModel": null,
   "unapprovedDecryptMsgCount": 0,

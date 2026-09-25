@@ -72,6 +72,19 @@ export type OrderFormState = {
 };
 
 /**
+ * Transient new-order fields persisted by PerpsController for a short return
+ * window. Derived fields such as balancePercent and autoCloseEnabled are
+ * reconstructed when the form is restored.
+ */
+export type OrderFormDraft = Pick<OrderFormState, 'type' | 'direction'> &
+  Partial<
+    Pick<
+      OrderFormState,
+      'amount' | 'leverage' | 'takeProfitPrice' | 'stopLossPrice' | 'limitPrice'
+    >
+  >;
+
+/**
  * Calculated values derived from form state
  * These are read-only display values
  */
@@ -128,8 +141,16 @@ export type OrderEntryProps = {
   onOrderTypeChange?: (orderType: OrderType) => void;
   /** Callback when add-funds icon is pressed in the amount input */
   onAddFunds?: () => void;
+  /** True while the live perps account stream is still hydrating */
+  isLoadingAccount?: boolean;
+  /** True when the account is known to hold no tradeable collateral */
+  hasNoAvailableBalance?: boolean;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /** Unexpired same-market draft used to restore a new-order form. */
+  initialDraft?: OrderFormDraft;
+  /** Called when the user selects a leverage value. */
+  onLeverageChange?: (leverage: number) => void;
   /** Market size decimals for controller-based position-size formatting */
   sizeDecimals?: number;
   /**
@@ -198,6 +219,10 @@ export type AmountInputProps = {
   currentPositionSize?: string;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
+  /** True while the live perps account stream is still hydrating */
+  isLoadingAccount?: boolean;
+  /** True when the account is known to hold no tradeable collateral */
+  hasNoAvailableBalance?: boolean;
   /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
   autoFocus?: boolean;
   /** Placeholder override for the USD input. Defaults to '0.00'. */

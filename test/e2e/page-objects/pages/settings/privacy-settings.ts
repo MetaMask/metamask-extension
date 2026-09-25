@@ -48,8 +48,8 @@ class PrivacySettings {
   private readonly confirmDeleteMetaMetricsDataButton =
     '[data-testid="clear-metametrics-data"]';
 
-  private readonly copiedSrpExclamation =
-    '[data-testid="reveal-seed-copy-success-toast-banner-base"]';
+  private readonly copiedSrpWarning =
+    '[data-testid="sensitive-clipboard-warning"]';
 
   private readonly copySrpButton = '[data-testid="reveal-seed-copy-button"]';
 
@@ -267,7 +267,7 @@ class PrivacySettings {
   async checkDisplayedSrpCanBeCopied(): Promise<void> {
     console.log('Check displayed SRP on privacy settings page can be copied');
     await this.driver.clickElement(this.copySrpButton);
-    await this.driver.waitForSelector(this.copiedSrpExclamation);
+    await this.driver.waitForSelector(this.copiedSrpWarning);
   }
 
   async checkPageIsLoaded(): Promise<void> {

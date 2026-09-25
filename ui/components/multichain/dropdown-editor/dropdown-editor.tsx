@@ -1,15 +1,12 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import classnames from 'clsx';
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
-  IconColor,
   Icon,
   IconName,
   IconSize,
-} from '@metamask/design-system-react';
-import {
-  Box,
   Input,
   Label,
   Popover,
@@ -22,6 +19,7 @@ import {
   BorderColor,
   BorderRadius,
   Display,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -73,7 +71,12 @@ export const DropdownEditor = <Item,>({
   buttonDataTestId: string;
 }) => {
   const t = useI18nContext();
-  const dropdown = useRef(null);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null,
+  );
+  const setDropdownRef = useCallback((node: HTMLElement | null) => {
+    setReferenceElement(node);
+  }, []);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const renderDropdownList = () => (
@@ -105,12 +108,12 @@ export const DropdownEditor = <Item,>({
             {renderItem(item, true)}
             {itemIsDeletable(item, items) && (
               <ButtonIcon
-                className="ml-1"
+                marginLeft={1}
                 ariaLabel={t('delete')}
                 size={ButtonIconSize.Sm}
                 iconName={IconName.Trash}
                 data-testid={`delete-item-${index}`}
-                iconProps={{ className: IconColor.ErrorDefault }}
+                color={IconColor.errorDefault}
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
 
@@ -151,10 +154,10 @@ export const DropdownEditor = <Item,>({
         className="dropdown-editor__item"
       >
         <Icon
-          color={IconColor.PrimaryDefault}
+          color={IconColor.primaryDefault}
           name={IconName.Add}
           size={IconSize.Sm}
-          className="mr-2"
+          marginRight={2}
         />
         <Text
           as="button"
@@ -199,7 +202,7 @@ export const DropdownEditor = <Item,>({
       borderWidth={1}
       paddingLeft={4}
       paddingRight={4}
-      ref={dropdown}
+      ref={setDropdownRef}
     >
       {selectedItem ? (
         renderItem(selectedItem, false)
@@ -214,7 +217,7 @@ export const DropdownEditor = <Item,>({
         />
       )}
       <ButtonIcon
-        className="ml-auto"
+        marginLeft="auto"
         iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
         ariaLabel={title}
         size={ButtonIconSize.Md}
@@ -241,7 +244,7 @@ export const DropdownEditor = <Item,>({
           matchWidth={true}
           paddingRight={0}
           className="dropdown-editor__item-popover"
-          referenceElement={dropdown.current}
+          referenceElement={referenceElement}
           position={PopoverPosition.Bottom}
           isOpen={isDropdownOpen}
           onClickOutside={() => setIsDropdownOpen(false)}

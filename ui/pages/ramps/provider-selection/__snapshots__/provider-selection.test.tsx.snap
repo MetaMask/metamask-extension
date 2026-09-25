@@ -26,7 +26,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full shadow-lg motion-safe:animate-slide-up max-w-[480px] rounded-[32px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -39,7 +39,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -47,7 +47,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -57,7 +57,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                    d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
                   />
                 </svg>
               </button>
@@ -88,7 +88,8 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -130,7 +131,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                          d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
                         />
                       </svg>
                     </div>
@@ -151,7 +152,8 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/moonpay"
                         >
                           MoonPay
                         </p>
@@ -229,7 +231,7 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full shadow-lg motion-safe:animate-slide-up max-w-[480px] rounded-[32px]"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
@@ -242,7 +244,7 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -250,7 +252,7 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -260,7 +262,7 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                    d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
                   />
                 </svg>
               </button>
@@ -318,7 +320,7 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full shadow-lg motion-safe:animate-slide-up max-w-[480px] rounded-[32px]"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
@@ -331,7 +333,7 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -339,7 +341,7 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -349,7 +351,7 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                    d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
                   />
                 </svg>
               </button>
@@ -407,7 +409,7 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full shadow-lg motion-safe:animate-slide-up max-w-[480px] rounded-[32px]"
           data-testid="ramps-provider-selection-loading"
           role="dialog"
         >
@@ -420,7 +422,7 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -428,7 +430,7 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -438,7 +440,7 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                    d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
                   />
                 </svg>
               </button>
@@ -570,7 +572,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full shadow-lg motion-safe:animate-slide-up max-w-[480px] rounded-[32px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -583,7 +585,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -591,7 +593,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -601,7 +603,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                    d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
                   />
                 </svg>
               </button>
@@ -632,7 +634,8 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -664,7 +667,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                          d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
                         />
                       </svg>
                     </div>
@@ -711,7 +714,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full shadow-lg motion-safe:animate-slide-up max-w-[480px] rounded-[32px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -724,7 +727,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -732,7 +735,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -742,7 +745,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                    d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
                   />
                 </svg>
               </button>
@@ -773,7 +776,8 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>
@@ -790,7 +794,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                          d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
                         />
                       </svg>
                     </div>
@@ -811,7 +815,8 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/moonpay"
                         >
                           MoonPay
                         </p>

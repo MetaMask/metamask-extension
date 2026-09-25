@@ -193,6 +193,16 @@ export type AppStateControllerState = {
    * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
    */
   passkeyAutoUnlockSuppressed: boolean;
+  /**
+   * Timestamp when the legacy passkey PRF migration reminder was last shown.
+   */
+  lastShownPrfMigrationReminderAt: number | null;
+
+  /**
+   * The entry point that initiated the last Perps deposit flow (e.g.
+   * 'hyperliquid_deposit_prompt'). Currently used to show custom toast UI.
+   */
+  lastPerpsDepositEntryPoint: string | null;
 };
 
 const controllerName = 'AppStateController';
@@ -327,6 +337,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
+  lastShownPrfMigrationReminderAt: null,
+  lastPerpsDepositEntryPoint: null,
   ...getInitialStateOverrides(),
 });
 
@@ -691,10 +703,22 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  lastShownPrfMigrationReminderAt: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   deferredDeepLink: {
     includeInStateLogs: false,
     persist: true,
     includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  lastPerpsDepositEntryPoint: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
 };
@@ -735,6 +759,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setIsWalletResetInProgress',
   'setLastActiveTime',
   'setLastInteractedConfirmationInfo',
+  'setLastPerpsDepositEntryPoint',
   'setLastUpdatedAt',
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
@@ -745,6 +770,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setOnboardingDate',
   'setOutdatedBrowserWarningLastShown',
   'setPasskeyAutoUnlockSuppressed',
+  'setLastShownPrfMigrationReminderAt',
   'setPendingExtensionVersion',
   'setPendingRedirectRoute',
   'setPendingShieldCohort',
@@ -946,6 +972,17 @@ export class AppStateController extends BaseController<
   setPasskeyAutoUnlockSuppressed(suppressed: boolean): void {
     this.update((state) => {
       state.passkeyAutoUnlockSuppressed = suppressed;
+    });
+  }
+
+  /**
+   * Records when the legacy passkey PRF migration reminder was last shown.
+   *
+   * @param lastShown - Timestamp when the reminder was shown.
+   */
+  setLastShownPrfMigrationReminderAt(lastShown: number): void {
+    this.update((state) => {
+      state.lastShownPrfMigrationReminderAt = lastShown;
     });
   }
 
@@ -1493,6 +1530,17 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.lastInteractedConfirmationInfo = lastInteractedConfirmationInfo;
+    });
+  }
+
+  /**
+   * Sets the entry point that initiated the last Perps deposit flow.
+   *
+   * @param entryPoint - The entry point identifier, or undefined to clear.
+   */
+  setLastPerpsDepositEntryPoint(entryPoint: string | null): void {
+    this.update((state) => {
+      state.lastPerpsDepositEntryPoint = entryPoint;
     });
   }
 
