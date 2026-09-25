@@ -17,6 +17,7 @@ import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldErrorStateClickedTypeEnum,
 } from '../../../shared/constants/subscriptions';
 import { SHIELD_PLAN_ROUTE } from '../../helpers/constants/routes';
 import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
@@ -249,6 +250,7 @@ export const useHandlePayment = ({
         actionClicked: ShieldErrorStateActionClickedEnum.Cta,
         location: ShieldErrorStateLocationEnum.Settings,
         view: ShieldErrorStateViewEnum.Banner,
+        type: ShieldErrorStateClickedTypeEnum.Renew,
       });
     }
 

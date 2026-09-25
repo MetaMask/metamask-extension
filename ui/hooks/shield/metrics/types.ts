@@ -10,6 +10,7 @@ import {
   ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
   ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateClickedTypeEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
   ShieldSubscriptionRequestSubscriptionStateEnum,
@@ -80,8 +81,8 @@ export type CaptureShieldMembershipCancelledEventParams =
 
 export type CaptureShieldSubscriptionRestartRequestEventParams =
   ExistingSubscriptionEventParams & {
-    requestStatus: 'completed' | 'failed';
-    errorMessage?: string;
+    status: 'succeeded' | 'failed';
+    error?: string;
   };
 
 /**
@@ -159,6 +160,7 @@ export type CaptureShieldErrorStateClickedEventParams =
     actionClicked: ShieldErrorStateActionClickedEnum;
     location: ShieldErrorStateLocationEnum;
     view: ShieldErrorStateViewEnum;
+    type: ShieldErrorStateClickedTypeEnum;
   };
 
 export type CaptureShieldUnexpectedErrorEventParams = {

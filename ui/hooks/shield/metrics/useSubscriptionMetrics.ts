@@ -184,8 +184,8 @@ export const useSubscriptionMetrics = () => {
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackShieldEvent(MetaMetricsEventName.ShieldMembershipRestartRequest, {
         ...formattedParams,
-        status: params.requestStatus,
-        error: params.errorMessage,
+        status: params.status,
+        error: params.error,
       });
     },
     [trackShieldEvent],

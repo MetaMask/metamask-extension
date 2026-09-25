@@ -51,6 +51,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateClickedTypeEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
@@ -259,6 +260,7 @@ function ShieldPausedToast() {
       actionClicked,
       location: ShieldErrorStateLocationEnum.Homepage,
       view: ShieldErrorStateViewEnum.Toast,
+      type: ShieldErrorStateClickedTypeEnum.UpdateCard,
     });
   };
 

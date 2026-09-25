@@ -840,9 +840,6 @@ export class ShieldSubscriptionService {
 
     const claimedRewardPoints =
       rewardPoints ?? shieldSubscriptionMetricsProps?.rewardPoints;
-    if (!claimedRewardPoints) {
-      return;
-    }
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ShieldOptInRewards)
