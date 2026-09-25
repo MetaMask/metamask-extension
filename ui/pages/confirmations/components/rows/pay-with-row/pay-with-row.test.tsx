@@ -14,6 +14,7 @@ import { useTransactionMetadataRequestOptional } from '../../../hooks/transactio
 import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertsName } from '../../../hooks/alerts/constants';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
@@ -24,6 +25,9 @@ jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
   selectIsMoneyAccountTransactionEnabled: jest.fn(() => false),
+}));
+jest.mock('../../../hooks/pay/useIsMoneyAccountPerpsNavigation', () => ({
+  useIsMoneyAccountPerpsNavigation: jest.fn(() => false),
 }));
 jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
@@ -448,6 +452,7 @@ describe('PayWithRow', () => {
   });
 
   it('hides the token select for money account perps deposits', () => {
+    jest.mocked(useIsMoneyAccountPerpsNavigation).mockReturnValue(true);
     const store = mockStore(getMockState());
     useTransactionMetadataRequestOptionalMock.mockReturnValue({
       id: 'test-id',
@@ -464,11 +469,12 @@ describe('PayWithRow', () => {
     expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
   });
 
-  it('shows the token select when payWithOption is MoneyAccount on non-deposit transactions', () => {
+  it('shows the token select when Money Account pay is not enabled for perps deposit', () => {
+    jest.mocked(useIsMoneyAccountPerpsNavigation).mockReturnValue(false);
     const store = mockStore(getMockState());
     useTransactionMetadataRequestOptionalMock.mockReturnValue({
       id: 'test-id',
-      type: TransactionType.simpleSend,
+      type: TransactionType.perpsDeposit,
       chainId: CHAIN_ID_MOCK,
       txParams: {
         from: FROM_ADDRESS_MOCK,
