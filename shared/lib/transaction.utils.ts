@@ -21,6 +21,7 @@ import { BigNumber } from 'bignumber.js';
 import { ERC20 } from '@metamask/controller-utils';
 import {
   APPROVAL_METHOD_NAMES,
+  TRANSFER_METHOD_NAMES,
   AssetType,
   TokenStandard,
 } from '../constants/transaction';
@@ -535,6 +536,39 @@ export function parseApprovalTransactionData(data: Hex):
 }
 
 /**
+ * Parses ERC-20/721/1155 token-transfer calldata and extracts the address
+ * actually receiving the tokens. For these methods the transaction's `to` is
+ * the token contract, not the recipient: the same distinction
+ * `getEffectiveRecipient` in `@metamask/transaction-controller` draws (that
+ * helper needs a classified `TransactionType`; this one parses raw calldata
+ * for callers, like the trust-signals middleware, that have none).
+ *
+ * @param data - The transaction calldata to parse
+ * @returns The method name and decoded recipient, or undefined when the
+ * calldata is not a recognized token transfer
+ */
+export function parseTransferTransactionData(data: Hex):
+  | {
+      name: string;
+      recipient?: Hex;
+    }
+  | undefined {
+  const transactionDescription = parseStandardTokenTransactionData(data);
+  const { args, name } = transactionDescription ?? {};
+
+  if (!TRANSFER_METHOD_NAMES.includes(name ?? '') || !name) {
+    return undefined;
+  }
+
+  const recipient = args?._to ?? args?.to; // ERC-20 - transfer / transferFrom // ERC-721 / ERC-1155 / Fiat Token V2
+
+  return {
+    name,
+    recipient: typeof recipient === 'string' ? (recipient as Hex) : undefined,
+  };
+}
+
+/**
  * Resolves the ERC-20 contract address for approval transactions.
  * Permit2 approvals encode the token in calldata; standard ERC-20 approvals
  * use `txParams.to`.
@@ -574,17 +608,12 @@ export function resolveApprovalTokenContractAddress(
 
 /**
  * Extracts the recipient address from a transaction's data field.
- * This function parses standard token transaction data and attempts to retrieve
- * the recipient address from the transaction arguments. It checks for both `_to`
- * and `to` argument patterns commonly found in token transfer transactions.
+ * Delegates to {@link parseTransferTransactionData} so UI, PPOM, and
+ * trust-signal scanning share the same method gate and `_to` / `to` fallback.
  *
  * @param data - The hexadecimal string representation of the transaction data to parse
  * @returns The recipient address as a string if found in the transaction data, or undefined if not present
  */
 export function getTransactionDataRecipient(data: string): string | undefined {
-  const transactionData = parseStandardTokenTransactionData(data);
-
-  const transferTo = transactionData?.args?._to || transactionData?.args?.to;
-
-  return transferTo;
+  return parseTransferTransactionData(data as Hex)?.recipient;
 }
