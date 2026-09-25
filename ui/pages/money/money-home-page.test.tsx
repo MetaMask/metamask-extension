@@ -20,6 +20,8 @@ import {
   MoneyComponentName,
   MoneyOnboardingStepAction,
   MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
 } from './constants/money-events';
 import { MoneyHomePage } from './money-home-page';
 import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
@@ -82,12 +84,20 @@ jest.mock('react-router-dom', () => ({
   Link: ({
     to,
     children,
+    onClick,
     ...props
   }: {
     to: string;
     children?: React.ReactNode;
   } & React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a href={to} {...props}>
+    <a
+      href={to}
+      onClick={(event) => {
+        onClick?.(event);
+        event.preventDefault();
+      }}
+      {...props}
+    >
       {children}
     </a>
   ),
@@ -306,6 +316,17 @@ describe('MoneyHomePage', () => {
     );
   });
 
+  it('tracks the empty-state How it works section header click', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-how-it-works-header'));
+
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+      componentName: MoneyComponentName.HowItWorksSectionHeader,
+      redirectTarget: MoneyScreenName.MoneyHowItWorks,
+    });
+  });
+
   it('opens the Money landing page from Learn more', () => {
     global.platform.openTab = jest.fn();
 
@@ -491,6 +512,27 @@ describe('MoneyHomePage', () => {
     });
   });
 
+  it('tracks the Earn on your crypto projected amount tooltip', async () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [DEPOSIT_TOKEN],
+      isNoFeeToken: () => false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    await act(async () => {
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-potential-earnings-projection-trigger'),
+      );
+    });
+
+    expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.PotentialEarningsProjectedAmount,
+    });
+  });
+
   it('disables the deposit entry points while a deposit is initiating', () => {
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
@@ -606,6 +648,74 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-condensed-info-card-growth'),
     ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
+  });
+
+  it.each([
+    [
+      'growth',
+      MoneyComponentName.CondensedInfoCardsHowItWorks,
+      MoneyScreenName.MoneyHowItWorks,
+    ],
+    ['musd', MoneyComponentName.CondensedInfoCardsMusd, MONEY_URLS.MUSD_PRICE],
+    [
+      'benefits',
+      MoneyComponentName.CondensedInfoCardsWhatYouGet,
+      MONEY_URLS.MONEY_LANDING,
+    ],
+  ])(
+    'tracks the %s condensed info card click',
+    (key, componentName, redirectTarget) => {
+      mockUseMoneyAccountBalance.mockReturnValue({
+        apyDecimal: 0.042,
+        apyPercent: 4.2,
+        apyPercentFormatted: '4.2%',
+        isBalanceFetchError: false,
+        isBalanceLoading: false,
+        tokenTotal: new BigNumber('100'),
+        totalFiatFormatted: '$100.00',
+        totalFiatRaw: '100',
+        vaultApyQuery: { isLoading: false },
+      });
+      global.platform.openTab = jest.fn();
+
+      renderWithLocalization(<MoneyHomePage />);
+
+      fireEvent.click(screen.getByTestId(`money-condensed-info-card-${key}`));
+
+      expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+        componentName,
+        redirectTarget,
+      });
+    },
+  );
+
+  it.each([
+    ['monthly', MoneyTooltipName.MonthlyEarnings],
+    ['moneyLifetime', MoneyTooltipName.LifetimeEarnings],
+  ])('tracks the %s earnings tooltip', async (labelKey, tooltipName) => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercent: 4.2,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    await act(async () => {
+      fireEvent.mouseEnter(screen.getByText(messages[labelKey].message));
+    });
+
+    expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
+      tooltipName,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.EarningsSection,
+    });
   });
 
   it('opens the mUSD price page from Meet mUSD', () => {
@@ -1061,6 +1171,11 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByText(messages.moneyHomeApyTooltipPoweredBy.message),
     ).toBeInTheDocument();
+    expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
+      tooltipName: MoneyTooltipName.Apy,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.BalanceSummaryApy,
+    });
   });
 
   it('hides the earn-on-your-crypto section when no assets are eligible', () => {

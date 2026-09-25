@@ -1,5 +1,5 @@
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
-import { MONEY_LANDING_URL } from './urls';
+import { MONEY_LANDING_URL, MUSD_PRICE_URL } from './urls';
 
 export enum MoneyScreenName {
   WalletHome = 'wallet_home',
@@ -36,7 +36,15 @@ export enum MoneyComponentName {
   PotentialEarningsSectionHeader = 'money_potential_earnings_section_header',
   PotentialEarningsSectionTokenRow = 'money_potential_earnings_section_token_row',
   PotentialEarningsTokenRow = 'money_potential_earnings_token_row',
+  PotentialEarningsViewHeader = 'money_potential_earnings_view_header',
+  PotentialEarningsProjectedAmount = 'money_earn_crypto_projected_amount',
   ConvertCryptoButton = 'money_convert_crypto_button',
+  BalanceSummaryApy = 'money_balance_summary_apy',
+  EarningsSection = 'money_earnings_section',
+  HowItWorksSectionHeader = 'money_how_it_works_section_header',
+  CondensedInfoCardsHowItWorks = 'money_condensed_info_cards_how_it_works',
+  CondensedInfoCardsMusd = 'money_condensed_info_cards_musd',
+  CondensedInfoCardsWhatYouGet = 'money_condensed_info_cards_what_you_get',
   HomeTab = 'money_home_tab',
   ActionButtonRow = 'money_action_button_row',
   More = 'money_more',
@@ -59,6 +67,8 @@ export enum MoneyButtonType {
 
 export enum MoneyTooltipName {
   MoneyBalance = 'money_balance',
+  MonthlyEarnings = 'monthly_earnings',
+  LifetimeEarnings = 'lifetime_earnings',
   EarnOnYourCrypto = 'earn_on_your_crypto',
   Apy = 'apy',
 }
@@ -85,6 +95,7 @@ export enum MoneyRedirectTargetType {
 
 export const MONEY_URLS = {
   MONEY_LANDING: MONEY_LANDING_URL,
+  MUSD_PRICE: MUSD_PRICE_URL,
   METAMASK_SUPPORT: SUPPORT_LINK ?? 'https://support.metamask.io',
 } as const;
 

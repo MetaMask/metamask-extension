@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
@@ -16,6 +16,8 @@ import {
   MoneyButtonType,
   MoneyComponentName,
   MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
 } from './constants/money-events';
 import { MoneyEarnPage } from './money-earn-page';
 
@@ -202,6 +204,22 @@ describe('MoneyEarnPage', () => {
       componentName: MoneyComponentName.ConvertCryptoButton,
       labelKey: 'moneyConvertYourCrypto',
       redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+  });
+
+  it('tracks the projected earnings tooltip from the view header', async () => {
+    renderWithLocalization(<MoneyEarnPage />);
+
+    await act(async () => {
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-potential-earnings-projection-trigger'),
+      );
+    });
+
+    expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.PotentialEarningsViewHeader,
     });
   });
 });

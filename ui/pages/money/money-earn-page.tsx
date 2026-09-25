@@ -27,6 +27,8 @@ import {
   MoneyButtonType,
   MoneyComponentName,
   MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
 } from './constants/money-events';
 import { MoneyPotentialEarningsSummary } from './components/money-potential-earnings-summary';
 import { MoneyPotentialEarningsTokenRow } from './components/money-potential-earnings-token-row';
@@ -50,9 +52,10 @@ export function MoneyEarnPage() {
       screenName: MoneyScreenName.MoneyPotentialEarnings,
       tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
     });
-  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
-    screenName: MoneyScreenName.MoneyPotentialEarnings,
-  });
+  const { trackButtonClicked, trackScreenViewed, trackTooltipClicked } =
+    useMoneyAnalytics({
+      screenName: MoneyScreenName.MoneyPotentialEarnings,
+    });
   const pageRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -76,6 +79,14 @@ export function MoneyEarnPage() {
     });
     initiateDeposit();
   }, [initiateDeposit, trackButtonClicked]);
+
+  const handleProjectionTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.PotentialEarningsViewHeader,
+    });
+  }, [trackTooltipClicked]);
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -112,6 +123,7 @@ export function MoneyEarnPage() {
             apyPercent={apyPercent}
             privacyMode={privacyMode}
             headingVariant={TextVariant.HeadingLg}
+            onProjectionTooltipOpen={handleProjectionTooltipOpen}
           />
 
           {eligibleTokens.map((token, index) => (

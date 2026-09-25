@@ -52,12 +52,17 @@ import {
   MoneyComponentName,
   MoneyOnboardingStepAction,
   MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
 } from './constants/money-events';
 import {
   MoneyActivityList,
   MAX_PREVIEW_ITEMS,
 } from './components/money-activity-list';
-import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
+import {
+  MoneyCondensedInfoCards,
+  type MoneyCondensedInfoCardClick,
+} from './components/money-condensed-info-cards';
 import { MoneyMoreMenu } from './components/money-more-menu';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyEarnings } from './components/money-earnings';
@@ -217,6 +222,7 @@ export function MoneyHomePage() {
     trackOnboardingEvent,
     trackScreenViewed,
     trackSurfaceClicked,
+    trackTooltipClicked,
   } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyHome,
   });
@@ -239,6 +245,44 @@ export function MoneyHomePage() {
     });
     navigate(MONEY_EARN_ROUTE);
   }, [navigate, trackSurfaceClicked]);
+  const handleHowItWorksHeaderClick = useCallback(() => {
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.HowItWorksSectionHeader,
+      redirectTarget: MoneyScreenName.MoneyHowItWorks,
+    });
+  }, [trackSurfaceClicked]);
+  const handleCondensedInfoCardClick = useCallback(
+    (card: MoneyCondensedInfoCardClick) => trackSurfaceClicked(card),
+    [trackSurfaceClicked],
+  );
+  const handleApyTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.Apy,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.BalanceSummaryApy,
+    });
+  }, [trackTooltipClicked]);
+  const handleMonthlyEarningsTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.MonthlyEarnings,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.EarningsSection,
+    });
+  }, [trackTooltipClicked]);
+  const handleLifetimeEarningsTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.LifetimeEarnings,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.EarningsSection,
+    });
+  }, [trackTooltipClicked]);
+  const handleProjectionTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.PotentialEarningsProjectedAmount,
+    });
+  }, [trackTooltipClicked]);
   const handleAddFundsFromActionRow = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -336,6 +380,7 @@ export function MoneyHomePage() {
           privacyMode={privacyMode}
           onAddToken={handleAddToken}
           onViewAll={handleViewAllEarnTokens}
+          onProjectionTooltipOpen={handleProjectionTooltipOpen}
           isAddDisabled={isDepositLoading}
         />
         <MoneySectionDivider />
@@ -417,6 +462,7 @@ export function MoneyHomePage() {
                       className="text-success-default"
                       position={PopoverPosition.Auto}
                       popoverStyle={{ maxWidth: 315 }}
+                      onOpen={handleApyTooltipOpen}
                       data-testid="money-home-apy"
                     >
                       <div className="flex flex-col gap-4">
@@ -509,19 +555,24 @@ export function MoneyHomePage() {
                     lifetimeEarnings={lifetimeEarnings}
                     isMonthlyLoading={isMonthlyEarningsLoading}
                     isLifetimeLoading={isLifetimeEarningsLoading}
+                    onMonthlyTooltipOpen={handleMonthlyEarningsTooltipOpen}
+                    onLifetimeTooltipOpen={handleLifetimeEarningsTooltipOpen}
                   />
                   <MoneySectionDivider />
                 </>
               ) : null}
               {activitySection}
               {earnOnYourCryptoSection}
-              <MoneyCondensedInfoCards />
+              <MoneyCondensedInfoCards
+                onCardClick={handleCondensedInfoCardClick}
+              />
             </>
           ) : (
             <>
               <section className="px-4 py-3">
                 <Link
                   to={MONEY_HOW_IT_WORKS_ROUTE}
+                  onClick={handleHowItWorksHeaderClick}
                   className="flex items-center gap-1 text-left no-underline text-inherit"
                   data-testid="money-how-it-works-header"
                 >
