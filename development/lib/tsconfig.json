@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "resolveJsonModule": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "noCheck": true
+  },
+  "exclude": ["*.test.ts"],
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "include": [
+    "build-type.ts",
+    "get-manifest-flag.ts",
+    "get-version.ts",
+    "retry.ts",
+    "variables.ts"
+  ]
+}

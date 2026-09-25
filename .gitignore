@@ -102,6 +102,17 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+# Emitted by `tsc -p development/lib/tsconfig.json` (see webpack:tsc)
+development/lib/build-type.js
+development/lib/build-type.d.ts
+development/lib/get-manifest-flag.js
+development/lib/get-manifest-flag.d.ts
+development/lib/get-version.js
+development/lib/get-version.d.ts
+development/lib/retry.js
+development/lib/retry.d.ts
+development/lib/variables.js
+development/lib/variables.d.ts
 
 # llm workflow playwright temp files
 temp-llm-workflow-*
