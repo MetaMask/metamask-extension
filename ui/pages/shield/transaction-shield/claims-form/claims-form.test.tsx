@@ -106,9 +106,7 @@ describe('Submit Claim Form', () => {
     fireEvent.blur(emailInput);
 
     const errorMessage = getByTestId('shield-claim-help-text');
-    expect(errorMessage).toHaveTextContent(
-      'Please enter a valid email address',
-    );
+    expect(errorMessage).toHaveTextContent('Enter a valid email address');
   });
 
   it('should show error when reimbursement wallet address is invalid', () => {
@@ -130,9 +128,7 @@ describe('Submit Claim Form', () => {
     const errorMessage = getByTestId(
       'shield-claim-reimbursement-wallet-address-help-text',
     );
-    expect(errorMessage).toHaveTextContent(
-      'Please enter a valid wallet address',
-    );
+    expect(errorMessage).toHaveTextContent('Enter a valid wallet address');
   });
 
   it('should disable submit button when there are errors', () => {
