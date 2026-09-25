@@ -1949,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "API của bên thứ ba hiện là một phần của Chức năng cơ bản. Dựa trên tùy chọn trước đây của bạn, cài đặt này đang $1. Bạn có thể thay đổi bất cứ lúc nào trong $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "tắt"
