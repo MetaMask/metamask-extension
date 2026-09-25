@@ -51,7 +51,7 @@ describe('ensureMusdTokenImportedForChain', () => {
       [
         {
           address: MUSD_TOKEN_ADDRESS,
-          symbol: 'MUSD',
+          symbol: 'mUSD',
           decimals: 6,
         },
       ],
@@ -67,7 +67,7 @@ describe('ensureMusdTokenImportedForChain', () => {
       [
         {
           address: MUSD_TOKEN_ADDRESS,
-          symbol: 'MUSD',
+          symbol: 'mUSD',
           decimals: 6,
         },
       ],
