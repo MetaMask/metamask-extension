@@ -1945,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "サードパーティAPIは基本機能の一部となりました。お客様の以前の設定に基づき、この設定は$1になっています。設定はいつでも$2で変更できます。",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "無効"

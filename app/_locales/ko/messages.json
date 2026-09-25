@@ -1945,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "이제 제3자 API가 기본 기능의 일부로 포함됩니다. 이전 기본 설정에 따라 이 설정은 $1 상태입니다. $2에서 언제든지 설정을 변경할 수 있습니다",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "비활성화됨"

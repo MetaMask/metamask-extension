@@ -1945,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "APIs de terceiros agora fazem parte da Funcionalidade Básica. Com base em suas preferências anteriores, esta configuração está $1. Você pode alterá-la quando quiser em $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "desativada"
