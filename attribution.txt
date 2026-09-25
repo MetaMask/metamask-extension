@@ -25503,7 +25503,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/design-system-react
-0.44.0 <https://github.com/MetaMask/metamask-design-system>
+0.45.3 <https://github.com/MetaMask/metamask-design-system>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -25529,7 +25529,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/design-system-shared
-0.38.0 <https://github.com/MetaMask/metamask-design-system>
+0.39.0 <https://github.com/MetaMask/metamask-design-system>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -26813,7 +26813,7 @@ SOFTWARE.
 ******************************
 
 @metamask/keyring-controller
-28.0.0 <https://github.com/MetaMask/core>
+28.1.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -28399,7 +28399,7 @@ SOFTWARE.
 ******************************
 
 @metamask/profile-sync-controller
-32.1.0 <https://github.com/MetaMask/core>
+32.3.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -39476,7 +39476,7 @@ authors: 강동윤 <kdy1997.dev@gmail.com>
 
 ******************************
 
-@swc/core-linux-x64-gnu
+@swc/core-darwin-arm64
 1.13.3 <https://github.com/swc-project/swc>
 license: Apache-2.0 AND MIT
 authors: 강동윤 <kdy1997.dev@gmail.com>
