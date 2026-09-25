@@ -220,7 +220,7 @@ async function main() {
       // Statistical benchmark result (page load or performance)
       const benchmark = value as BenchmarkResults;
       const type = benchmark.benchmarkType || BENCHMARK_TYPE.BENCHMARK;
-      const message = `${type}.${name}`;
+      const message = `benchmark.startupStandardHome.namespace`;
 
       // Skip if mean is empty
       if (Object.keys(benchmark.mean).length === 0) {
