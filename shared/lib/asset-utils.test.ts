@@ -184,6 +184,75 @@ describe('asset-utils', () => {
       ]);
     });
 
+    // @ts-expect-error - each is a valid test function
+    it.each([
+      {
+        name: 'Mantle',
+        chainId: 'eip155:5000' as CaipChainId,
+        nativeAddress: '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
+        expected:
+          'eip155:5000/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
+      },
+      {
+        name: 'Metis',
+        chainId: 'eip155:1088' as CaipChainId,
+        nativeAddress: '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
+        expected:
+          'eip155:1088/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
+      },
+    ])(
+      'keeps the dead-address ERC-20 asset ID for $name (not in native-asset map)',
+      ({
+        chainId,
+        nativeAddress,
+        expected,
+      }: {
+        chainId: CaipChainId;
+        nativeAddress: string;
+        expected: string;
+      }) => {
+        const result = toAssetId(nativeAddress, chainId);
+        expect(result).toBe(expected);
+        expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+          undefined,
+          result,
+        ]);
+      },
+    );
+
+    // These chains are not in the swaps native-asset map, so toAssetId falls
+    // back to the zero-address ERC-20 id rather than a distinct token contract.
+    // @ts-expect-error - each is a valid test function
+    it.each([
+      {
+        name: 'Gnosis',
+        chainId: 'eip155:100' as CaipChainId,
+        expected: 'eip155:100/erc20:0x0000000000000000000000000000000000000000',
+      },
+      {
+        name: 'Stable',
+        chainId: 'eip155:988' as CaipChainId,
+        expected: 'eip155:988/erc20:0x0000000000000000000000000000000000000000',
+      },
+      {
+        name: 'Rootstock',
+        chainId: 'eip155:30' as CaipChainId,
+        expected: 'eip155:30/erc20:0x0000000000000000000000000000000000000000',
+      },
+    ])(
+      'returns zero-address ERC-20 asset ID for $name native token',
+      ({ chainId, expected }: { chainId: CaipChainId; expected: string }) => {
+        const zeroAddress = '0x0000000000000000000000000000000000000000';
+
+        const result = toAssetId(zeroAddress, chainId);
+        expect(result).toBe(expected);
+        expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+          undefined,
+          result,
+        ]);
+      },
+    );
+
     it('should handle checksummed addresses', () => {
       const address = '0x1F9840a85d5aF5bf1D1762F925BDADdC4201F984';
       const chainId = 'eip155:1' as CaipChainId;

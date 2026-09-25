@@ -38,6 +38,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly advancedDetailsHexData: RawLocator =
     '[data-testid="advanced-details-transaction-hex"]';
 
+  private readonly advancedDetailsNonceSection: RawLocator =
+    '[data-testid="advanced-details-nonce-section"]';
+
   private readonly advancedDetailsSection: RawLocator =
     '[data-testid="advanced-details-data-section"]';
 
@@ -123,6 +126,11 @@ class TransactionConfirmation extends Confirmation {
 
   private readonly inlineAlert: RawLocator = {
     testId: 'inline-alert',
+  };
+
+  private readonly interactingWithLabel: RawLocator = {
+    css: 'p',
+    text: tEn('interactingWith'),
   };
 
   private readonly networkName: RawLocator =
@@ -304,6 +312,37 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector(this.inlineAlert);
   }
 
+  /**
+   * Confirms a wallet-initiated native send (not an ERC-20 `transfer`).
+   * Native `simpleSend` confirmations show the native ticker in the heading
+   * and do not expose a token `transfer` function in advanced details.
+   *
+   * Absence checks wait for the nonce section so they cannot pass during the
+   * render gap after toggling advanced details: wallet-initiated ERC-20
+   * transfers hide “Interacting with” until `showAdvancedDetails` is true.
+   *
+   * @param symbol - Native currency ticker expected in the send heading.
+   */
+  async checkNativeTransferPath(symbol: string): Promise<void> {
+    console.log(
+      `Checking confirmation is a native ${symbol} send, not ERC-20 transfer`,
+    );
+    await this.checkSendAmount(`1 ${symbol}`);
+    await this.clickAdvancedDetailsButton();
+    await this.driver.assertElementNotPresent(this.interactingWithLabel, {
+      findElementGuard: this.advancedDetailsNonceSection,
+    });
+    await this.driver.assertElementNotPresent(
+      {
+        css: this.advancedDetailsDataFunction,
+        text: 'transfer',
+      },
+      {
+        findElementGuard: this.advancedDetailsNonceSection,
+      },
+    );
+  }
+
   async checkNetworkIsDisplayed(network: string): Promise<void> {
     console.log(
       `Checking network ${network} is displayed on transaction confirmation page.`,
@@ -445,6 +484,42 @@ class TransactionConfirmation extends Confirmation {
   async clickEnforcedSimulationsToggle(): Promise<void> {
     console.log(`Clicking the enforced simulations toggle.`);
     await this.driver.clickElement(this.enforcedSimulationsToggle);
+  }
+
+  /**
+   * Confirm/cancel footer click. Matches `Confirmation.clickFooterButton` on
+   * current main so this class still typechecks when CI merges that API.
+   * @param options0
+   * @param options0.button
+   * @param options0.waitUntil
+   */
+  async clickFooterButton({
+    button,
+    waitUntil,
+  }: {
+    button: 'confirm' | 'cancel';
+    waitUntil?: 'windowClose' | 'disappear';
+  }): Promise<void> {
+    const locator =
+      button === 'confirm'
+        ? '[data-testid="confirm-footer-button"]'
+        : '[data-testid="confirm-footer-cancel-button"]';
+
+    switch (waitUntil) {
+      case 'windowClose':
+        await this.driver.clickElementAndWaitForWindowToClose(locator);
+        return;
+      case 'disappear':
+        await this.driver.clickElementAndWaitToDisappear(locator);
+        return;
+      case undefined:
+        await this.driver.clickElement(locator);
+        return;
+      default: {
+        const exhaustive: never = waitUntil;
+        throw new Error(`Unhandled waitUntil: ${String(exhaustive)}`);
+      }
+    }
   }
 
   async clickGasFeeTokenPill() {

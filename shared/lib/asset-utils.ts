@@ -19,21 +19,107 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
   SLIP44_ASSET_NAMESPACE,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
-import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
+import { NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
 import getFetchWithTimeout from './fetch-with-timeout';
 import { decimalToPrefixedHex } from './conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
-const polygonCaipChainId = 'eip155:137' as CaipChainId;
+
+/** Chain id as CAIP-2, hex, or loose string (e.g. decimal). */
+type ChainIdInput = CaipChainId | Hex | string;
+
+/**
+ * Convert a CAIP-2 or hex chain id to hex for `getNativeTokenAddress`.
+ *
+ * @param chainId - Chain id in CAIP or hex form.
+ * @returns Hex chain id, or `undefined` when the input is not an EVM chain.
+ */
+function toHexChainId(chainId: ChainIdInput): Hex | undefined {
+  if (isStrictHexString(chainId)) {
+    return chainId;
+  }
+  if (!isCaipChainId(chainId)) {
+    return undefined;
+  }
+  const { namespace, reference } = parseCaipChainId(chainId);
+  if (namespace !== KnownCaipNamespace.Eip155) {
+    return undefined;
+  }
+  return numberToHex(Number.parseInt(reference, 10));
+}
+
+/**
+ * True when `address` is this chain's native token, including non-zero natives
+ * such as Polygon (`0x…1010`) and Mantle/Metis (`0xdead…0000`).
+ *
+ * @param address - Token address or asset reference.
+ * @param chainId - Chain id in CAIP or hex form.
+ * @returns Whether the address is the native token for the chain.
+ */
+function isNativeTokenAddressForChain(
+  address: string,
+  chainId: ChainIdInput,
+): boolean {
+  const hexChainId = toHexChainId(chainId);
+  if (!hexChainId) {
+    return false;
+  }
+  return (
+    address.toLowerCase() === getNativeTokenAddress(hexChainId).toLowerCase()
+  );
+}
+
+/**
+ * Maps chain-specific native token addresses (Polygon `0x…1010`, Mantle/Metis
+ * `0xdead…0000`) to `NATIVE_TOKEN_ADDRESS` so `isNativeAddress` can recognize
+ * them. The original address is kept when native lookup does not succeed.
+ *
+ * @param address - Token address or asset reference.
+ * @param chainId - Chain id in CAIP or hex form.
+ * @returns `NATIVE_TOKEN_ADDRESS` when `address` is the chain native, else `address`.
+ */
+function toNativeLookupAddress(
+  address: Hex | CaipAssetType | string,
+  chainId: ChainIdInput,
+): Hex | CaipAssetType | string {
+  if (
+    typeof address === 'string' &&
+    isNativeTokenAddressForChain(address, chainId)
+  ) {
+    return NATIVE_TOKEN_ADDRESS;
+  }
+  return address;
+}
+
+/**
+ * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
+ * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
+ * custom/unsupported networks).
+ *
+ * @param chainId - The chain id in caip or hex format.
+ * @returns The native asset id, or `undefined` when it can't be resolved.
+ */
+export const getNativeAssetId = (
+  chainId?: CaipChainId | Hex,
+): CaipAssetType | undefined => {
+  if (!chainId) {
+    return undefined;
+  }
+  try {
+    return getNativeAssetForChainId(chainId).assetId;
+  } catch {
+    return undefined;
+  }
+};
 
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
@@ -55,18 +141,14 @@ export const toAssetId = (
     return undefined;
   }
 
-  // TODO: Fix or replace `isNativeAddress` to support Polygon
-  const isPolygonNative =
-    chainIdToUse === polygonCaipChainId &&
-    addressToUse === POLYGON_NATIVE_TOKEN_ADDRESS;
-
-  if (isNativeAddress(addressToUse) || isPolygonNative) {
-    try {
-      return getNativeAssetForChainId(chainIdToUse)?.assetId;
-    } catch {
-      // Skip error for unsupported chains (e.g., custom networks) so we obtain the assetId in another way
-      // This allows the send flow to work for custom networks even if they're not in the swaps map
-      // Format normalization in isEvmChainId should prevent most errors, but this is a defensive fallback
+  // Only treat a chain-specific native as `0x0` when the bridge native-asset
+  // map actually has an entry. Mantle/Metis natives live at `0xdead…0000` and
+  // are not in that map; rewriting them first produced `erc20:0x0`, which
+  // misses balances, prices, and metadata stored under the dead address.
+  if (isNativeAddress(toNativeLookupAddress(addressToUse, chainIdToUse))) {
+    const nativeAssetId = getNativeAssetId(chainIdToUse);
+    if (nativeAssetId) {
+      return nativeAssetId;
     }
   }
   if (chainIdToUse === MultichainNetworks.SOLANA) {
@@ -98,27 +180,6 @@ export const toAssetId = (
     );
   }
   return undefined;
-};
-
-/**
- * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
- * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
- * custom/unsupported networks).
- *
- * @param chainId - The chain id in caip or hex format.
- * @returns The native asset id, or `undefined` when it can't be resolved.
- */
-export const getNativeAssetId = (
-  chainId?: CaipChainId | Hex,
-): CaipAssetType | undefined => {
-  if (!chainId) {
-    return undefined;
-  }
-  try {
-    return getNativeAssetForChainId(chainId).assetId;
-  } catch {
-    return undefined;
-  }
 };
 
 export const isNativeCaipAssetId = (assetId: CaipAssetType) => {
