@@ -7605,8 +7605,6 @@ export async function setLastInteractedConfirmationInfo(
     [info],
   );
 }
-// Required for `applyPatches` below. The plugin registry is per copy of immer,
-// so don't rely on another package having enabled it.
 enablePatches();
 
 function applyPatches(
