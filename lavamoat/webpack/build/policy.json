@@ -2128,11 +2128,6 @@
         "thread-loader": true
       }
     },
-    "lodash": {
-      "globals": {
-        "define": true
-      }
-    },
     "@babel/core>@babel/helper-compilation-targets>lru-cache": {
       "packages": {
         "@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": true
@@ -3641,21 +3636,6 @@
         "fs.writeFile": true,
         "path.resolve": true,
         "util.format": true
-      }
-    },
-    "yaml": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "process.emitWarning": true,
-        "process.env.LOG_STREAM": true,
-        "process.env.LOG_TOKENS": true
-      },
-      "globals": {
-        "atob": true,
-        "btoa": true,
-        "console.dir": true,
-        "console.log": true,
-        "console.warn": true
       }
     },
     "yargs": {
