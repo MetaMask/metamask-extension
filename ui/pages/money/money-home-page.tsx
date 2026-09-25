@@ -50,6 +50,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyOnboardingStepAction,
   MoneyScreenName,
 } from './constants/money-events';
 import {
@@ -75,6 +76,7 @@ import { MoneyTransferSheet } from './components/money-transfer-sheet';
 const IS_MONEY_TRANSFER_SHEET_ENABLED: boolean = false;
 
 const ACTION_BUTTON_ROW_BUTTON_COUNT = 2;
+const ONBOARDING_TOTAL_STEPS = 1;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 const FORMATTED_ZERO = moneyFormatUsd(new BigNumber(0));
 
@@ -205,10 +207,17 @@ export function MoneyHomePage() {
   const { handleAddToken, initiateDeposit, isDepositLoading } =
     useMoneyAddDepositToken({
       screenName: MoneyScreenName.MoneyHome,
+      tokenRowComponentName:
+        MoneyComponentName.PotentialEarningsSectionTokenRow,
     });
   const { initiateWithdrawal, isLoading: isWithdrawLoading } =
     useMoneyAccountWithdrawal();
-  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
+  const {
+    trackButtonClicked,
+    trackOnboardingEvent,
+    trackScreenViewed,
+    trackSurfaceClicked,
+  } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyHome,
   });
   const isPageLoading =
@@ -217,25 +226,19 @@ export function MoneyHomePage() {
   useTrackOnce(!isPageLoading && availability.isAvailable, trackScreenViewed);
 
   const handleViewAllActivity = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.ViewAll,
-      componentName: MoneyComponentName.ActivitySection,
-      labelKey: 'moneyActivityViewAll',
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.ActivitySectionHeader,
       redirectTarget: MoneyScreenName.MoneyActivity,
     });
     navigate(MONEY_ACTIVITY_ROUTE);
-  }, [navigate, trackButtonClicked]);
+  }, [navigate, trackSurfaceClicked]);
   const handleViewAllEarnTokens = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.ViewAll,
-      componentName: MoneyComponentName.PotentialEarningsSection,
-      labelKey: 'viewAll',
-      redirectTarget: MoneyScreenName.MoneyEarnOnCrypto,
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.PotentialEarningsSectionHeader,
+      redirectTarget: MoneyScreenName.MoneyPotentialEarnings,
     });
     navigate(MONEY_EARN_ROUTE);
-  }, [navigate, trackButtonClicked]);
+  }, [navigate, trackSurfaceClicked]);
   const handleAddFundsFromActionRow = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -249,15 +252,15 @@ export function MoneyHomePage() {
     initiateDeposit();
   }, [initiateDeposit, trackButtonClicked]);
   const handleAddFundsFromFundCard = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.AddMoney,
-      componentName: MoneyComponentName.OnboardingCard,
-      labelKey: 'addFunds',
+    trackOnboardingEvent({
+      step: 1,
+      stepTitleKey: 'moneyEarnTitle',
+      totalSteps: ONBOARDING_TOTAL_STEPS,
+      stepAction: MoneyOnboardingStepAction.DepositInitiated,
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     initiateDeposit();
-  }, [initiateDeposit, trackButtonClicked]);
+  }, [initiateDeposit, trackOnboardingEvent]);
   const handleLearnMore = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,

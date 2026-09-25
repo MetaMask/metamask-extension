@@ -18,6 +18,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyOnboardingStepAction,
   MoneyScreenName,
 } from './constants/money-events';
 import { MoneyHomePage } from './money-home-page';
@@ -386,13 +387,14 @@ describe('MoneyHomePage', () => {
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
     expect(mockInitiateDeposit).toHaveBeenCalledWith();
-    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.AddMoney,
-      componentName: MoneyComponentName.OnboardingCard,
-      labelKey: 'addFunds',
+    expect(mockMoneyAnalytics.trackOnboardingEvent).toHaveBeenCalledWith({
+      step: 1,
+      stepTitleKey: 'moneyEarnTitle',
+      totalSteps: 1,
+      stepAction: MoneyOnboardingStepAction.DepositInitiated,
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
+    expect(mockMoneyAnalytics.trackButtonClicked).not.toHaveBeenCalled();
   });
 
   it('tracks the screen as viewed once after the balance has loaded', () => {
@@ -483,12 +485,9 @@ describe('MoneyHomePage', () => {
     fireEvent.click(screen.getByTestId('money-potential-earnings-view-all'));
 
     expect(mockNavigate).toHaveBeenCalledWith(MONEY_EARN_ROUTE);
-    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.ViewAll,
-      componentName: MoneyComponentName.PotentialEarningsSection,
-      labelKey: 'viewAll',
-      redirectTarget: MoneyScreenName.MoneyEarnOnCrypto,
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+      componentName: MoneyComponentName.PotentialEarningsSectionHeader,
+      redirectTarget: MoneyScreenName.MoneyPotentialEarnings,
     });
   });
 
@@ -680,11 +679,8 @@ describe('MoneyHomePage', () => {
     expect(screen.getByTestId('money-activity-view-all')).toBeEnabled();
     fireEvent.click(screen.getByTestId('money-activity-view-all'));
     expect(mockNavigate).toHaveBeenCalledWith(MONEY_ACTIVITY_ROUTE);
-    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.ViewAll,
-      componentName: MoneyComponentName.ActivitySection,
-      labelKey: 'moneyActivityViewAll',
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+      componentName: MoneyComponentName.ActivitySectionHeader,
       redirectTarget: MoneyScreenName.MoneyActivity,
     });
     expect(

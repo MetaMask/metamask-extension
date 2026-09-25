@@ -150,10 +150,11 @@ describe('MoneyEarnPage', () => {
     ).toHaveLength(6);
     expect(screen.getByText('Token 6')).toBeInTheDocument();
     expect(mockUseMoneyAddDepositToken).toHaveBeenCalledWith({
-      screenName: MoneyScreenName.MoneyEarnOnCrypto,
+      screenName: MoneyScreenName.MoneyPotentialEarnings,
+      tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
     });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
-      screenName: MoneyScreenName.MoneyEarnOnCrypto,
+      screenName: MoneyScreenName.MoneyPotentialEarnings,
     });
   });
 
@@ -198,7 +199,7 @@ describe('MoneyEarnPage', () => {
     expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
-      componentName: MoneyComponentName.PotentialEarningsSectionFooter,
+      componentName: MoneyComponentName.ConvertCryptoButton,
       labelKey: 'moneyConvertYourCrypto',
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });

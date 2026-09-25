@@ -8,7 +8,7 @@ export enum MoneyScreenName {
   MoneyTransfer = 'money_transfer',
   MoneyActivity = 'money_activity',
   MoneyActivityDetails = 'money_activity_details',
-  MoneyEarnOnCrypto = 'money_earn_on_crypto',
+  MoneyPotentialEarnings = 'money_potential_earnings',
   MoneyHowItWorks = 'money_how_it_works',
 }
 
@@ -19,12 +19,12 @@ export enum MoneyBottomSheetName {
 
 export enum MoneyComponentName {
   OnboardingCard = 'money_onboarding_card',
-  ActivitySection = 'money_activity_section',
+  ActivitySectionHeader = 'money_activity_section_header',
   ActivityListItem = 'money_activity_list_item',
   ActivityFilterAll = 'money_activity_filter_all',
   ActivityFilterDeposits = 'money_activity_filter_deposits',
   ActivityFilterTransfers = 'money_activity_filter_transfers',
-  ActivityFilterCard = 'money_activity_filter_card',
+  ActivityFilterPurchases = 'money_activity_filter_purchases',
   TransferMoneySheetBetweenAccounts = 'money_transfer_money_sheet_between_accounts',
   TransferMoneySheetPerpsAccount = 'money_transfer_money_sheet_perps_account',
   MoreSheetWhatYouGet = 'money_more_sheet_what_you_get',
@@ -33,9 +33,10 @@ export enum MoneyComponentName {
   WhatYouGetSection = 'money_what_you_get_section',
   BalanceCard = 'money_balance_card',
   BalanceProjection = 'money_balance_projection',
-  PotentialEarningsSection = 'money_potential_earnings_section',
+  PotentialEarningsSectionHeader = 'money_potential_earnings_section_header',
   PotentialEarningsSectionTokenRow = 'money_potential_earnings_section_token_row',
-  PotentialEarningsSectionFooter = 'money_potential_earnings_section_footer',
+  PotentialEarningsTokenRow = 'money_potential_earnings_token_row',
+  ConvertCryptoButton = 'money_convert_crypto_button',
   HomeTab = 'money_home_tab',
   ActionButtonRow = 'money_action_button_row',
   More = 'money_more',
@@ -64,6 +65,10 @@ export enum MoneyTooltipName {
 
 export enum MoneyTooltipType {
   Info = 'info',
+}
+
+export enum MoneyOnboardingStepAction {
+  DepositInitiated = 'deposit_initiated',
 }
 
 export enum MoneySurfaceType {

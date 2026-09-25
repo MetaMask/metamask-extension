@@ -11,6 +11,7 @@ import { useMoneyAnalytics } from './useMoneyAnalytics';
 
 type UseMoneyAddDepositTokenOptions = {
   screenName: MoneyScreenName;
+  tokenRowComponentName: MoneyComponentName;
 };
 
 /**
@@ -19,12 +20,14 @@ type UseMoneyAddDepositTokenOptions = {
  * Tracks the token-row Add click and opens the same deposit flow as Money
  * Home Add, optionally pre-selecting the row's payment token.
  *
- * @param options - Screen that owns the token list for analytics.
+ * @param options - Where the token list lives, for analytics.
  * @param options.screenName
+ * @param options.tokenRowComponentName
  * @returns The Add handler, the underlying deposit initiator, and loading state.
  */
 export function useMoneyAddDepositToken({
   screenName,
+  tokenRowComponentName,
 }: UseMoneyAddDepositTokenOptions) {
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
@@ -35,7 +38,7 @@ export function useMoneyAddDepositToken({
       trackTokenButtonClicked({
         buttonType: MoneyButtonType.Text,
         buttonIntent: MoneyButtonIntent.AddMoney,
-        componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
+        componentName: tokenRowComponentName,
         labelKey: 'moneyAdd',
         redirectTarget: MoneyScreenName.MoneyDeposit,
         tokenSymbol: token.symbol,
@@ -51,7 +54,7 @@ export function useMoneyAddDepositToken({
         },
       });
     },
-    [initiateDeposit, trackTokenButtonClicked],
+    [initiateDeposit, tokenRowComponentName, trackTokenButtonClicked],
   );
 
   return { handleAddToken, initiateDeposit, isDepositLoading };

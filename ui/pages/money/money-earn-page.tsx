@@ -47,10 +47,11 @@ export function MoneyEarnPage() {
   );
   const { handleAddToken, initiateDeposit, isDepositLoading } =
     useMoneyAddDepositToken({
-      screenName: MoneyScreenName.MoneyEarnOnCrypto,
+      screenName: MoneyScreenName.MoneyPotentialEarnings,
+      tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
     });
   const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
-    screenName: MoneyScreenName.MoneyEarnOnCrypto,
+    screenName: MoneyScreenName.MoneyPotentialEarnings,
   });
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -69,7 +70,7 @@ export function MoneyEarnPage() {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
-      componentName: MoneyComponentName.PotentialEarningsSectionFooter,
+      componentName: MoneyComponentName.ConvertCryptoButton,
       labelKey: 'moneyConvertYourCrypto',
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
