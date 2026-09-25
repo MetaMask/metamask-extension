@@ -159,6 +159,46 @@ describe('TokenPriceHeader', () => {
     });
   });
 
+  describe('Ambient color override', () => {
+    it('applies ambient color as inline style when provided', () => {
+      render(
+        <TokenPriceHeader
+          {...defaultProps}
+          price={100}
+          percentChange={5.25}
+          ambientColor="#00881A"
+        />,
+      );
+
+      const percentElement = screen.getByTestId('asset-price-percent-change');
+      expect(percentElement).toHaveStyle({ color: '#00881A' });
+    });
+
+    it('applies amber/orange ambient color for negative change', () => {
+      render(
+        <TokenPriceHeader
+          {...defaultProps}
+          price={100}
+          percentChange={-3.5}
+          ambientColor="#FA4B00"
+        />,
+      );
+
+      const percentElement = screen.getByTestId('asset-price-percent-change');
+      expect(percentElement).toHaveStyle({ color: '#FA4B00' });
+    });
+
+    it('uses default TextColor when no ambient color is provided', () => {
+      render(
+        <TokenPriceHeader {...defaultProps} price={100} percentChange={5.25} />,
+      );
+
+      const percentElement = screen.getByTestId('asset-price-percent-change');
+      expect(percentElement).toHaveClass('text-success-default');
+      expect(percentElement).not.toHaveStyle({ color: '#00881A' });
+    });
+  });
+
   describe('Edge cases', () => {
     it('handles NaN percentChange gracefully', () => {
       render(

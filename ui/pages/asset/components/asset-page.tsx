@@ -67,7 +67,10 @@ import {
   getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
-import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
+import {
+  getIsAdvancedChartsEnabled,
+  getIsAdvancedChartsThemingEnabled,
+} from '../../../selectors/multichain/feature-flags';
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
@@ -97,6 +100,7 @@ import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
+import { useTheme } from '../../../hooks/useTheme';
 import { AssetMarketDetails } from './asset-market-details';
 import { AssetPageHeader } from './asset-page-header';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
@@ -112,6 +116,11 @@ import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences
 import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
 import { useOHLCVChart } from './chart/useOHLCVChart';
 import { useOHLCVPriceData } from './chart/useOHLCVPriceData';
+import {
+  AMBIENT_NEGATIVE_COLOR,
+  getAmbientColor,
+  getAmbientSuccessColor,
+} from './chart/chart-theme-config';
 import TokenPriceHeader from './chart/token-price-header';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
@@ -184,6 +193,9 @@ const AssetPage = ({
 
   // Advanced chart state — preferences persisted via PreferencesController.
   const isAdvancedChartsEnabled = useSelector(getIsAdvancedChartsEnabled);
+  const isAdvancedChartsThemingEnabled = useSelector(
+    getIsAdvancedChartsThemingEnabled,
+  );
   const [advancedChartError, setAdvancedChartError] = useState<string | null>(
     null,
   );
@@ -371,6 +383,38 @@ const AssetPage = ({
     timestamp: ohlcvTimestamp,
   } = useOHLCVPriceData(mergedOhlcvData);
 
+  // Ambient chart theming — matches mobile's Price.advanced.tsx logic.
+  // Computes price direction from OHLCV data and derives candle/line colors.
+  const theme = useTheme();
+  const isDark = theme === 'dark';
+
+  const initialAmbientColor = useMemo(() => {
+    if (!isAdvancedChartsThemingEnabled || !isAdvancedChartsEnabled) {
+      return undefined;
+    }
+    if (ohlcvPercentChange === undefined) {
+      return undefined;
+    }
+    const isPositive = ohlcvPercentChange >= 0;
+    return getAmbientColor(isPositive, isDark);
+  }, [
+    ohlcvPercentChange,
+    isDark,
+    isAdvancedChartsEnabled,
+    isAdvancedChartsThemingEnabled,
+  ]);
+
+  const ambientSuccessColor = useMemo(() => {
+    if (!initialAmbientColor) {
+      return undefined;
+    }
+    return getAmbientSuccessColor(isDark);
+  }, [initialAmbientColor, isDark]);
+
+  const ambientErrorColor = initialAmbientColor
+    ? AMBIENT_NEGATIVE_COLOR
+    : undefined;
+
   // Combine iframe and OHLCV errors for fallback decision
   const combinedChartError = advancedChartError || ohlcvError;
   const shouldShowAdvancedChart =
@@ -546,6 +590,7 @@ const AssetPage = ({
               currency={currency}
               timestamp={ohlcvTimestamp}
               loading={isOhlcvLoading}
+              ambientColor={initialAmbientColor}
             />
 
             <IntervalBar
@@ -564,6 +609,9 @@ const AssetPage = ({
               onError={setAdvancedChartError}
               onReady={handleAdvancedChartReady}
               realtimeBar={realtimeLatestBar ?? undefined}
+              lineColorOverride={initialAmbientColor}
+              successColorOverride={ambientSuccessColor}
+              errorColorOverride={ambientErrorColor}
             />
             {/* Candlestick-only: the selection is kept in preferences, but the
                 bar and the studies themselves are hidden on a line chart. */}

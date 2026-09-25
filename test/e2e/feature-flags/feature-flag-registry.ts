@@ -3768,6 +3768,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  tokenDetailsAdvancedChartsTheming: {
+    inProd: true,
+    name: 'tokenDetailsAdvancedChartsTheming',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.49.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   tronAccounts: {
     inProd: true,
     name: 'tronAccounts',
