@@ -256,9 +256,7 @@ export const useSubscriptionMetrics = () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         attachments_count: params.attachmentsCount,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        submission_status: params.submissionStatus,
+        status: params.status,
         error: params.errorMessage,
       });
     },

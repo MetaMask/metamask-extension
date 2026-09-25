@@ -128,7 +128,7 @@ export type CaptureShieldClaimSubmissionEventParams = {
    */
   attachmentsCount: number;
 
-  submissionStatus: 'started' | 'completed' | 'failed';
+  status: 'started' | 'completed' | 'failed';
 
   errorMessage?: string;
 };
