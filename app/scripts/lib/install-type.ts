@@ -16,6 +16,13 @@ let cachedInstallType: InstallType = INSTALL_TYPE.UNKNOWN;
  * @returns A promise that resolves to the install type
  */
 export const initInstallType = async (): Promise<InstallType> => {
+  // The `management` API is only available in contexts that declare the
+  // `management` permission (background/service worker). In the offscreen
+  // document and other restricted contexts, `browser.management` is
+  // undefined, so guard before calling to avoid a TypeError.
+  if (typeof browser.management?.getSelf !== 'function') {
+    return cachedInstallType;
+  }
   try {
     const extensionInfo = await browser.management.getSelf();
     if (extensionInfo.installType) {
