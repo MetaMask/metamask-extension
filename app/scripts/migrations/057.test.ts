@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import migration57 from './057';
+import type { LegacyState } from './legacy-migration-utils';
 
 type MigrationInput = Parameters<typeof migration57.migrate>[0];
 
@@ -16,6 +15,7 @@ describe('migration #57', () => {
     const newStorage = await migration57.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.meta).toStrictEqual({
       version: 57,
     });
@@ -52,6 +52,7 @@ describe('migration #57', () => {
     const newStorage = await migration57.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: {
@@ -102,14 +103,18 @@ describe('migration #57', () => {
     const newStorage = await migration57.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    const expectedTransactions = {};
-    for (const transaction of Object.values(
-      newStorage.data.TransactionController.transactions,
-    )) {
+    const migratedData = newStorage.data as LegacyState;
+    const expectedTransactions: Record<string, unknown> = {};
+    const migratedTransactions =
+      migratedData.TransactionController!.transactions;
+    const transactionList = Array.isArray(migratedTransactions)
+      ? migratedTransactions
+      : Object.values(migratedTransactions ?? {});
+    for (const transaction of transactionList) {
       // Make sure each transaction now has an id.
       expect(typeof transaction.id !== 'undefined').toStrictEqual(true);
       // Build expected transaction object
-      expectedTransactions[transaction.id] = transaction;
+      expectedTransactions[String(transaction.id)] = transaction;
     }
     // Ensure that we got the correct number of transactions
     expect(Object.keys(expectedTransactions)).toHaveLength(
@@ -118,7 +123,12 @@ describe('migration #57', () => {
     // Ensure that the one transaction with id is preserved, even though it is
     // a falsy id.
     expect(
-      newStorage.data.TransactionController.transactions[0].id,
+      (
+        migratedData.TransactionController!.transactions as Record<
+          string,
+          { id?: number }
+        >
+      )['0'].id,
     ).toStrictEqual(0);
   });
 
@@ -169,6 +179,7 @@ describe('migration #57', () => {
     const newStorage = await migration57.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
@@ -187,6 +198,7 @@ describe('migration #57', () => {
     const newStorage = await migration57.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: {},
@@ -205,6 +217,7 @@ describe('migration #57', () => {
     const newStorage = await migration57.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 });

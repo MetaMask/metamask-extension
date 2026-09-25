@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /* eslint-disable @typescript-eslint/naming-convention -- Legacy permission keys use snake_case. */
 import migration68 from './068';
+import type { LegacyState } from './legacy-migration-utils';
 
 type MigrationInput = Parameters<typeof migration68.migrate>[0];
 
@@ -17,6 +16,7 @@ describe('migration #68', () => {
     const newStorage = await migration68.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.meta).toStrictEqual({
       version: 68,
     });
@@ -33,6 +33,7 @@ describe('migration #68', () => {
     const newStorage = await migration68.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage).toMatchObject({
       meta: {
         version: 68,
@@ -62,6 +63,7 @@ describe('migration #68', () => {
     const newStorage = await migration68.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     const { PermissionController } = newStorage.data;
 
     expect(PermissionController).toStrictEqual({
@@ -167,6 +169,7 @@ describe('migration #68', () => {
     const newStorage = await migration68.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
 
     expect(newStorage.data?.PermissionController).toStrictEqual({
       subjects: {
@@ -202,14 +205,14 @@ describe('migration #68', () => {
     const newStorage = await migration68.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    const { PermissionLogController, SubjectMetadataController } =
-      newStorage.data;
+    const migratedData = newStorage.data as LegacyState;
+    const { PermissionLogController, SubjectMetadataController } = migratedData;
     const expected = getOldState().PermissionsMetadata;
 
-    expect(PermissionLogController.permissionHistory).toStrictEqual(
+    expect(PermissionLogController!.permissionHistory).toStrictEqual(
       expected.permissionsHistory,
     );
-    expect(PermissionLogController.permissionActivityLog).toStrictEqual(
+    expect(PermissionLogController!.permissionActivityLog).toStrictEqual(
       expected.permissionsLog,
     );
 
@@ -270,8 +273,9 @@ describe('migration #68', () => {
     const newStorage = await migration68.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.SubjectMetadataController.subjectMetadata,
+      migratedData.SubjectMetadataController!.subjectMetadata,
     ).toStrictEqual({
       'foo.bar': {
         name: null, // replaced with null

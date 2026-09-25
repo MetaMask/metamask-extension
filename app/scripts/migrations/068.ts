@@ -1,30 +1,26 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy migration state remains loosely typed during JS-to-TS conversion. */
 import { cloneDeep } from 'lodash';
-
-type LegacyState = Record<string, any>;
-type VersionedData = { meta: { version?: number }; data?: LegacyState };
-
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type {
+  LegacyPermissionsController,
+  LegacyState,
+} from './legacy-migration-utils';
 const version = 68;
 
 /**
  * Transforms the PermissionsController and PermissionsMetadata substates
  * to match the new permission system.
  */
-const migration = {
+export default {
   version,
-  async migrate(originalVersionedData: VersionedData) {
+  async migrate(originalVersionedData: MigrationState) {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
-    const state = (versionedData.data ?? {}) as LegacyState;
+    const state = versionedData.data as LegacyState;
     const newState = transformState(state);
     versionedData.data = newState;
     return versionedData;
   },
-};
-
-export default migration;
+} satisfies LegacyMigration;
 
 function transformState(state: LegacyState) {
   const {
@@ -46,12 +42,15 @@ function transformState(state: LegacyState) {
       permissionActivityLog: permissionsLog,
       permissionHistory: permissionsHistory,
     },
-    SubjectMetadataController:
-      getSubjectMetadataControllerState(domainMetadata),
+    SubjectMetadataController: getSubjectMetadataControllerState(
+      domainMetadata as Record<string, Record<string, unknown>>,
+    ),
   };
 }
 
-function getPermissionControllerState(PermissionsController: LegacyState) {
+function getPermissionControllerState(
+  PermissionsController: LegacyPermissionsController,
+) {
   const { domains = {} } = PermissionsController;
 
   /**
@@ -63,7 +62,7 @@ function getPermissionControllerState(PermissionsController: LegacyState) {
   const NEW_CAVEAT_TYPE = 'restrictReturnedAccounts';
   const OLD_CAVEAT_NAME = 'exposedAccounts';
 
-  const subjects = Object.entries(domains).reduce(
+  const subjects = Object.entries(domains).reduce<Record<string, unknown>>(
     (transformed, [origin, domainEntry]) => {
       const permissions = Array.isArray(domainEntry?.permissions)
         ? domainEntry.permissions
@@ -89,7 +88,7 @@ function getPermissionControllerState(PermissionsController: LegacyState) {
         return transformed;
       }
 
-      const newPermission = {
+      const newPermission: Record<string, unknown> = {
         ...ethAccountsPermission,
         caveats: [{ type: NEW_CAVEAT_TYPE, value: oldCaveat.value }],
       };
@@ -113,41 +112,42 @@ function getPermissionControllerState(PermissionsController: LegacyState) {
   };
 }
 
-function getSubjectMetadataControllerState(domainMetadata: LegacyState) {
+function getSubjectMetadataControllerState(
+  domainMetadata: Record<string, Record<string, unknown>>,
+) {
   /**
    * Example existing domainMetadata entry keyed by origin.
    */
 
-  const subjectMetadata = Object.entries(domainMetadata).reduce(
-    (transformed, [origin, metadata]) => {
-      if (!metadata || typeof metadata !== 'object') {
-        return transformed;
-      }
-
-      const {
-        name = null,
-        icon = null,
-        extensionId = null,
-        ...other
-      } = metadata;
-
-      // We're getting rid of these.
-      delete other.lastUpdated;
-      delete other.host;
-
-      if (origin) {
-        transformed[origin] = {
-          name,
-          iconUrl: icon,
-          extensionId,
-          ...other,
-          origin,
-        };
-      }
+  const subjectMetadata = Object.entries(domainMetadata).reduce<
+    Record<string, Record<string, unknown>>
+  >((transformed, [origin, metadata]) => {
+    if (!metadata || typeof metadata !== 'object') {
       return transformed;
-    },
-    {},
-  );
+    }
+
+    const {
+      name = null,
+      icon = null,
+      extensionId = null,
+      ...other
+    } = metadata as Record<string, unknown>;
+
+    // We're getting rid of these.
+    delete other.lastUpdated;
+    delete other.host;
+
+    if (origin) {
+      transformed[origin] = {
+        name,
+        iconUrl: icon,
+        extensionId,
+        ...other,
+        origin,
+      };
+    }
+    return transformed;
+  }, {});
 
   return {
     subjectMetadata,

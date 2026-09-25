@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import migration56 from './056';
+import type { LegacyState } from './legacy-migration-utils';
 
 type MigrationInput = Parameters<typeof migration56.migrate>[0];
 
@@ -26,6 +25,7 @@ describe('migration #56', () => {
     const newStorage = await migration56.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.meta).toStrictEqual({
       version: 56,
     });
@@ -46,7 +46,8 @@ describe('migration #56', () => {
     const newStorage = await migration56.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    expect(newStorage.data.PreferencesController.tokens).toStrictEqual([
+    const migratedData = newStorage.data as LegacyState;
+    expect(migratedData.PreferencesController!.tokens).toStrictEqual([
       TOKEN2,
       TOKEN3,
     ]);
@@ -67,7 +68,8 @@ describe('migration #56', () => {
     const newStorage = await migration56.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    expect(newStorage.data.PreferencesController.tokens).toStrictEqual([
+    const migratedData = newStorage.data as LegacyState;
+    expect(migratedData.PreferencesController!.tokens).toStrictEqual([
       TOKEN2,
       TOKEN3,
     ]);
@@ -101,6 +103,7 @@ describe('migration #56', () => {
     const newStorage = await migration56.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
 
     const desiredResult = { ...originalAccountTokens };
     // The last item in the array was bad and should be removed
@@ -109,7 +112,7 @@ describe('migration #56', () => {
     desiredResult['0x1111111111111111111111111']['0x4'] = [];
     desiredResult['0x1111111111111111111111112']['0x4'] = [];
 
-    expect(newStorage.data.PreferencesController.accountTokens).toStrictEqual(
+    expect(migratedData.PreferencesController!.accountTokens).toStrictEqual(
       desiredResult,
     );
   });
@@ -133,7 +136,8 @@ describe('migration #56', () => {
     const newStorage = await migration56.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    expect(newStorage.data.PreferencesController.assetImages).toStrictEqual(
+    const migratedData = newStorage.data as LegacyState;
+    expect(migratedData.PreferencesController!.assetImages).toStrictEqual(
       desiredAssetImages,
     );
   });
@@ -163,6 +167,7 @@ describe('migration #56', () => {
     const newStorage = await migration56.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    expect(newStorage.data.PreferencesController).toStrictEqual(perfectData);
+    const migratedData = newStorage.data as LegacyState;
+    expect(migratedData.PreferencesController).toStrictEqual(perfectData);
   });
 });

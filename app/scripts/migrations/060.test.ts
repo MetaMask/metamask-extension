@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import migration60 from './060';
+import type { LegacyState } from './legacy-migration-utils';
 
 type MigrationInput = Parameters<typeof migration60.migrate>[0];
 
@@ -16,6 +15,7 @@ describe('migration #60', () => {
     const newStorage = await migration60.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.meta).toStrictEqual({
       version: 60,
     });
@@ -61,7 +61,8 @@ describe('migration #60', () => {
     const newStorage = await migration60.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    const { notifications } = newStorage.data.NotificationController;
+    const migratedData = newStorage.data as LegacyState;
+    const notifications = migratedData.NotificationController!.notifications!;
     const notificationKeys = Object.keys(notifications);
     // Expect support notification is removed
     expect(notificationKeys).toHaveLength(3);
@@ -106,6 +107,7 @@ describe('migration #60', () => {
     const newStorage = await migration60.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
@@ -121,6 +123,7 @@ describe('migration #60', () => {
     const newStorage = await migration60.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
@@ -137,6 +140,7 @@ describe('migration #60', () => {
     const newStorage = await migration60.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
@@ -153,6 +157,7 @@ describe('migration #60', () => {
     const newStorage = await migration60.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 });

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import { cloneDeep } from 'lodash';
+import type { LegacyState } from './legacy-migration-utils';
 import {
   TransactionStatus,
   TransactionType,
@@ -133,6 +132,7 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.meta).toStrictEqual({
       version: 59,
     });
@@ -170,8 +170,9 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
 
-    expect(newStorage.data.TransactionController.transactions).toStrictEqual({
+    expect(migratedData.TransactionController!.transactions).toStrictEqual({
       original: oldStorage.data.TransactionController.transactions.original,
       retry: oldStorage.data.TransactionController.transactions.retry,
     });
@@ -191,7 +192,10 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    const EXPECTED = cloneDeep(ERRONEOUS_TRANSACTION_STATE);
+    const migratedData = newStorage.data as LegacyState;
+    const EXPECTED: Record<string, unknown> = cloneDeep(
+      ERRONEOUS_TRANSACTION_STATE,
+    );
     delete EXPECTED['0'];
     expect(newStorage.data).toStrictEqual({
       TransactionController: {
@@ -223,7 +227,8 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    const EXPECTED = cloneDeep(
+    const migratedData = newStorage.data as LegacyState;
+    const EXPECTED: Record<string, unknown> = cloneDeep(
       oldStorage.data.TransactionController.transactions,
     );
     delete EXPECTED['0'];
@@ -256,6 +261,7 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: oldStorage.data.TransactionController.transactions,
@@ -278,7 +284,10 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    const EXPECTED = cloneDeep(ERRONEOUS_TRANSACTION_STATE_RETRY);
+    const migratedData = newStorage.data as LegacyState;
+    const EXPECTED: Record<string, unknown> = cloneDeep(
+      ERRONEOUS_TRANSACTION_STATE_RETRY,
+    );
     delete EXPECTED['0'];
     expect(newStorage.data).toStrictEqual({
       TransactionController: {
@@ -310,7 +319,8 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
-    const EXPECTED = cloneDeep(
+    const migratedData = newStorage.data as LegacyState;
+    const EXPECTED: Record<string, unknown> = cloneDeep(
       oldStorage.data.TransactionController.transactions,
     );
     delete EXPECTED['0'];
@@ -343,6 +353,7 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: oldStorage.data.TransactionController.transactions,
@@ -365,10 +376,13 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     // The following ERRONEOUS_TRANSACTION_STATE object only has one orphan in it
     // so using it as the base for our expected output automatically removes a few
     // transactions we expect to be missing.
-    const EXPECTED = cloneDeep(ERRONEOUS_TRANSACTION_STATE);
+    const EXPECTED: Record<string, unknown> = cloneDeep(
+      ERRONEOUS_TRANSACTION_STATE,
+    );
     delete EXPECTED['0'];
     expect(newStorage.data).toStrictEqual({
       TransactionController: {
@@ -395,6 +409,7 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
@@ -413,6 +428,7 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
@@ -431,6 +447,7 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
@@ -443,6 +460,7 @@ describe('migration #59', () => {
     const newStorage = await migration59.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 });

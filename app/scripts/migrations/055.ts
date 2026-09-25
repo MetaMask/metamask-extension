@@ -1,32 +1,25 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy migration state remains loosely typed during JS-to-TS conversion. */
 import { cloneDeep, mapKeys } from 'lodash';
 import { BUILT_IN_NETWORKS } from '../../../shared/constants/network';
-
-type LegacyState = Record<string, any>;
-type VersionedData = { meta: { version?: number }; data?: LegacyState };
-
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type { LegacyState } from './legacy-migration-utils';
 const version = 55;
 
 /**
  * replace 'incomingTxLastFetchedBlocksByNetwork' with 'incomingTxLastFetchedBlockByChainId'
  */
-const migration = {
+export default {
   version,
-  async migrate(originalVersionedData: VersionedData) {
+  async migrate(originalVersionedData: MigrationState) {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
-    const state = (versionedData.data ?? {}) as LegacyState;
+    const state = versionedData.data as LegacyState;
     versionedData.data = transformState(state);
     return versionedData;
   },
-};
-
-export default migration;
+} satisfies LegacyMigration;
 
 const UNKNOWN_CHAIN_ID_KEY = 'UNKNOWN';
-const builtInNetworks = BUILT_IN_NETWORKS as Record<
+const builtInNetworks = BUILT_IN_NETWORKS as unknown as Record<
   string,
   {
     networkId: string;

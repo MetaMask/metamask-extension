@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy migration state remains loosely typed during JS-to-TS conversion. */
 import { cloneDeep, uniq } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { getRpcUrl } from '../../../shared/constants/network';
-
-type LegacyState = Record<string, any>;
-type VersionedData = { meta: { version?: number }; data?: LegacyState };
-
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type { LegacyState, LegacyTransaction } from './legacy-migration-utils';
 const version = 74;
 
 const hexNumberIsGreaterThanZero = (hexNumber: string | null | undefined) =>
@@ -40,19 +35,17 @@ const DEPRECATED_TEST_NET_DETAILS: Record<
  * if the current network is one such network, updates the network provider details so that it
  * will work as a custom rpc
  */
-const migration = {
+export default {
   version,
-  async migrate(originalVersionedData: VersionedData) {
+  async migrate(originalVersionedData: MigrationState) {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
-    const state = (versionedData.data ?? {}) as LegacyState;
+    const state = versionedData.data as LegacyState;
     const newState = transformState(state);
     versionedData.data = newState;
     return versionedData;
   },
-};
-
-export default migration;
+} satisfies LegacyMigration;
 
 function transformState(state: LegacyState) {
   const PreferencesController = state?.PreferencesController || {};
@@ -77,11 +70,15 @@ function transformState(state: LegacyState) {
   const cachedBalances = state.CachedBalancesController?.cachedBalances || {};
 
   const deprecatedTestnetsOnWhichTheUserHasMadeATransaction = Object.values(
-    transactions,
+    transactions as Record<string, LegacyTransaction>,
   )
     .filter((transaction) => transaction && typeof transaction === 'object')
     .map((transaction) => transaction.chainId)
-    .filter((chainId) => DEPRECATED_TEST_NET_CHAINIDS.includes(chainId));
+    .filter(
+      (chainId): chainId is string =>
+        typeof chainId === 'string' &&
+        DEPRECATED_TEST_NET_CHAINIDS.includes(chainId),
+    );
   const deprecatedTestnetsOnWhichTheUserHasCachedBalance =
     DEPRECATED_TEST_NET_CHAINIDS.filter((chainId) => {
       const cachedBalancesForChain = Object.values(

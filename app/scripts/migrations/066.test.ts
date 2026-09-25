@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import type { LegacyState } from './legacy-migration-utils';
 import migration66 from './066';
 
 type MigrationInput = Parameters<typeof migration66.migrate>[0];
@@ -21,6 +20,7 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.meta).toStrictEqual({
       version: 66,
     });
@@ -35,8 +35,9 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.ledgerTransportType,
+      migratedData.PreferencesController!.ledgerTransportType,
     ).toStrictEqual(LedgerTransportTypes.u2f);
   });
 
@@ -51,8 +52,9 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.ledgerTransportType,
+      migratedData.PreferencesController!.ledgerTransportType,
     ).toStrictEqual(LedgerTransportTypes.u2f);
   });
 
@@ -69,8 +71,9 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.ledgerTransportType,
+      migratedData.PreferencesController!.ledgerTransportType,
     ).toStrictEqual(LedgerTransportTypes.u2f);
   });
 
@@ -86,14 +89,15 @@ describe('migration #66', () => {
     const originalWindow = global.window;
 
     try {
-      delete global.window;
+      Reflect.deleteProperty(global, 'window');
 
       const newStorage = await migration66.migrate(
         oldStorage as unknown as MigrationInput,
       );
+      const migratedData = newStorage.data as LegacyState;
 
       expect(
-        newStorage.data.PreferencesController.ledgerTransportType,
+        migratedData.PreferencesController!.ledgerTransportType,
       ).toStrictEqual(LedgerTransportTypes.u2f);
     } finally {
       global.window = originalWindow;
@@ -112,12 +116,15 @@ describe('migration #66', () => {
     const originalNavigator = window.navigator;
     jest
       .spyOn(window, 'navigator', 'get')
-      .mockImplementation(() => ({ ...originalNavigator, hid: true }));
+      .mockImplementation(
+        () => ({ ...originalNavigator, hid: true }) as unknown as Navigator,
+      );
     const newStorage = await migration66.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.ledgerTransportType,
+      migratedData.PreferencesController!.ledgerTransportType,
     ).toStrictEqual(LedgerTransportTypes.webhid);
   });
 
@@ -133,12 +140,15 @@ describe('migration #66', () => {
     const originalNavigator = window.navigator;
     jest
       .spyOn(window, 'navigator', 'get')
-      .mockImplementation(() => ({ ...originalNavigator, hid: true }));
+      .mockImplementation(
+        () => ({ ...originalNavigator, hid: true }) as unknown as Navigator,
+      );
     const newStorage = await migration66.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LedgerTransportTypes.live);
+      migratedData.PreferencesController!.ledgerTransportType,
+    ).toStrictEqual('live');
   });
 });

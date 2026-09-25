@@ -1,29 +1,25 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy migration state remains loosely typed during JS-to-TS conversion. */
 import { cloneDeep } from 'lodash';
-
-type LegacyState = Record<string, any>;
-type VersionedData = { meta: { version?: number }; data?: LegacyState };
-
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type {
+  LegacyNftController,
+  LegacyState,
+} from './legacy-migration-utils';
 const version = 76;
 
 /**
  * Update to `@metamask/controllers@33.0.0` (rename "Collectible" to "NFT").
  */
-const migration = {
+export default {
   version,
-  async migrate(originalVersionedData: VersionedData) {
+  async migrate(originalVersionedData: MigrationState) {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
-    const state = (versionedData.data ?? {}) as LegacyState;
+    const state = versionedData.data as LegacyState;
     const newState = transformState(state);
     versionedData.data = newState;
     return versionedData;
   },
-};
-
-export default migration;
+} satisfies LegacyMigration;
 
 function transformState(state: LegacyState) {
   if (state.CollectiblesController) {
@@ -40,7 +36,7 @@ function transformState(state: LegacyState) {
       ...(allCollectibles ? { allNfts: allCollectibles } : {}),
       ...(ignoredCollectibles ? { ignoredNfts: ignoredCollectibles } : {}),
       ...remainingState,
-    };
+    } as LegacyNftController;
     delete state.CollectiblesController;
   }
 

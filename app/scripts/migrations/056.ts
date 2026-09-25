@@ -1,11 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy migration state remains loosely typed during JS-to-TS conversion. */
 import { cloneDeep } from 'lodash';
-
-type LegacyState = Record<string, any>;
-type VersionedData = { meta: { version?: number }; data?: LegacyState };
-
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type { LegacyState } from './legacy-migration-utils';
 const version = 56;
 
 /**
@@ -13,9 +8,9 @@ const version = 56;
  * lack of previous addToken validation.  Also removes
  * an unwanted, undefined image property
  */
-const migration = {
+export default {
   version,
-  async migrate(originalVersionedData: VersionedData) {
+  async migrate(originalVersionedData: MigrationState) {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
 
@@ -27,19 +22,14 @@ const migration = {
       );
     }
 
-    if (
-      PreferencesController?.accountTokens &&
-      typeof PreferencesController.accountTokens === 'object'
-    ) {
-      Object.keys(PreferencesController.accountTokens).forEach((account) => {
-        const chains = Object.keys(
-          PreferencesController.accountTokens[account],
-        );
+    const accountTokens = PreferencesController?.accountTokens;
+    if (accountTokens && typeof accountTokens === 'object') {
+      Object.keys(accountTokens).forEach((account) => {
+        const chains = Object.keys(accountTokens[account]);
         chains.forEach((chain) => {
-          PreferencesController.accountTokens[account][chain] =
-            PreferencesController.accountTokens[account][chain].filter(
-              ({ address }) => address,
-            );
+          accountTokens[account][chain] = accountTokens[account][chain].filter(
+            ({ address }) => address,
+          );
         });
       });
     }
@@ -53,6 +43,4 @@ const migration = {
 
     return versionedData;
   },
-};
-
-export default migration;
+} satisfies LegacyMigration;

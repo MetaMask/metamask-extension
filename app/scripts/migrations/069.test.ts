@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import { SubjectType } from '@metamask/permission-controller';
 import migration69 from './069';
 

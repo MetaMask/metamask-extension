@@ -1,29 +1,22 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy migration state remains loosely typed during JS-to-TS conversion. */
 import { cloneDeep, keyBy } from 'lodash';
 import createId from '../../../shared/lib/random-id';
-
-type LegacyState = Record<string, any>;
-type VersionedData = { meta: { version?: number }; data?: LegacyState };
-
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type { LegacyState, LegacyTransaction } from './legacy-migration-utils';
 const version = 57;
 
 /**
  * replace 'incomingTxLastFetchedBlocksByNetwork' with 'incomingTxLastFetchedBlockByChainId'
  */
-const migration = {
+export default {
   version,
-  async migrate(originalVersionedData: VersionedData) {
+  async migrate(originalVersionedData: MigrationState) {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
-    const state = (versionedData.data ?? {}) as LegacyState;
+    const state = versionedData.data as LegacyState;
     versionedData.data = transformState(state);
     return versionedData;
   },
-};
-
-export default migration;
+} satisfies LegacyMigration;
 
 function transformState(state: LegacyState) {
   if (
@@ -44,9 +37,9 @@ function transformState(state: LegacyState) {
           // the state.
           tx.id = createId();
         }
-        return tx.id;
+        return String(tx.id);
       },
-    );
+    ) as Record<string, LegacyTransaction>;
   }
   return state;
 }

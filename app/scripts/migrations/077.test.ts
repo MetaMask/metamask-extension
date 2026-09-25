@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import { cloneDeep } from 'lodash';
 import migration77 from './077';
 

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import migration55 from './055';
 
