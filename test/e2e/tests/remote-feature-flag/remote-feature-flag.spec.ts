@@ -59,7 +59,7 @@ describe('Remote feature flag', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -110,7 +110,7 @@ describe('Remote feature flag', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

@@ -35,7 +35,7 @@ const mockRemoteFeatureFlags = () => (mockServer: Mockttp) =>
  */
 function buildConsolidatedProfileMetricsFixture() {
   const fixture = new FixtureBuilderV2()
-    .withMetaMetricsController({
+    .withAnalyticsController({
       analyticsId: MOCK_ANALYTICS_ID,
       optedIn: false,
     })
@@ -258,7 +258,7 @@ describe('Profile Metrics', function () {
         await withFixtures(
           {
             fixtures: new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 optedIn,
                 consentDecisionMade,
               })

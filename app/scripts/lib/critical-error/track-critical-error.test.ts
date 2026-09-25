@@ -33,7 +33,6 @@ describe('trackCriticalErrorEvent', () => {
         analyticsId: 'test-metrics-id-123',
         consentDecisionMade: true,
       },
-      MetaMetricsController: {},
     };
 
     trackCriticalErrorEvent(
@@ -69,7 +68,6 @@ describe('trackCriticalErrorEvent', () => {
         analyticsId: 'test-metrics-id-456',
         consentDecisionMade: true,
       },
-      MetaMetricsController: {},
     };
 
     trackCriticalErrorEvent(

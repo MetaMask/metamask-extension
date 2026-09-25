@@ -366,7 +366,6 @@ Helpful existing files:
 - `shared/lib/ab-testing/active-ab-test-assignment.ts`
 - `shared/lib/ab-testing/resolve-ab-test-assignment.ts`
 - `shared/lib/ab-testing/ab-test-analytics.ts`
-- `app/scripts/controllers/metametrics-controller.ts`
 - `test/e2e/feature-flags/feature-flag-registry.ts`
 
 ## FAQ

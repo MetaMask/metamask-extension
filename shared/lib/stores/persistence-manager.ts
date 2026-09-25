@@ -26,7 +26,6 @@ export type StorageKind = 'data' | 'split';
 export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
-  'MetaMetricsController',
   'AnalyticsController',
 ] as const;
 
@@ -1105,7 +1104,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               log.info('Backup vault found in IndexedDB, triggering recovery');
 
               // Track vault corruption detected event directly to Segment.
-              // We do this here (before throwing) because MetaMetricsController
+              // We do this here (before throwing) because AnalyticsController
               // is not initialized yet, so we use the backup state for consent/ID.
               const corruptionType = localStoreError
                 ? StateCorruptionErrorType.InaccessibleDatabase

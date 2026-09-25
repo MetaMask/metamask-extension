@@ -51,8 +51,7 @@ export type SegmentTrackPayload = {
 };
 
 /**
- * Thin interface exposed to the rest of the extension. This is the only
- * surface `MetaMetricsController` and `custom-segment-tracking` interact with,
+ * surface `AnalyticsController` and `custom-segment-tracking` interact with,
  * so swapping the underlying implementation (real SDK vs. mock) is confined
  * to this module.
  */

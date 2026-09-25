@@ -130,14 +130,10 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
-type MetaMetricsControllerFixturePatch = {
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+type AnalyticsControllerFixturePatch = {
   analyticsId?: string | null;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   consentDecisionMade?: boolean;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   dataCollectionForMarketing?: boolean;
 };
 
@@ -314,7 +310,7 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+  withAnalyticsController(data: AnalyticsControllerFixturePatch): this {
     const {
       analyticsId,
       optedIn,

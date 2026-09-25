@@ -196,7 +196,7 @@ export function trackEarlySegmentEvent({
     segment.flush();
   } catch (error) {
     // Log but don't propagate analytics errors to ensure they never break the
-    // flow. This matches MetaMetricsController's behavior.
+    // flow. This matches AnalyticsController's behavior.
     console.error('Failed to track early Segment event:', error);
   }
 }
@@ -256,7 +256,7 @@ export function trackSegmentEventWhileOptedOut({
     segment.flush();
   } catch (error) {
     // Log but don't propagate analytics errors to ensure they never break the
-    // flow. This matches MetaMetricsController's behavior.
+    // flow. This matches AnalyticsController's behavior.
     console.error('Failed to track Segment event while opted out:', error);
   }
 }
