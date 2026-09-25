@@ -3694,7 +3694,7 @@
     "message": "Disconnect all?"
   },
   "disconnectAllSitesSuccess": {
-    "message": "All dapps disconnected."
+    "message": "All dapps successfully disconnected."
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
@@ -3707,7 +3707,7 @@
     "description": "$1 is the site hostname"
   },
   "disconnectSiteSuccess": {
-    "message": "Disconnected from $1.",
+    "message": "Successfully disconnected from $1.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4686,7 +4686,7 @@
     "message": "Unlock Your Device"
   },
   "hardwareWalletRepairSuccessDescription": {
-    "message": "Your device has been reconnected. You can close this tab."
+    "message": "Your device has been reconnected successfully. You can close this tab."
   },
   "hardwareWalletRepairSuccessTitle": {
     "message": "Device Connected"
@@ -6398,7 +6398,7 @@
     "message": "New contract"
   },
   "newCustomTokenAdded": {
-    "message": "“$1” was added!"
+    "message": "“$1” was successfully added!"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Assets"
@@ -6414,13 +6414,13 @@
     "message": "NFT autodetection"
   },
   "newNetworkAdded": {
-    "message": "“$1” was added!"
+    "message": "“$1” was successfully added!"
   },
   "newNetworkEdited": {
-    "message": "“$1” was edited!"
+    "message": "“$1” was successfully edited!"
   },
   "newNftAddedMessage": {
-    "message": "NFT was added!"
+    "message": "NFT was successfully added!"
   },
   "newPassword": {
     "message": "New password"
@@ -6435,7 +6435,7 @@
     "message": "We’ve updated our privacy policy"
   },
   "newTokensImportedMessage": {
-    "message": "You've imported $1.",
+    "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
   },
   "newTokensImportedTitle": {
@@ -6543,7 +6543,7 @@
     "message": "You don't have any tokens yet. Search by name or address to discover popular tokens."
   },
   "noWebcamFound": {
-    "message": "Your computer's webcam was not found. Try again."
+    "message": "Your computer's webcam was not found. Please try again."
   },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
@@ -6693,7 +6693,7 @@
     "message": "Nothing to see here"
   },
   "notificationsPageErrorContent": {
-    "message": "Try visiting this page again."
+    "message": "Please, try to visit this page again."
   },
   "notificationsPageErrorTitle": {
     "message": "There has been an error"
@@ -6711,7 +6711,7 @@
     "message": "Agent wallet"
   },
   "notificationsSettingsBoxError": {
-    "message": "Something went wrong. Try again."
+    "message": "Something went wrong. Please try again."
   },
   "notificationsSettingsDeselectAll": {
     "message": "Deselect all"
@@ -6817,7 +6817,7 @@
     "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
   },
   "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Enter a valid URL"
+    "message": "Please enter a valid URL"
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Add custom IPFS Gateway"
@@ -7713,7 +7713,7 @@
     "message": "Close short"
   },
   "perpsConnectionTimeout": {
-    "message": "Connection timed out. Try again."
+    "message": "Connection timed out. Please try again."
   },
   "perpsContactSupport": {
     "message": "Contact support"
@@ -7993,7 +7993,7 @@
     "message": "More"
   },
   "perpsNetworkError": {
-    "message": "A network error occurred. Try again."
+    "message": "A network error occurred. Please try again."
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
@@ -8157,7 +8157,7 @@
     "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
-    "message": "Too many requests. Wait and try again."
+    "message": "Too many requests. Please wait and try again."
   },
   "perpsRecentActivity": {
     "message": "Recent activity"
@@ -8207,7 +8207,7 @@
     "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
-    "message": "Service temporarily unavailable. Try again later."
+    "message": "Service temporarily unavailable. Please try again later."
   },
   "perpsShort": {
     "message": "Short"
@@ -8389,7 +8389,7 @@
     "description": "Error toast text shown when adding or removing margin fails"
   },
   "perpsToastMarginAdjustmentFailedDescriptionFallback": {
-    "message": "Unable to adjust margin. Try again.",
+    "message": "Unable to adjust margin. Please try again.",
     "description": "Fallback description shown when margin adjustment fails without a usable error message."
   },
   "perpsToastMarginRemoveSuccess": {
@@ -8473,7 +8473,7 @@
     "description": "In-progress toast text shown while updating TP/SL settings"
   },
   "perpsToastUpdateSuccess": {
-    "message": "TP/SL updated",
+    "message": "TP/SL updated successfully",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTopMovers": {
@@ -8668,7 +8668,7 @@
     "message": "Pinned"
   },
   "pleaseConfirm": {
-    "message": "Confirm"
+    "message": "Please confirm"
   },
   "pna25ModalBlogPostLink": {
     "message": "blog post."
@@ -8884,7 +8884,7 @@
     "description": "$1 is the token symbol being purchased"
   },
   "rampsBuyWidgetError": {
-    "message": "Unable to start your purchase. Try again."
+    "message": "Unable to start your purchase. Please try again."
   },
   "rampsBuyingViaProvider": {
     "message": "Buying via $1.",
@@ -8913,7 +8913,7 @@
     "description": "Banner title on the ramps complete-buy interstitial"
   },
   "rampsEligibilityFailedDescription": {
-    "message": "Try again, or contact support if this keeps happening."
+    "message": "Please try again, or contact support if this keeps happening."
   },
   "rampsEligibilityFailedTitle": {
     "message": "We couldn’t verify your region"
@@ -9078,7 +9078,7 @@
     "message": "Select payment method"
   },
   "rampsServiceDisruptionDescription": {
-    "message": "We're experiencing a service disruption. Try again later."
+    "message": "We’re experiencing a service disruption. Please try again later."
   },
   "rampsServiceDisruptionTitle": {
     "message": "Buying is temporarily unavailable"
@@ -9220,7 +9220,7 @@
     "message": "We could not remove this NFT."
   },
   "removeNftMessage": {
-    "message": "NFT was removed!"
+    "message": "NFT was successfully removed!"
   },
   "removeSnap": {
     "message": "Remove Snap"
@@ -9326,7 +9326,7 @@
     "message": "Success"
   },
   "resultPageSuccessDefaultMessage": {
-    "message": "The operation completed."
+    "message": "The operation completed successfully."
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
@@ -9392,25 +9392,25 @@
     "message": "Reward"
   },
   "rewardsAuthFailDescription": {
-    "message": "An unknown error occurred while authenticating this account with the rewards program. Try again later."
+    "message": "An unknown error occurred while authenticating this account with the rewards program. Please try again later."
   },
   "rewardsAuthFailTitle": {
     "message": "Unknown error."
   },
   "rewardsErrorMessagesAccountAlreadyRegistered": {
-    "message": "This account is already registered with another Rewards profile. Switch account to continue."
+    "message": "This account is already registered with another Rewards profile. Please switch account to continue."
   },
   "rewardsErrorMessagesFailedToClaimReward": {
-    "message": "Failed to claim reward. Try again shortly."
+    "message": "Failed to claim reward. Please try again shortly."
   },
   "rewardsErrorMessagesRequestRejected": {
     "message": "You rejected the request."
   },
   "rewardsErrorMessagesServiceNotAvailable": {
-    "message": "Service is not available at the moment. Try again shortly."
+    "message": "Service is not available at the moment. Please try again shortly."
   },
   "rewardsErrorMessagesSomethingWentWrong": {
-    "message": "Something went wrong. Try again shortly."
+    "message": "Something went wrong. Please try again shortly."
   },
   "rewardsLinkAccount": {
     "message": "Add account"
@@ -9425,7 +9425,7 @@
     "message": "Win prizes, claim perks, and discover more ways to earn—just by using MetaMask."
   },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
-    "message": "We cannot determine if your country allows opting into the rewards program. Check your connection and try again."
+    "message": "We cannot determine if your country allows opting into the rewards program. Please check your connection and try again."
   },
   "rewardsOnboardingIntroGeoCheckFailedTitle": {
     "message": "Cannot determine opt-in eligibility"
@@ -9716,7 +9716,7 @@
     "message": "Security and privacy"
   },
   "securityChangePasswordToastError": {
-    "message": "Password couldn't be changed. Try again."
+    "message": "Password couldn’t be changed. Please try again."
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "New password saved, but $1 unlock couldn't be turned on.",
@@ -10229,13 +10229,13 @@
     "message": "Deleting draft failed"
   },
   "shieldClaimDraftDeleteFailedDescription": {
-    "message": "Unable to delete your claim draft. Try again."
+    "message": "Unable to delete your claim draft. Please try again."
   },
   "shieldClaimDraftSaveFailed": {
     "message": "Saving draft failed"
   },
   "shieldClaimDraftSaveFailedDescription": {
-    "message": "Unable to save your claim draft. Try again."
+    "message": "Unable to save your claim draft. Please try again."
   },
   "shieldClaimDraftSaved": {
     "message": "Draft saved"
@@ -10269,7 +10269,7 @@
     "description": "The $1 is the maximum file size in MB"
   },
   "shieldClaimFileUploaderHelpText": {
-    "message": "If you have any additional evidence, upload it here."
+    "message": "If you have any additional evidence, please upload it here."
   },
   "shieldClaimGroupActive": {
     "message": "Active claims"
@@ -10318,25 +10318,25 @@
     "message": "Incident details"
   },
   "shieldClaimInvalidChainId": {
-    "message": "Enter a valid chain ID"
+    "message": "Please enter a valid chain ID"
   },
   "shieldClaimInvalidEmail": {
-    "message": "Enter a valid email address"
+    "message": "Please enter a valid email address"
   },
   "shieldClaimInvalidRequired": {
     "message": "This field is required"
   },
   "shieldClaimInvalidTxHash": {
-    "message": "Enter a valid transaction hash"
+    "message": "Please enter a valid transaction hash"
   },
   "shieldClaimInvalidWalletAddress": {
-    "message": "Enter a valid wallet address"
+    "message": "Please enter a valid wallet address"
   },
   "shieldClaimMaxClaimsLimitExceeded": {
-    "message": "You have reached the maximum limit of open claims. Contact support to submit additional claims."
+    "message": "You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims."
   },
   "shieldClaimMaxDraftsReached": {
-    "message": "You have reached the maximum number of drafts. Delete a draft to save a new one."
+    "message": "You have reached the maximum number of drafts. Please delete a draft to save a new one."
   },
   "shieldClaimNetwork": {
     "message": "Select network"
@@ -10348,7 +10348,7 @@
     "message": "Wallet address for reimbursement"
   },
   "shieldClaimReimbursementWalletAddressHelpText": {
-    "message": "Ensure this is not a compromised wallet."
+    "message": "Please ensure this is not a compromised wallet."
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "Impacted wallet address and reimbursement wallet address must be different."
@@ -10429,7 +10429,7 @@
     "message": "See what's covered"
   },
   "shieldCoverageAlertMessagePaused": {
-    "message": "There was an issue with your MetaMask Transaction Shield plan payment. Update your payment method to resume coverage."
+    "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
   },
   "shieldCoverageAlertMessagePausedAcknowledgeButton": {
     "message": "Update payment method"
@@ -10743,7 +10743,7 @@
     "message": "Update card details"
   },
   "shieldTxMembershipErrorPausedCardTooltip": {
-    "message": "Your payment was declined. Update your payment method to continue your coverage."
+    "message": "Your payment was declined. Please update your payment method to continue your coverage."
   },
   "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
     "message": "Plan paused due to insufficient funds. Payment updates may take up to $1 hours.",
@@ -11191,7 +11191,7 @@
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
-    "message": "Any information you share with third-party services will be collected directly by those third-party services in accordance with their privacy policies. Refer to their privacy policies for more information.",
+    "message": "Any information you share with third-party services will be collected directly by those third-party services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsPrivacyWarningThirdMessage": {
@@ -11478,7 +11478,7 @@
     "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
-    "message": "Error in retrieving state logs. Try again later."
+    "message": "Error in retrieving state logs, please try again later."
   },
   "stateLogFileName": {
     "message": "MetaMask state logs"
@@ -11527,7 +11527,7 @@
     "message": "Swap failed"
   },
   "stxFailureDescription": {
-    "message": "Sudden market changes can cause failures. If the problem persists, reach out to $1.",
+    "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
@@ -11752,7 +11752,7 @@
     "message": "Quote source"
   },
   "swapQuotesExpiredErrorDescription": {
-    "message": "Request new quotes to get the latest rates."
+    "message": "Please request new quotes to get the latest rates."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Quotes timeout"
@@ -11949,7 +11949,7 @@
     "message": "I agree to the Terms of Use, which apply to my use of MetaMask and all of its features."
   },
   "termsOfUseFooterText": {
-    "message": "Scroll to read all sections"
+    "message": "Please scroll to read all sections"
   },
   "termsOfUseTitle": {
     "message": "Review our Terms of Use"
@@ -12031,7 +12031,7 @@
     "description": "$1 is the count of token permissions (plural form)"
   },
   "tokenSearchError": {
-    "message": "Couldn't load search results. Try again."
+    "message": "Couldn't load search results. Please try again."
   },
   "tokenStandard": {
     "message": "Token standard"
@@ -12166,7 +12166,7 @@
     "description": "Hardware device name"
   },
   "trezorDesktopAppRequiredError": {
-    "message": "Trezor Suite Desktop is required to use Trezor. Install and open Trezor Suite (suite.trezor.io) and try again.",
+    "message": "Trezor Suite Desktop is required to use Trezor. Please install and open Trezor Suite (suite.trezor.io) and try again.",
     "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
@@ -12232,7 +12232,7 @@
     "message": "Turn off"
   },
   "turnOffMetamaskNotificationsError": {
-    "message": "There was an error in disabling the notifications. Try again later."
+    "message": "There was an error in disabling the notifications. Please try again later."
   },
   "turnOffPasskey": {
     "message": "Turn off $1",
@@ -12246,7 +12246,7 @@
     "message": "Turn on"
   },
   "turnOnMetamaskNotificationsError": {
-    "message": "There was an error in creating the notifications. Try again later."
+    "message": "There was an error in creating the notifications. Please try again later."
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
@@ -12322,7 +12322,7 @@
     "message": "Unlock"
   },
   "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Try again."
+    "message": "Incorrect password. Try again."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
@@ -12550,7 +12550,7 @@
     "description": "$1 represents the name of the snap"
   },
   "watchEthereumAccountsDescription": {
-    "message": "Turning this option on will give you the ability to watch Ethereum accounts via a public address or ENS name. For feedback on this Beta feature, complete this $1.",
+    "message": "Turning this option on will give you the ability to watch Ethereum accounts via a public address or ENS name. For feedback on this Beta feature please complete this $1.",
     "description": "$1 is the link to a product feedback form"
   },
   "watchEthereumAccountsToggle": {
@@ -12564,7 +12564,7 @@
     "message": "Web3"
   },
   "web3ShimUsageNotification": {
-    "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, click $1 for more information.",
+    "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
     "description": "$1 is a clickable link."
   },
   "webhid": {

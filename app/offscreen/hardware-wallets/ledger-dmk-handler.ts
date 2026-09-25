@@ -194,6 +194,27 @@ function requireActionParams<
 }
 
 /**
+ * Builds the structured error surfaced when the extension holds no granted
+ * Ledger device.
+ *
+ * Shared by the discovery timeout path (the transport observable never
+ * emitted) and the fast-fail probe in `#assertPermittedDevicePresent`, so both
+ * present identical copy and classification to the UI.
+ *
+ * @param cause - Optional underlying reason, e.g. the RxJS `TimeoutError`.
+ */
+function createNoPermittedDeviceError(cause?: Error): HardwareWalletError {
+  const errorMessage = 'No permitted Ledger device found';
+  return new HardwareWalletError(errorMessage, {
+    code: ErrorCode.DeviceDisconnected,
+    severity: Severity.Err,
+    category: Category.Connection,
+    userMessage: errorMessage,
+    cause,
+  });
+}
+
+/**
  * Normalizes an error thrown during device discovery into a structured
  * `HardwareWalletError` so downstream consumers can reconstruct it across
  * the offscreen message boundary.
@@ -206,14 +227,7 @@ function requireActionParams<
  */
 function normalizeDiscoveryError(reason: unknown): HardwareWalletError {
   if (reason instanceof TimeoutError) {
-    const errorMessage = 'No permitted Ledger device found';
-    return new HardwareWalletError(errorMessage, {
-      code: ErrorCode.DeviceDisconnected,
-      severity: Severity.Err,
-      category: Category.Connection,
-      userMessage: errorMessage,
-      cause: reason,
-    });
+    return createNoPermittedDeviceError(reason);
   }
   return toHardwareWalletError(reason, HardwareWalletType.Ledger);
 }
@@ -510,6 +524,33 @@ export class LedgerDmkBridgeHandler {
   }
 
   /**
+   * Fails fast when the extension holds no WebHID grant for a Ledger device.
+   *
+   * `navigator.hid.getDevices()` resolves to `[]` when the origin has not been
+   * granted access. The transport's `listenToAvailableDevices()` observable
+   * then never emits, so without this probe discovery would only fail after
+   * `LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS`. An empty result is definitive, so
+   * reject immediately with the same structured error the timeout path emits.
+   *
+   * The grant itself must originate from a user-gesture context (see
+   * `requestWebHidDevices`); this probe only consumes it.
+   */
+  async #assertPermittedDevicePresent(): Promise<void> {
+    if (!isWebHIDSupported()) {
+      return;
+    }
+
+    const devices = await navigator.hid.getDevices();
+    const hasLedger = devices.some(
+      (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+    );
+
+    if (!hasLedger) {
+      throw createNoPermittedDeviceError();
+    }
+  }
+
+  /**
    * Discovers a Ledger device via the bridge's own DMK.
    *
    * Uses `bridge.startDiscovering()` which delegates to the bridge's internal
@@ -517,10 +558,15 @@ export class LedgerDmkBridgeHandler {
    * `startDiscovering` uses `navigator.hid.getDevices()` (already-permitted
    * devices, no user gesture) instead of `requestDevice()` (picker dialog).
    *
+   * The permitted-device probe above fails fast when the extension holds no
+   * grant, so this only runs once at least one Ledger device is permitted.
+   *
    * @param bridge - The `LedgerDmkBridge` instance to discover through.
    * @returns The first discovered device.
    */
   async #findPermittedDevice(bridge: LedgerDmkBridge): Promise<LedgerDevice> {
+    await this.#assertPermittedDevicePresent();
+
     return firstValueFrom(
       bridge.startDiscovering({}).pipe(
         timeoutOperator(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS),
