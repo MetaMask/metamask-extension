@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "ショートをクローズしました - マーケット"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "デポジット失敗"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "$1をデポジットしています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "$1をデポジットしました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "受取に失敗しました"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "$1を受け取っています",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "$1を受け取りました",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "購入に失敗しました"
   },
@@ -1844,6 +1866,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "連絡先"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "売買注文"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "同期する項目の管理"
   },
@@ -1924,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "サードパーティAPIは基本機能の一部となりました。お客様の以前の設定に基づき、この設定は$1になっています。設定はいつでも$2で変更できます。",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "無効"
@@ -3062,6 +3087,9 @@
   },
   "copiedToClipboard": {
     "message": "クリップボードにコピーしました"
+  },
+  "copy": {
+    "message": "コピー"
   },
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
@@ -5226,6 +5254,10 @@
   "lowLowercase": {
     "message": "低"
   },
+  "lowValueAssets": {
+    "message": "低残高のトークン ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
+  },
   "mainnet": {
     "message": "イーサリアムメインネット"
   },
@@ -5411,6 +5443,14 @@
   "money": {
     "message": "マネー"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1%のAPY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "$1を獲得",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
   },
@@ -5552,6 +5592,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Money残高に対する利息を自動で獲得"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "最大$1を自動で獲得",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "ロックアップなしで完全な流動性が確保され、いつでも取引や引き出しが可能です"
   },
@@ -5591,6 +5635,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "手数料なし"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "予想収益では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されたものではありません。利益は保証されていません。",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "残高を収益化"
   },
@@ -5609,6 +5657,10 @@
   "moneyHomeApyTooltip": {
     "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。資金は、Vedaが管理し、Steakhouse Financialがリスク監督を行うDeFiボールトに預け入れられ、確立された融資市場を通じて収益を生み出します。"
   },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Money Accountで最大$1の収益を自動で獲得できます。",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money AccountはMonadにより運用されています。"
   },
@@ -5618,12 +5670,6 @@
   "moneyHowItWorksDescription": {
     "message": "mUSDを追加しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。"
   },
-  "moneyHowItWorksDescription2": {
-    "message": "マネー残高は使用可能な残高です。MetaMaskカードをリンクすれば、世界中の1億5千万以上のマーチャントで使用できます。資金は使うまで収益を生み続けます。"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money AccountはMonadにより運用されています。"
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSDを追加して、最大$1を獲得しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。",
     "description": "$1 is the current mUSD APY."
@@ -5631,20 +5677,18 @@
   "moneyHowItWorksDisclosuresBody": {
     "message": "Money Accountは、銀行口座、普通預金口座、または保険対象の預金商品ではありません。APYは変動制であり、保証されるものではありません。Money Accountには、スマートコントラクト、プロトコル、流動性その他に関するリスクが伴い、資金の一部または全部が失われる可能性があります。地域ごとの制限の対象となります。規約が適用されます。"
   },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "リスクおよび開示事項"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "最大$1のAPYが得られます。この利率は変動制であり、市場の状況に応じて変動します。現在のレートはMoney Account内に常に表示されます。",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
   "moneyHowItWorksFaqApyQuestion": {
     "message": "APYは変動しますか？"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "ユーザー自身です。MetaMaskはセルフカストディウォレットであるため、アカウント所有者の秘密鍵でのみ管理できます。MetaMaskがユーザーの資金にアクセスしたり、凍結したり、移動させたりすることはできません。これが、第三者がユーザーの資金を保管する従来の銀行口座やカストディ型暗号資産プラットフォームとの違いです。"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "資金は誰が管理するのですか？"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money Accountは無料で開設でき、ステーブルコインの入金には手数料がかかりません。ステーブルコイン以外のトークンを入金する場合は、手数料がかかります。それ以外にも、MetaMask Cardの取引手数料、ATM引き出し手数料、現地通貨へのオフランプ手数料がかかります。"
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "カード手数料の詳細については、こちらをご覧ください。"
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "手数料はかかりますか？"
@@ -5655,14 +5699,12 @@
   "moneyHowItWorksFaqLockedQuestion": {
     "message": "資金はロックされますか？いつでも引き出せますか？"
   },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "最大$1の変動APY（年換算利回り）が得られるアカウントです。アカウントに入金すると、資金がmUSDで保持され、最大$1のAPYが得られます。mUSDは、MetaMaskのドル連動型ステーブルコインです。資金はいつでも利用または出金でき、ペナルティは一切ありません。MetaMask Cardを使えば、世界中にある1億5000万を超えるMastercard加盟店で資金を利用できます。",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "マネーアカウントとは？"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSDとは？"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "これは貯蓄用アカウントですか？それとも使用用アカウントですか？"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"
@@ -5730,6 +5772,10 @@
   "moneyToastDepositInProgressTitleConvert": {
     "message": "仮想通貨の換金"
   },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1がMoney Accountに追加されました。",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
   "moneyToastDepositSuccessDescriptionNoAmount": {
     "message": "Money Accountに追加されました。"
   },
@@ -5756,6 +5802,14 @@
   },
   "moneyToastWithdrawInProgressTitle": {
     "message": "送金中"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1が$2に追加されました。",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "$1に追加されました。",
+    "description": "$1 is the destination account name"
   },
   "moneyToastWithdrawSuccessTitle": {
     "message": "送金完了"
@@ -6867,6 +6921,10 @@
     "message": "$1を確認できませんでした。もう一度試すか、パスワードを使用してください。",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "もう一度お試しください",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
   "passkeySetupStepRegister": {
     "message": "$1の登録",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -7587,6 +7645,10 @@
   "perpsFilterAll": {
     "message": "すべて"
   },
+  "perpsFilterClear": {
+    "message": "$1、フィルターを消去",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "商品"
   },
@@ -7608,6 +7670,10 @@
   "perpsFilterMore": {
     "message": "さらに表示",
     "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "その他、$1が選択されました",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "新登場"
@@ -7704,6 +7770,18 @@
   },
   "perpsMarket": {
     "message": "マーケット"
+  },
+  "perpsMarketCategories": {
+    "message": "市場カテゴリー",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1件の市場",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1件の市場",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "市場が見つかりません"
@@ -8628,6 +8706,10 @@
   "rampsChangeProvider": {
     "message": "プロバイダーを変更します。"
   },
+  "rampsChangeProviders": {
+    "message": "プロバイダーを変更してください",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
   "rampsChooseProvider": {
     "message": "プロバイダーの選択"
   },
@@ -8799,6 +8881,9 @@
   "rampsPreviouslyUsed": {
     "message": "前回の利用"
   },
+  "rampsQuoteFetchError": {
+    "message": "クォートの取得中にエラーが発生しました。金額を下げるか、"
+  },
   "rampsQuoteUnavailable": {
     "message": "クォートが利用できません。"
   },
@@ -8813,6 +8898,14 @@
   },
   "rampsShowAllTokens": {
     "message": "すべてのトークンを表示"
+  },
+  "rampsTokenUnavailableDescription": {
+    "message": "このトークンはお客様の地域ではご利用いただけません。",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "トークンを利用できません",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "お住まいの地域では、まだ仮想通貨の購入はサポートされていません。"
@@ -8897,6 +8990,10 @@
   },
   "relayerFee": {
     "message": "リレイヤー手数料"
+  },
+  "remindMeLater": {
+    "message": "了解",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "削除"
@@ -9240,6 +9337,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "このRPCプロバイダーはリクエストを制限しています。後でもう一度試すか、別のRPC URLをご利用ください。"
   },
   "safeTransferFrom": {
     "message": "安全な送金元:"
@@ -11504,6 +11604,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "自動"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "スリッページ許容範囲は100%に制限されました。"
   },
   "swapSlippageHighDescription": {
     "message": "入力されたスリッページ ($1%) は非常に高いもののため、不利なレートに繋がる可能性があります",
