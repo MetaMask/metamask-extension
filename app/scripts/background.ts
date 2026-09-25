@@ -2,14 +2,13 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// Sentry hooks must run before other imports; disable import order rules for this file.
-/* eslint-disable import-x/order */
-
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
+// eslint-disable-next-line import-x/order -- Sentry hooks must run before other imports
 import { persistenceManager } from './lib/setup-initial-state-hooks';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
+// eslint-disable-next-line import-x/order -- must run before other imports
 import '../../shared/constants/infura-project-id';
 
 import log from 'loglevel';

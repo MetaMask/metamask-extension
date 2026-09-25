@@ -2,7 +2,6 @@
 import type { Duplex } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
 import type { PreinstalledSnap } from '@metamask/snaps-controllers';
-import type { Backup } from '../../shared/lib/stores/persistence-manager';
 import type MetamaskController from './metamask-controller';
 
 export type MetaMaskControllerInstance = InstanceType<
@@ -50,4 +49,4 @@ export type MetaMaskControllerStore = Pick<
   'memStore'
 >;
 
-export type { Backup };
+export type { Backup } from '../../shared/lib/stores/persistence-manager';
