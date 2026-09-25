@@ -8896,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Η δυνατότητα αγοράς δεν είναι προσωρινά διαθέσιμη"
   },
-  "rampsShowAllTokens": {
-    "message": "Εμφάνιση όλων των tokens"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Αυτό το token δεν είναι διαθέσιμο στην περιοχή σας.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"

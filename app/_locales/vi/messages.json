@@ -8910,9 +8910,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Tính năng mua tạm thời không khả dụng"
   },
-  "rampsShowAllTokens": {
-    "message": "Hiển thị tất cả token"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Token này không khả dụng tại khu vực của bạn.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
