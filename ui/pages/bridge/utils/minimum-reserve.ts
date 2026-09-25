@@ -8,7 +8,9 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   type AmountsAndAsset,
+  type QuoteResponse,
   isSolanaChainId,
+  sumAmounts,
 } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
@@ -64,6 +66,27 @@ export const resolveMinimumBalanceToKeep = (
     asset: nativeAsset,
   };
 };
+
+/**
+ * Minimum native balance to pass to `hasSufficientGasForQuote`.
+ *
+ * Native source: the quote reserve is shown by the "use max" reserve banner,
+ * which is hidden while the gas error is set, so it stays out of the gas check.
+ * Token source: there is no max to apply to the token amount, so a native
+ * balance short of fee + quote reserve surfaces as the "buy more" gas error.
+ *
+ * @param quote - The quote being validated
+ * @param minimumBalanceToKeep - Chain reserve (e.g. Solana rent exemption)
+ */
+export const resolveGasCheckMinimumBalance = (
+  quote: QuoteResponse,
+  minimumBalanceToKeep?: AmountsAndAsset,
+): AmountsAndAsset | undefined =>
+  isNativeAddress(quote.quote.src.asset.assetId)
+    ? minimumBalanceToKeep
+    : (sumAmounts([minimumBalanceToKeep], quote.quote.feeData.reserve) as
+        | AmountsAndAsset
+        | undefined);
 
 type InsufficientNativeReserveError = {
   minimumNativeBalanceToBeKeptInAccount: string;

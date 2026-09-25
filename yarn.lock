@@ -5846,9 +5846,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^81.2.0":
-  version: 81.2.0
-  resolution: "@metamask/bridge-controller@npm:81.2.0"
+"@metamask/bridge-controller@npm:^81.2.0, @metamask/bridge-controller@npm:^81.3.0":
+  version: 81.3.0
+  resolution: "@metamask/bridge-controller@npm:81.3.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5875,7 +5875,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^11.1.1"
-  checksum: 10/84b44d392f7b31a3aae52e1ae44de2e2db3a5a3474c608bd7c52d7320fbb8e0f4ade0bde4b6b86256a2c3b9b3d559136fbb6ca905005472cbf1ab7d667fb87f4
+  checksum: 10/9524e979b04e967fa77c379b5b72a74e5ee271242d4dd96a1156aea3652b1cc498feeac44f2420725cc567893c7fed697b54c60c336a51a82a63068456eff81b
   languageName: node
   linkType: hard
 
@@ -32042,7 +32042,7 @@ __metadata:
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^3.0.0"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
-    "@metamask/bridge-controller": "npm:^81.2.0"
+    "@metamask/bridge-controller": "npm:^81.3.0"
     "@metamask/bridge-status-controller": "npm:^76.3.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
