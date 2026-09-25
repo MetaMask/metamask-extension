@@ -182,7 +182,7 @@ class HomePage {
     );
     await this.driver.waitForSelector({
       tag: 'h6',
-      text: `“${networkName}” was successfully added!`,
+      text: `“${networkName}” was added!`,
     });
   }
 
@@ -251,7 +251,7 @@ class HomePage {
     );
     await this.driver.waitForSelector({
       tag: 'h6',
-      text: `“${networkName}” was successfully edited!`,
+      text: `“${networkName}” was edited!`,
     });
   }
 

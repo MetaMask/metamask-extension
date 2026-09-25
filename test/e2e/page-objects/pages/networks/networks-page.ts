@@ -90,7 +90,7 @@ class NetworksPage {
     );
     await this.driver.waitForSelector({
       ...this.networksPageSuccessToast,
-      text: `“${networkName}” was successfully added!`,
+      text: `“${networkName}” was added!`,
     });
   }
 
@@ -112,7 +112,7 @@ class NetworksPage {
     );
     await this.driver.waitForSelector({
       ...this.networksPageSuccessToast,
-      text: `“${networkName}” was successfully edited!`,
+      text: `“${networkName}” was edited!`,
     });
   }
 
