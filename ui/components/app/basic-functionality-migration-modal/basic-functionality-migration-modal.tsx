@@ -147,7 +147,7 @@ export function BasicFunctionalityMigrationModal() {
             }}
             data-testid="basic-functionality-migration-modal-accept"
           >
-            {t('acceptAndClose')}
+            {t('continue')}
           </Button>
         </ModalFooter>
       </ModalContent>

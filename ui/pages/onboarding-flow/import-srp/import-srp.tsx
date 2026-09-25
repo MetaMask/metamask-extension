@@ -43,6 +43,7 @@ export default function ImportSRP({
 }: ImportSRPProps) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [srpError, setSrpError] = useState('');
+  const [shouldClearClipboard, setShouldClearClipboard] = useState(false);
   const navigate = useNavigate();
   const resetOnboardingAndReturn = useOnboardingReset();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -74,6 +75,12 @@ export default function ImportSRP({
       return;
     }
 
+    if (shouldClearClipboard) {
+      navigator.clipboard.writeText('').catch(() => {
+        // Do not block onboarding if clipboard access remains unavailable.
+      });
+    }
+
     submitSecretRecoveryPhrase?.(secretRecoveryPhrase);
 
     trackEvent(
@@ -96,6 +103,7 @@ export default function ImportSRP({
     trackEvent,
     navigate,
     submitSecretRecoveryPhrase,
+    shouldClearClipboard,
   ]);
 
   const handleSecretRecoveryPhraseChange = useCallback((phrase: string) => {
@@ -129,6 +137,8 @@ export default function ImportSRP({
           error={srpError}
           setSecretRecoveryPhrase={handleSecretRecoveryPhraseChange}
           onClearCallback={() => setSrpError('')}
+          onClearClipboardRetry={() => setShouldClearClipboard(false)}
+          onClipboardClearFailed={() => setShouldClearClipboard(true)}
         />
       </Box>
       <Box

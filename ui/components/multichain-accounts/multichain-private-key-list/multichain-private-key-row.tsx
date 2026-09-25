@@ -23,19 +23,25 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { SensitiveClipboardCleanup } from '../../ui/sensitive-clipboard-cleanup/sensitive-clipboard-cleanup';
+import type { SensitiveClipboardState } from '../../../hooks/useCopyToClipboard';
 
 export type MultichainPrivateKeyRowProps = {
   address: string;
   chainId: CaipChainId;
   networkName: string;
-  onCopy: () => void;
+  onCopy: () => Promise<boolean>;
+  onClearClipboard: () => void;
   privateKey: string;
+  sensitiveClipboardState: SensitiveClipboardState;
 };
 
 type PrivateKeyContentProps = {
   chainId: CaipChainId;
-  onCopy: () => void;
+  onCopy: () => Promise<boolean>;
+  onClearClipboard: () => void;
   privateKey: string;
+  sensitiveClipboardState: SensitiveClipboardState;
 };
 
 const COPY_FEEDBACK_DURATION_MS = 1000;
@@ -43,7 +49,9 @@ const COPY_FEEDBACK_DURATION_MS = 1000;
 const PrivateKeyContent = ({
   chainId,
   onCopy,
+  onClearClipboard,
   privateKey,
+  sensitiveClipboardState,
 }: PrivateKeyContentProps) => {
   const t = useI18nContext();
   const [isCopied, setIsCopied] = useState(false);
@@ -59,8 +67,12 @@ const PrivateKeyContent = ({
     [],
   );
 
-  const handleCopy = () => {
-    onCopy();
+  const handleCopy = async () => {
+    const copied = await onCopy();
+    if (!copied) {
+      return;
+    }
+
     setIsCopied(true);
 
     if (copyFeedbackTimeoutRef.current !== null) {
@@ -138,6 +150,10 @@ const PrivateKeyContent = ({
       >
         {isCopied ? t('multichainAccountPrivateKeyCopied') : t('copy')}
       </Button>
+      <SensitiveClipboardCleanup
+        state={sensitiveClipboardState}
+        onClear={onClearClipboard}
+      />
     </Box>
   );
 };
@@ -147,7 +163,9 @@ export const MultichainPrivateKeyRow = ({
   chainId,
   networkName,
   onCopy,
+  onClearClipboard,
   privateKey,
+  sensitiveClipboardState,
 }: MultichainPrivateKeyRowProps) => {
   const networkImageSrc = getImageForChainId(chainId);
 
@@ -190,7 +208,9 @@ export const MultichainPrivateKeyRow = ({
       <PrivateKeyContent
         chainId={chainId}
         onCopy={onCopy}
+        onClearClipboard={onClearClipboard}
         privateKey={privateKey}
+        sensitiveClipboardState={sensitiveClipboardState}
       />
     </Box>
   );
