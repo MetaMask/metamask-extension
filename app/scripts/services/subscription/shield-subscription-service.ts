@@ -39,6 +39,7 @@ import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
   getShieldSubscription,
+  isNonUISubscriptionError,
   SHIELD_ERROR,
 } from '../../../../shared/lib/shield';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
@@ -141,7 +142,15 @@ export class ShieldSubscriptionService {
 
       return subscriptions;
     } catch (error) {
-      log.error('Failed to update subscription card payment method', error);
+      if (error instanceof Error && isNonUISubscriptionError(error)) {
+        // Expected when the user closes or cancels the checkout tab.
+        log.warn(
+          'Subscription card payment method update abandoned',
+          error.message,
+        );
+      } else {
+        log.error('Failed to update subscription card payment method', error);
+      }
       throw error;
     }
   }
@@ -262,7 +271,12 @@ export class ShieldSubscriptionService {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
 
-      log.error('Failed to start subscription with card', error);
+      if (error instanceof Error && isNonUISubscriptionError(error)) {
+        // Expected when the user closes or cancels the Stripe checkout tab.
+        log.warn('Shield subscription with card abandoned', error.message);
+      } else {
+        log.error('Failed to start subscription with card', error);
+      }
       throw error;
     }
   }
