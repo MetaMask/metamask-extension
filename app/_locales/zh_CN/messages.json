@@ -1963,7 +1963,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "第三方 API 现已纳入基本功能。根据您之前的偏好，此设置$1。您可以随时前往 $2 更改。",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "已禁用"

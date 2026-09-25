@@ -1945,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "Сторонние API теперь являются частью базового функционала. В соответствии с вашими предыдущими предпочтениями эта настройка — $1. Изменить ее можно в любое время в разделе $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "отключена"

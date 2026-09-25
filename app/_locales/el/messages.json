@@ -1945,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "Τα API τρίτων μερών αποτελούν πλέον μέρος της Βασικής Λειτουργικότητας. Με βάση τις προηγούμενες προτιμήσεις σας, αυτή η ρύθμιση είναι $1. Μπορείτε να την αλλάξετε ανά πάσα στιγμή στις $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "απενεργοποιημένη"

@@ -1945,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "Ang mga Third-party API ay bahagi na ngayon ng Basic Functionality. Batay sa iyong mga kagustuhan sa nakaraan, ang setting na ito ay $1. Baguhin ito anumang oras sa $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "i-disable"

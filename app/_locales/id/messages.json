@@ -1945,7 +1945,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "API pihak ketiga kini menjadi bagian dari Fungsionalitas Dasar. Berdasarkan preferensi Anda sebelumnya, pengaturan ini $1. Anda dapat mengubahnya setiap saat di $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "dinonaktifkan"

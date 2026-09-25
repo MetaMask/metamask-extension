@@ -19,6 +19,7 @@ import { getUseExternalServices } from '../../../selectors';
 import { getShouldShowBasicFunctionalityMigrationToast } from '../../../selectors/multichain/feature-flags';
 import { hideMigrationToast } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
+import { BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK } from '../basic-functionality-migration-modal/constants';
 import {
   BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
   BasicFunctionalityMixedToastAction,
@@ -103,6 +104,20 @@ export function BasicFunctionalityMigrationToast() {
                 onClick={openPrivacySettings}
               >
                 {t('basicFunctionalityMigrationToastSettingsLink')}
+              </TextButton>,
+              <TextButton
+                asChild
+                key="basic-functionality-migration-blog-post"
+                size={TextButtonSize.BodySm}
+                className="inline-flex p-0 align-baseline"
+              >
+                <a
+                  href={BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('basicFunctionalityMigrationToastLearnMore')}
+                </a>
               </TextButton>,
             ])}
           </Text>
