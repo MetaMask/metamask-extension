@@ -12,7 +12,7 @@ import {
 const mockArgs = {
   test: false,
   snow: false,
-  manifestVersion: 3,
+  browser: ['chrome'],
   type: 'main',
   lavamoatDebug: false,
   generatePolicy: false,
@@ -141,7 +141,11 @@ describe('LavamoatPlugin', () => {
     });
 
     it('keeps null_unsafe mode for inpage.js and bootstrap (no LavaMoat runtime needed)', () => {
-      for (const name of ['scripts/inpage.js', 'bootstrap']) {
+      for (const name of [
+        'scripts/inpage.js',
+        'scripts/inpage-mv2.js',
+        'bootstrap',
+      ]) {
         const result = runtimeConfig(mockChunk(name)) as { mode: string };
         assert.strictEqual(
           result.mode,
@@ -181,6 +185,50 @@ describe('LavamoatPlugin', () => {
         rules.includes(lavamoatBackgroundLayerRule),
         'should register the background re-layer rule',
       );
+    });
+
+    it('assigns both inpage entries to the unsafe layer', () => {
+      let addEntryHandler:
+        | ((entry: unknown, options: { name?: string }) => void)
+        | undefined;
+      const entries = new Map([
+        ['scripts/inpage.js', { options: {} }],
+        ['scripts/inpage-mv2.js', { options: {} }],
+      ]);
+      const mockCompiler = {
+        options: { module: { rules: [] } },
+        hooks: {
+          thisCompilation: {
+            tap: (_name: string, callback: (compilation: unknown) => void) => {
+              callback({
+                entries,
+                hooks: {
+                  addEntry: {
+                    tap: (
+                      _entryName: string,
+                      handler: typeof addEntryHandler,
+                    ) => {
+                      addEntryHandler = handler;
+                    },
+                  },
+                },
+              });
+            },
+          },
+        },
+      };
+
+      lavamoatUnsafeLayerPlugin.apply(mockCompiler as never);
+      assert(addEntryHandler, 'addEntry handler should be registered');
+
+      for (const name of ['scripts/inpage.js', 'scripts/inpage-mv2.js']) {
+        addEntryHandler({ request: `./${name}` }, { name });
+        assert.strictEqual(
+          entries.get(name)?.options.layer,
+          lavamoatUnsafeLayerRule.issuerLayer,
+          `${name} should use the unsafe layer`,
+        );
+      }
     });
   });
 });

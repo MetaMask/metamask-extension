@@ -59,6 +59,11 @@ const getServiceWorkerEntryName = (
   return undefined;
 };
 
+const getBackgroundPageBrowsers = (manifestPlugin: ManifestPlugin<boolean>) =>
+  [...manifestPlugin.manifests].flatMap(([browser, manifest]) =>
+    manifest.background?.page ? [browser] : [],
+  );
+
 /**
  * Collects the hash of every module reachable from an entrypoint, by walking
  * the module graph from the entry modules of the entrypoint's chunks. This
@@ -190,9 +195,16 @@ export function setupBackgroundClient(
         backgroundClientRequest,
         { name: serviceWorkerEntryName },
       ).apply(compiler);
-    } else {
-      // MV2: register a standalone entry; `HtmlBundlerPlugin.beforeEmit` injects
-      // it as a `<script>` into the background page.
+    }
+
+    const backgroundPageBrowsers = getBackgroundPageBrowsers(manifestPlugin);
+    if (backgroundPageBrowsers.length > 0) {
+      // Register a standalone entry; `HtmlBundlerPlugin.beforeEmit` injects it
+      // as a `<script>` into the background page.
+      manifestPlugin.addEntrypointBrowsers(
+        BACKGROUND_CLIENT_ENTRY_NAME,
+        backgroundPageBrowsers,
+      );
       new compiler.webpack.EntryPlugin(
         compiler.context,
         backgroundClientRequest,

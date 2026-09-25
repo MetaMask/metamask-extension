@@ -12,6 +12,7 @@ import {
 } from 'webpack';
 import { validate } from 'schema-utils';
 import {
+  BrowserManifestVersions,
   noop,
   extensionToJs,
   type Manifest,
@@ -38,8 +39,13 @@ export type EntryDescriptionNormalized = { import?: string[] } & Omit<
   'name'
 >;
 type CollectedBundleSizeStats = {
-  partSizes: ReturnType<typeof getBundlePartSizes>;
-  debugEntrypoints?: Record<string, BundleSizeDebugEntrypoint>;
+  byBrowser: Map<
+    Browser,
+    {
+      partSizes: ReturnType<typeof getBundlePartSizes>;
+      debugEntrypoints?: Record<string, BundleSizeDebugEntrypoint>;
+    }
+  >;
   timestamp: number;
 };
 
@@ -122,6 +128,12 @@ export class ManifestPlugin<Z extends boolean> {
     Set<BundleSizeCategory>
   > = new Map();
 
+  private browsersByHtmlResource: Map<string, Set<Browser>> = new Map();
+
+  private browsersByEntrypoint: Map<string, Set<Browser>> = new Map();
+
+  private auxiliaryBrowsersByEntrypoint: Map<string, Set<Browser>> = new Map();
+
   /**
    * Returns `true` if the given entrypoint can be split into chunks.
    * Scripts found in the extension manifest must be self-contained and cannot
@@ -134,6 +146,16 @@ export class ManifestPlugin<Z extends boolean> {
   canBeChunked = ({ name }: { name?: string | null }): boolean => {
     return !name || !this.selfContainedScripts.has(name);
   };
+
+  addEntrypointBrowsers(
+    entrypointName: string,
+    browsers: Iterable<Browser>,
+  ): void {
+    for (const browser of browsers) {
+      addToSetMap(this.auxiliaryBrowsersByEntrypoint, entrypointName, browser);
+      addToSetMap(this.browsersByEntrypoint, entrypointName, browser);
+    }
+  }
 
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
@@ -257,11 +279,18 @@ export class ManifestPlugin<Z extends boolean> {
       return;
     }
 
-    const categoryAssets = createBundleSizeCategoryAssets();
-    const assetSizes = new Map<string, number>();
-    const debugEntrypoints:
-      | Record<string, BundleSizeDebugEntrypoint>
-      | undefined = statsOptions.debug ? {} : undefined;
+    const statsByBrowser = new Map(
+      this.options.browsers.map((browser) => [
+        browser,
+        {
+          categoryAssets: createBundleSizeCategoryAssets(),
+          assetSizes: new Map<string, number>(),
+          debugEntrypoints: statsOptions.debug
+            ? ({} as Record<string, BundleSizeDebugEntrypoint>)
+            : undefined,
+        },
+      ]),
+    );
 
     for (const [name, entry] of compilation.entrypoints) {
       const categories = this.getBundleSizeCategories(compilation, name);
@@ -275,25 +304,46 @@ export class ManifestPlugin<Z extends boolean> {
         ...entry.getEntrypointChunk().getAllAsyncChunks(),
       ].flatMap((chunk) => getAssetStats(compilation, chunk.files));
 
-      if (debugEntrypoints) {
-        debugEntrypoints[name] = {
-          categories: [...categories],
-          initialFiles,
-          asyncFiles,
-        };
-      }
+      for (const [browser, browserStats] of statsByBrowser) {
+        const browserInitialFiles = initialFiles.filter((file) =>
+          this.getAssetBrowsers(compilation, file.name).includes(browser),
+        );
+        const browserAsyncFiles = asyncFiles.filter((file) =>
+          this.getAssetBrowsers(compilation, file.name).includes(browser),
+        );
 
-      for (const file of [...initialFiles, ...asyncFiles]) {
-        for (const category of categories) {
-          categoryAssets[category].add(file.name);
-          assetSizes.set(file.name, file.size);
+        if (
+          browserStats.debugEntrypoints &&
+          (browserInitialFiles.length > 0 || browserAsyncFiles.length > 0)
+        ) {
+          browserStats.debugEntrypoints[name] = {
+            categories: [...categories],
+            initialFiles: browserInitialFiles,
+            asyncFiles: browserAsyncFiles,
+          };
+        }
+
+        for (const file of [...browserInitialFiles, ...browserAsyncFiles]) {
+          for (const category of categories) {
+            browserStats.categoryAssets[category].add(file.name);
+            browserStats.assetSizes.set(file.name, file.size);
+          }
         }
       }
     }
 
     return {
-      partSizes: getBundlePartSizes(categoryAssets, assetSizes),
-      debugEntrypoints,
+      byBrowser: new Map(
+        [...statsByBrowser].map(
+          ([browser, { categoryAssets, assetSizes, debugEntrypoints }]) => [
+            browser,
+            {
+              partSizes: getBundlePartSizes(categoryAssets, assetSizes),
+              debugEntrypoints,
+            },
+          ],
+        ),
+      ),
       timestamp: Date.now(),
     };
   }
@@ -311,9 +361,11 @@ export class ManifestPlugin<Z extends boolean> {
     if (this.options.stats && bundleSizeStats) {
       const { outFile } = this.options.stats;
       for (const browser of this.options.browsers) {
+        const browserStats = bundleSizeStats.byBrowser.get(browser)!;
         const statsFile = outFile.replaceAll('[browser]', browser);
         const zip = this.getBundleZipSize(compilation, browser);
-        const { partSizes, timestamp, debugEntrypoints } = bundleSizeStats;
+        const { partSizes, debugEntrypoints } = browserStats;
+        const { timestamp } = bundleSizeStats;
         const summary = createBundleSizeSummary(partSizes, { zip, timestamp });
         emitJsonAsset(compilation, statsFile, summary);
 
@@ -326,6 +378,67 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
     }
+  }
+
+  private getAssetBrowsers(
+    compilation: Compilation,
+    assetName: string,
+  ): readonly Browser[] {
+    if (assetName.endsWith('.map')) {
+      return this.getAssetBrowsers(
+        compilation,
+        assetName.slice(0, -'.map'.length),
+      );
+    }
+
+    const browsers = new Set<Browser>();
+
+    for (const [browser, paths] of Object.entries(
+      this.options.browserAssetPaths ?? {},
+    ) as [Browser, readonly string[]][]) {
+      if (paths.some((assetPath) => assetName.startsWith(assetPath))) {
+        browsers.add(browser);
+      }
+    }
+
+    for (const [entrypointName, entrypoint] of compilation.entrypoints) {
+      const entrypointFiles = new Set(entrypoint.getFiles());
+      for (const chunk of entrypoint.getEntrypointChunk().getAllAsyncChunks()) {
+        for (const file of chunk.files) {
+          entrypointFiles.add(file);
+        }
+      }
+      if (!entrypointFiles.has(assetName)) {
+        continue;
+      }
+      for (const browser of this.browsersByEntrypoint.get(entrypointName) ??
+        []) {
+        browsers.add(browser);
+      }
+
+      const entryData = compilation.entries?.get(entrypointName);
+      for (const dependency of entryData?.dependencies ?? []) {
+        const module = compilation.moduleGraph.getModule(dependency);
+        if (!module) {
+          continue;
+        }
+
+        for (const {
+          originModule,
+        } of compilation.moduleGraph.getIncomingConnections(module)) {
+          const resource = originModule?.nameForCondition();
+          if (!resource) {
+            continue;
+          }
+          for (const browser of this.browsersByHtmlResource.get(resource) ??
+            []) {
+            browsers.add(browser);
+          }
+        }
+      }
+    }
+
+    return browsers.size === 0 ? this.options.browsers : [...browsers];
   }
 
   /**
@@ -355,7 +468,6 @@ export class ManifestPlugin<Z extends boolean> {
     const compressionOptions: ZipCompressionOptions = { level };
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
-    const [primaryBrowser, ...additionalBrowsers] = browsers;
     const assetNames = Object.keys(assets);
     const zipEligibleAssetCount = assetNames.filter(
       (assetName) => !excludeExtensions.includes(path.extname(assetName)),
@@ -394,7 +506,7 @@ export class ManifestPlugin<Z extends boolean> {
         moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
       const shouldZip = !excludeExtensions.includes(extName);
       const shouldCache =
-        shouldZip || (additionalBrowsers.length > 0 && !isSourceMapAsset);
+        shouldZip || (!isSourceMapAsset && browsers.length > 1);
       let { source } = assetDetails;
 
       if (shouldCache && !(source instanceof CachedSource)) {
@@ -407,10 +519,11 @@ export class ManifestPlugin<Z extends boolean> {
         });
       }
 
+      const assetBrowsers = this.getAssetBrowsers(compilation, assetName);
       if (shouldZip) {
-        zipBuilders.forEach(({ builder }) =>
-          builder.addAsset(assetName, source),
-        );
+        zipBuilders
+          .filter(({ browser }) => assetBrowsers.includes(browser))
+          .forEach(({ builder }) => builder.addAsset(assetName, source));
       }
 
       if (isSourceMapAsset) {
@@ -421,12 +534,16 @@ export class ManifestPlugin<Z extends boolean> {
         continue;
       }
 
-      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
+      const primaryBrowserForAsset = assetBrowsers[0];
+      const primaryAssetPath = path.posix.join(
+        primaryBrowserForAsset,
+        assetName,
+      );
       if (assetName !== primaryAssetPath) {
         compilation.renameAsset(assetName, primaryAssetPath);
       }
 
-      additionalBrowsers.forEach((browser) => {
+      assetBrowsers.slice(1).forEach((browser) => {
         compilation.emitAsset(
           path.posix.join(browser, assetName),
           source,
@@ -470,7 +587,6 @@ export class ManifestPlugin<Z extends boolean> {
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
-    const [primaryBrowser, ...additionalBrowsers] = browsers;
 
     for (const assetName of Object.keys(assets)) {
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
@@ -479,8 +595,9 @@ export class ManifestPlugin<Z extends boolean> {
         moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
       let { source } = assetDetails;
 
+      const assetBrowsers = this.getAssetBrowsers(compilation, assetName);
       if (
-        additionalBrowsers.length > 0 &&
+        assetBrowsers.length > 1 &&
         !isSourceMapAsset &&
         !(source instanceof CachedSource)
       ) {
@@ -501,12 +618,16 @@ export class ManifestPlugin<Z extends boolean> {
         continue;
       }
 
-      const primaryAssetPath = path.posix.join(primaryBrowser, assetName);
+      const primaryBrowserForAsset = assetBrowsers[0];
+      const primaryAssetPath = path.posix.join(
+        primaryBrowserForAsset,
+        assetName,
+      );
       if (assetName !== primaryAssetPath) {
         compilation.renameAsset(assetName, primaryAssetPath);
       }
 
-      additionalBrowsers.forEach((browser) => {
+      assetBrowsers.slice(1).forEach((browser) => {
         compilation.emitAsset(
           path.posix.join(browser, assetName),
           source,
@@ -564,35 +685,32 @@ export class ManifestPlugin<Z extends boolean> {
       this.watchedFiles.push(metamaskprodrcPath);
     }
 
-    const manifestPath = path.join(
-      compiler.context,
-      `manifest/v${this.options.manifest_version}`,
-    );
-    // Load the base manifest
-    const basePath = path.join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = this.readManifest(basePath);
-
     const buildTypeManifestPath = path.join(
       compiler.context,
       'build-types',
       this.options.buildType,
       'manifest',
     );
-    // Load the build type base manifest for the specific build type if it exists
-    const buildTypeBaseManifest = this.tryReadManifest(
-      path.join(buildTypeManifestPath, `_base.json`),
-    );
-
     const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
-    const baseDescription =
-      buildTypeBaseManifest.description ?? baseManifest.description;
-    const description = this.options.description
-      ? `${baseDescription} – ${this.options.description}`
-      : baseDescription;
     const { version } = this.options;
 
     this.options.browsers.forEach((browser) => {
+      const manifestPath = path.join(
+        compiler.context,
+        `manifest/v${BrowserManifestVersions[browser]}`,
+      );
+      const baseManifest: Manifest = this.readManifest(
+        path.join(manifestPath, '_base.json'),
+      );
+      const buildTypeBaseManifest = this.tryReadManifest(
+        path.join(buildTypeManifestPath, `_base.json`),
+      );
+      const baseDescription =
+        buildTypeBaseManifest.description ?? baseManifest.description;
+      const description = this.options.description
+        ? `${baseDescription} – ${this.options.description}`
+        : baseDescription;
       let manifest = structuredClone({
         ...baseManifest,
         ...buildTypeBaseManifest,
@@ -654,29 +772,43 @@ export class ManifestPlugin<Z extends boolean> {
   private resetBundleSizeEntrypointMetadata(): void {
     this.bundleSizeCategoriesByEntrypoint = new Map();
     this.bundleSizeCategoriesByHtmlResource = new Map();
+    this.browsersByHtmlResource = new Map();
+    this.browsersByEntrypoint = new Map(
+      [...this.auxiliaryBrowsersByEntrypoint].map(([entrypoint, browsers]) => [
+        entrypoint,
+        new Set(browsers),
+      ]),
+    );
   }
 
   private addManifestScript = ({
     compiler,
     entries,
     filename,
+    browser,
     opts,
     category,
   }: {
     compiler: Compiler;
     entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
+    browser: Browser;
     opts?: EntryDescriptionNormalized;
     category: BundleSizeCategory;
   }) => {
     addToSetMap(this.bundleSizeCategoriesByEntrypoint, filename, category);
+    addToSetMap(this.browsersByEntrypoint, filename, browser);
 
     if (this.addedScripts.has(filename)) return;
     this.addedScripts.add(filename);
     this.selfContainedScripts.add(filename);
     const filePath = path.resolve(compiler.context, filename);
+    const sourcePath =
+      !existsSync(filePath) && filename.endsWith('.js')
+        ? filePath.replace(/\.js$/u, '.ts')
+        : filePath;
     entries[filename] = {
-      import: [filePath],
+      import: [sourcePath],
       chunkLoading: false,
       filename: extensionToJs(filename),
       ...opts,
@@ -688,6 +820,7 @@ export class ManifestPlugin<Z extends boolean> {
     entries,
     filename,
     directory,
+    browsers,
     category,
     opts,
   }: {
@@ -695,6 +828,7 @@ export class ManifestPlugin<Z extends boolean> {
     entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
     directory: string;
+    browsers: readonly Browser[];
     category: BundleSizeCategory;
     opts?: EntryDescriptionNormalized;
   }) => {
@@ -706,6 +840,12 @@ export class ManifestPlugin<Z extends boolean> {
       category,
     );
     addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
+    browsers.forEach((browser) =>
+      addToSetMap(this.browsersByEntrypoint, parsedFileName, browser),
+    );
+    browsers.forEach((browser) =>
+      addToSetMap(this.browsersByHtmlResource, filePath, browser),
+    );
     entries[parsedFileName] = { import: [filePath], ...opts };
   };
 
@@ -715,7 +855,7 @@ export class ManifestPlugin<Z extends boolean> {
   ): void {
     this.resetBundleSizeEntrypointMetadata();
 
-    for (const manifest of this.manifests.values()) {
+    for (const [browser, manifest] of this.manifests) {
       // collect content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
         for (const script of contentScript.js ?? []) {
@@ -723,6 +863,7 @@ export class ManifestPlugin<Z extends boolean> {
             compiler,
             entries,
             filename: script,
+            browser,
             category: 'contentScripts',
           });
         }
@@ -735,6 +876,7 @@ export class ManifestPlugin<Z extends boolean> {
             compiler,
             entries,
             filename: script,
+            browser,
             category: 'background',
           });
         }
@@ -745,6 +887,7 @@ export class ManifestPlugin<Z extends boolean> {
               compiler,
               entries,
               filename: resource,
+              browser,
               category: 'other',
             });
           }
@@ -756,6 +899,7 @@ export class ManifestPlugin<Z extends boolean> {
             compiler,
             entries,
             filename: manifest.background.service_worker,
+            browser,
             opts: { chunkLoading: 'import-scripts' },
             category: 'background',
           });
@@ -768,6 +912,7 @@ export class ManifestPlugin<Z extends boolean> {
                 compiler,
                 entries,
                 filename,
+                browser,
                 category: 'other',
               });
             }
@@ -775,6 +920,12 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
     }
+
+    const manifestVersions = new Set(
+      [...this.manifests.values()].map(({ manifest_version: version }) =>
+        Number(version),
+      ),
+    );
 
     for (const { directory, category } of this.options.html ?? []) {
       let htmlFiles: string[] = [];
@@ -787,21 +938,30 @@ export class ManifestPlugin<Z extends boolean> {
       for (const filename of htmlFiles) {
         // ignore non-htm/html files
         if (/\.html?$/iu.test(filename)) {
-          // ignore background.html for MV3 extensions.
-          if (
-            this.options.manifest_version === 3 &&
-            filename === 'background.html'
-          ) {
+          // The MV2 background page is only needed by Firefox builds.
+          if (filename === 'background.html' && !manifestVersions.has(2)) {
             continue;
           }
-          // ignore offscreen.html for MV2 extensions.
-          if (
-            this.options.manifest_version === 2 &&
-            filename === 'offscreen.html'
-          ) {
+          // The MV3 offscreen document is only needed by Chrome builds.
+          if (filename === 'offscreen.html' && !manifestVersions.has(3)) {
             continue;
           }
-          this.addHtml({ compiler, entries, directory, filename, category });
+          const browsers = this.options.browsers.filter((browser) => {
+            const manifest = this.manifests.get(browser)!;
+            return (
+              (filename !== 'background.html' ||
+                manifest.manifest_version === 2) &&
+              (filename !== 'offscreen.html' || manifest.manifest_version === 3)
+            );
+          });
+          this.addHtml({
+            compiler,
+            entries,
+            directory,
+            filename,
+            browsers,
+            category,
+          });
         }
       }
     }

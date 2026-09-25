@@ -262,12 +262,38 @@ ${Object.entries(env)
       'chunks without a name name should be chunked',
     );
 
+    const cacheGroups = options.optimization.splitChunks?.cacheGroups as Record<
+      string,
+      { chunks: (chunk: { name?: string }) => boolean }
+    >;
+    assert.strictEqual(
+      cacheGroups.js.chunks({ name: 'background' }),
+      false,
+      'MV2 background page modules should not enter shared chunks',
+    );
+    assert.strictEqual(
+      cacheGroups.vendor.chunks({ name: 'offscreen.1' }),
+      false,
+      'MV3 offscreen page modules should not enter shared chunks',
+    );
+    assert.strictEqual(
+      cacheGroups.mv2Js.chunks({ name: 'background.1' }),
+      true,
+      'MV2 background page modules should use their target-specific chunk group',
+    );
+    assert.strictEqual(
+      cacheGroups.mv3Vendor.chunks({ name: 'offscreen' }),
+      true,
+      'MV3 offscreen page modules should use their target-specific chunk group',
+    );
+
     const manifestPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
     ) as ManifestPlugin<boolean>;
     assert(manifestPlugin, 'Manifest plugin should be present');
     assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, [
       'scripts/inpage.js.map',
+      'scripts/inpage-mv2.js.map',
       'scripts/contentscript.js.map',
     ]);
     assert.deepStrictEqual(
@@ -391,6 +417,31 @@ ${Object.entries(env)
         (rule) => rule.use.options.jsc.transform.react.refresh,
       ).length,
       0,
+    );
+  });
+
+  it('configures target-specific assets for combined browser builds', () => {
+    const config: Configuration = getWebpackConfig([
+      '--browser',
+      'chrome',
+      '--browser',
+      'firefox',
+      '--no-lavamoat',
+    ]);
+    const pluginNames = getPluginNames(config);
+    const manifestPlugin = config.plugins?.find(
+      (plugin) => plugin?.constructor.name === 'ManifestPlugin',
+    ) as ManifestPlugin<boolean>;
+    const copyPlugin = config.plugins?.find(
+      (plugin) => plugin?.constructor.name === 'CopyPlugin',
+    ) as { patterns: { to: string }[] };
+
+    assert.ok(pluginNames.includes('SelfInjectPlugin'));
+    assert.deepStrictEqual(manifestPlugin.options.browserAssetPaths, {
+      chrome: ['snaps/'],
+    });
+    assert.ok(
+      copyPlugin.patterns.some((pattern) => pattern.to === 'snaps/index.html'),
     );
   });
 
@@ -570,7 +621,6 @@ ${Object.entries(env)
         plugins: [
           new ManifestPlugin({
             browsers: ['chrome'],
-            manifest_version: 3,
             version: '1.0.0.0',
             versionName: '1.0.0',
             description: null,
