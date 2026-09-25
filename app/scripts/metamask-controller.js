@@ -2513,6 +2513,10 @@ export default class MetamaskController extends EventEmitter {
     } = this;
 
     return {
+      foo: () => {
+        return 42;
+      },
+
       // etc
       setCurrentCurrency: this.controllerMessenger.call.bind(
         this.controllerMessenger,
