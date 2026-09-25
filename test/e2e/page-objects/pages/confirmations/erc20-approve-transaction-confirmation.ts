@@ -27,45 +27,40 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     '[data-testid="edit-spending-cap-icon"]';
 
   private readonly estimatedChangesSection = {
-    css: 'p',
-    text: tEn('simulationDetailsTitle'),
+    testId: 'confirmation__simulation_section',
   };
 
   private readonly interactingWithSection = {
-    css: 'p',
-    text: tEn('interactingWith'),
+    testId: 'transaction-details-recipient-row',
   };
 
   private readonly methodSection = {
-    css: 'p',
-    text: tEn('methodData'),
+    testId: 'transaction-details-method-data-row',
   };
 
   private readonly nftTokenValue: RawLocator =
     '[data-testid="simulation-token-value"]';
 
   private readonly requestFromSection = {
-    css: 'p',
-    text: tEn('requestFrom'),
+    testId: 'transaction-details-origin-row',
   };
 
   private readonly revokeTitle = {
-    css: 'h2',
+    testId: 'confirm-title-text',
     text: tEn('confirmTitleRevokeApproveTransaction'),
   };
 
   private readonly spenderSection = {
-    css: 'p',
-    text: tEn('spender'),
+    testId: 'confirmation__approve-spender',
   };
 
   private readonly spendingCapPermissionDescription = {
-    css: 'p',
+    testId: 'confirm-title-description',
     text: tEn('confirmTitleDescERC20ApproveTransaction'),
   };
 
   private readonly spendingCapRequestTitle = {
-    css: 'h2',
+    testId: 'confirm-title-text',
     text: tEn('confirmTitlePermitTokens'),
   };
 
