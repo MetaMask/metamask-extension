@@ -181,7 +181,8 @@ describe('Contract Interaction Confirmation', () => {
           analyticsId: 'test-metametrics-id',
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

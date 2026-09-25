@@ -100,7 +100,7 @@ export function MoneyTransactionDetailsPage() {
   );
   const pageRef = useRef<HTMLDivElement>(null);
   // useCopyToClipboard analysis: Copies a public transaction hash
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);

@@ -132,6 +132,9 @@ class AccountListPage {
   private readonly addSnapAccountButton =
     '[data-testid="choose-wallet-type-snap-account"]';
 
+  private readonly addWalletButtonEnabled =
+    '[data-testid="account-list-add-wallet-button"]:not([disabled])';
+
   private readonly addWalletButtonReady = {
     tag: 'p',
     text: 'Add wallet',
@@ -343,7 +346,7 @@ class AccountListPage {
     expectedErrorMessage: string = '',
   ): Promise<void> {
     console.log(`Watch EOA account with address ${address}`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.chooseWalletTypeWatchEthereumAccountButton,
     );
@@ -386,7 +389,7 @@ class AccountListPage {
    */
   async addMultichainWallet(): Promise<void> {
     console.log(`Adding new multichain wallet`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
   }
 
   /**
@@ -402,7 +405,7 @@ class AccountListPage {
     expectedErrorMessage?: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -633,7 +636,7 @@ class AccountListPage {
         expectedAvailability ? 'displayed ' : 'not displayed'
       }`,
     );
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     if (expectedAvailability) {
       await this.driver.waitForSelector(
         this.chooseWalletTypeWatchEthereumAccountButton,
@@ -911,7 +914,7 @@ class AccountListPage {
       throw e;
     }
     if (waitForSync) {
-      await this.waitUntilSyncingIsCompleted(timeout);
+      await this.waitUntilSyncingIsCompleted();
     }
     console.log('Account list is loaded');
   }
@@ -946,6 +949,14 @@ class AccountListPage {
       css: this.walletHeader,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Click the Add wallet footer button once it is enabled and not syncing.
+   */
+  async clickAddWalletButton(): Promise<void> {
+    await this.waitForAddWalletButtonStablyReady();
+    await this.driver.clickElement(this.addMultichainWalletButton);
   }
 
   /**
@@ -1075,7 +1086,7 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importAccountFromMultichainWalletModalButton,
     );
@@ -1131,7 +1142,7 @@ class AccountListPage {
 
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(this.addHardwareWalletButton);
     // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
@@ -1227,7 +1238,7 @@ class AccountListPage {
   async startImportSecretPhrase(srp: string): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
 
-    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.clickAddWalletButton();
     await this.driver.clickElement(
       this.importWalletFromMultichainWalletModalButton,
     );
@@ -1304,17 +1315,40 @@ class AccountListPage {
   }
 
   /**
+   * Wait for the add wallet button to be enabled and not showing a syncing label.
+   *
+   * @param timeout - Maximum time in ms to wait for the button to stay ready.
+   */
+  async waitForAddWalletButtonStablyReady(
+    timeout: number = 15000,
+  ): Promise<void> {
+    console.log('Waiting for add wallet button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        const syncing = await this.driver.isElementPresentAndVisible(
+          this.addWalletButtonSyncing,
+          500,
+        );
+        if (syncing) {
+          return false;
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.addWalletButtonEnabled,
+          1000,
+        );
+      },
+      { timeout, interval: 500, stableFor: 2000 },
+    );
+  }
+
+  /**
    * Waiting until syncing is completed.
    *
    * @param timeout - Maximum time in ms to wait for syncing to finish.
    */
-  async waitUntilSyncingIsCompleted(timeout: number = 10000): Promise<void> {
+  async waitUntilSyncingIsCompleted(timeout: number = 15000): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent(this.addWalletButtonSyncing, {
-      timeout,
-      waitAtLeastGuard: largeDelayMs,
-    });
-    await this.checkAddWalletButtonIsDisplayed();
+    await this.waitForAddWalletButtonStablyReady(timeout);
   }
 }
 

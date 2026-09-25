@@ -1523,7 +1523,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
 
-      it('should track wallet_invokeMethod events with multichain_api category, api_source, and chain_id_caip properties', async () => {
+      it('tracks nested EIP-712 properties on requested and approved wallet_invokeMethod events', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1531,7 +1531,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           params: {
             request: {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-              params: [],
+              params: [undefined, permitSignatureMsg.msgParams.data],
             },
             scope: 'eip155:10',
           },
@@ -1552,6 +1552,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
             address_alert_response: ResultType.Loading,
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1563,12 +1571,20 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
       });
 
-      it('should track wallet_invokeMethod rejections with multichain_api category, api_source, and chain_id_caip properties', async () => {
+      it('tracks nested EIP-712 properties on requested and rejected wallet_invokeMethod events', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1576,7 +1592,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           params: {
             request: {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-              params: [],
+              params: [undefined, permitSignatureMsg.msgParams.data],
             },
             scope: 'eip155:137',
           },
@@ -1602,6 +1618,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
             address_alert_response: ResultType.Loading,
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1613,6 +1637,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });

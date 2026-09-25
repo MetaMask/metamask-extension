@@ -228,7 +228,7 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
       const event: SplitStateWriteEvent = {
-        bytesByController: { FooController: 13 },
+        bytesByController: new Map([['FooController', 13]]),
         coalescedUpdates: 1,
         controllerKeys: ['FooController'],
         idleStatus: 'unknown',

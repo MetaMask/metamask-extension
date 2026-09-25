@@ -488,19 +488,23 @@
     "message": "デポジット失敗"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "入金中"
+    "message": "$1をデポジットしています",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "デポジット"
+    "message": "$1をデポジットしました",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "受取に失敗しました"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "送信中"
+    "message": "$1を受け取っています",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "送信完了"
+    "message": "$1を受け取りました",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "購入に失敗しました"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "クリップボードにコピーしました"
   },
+  "copy": {
+    "message": "コピー"
+  },
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
   },
   "copyAddressShort": {
     "message": "アドレスをコピー"
-  },
-  "copyPrivateKey": {
-    "message": "秘密鍵をコピー"
   },
   "copyToClipboard": {
     "message": "クリップボードにコピー"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMaskを再インストール"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMaskのステートのリセット"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "問題が解決されませんか？"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "現在"
-  },
-  "currentAccountNotConnected": {
-    "message": "現在のアカウントは接続されていません"
   },
   "currentEstimatedBaseFee": {
     "message": "現在: $1 gwei"
@@ -5015,9 +5019,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "安全上の理由により、現在このテキストは選択できません。"
-  },
   "learnHow": {
     "message": "方法"
   },
@@ -5669,12 +5670,6 @@
   "moneyHowItWorksDescription": {
     "message": "mUSDを追加しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。"
   },
-  "moneyHowItWorksDescription2": {
-    "message": "マネー残高は使用可能な残高です。MetaMaskカードをリンクすれば、世界中の1億5千万以上のマーチャントで使用できます。資金は使うまで収益を生み続けます。"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money AccountはMonadにより運用されています。"
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSDを追加して、最大$1を獲得しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。",
     "description": "$1 is the current mUSD APY."
@@ -5692,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "APYは変動しますか？"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "ユーザー自身です。MetaMaskはセルフカストディウォレットであるため、アカウント所有者の秘密鍵でのみ管理できます。MetaMaskがユーザーの資金にアクセスしたり、凍結したり、移動させたりすることはできません。これが、第三者がユーザーの資金を保管する従来の銀行口座やカストディ型暗号資産プラットフォームとの違いです。"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "資金は誰が管理するのですか？"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money Accountは無料で開設でき、ステーブルコインの入金には手数料がかかりません。ステーブルコイン以外のトークンを入金する場合は、手数料がかかります。それ以外にも、MetaMask Cardの取引手数料、ATM引き出し手数料、現地通貨へのオフランプ手数料がかかります。"
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "カード手数料の詳細については、こちらをご覧ください。"
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "手数料はかかりますか？"
@@ -5719,12 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "マネーアカウントとは？"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSDとは？"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "これは貯蓄用アカウントですか？それとも使用用アカウントですか？"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"
@@ -6940,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "$1を確認できませんでした。もう一度試すか、パスワードを使用してください。",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "もう一度お試しください",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1の登録",
@@ -8558,10 +8542,6 @@
     "message": "秘密鍵",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1の秘密鍵",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "秘密鍵は非表示になっています",
     "description": "Explains that the private key input is hidden"
@@ -8573,9 +8553,6 @@
   "privateKeyShown": {
     "message": "秘密鍵は表示されています",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "警告: この鍵は絶対に公開しないでください。秘密鍵を持つ人は誰でも、アカウントに保持されているアセットを盗むことができます。"
   },
   "privateKeys": {
     "message": "秘密鍵",
@@ -9014,6 +8991,10 @@
   "relayerFee": {
     "message": "リレイヤー手数料"
   },
+  "remindMeLater": {
+    "message": "了解",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "削除"
   },
@@ -9356,6 +9337,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "このRPCプロバイダーはリクエストを制限しています。後でもう一度試すか、別のRPC URLをご利用ください。"
   },
   "safeTransferFrom": {
     "message": "安全な送金元:"
@@ -9954,9 +9938,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "新しいアドレス"
-  },
-  "sendBugReport": {
-    "message": "バグの報告をお送りください."
   },
   "sendBundleHwGasPayment": {
     "message": "ネットワーク手数料を$1で支払い中",
@@ -10679,12 +10660,6 @@
   "showPermissions": {
     "message": "表示許可"
   },
-  "showPrivateKey": {
-    "message": "秘密鍵を表示"
-  },
-  "showSRP": {
-    "message": "シークレットリカバリーフレーズを表示"
-  },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
   },
@@ -11291,38 +11266,19 @@
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1に従ってヴォールトを復元することを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "$1に従ってMetaMaskをリセットすることを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "ヴォールトを自動的に復元することができません。"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "ヴォールトは自動バックアップから復元することができます。自動リカバリーでは現在の設定が削除され、ヴォールトのみが復元されます。"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "内部エラー: データベースにアクセスできません"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMaskのステートのリセット"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "データベースをリセットしています…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "アカウントの復元"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "データベースを復元しています…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "これらの手順",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "シークレットリカバリーフレーズの復元方法"
@@ -11648,6 +11604,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "自動"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "スリッページ許容範囲は100%に制限されました。"
   },
   "swapSlippageHighDescription": {
     "message": "入力されたスリッページ ($1%) は非常に高いもののため、不利なレートに繋がる可能性があります",
@@ -12127,9 +12086,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1との接続が利用できません。続行する前にネットワーク接続情報を更新するか、後でもう一度お試しください。",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
   },
   "unexpectedError": {
     "message": "予期せぬエラーが発生しました。",
