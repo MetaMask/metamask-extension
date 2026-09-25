@@ -1,12 +1,13 @@
 import { renderHook } from '@testing-library/react';
-
-import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '#shared/lib/trace';
 import { useTrace } from './useTrace';
 
-jest.mock('../../shared/lib/trace', () => ({
+jest.mock('#shared/lib/trace', () => ({
   endTrace: jest.fn(),
   trace: jest.fn(),
-  TraceName: { HomepageBalanceReady: 'Homepage Balance Ready' },
+  TraceName: {
+    HomepageSectionTimeToContent: 'Homepage Section Time To Content',
+  },
 }));
 
 describe('useTrace', () => {
@@ -18,7 +19,7 @@ describe('useTrace', () => {
     const { rerender } = renderHook(
       ({ ready }) =>
         useTrace({
-          name: TraceName.HomepageBalanceReady,
+          name: TraceName.HomepageSectionTimeToContent,
           op: 'test.operation',
           generationKey: 'first',
           ready,
@@ -29,7 +30,7 @@ describe('useTrace', () => {
 
     expect(trace).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: TraceName.HomepageBalanceReady,
+        name: TraceName.HomepageSectionTimeToContent,
         op: 'test.operation',
       }),
     );
@@ -39,7 +40,7 @@ describe('useTrace', () => {
 
     expect(endTrace).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: TraceName.HomepageBalanceReady,
+        name: TraceName.HomepageSectionTimeToContent,
         data: { success: true },
       }),
     );
@@ -47,14 +48,14 @@ describe('useTrace', () => {
 
   it('ends an unfinished trace on unmount', () => {
     const { unmount } = renderHook(() =>
-      useTrace({ name: TraceName.HomepageBalanceReady }),
+      useTrace({ name: TraceName.HomepageSectionTimeToContent }),
     );
 
     unmount();
 
     expect(endTrace).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: TraceName.HomepageBalanceReady,
+        name: TraceName.HomepageSectionTimeToContent,
         data: { success: false, reason: 'unmounted' },
       }),
     );
@@ -63,7 +64,10 @@ describe('useTrace', () => {
   it('starts a new trace when the generation changes', () => {
     const { rerender } = renderHook(
       ({ generationKey }) =>
-        useTrace({ name: TraceName.HomepageBalanceReady, generationKey }),
+        useTrace({
+          name: TraceName.HomepageSectionTimeToContent,
+          generationKey,
+        }),
       { initialProps: { generationKey: 'first' } },
     );
 

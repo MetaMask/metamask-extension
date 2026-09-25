@@ -1,6 +1,5 @@
 import { useEffect, useId, useRef } from 'react';
-
-import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '#shared/lib/trace';
 
 export function useTrace({
   name,
