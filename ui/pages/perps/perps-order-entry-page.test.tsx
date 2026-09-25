@@ -3650,7 +3650,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockHidePerpsToast).toHaveBeenCalledTimes(1);
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastOrderFailed',
-        description: 'A network error occurred. Please try again.',
+        description: 'A network error occurred. Try again.',
       });
     });
 
