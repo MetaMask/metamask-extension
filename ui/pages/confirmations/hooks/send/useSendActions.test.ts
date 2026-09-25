@@ -4,7 +4,10 @@ import { waitFor } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { setMaxValueMode } from '../../../../ducks/send-max-value/send-max-value';
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
@@ -17,10 +20,12 @@ const MOCK_ADDRESS_3 = '4Nd1m5PztHZbA1FtdYzWxTjLdQdHZr4sqoZKxK3x3hJv';
 const MOCK_ADDRESS_4 = '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin';
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -35,6 +40,7 @@ jest.mock('react-redux', () => ({
 beforeEach(() => {
   mockUseNavigate.mockClear();
   mockDispatch.mockClear();
+  mockUseLocation.mockReturnValue({ key: 'in-app-entry' });
 });
 
 function renderHook() {
@@ -53,6 +59,18 @@ describe('useSendQueryParams', () => {
     const result = renderHook();
     result.handleBack();
     expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('handleBack navigates home when Send was opened directly', () => {
+    mockUseLocation.mockReturnValue({ key: 'default' });
+    const result = renderHook();
+
+    result.handleBack();
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+      state: { fromFreshTab: true },
+    });
   });
 
   it('handleSubmit is able to submit evm send', async () => {
