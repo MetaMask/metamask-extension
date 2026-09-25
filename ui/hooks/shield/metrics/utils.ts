@@ -65,7 +65,7 @@ export function formatDefaultShieldSubscriptionRequestEventProps(
     payment_chain: params.paymentChain,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    has_sufficient_crypto_balance: params.hasSufficientCryptoBalance,
+    has_sufficient_crypto_funds: params.hasSufficientCryptoBalance,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     gas_sponsored: params.gasSponsored,

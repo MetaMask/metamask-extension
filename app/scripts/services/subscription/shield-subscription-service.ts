@@ -471,7 +471,10 @@ export class ShieldSubscriptionService {
           {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            has_sufficient_crypto_balance: true,
+            has_sufficient_crypto_funds: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            gas_sponsored: isSponsored || false,
           },
         );
       }
@@ -524,6 +527,9 @@ export class ShieldSubscriptionService {
           {
             error: errorMessage,
             cause: cause?.message ?? '',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            gas_sponsored: isSponsored || false,
           },
         );
       } else {

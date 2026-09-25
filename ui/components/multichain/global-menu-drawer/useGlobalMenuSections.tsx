@@ -167,17 +167,20 @@ export function useGlobalMenuSections(
 
   const handleSupportMenuClick = useCallback(() => {
     dispatch(setShowSupportDataConsentModal(true));
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Home)
-        .addProperties({
-          url: supportLink,
-          location: segmentContext.page?.title,
-        })
-        .build(),
-    );
+    const shieldSubscription = getShieldSubscription(subscriptions);
+    if (!shieldSubscription) {
+      // if shield subscription is not active, track the support link clicked event
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+          .addCategory(MetaMetricsEventCategory.Home)
+          .addProperties({
+            url: supportLink,
+            location: segmentContext.page?.title,
+          })
+          .build(),
+      );
+    }
     if (showPriorityTag) {
-      const shieldSubscription = getShieldSubscription(subscriptions);
       const { cryptoPaymentChain, cryptoPaymentCurrency } =
         getSubscriptionPaymentData(shieldSubscription);
       if (shieldSubscription) {
