@@ -488,19 +488,23 @@
     "message": "Depósito fallido"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Depositando"
+    "message": "Depositando $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Depositado"
+    "message": "$1 depositado",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Error al recibir"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Enviando"
+    "message": "Recibiendo $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Enviado"
+    "message": "$1 recibido",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Compra fallida"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "Copiado al portapapeles"
   },
+  "copy": {
+    "message": "Copie"
+  },
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },
   "copyAddressShort": {
     "message": "Copiar dirección"
-  },
-  "copyPrivateKey": {
-    "message": "Copiar clave privada"
   },
   "copyToClipboard": {
     "message": "Copiar al Portapapeles"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Reinstalar MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Restablecer el estado de MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "¿Sigues teniendo problemas?"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "Actual"
-  },
-  "currentAccountNotConnected": {
-    "message": "La cuenta actual no está conectada"
   },
   "currentEstimatedBaseFee": {
     "message": "Actual: $1 GWEI"
@@ -5015,9 +5019,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Por su seguridad, seleccionar este texto no está disponible en este momento."
-  },
   "learnHow": {
     "message": "Más información"
   },
@@ -5673,12 +5674,6 @@
     "message": "Agrega mUSD a tu Money Account y gana hasta$1 de APY (variable) automáticamente. Los fondos se depositan en una bóveda DeFi, administrada por Veda con monitoreo de riesgos por parte de Steakhouse Financial. La tasa la generan plataformas DeFi de terceros que invierten fondos en protocolos de cadena de bloques. Sin staking, sin reclamaciones, sin bloqueos.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Tu saldo Money es tu saldo para gastar. Vincula tu tarjeta MetaMask para comprar en más de 150 millones de comercios en todo el mundo. Tu dinero sigue generando intereses hasta el momento en que lo uses."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account cuenta con la tecnología de Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Agrega mUSD y gana hasta $1. Tu saldo está respaldado por dólares y disponible para gastar, operar o enviar en cualquier momento.",
     "description": "$1 is the current mUSD APY."
@@ -5696,17 +5691,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "¿Cambia la tasa APY?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "¡Tú! MetaMask es una billetera de autocustodia, lo que significa que solo las claves privadas del titular de la cuenta pueden controlarla. MetaMask no puede acceder a tus fondos, congelarlos ni transferirlos. Esto es lo que nos diferencia de las cuentas bancarias tradicionales y de las plataformas de criptomonedas con custodia: no hay ningún tercero que tenga el control de tus fondos."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "¿Quién controla mi dinero?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "No hay ninguna tarifa por abrir una Money Account ni por depositar monedas estables. Se aplican tarifas al depositar tokens que no sean monedas estables. También hay tarifas asociadas con las transacciones de la tarjeta MetaMask, los retiros en cajeros automáticos y los costos por convertir fondos a moneda local. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Consulta aquí el desglose completo de las tarifas de la tarjeta."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "¿Hay algún cargo?"
@@ -5723,20 +5709,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "¿Qué es la cuenta Money?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD es la moneda estable de MetaMask respaldada 1:1 por dólares. Tu saldo de Money Account se mantiene en mUSD y está disponible para gastar, enviar u operar en cualquier momento.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "¿Qué es mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Tu saldo de Money Account es tu saldo para gastos: sigue generando intereses hasta el momento en que lo uses. Money Account no es una cuenta bancaria, una cuenta de ahorros ni un producto de depósito asegurado.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "¿Es una cuenta de ahorros o una cuenta de gastos?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Preguntas frecuentes"
@@ -6952,6 +6924,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "No pudimos verificar tu $1. Inténtalo de nuevo o usa tu contraseña.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Inténtalo de nuevo",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Registrar $1",
@@ -8580,10 +8556,6 @@
     "message": "Clave privada",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Clave privada para $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "La clave privada está oculta",
     "description": "Explains that the private key input is hidden"
@@ -8595,9 +8567,6 @@
   "privateKeyShown": {
     "message": "Esta clave privada se está mostrando",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Advertencia: No revele esta clave. Cualquier persona que tenga sus claves privadas podría robar los activos de su cuenta."
   },
   "privateKeys": {
     "message": "Claves privadas",
@@ -9036,6 +9005,10 @@
   "relayerFee": {
     "message": "Tarifa del repetidor"
   },
+  "remindMeLater": {
+    "message": "Recordarme más adelante",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Eliminar"
   },
@@ -9378,6 +9351,9 @@
   },
   "rpcUrl": {
     "message": "URL de RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Este proveedor de RPC está limitando las solicitudes. Inténtalo de nuevo más tarde o usa otra URL de RPC."
   },
   "safeTransferFrom": {
     "message": "Transferencia segura desde"
@@ -9976,9 +9952,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Nueva dirección"
-  },
-  "sendBugReport": {
-    "message": "Envíenos un informe de error."
   },
   "sendBundleHwGasPayment": {
     "message": "Pagando la tarifa de red con $1",
@@ -10701,12 +10674,6 @@
   "showPermissions": {
     "message": "Mostrar permisos"
   },
-  "showPrivateKey": {
-    "message": "Mostrar clave privada"
-  },
-  "showSRP": {
-    "message": "Mostrar frase secreta de recuperación"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"
   },
@@ -11313,38 +11280,19 @@
   "stateCorruptionAreYouSure": {
     "message": "¿Estás seguro de que deseas continuar?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Puedes intentar copiar y restaurar tu archivo de estado manualmente antes de decidir restaurar tu bóveda siguiendo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Puedes intentar copiar y restaurar tu archivo de estado manualmente antes de decidir restablecer MetaMask siguiendo $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Tu bóveda no se puede recuperar automáticamente."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Puedes recuperar tu bóveda desde una copia de respaldo automática. La recuperación automática eliminará tu configuración y preferencias actuales y restaurará solo tu bóveda."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Error interno: no se puede acceder a la base de datos"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Restablecer el estado de MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Restableciendo la base de datos…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restaurar cuentas"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restaurando la base de datos…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "estas instrucciones",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Cómo recuperar tu frase secreta de recuperación"
@@ -11670,6 +11618,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Automático"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "La tolerancia al deslizamiento se limitó al 100 %."
   },
   "swapSlippageHighDescription": {
     "message": "El deslizamiento ingresado ($1%) se considera muy alto y puede resultar en una mala tasa",
@@ -12149,9 +12100,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "La conexión con $1 no es confiable. Actualiza los datos de conectividad de red antes de continuar o inténtalo de nuevo más tarde.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Este comportamiento es inesperado y debe informarse como un error, incluso si se restauran tus cuentas."
   },
   "unexpectedError": {
     "message": "Ocurrió un error inesperado.",

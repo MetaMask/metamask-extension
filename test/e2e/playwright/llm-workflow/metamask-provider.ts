@@ -20,6 +20,7 @@ import {
   generateSessionId,
   knowledgeStore,
 } from '@metamask/client-mcp-core';
+import { isHeadless, parseBoolean } from '../../../helpers/env';
 import type {
   CreateMetaMaskContextOptions,
   CreateMetaMaskProdContextOptions,
@@ -36,7 +37,14 @@ import { MetaMaskExtensionLauncher } from '.';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
-const HEADLESS = process.env.MM_HEADLESS !== 'false';
+
+// Preserve MM_HEADLESS as the explicit mm CLI override. Otherwise, share the
+// Playwright harness convention: honor PLAYWRIGHT_HEADLESS/HEADLESS, use
+// headless mode in CI, and launch headed locally by default.
+const HEADLESS =
+  process.env.MM_HEADLESS === undefined
+    ? isHeadless('PLAYWRIGHT') || Boolean(process.env.CI)
+    : parseBoolean(process.env.MM_HEADLESS);
 
 export class MetaMaskSessionManager implements ISessionManager {
   private activeSession: {

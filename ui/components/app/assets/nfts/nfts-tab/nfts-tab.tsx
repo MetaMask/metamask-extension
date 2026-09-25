@@ -84,10 +84,15 @@ export default function NftsTab({
     sortCallback: 'alphaNumeric',
   });
 
+  const hasNftsToShow = hasAnyNfts || previouslyOwnedNfts.length > 0;
+
   return (
     <>
       <Box>
-        <AssetListControlBar data-testid="parent-selector-nfts-tab" />
+        <AssetListControlBar
+          showSortControl={false}
+          data-testid="parent-selector-nfts-tab"
+        />
       </Box>
 
       <Box className="nfts-tab">
@@ -98,7 +103,7 @@ export default function NftsTab({
                 <NFTsDetectionNoticeNFTsTab />
               </Box>
             ) : null}
-            {hasAnyNfts || previouslyOwnedNfts.length > 0 ? (
+            {hasNftsToShow ? (
               <Box>
                 <NftGrid
                   nfts={sortedNfts}

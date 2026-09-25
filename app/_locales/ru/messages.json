@@ -488,19 +488,23 @@
     "message": "Ошибка депозита"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Внесение депозита"
+    "message": "Внесение $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Внесено"
+    "message": "Внесено $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Ошибка получения"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Отправляется"
+    "message": "Получение $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Отправлено"
+    "message": "Получено $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Ошибка покупки"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "Скопировано в буфер обмена"
   },
+  "copy": {
+    "message": "Копировать"
+  },
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
   },
   "copyAddressShort": {
     "message": "Копировать адрес"
-  },
-  "copyPrivateKey": {
-    "message": "Копировать закрытый ключ"
   },
   "copyToClipboard": {
     "message": "Копировать в буфер обмена"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Переустановите MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Сброс состояния MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Проблема не устранена?"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "Текущая"
-  },
-  "currentAccountNotConnected": {
-    "message": "Ваша текущий счет не подключен"
   },
   "currentEstimatedBaseFee": {
     "message": "Текущая: $1 Гвей"
@@ -5011,9 +5015,6 @@
     "message": "Решетка",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "В целях вашей безопасности выбор этого текста в данный момент недоступен."
-  },
   "learnHow": {
     "message": "Узнайте как"
   },
@@ -5669,12 +5670,6 @@
     "message": "Добавьте mUSD на свой счет Money Account и автоматически зарабатывайте до $1 годовых (переменная ставка). Средства поступают в DeFi-хранилище, управляемое Veda с мониторингом рисков от Steakhouse Financial. Ставка генерируется сторонними DeFi-платформами, которые размещают средства в блокчейн-протоколах. Никакого стейкинга, никаких требований к выводу, никаких блокировок.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Ваш Денежный баланс — это ваш баланс для расходов. Привяжите свою карту MetaMask, чтобы расплачиваться в более чем 150 млн магазинов по всему миру. Ваши деньги продолжают приносить доход до того момента, пока вы их не потратите."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account работает на базе Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Внесите mUSD и зарабатывайте до $1. Ваш баланс обеспечен долларами и готов к тратам, торговле или отправке в любое время.",
     "description": "$1 is the current mUSD APY."
@@ -5692,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Меняется ли годовая процентная ставка?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Вы! MetaMask — это некастодиальный кошелек, то есть им управляют только закрытые ключи владельца счета. MetaMask не может получить доступ к вашим средствам, заморозить или переместить их. Это то, что отличает нас от традиционных банковских счетов и кастодиальных криптоплатформ — здесь нет третьей стороны, хранящей ваши средства."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Кто контролирует мои деньги?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "За открытие Money Account и за внесение стейблкоинов комиссия не взимается. Комиссия будет взиматься при внесении токенов, не являющихся стейблкоинами. Также существуют комиссии, связанные с транзакциями по карте MetaMask Card, снятием наличных в банкоматах и расходами на вывод средств в местную валюту. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Полную разбивку комиссий по карте смотрите здесь."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Есть ли какие-либо комиссии?"
@@ -5719,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Что такое Денежный счет?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD — это стейблкоин MetaMask, обеспеченный долларами в соотношении 1:1. Ваш баланс Money хранится в mUSD и остается доступным для трат, отправки или торговли в любое время.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Что такое mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Ваш баланс Money — это ваш баланс для трат: он продолжает приносить доход до того момента, пока вы его не используете. Счет Money Account не является банковским счетом, сберегательным счетом или застрахованным депозитным продуктом.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Это сберегательный или расчетный счет?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Часто задаваемые вопросы"
@@ -6948,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Нам не удалось проверить ваш $1. Попробуйте еще раз или используйте пароль.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Повторить попытку",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Зарегистрировать $1",
@@ -8566,10 +8542,6 @@
     "message": "Закрытый ключ",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Закрытый ключ за $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Закрытый ключ скрыт",
     "description": "Explains that the private key input is hidden"
@@ -8581,9 +8553,6 @@
   "privateKeyShown": {
     "message": "Этот закрытый ключ отображается",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Предупреждение: никогда не раскрывайте этот ключ. Любой, у кого есть ваши закрытые ключи, может украсть любые активы, хранящиеся на вашем счете."
   },
   "privateKeys": {
     "message": "Закрытые ключи",
@@ -9022,6 +8991,10 @@
   "relayerFee": {
     "message": "Комиссия ретранслятора"
   },
+  "remindMeLater": {
+    "message": "Понятно",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Удалить"
   },
@@ -9364,6 +9337,9 @@
   },
   "rpcUrl": {
     "message": "URL-адрес RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Этот поставщик RPC ограничивает запросы. Повторите попытку позже или используйте другой URL-адрес RPC."
   },
   "safeTransferFrom": {
     "message": "Безопасный перевод из"
@@ -9962,9 +9938,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Новый адрес"
-  },
-  "sendBugReport": {
-    "message": "Отправьте нам отчет об ошибке."
   },
   "sendBundleHwGasPayment": {
     "message": "Оплата комиссии сети с помощью $1",
@@ -10687,12 +10660,6 @@
   "showPermissions": {
     "message": "Показать разрешения"
   },
-  "showPrivateKey": {
-    "message": "Показать закрытый ключ"
-  },
-  "showSRP": {
-    "message": "Показать секретную фразу для восстановления"
-  },
   "showTestnetNetworks": {
     "message": "Показать тестовые сети"
   },
@@ -11299,38 +11266,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Уверены, что хотите продолжить?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Прежде чем вы решите восстановить свое хранилище, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Прежде чем вы решите сбросить MetaMask, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ваше хранилище нельзя восстановить автоматически."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Ваше хранилище можно восстановить из автоматизированной резервной копии. Автоматическое восстановление удалит ваши текущие настройки и предпочтения и восстановит только ваше хранилище."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Внутренняя ошибка: невозможно получить доступ к базе данных"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Сброс состояния MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Сброс базы данных…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Восстановить счета"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Восстановление базы данных…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "этим инструкциям",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Как восстановить вашу секретную фразу для восстановления"
@@ -11656,6 +11604,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Авто"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Допуск на проскальзывание ограничен 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Введенное проскальзывание ($1%) считается очень высоким и может привести к использованию плохого курса",
@@ -12135,9 +12086,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Подключение к $1 ненадежно. Обновите данные о подключении к сети, прежде чем продолжить, или повторите попытку позже.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Такое поведение является неожиданным, и о нем следует сообщить как об ошибке, даже если ваши счета восстановлены."
   },
   "unexpectedError": {
     "message": "Произошла неожиданная ошибка.",

@@ -488,19 +488,23 @@
     "message": "Nabigo ang pagdeposito"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Idinideposito"
+    "message": "Nagdedeposito ng $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Naideposito"
+    "message": "Naideposito ang $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Nabigong matanggap"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Ipinapadala"
+    "message": "Tinatanggap ang $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Ipinadala"
+    "message": "Natanggap ang $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Nabigo ang pagbili"
@@ -3084,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "Nakopya sa clipboard"
   },
+  "copy": {
+    "message": "Kopyahin"
+  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
   "copyAddressShort": {
     "message": "Kopyahin ang address"
-  },
-  "copyPrivateKey": {
-    "message": "Kopyahin ang pribadong key"
   },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
@@ -3151,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "I-reinstall ang MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "I-reset ang Estado ng MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Nakakaranas ka pa rin ng mga isyu?"
   },
@@ -3172,9 +3179,6 @@
   },
   "current": {
     "message": "Kasalukuyan"
-  },
-  "currentAccountNotConnected": {
-    "message": "Hindi nakakonekta ang kasalukuyan mong account"
   },
   "currentEstimatedBaseFee": {
     "message": "Kasalukuyan: $1 GWEI"
@@ -5011,9 +5015,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Para sa iyong kaligtasan, ang pagpil ng tekstong ito ay hindi available ngayon."
-  },
   "learnHow": {
     "message": "Alamin kung paano"
   },
@@ -5665,12 +5666,6 @@
   "moneyHowItWorksDescription": {
     "message": "Magdagdag ng mUSD at ang iyong balanse na sinusuportahan ng dolyar ay handa na para gastusin, i-trade, o ipadala anumang oras."
   },
-  "moneyHowItWorksDescription2": {
-    "message": "Ang balanse mo sa Money ang balanseng puwede mong gastusin. I-link ang MetaMask Card mo para magamit ito sa 150M+ merchant sa buong mundo. Patuloy na kikita ang pera mo hanggang sa gastusin mo ito."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Ang Money account ay pinapagana ng Monad."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Magdagdag ng mUSD at kumita ng hanggang $1. Ang iyong balanse ay sinusuportahan ng dolyar at handa na para gastusin, i-trade, o ipadala anumang oras.",
     "description": "$1 is the current mUSD APY."
@@ -5688,17 +5683,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Nagbabago ba ang rate ng APY?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Ikaw! Ang MetaMask ay isang self-custodial na wallet, ibig sabihin tanging ang mga Private Key ng may hawak ng account ang may kontrol dito. Hindi maaaring i-access, i-freeze, o galawin ng MetaMask ang mga pondo mo. Ito ang ipinagkaiba namin mula sa mga tradisyonal na account sa bangko at mga custodial crypto platform—walang third party na humahawak sa mga pondo mo."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Sino ang kumokontrol sa pera ko?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Walang bayad sa pagbubukas ng Money account at walang bayad sa pagdedeposito ng mga stablecoin. Sisingilin ka ng mga bayarin kapag nagdedeposito ng mga non-stablecoin token. Walang mga nauugnay na mga bayarin sa mga transaksyon sa MetaMask Card, pagwi-withdraw sa ATM, at mga gastos sa local currency offramp. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Tingnan ang kabuuan ng breakdown ng bayad sa Card dito."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "May mga kailangan bang bayaran?"
@@ -5715,12 +5701,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Ano ang Money account?"
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Ano ang mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Isa ba itong savings account o spending account?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Mga FAQ"
@@ -6936,6 +6916,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Hindi namin ma-verify ang $1 mo. Subukan ulit o gamitin ang password mo.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Subukang muli",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Irehistro ang $1",
@@ -8554,10 +8538,6 @@
     "message": "Pribadong Key",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Pribadong key para sa $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Ang pribadong key ay nakatago",
     "description": "Explains that the private key input is hidden"
@@ -8569,9 +8549,6 @@
   "privateKeyShown": {
     "message": "Ang pribadong key ay na ito ay ipinapakita",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Babala: Huwag ipaalam ang key na ito. Ang sinumang mayroon ng iyong mga pribadong key ay maaaring magnakaw ng anumang asset sa iyong account."
   },
   "privateKeys": {
     "message": "Mga pribadong key",
@@ -9010,6 +8987,10 @@
   "relayerFee": {
     "message": "Bayad sa relayer"
   },
+  "remindMeLater": {
+    "message": "Nakuha ko",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Alisin"
   },
@@ -9352,6 +9333,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Nililimitahan ng RPC provider ang mga kahilingang ito. Subukan muli mamaya o gamitin ang iba't ibang RPC URL."
   },
   "safeTransferFrom": {
     "message": "Ligtas na paglilipat mula"
@@ -9950,9 +9934,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Bagong address"
-  },
-  "sendBugReport": {
-    "message": "Padalhan kami ng ulat ng bug."
   },
   "sendBundleHwGasPayment": {
     "message": "Magbayad sa network gamit ang $1",
@@ -10675,12 +10656,6 @@
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
   },
-  "showPrivateKey": {
-    "message": "Ipakita ang pribadong key"
-  },
-  "showSRP": {
-    "message": "Ipakita ang Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test network"
   },
@@ -11287,38 +11262,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Sigurado ka bang gusto mong magpatuloy?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang ibalik ang iyong vault sa pamamagitan ng pagsunod sa $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang i-reset ang MetaMask sa pamamagitan ng pagsunod sa $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Hindi awtomatikong mababawi ang iyong vault."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Puwedeng mabawi ang iyong vault mula sa isang naka-automate na backup. Tatanggalin ng awtomatikong pagbawi ang iyong mga kasalukuyang setting at kagustuhan, at ibabalik lang ang vault mo."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Panloob na error: hindi ma-access ang database"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "I-reset ang Estado ng MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Nire-reset ang database…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Ibalik ang mga account"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Ibinabalik ang database…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "ang mga tagubiling ito",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Paano makuha ulit ang iyong Lihim na Parirala sa Pagbawi"
@@ -11644,6 +11600,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Auto"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Naka-cap ang slippagee tolerance sa 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Ang slippage na inilagay ($1%) ay itinuturing na napakataas at maaaring magresulta sa isang masamang rate",
@@ -12123,9 +12082,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Hindi maaasahan ang koneksyon sa $1. I-update ang mga detalye ng pagkakakonekta sa network bago magpatuloy o subukan muli mamaya.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Hindi inaasahan ang pangyayaring ito at dapat itong iulat bilang bug, kahit na maibalik ang iyong mga account."
   },
   "unexpectedError": {
     "message": "Nagkaroon ng hindi inaasahang error.",

@@ -313,7 +313,7 @@ export default function Home() {
       {showNavbar ? (
         <div className="flex min-h-full flex-col">
           <div className="grow">{homeBody}</div>
-          <div className="sticky bottom-0 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16">
+          <div className="sticky bottom-0 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 z-10">
             <DappConnectionControlBar />
           </div>
         </div>
