@@ -285,6 +285,13 @@ export class LedgerDmkBridgeHandler {
    * @returns A connected `LedgerDmkBridge`.
    */
   async #ensureBridge(): Promise<LedgerDmkBridge> {
+    // Set when the liveness check below already established that no permitted
+    // Ledger device exists. The rebuild must then skip the fast-fail probe in
+    // `#constructBridge` — the probe would deterministically throw against the
+    // same empty `getDevices()` result — and instead re-run full discovery,
+    // which yields the same canonical "No permitted Ledger device found"
+    // error via its timeout when no device is actually available.
+    let skipPermittedDeviceProbe = false;
     // Detect a stale cached bridge. Revoking the WebHID permission grant
     // (e.g. removing the device in chrome://settings) does NOT fire a native
     // `disconnect` event, so `#setupDisconnectMonitoring` never tears the
@@ -314,6 +321,7 @@ export class LedgerDmkBridgeHandler {
       const checkedBridge = this.#bridge;
       const hasPermittedDevice = await this.#hasPermittedLedgerDevice();
       if (!hasPermittedDevice && this.#bridge === checkedBridge) {
+        skipPermittedDeviceProbe = true;
         // Do not wait for cleanup of an unresponsive device.
         const bridgeToDestroy = this.#clearBridgeState();
         if (bridgeToDestroy) {
@@ -332,7 +340,7 @@ export class LedgerDmkBridgeHandler {
     }
 
     const generation = this.#bridgeGeneration;
-    const pending = this.#constructBridge()
+    const pending = this.#constructBridge({ skipPermittedDeviceProbe })
       .then(async ({ bridge, transport, sessionId, hidDevices }) => {
         // `destroy()` may have cleared state while construction was in flight.
         // Discard the orphaned bridge instead of resurrecting a torn-down handler.
@@ -448,10 +456,17 @@ export class LedgerDmkBridgeHandler {
    * compare the live bridge against the wrong `HIDDevice` set — tearing down a
    * healthy bridge or keeping a dead one.
    *
+   * @param options - Construction options.
+   * @param options.skipPermittedDeviceProbe - Skips the fast-fail
+   * `getDevices()` probe. Used only on the liveness-check rebuild path, where
+   * `#ensureBridge` just observed an empty `getDevices()` result and the probe
+   * would deterministically throw instead of letting discovery re-run.
    * @returns The connected `LedgerDmkBridge` plus the transport its DMK
    * created, the session id, and the permitted-device snapshot.
    */
-  async #constructBridge(): Promise<{
+  async #constructBridge(
+    options: { skipPermittedDeviceProbe?: boolean } = {},
+  ): Promise<{
     bridge: LedgerDmkBridge;
     transport: DestroyableTransport | null;
     sessionId: string;
@@ -474,12 +489,22 @@ export class LedgerDmkBridgeHandler {
 
     try {
       console.log('[LedgerDMK] constructBridge: finding permitted device');
+
+      // Snapshot the permitted devices with a single `getDevices()` call:
+      // - Probe path (default): the probe doubles as the snapshot and
+      //   fast-fails when no Ledger device is granted — discovery could not
+      //   succeed anyway.
+      // - Rebuild path (`skipPermittedDeviceProbe`): the liveness check in
+      //   `#ensureBridge` just read an empty `getDevices()` result, so there
+      //   is nothing to probe — capture fail-open instead and let discovery
+      //   surface the canonical error via its timeout.
+      const hidDevices = options.skipPermittedDeviceProbe
+        ? await this.#getPermittedLedgerHidDevices()
+        : await this.#assertPermittedDevicePresent();
+
       const device = await this.#findPermittedDevice(bridge);
       console.log('[LedgerDMK] constructBridge: connecting to device');
       const sessionId = await bridge.connect({ device });
-
-      // Save device identities to detect revoke and re-grant.
-      const hidDevices = await this.#getPermittedLedgerHidDevices();
 
       // `connect()` sets isConnected synchronously and starts session monitoring.
       // The bridge's signing methods handle device-action completion internally
@@ -538,7 +563,8 @@ export class LedgerDmkBridgeHandler {
   }
 
   /**
-   * Fails fast when the extension holds no WebHID grant for a Ledger device.
+   * Fails fast when the extension holds no WebHID grant for a Ledger device,
+   * returning the granted devices as the snapshot for later liveness checks.
    *
    * `navigator.hid.getDevices()` resolves to `[]` when the origin has not been
    * granted access. The transport's `listenToAvailableDevices()` observable
@@ -548,20 +574,25 @@ export class LedgerDmkBridgeHandler {
    *
    * The grant itself must originate from a user-gesture context (see
    * `requestWebHidDevices`); this probe only consumes it.
+   *
+   * @returns The currently permitted Ledger devices, or null when WebHID is
+   * unavailable (leaving later liveness checks on their vendor-ID fallback).
    */
-  async #assertPermittedDevicePresent(): Promise<void> {
+  async #assertPermittedDevicePresent(): Promise<Set<HIDDevice> | null> {
     if (!isWebHIDSupported()) {
-      return;
+      return null;
     }
 
     const devices = await navigator.hid.getDevices();
-    const hasLedger = devices.some(
+    const ledgerDevices = devices.filter(
       (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
     );
 
-    if (!hasLedger) {
+    if (ledgerDevices.length === 0) {
       throw createNoPermittedDeviceError();
     }
+
+    return new Set(ledgerDevices);
   }
 
   /**
@@ -572,15 +603,14 @@ export class LedgerDmkBridgeHandler {
    * `startDiscovering` uses `navigator.hid.getDevices()` (already-permitted
    * devices, no user gesture) instead of `requestDevice()` (picker dialog).
    *
-   * The permitted-device probe above fails fast when the extension holds no
-   * grant, so this only runs once at least one Ledger device is permitted.
+   * The caller (`#constructBridge`) runs the permitted-device probe first, so
+   * this only runs once at least one Ledger device is permitted — except on
+   * the liveness-check rebuild path, where the probe is deliberately skipped.
    *
    * @param bridge - The `LedgerDmkBridge` instance to discover through.
    * @returns The first discovered device.
    */
   async #findPermittedDevice(bridge: LedgerDmkBridge): Promise<LedgerDevice> {
-    await this.#assertPermittedDevicePresent();
-
     return firstValueFrom(
       bridge.startDiscovering({}).pipe(
         timeoutOperator(LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS),
