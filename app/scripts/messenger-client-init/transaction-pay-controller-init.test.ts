@@ -11,6 +11,7 @@ import {
   getMaxSourceBalance,
   resetMaxSourceBalancesForTests,
 } from '../lib/money/pay/max-source-balance';
+import { resetAtomicMaxHintsForTests } from '../lib/money/pay/atomic-max-hint';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
 import {
@@ -199,7 +200,10 @@ describe('TransactionPayControllerInit', () => {
       tokenAddress: '0xtoken1',
     };
 
-    afterEach(resetMaxSourceBalancesForTests);
+    afterEach(() => {
+      resetMaxSourceBalancesForTests();
+      resetAtomicMaxHintsForTests();
+    });
 
     function initApi() {
       const { api, messengerClient } =
@@ -237,6 +241,21 @@ describe('TransactionPayControllerInit', () => {
       updater(config as never);
 
       expect(config).toEqual({ isMaxAmount: true, atomic: false });
+    });
+
+    it('leaves atomic unset for a deposit max that atomic max allows', () => {
+      const { api, setTransactionConfigMock } = initApi();
+
+      api.setTransactionPayIsMaxAmount('tx-1', true, {
+        isAtomicMaxAllowed: true,
+        isMoneyAccountDeposit: true,
+      });
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { isMaxAmount?: boolean; atomic?: boolean } = {};
+      updater(config as never);
+
+      expect(config).toEqual({ isMaxAmount: true, atomic: undefined });
     });
 
     it('restores the default atomic mode when clearing max on a money-account deposit', () => {
@@ -300,6 +319,68 @@ describe('TransactionPayControllerInit', () => {
     });
   });
 
+  describe('api.setTransactionPayAtomicMaxAllowed', () => {
+    afterEach(resetAtomicMaxHintsForTests);
+
+    function initApi() {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      const setTransactionConfigMock = jest.mocked(
+        messengerClient.setTransactionConfig,
+      );
+      return { api, setTransactionConfigMock };
+    }
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      // Each case starts from the opposite hint so the refresh has to flip it.
+      { allowed: true, initialAtomic: false, atomic: undefined },
+      { allowed: false, initialAtomic: undefined, atomic: false },
+    ])(
+      'refreshes an armed max hint of $allowed to atomic $atomic',
+      ({
+        allowed,
+        initialAtomic,
+        atomic,
+      }: {
+        allowed: boolean;
+        initialAtomic?: boolean;
+        atomic?: boolean;
+      }) => {
+        const { api, setTransactionConfigMock } = initApi();
+
+        api.setTransactionPayAtomicMaxAllowed('tx-1', allowed);
+
+        const updater = setTransactionConfigMock.mock.calls[0][1];
+        const config: { isMaxAmount?: boolean; atomic?: boolean } = {
+          isMaxAmount: true,
+          atomic: initialAtomic,
+        };
+        updater(config as never);
+
+        expect(config).toEqual({ isMaxAmount: true, atomic });
+      },
+    );
+
+    it('leaves atomic alone when max is not armed', () => {
+      const { api, setTransactionConfigMock } = initApi();
+
+      api.setTransactionPayAtomicMaxAllowed('tx-1', true);
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { isMaxAmount?: boolean; atomic?: boolean } = {
+        isMaxAmount: false,
+        atomic: false,
+      };
+      updater(config as never);
+
+      expect(config).toEqual({ isMaxAmount: false, atomic: false });
+    });
+  });
+
   describe('api.setTransactionPayAccountOverride', () => {
     function initApi() {
       const { api, messengerClient } =
@@ -334,6 +415,8 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.setTransactionPayPaymentOverride', () => {
+    afterEach(resetAtomicMaxHintsForTests);
+
     function initApi(transactions: TransactionMeta[] = []) {
       const { api, messengerClient } = TransactionPayControllerInit(
         getInitRequestMock(transactions),
@@ -424,6 +507,45 @@ describe('TransactionPayControllerInit', () => {
         paymentOverride: undefined,
         refundTo: undefined,
         atomic: false,
+        isMaxAmount: true,
+      });
+    });
+
+    it('lets an atomic-max deposit stay atomic when clearing the override', () => {
+      const { api, setTransactionConfigMock } = initApi([
+        {
+          id: 'tx-deposit',
+          type: TransactionType.moneyAccountDeposit,
+        } as TransactionMeta,
+      ]);
+
+      api.setTransactionPayIsMaxAmount('tx-deposit', true, {
+        isAtomicMaxAllowed: true,
+        isMoneyAccountDeposit: true,
+      });
+      setTransactionConfigMock.mockClear();
+
+      api.setTransactionPayPaymentOverride('tx-deposit', {
+        paymentOverride: undefined,
+      });
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: {
+        paymentOverride?: string;
+        refundTo?: string;
+        atomic?: boolean;
+        isMaxAmount?: boolean;
+      } = {
+        paymentOverride: 'moneyAccount',
+        atomic: false,
+        isMaxAmount: true,
+      };
+      updater(config as never);
+
+      expect(config).toEqual({
+        paymentOverride: undefined,
+        refundTo: undefined,
+        atomic: undefined,
         isMaxAmount: true,
       });
     });

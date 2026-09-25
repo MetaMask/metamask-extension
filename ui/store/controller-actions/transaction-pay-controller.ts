@@ -45,6 +45,11 @@ export async function setIsMaxAmount(
   transactionId: string,
   isMaxAmount: boolean,
   options: {
+    /**
+     * Whether Core may quote this Max atomically. Money-account deposits only:
+     * requires the `atomicMaxEnabled` gate and a matching fixed-spread route.
+     */
+    isAtomicMaxAllowed?: boolean;
     isMoneyAccountDeposit?: boolean;
     sourceAccountAddress?: string;
     /**
@@ -61,6 +66,24 @@ export async function setIsMaxAmount(
     transactionId,
     isMaxAmount,
     options,
+  ]);
+}
+
+/**
+ * Refreshes the atomic hint for an already-armed Money Account deposit Max,
+ * without disturbing the recorded Max source balance. Used when the
+ * `atomicMaxEnabled` gate changes while Max is active.
+ *
+ * @param transactionId - Confirmation transaction id.
+ * @param isAtomicMaxAllowed - Whether Core may quote this Max atomically.
+ */
+export async function setAtomicMaxAllowed(
+  transactionId: string,
+  isAtomicMaxAllowed: boolean,
+): Promise<void> {
+  return await submitRequestToBackground('setTransactionPayAtomicMaxAllowed', [
+    transactionId,
+    isAtomicMaxAllowed,
   ]);
 }
 

@@ -1,4 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention, camelcase */
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/transaction/enforced-simulations';
 import {
   selectBlockedPayTokens,
@@ -15,6 +19,7 @@ import {
   selectPayQuoteConfig,
   selectPreferredPayToken,
   selectPreferredPayTokens,
+  selectRelayAtomicMaxEnabled,
   selectRelayFixedSpread,
   selectStablecoins,
 } from './feature-flags';
@@ -70,6 +75,11 @@ type PayPrefilledAmountConfig = {
   enabled?: boolean;
 };
 
+type RelayAtomicMaxEnabledConfig = {
+  default?: boolean;
+  transactionTypes?: Record<string, boolean>;
+};
+
 type PayExtendedFlag = {
   depositLimit?: Record<string, number>;
   prefilledAmount?: {
@@ -79,6 +89,11 @@ type PayExtendedFlag = {
   };
   enableMoneyAccountTransactions?: Record<string, boolean>;
   defaultPaySelectedSection?: Record<string, string>;
+  payStrategies?: {
+    relay?: {
+      atomicMaxEnabled?: RelayAtomicMaxEnabledConfig;
+    };
+  };
 };
 
 type HardwareWalletFlag = {
@@ -156,6 +171,76 @@ const getMockPayExtendedState = (
       }),
     },
   },
+});
+
+describe('selectRelayAtomicMaxEnabled', () => {
+  const getState = (atomicMaxEnabled?: RelayAtomicMaxEnabledConfig) =>
+    getMockPayExtendedState({
+      payStrategies: { relay: { atomicMaxEnabled } },
+    });
+
+  const depositTransaction = {
+    type: TransactionType.moneyAccountDeposit,
+  } as TransactionMeta;
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each([
+    [undefined, false],
+    [{}, false],
+    [{ default: true }, true],
+    [{ default: false }, false],
+    [
+      {
+        default: true,
+        transactionTypes: { [TransactionType.moneyAccountDeposit]: false },
+      },
+      false,
+    ],
+    [
+      { transactionTypes: { [TransactionType.moneyAccountDeposit]: true } },
+      true,
+    ],
+    [{ transactionTypes: { [TransactionType.perpsDeposit]: true } }, false],
+  ])(
+    'resolves %j to %s',
+    (
+      atomicMaxEnabled: RelayAtomicMaxEnabledConfig | undefined,
+      expected: boolean,
+    ) => {
+      expect(
+        selectRelayAtomicMaxEnabled(
+          getState(atomicMaxEnabled),
+          depositTransaction,
+        ),
+      ).toBe(expected);
+    },
+  );
+
+  it('matches a deposit nested inside a batch', () => {
+    const state = getState({
+      transactionTypes: { [TransactionType.moneyAccountDeposit]: true },
+    });
+
+    expect(
+      selectRelayAtomicMaxEnabled(state, {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      } as TransactionMeta),
+    ).toBe(true);
+  });
+
+  it('uses the default without a transaction', () => {
+    expect(selectRelayAtomicMaxEnabled(getState({ default: true }))).toBe(true);
+  });
+
+  it('defaults to false when the pay-extended flag is absent', () => {
+    expect(
+      selectRelayAtomicMaxEnabled(
+        getMockPayExtendedState(),
+        depositTransaction,
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('Confirmations Pay Feature Flags', () => {

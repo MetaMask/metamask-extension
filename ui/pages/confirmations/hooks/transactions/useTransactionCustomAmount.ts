@@ -9,6 +9,7 @@ import {
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import {
+  setAtomicMaxAllowed,
   setIsMaxAmount,
   setLastMoneyAccountWithdrawAmount,
 } from '../../../../store/controller-actions/transaction-pay-controller';
@@ -21,6 +22,11 @@ import {
 } from '../../../../selectors/transactionPayController';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
+import {
+  selectRelayAtomicMaxEnabled,
+  selectRelayFixedSpread,
+} from '../../selectors/feature-flags';
+import { isSubsidizedRoute } from '../../utils/relay-fixed-spread';
 import { usePayWithNoFeeToken } from '../pay/usePayWithNoFeeToken';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
@@ -272,6 +278,23 @@ export function useTransactionCustomAmount({
     return value.isFinite() && value.gt(0);
   }, [amountFiat]);
 
+  const relayFixedSpread = useSelector(selectRelayFixedSpread);
+  const isAtomicMaxEnabled = useSelector((state) =>
+    selectRelayAtomicMaxEnabled(state, transactionMeta),
+  );
+  // The route match only predicts the subsidy; Core verifies the returned quote
+  // and re-quotes non-atomically when it is unsubsidized.
+  const isAtomicMaxAllowed =
+    isAtomicMaxEnabled &&
+    isSubsidizedRoute(
+      relayFixedSpread,
+      {
+        chainId: payToken?.chainId ? String(payToken.chainId) : '',
+        address: payToken?.address ?? '',
+      },
+      { chainId: chainId ?? '', address: tokenAddress ?? '' },
+    );
+
   const setIsMax = useCallback(
     (value: boolean, sourceBalanceRaw?: string) => {
       if (transactionId) {
@@ -280,6 +303,7 @@ export function useTransactionCustomAmount({
           sourceBalanceRaw,
           ...(isMoneyAccountDeposit
             ? {
+                isAtomicMaxAllowed,
                 sourceAccountAddress: accountOverride,
                 sourceChainId: payToken?.chainId
                   ? String(payToken.chainId)
@@ -290,8 +314,25 @@ export function useTransactionCustomAmount({
         });
       }
     },
-    [accountOverride, isMoneyAccountDeposit, payToken, transactionId],
+    [
+      accountOverride,
+      isAtomicMaxAllowed,
+      isMoneyAccountDeposit,
+      payToken,
+      transactionId,
+    ],
   );
+
+  // A live `atomicMaxEnabled` change must reach an already-armed Max, which
+  // `setIsMax` alone would miss. Re-arming instead would clear the recorded Max
+  // source balance, so only the hint is refreshed.
+  useEffect(() => {
+    if (!isMoneyAccountDeposit || !isMaxAmount || !transactionId) {
+      return;
+    }
+
+    setAtomicMaxAllowed(transactionId, isAtomicMaxAllowed);
+  }, [isAtomicMaxAllowed, isMaxAmount, isMoneyAccountDeposit, transactionId]);
 
   const payTokenKey = `${payToken?.address ?? ''}:${payToken?.chainId ?? ''}:${accountOverride ?? ''}`;
   const prevPayTokenKeyRef = useRef(payTokenKey);
