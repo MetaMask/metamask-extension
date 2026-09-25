@@ -152,9 +152,13 @@ describe('ArcUsageNoticeToast', () => {
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: MetaMetricsEventName.ArcUsageNoticeToastDismissed,
+        name: MetaMetricsEventName.NetworkUsageNoticeToastInteracted,
         properties: expect.objectContaining({
           category: MetaMetricsEventCategory.Home,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          network_name: 'arc',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          interaction_type: 'dismissed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id_caip: 'eip155:5042',
         }),

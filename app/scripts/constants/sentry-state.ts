@@ -46,7 +46,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     consentDecisionMade: true,
     eventFragments: false,
     eventQueue: false,
+    marketingCampaignCookieId: true,
+    marketingConsentDecisionMade: false,
     optedIn: true,
+    optedInToMarketing: false,
     preConsentEventQueue: false,
   },
   AnnouncementController: {
@@ -55,6 +58,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   AuthenticationController: {
     isSignedIn: false,
     needsProfilePairing: false,
+    needsSocialPairing: false,
     srpSessionData: false,
   },
   NetworkOrderController: {
@@ -72,6 +76,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    installAttribution: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -209,12 +214,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotifications: false,
     isUpdatingMetamaskNotificationsAccount: false,
   },
-  MetaMetricsController: {
-    tracesBeforeMetricsOptIn: false,
-    traits: false,
-    dataCollectionForMarketing: false,
-    marketingCampaignCookieId: true,
-  },
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,
     metaMetricsDataDeletionTimestamp: true,
@@ -295,6 +294,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
+  },
+  ProfileMetricsController: {
+    accountSourceBackfillEnqueued: true,
+    reportedAccounts: false,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
@@ -411,6 +414,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     isContactSyncingEnabled: true,
+    isRampsSyncingEnabled: true,
   },
 };
 

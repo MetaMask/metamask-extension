@@ -1,4 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react';
 
 type State = {
   isIntersecting: boolean;
@@ -7,6 +15,7 @@ type State = {
 
 type UseIntersectionObserverOptions = {
   root?: Element | Document | null;
+  rootRef?: RefObject<Element | Document | null>;
   rootMargin?: string;
   threshold?: number | number[];
   onChange?: (
@@ -42,6 +51,7 @@ function meetsThreshold(
 export function useIntersectionObserver({
   threshold = 0,
   root = null,
+  rootRef,
   rootMargin = '0%',
   initialIsIntersecting = false,
   onChange,
@@ -57,8 +67,26 @@ export function useIntersectionObserver({
     ? threshold.join(',')
     : String(threshold);
 
-  callbackRef.current = onChange;
-  thresholdRef.current = threshold;
+  useLayoutEffect(() => {
+    callbackRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    thresholdRef.current = threshold;
+  }, [threshold]);
+
+  const [observerRoot, setObserverRoot] = useState<Element | Document | null>(
+    null,
+  );
+
+  // Re-read rootRef every commit; the ref object is stable while `.current` is set
+  // when the scroll container mounts (see activity list + ScrollContainer).
+  useLayoutEffect(() => {
+    const nextRoot = rootRef?.current ?? root ?? null;
+    setObserverRoot((previous) =>
+      previous === nextRoot ? previous : nextRoot,
+    );
+  });
 
   useEffect(() => {
     if (!ref || !('IntersectionObserver' in globalThis)) {
@@ -75,7 +103,7 @@ export function useIntersectionObserver({
           callbackRef.current?.(isIntersecting, entry);
         }
       },
-      { threshold: thresholdRef.current, root, rootMargin },
+      { threshold: thresholdRef.current, root: observerRoot, rootMargin },
     );
 
     observer.observe(ref);
@@ -83,27 +111,29 @@ export function useIntersectionObserver({
     return () => {
       observer.disconnect();
     };
-  }, [ref, thresholdKey, root, rootMargin]);
+  }, [ref, thresholdKey, observerRoot, rootMargin]);
 
-  useEffect(() => {
-    if (!ref && state.entry?.target) {
-      setState({ isIntersecting: initialIsIntersecting, entry: undefined });
-    }
-  }, [ref, state.entry, initialIsIntersecting]);
-
-  const result = useMemo(
-    () =>
-      [
-        setRef,
-        Boolean(state.isIntersecting),
-        state.entry,
-      ] as IntersectionReturn,
-    [state.entry, state.isIntersecting],
+  const setRefFn = useCallback(
+    (node?: Element | null) => {
+      setRef(node ?? null);
+      if (!node) {
+        setState({ isIntersecting: initialIsIntersecting, entry: undefined });
+      }
+    },
+    [initialIsIntersecting],
   );
 
-  result.ref = result[0];
-  result.isIntersecting = result[1];
-  result.entry = result[2];
-
-  return result;
+  return useMemo((): IntersectionReturn => {
+    const isIntersecting = Boolean(state.isIntersecting);
+    const { entry } = state;
+    const tuple = [
+      setRefFn,
+      isIntersecting,
+      entry,
+    ] as unknown as IntersectionReturn;
+    tuple.ref = setRefFn;
+    tuple.isIntersecting = isIntersecting;
+    tuple.entry = entry;
+    return tuple;
+  }, [setRefFn, state]);
 }

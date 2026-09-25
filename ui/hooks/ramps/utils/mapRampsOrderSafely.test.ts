@@ -143,4 +143,84 @@ describe('mapRampsOrderSafely', () => {
 
     expect(mapRampsOrderSafely(order)?.chainId).toBe('eip155:1');
   });
+
+  it('prefixes a bare provider txHash so EVM consumers accept the hash', () => {
+    // Coinbase returns settlement hashes without the `0x` prefix, which
+    // fails isValidTransactionHash downstream (explorer button, tx id row).
+    const order = {
+      ...baseOrder,
+      txHash:
+        'd70e5158f9b04dcbbe86e2d3d3306e21bba31e796cb0552d226b95392ffabe91',
+      status: 'COMPLETED',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.hash).toBe(
+      '0xd70e5158f9b04dcbbe86e2d3d3306e21bba31e796cb0552d226b95392ffabe91',
+    );
+  });
+
+  it('keeps an already-prefixed valid txHash untouched', () => {
+    const prefixedHash =
+      '0xd70e5158f9b04dcbbe86e2d3d3306e21bba31e796cb0552d226b95392ffabe91';
+    const order = {
+      ...baseOrder,
+      txHash: prefixedHash,
+      status: 'COMPLETED',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.hash).toBe(prefixedHash);
+  });
+
+  it('keeps placeholder txHash values unmapped so the shared mapper drops them', () => {
+    const order = {
+      ...baseOrder,
+      txHash: '0x',
+      status: 'COMPLETED',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.hash).toBeUndefined();
+  });
+
+  it('leaves a bare txHash untouched on a non-EVM order', () => {
+    // Bitcoin txids are canonically bare 64-char hex; prefixing them would
+    // corrupt explorer URLs and the Transaction ID row.
+    const bareHash =
+      'd70e5158f9b04dcbbe86e2d3d3306e21bba31e796cb0552d226b95392ffabe91';
+    const order = {
+      ...baseOrder,
+      network: {
+        name: 'Bitcoin',
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+      },
+      cryptoCurrency: {
+        assetId: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+        symbol: 'BTC',
+      },
+      txHash: bareHash,
+      status: 'COMPLETED',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.chainId).toBe('bip122:000000000019d6689c085ae165831e93');
+    expect(mapped?.hash).toBe(bareHash);
+  });
+
+  it('drops a bare all-zero txHash on an EVM order', () => {
+    const order = {
+      ...baseOrder,
+      txHash: '0'.repeat(64),
+      status: 'COMPLETED',
+    } as unknown as RampsOrder;
+
+    const mapped = mapRampsOrderSafely(order) as RampOrderItem | undefined;
+
+    expect(mapped?.hash).toBeUndefined();
+  });
 });

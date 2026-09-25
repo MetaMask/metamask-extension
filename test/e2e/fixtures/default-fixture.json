@@ -173,14 +173,18 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
-      "optedIn": false
+      "marketingCampaignCookieId": null,
+      "marketingConsentDecisionMade": true,
+      "optedIn": false,
+      "optedInToMarketing": false
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 225,
+      "currentMigrationVersion": 229,
       "firstTimeInfo": {},
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -202,6 +206,7 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
+      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -401,12 +406,6 @@
     },
     "LoggingController": {
       "logs": {}
-    },
-    "MetaMetricsController": {
-      "dataCollectionForMarketing": false,
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": [],
-      "traits": {}
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -1030,14 +1029,15 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
+        "hasLinkedSocialLoginProfile": false,
         "hideZeroBalanceTokens": false,
-        "isBasicFunctionalityConsolidatedEnabled": false,
-        "basicFunctionalityMigrationNotification": null,
-        "basicFunctionalityMigrationNotificationDismissed": false,
+        "isBasicFunctionalityConsolidatedEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1086,9 +1086,11 @@
       "watchEthereumAccountEnabled": false
     },
     "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
       "initialDelayEndTimestamp": 1770282498299,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
+      "reportedAccounts": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"],
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1107,6 +1109,7 @@
       }
     },
     "RampsController": {
+      "autoramps": [],
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null
@@ -1122,20 +1125,38 @@
         "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
         "perpsTAT3382AbtestTabBadge": "control",
         "platformSplitStateGradualRollout": "feature is ON",
-        "stxMigrationBatchStatus": "sentinel on",
-        "stxMigrationCancel": "sentinel on",
-        "stxMigrationGetFees": "sentinel on",
-        "stxMigrationSubmitTransactions": "sentinel on",
         "swapsSWAPS4827AbtestChainValueOrder": "control"
       },
       "localOverrides": {},
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": {
-          "name": "groupC",
-          "value": "valueC"
-        }
+        "feature3": [
+          {
+            "name": "groupA",
+            "scope": {
+              "type": "threshold",
+              "value": 0.3
+            },
+            "value": "valueA"
+          },
+          {
+            "name": "groupB",
+            "scope": {
+              "type": "threshold",
+              "value": 0.5
+            },
+            "value": "valueB"
+          },
+          {
+            "name": "groupC",
+            "scope": {
+              "type": "threshold",
+              "value": 1
+            },
+            "value": "valueC"
+          }
+        ]
       }
     },
     "RewardsController": {
@@ -1261,12 +1282,13 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": {}
   },
   "meta": {
     "storageKind": "split",
-    "version": 225
+    "version": 229
   }
 }

@@ -35,7 +35,7 @@ function QrCodeView({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const t = useI18nContext();
   const { message, data } = Qr;
   const checksummedAddress = normalizeSafeAddress(data);

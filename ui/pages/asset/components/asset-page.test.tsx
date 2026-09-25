@@ -58,6 +58,47 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../store/controller-actions/transaction-controller');
 
+const mockUseAssetPerpsMarket = jest.fn(
+  (): { market: { name: string } | undefined; isLoading: boolean } => ({
+    market: undefined,
+    isLoading: false,
+  }),
+);
+jest.mock('../hooks/useAssetPerpsMarket', () => ({
+  useAssetPerpsMarket: () => mockUseAssetPerpsMarket(),
+}));
+
+const mockUsePerpsPositionForAsset = jest.fn(() => ({
+  position: undefined,
+  isLoading: false,
+}));
+jest.mock('../../../hooks/perps/usePerpsPositionForAsset', () => ({
+  usePerpsPositionForAsset: () => mockUsePerpsPositionForAsset(),
+}));
+
+jest.mock('../../../components/app/perps/perps-view-stream-boundary', () => ({
+  PerpsViewStreamBoundary: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+}));
+
+// The Perps row and position card have their own suites; here we only assert
+// that the asset page mounts them for the native path with the matched market.
+jest.mock('../../../components/app/perps/perps-trade-buttons', () => ({
+  PerpsTradeButtons: ({ marketSymbol }: { marketSymbol: string }) => (
+    <div data-testid="perps-trade-buttons" data-market={marketSymbol} />
+  ),
+}));
+
+jest.mock('./asset-perps-position-section', () => ({
+  AssetPerpsPositionSection: ({ marketSymbol }: { marketSymbol: string }) => (
+    <div
+      data-testid="asset-perps-position-section"
+      data-market={marketSymbol}
+    />
+  ),
+}));
+
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -347,6 +388,15 @@ describe('AssetPage', () => {
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
 
+    mockUseAssetPerpsMarket.mockReturnValue({
+      market: undefined,
+      isLoading: false,
+    });
+    mockUsePerpsPositionForAsset.mockReturnValue({
+      position: undefined,
+      isLoading: false,
+    });
+
     // Return a stable (same-reference) default so Reselect's input stability
     // check does not trigger a warning when getAsset calls this selector twice.
     (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
@@ -587,6 +637,114 @@ describe('AssetPage', () => {
       '/0x1',
     );
     expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
+  });
+
+  describe('Perps actions on the native asset page', () => {
+    const renderNative = () =>
+      renderWithProvider(
+        <AssetPage asset={native} optionsButton={null} />,
+        store,
+        '/0x1',
+      );
+
+    it('holds a skeleton while the market lookup is in flight', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: undefined,
+        isLoading: true,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('asset-perps-actions-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('coin-overview-buy')).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-swap')).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+    });
+
+    it('holds a skeleton while the position lookup for a matched market is in flight', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+      mockUsePerpsPositionForAsset.mockReturnValue({
+        position: undefined,
+        isLoading: true,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('asset-perps-actions-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+    });
+
+    it('renders the Perps row when position loading settled with none', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+      mockUsePerpsPositionForAsset.mockReturnValue({
+        position: undefined,
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+    });
+
+    it('renders the Perps row and the open position section once the lookups resolve', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+      expect(queryByTestId('asset-perps-position-section')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+      expect(queryByTestId('coin-overview-buy')).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-swap')).not.toBeInTheDocument();
+    });
+
+    it('renders Receive rather than Send for a zero-balance native Perps asset', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('coin-overview-receive')).toBeInTheDocument();
+      expect(queryByTestId('coin-overview-send')).not.toBeInTheDocument();
+    });
+
+    it('keeps the standard row and no position section when the asset has no market', () => {
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('asset-perps-position-section'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-buy')).toBeInTheDocument();
+    });
   });
 
   it('should render an ERC20 asset without prices', async () => {

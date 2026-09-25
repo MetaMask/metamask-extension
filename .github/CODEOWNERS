@@ -158,7 +158,6 @@ ui/components/multichain/notifications*/**                     @MetaMask/core-ex
 # Co-owned by accounts and core-extension-ux
 ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @MetaMask/core-extension-ux
-ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/core-extension-ux
@@ -367,3 +366,5 @@ app/scripts/wallet-init/instance-options/storage-service*                @MetaMa
 /.github/scripts/known-feature-flag-constants.mts
 # Snapshots – *.snap files
 **/*.snap
+# Storybook stories – low-risk, often bulk-updated (e.g. Storybook upgrades)
+**/*.stories.*

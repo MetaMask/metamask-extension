@@ -1,13 +1,20 @@
 import { waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { reportMoneyQueryErrorOnce } from '../../helpers/money/report-money-error';
 import { useMoneyAccountAvailability } from './use-money-account-availability';
 
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
+jest.mock('../../helpers/money/report-money-error', () => ({
+  ...jest.requireActual('../../helpers/money/report-money-error'),
+  reportMoneyQueryErrorOnce: jest.fn(),
+}));
+
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+const mockReportMoneyQueryErrorOnce = jest.mocked(reportMoneyQueryErrorOnce);
 const stateWith = ({
   useExternalServices = true,
   flagEnabled = true,
@@ -69,5 +76,22 @@ describe('useMoneyAccountAvailability', () => {
 
     expect(result.current.availability).toStrictEqual({ isAvailable: false });
     expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    expect(mockReportMoneyQueryErrorOnce).not.toHaveBeenCalled();
+  });
+
+  it('forwards an availability query failure to Sentry', async () => {
+    const error = new Error('availability down');
+    mockSubmitRequestToBackground.mockRejectedValue(error);
+
+    renderHookWithProvider(() => useMoneyAccountAvailability(), stateWith());
+
+    await waitFor(() => {
+      expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+        'getAvailability',
+        '[Money Account] Availability query failed',
+        error,
+        { query: 'getAvailability' },
+      );
+    });
   });
 });

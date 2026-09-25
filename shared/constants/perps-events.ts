@@ -40,6 +40,8 @@ export const PERPS_EVENT_PROPERTY = {
   QUERY_LENGTH: 'query_length',
   HAS_RESULTS: 'has_results',
   ACTIVE_CHIPS: 'active_chips',
+  /** Extension unfunded-deposit funnel: what the Add funds click actually opened. */
+  DEPOSIT_CLICK_OUTCOME: 'deposit_click_outcome',
 } as const;
 
 /**
@@ -61,6 +63,8 @@ export const PERPS_EVENT_VALUE = {
     WALLET_HOME_PERPS_TAB: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
     /** Extension-only: controller contract has no bottom-nav source yet. */
     BOTTOM_NAV_BAR: 'bottom_nav_bar',
+    /** Extension-only: source for Hyperliquid deposit prompt. */
+    HYPERLIQUID_DEPOSIT_PROMPT: 'hyperliquid_deposit_prompt',
   },
   SCREEN_TYPE: {
     ...CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE,
@@ -82,6 +86,10 @@ export const PERPS_EVENT_VALUE = {
       CONTROLLER_PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_TAB,
     /** @deprecated Use TRADE_MENU_ACTION / keep trading location string */
     TRADING: 'trading',
+    /** Extension trade-screen available-to-trade row Add funds control. */
+    AMOUNT_INPUT: 'amount_input',
+    /** Extension trade-screen sticky-footer primary CTA. */
+    ORDER_FORM_FOOTER: 'order_form_footer',
   },
   BUTTON_CLICKED: {
     ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED,
@@ -110,6 +118,18 @@ export const PERPS_EVENT_VALUE = {
     /** Extension order-entry chart panel open/close (not yet in controller contract). */
     CHART_OPENED: 'chart_opened',
     CHART_CLOSED: 'chart_closed',
+    /**
+     * Unfunded trade-screen deposit funnel (not yet in the controller contract).
+     * Click is BUTTON_CLICKED + DEPOSIT; these cover the later drop-off points.
+     */
+    DEPOSIT_FLOW_OPENED: 'deposit_flow_opened',
+    DEPOSIT_CONFIRMED: 'deposit_confirmed',
+    TRADE_SUBMITTED_AFTER_DEPOSIT: 'trade_submitted_after_deposit',
+  },
+  /** What an Add funds click opened — geo-blocked clicks are a funnel drop-off. */
+  DEPOSIT_CLICK_OUTCOME: {
+    DEPOSIT: 'deposit',
+    GEO_BLOCK_MODAL: 'geo_block_modal',
   },
   ERROR_TYPE: {
     ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_TYPE,
@@ -136,6 +156,14 @@ export const PERPS_EVENT_VALUE = {
     TRADE: 'trade',
   },
 } as const;
+
+/** Where a tracked button click happened. Derived so typos fail to compile. */
+export type PerpsButtonLocation =
+  (typeof PERPS_EVENT_VALUE.BUTTON_LOCATION)[keyof typeof PERPS_EVENT_VALUE.BUTTON_LOCATION];
+
+/** What an Add funds click opened. Derived so typos fail to compile. */
+export type PerpsDepositClickOutcome =
+  (typeof PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME)[keyof typeof PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME];
 
 /**
  * Extension-only event properties.

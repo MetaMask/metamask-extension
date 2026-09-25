@@ -255,6 +255,7 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerClearStateAction,
   AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
@@ -293,6 +294,7 @@ import {
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsSeedlessOnboardingFeatureEnabled,
 } from '../../../shared/lib/environment';
+import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
@@ -363,10 +365,6 @@ import {
   ReferralStatus,
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
-import {
-  MetaMetricsControllerBufferedEndTraceAction,
-  MetaMetricsControllerBufferedTraceAction,
-} from '../controllers/metametrics-controller-method-action-types';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import {
   DefiReferralPartner,
@@ -414,11 +412,14 @@ import {
 import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { isBasicFunctionalitySocialLoginUser } from '../../../shared/lib/basic-functionality-consolidation';
 import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
@@ -505,13 +506,11 @@ const MESSENGER_EXPOSED_METHODS = [
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
   'connectHardware',
-  'consolidateBasicFunctionality',
   'createNewVaultAndGetSeedPhrase',
   'createNewVaultAndKeychain',
   'createNewVaultAndRestore',
   'createSeedPhraseBackup',
   'decodeTransactionData',
-  'dismissBasicFunctionalityMigrationNotification',
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
@@ -545,6 +544,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'isRelaySupported',
   'isSendBundleSupported',
   'lookupSelectedNetworks',
+  'closeNotificationPopup',
   'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
@@ -636,6 +636,7 @@ type AllowedActions =
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerClearStateAction
   | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
@@ -666,8 +667,8 @@ type AllowedActions =
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
   | KeyringControllerWithKeyringAction
-  | MetaMetricsControllerBufferedTraceAction
-  | MetaMetricsControllerBufferedEndTraceAction
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
@@ -800,6 +801,7 @@ type LegacyBackgroundApiServiceOptions = {
   getPermittedAccounts: (origin: string) => Promise<string[]>;
   getTabUrl: (tabId: number) => Promise<string | undefined>;
   updateTabUrl: (tabId: number, url: string) => Promise<void>;
+  closeNotificationPopup: () => Promise<void>;
   markNotificationPopupAsAutomaticallyClosed: () => void;
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
@@ -832,6 +834,8 @@ export class LegacyBackgroundApiService {
 
   readonly #updateTabUrl: (tabId: number, url: string) => Promise<void>;
 
+  readonly #closeNotificationPopup: () => Promise<void>;
+
   readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
 
   readonly #requestSafeReload: () => Promise<void>;
@@ -856,6 +860,7 @@ export class LegacyBackgroundApiService {
    * @param options.getPermittedAccounts - A function that returns the permitted accounts for an origin.
    * @param options.getTabUrl - A function that returns the current URL of a browser tab.
    * @param options.updateTabUrl - A function that navigates a browser tab to a URL.
+   * @param options.closeNotificationPopup - A function that closes the notification popup window.
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
@@ -869,6 +874,7 @@ export class LegacyBackgroundApiService {
     getPermittedAccounts,
     getTabUrl,
     updateTabUrl,
+    closeNotificationPopup,
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
@@ -882,6 +888,7 @@ export class LegacyBackgroundApiService {
     this.#getPermittedAccounts = getPermittedAccounts;
     this.#getTabUrl = getTabUrl;
     this.#updateTabUrl = updateTabUrl;
+    this.#closeNotificationPopup = closeNotificationPopup;
     this.#markNotificationPopupAsAutomaticallyClosed =
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
@@ -1097,6 +1104,14 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call('PhishingController:maybeUpdateState');
 
     return this.#messenger.call('PhishingController:testOrigin', website);
+  }
+
+  /**
+   * Closes the notification popup window if one is open.
+   * Marks it as automatically closed so triggerUi knows not to reopen it.
+   */
+  async closeNotificationPopup(): Promise<void> {
+    await this.#closeNotificationPopup();
   }
 
   /**
@@ -1540,8 +1555,8 @@ export class LegacyBackgroundApiService {
    * reset progress flag is set.
    */
   async resetWallet(restoreOnly = false): Promise<void> {
-    // sign out from Authentication service and clear the Session Data
-    this.#messenger.call('AuthenticationController:performSignOut');
+    // Sign out and re-arm profile/social pairing for the next wallet.
+    this.#messenger.call('AuthenticationController:clearState');
 
     // clear SeedlessOnboardingController state
     this.#messenger.call('SeedlessOnboardingController:clearState');
@@ -2449,7 +2464,7 @@ export class LegacyBackgroundApiService {
           },
         );
 
-        this.#messenger.call('MetaMetricsController:bufferedTrace', {
+        this.#messenger.call('SentryTracingService:bufferedTrace', {
           name: TraceName.OnboardingResetPassword,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -2484,7 +2499,7 @@ export class LegacyBackgroundApiService {
         await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
-        this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
           name: TraceName.OnboardingResetPassword,
           data: { success: changePasswordSuccess },
         });
@@ -3083,43 +3098,6 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * One-time Basic Functionality consolidation when the remote FF turns on.
-   * Aligns child preferences, schedules the modal/toast notice, and syncs
-   * TokenDetection / GasFee / Shield / subscription controllers when
-   * consolidation actually ran.
-   */
-  consolidateBasicFunctionality(): void {
-    const { firstTimeFlowType } = this.#messenger.call(
-      'OnboardingController:getState',
-    );
-    const { authConnection } = this.#messenger.call(
-      'SeedlessOnboardingController:getState',
-    );
-    const landingState = this.#messenger.call(
-      'PreferencesController:consolidateBasicFunctionality',
-      {
-        isSocialLogin: isBasicFunctionalitySocialLoginUser({
-          firstTimeFlowType: firstTimeFlowType ?? undefined,
-          authConnection,
-        }),
-      },
-    );
-
-    if (landingState !== null) {
-      this.toggleExternalServices(landingState);
-    }
-  }
-
-  /**
-   * Dismisses the one-time Basic Functionality migration modal or toast.
-   */
-  dismissBasicFunctionalityMigrationNotification(): void {
-    this.#messenger.call(
-      'PreferencesController:dismissBasicFunctionalityMigrationNotification',
-    );
-  }
-
-  /**
    * Toggles external services on or off.
    *
    * When enabled, token detection and non-RPC gas fee APIs are started, and the
@@ -3128,11 +3106,20 @@ export class LegacyBackgroundApiService {
    * and the shield service is stopped if applicable.
    *
    * @param useExternal - Whether external services should be enabled.
+   * @param ownedPreferences - Optional per-preference values forwarded to
+   * PreferencesController so enabling can preserve granular onboarding choices
+   * in one write.
    */
-  toggleExternalServices(useExternal: boolean): void {
+  toggleExternalServices(
+    useExternal: boolean,
+    ownedPreferences?: Partial<
+      Record<ExternalServicesOwnedPreference, boolean>
+    >,
+  ): void {
     this.#messenger.call(
       'PreferencesController:toggleExternalServices',
       useExternal,
+      ownedPreferences,
     );
 
     const subscriptionState = this.#messenger.call(
@@ -3844,7 +3831,7 @@ export class LegacyBackgroundApiService {
   ): Promise<void> {
     let createSeedPhraseBackupSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3872,7 +3859,7 @@ export class LegacyBackgroundApiService {
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         data: { success: createSeedPhraseBackupSuccess },
       });
@@ -3888,7 +3875,7 @@ export class LegacyBackgroundApiService {
   async #fetchAllSecretData(password?: string): Promise<SecretMetadata[]> {
     let fetchAllSeedPhrasesSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingFetchSrps,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3900,7 +3887,7 @@ export class LegacyBackgroundApiService {
 
       return allSeedPhrases;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingFetchSrps,
         data: { success: fetchAllSeedPhrasesSuccess },
       });
@@ -3997,7 +3984,7 @@ export class LegacyBackgroundApiService {
       await this.#seedlessOperationMutex.runExclusive(async () => {
         let addNewSeedPhraseBackupSuccess = false;
         try {
-          this.#messenger.call('MetaMetricsController:bufferedTrace', {
+          this.#messenger.call('SentryTracingService:bufferedTrace', {
             name: TraceName.OnboardingAddSrp,
             op: TraceOperation.OnboardingSecurityOp,
           });
@@ -4021,7 +4008,7 @@ export class LegacyBackgroundApiService {
 
           throw err;
         } finally {
-          this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+          this.#messenger.call('SentryTracingService:bufferedEndTrace', {
             name: TraceName.OnboardingAddSrp,
             data: { success: addNewSeedPhraseBackupSuccess },
           });
