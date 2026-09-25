@@ -1,6 +1,9 @@
+import { AUTOMATION_TYPE } from '../common/constants';
 import { preventSinonAssertSyntax } from './sinon-assert-syntax';
 import { preventJavaScriptFileAdditions } from './javascript-additions';
 import { preventDeprecatedImports } from './prevent-deprecated-imports';
+import { preventGetApiExpansion } from './prevent-get-api-expansion';
+import { preventLegacyBackgroundApiServiceExpansion } from './prevent-legacy-background-api-service-expansion';
 
 const RULES: IRule[] = [
   {
@@ -21,19 +24,57 @@ const RULES: IRule[] = [
     errorMessage:
       'The diff includes imports from deprecated paths. Please use @metamask/design-system-react instead. See: https://github.com/MetaMask/metamask-extension/blob/main/docs/design-system.md',
   },
+  {
+    name: "Don't expand MetamaskController.getApi",
+    fn: preventGetApiExpansion,
+    errorMessage:
+      'Do not add new properties to MetamaskController.getApi(). Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md',
+    automationType: AUTOMATION_TYPE.CI,
+    skip: ({ allowBackgroundApiChanges }) => allowBackgroundApiChanges,
+  },
+  {
+    name: "Don't expand LegacyBackgroundApiService",
+    fn: preventLegacyBackgroundApiServiceExpansion,
+    errorMessage:
+      'Do not add new methods to LegacyBackgroundApiService. Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md',
+    automationType: AUTOMATION_TYPE.CI,
+    skip: ({ allowBackgroundApiChanges }) => allowBackgroundApiChanges,
+  },
 ];
 
 type IRule = {
   name: string;
-  fn: (diff: string) => boolean;
+  fn: (diff: string, baseRef: string) => boolean;
   errorMessage: string;
+  automationType?: AUTOMATION_TYPE;
+  skip?: (options: { allowBackgroundApiChanges: boolean }) => boolean;
 };
 
-function runFitnessFunctionRule(rule: IRule, diff: string): void {
+function runFitnessFunctionRule({
+  rule,
+  diff,
+  automationType,
+  ruleOptions,
+  baseRef,
+}: {
+  rule: IRule;
+  diff: string;
+  automationType: AUTOMATION_TYPE;
+  ruleOptions: {
+    allowBackgroundApiChanges: boolean;
+  };
+  baseRef: string;
+}): void {
   const { name, fn, errorMessage } = rule;
+  if (
+    (rule.automationType && rule.automationType !== automationType) ||
+    rule.skip?.(ruleOptions)
+  ) {
+    return;
+  }
   console.log(`Checking rule "${name}"...`);
 
-  const hasRulePassed: boolean = fn(diff) as boolean;
+  const hasRulePassed: boolean = fn(diff, baseRef);
   if (hasRulePassed === true) {
     console.log(`...OK`);
   } else {
