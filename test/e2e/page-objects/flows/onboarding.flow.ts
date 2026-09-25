@@ -52,7 +52,7 @@ export const handleSidepanelPostOnboarding = async (
 
   // Navigate directly to home page in current window
   // With sidepanel enabled, this ensures we load home page in the test window
-  await driver.driver.get(`${driver.extensionUrl}/home.html`);
+  await driver.openNewURL(`${driver.extensionUrl}/home.html`);
 
   // Wait for the home page to fully load
   const headerNavbar = new HeaderNavbar(driver);
