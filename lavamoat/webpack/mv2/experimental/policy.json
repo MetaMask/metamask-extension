@@ -137,12 +137,14 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography' reexports from '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves' and webpack collapsed that to a direct import."
+          "Dependency '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography' reexports from '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves' and webpack collapsed that to a direct import.",
+          "Dependency '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography' reexports from '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true,
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": true,
         "webpack>events": true
       }
@@ -4013,11 +4015,6 @@
         "TextEncoder": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@open-rpc/schema-utils-js": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
@@ -5247,7 +5244,6 @@
         "AbortController": true,
         "AbortSignal": true,
         "WeakRef": true,
-        "clearTimeout": true,
         "performance": true,
         "process.hrtime.bigint": true,
         "setTimeout": true
@@ -5688,16 +5684,6 @@
       },
       "packages": {
         "@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/transaction-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true,
-        "module": true
-      },
-      "packages": {
-        "@metamask/transaction-pay-controller>@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {

@@ -137,12 +137,14 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography' reexports from '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves' and webpack collapsed that to a direct import."
+          "Dependency '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography' reexports from '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves' and webpack collapsed that to a direct import.",
+          "Dependency '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography' reexports from '@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true,
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": true,
         "webpack>events": true
       }
@@ -706,7 +708,15 @@
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module": {
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import.",
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/container": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
         "@ledgerhq/device-management-kit": true,
         "bs58": true,
         "@metamask/ppom-validator>crypto-js": true,
@@ -736,7 +746,15 @@
         "setTimeout": true,
         "vi.fn": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import.",
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/container": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
         "@ledgerhq/device-management-kit>inversify": true,
         "@ledgerhq/device-management-kit>isomorphic-ws": true,
         "@ledgerhq/device-management-kit>purify-ts": true,
@@ -751,7 +769,15 @@
       "globals": {
         "TextEncoder": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import.",
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/container": true,
+        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module": true,
         "@ledgerhq/device-management-kit": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/device-signer-kit-ethereum>@ledgerhq/signer-utils": true,
@@ -4214,11 +4240,6 @@
         "TextEncoder": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/context-module>ethers>@noble/hashes": {
       "globals": {
         "TextEncoder": true
@@ -5494,7 +5515,6 @@
         "AbortController": true,
         "AbortSignal": true,
         "WeakRef": true,
-        "clearTimeout": true,
         "performance": true,
         "process.hrtime.bigint": true,
         "setTimeout": true
@@ -5937,16 +5957,6 @@
         "@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/transaction-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true,
-        "module": true
-      },
-      "packages": {
-        "@metamask/transaction-pay-controller>@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
     "ethereumjs-util>ethereum-cryptography": {
       "globals": {
         "Buffer.from": true
@@ -6361,14 +6371,6 @@
         "string.prototype.matchall>es-errors": true,
         "eslint-plugin-react>hasown": true,
         "string.prototype.matchall>side-channel": true
-      }
-    },
-    "@ledgerhq/device-management-kit>inversify": {
-      "packages": {
-        "@ledgerhq/device-management-kit>inversify>@inversifyjs/common": true,
-        "@ledgerhq/device-management-kit>inversify>@inversifyjs/container": true,
-        "@ledgerhq/device-management-kit>inversify>@inversifyjs/core": true,
-        "@ledgerhq/device-management-kit>reflect-metadata": true
       }
     },
     "browserify>util>is-arguments": {
