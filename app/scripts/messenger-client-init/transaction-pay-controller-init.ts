@@ -19,6 +19,11 @@ import {
   clearMaxSourceBalance,
   setMaxSourceBalance,
 } from '../lib/money/pay/max-source-balance';
+import {
+  clearAtomicMaxHint,
+  isAtomicMaxAllowed,
+  setAtomicMaxHint,
+} from '../lib/money/pay/atomic-max-hint';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
 import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
@@ -119,6 +124,7 @@ function getApi(
       transactionId: string,
       isMaxAmount: boolean,
       options: {
+        isAtomicMaxAllowed?: boolean;
         isMoneyAccountDeposit?: boolean;
         sourceAccountAddress?: string;
         sourceBalanceRaw?: string;
@@ -144,13 +150,34 @@ function getApi(
         } else {
           clearMaxSourceBalance(transactionId);
         }
+
+        if (isMaxAmount) {
+          setAtomicMaxHint(transactionId, options.isAtomicMaxAllowed ?? false);
+        } else {
+          clearAtomicMaxHint(transactionId);
+        }
       }
 
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.isMaxAmount = isMaxAmount;
 
         if (options.isMoneyAccountDeposit) {
-          config.atomic = isMaxAmount ? false : undefined;
+          // Leave `atomic` unset when Core may quote Max atomically: the route
+          // match only predicts the subsidy, and Core verifies it and re-quotes
+          // non-atomically when the response is unsubsidized.
+          config.atomic =
+            isMaxAmount && !options.isAtomicMaxAllowed ? false : undefined;
+        }
+      });
+    },
+    setTransactionPayAtomicMaxAllowed: (
+      transactionId: string,
+      isAllowed: boolean,
+    ) => {
+      setAtomicMaxHint(transactionId, isAllowed);
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        if (config.isMaxAmount) {
+          config.atomic = isAllowed ? undefined : false;
         }
       });
     },
@@ -248,7 +275,8 @@ function getApi(
             .transactions.find(({ id }) => id === transactionId);
           const keepNonAtomic =
             config.isMaxAmount &&
-            getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
+            getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit &&
+            !isAtomicMaxAllowed(transactionId);
           config.atomic = keepNonAtomic ? false : undefined;
           config.refundTo = undefined;
           return;

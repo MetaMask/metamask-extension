@@ -174,6 +174,8 @@
     "@metamask/eth-sig-util": "^9.0.0",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "36.0.0",
+    "@metamask/transaction-pay-controller/@metamask/transaction-controller": "^70.1.0",
+    "@tanstack/query-core": "5.101.4",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
     "follow-redirects": "^1.16.0",
     "ip-address": "^10.3.1",
@@ -344,7 +346,7 @@
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/profile-sync-controller": "^32.3.0",
     "@metamask/account-tree-controller": "^9.0.0",
-    "@metamask/ramps-controller": "^22.0.0"
+    "@metamask/ramps-controller": "^23.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -477,7 +479,7 @@
     "@metamask/profile-metrics-controller": "^5.1.0",
     "@metamask/profile-sync-controller": "^32.3.0",
     "@metamask/providers": "^22.1.1",
-    "@metamask/ramps-controller": "^22.0.0",
+    "@metamask/ramps-controller": "^23.0.0",
     "@metamask/rate-limit-controller": "^7.0.0",
     "@metamask/react-data-query": "^1.0.0",
     "@metamask/remote-feature-flag-controller": "^7.0.0",
@@ -502,7 +504,7 @@
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^8.0.1",
     "@metamask/transaction-controller": "^70.1.0",
-    "@metamask/transaction-pay-controller": "^27.1.1",
+    "@metamask/transaction-pay-controller": "^29.1.0",
     "@metamask/tron-wallet-snap": "^3.2.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^11.12.1",

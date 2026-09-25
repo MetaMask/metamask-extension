@@ -1,6 +1,11 @@
 import { createSelector } from 'reselect';
 import type { Hex } from '@metamask/utils';
 import {
+  hasTransactionType,
+  type TransactionMeta,
+  type TransactionType,
+} from '@metamask/transaction-controller';
+import {
   getEnforcedSimulationsSlippage,
   getIsEnforcedSimulationsEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
@@ -358,6 +363,20 @@ export const selectIsPayHardwareEnabled = createSelector(
 type PayExtendedFlag = {
   enableMoneyAccountTransactions?: Record<string, boolean>;
   defaultPaySelectedSection?: Record<string, string>;
+  payStrategies?: {
+    relay?: {
+      atomicMaxEnabled?: RelayAtomicMaxEnabledConfig;
+    };
+  };
+};
+
+/**
+ * Mirrors the Core `atomicMaxEnabled` gate: `transactionTypes` is a
+ * type-to-boolean map, **not** an array. An array silently disables the gate.
+ */
+type RelayAtomicMaxEnabledConfig = {
+  default?: boolean;
+  transactionTypes?: Partial<Record<TransactionType, boolean>>;
 };
 
 const selectPayExtendedFlag = createSelector(
@@ -404,6 +423,39 @@ export const selectIsMoneyAccountTransactionEnabled = createSelector(
 export const selectDefaultPaySelectedSection = createSelector(
   selectPayExtendedFlag,
   (flag): Record<string, string> => flag?.defaultPaySelectedSection ?? {},
+);
+
+const selectRelayAtomicMaxEnabledConfig = createSelector(
+  selectPayExtendedFlag,
+  (flag): RelayAtomicMaxEnabledConfig | undefined =>
+    flag?.payStrategies?.relay?.atomicMaxEnabled,
+);
+
+/**
+ * Whether Core may quote a Money Account deposit Max atomically, from
+ * `confirmations_pay_extended.payStrategies.relay.atomicMaxEnabled`. A matching
+ * transaction type (including nested batch types) wins over `default`; an
+ * absent gate is `false`.
+ *
+ * @param _state
+ * @param transactionMeta
+ */
+export const selectRelayAtomicMaxEnabled = createSelector(
+  [
+    selectRelayAtomicMaxEnabledConfig,
+    (_state, transactionMeta?: TransactionMeta) => transactionMeta,
+  ],
+  (config, transactionMeta): boolean => {
+    for (const [type, enabled] of Object.entries(
+      config?.transactionTypes ?? {},
+    )) {
+      if (hasTransactionType(transactionMeta, [type as TransactionType])) {
+        return enabled;
+      }
+    }
+
+    return config?.default ?? false;
+  },
 );
 
 /**

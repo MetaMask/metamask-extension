@@ -29,6 +29,32 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
+  it('delegates RampsController:getQuoteWithFees', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getTransactionPayControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining(['RampsController:getQuoteWithFees']),
+      }),
+    );
+  });
+
+  it('no longer delegates the replaced RampsController:getQuotes', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getTransactionPayControllerMessenger(messenger);
+
+    expect(delegateSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining(['RampsController:getQuotes']),
+      }),
+    );
+  });
+
   it('delegates SentinelApiService:simulateTransactions', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');

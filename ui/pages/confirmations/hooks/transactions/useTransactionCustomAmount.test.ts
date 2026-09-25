@@ -100,6 +100,7 @@ function runHook({
   isAccountTokensLoading = false,
   paymentOverride,
   moneyAccountWithdrawableFiatRaw,
+  remoteFeatureFlags,
 }: {
   currency?: string;
   disableUpdate?: boolean;
@@ -125,6 +126,7 @@ function runHook({
   isAccountTokensLoading?: boolean;
   paymentOverride?: PaymentOverride;
   moneyAccountWithdrawableFiatRaw?: string;
+  remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
   jest
     .mocked(useTokenFiatRatesModule.useTokenFiatRate)
@@ -211,13 +213,16 @@ function runHook({
         prefillMaxOnLoad,
       }),
     getMockConfirmStateForTransaction(transactionMeta, {
-      metamask: paymentOverride
-        ? {
-            transactionData: {
-              [transactionMeta.id]: { paymentOverride },
-            },
-          }
-        : {},
+      metamask: {
+        ...(paymentOverride
+          ? {
+              transactionData: {
+                [transactionMeta.id]: { paymentOverride },
+              },
+            }
+          : {}),
+        ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
+      },
     }),
   );
 }
@@ -723,6 +728,7 @@ describe('useTransactionCustomAmount', () => {
         moneyAccountDepositMeta.id,
         false,
         {
+          isAtomicMaxAllowed: false,
           isMoneyAccountDeposit: true,
           sourceAccountAddress: undefined,
           sourceChainId: '0x1',
@@ -1156,6 +1162,190 @@ describe('useTransactionCustomAmount', () => {
     });
   });
 
+  describe('atomic max for money account deposits', () => {
+    const PAY_TOKEN_ADDRESS = '0x1234567890123456789012345678901234567890';
+    const TARGET_TOKEN_ADDRESS = '0x8888888888888888888888888888888888888888';
+
+    const depositMeta = {
+      ...MOCK_TRANSACTION_META,
+      type: TransactionType.moneyAccountDeposit,
+      chainId: '0x1',
+      txParams: {
+        ...MOCK_TRANSACTION_META.txParams,
+        to: TARGET_TOKEN_ADDRESS,
+        data: undefined,
+      },
+    } as TransactionMeta;
+
+    const fixedSpreadFlag = {
+      confirmations_relay_fixed_spread: {
+        chains: { eth: '0x1' },
+        tokens: {
+          sourceToken: PAY_TOKEN_ADDRESS,
+          targetToken: TARGET_TOKEN_ADDRESS,
+        },
+        routes: [['eth', 'sourceToken', 'eth', 'targetToken']],
+      },
+    };
+
+    const atomicMaxFlag = (atomicMaxEnabled: unknown) => ({
+      confirmations_pay_extended: {
+        payStrategies: { relay: { atomicMaxEnabled } },
+      },
+    });
+
+    const setAtomicMaxAllowedMock = jest.mocked(
+      TransactionPayControllerActions.setAtomicMaxAllowed,
+    );
+
+    function pressMax(remoteFeatureFlags?: Record<string, unknown>) {
+      const { result } = runHook({
+        transactionMeta: depositMeta,
+        payTokenAddress: PAY_TOKEN_ADDRESS,
+        payTokenChainId: '0x1',
+        payTokenBalanceUsd: 100,
+        payTokenBalanceRaw: '100000000',
+        remoteFeatureFlags,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      return setIsMaxAmountMock.mock.calls.at(-1);
+    }
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      { label: 'default', gate: { default: true } },
+      {
+        label: 'transaction type',
+        gate: { transactionTypes: { moneyAccountDeposit: true } },
+      },
+    ])(
+      'allows atomic max on a fixed-spread route enabled by $label',
+      ({ gate }: { gate: unknown }) => {
+        const call = pressMax({ ...fixedSpreadFlag, ...atomicMaxFlag(gate) });
+
+        expect(call?.[2]).toMatchObject({ isAtomicMaxAllowed: true });
+      },
+    );
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      { label: 'an absent gate', gate: undefined },
+      { label: 'a disabled default', gate: { default: false } },
+      {
+        label: 'a disabled transaction type',
+        gate: {
+          default: true,
+          transactionTypes: { moneyAccountDeposit: false },
+        },
+      },
+    ])(
+      'keeps a fixed-spread max non-atomic with $label',
+      ({ gate }: { gate: unknown }) => {
+        const call = pressMax({ ...fixedSpreadFlag, ...atomicMaxFlag(gate) });
+
+        expect(call?.[2]).toMatchObject({ isAtomicMaxAllowed: false });
+      },
+    );
+
+    it('keeps max non-atomic when the route is not fixed-spread', () => {
+      const call = pressMax(atomicMaxFlag({ default: true }));
+
+      expect(call?.[2]).toMatchObject({ isAtomicMaxAllowed: false });
+    });
+
+    it('does not treat a fixed-spread source with another destination as atomic', () => {
+      const { result } = runHook({
+        transactionMeta: {
+          ...depositMeta,
+          txParams: {
+            ...depositMeta.txParams,
+            to: '0x9999999999999999999999999999999999999999',
+          },
+        } as TransactionMeta,
+        payTokenAddress: PAY_TOKEN_ADDRESS,
+        payTokenChainId: '0x1',
+        payTokenBalanceUsd: 100,
+        remoteFeatureFlags: {
+          ...fixedSpreadFlag,
+          ...atomicMaxFlag({ default: true }),
+        },
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      expect(setIsMaxAmountMock.mock.calls.at(-1)?.[2]).toMatchObject({
+        isAtomicMaxAllowed: false,
+      });
+    });
+
+    it('refreshes an already-armed max when the gate is enabled', () => {
+      runHook({
+        transactionMeta: depositMeta,
+        payTokenAddress: PAY_TOKEN_ADDRESS,
+        payTokenChainId: '0x1',
+        isMaxAmount: true,
+        remoteFeatureFlags: {
+          ...fixedSpreadFlag,
+          ...atomicMaxFlag({ default: true }),
+        },
+      });
+
+      expect(setAtomicMaxAllowedMock).toHaveBeenCalledWith(
+        depositMeta.id,
+        true,
+      );
+    });
+
+    it('refreshes an already-armed max as non-atomic when the gate is off', () => {
+      runHook({
+        transactionMeta: depositMeta,
+        payTokenAddress: PAY_TOKEN_ADDRESS,
+        payTokenChainId: '0x1',
+        isMaxAmount: true,
+        remoteFeatureFlags: fixedSpreadFlag,
+      });
+
+      expect(setAtomicMaxAllowedMock).toHaveBeenCalledWith(
+        depositMeta.id,
+        false,
+      );
+    });
+
+    it('does not refresh the hint when max is not armed', () => {
+      runHook({
+        transactionMeta: depositMeta,
+        payTokenAddress: PAY_TOKEN_ADDRESS,
+        payTokenChainId: '0x1',
+        isMaxAmount: false,
+        remoteFeatureFlags: {
+          ...fixedSpreadFlag,
+          ...atomicMaxFlag({ default: true }),
+        },
+      });
+
+      expect(setAtomicMaxAllowedMock).not.toHaveBeenCalled();
+    });
+
+    it('does not refresh the hint for non-deposit transactions', () => {
+      runHook({
+        transactionMeta: MOCK_TRANSACTION_META,
+        isMaxAmount: true,
+        remoteFeatureFlags: {
+          ...fixedSpreadFlag,
+          ...atomicMaxFlag({ default: true }),
+        },
+      });
+
+      expect(setAtomicMaxAllowedMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('deposit prefill', () => {
     const moneyAccountDepositMeta = {
       ...MOCK_TRANSACTION_META,
@@ -1285,6 +1475,7 @@ describe('useTransactionCustomAmount', () => {
         moneyAccountDepositMeta.id,
         true,
         {
+          isAtomicMaxAllowed: false,
           isMoneyAccountDeposit: true,
           sourceAccountAddress: undefined,
           sourceBalanceRaw: '55709000',
@@ -1588,6 +1779,7 @@ describe('useTransactionCustomAmount', () => {
         moneyAccountDepositMeta.id,
         true,
         {
+          isAtomicMaxAllowed: false,
           isMoneyAccountDeposit: true,
           sourceAccountAddress: undefined,
           sourceBalanceRaw: '1123456',
@@ -1815,6 +2007,7 @@ describe('useTransactionCustomAmount', () => {
         moneyAccountDepositMeta.id,
         true,
         {
+          isAtomicMaxAllowed: false,
           isMoneyAccountDeposit: true,
           sourceAccountAddress: undefined,
           sourceBalanceRaw: '1123456',
@@ -1868,6 +2061,7 @@ describe('useTransactionCustomAmount', () => {
         moneyAccountDepositMeta.id,
         true,
         {
+          isAtomicMaxAllowed: false,
           isMoneyAccountDeposit: true,
           sourceAccountAddress: undefined,
           sourceChainId: '0x1',
