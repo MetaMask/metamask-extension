@@ -5195,21 +5195,6 @@ export function setEnabledAllPopularNetworks(): ThunkAction<
   };
 }
 
-/**
- * Hides account in the accounts list
- *
- * @param hiddenAccountList
- */
-export function updateHiddenAccountsList(
-  hiddenAccountList: [],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateHiddenAccountsList', [
-      hiddenAccountList,
-    ]);
-  };
-}
-
 // Pending Approvals
 
 /**
