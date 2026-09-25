@@ -1,6 +1,6 @@
 import { hasProperty, isObject } from '@metamask/utils';
 
-import { type ThresholdConfig } from '../../../../shared/constants/benchmarks';
+import { type ThresholdConfig } from '../../../../shared/constants/benchmarks.ts';
 
 /**
  * CI multipliers for benchmark thresholds.
