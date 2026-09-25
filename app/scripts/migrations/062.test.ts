@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import migration62 from './062';
 
 type MigrationInput = Parameters<typeof migration62.migrate>[0];

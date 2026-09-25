@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy migration state remains loosely typed during JS-to-TS conversion. */
 import { cloneDeep } from 'lodash';
 import log from 'loglevel';
 import { hasProperty, isObject } from '@metamask/utils';
@@ -8,10 +5,8 @@ import transformState077For082 from './077-supplements/077-supplement-for-082';
 import transformState077For084 from './077-supplements/077-supplement-for-084';
 import transformState077For086 from './077-supplements/077-supplement-for-086';
 import transformState077For088 from './077-supplements/077-supplement-for-088';
-
-type LegacyState = Record<string, any>;
-type VersionedData = { meta: { version?: number }; data?: LegacyState };
-
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type { LegacyState } from './legacy-migration-utils';
 const version = 77;
 
 /**
@@ -19,12 +14,12 @@ const version = 77;
  * and in v2 we changed that to an object. In this migration we are converting
  * the data from an array to an object.
  */
-const migration = {
+export default {
   version,
-  async migrate(originalVersionedData: VersionedData) {
+  async migrate(originalVersionedData: MigrationState) {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
-    const state = (versionedData.data ?? {}) as LegacyState;
+    const state = versionedData.data as LegacyState;
     let newState = transformState(state);
 
     newState = transformState077For082(newState);
@@ -35,9 +30,7 @@ const migration = {
     versionedData.data = newState;
     return versionedData;
   },
-};
-
-export default migration;
+} satisfies LegacyMigration;
 
 function transformState(state: LegacyState) {
   if (!hasProperty(state, 'TokenListController')) {
@@ -59,30 +52,50 @@ function transformState(state: LegacyState) {
   const { TokenListController } = state;
   const { tokensChainsCache } = TokenListController;
 
-  let dataCache;
-  let dataObject;
+  let dataCache: Record<string, unknown> | unknown[];
+  let dataObject: Record<string, Record<string, unknown>>;
   // eslint-disable-next-line
   for (const chainId in tokensChainsCache) {
-    dataCache = tokensChainsCache[chainId].data || {};
+    const cacheEntry = tokensChainsCache[chainId]?.data;
+    dataCache = Array.isArray(cacheEntry)
+      ? cacheEntry
+      : isObject(cacheEntry)
+        ? cacheEntry
+        : {};
     dataObject = {};
     // if the data is array convert that to object
     if (Array.isArray(dataCache)) {
       for (const token of dataCache) {
-        if (token?.address) {
-          dataObject[token.address] = token;
+        if (
+          isObject(token) &&
+          typeof token.address === 'string' &&
+          token.address
+        ) {
+          dataObject[token.address] = token as Record<string, unknown>;
         }
       }
-    } else if (
-      Object.keys(dataCache)[0]?.toLowerCase() !==
-      dataCache[Object.keys(dataCache)[0]]?.address?.toLowerCase()
-    ) {
-      // for the users who already updated to the recent version
-      // and the dataCache is already an object keyed with 0,1,2,3 etc
-      // eslint-disable-next-line
-      for (const tokenAddress in dataCache) {
-        const token = dataCache[tokenAddress];
-        if (token?.address) {
-          dataObject[token.address] = token;
+    } else if (!Array.isArray(dataCache)) {
+      const firstCacheKey = Object.keys(dataCache)[0];
+      const firstCacheEntry = firstCacheKey
+        ? dataCache[firstCacheKey]
+        : undefined;
+      const firstTokenAddress =
+        isObject(firstCacheEntry) && typeof firstCacheEntry.address === 'string'
+          ? firstCacheEntry.address.toLowerCase()
+          : undefined;
+      if (firstCacheKey?.toLowerCase() !== firstTokenAddress) {
+        // for the users who already updated to the recent version
+        // and the dataCache is already an object keyed with 0,1,2,3 etc
+        // eslint-disable-next-line
+        for (const tokenAddress in dataCache) {
+          const token = dataCache[tokenAddress];
+          if (
+            isObject(token) &&
+            typeof token.address === 'string' &&
+            token.address
+          ) {
+            dataObject[token.address] = token;
+          }
         }
       }
     }

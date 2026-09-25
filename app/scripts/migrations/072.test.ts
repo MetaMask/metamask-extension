@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import migration72 from './072';
 
 type MigrationInput = Parameters<typeof migration72.migrate>[0];

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import { TEST_CHAINS } from '../../../shared/constants/network';
+import type { LegacyState } from './legacy-migration-utils';
 import migration67 from './067';
 
 type MigrationInput = Parameters<typeof migration67.migrate>[0];
@@ -17,6 +16,7 @@ describe('migration #67', () => {
     const newStorage = await migration67.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(newStorage.meta).toStrictEqual({
       version: 67,
     });
@@ -42,8 +42,9 @@ describe('migration #67', () => {
     const newStorage = await migration67.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.preferences.showTestNetworks,
+      migratedData.PreferencesController!.preferences!.showTestNetworks,
     ).toBe(true);
   });
 
@@ -74,8 +75,9 @@ describe('migration #67', () => {
     const newStorage = await migration67.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.preferences.showTestNetworks,
+      migratedData.PreferencesController!.preferences!.showTestNetworks,
     ).toBe(true);
   });
 
@@ -125,8 +127,9 @@ describe('migration #67', () => {
     const newStorage = await migration67.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.preferences.showTestNetworks,
+      migratedData.PreferencesController!.preferences!.showTestNetworks,
     ).toBe(true);
   });
 
@@ -175,8 +178,9 @@ describe('migration #67', () => {
     const newStorage = await migration67.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.preferences.showTestNetworks,
+      migratedData.PreferencesController!.preferences!.showTestNetworks,
     ).toBe(false);
   });
 
@@ -226,8 +230,9 @@ describe('migration #67', () => {
     const newStorage = await migration67.migrate(
       oldStorage as unknown as MigrationInput,
     );
+    const migratedData = newStorage.data as LegacyState;
     expect(
-      newStorage.data.PreferencesController.preferences.showTestNetworks,
+      migratedData.PreferencesController!.preferences!.showTestNetworks,
     ).toBe(true);
   });
 });

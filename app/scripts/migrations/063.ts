@@ -1,35 +1,28 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy migration state remains loosely typed during JS-to-TS conversion. */
 import { cloneDeep } from 'lodash';
-
-type LegacyState = Record<string, any>;
-type VersionedData = { meta: { version?: number }; data?: LegacyState };
-
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type { LegacyState, LegacyToken } from './legacy-migration-utils';
 const version = 63;
 
 /**
  * Moves token state from preferences controller to TokensController
  */
-const migration = {
+export default {
   version,
-  async migrate(originalVersionedData: VersionedData) {
+  async migrate(originalVersionedData: MigrationState) {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
-    const state = (versionedData.data ?? {}) as LegacyState;
+    const state = versionedData.data as LegacyState;
     const newState = transformState(state);
     versionedData.data = newState;
     return versionedData;
   },
-};
-
-export default migration;
+} satisfies LegacyMigration;
 
 function transformState(state: LegacyState) {
   const accountTokens = state?.PreferencesController?.accountTokens;
   const accountHiddenTokens = state?.PreferencesController?.accountHiddenTokens;
 
-  const newAllTokens = {};
+  const newAllTokens: Record<string, Record<string, LegacyToken[]>> = {};
   if (accountTokens) {
     Object.keys(accountTokens).forEach((accountAddress) => {
       Object.keys(accountTokens[accountAddress]).forEach((chainId) => {
@@ -46,7 +39,7 @@ function transformState(state: LegacyState) {
     });
   }
 
-  const newAllIgnoredTokens = {};
+  const newAllIgnoredTokens: Record<string, Record<string, LegacyToken[]>> = {};
   if (accountHiddenTokens) {
     Object.keys(accountHiddenTokens).forEach((accountAddress) => {
       Object.keys(accountHiddenTokens[accountAddress]).forEach((chainId) => {
