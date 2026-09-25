@@ -139,6 +139,9 @@ class HomePage {
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
+  private readonly srpAddedToastCloseButton =
+    '.toast-container button[aria-label="Close"]';
+
   private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
 
   private readonly storageErrorToastBackupButton = {
@@ -149,11 +152,6 @@ class HomePage {
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   protected readonly swapButton = { css: 'button', text: 'Swap' };
-
-  // The generic toaster close button has no data-testid (ButtonIcon only sets
-  // aria-label), so this selector is shared by every toast.
-  private readonly toastCloseButton =
-    '.toast-container button[aria-label="Close"]';
 
   protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -542,13 +540,13 @@ class HomePage {
   }
 
   async dismissAccountImportedToast(): Promise<void> {
-    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
     // The toast can take some time to appear
-    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   /**
@@ -623,11 +621,17 @@ class HomePage {
   /**
    * Navigates to home.html so the current route is left, even when in-page
    * navigation elements are unavailable (e.g. header in search mode).
+   *
+   * @param expectedBalance - Optional balance text expected on the homepage
+   * after navigation.
    */
-  async navigateToHome(): Promise<void> {
+  async navigateToHome(expectedBalance?: string): Promise<void> {
     console.log('Navigate to home.html so the current route is left');
     await this.driver.navigate();
     await this.checkPageIsLoaded();
+    if (expectedBalance !== undefined) {
+      await this.checkExpectedBalanceIsDisplayed(expectedBalance);
+    }
   }
 
   async openPortfolioPage(): Promise<void> {

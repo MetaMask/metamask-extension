@@ -1,5 +1,9 @@
 import { TRON_ACCOUNT_ADDRESS } from '../tests/tron/mocks/common-tron';
 import {
+  EMPTY_TRON_ACCOUNT,
+  TRON_CHECK_BALANCE_ACCOUNT,
+} from '../tests/tron/fixtures/environments';
+import {
   GAS_FREE,
   HTX,
   SEED,
@@ -41,6 +45,36 @@ describe('withTronFixtures', () => {
           USDD: '289757448699320931',
           USDT: '2804595',
         },
+      },
+    });
+  });
+
+  it('builds Tron local node options for the check-balance funded account', () => {
+    expect(buildTronNodeOptions([TRON_CHECK_BALANCE_ACCOUNT])).toStrictEqual({
+      initialBalances: {
+        // TRX_BALANCE = 106072392 SUN (~106.07 TRX)
+        [TRON_ACCOUNT_ADDRESS]: 106_072_392,
+      },
+      trc10Balances: {
+        [TRON_ACCOUNT_ADDRESS]: {
+          GAS_FREE: '33333333',
+        },
+      },
+      trc20Balances: {
+        [TRON_ACCOUNT_ADDRESS]: {
+          HTX: '3156454956836360132407885',
+          SEED: '89851311',
+          USDD: '289757448699320931',
+          USDT: '2804595',
+        },
+      },
+    });
+  });
+
+  it('keeps a zero native balance for the empty account', () => {
+    expect(buildTronNodeOptions([EMPTY_TRON_ACCOUNT])).toStrictEqual({
+      initialBalances: {
+        [TRON_ACCOUNT_ADDRESS]: 0,
       },
     });
   });
