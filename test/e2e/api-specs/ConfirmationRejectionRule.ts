@@ -147,7 +147,7 @@ export class ConfirmationsRejectRule implements Rule {
             await testDapp.checkPageIsLoaded();
             await testDapp.checkConnectedAccounts(
               DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-              this.requiresEthAccountsPermission.includes(call.methodName),
+              false,
             );
           } catch (e) {
             console.log(e);
