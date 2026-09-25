@@ -484,41 +484,27 @@
   "activity_marketShort_success_title": {
     "message": "Posisi short ditutup - pasar"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Deposit gagal"
   },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Mendeposit"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
+    "message": "Mendeposit $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Didepositkan"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
+    "message": "$1 dideposit",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Pengiriman gagal"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "Penerimaan gagal"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Mengirim"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
+    "message": "Menerima $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Terkirim"
+    "message": "Menerima $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Pembelian gagal"
@@ -1963,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "API pihak ketiga kini menjadi bagian dari Fungsionalitas Dasar. Berdasarkan preferensi Anda sebelumnya, pengaturan ini $1. Anda dapat mengubahnya setiap saat di $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "dinonaktifkan"
@@ -3102,14 +3088,14 @@
   "copiedToClipboard": {
     "message": "Disalin ke papan klip"
   },
+  "copy": {
+    "message": "Salin"
+  },
   "copyAddress": {
     "message": "Salin alamat ke papan klip"
   },
   "copyAddressShort": {
     "message": "Salin alamat"
-  },
-  "copyPrivateKey": {
-    "message": "Salin kunci pribadi"
   },
   "copyToClipboard": {
     "message": "Salin ke papan klip"
@@ -3169,6 +3155,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "Instal ulang MetaMask"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Reset State MetaMask"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Masih mengalami masalah?"
   },
@@ -3190,9 +3179,6 @@
   },
   "current": {
     "message": "Saat ini"
-  },
-  "currentAccountNotConnected": {
-    "message": "Akun Anda saat ini tidak terhubung"
   },
   "currentEstimatedBaseFee": {
     "message": "Saat ini: $1 GWEI"
@@ -5033,9 +5019,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Demi keamanan Anda, memilih teks ini tidak tersedia untuk saat ini."
-  },
   "learnHow": {
     "message": "Pelajari caranya"
   },
@@ -5460,6 +5443,14 @@
   "money": {
     "message": "Dana"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Dapatkan $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin."
   },
@@ -5601,6 +5592,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Persentase hasil otomatis pada saldo Money Anda"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Hasil otomatis hingga $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Dapatkan likuiditas penuh tanpa penguncian, sehingga Anda dapat melakukan perdagangan atau penarikan setiap saat"
   },
@@ -5640,6 +5635,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Tidak ada biaya"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Proyeksi ini mengasumsikan Persentase Hasil Tahunan (APY) sebesar $1% tetap tidak berubah selama satu tahun. APY bersifat variabel dan tidak dijamin. Tidak ada jaminan pengembalian.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Hasilkan pada saldo Anda"
   },
@@ -5658,6 +5657,10 @@
   "moneyHomeApyTooltip": {
     "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin. Dana masuk ke brankas DeFi, yang dikelola oleh Veda dengan pengawasan risiko oleh Steakhouse Financial, yang menghasilkan pengembalian di pasar pinjaman yang sudah mapan."
   },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Money account menghasilkan hingga $1 secara otomatis.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money Account didukung oleh Monad."
   },
@@ -5670,12 +5673,6 @@
   "moneyHowItWorksDescription1": {
     "message": "Tambahkan mUSD ke Money account dan dapatkan hingga $1 APY (variabel) secara otomatis. Dana masuk ke brankas DeFi, yang dikelola oleh Veda dengan pemantauan risiko oleh Steakhouse Financial. Nilai dihasilkan oleh platform DeFi pihak ketiga yang menyebarkan dana dalam protokol blockchain. Tanpa stake, tanpa klaim, tanpa penguncian.",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Saldo Dana merupakan saldo penggunaan Anda. Hubungkan Kartu MetaMask untuk digunakan di lebih dari 150 juta merchant di seluruh dunia. Dana Anda terus menghasilkan keuntungan hingga saat Anda menggunakannya."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account didukung oleh Monad."
   },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Tambahkan mUSD dan dapatkan hingga $1. Saldo Anda didukung dolar dan siap untuk digunakan, diperdagangkan, atau dikirim setiap saat.",
@@ -5694,17 +5691,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Apakah tingkat APY berubah?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Anda sendiri! MetaMask merupakan dompet penyimpanan mandiri, artinya hanya Kunci Pribadi pemilik akun yang dapat mengontrolnya. MetaMask tidak dapat mengakses, membekukan, atau memindahkan dana Anda. Inilah yang membedakan kami dari rekening bank tradisional dan platform kripto kustodian—tidak ada pihak ketiga yang memegang dana Anda."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Siapa yang mengontrol dana saya?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Tidak ada biaya untuk membuka Money Account dan tidak ada biaya untuk mendepositkan stablecoin. Anda akan dikenakan biaya saat mendepositkan token yang bukan merupakan stablecoin. Terdapat juga biaya yang terkait dengan transaksi Kartu MetaMask, penarikan ATM, dan biaya penarikan mata uang lokal. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Lihat perincian biaya Kartu selengkapnya di sini."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Apakah ada biaya yang dikenakan?"
@@ -5721,20 +5709,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Apa itu akun Dana?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD merupakan stablecoin berbasis dolar milik MetaMask dengan rasio 1:1. Saldo Money Anda disimpan dalam bentuk mUSD dan tetap tersedia untuk digunakan, dikirim, atau diperdagangkan setiap saat.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Apa itu mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Saldo Money Anda adalah saldo yang dapat digunakan — saldo ini terus menghasilkan keuntungan hingga saat Anda menggunakannya. Money account bukanlah rekening bank, rekening tabungan, atau produk simpanan yang dijamin.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Apakah ini rekening tabungan atau rekening penggunaan?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Pertanyaan Umum"
@@ -6950,6 +6924,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Kami tidak dapat memverifikasi $1 Anda. Coba lagi atau gunakan kata sandi Anda.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Coba lagi",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Daftar $1",
@@ -8572,10 +8550,6 @@
     "message": "Kunci pribadi",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Kunci pribadi untuk $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Kunci pribadi disembunyikan",
     "description": "Explains that the private key input is hidden"
@@ -8587,9 +8561,6 @@
   "privateKeyShown": {
     "message": "Kunci pribadi ini sedang ditampilkan",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Peringatan: Jangan ungkapkan kunci ini. Siapa pun yang memiliki kunci pribadi Anda dapat mencuri aset yang disimpan di akun Anda."
   },
   "privateKeys": {
     "message": "Kunci pribadi",
@@ -9028,6 +8999,10 @@
   "relayerFee": {
     "message": "Biaya relayer"
   },
+  "remindMeLater": {
+    "message": "Ingatkan saya nanti",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Hapus"
   },
@@ -9370,6 +9345,9 @@
   },
   "rpcUrl": {
     "message": "URL RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Penyedia RPC ini membatasi permintaan. Coba lagi nanti atau gunakan URL RPC yang berbeda."
   },
   "safeTransferFrom": {
     "message": "Transfer aman dari"
@@ -9968,9 +9946,6 @@
   },
   "sendAlertNewAddressTitle": {
     "message": "Alamat baru"
-  },
-  "sendBugReport": {
-    "message": "Kirimkan laporan masalah."
   },
   "sendBundleHwGasPayment": {
     "message": "Membayar biaya jaringan dengan $1",
@@ -10693,12 +10668,6 @@
   "showPermissions": {
     "message": "Tampilkan Izin"
   },
-  "showPrivateKey": {
-    "message": "Tampilkan kunci pribadi"
-  },
-  "showSRP": {
-    "message": "Tampilkan Frasa Pemulihan Rahasia"
-  },
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"
   },
@@ -11305,38 +11274,19 @@
   "stateCorruptionAreYouSure": {
     "message": "Yakin ingin melanjutkan?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Anda dapat mencoba untuk menyalin dan memulihkan fail state secara manual sebelum memutuskan untuk memulihkan brankas Anda dengan mengikuti $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Anda dapat mencoba untuk menyalin dan memulihkan fail state secara manual sebelum memutuskan untuk mereset MetaMask dengan mengikuti $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Brankas Anda tidak dapat dipulihkan secara otomatis."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Brankas Anda dapat dipulihkan dari cadangan otomatis. Pemulihan otomatis akan menghapus pengaturan dan preferensi saat ini, dan hanya memulihkan brankas Anda."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Kesalahan internal: basis data tidak dapat diakses"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Reset State MetaMask"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Mereset basis data…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Pulihkan akun"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Memulihkan basis data…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "petunjuk berikut",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Cara memulihkan Frasa Pemulihan Rahasia"
@@ -11662,6 +11612,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Otomatis"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Toleransi selip dibatasi hingga 100%."
   },
   "swapSlippageHighDescription": {
     "message": "Selip yang dimasukkan ($1%) dianggap sangat tinggi dan dapat mengakibatkan tarif yang tidak efektif",
@@ -12141,9 +12094,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "Koneksi $1 tidak dapat diandalkan. Perbarui detail konektivitas jaringan sebelum melanjutkan atau coba lagi nanti.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Perilaku ini tidak terduga dan harus dilaporkan sebagai bug, bahkan jika akun Anda dipulihkan."
   },
   "unexpectedError": {
     "message": "Terjadi kesalahan tidak terduga.",

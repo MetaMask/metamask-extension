@@ -4,12 +4,14 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
+import { KeyringType } from '@metamask/keyring-api/v2';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
 import { useDispatch } from '../../../store/hooks';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
 
@@ -56,9 +58,14 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => mockUseI18nContext(),
 }));
 
-const mockHandleCopy = jest.fn();
+const mockHandleCopy = jest.fn().mockResolvedValue(true);
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
-  useCopyToClipboard: () => [false, mockHandleCopy],
+  useCopyToClipboard: () => [
+    false,
+    mockHandleCopy,
+    jest.fn(),
+    { state: 'idle', clear: jest.fn() },
+  ],
 }));
 
 const mockUseIsPasskeyActive = jest.fn().mockReturnValue(false);
@@ -139,7 +146,10 @@ const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
     metadata: {
       name: 'Solana Account',
       importTime: Date.now(),
-      keyring: { type: 'Snap Keyring' },
+      keyring: { type: KeyringType.Snap },
+      snap: {
+        id: SOLANA_WALLET_SNAP_ID,
+      },
     },
     options: {},
     methods: [],
@@ -331,8 +341,11 @@ jest.mock('../../../store/actions', () => ({
   },
 }));
 
-const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
-  const store = mockStore(createMockState());
+const renderComponent = (
+  groupId: AccountGroupId = GROUP_ID_MOCK,
+  state = createMockState(),
+) => {
+  const store = mockStore(state);
   return render(
     <Provider store={store}>
       <MultichainPrivateKeyList groupId={groupId} goBack={mockGoBack} />
@@ -360,6 +373,9 @@ describe('MultichainPrivateKeyList', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
     expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-private-keyring-list'),
+    ).not.toHaveClass('pt-4');
   });
 
   it('fires trace and endTrace around successful reveal', async () => {
@@ -385,6 +401,62 @@ describe('MultichainPrivateKeyList', () => {
         }),
       );
     });
+  });
+
+  it('combines EVM networks and excludes non-EVM accounts', async () => {
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    expect(await screen.findByText('ethereumAndEvms')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(
+        'multichain-private-key-row-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      ),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Polygon Mainnet')).not.toBeInTheDocument();
+    expect(screen.queryByText('Arbitrum One')).not.toBeInTheDocument();
+    expect(screen.getByTestId('multichain-private-keyring-list')).toHaveClass(
+      'pt-4',
+    );
+    expect(mockExportAccounts).toHaveBeenCalledWith('correctpassword', [
+      ACCOUNT_ONE_ADDRESS_MOCK,
+    ]);
+  });
+
+  it('does not report an export failure as a wrong password', async () => {
+    mockExportAccounts.mockRejectedValueOnce(new Error('EVM export failed'));
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    await waitFor(() => {
+      expect(mockExportAccounts).toHaveBeenCalledTimes(1);
+    });
+    expect(screen.queryByTestId('wrong-password-msg')).not.toBeInTheDocument();
+  });
+
+  it('renders the EVM section without disclosure controls', async () => {
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    const evmHeader = await screen.findByTestId(
+      'multichain-private-key-row-header-eip155:1',
+    );
+    expect(evmHeader.tagName).toBe('DIV');
+    expect(
+      screen.getByTestId('multichain-private-key-reveal-eip155:1'),
+    ).toBeInTheDocument();
   });
 
   describe('passkey reveal', () => {
