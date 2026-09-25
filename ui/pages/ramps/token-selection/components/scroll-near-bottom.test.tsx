@@ -40,6 +40,38 @@ describe('ScrollNearBottom', () => {
     expect(onNearBottom).toHaveBeenCalledTimes(1);
   });
 
+  it('does not request another page until the observed list length changes', () => {
+    const onNearBottom = jest.fn();
+    const { rerender } = render(
+      <ScrollContainer data-testid="scroll-container">
+        <ScrollNearBottom onNearBottom={onNearBottom} observedLength={10} />
+      </ScrollContainer>,
+    );
+
+    const container = screen.getByTestId('scroll-container');
+    setScrollMetrics(container, {
+      scrollTop: 4300,
+      clientHeight: 700,
+      scrollHeight: 5000,
+    });
+
+    fireEvent.scroll(container);
+    fireEvent.scroll(container);
+    fireEvent.scroll(container);
+
+    expect(onNearBottom).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <ScrollContainer data-testid="scroll-container">
+        <ScrollNearBottom onNearBottom={onNearBottom} observedLength={60} />
+      </ScrollContainer>,
+    );
+
+    fireEvent.scroll(container);
+
+    expect(onNearBottom).toHaveBeenCalledTimes(2);
+  });
+
   it('does not call onNearBottom when the scroll position is far from the bottom', () => {
     const onNearBottom = jest.fn();
     render(

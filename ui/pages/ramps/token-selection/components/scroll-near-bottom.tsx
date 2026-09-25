@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useScrollContainer } from '../../../../contexts/scroll-container';
 
 const DEFAULT_THRESHOLD_PX = 200;
@@ -43,11 +43,18 @@ export function ScrollNearBottom({
   thresholdPx = DEFAULT_THRESHOLD_PX,
 }: ScrollNearBottomProps) {
   const scrollContainerRef = useScrollContainer();
+  const lastObservedLength = useRef(observedLength);
+  const hasTriggeredForLength = useRef(false);
 
   useEffect(() => {
     const scrollElement = scrollContainerRef?.current;
     if (!enabled || !scrollElement) {
       return undefined;
+    }
+
+    if (lastObservedLength.current !== observedLength) {
+      lastObservedLength.current = observedLength;
+      hasTriggeredForLength.current = false;
     }
 
     const readMetrics = () => {
@@ -61,8 +68,17 @@ export function ScrollNearBottom({
       return { scrollTop, clientHeight, scrollHeight };
     };
 
+    const triggerNearBottom = () => {
+      if (hasTriggeredForLength.current) {
+        return;
+      }
+      hasTriggeredForLength.current = true;
+      onNearBottom();
+    };
+
     // Scroll events use proximity: the user reached the end of the
-    // scrollable content.
+    // scrollable content. Only one page is requested per observed list length,
+    // even if several native scroll events fire before React commits the page.
     const handleScroll = () => {
       const metrics = readMetrics();
       if (
@@ -70,7 +86,7 @@ export function ScrollNearBottom({
         metrics.scrollHeight - (metrics.scrollTop + metrics.clientHeight) <=
           thresholdPx
       ) {
-        onNearBottom();
+        triggerNearBottom();
       }
     };
 
@@ -78,7 +94,7 @@ export function ScrollNearBottom({
     // front (and whenever the content grows) until the list is scrollable.
     const metrics = readMetrics();
     if (metrics && metrics.scrollHeight <= metrics.clientHeight) {
-      onNearBottom();
+      triggerNearBottom();
     }
 
     scrollElement.addEventListener('scroll', handleScroll, { passive: true });
