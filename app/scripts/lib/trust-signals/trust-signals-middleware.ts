@@ -14,6 +14,7 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
 import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
+import { scanUnvalidatedSignatureAddresses } from './scan-unvalidated-signature';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -332,10 +333,6 @@ function handleEthSignTypedData(
       ? req.params[1]
       : JSON.stringify(req.params[1]),
   );
-  const verifyingContract = typedDataMessage.domain?.verifyingContract;
-  if (!verifyingContract) {
-    return;
-  }
 
   const { chainId: rawChainId } =
     networkController.getNetworkConfigurationByNetworkClientId(
@@ -347,21 +344,36 @@ function handleEthSignTypedData(
     return;
   }
 
-  // Scan the verifying contract address (token contract)
-  scanAddressInBackground(
-    verifyingContract,
-    'address for signature',
-    rawChainId,
+  // Start generic message-field scans as soon as the request arrives. The PPOM
+  // middleware may call this again after a benign verdict, but cache
+  // de-duplication prevents repeated API requests.
+  scanUnvalidatedSignatureAddresses({
+    request: req,
+    chainId: rawChainId,
     appStateController,
     phishingController,
-  );
+  });
+
+  const verifyingContract = typedDataMessage.domain?.verifyingContract;
+  if (verifyingContract) {
+    // Scan the verifying contract address (token contract).
+    scanAddressInBackground(
+      verifyingContract,
+      'address for signature',
+      rawChainId,
+      appStateController,
+      phishingController,
+    );
+  }
 
   const { primaryType }: { primaryType: string } = typedDataMessage;
   if (!primaryType) {
     return;
   }
 
-  // If this is a permit signature, also scan the spender address
+  // Scan permit spenders separately from the generic capped extraction. This
+  // keeps the scanner and confirmation hook on the same generic address window
+  // even when the typed data omits domain.verifyingContract.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
     const spenderAddress = typedDataMessage.message?.spender;

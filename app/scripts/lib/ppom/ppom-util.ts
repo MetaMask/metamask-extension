@@ -99,7 +99,7 @@ export async function validateRequestWithPPOM({
   chainId: Hex;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   getSecurityAlertsConfig?: GetSecurityAlertsConfig;
-}) {
+}): Promise<SecurityAlertResponse> {
   try {
     const controllerObject = await updateSecurityResponse(
       request.method,
@@ -121,14 +121,23 @@ export async function validateRequestWithPPOM({
       : await validateWithController(messenger, normalizedRequest, chainId);
 
     await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
+
+    return ppomResponse;
   } catch (error: unknown) {
     log('Error', error);
+
+    const errorResponse = handlePPOMError(
+      error,
+      'Error validating JSON RPC using PPOM: ',
+    );
 
     await updateSecurityResponse(
       request.method,
       securityAlertId,
-      handlePPOMError(error, 'Error validating JSON RPC using PPOM: '),
+      errorResponse,
     );
+
+    return errorResponse;
   }
 }
 
