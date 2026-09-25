@@ -29,8 +29,16 @@ describe('LavamoatPlugin', () => {
 
       // The paths that must be excluded from the unsafe loader so LavaMoat wraps them.
       assert.ok(
+        exclude.test('/project/app/scripts/background.js'),
+        'should exclude Unix-style background.js path',
+      );
+      assert.ok(
         exclude.test('/project/app/scripts/background.ts'),
         'should exclude Unix-style background.ts path',
+      );
+      assert.ok(
+        exclude.test('C:\\project\\app\\scripts\\background.js'),
+        'should exclude Windows-style background.js path',
       );
       assert.ok(
         exclude.test('C:\\project\\app\\scripts\\background.ts'),
@@ -76,8 +84,16 @@ describe('LavamoatPlugin', () => {
       assert.ok(test instanceof RegExp, 'test should be a RegExp');
 
       assert.ok(
+        test.test('/project/app/scripts/background.js'),
+        'should match Unix-style background.js path',
+      );
+      assert.ok(
         test.test('/project/app/scripts/background.ts'),
         'should match Unix-style background.ts path',
+      );
+      assert.ok(
+        test.test('C:\\project\\app\\scripts\\background.js'),
+        'should match Windows-style background.js path',
       );
       assert.ok(
         test.test('C:\\project\\app\\scripts\\background.ts'),

@@ -2,15 +2,10 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// Sentry hooks must run before other imports; disable import order rules for this file.
-/* eslint-disable import-x/order */
-
-// This import sets up global functions required for Sentry to function.
-// It must be run first in case an error is thrown later during initialization.
+/* eslint-disable import-x/order -- Sentry hooks and INFURA manifest flags must run before other imports */
 import { persistenceManager } from './lib/setup-initial-state-hooks';
-
-// Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
+/* eslint-enable import-x/order */
 
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -66,6 +61,7 @@ import {
   shouldTrackDeepLinkNavigation,
 } from '../../shared/lib/deep-links/metrics';
 import { hasVault } from '../../shared/lib/stores/persistence-manager';
+import type { MetaMaskStateType } from '../../shared/lib/stores/base-store';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import {
@@ -139,7 +135,6 @@ import type {
 import type { InstallLifecycleDependencies } from './lib/lifecycle/install-lifecycle';
 import type { ActiveTabTrackerController } from './lib/active-tab/active-tab-tracker';
 import type { BadgeManagerController } from './lib/badge/badge-manager';
-import type { MetaMaskStateType } from '../../shared/lib/stores/base-store';
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
