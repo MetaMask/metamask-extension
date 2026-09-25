@@ -4301,6 +4301,9 @@
   "gasLimitBelowMinimum": {
     "message": "Gas limit must be at least 12000"
   },
+  "gasLimitEditingUnavailable": {
+    "message": "Editing the gas limit is unavailable until MetaMask provides an estimate."
+  },
   "gasPrice": {
     "message": "Gas price"
   },
