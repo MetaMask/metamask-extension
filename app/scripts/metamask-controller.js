@@ -4892,16 +4892,11 @@ export default class MetamaskController extends EventEmitter {
             const { remoteFeatureFlags } = this.controllerMessenger.call(
               'RemoteFeatureFlagController:getState',
             );
-            // Resolve through the same manifest-merged path as the UI selector
-            // (`getIsPerpsTerminalBackendEnabled`). Reading raw controller state
-            // here would ignore `.manifest-overrides.json`, so a manifest
-            // override could enable the Terminal backend in the UI while the
-            // bridge kept emitting un-enriched direct-provider market data.
-            const mergedFlags = getRemoteFeatureFlags({
+            const effectiveFlags = getRemoteFeatureFlags({
               metamask: { remoteFeatureFlags },
             });
             return isPerpsRemoteConfigSatisfied(
-              mergedFlags.perpsTerminalBackendEnabled,
+              effectiveFlags.perpsTerminalBackendEnabled,
             );
           },
           emit: (channel, data, extra) => {

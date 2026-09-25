@@ -410,7 +410,6 @@ import {
   toHardwareWalletError,
 } from '../../../shared/lib/hardware-wallets';
 import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
-import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import {
   LatticeKeyringV2,
@@ -3214,20 +3213,13 @@ export class LegacyBackgroundApiService {
   /**
    * Get the active Ledger handler mode based on the remote feature flag.
    *
-   * Reads from `RemoteFeatureFlagController` state and merges with manifest
-   * overrides so `.manifest-overrides.json` can flip the flag for dev/E2E
-   * builds without touching LaunchDarkly.
+   * Reads the effective value from `RemoteFeatureFlagController` state.
    *
    * @returns The Ledger handler mode.
    */
   getLedgerMode(): LedgerHandlerMode {
     const state = this.#messenger.call('RemoteFeatureFlagController:getState');
-    const merged = merge(
-      {},
-      state.remoteFeatureFlags ?? {},
-      getManifestFlags().remoteFeatureFlags ?? {},
-    );
-    return isDmkFeatureEnabled(merged)
+    return isDmkFeatureEnabled(state.remoteFeatureFlags ?? {})
       ? LedgerHandlerMode.DMK
       : LedgerHandlerMode.Legacy;
   }

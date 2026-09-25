@@ -93,14 +93,16 @@ BLOCKAID_PUBLIC_KEY=
 ; This should NEVER be enabled in production since it slows down react
 ; ENABLE_WHY_DID_YOU_RENDER=false
 
-; A JSON config file that can be used to override the default manifest values.
+; A JSON config file that can be used to override the default manifest values
+; in development-mode builds only (for example, `yarn start` or `yarn build:dev`).
 ; e.g., `.manifest-overrides.json` where the contents might be something like:
 ; {
 ;  "_flags": {
 ;    "remoteFeatureFlags": { }
 ;  }
 ; }
-; Note: Properties are shallow merged into the manifest.json file at build time.
+; Note: Properties are merged into manifest.json at build time. Production-mode
+; builds such as `yarn dist` and `yarn build:test` ignore this setting.
 ;MANIFEST_OVERRIDES=.manifest-overrides.json
 
 ; Set this to `true` to enable Metamask Shield
