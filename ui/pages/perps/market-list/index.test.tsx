@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
@@ -734,6 +740,137 @@ describe('MarketListView', () => {
       await waitFor(() => {
         expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('row order under live updates', () => {
+    const marketWithChange = (symbol: string, change24hPercent: string) => ({
+      ...mockCryptoMarkets[0],
+      symbol,
+      name: symbol,
+      change24hPercent,
+    });
+
+    const streamMarkets = (
+      markets: ReturnType<typeof marketWithChange>[],
+    ): void => {
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(true),
+        markets,
+        cryptoMarkets: markets,
+        hip3Markets: [],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+    };
+
+    const renderedSymbols = (): string[] =>
+      screen
+        .getAllByTestId(/^market-row-(?!ticker-)/u)
+        .map((row) =>
+          (row.getAttribute('data-testid') ?? '').replace('market-row-', ''),
+        );
+
+    const sortByPriceChange = async (): Promise<void> => {
+      fireEvent.click(screen.getByTestId('sort-dropdown-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByTestId('sort-field-option-priceChange'));
+      fireEvent.click(screen.getByTestId('sort-modal-apply'));
+    };
+
+    it('keeps rows in place when a price tick changes the ranked field', async () => {
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+
+      // AAA now ranks first on the sorted field. A re-sort on every tick is
+      // what moved rows out from under the reader.
+      streamMarkets([
+        marketWithChange('AAA', '+9.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      rerender(<MarketListView />);
+
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+    });
+
+    it('updates the values shown on a row without moving it', async () => {
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('BBB', '+2.00%'),
+      ]);
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+
+      streamMarkets([
+        marketWithChange('AAA', '+9.00%'),
+        marketWithChange('BBB', '+2.00%'),
+      ]);
+      rerender(<MarketListView />);
+
+      expect(renderedSymbols()).toStrictEqual(['BBB', 'AAA']);
+      expect(
+        within(screen.getByTestId('market-row-AAA')).getAllByText('+9.00%')
+          .length,
+      ).toBeGreaterThan(0);
+    });
+
+    it('re-ranks on the ticked values when the user changes the sort', async () => {
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+
+      streamMarkets([
+        marketWithChange('AAA', '+9.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      rerender(<MarketListView />);
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+
+      // Pressing the already-sorted field reverses the direction, which is the
+      // user asking for a fresh ranking — it has to rank on the ticked values,
+      // not on the ones the frozen order was built from.
+      await sortByPriceChange();
+
+      expect(renderedSymbols()).toStrictEqual(['BBB', 'CCC', 'AAA']);
+    });
+
+    it('re-ranks when the set of markets changes', async () => {
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'AAA']);
+
+      // A newly listed market has to be ranked, not appended.
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      rerender(<MarketListView />);
+
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
     });
   });
 

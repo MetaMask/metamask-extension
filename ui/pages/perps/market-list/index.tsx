@@ -328,40 +328,77 @@ export const MarketListView = () => {
     );
   }, [allMarkets, allowedHip3Sources]);
 
-  // Filter and sort markets
+  // Filter markets
   // When searching, bypass filters and search ALL markets (like mobile)
   // When not searching, apply filters
-  const displayedMarkets = useMemo(() => {
-    let markets: PerpsMarketData[];
-
+  const matchingMarkets = useMemo(() => {
     if (searchQuery.trim()) {
       // Searching: search across ALL markets, ignore filters
-      markets = filterMarketsByQuery(allMarkets, searchQuery);
-    } else {
-      // Not searching: apply filters
-      markets = filterByType(
-        allMarkets,
-        selectedFilter,
-        allowedHip3Sources,
-        watchlistSymbols,
-      );
+      return filterMarketsByQuery(allMarkets, searchQuery);
     }
-
-    markets = sortMarkets({
-      markets,
-      sortBy: sortField,
-      direction: sortDirection,
-    });
-    return markets;
+    // Not searching: apply filters
+    return filterByType(
+      allMarkets,
+      selectedFilter,
+      allowedHip3Sources,
+      watchlistSymbols,
+    );
   }, [
     allMarkets,
     selectedFilter,
     allowedHip3Sources,
     watchlistSymbols,
     searchQuery,
+  ]);
+
+  // Identity of the matching set, independent of the live values on it. Live
+  // price ticks rewrite `price`/`change24hPercent` on every market several times
+  // a second, so anything keyed on `matchingMarkets` itself re-runs constantly.
+  const matchingSymbolsKey = useMemo(
+    () =>
+      matchingMarkets
+        .map((market) => market.symbol)
+        .sort((left, right) => left.localeCompare(right))
+        .join('|'),
+    [matchingMarkets],
+  );
+
+  // Everything that should establish a fresh ranking: the user changing what
+  // the ranking means, or the set of matching markets changing. Notably absent
+  // are the live values themselves.
+  const rankingKey = [
+    matchingSymbolsKey,
+    selectedFilter,
+    searchQuery.trim(),
     sortField,
     sortDirection,
-  ]);
+  ].join('|');
+
+  // Deliberately stale between those events: the markets as they were when the
+  // ranking was last established, so the order below is not retriggered by
+  // later ticks. Adding `matchingMarkets` as a dependency restores the bug.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const rankingSnapshot = useMemo(() => matchingMarkets, [rankingKey]);
+
+  const orderedSymbols = useMemo(
+    () =>
+      sortMarkets({
+        markets: rankingSnapshot,
+        sortBy: sortField,
+        direction: sortDirection,
+      }).map((market) => market.symbol),
+    [rankingSnapshot, sortField, sortDirection],
+  );
+
+  // Project live values onto the frozen order, so values update in place.
+  const displayedMarkets = useMemo(() => {
+    const marketsBySymbol = new Map(
+      matchingMarkets.map((market) => [market.symbol, market]),
+    );
+    return orderedSymbols
+      .map((symbol) => marketsBySymbol.get(symbol))
+      .filter((market): market is PerpsMarketData => market !== undefined);
+  }, [orderedSymbols, matchingMarkets]);
 
   // --- Market search funnel (query -> result tapped | abandoned) ------------
   // Refs, not state: these only feed analytics and must never trigger a render.
