@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useState,
 } from 'react';
 import { useSelector } from 'react-redux';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
@@ -32,6 +33,7 @@ type MetamaskNotificationsContextType = {
   notificationsData?: INotification[];
   isLoading: boolean;
   error?: unknown;
+  isInitialFetchPending: boolean;
 };
 
 const MetamaskNotificationsContext = createContext<
@@ -110,7 +112,20 @@ export function useFetchInitialNotificationsEffect() {
   const isSignedIn = useSelector(selectIsSignedIn);
   const shouldFetchNotifications =
     Boolean(isNotificationsEnabled) && Boolean(isSignedIn);
+  const shouldRunInitialFetch =
+    isBasicFunctionalityEnabled && shouldFetchNotifications && isUnlocked;
   const enableAndRefresh = useEnableAndRefresh();
+  const [fetchState, setFetchState] = useState(() => ({
+    shouldRun: shouldRunInitialFetch,
+    isPending: shouldRunInitialFetch,
+  }));
+
+  if (fetchState.shouldRun !== shouldRunInitialFetch) {
+    setFetchState({
+      shouldRun: shouldRunInitialFetch,
+      isPending: shouldRunInitialFetch,
+    });
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -136,15 +151,19 @@ export function useFetchInitialNotificationsEffect() {
         if (cancelled) {
           return;
         }
-        if (
-          isBasicFunctionalityEnabled &&
-          shouldFetchNotifications &&
-          isUnlocked
-        ) {
+        if (shouldRunInitialFetch) {
           await enableAndRefresh(await shouldEnableNotificationsOnStartup());
         }
       } catch {
         // Do nothing
+      } finally {
+        if (!cancelled && shouldRunInitialFetch) {
+          setFetchState((current) =>
+            current.shouldRun === shouldRunInitialFetch
+              ? { ...current, isPending: false }
+              : current,
+          );
+        }
       }
     };
 
@@ -153,13 +172,9 @@ export function useFetchInitialNotificationsEffect() {
     return () => {
       cancelled = true;
     };
-  }, [
-    shouldFetchNotifications,
-    isBasicFunctionalityEnabled,
-    isUnlocked,
-    dispatch,
-    enableAndRefresh,
-  ]);
+  }, [dispatch, enableAndRefresh, shouldRunInitialFetch]);
+
+  return fetchState.isPending;
 }
 
 export function useEnableNotificationsByDefaultEffect() {
@@ -223,7 +238,7 @@ export const MetamaskNotificationsProvider = ({
   useBasicFunctionalityDisableEffect();
 
   // Update subscriptions and fetch notifications
-  useFetchInitialNotificationsEffect();
+  const isInitialFetchPending = useFetchInitialNotificationsEffect();
 
   // Enable notifications by default for users
   useEnableNotificationsByDefaultEffect();
@@ -238,8 +253,15 @@ export const MetamaskNotificationsProvider = ({
       notificationsData,
       isLoading,
       error,
+      isInitialFetchPending,
     }),
-    [listNotificationsCallback, notificationsData, isLoading, error],
+    [
+      listNotificationsCallback,
+      notificationsData,
+      isLoading,
+      error,
+      isInitialFetchPending,
+    ],
   );
 
   return (
