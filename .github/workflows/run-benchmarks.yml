@@ -75,19 +75,14 @@ jobs:
         timeout-minutes: 25
         id: run-benchmark
         run: >-
-          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
+          ${{ format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}-{3}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType, matrix.index) }}
         shell: bash
 
-      - name: Send benchmark results to Sentry (main/release only)
-        if: >-
-          ${{
-            vars.SENTRY_DSN_PERFORMANCE &&
-            env.MAIN_OR_RELEASE == 'true'
-          }}
+      - name: Send benchmark results to Sentry
         run: |
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
-            --results "test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json" \
+            --results "test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}-${{ matrix.index }}.json" \
             --browser "${{ matrix.browser }}" \
             --buildType "${{ matrix.buildType }}"
         shell: bash
@@ -95,26 +90,26 @@ jobs:
           GH_HEAD_REF: ${{ github.head_ref }}
           GH_REF_NAME: ${{ github.ref_name }}
 
-      - name: Upload benchmark to S3
-        if: >-
-          ${{
-            vars.AWS_REGION != '' &&
-            vars.AWS_IAM_ROLE != '' &&
-            vars.AWS_S3_BUCKET != ''
-          }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
-          path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+      # - name: Upload benchmark to S3
+      #   if: >-
+      #     ${{
+      #       vars.AWS_REGION != '' &&
+      #       vars.AWS_IAM_ROLE != '' &&
+      #       vars.AWS_S3_BUCKET != ''
+      #     }}
+      #   uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+      #   with:
+      #     aws-region: ${{ vars.AWS_REGION }}
+      #     role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+      #     s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+      #     path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
 
       - name: Upload benchmark result as GitHub artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
           name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
-          path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+          path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}-${{ matrix.index }}.json
           retention-days: 7
           if-no-files-found: ignore
 
