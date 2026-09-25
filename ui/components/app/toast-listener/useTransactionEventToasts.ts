@@ -61,10 +61,7 @@ const excludedTransactionTypes: TransactionType[] = [
 ];
 
 // Ported from custom toasts that included pre-broadcast (approved/signed) stage
-const earlyPendingToastTypes = new Set([
-  TransactionType.musdConversion,
-  TransactionType.musdClaim,
-]);
+const earlyPendingToastTypes = new Set([TransactionType.musdClaim]);
 
 // Separate batch txs that share one toast with the main send/swap/bridge tx.
 export const batchHelperTransactionTypes = [

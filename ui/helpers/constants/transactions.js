@@ -29,6 +29,7 @@ export const EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.gasPayment,
   TransactionType.relayDeposit,
   TransactionType.musdRelayDeposit,
+  TransactionType.musdConversion,
 ]);
 
 // Non-EVM transaction types excluded from toast notifications.
