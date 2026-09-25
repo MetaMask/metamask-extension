@@ -36,6 +36,8 @@ import {
 } from '#shared/lib/asset-utils';
 import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
+import { useTrace } from '#ui/hooks/useTrace';
+import { getSelectedAccountGroup } from '#ui/selectors/multichain-accounts/account-tree';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -58,9 +60,7 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
-  selectAccountGroupBalanceIsLoadedForEmptyState,
 } from '../../../../selectors/assets';
-import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -73,7 +73,6 @@ import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
-import { useTrace } from '../../../../hooks/useTrace';
 
 type TokenListProps = {
   onTokenClick: (
@@ -181,9 +180,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  const balanceIsLoaded = useSelector(
-    selectAccountGroupBalanceIsLoadedForEmptyState,
-  );
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
     useBoolean(lowValueAssetsExpandedSessionValue);
@@ -262,14 +258,23 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     useExternalServices,
   ]);
 
+  const tokenListReady =
+    sortedFilteredTokens.length > 0 ||
+    Object.keys(accountGroupIdAssets).some((chainId) =>
+      allEnabledNetworksForAllNamespaces.includes(chainId),
+    );
+
   useTrace({
-    name: TraceName.HomepageTokenListReady,
-    op: TraceOperation.HomepagePerformance,
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
     enabled: Boolean(selectedAccountGroup),
     generationKey: `${selectedAccountGroup ?? 'none'}:${allEnabledNetworksForAllNamespaces.join(',')}`,
-    ready: sortedFilteredTokens.length > 0 || balanceIsLoaded,
+    ready: tokenListReady,
     data: {
       success: true,
+      // Sentry span attribute names use snake_case.
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      section_id: 'tokens',
       // Sentry span attribute names use snake_case.
       // eslint-disable-next-line @typescript-eslint/naming-convention
       content_state: sortedFilteredTokens.length ? 'filled' : 'empty',

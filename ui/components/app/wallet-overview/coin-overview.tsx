@@ -13,6 +13,7 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Box, Skeleton } from '@metamask/design-system-react';
+import { useTrace } from '#ui/hooks/useTrace';
 import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -63,11 +64,12 @@ import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectBalanceBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroup,
 } from '../../../selectors/assets';
+import { getAllEnabledNetworksForAllNamespaces } from '#ui/selectors/multichain/networks';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
-import { useTrace } from '../../../hooks/useTrace';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -241,6 +243,10 @@ export const CoinOverview = ({
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
+  const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
   const isEvm = isEvmChainId(chainId);
@@ -284,22 +290,25 @@ export const CoinOverview = ({
     [enabledNetworks],
   );
 
-  const [hasZeroFiatBalanceDelayElapsed, setHasZeroFiatBalanceDelayElapsed] =
-    useState(false);
+  const [zeroFiatBalanceDelayKey, setZeroFiatBalanceDelayKey] =
+    useState<string>();
 
   useEffect(() => {
     if (!shouldDelayZeroFiatBalance) {
-      setHasZeroFiatBalanceDelayElapsed(false);
+      setZeroFiatBalanceDelayKey(undefined);
       return undefined;
     }
 
-    setHasZeroFiatBalanceDelayElapsed(false);
+    setZeroFiatBalanceDelayKey(undefined);
     const timeoutId = setTimeout(() => {
-      setHasZeroFiatBalanceDelayElapsed(true);
+      setZeroFiatBalanceDelayKey(enabledNetworksDelayKey);
     }, ZERO_FIAT_BALANCE_DELAY_MS);
 
     return () => clearTimeout(timeoutId);
   }, [enabledNetworksDelayKey, shouldDelayZeroFiatBalance]);
+
+  const hasZeroFiatBalanceDelayElapsed =
+    zeroFiatBalanceDelayKey === enabledNetworksDelayKey;
 
   const shouldShowBalanceLoadingState = useMemo(
     () =>
@@ -327,19 +336,35 @@ export const CoinOverview = ({
       !shouldShowBalanceLoadingState,
     [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
+  const balanceReady = !shouldShowBalanceLoadingState;
+  const tokenListReady = Object.keys(accountGroupIdAssets).some((chainId) =>
+    allEnabledNetworksForAllNamespaces.includes(chainId),
+  );
 
   useTrace({
-    name: TraceName.HomepageBalanceReady,
-    op: TraceOperation.HomepagePerformance,
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
     enabled: Boolean(selectedAccountGroup),
     generationKey: `${selectedAccountGroup ?? 'none'}:${enabledNetworksDelayKey}`,
-    ready: !shouldShowBalanceLoadingState,
+    ready: balanceReady,
     data: {
       success: true,
       // Sentry span attribute names use snake_case.
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      section_id: 'balance',
+      // Sentry span attribute names use snake_case.
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_state: shouldShowBalanceEmptyState ? 'empty' : 'filled',
     },
+  });
+
+  useTrace({
+    name: TraceName.HomepageReady,
+    op: TraceOperation.HomepagePerformance,
+    enabled: Boolean(selectedAccountGroup),
+    generationKey: `${selectedAccountGroup ?? 'none'}:${enabledNetworksDelayKey}`,
+    ready: balanceReady && tokenListReady,
+    data: { success: true },
   });
 
   const handleSensitiveToggle = useCallback(() => {

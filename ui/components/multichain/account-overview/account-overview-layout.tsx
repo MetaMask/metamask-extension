@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { NetworkConnectionBanner } from '../../app/network-connection-banner';
 import { MoneyAccountBalance } from '../../app/money/money-account-balance';
 import {
