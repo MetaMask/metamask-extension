@@ -57,32 +57,6 @@ function addRc(definitions: Map<string, unknown>, rcFilePath: string): void {
 }
 
 /**
- * Get the name for the current build.
- *
- * @param type
- * @param build
- * @param isDev
- * @param args
- */
-export function getBuildName(
-  type: string,
-  build: BuildType,
-  isDev: boolean,
-  args: Pick<Args, 'manifestVersion' | 'lavamoat' | 'snow'>,
-) {
-  const buildName =
-    build.buildNameOverride ||
-    `MetaMask ${type.slice(0, 1).toUpperCase()}${type.slice(1)}`;
-  if (isDev) {
-    const mv3Str = args.manifestVersion === 3 ? ' MV3' : '';
-    const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
-    const snowStr = args.snow ? ' snow' : '';
-    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}`;
-  }
-  return buildName;
-}
-
-/**
  * Computes the `variables` (extension runtime's `process.env.*`).
  *
  * @param args
@@ -114,7 +88,7 @@ export function getVariables(
 
   // use the gulp-build's function to set the environment variables
   setEnvironmentVariables({
-    buildName: getBuildName(type, activeBuild, isDevBuild, args),
+    buildName: activeBuild.name,
     buildType: type,
     environment: env,
     isDevBuild,
