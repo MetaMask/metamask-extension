@@ -61,7 +61,8 @@ export function preventNewApiMembers({
 }
 
 /**
- * Reads a file from the working tree.
+ * Reads a file from the working tree. The file is assumed to exist (forcing
+ * whatever rules reference this file to be removed when the file is deleted).
  *
  * @param filePath - The repository-relative path of the file.
  * @returns The contents of the file.
@@ -71,12 +72,9 @@ function readCurrentFile(filePath: string): string {
 }
 
 /**
- * Reads a file as it exists at the commit the change is based on.
+ * Attempts to read a file as it exists at the commit the change is based on.
  *
- * CI checks out the PR in a shallow clone, so the base commit must already
- * have been fetched (the workflow does this before running fitness functions).
- * Rather than treating a missing commit as a missing file — which would make
- * every member look new — this throws.
+ * The commit is required to exist, but not the file.
  *
  * @param filePath - The repository-relative path of the file.
  * @param baseRef - The commit the change is based on.
@@ -89,10 +87,12 @@ function readBaseFile(filePath: string, baseRef: string): string | undefined {
       `Base commit ${baseRef} is not present in this repository. Make sure it has been fetched.`,
     );
   }
+
   const objectName = `${baseRef}:${filePath}`;
   if (!doesGitObjectExist(objectName)) {
     return undefined;
   }
+
   return execFileSync('git', ['show', objectName], GIT_EXEC_FILE_OPTIONS);
 }
 

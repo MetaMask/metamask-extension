@@ -25,11 +25,6 @@ async function getDiffByAutomationType(
   automationType: AUTOMATION_TYPE,
   diffPath?: string,
 ): Promise<{ baseRef: string; diff: string }> {
-  if (!Object.values(AUTOMATION_TYPE).includes(automationType)) {
-    console.error('Invalid automation type.');
-    process.exit(1);
-  }
-
   if (automationType === AUTOMATION_TYPE.CI) {
     return await getCIDiff(diffPath);
   }

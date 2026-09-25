@@ -15,7 +15,9 @@ export function parseFitnessFunctionArguments(
   diffPath?: string;
   allowBackgroundApiChanges: boolean;
 } {
-  const options = yargs(argumentsForFitnessFunctions)
+  const { automationType, diffPath, allowBackgroundApiChanges } = yargs(
+    argumentsForFitnessFunctions,
+  )
     .command(
       '$0 <automationType> [diffPath]',
       'Run fitness functions',
@@ -44,19 +46,26 @@ export function parseFitnessFunctionArguments(
     })
     .parseSync();
 
+  validateAutomationType(automationType);
+
   return {
-    automationType: getAutomationType(options.automationType),
-    diffPath:
-      typeof options.diffPath === 'string' ? options.diffPath : undefined,
-    allowBackgroundApiChanges: options.allowBackgroundApiChanges,
+    automationType,
+    diffPath: typeof diffPath === 'string' ? diffPath : undefined,
+    allowBackgroundApiChanges,
   };
 }
 
-function getAutomationType(value: unknown): AUTOMATION_TYPE {
-  for (const automationType of Object.values(AUTOMATION_TYPE)) {
-    if (value === automationType) {
-      return automationType;
-    }
+/**
+ * Type guard for the `automationType` argument.
+ *
+ * @param value - The possible automation type.
+ */
+function validateAutomationType(
+  value: unknown,
+): asserts value is AUTOMATION_TYPE {
+  const automationTypes: unknown[] = Object.values(AUTOMATION_TYPE);
+
+  if (!automationTypes.includes(value)) {
+    throw new Error(`Invalid automation type: ${String(value)}`);
   }
-  throw new Error(`Invalid automation type: ${String(value)}`);
 }
