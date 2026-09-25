@@ -691,7 +691,7 @@ describe('ReversePositionModal', () => {
       await waitFor(() => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
           key: 'perpsToastReverseFailed',
-          description: 'A network error occurred. Try again.',
+          description: 'A network error occurred. Please try again.',
         });
       });
     });
