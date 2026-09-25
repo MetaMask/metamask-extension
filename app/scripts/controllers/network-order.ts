@@ -9,7 +9,9 @@ import {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { array, object as superstructObject } from '@metamask/superstruct';
 import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
+import { CaipChainIdStruct } from '@metamask/utils';
 import type { Patch } from 'immer';
 import type {
   ControllerGetStateAction,
@@ -37,6 +39,14 @@ export type EnabledNetworksByChainId = Record<
 export type NetworkOrderControllerState = {
   orderedNetworkList: NetworksInfo[];
 };
+
+const NetworksInfoStruct = superstructObject({
+  networkId: CaipChainIdStruct,
+})
+
+const NetworkOrderControllerStateStruct = superstructObject({
+  orderedNetworkList: array(NetworksInfoStruct),
+});
 
 // Describes the structure of a state change event
 export type NetworkOrderStateChange = {
@@ -106,6 +116,8 @@ export class NetworkOrderController extends BaseController<
   NetworkOrderControllerState,
   NetworkOrderControllerMessenger
 > {
+  static readonly struct = NetworkOrderControllerStateStruct;
+
   /**
    * Creates a NetworkOrderController instance.
    *
