@@ -1853,6 +1853,48 @@ describe('Actions', () => {
     });
   });
 
+  describe('#removeWallet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removeAccountWallet in background with the wallet id', async () => {
+      const store = mockStore();
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const removeAccountWallet = sinon.stub().resolves();
+
+      background.getApi = sinon.stub().returns({
+        removeAccountWallet,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.removeWallet(walletId));
+
+      expect(removeAccountWallet.callCount).toStrictEqual(1);
+      expect(removeAccountWallet.calledWith(walletId)).toStrictEqual(true);
+    });
+
+    it('handles gracefully when removeAccountWallet throws', async () => {
+      const store = mockStore();
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+      const removeAccountWallet = sinon
+        .stub()
+        .rejects(new Error('Failed to remove wallet'));
+
+      background.getApi = sinon.stub().returns({
+        removeAccountWallet,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.removeWallet(walletId));
+
+      expect(removeAccountWallet.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
   describe('#setAccountGroupName', () => {
     afterEach(() => {
       sinon.restore();

@@ -854,6 +854,12 @@
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
   },
+  "previewBuilds": {
+    "@metamask/account-tree-controller": {
+      "type": "breaking",
+      "previewVersion": "10.0.1-preview-2731bd7"
+    }
+  },
   "engines": {
     "node": ">=24.13.0",
     "yarn": "^4.14.1"

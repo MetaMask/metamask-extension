@@ -37,6 +37,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   removeAccount,
+  removeWallet,
   setAccountGroupHidden,
   setAccountGroupPinned,
   setSelectedMultichainAccount,
@@ -60,6 +61,7 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
+  getMetaMaskHdKeyrings,
 } from '../../../selectors';
 import { getInternalAccountsObject } from '../../../selectors/accounts';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -67,6 +69,7 @@ import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
 import { AccountDeleteConfirmModal } from '../account-delete-confirm-modal';
+import { WalletRemoveModal } from '../wallet-remove-modal';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import {
   STATUS_CONNECTED,
@@ -76,7 +79,10 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
-import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
+import {
+  isPrimaryWallet,
+  isPrivateKeyWallet,
+} from '../../../helpers/utils/account-wallet';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
@@ -176,6 +182,8 @@ type ListItem =
       sectionKey?: string;
       isCollapsible?: boolean;
       isExpanded?: boolean;
+      editHeaderAction?: 'remove' | 'locked';
+      walletId?: AccountWalletId;
     }
   | {
       type: 'account';
@@ -186,6 +194,91 @@ type ListItem =
       showWalletName: boolean;
     }
   | { type: 'add-account'; key: string; walletId: string };
+
+function renderWalletHeaderTrailingControl({
+  editHeaderAction,
+  isExpanded,
+  t,
+  onAction,
+}: {
+  editHeaderAction?: 'remove' | 'locked';
+  isExpanded: boolean;
+  t: ReturnType<typeof useI18nContext>;
+  onAction?: () => void;
+}) {
+  if (editHeaderAction === 'remove') {
+    return (
+      <Box
+        className="flex items-center gap-1 mr-1.5"
+        data-testid="multichain-account-tree-wallet-header-remove"
+        role="button"
+        tabIndex={0}
+        onClick={(event) => {
+          event.stopPropagation();
+          onAction?.();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            event.stopPropagation();
+            onAction?.();
+          }
+        }}
+      >
+        <Icon
+          name={IconName.RemoveMinus}
+          size={IconSize.Md}
+          color={IconColor.ErrorDefault}
+          data-testid="multichain-account-tree-wallet-header-remove-icon"
+        />
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.ErrorDefault}
+        >
+          {t('remove')}
+        </Text>
+      </Box>
+    );
+  }
+
+  if (editHeaderAction === 'locked') {
+    return (
+      <Box
+        className="flex items-center gap-1 mr-1.5"
+        data-testid="multichain-account-tree-wallet-header-locked"
+        role="button"
+        tabIndex={0}
+        onClick={(event) => {
+          event.stopPropagation();
+          onAction?.();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            event.stopPropagation();
+            onAction?.();
+          }
+        }}
+      >
+        <Icon
+          name={IconName.Lock}
+          size={IconSize.Md}
+          color={IconColor.IconAlternative}
+          data-testid="multichain-account-tree-wallet-header-locked-icon"
+        />
+      </Box>
+    );
+  }
+
+  return (
+    <Icon
+      name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+      size={IconSize.Md}
+      color={IconColor.IconAlternative}
+    />
+  );
+}
 
 export const MultichainAccountList = ({
   wallets,
@@ -213,6 +306,10 @@ export const MultichainAccountList = ({
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const [primaryHdKeyring] = useSelector(getMetaMaskHdKeyrings);
+  const primaryHdKeyringId = primaryHdKeyring?.metadata?.id as
+    | string
+    | undefined;
   const { privacyMode } = useSelector(getPreferences);
   const internalAccountsById = useSelector(getInternalAccountsObject);
 
@@ -232,6 +329,10 @@ export const MultichainAccountList = ({
     accountName: string;
     address?: string;
     walletType?: AccountWalletType;
+  } | null>(null);
+  const [walletRemoveModal, setWalletRemoveModal] = useState<{
+    type: 'locked' | 'remove';
+    walletId?: AccountWalletId;
   } | null>(null);
 
   // Optimistic visibility so a hide/reveal shows on the cell before Redux
@@ -321,6 +422,16 @@ export const MultichainAccountList = ({
     }
     setAccountToDelete(null);
   }, [accountToDelete, createEventBuilder, dispatch, trackEvent]);
+
+  const handleWalletRemoveConfirm = useCallback(async () => {
+    if (walletRemoveModal?.type !== 'remove' || !walletRemoveModal.walletId) {
+      return;
+    }
+
+    console.log('handleWalletRemoveConfirm', walletRemoveModal.walletId);
+    await dispatch(removeWallet(walletRemoveModal.walletId));
+    setWalletRemoveModal(null);
+  }, [dispatch, walletRemoveModal]);
 
   const handleVisibilityToggle = useCallback(
     async (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
@@ -700,6 +811,12 @@ export const MultichainAccountList = ({
         if (shouldShowWalletHeaders) {
           const walletSectionKey = `wallet-${walletId}`;
           const isWalletExpanded = !collapsedSectionKeys.has(walletSectionKey);
+          let editHeaderAction: 'remove' | 'locked' | undefined;
+          if (isEditMode) {
+            editHeaderAction = isPrimaryWallet(walletData, primaryHdKeyringId)
+              ? 'locked'
+              : 'remove';
+          }
           result.push({
             type: 'header',
             key: `wallet-${walletId}`,
@@ -708,6 +825,8 @@ export const MultichainAccountList = ({
             sectionKey: walletSectionKey,
             isCollapsible: true,
             isExpanded: isWalletExpanded,
+            editHeaderAction,
+            walletId: walletId as AccountWalletId,
           });
           if (isWalletExpanded) {
             result.push(...accounts);
@@ -728,6 +847,7 @@ export const MultichainAccountList = ({
     showDefaultAddress,
     isEditMode,
     visibilityOverrides,
+    primaryHdKeyringId,
     t,
   ]);
 
@@ -745,6 +865,15 @@ export const MultichainAccountList = ({
           if (item.type === 'header') {
             if (item.isCollapsible && item.sectionKey) {
               const isExpanded = item.isExpanded ?? true;
+              const handleEditHeaderAction = () => {
+                if (!item.editHeaderAction) {
+                  return;
+                }
+                setWalletRemoveModal({
+                  type: item.editHeaderAction,
+                  walletId: item.walletId,
+                });
+              };
               return (
                 <Box
                   asChild
@@ -767,11 +896,14 @@ export const MultichainAccountList = ({
                     >
                       {item.text}
                     </Text>
-                    <Icon
-                      name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
-                      size={IconSize.Md}
-                      color={IconColor.IconAlternative}
-                    />
+                    {renderWalletHeaderTrailingControl({
+                      editHeaderAction: item.editHeaderAction,
+                      isExpanded,
+                      t,
+                      onAction: item.editHeaderAction
+                        ? handleEditHeaderAction
+                        : undefined,
+                    })}
                   </button>
                 </Box>
               );
@@ -821,6 +953,13 @@ export const MultichainAccountList = ({
           accountName={accountToDelete.accountName}
           onClose={handleAccountDeleteConfirmModalClose}
           onConfirm={handleAccountDeleteConfirm}
+        />
+      )}
+      {walletRemoveModal && (
+        <WalletRemoveModal
+          type={walletRemoveModal.type}
+          onClose={() => setWalletRemoveModal(null)}
+          onConfirm={handleWalletRemoveConfirm}
         />
       )}
     </>
