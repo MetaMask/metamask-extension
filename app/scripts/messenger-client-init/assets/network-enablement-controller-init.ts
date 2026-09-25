@@ -95,10 +95,7 @@ const generateDefaultNetworkEnablementControllerState = (
       },
       nativeAssetIdentifiers: {},
     };
-  } else if (
-    process.env.METAMASK_DEBUG ||
-    process.env.METAMASK_ENVIRONMENT === 'testing'
-  ) {
+  } else if (process.env.METAMASK_ENVIRONMENT === 'testing') {
     return {
       enabledNetworkMap: {
         ...generateEVMNetworkMap(networkConfigurationsByChainId, [
