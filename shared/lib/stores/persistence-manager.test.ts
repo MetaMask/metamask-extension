@@ -731,7 +731,6 @@ describe('PersistenceManager', () => {
         AppMetadataController: {
           currentAppVersion: '13.34.0',
         },
-        MetaMetricsController: {},
         AnalyticsController: {
           analyticsId: '0xabc123',
           optedIn: true,
@@ -749,7 +748,6 @@ describe('PersistenceManager', () => {
         AppMetadataController: {
           currentAppVersion: '13.34.0',
         },
-        MetaMetricsController: {},
         AnalyticsController: {
           analyticsId: '0xabc123',
           optedIn: true,

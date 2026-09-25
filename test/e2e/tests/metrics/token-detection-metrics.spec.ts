@@ -57,7 +57,7 @@ describe('Token detection event', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -100,7 +100,7 @@ describe('Token detection event', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withBasicFunctionalityConsolidationDisabled()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

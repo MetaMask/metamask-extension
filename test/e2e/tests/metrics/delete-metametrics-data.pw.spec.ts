@@ -80,7 +80,7 @@ pwTest.describe('Delete MetaMetrics Data', () => {
       {
         driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -144,7 +144,7 @@ pwTest.describe('Delete MetaMetrics Data', () => {
       {
         driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: false,

@@ -70,7 +70,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             useLocalhostHostname: true,
             chainIds: [1],
           })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

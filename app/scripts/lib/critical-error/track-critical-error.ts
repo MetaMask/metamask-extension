@@ -1,5 +1,5 @@
 // Critical error events are tracked via the early Segment tracking utility,
-// which is available before MetaMetricsController is initialized.
+// which is available before AnalyticsController is initialized.
 import type { CriticalErrorType } from '../../../../shared/constants/critical-error';
 import {
   MetaMetricsEventCategory,
@@ -11,10 +11,10 @@ import { trackEarlySegmentEvent } from '../segment/custom-segment-tracking';
 /**
  * Tracks a critical error event directly to Segment.
  *
- * This bypasses MetaMetricsController (which may not be initialized during
+ * This bypasses AnalyticsController (which may not be initialized during
  * critical error handling) and sends events using the backup state for consent/ID.
  *
- * @param backup - The backup state from IndexedDB containing MetaMetricsController state.
+ * @param backup - The backup state from IndexedDB containing AnalyticsController state.
  * @param eventName - The MetaMetrics event name to track.
  * @param criticalErrorType - The type of critical error (timeout or other).
  * @param properties - Optional additional properties to include with the event.
