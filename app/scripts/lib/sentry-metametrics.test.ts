@@ -1,4 +1,4 @@
-import type { Client, Event as SentryEvent, EventHint } from '@sentry/types';
+import type { Client, Event as SentryEvent, EventHint } from '@sentry/core';
 
 import type { AnalyticsParticipation } from './sentry-get-state';
 import { metaMetricsIntegration } from './sentry-metametrics';

@@ -64,6 +64,7 @@ describe('createTracesSampler (integration with Sentry.init)', () => {
       tracesSampler: createTracesSampler({
         defaultSampleRate: 1,
       }),
+      traceLifecycle: 'static',
       beforeSendTransaction: (event) => {
         if (event.transaction) {
           sentTransactions.push(event.transaction);

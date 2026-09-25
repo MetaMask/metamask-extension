@@ -1,11 +1,11 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import type {
-  Breadcrumb,
+import {
+  type Breadcrumb,
   ErrorEvent as SentryErrorEvent,
   Event as SentryEvent,
   TransactionEvent,
-} from '@sentry/types';
+} from '@sentry/core';
 import { debug as sentrySdkLogger } from '@sentry/core';
 import { cloneDeep, escapeRegExp } from 'lodash';
 import browser from 'webextension-polyfill';
@@ -37,6 +37,23 @@ type BeforeBreadcrumbHandler = NonNullable<
   SentryClientOptions['beforeBreadcrumb']
 >;
 type RewriteErrorMessage = (errorMessage: string) => string;
+
+export const sentryDataCollection: SentryClientOptions['dataCollection'] = {
+  cookies: false,
+  databaseQueryData: false,
+  frameContextLines: 7,
+  genAI: { inputs: false, outputs: false },
+  graphQL: { document: false, variables: false },
+  httpBodies: [],
+  httpHeaders: {
+    request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+    response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+  },
+  queues: false,
+  stackFrameVariables: true,
+  urlQueryParams: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+  userInfo: false,
+};
 
 type SentrySpanLike = {
   op?: string;
@@ -192,6 +209,7 @@ function getClientOptions(): SentryClientOptions {
       dropLowValueMarkSpans(transaction);
       return transaction as TransactionEvent;
     },
+    dataCollection: sentryDataCollection,
     debug: Boolean(METAMASK_DEBUG),
     dist: isManifestV3 ? 'mv3' : 'mv2',
     dsn: sentryTarget,
@@ -241,6 +259,7 @@ function getClientOptions(): SentryClientOptions {
     tracesSampler: createTracesSampler({
       defaultSampleRate: tracesSampleRate,
     }),
+    traceLifecycle: 'static',
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors:
       sentryTarget === SENTRY_DSN_PERFORMANCE
