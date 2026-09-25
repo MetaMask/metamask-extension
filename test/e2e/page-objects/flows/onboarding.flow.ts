@@ -1,6 +1,6 @@
 import { Browser } from 'selenium-webdriver';
 import { getCleanAppState } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
+import { Driver, PAGES } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
 import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
@@ -50,9 +50,7 @@ export const handleSidepanelPostOnboarding = async (
     { timeout: 30000, interval: 500 },
   );
 
-  // Navigate directly to home page in current window
-  // With sidepanel enabled, this ensures we load home page in the test window
-  await driver.driver.get(`${driver.extensionUrl}/home.html`);
+  await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
   // Wait for the home page to fully load
   const headerNavbar = new HeaderNavbar(driver);

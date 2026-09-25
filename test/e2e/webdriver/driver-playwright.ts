@@ -93,6 +93,8 @@ function sanitizeTestTitle(title: string): string {
   return title.replace(/[^a-zA-Z0-9-_]/gu, '_');
 }
 
+const WINDOW_SWITCH_TIMEOUT = 30 * 1000;
+
 const DOWNLOADS_FOLDER = path.join(
   process.cwd(),
   'test-artifacts',
@@ -276,7 +278,9 @@ export class PlaywrightDriver {
       this.registerPage(newPage);
     });
     this.context.on('weberror', (webError) => {
-      this.errors.push(webError.error());
+      if (webError.page()?.url().startsWith(this.extensionUrl)) {
+        this.errors.push(webError.error());
+      }
     });
   }
 
@@ -320,6 +324,69 @@ export class PlaywrightDriver {
       }
     }
     return this.registerPage(page);
+  }
+
+  private async openPageInNewWindow(url: string): Promise<Page> {
+    const page = await this.context.newPage();
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    return page;
+  }
+
+  // Firefox `context.newPage()` opens a new window; use a tab in the
+  // extension window so `triggerUi` still opens the confirmation dialog.
+  private async openTabInCurrentWindow(url: string): Promise<Page> {
+    const extensionPage = [...this.pages.values()].find(
+      (page) => !page.isClosed() && page.url().startsWith(this.extensionUrl),
+    );
+    if (!extensionPage) {
+      return await this.openPageInNewWindow(url);
+    }
+
+    const [page] = await Promise.all([
+      this.context.waitForEvent('page', { timeout: this.timeout }),
+      extensionPage.evaluate(async (target) => {
+        const { browser } = globalThis as unknown as {
+          browser: { tabs: { create: (options: object) => Promise<unknown> } };
+        };
+        await browser.tabs.create({ url: target, active: true });
+      }, url),
+    ]);
+    await page.waitForLoadState('domcontentloaded');
+    return page;
+  }
+
+  private openWindowHandles(): string[] {
+    return [...this.pages.entries()]
+      .filter(([, page]) => !page.isClosed())
+      .map(([handle]) => handle);
+  }
+
+  private async switchToWindowMatching(
+    description: string,
+    matches: (page: Page) => Promise<boolean>,
+    delayStep: number,
+    timeout: number,
+  ): Promise<void> {
+    const deadline = Date.now() + timeout;
+    while (Date.now() <= deadline) {
+      await this.getAllWindowHandles();
+      for (const page of this.pages.values()) {
+        if (page.isClosed()) {
+          continue;
+        }
+        try {
+          if (await matches(page)) {
+            this.currentPage = page;
+            await page.bringToFront();
+            return;
+          }
+        } catch {
+          // Window may still be loading or may have closed.
+        }
+      }
+      await this.delay(delayStep);
+    }
+    throw new Error(`No window with ${description}`);
   }
 
   private get page(): Page {
@@ -783,6 +850,25 @@ export class PlaywrightDriver {
     throw lastError;
   }
 
+  async clickElementAndWaitForWindowToClose(
+    rawLocator: RawLocator,
+    retries = 3,
+  ): Promise<void> {
+    const closingPage = this.page;
+    await Promise.all([
+      closingPage.waitForEvent('close', { timeout: this.timeout }),
+      this.clickElement(rawLocator, retries),
+    ]);
+
+    const remainingPage = this.context
+      .pages()
+      .find((candidate) => candidate !== closingPage && !candidate.isClosed());
+    if (remainingPage) {
+      this.currentPage = remainingPage;
+      this.registerPage(remainingPage);
+    }
+  }
+
   async clickElementSafe(
     rawLocator: RawLocator,
     timeout = 2000,
@@ -886,6 +972,9 @@ export class PlaywrightDriver {
   // -- Navigation -----------------------------------------------------------
 
   async navigate(page: string = PAGES.HOME): Promise<void> {
+    if (page === PAGES.BACKGROUND && this.browser === 'chrome') {
+      return;
+    }
     const target =
       this.browser === 'firefox' && page === PAGES.SIDEPANEL
         ? PAGES.HOME
@@ -896,11 +985,12 @@ export class PlaywrightDriver {
   }
 
   async openNewPage(url: string): Promise<string> {
-    const page = await this.context.newPage();
+    const page =
+      this.browser === 'firefox'
+        ? await this.openTabInCurrentWindow(url)
+        : await this.openPageInNewWindow(url);
     this.currentPage = page;
-    const handle = this.handleFor(page);
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-    return handle;
+    return this.handleFor(page);
   }
 
   async openNewURL(url: string): Promise<void> {
@@ -977,34 +1067,52 @@ export class PlaywrightDriver {
   }
 
   async switchToWindowWithUrl(
-    _url: string,
+    url: string,
     _initialHandles?: string[],
-    _delayStep = 1000,
-    _timeout = this.timeout,
+    delayStep = 1000,
+    timeout = WINDOW_SWITCH_TIMEOUT,
   ): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.switchToWindowWithUrl is not yet implemented.',
+    const expected = new URL(url).toString();
+    await this.switchToWindowMatching(
+      `url: ${expected}`,
+      async (page) => page.url() === expected,
+      delayStep,
+      timeout,
     );
   }
 
   async switchToWindowWithTitle(
-    _title: string,
+    title: string,
     _initialHandles?: string[],
-    _delayStep = 1000,
-    _timeout = this.timeout,
+    delayStep = 1000,
+    timeout = WINDOW_SWITCH_TIMEOUT,
   ): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.switchToWindowWithTitle is not yet implemented.',
+    await this.switchToWindowMatching(
+      `title: ${title}`,
+      async (page) => (await page.title()) === title,
+      delayStep,
+      timeout,
     );
   }
 
   async waitUntilXWindowHandles(
-    _expected: number,
-    _delayStep = 1000,
-    _timeout = this.timeout,
+    expected: number,
+    delayStep = 1000,
+    timeout = this.timeout,
   ): Promise<string[]> {
+    const x = this.browser === 'chrome' ? expected + 1 : expected;
+    const deadline = Date.now() + timeout;
+    let windowHandles: string[] = [];
+    while (Date.now() <= deadline) {
+      await this.getAllWindowHandles();
+      windowHandles = this.openWindowHandles();
+      if (windowHandles.length === x) {
+        return windowHandles;
+      }
+      await this.delay(delayStep);
+    }
     throw new Error(
-      'PlaywrightDriver.waitUntilXWindowHandles is not yet implemented.',
+      `waitUntilXWindowHandles timed out polling window handles. Expected: ${x}, Actual: ${windowHandles.length}`,
     );
   }
 

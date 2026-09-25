@@ -16,6 +16,13 @@ type MockResponse = {
   response: unknown;
 };
 
+export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
+
+const MOCK_SRP_E2E_IDENTIFIERS = {
+  baseKey: MOCK_SRP_E2E_IDENTIFIER_BASE_KEY,
+  list: new Map<string, string>(),
+};
+
 /**
  * E2E mock setup for identity APIs (Auth, UserStorage, Backup and sync)
  *
@@ -26,6 +33,8 @@ export async function mockIdentityServices(
   server: Mockttp,
   userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
 ) {
+  MOCK_SRP_E2E_IDENTIFIERS.list.clear();
+
   // Auth
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
@@ -56,13 +65,6 @@ export async function mockIdentityServices(
     server,
   );
 }
-
-export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
-
-const MOCK_SRP_E2E_IDENTIFIERS = {
-  baseKey: MOCK_SRP_E2E_IDENTIFIER_BASE_KEY,
-  list: new Map<string, string>(),
-};
 
 const getE2ESrpIdentifierForPublicKey = (publicKey: string) => {
   const { baseKey, list } = MOCK_SRP_E2E_IDENTIFIERS;

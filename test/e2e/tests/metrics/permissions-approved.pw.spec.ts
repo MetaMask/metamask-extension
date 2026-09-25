@@ -1,27 +1,27 @@
 import { strict as assert } from 'assert';
+import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
-import { Suite } from 'mocha';
-import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
 import {
   DEFAULT_FIXTURE_ACCOUNT,
+  E2E_DRIVER,
   MOCK_ANALYTICS_ID,
   MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
 } from '../../constants';
-import TestDapp from '../../page-objects/pages/test-dapp';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
 
 /**
- * mocks the segment api multiple times for specific payloads that we expect to
- * see when these tests are run. In this case we are looking for
- * 'Permissions Requested' and 'Permissions Received'. Do not use the constants
- * from the metrics constants files, because if these change we want a strong
- * indicator to our data team that the shape of data will change.
+ * Mocks the segment API for the Permissions Requested and Permissions Approved
+ * events. Do not use constants from the metrics constants files, because if
+ * these change we want a strong indicator to our data team that the shape of
+ * data will change.
  *
  * @param mockServer - The mock server instance.
- * @returns Array of mocked responses
+ * @returns Array of mocked responses.
  */
 async function mockSegment(mockServer: Mockttp) {
   return [
@@ -48,10 +48,11 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('Permissions Approved Event', function (this: Suite) {
-  it('Successfully tracked when connecting to dapp', async function () {
+pwTest.describe('Permissions Approved Event', () => {
+  pwTest('is tracked when connecting to a dapp', async () => {
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
@@ -60,7 +61,7 @@ describe('Permissions Approved Event', function (this: Suite) {
             optedIn: true,
           })
           .build(),
-        title: this.test?.fullTitle(),
+        title: pwTest.info().titlePath.join(' '),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

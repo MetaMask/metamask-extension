@@ -9,6 +9,12 @@ import {
 } from '../../helpers/mock-server';
 import { login } from '../../page-objects/flows/login.flow';
 
+// The automated trace is Sentry's pageload transaction, which is only flushed
+// once its idle span closes. On a busy runner the home page keeps adding child
+// spans, so the transaction can be held open until `browserTracingIntegration`
+// hits its 30 second `finalTimeout`.
+const AUTOMATED_TRACE_TIMEOUT = 35 * 1000;
+
 async function mockSentryCustomTrace(mockServer: MockttpServer) {
   return [
     await mockServer
@@ -109,7 +115,9 @@ pwTest.describe('Traces', () => {
         },
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
-          await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
+          await expectMockRequest(driver, mockedEndpoint[0], {
+            timeout: AUTOMATED_TRACE_TIMEOUT,
+          });
         },
       );
     },
