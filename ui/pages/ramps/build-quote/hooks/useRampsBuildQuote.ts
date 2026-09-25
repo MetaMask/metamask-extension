@@ -21,6 +21,7 @@ import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
+import { validateBuyWidgetUrl } from '../../../../hooks/ramps/utils/validateBuyUrl';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
@@ -242,6 +243,16 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     setIsContinuing(true);
     const checkoutSessionId = uuidV4();
     try {
+      // TRAM-3947 hardening: reject a mangled buyURL (e.g. server-side string
+      // concatenation gluing the callback fragment onto cryptoCurrencyId)
+      // before fetching — fail fast with no doomed network round-trip, and
+      // keep the extension from fetching arbitrary URLs that carry the wallet
+      // address if the quotes API misbehaves.
+      if (!validateBuyWidgetUrl(selectedQuote.quote?.buyURL).isValid) {
+        setContinueError(t('rampsBuyWidgetError'));
+        return;
+      }
+
       const widget = await getBuyWidgetData(selectedQuote);
       if (!widget?.url) {
         setContinueError(t('rampsBuyWidgetError'));

@@ -2490,7 +2490,6 @@ export default class MetamaskController extends EventEmitter {
       tokenListController,
       gasFeeController,
       gatorPermissionsController,
-      metaMetricsController,
       networkController,
       announcementController,
       onboardingController,
@@ -2590,10 +2589,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       setParticipateInMetaMetrics,
       setDataCollectionForMarketing,
-      setMarketingCampaignCookieId:
-        metaMetricsController.setMarketingCampaignCookieId.bind(
-          metaMetricsController,
-        ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -4767,7 +4762,7 @@ export default class MetamaskController extends EventEmitter {
 
   getCookieFromMarketingPage(data) {
     const { ga_client_id: cookieId } = data;
-    this.metaMetricsController.setMarketingCampaignCookieId(cookieId);
+    this.analyticsController.setMarketingCampaignCookieId(cookieId);
   }
 
   /**
