@@ -1,0 +1,14 @@
+diff --git a/dist/PhishingController.js b/dist/PhishingController.js
+index 2ffeebdda41763f62aab7ff89ec3915e9bacc1a8..80828d3d163cbebd38313a66eab259ee6f4d91ed 100644
+--- a/dist/PhishingController.js
++++ b/dist/PhishingController.js
+@@ -1,7 +1,8 @@
+ import { BaseController } from '@metamask/base-controller';
+ import { isValidHexAddress, safelyExecute, safelyExecuteWithTimeout, } from '@metamask/controller-utils';
+ import { getSendRecipients, TransactionStatus, } from '@metamask/transaction-controller';
+-import { toASCII } from 'punycode/punycode.js';
++import punycode from 'punycode/punycode.js';
++const { toASCII } = punycode;
+ import { findSimilarAddresses } from './address-poisoning.js';
+ import { CacheManager } from './CacheManager.js';
+ import { convertListToTrie, insertToTrie, matchedPathPrefix, } from './PathTrie.js';
