@@ -28,7 +28,7 @@ const RULES: IRule[] = [
     name: "Don't expand MetamaskController.getApi",
     fn: preventGetApiExpansion,
     errorMessage:
-      'Do not add new properties to MetamaskController.getApi(). Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md.\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md.',
+      'Do not add new properties to MetamaskController.getApi(). Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md',
     automationType: AUTOMATION_TYPE.CI,
     skip: ({ allowBackgroundApiChanges }) => allowBackgroundApiChanges,
   },
@@ -36,7 +36,7 @@ const RULES: IRule[] = [
     name: "Don't expand LegacyBackgroundApiService",
     fn: preventLegacyBackgroundApiServiceExpansion,
     errorMessage:
-      'Do not add new methods to LegacyBackgroundApiService. Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md.\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md.',
+      'Do not add new methods to LegacyBackgroundApiService. Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md',
     automationType: AUTOMATION_TYPE.CI,
     skip: ({ allowBackgroundApiChanges }) => allowBackgroundApiChanges,
   },
