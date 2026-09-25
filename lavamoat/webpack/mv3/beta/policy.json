@@ -3747,7 +3747,22 @@
         "lodash": true
       }
     },
-    "@metamask/shield-controller>@metamask/utils": {
+    "@metamask/seedless-onboarding-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "nock>debug": true,
+        "lodash": true
+      }
+    },
+    "@metamask/wallet>@metamask/shield-controller>@metamask/utils": {
       "packages": {
         "nock>debug": true
       }
