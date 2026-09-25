@@ -5489,8 +5489,4 @@ export class LegacyBackgroundApiService {
       >[0]['approvedPermissions'],
     });
   }
-
-  foo() {
-    return 'bar';
-  }
 }
