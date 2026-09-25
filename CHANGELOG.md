@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Showed an inline message and settings link on the NFTs tab when basic functionality is turned off (#46557)
+- Added Arc USDC reserve for swaps and bridges to prevent full-balance transactions from reverting (#46517)
 - Added a Card filter on Money Account Activity and highlighted APY in the Money Home benefits list (#46404)
 - Added how it works link to money menu (#46421)
 - Added a Memecoins category on Perps markets so users can filter to memecoin perps (#46415)
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Combined the social login Basic Functionality update notice into a single paragraph (#46641)
 - Updated wallet activity notifications to use server-provided, localized titles and descriptions (#46388)
 - Kept users on their current section when switching accounts and reset scroll position after navigation (#46412)
 - Opened the Send screen directly from Money Home instead of showing a destination menu (#46377)
@@ -44,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed a bug where some social-login users did not see the Basic Functionality migration notice after importing their recovery phrase (#46585)
 - Disabled the Manage default settings button after opening the wallet to keep onboarding settings in sync (#46359)
 - Hid the Earn on your crypto section when no eligible deposit tokens are available (#46355)
 - Fixed Perps accounts with empty responses from showing a fabricated $0.00 balance (#46332)
