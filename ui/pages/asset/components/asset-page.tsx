@@ -593,12 +593,29 @@ const AssetPage = ({
               ambientColor={initialAmbientColor}
             />
 
-            <IntervalBar
-              selectedInterval={acInterval}
-              onIntervalSelect={setAcInterval}
-              chartType={acChartType}
-              onChartTypeSelect={setAcChartType}
-            />
+            {/* Show skeleton for IntervalBar while chart is loading */}
+            {acChartReady ? (
+              <IntervalBar
+                selectedInterval={acInterval}
+                onIntervalSelect={setAcInterval}
+                chartType={acChartType}
+                onChartTypeSelect={setAcChartType}
+              />
+            ) : (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={2}
+                paddingBottom={2}
+              >
+                <Skeleton className="h-[28px] w-[200px] rounded-lg" />
+                <Box style={{ flex: 1 }} />
+                <Skeleton className="h-[28px] w-[72px] rounded-lg" />
+              </Box>
+            )}
             <AdvancedChartIframe
               assetId={caipAssetId as string}
               height={300}
@@ -615,7 +632,7 @@ const AssetPage = ({
             />
             {/* Candlestick-only: the selection is kept in preferences, but the
                 bar and the studies themselves are hidden on a line chart. */}
-            {acChartType === CHART_TYPE_CANDLE && (
+            {acChartReady && acChartType === CHART_TYPE_CANDLE && (
               <IndicatorBar
                 activeIndicators={acIndicators}
                 onIndicatorToggle={toggleAcIndicator}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Chart,
   LineElement,
@@ -15,6 +15,7 @@ import { brandColor } from '@metamask/design-tokens';
 import { Hex } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxBackgroundColor,
@@ -22,6 +23,7 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useTheme } from '../../../../hooks/useTheme';
+import { getIsAdvancedChartsThemingEnabled } from '../../../../selectors/multichain/feature-flags';
 import {
   BackgroundColor,
   TextColor,
@@ -39,6 +41,7 @@ import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
 import AssetChartPrice from './asset-chart-price';
+import { getAmbientColor } from './chart-theme-config';
 
 Chart.register(
   LinearScale,
@@ -49,11 +52,26 @@ Chart.register(
   CrosshairPlugin,
 );
 
+/**
+ * Radius for the end-point dot (live indicator).
+ * Only the last data point is visible; others have radius 0.
+ */
+const ENDPOINT_DOT_RADIUS = 5;
+
 const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   normalized: true,
   parsing: false,
   aspectRatio: 2.6,
-  layout: { autoPadding: false, padding: 0 },
+  // Padding ensures the end-point dot has room to render fully at edges
+  layout: {
+    autoPadding: false,
+    padding: {
+      top: ENDPOINT_DOT_RADIUS + 2,
+      right: ENDPOINT_DOT_RADIUS + 4,
+      bottom: ENDPOINT_DOT_RADIUS + 2,
+      left: 0,
+    },
+  },
   animation: { duration: 0 },
   fill: true,
   backgroundColor: ({ chart }) => {
@@ -68,7 +86,13 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   },
   elements: {
     line: { borderWidth: 1.5 },
-    point: { pointStyle: false },
+    point: {
+      // Show a dot only on the last data point (live indicator)
+      radius: (ctx) =>
+        ctx.dataIndex === ctx.dataset.data.length - 1 ? ENDPOINT_DOT_RADIUS : 0,
+      backgroundColor: (ctx) => ctx.chart.options.borderColor as string,
+      borderWidth: 0,
+    },
   },
   plugins: {
     // Downsample to a maximum number of points
@@ -85,7 +109,7 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
  * Returns a translated time range label for a given ISO 8601 duration string.
  * The passed duration is normalized and rescaled to get the cleanest, most human-friendly representation.
  *
- * Any passed duration string that is greater than 100 years will be translated to "All".
+ * Any passed duration string that is 10 years or greater will be translated to "All".
  *
  * [Normalized](https://moment.github.io/luxon/api-docs/index.html#durationnormalize).
  * It's reduced to its canonical representation in its current units, for instance:
@@ -110,7 +134,7 @@ const getTranslatedTimeRangeLabel = (
       .rescale()
       .toObject();
 
-  if (years && years > 100) {
+  if (years && years >= 10) {
     return `${translator('all')}`;
   }
 
@@ -129,7 +153,7 @@ const getTranslatedTimeRangeLabel = (
   );
 };
 
-const TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
+const TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P10Y'];
 
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
@@ -145,6 +169,7 @@ const AssetChart = ({
 }) => {
   const t = useI18nContext();
   const theme = useTheme();
+  const isThemingEnabled = useSelector(getIsAdvancedChartsThemingEnabled);
 
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     TIME_RANGES[0],
@@ -173,6 +198,21 @@ const AssetChart = ({
   const shouldShowChartMuted =
     isFetching && prices.length > 0 && !isPlaceholderData;
 
+  // Determine price direction for ambient chart theming (when feature flag enabled)
+  const isDark = theme === 'dark';
+  const chartColor = useMemo(() => {
+    if (!isThemingEnabled) {
+      return undefined; // Feature flag disabled, use default blue
+    }
+    // Compare current price with the first price in the range to determine direction
+    const comparePrice = prices?.[0]?.y;
+    if (comparePrice === undefined || currentPrice === undefined) {
+      return undefined; // No data yet, will use fallback
+    }
+    const isPositive = currentPrice >= comparePrice;
+    return getAmbientColor(isPositive, isDark);
+  }, [isThemingEnabled, currentPrice, prices, isDark]);
+
   const animation =
     isPlaceholderData || wasPlaceholderData
       ? {
@@ -190,7 +230,9 @@ const AssetChart = ({
 
   const options = {
     ...initialChartOptions,
-    borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
+    // Use ambient color based on price direction; fallback to blue if no data yet
+    borderColor:
+      chartColor ?? (isDark ? brandColor.blue400 : brandColor.blue500),
     transitions: {
       active: { animation },
       default: { animation },
@@ -231,17 +273,19 @@ const AssetChart = ({
         loading={loading || isPlaceholderData}
         currency={currency}
         price={currentPrice}
-        date={Date.now()}
+        date={prices?.[prices.length - 1]?.x ?? 0}
         comparePrice={
           isPlaceholderData || shouldShowChartEmptyState
             ? undefined
             : prices?.[0]?.y
         }
+        ambientColor={chartColor}
       />
 
       <Box
         data-testid="asset-price-chart"
         className="flex rounded-lg"
+        style={{ overflow: 'visible' }}
         marginTop={4}
         backgroundColor={
           loading && !prices
@@ -260,7 +304,10 @@ const AssetChart = ({
               currency={currency}
             />
             <Box
-              style={{ aspectRatio: `${options.aspectRatio}` }}
+              style={{
+                aspectRatio: `${options.aspectRatio}`,
+                overflow: 'visible',
+              }}
               className="flex"
               flexDirection={BoxFlexDirection.Column}
               justifyContent={
@@ -269,7 +316,7 @@ const AssetChart = ({
             >
               <Line
                 ref={chartRef}
-                data={{ datasets: [{ data: prices }] }}
+                data={{ datasets: [{ data: prices, clip: false }] }}
                 options={options}
                 // Update the price display on chart hover
                 onMouseMove={(event) => {

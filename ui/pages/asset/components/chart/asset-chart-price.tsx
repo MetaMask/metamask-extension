@@ -27,6 +27,8 @@ const AssetChartPrice = forwardRef(
       price?: number;
       date: number;
       comparePrice?: number;
+      /** Ambient color override for percent change text (matches chart line color) */
+      ambientColor?: string;
     },
     ref,
   ) => {
@@ -39,7 +41,7 @@ const AssetChartPrice = forwardRef(
     // Expose setPrice to parent for chart hover functionality
     useImperativeHandle(ref, () => ({ setPrice }));
 
-    const { loading, currency, comparePrice } = props;
+    const { loading, currency, comparePrice, ambientColor } = props;
 
     // Compute percentage change from current price and compare price
     const percentChange = useMemo(
@@ -54,6 +56,7 @@ const AssetChartPrice = forwardRef(
         currency={currency}
         timestamp={date}
         loading={loading}
+        ambientColor={ambientColor}
       />
     );
   },
