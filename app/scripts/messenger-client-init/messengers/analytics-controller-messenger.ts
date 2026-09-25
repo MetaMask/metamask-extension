@@ -15,6 +15,7 @@ import type {
   AnalyticsControllerOptOutAction,
   AnalyticsControllerOptOutOfMarketingAction,
   AnalyticsControllerResetConsentDecisionAction,
+  AnalyticsControllerSetMarketingCampaignCookieIdAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
   AnalyticsControllerUpdateEventFragmentAction,
@@ -26,8 +27,6 @@ import type {
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import type { MetaMetricsControllerGetStateAction } from '../../controllers/metametrics-controller';
-import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../../controllers/metametrics-controller-method-action-types';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import type {
   SentryTracingServiceClearTracesAfterMetricsOptInAction,
@@ -41,8 +40,7 @@ type InitActions =
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
-  | MetaMetricsControllerGetStateAction
-  | MetaMetricsControllerSetMarketingCampaignCookieIdAction
+  | AnalyticsControllerSetMarketingCampaignCookieIdAction
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerTrackEventAction
   | AnalyticsControllerIdentifyAction
@@ -119,8 +117,6 @@ export function getAnalyticsControllerInitMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
-      'MetaMetricsController:getState',
-      'MetaMetricsController:setMarketingCampaignCookieId',
       'AnalyticsController:getState',
       'AnalyticsController:trackEvent',
       'AnalyticsController:identify',
@@ -130,6 +126,7 @@ export function getAnalyticsControllerInitMessenger(
       'AnalyticsController:optOut',
       'AnalyticsController:optOutOfMarketing',
       'AnalyticsController:resetConsentDecision',
+      'AnalyticsController:setMarketingCampaignCookieId',
       'AnalyticsController:createEventFragment',
       'AnalyticsController:upsertEventFragment',
       'AnalyticsController:updateEventFragment',

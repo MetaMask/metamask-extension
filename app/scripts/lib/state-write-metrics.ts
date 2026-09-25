@@ -16,18 +16,17 @@ export const STATE_WRITE_TRACE_NAME = TraceName.StatePersist;
 export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
   const data: Record<string, number | string | boolean> = {
     'state.write.coalesced_updates': event.coalescedUpdates,
-    'state.write.controller_count': event.controllerKeys.length,
-    'state.write.controllers': event.controllerKeys.join(','),
+    'state.write.controller_count': event.bytesByController.size,
+    'state.write.controllers': [...event.bytesByController.keys()].join(','),
     'state.write.idle_status': event.idleStatus,
     'state.write.measurement_duration_ms': event.measurementDurationMs,
     'state.write.sample_rate': event.sampleRate,
+    'state.write.size_measurement_source': event.sizeMeasurementSource,
     'state.write.total_bytes': event.totalBytes,
     'state.write.write_duration_ms': event.writeDurationMs,
   };
 
-  for (const [controllerKey, bytes] of Object.entries(
-    event.bytesByController,
-  )) {
+  for (const [controllerKey, bytes] of event.bytesByController) {
     data[`state.write.bytes.${controllerKey}`] = bytes;
   }
 

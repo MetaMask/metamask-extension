@@ -38,6 +38,7 @@ export function getAccountTreeControllerMessenger(
     actions: [
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccount',
+      'AccountsController:getAccounts',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:setSelectedAccount',
       'UserStorageController:getState',
@@ -49,7 +50,9 @@ export function getAccountTreeControllerMessenger(
       'MultichainAccountService:createMultichainAccountGroup',
       'MultichainAccountService:createMultichainAccountGroups',
       'MultichainAccountService:createMultichainAccountWallet',
+      'MultichainAccountService:removeMultichainAccountWallet',
       'KeyringController:verifyPassword',
+      'KeyringController:removeAccount',
       'KeyringController:withController',
       'KeyringController:withKeyringV2',
       'KeyringController:withKeyringV2Unsafe',

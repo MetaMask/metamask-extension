@@ -26,7 +26,7 @@ critical:
     - app/scripts/ui.js
     - app/scripts/contentscript.js
     - app/scripts/inpage.js
-    - app/scripts/migrations/index.js
+    - app/scripts/migrations/index.ts
     - app/scripts/messenger-client-init/network-controller-init.ts
     - app/scripts/lib/createMetamaskMiddleware.ts
     - app/scripts/lib/encryptor-factory.ts

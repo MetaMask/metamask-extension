@@ -104,16 +104,16 @@ export const extensionToJs = (filename: string) =>
 /**
  * It gets minimizers for the webpack build.
  *
- * TerserPlugin's default `parallel` mode uses jest-worker to spawn a minifier
- * process per CPU core. Worker assignment is not guaranteed to be stable across
- * runs, which can change SWC mangling frequency analysis and produce different
- * `runtime.[contenthash].js` filenames. That breaks Firefox AMO reviewer
- * rebuild comparisons (mtree) even when the bundles are otherwise equivalent.
- * Disabling parallel minify keeps that step deterministic and has also been a
- * small wall-clock win in local `yarn dist:mv2` timings.
+ * SWC mangling can still produce different `runtime.[contenthash].js` output
+ * across Linux rebuilds (short-name swaps such as `c`/`l`), even with
+ * TerserPlugin `parallel: false`. That breaks Firefox AMO reviewer `mtree`
+ * comparisons. Disabling mangling for the runtime chunk keeps it
+ * content-stable while leaving mangling ON for all other chunks.
  */
 export function getMinimizers() {
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
+  // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
+  const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [
     new TerserPlugin({
       // use SWC to minify (about 7x faster than Terser)
@@ -123,9 +123,25 @@ export function getMinimizers() {
       // an unknown field. Earlier versions ignored it for `swcMinify`, so no
       // comments were ever extracted here; `false` keeps that behavior.
       extractComments: false,
-      // Determinism (and a small local build-time win): one minifier process.
       parallel: false,
-      // do not minify snow.
+      terserOptions: {
+        mangle: true,
+      },
+      // do not minify snow or the runtime chunk (handled below).
+      exclude: [/snow\.prod/u, runtimeChunkRe],
+    }),
+    new TerserPlugin({
+      // use SWC to minify (about 7x faster than Terser)
+      minify: TerserPlugin.swcMinify,
+      // see the note on the minimizer above
+      extractComments: false,
+      parallel: false,
+      terserOptions: {
+        // Disable mangling for the runtime chunk so AMO Linux rebuilds stay
+        // content-stable.
+        mangle: false,
+      },
+      include: runtimeChunkRe,
       exclude: /snow\.prod/u,
     }),
   ];

@@ -30,6 +30,7 @@
     "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "consentDecisionMade": true,
     "eventQueue": "object",
+    "marketingCampaignCookieId": null,
     "marketingConsentDecisionMade": "boolean",
     "optedIn": true,
     "optedInToMarketing": "boolean"
@@ -58,6 +59,7 @@
     "isWalletResetInProgress": "boolean",
     "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
+    "lastShownPrfMigrationReminderAt": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
@@ -100,6 +102,7 @@
   },
   "AssetsController": "object",
   "AuthenticationController": {
+    "enrolledCredentials": "object",
     "isSignedIn": "boolean",
     "needsProfilePairing": "boolean",
     "needsSocialPairing": "boolean"
@@ -173,9 +176,7 @@
     "vault": "string"
   },
   "LoggingController": { "logs": "object" },
-  "MetaMetricsController": {
-    "marketingCampaignCookieId": null
-  },
+  "MetaMetricsController": "object",
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
@@ -289,6 +290,7 @@
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "gasSponsorshipOptOutByChainId": "object",
+      "hasLinkedSocialLoginProfile": "boolean",
       "hideZeroBalanceTokens": false,
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",

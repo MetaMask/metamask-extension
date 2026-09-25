@@ -148,6 +148,7 @@
       "stellar": "object",
       "tron": "object"
     },
+    "enrolledCredentials": "object",
     "error": null,
     "estimatedGasFeeTimeBounds": {},
     "etag": null,
@@ -228,6 +229,7 @@
     "lastFetchedBlockNumbers": "object",
     "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
+    "lastShownPrfMigrationReminderAt": null,
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
@@ -308,6 +310,7 @@
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "gasSponsorshipOptOutByChainId": "object",
+      "hasLinkedSocialLoginProfile": "boolean",
       "hideZeroBalanceTokens": false,
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "privacyMode": "boolean",
@@ -464,6 +467,7 @@
   "moneyBalance": "object",
   "perpsTutorial": "object",
   "rewards": "object",
+  "sendMaxValue": "object",
   "smartAccounts": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }
