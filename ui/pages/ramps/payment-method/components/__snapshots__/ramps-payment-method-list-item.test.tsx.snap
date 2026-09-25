@@ -2,10 +2,11 @@
 
 exports[`RampsPaymentMethodListItem matches snapshot when showQuote with no matched quote amounts 1`] = `
 <div>
-  <button
+  <div
     class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
+    tabindex="0"
   >
     <div
       class="flex flex-row gap-3 items-center justify-between w-full"
@@ -51,16 +52,17 @@ exports[`RampsPaymentMethodListItem matches snapshot when showQuote with no matc
         class="flex flex-row gap-2 items-center shrink-0"
       />
     </div>
-  </button>
+  </div>
 </div>
 `;
 
 exports[`RampsPaymentMethodListItem matches snapshot while quote is loading 1`] = `
 <div>
-  <button
+  <div
     class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
+    tabindex="0"
   >
     <div
       class="flex flex-row gap-3 items-center justify-between w-full"
@@ -132,16 +134,17 @@ exports[`RampsPaymentMethodListItem matches snapshot while quote is loading 1`] 
         </div>
       </div>
     </div>
-  </button>
+  </div>
 </div>
 `;
 
 exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] = `
 <div>
-  <button
+  <div
     class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
+    tabindex="0"
   >
     <div
       class="flex flex-row gap-3 items-center justify-between w-full"
@@ -199,16 +202,17 @@ exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] =
         </svg>
       </div>
     </div>
-  </button>
+  </div>
 </div>
 `;
 
 exports[`RampsPaymentMethodListItem matches snapshot with instant delay and no limits 1`] = `
 <div>
-  <button
+  <div
     class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-bank-transfer"
     role="button"
+    tabindex="0"
   >
     <div
       class="flex flex-row gap-3 items-center justify-between w-full"
@@ -251,16 +255,17 @@ exports[`RampsPaymentMethodListItem matches snapshot with instant delay and no l
         </div>
       </div>
     </div>
-  </button>
+  </div>
 </div>
 `;
 
 exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
 <div>
-  <button
+  <div
     class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
     data-testid="ramps-payment-method-item-debit-credit-card"
     role="button"
+    tabindex="0"
   >
     <div
       class="flex flex-row gap-3 items-center justify-between w-full"
@@ -333,17 +338,16 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
         </svg>
       </div>
     </div>
-  </button>
+  </div>
 </div>
 `;
 
 exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
 <div>
-  <button
+  <div
     aria-disabled="true"
     class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative cursor-not-allowed opacity-50 w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
     data-testid="ramps-payment-method-item-debit-credit-card"
-    disabled=""
     role="button"
     tabindex="-1"
   >
@@ -394,19 +398,25 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote error 1`] = `
           class="flex flex-col items-end justify-center"
           data-testid="ramps-quote-display-warning"
         >
-          <svg
-            class="inline-block w-4 h-4 text-warning-default"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <button
+            class="border-0 bg-transparent p-0"
+            data-testid="ramps-quote-display-warning-trigger"
+            type="button"
           >
-            <path
-              d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m-.75-7.5V7.5a.75.75 0 0 1 1.5 0v5.25a.75.75 0 0 1-1.5 0m1.875 3.375A1.125 1.125 0 1 1 12 15a1.125 1.125 0 0 1 1.125 1.125"
-            />
-          </svg>
+            <svg
+              class="inline-block w-4 h-4 text-warning-default"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m-.75-7.5V7.5a.75.75 0 0 1 1.5 0v5.25a.75.75 0 0 1-1.5 0m1.875 3.375A1.125 1.125 0 1 1 12 15a1.125 1.125 0 0 1 1.125 1.125"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
-  </button>
+  </div>
 </div>
 `;
