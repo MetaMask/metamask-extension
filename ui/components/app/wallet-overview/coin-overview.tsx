@@ -13,6 +13,7 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Box, Skeleton } from '@metamask/design-system-react';
+import { useTrace } from '#ui/hooks/useTrace';
 import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -28,7 +29,7 @@ import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/m
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { trace, TraceName } from '../../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   getShouldHideZeroBalanceTokens,
   getIsTestnet,
@@ -336,6 +337,24 @@ export const CoinOverview = ({
       !shouldShowBalanceLoadingState,
     [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
+  const balanceReady = !shouldShowBalanceLoadingState;
+
+  useTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    enabled: Boolean(selectedAccountGroup),
+    generationKey: `${selectedAccountGroup ?? 'none'}:${enabledNetworksDelayKey}`,
+    ready: balanceReady,
+    data: {
+      success: true,
+      // Sentry span attribute names use snake_case.
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      section_id: 'balance',
+      // Sentry span attribute names use snake_case.
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      content_state: shouldShowBalanceEmptyState ? 'empty' : 'filled',
+    },
+  });
 
   const handleSensitiveToggle = useCallback(() => {
     dispatch(setPrivacyMode(!privacyMode));

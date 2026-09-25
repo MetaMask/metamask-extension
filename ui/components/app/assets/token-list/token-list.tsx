@@ -36,6 +36,8 @@ import {
 } from '#shared/lib/asset-utils';
 import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
+import { useTrace } from '#ui/hooks/useTrace';
+import { getSelectedAccountGroup } from '#ui/selectors/multichain-accounts/account-tree';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -44,7 +46,11 @@ import {
   getUseExternalServices,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import {
+  endTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';
 import {
   getSelectedMultichainNetworkConfiguration,
@@ -54,6 +60,7 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectAccountGroupBalanceIsLoadedForEmptyState,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -166,6 +173,7 @@ const LowValueAssetsToggle = ({
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
@@ -173,6 +181,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+  const balanceIsLoaded = useSelector(
+    selectAccountGroupBalanceIsLoadedForEmptyState,
+  );
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
     useBoolean(lowValueAssetsExpandedSessionValue);
@@ -250,6 +261,25 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     deferredShouldHideZeroBalanceTokens,
     useExternalServices,
   ]);
+
+  const tokenListReady = sortedFilteredTokens.length > 0 || balanceIsLoaded;
+
+  useTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    enabled: Boolean(selectedAccountGroup),
+    generationKey: `${selectedAccountGroup ?? 'none'}:${allEnabledNetworksForAllNamespaces.join(',')}`,
+    ready: tokenListReady,
+    data: {
+      success: true,
+      // Sentry span attribute names use snake_case.
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      section_id: 'tokens',
+      // Sentry span attribute names use snake_case.
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      content_state: sortedFilteredTokens.length ? 'filled' : 'empty',
+    },
+  });
 
   // Low value collapse only applies to declining-balance sort.
   const shouldPartitionLowValueTokens =

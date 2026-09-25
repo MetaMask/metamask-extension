@@ -1,6 +1,12 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { NetworkConnectionBanner } from '../../app/network-connection-banner';
 import { MoneyAccountBalance } from '../../app/money/money-account-balance';
+import { useTrace } from '#ui/hooks/useTrace';
+import { getSelectedAccountGroup } from '#ui/selectors/multichain-accounts/account-tree';
+import { getAllEnabledNetworksForAllNamespaces } from '#ui/selectors/multichain/networks';
+import { selectAccountGroupBalanceIsLoadedForEmptyState } from '#ui/selectors/assets';
+import { TraceName, TraceOperation } from '#shared/lib/trace';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -17,6 +23,25 @@ export const AccountOverviewLayout = ({
   'data-testid': dataTestId,
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const balanceIsLoaded = useSelector(
+    selectAccountGroupBalanceIsLoadedForEmptyState,
+  );
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
+  const generationKey = `${selectedAccountGroup ?? 'none'}:${allEnabledNetworksForAllNamespaces.join(',')}`;
+
+  useTrace({
+    name: TraceName.HomepageReady,
+    op: TraceOperation.HomepagePerformance,
+    enabled: Boolean(selectedAccountGroup),
+    generationKey,
+    // TokenList is ready when tokens exist or balances are loaded.
+    ready: balanceIsLoaded,
+    data: { success: true },
+  });
+
   const heroRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
       node.setAttribute('elementtiming', 'hero');

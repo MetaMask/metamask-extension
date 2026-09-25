@@ -14,6 +14,9 @@ import { sentryLogger } from './sentry';
 export enum TraceName {
   AccountList = 'Account List',
   AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
+  HomepageReady = 'Homepage Ready',
+  // Homepage Section Performance
+  HomepageSectionTimeToContent = 'Homepage Section Time To Content',
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
   AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
@@ -156,6 +159,8 @@ export enum TraceOperation {
   AccountCreate = 'account.create',
   AccountUi = 'account.ui',
   AccountDiscover = 'account.discover',
+  HomepagePerformance = 'homepage.performance',
+  HomepageSectionPerformance = 'homepage.section.performance',
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
