@@ -1237,7 +1237,7 @@ describe('TokenManagementPage', () => {
       expect.objectContaining({
         props: expect.objectContaining({
           dataTestId: 'token-management-network-added-success-toast',
-          title: '“Base” was added!',
+          title: '“Base” was successfully added!',
         }),
       }),
     );
