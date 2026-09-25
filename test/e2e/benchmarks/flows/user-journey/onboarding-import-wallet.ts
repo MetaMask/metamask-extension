@@ -4,7 +4,7 @@
  */
 
 import { Browser } from 'selenium-webdriver';
-import { Mockttp } from 'mockttp';
+import { Mockttp, MockedEndpoint } from 'mockttp';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { E2E_SRP, WALLET_PASSWORD } from '../../../constants';
@@ -29,6 +29,12 @@ import {
   measureStepWithLongTasks,
   buildLongTaskTimerResults,
 } from '../../utils/long-task-helper';
+import {
+  sentryCountResult,
+  sentryTimerResult,
+  waitForSentryTransactions,
+} from '../../utils/sentry-transactions';
+import { TraceName } from '../../../../../shared/lib/trace';
 import { setPassThroughInterceptor } from '../../../mock-e2e-pass-through';
 import {
   getCommonMocks,
@@ -43,13 +49,18 @@ import {
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
 import { collectWebVitals } from '../../utils';
-import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import type {
+  BenchmarkRunResult,
+  LongTaskStepResult,
+  TimerResult,
+} from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRunResult> {
   const steps: LongTaskStepResult[] = [];
+  const traceTimers: TimerResult[] = [];
   let webVitals: WebVitalsMetrics | undefined;
   try {
     await withFixtures(
@@ -59,6 +70,10 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           testing: {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
+          // Sample every trace, so the spans this benchmark reads reach the
+          // mocked Sentry endpoint. CI builds otherwise send only a small
+          // fraction of traces.
+          sentry: { tracesSampleRate: 1 },
         },
         useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
@@ -77,7 +92,13 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           return Promise.all(getCommonMocks(server));
         },
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        mockedEndpoint,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
         const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;
 
         await driver.navigate();
@@ -200,6 +221,44 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           ),
         );
 
+        // The app's own spans over opening the account list, as the Sentry SDK
+        // sent them, timed on the browser's clock rather than on the harness's
+        // (extension#46006 ([P0] Benchmark step timers measure the test
+        // harness, not the browser)).
+        //
+        // Two spans cover this one interaction, and both are reported because
+        // the gap between them is the only thing that localizes where the cost
+        // sits. Both start on the element `openAccountMenu` clicks: `Account
+        // List` in the account picker's own `onClick`, and `Show Account List`
+        // in the handler that `onClick` then calls. Both end on a mount effect
+        // in `MultichainAccountList`. So each covers the click and the first
+        // wait that `openAccountMenu` consumes before the step above starts
+        // measuring, which the step timer cannot see.
+        //
+        // These are the only spans this flow converts. The six earlier steps
+        // have no span whose interval matches them; the commit message records
+        // the per-step finding. Report-only: no threshold is registered, and
+        // both carry a `unit` so `runner.ts` keeps them out of the per-run
+        // `total`.
+        const transactions = await waitForSentryTransactions(
+          driver,
+          mockedEndpoint,
+          [TraceName.AccountList, TraceName.ShowAccountList],
+        );
+        traceTimers.push(
+          sentryTimerResult(transactions, TraceName.AccountList, 'accountList'),
+          sentryTimerResult(
+            transactions,
+            TraceName.ShowAccountList,
+            'showAccountList',
+          ),
+          sentryCountResult(
+            transactions,
+            TraceName.ShowAccountList,
+            'showAccountListCount',
+          ),
+        );
+
         // BUG #42792 This test is failing with the ASSETS_UNIFIED_STATE_ENABLED='true'
         // commenting out temporarily to unblock the release
         /*
@@ -213,14 +272,22 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
     );
 
     return {
-      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      timers: [
+        ...collectTimerResults(),
+        ...buildLongTaskTimerResults(steps),
+        ...traceTimers,
+      ],
       webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      timers: [
+        ...collectTimerResults(),
+        ...buildLongTaskTimerResults(steps),
+        ...traceTimers,
+      ],
       webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
