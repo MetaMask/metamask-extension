@@ -109,6 +109,7 @@ const mockGetSubscriptionControllerState = jest.fn();
 const mockGetKeyringControllerState = jest.fn();
 const mockGetRewardSeasonMetadata = jest.fn();
 const mockGetHasAccountOptedIn = jest.fn();
+const mockGetActualSubscriptionId = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
 const mockClearLastSelectedPaymentMethod = jest.fn();
@@ -177,6 +178,10 @@ rootMessenger.registerActionHandler(
   mockGetHasAccountOptedIn,
 );
 rootMessenger.registerActionHandler(
+  'RewardsController:getActualSubscriptionId',
+  mockGetActualSubscriptionId,
+);
+rootMessenger.registerActionHandler(
   'SubscriptionController:linkRewards',
   mockLinkRewards,
 );
@@ -234,6 +239,7 @@ rootMessenger.delegate({
     'RewardsController:getHasAccountOptedIn',
     'RewardsController:getSeasonMetadata',
     'RewardsController:getSeasonStatus',
+    'RewardsController:getActualSubscriptionId',
   ],
 });
 
@@ -299,6 +305,7 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
       endDate: Date.now() + 1000,
     });
     mockGetHasAccountOptedIn.mockResolvedValueOnce(false);
+    mockGetActualSubscriptionId.mockReturnValue('rewards_subscription_id');
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
       id: 1,
@@ -360,6 +367,7 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
     mockGetAccountsState.mockRestore();
     mockGetHasAccountOptedIn.mockRestore();
     mockGetHasAccountOptedIn.mockResolvedValueOnce(true);
+    mockGetActualSubscriptionId.mockReturnValue('rewards_subscription_id');
 
     mockGetAccountsState.mockReturnValue({
       internalAccounts: {
@@ -397,6 +405,20 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
     expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
 
     expect(mockGetHasAccountOptedIn).toHaveBeenCalled();
+    expect(mockGetActualSubscriptionId).toHaveBeenCalledWith(
+      'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    );
+    expect(mockTrackEvent.mock.calls).toEqual(
+      expect.arrayContaining([
+        [
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              rewards_subscription_id: 'rewards_subscription_id',
+            }),
+          }),
+        ],
+      ]),
+    );
   });
 
   it('should not include the reward account id if the season is not active', async () => {
@@ -712,6 +734,12 @@ describe('ShieldSubscriptionService - linkRewardToExistingSubscription', () => {
       endDate: Date.now() + 1000,
     });
     mockGetHasAccountOptedIn.mockResolvedValueOnce(true);
+    mockGetActualSubscriptionId.mockReturnValue('rewards_subscription_id');
+    mockGetAppStateControllerState.mockReturnValue({
+      shieldSubscriptionMetricsProps: {
+        userBalanceInUSD: 1000,
+      },
+    });
   });
 
   it('should link the reward to the existing subscription', async () => {
@@ -724,6 +752,20 @@ describe('ShieldSubscriptionService - linkRewardToExistingSubscription', () => {
       subscriptionId: MOCK_SHIELD_SUBSCRIPTION_ID,
       rewardAccountId: MOCK_REWARD_ACCOUNT_ID,
     });
+    expect(mockGetActualSubscriptionId).toHaveBeenCalledWith(
+      MOCK_REWARD_ACCOUNT_ID,
+    );
+    expect(mockTrackEvent.mock.calls).toEqual(
+      expect.arrayContaining([
+        [
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              rewards_subscription_id: 'rewards_subscription_id',
+            }),
+          }),
+        ],
+      ]),
+    );
   });
 
   it('should not link the reward to the existing subscription if the season is not active', async () => {
