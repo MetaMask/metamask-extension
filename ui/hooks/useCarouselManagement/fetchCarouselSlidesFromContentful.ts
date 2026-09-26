@@ -87,6 +87,53 @@ export class UnknownLocaleError extends Error {
   }
 }
 
+/**
+ * Validates that a raw Contentful entry has the shape we rely on. The response
+ * comes from an external API and cannot be trusted: if fields such as
+ * `headline` come back as a non-string (e.g. an object), rendering the slide
+ * crashes the wallet. Malformed entries are skipped rather than rendered.
+ *
+ * @param entry - A raw item from the Contentful response.
+ * @returns True if the entry can be safely turned into a slide.
+ */
+function isValidContentfulBanner(entry: unknown): entry is ContentfulBanner {
+  if (typeof entry !== 'object' || entry === null) {
+    return false;
+  }
+  const { sys, fields } = entry as Partial<ContentfulBanner>;
+  if (
+    typeof sys?.id !== 'string' ||
+    typeof fields !== 'object' ||
+    fields === null
+  ) {
+    return false;
+  }
+  // These fields are rendered or used for navigation directly, so they must be
+  // strings to avoid runtime crashes. `image` is intentionally not validated
+  // here because `resolveImage` degrades gracefully on a missing/malformed
+  // reference.
+  return (
+    typeof fields.headline === 'string' &&
+    typeof fields.teaser === 'string' &&
+    typeof fields.linkUrl === 'string'
+  );
+}
+
+/**
+ * Safely extracts a Contentful entry id for diagnostics. The entry may itself
+ * be malformed, so this never throws.
+ *
+ * @param entry - A raw item from the Contentful response.
+ * @returns The entry's `sys.id` when it is a string, otherwise `'unknown'`.
+ */
+function getContentfulEntryId(entry: unknown): string {
+  if (typeof entry !== 'object' || entry === null) {
+    return 'unknown';
+  }
+  const { sys } = entry as Partial<ContentfulBanner>;
+  return typeof sys?.id === 'string' ? sys.id : 'unknown';
+}
+
 async function fetchEntries(
   baseUrl: URL,
   locale?: string,
@@ -158,8 +205,25 @@ export async function fetchCarouselSlidesFromContentful(
 
   const prioritySlides: CarouselSlide[] = [];
   const regularSlides: CarouselSlide[] = [];
+  const skippedEntryIds: string[] = [];
 
-  for (const entry of res.items) {
+  // A well-formed response always has an array here; anything else is an
+  // unexpected response shape worth reporting rather than silently ignoring.
+  let items: unknown[] = [];
+  if (Array.isArray(res.items)) {
+    items = res.items;
+  } else {
+    captureException(
+      new Error('Contentful response `items` field was not an array'),
+    );
+  }
+
+  for (const entry of items) {
+    if (!isValidContentfulBanner(entry)) {
+      skippedEntryIds.push(getContentfulEntryId(entry));
+      continue;
+    }
+
     const {
       headline,
       teaser,
@@ -198,6 +262,15 @@ export async function fetchCarouselSlidesFromContentful(
     } else {
       regularSlides.push(slide);
     }
+  }
+
+  // Report once per fetch (with the affected entry ids) rather than once per
+  // entry, so a broken content batch cannot flood Sentry. The message is kept
+  // static so Sentry groups these together; the count/ids live in `extra`.
+  if (skippedEntryIds.length > 0) {
+    captureException(new Error('Skipped malformed Contentful banner entries'), {
+      extra: { skippedEntryIds },
+    });
   }
 
   return { prioritySlides, regularSlides };
