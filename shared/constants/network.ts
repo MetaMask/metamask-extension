@@ -295,7 +295,7 @@ export const KONET_DISPLAY_NAME = 'KONET Mainnet';
 export const ARC_DISPLAY_NAME = 'Arc';
 export const GRAVITY_DISPLAY_NAME = 'Gravity';
 export const ROBINHOOD_CHAIN_DISPLAY_NAME = 'Robinhood Chain';
-export const CRYMADX_DISPLAY_NAME = 'CryMadX Chain';
+export const CRYMADX_DISPLAY_NAME = 'CRYMAD Chain';
 export const ZERO_G_DISPLAY_NAME = '0G';
 export const SOMNIA_DISPLAY_NAME = 'Somnia';
 
