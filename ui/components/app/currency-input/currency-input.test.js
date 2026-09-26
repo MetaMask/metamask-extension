@@ -18,17 +18,25 @@ describe('CurrencyInput Component', () => {
   const mockStore = {
     metamask: {
       ...mockState.metamask,
-      currentCurrency: 'usd',
-      currencyRates: {
-        ETH: {
-          conversionRate: 231.06,
+      selectedCurrency: 'usd',
+      assetsInfo: {
+        ...mockState.metamask.assetsInfo,
+        'eip155:1/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+      },
+      assetsPrice: {
+        'eip155:1/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 231.06,
+          usdPrice: 231.06,
+          lastUpdated: 0,
         },
       },
       preferences: {
         showFiatInTestnets: true,
-      },
-      marketData: {
-        '0x5': {},
       },
       useCurrencyRateCheck: true,
     },

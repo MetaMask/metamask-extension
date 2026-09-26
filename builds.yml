@@ -376,9 +376,6 @@ env:
   - MM_PERPS_HL_BUILDER_ADDRESS_TESTNET: null
   # Build-time gate: omit PerpsController and perps RPC when false (mitigation for critical failures)
   - PERPS_ENABLED: false
-  # Build-time gate: when false AssetsController is instantiated but state remains empty.
-  # When true, the controller populates state (subject to remote feature flag).
-  - ASSETS_UNIFIED_STATE_ENABLED: true
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings

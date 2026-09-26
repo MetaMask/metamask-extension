@@ -35,16 +35,6 @@ export const getIsPerpsIncludedInBuild = (): boolean => {
 };
 
 /**
- * Compile-time gate (`ASSETS_UNIFIED_STATE_ENABLED`): controls whether
- * AssetsController populates state. The controller is always instantiated,
- * but when this is false the state remains empty. Distinct from the remote
- * `assetsUnifyState` rollout flag which provides an additional runtime gate.
- */
-export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
-  return process.env.ASSETS_UNIFIED_STATE_ENABLED?.toString() === 'true';
-};
-
-/**
  * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`):
  * - Onboarding: assign new users to the consolidated experience (remote flags
  * are not reliable during onboarding).

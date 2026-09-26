@@ -7,9 +7,9 @@ import { CustomAmount, CustomAmountSkeleton } from './custom-amount';
 
 const mockStore = configureStore([thunk]);
 
-const getMockState = (currentCurrency = 'usd') => ({
+const getMockState = (selectedCurrency = 'usd') => ({
   metamask: {
-    currentCurrency,
+    selectedCurrency,
   },
 });
 

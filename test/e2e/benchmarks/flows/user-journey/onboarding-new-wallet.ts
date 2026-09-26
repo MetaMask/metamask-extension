@@ -164,7 +164,7 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
             },
           ),
         );
-        // BUG #42792 This test is failing with the ASSETS_UNIFIED_STATE_ENABLED='true'
+        // BUG #42792 Web vitals collection fails under unified assets state;
         // commenting out temporarily to unblock the release
         /*
         try {

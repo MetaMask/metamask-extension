@@ -32,11 +32,19 @@ describe('useCurrentPrice', () => {
     );
   });
 
+  const ethNativeAssetId = 'eip155:1/slip44:60';
+  const usdcAssetId =
+    'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+  const ethConversionRate = 1776.47;
+  // Legacy fixture priced USDC in "USDC" (rate 1). Unified marketData is always
+  // native-denominated; assetsPrice.price is the fiat price so currentPrice matches.
+  const usdcFiatPrice = 0.9998967852645477;
+
   const mockBaseState = {
     metamask: {
       isUnlocked: true,
       completedOnboarding: true,
-      currentCurrency: 'usd',
+      selectedCurrency: 'usd',
       selectedNetworkClientId: 'selectedNetworkClientId',
       networkConfigurationsByChainId: {
         '0x1': {
@@ -89,25 +97,32 @@ describe('useCurrentPrice', () => {
     const mockStateIsEvm = {
       metamask: {
         ...mockBaseState.metamask,
-        currencyRates: {
-          ETH: {
-            conversionDate: 1745579164.04,
-            conversionRate: 1776.47,
-            usdConversionRate: 1776.47,
+        assetsInfo: {
+          [ethNativeAssetId]: {
+            type: 'native',
+            decimals: 18,
+            symbol: 'ETH',
           },
-          USDC: {
-            conversionDate: 1745579164.04,
-            conversionRate: 1,
-            usdConversionRate: 1,
+          [usdcAssetId]: {
+            type: 'erc20',
+            decimals: 6,
+            symbol: 'USDC',
+            name: 'USD Coin',
           },
         },
-        marketData: {
-          '0x1': {
-            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
-              currency: 'USDC',
-              tokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-              price: 0.9998967852645477,
-            },
+        assetsPrice: {
+          [ethNativeAssetId]: {
+            assetPriceType: 'fungible',
+            price: ethConversionRate,
+            usdPrice: ethConversionRate,
+            lastUpdated: 1745579164.04 * 1000,
+          },
+          [usdcAssetId]: {
+            assetPriceType: 'fungible',
+            // Round-trip through native rate yields fiat currentPrice.
+            price: usdcFiatPrice,
+            usdPrice: usdcFiatPrice,
+            lastUpdated: 1745579164.04 * 1000,
           },
         },
         internalAccounts: {
@@ -214,7 +229,12 @@ describe('useCurrentPrice', () => {
       const mockStateMissingRate = {
         metamask: {
           ...mockStateIsEvm.metamask,
-          currencyRates: {},
+          assetsInfo: {
+            [usdcAssetId]: mockStateIsEvm.metamask.assetsInfo[usdcAssetId],
+          },
+          assetsPrice: {
+            [usdcAssetId]: mockStateIsEvm.metamask.assetsPrice[usdcAssetId],
+          },
         },
       };
 
@@ -228,50 +248,57 @@ describe('useCurrentPrice', () => {
   });
 
   describe('when the chain is non-EVM', () => {
+    const solNativeAssetId =
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+    const elonaiAssetId =
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:4UWRG4THDmdydQnr4hqECN32eNdTHKKs7KVEW1ATpump';
+
     const mockStateIsNonEvm = {
       metamask: {
         ...mockBaseState.metamask,
-        conversionRates: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-            rate: '154.09',
-            conversionTime: 1745579168909,
-            expirationTime: 1745582768909,
-            marketData: {
-              marketCap: '79688385165',
-              totalVolume: '4459155642',
-              circulatingSupply: '517436215.2641955',
-              allTimeHigh: '293.31',
-              allTimeLow: '0.500801',
-              pricePercentChange: {
-                PT1H: 0.20080884925986253,
-                P1D: 4.9706348383147745,
-                P7D: 14.314708210794603,
-                P14D: 30.56881144800791,
-                P30D: 6.844730805437679,
-                P200D: 4.796845517353229,
-                P1Y: 5.499416857017334,
-              },
-            },
-            currency: 'swift:0/iso4217:USD',
+        assetsInfo: {
+          [solNativeAssetId]: {
+            type: 'native',
+            decimals: 9,
+            symbol: 'SOL',
+            name: 'Solana',
           },
-          // ELONAI
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:4UWRG4THDmdydQnr4hqECN32eNdTHKKs7KVEW1ATpump':
-            {
-              rate: '0.0000029141089909628',
-              conversionTime: 1745579166794,
-              expirationTime: 1745582766794,
-              marketData: {
-                marketCap: '2910.568726283457',
-                totalVolume: '0.6286020475620975',
-                circulatingSupply: '0',
-                allTimeHigh: '',
-                allTimeLow: '',
-                pricePercentChange: {
-                  P1D: 4.033766775371256,
-                },
-              },
-              currency: 'swift:0/iso4217:USD',
-            },
+          [elonaiAssetId]: {
+            type: 'token',
+            decimals: 6,
+            symbol: 'ELONAI',
+            name: 'ElonAI',
+          },
+        },
+        assetsPrice: {
+          [solNativeAssetId]: {
+            assetPriceType: 'fungible',
+            price: 154.09,
+            usdPrice: 154.09,
+            lastUpdated: 1745579168909,
+            marketCap: 79688385165,
+            totalVolume: 4459155642,
+            circulatingSupply: 517436215.2641955,
+            allTimeHigh: 293.31,
+            allTimeLow: 0.500801,
+            pricePercentChange1h: 0.20080884925986253,
+            pricePercentChange1d: 4.9706348383147745,
+            pricePercentChange7d: 14.314708210794603,
+            pricePercentChange14d: 30.56881144800791,
+            pricePercentChange30d: 6.844730805437679,
+            pricePercentChange200d: 4.796845517353229,
+            pricePercentChange1y: 5.499416857017334,
+          },
+          [elonaiAssetId]: {
+            assetPriceType: 'fungible',
+            price: 0.0000029141089909628,
+            usdPrice: 0.0000029141089909628,
+            lastUpdated: 1745579166794,
+            marketCap: 2910.568726283457,
+            totalVolume: 0.6286020475620975,
+            circulatingSupply: 0,
+            pricePercentChange1d: 4.033766775371256,
+          },
         },
         internalAccounts: {
           ...mockBaseState.metamask.internalAccounts,

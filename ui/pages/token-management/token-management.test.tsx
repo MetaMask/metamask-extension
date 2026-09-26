@@ -1681,14 +1681,6 @@ describe('TokenManagementPage', () => {
 
   it('shows imported EVM tokens from TokensController before balances exist', () => {
     const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
-    const selectedAddress =
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts
-          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
-      ]?.address;
-    if (!selectedAddress) {
-      throw new Error('Expected selected account address');
-    }
 
     const baseState = createState({
       accountGroupAssets: {
@@ -1699,16 +1691,16 @@ describe('TokenManagementPage', () => {
       ...baseState,
       metamask: {
         ...baseState.metamask,
-        allTokens: {
-          '0x1': {
-            [selectedAddress]: [
-              {
-                address: usdcAddress,
-                symbol: 'USDC',
-                decimals: 6,
-                name: 'USD Coin',
-              },
-            ],
+        customAssets: {
+          [mainnetToken.accountId]: [`eip155:1/erc20:${usdcAddress}`],
+        },
+        assetsInfo: {
+          ...(baseState.metamask.assetsInfo ?? {}),
+          [`eip155:1/erc20:${usdcAddress}`]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USD Coin',
           },
         },
       },
@@ -1737,22 +1729,24 @@ describe('TokenManagementPage', () => {
       ],
     });
 
-    const selectedAddress =
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts
-          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
-      ]?.address;
-
     const stateWithImportedToken = createState();
-    stateWithImportedToken.metamask = {
-      ...stateWithImportedToken.metamask,
-      allTokens: {
-        '0x1': {
-          [selectedAddress as string]: [
-            { address: usdcAddress, symbol: 'USDC', decimals: 6 },
-          ],
-        },
-      },
+    (
+      stateWithImportedToken.metamask as unknown as {
+        customAssets: Record<string, string[]>;
+      }
+    ).customAssets = {
+      [mainnetToken.accountId]: [`eip155:1/erc20:${usdcAddress}`],
+    };
+    (
+      stateWithImportedToken.metamask.assetsInfo as Record<
+        string,
+        { type: string; decimals: number; symbol: string; name?: string }
+      >
+    )[`eip155:1/erc20:${usdcAddress}`] = {
+      type: 'erc20',
+      symbol: 'USDC',
+      decimals: 6,
+      name: 'USD Coin',
     };
 
     renderPage(stateWithImportedToken);
@@ -1780,36 +1774,27 @@ describe('TokenManagementPage', () => {
       ],
     });
 
-    const selectedAddress =
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts
-          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
-      ]?.address;
-    if (!selectedAddress) {
-      throw new Error('Expected selected account address');
-    }
-
-    const baseState = createState();
-    const stateWithIgnoredToken = {
-      ...baseState,
-      metamask: {
-        ...baseState.metamask,
-        allTokens: {
-          '0x1': {
-            [selectedAddress]: [
-              {
-                address: mainnetToken.address,
-                symbol: mainnetToken.symbol,
-                decimals: mainnetToken.decimals,
-              },
-            ],
-          },
-        },
-        allIgnoredTokens: {
-          '0x1': {
-            [selectedAddress]: [mainnetToken.address],
-          },
-        },
+    const stateWithIgnoredToken = createState();
+    const unifiedState = stateWithIgnoredToken.metamask as unknown as {
+      customAssets: Record<string, string[]>;
+      assetsInfo: Record<
+        string,
+        { type: string; decimals: number; symbol: string; name?: string }
+      >;
+      assetPreferences: Record<string, { hidden?: boolean }>;
+    };
+    unifiedState.customAssets = {
+      [mainnetToken.accountId]: [`eip155:1/erc20:${mainnetToken.address}`],
+    };
+    unifiedState.assetsInfo[`eip155:1/erc20:${mainnetToken.address}`] = {
+      type: 'erc20',
+      symbol: mainnetToken.symbol,
+      decimals: mainnetToken.decimals,
+      name: mainnetToken.name,
+    };
+    unifiedState.assetPreferences = {
+      [`eip155:1/erc20:${mainnetToken.address}`]: {
+        hidden: true,
       },
     };
 

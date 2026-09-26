@@ -1,87 +1,33 @@
 import { useSelector } from 'react-redux';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import {
-  tokenBalancesStartPolling,
-  tokenBalancesStopPollingByPollingToken,
-} from '../store/actions';
 import { getTokenBalances } from '../ducks/metamask/metamask';
-import { hexToDecimal } from '../../shared/lib/conversion.utils';
-import { getEnabledChainIds } from '../selectors/multichain/networks';
-import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
-import useMultiPolling from './useMultiPolling';
 
-export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
+export const useTokenBalances = () => {
   const tokenBalances = useSelector(getTokenBalances);
-  const enabledChainIds = useSelector(getEnabledChainIds);
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-
-  const pollableChains =
-    chainIds && chainIds.length > 0 ? chainIds : enabledChainIds;
-
-  useMultiPolling({
-    startPolling: tokenBalancesStartPolling,
-    stopPollingByPollingToken: tokenBalancesStopPollingByPollingToken,
-    input: isAssetsUnifyStateEnabled ? [] : [pollableChains],
-  });
 
   return { tokenBalances };
 };
 
 // This hook is designed for backwards compatibility with `ui/hooks/useTokenTracker.js`
-// and the github.com/MetaMask/eth-token-tracker library. It replaces RPC calls with
-// reading state from `TokenBalancesController`. It should not be used in new code.
-// Instead, prefer to use `useTokenBalances` directly, or compose higher level hooks from it.
+// and the github.com/MetaMask/eth-token-tracker library. Balances are sourced from
+// AssetsController, so callers of this hook receive zero placeholders. It should not
+// be used in new code; read balances from AssetsController selectors instead.
 export const useTokenTracker = ({
-  chainId,
   tokens,
-  address,
-  hideZeroBalanceTokens,
 }: {
   chainId: Hex;
   tokens: Token[];
   address: Hex;
   hideZeroBalanceTokens?: boolean;
 }) => {
-  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  if (isAssetsUnifyStateEnabled) {
-    return {
-      tokensWithBalances: tokens.map((token) => ({
-        ...token,
-        balance: '0',
-        balanceError: null,
-        string: stringifyBalance('0', token.decimals),
-      })),
-    };
-  }
-
-  const tokensWithBalances = tokens.reduce(
-    (acc, token) => {
-      const hexBalance =
-        tokenBalances[address]?.[chainId]?.[token.address as Hex] ?? '0x0';
-      if (hexBalance !== '0x0' || !hideZeroBalanceTokens) {
-        const decimalBalance = hexToDecimal(hexBalance);
-        acc.push({
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          balance: decimalBalance,
-          balanceError: null,
-          string: stringifyBalance(decimalBalance, token.decimals),
-        });
-      }
-      return acc;
-    },
-    [] as (Token & {
-      balance: string;
-      string: string;
-      balanceError: unknown;
-    })[],
-  );
-
   return {
-    tokensWithBalances,
+    tokensWithBalances: tokens.map((token) => ({
+      ...token,
+      balance: '0',
+      balanceError: null,
+      string: stringifyBalance('0', token.decimals),
+    })),
   };
 };
 
