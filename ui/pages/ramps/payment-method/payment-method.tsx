@@ -26,6 +26,7 @@ import {
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
 import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
+import { getRampsTokenDisplaySymbol } from '../utils/token-display';
 import { RampsProviderSelectionModal } from '../provider-selection';
 import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
@@ -100,7 +101,7 @@ export function RampsPaymentMethodScreen() {
   const assetId = selectedToken?.assetId
     ? normalizeAssetIdForApi(selectedToken.assetId)
     : '';
-  const tokenSymbol = selectedToken?.symbol ?? '';
+  const tokenSymbol = getRampsTokenDisplaySymbol(selectedToken);
 
   const paymentMethodIds = useMemo(
     () => paymentMethods.map((paymentMethod) => paymentMethod.id),

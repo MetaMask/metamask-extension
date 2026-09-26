@@ -1,14 +1,8 @@
-import React, {
-  useMemo,
-  useCallback,
-  useState,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
-import { CaipChainId } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
+import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
@@ -29,11 +23,7 @@ import {
   TextFieldType,
 } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
-import {
-  getInternalAccountListSpreadByScopesByGroupId,
-  getInternalAccountsFromGroupById,
-} from '../../../selectors/multichain-accounts/account-tree';
+import { getInternalAccountsFromGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { verifyPassword, exportAccounts } from '../../../store/actions';
 import {
   useIsPasskeyActive,
@@ -60,19 +50,17 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../../shared/lib/trace';
-import { MINUTE } from '../../../../shared/constants/time';
 import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { PasskeyVerification } from '../../app/passkey-verification';
 import { useDispatch } from '../../../store/hooks';
 import { usePasskeyPrivateKeyExport } from '../../../hooks/passkey/usePasskeyPrivateKeyExport';
+import { MultichainPrivateKeyRow } from './multichain-private-key-row';
 
 const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
 const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
 
 /**
  * Check if the account has the private key available according to its keyring type.
- * TODO: Add support for KeyringTypes.snap
- *
  * @param account - The internal account to check.
  * @returns True if the private key is available, false otherwise.
  */
@@ -104,6 +92,9 @@ const MultichainPrivateKeyList = ({
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
   const [reveal, setReveal] = useState<boolean>(false);
   const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
+  const [copiedPrivateKeyRow, setCopiedPrivateKeyRow] = useState<string | null>(
+    null,
+  );
 
   const isPasskeyActive = useIsPasskeyActive();
   const isPasskeyIncompatibleInSidepanel =
@@ -117,6 +108,7 @@ const MultichainPrivateKeyList = ({
 
   const cleanStateVariables = useCallback(() => {
     setPrivateKeys({});
+    setCopiedPrivateKeyRow(null);
     setPassword('');
     setWrongPassword(false);
     setReveal(false);
@@ -132,11 +124,9 @@ const MultichainPrivateKeyList = ({
   );
 
   // useCopyToClipboard analysis: Copies one of your private keys
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: MINUTE });
-
-  const accountsSpreadByNetworkByGroupId = useSelector((state) =>
-    getInternalAccountListSpreadByScopesByGroupId(state, groupId),
-  );
+  const [, handleCopy, , sensitiveClipboard] = useCopyToClipboard({
+    sensitive: true,
+  });
 
   const accounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, groupId),
@@ -149,12 +139,18 @@ const MultichainPrivateKeyList = ({
     [setPassword],
   );
 
-  const exportableAddresses = useMemo(
+  const exportableAccounts = useMemo(
     () =>
-      accounts
-        .filter((account: InternalAccount) => hasPrivateKeyAvailable(account))
-        .map((account) => account.address),
+      accounts.filter(
+        (account: InternalAccount) =>
+          hasPrivateKeyAvailable(account) && isEvmAccountType(account.type),
+      ),
     [accounts],
+  );
+
+  const exportableAddresses = useMemo(
+    () => exportableAccounts.map((account) => account.address),
+    [exportableAccounts],
   );
 
   const buildPrivateKeyMap = useCallback(
@@ -170,6 +166,8 @@ const MultichainPrivateKeyList = ({
   );
 
   const onSubmit = useCallback(async () => {
+    let passwordVerified = false;
+
     trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportRequested)
         .addCategory(MetaMetricsEventCategory.Keys)
@@ -186,17 +184,17 @@ const MultichainPrivateKeyList = ({
 
     try {
       await verifyPassword(password);
+      passwordVerified = true;
       setWrongPassword(false);
       trace({
         name: TraceName.ShowAccountPrivateKeyList,
         op: TraceOperation.AccountUi,
       });
 
-      const pks = (await dispatch(
+      const privateKeysList = (await dispatch(
         exportAccounts(password, exportableAddresses),
       )) as unknown as string[];
-
-      setPrivateKeys(buildPrivateKeyMap(pks));
+      setPrivateKeys(buildPrivateKeyMap(privateKeysList));
       setReveal(true);
 
       trackEvent(
@@ -213,7 +211,7 @@ const MultichainPrivateKeyList = ({
           .build(),
       );
     } catch (error) {
-      setWrongPassword(true);
+      setWrongPassword(!passwordVerified);
       setReveal(false);
       trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportFailed)
@@ -266,7 +264,8 @@ const MultichainPrivateKeyList = ({
           exportableAddresses,
         );
 
-        setPrivateKeys(buildPrivateKeyMap(pks));
+        const exportedPrivateKeys = buildPrivateKeyMap(pks);
+        setPrivateKeys(exportedPrivateKeys);
         setReveal(true);
 
         trackEvent(
@@ -412,65 +411,85 @@ const MultichainPrivateKeyList = ({
     [handlePasswordChange, onCancel, onSubmit, password, t, wrongPassword],
   );
 
-  const renderAddressItem = useCallback(
-    (
-      item: {
-        scope: CaipChainId;
-        account: InternalAccount;
-        networkName: string;
-      },
-      index: number,
-    ): JSX.Element => {
-      const privateKey = privateKeys[item.account.address];
-      if (!privateKey) {
-        return <></>;
-      }
+  const privateKeySections = useMemo(
+    () =>
+      exportableAccounts.flatMap((account) => {
+        const privateKey = privateKeys[account.address];
+        if (!privateKey) {
+          return [];
+        }
 
-      const handleCopyClick = () => {
-        handleCopy(privateKey);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.KeyExportCopied)
-            .addCategory(MetaMetricsEventCategory.Keys)
-            .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Pkey,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              copy_method: 'clipboard',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            })
-            .build(),
-        );
-      };
-
-      return (
-        <MultichainAddressRow
-          key={`${item.account.address}-${item.scope}-${index}`}
-          chainId={item.scope}
-          networkName={item.networkName}
-          address={item.account.address}
-          copyActionParams={{
-            message: t('multichainAccountPrivateKeyCopied'),
-            callback: handleCopyClick,
-          }}
-        />
-      );
-    },
-    [
-      createEventBuilder,
-      handleCopy,
-      hdEntropyIndex,
-      privateKeys,
-      t,
-      trackEvent,
-    ],
+        return [
+          {
+            account,
+            chainId: EthScope.Mainnet,
+            networkName: t('ethereumAndEvms'),
+            privateKey,
+          },
+        ];
+      }),
+    [exportableAccounts, privateKeys, t],
   );
 
-  const renderedRows = useMemo(() => {
-    return accountsSpreadByNetworkByGroupId.map((item, index) =>
-      renderAddressItem(item, index),
-    );
-  }, [accountsSpreadByNetworkByGroupId, renderAddressItem]);
+  const handlePrivateKeyCopy = useCallback(
+    async (privateKey: string, rowId: string) => {
+      const copied = await handleCopy(privateKey);
+      if (!copied) {
+        return false;
+      }
+
+      setCopiedPrivateKeyRow(rowId);
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportCopied)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Pkey,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            copy_method: 'clipboard',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
+
+      return true;
+    },
+    [createEventBuilder, handleCopy, hdEntropyIndex, trackEvent],
+  );
+
+  const renderedRows = useMemo(
+    () =>
+      privateKeySections.map(
+        ({ account, chainId, networkName, privateKey }) => {
+          const rowId = `${account.address}-${chainId}`;
+
+          return (
+            <MultichainPrivateKeyRow
+              key={account.id}
+              address={account.address}
+              chainId={chainId}
+              networkName={networkName}
+              onCopy={() => handlePrivateKeyCopy(privateKey, rowId)}
+              onClearClipboard={sensitiveClipboard.clear}
+              privateKey={privateKey}
+              sensitiveClipboardState={
+                copiedPrivateKeyRow === rowId
+                  ? sensitiveClipboard.state
+                  : 'idle'
+              }
+            />
+          );
+        },
+      ),
+    [
+      copiedPrivateKeyRow,
+      handlePrivateKeyCopy,
+      privateKeySections,
+      sensitiveClipboard.clear,
+      sensitiveClipboard.state,
+    ],
+  );
 
   useEffect(() => {
     if (reveal) {
@@ -498,7 +517,7 @@ const MultichainPrivateKeyList = ({
 
   return (
     <Box
-      className="flex"
+      className={reveal ? 'flex pt-4' : 'flex'}
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >

@@ -162,7 +162,8 @@ describe('UserTraitsService', function () {
       consentDecisionMade: true,
       optedIn: true,
       analyticsId: '',
-      dataCollectionForMarketing: false,
+      marketingConsentDecisionMade: true,
+      optedInToMarketing: false,
       preferences: {
         privacyMode: false,
         tokenNetworkFilter: {},
@@ -353,7 +354,8 @@ describe('UserTraitsService', function () {
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           currentCurrency: 'usd',
-          dataCollectionForMarketing: false,
+          marketingConsentDecisionMade: true,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -460,7 +462,8 @@ describe('UserTraitsService', function () {
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
             currentCurrency: 'usd',
-            dataCollectionForMarketing: false,
+            marketingConsentDecisionMade: true,
+            optedInToMarketing: false,
             preferences: {
               privacyMode: false,
               tokenNetworkFilter: {},
@@ -510,7 +513,7 @@ describe('UserTraitsService', function () {
             consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
-            dataCollectionForMarketing: false,
+            optedInToMarketing: false,
             preferences: {
               privacyMode: false,
               tokenNetworkFilter: {},
@@ -566,7 +569,7 @@ describe('UserTraitsService', function () {
             consentDecisionMade: true,
             optedIn: true,
             analyticsId: TEST_ANALYTICS_ID,
-            dataCollectionForMarketing: false,
+            optedInToMarketing: false,
             preferences: {
               privacyMode: false,
               tokenNetworkFilter: {},
@@ -635,7 +638,7 @@ describe('UserTraitsService', function () {
           consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -716,7 +719,7 @@ describe('UserTraitsService', function () {
           consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -801,7 +804,7 @@ describe('UserTraitsService', function () {
           consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -869,7 +872,7 @@ describe('UserTraitsService', function () {
           consentDecisionMade: true,
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},
@@ -1313,7 +1316,7 @@ describe('UserTraitsService', function () {
           optedIn: true,
           analyticsId: TEST_ANALYTICS_ID,
           currentCurrency: 'usd',
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
           preferences: {
             privacyMode: true,
             tokenNetworkFilter: {},

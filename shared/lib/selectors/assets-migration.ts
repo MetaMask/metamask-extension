@@ -29,6 +29,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { NetworkState } from '@metamask/network-controller';
 import { decimalToPrefixedHex } from '../conversion.utils';
 import { AssetType } from '../../constants/transaction';
+import { augmentTempoCurrencyRates } from '../assets/enablement/tempo';
 import { createDeepEqualSelector } from './selector-creators';
 
 // Old state controllers and fields status
@@ -119,7 +120,10 @@ export const getAccountTrackerControllerAccountsByChainId =
             assetId as CaipAssetType,
           );
 
-          // No need to check if the chain is EVM, we already filtered out non-EVM accounts
+          if (parsedChain.namespace !== KnownCaipNamespace.Eip155) {
+            continue;
+          }
+
           const hexChainId = decimalToPrefixedHex(parsedChain.reference);
           const amount = balanceData?.amount ?? '0';
 
@@ -184,7 +188,10 @@ export const getTokensControllerAllTokens = createDeepEqualSelector(
 
         const assetType = parseCaipAssetType(assetId);
 
-        // No need to check if the chain is EVM, we already filtered out non-EVM accounts
+        if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+          continue;
+        }
+
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
         const assetAddress = toChecksumHexAddress(assetType.assetReference);
 
@@ -280,6 +287,10 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
         }
 
         const assetType = parseCaipAssetType(assetId as CaipAssetType);
+
+        if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
+          continue;
+        }
 
         const hexChainId = decimalToPrefixedHex(assetType.chain.reference);
         const assetAddress = toChecksumHexAddress(
@@ -579,7 +590,7 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       };
     }
 
-    return result;
+    return augmentTempoCurrencyRates(result, assetsPrice);
   },
 ) as unknown as ControllerStateSelector<CurrencyRateState, 'currencyRates'>;
 

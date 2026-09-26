@@ -19,7 +19,7 @@
     "app/scripts/lib/forwardRequestToSnap.test.ts": {
       "error: Error from onAfterRequest hook: Error:": 2
     },
-    "app/scripts/lib/migrator/index.test.js": {
+    "app/scripts/lib/migrator/index.test.ts": {
       "MetaMask: Migration skipped warnings": 2,
       "MetaMask: Migration state warnings": 1,
       "error: Error: Migration #157: No INFURA_PROJECT_ID": 1,
@@ -156,11 +156,6 @@
     "shared/lib/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
     },
-    "shared/lib/metametrics.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
-    },
     "shared/lib/selectors/index.test.ts": {
       "Reselect: Identity function warnings": 2
     },
@@ -177,19 +172,13 @@
       "error: StorageService: Failed to remove item:": 1,
       "error: StorageService: Failed to set item:": 1
     },
-    "ui/components/app/alert-system/contexts/alertActionHandler.test.ts": {
-      "Test errors: Uncaught Errors": 1
-    },
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
       "MetaMask: Background connection not initialized": 9,
       "React: PropTypes validation failures": 1
     },
-    "ui/components/app/assets/asset-list/asset-list.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/components/app/assets/nfts/nft-details/nft-details.test.js": {
       "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 6,
+      "React: Act warnings (component updates not wrapped)": 5,
       "React: DOM nesting violations": 2
     },
     "ui/components/app/assets/nfts/nft-grid/nft-grid-item-error-boundary.test.tsx": {
@@ -201,7 +190,7 @@
       "error: The above error occurred in": 3
     },
     "ui/components/app/assets/nfts/nfts-tab/nfts-tab.test.js": {
-      "React: Act warnings (component updates not wrapped)": 41,
+      "React: Act warnings (component updates not wrapped)": 49,
       "React: DOM nesting violations": 1
     },
     "ui/components/app/basic-configuration-modal/basic-configuration-modal.test.tsx": {
@@ -222,8 +211,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/components/app/metametrics-toggle/metametrics-toggle.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "error: Error: MetaMetrics context trackEvent was": 3
+      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/components/app/modals/customize-nonce/customize-nonce.test.js": {
       "React: PropTypes validation failures": 1
@@ -259,12 +247,6 @@
     "ui/components/app/qr-hardware-popover/qr-hardware-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 12
     },
-    "ui/components/app/qr-hardware-popover/qr-hardware-sign-request/qr-hardware-sign-request/qr-hardware-sign-request.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 8
-    },
-    "ui/components/app/rewards/RewardsVipBadge.test.tsx": {
-      "error: Error: test": 1
-    },
     "ui/components/app/selected-account/selected-account-component.test.js": {
       "React: DOM nesting violations": 1
     },
@@ -281,17 +263,7 @@
       "React: Missing key props in lists": 1
     },
     "ui/components/app/snaps/snap-ui-renderer/components/account-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 4,
       "React: DOM nesting violations": 1
-    },
-    "ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts": {
-      "MetaMask: Background connection not initialized": 8
-    },
-    "ui/components/app/snaps/snap-ui-renderer/components/asset-selector.test.ts": {
-      "MetaMask: Background connection not initialized": 4
-    },
-    "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.test.js": {
-      "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/components/app/srp-input/srp-input.test.js": {
       "React: Act warnings (component updates not wrapped)": 17022
@@ -336,9 +308,6 @@
     "ui/components/multichain-accounts/multichain-address-rows-triggered-list/multichain-triggered-address-rows-list.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/multichain-accounts/multichain-private-key-list/multichain-private-key-list.test.tsx": {
-      "React: Missing key props in lists": 1
-    },
     "ui/components/multichain-accounts/smart-contract-account-toggle-section/smart-contract-account-toggle-section.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2,
       "React: componentWill* lifecycle deprecations": 1
@@ -346,17 +315,6 @@
     "ui/components/multichain-accounts/smart-contract-account-toggle/smart-contract-account-toggle.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
       "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/components/multichain/account-details/account-details-display.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: DOM nesting violations": 1
-    },
-    "ui/components/multichain/account-details/account-details.test.js": {
-      "React: Act warnings (component updates not wrapped)": 8,
-      "React: DOM nesting violations": 1,
-      "warn: LavaDome: Initiated with \"unsafeOpenModeShadow\" set": 1,
-      "warn: LavaDomeDebug(getTextByRoot): Call/include this function for": 1
     },
     "ui/components/multichain/account-list-item-menu/account-list-item-menu.test.js": {
       "React: PropTypes validation failures": 1
@@ -366,24 +324,11 @@
       "React: Act warnings (component updates not wrapped)": 2,
       "React: PropTypes validation failures": 2
     },
-    "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/components/multichain/account-overview/account-overview-non-evm.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/components/multichain/account-overview/account-overview-unknown.test.tsx": {
-      "MetaMask: Background connection not initialized": 3
+      "MetaMask: Background connection not initialized": 2
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "Reselect: Input stability warnings": 3
-    },
-    "ui/components/multichain/app-header/app-header.test.js": {
-      "React: Act warnings (component updates not wrapped)": 4,
-      "Reselect: Input stability warnings": 3
-    },
-    "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 16
     },
     "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
@@ -418,11 +363,12 @@
     "ui/components/multichain/notifications-settings-box/notifications-settings-box.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/multichain/pages/gator-permissions/components/review-permission-renderer.test.tsx": {
-      "React: DOM nesting violations": 1
+    "ui/components/multichain/pages/gator-permissions/components/review-gator-permission-item.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/components/multichain/pages/gator-permissions/gator-permissions-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 2
+    "ui/components/multichain/pages/gator-permissions/components/review-permission-renderer.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "React: DOM nesting violations": 1
     },
     "ui/components/multichain/product-tour-popover/product-tour-popover.test.js": {
       "React: Act warnings (component updates not wrapped)": 3,
@@ -442,9 +388,6 @@
     },
     "ui/components/ui/survey-toast/survey-toast.test.tsx": {
       "MetaMask: Background connection not initialized": 1
-    },
-    "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
-      "Test errors: Uncaught Errors": 4
     },
     "ui/contexts/metametrics.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 1
@@ -479,10 +422,10 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/hooks/identity/useAccountSyncing/useAccountSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 13
+      "MetaMask: Background connection not initialized": 17
     },
     "ui/hooks/identity/useAuthentication/useAutoSignIn.test.tsx": {
-      "MetaMask: Background connection not initialized": 15
+      "MetaMask: Background connection not initialized": 17
     },
     "ui/hooks/identity/useAuthentication/useAutoSignOut.test.tsx": {
       "MetaMask: Background connection not initialized": 2
@@ -497,7 +440,10 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/hooks/identity/useContactSyncing/useContactSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 10
+      "MetaMask: Background connection not initialized": 14
+    },
+    "ui/hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing.test.tsx": {
+      "MetaMask: Background connection not initialized": 8
     },
     "ui/hooks/metamask-notifications/useCounter.test.tsx": {
       "Reselect: Input stability warnings": 2
@@ -508,9 +454,6 @@
     "ui/hooks/metamask-notifications/useSwitchNotifications.test.tsx": {
       "MetaMask: Background connection not initialized": 5
     },
-    "ui/hooks/money/useMoneyAccountInfo.test.ts": {
-      "error: Error: locked": 1
-    },
     "ui/hooks/musd/useMusdConversion.test.ts": {
       "error: [MUSD] Transaction creation failed: Error:": 1,
       "warn: [MUSD] Conversion flow not enabled": 1,
@@ -518,9 +461,6 @@
     },
     "ui/hooks/musd/useMusdCtaVisibility.test.ts": {
       "Reselect: Identity function warnings": 1
-    },
-    "ui/hooks/rewards/useVipTier.test.ts": {
-      "error: Error: fail": 1
     },
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1
@@ -540,9 +480,6 @@
     "ui/hooks/useTokenInsightsData.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/hooks/useTokenSearch.test.ts": {
-      "error: Error: boom": 1
-    },
     "ui/pages/asset/components/asset-page.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
@@ -555,7 +492,7 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6,
+      "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
@@ -575,15 +512,12 @@
     "ui/pages/bridge/quotes/multichain-bridge-quote-card.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/confirm-decrypt-message/confirm-decrypt-message.component.test.js": {
-      "React: Act warnings (component updates not wrapped)": 16
+    "ui/pages/bridge/token-insights-modal/token-insights-modal.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/UI/send-hero/send-hero.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 7,
       "error: Warning: React does not recognize": 5
-    },
-    "ui/pages/confirmations/components/confirm/header/simple-confirmation-header.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/components/confirm/info/approve/approve-details/approve-details.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
@@ -600,8 +534,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/batch/batch-simulation-details/batch-simulation-details.test.tsx": {
-      "MetaMask: Background connection not initialized": 14,
-      "React: Act warnings (component updates not wrapped)": 2
+      "MetaMask: Background connection not initialized": 14
     },
     "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.test.ts": {
       "MetaMask: Background connection not initialized": 40
@@ -667,9 +600,6 @@
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
       "MetaMask: Background connection not initialized": 56
     },
-    "ui/pages/confirmations/components/confirm/info/shared/send-heading/send-heading.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1
-    },
     "ui/pages/confirmations/components/confirm/info/shared/transaction-data/transaction-data.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
       "React: Missing key props in lists": 1
@@ -678,7 +608,7 @@
       "Reselect: Input stability warnings": 1
     },
     "ui/pages/confirmations/components/confirm/info/shield-subscription-approve/shield-subscription-approve.test.tsx": {
-      "MetaMask: Background connection not initialized": 20,
+      "MetaMask: Background connection not initialized": 12,
       "React: Act warnings (component updates not wrapped)": 6
     },
     "ui/pages/confirmations/components/confirm/info/token-transfer/token-transfer.test.tsx": {
@@ -699,7 +629,7 @@
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 49
+      "React: Act warnings (component updates not wrapped)": 46
     },
     "ui/pages/confirmations/components/confirm/row/dataTree.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 10
@@ -711,8 +641,7 @@
       "React: Act warnings (component updates not wrapped)": 12
     },
     "ui/pages/confirmations/components/confirm/title/hooks/useCurrentSpendingCap.test.ts": {
-      "MetaMask: Background connection not initialized": 2,
-      "React: Act warnings (component updates not wrapped)": 2
+      "MetaMask: Background connection not initialized": 2
     },
     "ui/pages/confirmations/components/gas-timing/gas-timing.component.test.js": {
       "React: Act warnings (component updates not wrapped)": 1
@@ -728,18 +657,10 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/components/send/amount/amount.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 14
-    },
-    "ui/pages/confirmations/components/send/asset-filter-input/asset-filter-input.test.tsx": {
-      "error: Warning: React does not recognize": 7,
-      "error: Warning: Received `false` for a": 2
+      "React: Act warnings (component updates not wrapped)": 10
     },
     "ui/pages/confirmations/components/send/hex-data/hex-data.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
-    },
-    "ui/pages/confirmations/components/send/recipient-filter-input/recipient-filter-input.test.tsx": {
-      "error: Warning: React does not recognize": 6,
-      "error: Warning: Received `false` for a": 2
     },
     "ui/pages/confirmations/components/send/recipient-input/recipient-input.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3
@@ -794,14 +715,11 @@
     "ui/pages/confirmations/utils/confirm.test.ts": {
       "error: Failed to detect if URL": 1
     },
-    "ui/pages/defi/components/defi-details-page.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/pages/error-page/error-component.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/multi-srp/import-srp/import-srp.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 881
+      "React: Act warnings (component updates not wrapped)": 519
     },
     "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
@@ -821,7 +739,7 @@
       "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/pages/networks/networks-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 112
+      "React: Act warnings (component updates not wrapped)": 46
     },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
@@ -841,7 +759,7 @@
       "Reselect: Input stability warnings": 3
     },
     "ui/pages/onboarding-flow/import-srp/import-srp.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 212
+      "React: Act warnings (component updates not wrapped)": 127
     },
     "ui/pages/onboarding-flow/metametrics/metametrics.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 4
@@ -936,9 +854,6 @@
     "ui/pages/settings/sync-accounts/components/enter-verification-code.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/settings/sync-accounts/components/qr-code-scan.test.tsx": {
-      "Reselect: Identity function warnings": 1
-    },
     "ui/pages/settings/sync-accounts/components/sync-error.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
@@ -950,11 +865,10 @@
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/shield/plan/shield-payment-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6
+      "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/pages/shield/plan/shield-plan.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 7,
-      "error: [useShieldRewards error]: Error: Actions must": 7
+      "React: Act warnings (component updates not wrapped)": 7
     },
     "ui/pages/shield/transaction-shield/claims-form/claims-form.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
@@ -978,7 +892,7 @@
       "error: Warning: React does not recognize": 1
     },
     "ui/pages/srp-input-form/index.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 412
+      "React: Act warnings (component updates not wrapped)": 244
     },
     "ui/pages/swaps/awaiting-signatures/awaiting-signatures.test.js": {
       "Reselect: Identity function warnings": 1
@@ -1000,16 +914,10 @@
       "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/token-management/token-management.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 22
-    },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 1,
       "error: Warning: A suspended resource finished": 1
-    },
-    "ui/providers/perps/PerpsAttributionContext.test.tsx": {
-      "Test errors: Uncaught Errors": 1
     },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2

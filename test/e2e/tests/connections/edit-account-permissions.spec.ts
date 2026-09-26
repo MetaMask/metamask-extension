@@ -23,6 +23,8 @@ describe('Edit Accounts Permissions', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2().build(),
+        // To investigate why is this error appearing (#46623)
+        ignoredConsoleErrors: ['[PerpsStreamManager] Failed to fetch account'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

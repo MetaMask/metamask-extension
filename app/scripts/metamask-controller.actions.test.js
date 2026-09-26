@@ -176,6 +176,7 @@ describe('MetaMaskController', function () {
       getRequestAccountTabIds: () => ({}),
       getOpenMetamaskTabsIds: () => ({}),
       notificationManager: {
+        closePopup: jest.fn(),
         markAsAutomaticallyClosed: jest.fn(),
       },
       infuraProjectId: 'foo',

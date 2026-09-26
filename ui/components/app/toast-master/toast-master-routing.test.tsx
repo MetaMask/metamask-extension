@@ -9,6 +9,14 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('../basic-functionality-migration-toast', () => ({
+  BasicFunctionalityMigrationToast: () => (
+    <div data-testid="mock-bft-migration-toast">
+      BasicFunctionalityMigrationToast
+    </div>
+  ),
+}));
+
 jest.mock('../perps/perps-withdraw-toast', () => ({
   PerpsWithdrawToast: () => (
     <div data-testid="mock-perps-withdraw-toast">PerpsWithdrawToast</div>
@@ -61,6 +69,17 @@ describe('ToastMaster routing', () => {
       expect(
         screen.queryByTestId('mock-perps-withdraw-toast'),
       ).not.toBeInTheDocument();
+    });
+
+    it('renders the Basic Functionality migration toast outside home', () => {
+      renderWithProvider(
+        <ToastMaster />,
+        createStore(),
+        '/confirm-transaction',
+      );
+      expect(
+        screen.getByTestId('mock-bft-migration-toast'),
+      ).toBeInTheDocument();
     });
   });
 });

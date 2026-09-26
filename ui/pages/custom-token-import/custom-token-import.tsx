@@ -55,6 +55,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
 import { useDispatch } from '../../store/hooks';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
@@ -147,6 +148,13 @@ export const CustomTokenImportPage = () => {
 
   const [selectedNetwork, setSelectedNetwork] =
     useState<string>(currentChainId);
+  const [prevCurrentChainId, setPrevCurrentChainId] =
+    useState<string>(currentChainId);
+
+  if (currentChainId !== prevCurrentChainId) {
+    setPrevCurrentChainId(currentChainId);
+    setSelectedNetwork(currentChainId);
+  }
 
   const availableNetworks = useMemo<CustomTokenImportNetworkOption[]>(
     () =>
@@ -401,11 +409,18 @@ export const CustomTokenImportPage = () => {
     [t],
   );
 
-  useEffect(() => {
-    setSelectedNetwork(currentChainId);
-  }, [currentChainId]);
+  const prevSelectedNetworkForClearRef = useRef<string | null>(null);
 
   useEffect(() => {
+    const previousNetwork = prevSelectedNetworkForClearRef.current;
+    prevSelectedNetworkForClearRef.current = selectedNetwork;
+
+    // Skip the initial mount: the form starts empty and clearing here (especially
+    // via a microtask) races with the first address entry in tests and in fast UX.
+    if (previousNetwork === null || previousNetwork === selectedNetwork) {
+      return;
+    }
+
     // Bump the lookup token so any address lookup started on the previous
     // network can't apply its result here.
     addressLookupRef.current += 1;
@@ -532,14 +547,14 @@ export const CustomTokenImportPage = () => {
       }
 
       trackSubmitAttempt(1);
-      navigate(TOKEN_MANAGEMENT_ROUTE, {
-        state: {
-          tokenManagementToast: {
-            type: 'customTokenAdded',
-            symbol,
-          },
-        },
-      });
+      // The toaster is mounted globally, so the toast survives this navigation.
+      toast.success(
+        <ToastContent
+          title={t('newCustomTokenAdded', [symbol])}
+          dataTestId="token-management-custom-token-success-toast"
+        />,
+      );
+      navigate(TOKEN_MANAGEMENT_ROUTE);
     } catch (error) {
       trackSubmitAttempt(0);
       throw error;
@@ -559,6 +574,7 @@ export const CustomTokenImportPage = () => {
     selectedAccount?.id,
     selectedNetwork,
     symbol,
+    t,
     trackSubmitAttempt,
   ]);
 

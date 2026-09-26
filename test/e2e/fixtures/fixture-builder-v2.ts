@@ -5,6 +5,7 @@ import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
+import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -47,7 +48,6 @@ import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
-import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type { Preferences } from '../../../shared/types/preferences';
 import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
@@ -130,13 +130,15 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
-type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
+type MetaMetricsControllerFixturePatch = {
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   analyticsId?: string | null;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
   /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   consentDecisionMade?: boolean;
+  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+  dataCollectionForMarketing?: boolean;
 };
 
 type StorageServiceNamespaceMap = {
@@ -297,6 +299,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withBridgeStatusController(data: Partial<BridgeStatusControllerState>): this {
+    merge(this.fixture.data.BridgeStatusController, data);
+    return this;
+  }
+
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -312,15 +319,14 @@ class FixtureBuilderV2 {
       analyticsId,
       optedIn,
       consentDecisionMade,
-      ...metaMetricsControllerPatch
+      dataCollectionForMarketing,
     } = data;
-
-    merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
     if (
       analyticsId !== undefined ||
       optedIn !== undefined ||
-      consentDecisionMade !== undefined
+      consentDecisionMade !== undefined ||
+      dataCollectionForMarketing !== undefined
     ) {
       const fixtureData = this.fixture.data as Record<string, unknown>;
       if (!fixtureData.AnalyticsController) {
@@ -339,6 +345,10 @@ class FixtureBuilderV2 {
       }
       if (consentDecisionMade !== undefined) {
         analyticsPatch.consentDecisionMade = consentDecisionMade;
+      }
+      if (dataCollectionForMarketing !== undefined) {
+        analyticsPatch.optedInToMarketing = dataCollectionForMarketing;
+        analyticsPatch.marketingConsentDecisionMade = true;
       }
       merge(analyticsController, analyticsPatch);
     }
@@ -1449,6 +1459,7 @@ class FixtureBuilderV2 {
       isAccountSyncingEnabled: false,
       isBackupAndSyncEnabled: false,
       isContactSyncingEnabled: false,
+      isRampsSyncingEnabled: false,
     });
   }
 
@@ -1625,6 +1636,19 @@ class FixtureBuilderV2 {
   withUseBasicFunctionalityDisabled(): this {
     return this.withPreferencesController({
       useExternalServices: false,
+    });
+  }
+
+  /**
+   * Uses the pre-consolidation settings layout (Assets autodetect toggles,
+   * Privacy → Third-party APIs, etc.). Required for E2E tests that exercise
+   * those surfaces when `default-fixture.json` marks the wallet consolidated.
+   */
+  withBasicFunctionalityConsolidationDisabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        isBasicFunctionalityConsolidatedEnabled: false,
+      },
     });
   }
 
