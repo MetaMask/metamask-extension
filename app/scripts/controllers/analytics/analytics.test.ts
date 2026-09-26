@@ -12,6 +12,7 @@ import type {
   AnalyticsControllerOptOutAction,
   AnalyticsControllerOptOutOfMarketingAction,
   AnalyticsControllerResetConsentDecisionAction,
+  AnalyticsControllerSetMarketingCampaignCookieIdAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
 } from '@metamask/analytics-controller';
@@ -25,8 +26,6 @@ import type { Browser } from 'webextension-polyfill';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
-import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
-import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../metametrics-controller-method-action-types';
 import type {
   SentryTracingServiceClearTracesAfterMetricsOptInAction,
   SentryTracingServiceTrackTracesAfterMetricsOptInAction,
@@ -60,8 +59,6 @@ function createConfiguredMessenger({
     consentDecisionMade,
     optedInToMarketing: false,
     marketingConsentDecisionMade: false,
-  };
-  const metaMetricsControllerState = {
     marketingCampaignCookieId,
   };
   const trackEventHandler = jest.fn();
@@ -82,6 +79,8 @@ function createConfiguredMessenger({
   const optOutOfMarketingHandler = jest.fn(() => {
     analyticsControllerState.optedInToMarketing = false;
     analyticsControllerState.marketingConsentDecisionMade = true;
+    // Core's optOutOfMarketing auto-clears the cookie ID; mirror that here.
+    analyticsControllerState.marketingCampaignCookieId = null;
   });
   const resetConsentDecisionHandler = jest.fn(() => {
     analyticsControllerState.optedIn = false;
@@ -103,8 +102,6 @@ function createConfiguredMessenger({
     | NetworkControllerGetStateAction
     | NetworkControllerGetNetworkClientByIdAction
     | RemoteFeatureFlagControllerGetStateAction
-    | MetaMetricsControllerGetStateAction
-    | MetaMetricsControllerSetMarketingCampaignCookieIdAction
     | SentryTracingServiceTrackTracesAfterMetricsOptInAction
     | SentryTracingServiceClearTracesAfterMetricsOptInAction
     | AnalyticsControllerGetStateAction
@@ -116,6 +113,7 @@ function createConfiguredMessenger({
     | AnalyticsControllerOptOutAction
     | AnalyticsControllerOptOutOfMarketingAction
     | AnalyticsControllerResetConsentDecisionAction
+    | AnalyticsControllerSetMarketingCampaignCookieIdAction
     | ActionConstraint,
     never
   >({
@@ -162,13 +160,9 @@ function createConfiguredMessenger({
       }) as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:getState',
-    () => metaMetricsControllerState as never,
-  );
-  rootMessenger.registerActionHandler(
-    'MetaMetricsController:setMarketingCampaignCookieId',
+    'AnalyticsController:setMarketingCampaignCookieId',
     ((cookieId: string | null) => {
-      metaMetricsControllerState.marketingCampaignCookieId = cookieId;
+      analyticsControllerState.marketingCampaignCookieId = cookieId;
       setMarketingCampaignCookieIdHandler(cookieId);
     }) as never,
   );
@@ -238,7 +232,6 @@ function createConfiguredMessenger({
     setMarketingCampaignCookieIdHandler,
     setUninstallURL,
     analyticsControllerState,
-    metaMetricsControllerState,
   };
 }
 
@@ -422,22 +415,22 @@ describe('analytics', () => {
       );
     });
 
-    it('nullifies the marketingCampaignCookieId when participation is toggled off', async () => {
-      const {
-        metaMetricsControllerState,
-        setMarketingCampaignCookieIdHandler,
-      } = createConfiguredMessenger({
-        marketingCampaignCookieId: TEST_GA_COOKIE_ID,
-      });
+    it('retains the marketingCampaignCookieId when participation is toggled off', async () => {
+      const { analyticsControllerState, setMarketingCampaignCookieIdHandler } =
+        createConfiguredMessenger({
+          marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+        });
 
-      expect(
-        metaMetricsControllerState.marketingCampaignCookieId,
-      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      expect(analyticsControllerState.marketingCampaignCookieId).toStrictEqual(
+        TEST_GA_COOKIE_ID,
+      );
 
       await setParticipateInMetaMetrics(false);
 
-      expect(setMarketingCampaignCookieIdHandler).toHaveBeenCalledWith(null);
-      expect(metaMetricsControllerState.marketingCampaignCookieId).toBeNull();
+      expect(setMarketingCampaignCookieIdHandler).not.toHaveBeenCalled();
+      expect(analyticsControllerState.marketingCampaignCookieId).toStrictEqual(
+        TEST_GA_COOKIE_ID,
+      );
     });
 
     it('updates AnalyticsController marketing consent', async () => {
@@ -445,8 +438,6 @@ describe('analytics', () => {
         analyticsControllerState,
         optInToMarketingHandler,
         optOutOfMarketingHandler,
-        metaMetricsControllerState,
-        setMarketingCampaignCookieIdHandler,
       } = createConfiguredMessenger({
         marketingCampaignCookieId: TEST_GA_COOKIE_ID,
       });
@@ -463,8 +454,7 @@ describe('analytics', () => {
       expect(optOutOfMarketingHandler).toHaveBeenCalledTimes(1);
       expect(analyticsControllerState.optedInToMarketing).toBe(false);
       expect(analyticsControllerState.marketingConsentDecisionMade).toBe(true);
-      expect(setMarketingCampaignCookieIdHandler).toHaveBeenCalledWith(null);
-      expect(metaMetricsControllerState.marketingCampaignCookieId).toBeNull();
+      expect(analyticsControllerState.marketingCampaignCookieId).toBeNull();
     });
 
     describe('the extension uninstall URL', () => {

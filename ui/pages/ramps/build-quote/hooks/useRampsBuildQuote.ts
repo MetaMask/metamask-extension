@@ -21,6 +21,7 @@ import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
+import { validateBuyWidgetUrl } from '../../../../hooks/ramps/utils/validateBuyUrl';
 import { watchRampsCheckoutTab } from '../../../../store/controller-actions/ramps-controller';
 import {
   findSelectedQuote,
@@ -31,6 +32,7 @@ import {
   resolvePaymentMethodLabel,
 } from '../utils/build-quote';
 import { getProviderLimitMessage } from '../../utils/getProviderLimitMessage';
+import { getRampsTokenDisplaySymbol } from '../../utils/token-display';
 import { useBuildQuoteAmount } from './useBuildQuoteAmount';
 
 type BuildQuoteLocationState = {
@@ -241,6 +243,16 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     setIsContinuing(true);
     const checkoutSessionId = uuidV4();
     try {
+      // TRAM-3947 hardening: reject a mangled buyURL (e.g. server-side string
+      // concatenation gluing the callback fragment onto cryptoCurrencyId)
+      // before fetching — fail fast with no doomed network round-trip, and
+      // keep the extension from fetching arbitrary URLs that carry the wallet
+      // address if the quotes API misbehaves.
+      if (!validateBuyWidgetUrl(selectedQuote.quote?.buyURL).isValid) {
+        setContinueError(t('rampsBuyWidgetError'));
+        return;
+      }
+
       const widget = await getBuyWidgetData(selectedQuote);
       if (!widget?.url) {
         setContinueError(t('rampsBuyWidgetError'));
@@ -273,7 +285,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           checkoutUrl: widget.url,
           providerName: selectedProvider?.name ?? '',
           amountOut: selectedQuote.quote?.amountOut,
-          tokenSymbol: selectedToken?.symbol ?? '',
+          tokenSymbol: getRampsTokenDisplaySymbol(selectedToken),
           tokenIconUrl: selectedToken?.iconUrl,
           tokenChainId: selectedToken?.chainId,
           walletAddress,
@@ -325,7 +337,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   return {
     kind: 'ready',
     pageTitle: selectedToken.symbol
-      ? t('rampsBuyToken', [selectedToken.symbol])
+      ? t('rampsBuyToken', [getRampsTokenDisplaySymbol(selectedToken)])
       : t('buy'),
     pageSubtitle: networkName ? t('rampsOnNetwork', [networkName]) : undefined,
     currencySymbol,

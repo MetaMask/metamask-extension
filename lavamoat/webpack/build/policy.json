@@ -1135,7 +1135,7 @@
         "console": true
       }
     },
-    "mockttp>express>content-disposition": {
+    "webpack-dev-server>express>content-disposition": {
       "builtin": {
         "path.basename": true
       },
@@ -1151,7 +1151,7 @@
         "value": true
       }
     },
-    "mockttp>express>cookie-signature": {
+    "webpack-dev-server>express>cookie-signature": {
       "builtin": {
         "crypto.createHash": true,
         "crypto.createHmac": true
@@ -1261,7 +1261,7 @@
         "webpack-dev-server>compression>debug>ms": true
       }
     },
-    "mockttp>express>debug": {
+    "webpack-dev-server>express>debug": {
       "builtin": {
         "fs.SyncWriteStream": true,
         "net.Socket": true,
@@ -1278,7 +1278,7 @@
         "process": true
       },
       "packages": {
-        "mockttp>express>debug>ms": true
+        "webpack-dev-server>express>debug>ms": true
       }
     },
     "nock>debug": {
@@ -1545,7 +1545,7 @@
         "Buffer.isBuffer": true
       }
     },
-    "mockttp>express": {
+    "webpack-dev-server>express": {
       "builtin": {
         "events.EventEmitter.prototype": true,
         "fs.statSync": true,
@@ -1569,19 +1569,19 @@
         "koa>accepts": true,
         "mockttp>express>array-flatten": true,
         "mockttp>body-parser": true,
-        "mockttp>express>content-disposition": true,
+        "webpack-dev-server>express>content-disposition": true,
         "koa>content-type": true,
-        "mockttp>express>cookie-signature": true,
+        "webpack-dev-server>express>cookie-signature": true,
         "mockttp>express>cookie": true,
-        "mockttp>express>debug": true,
+        "webpack-dev-server>express>debug": true,
         "koa>cookies>depd": true,
         "koa>encodeurl": true,
         "koa>escape-html": true,
         "mockttp>express>etag": true,
-        "mockttp>express>finalhandler": true,
+        "webpack-dev-server>express>finalhandler": true,
         "koa>fresh": true,
         "koa>http-errors": true,
-        "mockttp>express>merge-descriptors": true,
+        "webpack-dev-server>express>merge-descriptors": true,
         "mockttp>express>methods": true,
         "koa>on-finished": true,
         "koa>parseurl": true,
@@ -1590,11 +1590,11 @@
         "mockttp>express>qs": true,
         "mockttp>express>range-parser": true,
         "mockttp>express>safe-buffer": true,
-        "mockttp>express>send": true,
-        "mockttp>express>serve-static": true,
+        "webpack-dev-server>express>send": true,
+        "webpack-dev-server>express>serve-static": true,
         "koa>http-errors>setprototypeof": true,
         "koa>statuses": true,
-        "mockttp>express>type-is": true,
+        "webpack-dev-server>express>type-is": true,
         "mockttp>connect>utils-merge": true,
         "koa>vary": true
       }
@@ -1676,7 +1676,7 @@
         "chokidar>braces>fill-range>to-regex-range": true
       }
     },
-    "mockttp>express>finalhandler": {
+    "webpack-dev-server>express>finalhandler": {
       "globals": {
         "Buffer.byteLength": true,
         "process.env.NODE_ENV": true,
@@ -1684,7 +1684,7 @@
         "setImmediate": true
       },
       "packages": {
-        "mockttp>express>debug": true,
+        "webpack-dev-server>express>debug": true,
         "koa>encodeurl": true,
         "koa>escape-html": true,
         "koa>on-finished": true,
@@ -2795,7 +2795,7 @@
         "process": true
       }
     },
-    "mockttp>express>send": {
+    "webpack-dev-server>express>send": {
       "builtin": {
         "fs.createReadStream": true,
         "fs.stat": true,
@@ -2811,7 +2811,7 @@
         "Buffer.byteLength": true
       },
       "packages": {
-        "mockttp>express>debug": true,
+        "webpack-dev-server>express>debug": true,
         "koa>cookies>depd": true,
         "koa>destroy": true,
         "koa>encodeurl": true,
@@ -2864,7 +2864,7 @@
         "koa>parseurl": true
       }
     },
-    "mockttp>express>serve-static": {
+    "webpack-dev-server>express>serve-static": {
       "builtin": {
         "path.resolve": true,
         "url.format": true
@@ -2876,7 +2876,7 @@
         "koa>encodeurl": true,
         "koa>escape-html": true,
         "koa>parseurl": true,
-        "mockttp>express>send": true
+        "webpack-dev-server>express>send": true
       }
     },
     "string.prototype.matchall>call-bind>set-function-length": {
@@ -3211,9 +3211,9 @@
         "webpack>mime-types": true
       }
     },
-    "mockttp>express>type-is": {
+    "webpack-dev-server>express>type-is": {
       "packages": {
-        "mockttp>express>type-is>media-typer": true,
+        "webpack-dev-server>express>type-is>media-typer": true,
         "webpack>mime-types": true
       }
     },
@@ -3547,7 +3547,7 @@
         "webpack-cli>colorette": true,
         "webpack-dev-server>compression": true,
         "webpack-dev-server>connect-history-api-fallback": true,
-        "mockttp>express": true,
+        "webpack-dev-server>express": true,
         "webpack>graceful-fs": true,
         "webpack-dev-server>http-proxy-middleware": true,
         "webpack-dev-server>ipaddr.js": true,

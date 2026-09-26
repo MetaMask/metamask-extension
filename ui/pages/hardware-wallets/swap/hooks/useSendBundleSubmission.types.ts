@@ -33,6 +33,15 @@ export type UseSendBundleSubmissionOptions = {
    * `retryGenerationRef` after this submission started.
    */
   isStaleAttempt: (submissionGeneration: number) => boolean;
+  /**
+   * Called when a submission attempt fails with an error that intentionally
+   * maps to no state-machine event (e.g. the Ledger Ethereum app is closed):
+   * the signing UI stays on the awaiting path while
+   * `HardwareWalletErrorProvider` prompts the user, but the original signing
+   * request has died. The orchestrator must restart the send once the device
+   * recovers, otherwise the flow is stuck with no retry CTA.
+   */
+  onSubmissionNeedsRestart: () => void;
   /** Redux dispatch, typed for thunks like `updateAndApproveTx`. */
   dispatch: MetaMaskReduxDispatch;
 };

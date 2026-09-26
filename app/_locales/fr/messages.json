@@ -484,41 +484,27 @@
   "activity_marketShort_success_title": {
     "message": "Position courte fermée - marché"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Le dépôt a échoué"
   },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Dépôt"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
+    "message": "Déposer en $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Déposé"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
+    "message": "$1 déposé",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Échec de l’envoi"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "Échec de réception"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Envoi"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
+    "message": "Recevoir en $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Envoyé"
+    "message": "A reçu en $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Échec de l’achat"
@@ -1515,6 +1501,9 @@
   "alertMessageGasFeeLow": {
     "message": "Si vous choisissez des frais peu élevés, attendez-vous à des transactions plus lentes et à des temps d’attente plus longs. Pour des transactions plus rapides, choisissez les options « Ordre au marché » ou « Agressif »."
   },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Pour effectuer cette transaction, vous devez augmenter la limite de gaz à 12 000 ou plus."
+  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de réseau."
   },
@@ -1960,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "Les API tierces font désormais partie des fonctionnalités de base. Conformément à vos préférences précédentes, ce paramètre défini sur « $1 ». Vous pouvez le modifier à tout moment dans $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "désactivé"
@@ -3099,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "Copié dans le presse-papiers"
   },
+  "copy": {
+    "message": "Copier"
+  },
   "copyAddress": {
     "message": "Copier l’addresse dans le presse-papier"
   },
@@ -3187,9 +3179,6 @@
   },
   "current": {
     "message": "Actuel"
-  },
-  "currentAccountNotConnected": {
-    "message": "Votre compte actuel n’est pas connecté"
   },
   "currentEstimatedBaseFee": {
     "message": "Actuel : $1 GWEI"
@@ -5450,6 +5439,14 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "TRA $1 %",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Gagnez $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Le taux indiqué est un taux de rendement annuel estimé en fonction des conditions actuelles du marché. Ce taux est variable et n’est pas garanti."
   },
@@ -5591,6 +5588,10 @@
   "moneyBenefitAutoEarn": {
     "message": "Gagnez automatiquement des intérêts sur le solde de votre compte « Money »"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Gagnez automatiquement jusqu’à $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "Profitez d’une liquidité totale sans période de blocage, vous pourrez ainsi trader ou retirer des fonds à tout moment"
   },
@@ -5630,6 +5631,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Pas de frais"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "La projection part du principe que le taux de rendement annuel (TRA) de $1 % restera identique pendant un an. Il est variable, sans être garanti. Il n’y a aucune garantie de rendement.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Bénéficiez d'un rendement sur votre solde"
   },
@@ -5648,6 +5653,10 @@
   "moneyHomeApyTooltip": {
     "message": "Le taux affiché est un taux de rendement annuel estimé en fonction des conditions actuelles du marché. Ce taux est variable et n’est pas garanti. Les fonds sont placés dans un coffre-fort DeFi, géré par Veda sous la supervision de Steakhouse Financial, qui génère des rendements sur des marchés de prêt bien établis."
   },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Votre Money Account génère automatiquement un rendement allant jusqu’à $1.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Le Money Account est propulsé par Monad."
   },
@@ -5660,12 +5669,6 @@
   "moneyHowItWorksDescription1": {
     "message": "Ajoutez des mUSD sur votre compte Money et gagnez automatiquement jusqu’à $1 de RMP (variable). Les fonds sont placés dans un coffre-fort DeFi, géré par Veda et dont le suivi des risques est assuré par Steakhouse Financial. Le taux est généré par des plateformes DeFi tierces qui déploient les fonds dans des protocoles blockchain. Pas de staking, pas de réclamation, pas de blocage de fonds.",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Le solde de votre compte Money correspond à votre solde disponible. Associez votre carte MetaMask Card pour effectuer des achats auprès de plus de 150 millions de commerçants dans le monde entier. Votre argent continue de générer des revenus jusqu’à ce que vous le dépensiez."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Le Money Account est propulsé par Monad."
   },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Ajoutez des mUSD et gagnez jusqu'à $1. Votre solde est adossé au dollar et vous pouvez l’utiliser à tout moment pour effectuer des achats, des transferts ou des opérations de Bourse.",
@@ -5684,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "Le taux de rendement annuel varie-t-il ?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Vous ! MetaMask est un portefeuille de détention en propre, ce qui signifie que seules les clés privées du titulaire du compte permettent de le contrôler. MetaMask ne peut ni accéder à vos fonds, ni les bloquer, ni les transférer. C’est ce qui nous distingue des comptes bancaires traditionnels et des plateformes de crypto-monnaies avec gestion de fonds : aucun tiers ne détient vos fonds."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Qui gère mon argent ?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "L’ouverture d’un Money Account est gratuite, tout comme le dépôt de stablecoins. Des frais vous seront facturés lors du dépôt de jetons non-stablecoins. Des frais s’appliquent également aux transactions effectuées avec la MetaMask Card, aux retraits aux distributeurs automatiques et aux opérations de conversion en monnaie locale. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Découvrez ici tous les frais liés au compte MetaMask Card."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "Y a-t-il des frais à payer ?"
@@ -5711,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Qu’est-ce qu’un compte Money ?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "Le mUSD est le stablecoin de MetaMask adossé au dollar à parité 1:1. Le solde de votre compte « Money » est détenu sous forme de mUSD et vous pouvez l’utiliser à tout moment pour effectuer des achats, des transferts ou des opérations de Bourse.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Qu’est-ce que le mUSD ?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Votre solde « Money » correspond à votre solde disponible : il continue de générer des intérêts jusqu’au moment où vous l’utilisez. Le compte « Money » n’est ni un compte bancaire, ni un compte d’épargne, ni un produit de dépôt assuré.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "S’agit-il d’un compte d’épargne ou d’un compte courant ?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"
@@ -6940,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "Nous n’avons pas pu vérifier votre $1. Réessayez ou saisissez votre mot de passe.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Réessayer",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "Enregistrer $1",
@@ -8727,7 +8711,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Choisir un fournisseur"
+    "message": "Choisir le fournisseur on-ramp"
   },
   "rampsCompleteBuyTitle": {
     "message": "Finaliser l'achat",
@@ -8912,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "L’achat est temporairement indisponible"
   },
-  "rampsShowAllTokens": {
-    "message": "Afficher tous les jetons"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Ce jeton n’est pas disponible dans votre région.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9006,6 +8987,10 @@
   },
   "relayerFee": {
     "message": "Frais de relayeur"
+  },
+  "remindMeLater": {
+    "message": "C’est compris !",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "Supprimer"
@@ -9349,6 +9334,9 @@
   },
   "rpcUrl": {
     "message": "URL RPC"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Ce fournisseur RPC limite actuellement ses demandes. Réessayez plus tard ou utilisez une URL RPC différente."
   },
   "safeTransferFrom": {
     "message": "Transfert sécurisé depuis"
@@ -11613,6 +11601,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Automatique"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "La tolérance de slippage a été plafonnée à 100 %."
   },
   "swapSlippageHighDescription": {
     "message": "L’effet de glissement saisi ($1 %) est considéré comme très élevé et peut donner lieu à un taux de change désavantageux",

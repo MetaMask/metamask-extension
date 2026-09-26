@@ -484,41 +484,27 @@
   "activity_marketShort_success_title": {
     "message": "숏 청산 완료 - 시장가"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "예치 실패"
   },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "예치 중"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
+    "message": "$1 예치 중",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "입금됨"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
+    "message": "$1 예치 완료",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "전송 실패"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "받기 실패"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "전송 중"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
+    "message": "$1 받는 중",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "전송됨"
+    "message": "$1 받음",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "매수 실패"
@@ -1963,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "이제 제3자 API가 기본 기능의 일부로 포함됩니다. 이전 기본 설정에 따라 이 설정은 $1 상태입니다. $2에서 언제든지 설정을 변경할 수 있습니다",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "비활성화됨"
@@ -3102,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "클립보드에 복사되었습니다"
   },
+  "copy": {
+    "message": "복사"
+  },
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
   },
@@ -3190,9 +3179,6 @@
   },
   "current": {
     "message": "현재"
-  },
-  "currentAccountNotConnected": {
-    "message": "현재 계정이 연결되어 있지 있습니다."
   },
   "currentEstimatedBaseFee": {
     "message": "현재: $1 GWEI"
@@ -5457,6 +5443,14 @@
   "money": {
     "message": "머니"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "$1의 수익 얻기",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "표시된 수익률은 현재 시장 상황에 기반한 예상 연간수익률(APY)입니다. APY는 변동되며 보장되지 않습니다."
   },
@@ -5598,6 +5592,10 @@
   "moneyBenefitAutoEarn": {
     "message": "머니 잔액에 대한 수익을 자동으로 적립하세요."
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "자동으로 최대 $1의 수익 얻기",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "락업 없이 완전한 유동성을 제공하므로 언제든지 거래하거나 출금할 수 있습니다"
   },
@@ -5637,6 +5635,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "요금 없음"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "예상 수익은 $1%의 연이율(APY)이 1년 동안 유지되는 경우를 가정하여 계산됩니다. APY는 변동될 수 있으며 보장되지 않습니다. 수익은 보장되지 않습니다.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "잔액으로 수익을 적립하세요"
   },
@@ -5655,6 +5657,10 @@
   "moneyHomeApyTooltip": {
     "message": "표시된 수익률은 현재 시장 상황에 기반한 연간수익률(APY)입니다. APY는 변동될 수 있으며 보장되지 않습니다. 자금은 Veda가 운영하고 Steakhouse Financial이 위험을 관리하는 디파이 볼트에 예치되어 주요 대출 시장에서 수익을 창출합니다."
   },
+  "moneyHomeApyTooltipEarning": {
+    "message": "머니 계좌를 통해 자동으로 최대 $1의 수익을 얻을 수 있습니다.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money Account는 Monad에서 제공합니다."
   },
@@ -5667,12 +5673,6 @@
   "moneyHowItWorksDescription1": {
     "message": "mUSD를 Money Account에 입금하면 최대 $1 APY(변동형)의 수익을 자동으로 적립할 수 있습니다. 자금은 Veda가 운용하고 Steakhouse Financial이 위험을 모니터링하는 디파이 볼트에 예치됩니다. 수익률은 블록체인 프로토콜에서 자금을 운용하는 제삼자 디파이 플랫폼을 통해 발생합니다. 스테이킹, 수동 수령, 락업은 필요하지 않습니다.",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Money 잔액은 결제에 사용할 수 있는 잔액입니다. MetaMask 카드를 연결하면 전 세계 1억 5천만 개 이상의 가맹점에서 사용할 수 있습니다. 자금은 사용하는 순간까지 계속 수익을 냅니다."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account는 Monad에서 제공합니다."
   },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD를 추가하면 최대 $1의 수익이 적립됩니다. 잔액은 달러 연동 방식으로 유지되며 언제든지 결제 또는 거래에 사용하거나 송금할 수 있습니다.",
@@ -5691,17 +5691,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "APY 비율은 변경되나요?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "사용자 본인입니다! MetaMask는 셀프 커스터디 지갑이므로, 계정 소유자의 개인 키만이 계정을 제어할 수 있습니다. MetaMask는 머니 계정 잔액에 액세스하거나 이를 동결 또는 이동할 수 없습니다. 이 점이 바로 기존 은행 계좌 및 커스터디형 암호화폐 플랫폼과 MetaMask를 구분하는 차이점입니다. 사용자의 자금을 보관하는 제삼자는 없습니다."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "제 자금은 누가 관리하나요?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money Account 개설에는 수수료가 없으며, 스테이블코인을 예치하는 데도 수수료가 없습니다. 비스테이블코인 토큰을 예치하는 경우 수수료가 부과됩니다. 또한 MetaMask 카드 거래, ATM 출금, 현지 통화 오프램프 비용과 관련된 수수료가 있습니다. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "전체 카드 수수료 세부 내역은 여기에서 확인하세요."
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "수수료가 있나요?"
@@ -5718,20 +5709,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Money 계정이란 무엇인가요?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD는 미국 달러와 1:1로 연동되는 MetaMask의 달러 기반 스테이블코인입니다. Money 잔액은 mUSD로 보관되며 언제든지 결제, 송금 또는 거래에 사용할 수 있습니다.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD란 무엇인가요?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Money 잔액은 결제에 사용할 수 있는 잔액으로, 실제로 사용하는 순간까지 계속 수익이 발생합니다. Money 계정은 은행 계좌, 저축 계좌 또는 예금보험이 적용되는 예금 상품이 아닙니다.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "이 계정은 저축 계정인가요, 결제 계정인가요?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"
@@ -6947,6 +6924,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "$1을(를) 인증할 수 없습니다. 다시 시도하거나 비밀번호를 사용하세요.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "다시 시도",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 등록",
@@ -8738,7 +8719,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "공급업체 변경"
+    "message": "공급업체 선택"
   },
   "rampsCompleteBuyTitle": {
     "message": "구매 완료하기",
@@ -8923,9 +8904,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "현재 일시적으로 매수 기능을 이용할 수 없습니다"
   },
-  "rampsShowAllTokens": {
-    "message": "모든 토큰 표시"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "이 토큰은 현재 지역에서 사용할 수 없습니다.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9017,6 +8995,10 @@
   },
   "relayerFee": {
     "message": "릴레이어 수수료"
+  },
+  "remindMeLater": {
+    "message": "확인",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "제거"
@@ -9360,6 +9342,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "이 RPC 공급업체가 요청을 제한하고 있습니다. 나중에 다시 시도하거나 다른 RPC URL을 사용하세요."
   },
   "safeTransferFrom": {
     "message": "다음에서 안전하게 송금:"
@@ -11624,6 +11609,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "자동"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "슬리피지 허용 범위의 상한이 100%로 제한되었습니다."
   },
   "swapSlippageHighDescription": {
     "message": "입력한 슬리피지($1%)가 매우 높은 것으로 간주되어 불량률이 발생할 수 있습니다.",

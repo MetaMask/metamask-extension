@@ -6,6 +6,10 @@ import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getLabelKeys } from '../../../../shared/lib/activity/label-keys';
+import {
+  applyDisplaySign,
+  getDisplaySignPrefix,
+} from '../../../../shared/lib/activity/fiat';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
@@ -37,8 +41,8 @@ type ActivityContent = {
 };
 
 /**
- * Shared presentation for MM Pay product-balance rows (perps and money
- * account): signed fiat amount, token avatar, and optional incoming direction.
+ * Shared presentation for MM Pay product-balance rows (perps): signed fiat
+ * amount, token avatar, and optional incoming direction.
  *
  * @param options - Row formatting options.
  * @param options.currency - Fiat currency code used for formatting.
@@ -298,21 +302,37 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           token,
         });
       }
-      // Render the money-account balance change as fiat, consistent with other MM Pay rows.
+      // Rendered like a send/receive row with the money account as the
+      // counterparty, matching mobile. mUSD is pegged 1:1 to USD, so the
+      // pegged fiat amount stands in when no market rate is available. Until
+      // the batch commits to an mUSD amount only MM Pay's quoted fiat is
+      // known, so that becomes the primary amount rather than "0 mUSD".
       case 'moneyAccountDeposit':
       case 'moneyAccountWithdraw': {
         const { fiat, token } = activity.data;
+        const fiatAmount = fiat ? Number(fiat.amount) : undefined;
+        const peggedFiat =
+          token && fiatAmount !== undefined && Number.isFinite(fiatAmount)
+            ? applyDisplaySign(
+                formatCurrencyWithMinThreshold(
+                  token.direction === 'out' ? -fiatAmount : fiatAmount,
+                  MONEY_ACCOUNT_FIAT_CURRENCY,
+                ),
+                getDisplaySignPrefix(token.direction, { showPlus: true }),
+              )
+            : undefined;
+        const hasTokenAmount = Boolean(token?.amount);
 
-        return buildMmPayProductBalanceContent({
-          currency: MONEY_ACCOUNT_FIAT_CURRENCY,
-          fiat,
-          formatCurrencyWithMinThreshold,
-          isIncoming: activity.type === 'moneyAccountDeposit',
-          isWithdraw: activity.type === 'moneyAccountWithdraw',
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? '']),
           subtitle: t(labelKeys.description.key),
-          title: t(labelKeys.title.key),
-          token,
-        });
+          primaryAmount: hasTokenAmount ? formatTokenAmount(token) : peggedFiat,
+          primaryDirection: token?.direction,
+          secondaryAmount: hasTokenAmount
+            ? (formatAsFiat(token) ?? peggedFiat)
+            : undefined,
+        };
       }
       case 'nftBuy':
       case 'nftSell': {
