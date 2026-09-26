@@ -94,7 +94,29 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
 ];
 
-export const lavamoatPlugin = (args: Args) =>
+type IsolatedHtmlEntries = {
+  isIsolatedHtmlEntry: (name?: string | null) => boolean;
+  getIsolatedHtmlEntryNames: () => string[];
+};
+
+const lockdownBase = [
+  String.raw`runtime\.[0-9a-h]{20}\.js`,
+  String.raw`scripts\/contentscript\.js`,
+  String.raw`service-worker\.js`,
+];
+
+function lockdownPattern(isolatedHtmlNames: string[]) {
+  const isolated = isolatedHtmlNames.map(
+    (name) =>
+      `${name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}(?:\\.[0-9a-h]{20})?\\.js`,
+  );
+  return new RegExp(`^(?:${[...lockdownBase, ...isolated].join('|')})$`, 'u');
+}
+
+export const lavamoatPlugin = (
+  args: Args,
+  isolatedHtml?: IsolatedHtmlEntries,
+) =>
   new LavaMoatPlugin({
     rootDir,
     policyLocation: join(
@@ -107,9 +129,15 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'runtime.<hash>.js', 'scripts/contentscript.js', and 'service-worker.js'.
-    inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js)$/u,
+    // Apply lockdown to shared runtimes and self-contained extension entrypoints.
+    // LavaMoat copies options at construct time, before WAR HTML entries exist,
+    // so this must resolve names when `.test` runs during emit.
+    inlineLockdown: {
+      test: (file: string) =>
+        lockdownPattern(isolatedHtml?.getIsolatedHtmlEntryNames() ?? []).test(
+          file,
+        ),
+    } as RegExp,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -150,6 +178,20 @@ export const lavamoatPlugin = (args: Args) =>
               enabled: true,
               // Globals used by the contentscript
               exceptions: ['browser', 'chrome', 'btoa'],
+            },
+          },
+        };
+      } else if (isolatedHtml?.isIsolatedHtmlEntry(chunk.name)) {
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              exceptions: [
+                ...getScuttleGlobalThisExceptions(args),
+                'browser',
+                'chrome',
+              ],
             },
           },
         };

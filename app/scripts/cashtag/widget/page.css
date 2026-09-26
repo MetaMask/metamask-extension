@@ -1,0 +1,54 @@
+/* Injected into the page: widget position */
+
+a[interestfor='mm-cashtag-popover'] {
+  interest-delay-start: 0;
+}
+
+#mm-cashtag-popover {
+  margin: 0;
+  padding: 0;
+  border: none;
+  inset: auto;
+  width: 576px;
+  height: 503px;
+  border-radius: 12px;
+  transition-property: opacity, transform, display, overlay;
+  transition-duration: 100ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-behavior: allow-discrete;
+  top: anchor(bottom);
+  left: anchor(left);
+  margin-block-start: 8px;
+  position-try-fallbacks: flip-block, --below-left, --above-left;
+}
+
+@position-try --below-left {
+  inset: unset;
+  top: anchor(bottom);
+  left: anchor(left);
+}
+
+@position-try --above-left {
+  inset: unset;
+  bottom: anchor(top);
+  left: anchor(left);
+}
+
+@starting-style {
+  #mm-cashtag-popover {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+}
+
+#mm-cashtag-popover:popover-open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mm-cashtag-popover {
+    transform: none;
+    transition: none;
+  }
+}
