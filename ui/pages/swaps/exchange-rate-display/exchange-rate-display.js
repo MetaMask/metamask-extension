@@ -7,7 +7,7 @@ import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-
 import Box from '../../../components/ui/box';
 import {
   JustifyContent,
-  DISPLAY,
+  Display,
   AlignItems,
   IconColor,
   TextColor,
@@ -82,7 +82,7 @@ export default function ExchangeRateDisplay({
   return (
     <div className={classnames('exchange-rate-display', className)}>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         onClick={onQuotesClick}
