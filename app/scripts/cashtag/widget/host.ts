@@ -12,8 +12,6 @@ const widgetFramePath = 'cashtag-widget.html';
 const anchorNameProp = 'anchor-name';
 const positionAnchorProp = 'position-anchor';
 const activeAnchorVar = '--cashtag-invoker';
-const frameWidth = 576;
-const frameHeight = 503;
 
 export type WidgetHandle = {
   shadowHost: HTMLElement;
@@ -37,8 +35,6 @@ export async function injectWidget(): Promise<WidgetHandle> {
   host.setAttribute('popover', 'auto');
   host.popover = 'auto';
   host.style.setProperty(positionAnchorProp, activeAnchorVar);
-  host.style.width = `${frameWidth}px`;
-  host.style.height = `${frameHeight}px`;
 
   const shadowRoot = host.attachShadow({ mode: 'closed' });
 
