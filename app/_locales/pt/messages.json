@@ -8896,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "A opção Comprar está temporariamente indisponível"
   },
-  "rampsShowAllTokens": {
-    "message": "Mostrar todos os tokens"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Este token não está disponível em sua região.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"

@@ -8896,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "खरीदारी अस्थायी रूप से उपलब्ध नहीं है"
   },
-  "rampsShowAllTokens": {
-    "message": "सभी टोकन दिखाएं"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "यह टोकन आपके क्षेत्र में उपलब्ध नहीं है।",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"

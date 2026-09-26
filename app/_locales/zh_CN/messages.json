@@ -8902,9 +8902,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "购买功能暂时不可用"
   },
-  "rampsShowAllTokens": {
-    "message": "显示所有代币"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "您所在的地区暂不支持此代币。",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"

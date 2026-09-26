@@ -8896,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "L’achat est temporairement indisponible"
   },
-  "rampsShowAllTokens": {
-    "message": "Afficher tous les jetons"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Ce jeton n’est pas disponible dans votre région.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
