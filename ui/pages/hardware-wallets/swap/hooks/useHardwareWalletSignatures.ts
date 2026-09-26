@@ -23,8 +23,9 @@ import { useHwSwapQrState } from '../../../../hooks/hardware-wallets/useHwSwapQr
 import { useHwSwapNavigation } from '../../../../hooks/hardware-wallets/useHwSwapNavigation';
 import { useHwSwapActions } from '../../../../hooks/hardware-wallets/useHwSwapActions';
 import {
-  isUserRejectedHardwareWalletError,
   useHardwareWalletActions,
+  useHardwareWalletState,
+  isInE2eTest,
 } from '../../../../contexts/hardware-wallets';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import {
@@ -38,6 +39,7 @@ import { internalSelectPendingApproval } from '../../../../selectors';
 import type { SignatureStepListProps } from '../components/signature-step-list.types';
 import type { SignatureFooterProps } from '../components/signature-footer.types';
 import {
+  getHardwareWalletSignatureErrorEvent,
   getTransactionField,
   getHardwareWalletSignatureViewModel,
   isAwaitingSignature,
@@ -180,6 +182,10 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   );
 
   const retryGenerationRef = useRef(0);
+  const [retryGeneration, setRetryGeneration] = useState(0);
+  const bumpRetryGeneration = useCallback(() => {
+    setRetryGeneration(retryGenerationRef.current);
+  }, []);
   // Guards HW reject/fail dispatches so errors from the OLD submission during
   // cancelCurrentBatch() don't race with the retry and prematurely transition
   // the state machine. Cleared before the new resubmit so that attempt's
@@ -196,6 +202,28 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   // longer than SIGNATURE_STUCK_TIMEOUT_MS without progressing. Resets when
   // the state leaves awaiting-signature or a retry starts.
   const [hasSignatureTimedOut, setHasSignatureTimedOut] = useState(false);
+
+  // Set when a sendBundle submission attempt dies with an error that maps to
+  // no state-machine event (DeviceStateEthAppClosed): the signing UI stays on
+  // the awaiting path while HardwareWalletErrorProvider prompts the user to
+  // open the Ethereum app, but the signing request is gone. Once the device
+  // recovers, the send is restarted via handleRetry (which recreates the tx —
+  // the original approval was consumed by the failed attempt). Unlike the
+  // bridge path, the send path cannot rely on an effect re-fire: submit
+  // failure is swallowed to keep the UI awaiting, so it is flagged here.
+  const [needsSendBundleRestart, setNeedsSendBundleRestart] = useState(false);
+  const onSubmissionNeedsRestart = useCallback(() => {
+    setNeedsSendBundleRestart(true);
+  }, []);
+
+  // Connection state drives the app-closed recovery: the restart effect
+  // re-evaluates on every connection change (e.g. ErrorState while the
+  // Ethereum app is closed, Ready again once the app is reopened), and the
+  // modal's recovery checks re-arm the flag when the device is still not
+  // ready.
+  const { connectionState } = useHardwareWalletState();
+  const { ensureDeviceReady } = useHardwareWalletActions();
+  const inE2e = isInE2eTest();
 
   /**
    * True when a catch must not update the signature state machine: either
@@ -222,6 +250,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       retryGenerationRef,
       dispatchSignatureEvent,
       isStaleAttempt,
+      onSubmissionNeedsRestart,
       dispatch,
     });
 
@@ -229,11 +258,11 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     useSubmitBridgeTransaction();
 
   /**
-   * Wraps bridge submission so hardware-wallet reject/fail outcomes update the
-   * signature state machine. `useSubmitBridgeTransaction` throws on those
-   * outcomes; we translate them here unless the attempt is stale (cancel-
-   * during-retry in flight, or retry advanced `retryGenerationRef` after this
-   * submission started).
+   * Wraps bridge submission so hardware-wallet reject/fail/disconnect outcomes
+   * update the signature state machine. `useSubmitBridgeTransaction` throws on
+   * those outcomes; we map them to a shared signature event unless the attempt
+   * is stale (cancel-during-retry in flight, or retry advanced
+   * `retryGenerationRef` after this submission started).
    */
   const submitBridgeTransaction = useCallback(
     async (quoteResponse: QuoteResponse) => {
@@ -243,14 +272,9 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         await submitBridgeTransactionBase(quoteResponse);
       } catch (error) {
         if (!isStaleAttempt(submissionGeneration)) {
-          if (isUserRejectedHardwareWalletError(error)) {
-            dispatchSignatureEvent({
-              type: HardwareWalletSignatureEvent.TransactionRejected,
-            });
-          } else {
-            dispatchSignatureEvent({
-              type: HardwareWalletSignatureEvent.TransactionFailed,
-            });
+          const event = getHardwareWalletSignatureErrorEvent(error);
+          if (event) {
+            dispatchSignatureEvent(event);
           }
         }
         throw error;
@@ -356,6 +380,23 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     isDeviceDisconnectedRef,
   });
 
+  const [qrStepTrackingResetKey, setQrStepTrackingResetKey] = useState(
+    () => `${activeSigningRequestId}:0`,
+  );
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      setQrStepTrackingResetKey(
+        `${activeSigningRequestId}:${retryGenerationRef.current}`,
+      );
+    });
+  }, [
+    activeSigningRequestId,
+    retryGeneration,
+    retryGenerationRef,
+    signatureState.status,
+  ]);
+
   const {
     isReadingQrSignature,
     setIsReadingQrSignature,
@@ -367,7 +408,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
   } = useHwSwapQrState({
     signatureState,
     confirmationTxData,
-    stepTrackingResetKey: `${activeSigningRequestId}:${retryGenerationRef.current}`,
+    stepTrackingResetKey: qrStepTrackingResetKey,
   });
 
   useHwSwapNavigation({ signatureState });
@@ -386,7 +427,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     retryGenerationRef,
   );
 
-  const { handleRetry, handleCancel, isRetrying, hasRetriedRef } =
+  const { handleRetry, handleCancel, isRetrying, hasRetried } =
     useHwSwapActions({
       signatureState,
       dispatchSignatureEvent,
@@ -403,7 +444,72 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
       currentApprovalRequestId,
       returnRoute: sendBundleState?.returnRoute,
       isRetryingRef,
+      onRetryGenerationBump: bumpRetryGeneration,
     });
+
+  // Auto-restart a sendBundle submission that died with an error that maps to
+  // no state-machine event (DeviceStateEthAppClosed): the signing UI stays on
+  // the awaiting path while HardwareWalletErrorProvider prompts the user to
+  // open the Ethereum app, but the signing request is gone. The restart goes
+  // through handleRetry so it reuses the standard retry path (cancel the dead
+  // batch, resume the state machine, recreate the tx — the original approval
+  // was consumed by the failed attempt — then re-approve). The readiness
+  // snapshot alone is not enough — a signing failure does not necessarily
+  // flip connectionState — so the restart confirms with a live
+  // ensureDeviceReady() check, mirroring the bridge path's preflight. A
+  // failed check also sets the connection ErrorState, which surfaces the
+  // "Open Ethereum app" modal even if no device event did.
+  useEffect(() => {
+    if (!isSendBundleFlow || !needsSendBundleRestart) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const attemptRestart = async () => {
+      // E2E has no physical device; skip the live readiness check and
+      // restart directly (same policy as the bridge path's preflight).
+      const isDeviceReady = inE2e || (await ensureDeviceReady());
+
+      if (cancelled) {
+        return;
+      }
+
+      if (!isDeviceReady) {
+        // The device is still not ready (e.g. the app is still closed): the
+        // failed check updates the connection state so the recovery modal
+        // stays accurate. Retry on the next connection-state change.
+        setNeedsSendBundleRestart(true);
+        return;
+      }
+
+      setNeedsSendBundleRestart(false);
+      // ensureDeviceReady() above is already a live readiness check;
+      // connectionState may still lag a tick, so skip its stale re-check.
+      await handleRetry({ skipConnectionCheck: true });
+    };
+
+    attemptRestart().catch(() => {
+      if (!cancelled) {
+        // Unexpected restart failure: surface the standard failed state so
+        // the user gets the "Try again" button instead of a silent loop.
+        dispatchSignatureEvent({
+          type: HardwareWalletSignatureEvent.TransactionFailed,
+        });
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    connectionState,
+    ensureDeviceReady,
+    handleRetry,
+    inE2e,
+    isSendBundleFlow,
+    needsSendBundleRestart,
+  ]);
 
   // WORKAROUND: Set the Trezor signing-in-progress flag to suppress
   // spurious WebUSB disconnect teardowns during signing. See
@@ -500,7 +606,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     hasSigningRequest: Boolean(lockedQuote || sendBundleTxMeta),
     hasSignatureTimedOut,
     isRetrying,
-    hasRetried: hasRetriedRef.current,
+    hasRetried,
     showInlineQrSigning,
     isReadingQrSignature,
     activeQrStep,

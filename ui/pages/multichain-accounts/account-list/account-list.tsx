@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import {
   Box,
@@ -29,9 +29,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import { useAccountListSearch } from '../../../components/multichain-accounts/hooks/useAccountListSearch';
 import {
+  getAccountListStats,
   getAccountTree,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   getAllPermittedAccountsForCurrentTab,
   getIsDefaultAddressEnabled,
@@ -51,6 +53,12 @@ import {
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { ScrollContainer } from '../../../contexts/scroll-container';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsManageAccountsSource,
+} from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -62,6 +70,10 @@ export const AccountList = () => {
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
+  // The metrics counts below are read from the store at click time so they
+  // reflect the moment the manage view opened. They are not used during render.
+  const store = useStore<MultichainAccountsState>();
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const {
     isAccountTreeSyncingInProgress,
@@ -112,13 +124,52 @@ export const AccountList = () => {
     (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
       true;
 
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const handleBack = useCallback(() => {
+    // Edit mode hides the gear icon, so back is the way out of it.
+    if (isEditMode) {
+      setIsEditMode(false);
+      return;
+    }
+
     if (isFreshTab) {
       navigate(DEFAULT_ROUTE, { replace: true });
     } else {
       transitionBack(() => navigate(PREVIOUS_ROUTE));
     }
-  }, [isFreshTab, navigate]);
+  }, [isEditMode, isFreshTab, navigate]);
+
+  const handleEnterEditMode = useCallback(() => {
+    setIsEditMode(true);
+
+    // The stats walk the whole account tree, which is what the event's counts
+    // are specified to mean: the whole wallet, not the subset an active search
+    // has left on screen.
+    const { totalAccounts, totalWallets, hiddenCount } = getAccountListStats(
+      store.getState(),
+    );
+
+    // Tracked on the click rather than from an effect on `isEditMode`, so a
+    // re-render while editing cannot fire a second view event.
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ManageAccountsViewed)
+        .addCategory(MetaMetricsEventCategory.Accounts)
+        .addProperties({
+          source: MetaMetricsManageAccountsSource.AccountList,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          total_accounts: totalAccounts,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          total_wallets: totalWallets,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hidden_count: hiddenCount,
+        })
+        .build(),
+    );
+  }, [createEventBuilder, store, trackEvent]);
 
   return (
     <Page
@@ -138,8 +189,19 @@ export const AccountList = () => {
             data-testid="account-list-page-back-button"
           />
         }
+        endAccessory={
+          isEditMode ? null : (
+            <ButtonIcon
+              size={ButtonIconSize.Md}
+              ariaLabel={t('manageAccounts')}
+              iconName={IconName.Setting}
+              onClick={handleEnterEditMode}
+              data-testid="account-list-page-manage-button"
+            />
+          )
+        }
       >
-        {t('accounts')}
+        {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box
@@ -167,6 +229,7 @@ export const AccountList = () => {
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
               showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+              isEditMode={isEditMode}
             />
           ) : (
             <Box

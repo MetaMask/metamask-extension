@@ -13,4 +13,14 @@ describe('NoFeeTag', () => {
     expect(getByTestId('no-fee-tag')).toBeInTheDocument();
     expect(getByText(messages.noFee.message)).toBeInTheDocument();
   });
+
+  it('does not allow the label to wrap', () => {
+    const store = configureStore(mockState);
+    const { getByTestId } = renderWithProvider(<NoFeeTag />, store);
+
+    expect(getByTestId('no-fee-tag')).toHaveClass(
+      'shrink-0',
+      'whitespace-nowrap',
+    );
+  });
 });

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   Box,
@@ -26,14 +26,20 @@ const NftOptions = ({
 }: NftOptionsProps) => {
   const t = useContext(I18nContext);
   const [nftOptionsOpen, setNftOptionsOpen] = useState(false);
-  const ref = useRef<HTMLElement | null>(null);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null,
+  );
+
+  const setAnchorRef = useCallback((node: HTMLElement | null) => {
+    setReferenceElement(node);
+  }, []);
 
   const closePopover = () => {
     setNftOptionsOpen(false);
   };
 
   return (
-    <Box ref={ref}>
+    <Box ref={setAnchorRef}>
       <ButtonIcon
         iconName={IconName.MoreVertical}
         data-testid="nft-options__button"
@@ -46,7 +52,7 @@ const NftOptions = ({
         onClickOutside={closePopover}
         isOpen={nftOptionsOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={ref.current}
+        referenceElement={referenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,

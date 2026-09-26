@@ -193,7 +193,7 @@ describe('useBridging', () => {
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
             {
-              location: location as never,
+              location,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_source: token?.symbol ?? 'ETH',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -229,6 +229,8 @@ describe('useBridging', () => {
                     chainId: formatChainIdToCaip(expectedState.token.chainId),
                   }
                 : null,
+              swapViewTraceId: expect.any(String),
+              swapViewPrefilledAmount: false,
             },
           },
         );
@@ -549,7 +551,7 @@ describe('useBridging', () => {
           [
             UnifiedSwapBridgeEventName.ButtonClicked,
             {
-              location: location as never,
+              location,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol_destination: '',
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -583,6 +585,8 @@ describe('useBridging', () => {
                   chainId: formatChainIdToCaip(expectedState.token.chainId),
                 }
               : null,
+            swapViewTraceId: expect.any(String),
+            swapViewPrefilledAmount: false,
           },
         });
         expect(openTabSpy).not.toHaveBeenCalled();

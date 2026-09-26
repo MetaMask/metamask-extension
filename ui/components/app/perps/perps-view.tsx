@@ -10,6 +10,7 @@ import type { Order, Position } from '@metamask/perps-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { usePerpsEntryTrace } from '../../../hooks/perps/usePerpsEntryTrace';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -52,6 +53,7 @@ import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsMarketBalanceActions } from './perps-market-balance-actions';
 import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
 import { PerpsExploreMarkets } from './perps-explore-markets';
+import { PerpsProducts } from './perps-products';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
 import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
@@ -61,6 +63,7 @@ import {
 } from './perps-skeletons';
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsTopMovers } from './perps-top-movers';
 import { PerpsWatchlist } from './perps-watchlist';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
@@ -107,9 +110,12 @@ export const PerpsView = () => {
     usePerpsLiveOrders();
   const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
+    allMarkets,
     exploreMarkets,
     watchlistMarkets,
+    watchlistCount,
     isInitialLoading: marketsLoading,
+    isLive: marketsLive,
   } = usePerpsTabExploreData();
 
   const {
@@ -387,6 +393,19 @@ export const PerpsView = () => {
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
 
+  let entryVariant: 'empty' | 'position' | 'order' = 'empty';
+  if (orders.length > 0) {
+    entryVariant = 'order';
+  } else if (positions.length > 0) {
+    entryVariant = 'position';
+  }
+  usePerpsEntryTrace(
+    'home',
+    exploreMarkets,
+    isLoading,
+    marketsLive,
+    entryVariant,
+  );
   usePerpsMeasurement('PerpsTabLoaded', !isLoading);
 
   usePerpsEventTracking({
@@ -449,6 +468,17 @@ export const PerpsView = () => {
         </Box>
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
+        {/* Watchlist sits above Products once loaded, and is the one section
+            whose presence is known before the markets arrive: the starred
+            symbols are persisted. Reserving its rows here keeps Products in the
+            slot it will occupy instead of letting the watchlist push it down.
+            A user with nothing starred gets no section and no reservation. */}
+        {watchlistCount > 0 && (
+          <PerpsSectionSkeleton cardCount={watchlistCount} />
+        )}
+        {/* Reserves the Products section's height in the same slot it occupies
+            once loaded, so nothing below it shifts when the chips arrive. */}
+        <PerpsProducts isLoading />
         <Box data-testid="perps-recent-activity-skeleton">
           <PerpsSectionSkeleton cardCount={3} showStartTradeCta={false} />
         </Box>
@@ -491,6 +521,15 @@ export const PerpsView = () => {
 
       {/* Watchlist */}
       <PerpsWatchlist markets={watchlistMarkets} />
+
+      {/* Products: the tab's shortcut into the full market list, below the
+          user's own watchlist so their own markets come first. Loading is not
+          a live state here: `marketsLoading` is part of the `isLoading` the
+          early return above already took, so it is false by this point. */}
+      <PerpsProducts isLoading={false} />
+
+      {/* Top movers */}
+      <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />
 
       {/* Explore markets */}
       <PerpsExploreMarkets markets={exploreMarkets} />
