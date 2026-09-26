@@ -49,14 +49,12 @@ jest.mock('../../../hooks/musd', () => ({
   useCanBuyMusd: () => mockUseCanBuyMusd(),
 }));
 
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
-let mockOpensBuyInPortfolioTab = true;
+const mockGoToBuy = jest.fn();
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => ({
     goToBuy: mockGoToBuy,
-    opensBuyInPortfolioTab: mockOpensBuyInPortfolioTab,
   }),
 }));
 
@@ -128,7 +126,7 @@ describe('MusdEducationScreen', () => {
       canBuyMusdInRegion: true,
       isLoading: false,
     });
-    mockOpensBuyInPortfolioTab = true;
+    mockGoToBuy.mockResolvedValue('portfolio');
   });
 
   it('renders the headline with the bonus percentage', () => {
@@ -331,7 +329,7 @@ describe('MusdEducationScreen', () => {
         canBuyMusdInRegion: true,
         isLoading: false,
       });
-      mockOpensBuyInPortfolioTab = false;
+      mockGoToBuy.mockResolvedValue('native');
       const store = createMockStore();
       renderWithProvider(<MusdEducationScreen />, store);
 

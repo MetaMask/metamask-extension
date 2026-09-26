@@ -1,7 +1,19 @@
 import {
+  getStorageItem,
+  setStorageItem,
+} from '../../../../shared/lib/storage-helpers';
+import {
+  hasAttemptedPortfolioBuyMigration,
   hasEverConnectedToPortfolio,
+  markPortfolioBuyMigrationAttempted,
+  PORTFOLIO_BUY_MIGRATION_ATTEMPTED_STORAGE_KEY,
   PORTFOLIO_ORIGINS,
 } from './portfolioConnection';
+
+jest.mock('../../../../shared/lib/storage-helpers');
+
+const mockGetStorageItem = getStorageItem as jest.Mock;
+const mockSetStorageItem = setStorageItem as jest.Mock;
 
 // A CAIP-25 permission granting one EVM account, as stored after a dapp connects.
 const connectedSubject = (origin: string) => ({
@@ -150,5 +162,47 @@ describe('hasEverConnectedToPortfolio', () => {
         },
       }),
     ).toBe(false);
+  });
+});
+
+describe('Portfolio Buy migration attempt marker', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('reads supported marker values', async () => {
+    const results = [];
+    for (const [label, storedValue] of [
+      ['missing', undefined],
+      ['boolean marker', true],
+      ['legacy string marker', '1'],
+    ]) {
+      mockGetStorageItem.mockResolvedValue(storedValue);
+      results.push({
+        label,
+        attempted: await hasAttemptedPortfolioBuyMigration(),
+      });
+    }
+
+    expect({
+      results,
+      storageCalls: mockGetStorageItem.mock.calls,
+    }).toMatchSnapshot();
+  });
+
+  it('marks the migration attempted', async () => {
+    await markPortfolioBuyMigrationAttempted();
+
+    expect(mockSetStorageItem.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          "portfolio-buy-migration-attempted-v13",
+          true,
+        ],
+      ]
+    `);
+    expect(PORTFOLIO_BUY_MIGRATION_ATTEMPTED_STORAGE_KEY).toBe(
+      'portfolio-buy-migration-attempted-v13',
+    );
   });
 });

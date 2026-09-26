@@ -17,7 +17,7 @@ import * as stellarSnapRequests from '../utils/stellar-snap-client-requests';
 import { Asset } from '../types/asset';
 import TokenButtons from './token-buttons';
 
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
 const mockOpenBridgeExperience = jest.fn();
 
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
@@ -31,6 +31,14 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   __esModule: true,
   default: () => ({ openBridgeExperience: mockOpenBridgeExperience }),
 }));
+
+jest.mock('../../../helpers/utils/show-buy-tab-opened-toast', () => ({
+  showBuyTabOpenedToast: jest.fn(),
+}));
+const mockShowBuyTabOpenedToast = jest.mocked(
+  jest.requireMock('../../../helpers/utils/show-buy-tab-opened-toast')
+    .showBuyTabOpenedToast,
+);
 
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
@@ -100,6 +108,20 @@ describe('TokenButtons buy wiring', () => {
     fireEvent.click(getByTestId('token-overview-buy'));
     await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
     expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('shows the tab-opened toast when Buy opens Portfolio', async () => {
+    mockGoToBuy.mockResolvedValueOnce('portfolio');
+    const { getByTestId } = renderWithProvider(
+      <TokenButtons token={token} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('token-overview-buy'));
+    await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
+    expect(mockShowBuyTabOpenedToast.mock.calls.length).toMatchInlineSnapshot(
+      `1`,
+    );
   });
 });
 

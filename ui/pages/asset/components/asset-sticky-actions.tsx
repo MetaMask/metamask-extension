@@ -95,7 +95,7 @@ export const AssetStickyActions = ({
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const gateCtaAction = useAssetPageSecurityTrustCtaGate();
   const isCtaGateReady = useAssetPageSecurityTrustCtaGateReady();
-  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
+  const { goToBuy } = useRampsNavigation();
   const { openBridgeExperience } = useBridging();
 
   const isNative = isNativeAsset(asset);
@@ -163,16 +163,14 @@ export const AssetStickyActions = ({
         ? buyAssetId
         : toAssetId(asset.address, chainId);
 
-      const opened = await goToBuy({ assetId, chainId });
+      const destination = await goToBuy({ assetId, chainId });
       // The ramps gate can block the buy and show its own modal; don't report a
       // buy click in that case.
-      if (!opened) {
+      if (!destination) {
         return;
       }
 
-      // Only the Portfolio paths open a browser tab; when goToBuy navigates
-      // in-app the "tab opened" toast would be misleading.
-      if (opensBuyInPortfolioTab) {
+      if (destination === 'portfolio') {
         showBuyTabOpenedToast(
           t('buyTabOpenedToastText'),
           t('buyTabOpenedToastDescription'),
@@ -209,7 +207,6 @@ export const AssetStickyActions = ({
     createEventBuilder,
     gateCtaAction,
     goToBuy,
-    opensBuyInPortfolioTab,
     symbol,
     t,
     trackEvent,
