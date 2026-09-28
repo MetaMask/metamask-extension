@@ -258,6 +258,28 @@ export function RampsQuoteWarning({ warningMessage }: RampsQuoteWarningProps) {
 }
 
 /**
+ * Whether `RampsQuoteDisplay` renders content for the given props. Mirrors the
+ * component's render branches, which return null when there is no loading
+ * state, warning, or amounts to display.
+ *
+ * @param options0 - Same props as `RampsQuoteDisplay`.
+ * @param options0.cryptoAmount
+ * @param options0.fiatAmount
+ * @param options0.isLoading
+ * @param options0.showWarningIcon
+ */
+export function hasQuoteDisplayContent({
+  cryptoAmount,
+  fiatAmount,
+  isLoading,
+  showWarningIcon,
+}: RampsQuoteDisplayProps) {
+  return Boolean(
+    isLoading || showWarningIcon || cryptoAmount || fiatAmount !== null,
+  );
+}
+
+/**
  * Right-column quote preview for payment method rows (mobile `QuoteDisplay`).
  *
  * @param options0

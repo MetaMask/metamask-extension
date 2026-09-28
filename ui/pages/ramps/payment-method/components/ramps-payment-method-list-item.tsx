@@ -25,7 +25,9 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { getRampsListItemClassName } from '../../components/get-ramps-list-item-class-name';
 import { formatPaymentMethodDelay } from '../utils/format-payment-method-delay';
 import { getPaymentMethodIconName } from '../utils/get-payment-method-icon';
-import RampsQuoteDisplay from './ramps-quote-display';
+import RampsQuoteDisplay, {
+  hasQuoteDisplayContent,
+} from './ramps-quote-display';
 
 export type RampsPaymentMethodListItemProps = {
   paymentMethod: PaymentMethod;
@@ -101,6 +103,14 @@ export default function RampsPaymentMethodListItem({
     quote.quote.amountOutInFiat !== null
       ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
       : null;
+  const quoteInfoDisplayed =
+    showQuote &&
+    hasQuoteDisplayContent({
+      cryptoAmount,
+      fiatAmount,
+      isLoading: quoteLoading,
+      showWarningIcon: quoteError,
+    });
 
   return (
     <ButtonBase
@@ -209,7 +219,7 @@ export default function RampsPaymentMethodListItem({
                   warningMessage={quoteErrorMessage}
                 />
               ) : null}
-              {isSelected ? (
+              {isSelected && !quoteInfoDisplayed ? (
                 <Icon
                   name={IconName.Check}
                   size={IconSize.Lg}
