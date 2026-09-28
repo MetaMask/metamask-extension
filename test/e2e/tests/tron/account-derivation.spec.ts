@@ -213,7 +213,7 @@ describe('Tron account derivation', function (this: Suite) {
     );
   });
 
-  it('Shows each account Tron address on the quick-copy popup and copies it', async function () {
+  it('Shows each account Tron address on the quick-copy popup and copies it TEST', async function () {
     await withTronFixtures(
       {
         accounts: [EMPTY_TRON_ACCOUNT],
