@@ -15,7 +15,6 @@ import {
   getShieldCommonTrackingProps,
   getShieldMarketingTrackingProps,
 } from '../../../../shared/lib/shield';
-import type { MetaMaskReduxDispatch } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { ShieldMetricsSourceEnum } from '../../../../shared/constants/subscriptions';

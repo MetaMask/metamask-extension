@@ -19,6 +19,10 @@ import browser from 'webextension-polyfill';
 import { TransactionType } from '@metamask/transaction-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { WebAuthenticator } from '../oauth/types';
 import { createSwapsMockStore } from '../../../../test/jest';
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
@@ -695,6 +699,49 @@ describe('ShieldSubscriptionService - handlePostTransaction', () => {
     });
     expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
       PRODUCT_TYPES.SHIELD,
+    );
+  });
+
+  it('tracks a succeeded payment method change when the shield subscription is already active', async () => {
+    const previousShieldEnabled = process.env.METAMASK_SHIELD_ENABLED;
+    process.env.METAMASK_SHIELD_ENABLED = 'true';
+    mockGetSubscriptions.mockResolvedValue([MOCK_ACTIVE_SHIELD_SUBSCRIPTION]);
+
+    const txMeta = {
+      ...MOCK_TX_META,
+      isGasFeeSponsored: true,
+      txParams: {
+        from: '0xdeadbeef1234567890abcdef',
+      },
+    };
+
+    try {
+      // @ts-expect-error mock tx meta
+      await subscriptionService.handlePostTransaction(txMeta);
+    } finally {
+      process.env.METAMASK_SHIELD_ENABLED = previousShieldEnabled;
+    }
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ShieldPaymentMethodChange,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Shield,
+          status: 'succeeded',
+          subscription_status: SUBSCRIPTION_STATUSES.active,
+          payment_type: PAYMENT_TYPES.byCard,
+          billing_interval: 'monthly',
+          new_payment_type: PAYMENT_TYPES.byCrypto,
+          new_billing_interval: 'yearly',
+          new_crypto_payment_chain: '0x1',
+          new_payment_currency: 'USD',
+        }),
+      }),
+    );
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ShieldSubscriptionRequest,
+      }),
     );
   });
 });
