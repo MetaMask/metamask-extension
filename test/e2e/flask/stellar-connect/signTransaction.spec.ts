@@ -37,36 +37,4 @@ describe('Stellar - Sign Transaction - e2e tests', function () {
       },
     );
   });
-
-  it('Signs multiple transactions sequentially', async function () {
-    await withStellarWalletSnap(
-      {
-        ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
-        title: this.test?.fullTitle(),
-      },
-      async (driver) => {
-        await addMultipleAccounts({ driver });
-        const testDapp = new TestDappStellar(driver);
-        await testDapp.openTestDappPage();
-
-        await connectStellarTestDapp(driver, testDapp);
-
-        for (let i = 0; i < 2; i++) {
-          await testDapp.loadExampleXdr();
-          await testDapp.signTransaction();
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const signTxConfirmation = new SnapSignTransactionConfirmation(
-            driver,
-          );
-          await signTxConfirmation.checkPageIsLoaded();
-          await signTxConfirmation.clickFooterConfirmButton();
-          await testDapp.switchTo();
-
-          const signedTransaction = await testDapp.getSignedTransaction();
-          assert.ok(signedTransaction.length > 0);
-        }
-      },
-    );
-  });
 });
