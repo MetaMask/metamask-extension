@@ -61,22 +61,28 @@ const mockMetamaskStore = {
     tokenNetworkFilter: {},
     privacyMode: false,
   },
-  accountsAssets: {
-    [mockNonEvmAccount.id]: [MultichainNativeAssets.SOLANA],
-  },
-  balances: {
+  selectedCurrency: 'usd',
+  assetsBalance: {
     [mockNonEvmAccount.id]: {
       [MultichainNativeAssets.SOLANA]: {
         amount: mockNonEvmBalance,
-        unit: 'SOL',
       },
     },
   },
-  fiatCurrency: 'usd',
-  conversionRates: {
+  assetsInfo: {
     [MultichainNativeAssets.SOLANA]: {
-      rate: '1.000',
-      conversionDate: 0,
+      type: 'native',
+      decimals: 9,
+      symbol: 'SOL',
+      name: 'Solana',
+    },
+  },
+  assetsPrice: {
+    [MultichainNativeAssets.SOLANA]: {
+      assetPriceType: 'fungible',
+      price: 1,
+      usdPrice: 1,
+      lastUpdated: 0,
     },
   },
   cryptocurrencies: [Cryptocurrency.Solana],
@@ -105,8 +111,8 @@ describe('AggregatedBalance Component', () => {
     const testStore = getStore({
       metamask: {
         ...mockMetamaskStore,
-        accountsAssets: {
-          [mockNonEvmAccount.id]: [],
+        assetsBalance: {
+          [mockNonEvmAccount.id]: {},
         },
       },
     });
@@ -149,11 +155,10 @@ describe('AggregatedBalance Component', () => {
       getStore({
         metamask: {
           ...mockMetamaskStore,
-          balances: {
+          assetsBalance: {
             [mockNonEvmAccount.id]: {
               [MultichainNativeAssets.SOLANA]: {
-                amount: 0,
-                unit: 'SOL',
+                amount: '0',
               },
             },
           },
@@ -203,11 +208,10 @@ describe('AggregatedBalance Component', () => {
           preferences: {
             showNativeTokenAsMainBalance: true,
           },
-          balances: {
+          assetsBalance: {
             [mockNonEvmAccount.id]: {
               [MultichainNativeAssets.SOLANA]: {
-                amount: 0,
-                unit: 'SOL',
+                amount: '0',
               },
             },
           },
@@ -234,7 +238,7 @@ describe('AggregatedBalance Component', () => {
           preferences: {
             showNativeTokenAsMainBalance: false,
           },
-          conversionRates: {},
+          assetsPrice: {},
         },
       }),
     );
@@ -259,10 +263,12 @@ describe('AggregatedBalance Component', () => {
           preferences: {
             showNativeTokenAsMainBalance: false,
           },
-          conversionRates: {
+          assetsPrice: {
             [MultichainNativeAssets.SOLANA]: {
-              rate: '1.000',
-              conversionDate: 0,
+              assetPriceType: 'fungible',
+              price: 1,
+              usdPrice: 1,
+              lastUpdated: 0,
             },
           },
         },
