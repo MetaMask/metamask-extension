@@ -1818,6 +1818,14 @@
   "assetChartNoHistoricalPrices": {
     "message": "We could not fetch any historical data"
   },
+  "chartNoData": {
+    "message": "No chart data",
+    "description": "Title shown when advanced chart fails to load"
+  },
+  "chartNoDataDescription": {
+    "message": "We couldn't load the chart. Try switching to Line mode.",
+    "description": "Description shown when advanced chart fails to load, suggesting user switch to line chart"
+  },
   "assetDeactivate": {
     "message": "Remove",
     "description": "Button label to deactivate an asset."
