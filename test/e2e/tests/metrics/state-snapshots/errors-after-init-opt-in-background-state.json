@@ -42,7 +42,7 @@
     "firstTimeInfo": "object",
     "installAttribution": null,
     "previousAppVersion": "",
-    "previousMigrationVersion": 229
+    "previousMigrationVersion": 0
   },
   "AppStateController": {
     "activeQrCodeScanRequest": null,
