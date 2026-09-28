@@ -63,7 +63,8 @@ export const NotificationSectionSubPage = ({
     if (
       !section ||
       !isMetamaskNotificationsEnabled ||
-      (!isLoadingPreferences && !hasNotificationPreferences)
+      (!isLoadingPreferences &&
+        (!hasNotificationPreferences || !preferences?.[sectionType]))
     ) {
       navigate(NOTIFICATIONS_SETTINGS_ROUTE, { replace: true });
     }
@@ -72,7 +73,9 @@ export const NotificationSectionSubPage = ({
     isLoadingPreferences,
     isMetamaskNotificationsEnabled,
     navigate,
+    preferences,
     section,
+    sectionType,
   ]);
 
   // Valid section with notifications enabled, but preferences are still being
@@ -102,7 +105,7 @@ export const NotificationSectionSubPage = ({
     !section ||
     !isMetamaskNotificationsEnabled ||
     !hasNotificationPreferences ||
-    !preferences
+    !preferences?.[sectionType]
   ) {
     return null;
   }
