@@ -31,10 +31,7 @@ import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useShieldConfirm } from '../../../hooks/transactions/useShieldConfirm';
-import {
-  PayWithOption,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 export const WalletInitiatedHeader = () => {
@@ -44,7 +41,7 @@ export const WalletInitiatedHeader = () => {
     useShieldConfirm();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const navigate = useNavigate();
-  const { payWithOption } = useConfirmationNavigationOptions();
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
 
   const confirmationType = getConfirmationTransactionType(currentConfirmation);
 
@@ -108,7 +105,7 @@ export const WalletInitiatedHeader = () => {
       return null;
     }
     if (confirmationType === TransactionType.perpsDeposit) {
-      return payWithOption === PayWithOption.MoneyAccount
+      return isMoneyAccountPerpsDeposit
         ? t('sendToPerps')
         : t('perpsDepositFundsTitle');
     }
