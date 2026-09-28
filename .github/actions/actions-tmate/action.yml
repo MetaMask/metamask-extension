@@ -4,7 +4,7 @@ branding:
   icon: terminal
 author: 'Max Schmitt'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: './index.js'
   post: './index.js'
   post-if: '!cancelled()'
@@ -45,6 +45,10 @@ inputs:
     description: 'The ed25519 fingerprint for your tmate server'
     required: false
     default: ''
+  msys2-location:
+    description: 'The root of the MSYS2 installation (on Windows runners)'
+    required: false
+    default: 'C:\msys64'
   github-token:
     description: >
       Personal access token (PAT) used to call into GitHub's REST API.
@@ -52,3 +56,11 @@ inputs:
       Also when generating a new PAT, select the least scopes necessary.
       [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
     default: ${{ github.token }}
+
+outputs:
+  ssh-command:
+    description: 'The SSH command to connect to the tmate session (only set when detached mode is enabled)'
+  ssh-address:
+    description: 'The raw SSH address without the "ssh" prefix (only set when detached mode is enabled)'
+  web-url:
+    description: 'The web URL to connect to the tmate session (only set when detached mode is enabled and web URL is available)'
