@@ -1,0 +1,153 @@
+import { Messenger } from '@metamask/messenger';
+import type { AnalyticsControllerState } from '@metamask/analytics-controller';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import { setupMarketingConsentSync } from './marketing-consent-sync';
+
+jest.mock('@metamask/messenger', () => ({
+  Messenger: jest.fn(),
+}));
+
+type SyncArgs = Parameters<typeof setupMarketingConsentSync>[0];
+
+const GET_CONSENT_ACTION =
+  'AuthenticatedUserStorageService:getMarketingConsent';
+const PUT_CONSENT_ACTION =
+  'AuthenticatedUserStorageService:putMarketingConsent';
+const OPT_IN_ACTION = 'AnalyticsController:optInToMarketing';
+const OPT_OUT_ACTION = 'AnalyticsController:optOutOfMarketing';
+
+const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+function setupSync({
+  analyticsState = {
+    optedInToMarketing: false,
+    marketingConsentDecisionMade: false,
+  },
+  authenticationState = { isSignedIn: false },
+  remoteConsent = null,
+  getConsent = () => Promise.resolve(remoteConsent),
+}: {
+  analyticsState?: Partial<AnalyticsControllerState>;
+  authenticationState?: Partial<AuthenticationControllerState>;
+  remoteConsent?: { marketingConsentEnabled: boolean } | null;
+  getConsent?: () => Promise<{ marketingConsentEnabled: boolean } | null>;
+} = {}) {
+  const handlers: Record<string, (state: unknown) => void> = {};
+  const calls: unknown[][] = [];
+  const call = jest.fn((action: string) => {
+    calls.push([action]);
+    if (action === 'AnalyticsController:getState') {
+      return analyticsState;
+    }
+    if (action === 'AuthenticationController:getState') {
+      return authenticationState;
+    }
+    if (action === GET_CONSENT_ACTION) {
+      return getConsent();
+    }
+    return Promise.resolve();
+  });
+  const syncMessenger = {
+    call,
+    subscribe: jest.fn((event: string, handler: (state: unknown) => void) => {
+      handlers[event] = handler;
+    }),
+  };
+  (Messenger as jest.Mock).mockImplementation(() => syncMessenger);
+
+  const delegate = jest.fn();
+  const messenger = { delegate } as unknown as SyncArgs['messenger'];
+  setupMarketingConsentSync({ messenger });
+
+  return { handlers, call, calls, delegate };
+}
+
+describe('setupMarketingConsentSync', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('waits until signed in and the user has made a marketing decision', async () => {
+    const { handlers, call } = setupSync();
+
+    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
+
+    handlers['AuthenticationController:stateChange']({ isSignedIn: true });
+    await flushPromises();
+    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
+
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: false,
+      marketingConsentDecisionMade: true,
+    });
+    await flushPromises();
+
+    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).toHaveBeenCalledWith(
+      PUT_CONSENT_ACTION,
+      {
+        marketingConsentEnabled: false,
+      },
+      'extension',
+    );
+  });
+
+  it.each([true, false])(
+    'applies AUS consent %s to AnalyticsController',
+    async (marketingConsentEnabled) => {
+      const { call } = setupSync({
+        analyticsState: {
+          optedInToMarketing: !marketingConsentEnabled,
+          marketingConsentDecisionMade: true,
+        },
+        authenticationState: { isSignedIn: true },
+        remoteConsent: { marketingConsentEnabled },
+      });
+      await flushPromises();
+
+      expect(call).toHaveBeenCalledWith(
+        marketingConsentEnabled ? OPT_IN_ACTION : OPT_OUT_ACTION,
+      );
+      expect(call).not.toHaveBeenCalledWith(PUT_CONSENT_ACTION);
+    },
+  );
+
+  it('does not reconcile an undecided local value', async () => {
+    const { call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: false,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: null,
+    });
+    await flushPromises();
+
+    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).not.toHaveBeenCalledWith(PUT_CONSENT_ACTION);
+  });
+
+  it('leaves local state unchanged when the AUS read fails', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const { call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      getConsent: () => Promise.reject(new Error('AUS unavailable')),
+    });
+
+    await flushPromises();
+
+    expect(call).not.toHaveBeenCalledWith(OPT_IN_ACTION);
+    expect(call).not.toHaveBeenCalledWith(OPT_OUT_ACTION);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Failed to synchronize marketing consent with AUS:',
+      expect.any(Error),
+    );
+    consoleErrorSpy.mockRestore();
+  });
+});

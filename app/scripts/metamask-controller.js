@@ -403,6 +403,7 @@ import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
+import { setupMarketingConsentSync } from './wallet-init/marketing-consent-sync';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
@@ -792,6 +793,7 @@ export default class MetamaskController extends EventEmitter {
     this.userStorageController = messengerClientsByName.UserStorageController;
     this.authenticatedUserStorageService =
       messengerClientsByName.AuthenticatedUserStorageService;
+    setupMarketingConsentSync({ messenger: this.controllerMessenger });
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
