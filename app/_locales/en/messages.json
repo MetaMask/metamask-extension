@@ -9048,8 +9048,7 @@
     "message": "Instant"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "<",
-    "description": "Less-than glyph glued to the delay value, e.g. \"<15 mins\""
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "min"
@@ -9063,7 +9062,7 @@
   },
   "rampsPaymentMethodLimits": {
     "message": "$1 limit",
-    "description": "$1 is the maximum fiat buy amount, e.g. \"5,000 limit\""
+    "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",
