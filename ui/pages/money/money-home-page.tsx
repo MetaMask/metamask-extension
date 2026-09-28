@@ -81,7 +81,7 @@ import { MoneyTransferSheet } from './components/money-transfer-sheet';
 const IS_MONEY_TRANSFER_SHEET_ENABLED: boolean = false;
 
 const ACTION_BUTTON_ROW_BUTTON_COUNT = 2;
-const ONBOARDING_TOTAL_STEPS = 1;
+const ONBOARDING_TOTAL_STEPS = 2;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 const FORMATTED_ZERO = moneyFormatUsd(new BigNumber(0));
 
@@ -301,7 +301,7 @@ export function MoneyHomePage() {
   const handleAddFundsFromFundCard = useCallback(() => {
     trackOnboardingEvent({
       step: 1,
-      stepTitleKey: 'moneyEarnTitle',
+      stepTitleKey: 'moneyOnboardingFundTitle',
       totalSteps: ONBOARDING_TOTAL_STEPS,
       stepAction: MoneyOnboardingStepAction.DepositInitiated,
       redirectTarget: MoneyScreenName.MoneyDeposit,

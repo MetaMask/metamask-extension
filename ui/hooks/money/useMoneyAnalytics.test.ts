@@ -54,7 +54,7 @@ const mockState = {
       moneyAdd: { message: 'Add' },
       money: { message: 'Money' },
       moneyLearnMore: { message: 'Learn more' },
-      moneyEarnTitle: { message: 'Earn on your balance' },
+      moneyOnboardingFundTitle: { message: 'Fund your Money account' },
     },
   },
 };
@@ -535,8 +535,8 @@ describe('useMoneyAnalytics', () => {
         componentName: MoneyComponentName.OnboardingCard,
       }).trackOnboardingEvent({
         step: 1,
-        stepTitleKey: 'moneyEarnTitle',
-        totalSteps: 1,
+        stepTitleKey: 'moneyOnboardingFundTitle',
+        totalSteps: 2,
         stepAction: MoneyOnboardingStepAction.DepositInitiated,
         redirectTarget: MoneyScreenName.MoneyDeposit,
       });
@@ -546,8 +546,8 @@ describe('useMoneyAnalytics', () => {
         screen_name: MoneyScreenName.MoneyHome,
         component_name: MoneyComponentName.OnboardingCard,
         step: 1,
-        step_title: 'Earn on your balance',
-        total_steps: 1,
+        step_title: 'Fund your Money account',
+        total_steps: 2,
         step_action: MoneyOnboardingStepAction.DepositInitiated,
         redirect_target: MoneyScreenName.MoneyDeposit,
         redirect_target_type: MoneyRedirectTargetType.Screen,

@@ -423,8 +423,8 @@ describe('MoneyHomePage', () => {
     });
     expect(onboardingCardAnalytics.trackOnboardingEvent).toHaveBeenCalledWith({
       step: 1,
-      stepTitleKey: 'moneyEarnTitle',
-      totalSteps: 1,
+      stepTitleKey: 'moneyOnboardingFundTitle',
+      totalSteps: 2,
       stepAction: MoneyOnboardingStepAction.DepositInitiated,
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });

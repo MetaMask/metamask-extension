@@ -23,8 +23,6 @@ import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { getPrivacyMode } from '../../selectors/selectors';
 import {
-  MoneyButtonIntent,
-  MoneyButtonType,
   MoneyComponentName,
   MoneyScreenName,
   MoneyTooltipName,
@@ -47,15 +45,13 @@ export function MoneyEarnPage() {
     () => tokens.filter((token) => token.moneyFiatAmountUsd > 0),
     [tokens],
   );
-  const { handleAddToken, initiateDeposit, isDepositLoading } =
-    useMoneyAddDepositToken({
-      screenName: MoneyScreenName.MoneyPotentialEarnings,
-      tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
-    });
-  const { trackButtonClicked, trackScreenViewed, trackTooltipClicked } =
-    useMoneyAnalytics({
-      screenName: MoneyScreenName.MoneyPotentialEarnings,
-    });
+  const { handleAddToken, isDepositLoading } = useMoneyAddDepositToken({
+    screenName: MoneyScreenName.MoneyPotentialEarnings,
+    tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+  });
+  const { trackScreenViewed, trackTooltipClicked } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyPotentialEarnings,
+  });
   const pageRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -70,15 +66,15 @@ export function MoneyEarnPage() {
   const handleBack = useInAppBack(MONEY_HOME_ROUTE);
 
   const handleConvert = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.AddMoney,
+    const [defaultToken] = eligibleTokens;
+    if (!defaultToken) {
+      return;
+    }
+    handleAddToken(defaultToken, 0, eligibleTokens.length, {
       componentName: MoneyComponentName.ConvertCryptoButton,
       labelKey: 'moneyConvertYourCrypto',
-      redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
-  }, [initiateDeposit, trackButtonClicked]);
+  }, [eligibleTokens, handleAddToken]);
 
   const handleProjectionTooltipOpen = useCallback(() => {
     trackTooltipClicked({
@@ -145,6 +141,7 @@ export function MoneyEarnPage() {
           <Button
             size={ButtonSize.Lg}
             isLoading={isDepositLoading}
+            isDisabled={eligibleTokens.length === 0}
             onClick={handleConvert}
             className="w-full"
             data-testid="money-earn-convert-cta"
