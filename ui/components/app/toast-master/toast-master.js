@@ -249,6 +249,10 @@ function ShieldPausedToast() {
   const trackShieldErrorStateClickedEvent = (actionClicked) => {
     const { cryptoPaymentChain, cryptoPaymentCurrency } =
       getSubscriptionPaymentData(shieldSubscription);
+    const type = isCryptoPaymentWithError
+      ? ShieldErrorStateClickedTypeEnum.AddFunds
+      : ShieldErrorStateClickedTypeEnum.UpdateCard;
+
     // capture error state clicked event
     captureShieldErrorStateClickedEvent({
       subscriptionStatus: shieldSubscription.status,
@@ -260,7 +264,7 @@ function ShieldPausedToast() {
       actionClicked,
       location: ShieldErrorStateLocationEnum.Homepage,
       view: ShieldErrorStateViewEnum.Toast,
-      type: ShieldErrorStateClickedTypeEnum.UpdateCard,
+      type,
     });
   };
 

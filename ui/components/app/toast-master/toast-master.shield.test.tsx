@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import {
+  CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -42,6 +43,20 @@ const pausedShieldSubscription = {
   products: [{ name: PRODUCT_TYPES.SHIELD }],
   paymentMethod: {
     type: PAYMENT_TYPES.byCard,
+  },
+  interval: RECURRING_INTERVALS.month,
+} as unknown as Subscription;
+
+const pausedCryptoShieldSubscription = {
+  status: SUBSCRIPTION_STATUSES.paused,
+  products: [{ name: PRODUCT_TYPES.SHIELD }],
+  paymentMethod: {
+    type: PAYMENT_TYPES.byCrypto,
+    crypto: {
+      chainId: '0x1',
+      tokenSymbol: 'USDC',
+      error: CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE,
+    },
   },
   interval: RECURRING_INTERVALS.month,
 } as unknown as Subscription;
@@ -114,5 +129,42 @@ describe('ToastMaster Shield paused toast', () => {
       view: ShieldErrorStateViewEnum.Toast,
       type: ShieldErrorStateClickedTypeEnum.UpdateCard,
     });
+  });
+
+  it('tracks the add funds type when a crypto payment toast CTA is clicked', () => {
+    jest.mocked(useUserSubscriptions).mockReturnValue({
+      subscriptions: [pausedCryptoShieldSubscription],
+    } as unknown as ReturnType<typeof useUserSubscriptions>);
+    jest
+      .mocked(useUserSubscriptionByProduct)
+      .mockReturnValue(pausedCryptoShieldSubscription);
+
+    const { getByRole } = renderWithProvider(
+      <ToastMaster />,
+      configureStore({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          isUnlocked: true,
+          shieldPausedToastLastClickedOrClosed: null,
+        },
+      }),
+      '/',
+    );
+
+    fireEvent.click(
+      getByRole('button', {
+        name: messages.shieldPaymentPausedActionCryptoPayment.message,
+      }),
+    );
+
+    expect(mockCaptureShieldErrorStateClickedEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        paymentType: PAYMENT_TYPES.byCrypto,
+        cryptoPaymentChain: '0x1',
+        cryptoPaymentCurrency: 'USDC',
+        type: ShieldErrorStateClickedTypeEnum.AddFunds,
+      }),
+    );
   });
 });

@@ -1,8 +1,10 @@
 import { act } from '@testing-library/react';
 import {
+  CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
+  SUBSCRIPTION_STATUSES,
   type Subscription,
 } from '@metamask/subscription-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -79,7 +81,7 @@ describe('useHandlePayment', () => {
     jest.clearAllMocks();
   });
 
-  it('tracks a renew error with the renew clicked type', async () => {
+  it('tracks a card payment error with the update card clicked type', async () => {
     const { result } = renderHookWithProvider(
       () =>
         useHandlePayment({
@@ -104,8 +106,72 @@ describe('useHandlePayment', () => {
       actionClicked: ShieldErrorStateActionClickedEnum.Cta,
       location: ShieldErrorStateLocationEnum.Settings,
       view: ShieldErrorStateViewEnum.Banner,
-      type: ShieldErrorStateClickedTypeEnum.Renew,
+      type: ShieldErrorStateClickedTypeEnum.UpdateCard,
     });
     expect(mockExecuteUpdateSubscriptionCardPaymentMethod).toHaveBeenCalled();
+  });
+
+  it('tracks a crypto payment error with the add funds clicked type', async () => {
+    const onOpenAddFundsModal = jest.fn();
+    const cryptoSubscription = {
+      ...subscription,
+      status: SUBSCRIPTION_STATUSES.paused,
+      paymentMethod: {
+        type: PAYMENT_TYPES.byCrypto,
+        crypto: {
+          chainId: '0x1',
+          tokenSymbol: 'USDC',
+          error: CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE,
+        },
+      },
+    } as unknown as Subscription;
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useHandlePayment({
+          currentShieldSubscription: cryptoSubscription,
+          displayedShieldSubscription: cryptoSubscription,
+          isCancelled: false,
+          onOpenAddFundsModal,
+          subscriptions: [cryptoSubscription],
+        }),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.handlePaymentError();
+    });
+
+    expect(mockCaptureShieldErrorStateClickedEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: ShieldErrorStateClickedTypeEnum.AddFunds,
+      }),
+    );
+    expect(onOpenAddFundsModal).toHaveBeenCalled();
+  });
+
+  it('tracks a cancelled subscription error with the renew clicked type', async () => {
+    const { result } = renderHookWithProvider(
+      () =>
+        useHandlePayment({
+          currentShieldSubscription: subscription,
+          displayedShieldSubscription: subscription,
+          isCancelled: true,
+          onOpenAddFundsModal: jest.fn(),
+          subscriptions: [subscription],
+        }),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.handlePaymentError();
+    });
+
+    expect(mockCaptureShieldErrorStateClickedEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: ShieldErrorStateClickedTypeEnum.Renew,
+      }),
+    );
+    expect(mockNavigate).toHaveBeenCalled();
   });
 });

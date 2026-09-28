@@ -10,7 +10,10 @@ import {
   SubscriptionCryptoPaymentMethod,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
-import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionEndingSoon,
+  getIsShieldSubscriptionPaused,
+} from '../../../shared/lib/shield';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import {
   ShieldMetricsSourceEnum,
@@ -198,6 +201,10 @@ export const useHandlePayment = ({
     return getIsShieldSubscriptionPaused(subscriptions ?? []);
   }, [subscriptions]);
 
+  const isSubscriptionEndingSoon = useMemo(() => {
+    return getIsShieldSubscriptionEndingSoon(subscriptions ?? []);
+  }, [subscriptions]);
+
   const isUnexpectedErrorCryptoPayment = useMemo(() => {
     if (!currentShieldSubscription) {
       return false;
@@ -239,6 +246,21 @@ export const useHandlePayment = ({
     );
   }, [currentShieldSubscription]);
 
+  const errorStateClickedType = useMemo(() => {
+    if (isCancelled || (!isPaused && isSubscriptionEndingSoon)) {
+      return ShieldErrorStateClickedTypeEnum.Renew;
+    }
+    if (isInsufficientFundsCrypto) {
+      return ShieldErrorStateClickedTypeEnum.AddFunds;
+    }
+    return ShieldErrorStateClickedTypeEnum.UpdateCard;
+  }, [
+    isCancelled,
+    isPaused,
+    isSubscriptionEndingSoon,
+    isInsufficientFundsCrypto,
+  ]);
+
   const handlePaymentError = useCallback(async () => {
     if (currentShieldSubscription) {
       // capture error state clicked event
@@ -250,7 +272,7 @@ export const useHandlePayment = ({
         actionClicked: ShieldErrorStateActionClickedEnum.Cta,
         location: ShieldErrorStateLocationEnum.Settings,
         view: ShieldErrorStateViewEnum.Banner,
-        type: ShieldErrorStateClickedTypeEnum.Renew,
+        type: errorStateClickedType,
       });
     }
 
@@ -286,6 +308,7 @@ export const useHandlePayment = ({
   }, [
     currentShieldSubscription,
     isCancelled,
+    errorStateClickedType,
     isUnexpectedErrorCryptoPayment,
     isInsufficientFundsCrypto,
     isAllowanceNeededCrypto,
