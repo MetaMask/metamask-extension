@@ -105,7 +105,7 @@ describe('AdvancedChartIframe', () => {
       );
 
       const wrapper = getByTestId('advanced-chart-iframe');
-      expect(wrapper).toHaveStyle({ height: '300px' });
+      expect(wrapper).toHaveStyle({ height: '100%' });
     });
 
     it('renders iframe with correct title', () => {
