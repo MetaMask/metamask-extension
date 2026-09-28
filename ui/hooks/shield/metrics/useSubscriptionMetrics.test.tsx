@@ -120,6 +120,45 @@ describe('useSubscriptionMetrics', () => {
     );
   });
 
+  it('tracks crypto confirmation status and gas availability', () => {
+    const { result } = renderHookWithProvider(
+      () => useSubscriptionMetrics(),
+      mockState,
+    );
+
+    result.current.captureShieldCryptoConfirmationEvent({
+      defaultBillingInterval: RECURRING_INTERVALS.year,
+      defaultPaymentType: PAYMENT_TYPES.byCard,
+      defaultPaymentCurrency: 'USD',
+      source: ShieldMetricsSourceEnum.ShieldSettings,
+      type: 'entry' as ModalType,
+      subscriptionState: ShieldSubscriptionRequestSubscriptionStateEnum.New,
+      paymentType: PAYMENT_TYPES.byCrypto,
+      paymentCurrency: 'USD',
+      isTrialSubscription: true,
+      billingInterval: RECURRING_INTERVALS.month,
+      paymentChain: '0x1',
+      gasSponsored: false,
+      requestStatus: 'started',
+      confirmationScreenStatus: 'opened',
+      hasInsufficientGas: true,
+    });
+
+    const [event] = mockTrackEvent.mock.calls[0];
+    expect(event).toStrictEqual(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ShieldSubscriptionCryptoConfirmation,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Shield,
+          status: 'opened',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_insufficient_gas: true,
+        }),
+      }),
+    );
+  });
+
   it('tracks a claim submission with status', () => {
     const { result } = renderHookWithProvider(
       () => useSubscriptionMetrics(),

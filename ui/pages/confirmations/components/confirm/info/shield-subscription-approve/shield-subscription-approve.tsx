@@ -3,13 +3,17 @@ import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
 } from '@metamask/subscription-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useUserSubscriptions } from '../../../../../../hooks/subscription/useSubscription';
 import { useConfirmContext } from '../../../../context/confirm';
+import { useShieldConfirm } from '../../../../hooks/transactions/useShieldConfirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import {
@@ -26,6 +30,8 @@ import { SubscriptionDetails } from './subscription-details';
 import BillingDetails from './billing-details';
 
 const ShieldSubscriptionApproveInfo = () => {
+  const { handleShieldSubscriptionApprovalTransactionOpened } =
+    useShieldConfirm();
   const lastSelectedPaymentDetail = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
@@ -54,6 +60,26 @@ const ShieldSubscriptionApproveInfo = () => {
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const trackedConfirmationId = useRef<string>();
+
+  useEffect(() => {
+    if (
+      !transactionMeta ||
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+
+    const confirmationId =
+      transactionMeta.id ?? 'shield-subscription-approval-confirmation';
+    if (trackedConfirmationId.current === confirmationId) {
+      return;
+    }
+
+    trackedConfirmationId.current = confirmationId;
+    handleShieldSubscriptionApprovalTransactionOpened(transactionMeta);
+  }, [handleShieldSubscriptionApprovalTransactionOpened, transactionMeta]);
+
   const { decodeResponse, value: decodedApprovalAmount } =
     useDecodedTransactionDataValue(transactionMeta);
   const { decimals } = useAssetDetails(

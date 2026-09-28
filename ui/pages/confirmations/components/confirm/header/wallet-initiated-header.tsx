@@ -30,6 +30,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
+import { useShieldConfirm } from '../../../hooks/transactions/useShieldConfirm';
 import {
   PayWithOption,
   useConfirmationNavigationOptions,
@@ -39,6 +40,8 @@ import { AdvancedDetailsButton } from './advanced-details-button';
 export const WalletInitiatedHeader = () => {
   const t = useI18nContext();
   const { onCancel } = useConfirmActions();
+  const { handleShieldSubscriptionApprovalTransactionRejected } =
+    useShieldConfirm();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const navigate = useNavigate();
   const { payWithOption } = useConfirmationNavigationOptions();
@@ -49,7 +52,11 @@ export const WalletInitiatedHeader = () => {
     confirmationType && SEND_TRANSACTION_TYPES.includes(confirmationType);
 
   const handleBackButtonClick = useCallback(() => {
-    if (confirmationType === TransactionType.shieldSubscriptionApprove) {
+    if (
+      confirmationType === TransactionType.shieldSubscriptionApprove &&
+      currentConfirmation
+    ) {
+      handleShieldSubscriptionApprovalTransactionRejected(currentConfirmation);
       onCancel({ location: MetaMetricsEventLocation.Confirmation });
       navigate(SHIELD_PLAN_ROUTE);
       return;
@@ -76,7 +83,13 @@ export const WalletInitiatedHeader = () => {
         navigateBackForSend: true,
       });
     }
-  }, [confirmationType, currentConfirmation, navigate, onCancel]);
+  }, [
+    confirmationType,
+    currentConfirmation,
+    handleShieldSubscriptionApprovalTransactionRejected,
+    navigate,
+    onCancel,
+  ]);
 
   const getHeaderTitle = () => {
     if (isSendTransaction) {

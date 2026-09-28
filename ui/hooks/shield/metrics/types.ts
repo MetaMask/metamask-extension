@@ -88,20 +88,22 @@ export type CaptureShieldSubscriptionRestartRequestEventParams =
 /**
  * Triggered when the user has opened the crypto confirmation screen for a subscription or rejected the approval transaction.
  */
-export type CaptureShieldCryptoConfirmationEventParams =
-  CaptureShieldSubscriptionRequestParams & {
-    /**
-     * The status of the crypto confirmation screen.
-     */
-    confirmationScreenStatus: 'opened' | 'rejected';
+export type CaptureShieldCryptoConfirmationEventParams = Omit<
+  CaptureShieldSubscriptionRequestParams,
+  'requestStatus'
+> & {
+  /**
+   * The status of the crypto confirmation screen.
+   */
+  confirmationScreenStatus: 'opened' | 'rejected';
 
-    /**
-     * Whether the user has insufficient gas to confirm the transaction.
-     */
-    hasInsufficientGas: boolean;
+  /**
+   * Whether the user has insufficient gas to confirm the transaction.
+   */
+  hasInsufficientGas: boolean;
 
-    gasSponsored: boolean;
-  };
+  gasSponsored: boolean;
+};
 
 export type CaptureShieldCtaClickedEventParams = {
   source: ShieldMetricsSourceEnum;

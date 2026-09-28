@@ -7,9 +7,11 @@ import {
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
 } from '@metamask/subscription-controller';
-import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import { TransactionType } from '@metamask/transaction-controller';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../../test/lib/i18n-helpers';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import ShieldSubscriptionApproveInfo from './shield-subscription-approve';
 
 jest.mock('../hooks/useDecodedTransactionData', () => ({
@@ -84,6 +86,15 @@ jest.mock('../../../../hooks/gas/useGasSponsorshipPreference', () => ({
   })),
 }));
 
+const mockHandleShieldSubscriptionApprovalTransactionOpened = jest.fn();
+
+jest.mock('../../../../hooks/transactions/useShieldConfirm', () => ({
+  useShieldConfirm: () => ({
+    handleShieldSubscriptionApprovalTransactionOpened:
+      mockHandleShieldSubscriptionApprovalTransactionOpened,
+  }),
+}));
+
 const mockSubscriptionPricing: PricingResponse = {
   products: [
     {
@@ -138,8 +149,15 @@ const mockLastUsedPaymentDetail: CachedLastSelectedPaymentMethod = {
 };
 
 describe('ShieldSubscriptionApproveInfo', () => {
+  beforeEach(() => {
+    mockHandleShieldSubscriptionApprovalTransactionOpened.mockClear();
+  });
+
   it('renders correctly', () => {
-    const state = getMockApproveConfirmState();
+    const state = getMockConfirmStateForTransaction({
+      ...genUnapprovedContractInteractionConfirmation({ chainId: '0x1' }),
+      type: TransactionType.shieldSubscriptionApprove,
+    });
     // @ts-expect-error - mock state
     state.metamask.lastSelectedPaymentMethod = {
       [PRODUCT_TYPES.SHIELD]: mockLastUsedPaymentDetail,
@@ -165,5 +183,12 @@ describe('ShieldSubscriptionApproveInfo', () => {
     expect(getByText(tEn('account'))).toBeInTheDocument();
     expect(getByText(tEn('networkFee'))).toBeInTheDocument();
     expect(getByText(tEn('speed'))).toBeInTheDocument();
+    expect(
+      mockHandleShieldSubscriptionApprovalTransactionOpened,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: TransactionType.shieldSubscriptionApprove,
+      }),
+    );
   });
 });

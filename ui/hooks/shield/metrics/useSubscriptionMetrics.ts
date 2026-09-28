@@ -27,6 +27,7 @@ import { useAnalytics } from '../../useAnalytics';
 
 import {
   CaptureShieldClaimSubmissionEventParams,
+  CaptureShieldCryptoConfirmationEventParams,
   CaptureShieldCtaClickedEventParams,
   CaptureShieldEligibilityCohortAssignedEventParams,
   CaptureShieldEligibilityCohortTimeoutEventParams,
@@ -176,6 +177,29 @@ export const useSubscriptionMetrics = () => {
   );
 
   /**
+   * Capture the event when the crypto confirmation screen is opened or the
+   * approval transaction is rejected.
+   */
+  const captureShieldCryptoConfirmationEvent = useCallback(
+    (params: CaptureShieldCryptoConfirmationEventParams) => {
+      const formattedParams =
+        formatDefaultShieldSubscriptionRequestEventProps(params);
+
+      trackShieldEvent(
+        MetaMetricsEventName.ShieldSubscriptionCryptoConfirmation,
+        {
+          ...formattedParams,
+          status: params.confirmationScreenStatus,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_insufficient_gas: params.hasInsufficientGas,
+        },
+      );
+    },
+    [trackShieldEvent],
+  );
+
+  /**
    * Capture the event when the subscription restart request is triggered.
    */
   const captureShieldSubscriptionRestartRequestEvent = useCallback(
@@ -301,6 +325,7 @@ export const useSubscriptionMetrics = () => {
     setShieldSubscriptionMetricsPropsToBackground,
     captureShieldEntryModalEvent,
     captureShieldSubscriptionRequestEvent,
+    captureShieldCryptoConfirmationEvent,
     captureShieldMembershipCancelledEvent,
     captureShieldPaymentMethodChangeEvent,
     captureShieldCtaClickedEvent,
