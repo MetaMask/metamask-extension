@@ -21,7 +21,7 @@ import {
   useSafeChains,
 } from '../../components/multichain/networks-form/use-safe-chains';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getShouldShowTestNetworks } from '../../selectors/test-networks';
+import { getShouldShowTestNetworks } from '../../selectors';
 import { NoSearchResult } from './no-search-result';
 
 export type ChainlistNetwork = SafeChain & {

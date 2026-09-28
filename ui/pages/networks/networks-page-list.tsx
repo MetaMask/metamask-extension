@@ -35,11 +35,11 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useIsNetworkGasSponsored } from '../../hooks/useIsNetworkGasSponsored';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
-import { getIsTestnetInUse } from '../../selectors/test-networks';
 import {
+  getIsTestnetInUse,
   getOrderedNetworksList,
-  getShowTestNetworksPreference,
-} from '../../selectors/selectors';
+  getShouldShowTestNetworks,
+} from '../../selectors';
 import {
   addNetwork,
   setEditedNetwork,
@@ -176,7 +176,7 @@ export const NetworksPageList = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
-  const showTestnets = useSelector(getShowTestNetworksPreference);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const evmNetworks = useSelector(getNetworkConfigurationsByChainId);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
@@ -357,7 +357,7 @@ export const NetworksPageList = ({
               </Text>
               <ToggleButton
                 dataTestId="networks-page-show-test-networks"
-                value={showTestnets || currentlyOnTestnet}
+                value={showTestnets}
                 disabled={currentlyOnTestnet}
                 onToggle={handleToggleTestNetworks}
               />
@@ -365,7 +365,7 @@ export const NetworksPageList = ({
           </>
         ) : null}
 
-        {showTestnets || currentlyOnTestnet ? (
+        {showTestnets ? (
           <Box className="pb-2">
             {sortedTestNetworks.map(renderNetworkListItem)}
           </Box>

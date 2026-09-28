@@ -62,7 +62,7 @@ import {
 } from '../../../../shared/constants/network';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
-  getShowTestNetworksPreference,
+  getShouldShowTestNetworks,
   getOriginOfCurrentTab,
   getEditedNetwork,
   getOrderedNetworksList,
@@ -170,7 +170,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const showTestnets = useSelector(getShowTestNetworksPreference);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
@@ -817,7 +817,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                   </Text>
                   <ToggleButton
                     dataTestId="network-menu-show-test-networks"
-                    value={showTestnets || currentlyOnTestnet}
+                    value={showTestnets}
                     disabled={currentlyOnTestnet}
                     onToggle={(value: boolean) => {
                       const newVal = !value;
@@ -837,7 +837,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 </Box>
               ) : null}
 
-              {showTestnets || currentlyOnTestnet ? (
+              {showTestnets ? (
                 <Box className="multichain-network-list-menu">
                   {sortedTestNetworks.map((network) =>
                     generateMultichainNetworkListItem(network),

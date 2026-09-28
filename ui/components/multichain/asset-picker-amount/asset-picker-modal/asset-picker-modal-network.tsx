@@ -41,7 +41,7 @@ import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../../selectors/multichain';
-import { getShouldShowTestNetworks } from '../../../../selectors/test-networks';
+import { getShouldShowTestNetworks } from '../../../../selectors';
 import { getNetworkSections } from '../../../../helpers/utils/network-sections';
 
 // TODO use MultichainNetworkConfiguration type
