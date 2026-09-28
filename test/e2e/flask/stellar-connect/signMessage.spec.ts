@@ -1,11 +1,9 @@
 import { strict as assert } from 'assert';
 import { TestDappStellar } from '../../page-objects/pages/test-dapp-stellar';
-import {
-  confirmStellarSnapSigning,
-  connectStellarTestDapp,
-} from '../../page-objects/flows/stellar-dapp.flow';
+import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.flow';
 import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
+import { WINDOW_TITLES } from '../../constants';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
   withStellarWalletSnap,
@@ -28,8 +26,10 @@ describe('Stellar - Sign Message - e2e tests', function () {
         await testDapp.setMessage(messageToSign);
         await testDapp.signMessage();
 
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const signMessageConfirmation = new SnapSignMessageConfirmation(driver);
-        await confirmStellarSnapSigning(driver, signMessageConfirmation);
+        await signMessageConfirmation.checkPageIsLoaded();
+        await signMessageConfirmation.clickFooterConfirmButton();
 
         await testDapp.switchTo();
 

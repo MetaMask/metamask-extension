@@ -108,19 +108,6 @@ class ConnectAccountConfirmation {
     await this.driver.clickElement(this.accountSection);
   }
 
-  async tryConfirmConnect(timeout = 3000): Promise<boolean> {
-    try {
-      await this.driver.waitForMultipleSelectors(
-        [this.connectAccountConfirmationTitle, this.confirmConnectButton],
-        { timeout },
-      );
-      await this.confirmConnect();
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
   async waitForCancelButton(): Promise<void> {
     await this.driver.findClickableElements(this.cancelConnectButton);
   }
