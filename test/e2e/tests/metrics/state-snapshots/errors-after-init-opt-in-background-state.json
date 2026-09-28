@@ -196,7 +196,6 @@
     "conversionRates": "object",
     "historicalPrices": "object"
   },
-  "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "cryptocurrencies": ["btc", "sol"],

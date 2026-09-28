@@ -32,8 +32,6 @@ import {
   getAccountActivityServiceMessenger,
 } from './core-backend';
 import {
-  getMultichainBalancesControllerMessenger,
-  getMultichainBalancesControllerInitMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
   getMultichainAssetsControllerInitMessenger,
@@ -509,10 +507,6 @@ export const MESSENGER_FACTORIES = {
   MultichainAssetsRatesController: {
     getMessenger: getMultichainAssetsRatesControllerMessenger,
     getInitMessenger: getMultichainAssetsRatesControllerInitMessenger,
-  },
-  MultichainBalancesController: {
-    getMessenger: getMultichainBalancesControllerMessenger,
-    getInitMessenger: getMultichainBalancesControllerInitMessenger,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,
