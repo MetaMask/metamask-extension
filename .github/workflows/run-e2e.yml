@@ -149,8 +149,8 @@ jobs:
         with:
           browsers: ${{ inputs.playwright-browsers }}
 
-      - name: Pin geckodriver 0.36.0 (Firefox only)
-        if: ${{ contains(inputs.test-command, 'firefox') }}
+      - name: Pin geckodriver 0.36.0 (Firefox Selenium only)
+        if: ${{ contains(inputs.test-command, 'firefox') && inputs.playwright-browsers == '' }}
         run: .github/scripts/pin-geckodriver.sh
 
       - name: Run E2E tests

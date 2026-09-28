@@ -24,7 +24,7 @@ async function mocks(server: Mockttp) {
       .always()
       .thenJson(200, {
         fullSupport: [],
-        partialSupport: { balances: [] },
+        partialSupport: [],
       }),
   ];
 }

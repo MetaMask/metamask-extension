@@ -1,9 +1,5 @@
 import { getErrorMessage } from '@metamask/utils';
 import type {
-  AnalyticsControllerGetStateAction,
-  AnalyticsControllerState,
-} from '@metamask/analytics-controller';
-import type {
   NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -18,14 +14,7 @@ import {
   type StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { Json, Hex } from '@metamask/utils';
-import {
-  trace,
-  endTrace,
-  type TraceRequest,
-  type EndTraceRequest,
-  type TraceCallback,
-} from '../../../shared/lib/trace';
+import type { Hex } from '@metamask/utils';
 import type { captureException } from '../../../shared/lib/sentry';
 import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
 import { CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/chain-value-order';
@@ -34,7 +23,6 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
-import { MetaMetricsControllerMethodActions } from './metametrics-controller-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
@@ -52,55 +40,22 @@ const exceptionsToFilter: Record<string, boolean> = {
 };
 
 /**
- * Represents a buffered trace that is stored before user consent.
- * Simplified for JSON serialization - doesn't include callback functions.
- */
-type BufferedTrace = {
-  type: 'start' | 'end';
-  request: Record<string, Json>;
-  parentTraceName?: string;
-};
-
-/**
  * {@link MetaMetricsController}'s metadata.
  *
  * This allows us to choose if fields of the state should be persisted or not
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
+ *
+ * The controller currently holds no state fields.
  */
-const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
-  tracesBeforeMetricsOptIn: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: false,
-  },
-  dataCollectionForMarketing: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
-  marketingCampaignCookieId: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
-  },
-};
+const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {};
 
 /**
  * The state that MetaMetricsController stores.
  *
- * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
- * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
- * @property marketingCampaignCookieId - The marketing campaign cookie id.
+ * The controller currently holds no state fields.
  */
-export type MetaMetricsControllerState = {
-  tracesBeforeMetricsOptIn: BufferedTrace[];
-  dataCollectionForMarketing: boolean | null;
-  marketingCampaignCookieId: string | null;
-};
+export type MetaMetricsControllerState = Record<never, never>;
 
 /**
  * Returns the state of the {@link MetaMetricsController}.
@@ -113,9 +68,7 @@ export type MetaMetricsControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link MetaMetricsController}.
  */
-export type MetaMetricsControllerActions =
-  | MetaMetricsControllerGetStateAction
-  | MetaMetricsControllerMethodActions;
+export type MetaMetricsControllerActions = MetaMetricsControllerGetStateAction;
 
 /**
  * Event emitted when the state of the {@link MetaMetricsController} changes.
@@ -135,8 +88,7 @@ export type AllowedActions =
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
-  | MultichainNetworkControllerGetStateAction
-  | AnalyticsControllerGetStateAction;
+  | MultichainNetworkControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -166,21 +118,7 @@ export type MetaMetricsControllerOptions = {
  * Function to get default state of the {@link MetaMetricsController}.
  */
 export const getDefaultMetaMetricsControllerState =
-  (): MetaMetricsControllerState => ({
-    dataCollectionForMarketing: null,
-    marketingCampaignCookieId: null,
-    tracesBeforeMetricsOptIn: [],
-  });
-
-const MESSENGER_EXPOSED_METHODS = [
-  'addTraceBeforeMetricsOptIn',
-  'bufferedEndTrace',
-  'bufferedTrace',
-  'clearTracesAfterMetricsOptIn',
-  'setDataCollectionForMarketing',
-  'setMarketingCampaignCookieId',
-  'trackTracesAfterMetricsOptIn',
-] as const;
+  (): MetaMetricsControllerState => ({});
 
 export class MetaMetricsController extends BaseController<
   typeof controllerName,
@@ -192,10 +130,6 @@ export class MetaMetricsController extends BaseController<
   chainId: Hex;
 
   locale: string;
-
-  #analyticsGetState(): AnalyticsControllerState {
-    return this.messenger.call('AnalyticsController:getState');
-  }
 
   /**
    * @param options
@@ -237,11 +171,6 @@ export class MetaMetricsController extends BaseController<
     registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
     registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
 
-    this.messenger.registerMethodActionHandlers(
-      this,
-      MESSENGER_EXPOSED_METHODS,
-    );
-
     this.messenger.subscribe(
       'PreferencesController:stateChange',
       ({ currentLocale }) => {
@@ -273,111 +202,5 @@ export class MetaMetricsController extends BaseController<
       selectedNetworkClientId,
     );
     return chainId;
-  }
-
-  setDataCollectionForMarketing(dataCollectionForMarketing: boolean): string {
-    const { analyticsId } = this.#analyticsGetState();
-
-    this.update((state) => {
-      state.dataCollectionForMarketing = dataCollectionForMarketing;
-    });
-
-    if (!dataCollectionForMarketing && this.state.marketingCampaignCookieId) {
-      this.setMarketingCampaignCookieId(null);
-    }
-
-    return analyticsId;
-  }
-
-  setMarketingCampaignCookieId(marketingCampaignCookieId: string | null): void {
-    this.update((state) => {
-      state.marketingCampaignCookieId = marketingCampaignCookieId;
-    });
-  }
-
-  // Track all queued traces after a user opted into metrics.
-  trackTracesAfterMetricsOptIn(): void {
-    const { tracesBeforeMetricsOptIn } = this.state;
-    tracesBeforeMetricsOptIn.forEach((bufferedTrace) => {
-      if (bufferedTrace.type === 'start') {
-        trace(bufferedTrace.request as TraceRequest);
-      } else if (bufferedTrace.type === 'end') {
-        endTrace(bufferedTrace.request as EndTraceRequest);
-      }
-    });
-  }
-
-  // Once we track queued traces after a user opts into metrics, we want to clear the trace queue.
-  clearTracesAfterMetricsOptIn(): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.tracesBeforeMetricsOptIn = [];
-    });
-  }
-
-  // It adds a trace into a queue, which is only tracked if a user opts into metrics.
-  addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.tracesBeforeMetricsOptIn.push(traceData);
-    });
-  }
-
-  /**
-   * Buffered trace method that checks consent and either buffers or executes immediately
-   *
-   * @param request - The trace request
-   * @param fn - Optional callback function to trace
-   * @returns The result of the trace callback or undefined if buffered
-   */
-  bufferedTrace<TraceResultType>(
-    request: TraceRequest,
-    fn?: TraceCallback<TraceResultType>,
-  ): TraceResultType | undefined {
-    if (this.#analyticsGetState().optedIn) {
-      return fn ? trace(request, fn) : (trace(request) as TraceResultType);
-    }
-
-    // Extract parent trace name if parentContext exists
-    let parentTraceName: string | undefined;
-    if (request.parentContext && typeof request.parentContext === 'object') {
-      const parentSpan = request.parentContext as { _name?: string };
-      parentTraceName = parentSpan?._name;
-    }
-
-    this.addTraceBeforeMetricsOptIn({
-      type: 'start',
-      request: {
-        ...request,
-        parentContext: undefined as unknown as Json, // Remove original parentContext to avoid invalid references
-        // Use Date.now() as performance.timeOrigin is only valid for measuring durations within
-        // the same session; it won't produce valid event times for Sentry if buffered and flushed later
-        startTime: request.startTime ?? Date.now(),
-      },
-      parentTraceName, // Store the parent trace name for later reconnection
-    });
-
-    return undefined;
-  }
-
-  /**
-   * Buffered end trace method that checks consent and either buffers or executes immediately
-   *
-   * @param request - The end trace request
-   */
-  bufferedEndTrace(request: EndTraceRequest): void {
-    if (this.#analyticsGetState().optedIn) {
-      endTrace(request);
-    } else {
-      this.addTraceBeforeMetricsOptIn({
-        type: 'end',
-        request: {
-          ...request,
-          // Use Date.now() as performance.timeOrigin is only valid for measuring durations within
-          // the same session; it won't produce valid event times for Sentry if buffered and flushed later
-          timestamp: request.timestamp ?? Date.now(),
-        },
-      });
-    }
   }
 }

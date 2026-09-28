@@ -16,7 +16,11 @@ import {
 } from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  getMockAssetsPrice,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
   it('should display basic wallets and accounts', async function () {
@@ -35,6 +39,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 usdConversionRate: MOCK_ETH_CONVERSION_RATE,
               },
             },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -102,6 +109,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 'eip155:1/slip44:60': { amount: '0' },
               },
             },
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -115,7 +123,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x15af1d78b58c40000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver, {
+          expectedBalance: '$85,025.00',
+          waitForNonEvmAccounts: false,
+        });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const headerNavbar = new HeaderNavbar(driver);
@@ -162,6 +173,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 usdConversionRate: MOCK_ETH_CONVERSION_RATE,
               },
             },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),

@@ -310,7 +310,7 @@ class ActivityTab extends HomePage {
    * This function checks the specified number of pending transactions are displayed in the activity list on the homepage.
    * It waits up to 10 seconds for the expected number of pending transactions to be visible.
    *
-   * @param expectedNumber - The number of pending transactions expected to be displayed in the activity list. Defaults to 1.
+   * @param expectedNumber - The number of pending transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of pending transactions is displayed within the timeout period.
    */
   async checkPendingTxNumberDisplayedInActivity(
@@ -373,6 +373,23 @@ class ActivityTab extends HomePage {
   async checkTransactionActivityByText(txnText: string): Promise<void> {
     console.log(`Check transaction activity with text: ${txnText}`);
     await this.driver.waitForSelector({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
+  /**
+   * Checks that no transaction activity item matching the provided text is
+   * displayed in the activity list.
+   *
+   * @param txnText - The text to search for within the transaction activity list.
+   * @returns A promise that resolves when no activity item with the text is present.
+   */
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity with text is absent: ${txnText}`);
+    await this.driver.assertElementNotPresent({
       text: txnText,
       css: this.activityListAction,
     });
@@ -494,6 +511,15 @@ class ActivityTab extends HomePage {
     await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
       timeout: 5000,
     });
+  }
+
+  /**
+   * Clicks the activity row whose visible text contains the provided text.
+   *
+   * @param text - The text shown on the activity row (e.g. 'Sent TRX').
+   */
+  async clickActivityByText(text: string): Promise<void> {
+    await this.driver.clickElement({ css: this.activityListAction, text });
   }
 
   async clickCancelTransaction() {

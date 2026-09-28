@@ -4,14 +4,18 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import {
   en,
   I18nProvider,
   renderWithLocalization,
 } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
@@ -21,8 +25,10 @@ import {
   MoneyComponentName,
   MoneyScreenName,
 } from './constants/money-events';
-import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
-import { onchainItem } from './types/money-activity';
+import MOCK_MONEY_TRANSACTIONS, {
+  MOCK_ACCOUNTS_API_ACTIVITY,
+} from './constants/mock-activity-data';
+import { accountsApiItem, onchainItem } from './types/money-activity';
 import { MoneyActivityPage } from './money-activity-page';
 import {
   buildMoneyActivityBuckets,
@@ -35,6 +41,7 @@ const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
 const mockUseMoneyActivityItemClick = jest.fn();
 const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
 
 jest.mock('react-redux', () => ({
@@ -52,6 +59,7 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
 }));
 
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
@@ -72,7 +80,10 @@ jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
 }));
 const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
 
-const mockItems = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+const mockItems = [
+  ...MOCK_MONEY_TRANSACTIONS.map(onchainItem),
+  ...MOCK_ACCOUNTS_API_ACTIVITY.map(accountsApiItem),
+];
 const mockBuckets = buildMoneyActivityBuckets(mockItems);
 
 function makePendingDeposit(): ReturnType<typeof onchainItem> {
@@ -94,6 +105,7 @@ function makePendingDeposit(): ReturnType<typeof onchainItem> {
 describe('MoneyActivityPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({ key: 'ci9s3nlq' });
     mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockGetPrivacyMode.mockReturnValue(false);
     mockUseMoneyAccountAvailability.mockReturnValue({
@@ -159,6 +171,9 @@ describe('MoneyActivityPage', () => {
       screen.getByTestId('money-activity-filter-sends'),
     ).toBeInTheDocument();
     expect(
+      screen.getByTestId('money-activity-filter-card'),
+    ).toBeInTheDocument();
+    expect(
       screen.queryByTestId('money-activity-pending-header'),
     ).not.toBeInTheDocument();
     expect(
@@ -171,9 +186,9 @@ describe('MoneyActivityPage', () => {
         ),
       ),
     ).toBeInTheDocument();
-    expect(screen.getAllByTestId(/money-activity-row-money-tx-/u).length).toBe(
-      MOCK_MONEY_TRANSACTIONS.length,
-    );
+    expect(
+      screen.getAllByTestId(/^money-activity-row-(?!primary-|fiat-)/u).length,
+    ).toBe(mockItems.length);
   });
 
   it('resets the overflow ancestor scroll so View all starts at the top', () => {
@@ -203,6 +218,18 @@ describe('MoneyActivityPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
+  it('back button navigates to Money home when the page was opened directly by URL', () => {
+    mockUseLocation.mockReturnValue({ key: 'default' });
+
+    renderWithLocalization(<MoneyActivityPage />);
+
+    fireEvent.click(screen.getByTestId('money-activity-back-button'));
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+      state: { fromFreshTab: true },
+    });
+  });
+
   it('filters to Sends when the Sends chip is selected', () => {
     renderWithLocalization(<MoneyActivityPage />);
 
@@ -230,6 +257,33 @@ describe('MoneyActivityPage', () => {
       buttonIntent: MoneyButtonIntent.Filter,
       labelKey: 'moneyActivityFilterSends',
       componentName: MoneyComponentName.ActivityFilterTransfers,
+    });
+  });
+
+  it('filters to Card when the Card chip is selected', () => {
+    renderWithLocalization(<MoneyActivityPage />);
+
+    fireEvent.click(screen.getByTestId('money-activity-filter-card'));
+
+    expect(screen.getByTestId('money-activity-filter-card')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByTestId('money-activity-filter-all')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    expect(
+      screen.queryByText(messages.moneyActivityDeposited.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getAllByTestId(/money-activity-row-(?:card|cashback|refund):/u),
+    ).toHaveLength(mockBuckets[MoneyActivityFilter.Card].length);
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.Filter,
+      labelKey: 'moneyActivityFilterCard',
+      componentName: MoneyComponentName.ActivityFilterCard,
     });
   });
 
@@ -277,6 +331,40 @@ describe('MoneyActivityPage', () => {
     );
     expect(
       screen.queryByTestId(/money-activity-row-/u),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows a blank list when Card has no activity', () => {
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: mockItems.filter((item) => item.kind === 'onchain'),
+      buckets: {
+        ...buildMoneyActivityBuckets(
+          mockItems.filter((item) => item.kind === 'onchain'),
+        ),
+        [MoneyActivityFilter.Card]: [],
+      },
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyActivityPage />);
+    fireEvent.click(screen.getByTestId('money-activity-filter-card'));
+
+    expect(screen.getByTestId('money-activity-card-empty')).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('money-activity-card-empty')).getByText(
+        messages.moneyActivityEmpty.message,
+      ),
+    ).toHaveClass('sr-only');
+    expect(
+      screen.queryByTestId('money-activity-empty'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(/^money-activity-row-(?!primary-|fiat-)/u),
     ).not.toBeInTheDocument();
   });
 

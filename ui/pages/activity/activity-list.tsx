@@ -1,4 +1,10 @@
-import React, { useDeferredValue, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
@@ -94,13 +100,19 @@ export function ActivityList({
 
   const itemRef = useItemInView({
     targetIndex: lastEvmItemIndex,
-    root: scrollContainerRef?.current ?? null,
+    rootRef: scrollContainerRef ?? undefined,
     onVisible: fetchNextVisiblePage,
   });
 
-  useEventListener('popstate', () => {
+  const handlePopState = useCallback(() => {
     dialogRef.current?.close?.();
-  });
+  }, []);
+
+  useEventListener('popstate', handlePopState);
+
+  const handleDialogBack = useCallback(() => {
+    dialogRef.current?.close?.();
+  }, []);
 
   const handleClick = (item: ActivityListItem) => {
     const identifier = getActivityItemIdentifier(item);
@@ -215,7 +227,7 @@ export function ActivityList({
         <TransactionDetails
           chainId={selectedItem?.chainId}
           txIdentifier={getActivityItemIdentifier(selectedItem)}
-          onBack={() => dialogRef.current?.close?.()}
+          onBack={handleDialogBack}
         />
       </dialog>
     </PendingTransactionCancelSpeedUpProvider>

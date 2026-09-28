@@ -4,7 +4,6 @@ import {
 } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 
-import { MIN_GAS_LIMIT_HEX } from '../../../../../../shared/constants/gas';
 import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
@@ -54,11 +53,13 @@ describe('useGasTooLowAlerts', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if sufficient gas', () => {
+  it('returns no alerts at the EIP-2780 minimum gas limit', () => {
     expect(
       runHook({
         ...CONFIRMATION_MOCK,
-        txParams: { gas: MIN_GAS_LIMIT_HEX } as TransactionParams,
+        txParams: {
+          gas: toHex(Number(MIN_GAS_LIMIT_DEC)),
+        } as TransactionParams,
       }),
     ).toEqual([]);
   });
@@ -67,7 +68,7 @@ describe('useGasTooLowAlerts', () => {
     const alerts = runHook({
       ...CONFIRMATION_MOCK,
       txParams: {
-        gas: toHex(MIN_GAS_LIMIT_DEC.toNumber() - 1),
+        gas: toHex(Number(MIN_GAS_LIMIT_DEC) - 1),
       } as TransactionParams,
     });
 
@@ -83,7 +84,7 @@ describe('useGasTooLowAlerts', () => {
         isBlocking: true,
         key: 'gasTooLow',
         message:
-          'To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher.',
+          'To continue with this transaction, you’ll need to increase the gas limit to 12000 or higher.',
         reason: 'Low gas limit',
         severity: Severity.Warning,
       },

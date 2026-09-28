@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useState,
   useEffect,
+  useLayoutEffect,
   useRef,
 } from 'react';
 import type { Json } from '@metamask/utils';
@@ -49,6 +50,8 @@ import {
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
+  type PerpsButtonLocation,
+  type PerpsDepositClickOutcome,
 } from '../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
@@ -106,7 +109,10 @@ import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { usePerpsAbandonOrderTracking } from '../../hooks/perps/usePerpsAbandonOrderTracking';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
-import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
+import {
+  getTradeableBalance,
+  getTradeableBalanceRaw,
+} from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
@@ -141,7 +147,14 @@ import {
   isStopLossSafeFromLiquidation,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
+import {
+  PERPS_MIN_MARKET_ORDER_USD,
+  PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC,
+} from '../../components/app/perps/constants';
+import {
+  consumeUnfundedDepositFunnel,
+  markUnfundedDepositFunnel,
+} from '../../components/app/perps/utils/unfunded-deposit-funnel';
 import {
   OrderEntry,
   OrderEntryHeader,
@@ -346,7 +359,6 @@ const PerpsOrderEntryPage = () => {
   const ctaRef = useRef<HTMLDivElement>(null);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
-  trackRef.current = track;
   // Last size input method the user used (keypad/percentage/max), attributed on
   // PERPS_TRANSACTION_CONSIDERED. Defaults to 'default' until the
   // user interacts with a size control.
@@ -358,7 +370,10 @@ const PerpsOrderEntryPage = () => {
   // Abandon-order tracking: latest form snapshot, a stable reader for it, and
   // the commit flag that suppresses the event once an order is submitted.
   const latestAbandonPropsRef = useRef<Record<string, Json>>({});
-  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const getAbandonProperties = useCallback(
+    () => latestAbandonPropsRef.current,
+    [],
+  );
   const hasSubmittedOrderRef = useRef(false);
   const latestOrderFormStateRef = useRef<{
     symbol: string;
@@ -371,6 +386,11 @@ const PerpsOrderEntryPage = () => {
   // re-arming its debounce whenever the estimate recomputes.
   const slippageTradePropertiesRef = useRef<Record<string, Json>>({});
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
+
+  useLayoutEffect(() => {
+    trackRef.current = track;
+  }, [track]);
+
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
@@ -921,7 +941,7 @@ const PerpsOrderEntryPage = () => {
     orderDirection,
   ]);
   usePerpsAbandonOrderTracking({
-    getAbandonProperties: getAbandonProperties.current,
+    getAbandonProperties,
     hasCommittedRef: hasSubmittedOrderRef,
     // Only once the order form actually renders. The component returns early
     // for the feature-disabled, still-loading and market-not-found paths, and
@@ -1056,7 +1076,10 @@ const PerpsOrderEntryPage = () => {
   if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
     currentPrice = liveStreamPrice;
   }
-  currentPriceRef.current = currentPrice;
+
+  useLayoutEffect(() => {
+    currentPriceRef.current = currentPrice;
+  }, [currentPrice]);
 
   const marketOrders = useMemo(
     () => allOrders.filter((order) => order.symbol === decodedSymbol),
@@ -1134,8 +1157,19 @@ const PerpsOrderEntryPage = () => {
   // funded by spot USDC are recognized as tradeable. Withdraw screens still
   // read `account.spendableBalance` directly.
   const availableBalance = Number.parseFloat(getTradeableBalance(account));
+  // A missing or unparseable balance field is an unknown balance, not a zero
+  // one: enabling the deposit CTA there would prompt a funded trader to deposit
+  // collateral they already hold. Only a balance we actually read counts, so
+  // this reads the raw field rather than the `'0'`-defaulted one.
+  const rawTradeableBalance = getTradeableBalanceRaw(account);
+  const hasKnownBalance =
+    rawTradeableBalance !== undefined &&
+    Number.isFinite(Number.parseFloat(rawTradeableBalance));
   const hasNoAvailableBalance =
-    orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
+    orderMode === 'new' &&
+    !isLoadingAccount &&
+    hasKnownBalance &&
+    availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC;
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
 
   const isNearLiquidation = useMemo(() => {
@@ -1327,18 +1361,20 @@ const PerpsOrderEntryPage = () => {
     }),
     [estimatedSlippagePct, maxSlippageBps, maxSlippageSource],
   );
-  slippageTradePropertiesRef.current = slippageTradeProperties;
+
+  useLayoutEffect(() => {
+    slippageTradePropertiesRef.current = slippageTradeProperties;
+  }, [slippageTradeProperties]);
 
   const isSubmitDisabled =
     !selectedAddress ||
+    (orderMode === 'new' && isLoadingAccount) ||
     isDepositLoading ||
     isOrderPending ||
-    (orderMode === 'new' && isLoadingAccount) ||
-    hasNoAvailableBalance ||
-    (isMarketOrderWithAmount &&
-      (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
     (isPrimaryTradeAction &&
-      (isLimitPriceInvalid ||
+      ((isMarketOrderWithAmount &&
+        (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
+        isLimitPriceInvalid ||
         isNearLiquidation ||
         hasInvalidTPSL ||
         isInsufficientFunds ||
@@ -1394,7 +1430,7 @@ const PerpsOrderEntryPage = () => {
       }
     }
     return '$0.00';
-  }, [currentPrice, market?.price]);
+  }, [currentPrice, market]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange = formatSignedChangePercent(
@@ -2157,6 +2193,16 @@ const PerpsOrderEntryPage = () => {
           // placeOrder already clears the controller draft; this is defensive.
         });
       }
+      if (consumeUnfundedDepositFunnel(selectedAddress)) {
+        track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.TRADE_SUBMITTED_AFTER_DEPOSIT,
+          [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          ...(decodedSymbol
+            ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
+            : {}),
+        });
+      }
       if (shouldHandleTpslSeparately) {
         const { takeProfitPrice: cleanTp, stopLossPrice: cleanSl } =
           normalizeTpslPrices({
@@ -2266,6 +2312,7 @@ const PerpsOrderEntryPage = () => {
     orderCalculations,
     position,
     selectedAddress,
+    decodedSymbol,
     currentPrice,
     getTradeActionToastDescription,
     getClosePartialToastDescription,
@@ -2295,10 +2342,49 @@ const PerpsOrderEntryPage = () => {
     isEstimatedSlippageReady,
   ]);
 
+  /**
+   * Emits the Add funds click. Called before the eligibility branch so a
+   * geo-blocked click still lands in the funnel — that dismissal is the
+   * drop-off this instrumentation exists to measure.
+   */
+  const trackDepositCta = useCallback(
+    ({
+      buttonLocation,
+      isFunded,
+      outcome,
+    }: {
+      buttonLocation: PerpsButtonLocation;
+      isFunded: boolean;
+      outcome: PerpsDepositClickOutcome;
+    }) => {
+      if (!isFunded && selectedAddress) {
+        markUnfundedDepositFunnel(selectedAddress);
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: isFunded,
+        [PERPS_EVENT_PROPERTY.DEPOSIT_CLICK_OUTCOME]: outcome,
+        ...(decodedSymbol
+          ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
+          : {}),
+      });
+    },
+    [decodedSymbol, selectedAddress, track],
+  );
+
   const handlePrimaryAction = useCallback(async () => {
     await gate(async () => {
       if (hasNoAvailableBalance) {
         if (!isEligible) {
+          trackDepositCta({
+            buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+            isFunded: false,
+            outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.GEO_BLOCK_MODAL,
+          });
           setIsGeoBlockModalOpen(true);
           return;
         }
@@ -2306,6 +2392,11 @@ const PerpsOrderEntryPage = () => {
           return;
         }
 
+        trackDepositCta({
+          buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+          isFunded: false,
+          outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.DEPOSIT,
+        });
         await triggerDeposit();
         return;
       }
@@ -2319,12 +2410,21 @@ const PerpsOrderEntryPage = () => {
     isDepositLoading,
     isEligible,
     selectedAddress,
+    trackDepositCta,
     triggerDeposit,
   ]);
 
   const handleAddFunds = useCallback(async () => {
     await gate(async () => {
+      if (isLoadingAccount) {
+        return;
+      }
       if (!isEligible) {
+        trackDepositCta({
+          buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+          isFunded: !hasNoAvailableBalance,
+          outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.GEO_BLOCK_MODAL,
+        });
         setIsGeoBlockModalOpen(true);
         return;
       }
@@ -2332,9 +2432,24 @@ const PerpsOrderEntryPage = () => {
         return;
       }
 
+      trackDepositCta({
+        buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+        isFunded: !hasNoAvailableBalance,
+        outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.DEPOSIT,
+      });
+
       await triggerDeposit();
     });
-  }, [gate, isDepositLoading, isEligible, selectedAddress, triggerDeposit]);
+  }, [
+    gate,
+    hasNoAvailableBalance,
+    isLoadingAccount,
+    isDepositLoading,
+    isEligible,
+    selectedAddress,
+    trackDepositCta,
+    triggerDeposit,
+  ]);
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -2393,7 +2508,7 @@ const PerpsOrderEntryPage = () => {
   const isLong = orderDirection === 'long';
   const submitButtonText = (() => {
     if (hasNoAvailableBalance) {
-      return t('addFunds');
+      return t('perpsAddFundsToTrade');
     }
 
     switch (orderMode) {
@@ -2476,6 +2591,8 @@ const PerpsOrderEntryPage = () => {
           midPrice={topOfBook?.midPrice}
           onOrderTypeChange={handleOrderTypeChange}
           onAddFunds={handleAddFunds}
+          isLoadingAccount={isLoadingAccount}
+          hasNoAvailableBalance={hasNoAvailableBalance}
           initialLeverage={initialLeverage}
           initialDraft={restoredOrderDraft}
           onLeverageChange={handleLeverageChange}
@@ -2546,6 +2663,15 @@ const PerpsOrderEntryPage = () => {
           isChartOpen ? 'fixed left-0 w-full' : 'sticky shrink-0',
         )}
       >
+        {hasNoAvailableBalance && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid="perps-unfunded-add-funds-hint"
+          >
+            {t('perpsAddFundsHint', [`$${PERPS_MIN_MARKET_ORDER_USD}`])}
+          </Text>
+        )}
         <Button
           type="submit"
           variant={ButtonVariant.Primary}
