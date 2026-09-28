@@ -1155,6 +1155,7 @@ export enum MetaMetricsEventName {
   SendAmountSelected = 'Send Amount Selected',
   SendAssetSelected = 'Send Asset Selected',
   SendRecipientSelected = 'Send Recipient Selected',
+  SendFailed = 'Send Failed',
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
