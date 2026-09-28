@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { MOCK_ACCOUNTS_API_ACTIVITY } from '../../pages/money/constants/mock-activity-data';
 import {
   accountsApiItem,
   onchainItem,
@@ -7,13 +8,12 @@ import {
   type MoneyActivityItem,
 } from '../../pages/money/types/money-activity';
 import {
+  isMoneyCardActivityItem,
   MoneyActivityFilter,
   type MoneyActivityBuckets,
 } from '../../pages/money/utils/money-activity-filters';
 import { useMoneyAccountTransactions } from './use-money-account-transactions';
 import { useMoneyAccountApiActivity } from './use-money-account-api-activity';
-
-const EMPTY_API_ACTIVITY: AccountsApiActivity[] = [];
 
 export type UseMoneyActivityItemsResult = {
   items: MoneyActivityItem[];
@@ -85,17 +85,19 @@ export function buildMergedMoneyActivityBuckets(
   apiActivity: AccountsApiActivity[],
   watermark: number = Number.NEGATIVE_INFINITY,
 ): MoneyActivityBuckets {
+  const all = safeItems(
+    mergeMoneyActivity(onchain.all, apiActivity),
+    watermark,
+  );
   return {
-    [MoneyActivityFilter.All]: safeItems(
-      mergeMoneyActivity(onchain.all, apiActivity),
-      watermark,
-    ),
+    [MoneyActivityFilter.All]: all,
     [MoneyActivityFilter.Deposits]: onchainOnly(
       safeItems(mergeMoneyActivity(onchain.deposits, apiActivity), watermark),
     ),
     [MoneyActivityFilter.Transfers]: onchainOnly(
       safeItems(mergeMoneyActivity(onchain.transfers, apiActivity), watermark),
     ),
+    [MoneyActivityFilter.Card]: all.filter(isMoneyCardActivityItem),
   };
 }
 
@@ -130,7 +132,7 @@ export function useMoneyActivityItems({
     refetch,
   } = useMoneyAccountApiActivity();
 
-  const apiActivity = mockDataEnabled ? EMPTY_API_ACTIVITY : activity;
+  const apiActivity = mockDataEnabled ? MOCK_ACCOUNTS_API_ACTIVITY : activity;
   const effectiveWatermark = mockDataEnabled
     ? Number.NEGATIVE_INFINITY
     : watermark;

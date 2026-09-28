@@ -337,6 +337,20 @@ export class CandleStreamChannel {
     }
   }
 
+  /** Clear cached candles and deliveries while retaining mounted subscribers. */
+  clearCache(): void {
+    for (const entry of this.channels.values()) {
+      entry.cache = null;
+      for (const sub of entry.subscribers.values()) {
+        if (sub.pendingTimer) {
+          clearTimeout(sub.pendingTimer);
+          sub.pendingTimer = null;
+        }
+        sub.lastDeliveryTime = 0;
+      }
+    }
+  }
+
   /**
    * Clear all caches and disconnect all channels.
    * Called on account/network change.

@@ -75,7 +75,7 @@ describe('MoneyActivityList', () => {
     expect(screen.getByTestId('money-activity-settling')).toBeInTheDocument();
   });
 
-  it('does not make Accounts API rows clickable', () => {
+  it('makes Accounts API rows clickable when onItemClick is set', () => {
     const onItemClick = jest.fn();
     const apiItem = accountsApiItem({
       kind: 'card',
@@ -96,7 +96,9 @@ describe('MoneyActivityList', () => {
     );
 
     const row = screen.getByTestId(`money-activity-row-${apiItem.id}`);
-    expect(row.tagName).toBe('DIV');
+    expect(row.tagName).toBe('BUTTON');
+    fireEvent.click(row);
+    expect(onItemClick).toHaveBeenCalledWith(apiItem);
   });
 
   it('masks amounts in privacy mode', () => {

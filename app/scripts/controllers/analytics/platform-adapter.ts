@@ -104,11 +104,11 @@ export function createEnrichmentContext(
     },
     getProfileIdentityProperties,
     getMarketingCampaignCookieId: () =>
-      messenger.call('MetaMetricsController:getState')
-        .marketingCampaignCookieId,
+      messenger.call('AnalyticsController:getState')
+        .marketingCampaignCookieId ?? null,
     hasMarketingConsent: () =>
-      messenger.call('MetaMetricsController:getState')
-        .dataCollectionForMarketing === true,
+      messenger.call('AnalyticsController:getState').optedInToMarketing ===
+      true,
     hasBasicFunctionalityEnabled: () =>
       messenger.call('PreferencesController:getState').useExternalServices,
     getRemoteFeatureFlags: () =>

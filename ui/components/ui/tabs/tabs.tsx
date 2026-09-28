@@ -1,7 +1,6 @@
 import React, {
   useState,
   useMemo,
-  useEffect,
   useLayoutEffect,
   useCallback,
   useRef,
@@ -102,16 +101,29 @@ export const Tabs = <TKey extends string = string>({
     [getValidChildren],
   );
 
+  const tabKeysFingerprint = useMemo(
+    () => getValidChildren.map((child) => child.props.tabKey).join('\0'),
+    [getValidChildren],
+  );
+
   const [activeTabIndex, setActiveTabIndex] = useState<number>(() =>
     Math.max(findChildByKey(activeTab), 0),
   );
+  const [prevActiveTab, setPrevActiveTab] = useState(activeTab);
+  const [prevTabKeysFingerprint, setPrevTabKeysFingerprint] =
+    useState(tabKeysFingerprint);
 
-  useEffect(() => {
+  if (
+    activeTab !== prevActiveTab ||
+    tabKeysFingerprint !== prevTabKeysFingerprint
+  ) {
+    setPrevActiveTab(activeTab);
+    setPrevTabKeysFingerprint(tabKeysFingerprint);
     const childIndex = findChildByKey(activeTab);
     if (childIndex >= 0) {
       setActiveTabIndex(childIndex);
     }
-  }, [activeTab, findChildByKey]);
+  }
 
   const clampedIndex =
     getValidChildren.length > 0

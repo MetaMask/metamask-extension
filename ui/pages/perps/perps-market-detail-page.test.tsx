@@ -103,6 +103,7 @@ jest.mock('@metamask/perps-controller', () => ({
   },
   MARKET_CATEGORIES: [
     'crypto',
+    'memecoin',
     'stock',
     'pre-ipo',
     'index',

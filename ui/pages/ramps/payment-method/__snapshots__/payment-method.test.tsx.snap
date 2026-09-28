@@ -38,10 +38,11 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
       <div
         class="flex flex-col"
       >
-        <button
+        <div
           class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-payment-method-item-debit-credit-card"
           role="button"
+          tabindex="0"
         >
           <div
             class="flex flex-row gap-3 items-center justify-between w-full"
@@ -99,11 +100,12 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
               </svg>
             </div>
           </div>
-        </button>
-        <button
+        </div>
+        <div
           class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-payment-method-item-bank-transfer"
           role="button"
+          tabindex="0"
         >
           <div
             class="flex flex-row gap-3 items-center justify-between w-full"
@@ -146,7 +148,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
               </div>
             </div>
           </div>
-        </button>
+        </div>
       </div>
     </div>
     <div
@@ -577,10 +579,11 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
       <div
         class="flex flex-col"
       >
-        <button
+        <div
           class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-payment-method-item-debit-credit-card"
           role="button"
+          tabindex="0"
         >
           <div
             class="flex flex-row gap-3 items-center justify-between w-full"
@@ -638,11 +641,12 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
               </svg>
             </div>
           </div>
-        </button>
-        <button
+        </div>
+        <div
           class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-payment-method-item-bank-transfer"
           role="button"
+          tabindex="0"
         >
           <div
             class="flex flex-row gap-3 items-center justify-between w-full"
@@ -685,7 +689,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
               </div>
             </div>
           </div>
-        </button>
+        </div>
       </div>
     </div>
     <div
@@ -751,10 +755,11 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
       <div
         class="flex flex-col"
       >
-        <button
+        <div
           class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
           data-testid="ramps-payment-method-item-debit-credit-card"
           role="button"
+          tabindex="0"
         >
           <div
             class="flex flex-row gap-3 items-center justify-between w-full"
@@ -827,11 +832,12 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
               </svg>
             </div>
           </div>
-        </button>
-        <button
+        </div>
+        <div
           class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
           data-testid="ramps-payment-method-item-bank-transfer"
           role="button"
+          tabindex="0"
         >
           <div
             class="flex flex-row gap-3 items-center justify-between w-full"
@@ -880,20 +886,26 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                 class="flex flex-col items-end justify-center"
                 data-testid="ramps-quote-display-warning"
               >
-                <svg
-                  class="inline-block w-4 h-4 text-warning-default"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+                <button
+                  class="border-0 bg-transparent p-0"
+                  data-testid="ramps-quote-display-warning-trigger"
+                  type="button"
                 >
-                  <path
-                    d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m-.75-7.5V7.5a.75.75 0 0 1 1.5 0v5.25a.75.75 0 0 1-1.5 0m1.875 3.375A1.125 1.125 0 1 1 12 15a1.125 1.125 0 0 1 1.125 1.125"
-                  />
-                </svg>
+                  <svg
+                    class="inline-block w-4 h-4 text-warning-default"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m-.75-7.5V7.5a.75.75 0 0 1 1.5 0v5.25a.75.75 0 0 1-1.5 0m1.875 3.375A1.125 1.125 0 1 1 12 15a1.125 1.125 0 0 1 1.125 1.125"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
-        </button>
+        </div>
       </div>
     </div>
     <div
@@ -963,10 +975,11 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
         <div
           class="flex flex-col"
         >
-          <button
+          <div
             class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-background-muted"
             data-testid="ramps-payment-method-item-debit-credit-card"
             role="button"
+            tabindex="0"
           >
             <div
               class="flex flex-row gap-3 items-center justify-between w-full"
@@ -1024,11 +1037,12 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
                 </svg>
               </div>
             </div>
-          </button>
-          <button
+          </div>
+          <div
             class="inline-flex items-center justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] w-full rounded-none px-4 py-3 min-h-14 min-w-0 h-auto hover:bg-hover active:bg-pressed bg-transparent"
             data-testid="ramps-payment-method-item-bank-transfer"
             role="button"
+            tabindex="0"
           >
             <div
               class="flex flex-row gap-3 items-center justify-between w-full"
@@ -1074,7 +1088,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
                 class="flex flex-row gap-2 items-center shrink-0"
               />
             </div>
-          </button>
+          </div>
         </div>
       </div>
       <div
@@ -1120,7 +1134,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full shadow-lg motion-safe:animate-slide-up max-w-[480px] rounded-[32px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -1133,7 +1147,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
               <h4
                 class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
               >
-                Choose provider
+                Choose providers
               </h4>
             </div>
             <div
@@ -1182,7 +1196,8 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
                         class="flex flex-row gap-2 items-center w-full min-w-0"
                       >
                         <p
-                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default truncate text-left"
+                          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default min-w-0 flex-1 truncate text-left"
+                          data-testid="ramps-provider-item-name-/providers/transak"
                         >
                           Transak
                         </p>

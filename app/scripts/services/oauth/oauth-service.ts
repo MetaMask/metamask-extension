@@ -57,18 +57,12 @@ export class OAuthService {
 
   #platform: ExtensionPlatform;
 
-  #bufferedTrace: OAuthServiceOptions['bufferedTrace'];
-
-  #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
-
   #trackEvent: OAuthServiceOptions['trackEvent'];
 
   constructor({
     messenger,
     webAuthenticator,
     platform,
-    bufferedTrace,
-    bufferedEndTrace,
     trackEvent,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
@@ -76,8 +70,6 @@ export class OAuthService {
     this.#config = loadOAuthConfig();
     this.#webAuthenticator = webAuthenticator;
     this.#platform = platform;
-    this.#bufferedTrace = bufferedTrace;
-    this.#bufferedEndTrace = bufferedEndTrace;
     this.#trackEvent = trackEvent;
 
     this.#messenger.registerMethodActionHandlers(
@@ -248,7 +240,7 @@ export class OAuthService {
     let providerLoginSuccess = false;
 
     try {
-      this.#bufferedTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingOAuthProviderLogin,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -280,7 +272,7 @@ export class OAuthService {
 
       throw error;
     } finally {
-      this.#bufferedEndTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingOAuthProviderLogin,
         data: { success: providerLoginSuccess },
       });
@@ -301,7 +293,7 @@ export class OAuthService {
     let getAuthTokensSuccess = false;
 
     try {
-      this.#bufferedTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -328,7 +320,7 @@ export class OAuthService {
 
       throw error;
     } finally {
-      this.#bufferedEndTrace?.({
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         data: { success: getAuthTokensSuccess },
       });
@@ -512,6 +504,8 @@ export class OAuthService {
         throw this.#getAuthFlowError();
       }
 
+      const confirmedTabId: number = openedTabId;
+
       const redirectUrl = await new Promise<string>((resolve, reject) => {
         const platform = this.#platform;
 
@@ -522,16 +516,16 @@ export class OAuthService {
 
         function finish(callback: () => void): void {
           cleanup();
-          platform.closeTab(openedTabId).catch(() => undefined);
+          platform.closeTab(confirmedTabId).catch(() => undefined);
           callback();
         }
 
         function onUpdated(
           tabId: number,
           changeInfo: { url?: string; pendingUrl?: string },
-          tab?: { url?: string },
+          tab: { url?: string },
         ): void {
-          if (tabId !== openedTabId) {
+          if (tabId !== confirmedTabId) {
             return;
           }
 
@@ -551,7 +545,7 @@ export class OAuthService {
         }
 
         function onRemoved(tabId: number): void {
-          if (tabId !== openedTabId) {
+          if (tabId !== confirmedTabId) {
             return;
           }
 
