@@ -119,6 +119,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      pull-requests: read
     steps:
       - name: Get token
         id: token
