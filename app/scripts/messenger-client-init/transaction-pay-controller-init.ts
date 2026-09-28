@@ -19,11 +19,6 @@ import {
   clearMaxSourceBalance,
   setMaxSourceBalance,
 } from '../lib/money/pay/max-source-balance';
-import {
-  clearAtomicMaxHint,
-  isAtomicMaxAllowed,
-  setAtomicMaxHint,
-} from '../lib/money/pay/atomic-max-hint';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
 import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
@@ -150,12 +145,6 @@ function getApi(
         } else {
           clearMaxSourceBalance(transactionId);
         }
-
-        if (isMaxAmount) {
-          setAtomicMaxHint(transactionId, options.isAtomicMaxAllowed ?? false);
-        } else {
-          clearAtomicMaxHint(transactionId);
-        }
       }
 
       messengerClient.setTransactionConfig(transactionId, (config) => {
@@ -174,7 +163,6 @@ function getApi(
       transactionId: string,
       isAllowed: boolean,
     ) => {
-      setAtomicMaxHint(transactionId, isAllowed);
       messengerClient.setTransactionConfig(transactionId, (config) => {
         if (config.isMaxAmount) {
           config.atomic = isAllowed ? undefined : false;
@@ -273,11 +261,15 @@ function getApi(
           const transaction = moneyPayMessenger
             .call('TransactionController:getState')
             .transactions.find(({ id }) => id === transactionId);
-          const keepNonAtomic =
+          // An armed Max deposit already holds the correct hint (`false`, or
+          // `undefined` when Core may quote it atomically). Clearing the
+          // override must not re-derive it.
+          const keepAtomicHint =
             config.isMaxAmount &&
-            getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit &&
-            !isAtomicMaxAllowed(transactionId);
-          config.atomic = keepNonAtomic ? false : undefined;
+            getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
+          if (!keepAtomicHint) {
+            config.atomic = undefined;
+          }
           config.refundTo = undefined;
           return;
         }
