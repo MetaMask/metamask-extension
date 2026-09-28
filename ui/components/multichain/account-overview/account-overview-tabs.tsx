@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Hex } from '@metamask/utils';
 import {
   Box,
   BoxAlignItems,
@@ -49,7 +48,6 @@ import {
   PERPS_TAB_BADGE_VARIANTS,
   PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
 } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
-import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../../../pages/activity/activity-list';
 import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
@@ -62,25 +60,6 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showNfts?: boolean;
   showDefi?: boolean;
   showActivity?: boolean;
-};
-
-/**
- * Isolated component that starts/stops EVM token balance polling.
- *
- * This intentionally returns null and only runs a hook. While that may seem
- * like an anti-pattern, it is the correct React performance pattern here:
- * `useTokenBalances` internally calls `useSelector(getTokenBalances)`, which
- * subscribes the calling component to every token-balance state update
- * (every ~30 s). By placing the call in this tiny component instead of in
- * `AccountOverviewTabs`, only this component re-renders when balances change,
- * rather than the entire tabs subtree and all of its children.
- *
- * @param options - Component options.
- * @param options.chainIds - The chain IDs to poll balances for.
- */
-const TokenBalancesPoller = ({ chainIds }: { chainIds: Hex[] }) => {
-  useTokenBalances({ chainIds });
-  return null;
 };
 
 export const AccountOverviewTabs = ({
@@ -168,10 +147,6 @@ export const AccountOverviewTabs = ({
     }
   }, [showPerpsTabBadge, perpsIsEffectiveActiveTab, dispatch]);
 
-  // EVM token-balance polling is handled by TokenBalancesPoller (rendered below).
-  // Keeping it in an isolated child prevents balance updates from re-rendering
-  // this entire subtree every ~30 s.
-
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {
       if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
@@ -214,7 +189,6 @@ export const AccountOverviewTabs = ({
 
   return (
     <>
-      <TokenBalancesPoller chainIds={selectedChainIds as Hex[]} />
       <Tabs<AccountOverviewTab>
         animated
         activeTab={activeTabKey}
