@@ -28,6 +28,8 @@ jobs:
     needs: is-cross-repo-pr
     # Skip cross-repo PRs — later steps need write access to push commits.
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
+    permissions:
+      id-token: write
     steps:
       - name: Get token
         id: token
@@ -114,6 +116,9 @@ jobs:
       - is-cross-repo-pr
       - update-attributions
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get token
         id: token
@@ -194,6 +199,9 @@ jobs:
     needs:
       - is-cross-repo-pr
       - check-status
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get token
         id: token

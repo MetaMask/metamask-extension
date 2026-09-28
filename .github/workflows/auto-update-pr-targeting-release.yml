@@ -15,8 +15,7 @@ jobs:
       YARN_ENABLE_HARDENED_MODE: false
       INFURA_PROJECT_ID: 00000000000
     permissions:
-      pull-requests: write
-      contents: write
+      id-token: write
     steps:
       - name: Get token
         id: token
