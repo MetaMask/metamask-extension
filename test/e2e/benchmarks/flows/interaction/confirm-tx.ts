@@ -1,6 +1,31 @@
 /**
  * Benchmark: Confirm Transaction
  * Measures time to confirm a transaction
+ *
+ * This flow stays harness-clocked. No app span covers the `confirm_tx` step,
+ * so there is nothing to read from Sentry here (cf. extension#46680):
+ *
+ * - `TraceName.SendCompleted` would name exactly this step, but it is declared
+ *   in `shared/lib/trace.ts` and never called — one of the dead members of that
+ *   enum. Declaring a name does not emit a span.
+ * - `TraceName.Transaction` is started only by `createTracingMiddleware`, keyed
+ *   on the `eth_sendTransaction` JSON-RPC method and tagged `source: 'dapp'`
+ *   (app/scripts/lib/createTracingMiddleware.ts), and ended on the same RPC
+ *   path (app/scripts/lib/transaction/util.ts). This benchmark uses
+ *   `createInternalTransaction`, the wallet's own send flow, which never issues
+ *   that request — so the span is never opened.
+ * - `TraceName.OnFinishedTransaction` does fire for an internal transaction
+ *   (app/scripts/metamask-controller.js, `_onFinishedTransaction`), but it
+ *   brackets post-confirmation bookkeeping — notification, NFT ownership,
+ *   balance refresh — not the click-to-confirmed interval measured below.
+ * - `TraceName.AccountOverviewActivityTab` is started when the Activity tab is
+ *   clicked and ended only when the user clicks *away* to another tab
+ *   (`handleTabClick` in
+ *   ui/components/multichain/account-overview/account-overview-tabs.tsx). This
+ *   flow never leaves the tab, so the span never closes and is never sent.
+ *
+ * Emitting one of the last three in place of the step would report a different
+ * quantity under the step's name, so the harness clock is kept instead.
  */
 
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
