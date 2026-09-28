@@ -254,7 +254,7 @@ export const useSubscriptionMetrics = () => {
         subscription_status: params.subscriptionStatus,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        attachments_count: params.attachmentsCount,
+        attachment_count: params.attachmentsCount,
         status: params.status,
         error: params.errorMessage,
       });

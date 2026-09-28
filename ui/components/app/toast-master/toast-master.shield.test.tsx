@@ -61,6 +61,20 @@ const pausedCryptoShieldSubscription = {
   interval: RECURRING_INTERVALS.month,
 } as unknown as Subscription;
 
+const pausedCryptoAllowanceShieldSubscription = {
+  status: SUBSCRIPTION_STATUSES.paused,
+  products: [{ name: PRODUCT_TYPES.SHIELD }],
+  paymentMethod: {
+    type: PAYMENT_TYPES.byCrypto,
+    crypto: {
+      chainId: '0x1',
+      tokenSymbol: 'USDC',
+      error: CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_ALLOWANCE,
+    },
+  },
+  interval: RECURRING_INTERVALS.month,
+} as unknown as Subscription;
+
 describe('ToastMaster Shield paused toast', () => {
   const previousShieldEnabled = process.env.METAMASK_SHIELD_ENABLED;
   let consoleWarnSpy: jest.SpyInstance;
@@ -164,6 +178,41 @@ describe('ToastMaster Shield paused toast', () => {
         cryptoPaymentChain: '0x1',
         cryptoPaymentCurrency: 'USDC',
         type: ShieldErrorStateClickedTypeEnum.AddFunds,
+      }),
+    );
+  });
+
+  it('tracks the update card type for a crypto allowance error', () => {
+    jest.mocked(useUserSubscriptions).mockReturnValue({
+      subscriptions: [pausedCryptoAllowanceShieldSubscription],
+    } as unknown as ReturnType<typeof useUserSubscriptions>);
+    jest
+      .mocked(useUserSubscriptionByProduct)
+      .mockReturnValue(pausedCryptoAllowanceShieldSubscription);
+
+    const { getByRole } = renderWithProvider(
+      <ToastMaster />,
+      configureStore({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          isUnlocked: true,
+          shieldPausedToastLastClickedOrClosed: null,
+        },
+      }),
+      '/',
+    );
+
+    fireEvent.click(
+      getByRole('button', {
+        name: messages.shieldPaymentPausedActionCryptoPayment.message,
+      }),
+    );
+
+    expect(mockCaptureShieldErrorStateClickedEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        paymentType: PAYMENT_TYPES.byCrypto,
+        type: ShieldErrorStateClickedTypeEnum.UpdateCard,
       }),
     );
   });

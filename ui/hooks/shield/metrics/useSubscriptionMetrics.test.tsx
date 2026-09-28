@@ -144,7 +144,7 @@ describe('useSubscriptionMetrics', () => {
           subscription_status: SUBSCRIPTION_STATUSES.active,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          attachments_count: 2,
+          attachment_count: 2,
           status: 'completed',
           error: 'upload failed',
         }),

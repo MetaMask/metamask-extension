@@ -1,7 +1,10 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import {
+  CRYPTO_PAYMENT_METHOD_ERRORS,
+  PRODUCT_TYPES,
+} from '@metamask/subscription-controller';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -233,6 +236,11 @@ function ShieldPausedToast() {
     shieldSubscription &&
     isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
     Boolean(shieldSubscription.paymentMethod.crypto.error);
+  const isInsufficientFundsCrypto =
+    shieldSubscription &&
+    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
+    shieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
 
   // default text to unexpected error case
   let descriptionText = 'shieldPaymentPausedDescriptionUnexpectedError';
@@ -249,9 +257,10 @@ function ShieldPausedToast() {
   const trackShieldErrorStateClickedEvent = (actionClicked) => {
     const { cryptoPaymentChain, cryptoPaymentCurrency } =
       getSubscriptionPaymentData(shieldSubscription);
-    const type = isCryptoPaymentWithError
-      ? ShieldErrorStateClickedTypeEnum.AddFunds
-      : ShieldErrorStateClickedTypeEnum.UpdateCard;
+    const type =
+      isInsufficientFundsCrypto || isCryptoPaymentWithError
+        ? ShieldErrorStateClickedTypeEnum.AddFunds
+        : ShieldErrorStateClickedTypeEnum.UpdateCard;
 
     // capture error state clicked event
     captureShieldErrorStateClickedEvent({

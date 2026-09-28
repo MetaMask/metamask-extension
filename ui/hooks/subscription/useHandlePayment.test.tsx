@@ -160,6 +160,11 @@ describe('useHandlePayment', () => {
       await result.current.handlePaymentError();
     });
 
+    expect(mockCaptureShieldErrorStateClickedEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: ShieldErrorStateClickedTypeEnum.UpdateCard,
+      }),
+    );
     expect(
       mockCaptureCommonExistingShieldSubscriptionEvents,
     ).toHaveBeenCalledWith(
