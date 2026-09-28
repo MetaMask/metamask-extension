@@ -6,6 +6,7 @@ import {
 } from '../../page-objects/flows/stellar-dapp.flow';
 import SnapSignAuthEntryConfirmation from '../../page-objects/pages/confirmations/snap-sign-auth-entry-confirmation';
 import { DEFAULT_STELLAR_AUTH_ENTRY_XDR } from '../../constants';
+import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
   withStellarWalletSnap,
@@ -19,6 +20,7 @@ describe('Stellar - Sign Auth Entry - e2e tests', function () {
         title: this.test?.fullTitle(),
       },
       async (driver) => {
+        await addMultipleAccounts({ driver });
         const testDapp = new TestDappStellar(driver);
         await testDapp.openTestDappPage();
 
