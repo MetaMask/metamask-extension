@@ -998,9 +998,9 @@ describe('AssetPage', () => {
       );
 
       expect(getByTestId('spendable-balance-section')).toBeInTheDocument();
-      expect(getByTestId('spendable-balance-spendable-balance')).toHaveTextContent(
-        '7.5 XLM',
-      );
+      expect(
+        getByTestId('spendable-balance-spendable-balance'),
+      ).toHaveTextContent('7.5 XLM');
     });
   });
 });
