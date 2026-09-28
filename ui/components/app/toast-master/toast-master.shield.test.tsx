@@ -10,6 +10,8 @@ import {
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateClickedTypeEnum,
@@ -94,7 +96,11 @@ describe('ToastMaster Shield paused toast', () => {
       '/',
     );
 
-    fireEvent.click(getByRole('button', { name: 'Update' }));
+    fireEvent.click(
+      getByRole('button', {
+        name: messages.shieldPaymentPausedActionCardPayment.message,
+      }),
+    );
 
     expect(mockCaptureShieldErrorStateClickedEvent).toHaveBeenCalledWith({
       subscriptionStatus: SUBSCRIPTION_STATUSES.paused,
