@@ -68,15 +68,14 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           // endpoint this benchmark reads them from. CI builds otherwise send
           // only a small fraction of traces.
           sentry: { tracesSampleRate: 1 },
-          // `tracesSampleRate` only sets the sampler's DEFAULT, and
-          // `getTransactionSampleRate` returns a per-name override before it
-          // ever reads that default. `Swap Quote Fetch` is pinned to 0.001 in
-          // `DEFAULT_TRANSACTION_SAMPLE_RATES` (extension#46618), so without
-          // the line below this benchmark reads that span about once in a
-          // thousand runs. This is the only key that outranks the pin.
-          remoteFeatureFlags: {
-            sentry: { transactionSampleRates: { 'Swap Quote Fetch': 1 } },
-          },
+          // NOT overriding `Swap Quote Fetch`'s per-name rate, and NOT claiming
+          // the 0.001 pin is what hides it. Measured 2026-09-28 under CI=1,
+          // 1 iteration per arm, 47 envelopes every time and `Swap Quote Fetch`
+          // missing from every one: absent without the override, absent with it,
+          // and still absent with the build-time pin itself lifted to 1. The
+          // unpinned `Swap View Loaded` arrives throughout, so the harness and
+          // the mocked endpoint are working. Whatever stops this span, sampling
+          // is not it.
         },
         useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
