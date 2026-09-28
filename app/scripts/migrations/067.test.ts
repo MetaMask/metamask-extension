@@ -44,7 +44,7 @@ describe('migration #67', () => {
     );
     const migratedData = newStorage.data as LegacyState;
     expect(
-      migratedData.PreferencesController!.preferences!.showTestNetworks,
+      migratedData.PreferencesController?.preferences?.showTestNetworks,
     ).toBe(true);
   });
 
@@ -77,7 +77,7 @@ describe('migration #67', () => {
     );
     const migratedData = newStorage.data as LegacyState;
     expect(
-      migratedData.PreferencesController!.preferences!.showTestNetworks,
+      migratedData.PreferencesController?.preferences?.showTestNetworks,
     ).toBe(true);
   });
 
@@ -129,7 +129,7 @@ describe('migration #67', () => {
     );
     const migratedData = newStorage.data as LegacyState;
     expect(
-      migratedData.PreferencesController!.preferences!.showTestNetworks,
+      migratedData.PreferencesController?.preferences?.showTestNetworks,
     ).toBe(true);
   });
 
@@ -180,7 +180,7 @@ describe('migration #67', () => {
     );
     const migratedData = newStorage.data as LegacyState;
     expect(
-      migratedData.PreferencesController!.preferences!.showTestNetworks,
+      migratedData.PreferencesController?.preferences?.showTestNetworks,
     ).toBe(false);
   });
 
@@ -232,7 +232,7 @@ describe('migration #67', () => {
     );
     const migratedData = newStorage.data as LegacyState;
     expect(
-      migratedData.PreferencesController!.preferences!.showTestNetworks,
+      migratedData.PreferencesController?.preferences?.showTestNetworks,
     ).toBe(true);
   });
 });

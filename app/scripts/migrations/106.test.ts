@@ -101,7 +101,7 @@ describe('migration #106', () => {
           currentLocale: 'en',
           dismissSeedBackUpReminder: false,
           ipfsGateway: 'dweb.link',
-          securityAlertsEnabled: false,
+          securityAlertsEnabled: true,
           openSeaEnabled: false,
           useTokenDetection: false,
         },

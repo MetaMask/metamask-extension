@@ -1,10 +1,10 @@
 import { cloneDeep } from 'lodash';
-import type { LegacyState } from './legacy-migration-utils';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import type { LegacyState } from './legacy-migration-utils';
 import migration59 from './059';
 
 type MigrationInput = Parameters<typeof migration59.migrate>[0];
@@ -172,7 +172,7 @@ describe('migration #59', () => {
     );
     const migratedData = newStorage.data as LegacyState;
 
-    expect(migratedData.TransactionController!.transactions).toStrictEqual({
+    expect(migratedData.TransactionController?.transactions).toStrictEqual({
       original: oldStorage.data.TransactionController.transactions.original,
       retry: oldStorage.data.TransactionController.transactions.retry,
     });

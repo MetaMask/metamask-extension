@@ -9,6 +9,7 @@ import {
 import { TransactionType } from '@metamask/transaction-controller';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import type { LegacyState, LegacyTransaction } from './legacy-migration-utils';
+
 const version = 59;
 
 /**

@@ -1,12 +1,13 @@
 import { cloneDeep } from 'lodash';
 import log from 'loglevel';
 import { hasProperty, isObject } from '@metamask/utils';
+import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import transformState077For082 from './077-supplements/077-supplement-for-082';
 import transformState077For084 from './077-supplements/077-supplement-for-084';
 import transformState077For086 from './077-supplements/077-supplement-for-086';
 import transformState077For088 from './077-supplements/077-supplement-for-088';
-import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import type { LegacyState } from './legacy-migration-utils';
+
 const version = 77;
 
 /**
@@ -57,11 +58,13 @@ function transformState(state: LegacyState) {
   // eslint-disable-next-line
   for (const chainId in tokensChainsCache) {
     const cacheEntry = tokensChainsCache[chainId]?.data;
-    dataCache = Array.isArray(cacheEntry)
-      ? cacheEntry
-      : isObject(cacheEntry)
-        ? cacheEntry
-        : {};
+    if (Array.isArray(cacheEntry)) {
+      dataCache = cacheEntry;
+    } else if (isObject(cacheEntry)) {
+      dataCache = cacheEntry;
+    } else {
+      dataCache = {};
+    }
     dataObject = {};
     // if the data is array convert that to object
     if (Array.isArray(dataCache)) {

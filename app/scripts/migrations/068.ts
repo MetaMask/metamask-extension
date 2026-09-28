@@ -4,6 +4,7 @@ import type {
   LegacyPermissionsController,
   LegacyState,
 } from './legacy-migration-utils';
+
 const version = 68;
 
 /**
@@ -81,7 +82,7 @@ function getPermissionControllerState(
       // There are two caveats for each eth_accounts permission, but we only
       // need the value of one of them in the new permission system.
       const oldCaveat = ethAccountsPermission.caveats.find(
-        (caveat) => caveat.name === OLD_CAVEAT_NAME,
+        (caveat) => caveat?.name === OLD_CAVEAT_NAME,
       );
 
       if (!oldCaveat) {

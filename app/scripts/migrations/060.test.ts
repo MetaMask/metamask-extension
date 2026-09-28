@@ -62,7 +62,11 @@ describe('migration #60', () => {
       oldStorage as unknown as MigrationInput,
     );
     const migratedData = newStorage.data as LegacyState;
-    const notifications = migratedData.NotificationController!.notifications!;
+    const notifications = migratedData.NotificationController?.notifications;
+    expect(notifications).toBeDefined();
+    if (!notifications) {
+      return;
+    }
     const notificationKeys = Object.keys(notifications);
     // Expect support notification is removed
     expect(notificationKeys).toHaveLength(3);

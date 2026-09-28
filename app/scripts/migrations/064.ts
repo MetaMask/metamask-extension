@@ -2,6 +2,7 @@ import { cloneDeep, isPlainObject } from 'lodash';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import type { LegacyState, LegacyTransaction } from './legacy-migration-utils';
+
 const version = 64;
 
 const SENT_ETHER = 'sentEther'; // the legacy transaction type being replaced in this migration with TransactionType.simpleSend

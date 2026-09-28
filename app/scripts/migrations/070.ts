@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import type { LegacyState } from './legacy-migration-utils';
+
 const version = 70;
 
 /**

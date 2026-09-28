@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { getRpcUrl } from '../../../shared/constants/network';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import type { LegacyState, LegacyTransaction } from './legacy-migration-utils';
+
 const version = 74;
 
 const hexNumberIsGreaterThanZero = (hexNumber: string | null | undefined) =>

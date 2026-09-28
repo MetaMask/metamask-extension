@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import type { LegacyState, LegacyTransaction } from './legacy-migration-utils';
+
 const hexNumberIsGreaterThanZero = (hexNumber: string | null | undefined) =>
   new BigNumber(hexNumber || '0x0', 16).gt(0);
 
@@ -36,7 +37,7 @@ function transformState(state: LegacyState) {
   const provider = state.NetworkController?.provider || {};
   const cachedBalances = state.CachedBalancesController?.cachedBalances || {};
 
-  const chainId = provider.chainId;
+  const { chainId } = provider;
   const userIsCurrentlyOnATestNet =
     typeof chainId === 'string' &&
     TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]);
@@ -51,8 +52,10 @@ function transformState(state: LegacyState) {
           transaction.chainId as (typeof TEST_CHAINS)[number],
         ),
     );
-  const userHasACachedBalanceOnATestnet = TEST_CHAINS.some((chainId) => {
-    const cachedBalancesForChain = Object.values(cachedBalances[chainId] || {});
+  const userHasACachedBalanceOnATestnet = TEST_CHAINS.some((testChainId) => {
+    const cachedBalancesForChain = Object.values(
+      cachedBalances[testChainId] || {},
+    );
     const userHasABalanceGreaterThanZeroOnThisChain =
       cachedBalancesForChain.some((hexNumber) =>
         hexNumberIsGreaterThanZero(hexNumber as string | null | undefined),

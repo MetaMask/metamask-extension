@@ -4,6 +4,7 @@ import type {
   LegacyNftController,
   LegacyState,
 } from './legacy-migration-utils';
+
 const version = 76;
 
 /**

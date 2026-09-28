@@ -209,10 +209,10 @@ describe('migration #68', () => {
     const { PermissionLogController, SubjectMetadataController } = migratedData;
     const expected = getOldState().PermissionsMetadata;
 
-    expect(PermissionLogController!.permissionHistory).toStrictEqual(
+    expect(PermissionLogController?.permissionHistory).toStrictEqual(
       expected.permissionsHistory,
     );
-    expect(PermissionLogController!.permissionActivityLog).toStrictEqual(
+    expect(PermissionLogController?.permissionActivityLog).toStrictEqual(
       expected.permissionsLog,
     );
 
@@ -275,7 +275,7 @@ describe('migration #68', () => {
     );
     const migratedData = newStorage.data as LegacyState;
     expect(
-      migratedData.SubjectMetadataController!.subjectMetadata,
+      migratedData.SubjectMetadataController?.subjectMetadata,
     ).toStrictEqual({
       'foo.bar': {
         name: null, // replaced with null

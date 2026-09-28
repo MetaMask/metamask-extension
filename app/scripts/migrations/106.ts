@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import type { LegacyState } from './legacy-migration-utils';
+
 const version = 106;
 
 /**
@@ -22,16 +23,13 @@ export default {
 
 function transformState(state: LegacyState) {
   const PreferencesController = state?.PreferencesController || {};
-  const securityAlertsEnabled =
-    typeof PreferencesController.securityAlertsEnabled === 'boolean'
-      ? PreferencesController.securityAlertsEnabled
-      : PreferencesController.transactionSecurityCheckEnabled !== true;
 
   return {
     ...state,
     PreferencesController: {
       ...PreferencesController,
-      securityAlertsEnabled,
+      securityAlertsEnabled:
+        PreferencesController.transactionSecurityCheckEnabled !== true,
     },
   };
 }

@@ -79,12 +79,12 @@ export type LegacyPermissionsMetadata = {
 
 export type LegacyDomainPermission = {
   parentCapability?: string;
-  caveats?: Array<{
+  caveats?: {
     name?: string;
     type?: string;
     value?: unknown;
     [key: string]: unknown;
-  }>;
+  }[];
   [key: string]: unknown;
 };
 
@@ -145,6 +145,8 @@ export type LegacyMetaMaskSubstate = {
   [key: string]: unknown;
 };
 
+// Controller keys are the persisted state names and cannot be camelCased.
+/* eslint-disable @typescript-eslint/naming-convention */
 export type LegacyState = MigrationState['data'] &
   Partial<{
     metamask: LegacyMetaMaskSubstate;
@@ -169,5 +171,6 @@ export type LegacyState = MigrationState['data'] &
     NftController: LegacyNftController;
     CollectiblesController: LegacyCollectiblesController;
   }>;
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type { LegacyMigration, MigrationState };

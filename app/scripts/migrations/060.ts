@@ -1,6 +1,7 @@
 import { cloneDeep, isPlainObject } from 'lodash';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 import type { LegacyState } from './legacy-migration-utils';
+
 const version = 60;
 const SUPPORT_NOTIFICATION_KEY = 2;
 const SUPPORT_NOTIFICATION_DATE = '2020-08-31';
@@ -25,7 +26,7 @@ function transformState(state: LegacyState) {
   if (!notificationController) {
     return state;
   }
-  const notifications = notificationController.notifications;
+  const { notifications } = notificationController;
   if (!notifications || !isPlainObject(notifications)) {
     return state;
   }
