@@ -39,11 +39,6 @@ class EditConnectedAccountsPage {
     text: 'Add account',
   };
 
-  private readonly addNewAccountButtonSyncing = {
-    testId: 'add-multichain-account-button',
-    text: 'Syncing...',
-  };
-
   private readonly anyAccountName =
     '[data-testid^="multichain-account-cell-name-"]';
 
@@ -80,19 +75,11 @@ class EditConnectedAccountsPage {
     const initialCheckboxCount = initialCheckboxes.length;
 
     await this.driver.waitUntil(
-      async () => {
-        const syncing = await this.driver.isElementPresentAndVisible(
-          this.addNewAccountButtonSyncing,
-          500,
-        );
-        if (syncing) {
-          return false;
-        }
-        return await this.driver.isElementPresentAndVisible(
+      async () =>
+        await this.driver.isElementPresentAndVisible(
           this.addNewAccountButtonReadyState,
           500,
-        );
-      },
+        ),
       { timeout: 20000, interval: 500, stableFor: 1000 },
     );
     await this.driver.clickElement(this.addNewAccountButton);
