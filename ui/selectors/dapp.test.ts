@@ -139,6 +139,22 @@ describe('getDappActiveNetwork selector', () => {
     expect(result).toEqual({ ...mockNetworkConfig, isEvm: true });
   });
 
+  it('returns the EVM network when a non-EVM account was selected more recently', () => {
+    const mocks = arrangeMocks();
+    mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
+      {
+        ...mockSolanaAccount,
+        id: 'tron:728126428:T123',
+        type: 'tron:eoa',
+        scopes: ['tron:728126428'],
+      } as MockedValue,
+      mockEvmAccount as MockedValue,
+    ]);
+
+    const result = getDappActiveNetwork(mocks.mockState);
+    expect(result).toEqual({ ...mockNetworkConfig, isEvm: true });
+  });
+
   it('returns correct non-EVM network configuration for Solana account', () => {
     const mocks = arrangeMocks();
     mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
