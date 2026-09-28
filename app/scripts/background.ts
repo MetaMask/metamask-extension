@@ -2,10 +2,15 @@
  * @file The entry point for the web extension singleton process.
  */
 
-/* eslint-disable import-x/order -- Sentry hooks and INFURA manifest flags must run before other imports */
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+// eslint-disable-next-line import-x/order -- intentional first import for Sentry
 import { persistenceManager } from './lib/setup-initial-state-hooks';
+
+// Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
-/* eslint-enable import-x/order */
 
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -895,13 +900,14 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
         clearFailedTxBadge();
         const tabId = remotePort.sender?.tab?.id;
-        if (tabId === undefined) {
-          return;
+        if (tabId !== undefined) {
+          openMetamaskTabsIDs[tabId] = true;
         }
-        openMetamaskTabsIDs[tabId] = true;
 
         onStreamFinished(portStream, () => {
-          delete openMetamaskTabsIDs[tabId];
+          if (tabId !== undefined) {
+            delete openMetamaskTabsIDs[tabId];
+          }
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(
