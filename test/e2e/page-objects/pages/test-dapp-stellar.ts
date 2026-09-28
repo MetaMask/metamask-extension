@@ -30,11 +30,6 @@ export class TestDappStellar {
     text: 'Connected',
   };
 
-  private readonly metaMaskWalletButtonSelector = {
-    css: '.stellar-wallets-kit li',
-    text: 'MetaMask',
-  };
-
   private readonly networkSelectSelector = `[data-testid="${dataTestIds.testPage.header.network}"]`;
 
   private readonly selectedNetworkOptionSelector = (
@@ -70,8 +65,6 @@ export class TestDappStellar {
   private readonly transactionExampleXdrButtonSelector = {
     testId: dataTestIds.testPage.signTransaction.loadExampleXdr,
   };
-
-  private readonly walletModalSelector = '.stellar-wallets-kit';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -134,16 +127,6 @@ export class TestDappStellar {
       this.signedTransactionSelector,
     );
     return signedTransactionElement.getText();
-  }
-
-  async getWalletModal() {
-    await this.driver.waitForSelector(this.walletModalSelector);
-
-    return {
-      connectToMetaMaskWallet: async () => {
-        await this.driver.clickElement(this.metaMaskWalletButtonSelector);
-      },
-    };
   }
 
   async loadExampleXdr() {

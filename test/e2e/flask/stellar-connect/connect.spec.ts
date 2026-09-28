@@ -3,6 +3,7 @@ import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.fl
 import { DEFAULT_STELLAR_ADDRESS_SHORT, WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
+import StellarWalletModal from '../../page-objects/pages/stellar-wallet-modal';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
   withStellarWalletSnap,
@@ -66,8 +67,9 @@ describe('Stellar - Connect - e2e tests', function () {
 
         await testDapp.selectNetwork('pubnet');
         await testDapp.connect();
-        const modal = await testDapp.getWalletModal();
-        await modal.connectToMetaMaskWallet();
+        const walletModal = new StellarWalletModal(driver);
+        await walletModal.checkPageIsLoaded();
+        await walletModal.connectToMetaMaskWallet();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const connectAccountConfirmation = new ConnectAccountConfirmation(

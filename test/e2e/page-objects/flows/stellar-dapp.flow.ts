@@ -5,6 +5,7 @@ import ConnectAccountConfirmation from '../pages/confirmations/connect-account-c
 import SnapSignAuthEntryConfirmation from '../pages/confirmations/snap-sign-auth-entry-confirmation';
 import SnapSignMessageConfirmation from '../pages/confirmations/snap-sign-message-confirmation';
 import SnapSignTransactionConfirmation from '../pages/confirmations/snap-sign-transaction-confirmation';
+import StellarWalletModal from '../pages/stellar-wallet-modal';
 import { largeDelayMs } from '../../helpers';
 
 /**
@@ -19,12 +20,14 @@ const tryConnectWithRetry = async (
   testDapp: TestDappStellar,
   retries: number,
 ) => {
+  const walletModal = new StellarWalletModal(driver);
+
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       await testDapp.connect();
 
-      const modal = await testDapp.getWalletModal();
-      await modal.connectToMetaMaskWallet();
+      await walletModal.checkPageIsLoaded();
+      await walletModal.connectToMetaMaskWallet();
 
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
