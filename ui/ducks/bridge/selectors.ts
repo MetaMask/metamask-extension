@@ -627,17 +627,6 @@ export const getFromBalances = createSelector(
         assetIdsMatch(assetId as CaipAssetType, fromToken.assetId),
       ) ?? fromToken.assetId;
 
-    const nativeBalanceToUse =
-      fromNativeBalance ??
-      normalizedBalances[nativeBalanceAssetIdToUse]?.amount ??
-      '0';
-
-    // The Bridge API can denominate EVM native fees as the zero-address ERC-20
-    // (e.g. Arc USDC) instead of slip44, so expose the native balance under both.
-    const zeroAddressNativeAssetId = isNonEvmChainId(fromToken.chainId)
-      ? undefined
-      : (`${fromToken.chainId}/erc20:0x0000000000000000000000000000000000000000` as const);
-
     return {
       ...Object.fromEntries(
         Object.entries(normalizedBalances).map(([assetId, balance]) => [
@@ -649,10 +638,10 @@ export const getFromBalances = createSelector(
         fromTokenBalance ??
         normalizedBalances[fromTokenBalanceAssetIdToUse]?.amount ??
         '0',
-      ...(zeroAddressNativeAssetId && {
-        [zeroAddressNativeAssetId]: nativeBalanceToUse,
-      }),
-      [nativeBalanceAssetIdToUse]: nativeBalanceToUse,
+      [nativeBalanceAssetIdToUse]:
+        fromNativeBalance ??
+        normalizedBalances[nativeBalanceAssetIdToUse]?.amount ??
+        '0',
     };
   },
 );
