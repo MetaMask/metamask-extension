@@ -10,6 +10,8 @@ import {
 } from './testHelpers';
 
 describe('Stellar - Connect - e2e tests', function () {
+  // The Stellar Snap only supports pubnet, so this suite intentionally does not
+  // test switching to unsupported Stellar networks.
   it('Connects and displays the connected Stellar account', async function () {
     await withStellarWalletSnap(
       {
@@ -65,7 +67,7 @@ describe('Stellar - Connect - e2e tests', function () {
         const testDapp = new TestDappStellar(driver);
         await testDapp.openTestDappPage();
 
-        await testDapp.selectNetwork('pubnet');
+        await testDapp.verifySelectedNetwork('pubnet');
         await testDapp.connect();
         const walletModal = new StellarWalletModal(driver);
         await walletModal.checkPageIsLoaded();
@@ -107,30 +109,6 @@ describe('Stellar - Connect - e2e tests', function () {
         await testDapp.checkPageIsLoaded();
         await testDapp.findHeaderConnectedState();
         await testDapp.findConnectedAccount(DEFAULT_STELLAR_ADDRESS_SHORT);
-      },
-    );
-  });
-
-  it('Reflects network change in the dapp', async function () {
-    await withStellarWalletSnap(
-      {
-        ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
-        title: this.test?.fullTitle(),
-      },
-      async (driver) => {
-        await addMultipleAccounts({ driver });
-        const testDapp = new TestDappStellar(driver);
-        await testDapp.openTestDappPage();
-
-        await connectStellarTestDapp(driver, testDapp);
-        await testDapp.findHeaderConnectedState();
-
-        await testDapp.selectNetwork('testnet');
-        await testDapp.verifySelectedNetwork('testnet');
-
-        await testDapp.selectNetwork('pubnet');
-        await testDapp.verifySelectedNetwork('pubnet');
-        await testDapp.findHeaderConnectedState();
       },
     );
   });

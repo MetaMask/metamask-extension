@@ -18,7 +18,7 @@ export const connectStellarTestDapp = async (
   testDapp: TestDappStellar,
 ): Promise<void> => {
   await testDapp.checkPageIsLoaded();
-  await testDapp.selectNetwork('pubnet');
+  await testDapp.verifySelectedNetwork('pubnet');
   await testDapp.connect();
 
   const walletModal = new StellarWalletModal(driver);
