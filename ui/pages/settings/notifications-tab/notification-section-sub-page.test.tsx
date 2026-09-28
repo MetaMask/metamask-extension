@@ -12,10 +12,7 @@ import {
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
-import {
-  putAusMarketingConsent,
-  setDataCollectionForMarketing,
-} from '../../../store/actions';
+import { setDataCollectionForMarketing } from '../../../store/actions';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -99,7 +96,6 @@ jest.mock(
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setDataCollectionForMarketing: jest.fn(() => () => Promise.resolve()),
-  putAusMarketingConsent: jest.fn(() => () => Promise.resolve()),
 }));
 
 const mockStore = configureMockStore([thunk]);
@@ -1075,16 +1071,50 @@ describe('NotificationSectionSubPage', () => {
       fireEvent.click(
         screen.getByTestId('marketing-in-app-notifications-toggle-input'),
       );
-      fireEvent.click(screen.getByTestId('marketing-consent-sheet-opt-in'));
+      fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
 
       await waitFor(() => {
-        expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
-        expect(putAusMarketingConsent).not.toHaveBeenCalled();
+        expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true, {
+          waitForAus: true,
+        });
         expect(updatePreference).toHaveBeenCalledWith(
           'marketing',
           'inAppNotificationsEnabled',
           true,
         );
+      });
+    });
+
+    it('keeps the sheet open and permits retry when enabling the channel fails', async () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+      updatePreference
+        .mockRejectedValueOnce(new Error('Could not enable channel'))
+        .mockResolvedValue(undefined);
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+      fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
+      await waitFor(() => {
+        expect(
+          screen.getByText('Could not enable channel'),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
+      await waitFor(() => {
+        expect(updatePreference).toHaveBeenCalledTimes(2);
+        expect(
+          screen.queryByTestId('marketing-consent-sheet'),
+        ).not.toBeInTheDocument();
       });
     });
 
