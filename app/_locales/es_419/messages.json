@@ -8910,9 +8910,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "La compra no está disponible temporalmente"
   },
-  "rampsShowAllTokens": {
-    "message": "Mostrar todos los tokens"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Este token no está disponible en tu región.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
