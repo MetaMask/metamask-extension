@@ -417,6 +417,8 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
         [
           expect.objectContaining({
             properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               rewards_subscription_id: 'rewards_subscription_id',
             }),
           }),
@@ -728,12 +730,26 @@ describe('ShieldSubscriptionService - handlePostTransaction', () => {
         properties: expect.objectContaining({
           category: MetaMetricsEventCategory.Shield,
           status: 'succeeded',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           subscription_status: SUBSCRIPTION_STATUSES.active,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           payment_type: PAYMENT_TYPES.byCard,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           billing_interval: 'monthly',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_payment_type: PAYMENT_TYPES.byCrypto,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_billing_interval: 'yearly',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_crypto_payment_chain: '0x1',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_payment_currency: 'USD',
         }),
       }),
@@ -742,6 +758,48 @@ describe('ShieldSubscriptionService - handlePostTransaction', () => {
       expect.objectContaining({
         name: MetaMetricsEventName.ShieldSubscriptionRequest,
       }),
+    );
+  });
+
+  it('tracks a failed payment method change with sponsorship status', async () => {
+    const previousShieldEnabled = process.env.METAMASK_SHIELD_ENABLED;
+    process.env.METAMASK_SHIELD_ENABLED = 'true';
+    mockGetSubscriptions.mockResolvedValue([MOCK_ACTIVE_SHIELD_SUBSCRIPTION]);
+    mockSubmitShieldSubscriptionCryptoApproval.mockRejectedValueOnce(
+      new Error('payment failed'),
+    );
+
+    const txMeta = {
+      ...MOCK_TX_META,
+      isGasFeeSponsored: true,
+      txParams: {
+        from: '0xdeadbeef1234567890abcdef',
+      },
+    };
+
+    try {
+      await expect(
+        // @ts-expect-error mock tx meta
+        subscriptionService.handlePostTransaction(txMeta),
+      ).rejects.toThrow('payment failed');
+    } finally {
+      process.env.METAMASK_SHIELD_ENABLED = previousShieldEnabled;
+    }
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ShieldPaymentMethodChange,
+        properties: expect.objectContaining({
+          status: 'failed',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          gas_sponsored: true,
+          error: 'payment failed',
+        }),
+      }),
+    );
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
     );
   });
 });
@@ -807,6 +865,8 @@ describe('ShieldSubscriptionService - linkRewardToExistingSubscription', () => {
         [
           expect.objectContaining({
             properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               rewards_subscription_id: 'rewards_subscription_id',
             }),
           }),

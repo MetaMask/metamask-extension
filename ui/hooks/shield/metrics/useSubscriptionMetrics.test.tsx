@@ -1,4 +1,5 @@
 import {
+  type ModalType,
   PAYMENT_TYPES,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
@@ -10,6 +11,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  ShieldMetricsSourceEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateClickedTypeEnum,
   ShieldErrorStateLocationEnum,
@@ -66,10 +69,54 @@ describe('useSubscriptionMetrics', () => {
           category: MetaMetricsEventCategory.Shield,
           status: 'failed',
           error: 'network',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           subscription_status: SUBSCRIPTION_STATUSES.active,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           billing_interval: 'monthly',
         }),
       }),
+    );
+  });
+
+  it('tracks sufficient crypto funds with the updated property name', () => {
+    const { result } = renderHookWithProvider(
+      () => useSubscriptionMetrics(),
+      mockState,
+    );
+
+    result.current.captureShieldSubscriptionRequestEvent({
+      defaultBillingInterval: RECURRING_INTERVALS.month,
+      defaultPaymentType: PAYMENT_TYPES.byCard,
+      defaultPaymentCurrency: 'USD',
+      defaultPaymentChain: '0x1',
+      source: ShieldMetricsSourceEnum.Settings,
+      type: 'entry' as ModalType,
+      subscriptionState: ShieldSubscriptionRequestSubscriptionStateEnum.New,
+      paymentType: PAYMENT_TYPES.byCrypto,
+      paymentCurrency: 'USDC',
+      isTrialSubscription: false,
+      billingInterval: RECURRING_INTERVALS.month,
+      paymentChain: '0x1',
+      hasSufficientCryptoBalance: true,
+      gasSponsored: true,
+      requestStatus: 'started',
+    });
+
+    const [event] = mockTrackEvent.mock.calls[0];
+    expect(event.properties).toEqual(
+      expect.objectContaining({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        has_sufficient_crypto_funds: true,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        gas_sponsored: true,
+      }),
+    );
+    expect(event.properties).not.toHaveProperty(
+      'has_sufficient_crypto_balance',
     );
   });
 
@@ -92,7 +139,11 @@ describe('useSubscriptionMetrics', () => {
         name: MetaMetricsEventName.ShieldClaimSubmission,
         properties: expect.objectContaining({
           category: MetaMetricsEventCategory.Shield,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           subscription_status: SUBSCRIPTION_STATUSES.active,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           attachments_count: 2,
           status: 'completed',
           error: 'upload failed',
