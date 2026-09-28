@@ -349,9 +349,6 @@
   "currencySymbolDefinition": {
     "message": "O símbolo do ticker exibido para a moeda dessa rede."
   },
-  "currentAccountNotConnected": {
-    "message": "Sua conta atual não está conectada"
-  },
   "currentExtension": {
     "message": "Página atual da extensão"
   },
@@ -1050,9 +1047,6 @@
   "privateKey": {
     "message": "Chave privada",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Advertência: jamais revele essa chave. Qualquer pessoa com suas chaves privadas poderá roubar os ativos mantidos na sua conta."
   },
   "privateNetwork": {
     "message": "Rede privada"

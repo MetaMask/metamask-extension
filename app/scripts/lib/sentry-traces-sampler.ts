@@ -8,12 +8,31 @@ import { TraceName } from '../../../shared/lib/trace';
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
  * high-volume custom transaction can be capped without lowering visibility
  * elsewhere. Seeded with the two assets-controller transactions pinned to `0`.
+ *
+ * Perps preload and market-fetch transactions use a 0.1% starting rate,
+ * including initial loads and periodic refreshes. Remote overrides can adjust it.
+ *
+ * `Swap Quote Fetch` carries the same 0.1% starting rate so it holds an explicit
+ * per-name budget instead of inheriting the global rate. Its trigger is a
+ * debounced user edit rather than a discrete action, and `trace()` marks a span
+ * started under an active parent as `forceTransaction`, which makes the sampler
+ * re-consult this map. Without a pinned rate the `parentSampled` path would
+ * return `1`, recording every nested quote fetch at full rate.
  */
+export const SWAP_QUOTE_FETCH_SAMPLE_RATE = 0.001;
+
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
 > = Object.freeze({
   AssetsDataSourceTiming: 0,
   AssetsUpdatePipeline: 0,
+  // Literals, not `TraceName`: this module is loaded by the Sentry bootstrap,
+  // which must not pull in `shared/lib/trace` (it imports `./sentry`).
+  // `sentry-traces-sampler.test.ts` asserts these against the enum.
+  'Perps Market Data Preload': 0.001,
+  'Perps User Data Preload': 0.001,
+  'Perps Get Market Data With Prices': 0.001,
+  'Swap Quote Fetch': SWAP_QUOTE_FETCH_SAMPLE_RATE,
 });
 
 /**

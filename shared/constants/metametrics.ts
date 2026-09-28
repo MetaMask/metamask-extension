@@ -1130,7 +1130,7 @@ export enum MetaMetricsEventName {
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
   NotificationClicked = 'InApp Notification Clicked',
-  NotificationDetailClicked = 'InApp Notification Detail Clicked',
+  NotificationDetailItemClicked = 'InApp Notification Detail Item Clicked',
   NotificationsMenuOpened = 'InApp Notifications Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   PushNotificationClicked = 'Push Notification Clicked',

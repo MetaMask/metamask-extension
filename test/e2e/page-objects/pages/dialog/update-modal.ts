@@ -58,8 +58,8 @@ class UpdateModal {
   async confirm() {
     console.log('Click to confirm the update modal');
     await this.driver.clickElement(this.submitButton);
-    // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing a brief disconnect with webdriver
-    await this.driver.delay(3000);
+    // Brief wait for window handle changes to stabilize before counting handles
+    await this.driver.delay(500);
     await this.driver.waitUntilXWindowHandles(1);
   }
 }

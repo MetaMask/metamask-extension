@@ -56,7 +56,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Immer, Patch } from 'immer';
+import { enablePatches, Immer, Patch } from 'immer';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -98,6 +98,8 @@ import {
   isTrezorDesktopConnectionMissingError,
 } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
+import { isInE2eTest } from '../contexts/hardware-wallets/is-in-e2e-test';
+import { requestWebHidDevices } from '../contexts/hardware-wallets/webConnectionUtils';
 import { ModalType } from '../selectors/subscription/subscription';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
 import { captureException } from '../../shared/lib/sentry';
@@ -142,7 +144,6 @@ import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
-  LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
   MetaMetricsEventFragmentPayload,
@@ -1398,25 +1399,12 @@ export function connectHardware(
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
-        const inE2eTest =
-          process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
-        let connectedDevices: HIDDevice[] = [];
-        if (!inE2eTest) {
-          connectedDevices = await window.navigator.hid.requestDevice({
-            // The types for web hid were provided by @types/w3c-web-hid and may
-            // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
-            // string and this integration with Navigator.hid works before
-            // TypeScript. As a note, on the next declaration we convert the
-            // LEDGER_USB_VENDOR_ID to a number for a different API so....
-            // TODO: Get David Walsh's opinion here
-            filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
-          });
-        }
+        const inE2eTest = isInE2eTest();
+        const connectedDevices = inE2eTest
+          ? []
+          : await requestWebHidDevices(HardwareWalletType.Ledger);
         const userApprovedWebHidConnection =
-          inE2eTest ||
-          connectedDevices.some(
-            (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-          );
+          inE2eTest || connectedDevices.length > 0;
         if (!userApprovedWebHidConnection) {
           throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
         }
@@ -4889,6 +4877,7 @@ export function fetchAndSetQuotes(
     const [quotes, selectedAggId] = await trace(
       {
         name: TraceName.SwapQuotesFetched,
+        op: TraceOperation.BridgeDataFetch,
       },
       async () =>
         await submitRequestToBackground<Quotes>('fetchAndSetQuotes', [
@@ -6105,6 +6094,21 @@ export function getGasFeeTimeEstimate(
     maxPriorityFeePerGas,
     maxFeePerGas,
   ]);
+}
+
+/**
+ * Closes the notification window remotely from the browser action popup.
+ * This is different from `attemptCloseNotificationPopup` which closes the
+ * current window (used by notification to close itself).
+ */
+export async function closeNotificationFromPopup(): Promise<void> {
+  if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
+    console.warn(
+      'closeNotificationFromPopup: Can only be called from popup context',
+    );
+    return;
+  }
+  await submitRequestToBackground('closeNotificationPopup');
 }
 
 export async function attemptCloseNotificationPopup() {
@@ -7589,6 +7593,8 @@ export async function setLastInteractedConfirmationInfo(
     [info],
   );
 }
+enablePatches();
+
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],
