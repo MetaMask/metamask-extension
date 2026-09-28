@@ -5,6 +5,7 @@ import {
   connectStellarTestDapp,
 } from '../../page-objects/flows/stellar-dapp.flow';
 import SnapSignTransactionConfirmation from '../../page-objects/pages/confirmations/snap-sign-transaction-confirmation';
+import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
   withStellarWalletSnap,
@@ -18,6 +19,7 @@ describe('Stellar - Sign Transaction - e2e tests', function () {
         title: this.test?.fullTitle(),
       },
       async (driver) => {
+        await addMultipleAccounts({ driver });
         const testDapp = new TestDappStellar(driver);
         await testDapp.openTestDappPage();
 
@@ -43,6 +45,7 @@ describe('Stellar - Sign Transaction - e2e tests', function () {
         title: this.test?.fullTitle(),
       },
       async (driver) => {
+        await addMultipleAccounts({ driver });
         const testDapp = new TestDappStellar(driver);
         await testDapp.openTestDappPage();
 

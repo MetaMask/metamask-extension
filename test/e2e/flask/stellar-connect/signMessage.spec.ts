@@ -5,6 +5,7 @@ import {
   connectStellarTestDapp,
 } from '../../page-objects/flows/stellar-dapp.flow';
 import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
+import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
   withStellarWalletSnap,
@@ -18,6 +19,7 @@ describe('Stellar - Sign Message - e2e tests', function () {
         title: this.test?.fullTitle(),
       },
       async (driver) => {
+        await addMultipleAccounts({ driver });
         const messageToSign = 'Hello, world!';
         const testDapp = new TestDappStellar(driver);
         await testDapp.openTestDappPage();
