@@ -67,6 +67,32 @@ jobs:
           planning-token: ${{ steps.planning-token.outputs.token }}
           team-label-token: ${{ steps.label-token.outputs.token }}
 
+      # Although this step does not check the PR template or add any labels, it
+      # *does* need to re-run when labels are added or removed, and we need
+      # to block merges if it re-runs and fails.
+      - name: Run fitness functions
+        if: >-
+          ${{
+            github.event_name == 'pull_request_target'
+            && github.event.pull_request.head.repo.full_name == github.repository
+          }}
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ALLOW_BACKGROUND_API_CHANGES: ${{ contains(github.event.pull_request.labels.*.name, 'allow-background-api-changes') }}
+        run: |
+          # The checkout is a shallow clone of the PR's merge commit. Some
+          # fitness functions compare files against the PR's base commit, so
+          # fetch it explicitly.
+          git fetch --quiet --depth=1 origin "$BASE_SHA"
+
+          if [[ "$ALLOW_BACKGROUND_API_CHANGES" == 'true' ]]; then
+            yarn fitness-functions ci --allow-background-api-changes
+          else
+            yarn fitness-functions ci
+          fi
+
       # This is effectively `node .github/scripts/check-template-and-add-labels.mts`.
       # github-script supplies the authenticated github/context/core objects so
       # we do not have to install @actions packages at runtime.
