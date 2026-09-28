@@ -8896,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "購入は一時的にご利用いただけません"
   },
-  "rampsShowAllTokens": {
-    "message": "すべてのトークンを表示"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "このトークンはお客様の地域ではご利用いただけません。",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"

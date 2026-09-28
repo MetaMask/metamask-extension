@@ -91,6 +91,7 @@ import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import {
   safeAmountForCalc,
   getPriceImpactNumber,
+  getNativeReserve,
   getTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
 import { isArcTokenUSDC } from '../../components/app/assets/enablement/arc';
@@ -129,6 +130,7 @@ import { getCurrentCurrency } from '../metamask/metamask';
 import type { MetaMaskReduxState } from '../../store/store';
 import {
   buildInsufficientNativeReserveError,
+  resolveGasCheckMinimumBalance,
   resolveMinimumBalanceToKeep,
   resolveMinimumReserveBalanceForCaipAssetId,
 } from '../../pages/bridge/utils/minimum-reserve';
@@ -990,10 +992,11 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     );
 
     const totalNetworkFee = getTotalNetworkFee(activeQuote)?.normalizedAmount;
+    const quoteNativeReserve = getNativeReserve(activeQuote)?.normalizedAmount;
     const sentAmountString = activeQuote?.quote.src.normalizedAmount;
 
     if (
-      isBitcoinNativeReserveChain &&
+      (isBitcoinNativeReserveChain || quoteNativeReserve) &&
       totalNetworkFee &&
       sentAmountString &&
       nativeBalance &&
@@ -1002,7 +1005,13 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
     ) {
       const nativeBalanceInNativeUnits = new BigNumber(nativeBalance);
       const sentAmount = new BigNumber(sentAmountString);
+      const minimumNativeBalanceToBeKeptInAccount =
+        quoteNativeReserve ??
+        resolveMinimumReserveBalanceForCaipAssetId(fromToken?.assetId);
 
+      // Fee + sent amount already fails the gas check, which hides this banner.
+      // Do not also bail out when balance - fee - reserve <= 0: that is the
+      // case this banner exists to show.
       if (
         nativeBalanceInNativeUnits.sub(totalNetworkFee).sub(sentAmount).lte(0)
       ) {
@@ -1014,8 +1023,6 @@ export const getActiveQuoteInsufficientNativeReserveError = createSelector(
         0,
       );
 
-      const minimumNativeBalanceToBeKeptInAccount =
-        resolveMinimumReserveBalanceForCaipAssetId(fromToken?.assetId);
       const maxSwappableNativeBalance = nativeBalanceInNativeUnits
         .sub(totalNetworkFee)
         .sub(minimumNativeBalanceToBeKeptInAccount)
@@ -1136,7 +1143,10 @@ export const computeQuoteValidationErrors = (
       !hasSufficientGasForQuote({
         balances,
         quote: quote.quote,
-        minimumBalance: minimumBalanceToKeep,
+        minimumBalance: resolveGasCheckMinimumBalance(
+          quote,
+          minimumBalanceToKeep,
+        ),
         ignoreGasLessFlags: isHardwareWalletAccount && !gasIncluded,
       }),
     ),
