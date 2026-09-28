@@ -1,0 +1,50 @@
+name: AI PR risk analysis on auto-merge label
+
+# Keep label events separate from main.yml so adding any PR label does not
+# start the full CI workflow. Only adding auto-merge can run the analyzer.
+on:
+  pull_request:
+    types:
+      - labeled
+    branches:
+      - main
+
+permissions:
+  contents: write
+  id-token: write
+  statuses: write
+
+jobs:
+  get-requirements:
+    name: Get workflow and job requirements
+    # The workflow still starts for other labels, but this job does not.
+    if: >-
+      github.event.label.name == 'auto-merge'
+      && github.event.pull_request.draft == false
+      && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+    uses: ./.github/workflows/get-requirements.yml
+
+  ai-pr-risk-analysis:
+    name: AI PR risk analysis
+    needs:
+      - get-requirements
+    if: >-
+      !cancelled()
+      && needs.get-requirements.result == 'success'
+      && needs.get-requirements.outputs.changed-files != '[]'
+    # A skipped label event must not cancel an analysis already in progress.
+    concurrency:
+      group: ai-pr-risk-analysis-${{ github.event.pull_request.number || github.run_id }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+      checks: write
+    uses: ./.github/workflows/ai-pr-risk-analysis.yml
+    with:
+      changed-files: ${{ join(fromJSON(needs.get-requirements.outputs.changed-files), ' ') }}
+    secrets:
+      AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+      AI_ANALYZER_LANGFUSE_PUBLIC_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_PUBLIC_KEY }}
+      AI_ANALYZER_LANGFUSE_SECRET_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_SECRET_KEY }}
