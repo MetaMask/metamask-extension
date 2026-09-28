@@ -66,6 +66,35 @@ describe('PerpsMarketCategoryPill', () => {
     ).not.toHaveAttribute('aria-pressed');
   });
 
+  it('renders the local sentiment-satisfied glyph on a memecoin Products chip', () => {
+    renderWithProvider(
+      <PerpsMarketCategoryPill
+        category="memecoin"
+        onPress={jest.fn()}
+        variant={PerpsCategoryPillVariant.Chip}
+      />,
+      mockStore,
+    );
+
+    expect(
+      screen.getByTestId('perps-sentiment-satisfied-icon'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-market-categories-pill-memecoin'),
+    ).toHaveTextContent(messages.perpsFilterMemecoins.message);
+  });
+
+  it('does not render the local glyph on a market-list memecoin filter pill', () => {
+    renderWithProvider(
+      <PerpsMarketCategoryPill category="memecoin" onPress={jest.fn()} />,
+      mockStore,
+    );
+
+    expect(
+      screen.queryByTestId('perps-sentiment-satisfied-icon'),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders a leading glyph only for a surface that asks for one', () => {
     const { unmount } = renderWithProvider(
       <PerpsMarketCategoryPill

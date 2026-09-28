@@ -113,6 +113,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   isDepositPrefillEnabled: false,
   isDepositPrefillLoading: false,
   isDepositPrefilled: false,
+  isDepositPrefillSkipped: false,
   isInputChanged: false,
   isQuoteDerivedAmountLoading: false,
   updatePendingAmount: jest.fn(),
@@ -344,6 +345,25 @@ describe('CustomAmountInfo', () => {
 
     expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
     expect(queryByTestId('custom-amount')).not.toBeInTheDocument();
+  });
+
+  it('shows $0 instead of the amount skeleton when deposit prefill is skipped', () => {
+    // A money-account deposit with no funded pay token can never commit a
+    // prefill, so the field must settle at $0 with a usable keypad rather than
+    // sitting behind the skeleton forever.
+    const { getByTestId, queryByTestId } = render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '0',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: false,
+        isDepositPrefilled: false,
+        isDepositPrefillSkipped: true,
+      },
+    });
+
+    expect(getByTestId('custom-amount')).toHaveTextContent('0');
+    expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
   });
 
   it('does not show amount skeleton for deposit prefill loading when account has no funds', () => {

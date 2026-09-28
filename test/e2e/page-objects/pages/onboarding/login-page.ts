@@ -126,6 +126,13 @@ class LoginPage {
     );
   }
 
+  async isPageLoaded(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.parentSelector,
+      200,
+    );
+  }
+
   /**
    * This method unlocks the wallet and lands user on the homepage.
    *

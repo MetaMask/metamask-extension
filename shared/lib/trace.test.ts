@@ -1,5 +1,5 @@
 import type * as Sentry from '@sentry/browser';
-import { endTrace, trace, TraceName, getSerializedTraceContext } from './trace';
+import { endTrace, getSerializedTraceContext, trace, TraceName } from './trace';
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),

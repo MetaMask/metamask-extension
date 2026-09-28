@@ -303,7 +303,7 @@ export function EditContactForm({
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={onCancel}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="page-container-footer-cancel"
         >
           {t('cancel')}
@@ -313,7 +313,7 @@ export function EditContactForm({
           size={ButtonSize.Lg}
           isDisabled={isSaveDisabled}
           onClick={handleSubmit}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="page-container-footer-next"
         >
           {t('save')}

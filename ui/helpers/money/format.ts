@@ -6,6 +6,17 @@ import { formatWithThreshold } from '../../components/app/assets/util/formatWith
 export const DUST_THRESHOLD = 0.01;
 
 /**
+ * Whether a Money balance is large enough to display as a real figure. This
+ * is the same one-cent threshold `moneyFormatUsd` collapses to `$0.00`, so a
+ * balance that formats as zero is never treated as funded.
+ *
+ * @param tokenTotal - The mUSD balance, if known.
+ * @returns `true` when at least one cent is held.
+ */
+export const isMoneyBalanceFunded = (tokenTotal: BigNumber | undefined) =>
+  tokenTotal?.abs().gte(DUST_THRESHOLD) === true;
+
+/**
  * Formats a US-dollar value with proper dollar formatting ($1,234.56),
  * independent of the user's preferred currency or locale. Money Account
  * amounts are mUSD (USD-pegged) and are always shown in dollars.
