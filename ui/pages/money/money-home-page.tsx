@@ -219,12 +219,15 @@ export function MoneyHomePage() {
     useMoneyAccountWithdrawal();
   const {
     trackButtonClicked,
-    trackOnboardingEvent,
     trackScreenViewed,
     trackSurfaceClicked,
     trackTooltipClicked,
   } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyHome,
+  });
+  const { trackOnboardingEvent } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHome,
+    componentName: MoneyComponentName.OnboardingCard,
   });
   const isPageLoading =
     isAvailabilityLoading || (availability.isAvailable && isBalanceLoading);

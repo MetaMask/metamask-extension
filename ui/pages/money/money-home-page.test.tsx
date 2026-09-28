@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { act, fireEvent, screen, within } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
@@ -22,6 +23,7 @@ import {
   MoneyScreenName,
   MoneyTooltipName,
   MoneyTooltipType,
+  type MoneyRedirectTarget,
 } from './constants/money-events';
 import { MoneyHomePage } from './money-home-page';
 import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
@@ -400,6 +402,13 @@ describe('MoneyHomePage', () => {
   });
 
   it('initiates a deposit from the unfunded Add funds CTA', () => {
+    const onboardingCardAnalytics = createMoneyAnalyticsMock();
+    mockUseMoneyAnalytics.mockImplementation((location) =>
+      location?.componentName === MoneyComponentName.OnboardingCard
+        ? onboardingCardAnalytics
+        : mockMoneyAnalytics,
+    );
+
     renderWithLocalization(<MoneyHomePage />);
 
     fireEvent.click(
@@ -408,7 +417,11 @@ describe('MoneyHomePage', () => {
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
     expect(mockInitiateDeposit).toHaveBeenCalledWith();
-    expect(mockMoneyAnalytics.trackOnboardingEvent).toHaveBeenCalledWith({
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyHome,
+      componentName: MoneyComponentName.OnboardingCard,
+    });
+    expect(onboardingCardAnalytics.trackOnboardingEvent).toHaveBeenCalledWith({
       step: 1,
       stepTitleKey: 'moneyEarnTitle',
       totalSteps: 1,
@@ -650,7 +663,7 @@ describe('MoneyHomePage', () => {
     ).toHaveAttribute('href', MONEY_HOW_IT_WORKS_ROUTE);
   });
 
-  it.each([
+  it.each<[string, MoneyComponentName, MoneyRedirectTarget]>([
     [
       'growth',
       MoneyComponentName.CondensedInfoCardsHowItWorks,
@@ -689,7 +702,7 @@ describe('MoneyHomePage', () => {
     },
   );
 
-  it.each([
+  it.each<[keyof typeof messages, MoneyTooltipName]>([
     ['monthly', MoneyTooltipName.MonthlyEarnings],
     ['moneyLifetime', MoneyTooltipName.LifetimeEarnings],
   ])('tracks the %s earnings tooltip', async (labelKey, tooltipName) => {
