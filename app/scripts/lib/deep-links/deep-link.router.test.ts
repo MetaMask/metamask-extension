@@ -99,7 +99,7 @@ describe('DeepLinkRouter', () => {
         ).toHaveBeenCalledWith(
           expect.any(Function),
           {
-            urls: ['*://*.link.metamask.io/*', '*://*.link.metamask.com/*'],
+            urls: ['*://link.metamask.io/*', '*://link.metamask.com/*'],
             types: ['main_frame'],
           },
           mockIsManifestV3() ? [] : ['blocking'],

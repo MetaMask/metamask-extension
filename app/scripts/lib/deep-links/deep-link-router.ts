@@ -129,7 +129,7 @@ export class DeepLinkRouter extends EventEmitter<{
     browser.webRequest.onBeforeRequest.addListener(
       this.handleBeforeRequest,
       {
-        urls: DEEP_LINK_HOSTS.map((host) => `*://*.${host}/*`),
+        urls: DEEP_LINK_HOSTS.map((host) => `*://${host}/*`),
         // redirect only top level frames, ignore all others.
         types: ['main_frame'],
       },

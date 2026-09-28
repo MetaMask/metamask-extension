@@ -16,25 +16,21 @@ describe('deep-link host constants', () => {
 });
 
 describe('isDeepLinkHost', () => {
-  jestIt.each([
-    'link.metamask.io',
-    'links.link.metamask.io',
-    'link.metamask.com',
-    'links.link.metamask.com',
-  ])('accepts configured host %s', (hostname) => {
-    expect(isDeepLinkHost(hostname)).toBe(true);
-  });
+  jestIt.each(['link.metamask.io', 'link.metamask.com'])(
+    'accepts configured host %s',
+    (hostname) => {
+      expect(isDeepLinkHost(hostname)).toBe(true);
+    },
+  );
 
   jestIt.each([
     'metamask.com',
+    'invalid.link.metamask.io',
+    'invalid.link.metamask.com',
+    'nested.invalid.link.metamask.com',
     'link.metamask.com.evil.com',
     'link.metamask.io.evil.com',
   ])('rejects unconfigured host %s', (hostname) => {
     expect(isDeepLinkHost(hostname)).toBe(false);
-  });
-
-  it('matches only configured hosts when subdomains are disabled', () => {
-    expect(isDeepLinkHost('link.metamask.com', false)).toBe(true);
-    expect(isDeepLinkHost('links.link.metamask.com', false)).toBe(false);
   });
 });

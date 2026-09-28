@@ -20,21 +20,12 @@ export const DEEP_LINK_HOSTS = [
 
 /**
  * Checks whether a hostname belongs to a configured MetaMask deep-link host.
- * Configured subdomains are accepted because the browser request filter also
- * matches subdomains.
  *
  * @param hostname - The hostname to check.
- * @param allowSubdomains - Whether to include subdomains of configured hosts.
- * @returns Whether the hostname is a configured deep-link host or subdomain.
+ * @returns Whether the hostname is a configured deep-link host.
  */
-export function isDeepLinkHost(
-  hostname: string,
-  allowSubdomains = true,
-): boolean {
-  return DEEP_LINK_HOSTS.some(
-    (host) =>
-      hostname === host || (allowSubdomains && hostname.endsWith(`.${host}`)),
-  );
+export function isDeepLinkHost(hostname: string): boolean {
+  return DEEP_LINK_HOSTS.includes(hostname);
 }
 
 export const DEEP_LINK_MAX_LENGTH = 2048;

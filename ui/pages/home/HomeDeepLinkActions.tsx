@@ -32,7 +32,7 @@ function isDeepLinkUrlForPath(urlString: string | undefined, pathname: string) {
     return (
       url.protocol === 'https:' &&
       !url.port &&
-      isDeepLinkHost(url.hostname, false) &&
+      isDeepLinkHost(url.hostname) &&
       url.pathname === pathname
     );
   } catch {
