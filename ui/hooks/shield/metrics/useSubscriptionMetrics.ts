@@ -271,7 +271,7 @@ export const useSubscriptionMetrics = () => {
       const formattedParams = formatExistingSubscriptionEventProps(params);
       trackShieldEvent(MetaMetricsEventName.ShieldMembershipErrorStateClicked, {
         ...formattedParams,
-        type: params.errorCause,
+        type: params.type,
         action: params.actionClicked,
         location: params.location,
         view: params.view,
