@@ -52,7 +52,7 @@ jobs:
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -66,7 +66,7 @@ jobs:
           command: yarn mm-foundryup
 
       - name: Download build artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -109,7 +109,7 @@ jobs:
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''
           }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        uses: MetaMask/github-tools/.github/actions/upload-s3@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -118,7 +118,7 @@ jobs:
 
       - name: Upload benchmark result as GitHub artifact
         if: ${{ always() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
           path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
@@ -151,13 +151,13 @@ jobs:
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
       - name: Download artifact 'build-test-webpack'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: build-test-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -199,7 +199,7 @@ jobs:
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''
           }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        uses: MetaMask/github-tools/.github/actions/upload-s3@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -208,7 +208,7 @@ jobs:
 
       - name: Upload benchmark result as GitHub artifact
         if: ${{ always() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ${{ env.DAPP_BENCHMARK_JSON }}
           path: test-artifacts/benchmarks/${{ env.DAPP_BENCHMARK_JSON }}
@@ -240,7 +240,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout quality-gate sources
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           sparse-checkout: |
             .nvmrc
@@ -253,7 +253,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version-file: '.nvmrc'
 
@@ -263,7 +263,7 @@ jobs:
 
       - name: Download all benchmark artifacts
         id: download-benchmarks
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         continue-on-error: true
         with:
           pattern: benchmark-*.json
@@ -339,11 +339,11 @@ jobs:
       BRANCH_NAME: ${{ github.ref_name }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
       - name: Download all performance benchmark artifacts
         id: download-perf-benchmark
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         continue-on-error: true
         with:
           pattern: benchmark-*.json
@@ -353,7 +353,7 @@ jobs:
       - name: Get token
         id: token
         if: steps.download-perf-benchmark.outcome == 'success'
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           target-repository: MetaMask/extension_benchmark_stats

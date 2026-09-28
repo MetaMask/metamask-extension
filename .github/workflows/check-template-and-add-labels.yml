@@ -19,7 +19,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout .github/ directory
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           sparse-checkout: |
             .github
@@ -30,7 +30,7 @@ jobs:
         # pull_request_target runs can include cross-repo PRs. This token is safe here
         # because we only checkout and run trusted workflow-repository scripts,
         # never code from the PR branch.
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -48,7 +48,7 @@ jobs:
             && github.event.action == 'opened'
             && github.event.pull_request.head.repo.full_name == github.repository
           }}
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           target-repository: MetaMask/MetaMask-planning
@@ -62,7 +62,7 @@ jobs:
             && github.event.action == 'opened'
             && github.event.pull_request.head.repo.full_name == github.repository
           }}
-        uses: MetaMask/github-tools/.github/actions/add-team-label@v1
+        uses: MetaMask/github-tools/.github/actions/add-team-label@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           planning-token: ${{ steps.planning-token.outputs.token }}
           team-label-token: ${{ steps.label-token.outputs.token }}
@@ -72,7 +72,7 @@ jobs:
       # we do not have to install @actions packages at runtime.
       - name: Check template and add labels
         id: check-template-and-add-labels
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           github-token: ${{ steps.label-token.outputs.token }}
           script: |

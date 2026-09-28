@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Remove RCA-needed label
-        uses: MetaMask/github-tools/.github/actions/remove-rca-needed-label-sheets@v1
+        uses: MetaMask/github-tools/.github/actions/remove-rca-needed-label-sheets@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           spreadsheet-id: '1Y16QEnDwZuR3DAQIe3T5LTWy1ye07GNYqxIei_cMg24'
           sheet-name: 'Form Responses 1'

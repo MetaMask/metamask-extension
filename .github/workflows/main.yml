@@ -53,7 +53,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -76,7 +76,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         id: checkout-and-setup
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
@@ -88,7 +88,7 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
       - get-requirements
-    uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
+    uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
 
   test-lint:
     name: Test lint
@@ -100,7 +100,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -309,12 +309,12 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           fetch-depth: 0
 
       - name: Download coverage artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: lcov.info
           path: coverage
@@ -337,13 +337,13 @@ jobs:
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
       - name: Download artifact 'build-dist-webpack'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: build-dist-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
@@ -355,7 +355,7 @@ jobs:
       - name: Get token
         id: token
         if: ${{ env.BRANCH == 'main' && !github.event.repository.fork }}
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           target-repository: MetaMask/extension_bundlesize_stats
@@ -371,7 +371,7 @@ jobs:
 
       - name: Upload 'bundle-size' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        uses: MetaMask/github-tools/.github/actions/upload-s3@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -539,7 +539,7 @@ jobs:
     steps:
       - name: Get token
         id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           target-repository: MetaMask/extension-regression-validation-poc

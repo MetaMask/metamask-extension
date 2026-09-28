@@ -32,14 +32,14 @@ jobs:
       STATS_FILE: fp-rates.json
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
       - name: Setup Node.js
-        uses: metamask/github-tools/.github/actions/setup-environment@v1
+        uses: metamask/github-tools/.github/actions/setup-environment@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
 
       - name: Get token
         id: token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           target-repository: MetaMask/extension_benchmark_stats

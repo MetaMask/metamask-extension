@@ -34,7 +34,7 @@ jobs:
       - name: Get token
         id: token
         if: steps.validate.outputs.is-valid == 'true'
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -44,7 +44,7 @@ jobs:
 
       - name: Merge previous releases
         if: steps.validate.outputs.is-valid == 'true'
-        uses: metamask/github-tools/.github/actions/merge-previous-releases@v1
+        uses: metamask/github-tools/.github/actions/merge-previous-releases@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           new-release-branch: ${{ github.event.ref }}
           github-token: ${{ steps.token.outputs.token }}

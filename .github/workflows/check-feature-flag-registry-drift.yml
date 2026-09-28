@@ -20,7 +20,7 @@ jobs:
       has-drift: ${{ steps.check.outputs.HAS_DRIFT }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -47,14 +47,14 @@ jobs:
 
       - name: Upload drift report
         if: steps.check.outputs.HAS_DRIFT == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: drift-report
           path: report.json
 
       - name: Upload updated registry
         if: steps.check.outputs.HAS_DRIFT == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: updated-registry
           path: test/e2e/feature-flags/feature-flag-registry.ts
@@ -83,7 +83,7 @@ jobs:
     environment: default-branch
     steps:
       - name: Send Slack notification
-        uses: MetaMask/github-tools/.github/actions/feature-flag-drift-slack-noti@v1
+        uses: MetaMask/github-tools/.github/actions/feature-flag-drift-slack-noti@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           title: MetaMask Extension
           slack-webhook: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
