@@ -175,10 +175,9 @@ describe('parseMoneySubsidizedRoutes', () => {
 
 describe('isNoFeeMoneyDepositToken', () => {
   it('recognizes a subsidized route targeting Monad mUSD', () => {
-    const token: { address: Hex; chainId: Hex; symbol: string } = {
+    const token: { address: Hex; chainId: Hex } = {
       address: '0x0000000000000000000000000000000000000001',
       chainId: CHAIN_IDS.MAINNET,
-      symbol: 'TOKEN',
     };
     const routes = parseMoneySubsidizedRoutes({
       chains: { ethereum: CHAIN_IDS.MAINNET, monad: CHAIN_IDS.MONAD },
@@ -195,7 +194,6 @@ describe('isNoFeeMoneyDepositToken', () => {
         {
           address: MUSD_TOKEN_ADDRESS,
           chainId: CHAIN_IDS.MONAD,
-          symbol: 'mUSD',
         },
         [],
       ),
@@ -203,10 +201,9 @@ describe('isNoFeeMoneyDepositToken', () => {
   });
 
   it('rejects a route targeting another chain', () => {
-    const token: { address: Hex; chainId: Hex; symbol: string } = {
+    const token: { address: Hex; chainId: Hex } = {
       address: '0x0000000000000000000000000000000000000001',
       chainId: CHAIN_IDS.MAINNET,
-      symbol: 'TOKEN',
     };
     const routes = parseMoneySubsidizedRoutes({
       chains: { ethereum: CHAIN_IDS.MAINNET },
@@ -217,33 +214,7 @@ describe('isNoFeeMoneyDepositToken', () => {
     expect(isNoFeeMoneyDepositToken(token, routes)).toBe(false);
   });
 
-  it('optimistically recognizes stablecoins without route configuration', () => {
-    expect(
-      isNoFeeMoneyDepositToken(
-        {
-          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-          chainId: CHAIN_IDS.MAINNET,
-          symbol: 'USDC',
-        },
-        [],
-      ),
-    ).toBe(true);
-  });
-
-  it('does not optimistically recognize non-stable assets', () => {
-    expect(
-      isNoFeeMoneyDepositToken(
-        {
-          address: '0x0000000000000000000000000000000000000001',
-          chainId: CHAIN_IDS.MAINNET,
-          symbol: 'ETH',
-        },
-        [],
-      ),
-    ).toBe(false);
-  });
-
-  it('optimistically recognizes stablecoins missing from served routes', () => {
+  it('rejects a stablecoin without a route into Monad mUSD', () => {
     const routes = parseMoneySubsidizedRoutes({
       chains: { ethereum: CHAIN_IDS.MAINNET, monad: CHAIN_IDS.MONAD },
       tokens: {
@@ -258,10 +229,9 @@ describe('isNoFeeMoneyDepositToken', () => {
         {
           address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
           chainId: CHAIN_IDS.MAINNET,
-          symbol: 'USDC',
         },
         routes,
       ),
-    ).toBe(true);
+    ).toBe(false);
   });
 });

@@ -1,4 +1,7 @@
-import { getBasicFunctionalityConsolidationPlan } from './basic-functionality-consolidation';
+import {
+  getBasicFunctionalityConsolidationPlan,
+  shouldStartBasicFunctionalityConsolidation,
+} from './basic-functionality-consolidation';
 
 describe('getBasicFunctionalityConsolidationPlan', () => {
   const allEnabled = {
@@ -42,6 +45,7 @@ describe('getBasicFunctionalityConsolidationPlan', () => {
     ).toStrictEqual({
       landingState: true,
       notification: 'toast',
+      isConsistent: false,
     });
   });
 
@@ -51,6 +55,7 @@ describe('getBasicFunctionalityConsolidationPlan', () => {
     ).toStrictEqual({
       landingState: false,
       notification: null,
+      isConsistent: true,
     });
   });
 
@@ -60,6 +65,53 @@ describe('getBasicFunctionalityConsolidationPlan', () => {
     ).toStrictEqual({
       landingState: true,
       notification: 'modal',
+      isConsistent: true,
     });
+  });
+});
+
+describe('shouldStartBasicFunctionalityConsolidation', () => {
+  it('starts when the remote flag is on for an unmarked wallet', () => {
+    expect(
+      shouldStartBasicFunctionalityConsolidation({
+        isRemoteFlagEnabled: true,
+        isBuildFlagEnabled: false,
+        useExternalServices: true,
+        hasConsolidationMarker: false,
+      }),
+    ).toBe(true);
+  });
+
+  it('starts for BF-off wallets when the build flag is on', () => {
+    expect(
+      shouldStartBasicFunctionalityConsolidation({
+        isRemoteFlagEnabled: false,
+        isBuildFlagEnabled: true,
+        useExternalServices: false,
+        hasConsolidationMarker: false,
+      }),
+    ).toBe(true);
+  });
+
+  it('does not start for BF-on wallets when only the build flag is on', () => {
+    expect(
+      shouldStartBasicFunctionalityConsolidation({
+        isRemoteFlagEnabled: false,
+        isBuildFlagEnabled: true,
+        useExternalServices: true,
+        hasConsolidationMarker: false,
+      }),
+    ).toBe(false);
+  });
+
+  it('does not start when the wallet is already marked', () => {
+    expect(
+      shouldStartBasicFunctionalityConsolidation({
+        isRemoteFlagEnabled: true,
+        isBuildFlagEnabled: true,
+        useExternalServices: false,
+        hasConsolidationMarker: true,
+      }),
+    ).toBe(false);
   });
 });

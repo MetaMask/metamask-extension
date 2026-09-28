@@ -181,6 +181,8 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
+export const ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE =
+  '/onboarding/passkey-prf-migration';
 export const BATCH_SELL_ROOT_ROUTE = '/batch-sell';
 export const BATCH_SELL_SELECT_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/select`;
 export const BATCH_SELL_REVIEW_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/review`;
@@ -209,8 +211,10 @@ export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
 export const MONEY_HOME_ROUTE = '/money-home';
 export const MONEY_ACTIVITY_ROUTE = '/money-home/activity';
+export const MONEY_HOW_IT_WORKS_ROUTE = '/money-home/how-it-works';
 export const MONEY_TRANSACTION_DETAILS_ROUTE =
   '/money-home/activity/:transactionId';
+export const MONEY_EARN_ROUTE = '/money-home/earn';
 
 /**
  * Builds the Money transaction details path for a given activity item id.
@@ -237,8 +241,18 @@ export const ROUTES = [
   { path: PERPS_HOME_PAGE_ROUTE, label: 'Perps', trackInAnalytics: true },
   { path: MONEY_HOME_ROUTE, label: 'Money', trackInAnalytics: true },
   {
+    path: MONEY_HOW_IT_WORKS_ROUTE,
+    label: 'Money How It Works',
+    trackInAnalytics: true,
+  },
+  {
     path: MONEY_TRANSACTION_DETAILS_ROUTE,
     label: 'Money Transaction Details',
+    trackInAnalytics: true,
+  },
+  {
+    path: MONEY_EARN_ROUTE,
+    label: 'Money Earn On Crypto',
     trackInAnalytics: true,
   },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route

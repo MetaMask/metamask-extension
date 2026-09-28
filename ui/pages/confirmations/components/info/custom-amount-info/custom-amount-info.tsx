@@ -184,6 +184,9 @@ export const CustomAmountInfo = React.memo(
     // Show amount skeleton while deposit prefill recomputes (e.g. token or
     // account change) so the field does not briefly flash "0", and while a
     // quote the displayed amount comes from is still loading.
+    // `isDepositPrefillLoading` is already false once prefill settles as
+    // skipped (no funded pay token), so an unfundable deposit shows $0 and a
+    // usable keypad instead of an indefinite skeleton.
     const showAmountLoader =
       (isDepositPrefillLoading && !hasAccountNoFunds) ||
       isQuoteDerivedAmountLoading;

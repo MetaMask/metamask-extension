@@ -10,7 +10,6 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  IconColor,
   SensitiveText,
   Skeleton,
   Text,
@@ -18,9 +17,12 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { PopoverPosition } from '../../../component-library';
-import { InfoPopover } from '../../musd/info-popover';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
+import {
+  selectMoneyBalanceShowMusdLabelEnabled,
+  selectMoneyHomeScreenCardEnabled,
+} from '../../../../selectors/money/money-account-feature-flags';
+import { isMoneyBalanceFunded } from '../../../../helpers/money/format';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
@@ -35,12 +37,15 @@ import {
   MoneyTooltipName,
   MoneyTooltipType,
 } from '../../../../pages/money/constants/money-events';
+import { TooltipText } from '../tooltip-text';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
   'money-account-balance-value';
 export const MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID =
   'money-account-balance-last-known';
+export const MONEY_ACCOUNT_BALANCE_MUSD_LABEL_TEST_ID =
+  'money-account-balance-musd-label';
 export const MONEY_ACCOUNT_BALANCE_APY_TEST_ID = 'money-account-balance-apy';
 export const MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID =
   'money-account-balance-apy-skeleton';
@@ -49,6 +54,108 @@ export const MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID =
 export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
 export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
   'money-account-balance-add-button';
+
+const Balance = ({
+  fiatBalance,
+  isLoading,
+  privacyMode,
+  isLastKnown,
+  showMusdLabel,
+}: {
+  fiatBalance: string | undefined;
+  isLoading: boolean;
+  privacyMode: boolean;
+  isLastKnown: boolean;
+  showMusdLabel: boolean;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <>
+      {isLoading ? (
+        // 22px matches the bodyMd line-height of the balance text so
+        // the row doesn't shift when the figure arrives.
+        <Skeleton
+          height={22}
+          width={100}
+          data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
+        />
+      ) : (
+        // The last-known caption (16px) is absorbed by the card's bottom
+        // padding via -mb-4 so the row keeps its height when it appears.
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Start}
+          className={isLastKnown ? '-mb-4 shrink-0' : 'shrink-0'}
+        >
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+          >
+            <SensitiveText
+              variant={TextVariant.HeadingMd}
+              isHidden={privacyMode}
+              fontWeight={FontWeight.Medium}
+              data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
+            >
+              {fiatBalance}
+            </SensitiveText>
+
+            {showMusdLabel ? (
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+                data-testid={MONEY_ACCOUNT_BALANCE_MUSD_LABEL_TEST_ID}
+              >
+                {t('moneyBalanceMusdLabel')}
+              </Text>
+            ) : null}
+          </Box>
+
+          {isLastKnown ? (
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+              className="whitespace-nowrap"
+              data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
+            >
+              {t('moneyBalanceLastKnown')}
+            </Text>
+          ) : null}
+        </Box>
+      )}
+    </>
+  );
+};
+
+const Add = ({
+  onAddClick,
+  isDepositLoading,
+  moneyAccountEmpty,
+}: {
+  onAddClick: () => void;
+  isDepositLoading: boolean;
+  moneyAccountEmpty: boolean;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <Button
+      size={ButtonSize.Md}
+      variant={
+        // If the user has no balance this is a primary CTA
+        moneyAccountEmpty ? ButtonVariant.Primary : ButtonVariant.Secondary
+      }
+      className="shrink-0"
+      isLoading={isDepositLoading}
+      data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
+      onClick={onAddClick}
+    >
+      {t('moneyAdd')}
+    </Button>
+  );
+};
 
 /**
  * The Money Account balance, or nothing.
@@ -105,8 +212,10 @@ export const MoneyAccountBalance = () => {
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
   const isHomeCardEnabled = useSelector(selectMoneyHomeScreenCardEnabled);
+  const showMusdLabel = useSelector(selectMoneyBalanceShowMusdLabelEnabled);
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const {
+    tokenTotal,
     totalFiatFormatted,
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
@@ -121,14 +230,16 @@ export const MoneyAccountBalance = () => {
       componentName: MoneyComponentName.BalanceCard,
     });
 
-  const balance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
-  const isLoading = isBalanceLoading && balance === undefined;
+  const fiatBalance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
+  const isLoading = isBalanceLoading && fiatBalance === undefined;
   const isLastKnown = totalFiatFormatted === undefined && !isLoading;
   const isApyLoading = vaultApyQuery.isLoading && !apyPercentFormatted;
   const isVisible =
     isHomeCardEnabled &&
     hasMoneyAccount &&
-    (balance !== undefined || isLoading);
+    (fiatBalance !== undefined || isLoading);
+  const moneyAccountEmpty =
+    tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -170,25 +281,16 @@ export const MoneyAccountBalance = () => {
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
-          gap={1}
+          gap={2}
         >
-          <Text
+          <TooltipText
+            text={t('money')}
+            position={PopoverPosition.Auto}
+            data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
-          >
-            {t('moneyBalanceTitle')}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            • {t('moneyMusd')}
-          </Text>
-          <InfoPopover
-            iconColor={IconColor.IconAlternative}
-            ariaLabel={t('moneyBalanceTitle')}
-            data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
             onOpen={handleInfoOpen}
-            wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
-            position={PopoverPosition.Auto}
             popoverStyle={{
               maxWidth: 315,
               paddingTop: '12px',
@@ -203,36 +305,8 @@ export const MoneyAccountBalance = () => {
                 {t('moneyBalanceInfoWithdrawals')}
               </Text>
             </Box>
-          </InfoPopover>
-        </Box>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Baseline}
-          gap={2}
-        >
-          {isLoading ? (
-            // 32px matches the headingLg line-height of the balance text so
-            // the row doesn't shift when the figure arrives.
-            <Skeleton
-              height={32}
-              width={100}
-              // A skeleton has no baseline of its own, so it is centred rather
-              // than left to baseline-align against the APY beside it.
-              className="self-center"
-              data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
-            />
-          ) : (
-            // Honours the privacy-mode setting, as every other balance on the
-            // account overview does. Without it, turning balances off would
-            // leave the Money row as the one figure still on screen.
-            <SensitiveText
-              variant={TextVariant.HeadingLg}
-              isHidden={privacyMode}
-              data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
-            >
-              {balance}
-            </SensitiveText>
-          )}
+          </TooltipText>
+
           {isApyLoading ? (
             // 22px matches the bodyMd line-height of the APY text so the
             // row doesn't shift when the figure arrives.
@@ -244,7 +318,8 @@ export const MoneyAccountBalance = () => {
           ) : (
             apyPercentFormatted && (
               <Text
-                variant={TextVariant.BodyMd}
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
                 color={TextColor.SuccessDefault}
                 data-testid={MONEY_ACCOUNT_BALANCE_APY_TEST_ID}
               >
@@ -253,26 +328,20 @@ export const MoneyAccountBalance = () => {
             )
           )}
         </Box>
-        {isLastKnown ? (
-          <Text
-            variant={TextVariant.BodyXs}
-            color={TextColor.TextAlternative}
-            data-testid={MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID}
-          >
-            {t('moneyBalanceLastKnown')}
-          </Text>
-        ) : null}
+        <Balance
+          fiatBalance={fiatBalance}
+          isLoading={isLoading}
+          privacyMode={privacyMode}
+          isLastKnown={isLastKnown}
+          showMusdLabel={showMusdLabel}
+        />
       </Box>
-      <Button
-        size={ButtonSize.Md}
-        variant={ButtonVariant.Primary}
-        className="shrink-0 "
-        isLoading={isDepositLoading}
-        data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={handleAddClick}
-      >
-        {t('moneyAdd')}
-      </Button>
+
+      <Add
+        moneyAccountEmpty={moneyAccountEmpty}
+        onAddClick={handleAddClick}
+        isDepositLoading={isDepositLoading}
+      />
     </Box>
   );
 };

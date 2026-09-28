@@ -75,6 +75,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             consentDecisionMade: true,
             optedIn: true,
           })
+          .withBasicFunctionalityConsolidationDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockServerCalls,

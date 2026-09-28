@@ -20,6 +20,7 @@ exports[`RampsControllerInit exposes ramps background API methods 1`] = `
   "stopRampsLifecycle",
   "syncRampsOrdersWithUserStorage",
   "watchRampsCheckoutTab",
+  "watchRampsProviderOrderTab",
 ]
 `;
 

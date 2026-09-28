@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { setCurrentCurrency } from '../../../store/actions';
-import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
@@ -53,7 +52,7 @@ const CurrencySubPage = () => {
         .build(),
     );
     dispatch(setCurrentCurrency(value));
-    transitionBack(() => navigate(PREFERENCES_AND_DISPLAY_ROUTE));
+    transitionBack(() => navigate(-1));
   };
 
   return (
