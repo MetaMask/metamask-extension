@@ -45,6 +45,7 @@ export const useShieldConfirm = () => {
     (
       txMeta: TransactionMeta,
       confirmationScreenStatus: CaptureShieldCryptoConfirmationEventParams['confirmationScreenStatus'],
+      hasInsufficientGas: boolean,
     ): CaptureShieldCryptoConfirmationEventParams => {
       const billingInterval =
         lastSelectedPaymentDetails?.plan ?? RECURRING_INTERVALS.month;
@@ -69,7 +70,7 @@ export const useShieldConfirm = () => {
         hasSufficientCryptoBalance: undefined,
         gasSponsored,
         confirmationScreenStatus,
-        hasInsufficientGas: false,
+        hasInsufficientGas,
       };
     },
     [lastSelectedPaymentDetails, lastSubscription, modalType, trialedProducts],
@@ -117,13 +118,13 @@ export const useShieldConfirm = () => {
    * @param txMeta - The transaction metadata.
    */
   const handleShieldSubscriptionApprovalTransactionOpened = useCallback(
-    (txMeta: TransactionMeta) => {
+    (txMeta: TransactionMeta, hasInsufficientGas = false) => {
       if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
         return;
       }
 
       captureShieldCryptoConfirmationEvent(
-        getCryptoConfirmationEventParams(txMeta, 'opened'),
+        getCryptoConfirmationEventParams(txMeta, 'opened', hasInsufficientGas),
       );
     },
     [captureShieldCryptoConfirmationEvent, getCryptoConfirmationEventParams],
@@ -136,13 +137,17 @@ export const useShieldConfirm = () => {
    * @param txMeta - The transaction metadata.
    */
   const handleShieldSubscriptionApprovalTransactionRejected = useCallback(
-    (txMeta: TransactionMeta) => {
+    (txMeta: TransactionMeta, hasInsufficientGas = false) => {
       if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
         return;
       }
 
       captureShieldCryptoConfirmationEvent(
-        getCryptoConfirmationEventParams(txMeta, 'rejected'),
+        getCryptoConfirmationEventParams(
+          txMeta,
+          'rejected',
+          hasInsufficientGas,
+        ),
       );
     },
     [captureShieldCryptoConfirmationEvent, getCryptoConfirmationEventParams],

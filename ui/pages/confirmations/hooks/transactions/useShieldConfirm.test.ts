@@ -113,5 +113,28 @@ describe('useShieldConfirm', () => {
         }),
       );
     });
+
+    it('tracks the insufficient gas state passed by the confirmation screen', () => {
+      const txMeta = {
+        id: 'shield-approval-transaction',
+        type: TransactionType.shieldSubscriptionApprove,
+        chainId: '0x1',
+        isGasFeeSponsored: false,
+      } as unknown as TransactionMeta;
+      const { result } = renderHookWithProvider(() => useShieldConfirm());
+      mockCaptureShieldCryptoConfirmationEvent.mockClear();
+
+      result.current.handleShieldSubscriptionApprovalTransactionRejected(
+        txMeta,
+        true,
+      );
+
+      expect(mockCaptureShieldCryptoConfirmationEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          confirmationScreenStatus: 'rejected',
+          hasInsufficientGas: true,
+        }),
+      );
+    });
   });
 });

@@ -86,6 +86,13 @@ jest.mock('../../../../hooks/gas/useGasSponsorshipPreference', () => ({
   })),
 }));
 
+jest.mock('../../../../hooks/useHasInsufficientBalance', () => ({
+  useHasInsufficientBalance: jest.fn(() => ({
+    hasInsufficientBalance: false,
+    isNativeBalanceKnown: true,
+  })),
+}));
+
 const mockHandleShieldSubscriptionApprovalTransactionOpened = jest.fn();
 
 jest.mock('../../../../hooks/transactions/useShieldConfirm', () => ({
@@ -189,6 +196,7 @@ describe('ShieldSubscriptionApproveInfo', () => {
       expect.objectContaining({
         type: TransactionType.shieldSubscriptionApprove,
       }),
+      false,
     );
   });
 });

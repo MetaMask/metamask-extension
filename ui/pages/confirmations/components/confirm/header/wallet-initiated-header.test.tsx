@@ -24,6 +24,13 @@ jest.mock('../../../hooks/transactions/useShieldConfirm', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/useHasInsufficientBalance', () => ({
+  useHasInsufficientBalance: jest.fn(() => ({
+    hasInsufficientBalance: false,
+    isNativeBalanceKnown: true,
+  })),
+}));
+
 /** Build a confirm state for a perpsDeposit transaction. */
 const getPerpsDepositState = () => {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
@@ -111,6 +118,7 @@ describe('<WalletInitiatedHeader />', () => {
       expect.objectContaining({
         type: TransactionType.shieldSubscriptionApprove,
       }),
+      false,
     );
     expect(mockOnCancel).toHaveBeenCalledWith({
       location: 'confirmation',

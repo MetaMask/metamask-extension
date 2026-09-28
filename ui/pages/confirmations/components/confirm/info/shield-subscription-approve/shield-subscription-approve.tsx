@@ -13,6 +13,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useUserSubscriptions } from '../../../../../../hooks/subscription/useSubscription';
 import { useConfirmContext } from '../../../../context/confirm';
+import { useHasInsufficientBalance } from '../../../../hooks/useHasInsufficientBalance';
 import { useShieldConfirm } from '../../../../hooks/transactions/useShieldConfirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
@@ -60,6 +61,12 @@ const ShieldSubscriptionApproveInfo = () => {
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const { hasInsufficientBalance, isNativeBalanceKnown } =
+    useHasInsufficientBalance();
+  const hasInsufficientGas =
+    isNativeBalanceKnown &&
+    !transactionMeta?.isGasFeeSponsored &&
+    hasInsufficientBalance;
   const trackedConfirmationId = useRef<string>();
 
   useEffect(() => {
@@ -67,6 +74,9 @@ const ShieldSubscriptionApproveInfo = () => {
       !transactionMeta ||
       transactionMeta.type !== TransactionType.shieldSubscriptionApprove
     ) {
+      return;
+    }
+    if (!isNativeBalanceKnown) {
       return;
     }
 
@@ -77,8 +87,16 @@ const ShieldSubscriptionApproveInfo = () => {
     }
 
     trackedConfirmationId.current = confirmationId;
-    handleShieldSubscriptionApprovalTransactionOpened(transactionMeta);
-  }, [handleShieldSubscriptionApprovalTransactionOpened, transactionMeta]);
+    handleShieldSubscriptionApprovalTransactionOpened(
+      transactionMeta,
+      hasInsufficientGas,
+    );
+  }, [
+    handleShieldSubscriptionApprovalTransactionOpened,
+    hasInsufficientGas,
+    isNativeBalanceKnown,
+    transactionMeta,
+  ]);
 
   const { decodeResponse, value: decodedApprovalAmount } =
     useDecodedTransactionDataValue(transactionMeta);
