@@ -5,13 +5,9 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonIcon,
-  ButtonIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   FontWeight,
-  IconColor,
-  IconName,
   Skeleton,
   Text,
   TextButton,
@@ -40,12 +36,9 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  DEFAULT_ROUTE,
-  PREVIOUS_ROUTE,
-} from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
@@ -62,6 +55,7 @@ import { ActivityList } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useInAppBack } from '../../../hooks/useInAppBack';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
 import {
@@ -103,6 +97,7 @@ import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
+import { AssetPageHeader } from './asset-page-header';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
 import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
@@ -150,8 +145,6 @@ const AssetPage = ({
   optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
-  const navigate = useNavigate();
-  const location = useLocation();
   const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
   const isEvm = isEvmChainId(asset.chainId);
@@ -382,28 +375,15 @@ const AssetPage = ({
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
   const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
-  const assetDisplayName = useMemo(
-    () =>
-      name && symbol && name !== symbol
-        ? `${name} (${symbol})`
-        : (name ?? symbol),
-    [name, symbol],
-  );
-  const assetNameElement = (
+  const assetHeaderBadges = (
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={2}
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextAlternative}
-        data-testid="asset-name"
-      >
-        {assetDisplayName}
-      </Text>
       <AssetPageSecurityTrustHeaderBadge />
+      {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+      {isAssetInactive && <AssetInactiveBadge />}
     </Box>
   );
 
@@ -439,13 +419,7 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   }, []);
 
-  const handleBack = useCallback(() => {
-    if (location.key === 'default') {
-      navigate(DEFAULT_ROUTE, { replace: true });
-    } else {
-      transitionBack(() => navigate(PREVIOUS_ROUTE));
-    }
-  }, [location.key, navigate]);
+  const handleBack = useInAppBack(DEFAULT_ROUTE, transitionBack);
 
   return (
     <AssetPageSecurityTrustProvider
@@ -456,49 +430,22 @@ const AssetPage = ({
         className="asset__content"
         data-testid="parent-selector-asset-details"
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          paddingBottom={3}
-          paddingLeft={2}
-          paddingRight={4}
-          className="pt-4 sticky top-0 z-10 bg-background-default"
-        >
-          <Box flexDirection={BoxFlexDirection.Row}>
-            <ButtonIcon
-              color={IconColor.IconDefault}
-              size={ButtonIconSize.Md}
-              ariaLabel={t('back') as string}
-              iconName={IconName.ArrowLeft}
-              onClick={handleBack}
-              className="asset-page__back-button"
-            />
-          </Box>
-          {optionsButton}
-        </Box>
+        <AssetPageHeader
+          symbol={symbol}
+          image={image}
+          networkImage={tokenChainImage}
+          networkName={networkName}
+          contractAddress={contractAddress || undefined}
+          titleEndAccessory={assetHeaderBadges}
+          endAccessory={optionsButton}
+          onBack={handleBack}
+        />
         {isAssetInactive && (
           <AssetActivateCard
             asset={tokenAsset as Asset}
             chainName={networkName}
           />
         )}
-        <Box paddingLeft={4}>
-          {isStockToken || isAssetInactive ? (
-            <Box alignItems={BoxAlignItems.Center} gap={2}>
-              {assetNameElement}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
-                {isAssetInactive && <AssetInactiveBadge />}
-              </Box>
-            </Box>
-          ) : (
-            assetNameElement
-          )}
-        </Box>
         <AssetPageSecurityTrustBanner />
         <AssetChart
           chainId={chainId}

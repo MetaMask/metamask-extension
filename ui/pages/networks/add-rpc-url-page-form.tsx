@@ -15,7 +15,10 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import { isWebUrl } from '../../../shared/lib/url-utils';
 import { infuraProjectId } from '../../../shared/constants/network';
-import { jsonRpcRequest } from '../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../shared/lib/rpc.utils';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 
 const templateInfuraRpc = (endpoint: string) => {
@@ -90,9 +93,13 @@ export const AddRpcUrlPageForm = ({
           setValidatedUrl(trimmedUrl);
         }
       })
-      .catch(() => {
+      .catch((error) => {
         if (isCurrentValidation()) {
-          setRpcValidationError(t('failedToFetchChainId'));
+          setRpcValidationError(
+            isRpcRateLimitError(error)
+              ? t('rpcUrlRateLimited')
+              : t('failedToFetchChainId'),
+          );
           setValidatedUrl(undefined);
         }
       });
@@ -183,7 +190,7 @@ export const AddRpcUrlPageForm = ({
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={onCancel}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="page-container-footer-cancel"
         >
           {t('cancel')}
@@ -193,7 +200,7 @@ export const AddRpcUrlPageForm = ({
           size={ButtonSize.Lg}
           isDisabled={isSubmitDisabled}
           onClick={handleSubmit}
-          className="flex-1 rounded-xl"
+          className="flex-1"
           data-testid="page-container-footer-next"
         >
           {t('addUrl')}

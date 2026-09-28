@@ -6,7 +6,6 @@ import { BackgroundColor } from '../../../helpers/constants/design-system';
 import MetaFoxHorizontalLogo from './horizontal-logo';
 
 function MetaFoxLogo({
-  onClick = undefined,
   unsetIconHeight = false,
   isOnboarding = false,
   src = undefined,
@@ -46,12 +45,9 @@ function MetaFoxLogo({
 
   return (
     <Box
-      as="button"
-      onClick={onClick}
       className={classnames({
         'app-header__logo-container': !isOnboarding,
         'onboarding-app-header__logo-container': isOnboarding,
-        'app-header__logo-container--clickable': Boolean(onClick),
       })}
       backgroundColor={BackgroundColor.transparent}
       data-testid="app-header-logo"
@@ -72,7 +68,6 @@ function MetaFoxLogo({
 }
 
 MetaFoxLogo.propTypes = {
-  onClick: PropTypes.func,
   unsetIconHeight: PropTypes.bool,
   isOnboarding: PropTypes.bool,
   src: PropTypes.string,

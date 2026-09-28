@@ -17,6 +17,7 @@ import {
   TRON_RECIPIENT_ADDRESS,
   SUN_PER_TRX,
   mockAccountsApiV2WithTron,
+  mockBridgeGetTronTokens,
   mockExchangeRates,
   mockFiatExchangeRates,
   mockTronFeatureFlags,
@@ -82,6 +83,7 @@ export type WithTronFixturesOptions = Omit<
     localNodes: unknown[];
   }) => Promise<void> | void;
   fixtures?: unknown;
+  ignoredConsoleErrors?: string[];
   includeAnvil?: boolean;
   testSpecificMock?: (
     mockServer: Mockttp,
@@ -127,6 +129,15 @@ export function buildTronNodeOptions(
   };
 }
 
+/**
+ * Temporary unblock for Snap RPC noise that masked assertion results during
+ * background-page console capture. Remove once the Snap stops emitting these.
+ */
+const DEFAULT_TRON_IGNORED_CONSOLE_ERRORS = [
+  'getSubscriptions',
+  'Unexpected end of JSON input',
+];
+
 export async function withTronFixtures(
   options: WithTronFixturesOptions,
   testSuite: WithFixturesTestSuite,
@@ -136,6 +147,7 @@ export async function withTronFixtures(
     accounts,
     includeAnvil = true,
     testSpecificMock,
+    ignoredConsoleErrors,
     ...withFixtureOptions
   } = options;
   const nodeOptions = buildTronNodeOptions(accounts);
@@ -149,6 +161,10 @@ export async function withTronFixtures(
   await withFixtures(
     {
       ...withFixtureOptions,
+      ignoredConsoleErrors: [
+        ...DEFAULT_TRON_IGNORED_CONSOLE_ERRORS,
+        ...(ignoredConsoleErrors ?? []),
+      ],
       localNodeOptions: [
         ...(includeAnvil ? ['anvil'] : []),
         {
@@ -242,6 +258,9 @@ async function mockTronFixtureApis(
     await mockFiatExchangeRates(mockServer),
     await mockTronFixtureSpotPrices(mockServer, accounts, tronNode),
     await mockTronFixtureAssets(mockServer, accounts, tronNode),
+    // Empty catch-all bodies made `fetchPopularTokens` throw
+    // 'Unexpected end of JSON input' during the Tron network switch.
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockTronGetReward(mockServer),
     // NOTE: do not register static getblock/getnowblock/getblockbynum or
     // broadcasttransaction mocks here. mockttp serves the first matching
