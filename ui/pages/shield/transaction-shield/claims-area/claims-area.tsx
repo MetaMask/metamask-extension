@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes as RouterRoutes, Route } from 'react-router-dom';
+import { Navigate, Routes as RouterRoutes, Route } from 'react-router-dom';
 import { ClaimsProvider } from '../../../../contexts/claims/claims';
 import ClaimsList from '../claims-list';
 import ClaimsForm from '../claims-form';
@@ -26,6 +26,12 @@ const ClaimsArea = () => {
         <Route
           path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.RELATIVE}/:claimId`}
           element={<ClaimsForm mode={CLAIMS_FORM_MODES.VIEW} />}
+        />
+        <Route
+          path="*"
+          element={
+            <Navigate to={TRANSACTION_SHIELD_CLAIM_ROUTES.BASE} replace />
+          }
         />
       </RouterRoutes>
     </ClaimsProvider>

@@ -23,6 +23,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import { getNearestMatchedRoute } from './nearest-route';
 import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
@@ -221,6 +222,38 @@ describe('Routes Component', () => {
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
+  });
+
+  it('sends unknown routes to the nearest existing route instead of the error page', () => {
+    expect(
+      matchRoutes(routeConfig, '/multichain-account-list')?.at(-1)?.route.path,
+    ).toBe('*');
+    expect(
+      getNearestMatchedRoute('/multichain-account-list', routeConfig),
+    ).toBe(DEFAULT_ROUTE);
+    expect(getNearestMatchedRoute('/snaps/not-a-page', routeConfig)).toBe(
+      '/snaps',
+    );
+    expect(getNearestMatchedRoute('/account-list/extra', routeConfig)).toBe(
+      '/account-list',
+    );
+    expect(getNearestMatchedRoute('/money-home/not-a-page', routeConfig)).toBe(
+      '/money-home',
+    );
+    expect(getNearestMatchedRoute('/perps/activity/extra', routeConfig)).toBe(
+      '/perps/activity',
+    );
+    expect(getNearestMatchedRoute('/perps/not-a-page', routeConfig)).toBe(
+      DEFAULT_ROUTE,
+    );
+    expect(getNearestMatchedRoute(DEFAULT_ROUTE, routeConfig)).toBe(
+      DEFAULT_ROUTE,
+    );
+    expect(
+      matchRoutes(routeConfig, DEFAULT_ROUTE)?.some(
+        ({ route }) => route.path === DEFAULT_ROUTE,
+      ),
+    ).toBe(true);
   });
 
   it('registers the hardware wallet signing page outside guarded swap routes', () => {
