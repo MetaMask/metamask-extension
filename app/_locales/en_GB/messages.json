@@ -9048,7 +9048,8 @@
     "message": "Instant"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "Less than"
+    "message": "<",
+    "description": "Less-than glyph glued to the delay value, e.g. \"<15 mins\""
   },
   "rampsPaymentDelayMinute": {
     "message": "min"
@@ -9061,8 +9062,8 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "Up to $1",
-    "description": "$1 is the maximum fiat buy amount"
+    "message": "$1 limit",
+    "description": "$1 is the maximum fiat buy amount, e.g. \"5,000 limit\""
   },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",
