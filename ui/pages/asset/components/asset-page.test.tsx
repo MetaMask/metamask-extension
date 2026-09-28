@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import type { CaipChainId } from '@metamask/utils';
 import nock from 'nock';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
@@ -889,7 +890,7 @@ describe('AssetPage', () => {
   });
 
   describe('route CAIP asset id', () => {
-    const stellarChainId = 'stellar:pubnet';
+    const stellarChainId = 'stellar:pubnet' as CaipChainId;
     const stellarUsdcAssetId =
       'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
     const stellarXlmAssetId = 'stellar:pubnet/slip44:148';
