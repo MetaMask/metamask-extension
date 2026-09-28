@@ -15,6 +15,14 @@ function buildPillContents(data: AssetData) {
   }
   if (data.iconUrl) {
     icon.src = data.iconUrl;
+    icon.onerror = () => {
+      const fallback = document.createElement('span');
+      fallback.className = icon.className;
+      fallback.classList.add('mm-cashtag-pill-icon--fallback');
+      fallback.style.background = icon.style.background;
+      fallback.textContent = data.name?.[0] ?? '?';
+      icon.replaceWith(fallback);
+    };
   }
 
   const ticker = document.createElement('span');
