@@ -1,74 +1,59 @@
-import React, { useState } from 'react';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-  IconSize,
-  Popover,
-  PopoverPosition,
-} from '@metamask/design-system-react';
+import React, { useId } from 'react';
+import { ButtonIcon, IconName } from '@metamask/design-system-react';
 
-export type OverflowMenuItem = Readonly<{
+export type MenuItem = Readonly<{
   key: string;
   label: string;
-  onClick: () => void;
-  iconName?: IconName;
+  command?: string;
+  commandfor?: string;
 }>;
 
 type Props = Readonly<{
-  items: readonly OverflowMenuItem[];
+  items: readonly MenuItem[];
   ariaLabel?: string;
   testId?: string;
 }>;
 
-export function OverflowMenu({
-  items,
-  ariaLabel = 'More options',
-  testId = 'overflow-menu',
-}: Props) {
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLDivElement | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const closeMenu = () => setIsOpen(false);
+export function OverflowMenu({ items }: Props) {
+  const menuId = useId();
 
   return (
-    <div ref={setReferenceElement}>
+    <div className="relative">
       <ButtonIcon
+        ariaLabel="More options"
+        style={{ anchorName: '--menu-trigger' } as React.CSSProperties}
+        // @ts-expect-error need to update react types
+        command="toggle-popover"
+        commandfor={menuId}
         iconName={IconName.MoreVertical}
-        size={ButtonIconSize.Md}
-        ariaLabel={ariaLabel}
-        onClick={() => setIsOpen((open) => !open)}
-        data-testid={`${testId}-button`}
       />
-      <Popover
-        referenceElement={referenceElement}
-        isOpen={isOpen}
-        position={PopoverPosition.BottomEnd}
-        className="p-0 min-w-[180px] rounded-lg z-[1050]"
-        onClickOutside={closeMenu}
-        onPressEscKey={closeMenu}
-        data-testid={testId}
+      <div
+        id={menuId}
+        // @ts-expect-error need to update react types
+        popover="auto"
+        className="absolute m-0 min-w-[180px] rounded-lg z-[1050]"
+        style={
+          {
+            inset: 'auto',
+            positionAnchor: '--menu-trigger',
+            top: 'anchor(bottom)',
+            right: 'anchor(right)',
+          } as React.CSSProperties
+        }
       >
-        {items.map(({ key, label, onClick, iconName }) => (
+        {items.map(({ key, label, command, commandfor }) => (
           <button
             type="button"
             key={key}
-            data-testid={`${testId}-${key}__button`}
-            onClick={() => {
-              closeMenu();
-              onClick();
-            }}
             className="flex min-h-12 w-full items-center px-4 py-2 text-left text-s-body-sm font-medium hover:bg-hover"
+            // @ts-expect-error need to update react types
+            command={command}
+            commandfor={commandfor}
           >
-            {iconName ? (
-              <Icon name={iconName} size={IconSize.Sm} className="mr-2" />
-            ) : null}
             {label}
           </button>
         ))}
-      </Popover>
+      </div>
     </div>
   );
 }

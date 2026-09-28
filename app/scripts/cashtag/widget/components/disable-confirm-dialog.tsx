@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {
   Button,
   ButtonIcon,
-  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
   IconAlert,
@@ -12,59 +11,31 @@ import {
 } from '@metamask/design-system-react';
 
 type Props = Readonly<{
-  open: boolean;
-  onCancel: () => void;
+  id: string;
   onConfirm: () => void;
 }>;
 
 const titleId = 'mm-cashtag-disable-title';
 const descriptionId = 'mm-cashtag-disable-description';
-const lightDismissProps = { closedby: 'any' } as const;
 
-export function DisableConfirmDialog({ open, onCancel, onConfirm }: Props) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const confirmedRef = useRef(false);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) {
-      return;
-    }
-
-    if (open) {
-      confirmedRef.current = false;
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-      return;
-    }
-
-    if (dialog.open) {
-      dialog.close();
-    }
-  }, [open]);
-
+export function DisableConfirmDialog({ id, onConfirm }: Props) {
   return (
     <dialog
-      ref={dialogRef}
+      id={id}
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
-      className="mm-cashtag-disable-dialog w-[360px] max-w-[calc(100vw-32px)] rounded-xl border border-muted bg-default p-4 font-sans text-default shadow-lg"
-      {...lightDismissProps}
-      onClose={() => {
-        if (confirmedRef.current) {
-          return;
-        }
-        onCancel();
-      }}
+      className="w-[360px] max-w-[calc(100vw-32px)] rounded-xl border border-muted bg-default p-4 font-sans text-default shadow-lg"
+      // @ts-expect-error need to update react types
+      closedby="any"
     >
       <div className="relative flex flex-col items-center">
         <ButtonIcon
-          iconName={IconName.Close}
-          size={ButtonIconSize.Md}
           ariaLabel="Close"
+          iconName={IconName.Close}
           className="absolute right-0 top-0 text-icon-default hover:bg-muted-hover"
-          onClick={onCancel}
+          // @ts-expect-error need to update react types
+          command="close"
+          commandfor={id}
         />
         <IconAlert severity={IconAlertSeverity.Warning} size={IconSize.Xl} />
         <h2
@@ -88,7 +59,9 @@ export function DisableConfirmDialog({ open, onCancel, onConfirm }: Props) {
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
             className="w-full"
-            onClick={onCancel}
+            // @ts-expect-error need to update react types
+            command="close"
+            commandfor={id}
           >
             Cancel
           </Button>
@@ -96,10 +69,10 @@ export function DisableConfirmDialog({ open, onCancel, onConfirm }: Props) {
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             className="w-full"
-            onClick={() => {
-              confirmedRef.current = true;
-              onConfirm();
-            }}
+            // @ts-expect-error need to update react types
+            command="close"
+            commandfor={id}
+            onClick={onConfirm}
           >
             Disable
           </Button>

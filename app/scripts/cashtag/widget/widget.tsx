@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import type { AssetData, WidgetModel } from '../lib/types';
-import { DisableConfirmDialog } from './components/disable-confirm-dialog';
 import { TokenDetail } from './components/token-detail';
 import { TokenResults } from './components/token-results';
 
@@ -15,12 +14,10 @@ export function Widget({
 }: Readonly<WidgetModel>) {
   const [view, setView] = useState<WidgetView>('detail');
   const [active, setActive] = useState<AssetData>(data);
-  const [confirmDisable, setConfirmDisable] = useState(false);
 
   useEffect(() => {
     setActive(data);
     setView('detail');
-    setConfirmDisable(false);
   }, [data]);
 
   const results = [
@@ -35,7 +32,7 @@ export function Widget({
           <TokenDetail
             data={active}
             onSwap={() => onSwap(active)}
-            onDisable={() => setConfirmDisable(true)}
+            onDisable={onDisable}
             onViewDetails={() => onViewDetails(active)}
             onViewSimilar={results.length > 1 ? () => setView('results') : null}
           />
@@ -51,11 +48,6 @@ export function Widget({
           />
         )}
       </div>
-      <DisableConfirmDialog
-        open={confirmDisable}
-        onCancel={() => setConfirmDisable(false)}
-        onConfirm={onDisable}
-      />
     </>
   );
 }

@@ -33,7 +33,7 @@ describe('createPopupOpener', () => {
     const result = await requestOpenPopup();
 
     expect(result).toBe(true);
-    expect(deps.extension.action.openPopup).toHaveBeenCalledWith(undefined);
+    expect(deps.extension.action?.openPopup).toHaveBeenCalledWith(undefined);
     expect(deps.extension.tabs.get).not.toHaveBeenCalled();
   });
 
@@ -47,7 +47,7 @@ describe('createPopupOpener', () => {
     expect(deps.extension.windows.update).toHaveBeenCalledWith(789, {
       focused: true,
     });
-    expect(deps.extension.action.openPopup).toHaveBeenCalledWith({
+    expect(deps.extension.action?.openPopup).toHaveBeenCalledWith({
       windowId: 789,
     });
   });
@@ -62,12 +62,12 @@ describe('createPopupOpener', () => {
     const result = await requestOpenPopup(123);
 
     expect(result).toBe(true);
-    expect(deps.extension.action.openPopup).toHaveBeenCalledWith(undefined);
+    expect(deps.extension.action?.openPopup).toHaveBeenCalledWith(undefined);
   });
 
   it('returns false if openPopup throws', async () => {
     const deps = createMockDeps();
-    (deps.extension.action.openPopup as jest.Mock).mockRejectedValue(
+    (deps.extension.action?.openPopup as jest.Mock).mockRejectedValue(
       new Error('Gesture expired'),
     );
 

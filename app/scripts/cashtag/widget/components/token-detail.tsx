@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import {
   Button,
   ButtonSize,
@@ -21,6 +21,7 @@ import type { AssetData } from '../../lib/types';
 import { OverflowMenu } from '../../../../../shared/components/overflow-menu';
 import { PriceChart } from './price-chart';
 import { TokenAvatar } from './token-avatar';
+import { DisableConfirmDialog } from './disable-confirm-dialog';
 
 function onWidgetClick(handler: () => void) {
   return (event: React.MouseEvent) => {
@@ -52,6 +53,8 @@ export function TokenDetail({
   onViewDetails,
   onViewSimilar,
 }: Props) {
+  const disableDialogId = useId();
+
   const positive =
     data.change24hPercent === null ? true : data.change24hPercent >= 0;
   const priceChangeUsd =
@@ -94,7 +97,12 @@ export function TokenDetail({
           />
           <OverflowMenu
             items={[
-              { key: 'disable', label: 'Disable widget', onClick: onDisable },
+              {
+                key: 'disable',
+                label: 'Disable widget',
+                command: 'show-modal',
+                commandfor: disableDialogId,
+              },
             ]}
           />
         </div>
@@ -191,6 +199,8 @@ export function TokenDetail({
           </Button>
         </div>
       ) : null}
+
+      <DisableConfirmDialog id={disableDialogId} onConfirm={onDisable} />
     </div>
   );
 }
