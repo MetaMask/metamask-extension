@@ -114,8 +114,6 @@ import AssetChart from './chart/asset-chart';
 // [POC — THROWAWAY] Advanced Chart via cross-origin iframe from localhost:8001
 import AdvancedChartIframe from './chart/advanced-chart-iframe';
 import IntervalBar, {
-  CHART_TYPE_CANDLE,
-  CHART_TYPE_LINE,
   LINE_CHART_TIME_RANGES,
   LINE_TIME_RANGE_TO_ISO8601,
 } from './chart/advanced-chart-interval-bar';

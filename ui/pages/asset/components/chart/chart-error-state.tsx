@@ -10,8 +10,6 @@ import {
   TextAlign,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTheme } from '../../../../hooks/useTheme';
-import { ThemeType } from '../../../../../shared/constants/preferences';
 
 /**
  * SVG path from design for placeholder chart background.
@@ -40,13 +38,10 @@ export const ChartErrorState: React.FC<ChartErrorStateProps> = ({
   testId = 'chart-error-state',
 }) => {
   const t = useI18nContext();
-  const theme = useTheme();
 
-  // Use theme-appropriate fill color for the placeholder SVG
-  const placeholderFill =
-    theme === ThemeType.dark
-      ? 'var(--color-background-alternative)'
-      : 'var(--color-background-alternative)';
+  // Placeholder SVG fill color — resolved via CSS variable so it adapts
+  // automatically to the active theme without needing conditional logic.
+  const placeholderFill = 'var(--color-background-alternative)';
 
   return (
     <Box
