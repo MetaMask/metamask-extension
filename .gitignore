@@ -113,6 +113,9 @@ development/lib/retry.js
 development/lib/retry.d.ts
 development/lib/variables.js
 development/lib/variables.d.ts
+# Emitted when `development/lib` tsc pulls in `shared/lib/manifestFlags.ts`
+shared/lib/manifestFlags.js
+shared/lib/manifestFlags.d.ts
 
 # llm workflow playwright temp files
 temp-llm-workflow-*

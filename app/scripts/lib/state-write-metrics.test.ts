@@ -9,11 +9,11 @@ const EVENT: SplitStateWriteEvent = {
     ['FooController', 13],
   ]),
   coalescedUpdates: 3,
-  controllerKeys: ['BarController', 'FooController'],
   idleStatus: 'idle',
   measurementDurationMs: 0.25,
   sampleRate: 0.01,
-  totalBytes: 67,
+  sizeMeasurementSource: 'storage_get_bytes_in_use',
+  totalBytes: 34,
   writeDurationMs: 4.5,
 };
 
@@ -55,7 +55,8 @@ describe('trackSplitStateWrite', () => {
           'state.write.idle_status': 'idle',
           'state.write.measurement_duration_ms': 0.25,
           'state.write.sample_rate': 0.01,
-          'state.write.total_bytes': 67,
+          'state.write.size_measurement_source': 'storage_get_bytes_in_use',
+          'state.write.total_bytes': 34,
           'state.write.write_duration_ms': 4.5,
         },
         forceTransaction: undefined,
