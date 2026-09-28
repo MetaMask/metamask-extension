@@ -52,9 +52,6 @@ function setupSync({
     if (action === PUT_CONSENT_ACTION) {
       return putConsent();
     }
-    if (action === 'MetaMetricsController:getState') {
-      return { marketingCampaignCookieId: null };
-    }
     if (action === OPT_IN_ACTION || action === OPT_OUT_ACTION) {
       currentAnalyticsState = {
         ...currentAnalyticsState,
@@ -392,42 +389,6 @@ describe('setupMarketingConsentSync', () => {
       queryKey: [GET_CONSENT_ACTION],
     });
     expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
-  });
-
-  it('clears the marketing campaign cookie when AUS opts the user out', async () => {
-    const { call } = setupSync({
-      analyticsState: {
-        optedInToMarketing: true,
-        marketingConsentDecisionMade: true,
-      },
-      authenticationState: { isSignedIn: true },
-      remoteConsent: { marketingConsentEnabled: false },
-    });
-    call.mockImplementation((action: string) => {
-      if (action === 'AnalyticsController:getState') {
-        return {
-          optedInToMarketing: true,
-          marketingConsentDecisionMade: true,
-        };
-      }
-      if (action === 'AuthenticationController:getState') {
-        return { isSignedIn: true };
-      }
-      if (action === GET_CONSENT_ACTION) {
-        return Promise.resolve({ marketingConsentEnabled: false });
-      }
-      if (action === 'MetaMetricsController:getState') {
-        return { marketingCampaignCookieId: 'campaign-cookie' };
-      }
-      return Promise.resolve();
-    });
-    await flushPromises();
-
-    expect(call).toHaveBeenCalledWith(OPT_OUT_ACTION);
-    expect(call).toHaveBeenCalledWith(
-      'MetaMetricsController:setMarketingCampaignCookieId',
-      null,
-    );
   });
 
   it('coalesces consent changes while an AUS write is pending', async () => {

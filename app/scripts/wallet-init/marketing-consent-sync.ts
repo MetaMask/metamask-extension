@@ -16,8 +16,6 @@ import type {
   AuthenticationControllerState,
   AuthenticationControllerStateChangeEvent,
 } from '@metamask/profile-sync-controller/auth';
-import type { MetaMetricsControllerGetStateAction } from '../controllers/metametrics-controller';
-import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../controllers/metametrics-controller-method-action-types';
 import type { RootMessenger } from '../lib/messenger';
 
 type SyncActions =
@@ -27,9 +25,7 @@ type SyncActions =
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerOptInToMarketingAction
   | AnalyticsControllerOptOutOfMarketingAction
-  | AuthenticationControllerGetStateAction
-  | MetaMetricsControllerGetStateAction
-  | MetaMetricsControllerSetMarketingCampaignCookieIdAction;
+  | AuthenticationControllerGetStateAction;
 
 type SyncEvents =
   | AnalyticsControllerStateChangeEvent
@@ -66,8 +62,6 @@ export function setupMarketingConsentSync({
       'AnalyticsController:optInToMarketing',
       'AnalyticsController:optOutOfMarketing',
       'AuthenticationController:getState',
-      'MetaMetricsController:getState',
-      'MetaMetricsController:setMarketingCampaignCookieId',
     ],
     events: [
       'AnalyticsController:stateChange',
@@ -126,16 +120,8 @@ export function setupMarketingConsentSync({
             if (remote.marketingConsentEnabled) {
               await syncMessenger.call('AnalyticsController:optInToMarketing');
             } else {
+              // optOutOfMarketing also clears the marketing campaign cookie.
               syncMessenger.call('AnalyticsController:optOutOfMarketing');
-              const { marketingCampaignCookieId } = syncMessenger.call(
-                'MetaMetricsController:getState',
-              );
-              if (marketingCampaignCookieId) {
-                syncMessenger.call(
-                  'MetaMetricsController:setMarketingCampaignCookieId',
-                  null,
-                );
-              }
             }
           } finally {
             applyingRemote = undefined;
