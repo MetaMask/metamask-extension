@@ -1,5 +1,5 @@
 import { canonicalize } from './canonicalize';
-import { SIG_PARAM } from './constants';
+import { SIG_PARAM } from './common';
 import { getKeyData, sigToBytes } from './helpers';
 
 /**

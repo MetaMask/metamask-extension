@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
-import { SIG_PARAM } from '../../../../shared/lib/deep-links/constants';
+import { SIG_PARAM } from '../../../../shared/lib/deep-links/common';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';

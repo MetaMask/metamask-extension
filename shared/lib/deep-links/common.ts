@@ -24,11 +24,16 @@ export const DEEP_LINK_HOSTS = [
  * matches subdomains.
  *
  * @param hostname - The hostname to check.
+ * @param allowSubdomains - Whether to include subdomains of configured hosts.
  * @returns Whether the hostname is a configured deep-link host or subdomain.
  */
-export function isDeepLinkHost(hostname: string): boolean {
+export function isDeepLinkHost(
+  hostname: string,
+  allowSubdomains = true,
+): boolean {
   return DEEP_LINK_HOSTS.some(
-    (host) => hostname === host || hostname.endsWith(`.${host}`),
+    (host) =>
+      hostname === host || (allowSubdomains && hostname.endsWith(`.${host}`)),
   );
 }
 

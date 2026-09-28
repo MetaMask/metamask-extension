@@ -9,7 +9,7 @@ import {
 import {
   DEEP_LINK_HOSTS,
   DEEP_LINK_MAX_LENGTH,
-} from '../../../../shared/lib/deep-links/constants';
+} from '../../../../shared/lib/deep-links/common';
 import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
