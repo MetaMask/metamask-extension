@@ -275,7 +275,7 @@ describe('usePayHardwareAccountAlert', () => {
       });
     });
 
-    it('returns no alert for a Ledger payer under the legacy flat enabled flag', async () => {
+    it('returns alert for a Ledger payer under the legacy flat enabled flag', async () => {
       const { result } = runHook({
         transactionType: TransactionType.moneyAccountDeposit,
         senderKeyringType: 'HD Key Tree',
@@ -283,7 +283,7 @@ describe('usePayHardwareAccountAlert', () => {
         flag: FLAG_ON,
       });
       await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
       });
     });
 
