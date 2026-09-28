@@ -6,6 +6,7 @@ const ACCOUNT_1_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12';
 const ACCOUNT_2_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const LEDGER_ADDRESS = '0xfedcba0987654321fedcba0987654321fedcba09';
 const TREZOR_ADDRESS = '0x9876543210fedcba9876543210fedcba98765432';
+const QR_ADDRESS = '0x2468ace02468ace02468ace02468ace02468ace0';
 const NON_EVM_ADDRESS = 'bc1qexampleexampleexampleexampleexampleex';
 
 const hardwareAccount = (address: string, keyringType: KeyringTypes) => ({
@@ -28,6 +29,11 @@ const HARDWARE_WALLETS_MOCK = {
         id: 'group-2',
         metadata: { name: 'Ledger Account' },
         accounts: [hardwareAccount(LEDGER_ADDRESS, KeyringTypes.ledger)],
+      },
+      'group-4': {
+        id: 'group-4',
+        metadata: { name: 'QR Account' },
+        accounts: [hardwareAccount(QR_ADDRESS, KeyringTypes.qr)],
       },
     },
   },
@@ -137,6 +143,12 @@ describe('getEvmAccountsGroupedByWallet', () => {
               address: LEDGER_ADDRESS,
               type: 'eip155:eoa',
             },
+            {
+              id: 'group-4',
+              name: 'QR Account',
+              address: QR_ADDRESS,
+              type: 'eip155:eoa',
+            },
           ],
         },
         {
@@ -181,6 +193,18 @@ describe('getEvmAccountsGroupedByWallet', () => {
       });
 
       expect(result.map((wallet) => wallet.name)).toStrictEqual(['Wallet 1']);
+    });
+
+    it('excludes only QR accounts when enabled', () => {
+      const result = getEvmAccountsGroupedByWallet(HARDWARE_WALLETS_MOCK, {
+        excludeQrAccounts: true,
+      });
+
+      expect(
+        result.flatMap((wallet) =>
+          wallet.accounts.map((account) => account.name),
+        ),
+      ).toStrictEqual(['Account 1', 'Ledger Account', 'Trezor Account']);
     });
 
     const hardwareKeyringTypes = [

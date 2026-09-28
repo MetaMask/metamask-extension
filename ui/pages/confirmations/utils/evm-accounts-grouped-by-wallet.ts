@@ -1,5 +1,6 @@
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { isHardwareAccount } from '../../../components/app/rewards/utils/isHardwareAccount';
 import type { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
@@ -23,6 +24,10 @@ type GetEvmAccountsGroupedByWalletOptions = {
    * account is never offered rather than rejected after selection.
    */
   excludeHardwareAccounts?: boolean;
+  /**
+   * When true, omit QR hardware wallet accounts.
+   */
+  excludeQrAccounts?: boolean;
 };
 
 /**
@@ -38,12 +43,14 @@ type GetEvmAccountsGroupedByWalletOptions = {
  * @param wallets - Consolidated wallets from `getWalletsWithAccounts`.
  * @param options - Filtering options.
  * @param options.excludeHardwareAccounts - Whether to omit hardware accounts.
+ * @param options.excludeQrAccounts
  * @returns Wallets with their eligible EVM accounts, preserving wallet order.
  */
 export function getEvmAccountsGroupedByWallet(
   wallets: ConsolidatedWallets,
   {
     excludeHardwareAccounts = false,
+    excludeQrAccounts = false,
   }: GetEvmAccountsGroupedByWalletOptions = {},
 ): EvmWalletWithAccounts[] {
   return Object.values(wallets).reduce(
@@ -54,7 +61,11 @@ export function getEvmAccountsGroupedByWallet(
         const evmAccount = group.accounts.find(
           (account) =>
             isEvmAccountType(account.type) &&
-            !(excludeHardwareAccounts && isHardwareAccount(account)),
+            !(excludeHardwareAccounts && isHardwareAccount(account)) &&
+            !(
+              excludeQrAccounts &&
+              account.metadata?.keyring?.type === KeyringTypes.qr
+            ),
         );
 
         if (evmAccount) {

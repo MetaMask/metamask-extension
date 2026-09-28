@@ -30,6 +30,10 @@ export type AccountSelectModalProps = {
    */
   excludeHardwareAccounts?: boolean;
   /**
+   * When true, QR hardware wallet accounts are omitted from the list.
+   */
+  excludeQrAccounts?: boolean;
+  /**
    * Called when the modal requests to close (backdrop, escape, or close button).
    */
   onClose: () => void;
@@ -55,6 +59,7 @@ export type AccountSelectModalProps = {
  *
  * @param props - Component props.
  * @param props.excludeHardwareAccounts - Whether to omit hardware accounts.
+ * @param props.excludeQrAccounts - Whether to omit QR hardware accounts.
  * @param props.onClose - Called when the modal should close.
  * @param props.onSelect - Called with the chosen account address. The consumer
  * must close the modal after handling selection.
@@ -63,6 +68,7 @@ export type AccountSelectModalProps = {
  */
 export function AccountSelectModal({
   excludeHardwareAccounts = false,
+  excludeQrAccounts = false,
   onClose,
   onSelect,
   selectedAddress = '',
@@ -72,8 +78,12 @@ export function AccountSelectModal({
   const wallets = useSelector(getWalletsWithAccounts);
 
   const accountsGroupedByWallet = useMemo(
-    () => getEvmAccountsGroupedByWallet(wallets, { excludeHardwareAccounts }),
-    [wallets, excludeHardwareAccounts],
+    () =>
+      getEvmAccountsGroupedByWallet(wallets, {
+        excludeHardwareAccounts,
+        excludeQrAccounts,
+      }),
+    [wallets, excludeHardwareAccounts, excludeQrAccounts],
   );
 
   return (

@@ -16,6 +16,7 @@ jest.mock('../../../../components/app/preferred-avatar', () => ({
 const ACCOUNT_1_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12';
 const ACCOUNT_2_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const LEDGER_ADDRESS = '0xfedcba0987654321fedcba0987654321fedcba09';
+const QR_ADDRESS = '0x2468ace02468ace02468ace02468ace02468ace0';
 const NON_EVM_ADDRESS = 'bc1qexampleexampleexampleexampleexampleex';
 
 const mockStore = configureStore([thunk]);
@@ -48,6 +49,17 @@ const WALLETS_MOCK = {
             address: LEDGER_ADDRESS,
             type: 'eip155:eoa',
             metadata: { keyring: { type: KeyringTypes.ledger } },
+          },
+        ],
+      },
+      'group-5': {
+        id: 'group-5',
+        metadata: { name: 'QR Account' },
+        accounts: [
+          {
+            address: QR_ADDRESS,
+            type: 'eip155:eoa',
+            metadata: { keyring: { type: KeyringTypes.qr } },
           },
         ],
       },
@@ -138,6 +150,18 @@ describe('AccountSelectModal', () => {
 
       expect(screen.getByText('Account 1')).toBeInTheDocument();
       expect(screen.getByText('Account 2')).toBeInTheDocument();
+    });
+  });
+
+  describe('excludeQrAccounts', () => {
+    it('excludes QR accounts but keeps other hardware accounts', () => {
+      renderModal({ excludeQrAccounts: true });
+
+      expect(screen.queryByText('QR Account')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`account-select-item-${QR_ADDRESS}`),
+      ).not.toBeInTheDocument();
+      expect(screen.getByText('Ledger Account')).toBeInTheDocument();
     });
   });
 });

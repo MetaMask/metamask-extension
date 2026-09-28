@@ -91,6 +91,9 @@ export function FromAccountRow({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isHardwareBlocked = useIsPayHardwareBlocked();
+  const excludeQrAccounts = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
   const transactionId = currentConfirmation?.id ?? '';
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
@@ -203,6 +206,7 @@ export function FromAccountRow({
           onClose={closeModal}
           title={isRecipientRow ? t('selectRecipient') : undefined}
           excludeHardwareAccounts={isHardwareBlocked}
+          excludeQrAccounts={excludeQrAccounts}
         />
       )}
     </>
