@@ -21,6 +21,7 @@ import {
   buildMoneyKeyringBuilder,
   buildMoneyKeyringV2Builder,
 } from '../lib/money/money-keyring-builder';
+import { buildMpcKeyringBuilder } from '../lib/money/mpc-keyring-builder';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { TrezorMv2Bridge } from '../lib/offscreen-bridge/trezor-mv2-bridge';
@@ -35,6 +36,7 @@ import {
   RootMessengerEvents,
 } from '../lib/messenger';
 import { getMoneyKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/money-keyring-builder-messenger';
+import { getMpcKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/mpc-keyring-builder-messenger';
 import { getSnapKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
 import {
   getSnapKeyringV2BuilderMessenger,
@@ -191,6 +193,12 @@ export function getKeyringBuilders(
   // deserializing the vault. See `buildMoneyKeyringBuilder`.
   keyrings.push(
     buildMoneyKeyringBuilder(getMoneyKeyringBuilderMessenger(messenger)),
+  );
+
+  // Registered unconditionally so a vault that already holds an MPC keyring
+  // can be deserialized. See `buildMpcKeyringBuilder`.
+  keyrings.push(
+    buildMpcKeyringBuilder(getMpcKeyringBuilderMessenger(messenger)),
   );
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.

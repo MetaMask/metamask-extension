@@ -33,6 +33,7 @@ import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance
 import { useMoneyAddDepositToken } from '../../hooks/money/use-money-add-deposit-token';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
 import { useMoneyAccountWithdrawal } from '../../hooks/money/useMoneyAccountWithdrawal';
+import { useEnableMoneyAccountMfa } from '../../hooks/money/useEnableMoneyAccountMfa';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
@@ -74,7 +75,7 @@ import { MoneyTransferSheet } from './components/money-transfer-sheet';
  */
 const IS_MONEY_TRANSFER_SHEET_ENABLED: boolean = false;
 
-const ACTION_BUTTON_ROW_BUTTON_COUNT = 2;
+const ACTION_BUTTON_ROW_BUTTON_COUNT = 3;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 const FORMATTED_ZERO = moneyFormatUsd(new BigNumber(0));
 
@@ -208,6 +209,12 @@ export function MoneyHomePage() {
     });
   const { initiateWithdrawal, isLoading: isWithdrawLoading } =
     useMoneyAccountWithdrawal();
+  const {
+    enableMfa,
+    error: enableMfaError,
+    isEnabled: isMfaEnabled,
+    isEnabling: isEnablingMfa,
+  } = useEnableMoneyAccountMfa();
   const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyHome,
   });
@@ -290,6 +297,19 @@ export function MoneyHomePage() {
       console.error('[MoneyHomePage] Withdrawal initiation failed', error);
     });
   }, [initiateWithdrawal, trackButtonClicked]);
+  const handleEnableMfa = useCallback(() => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.EnableMfa,
+      componentName: MoneyComponentName.ActionButtonRow,
+      labelKey: 'moneyEnableMfa',
+      buttonPosition: 3,
+      buttonRowButtonCount: ACTION_BUTTON_ROW_BUTTON_COUNT,
+    });
+    enableMfa().catch((error: unknown) => {
+      console.error('[MoneyHomePage] Enable MFA failed', error);
+    });
+  }, [enableMfa, trackButtonClicked]);
   const handleCloseTransferSheet = useCallback(() => {
     setIsTransferSheetOpen(false);
   }, []);
@@ -455,7 +475,23 @@ export function MoneyHomePage() {
               disabled={!IS_MONEY_TRANSFER_SHEET_ENABLED && isWithdrawLoading}
               testId="money-send-button"
             />
+            <MoneyActionCard
+              icon={IconName.ShieldLock}
+              label={isMfaEnabled ? t('moneyMfaEnabled') : t('moneyEnableMfa')}
+              onClick={handleEnableMfa}
+              disabled={isMfaEnabled || isEnablingMfa}
+              testId="money-enable-mfa-button"
+            />
           </div>
+          {enableMfaError ? (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.ErrorDefault}
+              data-testid="money-enable-mfa-error"
+            >
+              {enableMfaError}
+            </Text>
+          ) : null}
 
           {showFundedLayout ? null : (
             <section className="mt-1 flex w-full max-w-[389px] flex-col gap-4 overflow-hidden rounded-2xl bg-background-muted p-4">

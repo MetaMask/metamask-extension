@@ -199,6 +199,7 @@ import { getSentryTracingServiceMessenger } from './sentry-tracing-service-messe
 import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 import { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
+import { getMoneyAccountMpcServiceMessenger } from './money-account-mpc-service-messenger';
 import {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
@@ -280,6 +281,7 @@ export {
 export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
+export { getMoneyAccountMpcServiceMessenger } from './money-account-mpc-service-messenger';
 export {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
@@ -506,6 +508,10 @@ export const MESSENGER_FACTORIES = {
   MoneyAccountController: {
     getMessenger: getMoneyAccountControllerMessenger,
     getInitMessenger: getMoneyAccountControllerInitMessenger,
+  },
+  MoneyAccountMpcService: {
+    getMessenger: getMoneyAccountMpcServiceMessenger,
+    getInitMessenger: noop,
   },
   MoneyAccountUpgradeController: {
     getMessenger: getMoneyAccountUpgradeControllerMessenger,

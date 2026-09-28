@@ -399,6 +399,7 @@ import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-ser
 import { ChompApiServiceInit } from './messenger-client-init/chomp-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
 import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
+import { MoneyAccountMpcServiceInit } from './messenger-client-init/money-account-mpc-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
@@ -674,6 +675,7 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       MoneyAccountController: MoneyAccountControllerInit,
+      MoneyAccountMpcService: MoneyAccountMpcServiceInit,
       MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
       ...(getIsAssetsUnifiedStateIncludedInBuild()
         ? { AssetsController: AssetsControllerInit }

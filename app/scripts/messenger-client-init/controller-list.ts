@@ -117,6 +117,7 @@ import { MoneyAccountBalanceService } from '@metamask/money-account-balance-serv
 import { MoneyAccountController } from '@metamask/money-account-controller';
 import { MoneyAccountUpgradeController } from '@metamask/money-account-upgrade-controller';
 import { MoneyAccountAvailabilityService } from '../lib/money/money-account-availability';
+import { MoneyAccountMpcService } from '../lib/money/money-account-mpc-service';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
@@ -188,6 +189,7 @@ export type MessengerClient =
   | MoneyAccountAvailabilityService
   | MoneyAccountBalanceService
   | MoneyAccountController
+  | MoneyAccountMpcService
   | MoneyAccountUpgradeController
   | MultichainAssetsController
   | MultichainAssetsRatesController

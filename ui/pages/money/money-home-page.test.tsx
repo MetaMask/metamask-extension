@@ -35,6 +35,8 @@ const mockInitiateDeposit = jest.fn();
 const mockUseMoneyAccountWithdrawal = jest.fn();
 const mockInitiateWithdrawal = jest.fn();
 const mockUseUpgradeMoneyAccount = jest.fn();
+const mockEnableMfa = jest.fn();
+const mockUseEnableMoneyAccountMfa = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -115,6 +117,9 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
 }));
 jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
   useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
+}));
+jest.mock('../../hooks/money/useEnableMoneyAccountMfa', () => ({
+  useEnableMoneyAccountMfa: () => mockUseEnableMoneyAccountMfa(),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -199,6 +204,13 @@ describe('MoneyHomePage', () => {
       initiateWithdrawal: mockInitiateWithdrawal,
       isLoading: false,
     });
+    mockEnableMfa.mockResolvedValue(undefined);
+    mockUseEnableMoneyAccountMfa.mockReturnValue({
+      enableMfa: mockEnableMfa,
+      error: undefined,
+      isEnabled: false,
+      isEnabling: false,
+    });
   });
 
   it('renders the full empty-state composition with a live zero balance', () => {
@@ -277,6 +289,7 @@ describe('MoneyHomePage', () => {
       messages.moneyAdd.message,
       messages.addFunds.message,
       messages.moneySend.message,
+      messages.moneyEnableMfa.message,
       messages.moneyLearnMore.message,
       messages.moneyMoreOptions.message,
     ];
@@ -337,7 +350,7 @@ describe('MoneyHomePage', () => {
       labelKey: 'moneySend',
       redirectTarget: MoneyScreenName.MoneyTransfer,
       buttonPosition: 2,
-      buttonRowButtonCount: 2,
+      buttonRowButtonCount: 3,
     });
 
     expect(mockInitiateWithdrawal).toHaveBeenCalledTimes(1);
@@ -357,6 +370,37 @@ describe('MoneyHomePage', () => {
     expect(screen.getByTestId('money-send-button')).toBeDisabled();
   });
 
+  it('enables MFA from the action row', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-enable-mfa-button'));
+
+    expect(mockEnableMfa).toHaveBeenCalledTimes(1);
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.EnableMfa,
+      componentName: MoneyComponentName.ActionButtonRow,
+      labelKey: 'moneyEnableMfa',
+      buttonPosition: 3,
+      buttonRowButtonCount: 3,
+    });
+  });
+
+  it('shows MFA as enabled and does not start another migration', () => {
+    mockUseEnableMoneyAccountMfa.mockReturnValue({
+      enableMfa: mockEnableMfa,
+      error: undefined,
+      isEnabled: true,
+      isEnabling: false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    const button = screen.getByTestId('money-enable-mfa-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent(messages.moneyMfaEnabled.message);
+  });
+
   it('initiates a deposit from the Add action card', () => {
     renderWithLocalization(<MoneyHomePage />);
 
@@ -373,7 +417,7 @@ describe('MoneyHomePage', () => {
       labelKey: 'moneyAdd',
       redirectTarget: MoneyScreenName.MoneyDeposit,
       buttonPosition: 1,
-      buttonRowButtonCount: 2,
+      buttonRowButtonCount: 3,
     });
   });
 
@@ -578,6 +622,7 @@ describe('MoneyHomePage', () => {
         [
           messages.moneyAdd.message,
           messages.moneySend.message,
+          messages.moneyEnableMfa.message,
           messages.moneyMoreOptions.message,
         ].includes(
           button.textContent || (button.getAttribute('aria-label') ?? ''),

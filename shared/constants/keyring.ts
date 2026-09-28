@@ -1,6 +1,7 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
 
 import { HardwareKeyringType } from './hardware-wallets';
+import { MPC_KEYRING_TYPE } from './mpc-keyring';
 
 /**
  * These are the keyrings that are managed entirely by MetaMask.
@@ -46,10 +47,12 @@ export const KEYRING_TYPES_SUPPORTING_7702 = [
  * keyring here the relay hook is skipped and an unsigned payload reaches
  * `eth_sendRawTransaction` ("Transaction decoding error"). Mirrors mobile's
  * `KEYRING_TYPES_SUPPORTING_7702`, which includes `ExtendedKeyringTypes.money`
- * for its transaction publish gate only.
+ * for its transaction publish gate only. The MPC keyring is included for the
+ * same reason once MFA has moved the Money Account onto it.
  */
 export const KEYRING_TYPES_SUPPORTING_7702_RELAY = [
   KeyringTypes.hd,
   KeyringTypes.simple,
   KeyringTypes.money,
+  MPC_KEYRING_TYPE,
 ];

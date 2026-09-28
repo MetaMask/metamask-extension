@@ -43,6 +43,7 @@ export enum MoneyComponentName {
 
 export enum MoneyButtonIntent {
   AddMoney = 'add_money',
+  EnableMfa = 'enable_mfa',
   GoToMoneyHome = 'go_to_money_home',
   TransferMoney = 'transfer_money',
   LearnMore = 'learn_more',

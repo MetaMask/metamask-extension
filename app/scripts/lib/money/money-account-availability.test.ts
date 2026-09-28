@@ -33,12 +33,14 @@ function createMockMessenger({
   geoFlag,
   location = 'US',
   getGeolocation,
+  moneyAccount,
 }: {
   vaultConfig?: unknown;
   networkConfigured?: boolean;
   geoFlag?: unknown;
   location?: string;
   getGeolocation?: () => Promise<string> | string;
+  moneyAccount?: { address: string; options: { mpcKeyring?: boolean } };
 } = {}) {
   const addNetwork = jest.fn().mockResolvedValue(MONAD_NETWORK_CONFIGURATION);
   const call = jest.fn((action: string, ...args: unknown[]) => {
@@ -67,6 +69,9 @@ function createMockMessenger({
         return getGeolocation();
       }
       return location;
+    }
+    if (action === 'MoneyAccountController:getMoneyAccount') {
+      return moneyAccount;
     }
     throw new Error(`Unexpected action: ${action}`);
   });
@@ -120,6 +125,22 @@ describe('MoneyAccountAvailabilityService', () => {
       isAvailable: true,
       address: MONEY_ADDRESS,
     });
+  });
+
+  it('answers with the MPC address after MFA migrates the money account', async () => {
+    const mpcAddress = '0x2222222222222222222222222222222222222222' as Hex;
+    const { service } = createService({
+      moneyAccount: {
+        address: mpcAddress,
+        options: { mpcKeyring: true },
+      },
+    });
+
+    expect(await service.getAvailability()).toStrictEqual({
+      isAvailable: true,
+      address: mpcAddress,
+    });
+    expect(deriveMoneyAccountAddressMock).not.toHaveBeenCalled();
   });
 
   it('adds the Money Account chain without making it active when it is not configured', async () => {

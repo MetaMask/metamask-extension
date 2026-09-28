@@ -1,9 +1,10 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
-  MoneyAccountController,
+  type MoneyAccountController,
   type MoneyAccountControllerMessenger,
 } from '@metamask/money-account-controller';
 import { createProjectLogger } from '@metamask/utils';
+import { MpcMoneyAccountController } from '../lib/money/mpc-money-account';
 import { isMoneyAccountEnabled } from '../../../shared/lib/money/feature-flags';
 import type { MoneyAccountControllerInitMessenger } from './messengers/money-account-controller-messenger';
 import type { MessengerClientInitFunction } from './types';
@@ -54,7 +55,7 @@ export const MoneyAccountControllerInit: MessengerClientInitFunction<
   MoneyAccountControllerMessenger,
   MoneyAccountControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
-  const controller = new MoneyAccountController({
+  const controller = new MpcMoneyAccountController({
     messenger: controllerMessenger,
     state: persistedState.MoneyAccountController,
   });

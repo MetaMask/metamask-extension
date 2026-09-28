@@ -6,8 +6,13 @@ import type {
 } from '@metamask/keyring-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
+import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { createProjectLogger, type Hex } from '@metamask/utils';
+import {
+  createProjectLogger,
+  isStrictHexString,
+  type Hex,
+} from '@metamask/utils';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import {
   getMoneyAccountGeoBlockedCountries,
@@ -15,6 +20,7 @@ import {
 } from '../../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
+import { isMpcBackedMoneyAccount } from '../../../../shared/lib/money/mpc-money-account';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 import {
   createMoneyChainConfigurator,
@@ -30,7 +36,8 @@ type MoneyAccountAvailabilityAllowedActions =
   | LegacyBackgroundApiServiceAddNetworkAction
   | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
-  | GeolocationControllerGetGeolocationAction;
+  | GeolocationControllerGetGeolocationAction
+  | MoneyAccountControllerGetMoneyAccountAction;
 
 type MoneyAccountAvailabilityEvents =
   | KeyringControllerUnlockEvent
@@ -149,6 +156,11 @@ export class MoneyAccountAvailabilityService {
    * @returns The money account address.
    */
   async #getAddress(): Promise<Hex> {
+    const migrated = this.#mpcAddress();
+    if (migrated) {
+      return migrated;
+    }
+
     if (!this.#address) {
       const address = deriveMoneyAccountAddress(this.#messenger);
 
@@ -164,6 +176,27 @@ export class MoneyAccountAvailabilityService {
     }
 
     return await this.#address;
+  }
+
+  /**
+   * The MPC address, once MFA has migrated the money account.
+   *
+   * Checked on every read so a migration replaces the seed-derived address
+   * without waiting for the next unlock.
+   *
+   * @returns The migrated address, or `undefined` when MFA is not enabled.
+   */
+  #mpcAddress(): Hex | undefined {
+    const account = this.#messenger.call(
+      'MoneyAccountController:getMoneyAccount',
+    );
+    if (
+      !isMpcBackedMoneyAccount(account) ||
+      !isStrictHexString(account.address)
+    ) {
+      return undefined;
+    }
+    return account.address;
   }
 
   async #configureChain(
