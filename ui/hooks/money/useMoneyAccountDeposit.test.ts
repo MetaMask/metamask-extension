@@ -407,6 +407,34 @@ describe('useMoneyAccountDeposit', () => {
   });
 
   describe('when a hardware account is selected', () => {
+    it('funds from the hardware account when hardware deposits are enabled', async () => {
+      const state = stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT]);
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountDeposit(),
+        {
+          metamask: {
+            ...state.metamask,
+            remoteFeatureFlags: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_pay_hardware: {
+                default: { enabled: false },
+                overrides: { moneyAccountDeposit: { enabled: true } },
+              },
+            },
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.initiateDeposit();
+      });
+
+      expect(createDepositTransactionMock).toHaveBeenCalledWith(
+        expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+        '0x1234567890123456789012345678901234567890',
+      );
+    });
+
     it('funds from the next eligible account instead of the hardware one', async () => {
       const { result } = renderHookWithProvider(
         () => useMoneyAccountDeposit(),
