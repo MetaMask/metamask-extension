@@ -280,6 +280,30 @@ export function hasQuoteDisplayContent({
 }
 
 /**
+ * Whether to show a row's selection check alongside its optional quote preview.
+ *
+ * @param options0 - Selection state and quote display props.
+ * @param options0.isSelected
+ * @param options0.showQuote
+ * @param options0.cryptoAmount
+ * @param options0.fiatAmount
+ * @param options0.isLoading
+ * @param options0.showWarningIcon
+ */
+export function shouldShowSelectedCheckIcon({
+  isSelected,
+  showQuote,
+  ...quoteDisplayProps
+}: RampsQuoteDisplayProps & {
+  isSelected: boolean;
+  showQuote: boolean;
+}) {
+  return (
+    isSelected && (!showQuote || !hasQuoteDisplayContent(quoteDisplayProps))
+  );
+}
+
+/**
  * Right-column quote preview for payment method rows (mobile `QuoteDisplay`).
  *
  * @param options0

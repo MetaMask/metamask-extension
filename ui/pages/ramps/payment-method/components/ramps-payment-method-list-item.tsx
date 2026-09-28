@@ -26,7 +26,7 @@ import { getRampsListItemClassName } from '../../components/get-ramps-list-item-
 import { formatPaymentMethodDelay } from '../utils/format-payment-method-delay';
 import { getPaymentMethodIconName } from '../utils/get-payment-method-icon';
 import RampsQuoteDisplay, {
-  hasQuoteDisplayContent,
+  shouldShowSelectedCheckIcon,
 } from './ramps-quote-display';
 
 export type RampsPaymentMethodListItemProps = {
@@ -103,14 +103,14 @@ export default function RampsPaymentMethodListItem({
     quote.quote.amountOutInFiat !== null
       ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
       : null;
-  const quoteInfoDisplayed =
-    showQuote &&
-    hasQuoteDisplayContent({
-      cryptoAmount,
-      fiatAmount,
-      isLoading: quoteLoading,
-      showWarningIcon: quoteError,
-    });
+  const showSelectedCheckIcon = shouldShowSelectedCheckIcon({
+    isSelected,
+    showQuote,
+    cryptoAmount,
+    fiatAmount,
+    isLoading: quoteLoading,
+    showWarningIcon: quoteError,
+  });
 
   return (
     <ButtonBase
@@ -219,7 +219,7 @@ export default function RampsPaymentMethodListItem({
                   warningMessage={quoteErrorMessage}
                 />
               ) : null}
-              {isSelected && !quoteInfoDisplayed ? (
+              {showSelectedCheckIcon ? (
                 <Icon
                   name={IconName.Check}
                   size={IconSize.Lg}

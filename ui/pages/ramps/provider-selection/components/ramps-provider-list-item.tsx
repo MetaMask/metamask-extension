@@ -19,7 +19,7 @@ import {
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getRampsListItemClassName } from '../../components/get-ramps-list-item-class-name';
 import RampsQuoteDisplay, {
-  hasQuoteDisplayContent,
+  shouldShowSelectedCheckIcon,
 } from '../../payment-method/components/ramps-quote-display';
 import type { ProviderTag } from '../utils/build-provider-list-items';
 
@@ -82,13 +82,13 @@ export default function RampsProviderListItem({
     quote.quote.amountOutInFiat !== null
       ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
       : null;
-  const quoteInfoDisplayed =
-    showQuote &&
-    hasQuoteDisplayContent({
-      cryptoAmount,
-      fiatAmount,
-      isLoading: quoteLoading,
-    });
+  const showSelectedCheckIcon = shouldShowSelectedCheckIcon({
+    isSelected,
+    showQuote,
+    cryptoAmount,
+    fiatAmount,
+    isLoading: quoteLoading,
+  });
 
   return (
     <ButtonBase
@@ -160,7 +160,7 @@ export default function RampsProviderListItem({
                 isLoading={quoteLoading}
               />
             ) : null}
-            {isSelected && !quoteInfoDisplayed ? (
+            {showSelectedCheckIcon ? (
               <Icon
                 name={IconName.Check}
                 size={IconSize.Md}
