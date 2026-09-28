@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
-  Button,
-  ButtonVariant,
   Modal,
   ModalBody,
   ModalContent,
@@ -107,24 +105,16 @@ export function MetaMetricsConsentContainer() {
             <Text>{t('onboardedMetametricsParagraph3')}</Text>
           </Box>
         </ModalBody>
-        <ModalFooter>
-          <Box className="flex gap-4">
-            <Button
-              className="flex-1"
-              variant={ButtonVariant.Secondary}
-              onClick={() => handleConsent(false)}
-            >
-              {t('onboardedMetametricsDisagree')}
-            </Button>
-            <Button
-              className="flex-1"
-              variant={ButtonVariant.Primary}
-              onClick={() => handleConsent(true)}
-            >
-              {t('onboardedMetametricsAccept')}
-            </Button>
-          </Box>
-        </ModalFooter>
+        <ModalFooter
+          secondaryButtonProps={{
+            children: t('onboardedMetametricsDisagree'),
+            onClick: () => handleConsent(false),
+          }}
+          primaryButtonProps={{
+            children: t('onboardedMetametricsAccept'),
+            onClick: () => handleConsent(true),
+          }}
+        />
       </ModalContent>
     </Modal>
   );
