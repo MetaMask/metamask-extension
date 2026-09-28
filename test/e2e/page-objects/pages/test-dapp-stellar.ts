@@ -7,7 +7,17 @@ const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappStellar {
-  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
+  private readonly connectButtonSelector = {
+    tag: 'button',
+    testId: dataTestIds.testPage.header.connect,
+  };
+
+  private readonly connectedAccountSelector = `[data-testid="${dataTestIds.testPage.header.account}"]`;
+
+  private readonly disconnectButtonSelector = {
+    tag: 'button',
+    testId: dataTestIds.testPage.header.disconnect,
+  };
 
   private readonly driver: Driver;
 
@@ -26,6 +36,38 @@ export class TestDappStellar {
     text: 'MetaMask',
   };
 
+  private readonly networkSelectSelector = `[data-testid="${dataTestIds.testPage.header.network}"]`;
+
+  private readonly signAuthEntryButtonSelector = {
+    testId: dataTestIds.testPage.signAuthEntry.signAuthEntry,
+  };
+
+  private readonly signAuthEntryInputSelector = {
+    testId: dataTestIds.testPage.signAuthEntry.authEntry,
+  };
+
+  private readonly signedAuthEntrySelector = `[data-testid="${dataTestIds.testPage.signAuthEntry.signedAuthEntry}"]`;
+
+  private readonly signedMessageSelector = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`;
+
+  private readonly signedTransactionSelector = `[data-testid="${dataTestIds.testPage.signTransaction.signedTransaction}"]`;
+
+  private readonly signMessageButtonSelector = {
+    testId: dataTestIds.testPage.signMessage.signMessage,
+  };
+
+  private readonly signMessageInputSelector = {
+    testId: dataTestIds.testPage.signMessage.message,
+  };
+
+  private readonly signTransactionButtonSelector = {
+    testId: dataTestIds.testPage.signTransaction.signTransaction,
+  };
+
+  private readonly transactionExampleXdrButtonSelector = {
+    testId: dataTestIds.testPage.signTransaction.loadExampleXdr,
+  };
+
   private readonly walletModalSelector = '.stellar-wallets-kit';
 
   constructor(driver: Driver) {
@@ -34,9 +76,7 @@ export class TestDappStellar {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector({
-        testId: dataTestIds.testPage.header.network,
-      });
+      await this.driver.waitForSelector(this.networkSelectSelector);
     } catch (e) {
       console.log(
         'Timeout while waiting for Stellar Test Dapp page to be loaded',
@@ -48,22 +88,16 @@ export class TestDappStellar {
   }
 
   async connect() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.connect,
-      tag: 'button',
-    });
+    await this.driver.clickElement(this.connectButtonSelector);
   }
 
   async disconnect() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.disconnect,
-      tag: 'button',
-    });
+    await this.driver.clickElement(this.disconnectButtonSelector);
   }
 
   async findConnectedAccount(account: string) {
     await this.driver.findElement({
-      css: this.connectedAccountSelectorTestId,
+      css: this.connectedAccountSelector,
       text: account,
     });
   }
@@ -80,21 +114,21 @@ export class TestDappStellar {
 
   async getSignedAuthEntry(): Promise<string> {
     const signedAuthEntryElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signAuthEntry.signedAuthEntry}"]`,
+      this.signedAuthEntrySelector,
     );
     return signedAuthEntryElement.getText();
   }
 
   async getSignedMessage(): Promise<string> {
     const signedMessageElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`,
+      this.signedMessageSelector,
     );
     return signedMessageElement.getText();
   }
 
   async getSignedTransaction(): Promise<string> {
     const signedTransactionElement = await this.driver.waitForSelector(
-      `[data-testid="${dataTestIds.testPage.signTransaction.signedTransaction}"]`,
+      this.signedTransactionSelector,
     );
     return signedTransactionElement.getText();
   }
@@ -110,9 +144,7 @@ export class TestDappStellar {
   }
 
   async loadExampleXdr() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signTransaction.loadExampleXdr,
-    });
+    await this.driver.clickElement(this.transactionExampleXdrButtonSelector);
   }
 
   async openTestDappPage({
@@ -125,48 +157,36 @@ export class TestDappStellar {
   }
 
   async selectNetwork(networkKey: 'pubnet' | 'testnet' | 'futurenet') {
-    const networkTestId = dataTestIds.testPage.header.network;
     await this.driver.executeScript(
-      `const select = document.querySelector('[data-testid="${networkTestId}"]');
+      `const select = document.querySelector(arguments[0]);
        if (!select) {
          throw new Error('Stellar network select not found');
        }
-       select.value = arguments[0];
+       select.value = arguments[1];
        select.dispatchEvent(new Event('change', { bubbles: true }));`,
+      this.networkSelectSelector,
       networkKey,
     );
   }
 
   async setAuthEntry(authEntry: string) {
-    await this.driver.fill(
-      { testId: dataTestIds.testPage.signAuthEntry.authEntry },
-      authEntry,
-    );
+    await this.driver.fill(this.signAuthEntryInputSelector, authEntry);
   }
 
   async setMessage(message: string) {
-    await this.driver.fill(
-      { testId: dataTestIds.testPage.signMessage.message },
-      message,
-    );
+    await this.driver.fill(this.signMessageInputSelector, message);
   }
 
   async signAuthEntry() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signAuthEntry.signAuthEntry,
-    });
+    await this.driver.clickElement(this.signAuthEntryButtonSelector);
   }
 
   async signMessage() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signMessage.signMessage,
-    });
+    await this.driver.clickElement(this.signMessageButtonSelector);
   }
 
   async signTransaction() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.signTransaction.signTransaction,
-    });
+    await this.driver.clickElement(this.signTransactionButtonSelector);
   }
 
   async switchTo() {
@@ -175,9 +195,7 @@ export class TestDappStellar {
   }
 
   async verifySelectedNetwork(networkKey: 'pubnet' | 'testnet' | 'futurenet') {
-    const selectEl = await this.driver.findElement({
-      testId: dataTestIds.testPage.header.network,
-    });
+    const selectEl = await this.driver.findElement(this.networkSelectSelector);
     const value = await selectEl.getAttribute('value');
     assert.strictEqual(value, networkKey);
   }
