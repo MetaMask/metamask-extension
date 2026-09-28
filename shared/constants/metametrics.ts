@@ -867,6 +867,7 @@ export enum MetaMetricsEventName {
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   MoneyButtonClicked = 'Money Button Clicked',
+  MoneyOnboardingEvent = 'Money Onboarding Event',
   MoneySurfaceClicked = 'Money Surface Clicked',
   MoneySurfaceViewed = 'Money Surface Viewed',
   MoneyTooltipClicked = 'Money Tooltip Clicked',
@@ -1130,7 +1131,7 @@ export enum MetaMetricsEventName {
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
   NotificationClicked = 'InApp Notification Clicked',
-  NotificationDetailClicked = 'InApp Notification Detail Clicked',
+  NotificationDetailItemClicked = 'InApp Notification Detail Item Clicked',
   NotificationsMenuOpened = 'InApp Notifications Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   PushNotificationClicked = 'Push Notification Clicked',

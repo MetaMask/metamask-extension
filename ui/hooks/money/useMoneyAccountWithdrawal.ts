@@ -22,12 +22,15 @@ import { useMoneyErrorReporter } from './useMoneyErrorReporter';
  * withdrawals — mobile records none either.
  *
  * The recipient is resolved by `selectMoneyFundingAccount`: the globally
- * selected account when it is eligible, otherwise the user's first eligible
- * EVM account. A hardware account cannot sign the withdraw batch, so a user on
- * a hardware wallet withdraws to their first eligible account rather than
- * being blocked at the confirmation. Fails fast only when no eligible account
- * exists. That address is passed as Pay's `accountOverride` so the
- * confirmation defaults the From row — and the withdraw recipient — to that
+ * selected account when it is eligible, otherwise the EVM account of the
+ * selected account group (a non-EVM network filter switches the selected
+ * account to e.g. a Solana account, but the group still holds the EVM
+ * account the user expects), otherwise the user's first eligible EVM
+ * account. A hardware account cannot sign the batch, so a user on a
+ * hardware wallet withdraws to their first eligible account rather than
+ * being blocked at the confirmation. Fails fast only when no eligible
+ * account exists. That address is passed as Pay's `accountOverride` so
+ * the confirmation defaults the From row — and the withdraw recipient — to that
  * account instead of the money account that executes the batch.
  *
  * Setup failures are reported to Sentry and shown as a toast inside this

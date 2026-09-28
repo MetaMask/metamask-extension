@@ -484,41 +484,27 @@
   "activity_marketShort_success_title": {
     "message": "已市价平空"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "存款失败"
   },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
-  },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "正在存入"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
+    "message": "正在存入 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "已存款"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
+    "message": "已存入 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "发送失败"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "接收失败"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "发送中"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
+    "message": "正在接收 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "已发送"
+    "message": "已接收 $1",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "购买失败"
@@ -1963,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "第三方 API 现已纳入基本功能。根据您之前的偏好，此设置$1。您可以随时前往 $2 更改。",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "已禁用"
@@ -3102,6 +3088,9 @@
   "copiedToClipboard": {
     "message": "已复制到剪贴板"
   },
+  "copy": {
+    "message": "复制"
+  },
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },
@@ -3190,9 +3179,6 @@
   },
   "current": {
     "message": "当前"
-  },
-  "currentAccountNotConnected": {
-    "message": "您的当前账户没有连接"
   },
   "currentEstimatedBaseFee": {
     "message": "当前：$1 GWEI"
@@ -5453,6 +5439,14 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% 年化收益率",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "赚取 $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
   },
@@ -5594,6 +5588,10 @@
   "moneyBenefitAutoEarn": {
     "message": "为您的 Money 余额自动赚取收益"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "自动赚取高达 $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "享受完全流动性，无锁仓期限制，可随时交易或提现"
   },
@@ -5633,6 +5631,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "不收费"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "预测假设 $1% 的年化收益率（APY）在一年内保持不变。年化收益率会浮动，不作保证。收益不作保证。",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "为余额赚取收益"
   },
@@ -5651,6 +5653,10 @@
   "moneyHomeApyTooltip": {
     "message": "所示收益率为基于当前市场状况的预估年化收益率（APY）。APY 会浮动变化，不作保证。资金将存入一个去中心化金融金库，该金库由 Veda 管理并由 Steakhouse Financial 进行风险监督，通过在成熟的借贷市场中运作来产生收益。"
   },
+  "moneyHomeApyTooltipEarning": {
+    "message": "您的 Money Account 可自动赚取最高 $1 的收益。",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money Account 由 Monad 提供支持。"
   },
@@ -5663,12 +5669,6 @@
   "moneyHowItWorksDescription1": {
     "message": "将 mUSD 存入 Money Account，即可自动赚取最高 $1 的浮动 APY。资金会存入由 Veda 管理、Steakhouse Financial 负责风险监控的 DeFi 金库。该收益率由第三方 DeFi 平台通过将资金部署到区块链协议中产生。无需质押，无需领取收益，也无锁定期。",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "您的 Money 账户余额即您的消费余额。关联您的 MetaMask 卡，即可在全球超过 1.5 亿家商户消费。您的资金在您使用之前会持续赚取收益。"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account 由 Monad 提供支持。"
   },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "添加 mUSD，赚取最高 $1 年化收益率。您的余额与美元挂钩，可随时消费、交易或转账。",
@@ -5687,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "年化收益率会变化吗？"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "您自己！MetaMask 是一款自托管钱包，意味着只有账户持有人的私钥才能控制它。MetaMask 无法访问、冻结或转移您的资金。这正是我们区别于传统银行账户和托管式加密平台之处——没有任何第三方持有您的资金。"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "谁控制我的资金？"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "开设 Money Account 无需费用，存入稳定币也无需费用。存入非稳定币代币时会产生费用。此外，MetaMask 卡交易、ATM 取款及本币出金也会产生相应费用。 "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "在此查看完整的卡费用明细。"
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "是否需要支付任何费用？"
@@ -5714,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "什么是 Money 账户？"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD 是 MetaMask 推出的、与美元 1:1 锚定的稳定币。您的 Money 余额以 mUSD 形式持有，可随时用于消费、转账或交易。",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "什么是 mUSD？"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "您的 Money 余额就是可用消费余额——在您实际使用之前，它会持续产生收益。Money Account 并非银行账户、储蓄账户或受保险保障的存款产品。",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "这是储蓄账户还是消费账户？"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "常见问题"
@@ -6943,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "我们无法验证您的 $1。请重试或使用您的密码。",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "请重试",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "注册 $1",
@@ -8921,9 +8902,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "购买功能暂时不可用"
   },
-  "rampsShowAllTokens": {
-    "message": "显示所有代币"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "您所在的地区暂不支持此代币。",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9015,6 +8993,10 @@
   },
   "relayerFee": {
     "message": "中继器费用"
+  },
+  "remindMeLater": {
+    "message": "明白了",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "删除"
@@ -9358,6 +9340,9 @@
   },
   "rpcUrl": {
     "message": "RPC（远程过程调用）URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "此远程过程调用（RPC）提供商正在限制请求。请稍后再试，或使用其他 RPC 网址。\n\n"
   },
   "safeTransferFrom": {
     "message": "安全转账来自"
@@ -11622,6 +11607,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "自动"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "滑移容差上限为 100%。"
   },
   "swapSlippageHighDescription": {
     "message": "输入的滑点（$1%）被认为是很高的，可能会因而得到较差的汇率",

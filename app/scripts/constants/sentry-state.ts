@@ -46,6 +46,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     consentDecisionMade: true,
     eventFragments: false,
     eventQueue: false,
+    marketingCampaignCookieId: true,
     marketingConsentDecisionMade: false,
     optedIn: true,
     optedInToMarketing: false,
@@ -212,9 +213,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isFetchingMetamaskNotifications: false,
     isUpdatingMetamaskNotifications: false,
     isUpdatingMetamaskNotificationsAccount: false,
-  },
-  MetaMetricsController: {
-    marketingCampaignCookieId: true,
   },
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,

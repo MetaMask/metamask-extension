@@ -34,6 +34,7 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": false,
+      "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": false,
       "optedIn": false,
       "optedInToMarketing": false,
@@ -51,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 228,
+      "currentMigrationVersion": 229,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -80,6 +81,7 @@
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -161,9 +163,6 @@
     "KeyringController": {},
     "LoggingController": {
       "logs": {}
-    },
-    "MetaMetricsController": {
-      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -2015,6 +2014,7 @@
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
+        "hasLinkedSocialLoginProfile": false,
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
@@ -2251,6 +2251,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 228
+    "version": 229
   }
 }
