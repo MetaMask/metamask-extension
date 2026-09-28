@@ -1133,7 +1133,6 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
     it('filters out EIP155 assets for non-EVM accounts', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsAssets: {},
           assetsBalance: {
             [mockAccountId2]: {
@@ -1160,7 +1159,6 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
     it('returns empty array when non-EVM account has only EIP155 assets', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           accountsAssets: {},
           assetsBalance: {
             [mockAccountId2]: {
@@ -1186,83 +1184,51 @@ describe('getMultiChainAssetsControllerAccountsAssets', () => {
 });
 
 describe('getMultiChainAssetsControllerAssetsMetadata', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns assetsMetadata from state unchanged', () => {
-      const legacyAssetsMetadata = {
-        [solanaTokenAssetId]: {
-          fungible: true as const,
-          iconUrl: 'https://example.com/sol.png',
-          units: [{ decimals: 6, symbol: 'USDC', name: 'USD Coin' }],
-          symbol: 'USDC',
-          name: 'USD Coin',
+  it('derives assetsMetadata from assetsInfo for non-EIP155 assets only', () => {
+    const state = {
+      metamask: {
+        assetsMetadata: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          [erc20AssetId]: {
+            type: 'erc20',
+            decimals: 6,
+            symbol: 'USDC',
+            name: 'USD Coin',
+          },
+          [solanaTokenAssetId]: {
+            type: 'token',
+            decimals: 6,
+            symbol: 'USDC',
+            name: 'USD Coin',
+            image: 'https://example.com/sol-usdc.png',
+          },
         },
-      };
-      const state = {
-        metamask: {
-          assetsMetadata: legacyAssetsMetadata,
-        },
-      };
-      const result = getMultiChainAssetsControllerAssetsMetadata(state);
+      },
+    };
+    const result = getMultiChainAssetsControllerAssetsMetadata(state);
 
-      expect(result).toBe(legacyAssetsMetadata);
-      expect(result).toStrictEqual(legacyAssetsMetadata);
+    expect(result).toStrictEqual({
+      [solanaTokenAssetId]: {
+        fungible: true,
+        iconUrl: 'https://example.com/sol-usdc.png',
+        units: [
+          {
+            decimals: 6,
+            symbol: 'USDC',
+            name: 'USD Coin',
+          },
+        ],
+        symbol: 'USDC',
+        name: 'USD Coin',
+      },
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
-    it('derives assetsMetadata from assetsInfo for non-EIP155 assets only', () => {
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
-          },
-          assetsMetadata: {},
-          assetsInfo: {
-            [nativeEthAssetId]: { type: 'native', decimals: 18 },
-            [erc20AssetId]: {
-              type: 'erc20',
-              decimals: 6,
-              symbol: 'USDC',
-              name: 'USD Coin',
-            },
-            [solanaTokenAssetId]: {
-              type: 'token',
-              decimals: 6,
-              symbol: 'USDC',
-              name: 'USD Coin',
-              image: 'https://example.com/sol-usdc.png',
-            },
-          },
-        },
-      };
-      const result = getMultiChainAssetsControllerAssetsMetadata(state);
-
-      expect(result).toStrictEqual({
-        [solanaTokenAssetId]: {
-          fungible: true,
-          iconUrl: 'https://example.com/sol-usdc.png',
-          units: [
-            {
-              decimals: 6,
-              symbol: 'USDC',
-              name: 'USD Coin',
-            },
-          ],
-          symbol: 'USDC',
-          name: 'USD Coin',
-        },
-      });
-    });
-  });
-
-  describe('edge cases when enabled', () => {
+  describe('edge cases', () => {
     it('defaults iconUrl to empty string when image is undefined', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           assetsMetadata: {},
           assetsInfo: {
             [solanaTokenAssetId]: {
@@ -1282,7 +1248,6 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
     it('excludes EIP155 assets from multichain metadata', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           assetsMetadata: {},
           assetsInfo: {
             [nativeEthAssetId]: {
@@ -1308,66 +1273,40 @@ describe('getMultiChainAssetsControllerAssetsMetadata', () => {
 });
 
 describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns allIgnoredAssets from state unchanged', () => {
-      const legacyAllIgnoredAssets = {
-        [mockAccountId2]: [solanaTokenAssetId] as CaipAssetType[],
-      };
-      const state = {
-        metamask: {
-          allIgnoredAssets: legacyAllIgnoredAssets,
+  it('derives allIgnoredAssets from assetPreferences for non-EVM accounts only', () => {
+    const state = {
+      metamask: {
+        allIgnoredAssets: {},
+        assetPreferences: {
+          [erc20AssetId]: { hidden: true },
+          [solanaTokenAssetId]: { hidden: true },
         },
-      };
-      const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
-
-      expect(result).toBe(legacyAllIgnoredAssets);
-      expect(result).toStrictEqual(legacyAllIgnoredAssets);
-    });
-  });
-
-  describe('when assets unify state feature is enabled (happy path)', () => {
-    it('derives allIgnoredAssets from assetPreferences for non-EVM accounts only', () => {
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
             },
-          },
-          allIgnoredAssets: {},
-          assetPreferences: {
-            [erc20AssetId]: { hidden: true },
-            [solanaTokenAssetId]: { hidden: true },
-          },
-          internalAccounts: {
-            accounts: {
-              [mockAccountId]: {
-                id: mockAccountId,
-                address: mockAccountAddressLowercase,
-                type: 'eip155:eoa',
-              },
-              [mockAccountId2]: {
-                id: mockAccountId2,
-                type: 'solana:data-account',
-              },
+            [mockAccountId2]: {
+              id: mockAccountId2,
+              type: 'solana:data-account',
             },
           },
         },
-      };
-      const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
+      },
+    };
+    const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
 
-      expect(result).toStrictEqual({
-        [mockAccountId2]: [solanaTokenAssetId],
-      });
+    expect(result).toStrictEqual({
+      [mockAccountId2]: [solanaTokenAssetId],
     });
   });
 
-  describe('edge cases when enabled', () => {
+  describe('edge cases', () => {
     it('skips preferences with hidden set to false', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allIgnoredAssets: {},
           assetPreferences: {
             [solanaTokenAssetId]: { hidden: false },
@@ -1390,7 +1329,6 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     it('skips EIP155 assets from ignored assets list', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allIgnoredAssets: {},
           assetPreferences: {
             [erc20AssetId]: { hidden: true },
@@ -1413,7 +1351,6 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
     it('skips EVM accounts entirely', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           allIgnoredAssets: {},
           assetPreferences: {
             [solanaTokenAssetId]: { hidden: true },
@@ -1437,212 +1374,184 @@ describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
 });
 
 describe('getMultiChainBalancesControllerBalances', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns balances from state unchanged', () => {
-      const legacyBalances = {
-        [mockAccountId2]: {
-          [solanaTokenAssetId]: { amount: '100', unit: 'USDC' },
-        },
-      };
-      const state = {
-        metamask: {
-          balances: legacyBalances,
-        },
-      };
-      const result = getMultiChainBalancesControllerBalances(state);
-
-      expect(result).toBe(legacyBalances);
-      expect(result).toStrictEqual(legacyBalances);
-    });
-  });
-
-  describe('when assets unify state feature is enabled (happy path)', () => {
-    it('derives balances from new state structure for non-EVM accounts only', () => {
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
+  it('derives balances from new state structure for non-EVM accounts only', () => {
+    const state = {
+      metamask: {
+        balances: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          [erc20AssetId]: { type: 'erc20', decimals: 6, symbol: 'USDC' },
+          [solanaTokenAssetId]: {
+            type: 'token',
+            decimals: 6,
+            symbol: 'USDC',
           },
-          balances: {},
-          assetsInfo: {
-            [nativeEthAssetId]: { type: 'native', decimals: 18 },
-            [erc20AssetId]: { type: 'erc20', decimals: 6, symbol: 'USDC' },
-            [solanaTokenAssetId]: {
-              type: 'token',
-              decimals: 6,
-              symbol: 'USDC',
-            },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '1' },
+            [erc20AssetId]: { amount: '1' },
           },
-          assetsBalance: {
+          [mockAccountId2]: {
+            [solanaTokenAssetId]: { amount: '250.5' },
+          },
+        },
+        internalAccounts: {
+          accounts: {
             [mockAccountId]: {
-              [nativeEthAssetId]: { amount: '1' },
-              [erc20AssetId]: { amount: '1' },
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
             },
             [mockAccountId2]: {
-              [solanaTokenAssetId]: { amount: '250.5' },
-            },
-          },
-          internalAccounts: {
-            accounts: {
-              [mockAccountId]: {
-                id: mockAccountId,
-                address: mockAccountAddressLowercase,
-                type: 'eip155:eoa',
-              },
-              [mockAccountId2]: {
-                id: mockAccountId2,
-                type: 'solana:data-account',
-              },
+              id: mockAccountId2,
+              type: 'solana:data-account',
             },
           },
         },
-      };
-      const result = getMultiChainBalancesControllerBalances(state);
+      },
+    };
+    const result = getMultiChainBalancesControllerBalances(state);
 
-      expect(result).toStrictEqual({
-        [mockAccountId2]: {
-          [solanaTokenAssetId]: { amount: '250.5', unit: 'USDC' },
-        },
-      });
+    expect(result).toStrictEqual({
+      [mockAccountId2]: {
+        [solanaTokenAssetId]: { amount: '250.5', unit: 'USDC' },
+      },
     });
   });
 });
 
 describe('getCurrencyRateControllerCurrentCurrency', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns currentCurrency from state unchanged', () => {
-      const legacyCurrentCurrency = 'eur';
-      const state = {
-        metamask: {
-          currentCurrency: legacyCurrentCurrency,
-        },
-      };
-      const result = getCurrencyRateControllerCurrentCurrency(state);
+  it('returns selectedCurrency from new state', () => {
+    const state = {
+      metamask: {
+        currentCurrency: 'eur',
+        selectedCurrency: 'usd' as const,
+      },
+    };
+    const result = getCurrencyRateControllerCurrentCurrency(state);
 
-      expect(result).toBe(legacyCurrentCurrency);
-    });
-  });
-
-  describe('when assets unify state feature is enabled', () => {
-    it('returns selectedCurrency from new state', () => {
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
-          },
-          currentCurrency: 'eur',
-          selectedCurrency: 'usd',
-        },
-      };
-      const result = getCurrencyRateControllerCurrentCurrency(state);
-
-      expect(result).toBe('usd');
-    });
+    expect(result).toBe('usd');
   });
 });
 
 describe('getCurrencyRateControllerCurrencyRates', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns currencyRates from state unchanged', () => {
-      const legacyCurrencyRates = {
-        ETH: {
-          conversionDate: 1000,
-          conversionRate: 2000,
-          usdConversionRate: 2000,
+  it('derives currencyRates from assetsInfo and assetsPrice for native EVM assets', () => {
+    const lastUpdated = 1700000000000; // ms
+    const mockNonFungibleAssetId = 'eip155:137/slip44:987654321';
+    const state = {
+      metamask: {
+        currentCurrency: 'eur',
+        selectedCurrency: 'eur',
+        currencyRates: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
+          [erc20AssetId]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
+          },
+          [mockNonFungibleAssetId]: {
+            type: 'something',
+            symbol: 'SMT',
+          },
         },
-      };
-      const state = {
-        metamask: {
-          currencyRates: legacyCurrencyRates,
+        assetsPrice: {
+          [nativeEthAssetId]: {
+            assetPriceType: 'fungible',
+            id: 'eth-price',
+            price: 2500,
+            usdPrice: 3000,
+            lastUpdated,
+            marketCap: 300000000000,
+            allTimeHigh: 4000,
+            allTimeLow: 500,
+            totalVolume: 1000000,
+            high1d: 2600,
+            low1d: 2400,
+            circulatingSupply: 120000000,
+            dilutedMarketCap: 300000000000,
+            marketCapPercentChange1d: 2,
+            priceChange1d: 50,
+            pricePercentChange1h: 0.5,
+            pricePercentChange1d: 2,
+            pricePercentChange7d: 5,
+            pricePercentChange14d: 8,
+            pricePercentChange30d: 10,
+            pricePercentChange200d: 20,
+            pricePercentChange1y: 30,
+          },
+          [mockNonFungibleAssetId]: {
+            assetPriceType: 'something',
+            id: 'smt-price',
+            price: 0.5,
+            lastUpdated,
+          },
         },
-      };
-      const result = getCurrencyRateControllerCurrencyRates(state);
+      },
+    };
+    const result = getCurrencyRateControllerCurrencyRates(state);
 
-      expect(result).toBe(legacyCurrencyRates);
-      expect(result).toStrictEqual(legacyCurrencyRates);
+    expect(result).toStrictEqual({
+      ETH: {
+        conversionDate: lastUpdated / 1000,
+        conversionRate: 2500,
+        usdConversionRate: 3000,
+      },
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
-    it('derives currencyRates from assetsInfo and assetsPrice for native EVM assets', () => {
-      const lastUpdated = 1700000000000; // ms
-      const mockNonFungibleAssetId = 'eip155:137/slip44:987654321';
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
+  it('derives the USD rate from the most recently updated price on a USD-native chain', () => {
+    const state = {
+      metamask: {
+        currencyRates: {},
+        assetsInfo: {
+          [tempoPathUsdAssetId]: {
+            type: 'erc20',
+            symbol: 'pathUSD',
+            decimals: 6,
           },
-          currencyRates: {},
-          assetsInfo: {
-            [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
-            [erc20AssetId]: {
-              type: 'erc20',
-              symbol: 'USDC',
-              decimals: 6,
-            },
-            [mockNonFungibleAssetId]: {
-              type: 'something',
-              symbol: 'SMT',
-            },
-          },
-          assetsPrice: {
-            [nativeEthAssetId]: {
-              assetPriceType: 'fungible',
-              id: 'eth-price',
-              price: 2500,
-              usdPrice: 3000,
-              lastUpdated,
-              marketCap: 300000000000,
-              allTimeHigh: 4000,
-              allTimeLow: 500,
-              totalVolume: 1000000,
-              high1d: 2600,
-              low1d: 2400,
-              circulatingSupply: 120000000,
-              dilutedMarketCap: 300000000000,
-              marketCapPercentChange1d: 2,
-              priceChange1d: 50,
-              pricePercentChange1h: 0.5,
-              pricePercentChange1d: 2,
-              pricePercentChange7d: 5,
-              pricePercentChange14d: 8,
-              pricePercentChange30d: 10,
-              pricePercentChange200d: 20,
-              pricePercentChange1y: 30,
-            },
-            [mockNonFungibleAssetId]: {
-              assetPriceType: 'something',
-              id: 'smt-price',
-              price: 0.5,
-              lastUpdated,
-            },
+          [tempoBridgedUsdcAssetId]: {
+            type: 'erc20',
+            symbol: 'USDC.e',
+            decimals: 6,
           },
         },
-      };
-      const result = getCurrencyRateControllerCurrencyRates(state);
-
-      expect(result).toStrictEqual({
-        ETH: {
-          conversionDate: lastUpdated / 1000,
-          conversionRate: 2500,
-          usdConversionRate: 3000,
+        assetsPrice: {
+          [tempoPathUsdAssetId]: makeMockPrice({
+            id: 'pathusd',
+            price: 0.9,
+            usdPrice: 1,
+            lastUpdated: 1700000000000,
+          }),
+          [tempoBridgedUsdcAssetId]: makeMockPrice({
+            id: 'bridged-usdc',
+            price: 0.9108,
+            usdPrice: 0.99,
+            lastUpdated: 1700000001000,
+          }),
         },
-      });
-    });
+      },
+    };
 
-    it('derives the USD rate from the most recently updated price on a USD-native chain', () => {
+    const result = getCurrencyRateControllerCurrencyRates(state);
+
+    expect(result.USD?.conversionRate).toBeCloseTo(0.92);
+    expect(result.USD?.usdConversionRate).toBe(1);
+    expect(result.USD?.conversionDate).toBe(1700000001);
+  });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    { price: 0, usdPrice: 1 },
+    { price: -1, usdPrice: 1 },
+    { price: 1, usdPrice: 0 },
+    { price: 1, usdPrice: -1 },
+  ])(
+    'does not derive a USD rate from an invalid price (price $price, usdPrice $usdPrice)',
+    ({ price, usdPrice }: { price: number; usdPrice: number }) => {
       const state = {
         metamask: {
-          ...enabledFlags,
           currencyRates: {},
           assetsInfo: {
             [tempoPathUsdAssetId]: {
@@ -1650,89 +1559,12 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
               symbol: 'pathUSD',
               decimals: 6,
             },
-            [tempoBridgedUsdcAssetId]: {
-              type: 'erc20',
-              symbol: 'USDC.e',
-              decimals: 6,
-            },
           },
           assetsPrice: {
             [tempoPathUsdAssetId]: makeMockPrice({
               id: 'pathusd',
-              price: 0.9,
-              usdPrice: 1,
-              lastUpdated: 1700000000000,
-            }),
-            [tempoBridgedUsdcAssetId]: makeMockPrice({
-              id: 'bridged-usdc',
-              price: 0.9108,
-              usdPrice: 0.99,
-              lastUpdated: 1700000001000,
-            }),
-          },
-        },
-      };
-
-      const result = getCurrencyRateControllerCurrencyRates(state);
-
-      expect(result.USD?.conversionRate).toBeCloseTo(0.92);
-      expect(result.USD?.usdConversionRate).toBe(1);
-      expect(result.USD?.conversionDate).toBe(1700000001);
-    });
-
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([
-      { price: 0, usdPrice: 1 },
-      { price: -1, usdPrice: 1 },
-      { price: 1, usdPrice: 0 },
-      { price: 1, usdPrice: -1 },
-    ])(
-      'does not derive a USD rate from an invalid price (price $price, usdPrice $usdPrice)',
-      ({ price, usdPrice }: { price: number; usdPrice: number }) => {
-        const state = {
-          metamask: {
-            ...enabledFlags,
-            currencyRates: {},
-            assetsInfo: {
-              [tempoPathUsdAssetId]: {
-                type: 'erc20',
-                symbol: 'pathUSD',
-                decimals: 6,
-              },
-            },
-            assetsPrice: {
-              [tempoPathUsdAssetId]: makeMockPrice({
-                id: 'pathusd',
-                price,
-                usdPrice,
-              }),
-            },
-          },
-        };
-
-        const result = getCurrencyRateControllerCurrencyRates(state);
-
-        expect(result.USD).toBeUndefined();
-      },
-    );
-
-    it('does not derive a USD rate from a price outside Tempo', () => {
-      const state = {
-        metamask: {
-          ...enabledFlags,
-          currencyRates: {},
-          assetsInfo: {
-            [erc20AssetId]: {
-              type: 'erc20',
-              symbol: 'USDC',
-              decimals: 6,
-            },
-          },
-          assetsPrice: {
-            [erc20AssetId]: makeMockPrice({
-              id: 'usdc',
-              price: 0.9,
-              usdPrice: 1,
+              price,
+              usdPrice,
             }),
           },
         },
@@ -1741,27 +1573,94 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
       const result = getCurrencyRateControllerCurrencyRates(state);
 
       expect(result.USD).toBeUndefined();
-    });
+    },
+  );
+
+  it('does not derive a USD rate from a price outside Tempo', () => {
+    const state = {
+      metamask: {
+        currencyRates: {},
+        assetsInfo: {
+          [erc20AssetId]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
+          },
+        },
+        assetsPrice: {
+          [erc20AssetId]: makeMockPrice({
+            id: 'usdc',
+            price: 0.9,
+            usdPrice: 1,
+          }),
+        },
+      },
+    };
+
+    const result = getCurrencyRateControllerCurrencyRates(state);
+
+    expect(result.USD).toBeUndefined();
   });
 });
 
 describe('getTokenRatesControllerMarketData', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns marketData from state unchanged', () => {
-      const legacyMarketData = {
-        '0x1': {
-          [erc20AssetAddressChecksummed]: {
-            tokenAddress: erc20AssetAddressChecksummed,
-            currency: 'ETH',
-            price: 1,
-            marketCap: 0,
-            allTimeHigh: 0,
-            allTimeLow: 0,
-            totalVolume: 0,
-            high1d: 0,
-            low1d: 0,
-            circulatingSupply: 0,
-            dilutedMarketCap: 0,
+  it('derives marketData from assetsPrice with prices converted to native currency', () => {
+    const lastUpdated = 1700000000000;
+    const ethPriceInUsd = 2000;
+    const usdcPriceInUsd = 1;
+    const state = {
+      metamask: {
+        marketData: {},
+        currentCurrency: 'usd',
+        selectedCurrency: 'usd',
+        currencyRates: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
+          [erc20AssetId]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
+          },
+        },
+        assetsPrice: {
+          [nativeEthAssetId]: {
+            assetPriceType: 'fungible',
+            id: 'eth-price',
+            price: ethPriceInUsd,
+            usdPrice: ethPriceInUsd,
+            lastUpdated,
+            marketCap: 300e9,
+            allTimeHigh: 4000,
+            allTimeLow: 500,
+            totalVolume: 1e9,
+            high1d: 2100,
+            low1d: 1900,
+            circulatingSupply: 120e6,
+            dilutedMarketCap: 300e9,
+            marketCapPercentChange1d: 2,
+            priceChange1d: 50,
+            pricePercentChange1h: 0.5,
+            pricePercentChange1d: 2,
+            pricePercentChange7d: 5,
+            pricePercentChange14d: 8,
+            pricePercentChange30d: 10,
+            pricePercentChange200d: 20,
+            pricePercentChange1y: 30,
+          },
+          [erc20AssetId]: {
+            assetPriceType: 'fungible',
+            id: 'usdc-price',
+            price: usdcPriceInUsd,
+            usdPrice: usdcPriceInUsd,
+            lastUpdated,
+            marketCap: 30e9,
+            allTimeHigh: 1.1,
+            allTimeLow: 0.9,
+            totalVolume: 100e9,
+            high1d: 1.01,
+            low1d: 0.99,
+            circulatingSupply: 30e9,
+            dilutedMarketCap: 30e9,
             marketCapPercentChange1d: 0,
             priceChange1d: 0,
             pricePercentChange1h: 0,
@@ -1773,170 +1672,79 @@ describe('getTokenRatesControllerMarketData', () => {
             pricePercentChange1y: 0,
           },
         },
-      };
-      const state = {
-        metamask: {
-          marketData: legacyMarketData,
+        networkConfigurationsByChainId: {
+          '0x1': { nativeCurrency: 'ETH' },
         },
-      };
-      const result = getTokenRatesControllerMarketData(state);
+      },
+    };
+    const result = getTokenRatesControllerMarketData(state);
 
-      expect(result).toBe(legacyMarketData);
-      expect(result).toStrictEqual(legacyMarketData);
-    });
+    // ETH native rate is 2000 USD; USDC price 1 USD -> 1/2000 ETH
+    const marketData = result['0x1'][erc20AssetAddressChecksummed];
+    expect(marketData.price).toBe(usdcPriceInUsd / ethPriceInUsd);
+    expect(marketData.currency).toBe('ETH');
+    expect(marketData.tokenAddress).toBe(erc20AssetAddressChecksummed);
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
-    it('derives marketData from assetsPrice with prices converted to native currency', () => {
-      const lastUpdated = 1700000000000;
-      const ethPriceInUsd = 2000;
-      const usdcPriceInUsd = 1;
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
+  it('prices tokens on a USD-native chain with no native asset in USD', () => {
+    const state = {
+      metamask: {
+        marketData: {},
+        currentCurrency: 'eur',
+        selectedCurrency: 'eur',
+        currencyRates: {},
+        assetsInfo: {
+          [tempoPathUsdAssetId]: {
+            type: 'erc20',
+            symbol: 'pathUSD',
+            decimals: 6,
           },
-          marketData: {},
-          currentCurrency: 'usd',
-          selectedCurrency: 'usd',
-          currencyRates: {},
-          assetsInfo: {
-            [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
-            [erc20AssetId]: {
-              type: 'erc20',
-              symbol: 'USDC',
-              decimals: 6,
-            },
-          },
-          assetsPrice: {
-            [nativeEthAssetId]: {
-              assetPriceType: 'fungible',
-              id: 'eth-price',
-              price: ethPriceInUsd,
-              usdPrice: ethPriceInUsd,
-              lastUpdated,
-              marketCap: 300e9,
-              allTimeHigh: 4000,
-              allTimeLow: 500,
-              totalVolume: 1e9,
-              high1d: 2100,
-              low1d: 1900,
-              circulatingSupply: 120e6,
-              dilutedMarketCap: 300e9,
-              marketCapPercentChange1d: 2,
-              priceChange1d: 50,
-              pricePercentChange1h: 0.5,
-              pricePercentChange1d: 2,
-              pricePercentChange7d: 5,
-              pricePercentChange14d: 8,
-              pricePercentChange30d: 10,
-              pricePercentChange200d: 20,
-              pricePercentChange1y: 30,
-            },
-            [erc20AssetId]: {
-              assetPriceType: 'fungible',
-              id: 'usdc-price',
-              price: usdcPriceInUsd,
-              usdPrice: usdcPriceInUsd,
-              lastUpdated,
-              marketCap: 30e9,
-              allTimeHigh: 1.1,
-              allTimeLow: 0.9,
-              totalVolume: 100e9,
-              high1d: 1.01,
-              low1d: 0.99,
-              circulatingSupply: 30e9,
-              dilutedMarketCap: 30e9,
-              marketCapPercentChange1d: 0,
-              priceChange1d: 0,
-              pricePercentChange1h: 0,
-              pricePercentChange1d: 0,
-              pricePercentChange7d: 0,
-              pricePercentChange14d: 0,
-              pricePercentChange30d: 0,
-              pricePercentChange200d: 0,
-              pricePercentChange1y: 0,
-            },
-          },
-          networkConfigurationsByChainId: {
-            '0x1': { nativeCurrency: 'ETH' },
+          [tempoBridgedUsdcAssetId]: {
+            type: 'erc20',
+            symbol: 'USDC.e',
+            decimals: 6,
           },
         },
-      };
-      const result = getTokenRatesControllerMarketData(state);
-
-      // ETH native rate is 2000 USD; USDC price 1 USD -> 1/2000 ETH
-      const marketData = result['0x1'][erc20AssetAddressChecksummed];
-      expect(marketData.price).toBe(usdcPriceInUsd / ethPriceInUsd);
-      expect(marketData.currency).toBe('ETH');
-      expect(marketData.tokenAddress).toBe(erc20AssetAddressChecksummed);
-    });
-
-    it('prices tokens on a USD-native chain with no native asset in USD', () => {
-      const state = {
-        metamask: {
-          ...enabledFlags,
-          marketData: {},
-          currentCurrency: 'eur',
-          selectedCurrency: 'eur',
-          currencyRates: {},
-          assetsInfo: {
-            [tempoPathUsdAssetId]: {
-              type: 'erc20',
-              symbol: 'pathUSD',
-              decimals: 6,
-            },
-            [tempoBridgedUsdcAssetId]: {
-              type: 'erc20',
-              symbol: 'USDC.e',
-              decimals: 6,
-            },
-          },
-          assetsPrice: {
-            [tempoPathUsdAssetId]: makeMockPrice({
-              id: 'pathusd',
-              price: 0.9,
-              usdPrice: 1,
-              lastUpdated: 1700000000000,
-            }),
-            [tempoBridgedUsdcAssetId]: makeMockPrice({
-              id: 'bridged-usdc',
-              price: 0.9108,
-              usdPrice: 0.99,
-              lastUpdated: 1700000001000,
-            }),
-          },
-          networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
+        assetsPrice: {
+          [tempoPathUsdAssetId]: makeMockPrice({
+            id: 'pathusd',
+            price: 0.9,
+            usdPrice: 1,
+            lastUpdated: 1700000000000,
+          }),
+          [tempoBridgedUsdcAssetId]: makeMockPrice({
+            id: 'bridged-usdc',
+            price: 0.9108,
+            usdPrice: 0.99,
+            lastUpdated: 1700000001000,
+          }),
         },
-      };
-      const result = getTokenRatesControllerMarketData(state);
+        networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
+      },
+    };
+    const result = getTokenRatesControllerMarketData(state);
 
-      const pathUsdMarketData =
-        result[tempoChainId][
-          toChecksumHexAddress(tempoPathUsdAddressLowercase) as Hex
-        ];
-      const bridgedUsdcMarketData =
-        result[tempoChainId][
-          toChecksumHexAddress(tempoBridgedUsdcAddressLowercase) as Hex
-        ];
-      expect(
-        getCurrencyRateControllerCurrencyRates(state).USD?.conversionRate,
-      ).toBeCloseTo(0.92);
-      expect(pathUsdMarketData.price).toBeCloseTo(0.9 / 0.92);
-      expect(pathUsdMarketData.currency).toBe('USD');
-      expect(bridgedUsdcMarketData.price).toBeCloseTo(0.99);
-      expect(bridgedUsdcMarketData.currency).toBe('USD');
-    });
+    const pathUsdMarketData =
+      result[tempoChainId][
+        toChecksumHexAddress(tempoPathUsdAddressLowercase) as Hex
+      ];
+    const bridgedUsdcMarketData =
+      result[tempoChainId][
+        toChecksumHexAddress(tempoBridgedUsdcAddressLowercase) as Hex
+      ];
+    expect(
+      getCurrencyRateControllerCurrencyRates(state).USD?.conversionRate,
+    ).toBeCloseTo(0.92);
+    expect(pathUsdMarketData.price).toBeCloseTo(0.9 / 0.92);
+    expect(pathUsdMarketData.currency).toBe('USD');
+    expect(bridgedUsdcMarketData.price).toBeCloseTo(0.99);
+    expect(bridgedUsdcMarketData.currency).toBe('USD');
   });
 
-  describe('edge cases when enabled', () => {
+  describe('edge cases', () => {
     it('skips non-EIP155 assets from marketData', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1978,7 +1786,6 @@ describe('getTokenRatesControllerMarketData', () => {
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
