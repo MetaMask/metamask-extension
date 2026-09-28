@@ -8,16 +8,9 @@ import {
   useDisableMetametrics,
 } from '../../../hooks/useMetametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import {
-  getOptedIn,
-  getUseExternalServices,
-  getIsSocialLoginFlow,
-} from '../../../selectors';
+import { getOptedIn, getUseExternalServices } from '../../../selectors';
 import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
-import {
-  setDataCollectionForMarketing,
-  setMarketingConsent,
-} from '../../../store/actions';
+import { setDataCollectionForMarketing } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -42,7 +35,6 @@ export const MetametricsToggleItem = () => {
   const isOptedIn = useSelector(getOptedIn);
   const useExternalServices = useSelector(getUseExternalServices);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
 
   const handleToggle = async (currentValue: boolean) => {
     const newValue = !currentValue;
@@ -61,9 +53,6 @@ export const MetametricsToggleItem = () => {
       );
     } else {
       if (dataCollectionForMarketing) {
-        if (socialLoginEnabled) {
-          dispatch(setMarketingConsent(false));
-        }
         dispatch(setDataCollectionForMarketing(false));
       }
 

@@ -92,9 +92,8 @@ describe('setupMarketingConsentSync', () => {
     );
   });
 
-  it.each([true, false])(
-    'applies AUS consent %s to AnalyticsController',
-    async (marketingConsentEnabled) => {
+  [true, false].forEach((marketingConsentEnabled) => {
+    it(`applies AUS consent ${marketingConsentEnabled} to AnalyticsController`, async () => {
       const { call } = setupSync({
         analyticsState: {
           optedInToMarketing: !marketingConsentEnabled,
@@ -109,8 +108,8 @@ describe('setupMarketingConsentSync', () => {
         marketingConsentEnabled ? OPT_IN_ACTION : OPT_OUT_ACTION,
       );
       expect(call).not.toHaveBeenCalledWith(PUT_CONSENT_ACTION);
-    },
-  );
+    });
+  });
 
   it('does not reconcile an undecided local value', async () => {
     const { call, handlers } = setupSync({

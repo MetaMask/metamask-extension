@@ -1013,30 +1013,31 @@ describe('NotificationSectionSubPage', () => {
       expect(updatePreference).not.toHaveBeenCalled();
     });
 
-    it.each([
-      'marketing-consent-sheet-cancel',
-      'marketing-consent-sheet-close',
-    ])('dismisses marketing consent when %s is clicked', (dismissTestId) => {
-      const updatePreference = renderSection(
-        'marketing',
-        createMockNotificationPreferences({
-          marketing: {
-            pushNotificationsEnabled: false,
-            inAppNotificationsEnabled: false,
-          },
-        }),
-      );
+    ['marketing-consent-sheet-cancel', 'marketing-consent-sheet-close'].forEach(
+      (dismissTestId) => {
+        it(`dismisses marketing consent when ${dismissTestId} is clicked`, () => {
+          const updatePreference = renderSection(
+            'marketing',
+            createMockNotificationPreferences({
+              marketing: {
+                pushNotificationsEnabled: false,
+                inAppNotificationsEnabled: false,
+              },
+            }),
+          );
 
-      fireEvent.click(
-        screen.getByTestId('marketing-push-notifications-toggle-input'),
-      );
-      fireEvent.click(screen.getByTestId(dismissTestId));
+          fireEvent.click(
+            screen.getByTestId('marketing-push-notifications-toggle-input'),
+          );
+          fireEvent.click(screen.getByTestId(dismissTestId));
 
-      expect(
-        screen.queryByTestId('marketing-consent-sheet'),
-      ).not.toBeInTheDocument();
-      expect(updatePreference).not.toHaveBeenCalled();
-    });
+          expect(
+            screen.queryByTestId('marketing-consent-sheet'),
+          ).not.toBeInTheDocument();
+          expect(updatePreference).not.toHaveBeenCalled();
+        });
+      },
+    );
 
     it('dismisses marketing consent when clicking outside the sheet', () => {
       const updatePreference = renderSection(

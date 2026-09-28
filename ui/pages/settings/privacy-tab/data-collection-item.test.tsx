@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -10,7 +10,6 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockSetDataCollectionForMarketing = jest.fn();
-const mockGetMarketingConsent = jest.fn().mockResolvedValue(true);
 
 jest.mock('../../../selectors/first-time-flow', () => {
   const actual = jest.requireActual<
@@ -28,8 +27,6 @@ jest.mock('../../../store/actions', () => ({
     mockSetDataCollectionForMarketing(val);
     return { type: 'MOCK_ACTION' };
   },
-  setMarketingConsent: jest.fn().mockResolvedValue(undefined),
-  getMarketingConsent: () => mockGetMarketingConsent(),
 }));
 
 const backgroundConnectionMock = new Proxy(
@@ -128,14 +125,14 @@ describe('DataCollectionToggleItem', () => {
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
 
-  it('fetches remote marketing consent on mount when social login flow is active', async () => {
+  it('uses the local marketing consent value for social login users', () => {
     (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
-    const mockStore = createMockStore();
+    const mockStore = createMockStore({ optedInToMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
-    await waitFor(() => {
-      expect(mockGetMarketingConsent).toHaveBeenCalled();
-    });
-    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
+    expect(
+      screen.getByTestId('data-collection-for-marketing-input'),
+    ).toHaveAttribute('value', 'true');
+    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
   });
 });
