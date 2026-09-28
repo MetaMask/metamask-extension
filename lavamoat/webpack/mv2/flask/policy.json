@@ -854,8 +854,7 @@
         "@metamask/assets-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
-        "@metamask/assets-controller>lodash-es": true,
-        "@metamask/assets-controller>p-limit": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/assets-controllers": {
@@ -1893,7 +1892,7 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/bridge-status-controller>@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/keyring-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/assets-controller>lodash-es": true,
@@ -1910,7 +1909,7 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/profile-metrics-controller>@metamask/utils": true,
+        "@metamask/profile-metrics-controller>@metamask/keyring-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/assets-controller>lodash-es": true,
@@ -1927,7 +1926,7 @@
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/profile-sync-controller>@metamask/keyring-controller>@metamask/utils": true,
+        "@metamask/profile-sync-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/assets-controller>lodash-es": true,
@@ -3116,16 +3115,9 @@
       }
     },
     "@metamask/bridge-status-controller>@metamask/utils": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@scure/base": true,
-        "buffer": true,
         "nock>debug": true,
         "lodash": true
       }
@@ -3164,7 +3156,21 @@
         "@metamask/utils>pony-cause": true
       }
     },
-    "@metamask/profile-sync-controller>@metamask/keyring-controller>@metamask/utils": {
+    "@metamask/bridge-status-controller>@metamask/keyring-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
+      }
+    },
+    "@metamask/profile-metrics-controller>@metamask/keyring-controller>@metamask/utils": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
@@ -3196,16 +3202,9 @@
       }
     },
     "@metamask/profile-metrics-controller>@metamask/utils": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@scure/base": true,
-        "buffer": true,
         "lodash": true
       }
     },
@@ -6206,11 +6205,6 @@
         "viem>ox>@noble/curves": true,
         "@noble/hashes": true,
         "viem>abitype": true
-      }
-    },
-    "@metamask/assets-controller>p-limit": {
-      "packages": {
-        "@metamask/assets-controller>p-limit>yocto-queue": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
