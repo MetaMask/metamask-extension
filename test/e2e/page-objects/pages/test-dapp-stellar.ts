@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { dataTestIds } from '@metamask/test-dapp-stellar';
 import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
@@ -38,6 +37,10 @@ export class TestDappStellar {
 
   private readonly networkSelectSelector = `[data-testid="${dataTestIds.testPage.header.network}"]`;
 
+  private readonly selectedNetworkOptionSelector = (
+    networkKey: 'pubnet' | 'testnet' | 'futurenet',
+  ) => `${this.networkSelectSelector} option[value="${networkKey}"]:checked`;
+
   private readonly signAuthEntryButtonSelector = {
     testId: dataTestIds.testPage.signAuthEntry.signAuthEntry,
   };
@@ -46,11 +49,11 @@ export class TestDappStellar {
     testId: dataTestIds.testPage.signAuthEntry.authEntry,
   };
 
-  private readonly signedAuthEntrySelector = `[data-testid="${dataTestIds.testPage.signAuthEntry.signedAuthEntry}"]`;
+  private readonly signedAuthEntrySelector = `[data-testid="${dataTestIds.testPage.signAuthEntry.signedAuthEntry}"]:not(:empty)`;
 
-  private readonly signedMessageSelector = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`;
+  private readonly signedMessageSelector = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]:not(:empty)`;
 
-  private readonly signedTransactionSelector = `[data-testid="${dataTestIds.testPage.signTransaction.signedTransaction}"]`;
+  private readonly signedTransactionSelector = `[data-testid="${dataTestIds.testPage.signTransaction.signedTransaction}"]:not(:empty)`;
 
   private readonly signMessageButtonSelector = {
     testId: dataTestIds.testPage.signMessage.signMessage,
@@ -195,14 +198,8 @@ export class TestDappStellar {
   }
 
   async verifySelectedNetwork(networkKey: 'pubnet' | 'testnet' | 'futurenet') {
-    const selectEl = await this.driver.findElement(this.networkSelectSelector);
-    const value = await selectEl.getAttribute('value');
-    assert.strictEqual(value, networkKey);
-  }
-
-  async verifySignedTransactionDiffersFrom(unsignedXdr: string) {
-    const signedTransaction = await this.getSignedTransaction();
-    assert.ok(signedTransaction.length > 0);
-    assert.notStrictEqual(signedTransaction, unsignedXdr);
+    await this.driver.waitForSelector(
+      this.selectedNetworkOptionSelector(networkKey),
+    );
   }
 }
