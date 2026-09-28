@@ -75,18 +75,12 @@ type TranslateFn = ReturnType<typeof useI18nContext>;
 function translateDelayToken(
   token: DelayDescriptionToken,
   t: TranslateFn,
-  isAccessibleLabel: boolean,
 ): string {
   switch (token) {
     case 'instant':
       return t('rampsPaymentDelayInstant');
-    case 'less_than': {
-      const lessThanLabel = t('rampsPaymentDelayLessThan');
-      if (!isAccessibleLabel || lessThanLabel !== '<') {
-        return lessThanLabel;
-      }
-      return 'Less than';
-    }
+    case 'less_than':
+      return t('rampsPaymentDelayLessThan');
     case 'separator':
       return '-';
     case 'minutes':
@@ -114,20 +108,18 @@ function translateDelayToken(
  *
  * @param delay - Delay bounds in minutes, when present.
  * @param t - i18n translate function.
- * @param isAccessibleLabel - Whether to use accessibility-specific wording.
  * @returns Localized delay label, or null when unavailable.
  */
 export function formatPaymentMethodDelay(
   delay: number[] | undefined,
   t: TranslateFn,
-  isAccessibleLabel = false,
 ): string | null {
   if (!Array.isArray(delay) || delay.length < 2) {
     return null;
   }
 
   return timeToDescription(delay)
-    .map((token) => translateDelayToken(token, t, isAccessibleLabel))
+    .map((token) => translateDelayToken(token, t))
     .reduce((acc, part, index, parts) => {
       if (index === 0) {
         return part;

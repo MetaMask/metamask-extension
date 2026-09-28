@@ -83,15 +83,7 @@ export default function RampsPaymentMethodListItem({
     paymentMethod.icon,
   );
   const delayText = formatPaymentMethodDelay(paymentMethod.delay, t);
-  const accessibleDelayText = formatPaymentMethodDelay(
-    paymentMethod.delay,
-    t,
-    true,
-  );
   const detailText = [delayText, limitText].filter(Boolean).join(' • ');
-  const accessibleDetailText = [accessibleDelayText, limitText]
-    .filter(Boolean)
-    .join(' • ');
   const subtitleText =
     quoteError && quoteErrorMessage ? quoteErrorMessage : detailText;
 
@@ -195,12 +187,6 @@ export default function RampsPaymentMethodListItem({
                   color={TextColor.TextAlternative}
                   className="truncate text-left"
                   data-testid={`ramps-payment-method-item-delay-${paymentMethod.id}`}
-                  aria-label={
-                    subtitleText === detailText &&
-                    accessibleDetailText !== detailText
-                      ? accessibleDetailText
-                      : undefined
-                  }
                 >
                   {subtitleText}
                 </Text>

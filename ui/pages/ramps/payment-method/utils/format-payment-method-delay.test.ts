@@ -35,15 +35,6 @@ describe('formatPaymentMethodDelay', () => {
     expect(formatPaymentMethodDelay([5], t)).toBeNull();
   });
 
-  it('uses spoken wording for an accessible less-than label', () => {
-    const tWithLessThanSymbol = (key: string) =>
-      key === 'rampsPaymentDelayLessThan' ? '<' : t(key);
-
-    expect(formatPaymentMethodDelay([0, 10], tWithLessThanSymbol, true)).toBe(
-      'Less than 10 mins',
-    );
-  });
-
   it('glues the less-than glyph to the following number', () => {
     expect(formatPaymentMethodDelay([0, 10], t)).toBe('<10 mins');
     expect(formatPaymentMethodDelay([0, 60], t)).toBe('<1 hour');
