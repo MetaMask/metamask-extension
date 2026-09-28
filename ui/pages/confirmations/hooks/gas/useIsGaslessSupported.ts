@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { useAsyncResult } from '../../../../hooks/useAsync';
@@ -75,6 +76,37 @@ export function useIsGaslessSupported() {
     !isDowngradeTransaction &&
     (smartTransactionPending ||
       (!isHardwareWalletAccount && shouldCheck7702Eligibility && relayPending));
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('[CONF-2019] gasless', {
+      id: transactionMeta?.id,
+      chainId,
+      from: transactionMeta?.txParams?.from,
+      isHardwareWalletAccount,
+      isSmartTransaction,
+      isSmartTransactionAndBundleSupported,
+      smartTransactionPending,
+      relaySupportsChain,
+      relayPending,
+      is7702Supported,
+      isSupported,
+      isPending,
+    });
+  }, [
+    chainId,
+    isHardwareWalletAccount,
+    isPending,
+    isSmartTransaction,
+    isSmartTransactionAndBundleSupported,
+    isSupported,
+    is7702Supported,
+    relayPending,
+    relaySupportsChain,
+    smartTransactionPending,
+    transactionMeta?.id,
+    transactionMeta?.txParams?.from,
+  ]);
 
   return {
     isSupported,

@@ -24,6 +24,7 @@ import { useDispatch } from '../../../../store/hooks';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
+import { useTransactionPayingAccount } from './useTransactionPayingAccount';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ export function useTransactionConfirm() {
     TransactionType.moneyAccountWithdraw,
   ]);
   const { prepareWithdrawTransaction } = useMoneyAccountWithdrawConfirm();
+  const payingAccount = useTransactionPayingAccount();
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
@@ -150,6 +152,25 @@ export function useTransactionConfirm() {
       handleGasless7702(txToApprove);
     }
 
+    // eslint-disable-next-line no-console
+    console.log('[CONF-2019] confirm', {
+      id: transactionMeta.id,
+      type: transactionMeta.type,
+      nestedTypes: transactionMeta.nestedTransactions?.map((tx) => tx.type),
+      from: transactionMeta.txParams?.from,
+      payingAccount,
+      chainId: transactionMeta.chainId,
+      isGaslessSupported,
+      isGaslessSupportedSTX,
+      isSponsorshipOptedOut,
+      shouldRedirectToHwSigningPage,
+      selectedGasFeeToken: selectedGasFeeToken?.tokenAddress,
+      metaIsGasFeeSponsored: transactionMeta.isGasFeeSponsored,
+      metaIsExternalSign: transactionMeta.isExternalSign,
+      approveIsGasFeeSponsored: txToApprove.isGasFeeSponsored,
+      approveIsExternalSign: txToApprove.isExternalSign,
+    });
+
     if (shouldRedirectToHwSigningPage) {
       redirectToHwSigningPage(txToApprove);
       return false;
@@ -188,6 +209,7 @@ export function useTransactionConfirm() {
     isMoneyAccountWithdraw,
     isSponsorshipOptedOut,
     onDappSwapCompleted,
+    payingAccount,
     prepareWithdrawTransaction,
     redirectToHwSigningPage,
     selectedGasFeeToken,

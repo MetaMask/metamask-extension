@@ -1,5 +1,6 @@
 import type { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import {
+  type BeforeSignHook,
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
   PublishHook,
@@ -85,6 +86,43 @@ function beforePublishHook({ messenger }: TransactionControllerHookRequest) {
 }
 
 function beforeSignHook({ messenger }: TransactionControllerHookRequest) {
+  const enforceSimulationHook = beforeSignEnforceSimulationHook({ messenger });
+
+  const hook: BeforeSignHook = async (request) => {
+    const { transactionMeta } = request;
+    const {
+      internalAccounts: { accounts },
+    } = messenger.call('AccountsController:getState');
+    const from = transactionMeta.txParams?.from?.toLowerCase();
+    const fromAccount = Object.values(accounts).find(
+      (account) => account.address.toLowerCase() === from,
+    );
+
+    // eslint-disable-next-line no-console
+    console.log('[CONF-2019] beforeSign', {
+      id: transactionMeta.id,
+      type: transactionMeta.type,
+      nestedTypes: transactionMeta.nestedTransactions?.map((tx) => tx.type),
+      from: transactionMeta.txParams?.from,
+      fromKeyring:
+        fromAccount?.metadata?.keyring?.type ??
+        'not an internal account (money account?)',
+      chainId: transactionMeta.chainId,
+      batchId: transactionMeta.batchId,
+      isExternalSign: transactionMeta.isExternalSign,
+      isGasFeeSponsored: transactionMeta.isGasFeeSponsored,
+      origin: transactionMeta.origin,
+    });
+
+    return enforceSimulationHook(request);
+  };
+
+  return hook;
+}
+
+function beforeSignEnforceSimulationHook({
+  messenger,
+}: Pick<TransactionControllerHookRequest, 'messenger'>) {
   return new EnforceSimulationHook({
     messenger,
     isEligible: (transactionMeta) => {
@@ -129,6 +167,17 @@ function publishHook({
   messenger,
 }: TransactionControllerHookRequest): PublishHook {
   return async (transactionMeta: TransactionMeta, signedTx: string) => {
+    // eslint-disable-next-line no-console
+    console.log('[CONF-2019] publish', {
+      id: transactionMeta.id,
+      type: transactionMeta.type,
+      from: transactionMeta.txParams?.from,
+      chainId: transactionMeta.chainId,
+      isExternalSign: transactionMeta.isExternalSign,
+      isGasFeeSponsored: transactionMeta.isGasFeeSponsored,
+      hasSignedTx: Boolean(signedTx),
+    });
+
     const flatState = getFlatState();
     const transactionController = {
       state: messenger.call('TransactionController:getState'),
@@ -145,6 +194,12 @@ function publishHook({
       isSmartTransaction: () => isSmartTransaction,
       messenger: messenger as unknown as TransactionPayControllerMessenger,
     }).getHook()(transactionMeta, signedTx as Hex);
+
+    // eslint-disable-next-line no-console
+    console.log('[CONF-2019] pay publish result', {
+      id: transactionMeta.id,
+      transactionHash: payResult?.transactionHash,
+    });
 
     if (payResult?.transactionHash) {
       return payResult;
