@@ -1,3 +1,4 @@
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
@@ -31,9 +32,7 @@ const isTestChain = (chainId: string | undefined): boolean => {
 };
 
 /**
- * True when the wallet's selected network is a testnet, or a connected dapp
- * is on a testnet. `domains` remembers per-origin network client ids; entries
- * for disconnected origins are ignored via `getPermittedAccountsByOrigin`.
+ * True when a test network in the wallet or a connected dapp is actively in use.
  */
 export const getIsTestnetInUse = createSelector(
   getSelectedChainId,
@@ -45,15 +44,12 @@ export const getIsTestnetInUse = createSelector(
       return true;
     }
 
-    if (!networkConfigurationsByChainId) {
-      return false;
-    }
-
     return Object.entries(domains ?? {}).some(
       ([origin, networkClientId]) =>
-        typeof networkClientId === 'string' &&
-        Boolean(subjects[origin]) &&
-        Object.values(networkConfigurationsByChainId).some(
+        Boolean(
+          subjects[origin]?.permissions?.[Caip25EndowmentPermissionName],
+        ) &&
+        Object.values(networkConfigurationsByChainId ?? {}).some(
           (network) =>
             isTestChain(network.chainId) &&
             network.rpcEndpoints?.some(

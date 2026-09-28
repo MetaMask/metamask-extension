@@ -96,6 +96,28 @@ describe('test network visibility selectors', () => {
     expect(getShouldShowTestNetworks(state)).toBe(false);
   });
 
+  it('stays off when an origin only has snap permission and a stale domains testnet entry', () => {
+    const origin = 'https://old.example';
+    const state = buildState({
+      domains: {
+        'https://dapp.example': 'mainnet',
+        [origin]: 'sepolia',
+      },
+      connectedOrigins: ['https://dapp.example'],
+    });
+    state.metamask.subjects[origin] = {
+      permissions: {
+        wallet_snap: {
+          parentCapability: 'wallet_snap',
+          caveats: [{ type: 'snapIds', value: { 'npm:example': {} } }],
+        },
+      },
+    };
+
+    expect(getIsTestnetInUse(state)).toBe(false);
+    expect(getShouldShowTestNetworks(state)).toBe(false);
+  });
+
   it('is on when the selected network is a testnet', () => {
     const state = buildState({ selectedChainId: 'eip155:11155111' });
 
