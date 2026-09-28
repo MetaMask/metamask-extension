@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts';
 import nock from 'nock';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
@@ -145,6 +146,13 @@ jest.mock('../../../hooks/musd', () => {
 });
 jest.mock('../../activity/activity-list', () => ({
   ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
+
+const mockUseParams = jest.fn((): Record<string, string | undefined> => ({}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: () => mockUseParams(),
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -387,6 +395,8 @@ describe('AssetPage', () => {
     });
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
+
+    mockUseParams.mockReturnValue({});
 
     mockUseAssetPerpsMarket.mockReturnValue({
       market: undefined,
@@ -875,6 +885,122 @@ describe('AssetPage', () => {
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('route CAIP asset id', () => {
+    const stellarChainId = 'stellar:pubnet';
+    const stellarUsdcAssetId =
+      'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+    const stellarXlmAssetId = 'stellar:pubnet/slip44:148';
+    const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+    const groupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+
+    const createStellarAssetPageStore = (
+      assetsBalance: Record<string, Record<string, unknown>> = {},
+    ) => {
+      const wallet = mockStore.metamask.accountTree.wallets[walletId];
+
+      return configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsBalance,
+          accountTree: {
+            wallets: {
+              [walletId]: {
+                ...wallet,
+                groups: {
+                  ...wallet.groups,
+                  [groupId]: {
+                    ...wallet.groups[groupId],
+                    accounts: [
+                      selectedAccountAddress,
+                      MOCK_ACCOUNT_STELLAR_PUBNET.id,
+                    ],
+                  },
+                },
+              },
+            },
+          },
+          internalAccounts: {
+            ...mockStore.metamask.internalAccounts,
+            accounts: {
+              ...mockStore.metamask.internalAccounts.accounts,
+              [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+            },
+          },
+        },
+      });
+    };
+
+    beforeEach(() => {
+      // No account-group asset, so bip44Asset and assetId cannot supply the id.
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+        {},
+      );
+    });
+
+    it('shows the activate card when the route CAIP asset id requires activation', () => {
+      mockUseParams.mockReturnValue({
+        chainId: stellarChainId,
+        asset: stellarUsdcAssetId,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage
+          asset={{
+            type: AssetType.token,
+            chainId: stellarChainId,
+            address: stellarUsdcAssetId,
+            symbol: 'USDC',
+            decimals: 7,
+            image: '',
+          }}
+          optionsButton={null}
+        />,
+        createStellarAssetPageStore(),
+      );
+
+      expect(getByTestId('asset-activate-card')).toBeInTheDocument();
+    });
+
+    it('shows the XLM spendable balance when the route CAIP asset id is native XLM', () => {
+      mockUseParams.mockReturnValue({
+        chainId: stellarChainId,
+        asset: stellarXlmAssetId,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage
+          asset={{
+            type: AssetType.native,
+            chainId: stellarChainId,
+            symbol: 'XLM',
+            image: '',
+            isOriginalNativeSymbol: true,
+            decimals: 7,
+          }}
+          optionsButton={null}
+        />,
+        createStellarAssetPageStore({
+          [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+            [stellarXlmAssetId]: {
+              amount: '10',
+              metadata: {
+                minimumReserveBalance: '25000000',
+                spendableBalance: '75000000',
+                decimal: 7,
+              },
+            },
+          },
+        }),
+      );
+
+      expect(getByTestId('spendable-balance-section')).toBeInTheDocument();
+      expect(getByTestId('spendable-balance-spendable-balance')).toHaveTextContent(
+        '7.5 XLM',
+      );
     });
   });
 });
