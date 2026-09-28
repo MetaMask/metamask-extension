@@ -7,6 +7,8 @@ import {
   IconName,
   IconSize,
   Label,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import browser from 'webextension-polyfill';
 import {
@@ -84,7 +86,25 @@ export function TokenDetail({
                 </span>
               ) : null}
             </div>
-            <span className="text-s-body-sm text-alternative">{data.name}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-s-body-sm text-alternative">
+                {data.name}
+              </span>
+              {onViewSimilar ? (
+                <>
+                  <span>•</span>
+                  <TextButton
+                    className="text-inherit"
+                    size={TextButtonSize.BodySm}
+                    endIconName={IconName.ArrowRight}
+                    endIconProps={{ size: IconSize.Xs }}
+                    onClick={onWidgetClick(onViewSimilar)}
+                  >
+                    View similar tokens
+                  </TextButton>
+                </>
+              ) : null}
+            </div>
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-4">
@@ -186,19 +206,6 @@ export function TokenDetail({
           Swap
         </Button>
       </footer>
-
-      {onViewSimilar ? (
-        <div className="mt-4 flex justify-end">
-          <Button
-            variant={ButtonVariant.Tertiary}
-            endIconName={IconName.ArrowRight}
-            endIconProps={{ size: IconSize.Xs }}
-            onClick={onWidgetClick(onViewSimilar)}
-          >
-            View similar tokens
-          </Button>
-        </div>
-      ) : null}
 
       <DisableConfirmDialog id={disableDialogId} onConfirm={onDisable} />
     </div>
