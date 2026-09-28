@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import type { CaipChainId } from '@metamask/utils';
 import nock from 'nock';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
@@ -24,6 +23,7 @@ import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts';
+import type { Asset } from '../types/asset';
 import AssetPage from './asset-page';
 
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -890,7 +890,7 @@ describe('AssetPage', () => {
   });
 
   describe('route CAIP asset id', () => {
-    const stellarChainId = 'stellar:pubnet' as CaipChainId;
+    const stellarChainId = 'stellar:pubnet';
     const stellarUsdcAssetId =
       'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
     const stellarXlmAssetId = 'stellar:pubnet/slip44:148';
@@ -950,14 +950,16 @@ describe('AssetPage', () => {
 
       const { getByTestId } = renderWithProvider(
         <AssetPage
-          asset={{
-            type: AssetType.token,
-            chainId: stellarChainId,
-            address: stellarUsdcAssetId,
-            symbol: 'USDC',
-            decimals: 7,
-            image: '',
-          }}
+          asset={
+            {
+              type: AssetType.token,
+              chainId: stellarChainId,
+              address: stellarUsdcAssetId,
+              symbol: 'USDC',
+              decimals: 7,
+              image: '',
+            } as unknown as Asset
+          }
           optionsButton={null}
         />,
         createStellarAssetPageStore(),
@@ -974,14 +976,16 @@ describe('AssetPage', () => {
 
       const { getByTestId } = renderWithProvider(
         <AssetPage
-          asset={{
-            type: AssetType.native,
-            chainId: stellarChainId,
-            symbol: 'XLM',
-            image: '',
-            isOriginalNativeSymbol: true,
-            decimals: 7,
-          }}
+          asset={
+            {
+              type: AssetType.native,
+              chainId: stellarChainId,
+              symbol: 'XLM',
+              image: '',
+              isOriginalNativeSymbol: true,
+              decimals: 7,
+            } as unknown as Asset
+          }
           optionsButton={null}
         />,
         createStellarAssetPageStore({
