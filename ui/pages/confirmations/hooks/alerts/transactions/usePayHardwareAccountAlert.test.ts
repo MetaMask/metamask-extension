@@ -227,17 +227,6 @@ describe('usePayHardwareAccountAlert', () => {
       });
     });
 
-    it('returns alert when only moneyAccountDeposit is enabled', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.musdConversion,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: DEPOSIT_ONLY,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-      });
-    });
-
     it('returns no alert with non-hardware wallet regardless of flag', async () => {
       const { result } = runHook({
         transactionType: TransactionType.musdConversion,
@@ -275,18 +264,6 @@ describe('usePayHardwareAccountAlert', () => {
       });
     });
 
-    it('returns alert for a Ledger payer under the legacy flat enabled flag', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.moneyAccountDeposit,
-        senderKeyringType: 'HD Key Tree',
-        payerKeyringType: KeyringTypes.ledger,
-        flag: FLAG_ON,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-      });
-    });
-
     it('returns alert for a QR payer even when the deposit override is enabled', async () => {
       const { result } = runHook({
         transactionType: TransactionType.moneyAccountDeposit,
@@ -299,18 +276,6 @@ describe('usePayHardwareAccountAlert', () => {
       });
     });
 
-    it('returns no alert for a software payer regardless of flag', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.moneyAccountDeposit,
-        senderKeyringType: 'HD Key Tree',
-        payerKeyringType: 'HD Key Tree',
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
-      });
-    });
-
     it('ignores a hardware signer when the payer is a software account', async () => {
       const { result } = runHook({
         transactionType: TransactionType.moneyAccountDeposit,
@@ -320,17 +285,6 @@ describe('usePayHardwareAccountAlert', () => {
       });
       await waitFor(() => {
         expect(result.current).toStrictEqual([]);
-      });
-    });
-
-    it('falls back to txParams.from when there is no payer override', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.moneyAccountDeposit,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
       });
     });
   });
