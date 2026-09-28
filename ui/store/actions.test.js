@@ -3863,40 +3863,25 @@ describe('Actions', () => {
     });
   });
 
-  describe('#getAusMarketingConsent', () => {
-    it('calls getAusMarketingConsent in the background', async () => {
+  describe('#setDataCollectionForMarketing with waitForAus', () => {
+    it('waits for AUS and refreshes local state after reconciliation', async () => {
       const store = mockStore();
-      const consent = { marketingConsentEnabled: true };
-      const getAusMarketingConsentStub = sinon.stub().resolves(consent);
-
+      const setConsent = sinon.stub().resolves('analytics-id');
+      const waitForMarketingConsentSync = sinon.stub().resolves();
+      const getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection({
-        getAusMarketingConsent: getAusMarketingConsentStub,
+        setDataCollectionForMarketing: setConsent,
+        waitForMarketingConsentSync,
+        getStatePatches,
       });
 
-      const result = await store.dispatch(actions.getAusMarketingConsent());
+      await store.dispatch(
+        actions.setDataCollectionForMarketing(true, { waitForAus: true }),
+      );
 
-      expect(getAusMarketingConsentStub.calledOnceWith()).toBe(true);
-      expect(result).toBe(consent);
-    });
-  });
-
-  describe('#putAusMarketingConsent', () => {
-    it('calls putAusMarketingConsent in the background with the extension client type', async () => {
-      const store = mockStore();
-      const putAusMarketingConsentStub = sinon.stub().resolves();
-
-      setBackgroundConnection({
-        putAusMarketingConsent: putAusMarketingConsentStub,
-      });
-
-      await store.dispatch(actions.putAusMarketingConsent(true));
-
-      expect(
-        putAusMarketingConsentStub.calledOnceWith(
-          { marketingConsentEnabled: true },
-          'extension',
-        ),
-      ).toBe(true);
+      expect(setConsent.calledOnceWith(true)).toBe(true);
+      expect(waitForMarketingConsentSync.calledOnceWith(true)).toBe(true);
+      expect(getStatePatches.calledOnce).toBe(true);
     });
   });
 

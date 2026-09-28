@@ -793,7 +793,9 @@ export default class MetamaskController extends EventEmitter {
     this.userStorageController = messengerClientsByName.UserStorageController;
     this.authenticatedUserStorageService =
       messengerClientsByName.AuthenticatedUserStorageService;
-    setupMarketingConsentSync({ messenger: this.controllerMessenger });
+    this.waitForMarketingConsentSync = setupMarketingConsentSync({
+      messenger: this.controllerMessenger,
+    });
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
@@ -2591,6 +2593,11 @@ export default class MetamaskController extends EventEmitter {
         ),
       setParticipateInMetaMetrics,
       setDataCollectionForMarketing,
+      waitForMarketingConsentSync: this.waitForMarketingConsentSync,
+      setMarketingCampaignCookieId:
+        metaMetricsController.setMarketingCampaignCookieId.bind(
+          metaMetricsController,
+        ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -3740,14 +3747,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       putNotificationPreferences:
         authenticatedUserStorageService.putNotificationPreferences.bind(
-          authenticatedUserStorageService,
-        ),
-      getAusMarketingConsent:
-        authenticatedUserStorageService.getMarketingConsent.bind(
-          authenticatedUserStorageService,
-        ),
-      putAusMarketingConsent:
-        authenticatedUserStorageService.putMarketingConsent.bind(
           authenticatedUserStorageService,
         ),
       // NotificationServicesController

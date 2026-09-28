@@ -110,15 +110,17 @@ describe('Onboarding Metametrics Component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders match snapshot', () => {
+  it('renders match snapshot', async () => {
     const { container } = renderWithProvider(<OnboardingMetametrics />, store);
+    await settleGeolocation();
     expect(container).toMatchSnapshot();
   });
 
-  it('renders match snapshot after new policy date', () => {
+  it('renders match snapshot after new policy date', async () => {
     // TODO: merge this with the previous test once this date is reached
     jest.useFakeTimers().setSystemTime(new Date('2024-06-05'));
     const { container } = renderWithProvider(<OnboardingMetametrics />, store);
+    await settleGeolocation();
     expect(container).toMatchSnapshot();
     jest.useRealTimers();
   });

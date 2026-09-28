@@ -4340,6 +4340,7 @@ export function setParticipateInMetaMetrics(
 
 export function setDataCollectionForMarketing(
   dataCollectionPreference: boolean,
+  { waitForAus = false }: { waitForAus?: boolean } = {},
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -4355,6 +4356,15 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+    if (waitForAus) {
+      try {
+        await submitRequestToBackground('waitForMarketingConsentSync', [
+          dataCollectionPreference,
+        ]);
+      } finally {
+        await forceUpdateMetamaskState(dispatch);
+      }
+    }
   };
 }
 
@@ -7378,51 +7388,6 @@ export function putNotificationPreferences(
     try {
       await submitRequestToBackground('putNotificationPreferences', [
         preferences,
-        'extension',
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
- * Gets marketing consent from Authenticated User Storage.
- *
- * @returns A thunk action that retrieves the current AUS marketing consent.
- */
-export function getAusMarketingConsent(): ThunkAction<
-  Promise<{ marketingConsentEnabled: boolean } | null>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      return (await submitRequestToBackground('getAusMarketingConsent')) as {
-        marketingConsentEnabled: boolean;
-      } | null;
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
- * Writes marketing consent to Authenticated User Storage.
- *
- * @param marketingConsent - Whether the user has opted in to marketing.
- * @returns A thunk action that writes marketing consent.
- */
-export function putAusMarketingConsent(
-  marketingConsent: boolean,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('putAusMarketingConsent', [
-        { marketingConsentEnabled: marketingConsent },
         'extension',
       ]);
     } catch (error) {

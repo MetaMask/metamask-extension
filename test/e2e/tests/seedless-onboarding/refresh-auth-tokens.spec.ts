@@ -6,6 +6,9 @@ import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/fl
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { AuthServer } from '../../helpers/seedless-onboarding/constants';
 import { MOCK_GOOGLE_ACCOUNT } from '../../constants';
 
@@ -33,7 +36,7 @@ async function getMockedRequests(
 }
 
 describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
-  it('refreshes the auth token when wallet initialization needs an AUS bearer token', async function () {
+  it('renews an expired social-login auth token during onboarding', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
@@ -77,6 +80,53 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         assert.ok(
           grants.includes('refresh_token'),
           'Expected wallet initialization to refresh the expired auth token',
+        );
+      },
+    );
+  });
+
+  it('uses a refreshed token after locking and unlocking the wallet', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        ignoredConsoleErrors: [
+          'The operation cannot be completed while the controller is locked.',
+          'Unable to enable notifications',
+        ],
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) =>
+          new OAuthMockttpService().setup(server, {
+            forceTokenExpiration: true,
+            userEmail: MOCK_GOOGLE_ACCOUNT,
+          }),
+      },
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
+        await importWalletWithSocialLoginOnboardingFlow({ driver });
+        await new HomePage(driver).checkPageIsLoaded();
+        const requestsBeforeLock = await getMockedRequests(
+          driver,
+          mockedEndpoints,
+        );
+        const tokenRequestsBeforeLock = requestsBeforeLock.filter((request) =>
+          request.url.includes(AuthServer.RequestToken),
+        ).length;
+        await lockAndWaitForLoginPage(driver);
+        await new LoginPage(driver).loginToHomepage();
+        await new HeaderNavbar(driver).openSettingsPage();
+
+        const requests = await getMockedRequests(driver, mockedEndpoints);
+        const tokenRequests = requests.filter((request) =>
+          request.url.includes(AuthServer.RequestToken),
+        );
+        assert.ok(
+          tokenRequests.length > tokenRequestsBeforeLock,
+          'Expected a new auth token request after wallet unlock',
         );
       },
     );
