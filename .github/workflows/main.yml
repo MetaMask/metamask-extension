@@ -43,12 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      SLACK_NIGHTLY_BUILDS_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL }}
-      SLACK_WEBHOOK_FEATURE_FLAG_DRIFT: ${{ secrets.SLACK_WEBHOOK_FEATURE_FLAG_DRIFT }}
-      SLACK_WEBHOOK_FLAKY_TESTS: ${{ secrets.SLACK_WEBHOOK_FLAKY_TESTS }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      METAMASKBOT_CROWDIN_TOKEN: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
+      AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
