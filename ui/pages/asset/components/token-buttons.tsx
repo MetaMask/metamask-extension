@@ -11,7 +11,10 @@ import {
   Box,
   BoxFlexDirection,
   BoxJustifyContent,
-  IconName as IconNameDs,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
@@ -32,13 +35,8 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { BlockSize, IconColor } from '../../../helpers/constants/design-system';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
-import {
-  Icon,
-  IconName,
-  IconSize,
-} from '../../../components/component-library';
 import { MoreButtonsGroup } from '../../../components/app/wallet-overview/coin-buttons';
 import { PerpsTradeButtons } from '../../../components/app/perps/perps-trade-buttons';
 import { ReceiveModal } from '../../../components/multichain/receive-modal';
@@ -288,8 +286,9 @@ const TokenButtons = ({
       Icon={
         <Icon
           name={IconName.Arrow2UpRight}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={IconSize.Md}
+          className="align-baseline"
         />
       }
       label={t('send')}
@@ -331,8 +330,9 @@ const TokenButtons = ({
               Icon={
                 <Icon
                   name={IconName.Received}
-                  color={IconColor.iconAlternative}
+                  color={IconColor.IconAlternative}
                   size={IconSize.Md}
+                  className="align-baseline"
                 />
               }
               label={t('receive')}
@@ -349,14 +349,14 @@ const TokenButtons = ({
                 label: t('buy'),
                 onClick: handleBuyAndSellOnClick,
                 testId: 'token-overview-more-buy',
-                iconName: IconNameDs.AttachMoney,
+                iconName: IconName.AttachMoney,
                 enabled: isCtaGateReady,
               },
               {
                 label: t('swap'),
                 onClick: handleSwapOnClick,
                 testId: 'token-overview-more-swap',
-                iconName: IconNameDs.SwapVertical,
+                iconName: IconName.SwapVertical,
                 enabled:
                   isExternalServicesEnabled &&
                   !isMarketClosed &&
@@ -367,14 +367,14 @@ const TokenButtons = ({
                 label: t('receive'),
                 onClick: handleReceiveOnClick,
                 testId: 'token-overview-more-receive',
-                iconName: IconNameDs.Received,
+                iconName: IconName.Received,
                 enabled: shouldShowSendButton,
               },
               {
                 label: t('assetDeactivate') as string,
                 onClick: deactivateAsset,
                 testId: 'token-overview-more-deactivate-asset',
-                iconName: IconNameDs.Trash,
+                iconName: IconName.Trash,
                 enabled: canDeactivate && !isDeactivating,
               },
             ]}
@@ -386,9 +386,10 @@ const TokenButtons = ({
             className="token-overview__button"
             Icon={
               <Icon
-                name={IconName.Dollar}
-                color={IconColor.iconAlternative}
+                name={IconName.AttachMoney}
+                color={IconColor.IconAlternative}
                 size={IconSize.Md}
+                className="align-baseline"
               />
             }
             label={t('buy')}
@@ -404,8 +405,9 @@ const TokenButtons = ({
             Icon={
               <Icon
                 name={IconName.SwapVertical}
-                color={IconColor.iconAlternative}
+                color={IconColor.IconAlternative}
                 size={IconSize.Md}
+                className="align-baseline"
               />
             }
             onClick={handleSwapOnClick}
@@ -422,8 +424,9 @@ const TokenButtons = ({
               Icon={
                 <Icon
                   name={IconName.Trash}
-                  color={IconColor.iconAlternative}
+                  color={IconColor.IconAlternative}
                   size={IconSize.Md}
+                  className="align-baseline"
                 />
               }
               onClick={deactivateAsset}
