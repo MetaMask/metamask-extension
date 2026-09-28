@@ -142,19 +142,6 @@ export class TestDappStellar {
     await this.checkPageIsLoaded();
   }
 
-  async selectNetwork(networkKey: 'pubnet' | 'testnet' | 'futurenet') {
-    await this.driver.executeScript(
-      `const select = document.querySelector(arguments[0]);
-       if (!select) {
-         throw new Error('Stellar network select not found');
-       }
-       select.value = arguments[1];
-       select.dispatchEvent(new Event('change', { bubbles: true }));`,
-      this.networkSelectSelector,
-      networkKey,
-    );
-  }
-
   async setAuthEntry(authEntry: string) {
     await this.driver.fill(this.signAuthEntryInputSelector, authEntry);
   }
