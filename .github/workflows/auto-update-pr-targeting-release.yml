@@ -18,12 +18,19 @@ jobs:
       pull-requests: write
       contents: write
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+
       # We don't want to use action-checkout-and-setup here because it forces `yarn --immutable`
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          # Use PAT to ensure that the commit later can trigger status check workflows
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
           ref: ${{ github.event.pull_request.head.ref }}
 
       # Prevent loops on this action by checking if the last commit author is the bot itself
@@ -31,11 +38,11 @@ jobs:
         id: prevent-loops
         run: |
           author_name=$(git log -1 --pretty=format:'%an')
-          if [ "$author_name" = "MetaMask Bot" ]; then
-            echo "The author of the most recent commit is MetaMask Bot. Exiting the workflow."
+          if [ "$author_name" = "metamask-ci[bot]" ]; then
+            echo "The author of the most recent commit is metamask-ci. Exiting the workflow."
             echo "stop_loop=true" >> "$GITHUB_OUTPUT"
           else
-            echo "The author of the most recent commit is *not* MetaMask Bot, continuing..."
+            echo "The author of the most recent commit is *not* metamask-ci, continuing..."
             echo "stop_loop=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -70,8 +77,8 @@ jobs:
             echo "No changes detected"
           else
             echo "Changes detected, committing..."
-            git config --global user.name 'MetaMask Bot'
-            git config --global user.email 'metamaskbot@users.noreply.github.com'
+            git config --global user.name 'metamask-ci[bot]'
+            git config --global user.email '271559518+metamask-ci[bot]@users.noreply.github.com'
             git commit -am "release: dedupe, update LavaMoat policies, update attributions"
             git push
           fi
