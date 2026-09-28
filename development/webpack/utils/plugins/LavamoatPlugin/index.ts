@@ -14,6 +14,9 @@ const rootDir = join(__dirname, '../../../../../');
 const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
+  // X widget content script uses React. Manifest key is `.ts`; asset is `.js`.
+  'scripts/cashtag/content-script.ts',
+  'scripts/cashtag/content-script.js',
 ]);
 
 const getScuttleGlobalThisExceptions = (args: Args) => [
@@ -146,10 +149,10 @@ export const lavamoatPlugin = (args: Args) =>
         return {
           mode: 'safe',
           embeddedOptions: {
+            // Same-extension content scripts share one world; scuttling here
+            // breaks the React-based X widget that runs alongside this bundle.
             scuttleGlobalThis: {
-              enabled: true,
-              // Globals used by the contentscript
-              exceptions: ['browser', 'chrome', 'btoa'],
+              enabled: false,
             },
           },
         };
@@ -201,8 +204,7 @@ export const lavamoatBackgroundLayerRule = {
 
 // Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
 const unsafeLayerEntries: Set<string> = new Set([
-  'scripts/inpage.js',
-  'bootstrap',
+  ...nullUnsafeEntries,
   'service-worker.ts',
 ]);
 

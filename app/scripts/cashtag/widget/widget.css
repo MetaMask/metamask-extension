@@ -1,0 +1,43 @@
+/* Copied via webpack (PostCSS + Tailwind) → fetched into the widget shadow.
+   Design tokens are prepended by the CopyPlugin transform */
+@tailwind base;
+@tailwind utilities;
+
+:host {
+  color-scheme: light dark;
+  font-family: var(--font-family-default);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mm-cashtag-card {
+  anchor-name: --cashtag-widget;
+}
+
+.mm-cashtag-disable-dialog {
+  margin: 0;
+  inset: auto;
+  position: fixed;
+  position-anchor: --cashtag-widget;
+  top: anchor(center);
+  left: anchor(center);
+  translate: -50% -50%;
+}
+
+.mm-cashtag-disable-dialog:not([open]) {
+  display: none;
+}
+
+.mm-cashtag-menu:popover-open {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: auto;
+  position-anchor: --cashtag-menu-anchor;
+  top: anchor(bottom);
+  right: anchor(right);
+  left: auto;
+  margin-block-start: 8px;
+  /* UA popover padding: 0.25em — zero inline so item hover goes edge to edge */
+  padding-inline: 0;
+  position-try-fallbacks: flip-block, flip-inline;
+}
