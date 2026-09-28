@@ -867,6 +867,7 @@ export enum MetaMetricsEventName {
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   MoneyButtonClicked = 'Money Button Clicked',
+  MoneyOnboardingEvent = 'Money Onboarding Event',
   MoneySurfaceClicked = 'Money Surface Clicked',
   MoneySurfaceViewed = 'Money Surface Viewed',
   MoneyTooltipClicked = 'Money Tooltip Clicked',
