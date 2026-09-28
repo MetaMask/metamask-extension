@@ -864,8 +864,7 @@
         "@metamask/assets-controller>@metamask/utils": true,
         "async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
-        "@metamask/assets-controller>lodash-es": true,
-        "@metamask/assets-controller>p-limit": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/assets-controllers": {
@@ -902,7 +901,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/assets-controllers>@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
@@ -964,7 +963,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -1420,7 +1419,7 @@
       "packages": {
         "@metamask/core-backend>@metamask/controller-utils": true,
         "@metamask/core-backend>@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "cockatiel": true,
         "@metamask/core-backend>uuid": true
       }
@@ -2811,7 +2810,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "@tanstack/react-query": true
       }
     },
@@ -4495,6 +4494,19 @@
       "packages": {
         "@noble/hashes": true,
         "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
+      }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document.visibilityState": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
@@ -6581,11 +6593,6 @@
         "viem>ox>@noble/curves": true,
         "@noble/hashes": true,
         "viem>abitype": true
-      }
-    },
-    "@metamask/assets-controller>p-limit": {
-      "packages": {
-        "@metamask/assets-controller>p-limit>yocto-queue": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
