@@ -113,7 +113,7 @@ describe('setupMarketingConsentSync', () => {
   );
 
   it('does not reconcile an undecided local value', async () => {
-    const { call } = setupSync({
+    const { call, handlers } = setupSync({
       analyticsState: {
         optedInToMarketing: true,
         marketingConsentDecisionMade: false,
@@ -125,6 +125,137 @@ describe('setupMarketingConsentSync', () => {
 
     expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
     expect(call).not.toHaveBeenCalledWith(PUT_CONSENT_ACTION);
+  });
+
+  it('writes subsequent local consent changes to AUS', async () => {
+    const { handlers, call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: false },
+    });
+    await flushPromises();
+
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: true,
+      marketingConsentDecisionMade: true,
+    });
+    await flushPromises();
+
+    expect(call).toHaveBeenCalledWith(
+      PUT_CONSENT_ACTION,
+      { marketingConsentEnabled: true },
+      'extension',
+    );
+  });
+
+  it('applies remote consent without echoing a PUT', async () => {
+    const { call, handlers } = setupSync({
+      analyticsState: {
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: true },
+    });
+    await flushPromises();
+
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: true,
+      marketingConsentDecisionMade: true,
+    });
+    await flushPromises();
+
+    expect(call).toHaveBeenCalledWith(OPT_IN_ACTION);
+    expect(call).not.toHaveBeenCalledWith(PUT_CONSENT_ACTION);
+  });
+
+  it('coalesces consent changes while an AUS write is pending', async () => {
+    let resolveFirstWrite: (() => void) | undefined;
+    const firstWrite = new Promise<void>((resolve) => {
+      resolveFirstWrite = resolve;
+    });
+    const { handlers, call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: false },
+    });
+    await flushPromises();
+    call.mockImplementation((action: string) => {
+      if (action === 'AnalyticsController:getState') {
+        return {
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
+        };
+      }
+      if (action === 'AuthenticationController:getState') {
+        return { isSignedIn: true };
+      }
+      if (action === PUT_CONSENT_ACTION) {
+        return firstWrite;
+      }
+      if (action === GET_CONSENT_ACTION) {
+        return Promise.resolve({ marketingConsentEnabled: false });
+      }
+      return Promise.resolve();
+    });
+
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: true,
+      marketingConsentDecisionMade: true,
+    });
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: false,
+      marketingConsentDecisionMade: true,
+    });
+    await flushPromises();
+    resolveFirstWrite?.();
+    await flushPromises();
+
+    expect(
+      call.mock.calls.filter(([action]) => action === PUT_CONSENT_ACTION),
+    ).toEqual([
+      [PUT_CONSENT_ACTION, { marketingConsentEnabled: true }, 'extension'],
+      [PUT_CONSENT_ACTION, { marketingConsentEnabled: false }, 'extension'],
+    ]);
+  });
+
+  it('keeps a newer local decision when it changes during the AUS read', async () => {
+    let resolveConsent:
+      | ((consent: { marketingConsentEnabled: boolean }) => void)
+      | undefined;
+    const remoteConsent = new Promise<{ marketingConsentEnabled: boolean }>(
+      (resolve) => {
+        resolveConsent = resolve;
+      },
+    );
+    const { handlers, call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      getConsent: () => remoteConsent,
+    });
+
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: true,
+      marketingConsentDecisionMade: true,
+    });
+    resolveConsent?.({ marketingConsentEnabled: false });
+    await flushPromises();
+
+    expect(call).not.toHaveBeenCalledWith(OPT_OUT_ACTION);
+    expect(call).toHaveBeenCalledWith(
+      PUT_CONSENT_ACTION,
+      { marketingConsentEnabled: true },
+      'extension',
+    );
   });
 
   it('leaves local state unchanged when the AUS read fails', async () => {

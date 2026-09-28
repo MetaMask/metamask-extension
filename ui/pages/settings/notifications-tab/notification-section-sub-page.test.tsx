@@ -1078,7 +1078,7 @@ describe('NotificationSectionSubPage', () => {
 
       await waitFor(() => {
         expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
-        expect(putAusMarketingConsent).toHaveBeenCalledWith(true);
+        expect(putAusMarketingConsent).not.toHaveBeenCalled();
         expect(updatePreference).toHaveBeenCalledWith(
           'marketing',
           'inAppNotificationsEnabled',

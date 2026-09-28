@@ -38,10 +38,7 @@ import type {
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
-import {
-  putAusMarketingConsent,
-  setDataCollectionForMarketing,
-} from '../../store/actions';
+import { setDataCollectionForMarketing } from '../../store/actions';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 import type { NotificationWalletGroup } from './notifications-settings-helpers';
@@ -582,7 +579,6 @@ export function NotificationSettingsSection({
     setPreferenceError(null);
     try {
       await dispatch(setDataCollectionForMarketing(true));
-      await dispatch(putAusMarketingConsent(true));
       await updatePreference('marketing', pendingMarketingChannel, true);
       trackEvent(
         createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
