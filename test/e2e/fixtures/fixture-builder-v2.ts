@@ -9,7 +9,6 @@ import type { BridgeStatusControllerState } from '@metamask/bridge-status-contro
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
-  MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
   TokenRatesControllerState,
@@ -145,18 +144,6 @@ type StorageServiceNamespace = keyof StorageServiceNamespaceMap;
 
 type FixtureBuildResult = FixtureType & {
   storageServiceData?: Record<string, unknown>;
-};
-
-/**
- * Like `Partial<MultichainAssetsRatesControllerState>`, but `conversionRates` may be a
- * partial map (lodash `merge` fills the rest).
- */
-type MultichainAssetsRatesControllerFixturePatch = Partial<
-  Omit<MultichainAssetsRatesControllerState, 'conversionRates'>
-> & {
-  conversionRates?: Partial<
-    MultichainAssetsRatesControllerState['conversionRates']
-  >;
 };
 
 /**
@@ -342,13 +329,6 @@ class FixtureBuilderV2 {
       merge(analyticsController, analyticsPatch);
     }
 
-    return this;
-  }
-
-  withMultichainAssetsRatesController(
-    data: MultichainAssetsRatesControllerFixturePatch,
-  ): this {
-    merge(this.fixture.data.MultichainAssetsRatesController, data);
     return this;
   }
 
@@ -726,14 +706,6 @@ class FixtureBuilderV2 {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
     });
-  }
-
-  withConversionRates(
-    conversionRates: Partial<
-      MultichainAssetsRatesControllerState['conversionRates']
-    > = {},
-  ): this {
-    return this.withMultichainAssetsRatesController({ conversionRates });
   }
 
   withCurrencyRates(
