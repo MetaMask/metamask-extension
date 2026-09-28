@@ -15,6 +15,12 @@ import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
+  sentryCountResult,
+  sentryTimerResult,
+  waitForSentryTransactions,
+} from '../../utils/sentry-transactions';
+import { TraceName } from '../../../../../shared/lib/trace';
+import {
   measureStepWithLongTasks,
   buildLongTaskTimerResults,
 } from '../../utils/long-task-helper';
@@ -29,7 +35,11 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
-import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import type {
+  BenchmarkRunResult,
+  LongTaskStepResult,
+  TimerResult,
+} from '../../utils/types';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';
@@ -39,6 +49,7 @@ const SOLANA_USDC_CONTRACT_ADDRESS =
 
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
   const steps: LongTaskStepResult[] = [];
+  const traceTimers: TimerResult[] = [];
   let webVitals: WebVitalsMetrics | undefined;
   try {
     const branchMock = getTestSpecificMock();
@@ -52,6 +63,19 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         manifestFlags: {
           testing: {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
+          },
+          // Sample every trace, so the swap spans reach the mocked Sentry
+          // endpoint this benchmark reads them from. CI builds otherwise send
+          // only a small fraction of traces.
+          sentry: { tracesSampleRate: 1 },
+          // `tracesSampleRate` only sets the sampler's DEFAULT, and
+          // `getTransactionSampleRate` returns a per-name override before it
+          // ever reads that default. `Swap Quote Fetch` is pinned to 0.001 in
+          // `DEFAULT_TRANSACTION_SAMPLE_RATES` (extension#46618), so without
+          // the line below this benchmark reads that span about once in a
+          // thousand runs. This is the only key that outranks the pin.
+          remoteFeatureFlags: {
+            sentry: { transactionSampleRates: { 'Swap Quote Fetch': 1 } },
           },
         },
         useMockingPassThrough: !shouldUseMockedRequests(),
@@ -73,7 +97,13 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           return [...branchEndpoints];
         },
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        mockedEndpoint,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
         // Login flow
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
@@ -121,6 +151,32 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           ),
         );
 
+        // The app's own spans over the same two steps, as the Sentry SDK sent
+        // them, timed on the browser's clock (extension#46006). Report-only:
+        // no threshold is registered for them.
+        const transactions = await waitForSentryTransactions(
+          driver,
+          mockedEndpoint,
+          [TraceName.SwapViewLoaded, TraceName.SwapQuoteFetch],
+        );
+        traceTimers.push(
+          sentryTimerResult(
+            transactions,
+            TraceName.SwapViewLoaded,
+            'swapViewLoaded',
+          ),
+          sentryTimerResult(
+            transactions,
+            TraceName.SwapQuoteFetch,
+            'swapQuoteFetch',
+          ),
+          sentryCountResult(
+            transactions,
+            TraceName.SwapQuoteFetch,
+            'swapQuoteFetchCount',
+          ),
+        );
+
         try {
           webVitals = await collectWebVitals(driver);
         } catch (error) {
@@ -130,14 +186,22 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
     );
 
     return {
-      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      timers: [
+        ...collectTimerResults(),
+        ...buildLongTaskTimerResults(steps),
+        ...traceTimers,
+      ],
       webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      timers: [
+        ...collectTimerResults(),
+        ...buildLongTaskTimerResults(steps),
+        ...traceTimers,
+      ],
       webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
