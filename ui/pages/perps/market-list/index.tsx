@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
+  useLayoutEffect,
   useRef,
 } from 'react';
 import { useSelector } from 'react-redux';
@@ -25,8 +26,10 @@ import {
 import {
   getMarketTypeFilter,
   MARKET_CATEGORIES,
+  matchesCategory,
   type PerpsMarketData,
 } from '@metamask/perps-controller';
+import { usePerpsEntryTrace } from '../../../hooks/perps/usePerpsEntryTrace';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -185,12 +188,23 @@ const filterByType = (
         isUncategorizedHip3Market(m, allowedHip3Sources),
       );
     }
+    case 'memecoin': {
+      // Derived category: tagged main-DEX crypto. `getMarketTypeFilter`
+      // never returns `'memecoin'` because those rows keep `marketType:
+      // 'crypto'`. HIP-3 is excluded so membership matches the Crypto
+      // pill (`isCryptoMarket`). Tagged main-DEX markets appear under
+      // both pills.
+      return markets.filter(
+        (m) => isCryptoMarket(m) && matchesCategory(m, 'memecoin'),
+      );
+    }
     default: {
-      // Any controller market category (crypto, stock, pre-ipo, index, etf,
-      // commodity, forex, …) is matched generically so a new category works
-      // without a new case here. Crypto keeps the Extension's long-standing
-      // `marketSource` rule rather than the controller's `matchesCategory`,
-      // which also counts a HIP-3 market typed `marketType: 'crypto'`.
+      // Any remaining controller market category (crypto, stock, pre-ipo,
+      // index, etf, commodity, forex, …) is matched generically so a new
+      // 1:1 `marketType` category works without a new case here. Crypto
+      // keeps the Extension's long-standing `marketSource` rule rather than
+      // the controller's `matchesCategory`, which also counts a HIP-3
+      // market typed `marketType: 'crypto'`.
       return markets.filter((m) =>
         filter === 'crypto'
           ? isCryptoMarket(m)
@@ -215,8 +229,11 @@ export const MarketListView = () => {
   const { setFlowAttribution } = usePerpsAttribution();
 
   // Use stream hooks for real-time market data
-  const { markets: allMarkets, isInitialLoading: marketsLoading } =
-    usePerpsLiveMarketListData();
+  const {
+    markets: allMarkets,
+    isInitialLoading: marketsLoading,
+    areMarketsLive,
+  } = usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
   // Upper-cased so lookups match `PerpsMarketData.symbol` casing.
@@ -349,10 +366,15 @@ export const MarketListView = () => {
   // --- Market search funnel (query -> result tapped | abandoned) ------------
   // Refs, not state: these only feed analytics and must never trigger a render.
   const trackRef = useRef(track);
-  trackRef.current = track;
   // Latest settled result set, read by the tap handler for rank/count.
+  usePerpsEntryTrace(
+    'market_list',
+    displayedMarkets,
+    isLoading,
+    areMarketsLive(displayedMarkets),
+  );
+
   const displayedMarketsRef = useRef(displayedMarkets);
-  displayedMarketsRef.current = displayedMarkets;
   // Last query actually emitted, so abandonment reports what was measured.
   const emittedQueryRef = useRef('');
   const emittedResultsCountRef = useRef<number | undefined>(undefined);
@@ -365,11 +387,9 @@ export const MarketListView = () => {
   // Result count as of the render that last had this pending query on screen.
   const pendingResultCountRef = useRef<number | undefined>(undefined);
   const isLoadingRef = useRef(isLoading);
-  isLoadingRef.current = isLoading;
   // What is in the box right now, so a tap can be attributed to a search that
   // is still inside the debounce window.
   const trimmedQueryRef = useRef('');
-  trimmedQueryRef.current = searchQuery.trim();
 
   // Chips narrowing the browse context. The Extension exposes only the category
   // filter; mobile also counts its watchlist chip.
@@ -378,7 +398,14 @@ export const MarketListView = () => {
     [selectedFilter],
   );
   const activeChipsRef = useRef(activeChips);
-  activeChipsRef.current = activeChips;
+
+  useLayoutEffect(() => {
+    trackRef.current = track;
+    displayedMarketsRef.current = displayedMarkets;
+    isLoadingRef.current = isLoading;
+    trimmedQueryRef.current = searchQuery.trim();
+    activeChipsRef.current = activeChips;
+  }, [track, displayedMarkets, isLoading, searchQuery, activeChips]);
 
   /**
    * Emit PERPS_SEARCH_QUERY (and the matching screen view once counts are

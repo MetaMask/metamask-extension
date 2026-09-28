@@ -40,7 +40,8 @@ export type MetaMaskState = Pick<
   | 'allNfts'
   | 'allTokens'
   | 'theme'
-  | 'dataCollectionForMarketing'
+  | 'optedInToMarketing'
+  | 'marketingConsentDecisionMade'
   | 'useNftDetection'
   | 'openSeaEnabled'
   | 'securityAlertsEnabled'
@@ -248,7 +249,9 @@ export class UserTraitsService {
           ? metamaskState.optedIn === true
           : null,
       [MetaMetricsUserTrait.HasMarketingConsent]:
-        metamaskState.dataCollectionForMarketing,
+        metamaskState.marketingConsentDecisionMade === true
+          ? metamaskState.optedInToMarketing === true
+          : null,
       [MetaMetricsUserTrait.TokenSortPreference]:
         metamaskState.preferences?.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:

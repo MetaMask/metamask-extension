@@ -12,7 +12,6 @@ import { parseCaipChainId } from '@metamask/utils';
 import { MetaMetricsSwapsEventSource as ExtendedMetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getBip44DefaultPairsConfig,
@@ -80,10 +79,6 @@ const useBridging = () => {
       destTokenAssetId?: string,
     ) => {
       !bridgeState && dispatch(resetInputFields());
-      trace({
-        name: TraceName.SwapViewLoaded,
-        startTime: Date.now(),
-      });
       // TODO: pick the correct location type
       dispatch(setBridgeLocation(location as MetaMetricsSwapsEventSource));
       dispatch(
@@ -162,6 +157,7 @@ const useBridging = () => {
         token: tokenToUse,
         search,
         isEntrypoint: true,
+        entryPoint: location,
       });
     },
     [

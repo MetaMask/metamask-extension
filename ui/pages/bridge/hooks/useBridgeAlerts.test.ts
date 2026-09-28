@@ -23,6 +23,7 @@ import {
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../components/app/assets/enablement/arc';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 import { useBridgeAlerts } from './useBridgeAlerts';
@@ -672,6 +673,51 @@ describe('useBridgeAlerts', () => {
       );
       expect(alert?.bannerAlertProps?.actionButtonLabel).toBe(
         'buyMoreAsset:ETH',
+      );
+      expect(alert?.bannerAlertProps?.actionButtonOnClick).toBeInstanceOf(
+        Function,
+      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('insufficient-gas');
+    });
+
+    it('uses the insufficient-gas error when the Arc reserve would be depleted', () => {
+      jest
+        .mocked(getValidationErrors)
+        .mockReturnValue(DEFAULT_VALIDATION_ERRORS);
+      jest
+        .mocked(getFromChain)
+        .mockReturnValue({ chainId: ARC_NATIVE_CAIP_CHAIN_ID } as never);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({
+        priceImpact: { amount: '0.05' },
+      });
+      jest
+        .mocked(getActiveQuoteInsufficientNativeReserveError)
+        .mockReturnValue({
+          minimumNativeBalanceToBeKeptInAccount: '0.05',
+          maxSwappableNativeBalance: '9.95',
+        });
+
+      const { result } = renderHook();
+      const bannerIds = result.current.bannerAlerts.map(
+        (a: BridgeAlert) => a.id,
+      );
+
+      expect(bannerIds).toContain('insufficient-gas');
+      const alert = result.current.alertsById['insufficient-gas'];
+      expect(alert).toStrictEqual(
+        expect.objectContaining({
+          id: 'insufficient-gas',
+          severity: 'danger',
+          title: 'bridgeValidationInsufficientGasTitle:ETH',
+          description: 'bridgeValidationInsufficientGasMessage:ETH',
+          isConfirmationAlert: false,
+          bannerAlertProps: expect.objectContaining({
+            severity: BannerAlertSeverity.Danger,
+            actionButtonLabel: 'buyMoreAsset:ETH',
+          }),
+        }),
       );
       expect(alert?.bannerAlertProps?.actionButtonOnClick).toBeInstanceOf(
         Function,

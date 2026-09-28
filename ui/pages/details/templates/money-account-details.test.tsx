@@ -16,6 +16,11 @@ jest.mock('../../../hooks/activity/useLocalTransactionMeta');
 jest.mock('../../../hooks/money/useMoneyAccountDeposit');
 jest.mock('../../../hooks/money/useMoneyAccountInfo');
 
+jest.mock('../../../contexts/route-messenger', () => ({
+  RouteMessengerProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+}));
+
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
@@ -116,7 +121,7 @@ function buildItem(
     data: {
       from: '0xfrom',
       fiat: { amount: '25.5' },
-      token: { direction: 'in', symbol: 'mUSD', assetId: MUSD_ASSET_ID },
+      token: { direction: 'out', symbol: 'mUSD', assetId: MUSD_ASSET_ID },
     },
     ...overrides,
   } as MoneyAccountActivityItem;
@@ -143,20 +148,31 @@ describe('MoneyAccountDetails', () => {
   });
 
   describe('hero amount', () => {
-    it('renders a deposit amount with a plus sign', () => {
+    it('renders a deposit as an outflow with a minus sign', () => {
       render(<MoneyAccountDetails item={buildItem()} />);
 
-      expect(screen.getByText('+usd:25.5')).toBeInTheDocument();
+      expect(screen.getByText('-usd:25.5')).toBeInTheDocument();
     });
 
-    it('renders a withdrawal amount with a minus sign', () => {
+    it('renders a withdrawal as an inflow with a plus sign', () => {
       render(
         <MoneyAccountDetails
-          item={buildItem({ type: 'moneyAccountWithdraw' })}
+          item={buildItem({
+            type: 'moneyAccountWithdraw',
+            data: {
+              from: '0xfrom',
+              fiat: { amount: '25.5' },
+              token: {
+                direction: 'in',
+                symbol: 'mUSD',
+                assetId: MUSD_ASSET_ID,
+              },
+            },
+          } as Partial<MoneyAccountActivityItem>)}
         />,
       );
 
-      expect(screen.getByText('-usd:25.5')).toBeInTheDocument();
+      expect(screen.getByText('+usd:25.5')).toBeInTheDocument();
     });
 
     it('renders no amount when the item has no fiat value', () => {

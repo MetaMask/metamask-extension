@@ -109,6 +109,7 @@ describe('Nft detection event', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
+          .withBasicFunctionalityConsolidationDisabled()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,

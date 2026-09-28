@@ -173,13 +173,16 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
-      "optedIn": false
+      "marketingCampaignCookieId": null,
+      "marketingConsentDecisionMade": true,
+      "optedIn": false,
+      "optedInToMarketing": false
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 226,
+      "currentMigrationVersion": 229,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -203,6 +206,7 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
+      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -402,11 +406,6 @@
     },
     "LoggingController": {
       "logs": {}
-    },
-    "MetaMetricsController": {
-      "dataCollectionForMarketing": false,
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": []
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -1036,8 +1035,9 @@
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
+        "hasLinkedSocialLoginProfile": false,
         "hideZeroBalanceTokens": false,
-        "isBasicFunctionalityConsolidatedEnabled": false,
+        "isBasicFunctionalityConsolidatedEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1090,7 +1090,7 @@
       "initialDelayEndTimestamp": 1770282498299,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
-      "reportedAccounts": [],
+      "reportedAccounts": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"],
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1289,6 +1289,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 226
+    "version": 229
   }
 }
