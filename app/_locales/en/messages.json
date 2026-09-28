@@ -5868,11 +5868,11 @@
   "moneyLifetimeTooltip": {
     "message": "The total you've earned on your Money account balance over time."
   },
-  "moneyMfaEnabled": {
-    "message": "MFA enabled"
-  },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
+  },
+  "moneyMfaEnabled": {
+    "message": "MFA enabled"
   },
   "moneyMonthlyTooltip": {
     "message": "The total you've earned on your Money account balance in the last 30 days."
