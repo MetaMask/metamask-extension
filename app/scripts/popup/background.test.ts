@@ -1,7 +1,5 @@
-import type { PopupOpenerDeps } from './background';
 import { createPopupOpener } from './background';
-
-const originalChrome = globalThis.chrome;
+import type { PopupOpenerDeps } from './background';
 
 describe('createPopupOpener', () => {
   const createMockDeps = (): PopupOpenerDeps =>
@@ -10,28 +8,19 @@ describe('createPopupOpener', () => {
         tabs: {
           get: jest.fn().mockResolvedValue({ windowId: 789 }),
         },
+        action: {
+          openPopup: jest.fn().mockResolvedValue(undefined),
+        },
         windows: {
           update: jest.fn().mockResolvedValue(undefined),
         },
       },
     }) as unknown as PopupOpenerDeps;
 
-  beforeEach(() => {
-    globalThis.chrome = {
-      action: {
-        openPopup: jest.fn().mockResolvedValue(undefined),
-      },
-    } as unknown as typeof chrome;
-  });
-
-  afterEach(() => {
-    globalThis.chrome = originalChrome;
-  });
-
-  it('returns false if chrome.action.openPopup is not available', async () => {
-    globalThis.chrome = {} as typeof chrome;
-
+  it('returns false if action.openPopup is not available', async () => {
     const deps = createMockDeps();
+    deps.extension.action = undefined;
+
     const requestOpenPopup = createPopupOpener(deps);
     const result = await requestOpenPopup();
 
@@ -44,7 +33,7 @@ describe('createPopupOpener', () => {
     const result = await requestOpenPopup();
 
     expect(result).toBe(true);
-    expect(globalThis.chrome.action.openPopup).toHaveBeenCalledWith(undefined);
+    expect(deps.extension.action.openPopup).toHaveBeenCalledWith(undefined);
     expect(deps.extension.tabs.get).not.toHaveBeenCalled();
   });
 
@@ -58,7 +47,7 @@ describe('createPopupOpener', () => {
     expect(deps.extension.windows.update).toHaveBeenCalledWith(789, {
       focused: true,
     });
-    expect(globalThis.chrome.action.openPopup).toHaveBeenCalledWith({
+    expect(deps.extension.action.openPopup).toHaveBeenCalledWith({
       windowId: 789,
     });
   });
@@ -73,12 +62,12 @@ describe('createPopupOpener', () => {
     const result = await requestOpenPopup(123);
 
     expect(result).toBe(true);
-    expect(globalThis.chrome.action.openPopup).toHaveBeenCalledWith(undefined);
+    expect(deps.extension.action.openPopup).toHaveBeenCalledWith(undefined);
   });
 
   it('returns false if openPopup throws', async () => {
     const deps = createMockDeps();
-    (globalThis.chrome.action.openPopup as jest.Mock).mockRejectedValue(
+    (deps.extension.action.openPopup as jest.Mock).mockRejectedValue(
       new Error('Gesture expired'),
     );
 
