@@ -9,7 +9,7 @@ import {
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import {
-  setAtomicMaxAllowed,
+  setTransactionPayAtomic,
   setIsMaxAmount,
   setLastMoneyAccountWithdrawAmount,
 } from '../../../../store/controller-actions/transaction-pay-controller';
@@ -331,7 +331,7 @@ export function useTransactionCustomAmount({
       return;
     }
 
-    setAtomicMaxAllowed(transactionId, isAtomicMaxAllowed);
+    setTransactionPayAtomic(transactionId, isAtomicMaxAllowed);
   }, [isAtomicMaxAllowed, isMaxAmount, isMoneyAccountDeposit, transactionId]);
 
   const payTokenKey = `${payToken?.address ?? ''}:${payToken?.chainId ?? ''}:${accountOverride ?? ''}`;

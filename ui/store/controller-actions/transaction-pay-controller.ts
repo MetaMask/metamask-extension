@@ -77,11 +77,11 @@ export async function setIsMaxAmount(
  * @param transactionId - Confirmation transaction id.
  * @param isAtomicMaxAllowed - Whether Core may quote this Max atomically.
  */
-export async function setAtomicMaxAllowed(
+export async function setTransactionPayAtomic(
   transactionId: string,
   isAtomicMaxAllowed: boolean,
 ): Promise<void> {
-  return await submitRequestToBackground('setTransactionPayAtomicMaxAllowed', [
+  return await submitRequestToBackground('setTransactionPayAtomic', [
     transactionId,
     isAtomicMaxAllowed,
   ]);

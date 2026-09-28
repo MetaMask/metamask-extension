@@ -1194,8 +1194,8 @@ describe('useTransactionCustomAmount', () => {
       },
     });
 
-    const setAtomicMaxAllowedMock = jest.mocked(
-      TransactionPayControllerActions.setAtomicMaxAllowed,
+    const setTransactionPayAtomicMock = jest.mocked(
+      TransactionPayControllerActions.setTransactionPayAtomic,
     );
 
     function pressMax(remoteFeatureFlags?: Record<string, unknown>) {
@@ -1296,7 +1296,7 @@ describe('useTransactionCustomAmount', () => {
         },
       });
 
-      expect(setAtomicMaxAllowedMock).toHaveBeenCalledWith(
+      expect(setTransactionPayAtomicMock).toHaveBeenCalledWith(
         depositMeta.id,
         true,
       );
@@ -1311,7 +1311,7 @@ describe('useTransactionCustomAmount', () => {
         remoteFeatureFlags: fixedSpreadFlag,
       });
 
-      expect(setAtomicMaxAllowedMock).toHaveBeenCalledWith(
+      expect(setTransactionPayAtomicMock).toHaveBeenCalledWith(
         depositMeta.id,
         false,
       );
@@ -1329,7 +1329,7 @@ describe('useTransactionCustomAmount', () => {
         },
       });
 
-      expect(setAtomicMaxAllowedMock).not.toHaveBeenCalled();
+      expect(setTransactionPayAtomicMock).not.toHaveBeenCalled();
     });
 
     it('does not refresh the hint for non-deposit transactions', () => {
@@ -1342,7 +1342,7 @@ describe('useTransactionCustomAmount', () => {
         },
       });
 
-      expect(setAtomicMaxAllowedMock).not.toHaveBeenCalled();
+      expect(setTransactionPayAtomicMock).not.toHaveBeenCalled();
     });
   });
 

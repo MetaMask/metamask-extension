@@ -159,7 +159,7 @@ function getApi(
         }
       });
     },
-    setTransactionPayAtomicMaxAllowed: (
+    setTransactionPayAtomic: (
       transactionId: string,
       isAllowed: boolean,
     ) => {

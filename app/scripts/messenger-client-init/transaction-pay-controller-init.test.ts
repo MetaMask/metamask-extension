@@ -315,7 +315,7 @@ describe('TransactionPayControllerInit', () => {
     });
   });
 
-  describe('api.setTransactionPayAtomicMaxAllowed', () => {
+  describe('api.setTransactionPayAtomic', () => {
     function initApi() {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
@@ -346,7 +346,7 @@ describe('TransactionPayControllerInit', () => {
       }) => {
         const { api, setTransactionConfigMock } = initApi();
 
-        api.setTransactionPayAtomicMaxAllowed('tx-1', allowed);
+        api.setTransactionPayAtomic('tx-1', allowed);
 
         const updater = setTransactionConfigMock.mock.calls[0][1];
         const config: { isMaxAmount?: boolean; atomic?: boolean } = {
@@ -362,7 +362,7 @@ describe('TransactionPayControllerInit', () => {
     it('leaves atomic alone when max is not armed', () => {
       const { api, setTransactionConfigMock } = initApi();
 
-      api.setTransactionPayAtomicMaxAllowed('tx-1', true);
+      api.setTransactionPayAtomic('tx-1', true);
 
       const updater = setTransactionConfigMock.mock.calls[0][1];
       const config: { isMaxAmount?: boolean; atomic?: boolean } = {
