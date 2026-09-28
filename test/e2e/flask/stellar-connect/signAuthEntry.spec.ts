@@ -1,11 +1,8 @@
 import { strict as assert } from 'assert';
 import { TestDappStellar } from '../../page-objects/pages/test-dapp-stellar';
-import {
-  confirmStellarSnapSigning,
-  connectStellarTestDapp,
-} from '../../page-objects/flows/stellar-dapp.flow';
+import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.flow';
 import SnapSignAuthEntryConfirmation from '../../page-objects/pages/confirmations/snap-sign-auth-entry-confirmation';
-import { DEFAULT_STELLAR_AUTH_ENTRY_XDR } from '../../constants';
+import { DEFAULT_STELLAR_AUTH_ENTRY_XDR, WINDOW_TITLES } from '../../constants';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
@@ -28,10 +25,12 @@ describe('Stellar - Sign Auth Entry - e2e tests', function () {
         await testDapp.setAuthEntry(DEFAULT_STELLAR_AUTH_ENTRY_XDR);
         await testDapp.signAuthEntry();
 
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const signAuthEntryConfirmation = new SnapSignAuthEntryConfirmation(
           driver,
         );
-        await confirmStellarSnapSigning(driver, signAuthEntryConfirmation);
+        await signAuthEntryConfirmation.checkPageIsLoaded();
+        await signAuthEntryConfirmation.clickFooterConfirmButton();
         await testDapp.switchTo();
 
         const signedAuthEntry = await testDapp.getSignedAuthEntry();

@@ -1,11 +1,9 @@
 import { strict as assert } from 'assert';
 import { TestDappStellar } from '../../page-objects/pages/test-dapp-stellar';
-import {
-  confirmStellarSnapSigning,
-  connectStellarTestDapp,
-} from '../../page-objects/flows/stellar-dapp.flow';
+import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.flow';
 import SnapSignTransactionConfirmation from '../../page-objects/pages/confirmations/snap-sign-transaction-confirmation';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
+import { WINDOW_TITLES } from '../../constants';
 import {
   DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
   withStellarWalletSnap,
@@ -27,8 +25,10 @@ describe('Stellar - Sign Transaction - e2e tests', function () {
         await testDapp.loadExampleXdr();
         await testDapp.signTransaction();
 
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const signTxConfirmation = new SnapSignTransactionConfirmation(driver);
-        await confirmStellarSnapSigning(driver, signTxConfirmation);
+        await signTxConfirmation.checkPageIsLoaded();
+        await signTxConfirmation.clickFooterConfirmButton();
         await testDapp.switchTo();
 
         const signedTransaction = await testDapp.getSignedTransaction();
@@ -55,10 +55,12 @@ describe('Stellar - Sign Transaction - e2e tests', function () {
           await testDapp.loadExampleXdr();
           await testDapp.signTransaction();
 
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signTxConfirmation = new SnapSignTransactionConfirmation(
             driver,
           );
-          await confirmStellarSnapSigning(driver, signTxConfirmation);
+          await signTxConfirmation.checkPageIsLoaded();
+          await signTxConfirmation.clickFooterConfirmButton();
           await testDapp.switchTo();
 
           const signedTransaction = await testDapp.getSignedTransaction();
