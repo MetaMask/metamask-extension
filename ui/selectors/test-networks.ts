@@ -5,7 +5,7 @@ import { isTestNetwork } from '../helpers/utils/network-helper';
 import { getSelectedMultichainNetworkChainId } from './multichain/networks';
 import {
   getAllDomains,
-  getPermittedAccountsByOrigin,
+  getPermissionSubjects,
   getShowTestNetworksPreference,
 } from './selectors';
 
@@ -39,13 +39,8 @@ export const getIsTestnetInUse = createSelector(
   getSelectedChainId,
   getAllDomains,
   getNetworkConfigurationsByChainId,
-  getPermittedAccountsByOrigin,
-  (
-    selectedChainId,
-    domains,
-    networkConfigurationsByChainId,
-    permittedAccountsByOrigin,
-  ) => {
+  getPermissionSubjects,
+  (selectedChainId, domains, networkConfigurationsByChainId, subjects) => {
     if (isTestChain(selectedChainId)) {
       return true;
     }
@@ -57,7 +52,7 @@ export const getIsTestnetInUse = createSelector(
     return Object.entries(domains ?? {}).some(
       ([origin, networkClientId]) =>
         typeof networkClientId === 'string' &&
-        permittedAccountsByOrigin[origin] &&
+        Boolean(subjects[origin]) &&
         Object.values(networkConfigurationsByChainId).some(
           (network) =>
             isTestChain(network.chainId) &&
