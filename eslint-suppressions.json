@@ -632,11 +632,6 @@
       "count": 4
     }
   },
-  "ui/pages/asset/components/chart/asset-chart.tsx": {
-    "react-hooks/purity": {
-      "count": 1
-    }
-  },
   "ui/pages/asset/hooks/useHistoricalPrices.ts": {
     "react-hooks/purity": {
       "count": 2
