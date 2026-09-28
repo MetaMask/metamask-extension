@@ -82,6 +82,15 @@ function webAccessibleResourcePaths(manifest: Manifest) {
   );
 }
 
+function htmlScriptEntrypointNames(html: string) {
+  return [
+    ...html.matchAll(/<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/giu),
+  ]
+    .map((match) => match[1])
+    .filter((src) => src.startsWith('./') || src.startsWith('../'))
+    .map((src) => path.posix.parse(src).name);
+}
+
 function addToSetMap<TKey, TValue>(
   map: Map<TKey, Set<TValue>>,
   key: TKey,
@@ -120,6 +129,8 @@ export class ManifestPlugin<Z extends boolean> {
 
   private isolatedHtmlEntries: Set<string> = new Set();
 
+  private contentScriptEntries: Set<string> = new Set();
+
   private bundleSizeCategoriesByEntrypoint: Map<
     string,
     Set<BundleSizeCategory>
@@ -147,6 +158,12 @@ export class ManifestPlugin<Z extends boolean> {
     Boolean(name && this.isolatedHtmlEntries.has(name));
 
   getIsolatedHtmlEntryNames = () => [...this.isolatedHtmlEntries];
+
+  isContentScriptEntry = (name?: string | null) =>
+    Boolean(name && this.contentScriptEntries.has(name));
+
+  getContentScriptOutputNames = () =>
+    [...this.contentScriptEntries].map(extensionToJs);
 
   private isWebAccessibleHtml(filename: string) {
     for (const manifest of this.manifests.values()) {
@@ -697,6 +714,9 @@ export class ManifestPlugin<Z extends boolean> {
     category: BundleSizeCategory;
   }) => {
     addToSetMap(this.bundleSizeCategoriesByEntrypoint, filename, category);
+    if (category === 'contentScripts') {
+      this.contentScriptEntries.add(filename);
+    }
 
     if (this.addedScripts.has(filename)) return;
     this.addedScripts.add(filename);
@@ -738,12 +758,13 @@ export class ManifestPlugin<Z extends boolean> {
       this.selfContainedScripts.add(parsedFileName);
       this.isolatedHtmlEntries.add(parsedFileName);
 
-      // `cashtag-widget.html` is the web-accessible HTML entry, but HtmlBundler
-      // names its bootstrap script `frame-bootstrap`. Keep it isolated from
-      // other extension pages while its widget code loads on demand.
-      if (parsedFileName === 'cashtag-widget') {
-        this.selfContainedScripts.add('frame-bootstrap');
-        this.isolatedHtmlEntries.add('frame-bootstrap');
+      // HtmlBundler gives referenced scripts their own entrypoint names.
+      // They must keep the same LavaMoat boundary as the web-accessible page.
+      for (const scriptName of htmlScriptEntrypointNames(
+        readFileSync(filePath, 'utf8'),
+      )) {
+        this.selfContainedScripts.add(scriptName);
+        this.isolatedHtmlEntries.add(scriptName);
       }
     }
   };
@@ -754,6 +775,7 @@ export class ManifestPlugin<Z extends boolean> {
   ): void {
     this.resetBundleSizeEntrypointMetadata();
     this.isolatedHtmlEntries.clear();
+    this.contentScriptEntries.clear();
 
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)

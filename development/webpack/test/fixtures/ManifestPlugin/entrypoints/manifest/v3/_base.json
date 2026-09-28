@@ -17,7 +17,7 @@
   "web_accessible_resources": [
     {
       "matches": ["<all_urls>"],
-      "resources": ["images/icon.png", "testing.js"]
+      "resources": ["images/icon.png", "testing.js", "widget.html"]
     }
   ]
 }

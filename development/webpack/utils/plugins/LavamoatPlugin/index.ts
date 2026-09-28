@@ -97,6 +97,8 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
 type IsolatedHtmlEntries = {
   isIsolatedHtmlEntry: (name?: string | null) => boolean;
   getIsolatedHtmlEntryNames: () => string[];
+  isContentScriptEntry: (name?: string | null) => boolean;
+  getContentScriptOutputNames: () => string[];
 };
 
 const lockdownBase = [
@@ -105,11 +107,11 @@ const lockdownBase = [
   String.raw`service-worker\.js`,
 ];
 
-function lockdownPattern(isolatedHtmlNames: string[]) {
-  const isolated = isolatedHtmlNames.map(
-    (name) =>
-      `${name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}(?:\\.[0-9a-h]{20})?\\.js`,
-  );
+function lockdownPattern(entryNames: string[]) {
+  const isolated = entryNames.map((name) => {
+    const baseName = name.endsWith('.js') ? name.slice(0, -3) : name;
+    return `${baseName.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}(?:\\.[0-9a-h]{20})?\\.js`;
+  });
   return new RegExp(`^(?:${[...lockdownBase, ...isolated].join('|')})$`, 'u');
 }
 
@@ -134,9 +136,10 @@ export const lavamoatPlugin = (
     // so this must resolve names when `.test` runs during emit.
     inlineLockdown: {
       test: (file: string) =>
-        lockdownPattern(isolatedHtml?.getIsolatedHtmlEntryNames() ?? []).test(
-          file,
-        ),
+        lockdownPattern([
+          ...(isolatedHtml?.getIsolatedHtmlEntryNames() ?? []),
+          ...(isolatedHtml?.getContentScriptOutputNames() ?? []),
+        ]).test(file),
     } as RegExp,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
@@ -170,7 +173,10 @@ export const lavamoatPlugin = (
             },
           },
         };
-      } else if (chunk.name === 'scripts/contentscript.js') {
+      } else if (
+        chunk.name === 'scripts/contentscript.js' ||
+        isolatedHtml?.isContentScriptEntry(chunk.name)
+      ) {
         return {
           mode: 'safe',
           embeddedOptions: {

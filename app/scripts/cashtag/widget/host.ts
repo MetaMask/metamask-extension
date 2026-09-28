@@ -1,5 +1,5 @@
-import browser from 'webextension-polyfill';
-import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import { createWidgetFrame } from '../../widgets/host';
+import { WIDGETS } from '../../widgets/protocol';
 import { findCashtagAnchors, symbolFromCashtagAnchor } from '../lib/helpers';
 import type { ResolvedTicker } from '../lib/types';
 import {
@@ -8,9 +8,9 @@ import {
   removePageStyles,
 } from '../lib/ui';
 import widgetPageStyles from './page.css';
+import { CASHTAG_WIDGET_UPDATES, type CashtagTheme } from './theme';
 
 const widgetPageStyleAttr = 'data-mm-cashtag-widget-css';
-const widgetFramePath = 'cashtag-widget.html';
 const anchorNameProp = 'anchor-name';
 const positionAnchorProp = 'position-anchor';
 const activeAnchorVar = '--cashtag-invoker';
@@ -24,47 +24,7 @@ export type WidgetHandle = {
   stop: () => void;
 };
 
-type WidgetInitMessage = {
-  type: 'METAMASK_X_WIDGET_INIT';
-  authToken: string;
-  symbol: string;
-  theme: 'light' | 'dark';
-};
-
-function newAuthToken() {
-  return Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) =>
-    byte.toString(16).padStart(2, '0'),
-  ).join('');
-}
-
-async function registerFrame(authToken: string) {
-  try {
-    const response = (await browser.runtime.sendMessage({
-      type: EXTENSION_MESSAGES.REGISTER_X_WIDGET_FRAME,
-      body: { authToken },
-    })) as { body?: { ok?: boolean } } | undefined;
-    return response?.body?.ok === true;
-  } catch {
-    return false;
-  }
-}
-
-function revokeFrame(authToken: string | null) {
-  if (!authToken) {
-    return;
-  }
-  browser.runtime
-    .sendMessage({
-      type: EXTENSION_MESSAGES.REVOKE_X_WIDGET_FRAME,
-      body: { authToken },
-    })
-    .catch(() => undefined);
-}
-
 export async function injectWidget(): Promise<WidgetHandle> {
-  const frameUrl = chrome.runtime.getURL(widgetFramePath);
-  const frameUrlParts = new URL(frameUrl);
-  const frameOrigin = `${frameUrlParts.protocol}//${frameUrlParts.host}`;
   injectPageStyles(widgetPageStyles, widgetPageStyleAttr);
 
   const host = document.createElement('div');
@@ -77,51 +37,21 @@ export async function injectWidget(): Promise<WidgetHandle> {
 
   const shadowRoot = host.attachShadow({ mode: 'closed' });
 
-  const frame = document.createElement('iframe');
-  frame.setAttribute('title', 'MetaMask');
-  frame.style.cssText =
-    'display:block;width:100%;height:100%;border:0;color-scheme:normal;background:transparent;';
-  shadowRoot.appendChild(frame);
+  const widgetFrame = createWidgetFrame(WIDGETS.Cashtag);
+  shadowRoot.appendChild(widgetFrame.element);
 
   document.documentElement.appendChild(host);
 
-  let theme: 'light' | 'dark' = 'light';
   let symbol: string | null = null;
-  let authToken: string | null = null;
-  let generation = 0;
-  let registrationQueue = Promise.resolve();
-
-  const onFrameLoad = () => {
-    if (!authToken || !symbol) {
-      return;
-    }
-    const message: WidgetInitMessage = {
-      type: 'METAMASK_X_WIDGET_INIT',
-      authToken,
-      symbol,
-      theme,
-    };
-    frame.contentWindow?.postMessage(message, frameOrigin);
-  };
-  frame.addEventListener('load', onFrameLoad);
-
+  let theme: CashtagTheme = 'light';
   const unbindColorScheme = bindHostColorScheme(host, (next) => {
     theme = next;
-    if (authToken) {
-      frame.contentWindow?.postMessage(
-        { type: 'METAMASK_X_WIDGET_THEME', authToken, theme },
-        frameOrigin,
-      );
-    }
+    widgetFrame.sendUpdate({ type: CASHTAG_WIDGET_UPDATES.Theme, theme });
   });
 
   function reset() {
-    generation += 1;
-    const oldToken = authToken;
-    authToken = null;
     symbol = null;
-    frame.removeAttribute('src');
-    revokeFrame(oldToken);
+    widgetFrame.hide();
   }
 
   return {
@@ -130,26 +60,13 @@ export async function injectWidget(): Promise<WidgetHandle> {
       if (symbol === nextSymbol) {
         return;
       }
-      reset();
       symbol = nextSymbol;
-      const requestGeneration = generation;
-      const nextToken = newAuthToken();
-      authToken = nextToken;
-      const registration = registrationQueue.then(() =>
-        registerFrame(nextToken),
-      );
-      registrationQueue = registration.then(() => undefined);
-      registration.then((ok) => {
-        if (!ok || generation !== requestGeneration) {
-          return;
-        }
-        frame.src = frameUrl;
-      });
+      widgetFrame.show({ symbol: nextSymbol, theme });
     },
     reset,
     stop() {
-      reset();
-      frame.removeEventListener('load', onFrameLoad);
+      symbol = null;
+      widgetFrame.dispose();
       unbindColorScheme();
       host.remove();
       removePageStyles(widgetPageStyleAttr);

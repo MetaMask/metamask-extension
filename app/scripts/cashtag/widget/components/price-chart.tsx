@@ -7,7 +7,7 @@ import {
   type UTCTimestamp,
 } from 'lightweight-charts';
 import { EXTENSION_MESSAGES } from '#shared/constants/messages';
-import { sendWidgetMessage } from '../widget-runtime';
+import { sendWidgetAction } from '../../../widgets/frame-runtime';
 import { formatChartTime, formatUsd } from '../../lib/helpers';
 import type { PricePoint } from '../../lib/types';
 
@@ -42,7 +42,7 @@ function isPricePoint(point: unknown): point is PricePoint {
 }
 
 function loadPriceHistory(caipAssetId: string) {
-  return sendWidgetMessage(EXTENSION_MESSAGES.GET_DATA, {
+  return sendWidgetAction(EXTENSION_MESSAGES.GET_DATA, {
     caipAssetId,
     fields: ['priceHistory'],
   })

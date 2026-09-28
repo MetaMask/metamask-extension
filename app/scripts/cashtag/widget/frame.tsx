@@ -1,9 +1,15 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import {
+  sendWidgetAction,
+  setWidgetSession,
+} from '../../widgets/frame-runtime';
+import { onWidgetUpdate } from '../../widgets/frame-updates';
+import { WIDGETS } from '../../widgets/protocol';
 import type { AssetData, ResolvedTicker } from '../lib/types';
+import { isCashtagTheme, isCashtagThemeUpdate } from './theme';
 import { Widget } from './widget';
-import { sendWidgetMessage, setWidgetAuthToken } from './widget-runtime';
 
 // The widget CSS is loaded at runtime because HtmlBundler leaves the
 // design-tokens package import unresolved in distributed CSS. The copied
@@ -23,7 +29,7 @@ function openExtensionPage(page: 'swap' | 'asset', asset: AssetData) {
   if (!asset.caipAssetId) {
     return;
   }
-  sendWidgetMessage(EXTENSION_MESSAGES.OPEN_EXTENSION, {
+  sendWidgetAction(EXTENSION_MESSAGES.OPEN_EXTENSION, {
     page,
     caipAssetId: asset.caipAssetId,
   }).catch(() => undefined);
@@ -31,7 +37,7 @@ function openExtensionPage(page: 'swap' | 'asset', asset: AssetData) {
 
 async function loadTicker(symbol: string): Promise<ResolvedTicker | null> {
   try {
-    const response = await sendWidgetMessage(EXTENSION_MESSAGES.GET_DATA, {
+    const response = await sendWidgetAction(EXTENSION_MESSAGES.GET_DATA, {
       symbol,
     });
     const result = response as
@@ -53,19 +59,38 @@ async function loadTicker(symbol: string): Promise<ResolvedTicker | null> {
 
 export async function mountFrame({
   authToken,
-  symbol,
-  theme,
+  payload,
 }: {
   authToken: string;
-  symbol: string;
-  theme: 'light' | 'dark';
+  payload: unknown;
 }) {
+  const symbol =
+    payload && typeof payload === 'object' && 'symbol' in payload
+      ? payload.symbol
+      : undefined;
+  const theme =
+    payload && typeof payload === 'object' && 'theme' in payload
+      ? payload.theme
+      : undefined;
+  if (
+    typeof symbol !== 'string' ||
+    symbol.length === 0 ||
+    symbol.length > 32 ||
+    !isCashtagTheme(theme)
+  ) {
+    return;
+  }
   const mountPoint = document.getElementById('root');
   if (!mountPoint) {
     return;
   }
-  setWidgetAuthToken(authToken);
+  setWidgetSession(WIDGETS.Cashtag.id, authToken);
   document.documentElement.dataset.theme = theme;
+  onWidgetUpdate((update) => {
+    if (isCashtagThemeUpdate(update)) {
+      document.documentElement.dataset.theme = update.theme;
+    }
+  });
 
   await loadStyles();
   const resolved = await loadTicker(symbol);
@@ -80,7 +105,7 @@ export async function mountFrame({
       onSwap={(asset) => openExtensionPage('swap', asset)}
       onViewDetails={(asset) => openExtensionPage('asset', asset)}
       onDisable={() => {
-        sendWidgetMessage(EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED, {
+        sendWidgetAction(EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED, {
           enabled: false,
         }).catch(() => undefined);
       }}

@@ -1703,6 +1703,42 @@ describe('ManifestPlugin', () => {
     });
 
     describe('canBeChunked', () => {
+      it('isolates scripts referenced by web-accessible HTML', async () => {
+        const { compiler, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+          html,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        assert.strictEqual(
+          plugin.isIsolatedHtmlEntry('widget-bootstrap'),
+          true,
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'widget-bootstrap' }),
+          false,
+        );
+        assert.strictEqual(
+          plugin.isContentScriptEntry('scripts/contentscript.js'),
+          true,
+        );
+        assert.ok(
+          plugin
+            .getContentScriptOutputNames()
+            .includes('scripts/contentscript.js'),
+        );
+      });
+
       it('should return false for scripts collected from the manifest', async () => {
         const { compiler, promise } = mockWebpack([], [], []);
         compiler.context = entrypointsContext;
@@ -1882,6 +1918,7 @@ describe('ManifestPlugin', () => {
         assert.deepStrictEqual(war?.[0].resources, [
           'images/icon.png',
           'testing.bundle.js',
+          'widget.html',
         ]);
       });
 
@@ -1945,7 +1982,7 @@ describe('ManifestPlugin', () => {
         // web_accessible_resources .js should be resolved, non-.js untouched
         assert.deepStrictEqual(
           (json as chrome.runtime.ManifestV2).web_accessible_resources,
-          ['images/icon.png', 'testing.bundle.js'],
+          ['images/icon.png', 'testing.bundle.js', 'widget.html'],
         );
       });
 
@@ -1990,6 +2027,7 @@ describe('ManifestPlugin', () => {
         assert.deepStrictEqual(war?.[0].resources, [
           'images/icon.png',
           'testing.js',
+          'widget.html',
         ]);
       });
 
@@ -2025,6 +2063,7 @@ describe('ManifestPlugin', () => {
         assert.deepStrictEqual(war?.[0].resources, [
           'images/icon.png',
           'testing.bundle.js',
+          'widget.html',
         ]);
       });
     });

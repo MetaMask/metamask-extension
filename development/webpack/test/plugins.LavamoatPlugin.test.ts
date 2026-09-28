@@ -91,6 +91,41 @@ describe('LavamoatPlugin', () => {
   });
 
   describe('lavamoatPlugin – runtimeConfigurationPerChunk_experimental', () => {
+    it('protects manifest content-script entries with their own LavaMoat runtime', () => {
+      const plugin = lavamoatPlugin(mockArgs, {
+        isIsolatedHtmlEntry: () => false,
+        getIsolatedHtmlEntryNames: () => [],
+        isContentScriptEntry: (name) => name === 'scripts/cashtag/entry.ts',
+        getContentScriptOutputNames: () => ['scripts/cashtag/entry.js'],
+      }) as unknown as {
+        options: {
+          inlineLockdown: { test: (file: string) => boolean };
+          runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
+            mode: string;
+            embeddedOptions?: {
+              scuttleGlobalThis?: { exceptions: string[] };
+            };
+          };
+        };
+      };
+      const config = plugin.options.runtimeConfigurationPerChunk_experimental(
+        mockChunk('scripts/cashtag/entry.ts'),
+      );
+
+      assert.strictEqual(config.mode, 'safe');
+      assert.ok(
+        config.embeddedOptions?.scuttleGlobalThis?.exceptions.includes(
+          'chrome',
+        ),
+      );
+      assert.ok(
+        config.embeddedOptions?.scuttleGlobalThis?.exceptions.includes(
+          'browser',
+        ),
+      );
+      assert.ok(plugin.options.inlineLockdown.test('scripts/cashtag/entry.js'));
+    });
+
     // Access the internal options via the public `this.options` property that
     // LavaMoatPlugin stores on every instance.
     const plugin = lavamoatPlugin(mockArgs) as unknown as {

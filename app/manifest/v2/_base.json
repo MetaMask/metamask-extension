@@ -37,6 +37,12 @@
       "all_frames": true
     },
     {
+      "matches": ["https://x.com/*", "https://www.x.com/*"],
+      "js": ["scripts/cashtag/entry.ts"],
+      "run_at": "document_idle",
+      "all_frames": false
+    },
+    {
       "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
@@ -73,5 +79,5 @@
     "cookies"
   ],
   "short_name": "__MSG_appName__",
-  "web_accessible_resources": ["cashtag-widget.html"]
+  "web_accessible_resources": ["widget.html"]
 }

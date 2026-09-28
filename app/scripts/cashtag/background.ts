@@ -10,17 +10,14 @@ import { buildAssetRoutePath } from '#shared/lib/asset-route';
 import type { ManifestFlags } from '#shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import type { WidgetBackgroundDefinition } from '../widgets/background';
+import { WIDGETS } from '../widgets/protocol';
 import { fetchPriceHistory, resolveTicker } from './lib/data';
 import type { Controller } from './lib/types';
-import {
-  createWidgetFrameAuthorization,
-  type WidgetFrameAuthorization,
-} from './widget/authorization';
 
 const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
 const xTabUrlPatterns = ['*://x.com/*', '*://www.x.com/*'];
 const xHosts = new Set(['x.com', 'www.x.com']);
-const widgetFramePath = 'cashtag-widget.html';
 const fullscreenFile = 'home.html';
 const popupResetDelayMs = 1000;
 // Retry delays for broadcasting OPEN_ROUTE after a cold open,
@@ -45,7 +42,7 @@ function isXPageSender(sender: chrome.runtime.MessageSender) {
   return (
     sender.id === chrome.runtime.id &&
     url !== null &&
-    (url.protocol === 'https:' || url.protocol === 'http:') &&
+    url.protocol === 'https:' &&
     xHosts.has(url.hostname)
   );
 }
@@ -54,53 +51,16 @@ function isXContentScriptSender(sender: chrome.runtime.MessageSender) {
   return sender.frameId === 0 && isXPageSender(sender);
 }
 
-function isWidgetFrameSender(sender: chrome.runtime.MessageSender) {
-  const url = parsedUrl(sender.url);
-  const tabUrl = parsedUrl(sender.tab?.url);
-  const expectedUrl = new URL(chrome.runtime.getURL(widgetFramePath));
-  return (
-    sender.id === chrome.runtime.id &&
-    typeof sender.frameId === 'number' &&
-    sender.frameId > 0 &&
-    url?.protocol === expectedUrl.protocol &&
-    url.hostname === expectedUrl.hostname &&
-    url.pathname === expectedUrl.pathname &&
-    tabUrl !== null &&
-    xHosts.has(tabUrl.hostname)
-  );
-}
-
 export function isAllowedCashtagSender(
   message: CashtagMessage | null | undefined,
   sender: chrome.runtime.MessageSender,
-  authorization: WidgetFrameAuthorization,
 ) {
   const messageType = message?.type;
-  if (messageType === EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED) {
-    return isXPageSender(sender);
-  }
-  if (
-    messageType === EXTENSION_MESSAGES.REGISTER_X_WIDGET_FRAME ||
-    messageType === EXTENSION_MESSAGES.REVOKE_X_WIDGET_FRAME
-  ) {
-    return isXContentScriptSender(sender);
-  }
-  if (messageType === EXTENSION_MESSAGES.CLAIM_X_WIDGET_FRAME) {
-    return isWidgetFrameSender(sender);
-  }
-  if (messageType === EXTENSION_MESSAGES.GET_DATA) {
-    return (
-      isXContentScriptSender(sender) ||
-      authorization.isAuthorized(message?.body?.authToken, sender)
-    );
-  }
-  if (
-    messageType === EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED ||
-    messageType === EXTENSION_MESSAGES.OPEN_EXTENSION
-  ) {
-    return authorization.isAuthorized(message?.body?.authToken, sender);
-  }
-  return false;
+  return (
+    (messageType === EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED ||
+      messageType === EXTENSION_MESSAGES.GET_DATA) &&
+    isXContentScriptSender(sender)
+  );
 }
 
 async function broadcastTickerWidgetEnabled(enabled: boolean) {
@@ -499,34 +459,10 @@ export function createCashtagResponse(
   message: CashtagMessage,
   sender: chrome.runtime.MessageSender,
   getController: GetController,
-  authorization: WidgetFrameAuthorization,
 ) {
   switch (message.type) {
     case EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED:
       return handleGetWidgetEnabled(getController, sender);
-    case EXTENSION_MESSAGES.REGISTER_X_WIDGET_FRAME:
-      return Promise.resolve({
-        type: EXTENSION_MESSAGES.REGISTER_X_WIDGET_FRAME,
-        body: {
-          ok:
-            isTickerWidgetEnabled(getController()) &&
-            authorization.register(message.body?.authToken, sender),
-        },
-      });
-    case EXTENSION_MESSAGES.CLAIM_X_WIDGET_FRAME:
-      return Promise.resolve({
-        type: EXTENSION_MESSAGES.CLAIM_X_WIDGET_FRAME,
-        body: {
-          ok:
-            isTickerWidgetEnabled(getController()) &&
-            authorization.claim(message.body?.authToken, sender),
-        },
-      });
-    case EXTENSION_MESSAGES.REVOKE_X_WIDGET_FRAME:
-      return Promise.resolve({
-        type: EXTENSION_MESSAGES.REVOKE_X_WIDGET_FRAME,
-        body: { ok: authorization.revoke(message.body?.authToken, sender) },
-      });
     case EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED:
       return handleSetWidgetEnabled(message, getController);
     case EXTENSION_MESSAGES.GET_DATA:
@@ -560,6 +496,27 @@ export function bindTickerWidgetEnabledBroadcasts(
   );
 }
 
+export function createCashtagWidgetDefinition(
+  getController: GetController,
+): WidgetBackgroundDefinition<typeof WIDGETS.Cashtag.id> {
+  const cashtagAction =
+    (type: string) =>
+    (payload: Record<string, unknown>, sender: chrome.runtime.MessageSender) =>
+      createCashtagResponse({ type, body: payload }, sender, getController);
+  return {
+    isEnabled: () => isTickerWidgetEnabled(getController()),
+    actions: {
+      [EXTENSION_MESSAGES.GET_DATA]: cashtagAction(EXTENSION_MESSAGES.GET_DATA),
+      [EXTENSION_MESSAGES.OPEN_EXTENSION]: cashtagAction(
+        EXTENSION_MESSAGES.OPEN_EXTENSION,
+      ),
+      [EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED]: cashtagAction(
+        EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
+      ),
+    },
+  };
+}
+
 export function registerCashtagBackgroundBridge({
   getController,
 }: {
@@ -569,22 +526,15 @@ export function registerCashtagBackgroundBridge({
     return;
   }
   registered = true;
-  const authorization = createWidgetFrameAuthorization();
 
   bindTickerWidgetEnabledBroadcasts(getController);
-  chrome.tabs.onRemoved.addListener(authorization.removeTab);
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (!isAllowedCashtagSender(message, sender, authorization)) {
+    if (!isAllowedCashtagSender(message, sender)) {
       return false;
     }
 
-    const response = createCashtagResponse(
-      message,
-      sender,
-      getController,
-      authorization,
-    );
+    const response = createCashtagResponse(message, sender, getController);
 
     if (response === undefined) {
       return false;
