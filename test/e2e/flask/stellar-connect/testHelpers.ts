@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { regularDelayMs, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -73,7 +73,6 @@ export async function withStellarWalletSnap(
     },
     async ({ driver }: { driver: Driver }) => {
       await login(driver);
-      await driver.delay(regularDelayMs);
       await test(driver);
     },
   );
