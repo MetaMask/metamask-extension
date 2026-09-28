@@ -6,45 +6,6 @@ import SnapSignAuthEntryConfirmation from '../pages/confirmations/snap-sign-auth
 import SnapSignMessageConfirmation from '../pages/confirmations/snap-sign-message-confirmation';
 import SnapSignTransactionConfirmation from '../pages/confirmations/snap-sign-transaction-confirmation';
 import StellarWalletModal from '../pages/stellar-wallet-modal';
-import { largeDelayMs } from '../../helpers';
-
-/**
- * Tries opening the wallet selection modal and selecting the MetaMask option.
- *
- * @param driver - The driver instance.
- * @param testDapp - The Stellar test dapp page object.
- * @param retries - The number of retries.
- */
-const tryConnectWithRetry = async (
-  driver: Driver,
-  testDapp: TestDappStellar,
-  retries: number,
-) => {
-  const walletModal = new StellarWalletModal(driver);
-
-  for (let attempt = 0; attempt < retries; attempt++) {
-    try {
-      await testDapp.connect();
-
-      await walletModal.checkPageIsLoaded();
-      await walletModal.connectToMetaMaskWallet();
-
-      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-      return;
-    } catch (error) {
-      console.warn(
-        `Retrying Stellar dapp wallet modal (attempt ${attempt + 1}/${retries})`,
-      );
-
-      if (attempt === retries - 1) {
-        throw error;
-      }
-
-      await driver.delay(largeDelayMs);
-    }
-  }
-};
 
 /**
  * Connects the Stellar test dapp to the wallet.
@@ -58,7 +19,13 @@ export const connectStellarTestDapp = async (
 ): Promise<void> => {
   await testDapp.checkPageIsLoaded();
   await testDapp.selectNetwork('pubnet');
-  await tryConnectWithRetry(driver, testDapp, 3);
+  await testDapp.connect();
+
+  const walletModal = new StellarWalletModal(driver);
+  await walletModal.checkPageIsLoaded();
+  await walletModal.connectToMetaMaskWallet();
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
   await connectAccountConfirmation.checkPageIsLoaded();
