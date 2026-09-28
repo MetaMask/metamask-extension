@@ -72,6 +72,26 @@ describe('RampsPaymentMethodListItem', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('keeps the compact less-than label while exposing a screen reader friendly label', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={{ ...debitCard, delay: [0, 10] }}
+        limitText="$2,000 limit"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    const subtitle = getByTestId(
+      'ramps-payment-method-item-delay-debit-credit-card',
+    );
+    expect(subtitle).toHaveTextContent('<10 mins • $2,000 limit');
+    expect(subtitle).toHaveAttribute(
+      'aria-label',
+      'Less than 10 mins • $2,000 limit',
+    );
+  });
+
   it('matches snapshot with instant delay and no limits', () => {
     const { container } = renderWithProvider(
       <RampsPaymentMethodListItem
