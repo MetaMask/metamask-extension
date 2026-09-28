@@ -7423,19 +7423,47 @@ export function putNotificationPreferences(
 }
 
 /**
+ * Gets marketing consent from Authenticated User Storage.
+ *
+ * @returns A thunk action that retrieves the current AUS marketing consent.
+ */
+export function getAusMarketingConsent(): ThunkAction<
+  Promise<{ marketingConsentEnabled: boolean } | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      return (await submitRequestToBackground('getAusMarketingConsent')) as {
+        marketingConsentEnabled: boolean;
+      } | null;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
  * Writes marketing consent to Authenticated User Storage.
  *
  * @param marketingConsent - Whether the user has opted in to marketing.
  * @returns A thunk action that writes marketing consent.
  */
-export function putMarketingConsent(
+export function putAusMarketingConsent(
   marketingConsent: boolean,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    // TODO: Call AuthenticatedUserStorageService:putMarketingConsent once AUS
-    // supports PUT /marketing-consent. Keep this asynchronous to match the
-    // notification-preferences write flow.
-    await Promise.resolve(marketingConsent);
+    try {
+      await submitRequestToBackground('putAusMarketingConsent', [
+        { marketingConsentEnabled: marketingConsent },
+        'extension',
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
   };
 }
 

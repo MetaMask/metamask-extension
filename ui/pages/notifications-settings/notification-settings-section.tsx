@@ -39,7 +39,7 @@ import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifi
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
 import {
-  putMarketingConsent,
+  putAusMarketingConsent,
   setDataCollectionForMarketing,
 } from '../../store/actions';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
@@ -434,7 +434,10 @@ const MarketingConsentSheet = ({
       >
         <ModalHeader
           onClose={onClose}
-          closeButtonProps={{ 'data-testid': 'marketing-consent-sheet-close' }}
+          closeButtonProps={{
+            ariaLabel: t('close'),
+            'data-testid': 'marketing-consent-sheet-close',
+          }}
         >
           <Text variant={TextVariant.HeadingSm}>
             {t('notificationsSettingsMarketingConsentSheetTitle')}
@@ -579,7 +582,7 @@ export function NotificationSettingsSection({
     setPreferenceError(null);
     try {
       await dispatch(setDataCollectionForMarketing(true));
-      await dispatch(putMarketingConsent(true));
+      await dispatch(putAusMarketingConsent(true));
       await updatePreference('marketing', pendingMarketingChannel, true);
       trackEvent(
         createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)

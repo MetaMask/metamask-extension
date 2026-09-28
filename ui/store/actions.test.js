@@ -3879,6 +3879,43 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getAusMarketingConsent', () => {
+    it('calls getAusMarketingConsent in the background', async () => {
+      const store = mockStore();
+      const consent = { marketingConsentEnabled: true };
+      const getAusMarketingConsentStub = sinon.stub().resolves(consent);
+
+      setBackgroundConnection({
+        getAusMarketingConsent: getAusMarketingConsentStub,
+      });
+
+      const result = await store.dispatch(actions.getAusMarketingConsent());
+
+      expect(getAusMarketingConsentStub.calledOnceWith()).toBe(true);
+      expect(result).toBe(consent);
+    });
+  });
+
+  describe('#putAusMarketingConsent', () => {
+    it('calls putAusMarketingConsent in the background with the extension client type', async () => {
+      const store = mockStore();
+      const putAusMarketingConsentStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        putAusMarketingConsent: putAusMarketingConsentStub,
+      });
+
+      await store.dispatch(actions.putAusMarketingConsent(true));
+
+      expect(
+        putAusMarketingConsentStub.calledOnceWith(
+          { marketingConsentEnabled: true },
+          'extension',
+        ),
+      ).toBe(true);
+    });
+  });
+
   describe('#enableMetamaskNotifications', () => {
     it('calls enableMetamaskNotifications in the background with options', async () => {
       const store = mockStore();

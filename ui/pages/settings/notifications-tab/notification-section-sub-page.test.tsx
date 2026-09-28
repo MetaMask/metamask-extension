@@ -13,7 +13,7 @@ import {
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
 import {
-  putMarketingConsent,
+  putAusMarketingConsent,
   setDataCollectionForMarketing,
 } from '../../../store/actions';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -99,7 +99,7 @@ jest.mock(
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setDataCollectionForMarketing: jest.fn(() => () => Promise.resolve()),
-  putMarketingConsent: jest.fn(() => () => Promise.resolve()),
+  putAusMarketingConsent: jest.fn(() => () => Promise.resolve()),
 }));
 
 const mockStore = configureMockStore([thunk]);
@@ -1078,7 +1078,7 @@ describe('NotificationSectionSubPage', () => {
 
       await waitFor(() => {
         expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
-        expect(putMarketingConsent).toHaveBeenCalledWith(true);
+        expect(putAusMarketingConsent).toHaveBeenCalledWith(true);
         expect(updatePreference).toHaveBeenCalledWith(
           'marketing',
           'inAppNotificationsEnabled',

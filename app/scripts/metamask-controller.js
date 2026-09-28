@@ -3746,6 +3746,14 @@ export default class MetamaskController extends EventEmitter {
         authenticatedUserStorageService.putNotificationPreferences.bind(
           authenticatedUserStorageService,
         ),
+      getAusMarketingConsent:
+        authenticatedUserStorageService.getMarketingConsent.bind(
+          authenticatedUserStorageService,
+        ),
+      putAusMarketingConsent:
+        authenticatedUserStorageService.putMarketingConsent.bind(
+          authenticatedUserStorageService,
+        ),
       // NotificationServicesController
       checkAccountsPresence:
         notificationServicesController.checkAccountsPresence.bind(
