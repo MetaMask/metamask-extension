@@ -4,17 +4,21 @@ import { Driver } from '../../../webdriver/driver';
 import { login } from '../../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import {
+  addMultipleAccounts,
   waitUntilAccountTreeSyncIdle,
-  addNHdAccountsForTronDerivation,
-  assertTronAddressAtIndex,
-  assertTronAddressesForAccounts,
-} from '../../../page-objects/flows/account-derivation.flow';
+} from '../../../page-objects/flows/add-account.flow';
+import {
+  assertAccountNetworkAddress,
+  assertAccountNetworkAddresses,
+} from '../../../page-objects/flows/account-list.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import { selectTronNetwork } from '../../../page-objects/flows/tron-network.flow';
+import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../../constants';
 import { EMPTY_TRON_ACCOUNT } from '../../tron/fixtures/environments';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
 import { buildDiscoveryAccountsThrough } from './utils/buildDiscoveryAccountsThrough';
+import { buildExpectedTronAccountsThrough } from './utils/buildExpectedTronAccountsThrough';
 
 /**
  * Tron HD address derivation E2E cluster (WPN-685).
@@ -29,7 +33,10 @@ import { buildDiscoveryAccountsThrough } from './utils/buildDiscoveryAccountsThr
  * - asset discovery 1-5: mocked txs, no manual add — automatic discovery; Account 6 absent
  */
 describe('Tron account derivation', function (this: Suite) {
-  this.timeout(240_000);
+  // Measured locally: ~100s for the 8-account add/assert tests and ~70s for
+  // discovery. 180s leaves headroom for slower CI machines; the 85s default
+  // is not enough for the first two tests.
+  this.timeout(180_000);
 
   it('derives Tron addresses while adding multichain accounts from Account 1 to Account 8', async function () {
     await withTronFixtures(
@@ -60,7 +67,12 @@ describe('Tron account derivation', function (this: Suite) {
             await accountList.checkMultichainAccountNameDisplayed(accountLabel);
           }
 
-          await assertTronAddressAtIndex(driver, index);
+          await assertAccountNetworkAddress({
+            driver,
+            accountLabel,
+            networkName: 'Tron',
+            expectedAddress: EXPECTED_TRON_ADDRESSES_BY_INDEX[index],
+          });
         }
 
         await accountList.closeMultichainAccountsPage();
@@ -79,11 +91,19 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await addMultipleAccounts({
+          driver,
+          numberOfAccounts: 7,
+          beforeAddAccount: () => waitUntilAccountTreeSyncIdle(driver),
+        });
 
         await selectTronNetwork(driver);
 
-        await assertTronAddressesForAccounts(driver, 8);
+        await assertAccountNetworkAddresses({
+          driver,
+          accounts: buildExpectedTronAccountsThrough(8),
+          networkName: 'Tron',
+        });
       },
     );
   });
@@ -103,7 +123,10 @@ describe('Tron account derivation', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
-        await assertTronAddressesForAccounts(driver, 5, {
+        await assertAccountNetworkAddresses({
+          driver,
+          accounts: buildExpectedTronAccountsThrough(5),
+          networkName: 'Tron',
           absentAccountLabel: 'Account 6',
         });
       },

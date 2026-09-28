@@ -53,6 +53,97 @@ export async function checkAccountAddressDisplayedInAccountList(
 }
 
 /**
+ * Asserts that the given account's per-network address row shows the expected
+ * address for `networkName`, and that copying the row puts the full address
+ * on the clipboard.
+ *
+ * Assumes the multichain accounts page is already open. Opens the account's
+ * menu, enters the address list, asserts, and navigates back to the list.
+ *
+ * @param options - Flow options.
+ * @param options.driver - The WebDriver instance.
+ * @param options.accountLabel - Label of the account group to assert.
+ * @param options.networkName - Name of the network row inside the address list.
+ * @param options.expectedAddress - Full expected address (the row shows the shortened form).
+ */
+export async function assertAccountNetworkAddress({
+  driver,
+  accountLabel,
+  networkName,
+  expectedAddress,
+}: {
+  driver: Driver;
+  accountLabel: string;
+  networkName: string;
+  expectedAddress: string;
+}): Promise<void> {
+  const accountListPage = new AccountListPage(driver);
+  const accountAddressListPage = new AccountAddressListPage(driver);
+
+  await accountListPage.openMultichainAccountMenu({ accountLabel });
+  await accountListPage.clickMultichainAccountMenuItem('Addresses');
+  await accountAddressListPage.checkPageIsLoaded();
+  await accountAddressListPage.checkNetworkAddressIsDisplayedForNetwork({
+    networkName,
+    networkAddress: shortenAddress(expectedAddress),
+  });
+  await accountAddressListPage.clickCopyButtonForNetworkAndAssertClipboard({
+    networkName,
+    expectedAddress,
+  });
+  await accountAddressListPage.goBack();
+}
+
+/**
+ * Asserts per-network addresses for a list of accounts, opening the account
+ * menu once. Optionally asserts that an account group with
+ * `absentAccountLabel` is NOT displayed (e.g. an account beyond a discovery
+ * threshold).
+ *
+ * @param options - Flow options.
+ * @param options.driver - The WebDriver instance.
+ * @param options.accounts - Accounts to assert, in display order; each item
+ * has `accountLabel` (label of the account group) and `expectedAddress` (full
+ * expected address for the network, shown shortened in the row).
+ * @param options.networkName - Name of the network row inside the address list.
+ * @param options.absentAccountLabel - Label of an account group that must not be displayed.
+ */
+export async function assertAccountNetworkAddresses({
+  driver,
+  accounts,
+  networkName,
+  absentAccountLabel,
+}: {
+  driver: Driver;
+  accounts: { accountLabel: string; expectedAddress: string }[];
+  networkName: string;
+  absentAccountLabel?: string;
+}): Promise<void> {
+  const homepage = new HomePage(driver);
+  const accountListPage = new AccountListPage(driver);
+
+  await homepage.headerNavbar.openAccountMenu();
+  await accountListPage.checkPageIsLoaded();
+  await accountListPage.waitUntilSyncingIsCompleted();
+
+  for (const account of accounts) {
+    await assertAccountNetworkAddress({
+      driver,
+      networkName,
+      ...account,
+    });
+  }
+
+  if (absentAccountLabel) {
+    await accountListPage.checkMultichainAccountNameNotDisplayed(
+      absentAccountLabel,
+    );
+  }
+
+  await accountListPage.closeMultichainAccountsPage();
+}
+
+/**
  * Switches to the specified account via the homepage account menu.
  *
  * @param driver

@@ -15,9 +15,6 @@ import { quoteXPathText } from '../../../../helpers/quoteXPathText';
  * @see ui/pages/multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.tsx
  */
 class AccountAddressListPage {
-  private readonly accountAddress =
-    '[data-testid="multichain-address-row-address"]';
-
   private readonly addressCopiedMessage = {
     css: '[data-testid="multichain-address-row-address"]',
     text: 'Address copied',
@@ -130,17 +127,6 @@ class AccountAddressListPage {
         addressIndex + 1
       }]`,
     });
-  }
-
-  async getTruncatedAccountAddress(addressIndex: number = 0): Promise<string> {
-    console.log('Get truncated account address');
-    const addressElements = await this.driver.findElements(this.accountAddress);
-    if (addressIndex < 0 || addressIndex >= addressElements.length) {
-      throw new Error('Invalid account row index');
-    }
-    const addressElement = addressElements[addressIndex];
-    const address = await addressElement.getText();
-    return address;
   }
 
   async goBack(): Promise<void> {

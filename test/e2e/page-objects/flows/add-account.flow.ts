@@ -1,4 +1,9 @@
 import { Driver } from '../../webdriver/driver';
+import { getCleanAppState } from '../../helpers';
+import {
+  BASE_ACCOUNT_SYNC_INTERVAL,
+  BASE_ACCOUNT_SYNC_TIMEOUT,
+} from '../../tests/identity/account-syncing/helpers';
 import HomePage from '../pages/home/homepage';
 import AccountListPage from '../pages/accounts/list-page';
 
@@ -37,6 +42,30 @@ export const addAccount = async ({
 };
 
 /**
+ * Waits until the AccountTreeController's `isAccountTreeSyncingInProgress`
+ * flag is false. This is more reliable than
+ * `checkHasAccountSyncingSyncedAtLeastOnce` for cases where a second sync is
+ * triggered (e.g. when a new non-EVM network is enabled) because that flag is
+ * never reset to false once it becomes true.
+ *
+ * @param driver - The WebDriver instance.
+ */
+export async function waitUntilAccountTreeSyncIdle(
+  driver: Driver,
+): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return uiState?.metamask?.isAccountTreeSyncingInProgress === false;
+    },
+    {
+      interval: BASE_ACCOUNT_SYNC_INTERVAL,
+      timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+    },
+  );
+}
+
+/**
  * Opens the account menu once, creates the given number of accounts while
  * keeping the account list open, then selects the requested account.
  *
@@ -48,15 +77,19 @@ export const addAccount = async ({
  * @param options.driver - The webdriver instance.
  * @param options.numberOfAccounts - Number of accounts to create. Defaults to 1.
  * @param options.accountToSelect - Account label to select once creation is done. Defaults to 'Account 1'.
+ * @param options.beforeAddAccount - Optional hook awaited before each "Add account" click,
+ * e.g. to wait for a background sync that could keep the button in a "Syncing…" state.
  */
 export const addMultipleAccounts = async ({
   driver,
   numberOfAccounts = 1,
   accountToSelect = 'Account 1',
+  beforeAddAccount,
 }: {
   driver: Driver;
   numberOfAccounts?: number;
   accountToSelect?: string;
+  beforeAddAccount?: () => Promise<void>;
 }): Promise<void> => {
   const homepage = new HomePage(driver);
   const accountListPage = new AccountListPage(driver);
@@ -69,6 +102,7 @@ export const addMultipleAccounts = async ({
     }
 
     await accountListPage.checkPageIsLoaded();
+    await beforeAddAccount?.();
     await accountListPage.addMultichainAccount();
   }
 
