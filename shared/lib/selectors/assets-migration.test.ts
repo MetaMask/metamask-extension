@@ -1820,7 +1820,6 @@ describe('getTokenRatesControllerMarketData', () => {
     it('skips assets when native currency conversion rate is unavailable', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1849,7 +1848,6 @@ describe('getTokenRatesControllerMarketData', () => {
       const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1882,7 +1880,6 @@ describe('getTokenRatesControllerMarketData', () => {
       const ethPrice = 2500;
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1941,7 +1938,6 @@ describe('getTokenRatesControllerMarketData', () => {
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       const state = {
         metamask: {
-          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1979,142 +1975,93 @@ describe('getTokenRatesControllerMarketData', () => {
 });
 
 describe('getMultichainAssetsRatesControllerConversionRates', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns conversionRates from state unchanged', () => {
-      const legacyConversionRates = {
-        [solanaTokenAssetId]: {
-          rate: '1',
-          conversionTime: 1700000000000,
-          expirationTime: undefined,
-          marketData: {
-            fungible: true as const,
-            allTimeHigh: '1.1',
-            allTimeLow: '0.9',
-            circulatingSupply: '1000000',
-            marketCap: '1000000',
-            totalVolume: '500000',
-            pricePercentChange: {
-              PT1H: 0,
-              P1D: 0,
-              P7D: 0,
-              P14D: 0,
-              P30D: 0,
-              P200D: 0,
-              P1Y: 0,
-            },
+  it('derives conversionRates from assetsPrice for non-EVM assets only', () => {
+    const lastUpdated = 1700000000000;
+    const state = {
+      metamask: {
+        assetsPrice: {
+          [nativeEthAssetId]: {
+            assetPriceType: 'fungible' as const,
+            id: 'eth-price',
+            price: 2000,
+            usdPrice: 2000,
+            lastUpdated,
+            marketCap: 300e9,
+            allTimeHigh: 4000,
+            allTimeLow: 500,
+            totalVolume: 1e9,
+            high1d: 2100,
+            low1d: 1900,
+            circulatingSupply: 120e6,
+            dilutedMarketCap: 300e9,
+            marketCapPercentChange1d: 2,
+            priceChange1d: 50,
+            pricePercentChange1h: 0.5,
+            pricePercentChange1d: 2,
+            pricePercentChange7d: 5,
+            pricePercentChange14d: 8,
+            pricePercentChange30d: 10,
+            pricePercentChange200d: 20,
+            pricePercentChange1y: 30,
+          },
+          [solanaTokenAssetId]: {
+            assetPriceType: 'fungible' as const,
+            id: 'sol-usdc-price',
+            price: 1.02,
+            usdPrice: 1.02,
+            lastUpdated,
+            marketCap: 30e9,
+            allTimeHigh: 1.1,
+            allTimeLow: 0.95,
+            totalVolume: 100e9,
+            high1d: 1.03,
+            low1d: 1.01,
+            circulatingSupply: 30e9,
+            dilutedMarketCap: 30e9,
+            marketCapPercentChange1d: 0.5,
+            priceChange1d: 0.01,
+            pricePercentChange1h: 0.1,
+            pricePercentChange1d: 0.5,
+            pricePercentChange7d: 1,
+            pricePercentChange14d: 1.5,
+            pricePercentChange30d: 2,
+            pricePercentChange200d: 3,
+            pricePercentChange1y: 5,
           },
         },
-      };
-      const state = {
-        metamask: {
-          conversionRates: legacyConversionRates,
-        },
-      };
-      const result = getMultichainAssetsRatesControllerConversionRates(state);
+      },
+    };
+    const result = getMultichainAssetsRatesControllerConversionRates(state);
 
-      expect(result).toBe(legacyConversionRates);
-      expect(result).toStrictEqual(legacyConversionRates);
+    expect(result[nativeEthAssetId]).toBeUndefined();
+    expect(result[solanaTokenAssetId]).toStrictEqual({
+      rate: '1.02',
+      conversionTime: lastUpdated,
+      expirationTime: undefined,
+      marketData: {
+        fungible: true,
+        allTimeHigh: '1.1',
+        allTimeLow: '0.95',
+        circulatingSupply: '30000000000',
+        marketCap: '30000000000',
+        totalVolume: '100000000000',
+        pricePercentChange: {
+          PT1H: 0.1,
+          P1D: 0.5,
+          P7D: 1,
+          P14D: 1.5,
+          P30D: 2,
+          P200D: 3,
+          P1Y: 5,
+        },
+      },
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
-    it('derives conversionRates from assetsPrice for non-EVM assets only', () => {
-      const lastUpdated = 1700000000000;
-      const state = {
-        metamask: {
-          remoteFeatureFlags: {
-            [ASSETS_UNIFY_STATE_FLAG]: {
-              enabled: true,
-              featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-            },
-          },
-          conversionRates: {},
-          assetsPrice: {
-            [nativeEthAssetId]: {
-              assetPriceType: 'fungible',
-              id: 'eth-price',
-              price: 2000,
-              usdPrice: 2000,
-              lastUpdated,
-              marketCap: 300e9,
-              allTimeHigh: 4000,
-              allTimeLow: 500,
-              totalVolume: 1e9,
-              high1d: 2100,
-              low1d: 1900,
-              circulatingSupply: 120e6,
-              dilutedMarketCap: 300e9,
-              marketCapPercentChange1d: 2,
-              priceChange1d: 50,
-              pricePercentChange1h: 0.5,
-              pricePercentChange1d: 2,
-              pricePercentChange7d: 5,
-              pricePercentChange14d: 8,
-              pricePercentChange30d: 10,
-              pricePercentChange200d: 20,
-              pricePercentChange1y: 30,
-            },
-            [solanaTokenAssetId]: {
-              assetPriceType: 'fungible',
-              id: 'sol-usdc-price',
-              price: 1.02,
-              usdPrice: 1.02,
-              lastUpdated,
-              marketCap: 30e9,
-              allTimeHigh: 1.1,
-              allTimeLow: 0.95,
-              totalVolume: 100e9,
-              high1d: 1.03,
-              low1d: 1.01,
-              circulatingSupply: 30e9,
-              dilutedMarketCap: 30e9,
-              marketCapPercentChange1d: 0.5,
-              priceChange1d: 0.01,
-              pricePercentChange1h: 0.1,
-              pricePercentChange1d: 0.5,
-              pricePercentChange7d: 1,
-              pricePercentChange14d: 1.5,
-              pricePercentChange30d: 2,
-              pricePercentChange200d: 3,
-              pricePercentChange1y: 5,
-            },
-          },
-        },
-      };
-      const result = getMultichainAssetsRatesControllerConversionRates(state);
-
-      expect(result[nativeEthAssetId]).toBeUndefined();
-      expect(result[solanaTokenAssetId]).toStrictEqual({
-        rate: '1.02',
-        conversionTime: lastUpdated,
-        expirationTime: undefined,
-        marketData: {
-          fungible: true,
-          allTimeHigh: '1.1',
-          allTimeLow: '0.95',
-          circulatingSupply: '30000000000',
-          marketCap: '30000000000',
-          totalVolume: '100000000000',
-          pricePercentChange: {
-            PT1H: 0.1,
-            P1D: 0.5,
-            P7D: 1,
-            P14D: 1.5,
-            P30D: 2,
-            P200D: 3,
-            P1Y: 5,
-          },
-        },
-      });
-    });
-  });
-
-  describe('edge cases when enabled', () => {
+  describe('edge cases', () => {
     it('returns empty result when only EVM assets exist in assetsPrice', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
-          conversionRates: {},
           assetsPrice: {
             [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: 2000 }),
             [erc20AssetId]: makeMockPrice({ id: 'usdc', price: 1 }),
@@ -2130,8 +2077,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
       const lastUpdated = 1700000000000;
       const state = {
         metamask: {
-          ...enabledFlags,
-          conversionRates: {},
           assetsPrice: {
             [solanaTokenAssetId]: makeMockPrice({
               id: 'sol-usdc',
@@ -2162,18 +2107,18 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('omits non-finite market data fields instead of stringifying them', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
-          conversionRates: {},
           assetsPrice: {
-            [solanaTokenAssetId]: makeMockPrice({
-              id: 'sol-usdc',
-              price: 1.5,
+            [solanaTokenAssetId]: {
+              ...makeMockPrice({
+                id: 'sol-usdc',
+                price: 1.5,
+              }),
               allTimeHigh: null,
               allTimeLow: undefined,
               circulatingSupply: NaN,
               marketCap: null,
               totalVolume: Infinity,
-            }),
+            } as unknown as FungibleAssetPrice,
           },
         },
       };
@@ -2190,8 +2135,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('handles empty assetsPrice', () => {
       const state = {
         metamask: {
-          ...enabledFlags,
-          conversionRates: {},
           assetsPrice: {},
         },
       };
@@ -2206,210 +2149,115 @@ describe('getRatesControllerRates', () => {
   const solanaSplMissingSymbolAssetId =
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2NzMQx8TiDFbw5p3oMNVBh59UkKAPLHoa62YV6vXNmmG';
 
-  describe('when assets unify state feature is disabled', () => {
-    it('returns rates from state unchanged', () => {
-      const legacyRates = {
-        btc: {
-          conversionDate: 1700000000000,
-          conversionRate: 71052.43,
-          usdConversionRate: 71052.43,
+  it('derives rates from assetsInfo and assetsPrice for non-EVM native assets', () => {
+    const lastUpdated = 1700000000000;
+    const state = {
+      metamask: {
+        rates: {},
+        assetsInfo: {
+          [nativeEthAssetId]: {
+            type: 'native',
+            symbol: 'ETH',
+            decimals: 18,
+          },
+          [bitcoinNativeAssetId]: {
+            type: 'native',
+            symbol: 'BTC',
+            decimals: 8,
+          },
+          [solanaNativeAssetId]: {
+            type: 'native',
+            symbol: 'SOL',
+            decimals: 9,
+          },
         },
-        sol: {
-          conversionDate: 1700000000000,
-          conversionRate: 91.69,
-          usdConversionRate: 91.69,
+        assetsPrice: {
+          [nativeEthAssetId]: makeMockPrice({
+            id: 'eth',
+            price: 2000,
+            usdPrice: 2000,
+            lastUpdated,
+          }),
+          [bitcoinNativeAssetId]: makeMockPrice({
+            id: 'btc',
+            price: 71052.43,
+            usdPrice: 71052.43,
+            lastUpdated,
+          }),
+          [solanaNativeAssetId]: makeMockPrice({
+            id: 'sol',
+            price: 91.69,
+            usdPrice: 91.69,
+            lastUpdated,
+          }),
         },
-      };
-      const state = {
-        metamask: {
-          rates: legacyRates,
-        },
-      };
-      const result = getRatesControllerRates(state);
+      },
+    };
+    const result = getRatesControllerRates(state);
 
-      expect(result).toBe(legacyRates);
-      expect(result).toStrictEqual(legacyRates);
+    expect(result.eth).toBeUndefined();
+    expect(result).toStrictEqual({
+      btc: {
+        conversionDate: lastUpdated,
+        conversionRate: 71052.43,
+        usdConversionRate: 71052.43,
+      },
+      sol: {
+        conversionDate: lastUpdated,
+        conversionRate: 91.69,
+        usdConversionRate: 91.69,
+      },
     });
   });
 
-  describe('when assets unify state feature is enabled (happy path)', () => {
-    it('derives rates from assetsInfo and assetsPrice for non-EVM native assets', () => {
-      const lastUpdated = 1700000000000;
-      const state = {
-        metamask: {
-          ...enabledFlags,
-          rates: {},
-          assetsInfo: {
-            [nativeEthAssetId]: {
-              type: 'native',
-              symbol: 'ETH',
-              decimals: 18,
-            },
-            [bitcoinNativeAssetId]: {
-              type: 'native',
-              symbol: 'BTC',
-              decimals: 8,
-            },
-            [solanaNativeAssetId]: {
-              type: 'native',
-              symbol: 'SOL',
-              decimals: 9,
-            },
+  it('skips assetsInfo entries with missing symbol without throwing', () => {
+    const lastUpdated = 1700000000000;
+    const state = {
+      metamask: {
+        rates: {},
+        assetsInfo: {
+          [solanaSplMissingSymbolAssetId]: {
+            decimals: 9,
+            type: 'spl',
           },
-          assetsPrice: {
-            [nativeEthAssetId]: makeMockPrice({
-              id: 'eth',
-              price: 2000,
-              usdPrice: 2000,
-              lastUpdated,
-            }),
-            [bitcoinNativeAssetId]: makeMockPrice({
-              id: 'btc',
-              price: 71052.43,
-              usdPrice: 71052.43,
-              lastUpdated,
-            }),
-            [solanaNativeAssetId]: makeMockPrice({
-              id: 'sol',
-              price: 91.69,
-              usdPrice: 91.69,
-              lastUpdated,
-            }),
+          [bitcoinNativeAssetId]: {
+            type: 'native',
+            symbol: 'BTC',
+            decimals: 8,
           },
         },
-      };
-      const result = getRatesControllerRates(state);
+        assetsPrice: {
+          [bitcoinNativeAssetId]: makeMockPrice({
+            id: 'btc',
+            price: 71052.43,
+            usdPrice: 71052.43,
+            lastUpdated,
+          }),
+        },
+      },
+    };
 
-      expect(result.eth).toBeUndefined();
-      expect(result).toStrictEqual({
-        btc: {
-          conversionDate: lastUpdated,
-          conversionRate: 71052.43,
-          usdConversionRate: 71052.43,
-        },
-        sol: {
-          conversionDate: lastUpdated,
-          conversionRate: 91.69,
-          usdConversionRate: 91.69,
-        },
-      });
-    });
-
-    it('skips assetsInfo entries with missing symbol without throwing', () => {
-      const lastUpdated = 1700000000000;
-      const state = {
-        metamask: {
-          ...enabledFlags,
-          rates: {},
-          assetsInfo: {
-            [solanaSplMissingSymbolAssetId]: {
-              decimals: 9,
-              type: 'spl',
-            },
-            [bitcoinNativeAssetId]: {
-              type: 'native',
-              symbol: 'BTC',
-              decimals: 8,
-            },
-          },
-          assetsPrice: {
-            [bitcoinNativeAssetId]: makeMockPrice({
-              id: 'btc',
-              price: 71052.43,
-              usdPrice: 71052.43,
-              lastUpdated,
-            }),
-          },
-        },
-      };
-
-      expect(() => getRatesControllerRates(state)).not.toThrow();
-      expect(getRatesControllerRates(state)).toStrictEqual({
-        btc: {
-          conversionDate: lastUpdated,
-          conversionRate: 71052.43,
-          usdConversionRate: 71052.43,
-        },
-      });
+    expect(() => getRatesControllerRates(state)).not.toThrow();
+    expect(getRatesControllerRates(state)).toStrictEqual({
+      btc: {
+        conversionDate: lastUpdated,
+        conversionRate: 71052.43,
+        usdConversionRate: 71052.43,
+      },
     });
   });
 });
 
 describe('getRatesControllerFiatCurrency', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns fiatCurrency from state unchanged', () => {
-      const state = {
-        metamask: {
-          fiatCurrency: 'eur',
-        },
-      };
-      const result = getRatesControllerFiatCurrency(state);
-
-      expect(result).toBe('eur');
-    });
-  });
-
-  describe('when assets unify state feature is enabled', () => {
-    it('returns selectedCurrency from new state', () => {
-      const state = {
-        metamask: {
-          ...enabledFlags,
-          fiatCurrency: 'eur',
-          selectedCurrency: 'usd',
-        },
-      };
-      const result = getRatesControllerFiatCurrency(state);
-
-      expect(result).toBe('usd');
-    });
-  });
-});
-
-describe('getIsAssetsUnifiedStateIncludedInBuild compile-time gate', () => {
-  afterEach(() => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
-  });
-
-  it('returns legacy accountsByChainId when the build excludes unified state even if the remote flag is enabled', () => {
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
-    const legacyAccountsByChainId = {
-      '0x1': {
-        [mockAccountAddressChecksummed]: {
-          balance: '0xabc' as const,
-        },
-      },
-    };
+  it('returns selectedCurrency from new state', () => {
     const state = {
       metamask: {
-        // `getIsAssetsUnifyStateEnabled` is memoized on `remoteFeatureFlags` only; vary
-        // the object so this test does not reuse a cached `true` from earlier examples.
-        remoteFeatureFlags: {
-          ...enabledFlags.remoteFeatureFlags,
-          compileTimeGateCacheBust: 'accountsByChainId',
-        },
-        accountsByChainId: legacyAccountsByChainId,
-        assetsInfo: {
-          [nativeEthAssetId]: { type: 'native', decimals: 18 },
-        },
-        assetsBalance: {
-          [mockAccountId]: {
-            [nativeEthAssetId]: { amount: '999' },
-          },
-        },
-        internalAccounts: {
-          accounts: {
-            [mockAccountId]: {
-              id: mockAccountId,
-              address: mockAccountAddressLowercase,
-              type: 'eip155:eoa',
-            },
-          },
-        },
+        fiatCurrency: 'eur',
+        selectedCurrency: 'usd' as const,
       },
     };
+    const result = getRatesControllerFiatCurrency(state);
 
-    expect(getAccountTrackerControllerAccountsByChainId(state)).toBe(
-      legacyAccountsByChainId,
-    );
+    expect(result).toBe('usd');
   });
 });
