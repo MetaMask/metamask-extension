@@ -182,7 +182,7 @@ describe('ToastMaster Shield paused toast', () => {
     );
   });
 
-  it('tracks the update card type for a crypto allowance error', () => {
+  it('tracks the add funds type for a crypto allowance error', () => {
     jest.mocked(useUserSubscriptions).mockReturnValue({
       subscriptions: [pausedCryptoAllowanceShieldSubscription],
     } as unknown as ReturnType<typeof useUserSubscriptions>);
@@ -212,7 +212,7 @@ describe('ToastMaster Shield paused toast', () => {
     expect(mockCaptureShieldErrorStateClickedEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         paymentType: PAYMENT_TYPES.byCrypto,
-        type: ShieldErrorStateClickedTypeEnum.UpdateCard,
+        type: ShieldErrorStateClickedTypeEnum.AddFunds,
       }),
     );
   });
