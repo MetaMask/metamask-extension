@@ -48,7 +48,7 @@
       "firstTimeInfo": "object",
       "installAttribution": null,
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 229
     },
     "AppStateController": {
       "arcUsageNoticeShown": "boolean",
@@ -358,6 +358,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 229
+    "version": 230
   }
 }
