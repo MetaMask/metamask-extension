@@ -3,16 +3,18 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
   Box,
   Button,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
   Text,
 } from '../../../../components/component-library';
 import {
-  IconColor,
   TextColor,
   Display,
   FlexDirection,
@@ -126,7 +128,7 @@ const DebugContent = () => {
             <Icon
               className="settings-page-developer-options__icon-check"
               name={IconName.Check}
-              color={IconColor.successDefault}
+              color={IconColor.SuccessDefault}
               size={IconSize.Lg}
               hidden={!hasResetAnnouncements}
             />
@@ -175,7 +177,7 @@ const DebugContent = () => {
             <Icon
               className="settings-page-developer-options__icon-check"
               name={IconName.Check}
-              color={IconColor.successDefault}
+              color={IconColor.SuccessDefault}
               size={IconSize.Lg}
               hidden={!hasResetOnboarding}
             />
