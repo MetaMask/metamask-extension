@@ -9,7 +9,6 @@ import type { BridgeStatusControllerState } from '@metamask/bridge-status-contro
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
-  MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
   TokenRatesControllerState,
@@ -145,18 +144,6 @@ type StorageServiceNamespace = keyof StorageServiceNamespaceMap;
 
 type FixtureBuildResult = FixtureType & {
   storageServiceData?: Record<string, unknown>;
-};
-
-/**
- * Like `Partial<MultichainAssetsRatesControllerState>`, but `conversionRates` may be a
- * partial map (lodash `merge` fills the rest).
- */
-type MultichainAssetsRatesControllerFixturePatch = Partial<
-  Omit<MultichainAssetsRatesControllerState, 'conversionRates'>
-> & {
-  conversionRates?: Partial<
-    MultichainAssetsRatesControllerState['conversionRates']
-  >;
 };
 
 /**
@@ -348,18 +335,6 @@ class FixtureBuilderV2 {
       merge(analyticsController, analyticsPatch);
     }
 
-    return this;
-  }
-
-  /**
-   * @deprecated Assets-unify reads non-EVM fiat from `AssetsController.assetsPrice`.
-   * Set that price with {@link FixtureBuilderV2.withAssetsController}.
-   * @param data - Legacy MultichainAssetsRatesController state to merge.
-   */
-  withMultichainAssetsRatesController(
-    data: MultichainAssetsRatesControllerFixturePatch,
-  ): this {
-    merge(this.fixture.data.MultichainAssetsRatesController, data);
     return this;
   }
 
@@ -739,22 +714,6 @@ class FixtureBuilderV2 {
     });
   }
 
-  /**
-   * @deprecated Set the non-EVM price with {@link FixtureBuilderV2.withAssetsController}.
-   * @param conversionRates - Legacy conversion rates to merge.
-   */
-  withConversionRates(
-    conversionRates: Partial<
-      MultichainAssetsRatesControllerState['conversionRates']
-    > = {},
-  ): this {
-    return this.withMultichainAssetsRatesController({ conversionRates });
-  }
-
-  /**
-   * @deprecated Set the displayed native price with {@link FixtureBuilderV2.withAssetsController}.
-   * @param currencyRates - Legacy currency rates to merge.
-   */
   withCurrencyRates(
     currencyRates: CurrencyRateState['currencyRates'] = {},
   ): this {
