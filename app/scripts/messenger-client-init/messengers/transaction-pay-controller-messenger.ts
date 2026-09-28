@@ -64,7 +64,7 @@ export function getTransactionPayControllerMessenger(
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
       'RampsController:getOrder',
-      'RampsController:getQuoteWithFees',
+      'RampsController:getQuotes',
       'SentinelApiService:simulateTransactions',
     ],
     events: [
