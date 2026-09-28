@@ -2141,7 +2141,18 @@
         "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
       }
     },
-    "webpack>loader-runner": {
+    "thread-loader>loader-runner": {
+      "builtin": {
+        "fs": true,
+        "url": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
+        "console.error": true,
+        "process.nextTick": true,
+        "setImmediate": true
+      },
       "packages": {
         "$root$": true,
         "@lavamoat/webpack": true,
@@ -3233,7 +3244,7 @@
       },
       "packages": {
         "thread-loader>json-parse-better-errors": true,
-        "webpack>loader-runner": true,
+        "thread-loader>loader-runner": true,
         "thread-loader>neo-async": true,
         "thread-loader>schema-utils": true,
         "webpack": true
