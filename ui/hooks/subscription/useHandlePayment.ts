@@ -13,8 +13,10 @@ import {
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
+  getSubscriptionPaymentData,
 } from '../../../shared/lib/shield';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   ShieldMetricsSourceEnum,
   ShieldErrorStateActionClickedEnum,
@@ -69,7 +71,10 @@ export const useHandlePayment = ({
   subscriptionPricing?: PricingResponse;
 }) => {
   const navigate = useNavigate();
-  const { captureShieldErrorStateClickedEvent } = useSubscriptionMetrics();
+  const {
+    captureCommonExistingShieldSubscriptionEvents,
+    captureShieldErrorStateClickedEvent,
+  } = useSubscriptionMetrics();
 
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
@@ -261,6 +266,29 @@ export const useHandlePayment = ({
     isInsufficientFundsCrypto,
   ]);
 
+  const capturePaymentMethodRetriedEvent = useCallback(() => {
+    if (!currentShieldSubscription) {
+      return;
+    }
+
+    const { cryptoPaymentChain, cryptoPaymentCurrency } =
+      getSubscriptionPaymentData(currentShieldSubscription);
+
+    captureCommonExistingShieldSubscriptionEvents(
+      {
+        subscriptionStatus: currentShieldSubscription.status,
+        paymentType: currentShieldSubscription.paymentMethod.type,
+        billingInterval: currentShieldSubscription.interval,
+        cryptoPaymentChain,
+        cryptoPaymentCurrency,
+      },
+      MetaMetricsEventName.ShieldPaymentMethodRetried,
+    );
+  }, [
+    captureCommonExistingShieldSubscriptionEvents,
+    currentShieldSubscription,
+  ]);
+
   const handlePaymentError = useCallback(async () => {
     if (currentShieldSubscription) {
       // capture error state clicked event
@@ -298,11 +326,13 @@ export const useHandlePayment = ({
         //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
         // }))
       } else if (isAllowanceNeededCrypto) {
+        capturePaymentMethodRetriedEvent();
         await executeSubscriptionCryptoApprovalTransaction();
       } else {
         throw new Error('Unknown crypto error action');
       }
     } else {
+      capturePaymentMethodRetriedEvent();
       await executeUpdateSubscriptionCardPaymentMethod();
     }
   }, [
@@ -315,6 +345,7 @@ export const useHandlePayment = ({
     onOpenAddFundsModal,
     executeSubscriptionCryptoApprovalTransaction,
     executeUpdateSubscriptionCardPaymentMethod,
+    capturePaymentMethodRetriedEvent,
     handleClickContactSupport,
     navigate,
     captureShieldErrorStateClickedEvent,

@@ -15,11 +15,16 @@ import {
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
 } from '../../../shared/constants/subscriptions';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useHandlePayment } from './useHandlePayment';
 
 const mockNavigate = jest.fn();
+const mockCaptureCommonExistingShieldSubscriptionEvents = jest.fn();
 const mockCaptureShieldErrorStateClickedEvent = jest.fn();
 const mockExecuteUpdateSubscriptionCardPaymentMethod = jest
+  .fn()
+  .mockResolvedValue(undefined);
+const mockExecuteSubscriptionCryptoApprovalTransaction = jest
   .fn()
   .mockResolvedValue(undefined);
 
@@ -30,6 +35,8 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../shield/metrics/useSubscriptionMetrics', () => ({
   useSubscriptionMetrics: () => ({
+    captureCommonExistingShieldSubscriptionEvents:
+      mockCaptureCommonExistingShieldSubscriptionEvents,
     captureShieldErrorStateClickedEvent:
       mockCaptureShieldErrorStateClickedEvent,
   }),
@@ -55,7 +62,7 @@ jest.mock('./useSubscription', () => ({
     undefined,
   ],
   useSubscriptionCryptoApprovalTransaction: () => ({
-    execute: jest.fn(),
+    execute: mockExecuteSubscriptionCryptoApprovalTransaction,
   }),
   useUpdateSubscriptionCryptoPaymentMethod: () => ({
     execute: jest.fn(),
@@ -109,6 +116,63 @@ describe('useHandlePayment', () => {
       type: ShieldErrorStateClickedTypeEnum.UpdateCard,
     });
     expect(mockExecuteUpdateSubscriptionCardPaymentMethod).toHaveBeenCalled();
+    expect(
+      mockCaptureCommonExistingShieldSubscriptionEvents,
+    ).toHaveBeenCalledWith(
+      {
+        subscriptionStatus: 'active',
+        paymentType: PAYMENT_TYPES.byCard,
+        billingInterval: RECURRING_INTERVALS.month,
+        cryptoPaymentChain: undefined,
+        cryptoPaymentCurrency: undefined,
+      },
+      MetaMetricsEventName.ShieldPaymentMethodRetried,
+    );
+  });
+
+  it('tracks a crypto payment retry when approval is needed', async () => {
+    const cryptoSubscription = {
+      ...subscription,
+      status: SUBSCRIPTION_STATUSES.paused,
+      paymentMethod: {
+        type: PAYMENT_TYPES.byCrypto,
+        crypto: {
+          chainId: '0x1',
+          tokenSymbol: 'USDC',
+          error: CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_ALLOWANCE,
+        },
+      },
+    } as unknown as Subscription;
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useHandlePayment({
+          currentShieldSubscription: cryptoSubscription,
+          displayedShieldSubscription: cryptoSubscription,
+          isCancelled: false,
+          onOpenAddFundsModal: jest.fn(),
+          subscriptions: [cryptoSubscription],
+        }),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.handlePaymentError();
+    });
+
+    expect(
+      mockCaptureCommonExistingShieldSubscriptionEvents,
+    ).toHaveBeenCalledWith(
+      {
+        subscriptionStatus: SUBSCRIPTION_STATUSES.paused,
+        paymentType: PAYMENT_TYPES.byCrypto,
+        billingInterval: RECURRING_INTERVALS.month,
+        cryptoPaymentChain: '0x1',
+        cryptoPaymentCurrency: 'USDC',
+      },
+      MetaMetricsEventName.ShieldPaymentMethodRetried,
+    );
+    expect(mockExecuteSubscriptionCryptoApprovalTransaction).toHaveBeenCalled();
   });
 
   it('tracks a crypto payment error with the add funds clicked type', async () => {
@@ -147,6 +211,9 @@ describe('useHandlePayment', () => {
         type: ShieldErrorStateClickedTypeEnum.AddFunds,
       }),
     );
+    expect(
+      mockCaptureCommonExistingShieldSubscriptionEvents,
+    ).not.toHaveBeenCalled();
     expect(onOpenAddFundsModal).toHaveBeenCalled();
   });
 
@@ -172,6 +239,9 @@ describe('useHandlePayment', () => {
         type: ShieldErrorStateClickedTypeEnum.Renew,
       }),
     );
+    expect(
+      mockCaptureCommonExistingShieldSubscriptionEvents,
+    ).not.toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalled();
   });
 });
