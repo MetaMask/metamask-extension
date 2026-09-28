@@ -19,6 +19,7 @@ import {
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getRampsListItemClassName } from '../../components/get-ramps-list-item-class-name';
 import RampsQuoteDisplay, {
+  getRampsQuoteAmounts,
   shouldShowSelectedCheckIcon,
 } from '../../payment-method/components/ramps-quote-display';
 import type { ProviderTag } from '../utils/build-provider-list-items';
@@ -68,20 +69,13 @@ export default function RampsProviderListItem({
 }: RampsProviderListItemProps) {
   const { formatToken, formatCurrency } = useFormatters();
 
-  const cryptoAmount =
-    quote?.quote?.amountOut !== undefined &&
-    quote.quote.amountOut !== null &&
-    tokenSymbol
-      ? formatToken(Number(quote.quote.amountOut), tokenSymbol, {
-          maximumFractionDigits: 4,
-          minimumFractionDigits: 0,
-        })
-      : '';
-  const fiatAmount =
-    quote?.quote?.amountOutInFiat !== undefined &&
-    quote.quote.amountOutInFiat !== null
-      ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
-      : null;
+  const { cryptoAmount, fiatAmount } = getRampsQuoteAmounts({
+    quote,
+    tokenSymbol,
+    currency,
+    formatToken,
+    formatCurrency,
+  });
   const showSelectedCheckIcon = shouldShowSelectedCheckIcon({
     isSelected,
     showQuote,

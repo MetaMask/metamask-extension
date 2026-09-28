@@ -26,6 +26,7 @@ import { getRampsListItemClassName } from '../../components/get-ramps-list-item-
 import { formatPaymentMethodDelay } from '../utils/format-payment-method-delay';
 import { getPaymentMethodIconName } from '../utils/get-payment-method-icon';
 import RampsQuoteDisplay, {
+  getRampsQuoteAmounts,
   shouldShowSelectedCheckIcon,
 } from './ramps-quote-display';
 
@@ -89,20 +90,13 @@ export default function RampsPaymentMethodListItem({
   const subtitleText =
     quoteError && quoteErrorMessage ? quoteErrorMessage : detailText;
 
-  const cryptoAmount =
-    quote?.quote?.amountOut !== undefined &&
-    quote.quote.amountOut !== null &&
-    tokenSymbol
-      ? formatToken(Number(quote.quote.amountOut), tokenSymbol, {
-          maximumFractionDigits: 4,
-          minimumFractionDigits: 0,
-        })
-      : '';
-  const fiatAmount =
-    quote?.quote?.amountOutInFiat !== undefined &&
-    quote.quote.amountOutInFiat !== null
-      ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
-      : null;
+  const { cryptoAmount, fiatAmount } = getRampsQuoteAmounts({
+    quote,
+    tokenSymbol,
+    currency,
+    formatToken,
+    formatCurrency,
+  });
   const showSelectedCheckIcon = shouldShowSelectedCheckIcon({
     isSelected,
     showQuote,

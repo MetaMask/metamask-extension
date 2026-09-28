@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
+import type { Quote } from '@metamask/ramps-controller';
 import {
   Box,
   BoxAlignItems,
@@ -15,6 +16,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { Popover } from '../../../../components/component-library'; // NOSONAR: migrating this fallback to the design-system Popover would add @floating-ui to the bundle and require LavaMoat policy changes, which is deferred to a dedicated design-system follow-up
+import type { useFormatters } from '../../../../hooks/useFormatters';
 
 export type RampsQuoteDisplayProps = {
   cryptoAmount: string;
@@ -27,6 +29,50 @@ export type RampsQuoteDisplayProps = {
    */
   warningMessage?: string;
 };
+
+type RampsQuoteFormatters = Pick<
+  ReturnType<typeof useFormatters>,
+  'formatToken' | 'formatCurrency'
+>;
+
+/**
+ * Formats the crypto and fiat amounts displayed by a quote row.
+ *
+ * @param options0 - Quote and formatting context.
+ * @param options0.quote
+ * @param options0.tokenSymbol
+ * @param options0.currency
+ * @param options0.formatToken
+ * @param options0.formatCurrency
+ */
+export function getRampsQuoteAmounts({
+  quote,
+  tokenSymbol,
+  currency,
+  formatToken,
+  formatCurrency,
+}: {
+  quote: Quote | null;
+  tokenSymbol: string;
+  currency: string;
+} & RampsQuoteFormatters) {
+  const amountOut = quote?.quote?.amountOut;
+  const cryptoAmount =
+    amountOut !== undefined && amountOut !== null && tokenSymbol
+      ? formatToken(Number(amountOut), tokenSymbol, {
+          maximumFractionDigits: 4,
+          minimumFractionDigits: 0,
+        })
+      : '';
+
+  const amountOutInFiat = quote?.quote?.amountOutInFiat;
+  const fiatAmount =
+    amountOutInFiat !== undefined && amountOutInFiat !== null
+      ? formatCurrency(Number(amountOutInFiat), currency)
+      : null;
+
+  return { cryptoAmount, fiatAmount };
+}
 
 /**
  * Whether the current browser supports Interest Invokers (`interestfor`,
