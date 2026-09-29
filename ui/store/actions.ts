@@ -5830,13 +5830,8 @@ export function captureSingleException(
 export function estimateGas(
   params: TransactionParams,
   networkClientId?: string,
-  bufferMultiplier?: number,
 ): Promise<Hex> {
-  return submitRequestToBackground('estimateGas', [
-    params,
-    networkClientId,
-    bufferMultiplier,
-  ]);
+  return submitRequestToBackground('estimateGas', [params, networkClientId]);
 }
 
 export async function updateTokenType(

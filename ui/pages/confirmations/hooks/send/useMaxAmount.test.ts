@@ -122,7 +122,7 @@ describe('useMaxAmount', () => {
     jest.clearAllMocks();
   });
 
-  it('reserves buffered node-estimated gas for the eventual Max transaction', async () => {
+  it('reserves node-estimated gas for the eventual Max transaction', async () => {
     const { result } = renderHookWithProvider(useMaxAmount, createState());
 
     await waitFor(() => expect(result.current.isMaxAmountAvailable).toBe(true));
@@ -136,7 +136,6 @@ describe('useMaxAmount', () => {
         value: '0x30ca024f987b900000',
       },
       'goerli',
-      1.5,
     );
     expect(estimateGasMock).toHaveBeenLastCalledWith(
       {
@@ -146,7 +145,6 @@ describe('useMaxAmount', () => {
         value: '0x3635c8274c51cc4b80',
       },
       'goerli',
-      1.5,
     );
     expect(result.current.getMaxAmount()).toBe('999.99957066841144');
   });
@@ -201,7 +199,6 @@ describe('useMaxAmount', () => {
     expect(estimateGasMock).toHaveBeenCalledWith(
       expect.objectContaining({ value: '0x30ca024f987b900000' }),
       'goerli',
-      1.5,
     );
   });
 
@@ -220,25 +217,21 @@ describe('useMaxAmount', () => {
       1,
       expect.objectContaining({ value: '0x30ca024f987b900000' }),
       'goerli',
-      1.5,
     );
     expect(estimateGasMock).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ value: '0x18650127cc3dc80000' }),
       'goerli',
-      1.5,
     );
     expect(estimateGasMock).toHaveBeenNthCalledWith(
       3,
       expect.objectContaining({ value: '0xc328093e61ee40000' }),
       'goerli',
-      1.5,
     );
     expect(estimateGasMock).toHaveBeenNthCalledWith(
       4,
       expect.objectContaining({ value: '0x3635c8274c51cc4b80' }),
       'goerli',
-      1.5,
     );
     expect(estimateGasMock).toHaveBeenCalledTimes(4);
     expect(result.current.getMaxAmount()).toBe('999.99957066841144');
@@ -268,7 +261,6 @@ describe('useMaxAmount', () => {
         to: MOCK_ADDRESS_1,
       }),
       'secondRpc',
-      1.5,
     );
   });
 

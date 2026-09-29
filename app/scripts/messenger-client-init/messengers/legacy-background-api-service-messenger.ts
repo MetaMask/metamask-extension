@@ -156,7 +156,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SentryTracingService:bufferedEndTrace',
       'TransactionController:updateEditableParams',
       'TransactionController:estimateGas',
-      'TransactionController:estimateGasBuffered',
       'TransactionController:isAtomicBatchSupported',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
