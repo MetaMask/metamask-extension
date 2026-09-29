@@ -46,7 +46,26 @@ type ControllerFlagState = {
   remoteFeatureFlags?: { sentry?: Record<string, unknown> };
 };
 
-let remoteRates: SentryRemoteRates = {};
+// MV2 background pages load multiple <script> chunks (e.g. a Sentry bundle and
+// the main background bundle). Each chunk gets its own copy of this module with
+// its own `let remoteRates = {}`. `applySentryRemoteRates` writes into the
+// Sentry chunk's copy while `getPersistenceWriteTelemetrySampleRate` reads from
+// the main bundle's copy, so the written value is never seen. Storing the cache
+// on `globalThis` makes it a true singleton shared by all scripts on the same
+// background page. MV3 is unaffected (single service-worker bundle).
+const REMOTE_RATES_KEY = '__metamask_sentryRemoteRates__';
+
+function getRemoteRates(): SentryRemoteRates {
+  return (
+    ((globalThis as Record<string, unknown>)[
+      REMOTE_RATES_KEY
+    ] as SentryRemoteRates) ?? {}
+  );
+}
+
+function setRemoteRates(rates: SentryRemoteRates): void {
+  (globalThis as Record<string, unknown>)[REMOTE_RATES_KEY] = rates;
+}
 
 /**
  * Validate a per-transaction-name rate map: keep only entries whose value is a
@@ -135,7 +154,7 @@ function mergeSentryFlags(
  * @returns The override, or undefined so callers fall back to the constant.
  */
 export function getRemoteWrapperSampleRate(): number | undefined {
-  return remoteRates.wrapperSampleRate;
+  return getRemoteRates().wrapperSampleRate;
 }
 
 /**
@@ -149,7 +168,7 @@ export function getRemoteWrapperSampleRate(): number | undefined {
 export function getRemoteTransactionSampleRates():
   | Record<string, number>
   | undefined {
-  return remoteRates.transactionSampleRates;
+  return getRemoteRates().transactionSampleRates;
 }
 
 /**
@@ -161,7 +180,7 @@ export function getRemoteTransactionSampleRates():
  * @returns The override, or undefined so callers fall back to the build-time rate.
  */
 export function getRemoteTracesSampleRate(): number | undefined {
-  return remoteRates.tracesSampleRate;
+  return getRemoteRates().tracesSampleRate;
 }
 
 /**
@@ -174,10 +193,10 @@ export function getRemoteTracesSampleRate(): number | undefined {
  * @returns A sample rate in [0, 1].
  */
 export function getPersistenceWriteTelemetrySampleRate(): number {
+  const rates = getRemoteRates();
   return Math.min(
-    remoteRates.persistenceWriteSampleRate ??
-      PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
-    remoteRates.tracesSampleRate ?? 1,
+    rates.persistenceWriteSampleRate ?? PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
+    rates.tracesSampleRate ?? 1,
   );
 }
 
@@ -185,7 +204,7 @@ export function getPersistenceWriteTelemetrySampleRate(): number {
  * Test-only reset of the cached rates.
  */
 export function resetSentryRemoteRates(): void {
-  remoteRates = {};
+  setRemoteRates({});
 }
 
 type PersistedStateHook = (options: {
@@ -274,7 +293,7 @@ export async function applySentryRemoteRates(client?: {
       sentryFlag?.persistenceWriteSampleRate,
     ),
   };
-  remoteRates = applied;
+  setRemoteRates(applied);
 
   if (client && applied.tracesSampleRate !== undefined) {
     client.getOptions().tracesSampleRate = applied.tracesSampleRate;
