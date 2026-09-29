@@ -1231,6 +1231,12 @@ describe('UserTraitsService', function () {
   });
 
   describe('handleMetaMaskStateUpdate', function () {
+    beforeEach(() => {
+      jest.spyOn(Utils, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
+      jest.spyOn(Utils, 'getDeviceType').mockReturnValue(DEVICE_TYPE.DESKTOP);
+      jest.spyOn(Utils, 'getOs').mockReturnValue(OS.MACOS);
+    });
+
     it('falls back to the base account type when SeedlessOnboardingController is unavailable', async function () {
       await withService(
         { seedlessOnboardingUnavailable: true },
@@ -1338,6 +1344,60 @@ describe('UserTraitsService', function () {
         expect(identifySpy).toHaveBeenLastCalledWith({
           [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
           [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+        });
+      });
+    });
+
+    it('identifies token detection changes', async function () {
+      await withService(({ service }) => {
+        const identifySpy = jest
+          .spyOn(analyticsHelpers, 'identify')
+          .mockImplementation(() => undefined);
+
+        const enabled = {
+          ...buildStateWithAccounts({ mock1: {} as InternalAccount }),
+          analyticsId: TEST_ANALYTICS_ID,
+          useTokenDetection: true,
+        };
+
+        service.handleMetaMaskStateUpdate(enabled);
+        identifySpy.mockClear();
+
+        service.handleMetaMaskStateUpdate({
+          ...enabled,
+          useTokenDetection: false,
+        });
+
+        expect(identifySpy).toHaveBeenCalledTimes(1);
+        expect(identifySpy).toHaveBeenCalledWith({
+          [MetaMetricsUserTrait.TokenDetectionEnabled]: false,
+        });
+      });
+    });
+
+    it('identifies NFT autodetection changes', async function () {
+      await withService(({ service }) => {
+        const identifySpy = jest
+          .spyOn(analyticsHelpers, 'identify')
+          .mockImplementation(() => undefined);
+
+        const enabled = {
+          ...buildStateWithAccounts({ mock1: {} as InternalAccount }),
+          analyticsId: TEST_ANALYTICS_ID,
+          useNftDetection: true,
+        };
+
+        service.handleMetaMaskStateUpdate(enabled);
+        identifySpy.mockClear();
+
+        service.handleMetaMaskStateUpdate({
+          ...enabled,
+          useNftDetection: false,
+        });
+
+        expect(identifySpy).toHaveBeenCalledTimes(1);
+        expect(identifySpy).toHaveBeenCalledWith({
+          [MetaMetricsUserTrait.NftAutodetectionEnabled]: false,
         });
       });
     });

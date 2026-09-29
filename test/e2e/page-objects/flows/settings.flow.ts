@@ -43,13 +43,14 @@ export const enableTestNetworks = async (driver: Driver): Promise<void> => {
 };
 
 /**
- * Enable native token as main balance from settings
+ * Open Settings → Assets from the wallet home.
  *
  * @param driver - The WebDriver instance
+ * @returns The assets settings page object.
  */
-export const enableNativeTokenAsMainBalance = async (
+export const openAssetsSettings = async (
   driver: Driver,
-): Promise<void> => {
+): Promise<PreferencesAndDisplaySettings> => {
   const homePage = new HomePage(driver);
   await homePage.headerNavbar.openSettingsPage();
 
@@ -59,6 +60,18 @@ export const enableNativeTokenAsMainBalance = async (
 
   const assetsSettings = new PreferencesAndDisplaySettings(driver);
   await assetsSettings.checkAssetsPageIsLoaded();
+  return assetsSettings;
+};
+
+/**
+ * Enable native token as main balance from settings
+ *
+ * @param driver - The WebDriver instance
+ */
+export const enableNativeTokenAsMainBalance = async (
+  driver: Driver,
+): Promise<void> => {
+  const assetsSettings = await openAssetsSettings(driver);
   await assetsSettings.toggleShowNativeTokenAsMainBalance();
 
   await closeSettings(driver);
