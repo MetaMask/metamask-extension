@@ -50,13 +50,19 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyOnboardingStepAction,
   MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
 } from './constants/money-events';
 import {
   MoneyActivityList,
   MAX_PREVIEW_ITEMS,
 } from './components/money-activity-list';
-import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
+import {
+  MoneyCondensedInfoCards,
+  type MoneyCondensedInfoCardClick,
+} from './components/money-condensed-info-cards';
 import { MoneyMoreMenu } from './components/money-more-menu';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyEarnings } from './components/money-earnings';
@@ -75,6 +81,7 @@ import { MoneyTransferSheet } from './components/money-transfer-sheet';
 const IS_MONEY_TRANSFER_SHEET_ENABLED: boolean = false;
 
 const ACTION_BUTTON_ROW_BUTTON_COUNT = 2;
+const ONBOARDING_TOTAL_STEPS = 2;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 const FORMATTED_ZERO = moneyFormatUsd(new BigNumber(0));
 
@@ -205,11 +212,22 @@ export function MoneyHomePage() {
   const { handleAddToken, initiateDeposit, isDepositLoading } =
     useMoneyAddDepositToken({
       screenName: MoneyScreenName.MoneyHome,
+      tokenRowComponentName:
+        MoneyComponentName.PotentialEarningsSectionTokenRow,
     });
   const { initiateWithdrawal, isLoading: isWithdrawLoading } =
     useMoneyAccountWithdrawal();
-  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
+  const {
+    trackButtonClicked,
+    trackScreenViewed,
+    trackSurfaceClicked,
+    trackTooltipClicked,
+  } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyHome,
+  });
+  const { trackOnboardingEvent } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHome,
+    componentName: MoneyComponentName.OnboardingCard,
   });
   const isPageLoading =
     isAvailabilityLoading || (availability.isAvailable && isBalanceLoading);
@@ -217,25 +235,57 @@ export function MoneyHomePage() {
   useTrackOnce(!isPageLoading && availability.isAvailable, trackScreenViewed);
 
   const handleViewAllActivity = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.ViewAll,
-      componentName: MoneyComponentName.ActivitySection,
-      labelKey: 'moneyActivityViewAll',
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.ActivitySectionHeader,
       redirectTarget: MoneyScreenName.MoneyActivity,
     });
     navigate(MONEY_ACTIVITY_ROUTE);
-  }, [navigate, trackButtonClicked]);
+  }, [navigate, trackSurfaceClicked]);
   const handleViewAllEarnTokens = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.ViewAll,
-      componentName: MoneyComponentName.PotentialEarningsSection,
-      labelKey: 'viewAll',
-      redirectTarget: MoneyScreenName.MoneyEarnOnCrypto,
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.PotentialEarningsSectionHeader,
+      redirectTarget: MoneyScreenName.MoneyPotentialEarnings,
     });
     navigate(MONEY_EARN_ROUTE);
-  }, [navigate, trackButtonClicked]);
+  }, [navigate, trackSurfaceClicked]);
+  const handleHowItWorksHeaderClick = useCallback(() => {
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.HowItWorksSectionHeader,
+      redirectTarget: MoneyScreenName.MoneyHowItWorks,
+    });
+  }, [trackSurfaceClicked]);
+  const handleCondensedInfoCardClick = useCallback(
+    (card: MoneyCondensedInfoCardClick) => trackSurfaceClicked(card),
+    [trackSurfaceClicked],
+  );
+  const handleApyTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.Apy,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.BalanceSummaryApy,
+    });
+  }, [trackTooltipClicked]);
+  const handleMonthlyEarningsTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.MonthlyEarnings,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.EarningsSection,
+    });
+  }, [trackTooltipClicked]);
+  const handleLifetimeEarningsTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.LifetimeEarnings,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.EarningsSection,
+    });
+  }, [trackTooltipClicked]);
+  const handleProjectionTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.PotentialEarningsProjectedAmount,
+    });
+  }, [trackTooltipClicked]);
   const handleAddFundsFromActionRow = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -249,15 +299,15 @@ export function MoneyHomePage() {
     initiateDeposit();
   }, [initiateDeposit, trackButtonClicked]);
   const handleAddFundsFromFundCard = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.AddMoney,
-      componentName: MoneyComponentName.OnboardingCard,
-      labelKey: 'addFunds',
+    trackOnboardingEvent({
+      step: 1,
+      stepTitleKey: 'moneyOnboardingFundTitle',
+      totalSteps: ONBOARDING_TOTAL_STEPS,
+      stepAction: MoneyOnboardingStepAction.DepositInitiated,
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     initiateDeposit();
-  }, [initiateDeposit, trackButtonClicked]);
+  }, [initiateDeposit, trackOnboardingEvent]);
   const handleLearnMore = useCallback(() => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
@@ -333,6 +383,7 @@ export function MoneyHomePage() {
           privacyMode={privacyMode}
           onAddToken={handleAddToken}
           onViewAll={handleViewAllEarnTokens}
+          onProjectionTooltipOpen={handleProjectionTooltipOpen}
           isAddDisabled={isDepositLoading}
         />
         <MoneySectionDivider />
@@ -414,6 +465,7 @@ export function MoneyHomePage() {
                       className="text-success-default"
                       position={PopoverPosition.Auto}
                       popoverStyle={{ maxWidth: 315 }}
+                      onOpen={handleApyTooltipOpen}
                       data-testid="money-home-apy"
                     >
                       <div className="flex flex-col gap-4">
@@ -506,19 +558,24 @@ export function MoneyHomePage() {
                     lifetimeEarnings={lifetimeEarnings}
                     isMonthlyLoading={isMonthlyEarningsLoading}
                     isLifetimeLoading={isLifetimeEarningsLoading}
+                    onMonthlyTooltipOpen={handleMonthlyEarningsTooltipOpen}
+                    onLifetimeTooltipOpen={handleLifetimeEarningsTooltipOpen}
                   />
                   <MoneySectionDivider />
                 </>
               ) : null}
               {activitySection}
               {earnOnYourCryptoSection}
-              <MoneyCondensedInfoCards />
+              <MoneyCondensedInfoCards
+                onCardClick={handleCondensedInfoCardClick}
+              />
             </>
           ) : (
             <>
               <section className="px-4 py-3">
                 <Link
                   to={MONEY_HOW_IT_WORKS_ROUTE}
+                  onClick={handleHowItWorksHeaderClick}
                   className="flex items-center gap-1 text-left no-underline text-inherit"
                   data-testid="money-how-it-works-header"
                 >

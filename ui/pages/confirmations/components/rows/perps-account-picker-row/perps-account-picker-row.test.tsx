@@ -5,10 +5,7 @@ import thunk from 'redux-thunk';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionMetadataRequestOptional } from '../../../hooks/transactions/useTransactionMetadataRequest';
-import {
-  PayWithOption,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 import { updateEditableParams } from '../../../../../store/actions';
 import {
   usePerpsSubAccounts,
@@ -21,9 +18,8 @@ import {
 } from './perps-account-picker-row';
 
 jest.mock('../../../hooks/transactions/useTransactionMetadataRequest');
-jest.mock('../../../hooks/useConfirmationNavigation', () => ({
-  PayWithOption: { MoneyAccount: 'money_account' },
-  useConfirmationNavigationOptions: jest.fn(),
+jest.mock('../../../hooks/pay/useIsMoneyAccountPerpsNavigation', () => ({
+  useIsMoneyAccountPerpsNavigation: jest.fn(),
 }));
 jest.mock('../../../../../store/actions', () => ({
   updateEditableParams: jest.fn(() => () => Promise.resolve()),
@@ -67,8 +63,8 @@ describe('PerpsAccountPickerRow', () => {
   const useTransactionMetadataRequestOptionalMock = jest.mocked(
     useTransactionMetadataRequestOptional,
   );
-  const useConfirmationNavigationOptionsMock = jest.mocked(
-    useConfirmationNavigationOptions,
+  const useIsMoneyAccountPerpsNavigationMock = jest.mocked(
+    useIsMoneyAccountPerpsNavigation,
   );
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
   const usePerpsSubAccountsMock = jest.mocked(usePerpsSubAccounts);
@@ -76,9 +72,7 @@ describe('PerpsAccountPickerRow', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    useConfirmationNavigationOptionsMock.mockReturnValue({
-      payWithOption: PayWithOption.MoneyAccount,
-    } as ReturnType<typeof useConfirmationNavigationOptions>);
+    useIsMoneyAccountPerpsNavigationMock.mockReturnValue(true);
 
     useTransactionMetadataRequestOptionalMock.mockReturnValue({
       id: TX_ID_MOCK,
@@ -96,7 +90,7 @@ describe('PerpsAccountPickerRow', () => {
       Promise.resolve()) as never);
   });
 
-  it('renders when perps deposit with MoneyAccount option', () => {
+  it('renders on a Money Account → Perps deposit', () => {
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
 
     expect(
@@ -104,24 +98,8 @@ describe('PerpsAccountPickerRow', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders nothing when payWithOption is not MoneyAccount', () => {
-    useConfirmationNavigationOptionsMock.mockReturnValue({
-      payWithOption: undefined,
-    } as ReturnType<typeof useConfirmationNavigationOptions>);
-
-    renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
-
-    expect(
-      screen.queryByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.row),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders nothing when the confirmation is not a perps deposit', () => {
-    useTransactionMetadataRequestOptionalMock.mockReturnValue({
-      id: TX_ID_MOCK,
-      type: TransactionType.simpleSend,
-      txParams: { from: FROM_ADDRESS_MOCK },
-    } as never);
+  it('renders nothing when this is not a Money Account → Perps deposit', () => {
+    useIsMoneyAccountPerpsNavigationMock.mockReturnValue(false);
 
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
 
