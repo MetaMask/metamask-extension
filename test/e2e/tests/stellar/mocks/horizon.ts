@@ -53,6 +53,7 @@ export const mockHorizonAccount = (
         'u',
       ),
     )
+    .always()
     .thenCallback(async (req) => {
       const match = req.url.match(/\/accounts\/(G[A-Z0-9]{55})$/u);
       const requestedAddress = match?.[1] ?? address;
@@ -82,4 +83,17 @@ export const mockHorizonTestnetAccount = (
     .forGet(
       new RegExp(`^${HORIZON_TESTNET_URL_PATTERN}/accounts/${address}$`, 'u'),
     )
+    .always()
     .thenJson(200, accountResponse(address));
+
+export const mockHorizonDefaultResponse = (mockServer: Mockttp) =>
+  mockServer
+    .forAnyRequest()
+    .withUrlMatching(
+      new RegExp(
+        `^(?:${HORIZON_MAINNET_URL_PATTERN}|${HORIZON_TESTNET_URL_PATTERN})(?:/|$)`,
+        'u',
+      ),
+    )
+    .always()
+    .thenJson(200, {});
