@@ -1,3 +1,4 @@
+import type { SingleChainGasFeeState } from '@metamask/gas-fee-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { useCallback } from 'react';
@@ -20,37 +21,14 @@ import { useSendType } from './useSendType';
 
 const GWEI_TO_WEI_CONVERSION_RATE = 1e9;
 
-type FeeMarketGasFeeEstimate = {
-  medium: {
-    maxFeePerGas?: string;
-    suggestedMaxFeePerGas?: number | string;
-  };
-};
+type GasFeeEstimates = SingleChainGasFeeState['gasFeeEstimates'];
 
-type LegacyGasFeeEstimate = {
-  medium: string;
-};
+const gweiToWei = (gwei: string) =>
+  new Numeric(gwei, 10).times(new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10));
 
-type GasPriceEstimate = {
-  gasPrice: string;
-};
-
-type NoGasFeeEstimate = {
-  gasPrice?: never;
-  medium?: never;
-};
-
-export type GasFeeEstimatesType =
-  | FeeMarketGasFeeEstimate
-  | GasPriceEstimate
-  | LegacyGasFeeEstimate
-  | NoGasFeeEstimate;
-
-const getMaxFeePerGasInWei = (gasFeeEstimates: GasFeeEstimatesType) => {
-  if ('gasPrice' in gasFeeEstimates && gasFeeEstimates.gasPrice !== undefined) {
-    return new Numeric(gasFeeEstimates.gasPrice, 10).times(
-      new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10),
-    );
+const getMaxFeePerGasInWei = (gasFeeEstimates: GasFeeEstimates) => {
+  if ('gasPrice' in gasFeeEstimates) {
+    return gweiToWei(gasFeeEstimates.gasPrice);
   }
 
   if (!('medium' in gasFeeEstimates)) {
@@ -58,30 +36,15 @@ const getMaxFeePerGasInWei = (gasFeeEstimates: GasFeeEstimatesType) => {
   }
 
   const { medium } = gasFeeEstimates;
-  if (medium === undefined) {
-    return undefined;
-  }
-
-  if (typeof medium === 'string') {
-    return new Numeric(medium, 10).times(
-      new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10),
-    );
-  }
-
-  const { maxFeePerGas, suggestedMaxFeePerGas } = medium;
-  if (suggestedMaxFeePerGas !== undefined) {
-    return new Numeric(suggestedMaxFeePerGas, 10).times(
-      new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10),
-    );
-  }
-
-  return maxFeePerGas === undefined ? undefined : new Numeric(maxFeePerGas, 16);
+  return gweiToWei(
+    typeof medium === 'string' ? medium : medium.suggestedMaxFeePerGas,
+  );
 };
 
 export const getEstimatedTotalGas = (
   gasLimit: Hex,
   layer1GasFees: Hex,
-  gasFeeEstimates: GasFeeEstimatesType,
+  gasFeeEstimates: GasFeeEstimates,
 ) => {
   const maxFeePerGasInWei = getMaxFeePerGasInWei(gasFeeEstimates);
   const gasFee = maxFeePerGasInWei
@@ -138,7 +101,7 @@ export const useMaxAmount = () => {
     Boolean(isEvmSendType) &&
       requiresGasReservation &&
       Boolean(networkClientId),
-  ) as { gasFeeEstimates?: GasFeeEstimatesType };
+  ) as { gasFeeEstimates?: GasFeeEstimates };
   const hasGasFeeEstimate =
     !requiresGasReservation ||
     Boolean(gasFeeEstimates && getMaxFeePerGasInWei(gasFeeEstimates));
