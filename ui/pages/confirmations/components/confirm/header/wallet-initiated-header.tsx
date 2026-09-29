@@ -30,6 +30,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
+import { useIsGasFeeSponsored } from '../../../hooks/gas/useIsGasFeeSponsored';
 import { useHasInsufficientBalance } from '../../../hooks/useHasInsufficientBalance';
 import { useShieldConfirm } from '../../../hooks/transactions/useShieldConfirm';
 import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
@@ -43,6 +44,7 @@ export const WalletInitiatedHeader = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { hasInsufficientBalance, isNativeBalanceKnown } =
     useHasInsufficientBalance();
+  const { isGasFeeSponsored } = useIsGasFeeSponsored();
   const navigate = useNavigate();
   const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
 
@@ -58,9 +60,8 @@ export const WalletInitiatedHeader = () => {
     ) {
       handleShieldSubscriptionApprovalTransactionRejected(
         currentConfirmation,
-        isNativeBalanceKnown &&
-          !currentConfirmation.isGasFeeSponsored &&
-          hasInsufficientBalance,
+        isNativeBalanceKnown && !isGasFeeSponsored && hasInsufficientBalance,
+        isGasFeeSponsored,
       );
       onCancel({ location: MetaMetricsEventLocation.Confirmation });
       navigate(SHIELD_PLAN_ROUTE);
@@ -93,6 +94,7 @@ export const WalletInitiatedHeader = () => {
     currentConfirmation,
     hasInsufficientBalance,
     handleShieldSubscriptionApprovalTransactionRejected,
+    isGasFeeSponsored,
     isNativeBalanceKnown,
     navigate,
     onCancel,

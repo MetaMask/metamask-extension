@@ -3,7 +3,7 @@ import type { TransactionPayTotals } from '@metamask/transaction-pay-controller'
 
 export type SponsoredNetworkFeeFlags = {
   /**
-   * Parent transaction has `isGasFeeSponsored` for a supported money/mUSD type.
+   * Parent transaction gas fee is sponsored for a supported money/mUSD type.
    * Target-network estimates are MetaMask-sponsored in this case.
    */
   isTargetNetworkSponsored: boolean;

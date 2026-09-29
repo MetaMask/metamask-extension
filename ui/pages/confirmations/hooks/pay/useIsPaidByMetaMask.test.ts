@@ -4,6 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
+import { useIsGasFeeSponsored } from '../gas/useIsGasFeeSponsored';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -18,6 +19,7 @@ import {
   useSponsoredNetworkFeeFlags,
 } from './useIsPaidByMetaMask';
 
+jest.mock('../gas/useIsGasFeeSponsored');
 jest.mock('../transactions/useTransactionMetadataRequest');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayToken');
@@ -34,15 +36,24 @@ const useTransactionPaySourceAmountsMock = jest.mocked(
   useTransactionPaySourceAmounts,
 );
 const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
+const useIsGasFeeSponsoredMock = jest.mocked(useIsGasFeeSponsored);
 
 function mockConfirmation(
   type: TransactionType,
-  extras: Partial<TransactionMeta> = {},
+  {
+    isGasFeeSponsored = false,
+    ...extras
+  }: Partial<TransactionMeta> & { isGasFeeSponsored?: boolean } = {},
 ) {
   useTransactionMetadataRequestOptionalMock.mockReturnValue({
     type,
     ...extras,
   } as TransactionMeta);
+  useIsGasFeeSponsoredMock.mockReturnValue({
+    isGasFeeSponsored,
+    isGasFeeSponsorshipEligible: isGasFeeSponsored,
+    pending: false,
+  });
 }
 
 function mockTotals(overrides?: Partial<TransactionPayTotals['fees']>) {

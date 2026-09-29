@@ -114,22 +114,25 @@ const TRANSACTION_META_MOCK =
 
 function runHook({
   customNonceValue,
+  forceIsGasFeeSponsored,
   gasFeeTokens,
-  isGasFeeSponsored,
+  isGasFeeSponsoredAvailable,
   isGasFeeTokenIgnoredIfBalance,
   selectedGasFeeToken,
   type,
 }: {
   customNonceValue?: string;
+  forceIsGasFeeSponsored?: boolean;
   gasFeeTokens?: GasFeeToken[];
-  isGasFeeSponsored?: boolean;
+  isGasFeeSponsoredAvailable?: boolean;
   isGasFeeTokenIgnoredIfBalance?: boolean;
   selectedGasFeeToken?: Hex;
   type?: TransactionType;
 } = {}) {
   const confirmation = genUnapprovedContractInteractionConfirmation({
+    forceIsGasFeeSponsored,
     gasFeeTokens,
-    isGasFeeSponsored,
+    isGasFeeSponsoredAvailable,
     selectedGasFeeToken,
   }) as TransactionMeta;
   confirmation.isGasFeeTokenIgnoredIfBalance = isGasFeeTokenIgnoredIfBalance;
@@ -282,7 +285,7 @@ describe('useTransactionConfirm', () => {
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-      isGasFeeSponsored: true,
+      isGasFeeSponsoredAvailable: true,
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
       type: TransactionType.simpleSend,
     });
@@ -586,15 +589,15 @@ describe('useTransactionConfirm', () => {
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-      isGasFeeSponsored: false,
+      isGasFeeSponsoredAvailable: false,
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
     });
 
     await onTransactionConfirm();
 
     const actual = updateAndApproveTxMock.mock.calls[0][0];
-    expect(actual.isExternalSign).toBeUndefined();
-    expect(actual.isGasFeeSponsored).toBe(false);
+    expect(actual).not.toHaveProperty('isExternalSign');
+    expect(actual.isGasFeeSponsored).toBeUndefined();
   });
 
   it('preserves gas fee token balance fallback metadata', async () => {
@@ -646,21 +649,17 @@ describe('useTransactionConfirm', () => {
     );
   });
 
-  it('preserves sponsorship metadata without client-side lifecycle hints', async () => {
+  it('preserves sponsorship facts without client-side lifecycle metadata', async () => {
     const { onTransactionConfirm } = runHook({
-      isGasFeeSponsored: true,
+      isGasFeeSponsoredAvailable: true,
     });
 
     await onTransactionConfirm();
 
-    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        isExternalSign: undefined,
-        isGasFeeSponsored: true,
-      }),
-      true,
-      '',
-    );
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsoredAvailable).toBe(true);
+    expect(actual.isGasFeeSponsored).toBeUndefined();
+    expect(actual).not.toHaveProperty('isExternalSign');
   });
 
   it('returns true after successful transaction in popup environment', async () => {
@@ -811,18 +810,15 @@ describe('useTransactionConfirm', () => {
     it('preserves required sponsorship metadata from the prepared withdrawal', async () => {
       const { confirmation, onTransactionConfirm } = runHook({
         type: TransactionType.moneyAccountWithdraw,
-        isGasFeeSponsored: true,
+        forceIsGasFeeSponsored: true,
       });
       mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
 
       await onTransactionConfirm();
 
-      expect(updateAndApproveTxMock.mock.calls[0][0]).toStrictEqual(
-        expect.objectContaining({
-          isGasFeeSponsored: true,
-          isExternalSign: undefined,
-        }),
-      );
+      const actual = updateAndApproveTxMock.mock.calls[0][0];
+      expect(actual.forceIsGasFeeSponsored).toBe(true);
+      expect(actual).not.toHaveProperty('isExternalSign');
     });
   });
 });

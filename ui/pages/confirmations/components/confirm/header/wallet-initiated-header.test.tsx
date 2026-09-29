@@ -24,6 +24,14 @@ jest.mock('../../../hooks/transactions/useShieldConfirm', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/gas/useIsGasFeeSponsored', () => ({
+  useIsGasFeeSponsored: jest.fn(() => ({
+    isGasFeeSponsored: false,
+    isGasFeeSponsorshipEligible: false,
+    pending: false,
+  })),
+}));
+
 jest.mock('../../../hooks/useHasInsufficientBalance', () => ({
   useHasInsufficientBalance: jest.fn(() => ({
     hasInsufficientBalance: false,
@@ -118,6 +126,7 @@ describe('<WalletInitiatedHeader />', () => {
       expect.objectContaining({
         type: TransactionType.shieldSubscriptionApprove,
       }),
+      false,
       false,
     );
     expect(mockOnCancel).toHaveBeenCalledWith({
