@@ -10,6 +10,8 @@ export function Widget({
   similar,
   onSwap,
   onViewDetails,
+  onViewSimilar,
+  onSelectSimilar,
   onDisable,
 }: Readonly<WidgetModel>) {
   const [view, setView] = useState<WidgetView>('detail');
@@ -34,7 +36,14 @@ export function Widget({
             onSwap={() => onSwap(active)}
             onDisable={onDisable}
             onViewDetails={() => onViewDetails(active)}
-            onViewSimilar={results.length > 1 ? () => setView('results') : null}
+            onViewSimilar={
+              results.length > 1
+                ? () => {
+                    onViewSimilar();
+                    setView('results');
+                  }
+                : null
+            }
           />
         ) : (
           <TokenResults
@@ -42,6 +51,9 @@ export function Widget({
             results={results}
             onBack={() => setView('detail')}
             onSelect={(asset) => {
+              if (asset.caipAssetId !== data.caipAssetId) {
+                onSelectSimilar(asset);
+              }
               setActive(asset);
               setView('detail');
             }}

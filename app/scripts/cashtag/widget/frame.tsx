@@ -31,6 +31,37 @@ function openExtensionPage(page: 'swap' | 'asset', asset: AssetData) {
     .catch(() => undefined);
 }
 
+function trackWidgetEvent({
+  event,
+  action,
+  primary,
+  similarTokenCount,
+  selected,
+}: {
+  event?: 'swap_clicked' | 'token_details_clicked';
+  action?: 'view_similar' | 'select_similar';
+  primary: AssetData;
+  similarTokenCount: number;
+  selected?: AssetData;
+}) {
+  const asset = selected ?? primary;
+
+  browser.runtime
+    .sendMessage({
+      type: EXTENSION_MESSAGES.TRACK_EVENT,
+      body: {
+        event,
+        action,
+        tokenSymbol: asset.ticker,
+        caipAssetId: asset.caipAssetId,
+        chainId: asset.chainId,
+        verified: asset.resultType === 'Verified',
+        similarTokenCount,
+      },
+    })
+    .catch(() => undefined);
+}
+
 async function loadTicker(symbol: string): Promise<ResolvedTicker | null> {
   try {
     const response = await browser.runtime.sendMessage({
@@ -76,12 +107,48 @@ async function main() {
     return;
   }
 
+  trackWidgetEvent({
+    primary: resolved.primary,
+    similarTokenCount: resolved.similar.length,
+  });
+
   createRoot(mountPoint).render(
     <Widget
       data={resolved.primary}
       similar={resolved.similar}
-      onSwap={(asset) => openExtensionPage('swap', asset)}
-      onViewDetails={(asset) => openExtensionPage('asset', asset)}
+      onSwap={(asset) => {
+        trackWidgetEvent({
+          event: 'swap_clicked',
+          primary: resolved.primary,
+          similarTokenCount: resolved.similar.length,
+          selected: asset,
+        });
+        openExtensionPage('swap', asset);
+      }}
+      onViewDetails={(asset) => {
+        trackWidgetEvent({
+          event: 'token_details_clicked',
+          primary: resolved.primary,
+          similarTokenCount: resolved.similar.length,
+          selected: asset,
+        });
+        openExtensionPage('asset', asset);
+      }}
+      onViewSimilar={() =>
+        trackWidgetEvent({
+          action: 'view_similar',
+          primary: resolved.primary,
+          similarTokenCount: resolved.similar.length,
+        })
+      }
+      onSelectSimilar={(asset) =>
+        trackWidgetEvent({
+          action: 'select_similar',
+          primary: resolved.primary,
+          similarTokenCount: resolved.similar.length,
+          selected: asset,
+        })
+      }
       onDisable={() => {
         browser.runtime
           .sendMessage({

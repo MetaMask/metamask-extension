@@ -5,7 +5,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '#shared/constants/metametrics';
-import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+import {
+  EXTENSION_MESSAGES,
+  WEB_WIDGET_CLICK_ENTRY_POINT,
+} from '#shared/constants/messages';
 import { buildAssetRoutePath } from '#shared/lib/asset-route';
 import type { ManifestFlags } from '#shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
@@ -78,7 +81,8 @@ export function isAllowedCashtagSender(
   }
   if (
     messageType === EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED ||
-    messageType === EXTENSION_MESSAGES.OPEN_EXTENSION
+    messageType === EXTENSION_MESSAGES.OPEN_EXTENSION ||
+    messageType === EXTENSION_MESSAGES.TRACK_EVENT
   ) {
     return isWidgetFrameSender(sender);
   }
@@ -359,7 +363,9 @@ function handleSetWidgetEnabled(
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
           /* eslint-disable @typescript-eslint/naming-convention */
-          show_metamask_widget_on_x: enabled,
+          settings_type: 'show_metamask_widget_on_x',
+          old_value: previous,
+          new_value: enabled,
           /* eslint-enable @typescript-eslint/naming-convention */
           location: 'x_widget',
         })
@@ -370,6 +376,84 @@ function handleSetWidgetEnabled(
     type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
     body: { enabled },
   });
+}
+
+function handleTrackEvent(message: CashtagMessage) {
+  const body = message.body;
+  const event = body?.event;
+  if (
+    event !== undefined &&
+    event !== 'swap_clicked' &&
+    event !== 'token_details_clicked'
+  ) {
+    return Promise.resolve();
+  }
+  const action =
+    body?.action === 'view_similar' || body?.action === 'select_similar'
+      ? body.action
+      : undefined;
+  if (body?.action !== undefined && action === undefined) {
+    return Promise.resolve();
+  }
+
+  const tokenSymbol = bodyString(message, 'tokenSymbol');
+  const caipAssetId = bodyString(message, 'caipAssetId');
+  const chainId = bodyString(message, 'chainId');
+  if (!tokenSymbol || !caipAssetId || !chainId) {
+    return Promise.resolve();
+  }
+
+  const verified = body?.verified === true;
+  const similarTokenCount = body?.similarTokenCount;
+  if (
+    typeof similarTokenCount !== 'number' ||
+    !Number.isInteger(similarTokenCount) ||
+    similarTokenCount < 0
+  ) {
+    return Promise.resolve();
+  }
+
+  if (event === 'swap_clicked') {
+    trackEvent(
+      createEventBuilder('Unified SwapBridge Page Viewed')
+        .addCategory(MetaMetricsEventCategory.CrossChainSwaps)
+        .addProperties({ entry_point: WEB_WIDGET_CLICK_ENTRY_POINT })
+        .build(),
+    );
+    return Promise.resolve();
+  }
+
+  if (event === 'token_details_clicked') {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.Tokens)
+        .addProperties({
+          location: 'Asset',
+          entry_point: WEB_WIDGET_CLICK_ENTRY_POINT,
+          token_symbol: tokenSymbol,
+          chain_id: chainId,
+        })
+        .build(),
+    );
+    return Promise.resolve();
+  }
+
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.WebWidgetViewed)
+      .addCategory(MetaMetricsEventCategory.Tokens)
+      .addProperties({
+        domain: 'x.com',
+        token_symbol: tokenSymbol,
+        caip_asset_id: caipAssetId,
+        chain_id: chainId,
+        verified,
+        similar_token_count: similarTokenCount,
+        ...(action ? { action } : {}),
+      })
+      .build(),
+  );
+
+  return Promise.resolve();
 }
 
 function handleGetData(message: CashtagMessage, getController: GetController) {
@@ -497,6 +581,8 @@ export function createCashtagResponse(
       return handleGetData(message, getController);
     case EXTENSION_MESSAGES.OPEN_EXTENSION:
       return handleOpenExtension(message, sender, getController);
+    case EXTENSION_MESSAGES.TRACK_EVENT:
+      return handleTrackEvent(message);
     default:
       return undefined;
   }

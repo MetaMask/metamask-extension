@@ -79,7 +79,9 @@ const ShowTickerWidgetItem = createToggleItem({
     event: MetaMetricsEventName.SettingsUpdated,
     properties: (newValue) => ({
       /* eslint-disable @typescript-eslint/naming-convention */
-      show_metamask_widget_on_x: newValue,
+      settings_type: 'show_metamask_widget_on_x',
+      old_value: !newValue,
+      new_value: newValue,
       /* eslint-enable @typescript-eslint/naming-convention */
       location: 'settings',
     }),

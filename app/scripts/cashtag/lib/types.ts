@@ -31,6 +31,8 @@ export type WidgetModel = {
   similar: AssetData[];
   onSwap: (asset: AssetData) => void;
   onViewDetails: (asset: AssetData) => void;
+  onViewSimilar: () => void;
+  onSelectSimilar: (asset: AssetData) => void;
   onDisable: () => void;
 };
 
