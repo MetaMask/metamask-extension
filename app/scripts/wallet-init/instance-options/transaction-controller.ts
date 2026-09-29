@@ -294,7 +294,15 @@ async function isEIP7702GasFeeTokensEnabled(
     return false;
   }
 
-  const { chainId } = transactionMeta;
+  const { chainId, excludeNativeTokenForFee, isGasFeeTokenIgnoredIfBalance } =
+    transactionMeta;
+
+  // A gas fee token requested when creating the transaction is always paid
+  // through EIP-7702.
+  if (isGasFeeTokenIgnoredIfBalance || excludeNativeTokenForFee) {
+    return true;
+  }
+
   const uiState = getUIState(getFlatState());
 
   const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);

@@ -286,5 +286,31 @@ describe('TransactionController wallet instance options', () => {
       const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
       expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
+
+    it('returns true when isGasFeeTokenIgnoredIfBalance is set even if send bundle is supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+      expect(
+        await optionFn?.({
+          ...mockTransactionMeta,
+          isGasFeeTokenIgnoredIfBalance: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true when excludeNativeTokenForFee is set even if send bundle is supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+      expect(
+        await optionFn?.({
+          ...mockTransactionMeta,
+          excludeNativeTokenForFee: true,
+        }),
+      ).toBe(true);
+    });
   });
 });
