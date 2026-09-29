@@ -2708,6 +2708,14 @@
   "changePasswordWarningDescription": {
     "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
+  "chartNoData": {
+    "message": "No chart data",
+    "description": "Title shown when advanced chart fails to load"
+  },
+  "chartNoDataDescription": {
+    "message": "We couldn't load the chart. Try switching to Line mode.",
+    "description": "Description shown when advanced chart fails to load, suggesting user switch to line chart"
+  },
   "checkNetworkConnectivity": {
     "message": "Check network connectivity."
   },
