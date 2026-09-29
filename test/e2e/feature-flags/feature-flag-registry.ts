@@ -1651,9 +1651,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           ],
           perpsWithdraw: [
             {
-              address: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-              chainId: '0x1',
-              name: 'mUSD',
+              address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+              chainId: '0xa4b1',
+              name: 'USDC',
             },
           ],
         },
