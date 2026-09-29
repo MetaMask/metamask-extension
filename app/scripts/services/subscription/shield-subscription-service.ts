@@ -452,9 +452,9 @@ export class ShieldSubscriptionService {
   }
 
   async #handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {
-    const { isGasFeeSponsored, chainId } = txMeta;
-    const bundlerSupported = await isSendBundleSupported(chainId);
-    const isSponsored = Boolean(isGasFeeSponsored && bundlerSupported);
+    // Recorded by TransactionController from the publish hook result, so it
+    // reflects whether the submitted transaction was actually sponsored.
+    const isSponsored = Boolean(txMeta.isGasFeeSponsored);
     const currentShieldSubscription =
       await this.#getCurrentShieldSubscription();
     const isCurrentShieldSubscriptionActive = getIsShieldSubscriptionActive(
