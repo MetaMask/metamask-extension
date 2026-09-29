@@ -181,9 +181,25 @@ export const CustomAmountInfo = React.memo(
       prefillMaxOnLoad,
     });
 
+    // Show amount skeleton while deposit prefill recomputes (e.g. token or
+    // account change) so the field does not briefly flash "0", and while a
+    // quote the displayed amount comes from is still loading.
+    // `isDepositPrefillLoading` is already false once prefill settles as
+    // skipped (no funded pay token), so an unfundable deposit shows $0 and a
+    // usable keypad instead of an indefinite skeleton.
+    const showAmountLoader =
+      (isDepositPrefillLoading && !hasAccountNoFunds) ||
+      isQuoteDerivedAmountLoading;
+
+    // While the field is recomputing, `amountFiat` still holds the amount for
+    // the previously selected token / account. Comparing it against the newly
+    // selected one's balance briefly reports "Insufficient funds" for an
+    // amount that is about to be replaced, so withhold it until the field
+    // settles. Amount-independent alerts (no funds, hardware, signing) are
+    // unaffected — they come from the argument-less call above.
     const { alertContent, alertMessage, hasAlert, hideResults } =
       useTransactionCustomAmountAlerts({
-        pendingFiatAmount: amountFiat,
+        pendingFiatAmount: showAmountLoader ? undefined : amountFiat,
       });
 
     const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
@@ -202,13 +218,6 @@ export const CustomAmountInfo = React.memo(
       },
       [updatePendingAmount],
     );
-
-    // Show amount skeleton while deposit prefill recomputes (e.g. token or
-    // account change) so the field does not briefly flash "0", and while a
-    // quote the displayed amount comes from is still loading.
-    const showAmountLoader =
-      (isDepositPrefillLoading && !hasAccountNoFunds) ||
-      isQuoteDerivedAmountLoading;
 
     if (!currentConfirmation || isAwaitingRequiredToken) {
       return (

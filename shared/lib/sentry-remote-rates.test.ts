@@ -1,10 +1,19 @@
 import {
   applySentryRemoteRates,
+  getPersistenceWriteTelemetrySampleRate,
   getRemoteTransactionSampleRates,
   getRemoteWrapperSampleRate,
+  PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
   resetSentryRemoteRates,
 } from './sentry-remote-rates';
 import { shouldSampleWrappers } from './wrapper-sampling';
+import { getManifestFlags } from './manifestFlags';
+
+jest.mock('./manifestFlags', () => ({
+  getManifestFlags: jest.fn(() => ({})),
+}));
+
+const mockedGetManifestFlags = jest.mocked(getManifestFlags);
 
 const SAMPLED_TRACE_ID = '00000000aaaaaaaaaaaaaaaaaaaaaaaa'; // bucket 0
 const UNSAMPLED_TRACE_ID = 'ffffffffaaaaaaaaaaaaaaaaaaaaaaaa'; // bucket 7295
@@ -27,9 +36,17 @@ function mockClient() {
   return { getOptions: () => options, options };
 }
 
+const EMPTY_APPLIED_RATES = {
+  tracesSampleRate: undefined,
+  wrapperSampleRate: undefined,
+  transactionSampleRates: undefined,
+  persistenceWriteSampleRate: undefined,
+};
+
 describe('applySentryRemoteRates', () => {
   afterEach(() => {
     resetSentryRemoteRates();
+    mockedGetManifestFlags.mockReturnValue({});
     // @ts-expect-error test cleanup of the global hook
     delete globalThis.stateHooks;
   });
@@ -44,6 +61,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.02,
       wrapperSampleRate: 0.5,
       transactionSampleRates: undefined,
+      persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.02);
     expect(getRemoteWrapperSampleRate()).toBe(0.5);
@@ -79,6 +97,7 @@ describe('applySentryRemoteRates', () => {
         tracesSampleRate: undefined,
         wrapperSampleRate: undefined,
         transactionSampleRates: undefined,
+        persistenceWriteSampleRate: undefined,
       });
       expect(client.options.tracesSampleRate).toBe(0.0075);
       expect(getRemoteWrapperSampleRate()).toBeUndefined();
@@ -105,6 +124,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: undefined,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.0075);
   });
@@ -117,9 +137,7 @@ describe('applySentryRemoteRates', () => {
     // Exhaust the bounded wait without the hook ever appearing.
     await jest.advanceTimersByTimeAsync(50 * 100);
 
-    // The give-up path returns before the rate object is built, so it is empty
-    // rather than a three-key object of `undefined`s.
-    await expect(applied).resolves.toStrictEqual({});
+    await expect(applied).resolves.toStrictEqual(EMPTY_APPLIED_RATES);
     expect(client.options.tracesSampleRate).toBe(0.0075);
     expect(getRemoteWrapperSampleRate()).toBeUndefined();
     jest.useRealTimers();
@@ -139,6 +157,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.03,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.03);
     jest.useRealTimers();
@@ -160,6 +179,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.04,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.04);
     jest.useRealTimers();
@@ -174,7 +194,7 @@ describe('applySentryRemoteRates', () => {
     };
 
     await expect(applySentryRemoteRates(mockClient())).resolves.toStrictEqual(
-      {},
+      EMPTY_APPLIED_RATES,
     );
     expect(getRemoteWrapperSampleRate()).toBeUndefined();
   });
@@ -186,6 +206,112 @@ describe('applySentryRemoteRates', () => {
 
     expect(applied.tracesSampleRate).toBe(0.02);
     expect(getRemoteWrapperSampleRate()).toBe(0.5);
+  });
+
+  describe('persistenceWriteSampleRate', () => {
+    it('falls back to the compile-time default when absent', () => {
+      expect(PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE).toBe(0);
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0);
+    });
+
+    it('uses the remote override once applied', async () => {
+      mockPersistedState({ persistenceWriteSampleRate: 0.25 });
+
+      const applied = await applySentryRemoteRates();
+
+      expect(applied.persistenceWriteSampleRate).toBe(0.25);
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0.25);
+    });
+
+    it('is capped by the remote tracesSampleRate', async () => {
+      mockPersistedState({
+        persistenceWriteSampleRate: 0.5,
+        tracesSampleRate: 0.01,
+      });
+
+      await applySentryRemoteRates();
+
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0.01);
+    });
+
+    it('drops every write when the remote tracesSampleRate is 0', async () => {
+      mockPersistedState({
+        persistenceWriteSampleRate: 1,
+        tracesSampleRate: 0,
+      });
+
+      await applySentryRemoteRates();
+
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0);
+    });
+
+    it('accepts the boundary rates 0 and 1', async () => {
+      mockPersistedState({ persistenceWriteSampleRate: 0 });
+      await applySentryRemoteRates();
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0);
+
+      resetSentryRemoteRates();
+      mockPersistedState({ persistenceWriteSampleRate: 1 });
+      await applySentryRemoteRates();
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(1);
+    });
+
+    it('ignores an invalid remote rate and keeps the default', async () => {
+      mockPersistedState({ persistenceWriteSampleRate: 1.5 });
+
+      await applySentryRemoteRates();
+
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(
+        PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
+      );
+    });
+
+    it('applies persistenceWriteSampleRate from manifest overrides', async () => {
+      mockedGetManifestFlags.mockReturnValue({
+        remoteFeatureFlags: {
+          sentry: { persistenceWriteSampleRate: 1 },
+        },
+      });
+      mockPersistedState(undefined);
+
+      const applied = await applySentryRemoteRates();
+
+      expect(applied.persistenceWriteSampleRate).toBe(1);
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(1);
+    });
+
+    it('lets manifest overrides win over persisted remote rates', async () => {
+      mockedGetManifestFlags.mockReturnValue({
+        remoteFeatureFlags: {
+          sentry: { persistenceWriteSampleRate: 1 },
+        },
+      });
+      mockPersistedState({ persistenceWriteSampleRate: 0.25 });
+
+      const applied = await applySentryRemoteRates();
+
+      expect(applied.persistenceWriteSampleRate).toBe(1);
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(1);
+    });
+
+    it('applies manifest rates when the persisted-state hook never registers', async () => {
+      jest.useFakeTimers();
+      mockedGetManifestFlags.mockReturnValue({
+        remoteFeatureFlags: {
+          sentry: { persistenceWriteSampleRate: 1 },
+        },
+      });
+
+      const applied = applySentryRemoteRates();
+      await jest.advanceTimersByTimeAsync(50 * 100);
+
+      await expect(applied).resolves.toStrictEqual({
+        ...EMPTY_APPLIED_RATES,
+        persistenceWriteSampleRate: 1,
+      });
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(1);
+      jest.useRealTimers();
+    });
   });
 
   describe('transactionSampleRates', () => {

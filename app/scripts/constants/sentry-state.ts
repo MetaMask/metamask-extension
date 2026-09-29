@@ -46,7 +46,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     consentDecisionMade: true,
     eventFragments: false,
     eventQueue: false,
+    marketingCampaignCookieId: true,
+    marketingConsentDecisionMade: false,
     optedIn: true,
+    optedInToMarketing: false,
     preConsentEventQueue: false,
   },
   AnnouncementController: {
@@ -211,11 +214,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotifications: false,
     isUpdatingMetamaskNotificationsAccount: false,
   },
-  MetaMetricsController: {
-    tracesBeforeMetricsOptIn: false,
-    dataCollectionForMarketing: false,
-    marketingCampaignCookieId: true,
-  },
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,
     metaMetricsDataDeletionTimestamp: true,
@@ -296,6 +294,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     usePhishDetect: true,
     useTokenDetection: true,
     useTransactionSimulations: true,
+  },
+  ProfileMetricsController: {
+    accountSourceBackfillEnqueued: true,
+    reportedAccounts: false,
   },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,

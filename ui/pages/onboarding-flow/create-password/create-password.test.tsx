@@ -1191,6 +1191,9 @@ describe('Onboarding Create Password', () => {
             name: MetaMetricsEventName.WalletSetupFailure,
           }),
         );
+        expect(queryByTestId('create-password-error')).toHaveTextContent(
+          messages.notificationsSettingsBoxError.message,
+        );
       });
     });
   });

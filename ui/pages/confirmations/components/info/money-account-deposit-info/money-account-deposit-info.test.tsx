@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
 import { useUpgradeMoneyAccount } from '../../../../../hooks/money/use-upgrade-money-account';
+import { useConfirmationNavigationOptions } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfo } from '../custom-amount-info';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
@@ -21,13 +22,21 @@ jest.mock('../../../../../hooks/money/use-upgrade-money-account', () => ({
   useUpgradeMoneyAccount: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  useConfirmationNavigationOptions: jest.fn(),
+}));
+
 const useAddTokenMock = jest.mocked(useAddToken);
+const useConfirmationNavigationOptionsMock = jest.mocked(
+  useConfirmationNavigationOptions,
+);
 const customAmountInfoMock = jest.mocked(CustomAmountInfo);
 const useUpgradeMoneyAccountMock = jest.mocked(useUpgradeMoneyAccount);
 
 describe('MoneyAccountDepositInfo', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useConfirmationNavigationOptionsMock.mockReturnValue({});
   });
 
   it('upgrades the Money account while mounted', () => {
@@ -59,6 +68,21 @@ describe('MoneyAccountDepositInfo', () => {
         displayAccountRow: true,
         displayPercentageButtons: true,
         hidePayTokenAmount: true,
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('passes the preferred payment token from the route to CustomAmountInfo', () => {
+    useConfirmationNavigationOptionsMock.mockReturnValue({
+      preferredPaymentToken: { address: '0xabc', chainId: '0x1' },
+    });
+
+    render(<MoneyAccountDepositInfo />);
+
+    expect(customAmountInfoMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        preferredToken: { address: '0xabc', chainId: '0x1' },
       }),
       expect.anything(),
     );

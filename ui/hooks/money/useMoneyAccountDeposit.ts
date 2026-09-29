@@ -1,10 +1,9 @@
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { bytesToHex, type Hex } from '@metamask/utils';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
-import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { selectMoneyFundingAccount } from '../../selectors/money/money-funding-account';
 import {
   clearMoneyAccountDepositIntent,
   setMoneyAccountDepositIntent,
@@ -14,6 +13,7 @@ import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
+import type { SetPayTokenRequest } from '../../pages/confirmations/hooks/pay/types';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
@@ -24,6 +24,10 @@ export type InitiateDepositOptions = {
    * payment method instead of a guess.
    */
   intent?: MoneyAccountDepositIntent;
+  /**
+   * Token to pre-select as the source of funds.
+   */
+  preferredPaymentToken?: SetPayTokenRequest;
 };
 
 const DEPOSIT_FAILED_TOAST_COPY = {
@@ -65,10 +69,17 @@ const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
  * unavailable money account is a thrown error here, not a rendered state,
  * because the surface is supposed to be hidden entirely.
  *
- * Fails fast when no eligible EVM account is selected. The selected account's
- * address is passed as Pay's `accountOverride` so the confirmation defaults
- * the From row — and quotes — to that account instead of the money account
- * that executes the batch.
+ * The funding account is resolved by `selectMoneyFundingAccount`: the globally
+ * selected account when it is eligible, otherwise the EVM account of the
+ * selected account group (a non-EVM network filter switches the selected
+ * account to e.g. a Solana account, but the group still holds the EVM
+ * account the user expects), otherwise the user's first eligible EVM
+ * account. A hardware account cannot sign the batch, so a user on a
+ * hardware wallet funds from their first eligible account rather than
+ * being blocked at the confirmation. Fails fast only when no eligible
+ * account exists. That address is passed as Pay's `accountOverride` so
+ * the confirmation defaults the From row — and quotes — to that account instead of
+ * the money account that executes the batch.
  *
  * The current location is passed as `goBackTo` so closing the confirmation
  * returns the user to the surface they started from (e.g. the Money home)
@@ -85,7 +96,7 @@ const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
-  const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
+  const fundingAccount = useSelector(selectMoneyFundingAccount);
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -101,18 +112,19 @@ export function useMoneyAccountDeposit() {
 
       setIsLoading(true);
       try {
-        if (!selectedAccount || !isEvmAccountType(selectedAccount.type)) {
+        if (!fundingAccount) {
           throw new Error('[Money Account] Missing funding EVM account');
         }
 
         const { transactionId } = await createMoneyAccountDepositTransaction(
           batchId,
-          selectedAccount.address as Hex,
+          fundingAccount.address as Hex,
         );
 
         navigateToTransaction(transactionId, {
           loader: ConfirmationLoader.CustomAmount,
           goBackTo: location.pathname + location.search,
+          preferredPaymentToken: options?.preferredPaymentToken,
         });
       } catch (error) {
         clearMoneyAccountDepositIntent(batchId);
@@ -132,11 +144,11 @@ export function useMoneyAccountDeposit() {
       }
     },
     [
+      fundingAccount,
       location.pathname,
       location.search,
       navigateToTransaction,
       reportError,
-      selectedAccount,
     ],
   );
 

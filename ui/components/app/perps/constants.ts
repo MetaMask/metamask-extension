@@ -5,6 +5,13 @@
  * These may eventually be moved to core.
  */
 
+import { IconName } from '@metamask/design-system-react';
+import {
+  MARKET_CATEGORY_FILTERS,
+  type MarketCategoryFilter,
+  type MarketFilter,
+} from '../../../../shared/constants/perps';
+
 /**
  * Height of list item rows (positions, orders, markets, transactions).
  * Matches ASSET_CELL_HEIGHT from the tokens tab for visual consistency.
@@ -74,6 +81,14 @@ export const PERPS_COLLATERAL_SYMBOL = 'USDC';
 export const PERPS_MIN_MARKET_ORDER_USD = 10;
 
 /**
+ * A tradeable balance below this rounds to `0.00 USDC` in the displayed
+ * available-to-trade row, so a disabled Insufficient funds button reads as a
+ * bug. Treat it as unfunded and offer Add funds instead. This is a display
+ * threshold, not an order-minimum one — see `PERPS_MIN_MARKET_ORDER_USD`.
+ */
+export const PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC = 0.01;
+
+/**
  * Market sorting configuration
  * Controls sorting behavior for the markets view
  */
@@ -120,3 +135,63 @@ export const HIP3_MARKET_CONFIG = {
     return Boolean(marketSource && allowedSources.has(marketSource));
   },
 } as const;
+
+/**
+ * i18n label key for every market filter. Driven by the controller's
+ * `MARKET_CATEGORIES` plus the UI-only `all` / `new` pseudo-filters and the
+ * `watchlist` user-state filter — adding a core category only requires a new
+ * label key here.
+ *
+ * Shared by every surface that labels a category: the market list's category
+ * rail and the Perps tab's Products chips, both through
+ * `PerpsMarketCategoryPill`, plus the rail's `More` menu options — so no two
+ * can drift.
+ */
+export const MARKET_FILTER_LABEL_KEYS: Record<MarketFilter, string> = {
+  all: 'perpsFilterAll',
+  // Reuses the Perps tab section heading rather than adding a duplicate string.
+  watchlist: 'perpsWatchlist',
+  crypto: 'perpsFilterCrypto',
+  memecoin: 'perpsFilterMemecoins',
+  stock: 'perpsFilterStocks',
+  'pre-ipo': 'perpsFilterPreIpo',
+  index: 'perpsFilterIndex',
+  etf: 'perpsFilterEtf',
+  commodity: 'perpsFilterCommodities',
+  forex: 'perpsFilterForex',
+  new: 'perpsFilterNew',
+};
+
+/**
+ * Leading glyph for each product category chip except `memecoin`, taken from
+ * the Products design (Figma `13192:28387`). Indices and ETFs deliberately
+ * share `Chart` — the design uses one bar-chart glyph for both. Memecoins use
+ * the local `PerpsSentimentSatisfiedIcon` until MMDS ships
+ * `IconName.SentimentSatisfied`.
+ */
+export const MARKET_CATEGORY_ICONS: Record<
+  Exclude<MarketCategoryFilter, 'memecoin'>,
+  IconName
+> = {
+  // `all` never renders a chip; kept so the record stays exhaustive.
+  all: IconName.Category,
+  crypto: IconName.Ethereum,
+  stock: IconName.Diagram,
+  'pre-ipo': IconName.Rocket,
+  commodity: IconName.Tint,
+  index: IconName.Chart,
+  new: IconName.Fire,
+  forex: IconName.Exchange,
+  etf: IconName.Chart,
+};
+
+export const MEMECOIN_CATEGORY_ID = 'memecoin' satisfies MarketCategoryFilter;
+
+/**
+ * Categories shown as Products chips on the Perps tab, taken from the
+ * controller's filters in its own order — the order the market list's filter
+ * rail uses too — so a core category change reaches the tab with no change
+ * here. `all` is the absence of a filter and never gets a chip.
+ */
+export const PERPS_PRODUCT_CATEGORIES: readonly MarketCategoryFilter[] =
+  MARKET_CATEGORY_FILTERS.filter((category) => category !== 'all');

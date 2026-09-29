@@ -91,6 +91,11 @@ const FILE_SOURCES: Array<{
     exportName: 'MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME',
   },
   {
+    key: 'MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME',
+  },
+  {
     key: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',
     file: 'shared/lib/money/feature-flags.ts',
     exportName: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',

@@ -21,6 +21,11 @@ import {
 } from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -29,6 +34,16 @@ import {
   PreferencesController,
   ReferralStatus,
 } from './preferences-controller';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('./analytics', () => {
+  const actual = jest.requireActual('./analytics');
+  return {
+    ...actual,
+    trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+  };
+});
 
 const setupController = ({
   state,
@@ -434,6 +449,65 @@ describe('preferences controller', () => {
       expect(controller.state.useNftDetection).toStrictEqual(false);
       expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
     });
+
+    it('preserves owned preference overrides when enabling', () => {
+      const { controller } = setupController({});
+      controller.toggleExternalServices(false);
+
+      controller.toggleExternalServices(true, {
+        useTokenDetection: false,
+        useCurrencyRateCheck: false,
+      });
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(controller.state.useTokenDetection).toBe(false);
+      expect(controller.state.useCurrencyRateCheck).toBe(false);
+      expect(controller.state.usePhishDetect).toBe(true);
+      expect(controller.state.useAddressBarEnsResolution).toBe(true);
+      expect(controller.state.openSeaEnabled).toBe(true);
+      expect(controller.state.useNftDetection).toBe(true);
+      expect(controller.state.useSafeChainsListValidation).toBe(true);
+    });
+
+    it('ignores owned preference overrides when disabling', () => {
+      const { controller } = setupController({});
+
+      controller.toggleExternalServices(false, {
+        useTokenDetection: true,
+      });
+
+      expect(controller.state.useExternalServices).toBe(false);
+      expect(controller.state.useTokenDetection).toBe(false);
+    });
+  });
+
+  describe('toggleBasicFunctionality', () => {
+    it('sets Basic Functionality and every child preference together', () => {
+      const { controller, toggleExternalServices } = setupController({});
+      controller.toggleExternalServices(false);
+
+      controller.toggleBasicFunctionality(true);
+
+      expect(controller.state.useExternalServices).toBe(true);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(true);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('turns every child preference off together', () => {
+      const { controller, toggleExternalServices } = setupController({});
+
+      controller.toggleBasicFunctionality(false);
+
+      expect(controller.state.useExternalServices).toBe(false);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(false);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(false);
+      expect(toggleExternalServices).toHaveBeenCalledWith(false);
+    });
   });
 
   describe('addSnapAccountEnabled', () => {
@@ -511,6 +585,7 @@ describe('preferences controller', () => {
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
+        hasLinkedSocialLoginProfile: false,
         basicFunctionalityMigrationNotification: null,
         basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
@@ -547,6 +622,7 @@ describe('preferences controller', () => {
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
+        hasLinkedSocialLoginProfile: false,
         basicFunctionalityMigrationNotification: null,
         basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
@@ -653,6 +729,10 @@ describe('preferences controller', () => {
   });
 
   describe('consolidateBasicFunctionality', () => {
+    beforeEach(() => {
+      mockTrackEvent.mockClear();
+    });
+
     it('consolidates a social-login wallet and syncs external services', () => {
       const { controller, getSeedlessOnboardingState, toggleExternalServices } =
         setupController({});
@@ -670,17 +750,131 @@ describe('preferences controller', () => {
         controller.getPreferences().basicFunctionalityMigrationNotification,
       ).toBe('modal');
       expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      // Default setup is aligned (all-on); aligned social is not on Migrated.
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('tracks Basic Functionality Migrated for unaligned mixed wallets', () => {
+      const childPreferenceState = Object.fromEntries(
+        BFT_CHILD_PREFERENCES.map((preference, index) => [
+          preference,
+          index < 10,
+        ]),
+      ) as Pick<
+        PreferencesControllerState,
+        (typeof BFT_CHILD_PREFERENCES)[number]
+      >;
+      const { controller } = setupController({
+        state: {
+          useExternalServices: false,
+          ...childPreferenceState,
+        },
+      });
+
+      mockTrackEvent.mockImplementationOnce(() => {
+        expect(controller.state.useExternalServices).toBe(true);
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.BasicFunctionalityMigrated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: 'on',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: false,
+          }),
+        }),
+      );
+    });
+
+    it('tracks Basic Functionality Migrated for unaligned social wallets', () => {
+      const { controller, getSeedlessOnboardingState } = setupController({});
+      controller.setUseTokenDetection(false);
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.BasicFunctionalityMigrated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            routed_bf_state: 'on',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: true,
+          }),
+        }),
+      );
+    });
+
+    it('repairs a consolidated social-login wallet with Basic Functionality disabled', () => {
+      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.toggleExternalServices(false);
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(true);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      expect(mockTrackEvent).not.toHaveBeenCalled();
     });
 
     it('does not sync external services when already consolidated', () => {
-      const { controller, getOnboardingState, toggleExternalServices } =
-        setupController({});
+      const { controller, toggleExternalServices } = setupController({});
       controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
 
       controller.consolidateBasicFunctionality();
 
-      expect(getOnboardingState).not.toHaveBeenCalled();
       expect(toggleExternalServices).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('repairs a consolidated linked-social wallet missing the migration modal', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      controller.setPreference('hasLinkedSocialLoginProfile', true);
+
+      controller.consolidateBasicFunctionality();
+
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(getOnboardingState).toHaveBeenCalled();
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('treats linked-social profile preference as a social-login wallet', () => {
+      const { controller, toggleExternalServices } = setupController({});
+      controller.setPreference('hasLinkedSocialLoginProfile', true);
+      controller.toggleExternalServices(false);
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
     });
   });
 
@@ -823,6 +1017,7 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
+            "hasLinkedSocialLoginProfile": false,
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
@@ -896,6 +1091,7 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
+            "hasLinkedSocialLoginProfile": false,
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
@@ -983,6 +1179,7 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
+            "hasLinkedSocialLoginProfile": false,
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
@@ -1071,6 +1268,7 @@ describe('preferences controller', () => {
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
             "gasSponsorshipOptOutByChainId": {},
+            "hasLinkedSocialLoginProfile": false,
             "hideZeroBalanceTokens": false,
             "isBasicFunctionalityConsolidatedEnabled": false,
             "privacyMode": false,
@@ -1414,7 +1612,8 @@ describe('preferences controller', () => {
             showDefaultAddress: true,
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
-            isBasicFunctionalityConsolidatedEnabled: true,
+            isBasicFunctionalityConsolidatedEnabled: false,
+            hasLinkedSocialLoginProfile: false,
             basicFunctionalityMigrationNotification: null,
             basicFunctionalityMigrationNotificationDismissed: false,
             skipDeepLinkInterstitial: false,

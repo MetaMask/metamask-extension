@@ -39,6 +39,9 @@ class OnboardingCompletePage {
   private readonly onboardingCompleteDoneButton =
     '[data-testid="onboarding-complete-done"]';
 
+  private readonly onboardingCompleteDoneButtonEnabled =
+    '[data-testid="onboarding-complete-done"]:not([disabled])';
+
   private readonly page = '[data-testid="parent-selector-onboarding-complete"]';
 
   private readonly walletReadyMessage = {
@@ -94,7 +97,10 @@ class OnboardingCompletePage {
   async clickCreateWalletDoneButton(): Promise<void> {
     // With sidepanel enabled, clicking done opens a new window instead of
     // navigating in the current window, so the button doesn't "disappear"
-    // We just click it without waiting for it to disappear
+    await this.driver.waitForElementToStopMoving(
+      this.onboardingCompleteDoneButton,
+    );
+    await this.waitForDoneButtonStablyEnabled();
     await this.driver.clickElement(this.onboardingCompleteDoneButton);
   }
 
@@ -113,6 +119,19 @@ class OnboardingCompletePage {
   async navigateToDefaultPrivacySettings(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.manageDefaultSettingsButton,
+    );
+  }
+
+  async waitForDoneButtonStablyEnabled(): Promise<void> {
+    console.log('Waiting for onboarding Done button to be stably enabled');
+    await this.driver.waitUntil(
+      async () => {
+        return await this.driver.isElementPresentAndVisible(
+          this.onboardingCompleteDoneButtonEnabled,
+          1000,
+        );
+      },
+      { timeout: 10000, interval: 500, stableFor: 2000 },
     );
   }
 }

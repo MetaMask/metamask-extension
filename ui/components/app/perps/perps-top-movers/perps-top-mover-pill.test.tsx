@@ -41,14 +41,43 @@ describe('PerpsTopMoverPill', () => {
     expect(screen.getByTestId('perps-top-movers-pill-BTC')).toBeInTheDocument();
   });
 
-  it('sizes to its label instead of stretching or shrinking in a row', () => {
+  it('sizes to its label but can never outgrow the row', () => {
     renderPill();
 
     const pill = screen.getByTestId('perps-top-movers-pill-BTC');
 
-    expect(pill).toHaveClass('w-auto', 'shrink-0');
-    expect(pill).not.toHaveClass('flex-1');
-    expect(pill).not.toHaveClass('min-w-0');
+    // Content width, as on mobile.
+    expect(pill).toHaveClass('w-auto');
+    expect(pill).not.toHaveClass('w-full');
+    // The list wraps rather than scrolls, so a pill must be able to give way if
+    // its label alone is wider than the row. `shrink-0` would pin it at content
+    // width and push the section sideways again.
+    expect(pill).toHaveClass('max-w-full', 'min-w-0');
+    expect(pill).not.toHaveClass('shrink-0');
+    // The pill is content-height, so its 24px logo plus this 12px of padding is
+    // what makes it 36px. The loading skeleton hardcodes that 36px as `h-9`, so
+    // changing either of these without changing the skeleton reintroduces a
+    // reflow when the ranking lands.
+    expect(pill).toHaveClass('h-auto', 'py-1.5');
+  });
+
+  it('truncates a long ticker rather than pushing the change out of the cell', () => {
+    renderPill({ symbol: 'AVERYLONGTICKER' });
+
+    const pill = screen.getByTestId('perps-top-movers-pill-AVERYLONGTICKER');
+
+    // jsdom computes no layout, so the behaviour is pinned through the classes
+    // that produce it: the ticker is the only part allowed to shrink and clip,
+    // and the change value is held at its natural width so a long ticker can
+    // never squeeze it out of the cell.
+    expect(screen.getByText('AVERYLONGTICKER')).toHaveClass(
+      'min-w-0',
+      'truncate',
+    );
+    expect(screen.getByText('+2.84%')).toHaveClass('shrink-0');
+    // `truncate` clips through text-overflow, so the whole ticker stays in the
+    // DOM and the button keeps its full accessible name.
+    expect(pill).toHaveTextContent('AVERYLONGTICKER');
   });
 
   it('displays the ticker', () => {

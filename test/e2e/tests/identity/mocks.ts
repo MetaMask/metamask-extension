@@ -6,6 +6,7 @@ import {
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { USER_STORAGE_RAMPS_ORDERS_FEATURE } from './constants';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -48,6 +49,10 @@ export async function mockIdentityServices(
   );
   userStorageMockttpControllerInstance.setupPath(
     USER_STORAGE_GROUPS_FEATURE_KEY,
+    server,
+  );
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_RAMPS_ORDERS_FEATURE,
     server,
   );
 }

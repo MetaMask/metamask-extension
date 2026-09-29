@@ -1,10 +1,17 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  getTokenDisplaySymbol,
+  MUSD_TOKEN,
+  MUSD_TOKEN_ADDRESS,
+} from '@metamask/money-account-utils';
+import type { Hex } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import { shortenString } from '../../../helpers/utils/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
+import type { AccountsApiActivity } from '../types/money-activity';
 import {
   classifyMoneyActivity,
   getMoneyActivityStatus,
@@ -15,6 +22,12 @@ import { resolveOnchainAmount } from './money-activity-display';
 export type MoneyTransactionDetailsHeroAmount = {
   amount: string;
   isSuccessColor: boolean;
+};
+
+export type MoneyActivityAsset = {
+  chainId: Hex;
+  tokenAddress: Hex;
+  symbol: string | undefined;
 };
 
 /**
@@ -42,6 +55,64 @@ export function getMoneyTransactionDetailsHeroAmount(
   return {
     amount: `${isIncoming ? '+' : '-'}${formatted}`,
     isSuccessColor: isIncoming,
+  };
+}
+
+/**
+ * Formats the details-page hero amount for an Accounts API settlement.
+ *
+ * @param activity - Parsed Accounts API card, cashback, or refund.
+ * @returns Formatted fiat amount and whether to use the success color.
+ */
+export function getMoneyApiActivityDetailsHeroAmount(
+  activity: AccountsApiActivity,
+): MoneyTransactionDetailsHeroAmount {
+  const isIncoming = activity.kind === 'cashback' || activity.kind === 'refund';
+  const amount = new BigNumber(activity.amount).dividedBy(
+    new BigNumber(10).pow(activity.token.decimals),
+  );
+
+  return {
+    amount: `${isIncoming ? '+' : '-'}${moneyFormatUsd(amount)}`,
+    isSuccessColor: isIncoming,
+  };
+}
+
+/**
+ * Resolves the asset to show on the Money activity details hero.
+ * Prefers the MetaMask Pay token when the deposit was not fiat-funded,
+ * then the transferred token, then mUSD on the transaction chain.
+ *
+ * @param tx - The transaction to present.
+ * @returns Chain, token address, and display symbol for the hero icon.
+ */
+export function getMoneyActivityAsset(tx: TransactionMeta): MoneyActivityAsset {
+  const { metamaskPay, transferInformation, chainId } = tx;
+  const isFiatDeposit = Boolean(metamaskPay?.fiat);
+
+  if (!isFiatDeposit && metamaskPay?.tokenAddress && metamaskPay?.chainId) {
+    return {
+      chainId: metamaskPay.chainId,
+      tokenAddress: metamaskPay.tokenAddress,
+      symbol: getTokenDisplaySymbol(metamaskPay.tokenAddress),
+    };
+  }
+
+  if (transferInformation?.contractAddress) {
+    return {
+      chainId: chainId as Hex,
+      tokenAddress: transferInformation.contractAddress as Hex,
+      symbol: getTokenDisplaySymbol(
+        transferInformation.contractAddress,
+        transferInformation.symbol,
+      ),
+    };
+  }
+
+  return {
+    chainId: chainId as Hex,
+    tokenAddress: MUSD_TOKEN_ADDRESS,
+    symbol: MUSD_TOKEN.symbol,
   };
 }
 

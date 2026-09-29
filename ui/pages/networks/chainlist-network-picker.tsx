@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
@@ -21,7 +21,7 @@ import {
   useSafeChains,
 } from '../../components/multichain/networks-form/use-safe-chains';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getShowTestNetworks } from '../../selectors/selectors';
+import { getShouldShowTestNetworks } from '../../selectors';
 import { NoSearchResult } from './no-search-result';
 
 export type ChainlistNetwork = SafeChain & {
@@ -69,7 +69,7 @@ export const ChainlistNetworkPicker = ({
   const [visibleNetworkCount, setVisibleNetworkCount] =
     useState(CHAINLIST_PAGE_SIZE);
   const { safeChains } = useSafeChains();
-  const showTestNetworks = useSelector(getShowTestNetworks);
+  const showTestNetworks = useSelector(getShouldShowTestNetworks);
 
   const chainlistNetworks = useMemo(() => {
     const normalizedSearchValue = searchValue.trim().toLowerCase();
@@ -109,9 +109,11 @@ export const ChainlistNetworkPicker = ({
   const showNoSearchResults =
     searchValue.trim().length > 0 && chainlistNetworks.length === 0;
 
-  useEffect(() => {
+  const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
+  if (searchValue !== prevSearchValue) {
+    setPrevSearchValue(searchValue);
     setVisibleNetworkCount(CHAINLIST_PAGE_SIZE);
-  }, [searchValue]);
+  }
 
   const handleLearnHowToStaySafe = useCallback(() => {
     global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });

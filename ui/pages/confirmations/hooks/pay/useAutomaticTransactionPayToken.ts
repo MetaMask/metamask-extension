@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   getTransactionType,
+  hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
 import { getMoneyAccountTransactionType } from '../../utils/confirm';
@@ -66,6 +70,9 @@ export function useAutomaticTransactionPayToken({
   );
   const isMoneyPaymentOverride =
     paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
   const vaultConfig = useSelector(selectMoneyAccountVaultConfig);
   const moneyAccountPayToken = useMemo(
     () => getMoneyAccountPayToken(vaultConfig),
@@ -147,6 +154,7 @@ export function useAutomaticTransactionPayToken({
     () =>
       getBestToken({
         isHardwareWallet,
+        isMoneyAccountDeposit,
         isMoneyPaymentOverride,
         isPostQuoteWithdraw,
         isPostQuoteWithdrawTokenFilterApplied,
@@ -161,6 +169,7 @@ export function useAutomaticTransactionPayToken({
       }),
     [
       isHardwareWallet,
+      isMoneyAccountDeposit,
       isMoneyPaymentOverride,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
@@ -350,6 +359,7 @@ export function useAutomaticTransactionPayToken({
 
 function getBestToken({
   isHardwareWallet,
+  isMoneyAccountDeposit,
   isMoneyPaymentOverride,
   isPostQuoteWithdraw,
   isPostQuoteWithdrawTokenFilterApplied,
@@ -363,6 +373,7 @@ function getBestToken({
   tokens,
 }: {
   isHardwareWallet: boolean;
+  isMoneyAccountDeposit: boolean;
   isMoneyPaymentOverride: boolean;
   isPostQuoteWithdraw: boolean;
   isPostQuoteWithdrawTokenFilterApplied: boolean;
@@ -393,6 +404,16 @@ function getBestToken({
     return moneyAccountPayToken;
   }
 
+  // Exclude zero-balance EOA tokens from every money-account deposit selection
+  // path. `minimumRequiredTokenBalance` defaults to 0, so a $0 preferred /
+  // no-fee row (for example Monad mUSD) would otherwise outrank a funded token
+  // and the deposit would open on a token that can never fund it. If none are
+  // funded, leave the pay token unresolved so the deposit prefill lifecycle can
+  // settle as skipped instead of holding the amount skeleton up forever.
+  const selectableTokens = isMoneyAccountDeposit
+    ? tokens.filter((token) => (token.fiat?.balance ?? 0) > 0)
+    : tokens;
+
   // Without a post-quote withdraw allowlist, `preferredToken` is the
   // destination: honor it even if the user has no wallet balance of it.
   if (isPostQuoteWithdraw && preferredToken) {
@@ -409,7 +430,7 @@ function getBestToken({
       return preferredToken;
     }
   } else if (preferredToken) {
-    const preferredTokenAvailable = tokens.some(
+    const preferredTokenAvailable = selectableTokens.some(
       (token) =>
         token.address?.toLowerCase() === preferredToken.address.toLowerCase() &&
         String(token.chainId)?.toLowerCase() ===
@@ -425,7 +446,7 @@ function getBestToken({
     isPostQuoteWithdraw,
     minimumRequiredTokenBalance,
     preferredTokensFromFlags,
-    tokens,
+    tokens: selectableTokens,
   });
   if (preferredFromFlags) {
     return preferredFromFlags;
@@ -438,8 +459,8 @@ function getBestToken({
   // Same as mobile / Pay-with picker: prefer a no-fee source (subsidized
   // route or same-token Monad mUSD) that meets the fiat minimum before
   // falling through to the first funding token.
-  if (tokens?.length && !isPostQuoteWithdraw) {
-    const noFeeCandidates = tokens
+  if (selectableTokens.length && !isPostQuoteWithdraw) {
+    const noFeeCandidates = selectableTokens
       .filter((token) => {
         if (!token.chainId || !token.address) {
           return false;
@@ -463,10 +484,10 @@ function getBestToken({
     }
   }
 
-  if (tokens?.length) {
+  if (selectableTokens.length) {
     return {
-      address: tokens[0].address as Hex,
-      chainId: tokens[0].chainId as Hex,
+      address: selectableTokens[0].address as Hex,
+      chainId: selectableTokens[0].chainId as Hex,
     };
   }
 

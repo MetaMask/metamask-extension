@@ -348,7 +348,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(screen.queryByTestId('alert-modal')).not.toBeInTheDocument();
   });
 
-  it('displays the alert for insufficient gas', async () => {
+  it('displays the alert for a gas limit below 12000', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -358,7 +358,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction(account.address);
     const transaction = mockedMetaMaskState.transactions[0];
-    transaction.txParams.gas = '0x0';
+    transaction.txParams.gas = '0x2edf';
 
     await act(async () => {
       await integrationTestRender({
@@ -376,17 +376,10 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),
-    ).toBeInTheDocument();
-
-    expect(
-      await screen.findByTestId('alert-modal__selected-alert'),
     ).toHaveTextContent(
-      'To continue with this transaction, you’ll need to increase the gas limit to 21000 or higher.',
+      'To continue with this transaction, you’ll need to increase the gas limit to 12000 or higher.',
     );
 
-    expect(
-      await screen.findByTestId('alert-modal-action-showAdvancedGasModal'),
-    ).toBeInTheDocument();
     expect(
       await screen.findByTestId('alert-modal-action-showAdvancedGasModal'),
     ).toHaveTextContent('Update gas limit');
