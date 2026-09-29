@@ -113,22 +113,15 @@ describe('verify', () => {
     ]);
   });
 
-  it('rejects a .com link when neither origin verifies', async () => {
-    const result = await verify(
-      new URL('https://link.metamask.com/path?sig=abc'),
-    );
+  jestIt.each([
+    ['https://link.metamask.com/path?sig=abc', 2],
+    ['https://link.metamask.com.evil.tld/path?sig=abc', 1],
+    ['https://link.metamask.io/path?sig=abc', 2],
+  ])('rejects %s after %i verification attempts', async (url, attempts) => {
+    const result = await verify(new URL(url));
 
     expect(result).toBe(INVALID);
-    expect(mockVerify).toHaveBeenCalledTimes(2);
-  });
-
-  it('does not try the .com origin for a lookalike host', async () => {
-    const result = await verify(
-      new URL('https://link.metamask.com.evil.tld/path?sig=abc'),
-    );
-
-    expect(result).toBe(INVALID);
-    expect(mockVerify).toHaveBeenCalledTimes(1);
+    expect(mockVerify).toHaveBeenCalledTimes(attempts);
   });
 
   jestIt.each([
@@ -169,15 +162,6 @@ describe('verify', () => {
     expect(new TextDecoder().decode(mockVerify.mock.calls[0][3])).toBe(
       'https://link.metamask.io/path',
     );
-  });
-
-  it('rejects a .io link when neither origin verifies', async () => {
-    const result = await verify(
-      new URL('https://link.metamask.io/path?sig=abc'),
-    );
-
-    expect(result).toBe(INVALID);
-    expect(mockVerify).toHaveBeenCalledTimes(2);
   });
 
   it('checks every configured signing host for an allowed link', async () => {
