@@ -253,8 +253,6 @@ export class LedgerDmkBridgeHandler {
    */
   #bridgeGeneration = 0;
 
-  #sessionId: string | null = null;
-
   // Devices permitted when the cached bridge connected.
   // Re-granting permission creates new HIDDevice objects.
   #bridgeHidDevices: Set<HIDDevice> | null = null;
@@ -341,7 +339,7 @@ export class LedgerDmkBridgeHandler {
 
     const generation = this.#bridgeGeneration;
     const pending = this.#constructBridge({ skipPermittedDeviceProbe })
-      .then(async ({ bridge, transport, sessionId, hidDevices }) => {
+      .then(async ({ bridge, transport, hidDevices }) => {
         // `destroy()` may have cleared state while construction was in flight.
         // Discard the orphaned bridge instead of resurrecting a torn-down handler.
         if (generation !== this.#bridgeGeneration) {
@@ -366,10 +364,9 @@ export class LedgerDmkBridgeHandler {
         this.#bridge = bridge;
         this.#bridgeTransport = transport;
         // Published here, not in `constructBridge`, so a discarded in-flight
-        // construction can never overwrite a newer live bridge's session id or
+        // construction can never overwrite a newer live bridge's
         // permitted-device snapshot (which later liveness checks compare
         // against).
-        this.#sessionId = sessionId;
         this.#bridgeHidDevices = hidDevices;
         return bridge;
       })
@@ -377,7 +374,6 @@ export class LedgerDmkBridgeHandler {
         console.error('[LedgerDMK] ensureBridge: connect failed', error);
         if (generation === this.#bridgeGeneration) {
           this.#bridgePromise = null;
-          this.#sessionId = null;
           this.#bridgeHidDevices = null;
           this.#bridgeTransport = null;
         }
@@ -446,8 +442,8 @@ export class LedgerDmkBridgeHandler {
    * Constructs a fresh `LedgerDmkBridge`, discovers a permitted device,
    * connects, and waits for session readiness.
    *
-   * Nothing is assigned to instance fields here — the transport, session id,
-   * and HID device snapshot are all returned to the caller, which publishes
+   * Nothing is assigned to instance fields here — the transport and HID
+   * device snapshot are all returned to the caller, which publishes
    * them only after its generation check passes. Writing them here would let a
    * construction that is later discarded (a stale-bridge rebuild racing
    * `destroy()`/`forceReset()`) clobber a newer live bridge's state: the loser's
@@ -462,14 +458,13 @@ export class LedgerDmkBridgeHandler {
    * `#ensureBridge` just observed an empty `getDevices()` result and the probe
    * would deterministically throw instead of letting discovery re-run.
    * @returns The connected `LedgerDmkBridge` plus the transport its DMK
-   * created, the session id, and the permitted-device snapshot.
+   * created and the permitted-device snapshot.
    */
   async #constructBridge(
     options: { skipPermittedDeviceProbe?: boolean } = {},
   ): Promise<{
     bridge: LedgerDmkBridge;
     transport: DestroyableTransport | null;
-    sessionId: string;
     hidDevices: Set<HIDDevice> | null;
   }> {
     console.log('[LedgerDMK] constructBridge: creating LedgerDmkBridge');
@@ -515,7 +510,7 @@ export class LedgerDmkBridgeHandler {
         sessionId,
       });
 
-      return { bridge, transport, sessionId, hidDevices };
+      return { bridge, transport, hidDevices };
     } catch (error) {
       // Discovery/connect failures must not leave an orphaned DMK instance in
       // the long-lived offscreen document (HID state, transports, etc.).
@@ -819,8 +814,8 @@ export class LedgerDmkBridgeHandler {
   }
 
   /**
-   * Synchronously clears the cached bridge, session id, pending
-   * bridge-construction promise, and session-state subscription, and bumps
+   * Synchronously clears the cached bridge, pending bridge-construction
+   * promise, and session-state subscription, and bumps
    * `bridgeGeneration` so in-flight `constructBridge()` calls are discarded.
    *
    * Shared by every teardown path (`#tearDownBridge`, `forceReset`, the
@@ -847,7 +842,6 @@ export class LedgerDmkBridgeHandler {
     // callers construct a fresh bridge instead of reusing one mid-destroy.
     this.#bridge = null;
     this.#bridgePromise = null;
-    this.#sessionId = null;
     this.#bridgeHidDevices = null;
     this.#bridgeTransport = null;
 
