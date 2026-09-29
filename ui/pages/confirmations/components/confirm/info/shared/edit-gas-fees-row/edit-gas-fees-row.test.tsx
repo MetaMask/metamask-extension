@@ -73,7 +73,7 @@ function render({
     chainId,
     gasFeeTokens,
     selectedGasFeeToken,
-    isGasFeeSponsored: isGaslessSupported,
+    isGasFeeSponsoredAvailable: isGaslessSupported,
   });
 
   if (transactionType) {

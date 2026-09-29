@@ -46,10 +46,10 @@ export const useShieldConfirm = () => {
       txMeta: TransactionMeta,
       confirmationScreenStatus: CaptureShieldCryptoConfirmationEventParams['confirmationScreenStatus'],
       hasInsufficientGas: boolean,
+      gasSponsored: boolean,
     ): CaptureShieldCryptoConfirmationEventParams => {
       const billingInterval =
         lastSelectedPaymentDetails?.plan ?? RECURRING_INTERVALS.month;
-      const gasSponsored = Boolean(txMeta.isGasFeeSponsored);
 
       return {
         defaultBillingInterval: RECURRING_INTERVALS.year,
@@ -116,15 +116,26 @@ export const useShieldConfirm = () => {
    * Track when the Shield subscription approval confirmation screen opens.
    *
    * @param txMeta - The transaction metadata.
+   * @param hasInsufficientGas - Whether the account cannot pay the gas fee.
+   * @param gasSponsored - Whether the gas fee is sponsored.
    */
   const handleShieldSubscriptionApprovalTransactionOpened = useCallback(
-    (txMeta: TransactionMeta, hasInsufficientGas = false) => {
+    (
+      txMeta: TransactionMeta,
+      hasInsufficientGas = false,
+      gasSponsored = false,
+    ) => {
       if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
         return;
       }
 
       captureShieldCryptoConfirmationEvent(
-        getCryptoConfirmationEventParams(txMeta, 'opened', hasInsufficientGas),
+        getCryptoConfirmationEventParams(
+          txMeta,
+          'opened',
+          hasInsufficientGas,
+          gasSponsored,
+        ),
       );
     },
     [captureShieldCryptoConfirmationEvent, getCryptoConfirmationEventParams],
@@ -135,9 +146,15 @@ export const useShieldConfirm = () => {
    * confirmation screen.
    *
    * @param txMeta - The transaction metadata.
+   * @param hasInsufficientGas - Whether the account cannot pay the gas fee.
+   * @param gasSponsored - Whether the gas fee is sponsored.
    */
   const handleShieldSubscriptionApprovalTransactionRejected = useCallback(
-    (txMeta: TransactionMeta, hasInsufficientGas = false) => {
+    (
+      txMeta: TransactionMeta,
+      hasInsufficientGas = false,
+      gasSponsored = false,
+    ) => {
       if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
         return;
       }
@@ -147,6 +164,7 @@ export const useShieldConfirm = () => {
           txMeta,
           'rejected',
           hasInsufficientGas,
+          gasSponsored,
         ),
       );
     },

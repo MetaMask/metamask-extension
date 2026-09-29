@@ -2,7 +2,6 @@
 import {
   TransactionContainerType,
   TransactionMeta,
-  TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,7 +10,6 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { isTransactionGasFeeSponsorshipAvailable } from '../../../../../../../../shared/lib/transaction-gas-fee.utils';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -25,8 +23,7 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
-import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
-import { useGasSponsorshipPreference } from '../../../../../hooks/gas/useGasSponsorshipPreference';
+import { useIsGasFeeSponsored } from '../../../../../hooks/gas/useIsGasFeeSponsored';
 import { useTransactionEventFragment } from '../../../../../hooks/useTransactionEventFragment';
 
 export const GasFeesDetails = (): JSX.Element | null => {
@@ -57,17 +54,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
 
   const estimationFailed = useEstimationFailed();
 
-  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
-    transactionMeta?.chainId,
-  );
-
-  const isSponsorshipEligible =
-    isGaslessSupported &&
-    isTransactionGasFeeSponsorshipAvailable(transactionMeta) &&
-    transactionMeta?.type !== TransactionType.revokeDelegation;
-
-  const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;
+  const { isGasFeeSponsored } = useIsGasFeeSponsored();
   const showAddedProtectionFee = Boolean(
     transactionMeta?.containerTypes?.includes(
       TransactionContainerType.EnforcedSimulations,

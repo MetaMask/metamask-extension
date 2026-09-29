@@ -3,10 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  isTransactionGasFeeSponsored,
-  isTransactionGasFeeSponsorshipAvailable,
-} from './transaction-gas-fee.utils';
+import { isTransactionGasFeeSponsored } from './transaction-gas-fee.utils';
 
 const BASE_TRANSACTION = {
   id: 'test-tx',
@@ -30,31 +27,6 @@ function buildTransaction(
     ...overrides,
   } as TransactionMeta;
 }
-
-describe('isTransactionGasFeeSponsorshipAvailable', () => {
-  it('uses current sponsorship availability instead of deprecated metadata', () => {
-    expect(
-      isTransactionGasFeeSponsorshipAvailable(
-        buildTransaction({
-          isGasFeeSponsored: true,
-          isGasFeeSponsoredAvailable: false,
-        }),
-      ),
-    ).toBe(false);
-  });
-
-  it('falls back to deprecated sponsorship metadata', () => {
-    expect(
-      isTransactionGasFeeSponsorshipAvailable(
-        buildTransaction({ isGasFeeSponsoredAvailable: undefined }),
-      ),
-    ).toBe(true);
-  });
-
-  it('returns false without transaction metadata', () => {
-    expect(isTransactionGasFeeSponsorshipAvailable(undefined)).toBe(false);
-  });
-});
 
 describe('isTransactionGasFeeSponsored', () => {
   it('returns true for a confirmed transaction with the sponsored flag', () => {
