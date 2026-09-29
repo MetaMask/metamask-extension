@@ -30,13 +30,19 @@ import { useConfirmContext } from '../../../context/confirm';
 import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
+import { useHasInsufficientBalance } from '../../../hooks/useHasInsufficientBalance';
+import { useShieldConfirm } from '../../../hooks/transactions/useShieldConfirm';
 import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 export const WalletInitiatedHeader = () => {
   const t = useI18nContext();
   const { onCancel } = useConfirmActions();
+  const { handleShieldSubscriptionApprovalTransactionRejected } =
+    useShieldConfirm();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { hasInsufficientBalance, isNativeBalanceKnown } =
+    useHasInsufficientBalance();
   const navigate = useNavigate();
   const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
 
@@ -46,7 +52,16 @@ export const WalletInitiatedHeader = () => {
     confirmationType && SEND_TRANSACTION_TYPES.includes(confirmationType);
 
   const handleBackButtonClick = useCallback(() => {
-    if (confirmationType === TransactionType.shieldSubscriptionApprove) {
+    if (
+      confirmationType === TransactionType.shieldSubscriptionApprove &&
+      currentConfirmation
+    ) {
+      handleShieldSubscriptionApprovalTransactionRejected(
+        currentConfirmation,
+        isNativeBalanceKnown &&
+          !currentConfirmation.isGasFeeSponsored &&
+          hasInsufficientBalance,
+      );
       onCancel({ location: MetaMetricsEventLocation.Confirmation });
       navigate(SHIELD_PLAN_ROUTE);
       return;
@@ -73,7 +88,15 @@ export const WalletInitiatedHeader = () => {
         navigateBackForSend: true,
       });
     }
-  }, [confirmationType, currentConfirmation, navigate, onCancel]);
+  }, [
+    confirmationType,
+    currentConfirmation,
+    hasInsufficientBalance,
+    handleShieldSubscriptionApprovalTransactionRejected,
+    isNativeBalanceKnown,
+    navigate,
+    onCancel,
+  ]);
 
   const getHeaderTitle = () => {
     if (isSendTransaction) {
