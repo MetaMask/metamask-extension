@@ -995,13 +995,13 @@
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
-        "@metamask/accounts-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/keyring-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/accounts-controller>ethereum-cryptography": true,
-        "lodash": true,
+        "@metamask/assets-controller>lodash-es": true,
         "uuid": true
       }
     },
@@ -1582,6 +1582,23 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/transaction-controller>@metamask/controller-utils>@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/transaction-pay-controller>@metamask/controller-utils>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
@@ -2189,23 +2206,6 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/accounts-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
     "@metamask/delegation-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -2258,23 +2258,6 @@
       }
     },
     "@metamask/signature-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
       },
@@ -2985,6 +2968,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/ramps-controller>@metamask/controller-utils": true,
+        "@metamask/ramps-controller>bignumber.js": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true
       }
@@ -3407,16 +3391,16 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/transaction-pay-controller>@metamask/keyring-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/controller-utils": true,
+        "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
         "@metamask/ramps-controller": true,
-        "@metamask/sentinel-api-service": true,
+        "@metamask/transaction-pay-controller>@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true,
+        "@metamask/transaction-pay-controller>@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
-        "lodash": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/user-operation-controller": {
@@ -3633,6 +3617,13 @@
         "lodash": true
       }
     },
+    "@metamask/transaction-pay-controller>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
     "@metamask/wallet>@metamask/controller-utils>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -3763,6 +3754,14 @@
         "@noble/hashes": true,
         "@scure/base": true,
         "buffer": true,
+        "nock>debug": true,
+        "lodash": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
         "nock>debug": true,
         "lodash": true
       }
@@ -5146,6 +5145,11 @@
       }
     },
     "@metamask/perps-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/ramps-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
