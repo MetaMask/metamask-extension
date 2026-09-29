@@ -44,7 +44,7 @@ export const getSecurityTrustBadgeConfig = (
     case 'Warning':
     case 'Spam':
       return {
-        icon: IconName.Warning,
+        icon: IconName.Danger,
         iconColor: IconColor.WarningDefault,
         alertSeverity: 'warning',
         label: t('securityTrustRisky'),
