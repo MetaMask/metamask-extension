@@ -44,6 +44,10 @@ const EMPTY_APPLIED_RATES = {
 };
 
 describe('applySentryRemoteRates', () => {
+  beforeEach(() => {
+    globalThis.stateHooks = {};
+  });
+
   afterEach(() => {
     resetSentryRemoteRates();
     mockedGetManifestFlags.mockReturnValue({});

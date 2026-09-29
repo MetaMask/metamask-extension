@@ -51,20 +51,17 @@ type ControllerFlagState = {
 // its own `let remoteRates = {}`. `applySentryRemoteRates` writes into the
 // Sentry chunk's copy while `getPersistenceWriteTelemetrySampleRate` reads from
 // the main bundle's copy, so the written value is never seen. Storing the cache
-// on `globalThis` makes it a true singleton shared by all scripts on the same
-// background page. MV3 is unaffected (single service-worker bundle).
-const REMOTE_RATES_KEY = '__metamask_sentryRemoteRates__';
-
+// on `globalThis.stateHooks` makes it a true singleton shared by all scripts on
+// the same background page (`stateHooks` is already excepted from LavaMoat
+// scuttling). MV3 is unaffected (single service-worker bundle).
 function getRemoteRates(): SentryRemoteRates {
-  return (
-    ((globalThis as Record<string, unknown>)[
-      REMOTE_RATES_KEY
-    ] as SentryRemoteRates) ?? {}
-  );
+  return globalThis.stateHooks?.getSentryRemoteRates?.() ?? {};
 }
 
 function setRemoteRates(rates: SentryRemoteRates): void {
-  (globalThis as Record<string, unknown>)[REMOTE_RATES_KEY] = rates;
+  if (globalThis.stateHooks) {
+    globalThis.stateHooks.getSentryRemoteRates = () => rates;
+  }
 }
 
 /**
