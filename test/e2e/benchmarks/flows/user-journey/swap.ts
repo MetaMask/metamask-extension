@@ -68,14 +68,28 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           // endpoint this benchmark reads them from. CI builds otherwise send
           // only a small fraction of traces.
           sentry: { tracesSampleRate: 1 },
-          // NOT overriding `Swap Quote Fetch`'s per-name rate, and NOT claiming
-          // the 0.001 pin is what hides it. Measured 2026-09-28 under CI=1,
-          // 1 iteration per arm, 47 envelopes every time and `Swap Quote Fetch`
-          // missing from every one: absent without the override, absent with it,
-          // and still absent with the build-time pin itself lifted to 1. The
-          // unpinned `Swap View Loaded` arrives throughout, so the harness and
-          // the mocked endpoint are working. Whatever stops this span, sampling
-          // is not it.
+          // `Swap Quote Fetch` is pinned to 0.001 in `DEFAULT_TRANSACTION_SAMPLE_RATES`
+          // (extension#46618) and `tracesSampleRate` above only sets the sampler's
+          // DEFAULT, which a per-name override is read ahead of. This key is the
+          // one that outranks the pin, and it is NECESSARY BUT NOT SUFFICIENT.
+          //
+          // Measured 2026-09-28, CI=1, 1 iteration per arm, one variable each:
+          //   stock code                      -> span absent
+          //   + this override                 -> span absent
+          //   + guard removed, pin at 0.001   -> span absent
+          //   guard removed + this override   -> swapQuoteFetch 2274.99 ms
+          //   guard removed + pin lifted to 1 -> swapQuoteFetch 2264.99 ms
+          // The unpinned `Swap View Loaded` arrives in every arm, so the harness
+          // and the mocked endpoint are not the variable.
+          //
+          // The second blocker is upstream and NOT fixable here: the completion
+          // guard in `ui/hooks/bridge/useQuoteFetchEvents.ts` returns before
+          // `endTrace` when the arrived quote's dest asset does not match the
+          // selected one, which is the case this benchmark produces. Until that
+          // is addressed, `swapQuoteFetch` cannot report whatever this key says.
+          remoteFeatureFlags: {
+            sentry: { transactionSampleRates: { 'Swap Quote Fetch': 1 } },
+          },
         },
         useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
