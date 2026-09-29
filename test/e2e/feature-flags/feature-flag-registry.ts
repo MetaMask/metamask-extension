@@ -1375,7 +1375,216 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'confirmations_pay_tokens',
     productionDefault: {
-      enabled: false,
+      blockedTokens: {
+        default: {
+          chainIds: ['0xaa36a7', '0xe705', '0x4cef52'],
+          tokens: [
+            {
+              address: '0x66a3c2fa3e467aa586e90912f977e648589cabaf',
+              chainId: '0x1',
+            },
+            {
+              address: '0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE',
+              chainId: '0x38',
+            },
+            {
+              address: '0x5ca42204cdaa70d5c773946e69de942b85ca6706',
+              chainId: '0x38',
+            },
+            {
+              address: '0x683e9dcf085e5efcc7925858aace94d4b8882024',
+              chainId: '0x38',
+            },
+            {
+              address: '0xe90d1567ecEF9282CC1AB348D9e9E2ac95659B99',
+              chainId: '0x38',
+            },
+            {
+              address: '0xEF1f39d8391cdDcaee62b8b383cB992F46a6ce4f',
+              chainId: '0x38',
+            },
+            {
+              address: '0xf0f9D895aCa5c8678f706FB8216fa22957685A13',
+              chainId: '0x1',
+            },
+            {
+              address: '0xb1ced2e320e3f4c8e3511b1dc59203303493f382',
+              chainId: '0x38',
+            },
+            {
+              address: '0x73a15fed60bf67631dc6cd7bc5b6e8da8190acf5',
+              chainId: '0x1',
+            },
+            {
+              address: '0xfecbda1b8dbd73c4eea7843c04db816107fa6666',
+              chainId: '0x38',
+            },
+            {
+              address: '0x8C907e0a72C3d55627E853f4ec6a96b0C8771145',
+              chainId: '0x38',
+            },
+            {
+              address: '0x619940C0F69f1612245f94b7659403623239Fb20',
+              chainId: '0x38',
+            },
+            {
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0x8f',
+            },
+          ],
+        },
+        overrides: {
+          perpsDeposit: {
+            chainIds: ['0xaa36a7', '0xe705', '0x4cef52'],
+            tokens: [
+              {
+                address: '0x33A3d962955A3862C8093D1273344719f03cA17C',
+                chainId: '0x38',
+              },
+              {
+                address: '0x66a3c2fa3e467aa586e90912f977e648589cabaf',
+                chainId: '0x1',
+              },
+              {
+                address: '0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE',
+                chainId: '0x38',
+              },
+              {
+                address: '0x5ca42204cdaa70d5c773946e69de942b85ca6706',
+                chainId: '0x38',
+              },
+              {
+                address: '0x683e9dcf085e5efcc7925858aace94d4b8882024',
+                chainId: '0x38',
+              },
+              {
+                address: '0xe90d1567ecEF9282CC1AB348D9e9E2ac95659B99',
+                chainId: '0x38',
+              },
+              {
+                address: '0xEF1f39d8391cdDcaee62b8b383cB992F46a6ce4f',
+                chainId: '0x38',
+              },
+              {
+                address: '0xf0f9D895aCa5c8678f706FB8216fa22957685A13',
+                chainId: '0x1',
+              },
+              {
+                address: '0xb1ced2e320e3f4c8e3511b1dc59203303493f382',
+                chainId: '0x38',
+              },
+              {
+                address: '0x73a15fed60bf67631dc6cd7bc5b6e8da8190acf5',
+                chainId: '0x1',
+              },
+              {
+                address: '0xfecbda1b8dbd73c4eea7843c04db816107fa6666',
+                chainId: '0x38',
+              },
+              {
+                address: '0x8C907e0a72C3d55627E853f4ec6a96b0C8771145',
+                chainId: '0x38',
+              },
+              {
+                address: '0x619940C0F69f1612245f94b7659403623239Fb20',
+                chainId: '0x38',
+              },
+              {
+                address: '0x0000000000000000000000000000000000000000',
+                chainId: '0x8f',
+              },
+            ],
+          },
+        },
+      },
+      minimumRequiredTokenBalance: 10,
+      preferredTokens: {
+        default: [],
+        overrides: {
+          perpsDeposit: [
+            {
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0x1',
+              name: 'ETH',
+              successRate: 93.89,
+            },
+            {
+              address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eb48',
+              chainId: '0x1',
+              name: 'USDC',
+              successRate: 93.17,
+            },
+            {
+              address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+              chainId: '0xa4b1',
+              name: 'USDC',
+              successRate: 90.73,
+            },
+            {
+              address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+              chainId: '0x1',
+              name: 'USDT',
+              successRate: 90.4,
+            },
+            {
+              address: '0x55d398326f99059fF775485246999027B3197955',
+              chainId: '0x38',
+              name: 'USDT',
+              successRate: 91.4,
+            },
+            {
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0xa4b1',
+              name: 'ETH',
+              successRate: 96.55,
+            },
+            {
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0x2105',
+              name: 'ETH',
+              successRate: 91.15,
+            },
+            {
+              address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+              chainId: '0xa4b1',
+              name: 'USDT',
+              successRate: 97.5,
+            },
+            {
+              address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+              chainId: '0x38',
+              name: 'USDC',
+              successRate: 96.38,
+            },
+            {
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0x38',
+              name: 'BNB',
+              successRate: 89.94,
+            },
+            {
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0x89',
+              name: 'POL',
+              successRate: 89.65,
+            },
+            {
+              address: '0xe2fceAc20813592220b8C56999000d08C7844E6c',
+              chainId: '0x1',
+              name: 'MUSD',
+              successRate: 96.66,
+            },
+          ],
+          perpsWithdraw: [
+            {
+              address: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+              chainId: '0x1',
+              name: 'mUSD',
+            },
+          ],
+        },
+      },
+      rc: true,
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
