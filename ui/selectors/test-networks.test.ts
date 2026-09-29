@@ -107,6 +107,7 @@ describe('test network visibility selectors', () => {
     });
     state.metamask.subjects[origin] = {
       permissions: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         wallet_snap: {
           parentCapability: 'wallet_snap',
           caveats: [{ type: 'snapIds', value: { 'npm:example': {} } }],
