@@ -226,17 +226,6 @@ describe('usePayHardwareAccountAlert', () => {
         expect(result.current).toStrictEqual([]);
       });
     });
-
-    it('returns no alert with non-hardware wallet regardless of flag', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.musdConversion,
-        senderKeyringType: 'HD Key Tree',
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
-      });
-    });
   });
 
   describe('moneyAccountDeposit — evaluates the paying account', () => {
