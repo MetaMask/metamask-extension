@@ -13,7 +13,7 @@ import { MPC_KEYRING_TYPE } from '../../../../shared/constants/mpc-keyring';
  * Override it from `.metamaskrc`.
  */
 const DEFAULT_MFA_CLOUD_SIGNER_URL =
-  'https://mpc-service-non-enclave.dev-api.cx.metamask.io/v1/mpc';
+  'https://mpc-service-non-enclave.dev-api.cx.metamask.io/v2';
 
 /**
  * Dev relayer used when `MFA_RELAYER_URL` is not set.

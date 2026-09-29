@@ -313,7 +313,7 @@ env:
   - INFURA_PROJECT_ID
   # MPC cloud used by the Money Account "Enable MFA" proof of concept.
   # Override either value from .metamaskrc.
-  - MFA_CLOUD_SIGNER_URL: 'https://mpc-service-non-enclave.dev-api.cx.metamask.io/v1/mpc'
+  - MFA_CLOUD_SIGNER_URL: 'https://mpc-service-non-enclave.dev-api.cx.metamask.io/v2'
   - MFA_RELAYER_URL: 'wss://mm-sdk-relay.dev-api.cx.metamask.io/connection/websocket'
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
   - SEGMENT_WRITE_KEY: ''
