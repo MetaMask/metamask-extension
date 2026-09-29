@@ -39,7 +39,7 @@ const DEFAULT_FIXTURE_ETH_NATIVE_ASSET_IDS = [
   'eip155:1337/slip44:1',
   'eip155:42161/slip44:60',
   'eip155:59144/slip44:60',
-];
+] as const;
 const NATIVE_TOKEN_ADDRESS: Hex = '0x0000000000000000000000000000000000000000';
 
 export const MUSD_MONAD_ADDRESS: Hex =
@@ -71,6 +71,35 @@ export const ETH_USD_PRICE = 2048;
 export const USDC_USD_PRICE = 1;
 const MON_USD_PRICE = 1;
 const MUSD_USD_PRICE = 1;
+
+/**
+ * Fungible price entry whose `assetPriceType` stays a literal.
+ * `Object.fromEntries` otherwise widens it to `string`, which is not an
+ * `AssetPrice` under assets-controller 17.
+ *
+ * @param id - CoinGecko id stored on the price entry.
+ * @param usdPrice - USD price seeded for the asset.
+ */
+function fungibleAssetPrice(id: string, usdPrice: number) {
+  return {
+    assetPriceType: 'fungible' as const,
+    id,
+    lastUpdated: 0,
+    price: usdPrice,
+    usdPrice,
+  };
+}
+
+const DEFAULT_FIXTURE_ETH_NATIVE_PRICES = Object.fromEntries(
+  DEFAULT_FIXTURE_ETH_NATIVE_ASSET_IDS.map((assetId) => [
+    assetId,
+    fungibleAssetPrice('ethereum', ETH_USD_PRICE),
+  ]),
+) as {
+  [AssetId in (typeof DEFAULT_FIXTURE_ETH_NATIVE_ASSET_IDS)[number]]: ReturnType<
+    typeof fungibleAssetPrice
+  >;
+};
 
 const RELAY_API_BASE_URL = 'https://api.relay.link';
 const PRICE_API_BASE_URL = 'https://price.api.cx.metamask.io';
@@ -1165,46 +1194,17 @@ export function buildMoneyAccountDepositFixture({
         // Pay's `currencyRates` are keyed by ticker, so every chain whose
         // native asset is "ETH" in the default fixture must agree on the ETH
         // price or the USDC → USD conversion mixes rates from two chains.
-        ...Object.fromEntries(
-          DEFAULT_FIXTURE_ETH_NATIVE_ASSET_IDS.map((assetId) => [
-            assetId,
-            {
-              assetPriceType: 'fungible',
-              id: 'ethereum',
-              lastUpdated: 0,
-              price: ETH_USD_PRICE,
-              usdPrice: ETH_USD_PRICE,
-            },
-          ]),
+        ...DEFAULT_FIXTURE_ETH_NATIVE_PRICES,
+        [MONAD_NATIVE_ASSET_ID]: fungibleAssetPrice('monad', MON_USD_PRICE),
+        [MUSD_MONAD_ASSET_ID]: fungibleAssetPrice(
+          'metamask-usd',
+          MUSD_USD_PRICE,
         ),
-        [MONAD_NATIVE_ASSET_ID]: {
-          assetPriceType: 'fungible',
-          id: 'monad',
-          lastUpdated: 0,
-          price: MON_USD_PRICE,
-          usdPrice: MON_USD_PRICE,
-        },
-        [MUSD_MONAD_ASSET_ID]: {
-          assetPriceType: 'fungible',
-          id: 'metamask-usd',
-          lastUpdated: 0,
-          price: MUSD_USD_PRICE,
-          usdPrice: MUSD_USD_PRICE,
-        },
-        [MAINNET_NATIVE_ASSET_ID]: {
-          assetPriceType: 'fungible',
-          id: 'ethereum',
-          lastUpdated: 0,
-          price: ETH_USD_PRICE,
-          usdPrice: ETH_USD_PRICE,
-        },
-        [MAINNET_USDC_ASSET_ID]: {
-          assetPriceType: 'fungible',
-          id: 'usd-coin',
-          lastUpdated: 0,
-          price: USDC_USD_PRICE,
-          usdPrice: USDC_USD_PRICE,
-        },
+        [MAINNET_NATIVE_ASSET_ID]: fungibleAssetPrice(
+          'ethereum',
+          ETH_USD_PRICE,
+        ),
+        [MAINNET_USDC_ASSET_ID]: fungibleAssetPrice('usd-coin', USDC_USD_PRICE),
       },
     })
     .build();
