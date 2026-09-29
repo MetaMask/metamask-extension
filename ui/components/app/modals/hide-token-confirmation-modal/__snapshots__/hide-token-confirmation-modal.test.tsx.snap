@@ -65,7 +65,7 @@ exports[`Hide Token Confirmation Modal matches snapshot 1`] = `
                 TKN
               </p>
               <p
-                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+                class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left w-full"
               >
                 You can add this token back in the future by going to “Import token” in your accounts options menu.
               </p>
