@@ -8,7 +8,6 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   ButtonSize,
-  ButtonVariant,
   Modal,
   ModalBody,
   ModalContent,
@@ -115,14 +114,12 @@ export function HideTokenConfirmationModal({
             'data-testid': 'hide-token-confirmation__cancel',
             onClick: onClose,
             size: ButtonSize.Lg,
-            variant: ButtonVariant.Secondary,
           }}
           primaryButtonProps={{
             children: t('hide'),
             'data-testid': 'hide-token-confirmation__hide',
             onClick: handleHideToken,
             size: ButtonSize.Lg,
-            variant: ButtonVariant.Primary,
           }}
         />
       </ModalContent>
