@@ -4,16 +4,12 @@ import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.fl
 import SnapSignAuthEntryConfirmation from '../../page-objects/pages/confirmations/snap-sign-auth-entry-confirmation';
 import { DEFAULT_STELLAR_AUTH_ENTRY_XDR, WINDOW_TITLES } from '../../constants';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
-import {
-  DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
-  withStellarWalletSnap,
-} from './testHelpers';
+import { withStellarWalletSnap } from './testHelpers';
 
 describe('Stellar - Sign Auth Entry - e2e tests', function () {
   it('Signs an auth entry', async function () {
     await withStellarWalletSnap(
       {
-        ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {
