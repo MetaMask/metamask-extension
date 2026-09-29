@@ -15,6 +15,7 @@ import type {
   DeFiPositionsControllerV2State,
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -77,6 +78,12 @@ import type { AppMetadataControllerState } from '../../app/scripts/controllers/a
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
 
 export type ControllerStatePropertiesEnumerated = {
+  assetsInfo: AssetsControllerState['assetsInfo'];
+  assetsBalance: AssetsControllerState['assetsBalance'];
+  assetsPrice: AssetsControllerState['assetsPrice'];
+  customAssets: AssetsControllerState['customAssets'];
+  assetPreferences: AssetsControllerState['assetPreferences'];
+  selectedCurrency: AssetsControllerState['selectedCurrency'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -342,6 +349,7 @@ export type ControllerStatePropertiesEnumerated = {
 export type ControllerStateTypesMerged = AccountsControllerState &
   AccountTrackerControllerState &
   AddressBookControllerState &
+  AssetsControllerState &
   AlertControllerState &
   AnnouncementControllerState &
   AuthenticationController.AuthenticationControllerState &
