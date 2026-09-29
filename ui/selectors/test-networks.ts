@@ -44,12 +44,10 @@ export const getIsTestnetInUse = createSelector(
   getAllDomains,
   getNetworkConfigurationsByChainId,
   getPermissionSubjects,
-  (
-    selectedChainId,
-    domains,
-    networkConfigurationsByChainId,
-    subjects: PermissionSubjects,
-  ) => {
+  (selectedChainId, domains, networkConfigurationsByChainId, subjects) => {
+    // `getPermissionSubjects` is untyped JS and resolves to `{}`
+    const permissionSubjects = subjects as PermissionSubjects;
+
     if (isTestChain(selectedChainId)) {
       return true;
     }
@@ -57,7 +55,9 @@ export const getIsTestnetInUse = createSelector(
     return Object.entries(domains ?? {}).some(
       ([origin, networkClientId]) =>
         Boolean(
-          subjects[origin]?.permissions?.[Caip25EndowmentPermissionName],
+          permissionSubjects[origin]?.permissions?.[
+            Caip25EndowmentPermissionName
+          ],
         ) &&
         Object.values(networkConfigurationsByChainId ?? {}).some(
           (network) =>
