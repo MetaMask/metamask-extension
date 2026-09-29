@@ -6,6 +6,7 @@ import { useAppSelector } from '../../../../store/hooks';
 import { estimateGas } from '../../../../store/actions';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
+import { selectDefaultNetworkClientIdsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { Asset } from '../../types/send';
@@ -82,17 +83,11 @@ export const useMaxAmount = () => {
   const { rawBalanceNumeric } = useBalance();
   const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
 
-  const networkClientId = useAppSelector((state) => {
-    if (!chainId) {
-      return undefined;
-    }
-
-    const networkConfiguration =
-      state.metamask.networkConfigurationsByChainId[chainId as Hex];
-    return networkConfiguration?.rpcEndpoints[
-      networkConfiguration.defaultRpcEndpointIndex
-    ]?.networkClientId;
-  });
+  const networkClientId = useAppSelector((state) =>
+    chainId
+      ? selectDefaultNetworkClientIdsByChainId(state)[chainId as Hex]
+      : undefined,
+  );
 
   const requiresGasReservation =
     Boolean(isEvmNativeSendType) && !isNetworkGasSponsored;
