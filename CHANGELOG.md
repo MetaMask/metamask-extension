@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added deep linking to the Money home page (#46589)
 - Added an “Add funds to trade” option on the Perps order screen for accounts with no balance (#45986)
 - Added XDC Network to the Additional networks list when enabled (#46543)
+- Refreshed Tron energy, bandwidth and staking information on the TRX token details page so it shows up-to-date values when the page is opened and after Tron transactions are confirmed (#46795)
 
 ### Changed
 
