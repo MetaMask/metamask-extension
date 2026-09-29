@@ -1,9 +1,8 @@
-import { strict as assert } from 'assert';
 import { TestDappStellar } from '../../page-objects/pages/test-dapp-stellar';
 import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.flow';
 import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
-import { WINDOW_TITLES } from '../../constants';
+import { DEFAULT_STELLAR_SIGNED_MESSAGE, WINDOW_TITLES } from '../../constants';
 import { withStellarWalletSnap } from './testHelpers';
 
 describe('Stellar - Sign Message', function () {
@@ -29,8 +28,7 @@ describe('Stellar - Sign Message', function () {
 
         await testDapp.switchTo();
 
-        const signedMessage = await testDapp.getSignedMessage();
-        assert.ok(signedMessage.length > 0);
+        await testDapp.verifySignedMessage(DEFAULT_STELLAR_SIGNED_MESSAGE);
       },
     );
   });

@@ -1,8 +1,11 @@
-import { strict as assert } from 'assert';
 import { TestDappStellar } from '../../page-objects/pages/test-dapp-stellar';
 import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.flow';
 import SnapSignAuthEntryConfirmation from '../../page-objects/pages/confirmations/snap-sign-auth-entry-confirmation';
-import { DEFAULT_STELLAR_AUTH_ENTRY_XDR, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_STELLAR_AUTH_ENTRY_XDR,
+  DEFAULT_STELLAR_SIGNED_AUTH_ENTRY,
+  WINDOW_TITLES,
+} from '../../constants';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import { withStellarWalletSnap } from './testHelpers';
 
@@ -29,9 +32,7 @@ describe('Stellar - Sign Auth Entry', function () {
         await signAuthEntryConfirmation.clickFooterConfirmButton();
         await testDapp.switchTo();
 
-        const signedAuthEntry = await testDapp.getSignedAuthEntry();
-        assert.ok(signedAuthEntry.length > 0);
-        assert.match(signedAuthEntry, /^[A-Za-z0-9+/=]+$/u);
+        await testDapp.verifySignedAuthEntry(DEFAULT_STELLAR_SIGNED_AUTH_ENTRY);
       },
     );
   });
