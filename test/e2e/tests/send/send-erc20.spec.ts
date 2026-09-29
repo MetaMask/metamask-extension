@@ -149,19 +149,17 @@ describe('Send ERC20', function () {
           await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
           // Watch the token first
-          await driver.delay(1000);
           await testDapp.clickERC20WatchAssetButton();
-
-          await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-          await watchAssetConfirmation.clickFooterButton({ button: 'confirm' });
+          await watchAssetConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Initiate transfer
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.clickERC20TokenTransferButton();
-
-          await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           const tokenTransferConfirmation =
@@ -169,6 +167,7 @@ describe('Send ERC20', function () {
           await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
           await tokenTransferConfirmation.clickFooterButton({
             button: 'confirm',
+            waitUntil: 'windowClose',
           });
 
           await driver.switchToWindowWithTitle(

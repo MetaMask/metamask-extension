@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import configureStore from '../../../../../store/store';
@@ -11,7 +11,15 @@ import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { toast, ToastContent } from '../../../../ui/toast/toast';
+import { PRIVACY_ROUTE } from '../../../../../helpers/constants/routes';
 import NftsTab from '.';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 jest.mock('../../../../../hooks/useAnalytics', () => ({
   useAnalytics: () => ({
@@ -174,6 +182,7 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
+  useExternalServices = true,
   balance = ETH_BALANCE,
 }) => {
   const store = configureStore({
@@ -234,6 +243,7 @@ const render = ({
       currentCurrency: 'usd',
       tokenList: {},
       useNftDetection,
+      useExternalServices,
       nftsDropdownState,
     },
   });
@@ -248,12 +258,17 @@ describe('NFT Items', () => {
   setBackgroundConnection({
     detectNfts: detectNftsStub,
     getState: getStateStub,
+    getStatePatches: jest.fn().mockResolvedValue([]),
     checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
     setUseNftDetection: setUseNftDetectionStub,
     setOpenSeaEnabled: setDisplayNftMediaStub,
     setPreference: setPreferenceStub,
+  });
+
+  beforeEach(() => {
+    mockNavigate.mockClear();
   });
 
   describe('NFTs Detection Notice', () => {
@@ -337,6 +352,74 @@ describe('NFT Items', () => {
       });
       expect(
         screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('basic functionality off', () => {
+    it('renders the basic functionality off empty state when useExternalServices is false', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useExternalServices: false,
+      });
+
+      expect(
+        screen.getByTestId('nfts-basic-functionality-off'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsBasicFunctionalityOff.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', {
+          name: messages.basicFunctionalityRequired_reviewInSettings.message,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render the basic functionality off empty state when useExternalServices is true', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useExternalServices: true,
+      });
+
+      expect(
+        screen.queryByTestId('nfts-basic-functionality-off'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('navigates to privacy settings when Review in settings is clicked', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useExternalServices: false,
+      });
+
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: messages.basicFunctionalityRequired_reviewInSettings.message,
+        }),
+      );
+
+      expect(mockNavigate).toHaveBeenCalledWith(PRIVACY_ROUTE);
+    });
+  });
+
+  describe('Sort control', () => {
+    it('does not render the sort control', async () => {
+      await act(async () =>
+        render({
+          selectedAddress: ACCOUNT_1,
+          nfts: NFTS,
+          useNftDetection: true,
+        }),
+      );
+      expect(
+        screen.queryByTestId('sort-by-popover-toggle'),
       ).not.toBeInTheDocument();
     });
   });

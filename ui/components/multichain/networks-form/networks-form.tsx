@@ -6,6 +6,8 @@ import {
   ButtonSize,
   ButtonVariant,
   FormTextField,
+  HelpText,
+  HelpTextSeverity,
   IconName,
   TextButton,
   TextButtonSize,
@@ -55,7 +57,7 @@ import {
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../store/actions';
-import { Box, HelpText, HelpTextSeverity, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -544,10 +546,7 @@ export const NetworksForm = ({
         {(name && warnings?.name?.msg) || suggestedName ? (
           <Box marginTop={1}>
             {name && warnings?.name?.msg ? (
-              <HelpText
-                variant={TextVariant.bodySm}
-                severity={HelpTextSeverity.Warning}
-              >
+              <HelpText severity={HelpTextSeverity.Warning}>
                 {warnings.name.msg}
               </HelpText>
             ) : null}
@@ -642,7 +641,6 @@ export const NetworksForm = ({
         {errors.rpcUrl?.msg && (
           <Box>
             <HelpText
-              variant={TextVariant.bodySm}
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
@@ -692,7 +690,6 @@ export const NetworksForm = ({
 
         {errors.chainId?.msg ? (
           <HelpText
-            variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Danger}
             data-testid="network-form-chain-id-error"
           >
@@ -702,26 +699,28 @@ export const NetworksForm = ({
         {errors.chainId?.key === 'existingChainId' ? (
           <Box>
             <HelpText
-              variant={TextVariant.bodySm}
+              asChild
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
-              {t('updateOrEditNetworkInformations')}{' '}
-              <TextButton
-                size={TextButtonSize.BodySm}
-                onClick={() => {
-                  if (chainIdHex) {
-                    dispatch(
-                      setEditedNetwork({
-                        chainId: chainIdHex,
-                      }),
-                    );
-                    onEdit?.();
-                  }
-                }}
-              >
-                {t('editNetworkLink')}
-              </TextButton>
+              <div>
+                {t('updateOrEditNetworkInformations')}{' '}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    if (chainIdHex) {
+                      dispatch(
+                        setEditedNetwork({
+                          chainId: chainIdHex,
+                        }),
+                      );
+                      onEdit?.();
+                    }
+                  }}
+                >
+                  {t('editNetworkLink')}
+                </TextButton>
+              </div>
             </HelpText>
           </Box>
         ) : null}
@@ -770,7 +769,6 @@ export const NetworksForm = ({
         ) : null}
         {ticker && warnings.ticker?.msg ? (
           <HelpText
-            variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Warning}
             data-testid="network-form-ticker-warning"
           >

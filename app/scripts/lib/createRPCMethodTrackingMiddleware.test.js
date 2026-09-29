@@ -221,10 +221,6 @@ messenger.registerActionHandler(
   'SentryTracingService:clearTracesAfterMetricsOptIn',
   () => undefined,
 );
-messenger.registerActionHandler(
-  'MetaMetricsController:setMarketingCampaignCookieId',
-  () => undefined,
-);
 
 messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
   isEvmSelected: true,

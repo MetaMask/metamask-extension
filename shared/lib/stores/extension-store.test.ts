@@ -12,7 +12,14 @@ jest.mock('webextension-polyfill', () => ({
 
 const setup = (
   options: {
-    localMock?: { get?: unknown; set?: unknown; remove?: unknown } | false;
+    localMock?:
+      | {
+          get?: unknown;
+          getBytesInUse?: unknown;
+          set?: unknown;
+          remove?: unknown;
+        }
+      | false;
   } = {},
 ) => {
   if (typeof options.localMock === 'undefined') {
@@ -118,6 +125,46 @@ describe('ExtensionStore', () => {
 
       expect(result).toBe(MOCK_STATE);
       expect(getMock).toHaveBeenCalledWith(['data', 'meta']);
+    });
+  });
+
+  describe('getBytesInUseByKey', () => {
+    it('throws an error if called in a browser that does not support local storage', async () => {
+      const localStore = setup({ localMock: false });
+
+      await expect(localStore.getBytesInUseByKey(['foo'])).rejects.toThrow(
+        'MetaMask - cannot measure state size in local store as this browser does not support this action',
+      );
+    });
+
+    it('throws an error if getBytesInUse is unavailable', async () => {
+      const localStore = setup({ localMock: { get: jest.fn() } });
+
+      await expect(localStore.getBytesInUseByKey(['foo'])).rejects.toThrow(
+        'MetaMask - cannot measure state size because getBytesInUse is not available',
+      );
+    });
+
+    it('returns bytes in use for each requested key', async () => {
+      const getBytesInUse = jest
+        .fn()
+        .mockResolvedValueOnce(42)
+        .mockResolvedValueOnce(7);
+      const localStore = setup({
+        localMock: { getBytesInUse },
+      });
+
+      await expect(
+        localStore.getBytesInUseByKey(['FooController', 'BarController']),
+      ).resolves.toStrictEqual(
+        new Map([
+          ['FooController', 42],
+          ['BarController', 7],
+        ]),
+      );
+      expect(getBytesInUse).toHaveBeenCalledTimes(2);
+      expect(getBytesInUse).toHaveBeenNthCalledWith(1, 'FooController');
+      expect(getBytesInUse).toHaveBeenNthCalledWith(2, 'BarController');
     });
   });
 

@@ -88,10 +88,8 @@ export function usePerpsChannel<TData>(
 
     if (channel.hasCachedData()) {
       setData(channel.getCachedData());
-      if (!hasReceivedData.current) {
-        hasReceivedData.current = true;
-        setIsInitialLoading(false);
-      }
+      hasReceivedData.current = true;
+      setIsInitialLoading(false);
     } else {
       // Channel was reset (e.g. account switch) — clear stale data
       // so the component shows loading instead of the old account's data.
@@ -115,6 +113,10 @@ export function usePerpsChannel<TData>(
   }, [streamManager, isInitializing]);
 
   if (!streamManager || isInitializing) {
+    if (!isInitialLoading) {
+      setData(emptyValue);
+      setIsInitialLoading(true);
+    }
     return { data: emptyValue, isInitialLoading: true };
   }
 

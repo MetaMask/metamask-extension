@@ -61,6 +61,11 @@ const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
   TransactionType.moneyAccountWithdraw,
 ];
 
+const MONEY_ACCOUNT_HARDWARE_SELECTOR_BLOCKED_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+];
+
 /**
  * "From <wallet>" / "To <wallet>" account selector row.
  *
@@ -91,6 +96,12 @@ export function FromAccountRow({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isHardwareBlocked = useIsPayHardwareBlocked();
+  const excludeHardwareAccounts =
+    isHardwareBlocked ||
+    hasTransactionType(
+      currentConfirmation,
+      MONEY_ACCOUNT_HARDWARE_SELECTOR_BLOCKED_TRANSACTION_TYPES,
+    );
   const transactionId = currentConfirmation?.id ?? '';
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
@@ -202,7 +213,7 @@ export function FromAccountRow({
           onSelect={handleSelect}
           onClose={closeModal}
           title={isRecipientRow ? t('selectRecipient') : undefined}
-          excludeHardwareAccounts={isHardwareBlocked}
+          excludeHardwareAccounts={excludeHardwareAccounts}
         />
       )}
     </>
