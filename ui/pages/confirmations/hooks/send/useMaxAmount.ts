@@ -19,10 +19,6 @@ import { useBalance } from './useBalance';
 import { useSendType } from './useSendType';
 
 const GWEI_TO_WEI_CONVERSION_RATE = 1e9;
-const INITIAL_BOOTSTRAP_BALANCE_MULTIPLIER = '0.9';
-const BOOTSTRAP_BACKOFF_DIVISOR = '2';
-const MAX_BOOTSTRAP_ESTIMATE_ATTEMPTS = 6;
-const INSUFFICIENT_FUNDS_ERROR_PATTERN = /insufficient (?:funds|balance)/iu;
 
 type FeeMarketGasFeeEstimate = {
   medium: {
@@ -169,83 +165,40 @@ export const useMaxAmount = () => {
       return undefined;
     }
 
-    const estimateTransaction = async (estimateValue: string) => {
-      const transactionParams = prepareEVMTransaction(
-        asset,
-        {
-          from,
-          to: toResolved,
-          value: estimateValue,
-        },
-        hexData,
-      );
-
-      const [gasLimit, layer1GasFees] = await Promise.all([
-        estimateGas(transactionParams, networkClientId),
-        chainId === CHAIN_IDS.MAINNET
-          ? Promise.resolve('0x0' as Hex)
-          : getLayer1GasFees({
-              asset,
-              chainId: chainId as Hex,
-              from: from as Hex,
-              value: estimateValue,
-            }),
-      ]);
-
-      return {
-        gasLimit,
-        layer1GasFees: layer1GasFees ?? ('0x0' as Hex),
-      };
-    };
-
-    const estimateBootstrapTransaction = (
-      rawValue: Numeric,
-      attemptsRemaining: number,
-    ): Promise<{ gasLimit: Hex; layer1GasFees: Hex }> => {
-      const bootstrapValue = toTokenMinimalUnit(
-        rawValue.toString(),
-        asset.decimals,
-        10,
-      ) as string;
-
-      return estimateTransaction(bootstrapValue).catch((error: unknown) => {
-        if (
-          !(error instanceof Error) ||
-          !INSUFFICIENT_FUNDS_ERROR_PATTERN.test(error.message) ||
-          attemptsRemaining === 1
-        ) {
-          throw error;
-        }
-
-        return estimateBootstrapTransaction(
-          rawValue.divide(new Numeric(BOOTSTRAP_BACKOFF_DIVISOR, 10)),
-          attemptsRemaining - 1,
-        );
-      });
-    };
-
-    // Bootstrap below the full balance so the node can reserve gas while using
-    // a representative value for payable contracts. If the balance cannot
-    // cover that value and gas, back off before re-estimating with Max.
-    const initialEstimate = await estimateBootstrapTransaction(
-      rawBalanceNumeric.times(
-        new Numeric(INITIAL_BOOTSTRAP_BALANCE_MULTIPLIER, 10),
-      ),
-      MAX_BOOTSTRAP_ESTIMATE_ATTEMPTS,
-    );
-    const initialMaxAmount = getMaxAmountFn({
+    // `eth_estimateGas` without fee fields only requires the value to be
+    // covered by the balance, so estimate the transaction using the full
+    // balance and subtract the resulting gas cost from it.
+    const value = toTokenMinimalUnit(
+      rawBalanceNumeric.toString(),
+      asset.decimals,
+      10,
+    ) as string;
+    const transactionParams = prepareEVMTransaction(
       asset,
-      estimatedTotalGas: getEstimatedTotalGas(
-        initialEstimate.gasLimit,
-        initialEstimate.layer1GasFees,
-        gasFeeEstimates,
-      ),
-      rawBalanceNumeric,
-    }) as string;
+      {
+        from,
+        to: toResolved,
+        value,
+      },
+      hexData,
+    );
 
-    return new Numeric(initialMaxAmount, 10).isZero()
-      ? initialEstimate
-      : await estimateTransaction(initialMaxAmount);
+    const [gasLimit, layer1GasFees] = await Promise.all([
+      estimateGas(transactionParams, networkClientId),
+      chainId === CHAIN_IDS.MAINNET
+        ? Promise.resolve('0x0' as Hex)
+        : getLayer1GasFees({
+            asset,
+            chainId: chainId as Hex,
+            from: from as Hex,
+            value,
+          }),
+    ]);
+
+    return {
+      gasLimit,
+      layer1GasFees: layer1GasFees ?? ('0x0' as Hex),
+    };
   }, [
     asset,
     chainId,

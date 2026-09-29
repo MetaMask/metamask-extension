@@ -122,30 +122,21 @@ describe('useMaxAmount', () => {
     jest.clearAllMocks();
   });
 
-  it('reserves node-estimated gas for the eventual Max transaction', async () => {
+  it('reserves node-estimated gas for a transaction using the full balance', async () => {
     const { result } = renderHookWithProvider(useMaxAmount, createState());
 
     await waitFor(() => expect(result.current.isMaxAmountAvailable).toBe(true));
 
-    expect(estimateGasMock).toHaveBeenNthCalledWith(
-      1,
+    expect(estimateGasMock).toHaveBeenCalledWith(
       {
         data: '0x',
         from: MOCK_ADDRESS_1,
         to: MOCK_ADDRESS_2,
-        value: '0x30ca024f987b900000',
+        value: '0x3635c9adc5dea00000',
       },
       'goerli',
     );
-    expect(estimateGasMock).toHaveBeenLastCalledWith(
-      {
-        data: '0x',
-        from: MOCK_ADDRESS_1,
-        to: MOCK_ADDRESS_2,
-        value: '0x3635c8274c51cc4b80',
-      },
-      'goerli',
-    );
+    expect(estimateGasMock).toHaveBeenCalledTimes(1);
     expect(result.current.getMaxAmount()).toBe('999.99957066841144');
   });
 
@@ -179,7 +170,7 @@ describe('useMaxAmount', () => {
     expect(result.current.isMaxAmountPending).toBe(false);
     expect(result.current.isMaxAmountAvailable).toBe(true);
     expect(result.current.getMaxAmount()).toBe('999.999958');
-    expect(estimateGasMock).toHaveBeenCalledTimes(2);
+    expect(estimateGasMock).toHaveBeenCalledTimes(1);
   });
 
   it('reserves a node estimate above 21,000 gas', async () => {
@@ -191,59 +182,13 @@ describe('useMaxAmount', () => {
     expect(result.current.getMaxAmount()).toBe('999.9993866691592');
   });
 
-  it('uses a below-balance value when Max is selected before entering an amount', async () => {
-    const { result } = renderHookWithProvider(useMaxAmount, createState());
-
-    await waitFor(() => expect(result.current.isMaxAmountAvailable).toBe(true));
-
-    expect(estimateGasMock).toHaveBeenCalledWith(
-      expect.objectContaining({ value: '0x30ca024f987b900000' }),
-      'goerli',
-    );
-  });
-
-  it('backs off the bootstrap value after insufficient funds errors', async () => {
-    estimateGasMock
-      .mockRejectedValueOnce(
-        new Error('insufficient funds for gas * price + value'),
-      )
-      .mockRejectedValueOnce(new Error('insufficient balance'))
-      .mockResolvedValue('0x5208');
-    const { result } = renderHookWithProvider(useMaxAmount, createState());
-
-    await waitFor(() => expect(result.current.isMaxAmountAvailable).toBe(true));
-
-    expect(estimateGasMock).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ value: '0x30ca024f987b900000' }),
-      'goerli',
-    );
-    expect(estimateGasMock).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({ value: '0x18650127cc3dc80000' }),
-      'goerli',
-    );
-    expect(estimateGasMock).toHaveBeenNthCalledWith(
-      3,
-      expect.objectContaining({ value: '0xc328093e61ee40000' }),
-      'goerli',
-    );
-    expect(estimateGasMock).toHaveBeenNthCalledWith(
-      4,
-      expect.objectContaining({ value: '0x3635c8274c51cc4b80' }),
-      'goerli',
-    );
-    expect(estimateGasMock).toHaveBeenCalledTimes(4);
-    expect(result.current.getMaxAmount()).toBe('999.99957066841144');
-  });
-
   it('re-estimates when the sender, recipient, chain, or RPC changes', async () => {
     const state = createState({
       chainId: '0x6',
       networkClientId: 'secondRpc',
     });
     const { rerender } = renderHookWithProvider(useMaxAmount, state);
-    await waitFor(() => expect(estimateGasMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(estimateGasMock).toHaveBeenCalledTimes(1));
 
     sendContext = {
       ...sendContext,
@@ -254,7 +199,7 @@ describe('useMaxAmount', () => {
     };
     rerender();
 
-    await waitFor(() => expect(estimateGasMock).toHaveBeenCalledTimes(4));
+    await waitFor(() => expect(estimateGasMock).toHaveBeenCalledTimes(2));
     expect(estimateGasMock).toHaveBeenLastCalledWith(
       expect.objectContaining({
         from: MOCK_ADDRESS_3,
@@ -269,9 +214,7 @@ describe('useMaxAmount', () => {
     const secondEstimate = createControlledPromise<`0x${string}`>();
     estimateGasMock
       .mockReturnValueOnce(firstEstimate.promise)
-      .mockReturnValueOnce(secondEstimate.promise)
-      .mockResolvedValueOnce('0x7530')
-      .mockResolvedValue('0x5208');
+      .mockReturnValueOnce(secondEstimate.promise);
     const { result, rerender } = renderHookWithProvider(
       useMaxAmount,
       createState({ suggestedMaxFeePerGas: '1' }),
@@ -288,7 +231,7 @@ describe('useMaxAmount', () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    expect(estimateGasMock).toHaveBeenCalledTimes(4);
+    expect(estimateGasMock).toHaveBeenCalledTimes(2);
     expect(result.current.getMaxAmount()).toBe('999.99997');
   });
 
@@ -303,17 +246,6 @@ describe('useMaxAmount', () => {
     expect(result.current.isMaxAmountError).toBe(true);
     expect(result.current.getMaxAmount()).toBeUndefined();
     expect(estimateGasMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('limits bootstrap retries for insufficient funds errors', async () => {
-    estimateGasMock.mockRejectedValue(new Error('insufficient funds'));
-    const { result } = renderHookWithProvider(useMaxAmount, createState());
-
-    await waitFor(() => expect(result.current.isMaxAmountPending).toBe(false));
-
-    expect(result.current.isMaxAmountAvailable).toBe(false);
-    expect(result.current.isMaxAmountError).toBe(true);
-    expect(estimateGasMock).toHaveBeenCalledTimes(6);
   });
 
   it('does not report an error while estimate inputs are missing', () => {
