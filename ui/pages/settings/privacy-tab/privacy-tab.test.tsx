@@ -15,6 +15,15 @@ import PrivacyTab, {
   PRIVACY_SETTING_ITEMS,
 } from './privacy-tab';
 
+jest.mock(
+  '../../../contexts/metamask-notifications/metamask-notifications',
+  () => ({
+    useMetamaskNotificationsContext: () => ({
+      listNotifications: jest.fn(),
+    }),
+  }),
+);
+
 const backgroundConnectionMock = new Proxy(
   {},
   { get: () => jest.fn().mockResolvedValue(undefined) },

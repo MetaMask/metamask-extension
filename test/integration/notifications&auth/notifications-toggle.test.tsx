@@ -39,6 +39,8 @@ const selectors = {
     'notifications-settings-allow-toggle-input',
   marketingSection: 'notifications-settings-section-marketing',
   marketingInAppToggleInput: 'marketing-in-app-notifications-toggle-input',
+  marketingConsentSheet: 'marketing-consent-sheet',
+  marketingConsentSheetConfirm: 'marketing-consent-sheet-confirm',
 };
 
 const clickElement = async (testId: string) => {
@@ -181,7 +183,17 @@ describe('Notifications Toggle', () => {
     await waitForElement(selectors.marketingInAppToggleInput);
     await clickElement(selectors.marketingInAppToggleInput);
 
+    // Marketing consent is off, so enabling a channel first requires
+    // opting in to marketing data collection via the consent sheet.
+    await waitForElement(selectors.marketingConsentSheet);
+    await clickElement(selectors.marketingConsentSheetConfirm);
+
     await waitFor(() => {
+      const setDataCollectionForMarketingCall =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'setDataCollectionForMarketing',
+        );
+
       const putNotificationPreferencesCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'putNotificationPreferences',
@@ -191,6 +203,11 @@ describe('Notifications Toggle', () => {
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
+
+      expect(setDataCollectionForMarketingCall?.[0]).toBe(
+        'setDataCollectionForMarketing',
+      );
+      expect(setDataCollectionForMarketingCall?.[1]).toStrictEqual([true]);
 
       expect(putNotificationPreferencesCall?.[0]).toBe(
         'putNotificationPreferences',

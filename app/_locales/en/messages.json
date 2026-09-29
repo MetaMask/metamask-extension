@@ -5431,6 +5431,15 @@
   "marketRate": {
     "message": "Market rate"
   },
+  "marketingConsentOptOutSheetConfirm": {
+    "message": "Turn off"
+  },
+  "marketingConsentOptOutSheetDescription": {
+    "message": "Turning off Marketing updates also turns off Updates and rewards notifications, since they rely on this data."
+  },
+  "marketingConsentOptOutSheetTitle": {
+    "message": "Data collection"
+  },
   "maskicons": {
     "message": "Polycons"
   },
@@ -6736,15 +6745,6 @@
     "message": "Opt in"
   },
   "notificationsSettingsMarketingConsentSheetTitle": {
-    "message": "Data collection"
-  },
-  "marketingConsentOptOutSheetConfirm": {
-    "message": "Turn off"
-  },
-  "marketingConsentOptOutSheetDescription": {
-    "message": "Turning off Marketing updates also turns off Updates and rewards notifications, since they rely on this data."
-  },
-  "marketingConsentOptOutSheetTitle": {
     "message": "Data collection"
   },
   "notificationsSettingsMarketingDescription": {
