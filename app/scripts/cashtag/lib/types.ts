@@ -1,3 +1,5 @@
+import type { PreferencesController } from '../../controllers/preferences-controller';
+
 export type AssetData = {
   ticker: string;
   name: string;
@@ -55,6 +57,6 @@ export type Controller = {
         useSidePanelAsDefault?: boolean;
       };
     };
-    setPreference?: (preference: string, value: boolean) => unknown;
+    setPreference?: PreferencesController['setPreference'];
   };
 };
