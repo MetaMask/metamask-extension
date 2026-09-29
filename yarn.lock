@@ -9808,9 +9808,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/platform-api-docs@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/platform-api-docs@npm:0.1.0"
+"@metamask/platform-api-docs@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@metamask/platform-api-docs@npm:0.2.1"
   dependencies:
     "@docusaurus/core": "npm:^3.10.1"
     "@docusaurus/plugin-content-docs": "npm:^3.10.1"
@@ -9819,9 +9819,8 @@ __metadata:
     "@docusaurus/types": "npm:^3.10.1"
     "@easyops-cn/docusaurus-search-local": "npm:^0.55.1"
     "@mdx-js/react": "npm:^3.1.1"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     execa: "npm:^5.0.0"
-    glob: "npm:^13.0.6"
     npm-which: "npm:^3.0.1"
     prism-react-renderer: "npm:^2.4.1"
     react: "npm:^19.0.0"
@@ -9829,8 +9828,8 @@ __metadata:
     ts-morph: "npm:^28.0.0"
     yargs: "npm:^17.7.2"
   bin:
-    platform-api-docs: ./dist/cli.mjs
-  checksum: 10/8675d9b08bf944c25ea5d62a486d8e3c320ef7219ef155b03def8ef2afe77583fece850acae8ea16b932617b8dd337c33862f1fe389cbc5a0c335dd9197e6c99
+    platform-api-docs: ./dist/cli.js
+  checksum: 10/3b5baf6dfd20b02af3dddc52186bde272de0a321e3bf5d43bff195083b4d65830cc0aa34dfb231544a76d0e91e1ce9e199dc26c59b77de1cfdd810b4df0fc370
   languageName: node
   linkType: hard
 
@@ -29638,7 +29637,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^13.0.0, glob@npm:^13.0.6":
+"glob@npm:^13.0.0":
   version: 13.0.6
   resolution: "glob@npm:13.0.6"
   dependencies:
@@ -35727,7 +35726,7 @@ __metadata:
     "@metamask/perps-controller": "npm:^17.1.0"
     "@metamask/phishing-controller": "npm:^17.4.1"
     "@metamask/phishing-warning": "npm:^5.1.0"
-    "@metamask/platform-api-docs": "npm:^0.1.0"
+    "@metamask/platform-api-docs": "npm:^0.2.1"
     "@metamask/polling-controller": "npm:^16.0.7"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.39.1"
