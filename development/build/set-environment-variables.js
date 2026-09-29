@@ -1,6 +1,6 @@
 const { readFileSync } = require('node:fs');
 const assert = require('node:assert');
-const { ENVIRONMENT } = require('./constants');
+const ENVIRONMENT = require('../../shared/constants/build-environment.json');
 
 /**
  * Sets environment variables to inject in the current build.

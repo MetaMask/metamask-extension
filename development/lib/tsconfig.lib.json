@@ -2,8 +2,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "isolatedModules": true,
-    "outDir": ".",
-    "rootDir": ".",
+    "outDir": "../..",
+    "rootDir": "../..",
     "resolveJsonModule": true,
     "declaration": true,
     "skipLibCheck": true,
