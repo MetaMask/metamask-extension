@@ -31,6 +31,33 @@ import {
   isValidPositiveNumericString,
 } from '../../../utils/send';
 
+const MaxButton = ({
+  isAvailable,
+  isError,
+  isPending,
+  onClick,
+}: {
+  isAvailable: boolean;
+  isError: boolean;
+  isPending: boolean;
+  onClick: () => void;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <ButtonLink
+      disabled={!isAvailable}
+      loading={isPending}
+      marginLeft={2}
+      onClick={onClick}
+      title={isError ? t('maxAmountUnavailable') : undefined}
+      variant={TextVariant.bodySm}
+    >
+      {t('max')}
+    </ButtonLink>
+  );
+};
+
 export const Amount = ({
   amountError,
 }: {
@@ -215,16 +242,12 @@ export const Amount = ({
             {balanceDisplayValue}
           </Text>
           {!isNonEvmNativeSendType && (
-            <ButtonLink
-              disabled={!isMaxAmountAvailable}
-              loading={isMaxAmountPending}
-              marginLeft={2}
+            <MaxButton
+              isAvailable={isMaxAmountAvailable}
+              isError={isMaxAmountError}
+              isPending={isMaxAmountPending}
               onClick={updateToMax}
-              title={isMaxAmountError ? t('maxAmountUnavailable') : undefined}
-              variant={TextVariant.bodySm}
-            >
-              {t('max')}
-            </ButtonLink>
+            />
           )}
         </Box>
       </Box>
