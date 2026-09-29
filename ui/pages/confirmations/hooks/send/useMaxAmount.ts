@@ -19,7 +19,6 @@ import { useBalance } from './useBalance';
 import { useSendType } from './useSendType';
 
 const GWEI_TO_WEI_CONVERSION_RATE = 1e9;
-const GAS_LIMIT_BUFFER_MULTIPLIER = 1.5;
 const INITIAL_BOOTSTRAP_BALANCE_MULTIPLIER = '0.9';
 const BOOTSTRAP_BACKOFF_DIVISOR = '2';
 const MAX_BOOTSTRAP_ESTIMATE_ATTEMPTS = 6;
@@ -182,11 +181,7 @@ export const useMaxAmount = () => {
       );
 
       const [gasLimit, layer1GasFees] = await Promise.all([
-        estimateGas(
-          transactionParams,
-          networkClientId,
-          GAS_LIMIT_BUFFER_MULTIPLIER,
-        ),
+        estimateGas(transactionParams, networkClientId),
         chainId === CHAIN_IDS.MAINNET
           ? Promise.resolve('0x0' as Hex)
           : getLayer1GasFees({

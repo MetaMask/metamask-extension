@@ -2134,119 +2134,75 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('estimateGas', () => {
-    it('estimates the gas using the requested network client', async () => {
+    it('estimates the gas for a transaction using the selected network client', async () => {
       await withService(async ({ rootMessenger }) => {
-        const estimateGas = jest.fn().mockResolvedValue({
-          gas: '0x5208',
-          simulationFails: undefined,
-        });
+        const request = jest.fn().mockResolvedValue(21000);
         rootMessenger.registerActionHandler(
-          'TransactionController:estimateGas',
-          estimateGas,
-        );
-        const transactionParams = {
-          from: '0x456',
-          to: '0x123',
-          value: '0x0',
-        };
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:estimateGas',
-          transactionParams,
-          'networkClientId',
-        );
-
-        expect(estimateGas).toHaveBeenCalledWith(
-          transactionParams,
-          'networkClientId',
-        );
-        expect(result).toStrictEqual('0x5208');
-      });
-    });
-
-    it('applies a requested gas buffer using the TransactionController', async () => {
-      await withService(async ({ rootMessenger }) => {
-        const estimateGasBuffered = jest.fn().mockResolvedValue({
-          gas: '0x7b0c',
-          simulationFails: undefined,
-        });
-        rootMessenger.registerActionHandler(
-          'TransactionController:estimateGasBuffered',
-          estimateGasBuffered,
-        );
-        const transactionParams = {
-          from: '0x456',
-          to: '0x123',
-          value: '0x0',
-        };
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:estimateGas',
-          transactionParams,
-          'networkClientId',
-          1.5,
-        );
-
-        expect(estimateGasBuffered).toHaveBeenCalledWith(
-          transactionParams,
-          1.5,
-          'networkClientId',
-        );
-        expect(result).toStrictEqual('0x7b0c');
-      });
-    });
-
-    it('uses the selected network client for legacy callers', async () => {
-      await withService(async ({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'NetworkController:getState',
+          'NetworkController:getSelectedNetworkClient',
           jest.fn().mockReturnValue({
-            selectedNetworkClientId: 'selectedNetworkClientId',
+            provider: {
+              request,
+            },
           }),
         );
-        const estimateGas = jest.fn().mockResolvedValue({
-          gas: '0x5208',
-          simulationFails: undefined,
-        });
-        rootMessenger.registerActionHandler(
-          'TransactionController:estimateGas',
-          estimateGas,
-        );
-        const transactionParams = {
-          from: '0x456',
-          to: '0x123',
-          value: '0x0',
-        };
 
-        await rootMessenger.call(
+        const estimateGasParams = { to: '0x123', value: '0x0' };
+
+        const result = await rootMessenger.call(
           'LegacyBackgroundApiService:estimateGas',
-          transactionParams,
+          estimateGasParams,
         );
 
-        expect(estimateGas).toHaveBeenCalledWith(
-          transactionParams,
-          'selectedNetworkClientId',
-        );
+        expect(request).toHaveBeenCalledWith({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        });
+        expect(result).toStrictEqual((21000).toString(16));
       });
     });
 
-    it('throws if the node estimate fails', async () => {
+    it('estimates the gas for a transaction using the requested network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const request = jest.fn().mockResolvedValue(21000);
+        const getNetworkClientById = jest.fn().mockReturnValue({
+          provider: {
+            request,
+          },
+        });
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          getNetworkClientById,
+        );
+
+        const estimateGasParams = { to: '0x123', value: '0x0' };
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:estimateGas',
+          estimateGasParams,
+          'networkClientId',
+        );
+
+        expect(getNetworkClientById).toHaveBeenCalledWith('networkClientId');
+        expect(request).toHaveBeenCalledWith({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        });
+        expect(result).toStrictEqual((21000).toString(16));
+      });
+    });
+
+    it('throws if there is no selected network client', async () => {
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(
-          'TransactionController:estimateGas',
-          jest.fn().mockResolvedValue({
-            gas: '0x1234',
-            simulationFails: { reason: 'Node estimate failed' },
-          }),
+          'NetworkController:getSelectedNetworkClient',
+          jest.fn().mockReturnValue(undefined),
         );
 
         await expect(
-          rootMessenger.call(
-            'LegacyBackgroundApiService:estimateGas',
-            { from: '0x456', to: '0x123' },
-            'networkClientId',
-          ),
-        ).rejects.toThrow('Gas estimation failed: Node estimate failed');
+          rootMessenger.call('LegacyBackgroundApiService:estimateGas', {
+            to: '0x123',
+          }),
+        ).rejects.toThrow('No network client available for gas estimation');
       });
     });
   });
@@ -8802,7 +8758,6 @@ function getMessenger(
       'SentryTracingService:bufferedEndTrace',
       'TransactionController:updateEditableParams',
       'TransactionController:estimateGas',
-      'TransactionController:estimateGasBuffered',
       'TransactionController:isAtomicBatchSupported',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
