@@ -270,7 +270,8 @@ describe('useMaxAmount', () => {
     estimateGasMock
       .mockReturnValueOnce(firstEstimate.promise)
       .mockReturnValueOnce(secondEstimate.promise)
-      .mockResolvedValue('0x7530');
+      .mockResolvedValueOnce('0x7530')
+      .mockResolvedValue('0x5208');
     const { result, rerender } = renderHookWithProvider(
       useMaxAmount,
       createState({ suggestedMaxFeePerGas: '1' }),
@@ -282,10 +283,13 @@ describe('useMaxAmount', () => {
     await waitFor(() => expect(result.current.isMaxAmountAvailable).toBe(true));
     expect(result.current.getMaxAmount()).toBe('999.99997');
 
-    act(() => firstEstimate.resolve('0x5208'));
-    await waitFor(() =>
-      expect(result.current.getMaxAmount()).toBe('999.99997'),
-    );
+    await act(async () => {
+      firstEstimate.resolve('0x5208');
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(estimateGasMock).toHaveBeenCalledTimes(4);
+    expect(result.current.getMaxAmount()).toBe('999.99997');
   });
 
   it('makes Max unavailable if the node estimate fails', async () => {
