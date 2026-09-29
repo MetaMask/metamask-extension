@@ -1,9 +1,11 @@
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+  getIsGasFeeSponsored,
+  isGasFeeSponsorshipPossible,
+  isGasFeeSponsorshipRequired,
+  isMoneyAccountSponsorship,
+} from '../../../../shared/lib/gas-sponsorship';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { accountSupports7702ForRelay } from '../account-supports-7702';
 import { getSmartTransactionCommonParams } from '../smart-transaction/smart-transactions';
 import type { MessengerClientFlatState } from '../../messenger-client-init/controller-list';
@@ -22,11 +24,10 @@ export type GasFeeSponsorshipRequest = {
 /**
  * Determines whether MetaMask sponsors the gas fee of a transaction.
  *
- * This is the single sponsorship definition used by the publish hook, the
- * `shouldSign` hook, and Transaction Pay. Sponsorship requires availability
- * (from simulation or required by the transaction creator), no user opt-out,
- * and a supported publisher (Smart Transactions with sendBundle, or the
- * EIP-7702 relay for software accounts).
+ * Resolves account and chain capabilities in the background and applies the
+ * shared {@link getIsGasFeeSponsored} rules, which the confirmation UI also
+ * uses. Used by the publish hook, the `shouldSign` hook, and Transaction Pay.
+ * Throws when a transaction that requires sponsorship cannot be sponsored.
  *
  * @param request - Sponsorship dependencies.
  * @param request.getFlatState - Returns the flat background state.
@@ -39,19 +40,9 @@ export async function isGasFeeSponsored(
   transaction: TransactionMeta,
 ): Promise<boolean> {
   const { chainId, txParams } = transaction;
+  const isSponsorshipRequired = isGasFeeSponsorshipRequired(transaction);
 
-  if (transaction.type === TransactionType.revokeDelegation) {
-    return false;
-  }
-
-  const isSponsorshipRequired = hasTransactionType(transaction, [
-    TransactionType.moneyAccountWithdraw,
-  ]);
-
-  if (
-    !transaction.forceIsGasFeeSponsored &&
-    !transaction.isGasFeeSponsoredAvailable
-  ) {
+  if (!isGasFeeSponsorshipPossible(transaction)) {
     return failSponsorship(isSponsorshipRequired);
   }
 
@@ -59,41 +50,35 @@ export async function isGasFeeSponsored(
   const { gasSponsorshipOptOutByChainId } = getPreferences({
     metamask: flatState,
   });
+  const isOptedOut = Boolean(gasSponsorshipOptOutByChainId?.[chainId]);
 
-  if (gasSponsorshipOptOutByChainId?.[chainId]) {
+  if (isOptedOut) {
     return failSponsorship(isSponsorshipRequired);
   }
 
-  // Money Account batches execute from the Money Account keyring, which is
-  // relay-capable, so the selected account type does not apply.
-  if (
-    hasTransactionType(transaction, [
-      TransactionType.moneyAccountDeposit,
-      TransactionType.moneyAccountWithdraw,
-    ])
-  ) {
+  if (isMoneyAccountSponsorship(transaction)) {
     return true;
   }
 
   const { isHardwareWalletAccount, isSmartTransaction } =
     getSmartTransactionCommonParams(flatState, chainId);
 
-  if (isSmartTransaction && (await isSendBundleSupported(chainId))) {
-    return true;
-  }
+  const isSmartTransactionBundleSupported =
+    isSmartTransaction && (await isSendBundleSupported(chainId));
 
-  if (isHardwareWalletAccount || txParams?.to === undefined) {
-    return failSponsorship(isSponsorshipRequired);
-  }
+  const isGaslessSupported =
+    isSmartTransactionBundleSupported ||
+    (!isHardwareWalletAccount &&
+      txParams?.to !== undefined &&
+      (await accountSupports7702ForRelay(txParams.from, keyringController)) &&
+      (await isRelaySupported(chainId)));
 
-  if (
-    (await accountSupports7702ForRelay(txParams.from, keyringController)) &&
-    (await isRelaySupported(chainId))
-  ) {
-    return true;
-  }
+  const sponsored = getIsGasFeeSponsored(transaction, {
+    isGaslessSupported,
+    isOptedOut,
+  });
 
-  return failSponsorship(isSponsorshipRequired);
+  return sponsored || failSponsorship(isSponsorshipRequired);
 }
 
 function failSponsorship(isSponsorshipRequired: boolean): false {
