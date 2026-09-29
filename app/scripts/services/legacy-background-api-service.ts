@@ -290,10 +290,7 @@ import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
 } from '../lib/util';
-import {
-  getIsAssetsUnifiedStateIncludedInBuild,
-  getIsSeedlessOnboardingFeatureEnabled,
-} from '../../../shared/lib/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
@@ -312,11 +309,6 @@ import {
 } from '../../../shared/lib/selectors/networks';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
-import {
-  ASSETS_UNIFY_STATE_VERSION_1,
-  AssetsUnifyStateFeatureFlag,
-  isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
-} from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { LedgerHandlerMode } from '../../../shared/constants/offscreen-communication';
 import { MINUTE } from '../../../shared/constants/time';
@@ -539,7 +531,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'handleDefiReferralOnPermittedAccountsAdded',
   'importAccountWithStrategy',
   'importMnemonicToVault',
-  'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
   'isRelaySupported',
   'isSendBundleSupported',
@@ -900,27 +891,6 @@ export class LegacyBackgroundApiService {
     this.#messenger.registerMethodActionHandlers(
       this,
       MESSENGER_EXPOSED_METHODS,
-    );
-  }
-
-  /**
-   * Checks if the assets unify state feature is enabled based on the remote feature flag and build configuration.
-   *
-   * @returns `true` if the assets unify state feature is enabled, `false` otherwise.
-   */
-  isAssetsUnifyStateEnabled(): boolean {
-    const featureFlagsState = this.#messenger.call(
-      'RemoteFeatureFlagController:getState',
-    );
-
-    const assetsUnifyState =
-      featureFlagsState.remoteFeatureFlags?.assetsUnifyState;
-
-    return (
-      getIsAssetsUnifyStateFeatureEnabled(
-        assetsUnifyState as AssetsUnifyStateFeatureFlag,
-        ASSETS_UNIFY_STATE_VERSION_1,
-      ) && getIsAssetsUnifiedStateIncludedInBuild()
     );
   }
 

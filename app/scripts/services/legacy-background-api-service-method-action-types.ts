@@ -6,16 +6,6 @@
 import type { LegacyBackgroundApiService } from './legacy-background-api-service';
 
 /**
- * Checks if the assets unify state feature is enabled based on the remote feature flag and build configuration.
- *
- * @returns `true` if the assets unify state feature is enabled, `false` otherwise.
- */
-export type LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction = {
-  type: `LegacyBackgroundApiService:isAssetsUnifyStateEnabled`;
-  handler: LegacyBackgroundApiService['isAssetsUnifyStateEnabled'];
-};
-
-/**
  * Sets the current currency for the CurrencyRateController and AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
@@ -1154,7 +1144,6 @@ export type LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAc
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
-  | LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
   | LegacyBackgroundApiServiceGetAssetsAction
   | LegacyBackgroundApiServiceAddTokenAction

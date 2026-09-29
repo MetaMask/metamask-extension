@@ -465,9 +465,6 @@
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1
     },
-    "ui/hooks/useCurrencyRatePolling.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 3
-    },
     "ui/hooks/useDecodedTransactionData.test.ts": {
       "error: Unexpected keys \"data\", \"to\", \"chainId\"": 1
     },
