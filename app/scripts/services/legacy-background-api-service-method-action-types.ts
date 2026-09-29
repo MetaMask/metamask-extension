@@ -16,7 +16,7 @@ export type LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction = {
 };
 
 /**
- * Sets the current currency for the CurrencyRateController and AssetsController (if the assets unify state feature is enabled).
+ * Sets the current currency for the CurrencyRateController and AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
  */
@@ -29,13 +29,9 @@ export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
  * Refreshes and returns the assets for the given accounts via the
  * AssetsController (force-updating from remote sources).
  *
- * No-ops when the assets unify state feature is not enabled, since the
- * AssetsController is not registered in that case.
- *
  * @param accounts - The accounts to fetch assets for.
  * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
- * @returns The assets for the given accounts, or `undefined` when the feature
- * is not enabled.
+ * @returns The assets for the given accounts.
  */
 export type LegacyBackgroundApiServiceGetAssetsAction = {
   type: `LegacyBackgroundApiService:getAssets`;
@@ -43,13 +39,9 @@ export type LegacyBackgroundApiServiceGetAssetsAction = {
 };
 
 /**
- * Adds a token to the wallet.
- *
- * When the assets unify state feature is enabled, the token is added as a
- * custom asset on the AssetsController for the currently selected account
- * (resolving the chain ID from the given network client and building the
- * CAIP-19 asset ID from the address). Otherwise, it is added via the
- * TokensController.
+ * Adds a token to the wallet as a custom asset on the AssetsController for
+ * the currently selected account (resolving the chain ID from the given
+ * network client and building the CAIP-19 asset ID from the address).
  *
  * @param token - The token to add.
  * @param token.address - The token contract address.
