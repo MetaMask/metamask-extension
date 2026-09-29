@@ -3024,8 +3024,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'extensionBasicFunctionalityToggle',
     productionDefault: {
-      enabled: true,
-      minimumVersion: '13.50.0',
+      enabled: false,
+      minimumVersion: '99.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
