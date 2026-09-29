@@ -6,7 +6,7 @@ import { DEFAULT_STELLAR_AUTH_ENTRY_XDR, WINDOW_TITLES } from '../../constants';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import { withStellarWalletSnap } from './testHelpers';
 
-describe('Stellar - Sign Auth Entry - e2e tests', function () {
+describe('Stellar - Sign Auth Entry', function () {
   it('Signs an auth entry', async function () {
     await withStellarWalletSnap(
       {

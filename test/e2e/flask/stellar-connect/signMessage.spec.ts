@@ -6,7 +6,7 @@ import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import { WINDOW_TITLES } from '../../constants';
 import { withStellarWalletSnap } from './testHelpers';
 
-describe('Stellar - Sign Message - e2e tests', function () {
+describe('Stellar - Sign Message', function () {
   it('Signs a message', async function () {
     await withStellarWalletSnap(
       {
