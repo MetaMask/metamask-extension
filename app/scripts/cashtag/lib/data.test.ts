@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe('resolveTicker', () => {
-  it('normalizes the ticker, filters non-exact matches, and orders assets by market cap', async () => {
+  it('prioritizes security, liquidity, volume, and market cap', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -20,18 +20,24 @@ describe('resolveTicker', () => {
             assetId: 'eip155:1/erc20:0xlow',
             symbol: 'QQQ',
             name: 'Lower QQQ',
+            liquidity: 20,
+            aggregatedUsdVolume: 200,
             marketCap: 10,
           },
           {
             assetId: 'eip155:1/erc20:0xhigh',
             symbol: 'qqq',
             name: 'Higher QQQ',
+            liquidity: 20,
+            aggregatedUsdVolume: 300,
             marketCap: 20,
           },
           {
             assetId: 'eip155:1/erc20:0xother',
             symbol: 'QQQX',
             name: 'Other token',
+            liquidity: 100,
+            aggregatedUsdVolume: 1000,
             marketCap: 100,
           },
         ],
@@ -40,12 +46,18 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker(' qqq ')).resolves.toMatchObject({
       primary: {
-        ticker: 'QQQ',
-        name: 'Higher QQQ',
-        caipAssetId: 'eip155:1/erc20:0xhigh',
+        ticker: 'QQQX',
+        name: 'Other token',
+        caipAssetId: 'eip155:1/erc20:0xother',
       },
       similar: [
         expect.objectContaining({
+          ticker: 'qqq',
+          name: 'Higher QQQ',
+          caipAssetId: 'eip155:1/erc20:0xhigh',
+        }),
+        expect.objectContaining({
+          ticker: 'QQQ',
           name: 'Lower QQQ',
           caipAssetId: 'eip155:1/erc20:0xlow',
         }),
@@ -66,6 +78,43 @@ describe('resolveTicker', () => {
 
     fetchMock.mockResolvedValue({ ok: false } as Response);
     await expect(resolveTicker('QQQ')).resolves.toBeNull();
+  });
+
+  it('prioritizes verified assets over suspicious exact matches', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [
+          {
+            assetId: 'eip155:1/erc20:0xspam',
+            symbol: 'MSFT',
+            name: 'Suspicious Microsoft token',
+            marketCap: 1000,
+            securityData: { resultType: 'Spam' },
+          },
+          {
+            assetId: 'eip155:1/erc20:0xverified',
+            symbol: 'MSFTON',
+            name: 'Microsoft (Ondo Tokenized)',
+            marketCap: 10,
+            securityData: { resultType: 'Verified' },
+          },
+        ],
+      }),
+    } as Response);
+
+    await expect(resolveTicker('MSFT')).resolves.toMatchObject({
+      primary: {
+        ticker: 'MSFTON',
+        name: 'Microsoft (Ondo Tokenized)',
+      },
+      similar: [
+        expect.objectContaining({
+          ticker: 'MSFT',
+          name: 'Suspicious Microsoft token',
+        }),
+      ],
+    });
   });
 });
 

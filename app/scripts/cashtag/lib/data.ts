@@ -36,10 +36,10 @@ function chainIdFromAssetId(assetId: string): CaipChainId | null {
   return chainId ? (chainId as CaipChainId) : null;
 }
 
-function toAssetData(hit: SearchHit, ticker: string): AssetData {
+function toAssetData(hit: SearchHit): AssetData {
   const liquidity = num(hit.liquidity);
   return {
-    ticker,
+    ticker: hit.symbol,
     name: hit.name,
     iconUrl: getCaipAssetImageUrl(hit.assetId) ?? null,
     color: null,
@@ -56,8 +56,48 @@ function toAssetData(hit: SearchHit, ticker: string): AssetData {
 }
 
 function compareHits(left: SearchHit, right: SearchHit) {
+  const getSecurityPriority = (resultType?: string) => {
+    switch (resultType) {
+      case 'Malicious':
+        return 0;
+      case 'Warning':
+      case 'Spam':
+        return 1;
+      case 'Verified':
+        return 3;
+      default:
+        return 2;
+    }
+  };
+
+  const leftSecurityPriority = getSecurityPriority(
+    left.securityData?.resultType,
+  );
+  const rightSecurityPriority = getSecurityPriority(
+    right.securityData?.resultType,
+  );
+  // Prefer safer assets over suspicious or malicious assets.
+  if (rightSecurityPriority !== leftSecurityPriority) {
+    return rightSecurityPriority - leftSecurityPriority;
+  }
+
+  const leftLiquidity = num(left.liquidity) ?? -1;
+  const rightLiquidity = num(right.liquidity) ?? -1;
+  // Prefer assets with more available liquidity.
+  if (rightLiquidity !== leftLiquidity) {
+    return rightLiquidity - leftLiquidity;
+  }
+
+  const leftVolume = num(left.aggregatedUsdVolume) ?? -1;
+  const rightVolume = num(right.aggregatedUsdVolume) ?? -1;
+  // Prefer assets with higher 24-hour trading volume.
+  if (rightVolume !== leftVolume) {
+    return rightVolume - leftVolume;
+  }
+
   const leftCap = num(left.marketCap) ?? -1;
   const rightCap = num(right.marketCap) ?? -1;
+  // Use market cap as the final market-data tie-breaker.
   if (rightCap !== leftCap) {
     return rightCap - leftCap;
   }
@@ -81,9 +121,7 @@ async function searchBySymbol(symbol: string): Promise<SearchHit[]> {
     return [];
   }
   const body = (await response.json()) as { data?: SearchHit[] };
-  return (body.data ?? []).filter(
-    (hit) => hit.symbol.toUpperCase() === symbol.toUpperCase(),
-  );
+  return body.data ?? [];
 }
 
 export async function fetchPriceHistory(
@@ -148,7 +186,7 @@ export async function resolveTicker(
     return null;
   }
 
-  const assets = matches.map((hit) => toAssetData(hit, ticker));
+  const assets = matches.map(toAssetData);
   return {
     primary: assets[0],
     similar: assets.slice(1),

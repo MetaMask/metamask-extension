@@ -47,7 +47,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
       <div className="min-h-0 flex-1 overflow-x-auto">
         <table className="w-full table-fixed border-collapse text-left">
           <colgroup>
-            <col className="w-[140px]" />
+            <col className="w-[160px]" />
             <col />
             <col />
             {showLiquidity ? <col /> : null}
@@ -75,7 +75,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                   onClick={() => onSelect(asset)}
                 >
                   <td className="py-3 pl-6 pr-3">
-                    <div className="flex min-w-0 items-center gap-2">
+                    <div className="flex min-w-0 items-center gap-3">
                       <TokenAvatar asset={asset} />
                       <div className="flex min-w-0 items-center gap-1">
                         <span className="truncate font-medium">
