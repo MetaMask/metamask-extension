@@ -14,7 +14,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
 import { getLayer1GasFees } from '../../utils/send';
-import { GasFeeEstimatesType, useMaxAmount } from './useMaxAmount';
+import { useMaxAmount } from './useMaxAmount';
 import { useBalance } from './useBalance';
 
 jest.mock('./useBalance');
@@ -50,7 +50,7 @@ const createState = ({
   },
 }: {
   chainId?: string;
-  gasFeeEstimates?: GasFeeEstimatesType;
+  gasFeeEstimates?: Record<string, unknown>;
   networkClientId?: string;
   suggestedMaxFeePerGas?: string;
 } = {}) =>
