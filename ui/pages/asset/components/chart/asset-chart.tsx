@@ -370,7 +370,6 @@ const AssetChart = ({
                 ref={chartRef}
                 data={{ datasets: [{ data: realtimePrices, clip: false }] }}
                 options={options}
-                
               />
             </Box>
 

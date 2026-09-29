@@ -758,10 +758,7 @@ const AssetPage = ({
         ) : (
           /* FF OFF: parent owns header, legacy chart handles the rest */
           <>
-            <TokenPriceHeader
-              price={currentPrice}
-              currency={currency}
-            />
+            <TokenPriceHeader price={currentPrice} currency={currency} />
             <AssetChart
               chainId={chainId}
               address={address}
