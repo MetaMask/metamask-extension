@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/messenger';
 import type { AnalyticsControllerState } from '@metamask/analytics-controller';
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
+import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { setupMarketingConsentSync } from './marketing-consent-sync';
 
 jest.mock('@metamask/messenger', () => ({
@@ -26,25 +27,31 @@ function setupSync({
     marketingConsentDecisionMade: false,
   },
   authenticationState = { isSignedIn: false },
+  keyringState = { isUnlocked: true },
   remoteConsent = null,
   getConsent = () => Promise.resolve(remoteConsent),
   putConsent = () => Promise.resolve(),
 }: {
   analyticsState?: Partial<AnalyticsControllerState>;
   authenticationState?: Partial<AuthenticationControllerState>;
+  keyringState?: Partial<KeyringControllerState>;
   remoteConsent?: { marketingConsentEnabled: boolean } | null;
   getConsent?: () => Promise<{ marketingConsentEnabled: boolean } | null>;
   putConsent?: () => Promise<void>;
 } = {}) {
-  const handlers: Record<string, (state: unknown) => void> = {};
+  const handlers: Record<string, (state?: unknown) => void> = {};
   let currentAnalyticsState = analyticsState;
   const currentAuthenticationState = authenticationState;
+  const currentKeyringState = keyringState;
   const call = jest.fn((action: string) => {
     if (action === 'AnalyticsController:getState') {
       return currentAnalyticsState;
     }
     if (action === 'AuthenticationController:getState') {
       return currentAuthenticationState;
+    }
+    if (action === 'KeyringController:getState') {
+      return currentKeyringState;
     }
     if (action === GET_CONSENT_ACTION) {
       return getConsent();
@@ -65,7 +72,7 @@ function setupSync({
   });
   const syncMessenger = {
     call,
-    subscribe: jest.fn((event: string, handler: (state: unknown) => void) => {
+    subscribe: jest.fn((event: string, handler: (state?: unknown) => void) => {
       handlers[event] = handler;
     }),
   };
@@ -73,9 +80,10 @@ function setupSync({
 
   const delegate = jest.fn();
   const messenger = { delegate } as unknown as SyncArgs['messenger'];
-  const waitForSync = setupMarketingConsentSync({ messenger });
+  const { waitForMarketingConsentSync: waitForSync, refreshMarketingConsent } =
+    setupMarketingConsentSync({ messenger });
 
-  return { handlers, call, delegate, waitForSync };
+  return { handlers, call, delegate, waitForSync, refreshMarketingConsent };
 }
 
 describe('setupMarketingConsentSync', () => {
@@ -106,6 +114,111 @@ describe('setupMarketingConsentSync', () => {
       },
       'extension',
     );
+  });
+
+  it('does not read AUS while the vault is locked and syncs after unlock', async () => {
+    // Sign-in and the consent decision persist across extension restarts, so
+    // the sync starts ready — but the vault is still locked at startup and AUS
+    // reads need an unlocked wallet to obtain a bearer token.
+    const { handlers, call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      keyringState: { isUnlocked: false },
+      remoteConsent: { marketingConsentEnabled: false },
+    });
+    await flushPromises();
+
+    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).not.toHaveBeenCalledWith(OPT_OUT_ACTION);
+
+    handlers['KeyringController:unlock']();
+    await flushPromises();
+
+    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).toHaveBeenCalledWith(OPT_OUT_ACTION);
+    expect(call).not.toHaveBeenCalledWith(PUT_CONSENT_ACTION);
+  });
+
+  it('re-reads AUS on refresh after an earlier sync in the same session', async () => {
+    let remote = { marketingConsentEnabled: true };
+    const { call, refreshMarketingConsent } = setupSync({
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      getConsent: () => Promise.resolve(remote),
+    });
+    await flushPromises();
+    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).not.toHaveBeenCalledWith(OPT_OUT_ACTION);
+
+    // Another device opted out while this background stayed alive.
+    remote = { marketingConsentEnabled: false };
+    call.mockClear();
+    refreshMarketingConsent();
+    await flushPromises();
+
+    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).toHaveBeenCalledWith(OPT_OUT_ACTION);
+    expect(call).not.toHaveBeenCalledWith(PUT_CONSENT_ACTION);
+  });
+
+  it('re-reads AUS on every unlock', async () => {
+    let remote = { marketingConsentEnabled: true };
+    const { call, handlers } = setupSync({
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      getConsent: () => Promise.resolve(remote),
+    });
+    await flushPromises();
+
+    handlers['KeyringController:lock']();
+    remote = { marketingConsentEnabled: false };
+    call.mockClear();
+    handlers['KeyringController:unlock']();
+    await flushPromises();
+
+    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).toHaveBeenCalledWith(OPT_OUT_ACTION);
+  });
+
+  it('defers a refresh until an in-flight AUS write lands', async () => {
+    let resolvePut: (() => void) | undefined;
+    const { call, handlers, refreshMarketingConsent } = setupSync({
+      analyticsState: {
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: false },
+      putConsent: () =>
+        new Promise<void>((resolve) => {
+          resolvePut = resolve;
+        }),
+    });
+    await flushPromises();
+
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: true,
+      marketingConsentDecisionMade: true,
+    });
+    await flushPromises();
+    call.mockClear();
+
+    refreshMarketingConsent();
+    await flushPromises();
+    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
+
+    resolvePut?.();
+    await flushPromises();
+    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
   });
 
   [true, false].forEach((marketingConsentEnabled) => {

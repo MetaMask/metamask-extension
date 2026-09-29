@@ -12,6 +12,12 @@ import type {
 } from '@metamask/analytics-controller';
 import { Messenger } from '@metamask/messenger';
 import type {
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerState,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
+import type {
   AuthenticationControllerGetStateAction,
   AuthenticationControllerState,
   AuthenticationControllerStateChangeEvent,
@@ -25,17 +31,29 @@ type SyncActions =
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerOptInToMarketingAction
   | AnalyticsControllerOptOutOfMarketingAction
-  | AuthenticationControllerGetStateAction;
+  | AuthenticationControllerGetStateAction
+  | KeyringControllerGetStateAction;
 
 type SyncEvents =
   | AnalyticsControllerStateChangeEvent
-  | AuthenticationControllerStateChangeEvent;
+  | AuthenticationControllerStateChangeEvent
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent;
 
 type SyncMessenger = RootMessenger<SyncActions, SyncEvents>;
 
 type ConsentSyncSession = {
   lastSynced?: boolean;
   pendingConsentUpdate?: { value: boolean };
+  // AUS may have changed on another device since the last read.
+  remoteStale?: boolean;
+};
+
+export type MarketingConsentSync = {
+  /** Confirms the requested consent was saved to AUS. */
+  waitForMarketingConsentSync: (expectedConsent: boolean) => Promise<void>;
+  /** Re-reads consent from AUS, e.g. when the wallet UI opens. */
+  refreshMarketingConsent: () => void;
 };
 
 function isConsentSyncReady(
@@ -44,8 +62,12 @@ function isConsentSyncReady(
     AnalyticsControllerState,
     'marketingConsentDecisionMade'
   >,
+  keyringState: Pick<KeyringControllerState, 'isUnlocked'>,
 ): boolean {
+  // AUS consent reads require a bearer token, which is only obtainable while
+  // the vault is unlocked, so a sync attempted while locked always fails.
   return (
+    keyringState.isUnlocked === true &&
     authenticationState.isSignedIn === true &&
     analyticsState.marketingConsentDecisionMade === true
   );
@@ -93,13 +115,13 @@ function getCanonicalProfileId(
  *
  * @param options - Setup options.
  * @param options.messenger - The root controller messenger.
- * @returns A function that confirms the requested consent was saved to AUS.
+ * @returns Functions to await a consent save and to re-read AUS consent.
  */
 export function setupMarketingConsentSync({
   messenger,
 }: {
   messenger: SyncMessenger;
-}): (expectedConsent: boolean) => Promise<void> {
+}): MarketingConsentSync {
   const syncMessenger = new Messenger<
     'MarketingConsentSync',
     SyncActions,
@@ -117,10 +139,13 @@ export function setupMarketingConsentSync({
       'AnalyticsController:optInToMarketing',
       'AnalyticsController:optOutOfMarketing',
       'AuthenticationController:getState',
+      'KeyringController:getState',
     ],
     events: [
       'AnalyticsController:stateChange',
       'AuthenticationController:stateChange',
+      'KeyringController:lock',
+      'KeyringController:unlock',
     ],
   });
 
@@ -128,11 +153,13 @@ export function setupMarketingConsentSync({
   let authenticationState = syncMessenger.call(
     'AuthenticationController:getState',
   );
+  let keyringState = syncMessenger.call('KeyringController:getState');
   let session: ConsentSyncSession = {};
   let applyingRemote: { value: boolean } | undefined;
   let inFlight: Promise<void> | undefined;
 
-  const isReady = () => isConsentSyncReady(authenticationState, analyticsState);
+  const isReady = () =>
+    isConsentSyncReady(authenticationState, analyticsState, keyringState);
 
   const reconcileWithAus = async (
     currentSession: typeof session,
@@ -216,7 +243,11 @@ export function setupMarketingConsentSync({
   };
 
   const run = async (currentSession: typeof session) => {
-    if (currentSession.lastSynced === undefined) {
+    if (
+      currentSession.lastSynced === undefined ||
+      currentSession.remoteStale === true
+    ) {
+      currentSession.remoteStale = false;
       await reconcileWithAus(currentSession);
     }
 
@@ -236,7 +267,9 @@ export function setupMarketingConsentSync({
 
     inFlight = run(startedFor).finally(() => {
       inFlight = undefined;
-      if (isReady() && session !== startedFor) {
+      // Re-run for a new session, or for a refresh requested mid-run; a
+      // refresh must not read AUS before an in-flight write has landed.
+      if (isReady() && (session !== startedFor || session.remoteStale)) {
         startSync();
       }
     });
@@ -249,6 +282,22 @@ export function setupMarketingConsentSync({
       console.error('Failed to synchronize marketing consent with AUS:', error);
     });
   }
+
+  const refreshMarketingConsent = () => {
+    session.remoteStale = true;
+    startSync();
+  };
+
+  syncMessenger.subscribe('KeyringController:unlock', () => {
+    keyringState = { ...keyringState, isUnlocked: true };
+    // Sign-in persists across restarts and AUS may have changed on another
+    // device while locked, so re-read AUS on every unlock.
+    refreshMarketingConsent();
+  });
+
+  syncMessenger.subscribe('KeyringController:lock', () => {
+    keyringState = { ...keyringState, isUnlocked: false };
+  });
 
   syncMessenger.subscribe(
     'AuthenticationController:stateChange',
@@ -300,10 +349,12 @@ export function setupMarketingConsentSync({
 
   startSync();
 
-  return async (expectedConsent: boolean) => {
+  const waitForMarketingConsentSync = async (expectedConsent: boolean) => {
     // A skipped sync must not be reported as a successful save.
     if (!isReady()) {
-      throw new Error('Marketing consent requires a signed-in wallet');
+      throw new Error(
+        'Marketing consent requires an unlocked, signed-in wallet',
+      );
     }
     const currentSession = session;
     await sync();
@@ -314,4 +365,6 @@ export function setupMarketingConsentSync({
       analyticsState,
     );
   };
+
+  return { waitForMarketingConsentSync, refreshMarketingConsent };
 }
