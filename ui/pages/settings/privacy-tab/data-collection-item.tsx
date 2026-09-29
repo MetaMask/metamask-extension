@@ -29,12 +29,8 @@ export const DataCollectionToggleItem = () => {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { listNotifications } = useMetamaskNotificationsContext();
-  const {
-    preferences,
-    ensurePreferences,
-    refetchPreferences,
-    updatePreferencesSection,
-  } = useNotificationPreferences();
+  const { ensurePreferences, refetchPreferences, updatePreferencesSection } =
+    useNotificationPreferences();
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
@@ -91,60 +87,62 @@ export const DataCollectionToggleItem = () => {
     trackPreference(newValue);
   };
 
+  const rollBackTurnOff = useCallback(
+    async (previousMarketing?: MarketingPreference) => {
+      try {
+        // Restore consent before channels so channels are never on without it.
+        await dispatch(setDataCollectionForMarketing(true));
+        if (previousMarketing) {
+          await updatePreferencesSection('marketing', previousMarketing);
+          listNotifications();
+        }
+      } catch (rollbackError) {
+        console.error('Failed to roll back marketing opt-out:', rollbackError);
+      }
+    },
+    [dispatch, listNotifications, updatePreferencesSection],
+  );
+
   const handleTurnOff = useCallback(async () => {
     setIsSubmitting(true);
     setError(null);
-    let marketing: MarketingPreference | undefined;
-    let preferencesUpdated = false;
     try {
-      const fetchedPreferences = await refetchPreferences();
-      if (fetchedPreferences.error) {
-        throw fetchedPreferences.error;
-      }
-      marketing = fetchedPreferences.data?.marketing ?? preferences?.marketing;
-      if (
+      // Decide from a fresh read only; the cache may be stale.
+      const { data } = await refetchPreferences({ throwOnError: true });
+      const marketing = data?.marketing;
+      const channelsEnabled = Boolean(
         marketing?.pushNotificationsEnabled ||
-        marketing?.inAppNotificationsEnabled
-      ) {
+        marketing?.inAppNotificationsEnabled,
+      );
+      if (marketing && channelsEnabled) {
         await updatePreferencesSection('marketing', {
           ...marketing,
           pushNotificationsEnabled: false,
           inAppNotificationsEnabled: false,
         });
-        preferencesUpdated = true;
-      }
-      await dispatch(
-        setDataCollectionForMarketing(false, { waitForAus: true }),
-      );
-      setIsConsentSheetOpen(false);
-      trackPreference(false);
-      if (preferencesUpdated) {
         listNotifications();
       }
-    } catch (updateError) {
-      if (preferencesUpdated) {
-        try {
-          if (marketing) {
-            await updatePreferencesSection('marketing', marketing);
-          }
-          listNotifications();
-        } catch {
-          // Keep the warning open so the user can retry.
-        }
+      try {
+        await dispatch(
+          setDataCollectionForMarketing(false, { waitForAus: true }),
+        );
+      } catch (consentError) {
+        await rollBackTurnOff(channelsEnabled ? marketing : undefined);
+        throw consentError;
       }
-      setError(
-        updateError instanceof Error
-          ? updateError.message
-          : t('notificationsSettingsBoxError'),
-      );
+      setIsConsentSheetOpen(false);
+      trackPreference(false);
+    } catch (turnOffError) {
+      console.error('Failed to turn off marketing consent:', turnOffError);
+      setError(t('notificationsSettingsBoxError'));
     } finally {
       setIsSubmitting(false);
     }
   }, [
     dispatch,
     listNotifications,
-    preferences,
     refetchPreferences,
+    rollBackTurnOff,
     t,
     trackPreference,
     updatePreferencesSection,
