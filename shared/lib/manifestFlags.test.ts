@@ -8,12 +8,19 @@ type Globals = {
 const globals = globalThis as unknown as Globals;
 
 /**
- * A `runtime.getManifest` that returns the given manifest object.
+ * A `runtime.getManifest` returning a manifest that carries the given flags.
  *
- * @param manifest - what `getManifest()` should return.
+ * @param flags - the value of the manifest's `_flags` key. Omit for a manifest
+ * that carries none.
  * @returns an object shaped like an extension global.
  */
-function extensionGlobal(manifest: Record<string, unknown>) {
+function extensionGlobal(flags?: Record<string, unknown>) {
+  /* eslint-disable @typescript-eslint/naming-convention -- `manifest_version`
+     and `_flags` are key names fixed by the WebExtension manifest format. */
+  const manifest = flags
+    ? { manifest_version: 3, _flags: flags }
+    : { manifest_version: 3 };
+  /* eslint-enable @typescript-eslint/naming-convention */
   return { runtime: { id: 'test-extension', getManifest: () => manifest } };
 }
 
@@ -40,10 +47,7 @@ describe('getManifestFlags', () => {
 
   it('reads `_flags` off `chrome.runtime` when only `chrome` is present', () => {
     delete globals.browser;
-    globals.chrome = extensionGlobal({
-      manifest_version: 3,
-      _flags: { sentry: { tracesSampleRate: 1 } },
-    });
+    globals.chrome = extensionGlobal({ sentry: { tracesSampleRate: 1 } });
 
     expect(getManifestFlags()).toStrictEqual({
       sentry: { tracesSampleRate: 1 },
@@ -52,8 +56,7 @@ describe('getManifestFlags', () => {
 
   it('reads `_flags` off `browser.runtime` when `browser` is present', () => {
     globals.browser = extensionGlobal({
-      manifest_version: 2,
-      _flags: { testing: { fixtureServerPort: 12345 } },
+      testing: { fixtureServerPort: 12345 },
     });
     delete globals.chrome;
 
@@ -67,17 +70,14 @@ describe('getManifestFlags', () => {
     // `permissions`. Keying the fallback on `browser` itself rather than on
     // `browser.runtime` would read `undefined` here and lose the flags.
     globals.browser = { permissions: {} };
-    globals.chrome = extensionGlobal({
-      manifest_version: 3,
-      _flags: { ci: { enabled: true } },
-    });
+    globals.chrome = extensionGlobal({ ci: { enabled: true } });
 
     expect(getManifestFlags()).toStrictEqual({ ci: { enabled: true } });
   });
 
   it('returns an empty object when the manifest carries no `_flags`', () => {
     delete globals.browser;
-    globals.chrome = extensionGlobal({ manifest_version: 3 });
+    globals.chrome = extensionGlobal();
 
     expect(getManifestFlags()).toStrictEqual({});
   });
