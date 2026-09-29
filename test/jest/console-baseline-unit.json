@@ -522,6 +522,9 @@
       "React: Act warnings (component updates not wrapped)": 7,
       "error: Warning: React does not recognize": 5
     },
+    "ui/pages/confirmations/components/confirm/header/header.test.tsx": {
+      "MetaMask: Background connection not initialized": 8
+    },
     "ui/pages/confirmations/components/confirm/info/approve/approve-details/approve-details.test.tsx": {
       "MetaMask: Background connection not initialized": 3,
       "React: Act warnings (component updates not wrapped)": 3
