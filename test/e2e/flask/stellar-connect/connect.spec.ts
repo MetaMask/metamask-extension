@@ -4,10 +4,7 @@ import { DEFAULT_STELLAR_ADDRESS_SHORT, WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import StellarWalletModal from '../../page-objects/pages/stellar-wallet-modal';
-import {
-  DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
-  withStellarWalletSnap,
-} from './testHelpers';
+import { withStellarWalletSnap } from './testHelpers';
 
 describe('Stellar - Connect - e2e tests', function () {
   // The Stellar Snap only supports pubnet, so this suite intentionally does not
@@ -15,7 +12,6 @@ describe('Stellar - Connect - e2e tests', function () {
   it('Connects and displays the connected Stellar account', async function () {
     await withStellarWalletSnap(
       {
-        ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {
@@ -34,7 +30,6 @@ describe('Stellar - Connect - e2e tests', function () {
   it('Connects, disconnects, and connects again', async function () {
     await withStellarWalletSnap(
       {
-        ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {
@@ -59,7 +54,6 @@ describe('Stellar - Connect - e2e tests', function () {
   it('Cancels connection and connects again', async function () {
     await withStellarWalletSnap(
       {
-        ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {
@@ -93,7 +87,6 @@ describe('Stellar - Connect - e2e tests', function () {
   it('Does not disconnect the dapp after page refresh', async function () {
     await withStellarWalletSnap(
       {
-        ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {

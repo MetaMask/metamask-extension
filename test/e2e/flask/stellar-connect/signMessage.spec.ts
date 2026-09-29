@@ -4,16 +4,12 @@ import { connectStellarTestDapp } from '../../page-objects/flows/stellar-dapp.fl
 import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import { WINDOW_TITLES } from '../../constants';
-import {
-  DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
-  withStellarWalletSnap,
-} from './testHelpers';
+import { withStellarWalletSnap } from './testHelpers';
 
 describe('Stellar - Sign Message - e2e tests', function () {
   it('Signs a message', async function () {
     await withStellarWalletSnap(
       {
-        ...DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
       },
       async (driver) => {

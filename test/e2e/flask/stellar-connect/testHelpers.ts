@@ -21,12 +21,6 @@ import {
   mockStellarWalletIcons,
 } from '../../tests/stellar/mocks';
 
-export const DEFAULT_STELLAR_TEST_DAPP_FIXTURE_OPTIONS = {
-  dappOptions: {
-    customDappPaths: [DAPP_PATH.TEST_DAPP_STELLAR],
-  },
-};
-
 export async function withStellarWalletSnap(
   {
     title,
@@ -56,7 +50,6 @@ export async function withStellarWalletSnap(
       title,
       dapp: true,
       dappOptions: dappOptions ?? {
-        numberOfTestDapps: 1,
         customDappPaths: [DAPP_PATH.TEST_DAPP_STELLAR],
       },
       testSpecificMock: async (mockServer: Mockttp) => [
