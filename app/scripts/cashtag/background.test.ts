@@ -141,11 +141,11 @@ describe('createCashtagResponse', () => {
     body: { page: 'swap', caipAssetId },
   };
 
-  function getController() {
+  function getController(useExternalServices = true) {
     return {
       preferencesController: {
         state: {
-          useExternalServices: true,
+          useExternalServices,
           preferences: { showTickerWidget: true, useSidePanelAsDefault: true },
         },
       },
@@ -187,8 +187,7 @@ describe('createCashtagResponse', () => {
   });
 
   it('does not enable the widget when Basic Functionality is disabled', async () => {
-    const controller = getController();
-    controller.preferencesController.state.useExternalServices = false;
+    const controller = getController(false);
 
     const response = await createCashtagResponse(
       { type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED },
@@ -203,8 +202,7 @@ describe('createCashtagResponse', () => {
   });
 
   it('does not fetch widget data when Basic Functionality is disabled', async () => {
-    const controller = getController();
-    controller.preferencesController.state.useExternalServices = false;
+    const controller = getController(false);
 
     const response = await createCashtagResponse(
       {
