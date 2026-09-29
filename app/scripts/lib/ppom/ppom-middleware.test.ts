@@ -7,6 +7,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import { scanUnvalidatedSignatureAddresses } from '../trust-signals/scan-unvalidated-signature';
 import { createPPOMMiddleware, PPOMMiddlewareRequest } from './ppom-middleware';
 import {
   generateSecurityAlertId,
@@ -16,6 +17,7 @@ import {
 import { SecurityAlertResponse } from './types';
 
 jest.mock('./ppom-util');
+jest.mock('../trust-signals/scan-unvalidated-signature');
 jest.mock('@metamask/controller-utils', () => ({
   ...jest.requireActual('@metamask/controller-utils'),
   detectSIWE: jest.fn(),
@@ -101,6 +103,9 @@ const createMiddleware = (
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    { scanAddress: jest.fn() } as any,
     updateSecurityAlertResponse,
   );
   return { middlewareFunction, networkController };
@@ -110,6 +115,9 @@ describe('PPOMMiddleware', () => {
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const handlePPOMErrorMock = jest.mocked(handlePPOMError);
   const detectSIWEMock = jest.mocked(detectSIWE);
+  const scanUnvalidatedSignatureAddressesMock = jest.mocked(
+    scanUnvalidatedSignatureAddresses,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -296,5 +304,55 @@ describe('PPOMMiddleware', () => {
     );
 
     expect(nextMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('starts signature address scan when PPOM returns benign for typed-data', async () => {
+    (validateRequestWithPPOM as jest.Mock).mockResolvedValue({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: BlockaidResultType.Benign,
+      reason: BlockaidReason.notApplicable,
+      securityAlertId: SECURITY_ALERT_ID_MOCK,
+    });
+
+    const { middlewareFunction } = createMiddleware();
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_signTypedData_v4',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+    await flushPromises();
+
+    expect(scanUnvalidatedSignatureAddressesMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not start signature address scan when PPOM flags request', async () => {
+    (validateRequestWithPPOM as jest.Mock).mockResolvedValue(
+      SECURITY_ALERT_RESPONSE_MOCK,
+    );
+
+    const { middlewareFunction } = createMiddleware();
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_signTypedData_v4',
+      securityAlertResponse: undefined,
+    };
+
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+    await flushPromises();
+
+    expect(scanUnvalidatedSignatureAddressesMock).not.toHaveBeenCalled();
   });
 });

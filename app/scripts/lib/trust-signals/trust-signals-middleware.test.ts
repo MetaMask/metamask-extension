@@ -16,9 +16,11 @@ import {
   createCaipOriginScanGate,
   createEip1193OriginScanGate,
 } from './trust-signals-util';
+import { scanUnvalidatedSignatureAddresses } from './scan-unvalidated-signature';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 
 jest.mock('./security-alerts-api');
+jest.mock('./scan-unvalidated-signature');
 jest.mock('../../../../shared/lib/transaction.utils');
 process.env.SECURITY_ALERTS_API_ENABLED = 'true';
 
@@ -1004,6 +1006,12 @@ describe('trust signals middleware', () => {
         CHAIN_IDS.MAINNET,
         phishingController,
       );
+      expect(scanUnvalidatedSignatureAddresses).toHaveBeenCalledWith({
+        request: req,
+        chainId: CHAIN_IDS.MAINNET,
+        appStateController,
+        phishingController,
+      });
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
@@ -1049,6 +1057,51 @@ describe('trust signals middleware', () => {
       );
       expect(phishingController.scanUrl).toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
+    });
+
+    it('scans permit spender outside the generic address cap without a verifying contract', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, phishingController } =
+        createMiddleware();
+      const permitData = {
+        domain: { name: 'Test Token', version: '1', chainId: 1 },
+        primaryType: 'Permit',
+        message: {
+          owner: TEST_ADDRESSES.FROM,
+          spender: TEST_ADDRESSES.SPENDER,
+          value: 1000,
+        },
+        types: {
+          Permit: [
+            { name: 'owner', type: 'address' },
+            { name: 'spender', type: 'address' },
+            { name: 'value', type: 'uint256' },
+          ],
+        },
+      };
+      const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+        TEST_ADDRESSES.FROM,
+        permitData,
+      ]);
+
+      await middleware(req, createMockResponse(), jest.fn());
+
+      expect(scanUnvalidatedSignatureAddresses).toHaveBeenCalledWith({
+        request: req,
+        chainId: CHAIN_IDS.MAINNET,
+        appStateController,
+        phishingController,
+      });
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.SPENDER,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        CHAIN_IDS.MAINNET,
+        phishingController,
+      );
     });
 
     it('does not scan when verifyingContract is not present', async () => {

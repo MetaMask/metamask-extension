@@ -1,8 +1,10 @@
 import { AccountsController } from '@metamask/accounts-controller';
+import { detectSIWE } from '@metamask/controller-utils';
 import {
   NetworkClientId,
   NetworkController,
 } from '@metamask/network-controller';
+import { PhishingController } from '@metamask/phishing-controller';
 import {
   Hex,
   Json,
@@ -10,14 +12,17 @@ import {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@metamask/utils';
-import { detectSIWE } from '@metamask/controller-utils';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
-import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
+import {
+  BlockaidResultType,
+  LOADING_SECURITY_ALERT_RESPONSE,
+} from '../../../../shared/constants/security-provider';
+import { scanUnvalidatedSignatureAddresses } from '../trust-signals/scan-unvalidated-signature';
 import {
   generateSecurityAlertId,
   handlePPOMError,
@@ -58,6 +63,7 @@ export type PPOMMiddlewareRequest<
  * @param networkController - Instance of NetworkController.
  * @param appStateController
  * @param accountsController - Instance of AccountsController.
+ * @param phishingController - Controller providing scanAddress for signature fields.
  * @param updateSecurityAlertResponse
  * @param getSecurityAlertsConfig - Optional method to get transaction security alerts parameters.
  * @returns PPOMMiddleware function.
@@ -71,6 +77,7 @@ export function createPPOMMiddleware<
   networkController: NetworkController,
   appStateController: AppStateController,
   accountsController: AccountsController,
+  phishingController: Pick<PhishingController, 'scanAddress'>,
   updateSecurityAlertResponse: UpdateSecurityAlertResponse,
   getSecurityAlertsConfig?: GetSecurityAlertsConfig,
 ) {
@@ -117,7 +124,7 @@ export function createPPOMMiddleware<
 
       const securityAlertId = generateSecurityAlertId();
 
-      trace(
+      const validationPromise = trace(
         { name: TraceName.PPOMValidation, parentContext: req.traceContext },
         () =>
           validateRequestWithPPOM({
@@ -129,6 +136,27 @@ export function createPPOMMiddleware<
             getSecurityAlertsConfig,
           }),
       );
+
+      if (SIGNING_METHODS.includes(req.method)) {
+        Promise.resolve(validationPromise)
+          .then((securityAlertResponse) => {
+            const resultType = securityAlertResponse?.result_type;
+            const ppomFlagged =
+              resultType === BlockaidResultType.Malicious ||
+              resultType === BlockaidResultType.Warning;
+            if (!ppomFlagged) {
+              scanUnvalidatedSignatureAddresses({
+                request: req,
+                chainId: chainId as Hex,
+                appStateController,
+                phishingController,
+              });
+            }
+          })
+          .catch(() => {
+            // ignore — scan is fire-and-forget
+          });
+      }
 
       const securityAlertResponseLoading: SecurityAlertResponse = {
         ...LOADING_SECURITY_ALERT_RESPONSE,
