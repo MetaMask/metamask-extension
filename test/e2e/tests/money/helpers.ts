@@ -75,6 +75,14 @@ function fungibleAssetPrice(id: string, usdPrice: number) {
   };
 }
 
+/** Accountant `getRate()`. A zero rate makes share math divide by zero. */
+const ACCOUNTANT_GET_RATE_SELECTOR = '0x679aefce';
+/**
+ * 1:1 vault rate in the 6-decimal share scalar `getSharesForWithdrawal` uses,
+ * so a $50 withdraw encodes 50 mUSD of shares.
+ */
+const VAULT_RATE_ONE_TO_ONE = pad(toHex(1_000_000n), { size: 32 });
+
 const DEFAULT_FIXTURE_ETH_NATIVE_PRICES = Object.fromEntries(
   DEFAULT_FIXTURE_ETH_NATIVE_ASSET_IDS.map((assetId) => [
     assetId,
@@ -88,6 +96,7 @@ const DEFAULT_FIXTURE_ETH_NATIVE_PRICES = Object.fromEntries(
 
 type RelayQuoteRequestBody = {
   amount?: string;
+  destinationCurrency?: string;
   originCurrency?: string;
   recipient?: string;
   user?: string;
@@ -282,6 +291,11 @@ type RelaySettlements = {
   hashByRequestId: Map<string, Hex>;
   /** Fallback for receipts of hashes no quote produced (the vault batch). */
   lastAmountOutRaw: bigint;
+  /**
+   * Settlement hashes whose Transfer receipt is on Mainnet (a withdraw into a
+   * Mainnet token). Everything else settles on Monad.
+   */
+  mainnetHashes: Set<string>;
 };
 
 function createRelaySettlements(): RelaySettlements {
@@ -289,6 +303,7 @@ function createRelaySettlements(): RelaySettlements {
     amountByHash: new Map(),
     hashByRequestId: new Map(),
     lastAmountOutRaw: 0n,
+    mainnetHashes: new Set(),
   };
 }
 
@@ -388,6 +403,8 @@ function resolveMonadRpcResult(
           return UINT256_MAX;
         case ERC20_DECIMALS_SELECTOR:
           return UINT8_SIX;
+        case ACCOUNTANT_GET_RATE_SELECTOR:
+          return VAULT_RATE_ONE_TO_ONE;
         case MULTICALL3_AGGREGATE3_SELECTOR:
           return encodeAggregate3Result(data);
         default:
@@ -557,6 +574,66 @@ async function mockDepositSettlement(
   server: Mockttp,
   settlements: RelaySettlements,
 ): Promise<void> {
+  // Withdraw quotes settle on Mainnet: answer only the receipts for hashes
+  // this run quoted, and let every other Mainnet call reach Anvil.
+  await server
+    .forPost(/mainnet\.infura\.io/u)
+    .always()
+    .matching(async (request) => {
+      const body = (await request.body.getJson()) as Record<string, unknown>;
+      if (body?.method !== 'eth_getTransactionReceipt') {
+        return false;
+      }
+      const hash = String(
+        (body.params as unknown[] | undefined)?.[0] ?? '',
+      ).toLowerCase();
+      return settlements.mainnetHashes.has(hash);
+    })
+    .thenCallback(async (request) => {
+      const body = (await request.body.getJson()) as Record<string, unknown>;
+      const hash = (body.params as Hex[])[0];
+      const amount =
+        settlements.amountByHash.get(hash.toLowerCase()) ??
+        settlements.lastAmountOutRaw;
+      return {
+        statusCode: 200,
+        json: {
+          id: body.id ?? 1,
+          jsonrpc: '2.0',
+          result: {
+            transactionHash: hash,
+            transactionIndex: '0x0',
+            blockNumber: MONAD_BLOCK_NUMBER,
+            blockHash: MONAD_BLOCK_HASH,
+            from: RELAY_SOLVER_ADDRESS,
+            to: MAINNET_USDC_ADDRESS,
+            cumulativeGasUsed: '0x94670',
+            gasUsed: '0x94670',
+            effectiveGasPrice: '0x3b9aca00',
+            contractAddress: null,
+            logs: [
+              {
+                address: MAINNET_USDC_ADDRESS,
+                topics: [
+                  ERC20_TRANSFER_EVENT_TOPIC,
+                  pad(RELAY_SOLVER_ADDRESS, { size: 32 }),
+                  pad(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE as Hex, { size: 32 }),
+                ],
+                data: pad(toHex(amount), { size: 32 }),
+                blockNumber: MONAD_BLOCK_NUMBER,
+                transactionHash: hash,
+                transactionIndex: '0x0',
+                logIndex: '0x0',
+                removed: false,
+              },
+            ],
+            status: '0x1',
+            logsBloom: `0x${'0'.repeat(512)}`,
+          },
+        },
+      };
+    });
+
   const settlementHashForRequest = (url: string): Hex => {
     const requestId = new URL(url).searchParams.get('requestId') ?? '';
     return (
@@ -718,17 +795,36 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
   amountOutRaw: bigint;
   requestId: Hex;
   settlementHash: Hex;
+  settlesOnMainnet: boolean;
 } {
-  const isNativeSource =
-    (body.originCurrency ?? '').toLowerCase() === NATIVE_TOKEN_ADDRESS;
-  const sourceDecimals = isNativeSource ? 18 : 6;
-  const sourcePrice = isNativeSource ? ETH_USD_PRICE : USDC_USD_PRICE;
-  const sourceAddress: Hex = isNativeSource
-    ? NATIVE_TOKEN_ADDRESS
-    : MAINNET_USDC_ADDRESS;
-  const sourceSymbol = isNativeSource ? 'ETH' : 'USDC';
-  const user = (body.user ?? DEFAULT_FIXTURE_ACCOUNT_LOWERCASE) as Hex;
-  const recipient = (body.recipient ?? MONEY_ACCOUNT_ADDRESS) as Hex;
+  const originCurrency = (body.originCurrency ?? '').toLowerCase();
+  // A withdraw quotes Monad mUSD into the receive token (Mainnet USDC by
+  // default); a deposit quotes a Mainnet token into Monad mUSD.
+  const isMusdSource = originCurrency === MUSD_MONAD_ADDRESS.toLowerCase();
+  const isNativeSource = originCurrency === NATIVE_TOKEN_ADDRESS;
+  let sourceDecimals = 6;
+  let sourcePrice = USDC_USD_PRICE;
+  let sourceAddress: Hex = MAINNET_USDC_ADDRESS;
+  let sourceSymbol = 'USDC';
+  if (isMusdSource) {
+    sourcePrice = MUSD_USD_PRICE;
+    sourceAddress = MUSD_MONAD_ADDRESS;
+    sourceSymbol = 'mUSD';
+  } else if (isNativeSource) {
+    sourceDecimals = 18;
+    sourcePrice = ETH_USD_PRICE;
+    sourceAddress = NATIVE_TOKEN_ADDRESS;
+    sourceSymbol = 'ETH';
+  }
+  const sourceChainId = isMusdSource ? MONAD_CHAIN_ID_DECIMAL : 1;
+  const user = (body.user ??
+    (isMusdSource
+      ? MONEY_ACCOUNT_ADDRESS
+      : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) as Hex;
+  const recipient = (body.recipient ??
+    (isMusdSource
+      ? DEFAULT_FIXTURE_ACCOUNT_LOWERCASE
+      : MONEY_ACCOUNT_ADDRESS)) as Hex;
 
   let amountInRaw = 0n;
   try {
@@ -748,7 +844,7 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
 
   const currencyIn = {
     currency: buildRelayCurrency(
-      1,
+      sourceChainId,
       sourceAddress,
       sourceSymbol,
       sourceDecimals,
@@ -759,12 +855,14 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
     minimumAmount: amountInRaw.toString(),
   };
   const currencyOut = {
-    currency: buildRelayCurrency(
-      MONAD_CHAIN_ID_DECIMAL,
-      MUSD_MONAD_ADDRESS,
-      'mUSD',
-      6,
-    ),
+    currency: isMusdSource
+      ? buildRelayCurrency(1, MAINNET_USDC_ADDRESS, 'USDC', 6)
+      : buildRelayCurrency(
+          MONAD_CHAIN_ID_DECIMAL,
+          MUSD_MONAD_ADDRESS,
+          'mUSD',
+          6,
+        ),
     amount: amountOutRaw.toString(),
     amountFormatted: amountUsd,
     amountUsd,
@@ -790,14 +888,14 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
       }
     : {
         from: user,
-        to: MAINNET_USDC_ADDRESS,
+        to: isMusdSource ? MUSD_MONAD_ADDRESS : MAINNET_USDC_ADDRESS,
         data: encodeFunctionData({
           abi: ERC20_ABI,
           functionName: 'transfer',
           args: [RELAY_SOLVER_ADDRESS, amountInRaw],
         }),
         value: '0',
-        chainId: 1,
+        chainId: sourceChainId,
         gas: '65000',
         maxFeePerGas: '3000000000',
         maxPriorityFeePerGas: '1500000000',
@@ -807,6 +905,7 @@ function buildRelayQuote(body: RelayQuoteRequestBody): {
     amountOutRaw,
     requestId,
     settlementHash,
+    settlesOnMainnet: isMusdSource,
     quote: {
       steps: [
         {
@@ -893,11 +992,14 @@ async function mockRelayQuote(
     if (!body.amount || body.amount === '0') {
       return { statusCode: 400, json: { message: 'Amount is required' } };
     }
-    const { quote, amountOutRaw, requestId, settlementHash } =
+    const { quote, amountOutRaw, requestId, settlementHash, settlesOnMainnet } =
       buildRelayQuote(body);
     settlements.hashByRequestId.set(requestId.toLowerCase(), settlementHash);
     settlements.amountByHash.set(settlementHash.toLowerCase(), amountOutRaw);
     settlements.lastAmountOutRaw = amountOutRaw;
+    if (settlesOnMainnet) {
+      settlements.mainnetHashes.add(settlementHash.toLowerCase());
+    }
     return { statusCode: 200, json: quote };
   };
 

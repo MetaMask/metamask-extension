@@ -41,6 +41,8 @@ class MoneyHomePage {
 
   private readonly page = { testId: 'money-home-page' };
 
+  private readonly sendButton = { testId: 'money-send-button' };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -73,6 +75,10 @@ class MoneyHomePage {
     await this.driver.waitForSelector(this.balance);
   }
 
+  async checkSentActivity(fiatAmount: string): Promise<void> {
+    await this.checkActivityItem(tEn('moneyActivitySent'), fiatAmount);
+  }
+
   async clickActivityItem(label: string): Promise<void> {
     console.log(`Click Money activity row "${label}"`);
     await this.driver.clickElement(this.activityRow(label));
@@ -82,6 +88,12 @@ class MoneyHomePage {
     console.log('Click Money home Add action');
     await this.driver.waitForSelector(this.addButton, { state: 'enabled' });
     await this.driver.clickElement(this.addButton);
+  }
+
+  async clickSend(): Promise<void> {
+    console.log('Click Money home Send action');
+    await this.driver.waitForSelector(this.sendButton, { state: 'enabled' });
+    await this.driver.clickElement(this.sendButton);
   }
 }
 

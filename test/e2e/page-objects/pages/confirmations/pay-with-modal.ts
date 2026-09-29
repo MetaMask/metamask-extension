@@ -25,17 +25,20 @@ export class PayWithModal {
 
   private readonly sections = { testId: 'pay-with-sections' };
 
-  private readonly title = {
-    css: 'header',
-    text: tEn('payWithModalTitle'),
-  };
+  private readonly title: { css: string; text: string };
 
   private readonly tokenAsset = (chainId: string, symbol: string) => ({
     testId: `token-asset-${chainId}-${symbol}`,
   });
 
-  constructor(driver: Driver) {
+  /**
+   * @param driver - The WebDriver instance.
+   * @param title - Modal heading. Deposits say "Pay with"; withdraws say
+   * "Withdraw to".
+   */
+  constructor(driver: Driver, title: string = tEn('payWithModalTitle')) {
     this.driver = driver;
+    this.title = { css: 'header', text: title };
   }
 
   async checkPageIsLoaded(): Promise<void> {
