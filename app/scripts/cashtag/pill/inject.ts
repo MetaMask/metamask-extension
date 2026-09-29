@@ -59,12 +59,16 @@ export async function injectPills(
   const painted = new WeakSet<HTMLAnchorElement>();
   const resolving = new WeakSet<HTMLAnchorElement>();
 
-  const paint = (element: HTMLAnchorElement, data: AssetData) => {
+  const paint = (
+    element: HTMLAnchorElement,
+    symbol: string,
+    data: AssetData,
+  ) => {
     if (painted.has(element) || element.dataset.mmCashtag) {
       return;
     }
     painted.add(element);
-    element.dataset.mmCashtag = data.ticker;
+    element.dataset.mmCashtag = symbol;
     element.replaceChildren();
     element.append(buildPillContents(data));
   };
@@ -92,7 +96,7 @@ export async function injectPills(
           if (!element.isConnected || !asset) {
             return;
           }
-          paint(element, asset);
+          paint(element, symbol, asset);
         })
         .finally(() => {
           resolving.delete(element);
