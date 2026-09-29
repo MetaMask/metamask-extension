@@ -100,9 +100,10 @@ export function HideTokenConfirmationModal({
               {symbol}
             </Text>
             <Text
+              className="w-full"
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
-              textAlign={TextAlign.Center}
+              textAlign={TextAlign.Left}
             >
               {t('readdToken')}
             </Text>
