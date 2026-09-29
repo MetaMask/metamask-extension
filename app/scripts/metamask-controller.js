@@ -793,12 +793,9 @@ export default class MetamaskController extends EventEmitter {
     this.userStorageController = messengerClientsByName.UserStorageController;
     this.authenticatedUserStorageService =
       messengerClientsByName.AuthenticatedUserStorageService;
-    const marketingConsentSync = setupMarketingConsentSync({
+    this.marketingConsentSync = setupMarketingConsentSync({
       messenger: this.controllerMessenger,
     });
-    this.waitForMarketingConsentSync =
-      marketingConsentSync.waitForMarketingConsentSync;
-    this.refreshMarketingConsent = marketingConsentSync.refreshMarketingConsent;
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
@@ -2596,7 +2593,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setParticipateInMetaMetrics,
       setDataCollectionForMarketing,
-      waitForMarketingConsentSync: this.waitForMarketingConsentSync,
+      waitForMarketingConsentSync:
+        this.marketingConsentSync.waitForMarketingConsentSync,
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -6532,7 +6530,7 @@ export default class MetamaskController extends EventEmitter {
     if (open) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
       // Consent may have changed on another device since the last read.
-      this.refreshMarketingConsent();
+      this.marketingConsentSync.refreshMarketingConsent();
     } else {
       this.controllerMessenger.call('BackendWebSocketService:disconnect');
     }
