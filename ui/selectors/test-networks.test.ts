@@ -40,20 +40,25 @@ const buildState = ({
   showTestNetworks = false,
   domains = { 'https://dapp.example': 'mainnet' },
   connectedOrigins = ['https://dapp.example'],
+  extraSubjects = {},
 }: {
   selectedChainId?: string;
   showTestNetworks?: boolean;
   domains?: Record<string, string>;
   connectedOrigins?: string[];
+  extraSubjects?: Record<string, unknown>;
 } = {}) =>
   ({
     metamask: {
       isEvmSelected: false,
       selectedMultichainNetworkChainId: selectedChainId,
       domains,
-      subjects: Object.fromEntries(
-        connectedOrigins.map((origin) => [origin, connectedSubject(origin)]),
-      ),
+      subjects: {
+        ...Object.fromEntries(
+          connectedOrigins.map((origin) => [origin, connectedSubject(origin)]),
+        ),
+        ...extraSubjects,
+      },
       networkConfigurationsByChainId: {
         '0x1': mainnet,
         '0xaa36a7': sepolia,
@@ -104,16 +109,18 @@ describe('test network visibility selectors', () => {
         [origin]: 'sepolia',
       },
       connectedOrigins: ['https://dapp.example'],
-    });
-    state.metamask.subjects[origin] = {
-      permissions: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        wallet_snap: {
-          parentCapability: 'wallet_snap',
-          caveats: [{ type: 'snapIds', value: { 'npm:example': {} } }],
+      extraSubjects: {
+        [origin]: {
+          permissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            wallet_snap: {
+              parentCapability: 'wallet_snap',
+              caveats: [{ type: 'snapIds', value: { 'npm:example': {} } }],
+            },
+          },
         },
       },
-    };
+    });
 
     expect(getIsTestnetInUse(state)).toBe(false);
     expect(getShouldShowTestNetworks(state)).toBe(false);

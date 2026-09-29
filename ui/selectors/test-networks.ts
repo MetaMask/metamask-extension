@@ -20,6 +20,11 @@ const getSelectedChainId = (
   }
 };
 
+type PermissionSubjects = Record<
+  string,
+  { permissions?: Record<string, unknown> } | undefined
+>;
+
 const isTestChain = (chainId: string | undefined): boolean => {
   if (!chainId) {
     return false;
@@ -39,7 +44,12 @@ export const getIsTestnetInUse = createSelector(
   getAllDomains,
   getNetworkConfigurationsByChainId,
   getPermissionSubjects,
-  (selectedChainId, domains, networkConfigurationsByChainId, subjects) => {
+  (
+    selectedChainId,
+    domains,
+    networkConfigurationsByChainId,
+    subjects: PermissionSubjects,
+  ) => {
     if (isTestChain(selectedChainId)) {
       return true;
     }
