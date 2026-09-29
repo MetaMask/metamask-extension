@@ -10,7 +10,9 @@ import { getIsSocialLoginFlow } from '../first-time-flow';
 
 export type OnboardingState = {
   metamask: Partial<SeedlessOnboardingControllerState> &
-    OnboardingControllerState;
+    OnboardingControllerState & {
+      preferences?: { hasLinkedSocialLoginProfile?: boolean };
+    };
 };
 
 export function getSocialLoginType(
@@ -30,6 +32,8 @@ export function getIsBasicFunctionalitySocialLoginUser(
   return isBasicFunctionalitySocialLoginUser({
     firstTimeFlowType: state.metamask.firstTimeFlowType ?? undefined,
     authConnection: state.metamask.authConnection,
+    hasLinkedSocialLoginProfile:
+      state.metamask.preferences?.hasLinkedSocialLoginProfile,
   });
 }
 

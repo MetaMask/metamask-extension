@@ -1,4 +1,4 @@
-import { BaseUrl } from '../../../constants/urls';
+import { MONEY_HOME_ROUTE } from './route';
 import { money } from './money';
 
 describe('money deep link route', () => {
@@ -10,30 +10,22 @@ describe('money deep link route', () => {
     expect(money.getTitle(new URLSearchParams())).toBe('deepLink_theMoneyPage');
   });
 
-  it('redirects to the MetaMask money page with no query params', () => {
+  it('navigates to the Money home route with no query params', () => {
     const result = money.handler(new URLSearchParams());
 
-    expect('redirectTo' in result).toBe(true);
-
-    const { redirectTo } = result as { redirectTo: URL };
-    expect(redirectTo.toString()).toBe(`${BaseUrl.MetaMask}/money`);
+    expect(result).toStrictEqual({
+      path: MONEY_HOME_ROUTE,
+      query: new URLSearchParams(),
+    });
   });
 
-  it('forwards incoming query params to the redirect URL', () => {
+  it('ignores incoming query params', () => {
     const params = new URLSearchParams({ ref: 'extension', foo: 'bar' });
     const result = money.handler(params);
 
-    const { redirectTo } = result as { redirectTo: URL };
-    expect(redirectTo.searchParams.get('ref')).toBe('extension');
-    expect(redirectTo.searchParams.get('foo')).toBe('bar');
-  });
-
-  it('preserves the base redirect URL path when query params are present', () => {
-    const params = new URLSearchParams({ baz: 'qux' });
-    const result = money.handler(params);
-
-    const { redirectTo } = result as { redirectTo: URL };
-    expect(redirectTo.pathname).toBe('/money');
-    expect(redirectTo.origin).toBe(BaseUrl.MetaMask);
+    expect(result).toStrictEqual({
+      path: MONEY_HOME_ROUTE,
+      query: new URLSearchParams(),
+    });
   });
 });

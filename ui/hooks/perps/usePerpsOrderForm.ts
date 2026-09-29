@@ -3,7 +3,7 @@ import {
   getMaxAllowedAmount,
   type OrderType,
 } from '@metamask/perps-controller';
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   calculateMarginRequired,
@@ -261,7 +261,9 @@ export function usePerpsOrderForm({
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const defaultLeverage =
     initialDraft?.leverage ?? initialLeverage ?? TRADING_DEFAULTS.leverage;
-  const hasUserEditedAmount = useRef(Boolean(initialDraft?.amount));
+  const [hasUserEditedAmount, setHasUserEditedAmount] = useState(
+    Boolean(initialDraft?.amount),
+  );
 
   const computeInitialAmountValue = useCallback(
     (leverage: number): string => {
@@ -484,7 +486,7 @@ export function usePerpsOrderForm({
             )
           : {};
 
-      hasUserEditedAmount.current = Boolean(initialDraft?.amount);
+      setHasUserEditedAmount(Boolean(initialDraft?.amount));
       if (mode === 'modify' && existingPosition) {
         setFormState({
           ...mockOrderFormDefaults,
@@ -552,10 +554,18 @@ export function usePerpsOrderForm({
   );
   const defaultAmountKey = `${mode}|${formState.leverage}|${availableBalance}|${defaultAmountFieldsForBalance.amount}|${defaultAmountFieldsForBalance.balancePercent}`;
 
+  // `hasUserEditedAmount` state updates asynchronously; on the same render as a
+  // form reset, derive the flag from the incoming draft so default-amount sync
+  // does not clobber a restored amount when `defaultAmountKey` also changes.
+  const userHasEditedAmount =
+    resetDependenciesChanged && shouldResetForm
+      ? Boolean(initialDraft?.amount)
+      : hasUserEditedAmount;
+
   if (
     defaultAmountKey !== prevDefaultAmountKey &&
     mode === 'new' &&
-    !hasUserEditedAmount.current &&
+    !userHasEditedAmount &&
     defaultAmountFieldsForBalance.amount &&
     (formState.amount !== defaultAmountFieldsForBalance.amount ||
       formState.balancePercent !== defaultAmountFieldsForBalance.balancePercent)
@@ -732,7 +742,7 @@ export function usePerpsOrderForm({
 
   // Form state update handlers
   const handleAmountChange = useCallback((amount: string) => {
-    hasUserEditedAmount.current = true;
+    setHasUserEditedAmount(true);
     setFormState((prev) => ({ ...prev, amount }));
   }, []);
 

@@ -285,14 +285,24 @@ export const CoinOverview = ({
 
   const [hasZeroFiatBalanceDelayElapsed, setHasZeroFiatBalanceDelayElapsed] =
     useState(false);
+  const [prevDelayKey, setPrevDelayKey] = useState(enabledNetworksDelayKey);
+  const [prevShouldDelayZeroFiatBalance, setPrevShouldDelayZeroFiatBalance] =
+    useState(shouldDelayZeroFiatBalance);
+
+  if (
+    enabledNetworksDelayKey !== prevDelayKey ||
+    shouldDelayZeroFiatBalance !== prevShouldDelayZeroFiatBalance
+  ) {
+    setPrevDelayKey(enabledNetworksDelayKey);
+    setPrevShouldDelayZeroFiatBalance(shouldDelayZeroFiatBalance);
+    setHasZeroFiatBalanceDelayElapsed(false);
+  }
 
   useEffect(() => {
     if (!shouldDelayZeroFiatBalance) {
-      setHasZeroFiatBalanceDelayElapsed(false);
       return undefined;
     }
 
-    setHasZeroFiatBalanceDelayElapsed(false);
     const timeoutId = setTimeout(() => {
       setHasZeroFiatBalanceDelayElapsed(true);
     }, ZERO_FIAT_BALANCE_DELAY_MS);

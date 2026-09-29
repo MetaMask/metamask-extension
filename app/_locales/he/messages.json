@@ -409,9 +409,6 @@
     "message": "מפתח פרטי",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "אזהרה: לעולם אין למסור מפתח זה. מי שיקבל את המפתחות הפרטיים שלך יוכל לגנוב את כל הנכסים השמורים בחשבון שלך."
-  },
   "privateNetwork": {
     "message": "רשת פרטית"
   },
