@@ -78,7 +78,7 @@ export function HideTokenConfirmationModal({
       data-testid="hide-token-confirmation-modal"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent className="items-center">
         <ModalHeader>{t('hideTokenPrompt')}</ModalHeader>
         <ModalBody>
           <Box
