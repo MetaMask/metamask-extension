@@ -1,0 +1,25 @@
+diff --git a/src/runtime/runtime.js b/src/runtime/runtime.js
+index e28eb5aecfb1501a249f386f53a8b93aefc66a75..288030d42761222f956f22f700072e4fbabb3473 100644
+--- a/src/runtime/runtime.js
++++ b/src/runtime/runtime.js
+@@ -348,7 +348,19 @@ const lavamoatRuntimeWrapper = (resourceId, runtimeKit) => {
+     // To discover more, go to https://github.com/webpack/webpack/blob/main/lib/RuntimeGlobals.js and/or look at implementations here https://github.com/webpack/webpack/tree/main/lib/runtime/
+     // Looking at the runtime chunk in the built bundle is probably the fastest way to learn what these do.
+ 
+-    const supportedRuntimeItems = ['O', 'n', 'd', 'o', 'r', 's', 't', 'b', 'j']
++    const supportedRuntimeItems = [
++      'O',
++      'n',
++      'd',
++      'o',
++      'r',
++      's',
++      't',
++      'b',
++      'j',
++      'dn', // (webpack >=5.107) only sets `.name` to "default" on the anonymous default export
++      'ns', // wrap an exports object in a spec Module Namespace Exotic Object
++    ]
+     for (const item of supportedRuntimeItems) {
+       policyRequire[item] = harden(__webpack_require__[item])
+     }
