@@ -66,8 +66,8 @@ export function TokenDetail({
   const securityBadge = getSecurityStatusBadge(data.resultType);
 
   return (
-    <div className="flex flex-col h-full p-6">
-      <header className="mb-7 flex items-center justify-between">
+    <div className="flex flex-col h-full p-6 gap-2">
+      <header className="mb-7 flex items-center justify-between gap-1">
         <div className="flex min-w-0 items-center gap-4">
           <TokenAvatar asset={data} size="lg" />
           <div className="flex min-w-0 flex-col justify-center">
@@ -87,14 +87,14 @@ export function TokenDetail({
               ) : null}
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-s-body-sm text-alternative">
+              <span className="text-s-body-sm text-alternative truncate">
                 {data.name}
               </span>
               {onViewSimilar ? (
                 <>
                   <span>•</span>
                   <TextButton
-                    className="text-inherit"
+                    className="text-inherit truncate"
                     size={TextButtonSize.BodySm}
                     endIconName={IconName.ArrowRight}
                     endIconProps={{ size: IconSize.Xs }}

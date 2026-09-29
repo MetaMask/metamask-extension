@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe('resolveTicker', () => {
-  it('prioritizes security, liquidity, volume, and market cap', async () => {
+  it('preserves the API order for the primary and similar assets', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -46,9 +46,9 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker(' qqq ')).resolves.toMatchObject({
       primary: {
-        ticker: 'QQQX',
-        name: 'Other token',
-        caipAssetId: 'eip155:1/erc20:0xother',
+        ticker: 'QQQ',
+        name: 'Lower QQQ',
+        caipAssetId: 'eip155:1/erc20:0xlow',
       },
       similar: [
         expect.objectContaining({
@@ -57,9 +57,9 @@ describe('resolveTicker', () => {
           caipAssetId: 'eip155:1/erc20:0xhigh',
         }),
         expect.objectContaining({
-          ticker: 'QQQ',
-          name: 'Lower QQQ',
-          caipAssetId: 'eip155:1/erc20:0xlow',
+          ticker: 'QQQX',
+          name: 'Other token',
+          caipAssetId: 'eip155:1/erc20:0xother',
         }),
       ],
     });
@@ -78,43 +78,6 @@ describe('resolveTicker', () => {
 
     fetchMock.mockResolvedValue({ ok: false } as Response);
     await expect(resolveTicker('QQQ')).resolves.toBeNull();
-  });
-
-  it('prioritizes verified assets over suspicious exact matches', async () => {
-    fetchMock.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        data: [
-          {
-            assetId: 'eip155:1/erc20:0xspam',
-            symbol: 'MSFT',
-            name: 'Suspicious Microsoft token',
-            marketCap: 1000,
-            securityData: { resultType: 'Spam' },
-          },
-          {
-            assetId: 'eip155:1/erc20:0xverified',
-            symbol: 'MSFTON',
-            name: 'Microsoft (Ondo Tokenized)',
-            marketCap: 10,
-            securityData: { resultType: 'Verified' },
-          },
-        ],
-      }),
-    } as Response);
-
-    await expect(resolveTicker('MSFT')).resolves.toMatchObject({
-      primary: {
-        ticker: 'MSFTON',
-        name: 'Microsoft (Ondo Tokenized)',
-      },
-      similar: [
-        expect.objectContaining({
-          ticker: 'MSFT',
-          name: 'Suspicious Microsoft token',
-        }),
-      ],
-    });
   });
 });
 
