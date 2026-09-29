@@ -23,7 +23,7 @@ exports[`Hide Token Confirmation Modal matches snapshot 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
