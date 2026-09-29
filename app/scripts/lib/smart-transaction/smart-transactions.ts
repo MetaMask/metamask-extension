@@ -58,6 +58,8 @@ type SmartTransactionSentinelMeta = NonNullable<
 type SmartTransactionTxType = SmartTransactionSentinelMeta['txType'];
 
 export type SubmitSmartTransactionRequest = {
+  /** Whether the gas fee is sponsored, as decided by the publish hook. */
+  isGasFeeSponsored?: boolean;
   transactionMeta: TransactionMeta;
   signedTransactionInHex?: string;
   smartTransactionsController: SmartTransactionsController;
@@ -70,6 +72,8 @@ export type SubmitSmartTransactionRequest = {
 
 class SmartTransactionHook {
   #chainId: Hex;
+
+  #isGasFeeSponsored: boolean;
 
   #controllerMessenger: SmartTransactionHookMessenger;
 
@@ -107,6 +111,7 @@ class SmartTransactionHook {
 
   constructor(request: SubmitSmartTransactionRequest) {
     const {
+      isGasFeeSponsored,
       transactionMeta,
       signedTransactionInHex,
       smartTransactionsController,
@@ -116,6 +121,7 @@ class SmartTransactionHook {
       featureFlags,
       transactions,
     } = request;
+    this.#isGasFeeSponsored = Boolean(isGasFeeSponsored);
     this.#transactionMeta = transactionMeta as TransactionMeta;
     this.#signedTransactionInHex = signedTransactionInHex;
     this.#smartTransactionsController = smartTransactionsController;
@@ -151,10 +157,7 @@ class SmartTransactionHook {
 
     let getFeesResponse;
     // Skip getting fees if the tx is signed and sponsored
-    if (
-      !this.#signedTransactionInHex ||
-      !this.#transactionMeta.isGasFeeSponsored
-    ) {
+    if (!this.#signedTransactionInHex || !this.#isGasFeeSponsored) {
       try {
         getFeesResponse = await this.#smartTransactionsController.getFees(
           { ...this.#txParams, chainId: this.#chainId },

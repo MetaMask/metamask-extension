@@ -187,6 +187,7 @@ describe('Delegation 7702 Publish Hook', () => {
     );
 
     hookClass = new Delegation7702PublishHook({
+      isGasFeeSponsored: false,
       messenger,
     });
 
@@ -256,13 +257,10 @@ describe('Delegation 7702 Publish Hook', () => {
       ]);
 
       await expect(
-        hookClass.getHook()(
-          {
-            ...TRANSACTION_META_MOCK,
-            isGasFeeSponsored: true,
-          },
-          SIGNED_TX_MOCK,
-        ),
+        new Delegation7702PublishHook({
+          isGasFeeSponsored: true,
+          messenger,
+        }).getHook()(TRANSACTION_META_MOCK, SIGNED_TX_MOCK),
       ).rejects.toThrow(
         'Chain must support EIP-7702 for sponsored or gas included transaction',
       );
@@ -304,7 +302,6 @@ describe('Delegation 7702 Publish Hook', () => {
         {
           ...TRANSACTION_META_MOCK,
           type: TransactionType.revokeDelegation,
-          isGasFeeSponsored: true,
           gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
           selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
         } as unknown as TransactionMeta,
@@ -539,13 +536,10 @@ describe('Delegation 7702 Publish Hook', () => {
       },
     ]);
 
-    await hookClass.getHook()(
-      {
-        ...TRANSACTION_META_MOCK,
-        isGasFeeSponsored: true,
-      },
-      SIGNED_TX_MOCK,
-    );
+    await new Delegation7702PublishHook({
+      isGasFeeSponsored: true,
+      messenger,
+    }).getHook()(TRANSACTION_META_MOCK, SIGNED_TX_MOCK);
 
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
@@ -567,11 +561,13 @@ describe('Delegation 7702 Publish Hook', () => {
       },
     ]);
 
-    await hookClass.getHook()(
+    await new Delegation7702PublishHook({
+      isGasFeeSponsored: true,
+      messenger,
+    }).getHook()(
       {
         ...TRANSACTION_META_MOCK,
         type: TransactionType.batch,
-        isGasFeeSponsored: true,
         txParams: {
           ...TRANSACTION_META_MOCK.txParams,
           data: '0xdeadbeef',
