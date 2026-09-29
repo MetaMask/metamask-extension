@@ -23,6 +23,14 @@
       "symbol": "USDC",
       "decimals": 6,
       "name": "USD Coin"
+    },
+    {
+      "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "chainId": 1151111081099710,
+      "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USDC"
     }
   ],
   "pageInfo": {

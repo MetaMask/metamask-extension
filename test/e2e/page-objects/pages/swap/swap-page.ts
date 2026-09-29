@@ -435,7 +435,15 @@ class SwapPage {
       await this.driver.clickElement(this.importTokensButton);
       await this.driver.waitForSelector(this.bridgeAsset);
     }
-    await this.driver.clickElement(this.bridgeAsset);
+    // `bridgeAsset` is a PREFIX selector matching every row, and the picker
+    // opens on "All networks" -- so an unconstrained click can take a stale
+    // row from the pre-filter list before the chosen network re-renders.
+    // Measured: it took `eip155:1/slip44:60` while the flow had asked for
+    // USDC on Solana. The testid is `bridge-asset--${assetId}`, whose Solana
+    // form ends in the contract address, so the searched row is addressable.
+    const searched = `[data-testid^="bridge-asset--"][data-testid$="${contractAddress}"]`;
+    await this.driver.waitForSelector(searched, { timeout: 30000 });
+    await this.driver.clickElement(searched);
   }
 
   async selectSourceToken(sourceToken: string): Promise<void> {
