@@ -45,7 +45,7 @@ const EMPTY_APPLIED_RATES = {
 
 describe('applySentryRemoteRates', () => {
   beforeEach(() => {
-    globalThis.stateHooks = {};
+    globalThis.stateHooks = {} as typeof globalThis.stateHooks;
   });
 
   afterEach(() => {
