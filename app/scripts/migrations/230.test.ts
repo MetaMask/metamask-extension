@@ -158,6 +158,9 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('does not throw when the backup database is unavailable', async () => {
+    // The migration logs a warning when the backup database can't be opened;
+    // silence it so this suite produces no console output.
+    jest.spyOn(console, 'warn').mockImplementation(jest.fn());
     jest
       .spyOn(IndexedDBStore.prototype, 'open')
       .mockRejectedValue(new Error('Database is not available'));
@@ -173,5 +176,7 @@ describe(`migration #${VERSION}`, () => {
       migrate(oldStorage, new Set<string>()),
     ).resolves.toBeUndefined();
     expect(oldStorage.meta.version).toBe(VERSION);
+
+    jest.restoreAllMocks();
   });
 });
