@@ -207,6 +207,18 @@ describe('getEvmAccountsGroupedByWallet', () => {
       ).toStrictEqual(['Account 1', 'Ledger Account', 'Trezor Account']);
     });
 
+    it('keeps only the allowed hardware account', () => {
+      const result = getEvmAccountsGroupedByWallet(HARDWARE_WALLETS_MOCK, {
+        allowedHardwareAccountAddress: LEDGER_ADDRESS,
+      });
+
+      expect(
+        result.flatMap((wallet) =>
+          wallet.accounts.map((account) => account.name),
+        ),
+      ).toStrictEqual(['Account 1', 'Ledger Account']);
+    });
+
     const hardwareKeyringTypes = [
       KeyringTypes.ledger,
       KeyringTypes.trezor,

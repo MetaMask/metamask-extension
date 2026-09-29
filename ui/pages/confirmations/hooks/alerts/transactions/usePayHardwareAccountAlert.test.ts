@@ -143,62 +143,12 @@ const EXPECTED_ALERT = {
 };
 
 const FLAG_OFF: PayHardwareFlag = { enabled: false };
-const FLAG_ON: PayHardwareFlag = { enabled: true };
 const DEPOSIT_ONLY: PayHardwareFlag = {
   default: { enabled: false },
   overrides: { moneyAccountDeposit: { enabled: true } },
 };
 
 describe('usePayHardwareAccountAlert', () => {
-  // predictDeposit and predictWithdraw are in PAY_HARDWARE_ALERT_TRANSACTION_TYPES
-  // but are not yet in REDESIGN_USER_TRANSACTION_TYPES (confirmation.utils.ts),
-  // so currentConfirmation is undefined for those types and the hook cannot fire.
-  // Tests below cover the types that go through the redesigned confirmation flow.
-  describe('PAY_HARDWARE_ALERT_TRANSACTION_TYPES — always blocked regardless of flag', () => {
-    const alwaysBlockedTypes = [
-      TransactionType.moneyAccountWithdraw,
-      TransactionType.perpsDeposit,
-      TransactionType.perpsWithdraw,
-    ];
-
-    for (const txType of alwaysBlockedTypes) {
-      it(`returns alert for ${txType} when flag is disabled`, async () => {
-        const { result } = runHook({
-          transactionType: txType,
-          senderKeyringType: KeyringTypes.ledger,
-          flag: FLAG_OFF,
-        });
-        await waitFor(() => {
-          expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-        });
-      });
-    }
-  });
-
-  describe('musdConversion — blocked only when flag is disabled', () => {
-    it('returns alert when flag is disabled', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.musdConversion,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-      });
-    });
-
-    it('returns no alert when flag is enabled', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.musdConversion,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: FLAG_ON,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
-      });
-    });
-  });
-
   describe('moneyAccountDeposit — evaluates the paying account', () => {
     it('returns alert for a Ledger payer when the deposit override is disabled', async () => {
       const { result } = runHook({

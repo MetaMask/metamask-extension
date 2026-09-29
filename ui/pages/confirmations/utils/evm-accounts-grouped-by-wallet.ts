@@ -28,6 +28,10 @@ type GetEvmAccountsGroupedByWalletOptions = {
    * When true, omit QR hardware wallet accounts.
    */
   excludeQrAccounts?: boolean;
+  /**
+   * When set, omit hardware accounts other than this address.
+   */
+  allowedHardwareAccountAddress?: string | null;
 };
 
 /**
@@ -44,6 +48,7 @@ type GetEvmAccountsGroupedByWalletOptions = {
  * @param options - Filtering options.
  * @param options.excludeHardwareAccounts - Whether to omit hardware accounts.
  * @param options.excludeQrAccounts
+ * @param options.allowedHardwareAccountAddress
  * @returns Wallets with their eligible EVM accounts, preserving wallet order.
  */
 export function getEvmAccountsGroupedByWallet(
@@ -51,6 +56,7 @@ export function getEvmAccountsGroupedByWallet(
   {
     excludeHardwareAccounts = false,
     excludeQrAccounts = false,
+    allowedHardwareAccountAddress,
   }: GetEvmAccountsGroupedByWalletOptions = {},
 ): EvmWalletWithAccounts[] {
   return Object.values(wallets).reduce(
@@ -62,6 +68,13 @@ export function getEvmAccountsGroupedByWallet(
           (account) =>
             isEvmAccountType(account.type) &&
             !(excludeHardwareAccounts && isHardwareAccount(account)) &&
+            !(
+              allowedHardwareAccountAddress !== undefined &&
+              isHardwareAccount(account) &&
+              (!allowedHardwareAccountAddress ||
+                account.address.toLowerCase() !==
+                  allowedHardwareAccountAddress.toLowerCase())
+            ) &&
             !(
               excludeQrAccounts &&
               account.metadata?.keyring?.type === KeyringTypes.qr

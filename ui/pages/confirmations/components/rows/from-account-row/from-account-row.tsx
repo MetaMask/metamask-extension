@@ -209,6 +209,7 @@ export function FromAccountRow({
           title={isRecipientRow ? t('selectRecipient') : undefined}
           excludeHardwareAccounts={isHardwareBlocked}
           excludeQrAccounts={excludeQrAccounts}
+          restrictHardwareAccountsToSelected={excludeQrAccounts}
         />
       )}
     </>
