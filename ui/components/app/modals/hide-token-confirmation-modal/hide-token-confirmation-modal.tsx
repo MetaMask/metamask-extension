@@ -60,9 +60,11 @@ export function HideTokenConfirmationModal({
     );
 
     if (normalizedAssetId) {
-      dispatch(actions.hideAsset(normalizedAssetId)).catch((error) => {
-        console.error('Error hiding asset:', error);
-      });
+      Promise.resolve(dispatch(actions.hideAsset(normalizedAssetId))).catch(
+        (error: unknown) => {
+          console.error('Error hiding asset:', error);
+        },
+      );
     }
 
     onClose();
