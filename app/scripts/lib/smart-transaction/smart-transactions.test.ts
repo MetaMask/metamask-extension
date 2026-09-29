@@ -263,7 +263,7 @@ describe('submitSmartTransactionHook', () => {
 
   it('skips getting fees if the transaction is signed and sponsored', async () => {
     await withRequest(async ({ request, submitSignedTransactionsSpy }) => {
-      request.transactionMeta.isGasFeeSponsored = true;
+      request.isGasFeeSponsored = true;
       request.featureFlags.extensionReturnTxHashAsap = true;
 
       const result = await submitSmartTransactionHook(request);
