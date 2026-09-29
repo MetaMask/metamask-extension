@@ -31,8 +31,7 @@ export const DataCollectionToggleItem = () => {
   const { listNotifications } = useMetamaskNotificationsContext();
   const {
     preferences,
-    isLoading: isLoadingNotificationPreferences,
-    error: notificationPreferencesError,
+    ensurePreferences,
     refetchPreferences,
     updatePreferencesSection,
   } = useNotificationPreferences();
@@ -65,19 +64,27 @@ export const DataCollectionToggleItem = () => {
     [createEventBuilder, trackEvent],
   );
 
-  const handleToggle = (currentValue: boolean) => {
+  const handleToggle = async (currentValue: boolean) => {
     const newValue = !currentValue;
 
-    if (
-      !newValue &&
-      (preferences?.marketing?.pushNotificationsEnabled ||
-        preferences?.marketing?.inAppNotificationsEnabled ||
-        isLoadingNotificationPreferences ||
-        Boolean(notificationPreferencesError))
-    ) {
-      setError(null);
-      setIsConsentSheetOpen(true);
-      return;
+    if (!newValue) {
+      // Warn when Updates and rewards notifications rely on the consent, or
+      // when their state cannot be read. Turning off re-reads before writing.
+      let needsWarning = true;
+      try {
+        const marketing = (await ensurePreferences())?.marketing;
+        needsWarning = Boolean(
+          marketing?.pushNotificationsEnabled ||
+          marketing?.inAppNotificationsEnabled,
+        );
+      } catch {
+        // Unknown channel state; keep the warning.
+      }
+      if (needsWarning) {
+        setError(null);
+        setIsConsentSheetOpen(true);
+        return;
+      }
     }
 
     dispatch(setDataCollectionForMarketing(newValue));

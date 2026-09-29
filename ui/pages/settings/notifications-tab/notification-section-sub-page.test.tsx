@@ -145,6 +145,7 @@ describe('NotificationSectionSubPage', () => {
       isUpdatingPreferences: false,
       error: null,
       refetchPreferences: mockRefetchPreferences,
+      ensurePreferences: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -163,6 +164,7 @@ describe('NotificationSectionSubPage', () => {
       isUpdatingPreferences: false,
       error: null,
       refetchPreferences: jest.fn(),
+      ensurePreferences: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -508,6 +510,7 @@ describe('NotificationSectionSubPage', () => {
       isUpdatingPreferences: false,
       error: null,
       refetchPreferences: jest.fn(),
+      ensurePreferences: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -627,6 +630,7 @@ describe('NotificationSectionSubPage', () => {
         isUpdatingPreferences: false,
         error: null,
         refetchPreferences: mockRefetchPreferences,
+        ensurePreferences: jest.fn(),
         updatePreference: jest.fn(),
         updatePreferencesSection: jest.fn(),
       });
@@ -838,6 +842,7 @@ describe('NotificationSectionSubPage', () => {
         isUpdatingPreferences: false,
         error: null,
         refetchPreferences: mockRefetchPreferences,
+        ensurePreferences: jest.fn(),
         updatePreference: jest.fn(),
         updatePreferencesSection: jest.fn(),
       });
@@ -938,6 +943,7 @@ describe('NotificationSectionSubPage', () => {
         isUpdatingPreferences: false,
         error: null,
         refetchPreferences: jest.fn(),
+        ensurePreferences: jest.fn(),
         updatePreference,
         updatePreferencesSection: jest.fn(),
       });

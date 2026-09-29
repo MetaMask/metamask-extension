@@ -13,7 +13,7 @@ const mockSetDataCollectionForMarketing = jest.fn();
 const mockUpdatePreferencesSection = jest.fn();
 const mockRefetchPreferences = jest.fn();
 const mockListNotifications = jest.fn();
-let mockPreferencesLoading = false;
+const mockEnsurePreferences = jest.fn();
 let mockConsentWrite: () => Promise<void> = () => Promise.resolve();
 let mockMarketingPreferences = {
   pushNotificationsEnabled: false,
@@ -43,7 +43,7 @@ jest.mock(
   () => ({
     useNotificationPreferences: () => ({
       preferences: { marketing: mockMarketingPreferences },
-      isLoading: mockPreferencesLoading,
+      ensurePreferences: mockEnsurePreferences,
       refetchPreferences: mockRefetchPreferences,
       updatePreferencesSection: mockUpdatePreferencesSection,
     }),
@@ -87,9 +87,11 @@ describe('DataCollectionToggleItem', () => {
       pushNotificationsEnabled: false,
       inAppNotificationsEnabled: false,
     };
-    mockPreferencesLoading = false;
     mockUpdatePreferencesSection.mockResolvedValue(undefined);
     mockConsentWrite = () => Promise.resolve();
+    mockEnsurePreferences.mockImplementation(() =>
+      Promise.resolve({ marketing: mockMarketingPreferences }),
+    );
     mockRefetchPreferences.mockImplementation(() =>
       Promise.resolve({ data: { marketing: mockMarketingPreferences } }),
     );
@@ -152,51 +154,75 @@ describe('DataCollectionToggleItem', () => {
     expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
   });
 
-  it('calls setDataCollectionForMarketing with false when toggled off', () => {
+  it('calls setDataCollectionForMarketing with false when toggled off', async () => {
     const mockStore = createMockStore({ optedInToMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
+    await waitFor(() => {
+      expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+    });
     expect(
       screen.queryByTestId('marketing-consent-opt-out-sheet'),
     ).not.toBeInTheDocument();
-    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
   });
 
   it('allows opting out if notification preferences have not been created', async () => {
-    mockRefetchPreferences.mockResolvedValueOnce({ data: null, error: null });
+    mockEnsurePreferences.mockResolvedValueOnce(null);
     const store = createMockStore({ optedInToMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, store);
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
-    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+    await waitFor(() => {
+      expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+    });
     expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
-  it('allows opting out after a loading preference read returns no preferences', async () => {
-    mockPreferencesLoading = true;
-    mockRefetchPreferences.mockResolvedValueOnce({ data: null, error: null });
+  it('waits for an in-flight preference read instead of showing the warning', async () => {
+    let resolveRead: (value: null) => void = () => undefined;
+    mockEnsurePreferences.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveRead = resolve;
+      }),
+    );
     renderWithProvider(
       <DataCollectionToggleItem />,
       createMockStore({ optedInToMarketing: true }),
     );
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
-    fireEvent.click(
-      screen.getByTestId('marketing-consent-opt-out-sheet-confirm'),
-    );
+
+    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
+    resolveRead(null);
 
     await waitFor(() => {
       expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
-      expect(
-        screen.queryByTestId('marketing-consent-opt-out-sheet'),
-      ).not.toBeInTheDocument();
     });
+    expect(
+      screen.queryByTestId('marketing-consent-opt-out-sheet'),
+    ).not.toBeInTheDocument();
+    expect(mockRefetchPreferences).not.toHaveBeenCalled();
     expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
-  it('shows the opt-out warning without changing either preference when marketing notifications are enabled', () => {
+  it('shows the opt-out warning when the preference read failed', async () => {
+    mockEnsurePreferences.mockRejectedValueOnce(new Error('AUS unavailable'));
+    renderWithProvider(
+      <DataCollectionToggleItem />,
+      createMockStore({ optedInToMarketing: true }),
+    );
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    expect(
+      await screen.findByTestId('marketing-consent-opt-out-sheet'),
+    ).toBeInTheDocument();
+    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
+  });
+
+  it('shows the opt-out warning without changing either preference when marketing notifications are enabled', async () => {
     mockMarketingPreferences = {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: true,
@@ -207,13 +233,13 @@ describe('DataCollectionToggleItem', () => {
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
     expect(
-      screen.getByTestId('marketing-consent-opt-out-sheet'),
+      await screen.findByTestId('marketing-consent-opt-out-sheet'),
     ).toBeInTheDocument();
     expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
     expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
-  it('leaves preferences unchanged when the opt-out sheet is dismissed', () => {
+  it('leaves preferences unchanged when the opt-out sheet is dismissed', async () => {
     mockMarketingPreferences = {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: true,
@@ -223,7 +249,7 @@ describe('DataCollectionToggleItem', () => {
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
     fireEvent.click(
-      screen.getByTestId('marketing-consent-opt-out-sheet-cancel'),
+      await screen.findByTestId('marketing-consent-opt-out-sheet-cancel'),
     );
 
     expect(
@@ -243,7 +269,7 @@ describe('DataCollectionToggleItem', () => {
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
     fireEvent.click(
-      screen.getByTestId('marketing-consent-opt-out-sheet-confirm'),
+      await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
     );
 
     await waitFor(() => {
@@ -272,7 +298,7 @@ describe('DataCollectionToggleItem', () => {
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
     fireEvent.click(
-      screen.getByTestId('marketing-consent-opt-out-sheet-confirm'),
+      await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
     );
 
     await waitFor(() => {
@@ -300,7 +326,7 @@ describe('DataCollectionToggleItem', () => {
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
     fireEvent.click(
-      screen.getByTestId('marketing-consent-opt-out-sheet-confirm'),
+      await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
     );
 
     await waitFor(() => {
