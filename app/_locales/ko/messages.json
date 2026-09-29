@@ -8904,9 +8904,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "현재 일시적으로 매수 기능을 이용할 수 없습니다"
   },
-  "rampsShowAllTokens": {
-    "message": "모든 토큰 표시"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "이 토큰은 현재 지역에서 사용할 수 없습니다.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"

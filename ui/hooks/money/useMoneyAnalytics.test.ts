@@ -20,6 +20,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyOnboardingStepAction,
   MoneyRedirectTargetType,
   MoneyScreenName,
   MoneySurfaceType,
@@ -53,6 +54,7 @@ const mockState = {
       moneyAdd: { message: 'Add' },
       money: { message: 'Money' },
       moneyLearnMore: { message: 'Learn more' },
+      moneyOnboardingFundTitle: { message: 'Fund your Money account' },
     },
   },
 };
@@ -522,6 +524,33 @@ describe('useMoneyAnalytics', () => {
         component_name: MoneyComponentName.BalanceCard,
         tooltip_name: MoneyTooltipName.MoneyBalance,
         tooltip_type: MoneyTooltipType.Info,
+      });
+    });
+  });
+
+  describe('trackOnboardingEvent', () => {
+    it('tracks the step with its English title and derived redirect type', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.MoneyHome,
+        componentName: MoneyComponentName.OnboardingCard,
+      }).trackOnboardingEvent({
+        step: 1,
+        stepTitleKey: 'moneyOnboardingFundTitle',
+        totalSteps: 2,
+        stepAction: MoneyOnboardingStepAction.DepositInitiated,
+        redirectTarget: MoneyScreenName.MoneyDeposit,
+      });
+
+      expectEvent(MetaMetricsEventName.MoneyOnboardingEvent, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.MoneyHome,
+        component_name: MoneyComponentName.OnboardingCard,
+        step: 1,
+        step_title: 'Fund your Money account',
+        total_steps: 2,
+        step_action: MoneyOnboardingStepAction.DepositInitiated,
+        redirect_target: MoneyScreenName.MoneyDeposit,
+        redirect_target_type: MoneyRedirectTargetType.Screen,
       });
     });
   });

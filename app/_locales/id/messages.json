@@ -8904,9 +8904,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Pembelian tidak tersedia untuk sementara waktu"
   },
-  "rampsShowAllTokens": {
-    "message": "Tampilkan semua token"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Token ini tidak tersedia di wilayah Anda.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"

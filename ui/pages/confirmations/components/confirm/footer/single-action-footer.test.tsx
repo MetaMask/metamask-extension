@@ -83,6 +83,7 @@ function render({
     isBlocking?: boolean;
   }[],
   pathname,
+  isMoneyAccountPayEnabled = false,
 }: {
   isGaslessLoading?: boolean;
   confirmation?:
@@ -100,11 +101,24 @@ function render({
     isBlocking?: boolean;
   }[];
   pathname?: string;
+  isMoneyAccountPayEnabled?: boolean;
 } = {}) {
   const baseState = getMockConfirmStateForTransaction(confirmation);
 
   const state = {
     ...baseState,
+    metamask: {
+      ...baseState.metamask,
+      remoteFeatureFlags: {
+        ...baseState.metamask.remoteFeatureFlags,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay_extended: {
+          enableMoneyAccountTransactions: {
+            perpsDeposit: isMoneyAccountPayEnabled,
+          },
+        },
+      },
+    },
     confirmAlerts: {
       alerts: { [confirmation.id]: alerts },
       confirmed: {},
@@ -353,10 +367,22 @@ describe('<SingleActionFooter />', () => {
     const { getByTestId } = render({
       confirmation: genPerpsDeposit(),
       pathname: '/?payWithOption=money_account',
+      isMoneyAccountPayEnabled: true,
     });
 
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.send.message,
+    );
+  });
+
+  it('keeps the Add funds label when Money Account pay is not enabled for perps deposit', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      pathname: '/?payWithOption=money_account',
+    });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
     );
   });
 

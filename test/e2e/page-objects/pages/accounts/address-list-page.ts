@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { quoteXPathText } from '../../../../helpers/quoteXPathText';
+import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 
 /**
  * Multichain per-network address rows: copy, QR, and explorer links.
