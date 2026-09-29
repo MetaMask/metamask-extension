@@ -346,7 +346,8 @@
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/profile-sync-controller": "^33.0.0",
     "@metamask/account-tree-controller": "^11.0.0",
-    "@metamask/ramps-controller": "^22.0.0"
+    "@metamask/ramps-controller": "^22.0.0",
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@17.0.0-preview-3556501b4"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
