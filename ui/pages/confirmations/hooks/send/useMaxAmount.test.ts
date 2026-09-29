@@ -9,7 +9,7 @@ import {
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
-import { useMaxAmount } from './useMaxAmount';
+import { getEstimatedTotalGas, useMaxAmount } from './useMaxAmount';
 import { useBalance } from './useBalance';
 
 jest.mock('./useBalance');
@@ -85,6 +85,14 @@ describe('useMaxAmount', () => {
     } as unknown as MetaMaskReduxState);
 
     expect(result.getMaxAmount()).toEqual('1000');
+  });
+
+  it('return correct estimated total gas for eth_gasPrice estimates', () => {
+    const result = getEstimatedTotalGas('0x0', {
+      gasPrice: '0.001000263',
+    });
+
+    expect(result.toString()).toEqual('21005523000');
   });
 
   it('return 0 if balance of native asset is less than gas needed', () => {

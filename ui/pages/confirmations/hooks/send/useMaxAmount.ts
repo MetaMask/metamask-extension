@@ -18,9 +18,10 @@ const NATIVE_TRANSFER_GAS_LIMIT = 21000;
 const GWEI_TO_WEI_CONVERSION_RATE = 1e9;
 
 export type GasFeeEstimatesType = {
-  medium: {
-    suggestedMaxFeePerGas: number;
+  medium?: {
+    suggestedMaxFeePerGas: number | string;
   };
+  gasPrice?: number | string;
 };
 
 export const getEstimatedTotalGas = (
@@ -30,10 +31,15 @@ export const getEstimatedTotalGas = (
   if (!gasFeeEstimates) {
     return new Numeric('0', 10);
   }
-  const { medium: { suggestedMaxFeePerGas } = { suggestedMaxFeePerGas: 0 } } =
-    gasFeeEstimates;
+  const suggestedMaxFeePerGas =
+    gasFeeEstimates.medium?.suggestedMaxFeePerGas ?? gasFeeEstimates.gasPrice;
+
+  if (!suggestedMaxFeePerGas) {
+    return new Numeric('0', 10);
+  }
+
   const totalGas = new Numeric(
-    suggestedMaxFeePerGas * NATIVE_TRANSFER_GAS_LIMIT,
+    Number(suggestedMaxFeePerGas) * NATIVE_TRANSFER_GAS_LIMIT,
     10,
   );
   const conversionrate = new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10);
