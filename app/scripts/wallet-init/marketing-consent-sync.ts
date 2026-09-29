@@ -33,6 +33,52 @@ type SyncEvents =
 
 type SyncMessenger = RootMessenger<SyncActions, SyncEvents>;
 
+type ConsentSyncSession = {
+  lastSynced?: boolean;
+  pendingConsentUpdate?: { value: boolean };
+};
+
+function isConsentSyncReady(
+  authenticationState: Pick<AuthenticationControllerState, 'isSignedIn'>,
+  analyticsState: Pick<
+    AnalyticsControllerState,
+    'marketingConsentDecisionMade'
+  >,
+): boolean {
+  return (
+    authenticationState.isSignedIn === true &&
+    analyticsState.marketingConsentDecisionMade === true
+  );
+}
+
+/**
+ * Confirm AUS recorded the requested consent in the same signed-in session.
+ *
+ * @param expectedConsent - The consent value the caller asked to save.
+ * @param expectedSession - The session captured when the caller started waiting.
+ * @param session - The session that applies when the wait finishes.
+ * @param analyticsState - The local analytics state after the wait.
+ */
+function assertMarketingConsentSynced(
+  expectedConsent: boolean,
+  expectedSession: ConsentSyncSession,
+  session: ConsentSyncSession,
+  analyticsState: Pick<
+    AnalyticsControllerState,
+    'optedInToMarketing' | 'marketingConsentDecisionMade'
+  >,
+): void {
+  if (
+    expectedSession !== session ||
+    session.pendingConsentUpdate !== undefined ||
+    session.lastSynced !== expectedConsent ||
+    analyticsState.marketingConsentDecisionMade !== true ||
+    analyticsState.optedInToMarketing !== expectedConsent
+  ) {
+    throw new Error('Marketing consent was not saved to AUS');
+  }
+}
+
 function getCanonicalProfileId(
   srpSessionData: AuthenticationControllerState['srpSessionData'],
 ): string {
@@ -82,16 +128,11 @@ export function setupMarketingConsentSync({
   let authenticationState = syncMessenger.call(
     'AuthenticationController:getState',
   );
-  let session: {
-    lastSynced?: boolean;
-    pendingConsentUpdate?: { value: boolean };
-  } = {};
+  let session: ConsentSyncSession = {};
   let applyingRemote: { value: boolean } | undefined;
   let inFlight: Promise<void> | undefined;
 
-  const isReady = () =>
-    authenticationState.isSignedIn === true &&
-    analyticsState.marketingConsentDecisionMade === true;
+  const isReady = () => isConsentSyncReady(authenticationState, analyticsState);
 
   const reconcileWithAus = async (
     currentSession: typeof session,
@@ -209,21 +250,6 @@ export function setupMarketingConsentSync({
     });
   }
 
-  const assertMarketingConsentSynced = (
-    expectedConsent: boolean,
-    expectedSession: typeof session,
-  ) => {
-    if (
-      expectedSession !== session ||
-      session.pendingConsentUpdate !== undefined ||
-      session.lastSynced !== expectedConsent ||
-      analyticsState.marketingConsentDecisionMade !== true ||
-      analyticsState.optedInToMarketing !== expectedConsent
-    ) {
-      throw new Error('Marketing consent was not saved to AUS');
-    }
-  };
-
   syncMessenger.subscribe(
     'AuthenticationController:stateChange',
     (state: AuthenticationControllerState) => {
@@ -281,6 +307,11 @@ export function setupMarketingConsentSync({
     }
     const currentSession = session;
     await sync();
-    assertMarketingConsentSynced(expectedConsent, currentSession);
+    assertMarketingConsentSynced(
+      expectedConsent,
+      currentSession,
+      session,
+      analyticsState,
+    );
   };
 }
