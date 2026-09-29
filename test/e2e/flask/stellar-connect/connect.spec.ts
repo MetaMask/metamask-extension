@@ -6,7 +6,7 @@ import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import StellarWalletModal from '../../page-objects/pages/stellar-wallet-modal';
 import { withStellarWalletSnap } from './testHelpers';
 
-describe('Stellar - Connect - e2e tests', function () {
+describe('Stellar - Connect', function () {
   // The Stellar Snap only supports pubnet, so this suite intentionally does not
   // test switching to unsupported Stellar networks.
   it('Connects and displays the connected Stellar account', async function () {
