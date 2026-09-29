@@ -88,7 +88,7 @@ export const DataCollectionToggleItem = () => {
     <SettingsToggleItem
       title={t(PRIVACY_ITEMS['data-collection'])}
       description={description}
-      value={dataCollectionForMarketing}
+      value={dataCollectionForMarketing === true}
       onToggle={handleToggle}
       dataTestId="data-collection-for-marketing-input"
       containerDataTestId="data-collection-for-marketing-toggle"

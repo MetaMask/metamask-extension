@@ -55,6 +55,9 @@ const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
 const mockUseMoneyAccountDeposit = jest.mocked(useMoneyAccountDeposit);
 const mockInitiateDeposit = jest.fn();
 
+const PRIMARY_BUTTON_CLASS = 'bg-icon-default';
+const SECONDARY_BUTTON_CLASS = 'bg-muted';
+
 const MONEY_ADDRESS = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B' as const;
 
 type ArrangeOptions = {
@@ -175,7 +178,6 @@ describe('MoneyAccountBalance', () => {
     );
     expect(getByText(tEn('money'))).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
   });
 
   it('hides the balance when privacy mode is on', () => {
@@ -265,62 +267,72 @@ describe('MoneyAccountBalance', () => {
     });
   });
 
-  it('shows Add instead of the figure when the live balance is zero', () => {
+  it('shows the figure alongside a primary Add when the live balance is zero', () => {
     arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
 
-    const { getByTestId, queryByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(
-      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
-    ).toHaveTextContent(tEn('moneyAdd'));
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$0.00',
+    );
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      PRIMARY_BUTTON_CLASS,
+    );
   });
 
-  it('shows Add instead of $0.00 when the live balance is sub-cent dust', () => {
+  it('shows a primary Add when the live balance is sub-cent dust', () => {
     arrange({
       tokenTotal: new BigNumber('0.004'),
       totalFiatFormatted: '$0.00',
     });
 
-    const { getByTestId, queryByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(
-      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
-    ).toHaveTextContent(tEn('moneyAdd'));
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$0.00',
+    );
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      PRIMARY_BUTTON_CLASS,
+    );
   });
 
-  it('shows the figure rather than Add once the live balance reaches one cent', () => {
+  it('shows a secondary Add once the live balance reaches one cent', () => {
     arrange({
       tokenTotal: new BigNumber('0.01'),
       totalFiatFormatted: '$0.01',
     });
 
-    const { getByTestId, queryByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$0.01',
     );
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      SECONDARY_BUTTON_CLASS,
+    );
   });
 
-  it('keeps the masked figure rather than Add when privacy mode hides a zero balance', () => {
+  it('shows the masked figure alongside Add when privacy mode hides a zero balance', () => {
     arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
 
-    const { getByTestId, queryByTestId } = render({ privacyMode: true });
+    const { getByTestId } = render({ privacyMode: true });
 
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toBeInTheDocument();
     expect(
       getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID),
     ).not.toHaveTextContent('$0.00');
   });
 
-  it('keeps the last-known label rather than Add when the stale figure is zero', () => {
+  it('shows the last-known label alongside a secondary Add when the stale figure is zero', () => {
     arrange({ lastKnownTotalFiatFormatted: '$0.00' });
 
-    const { getByTestId, queryByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      SECONDARY_BUTTON_CLASS,
+    );
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$0.00',
     );

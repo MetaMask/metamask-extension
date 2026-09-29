@@ -137,21 +137,26 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
   }, [selectedChainId, enteredDomainName, input, dispatch]);
 
   useEffect(() => {
-    if (qrCodeData?.type === 'address' && qrCodeData?.values?.address) {
-      const scannedAddress = qrCodeData.values.address.toLowerCase();
-      const addresses = [
-        ...(domainResolutions?.map(
-          (r: { resolvedAddress: string }) => r.resolvedAddress,
-        ) ?? []),
-        selectedAddress,
-      ]
-        .filter(Boolean)
-        .map((addr: string) => addr.toLowerCase());
-      if (!addresses.includes(scannedAddress)) {
+    if (qrCodeData?.type !== 'address' || !qrCodeData?.values?.address) {
+      return;
+    }
+
+    const scannedAddress = qrCodeData.values.address.toLowerCase();
+    const addresses = [
+      ...(domainResolutions?.map(
+        (r: { resolvedAddress: string }) => r.resolvedAddress,
+      ) ?? []),
+      selectedAddress,
+    ]
+      .filter(Boolean)
+      .map((addr: string) => addr.toLowerCase());
+
+    if (!addresses.includes(scannedAddress)) {
+      queueMicrotask(() => {
         setInput(scannedAddress);
         validate(scannedAddress);
-        dispatch(qrCodeDetected(null as never));
-      }
+      });
+      dispatch(qrCodeDetected(null as never));
     }
   }, [qrCodeData, domainResolutions, selectedAddress, validate, dispatch]);
 

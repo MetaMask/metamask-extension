@@ -18,7 +18,10 @@ import {
 } from '@metamask/design-system-react';
 import { PopoverPosition } from '../../../component-library';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
+import {
+  selectMoneyBalanceShowMusdLabelEnabled,
+  selectMoneyHomeScreenCardEnabled,
+} from '../../../../selectors/money/money-account-feature-flags';
 import { isMoneyBalanceFunded } from '../../../../helpers/money/format';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
@@ -41,6 +44,8 @@ export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
   'money-account-balance-value';
 export const MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID =
   'money-account-balance-last-known';
+export const MONEY_ACCOUNT_BALANCE_MUSD_LABEL_TEST_ID =
+  'money-account-balance-musd-label';
 export const MONEY_ACCOUNT_BALANCE_APY_TEST_ID = 'money-account-balance-apy';
 export const MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID =
   'money-account-balance-apy-skeleton';
@@ -50,39 +55,20 @@ export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
 export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
   'money-account-balance-add-button';
 
-const AddOrBalance = ({
+const Balance = ({
   fiatBalance,
-  showAddButton,
   isLoading,
   privacyMode,
-  onAddClick,
-  isDepositLoading,
   isLastKnown,
+  showMusdLabel,
 }: {
   fiatBalance: string | undefined;
-  showAddButton: boolean;
   isLoading: boolean;
   privacyMode: boolean;
-  onAddClick: () => void;
-  isDepositLoading: boolean;
   isLastKnown: boolean;
+  showMusdLabel: boolean;
 }) => {
   const t = useI18nContext();
-
-  if (showAddButton) {
-    return (
-      <Button
-        size={ButtonSize.Md}
-        variant={ButtonVariant.Primary}
-        className="shrink-0"
-        isLoading={isDepositLoading}
-        data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={onAddClick}
-      >
-        {t('moneyAdd')}
-      </Button>
-    );
-  }
 
   return (
     <>
@@ -99,17 +85,33 @@ const AddOrBalance = ({
         // padding via -mb-4 so the row keeps its height when it appears.
         <Box
           flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.End}
+          alignItems={BoxAlignItems.Start}
           className={isLastKnown ? '-mb-4 shrink-0' : 'shrink-0'}
         >
-          <SensitiveText
-            variant={TextVariant.BodyMd}
-            isHidden={privacyMode}
-            fontWeight={FontWeight.Medium}
-            data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
           >
-            {fiatBalance}
-          </SensitiveText>
+            <SensitiveText
+              variant={TextVariant.HeadingMd}
+              isHidden={privacyMode}
+              fontWeight={FontWeight.Medium}
+              data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
+            >
+              {fiatBalance}
+            </SensitiveText>
+
+            {showMusdLabel ? (
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+                data-testid={MONEY_ACCOUNT_BALANCE_MUSD_LABEL_TEST_ID}
+              >
+                {t('moneyBalanceMusdLabel')}
+              </Text>
+            ) : null}
+          </Box>
 
           {isLastKnown ? (
             <Text
@@ -124,6 +126,34 @@ const AddOrBalance = ({
         </Box>
       )}
     </>
+  );
+};
+
+const Add = ({
+  onAddClick,
+  isDepositLoading,
+  moneyAccountEmpty,
+}: {
+  onAddClick: () => void;
+  isDepositLoading: boolean;
+  moneyAccountEmpty: boolean;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <Button
+      size={ButtonSize.Md}
+      variant={
+        // If the user has no balance this is a primary CTA
+        moneyAccountEmpty ? ButtonVariant.Primary : ButtonVariant.Secondary
+      }
+      className="shrink-0"
+      isLoading={isDepositLoading}
+      data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
+      onClick={onAddClick}
+    >
+      {t('moneyAdd')}
+    </Button>
   );
 };
 
@@ -182,6 +212,7 @@ export const MoneyAccountBalance = () => {
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
   const isHomeCardEnabled = useSelector(selectMoneyHomeScreenCardEnabled);
+  const showMusdLabel = useSelector(selectMoneyBalanceShowMusdLabelEnabled);
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const {
     tokenTotal,
@@ -207,9 +238,8 @@ export const MoneyAccountBalance = () => {
     isHomeCardEnabled &&
     hasMoneyAccount &&
     (fiatBalance !== undefined || isLoading);
-  const hasLiveUnfundedBalance =
+  const moneyAccountEmpty =
     tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
-  const showAddButton = hasLiveUnfundedBalance && !privacyMode;
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -257,7 +287,7 @@ export const MoneyAccountBalance = () => {
             text={t('money')}
             position={PopoverPosition.Auto}
             data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
-            variant={TextVariant.BodyMd}
+            variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             onOpen={handleInfoOpen}
@@ -288,7 +318,7 @@ export const MoneyAccountBalance = () => {
           ) : (
             apyPercentFormatted && (
               <Text
-                variant={TextVariant.BodyMd}
+                variant={TextVariant.BodySm}
                 fontWeight={FontWeight.Medium}
                 color={TextColor.SuccessDefault}
                 data-testid={MONEY_ACCOUNT_BALANCE_APY_TEST_ID}
@@ -298,15 +328,19 @@ export const MoneyAccountBalance = () => {
             )
           )}
         </Box>
+        <Balance
+          fiatBalance={fiatBalance}
+          isLoading={isLoading}
+          privacyMode={privacyMode}
+          isLastKnown={isLastKnown}
+          showMusdLabel={showMusdLabel}
+        />
       </Box>
-      <AddOrBalance
-        fiatBalance={fiatBalance}
-        showAddButton={showAddButton}
-        isLoading={isLoading}
-        privacyMode={privacyMode}
+
+      <Add
+        moneyAccountEmpty={moneyAccountEmpty}
         onAddClick={handleAddClick}
         isDepositLoading={isDepositLoading}
-        isLastKnown={isLastKnown}
       />
     </Box>
   );
