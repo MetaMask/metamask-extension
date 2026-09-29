@@ -25,7 +25,7 @@ import { useDispatch } from '../../../../store/hooks';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 
-export type HideToken = {
+type HideToken = {
   assetId?: string;
   symbol?: string;
   address: string;
@@ -53,18 +53,16 @@ export function HideTokenConfirmationModal({
   // EVM uses `address` which is hex, whereas non-EVM uses `assetId` which is a CAIP.
   const assetIdToUse = assetId || address;
 
-  const handleHideToken = async () => {
+  const handleHideToken = () => {
     const normalizedAssetId = toAssetId(
       assetIdToUse,
       tokenChainId as CaipChainId | Hex | undefined,
     );
 
     if (normalizedAssetId) {
-      try {
-        await dispatch(actions.hideAsset(normalizedAssetId));
-      } catch (error) {
+      dispatch(actions.hideAsset(normalizedAssetId)).catch((error) => {
         console.error('Error hiding asset:', error);
-      }
+      });
     }
 
     onClose();
