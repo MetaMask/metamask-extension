@@ -99,6 +99,7 @@ describe('AssetMarketDetails', () => {
             circulatingSupply: mockCirculatingSupply,
             allTimeHigh: 100,
             allTimeLow: 10,
+            dilutedMarketCap: 80000,
           },
         },
       })
@@ -127,6 +128,8 @@ describe('AssetMarketDetails', () => {
     expect(getByText(messages.circulatingSupply.message)).toBeInTheDocument();
     expect(getByText(messages.allTimeHigh.message)).toBeInTheDocument();
     expect(getByText(messages.allTimeLow.message)).toBeInTheDocument();
+    expect(getByText(messages.volumeToMarketCap.message)).toBeInTheDocument();
+    expect(getByText(messages.fullyDiluted.message)).toBeInTheDocument();
   });
 
   it('should correctly multiply market cap by exchange rate for EVM tokens', () => {
@@ -157,6 +160,26 @@ describe('AssetMarketDetails', () => {
 
     // Verify it's NOT the multiplied value (15B * 1000 = 15T)
     expect(circulatingSupplyRow).not.toHaveTextContent('15000.00B');
+  });
+
+  it('derives volume to market cap from volume and market cap', () => {
+    const { getByTestId } = renderWithI18n(
+      <AssetMarketDetails asset={evmAsset} address="0xTokenAddress" />,
+    );
+
+    // 1,000 / 50,000 = 2%, unchanged by the exchange rate
+    expect(getByTestId('asset-volume-to-market-cap')).toHaveTextContent(
+      '2.00%',
+    );
+  });
+
+  it('multiplies fully diluted value by the exchange rate for EVM tokens', () => {
+    const { getByTestId } = renderWithI18n(
+      <AssetMarketDetails asset={evmAsset} address="0xTokenAddress" />,
+    );
+
+    // 80,000 * 1,000 = 80,000,000 -> $80.00M
+    expect(getByTestId('asset-fully-diluted')).toHaveTextContent('$80.00M');
   });
 
   it('should multiply allTimeHigh and allTimeLow by exchange rate for EVM tokens', () => {

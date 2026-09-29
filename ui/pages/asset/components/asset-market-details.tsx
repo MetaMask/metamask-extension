@@ -45,7 +45,11 @@ export const AssetMarketDetails = ({
   const evmMarketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
-  const { formatCurrencyCompact, formatCompact } = useFormatters();
+  const {
+    formatCurrencyCompact,
+    formatCompact,
+    formatPercentWithMinThreshold,
+  } = useFormatters();
 
   const isEvm = isEvmChainId(asset.chainId);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
@@ -78,6 +82,10 @@ export const AssetMarketDetails = ({
     ? evmMarketData[chainId]?.[address as Hex]
     : nonEvmMarketData;
 
+  const rawDilutedMarketCap = (
+    tokenMarketDetails as { dilutedMarketCap?: string | number } | undefined
+  )?.dilutedMarketCap;
+
   const shouldDisplayMarketData =
     Number(conversionRate) > 0 &&
     tokenMarketDetails &&
@@ -85,7 +93,8 @@ export const AssetMarketDetails = ({
       Number(tokenMarketDetails.totalVolume) > 0 ||
       Number(tokenMarketDetails.circulatingSupply) > 0 ||
       Number(tokenMarketDetails.allTimeHigh) > 0 ||
-      Number(tokenMarketDetails.allTimeLow) > 0);
+      Number(tokenMarketDetails.allTimeLow) > 0 ||
+      Number(rawDilutedMarketCap) > 0);
 
   if (!shouldDisplayMarketData) {
     return null;
@@ -103,13 +112,18 @@ export const AssetMarketDetails = ({
   const circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
   let allTimeHigh = toNumber(tokenMarketDetails.allTimeHigh);
   let allTimeLow = toNumber(tokenMarketDetails.allTimeLow);
+  let fullyDiluted = toNumber(rawDilutedMarketCap);
 
   if (isEvm) {
     marketCap *= tokenExchangeRate;
     totalVolume *= tokenExchangeRate;
     allTimeHigh *= tokenExchangeRate;
     allTimeLow *= tokenExchangeRate;
+    fullyDiluted *= tokenExchangeRate;
   }
+
+  const volumeToMarketCap =
+    marketCap > 0 && totalVolume > 0 ? totalVolume / marketCap : 0;
 
   return (
     <Box>
@@ -149,6 +163,16 @@ export const AssetMarketDetails = ({
               {formatCurrencyCompact(totalVolume, currency)}
             </Text>,
           )}
+        {volumeToMarketCap > 0 &&
+          renderRow(
+            t('volumeToMarketCap'),
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              data-testid="asset-volume-to-market-cap"
+            >
+              {formatPercentWithMinThreshold(volumeToMarketCap)}
+            </Text>,
+          )}
         {circulatingSupply > 0 &&
           renderRow(
             t('circulatingSupply'),
@@ -176,6 +200,16 @@ export const AssetMarketDetails = ({
                 currency,
                 getPricePrecision(allTimeLow),
               )}
+            </Text>,
+          )}
+        {fullyDiluted > 0 &&
+          renderRow(
+            t('fullyDiluted'),
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              data-testid="asset-fully-diluted"
+            >
+              {formatCurrencyCompact(fullyDiluted, currency)}
             </Text>,
           )}
       </Box>
