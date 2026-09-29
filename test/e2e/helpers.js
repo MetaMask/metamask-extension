@@ -8,7 +8,10 @@ const { difference } = require('lodash');
 // eslint-disable-next-line no-redeclare
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
-const { setupMocking } = require('./mock-e2e');
+const {
+  setupMocking,
+  fixturesDisableBasicFunctionalityConsolidation,
+} = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
@@ -512,6 +515,8 @@ async function withFixtures(options, testSuite) {
       ethConversionInUsd,
       monConversionInUsd,
       unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
+      disableBasicFunctionalityConsolidation:
+        fixturesDisableBasicFunctionalityConsolidation(fixtures),
     });
 
     if ((await detectPort(8000)) !== 8000) {

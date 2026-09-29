@@ -688,6 +688,85 @@ function buildUnifiedEvmAccountsApiBalances(
  * @typedef {import('mockttp').MockedEndpoint} MockedEndpoint
  */
 
+const DISABLED_EXTENSION_BASIC_FUNCTIONALITY_TOGGLE = {
+  enabled: false,
+  minimumVersion: '99.0.0',
+};
+
+/**
+ * Production `/v1/flags` payload with `extensionBasicFunctionalityToggle` forced
+ * off so tests can keep the pre-consolidation settings surfaces.
+ *
+ * @returns {import('@metamask/utils').Json[]}
+ */
+function getProductionFlagsWithBasicFunctionalityConsolidationDisabled() {
+  return getProductionRemoteFlagApiResponse().map((entry) => {
+    if (
+      entry &&
+      typeof entry === 'object' &&
+      'extensionBasicFunctionalityToggle' in entry
+    ) {
+      return {
+        extensionBasicFunctionalityToggle:
+          DISABLED_EXTENSION_BASIC_FUNCTIONALITY_TOGGLE,
+      };
+    }
+    if (
+      entry &&
+      typeof entry === 'object' &&
+      'backendWebSocketConnection' in entry
+    ) {
+      return { backendWebSocketConnection: true };
+    }
+    return entry;
+  });
+}
+
+/**
+ * Registers a DEFAULT-priority `/v1/flags` mock that beats the production
+ * FALLBACK and keeps Basic Functionality consolidation off for the test.
+ *
+ * @param {Mockttp} server - The mock server used for network mocks.
+ * @returns {Promise<MockedEndpoint>}
+ */
+async function mockBasicFunctionalityConsolidationDisabledFlags(server) {
+  return server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: getProductionFlagsWithBasicFunctionalityConsolidationDisabled(),
+      };
+    });
+}
+
+/**
+ * True when the fixture used `withBasicFunctionalityConsolidationDisabled()`.
+ *
+ * @param {object | undefined} fixtures - Built fixture payload from FixtureBuilderV2.
+ * @returns {boolean}
+ */
+function fixturesDisableBasicFunctionalityConsolidation(fixtures) {
+  const isConsolidated =
+    fixtures?.data?.PreferencesController?.preferences
+      ?.isBasicFunctionalityConsolidatedEnabled;
+  const toggle =
+    fixtures?.data?.RemoteFeatureFlagController?.remoteFeatureFlags
+      ?.extensionBasicFunctionalityToggle;
+
+  return (
+    isConsolidated === false &&
+    Boolean(toggle) &&
+    typeof toggle === 'object' &&
+    toggle.enabled === false
+  );
+}
+
 /**
  * @typedef {object} SetupMockReturn
  * @property {MockedEndpoint} mockedEndpoint - If a testSpecificMock was provided, returns the mockedEndpoint
@@ -703,6 +782,7 @@ function buildUnifiedEvmAccountsApiBalances(
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010.
  * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state). See UnifiedEvmAccountsApiBalances typedef in helpers.js.
+ * @param {boolean} [options.disableBasicFunctionalityConsolidation] - When true, overrides `/v1/flags` so consolidation stays off.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
@@ -712,6 +792,7 @@ async function setupMocking(
     chainId,
     ethConversionInUsd = 3010,
     unifiedEvmAccountsApiBalances = {},
+    disableBasicFunctionalityConsolidation = false,
   } = {},
 ) {
   let numNetworkReqs = 0;
@@ -759,6 +840,10 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
+
+  if (disableBasicFunctionalityConsolidation) {
+    await mockBasicFunctionalityConsolidationDisabledFlags(server);
+  }
 
   // Snaps execution ACL registry
   await setupSnapRegistryMocks(server);
@@ -2897,4 +2982,10 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking, emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES };
+module.exports = {
+  setupMocking,
+  emptyHtmlPage,
+  MOCK_SUGGESTED_GAS_FEES,
+  mockBasicFunctionalityConsolidationDisabledFlags,
+  fixturesDisableBasicFunctionalityConsolidation,
+};

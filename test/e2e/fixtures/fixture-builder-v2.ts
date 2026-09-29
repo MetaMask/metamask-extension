@@ -1650,6 +1650,13 @@ class FixtureBuilderV2 {
       preferences: {
         isBasicFunctionalityConsolidatedEnabled: false,
       },
+    }).withRemoteFeatureFlagController({
+      remoteFeatureFlags: {
+        extensionBasicFunctionalityToggle: {
+          enabled: false,
+          minimumVersion: '99.0.0',
+        },
+      },
     });
   }
 
