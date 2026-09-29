@@ -17,9 +17,6 @@ export const mockStellarFeatureFlag = (mockServer: Mockttp) =>
         json: [
           {
             stellarAccounts: { enabled: true, minimumVersion: '0.0.1' },
-            sendRedesign: {
-              enabled: false,
-            },
           },
         ],
       };
