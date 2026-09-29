@@ -384,7 +384,10 @@ export const ClosePositionModal = ({
   // Abandon-order tracking state: latest form snapshot, a stable reader for it,
   // and the commit flag that suppresses the event once a close is submitted.
   const latestAbandonPropsRef = useRef<Record<string, Json>>({});
-  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const getAbandonProperties = useCallback(
+    () => latestAbandonPropsRef.current,
+    [],
+  );
   const hasConfirmedCloseRef = useRef(false);
 
   // Which control the trader last used to set the close amount. Mirrors mobile:
@@ -504,7 +507,7 @@ export const ClosePositionModal = ({
     closeNotionalUsd,
   ]);
   usePerpsAbandonOrderTracking({
-    getAbandonProperties: getAbandonProperties.current,
+    getAbandonProperties,
     hasCommittedRef: hasConfirmedCloseRef,
     active: isOpen,
   });

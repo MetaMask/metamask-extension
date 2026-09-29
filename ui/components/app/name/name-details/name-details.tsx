@@ -239,12 +239,31 @@ export default function NameDetails({
   });
 
   const nameSources = useSelector(getNameSources);
-  const [name, setName] = useState('');
-  const [openMetricSent, setOpenMetricSent] = useState(false);
-  const [selectedSourceId, setSelectedSourceId] = useState<string>();
-  const [selectedSourceName, setSelectedSourceName] = useState<string>();
+  const [name, setName] = useState(savedPetname ?? '');
+  const openMetricSentRef = useRef(false);
+  const [selectedSourceId, setSelectedSourceId] = useState<string | undefined>(
+    savedSourceId ?? undefined,
+  );
+  const [selectedSourceName, setSelectedSourceName] = useState<
+    string | undefined
+  >(savedSourceId ? (savedPetname ?? undefined) : undefined);
+  const [prevSavedPetname, setPrevSavedPetname] = useState(savedPetname);
+  const [prevSavedSourceId, setPrevSavedSourceId] = useState(savedSourceId);
   const dispatch = useDispatch();
   const t = useI18nContext();
+
+  if (
+    savedPetname !== prevSavedPetname ||
+    savedSourceId !== prevSavedSourceId
+  ) {
+    setPrevSavedPetname(savedPetname);
+    setPrevSavedSourceId(savedSourceId);
+    setName(savedPetname ?? '');
+    setSelectedSourceId(savedSourceId ?? undefined);
+    setSelectedSourceName(
+      savedSourceId ? (savedPetname ?? undefined) : undefined,
+    );
+  }
 
   const formattedValue = formatValue(value, type);
 
@@ -255,17 +274,7 @@ export default function NameDetails({
   );
 
   // useCopyToClipboard analysis: Copies the public address of the name
-  const [copiedAddress, handleCopyAddress] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
-
-  useEffect(() => {
-    setName(savedPetname ?? '');
-    setSelectedSourceId(savedSourceId ?? undefined);
-    setSelectedSourceName(
-      savedSourceId ? (savedPetname ?? undefined) : undefined,
-    );
-  }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
+  const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
 
   const proposedNameOptions = useMemo(
     () => generateComboOptions(proposedNames, t, nameSources),
@@ -285,11 +294,11 @@ export default function NameDetails({
   );
 
   useEffect(() => {
-    if (initialSources && !openMetricSent) {
+    if (initialSources && !openMetricSentRef.current) {
       trackPetnamesOpenEvent();
-      setOpenMetricSent(true);
+      openMetricSentRef.current = true;
     }
-  }, [initialSources, openMetricSent, trackPetnamesOpenEvent]);
+  }, [initialSources, trackPetnamesOpenEvent]);
 
   const handleSaveClick = useCallback(async () => {
     trackPetnamesSaveEvent();

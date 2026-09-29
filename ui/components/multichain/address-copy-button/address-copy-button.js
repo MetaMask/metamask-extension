@@ -24,7 +24,7 @@ function AddressCopyButton({ address, shorten = false, wrap = false }) {
     : checksummedAddress;
 
   // useCopyToClipboard analysis: Copies a public address
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const t = useI18nContext();
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');

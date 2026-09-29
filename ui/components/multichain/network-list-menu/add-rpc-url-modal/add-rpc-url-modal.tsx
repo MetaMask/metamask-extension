@@ -3,13 +3,13 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  HelpText,
+  HelpTextSeverity,
 } from '@metamask/design-system-react';
 import {
   Box,
   FormTextField,
   FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
 } from '../../../component-library';
 import {
   BackgroundColor,

@@ -15,6 +15,7 @@ import type {
   DeFiPositionsControllerV2State,
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -77,6 +78,12 @@ import type { AppMetadataControllerState } from '../../app/scripts/controllers/a
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
 
 export type ControllerStatePropertiesEnumerated = {
+  assetsInfo: AssetsControllerState['assetsInfo'];
+  assetsBalance: AssetsControllerState['assetsBalance'];
+  assetsPrice: AssetsControllerState['assetsPrice'];
+  customAssets: AssetsControllerState['customAssets'];
+  assetPreferences: AssetsControllerState['assetPreferences'];
+  selectedCurrency: AssetsControllerState['selectedCurrency'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -152,6 +159,7 @@ export type ControllerStatePropertiesEnumerated = {
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
   passkeyAutoUnlockSuppressed: AppStateControllerState['passkeyAutoUnlockSuppressed'];
+  lastShownPrfMigrationReminderAt: AppStateControllerState['lastShownPrfMigrationReminderAt'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -191,12 +199,13 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
   consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
+  marketingConsentDecisionMade?: AnalyticsControllerState['marketingConsentDecisionMade'];
   preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
   optedIn: AnalyticsControllerState['optedIn'];
+  optedInToMarketing?: AnalyticsControllerState['optedInToMarketing'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
-  marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
+  marketingCampaignCookieId?: AnalyticsControllerState['marketingCampaignCookieId'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
   metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
@@ -340,6 +349,7 @@ export type ControllerStatePropertiesEnumerated = {
 export type ControllerStateTypesMerged = AccountsControllerState &
   AccountTrackerControllerState &
   AddressBookControllerState &
+  AssetsControllerState &
   AlertControllerState &
   AnnouncementControllerState &
   AuthenticationController.AuthenticationControllerState &
