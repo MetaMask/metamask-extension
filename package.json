@@ -327,7 +327,7 @@
     "nanoid@npm:3.3.3": "^3.3.18",
     "protobufjs": "^7.6.5",
     "tmp": "^0.2.7",
-    "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
+    "jiti@npm:^2.5.1": "npm:npm-empty-package@1.0.0",
     "esbuild": "0.28.1",
     "valibot": "^1.4.2",
     "@metamask/snaps-controllers": "^21.1.1",
