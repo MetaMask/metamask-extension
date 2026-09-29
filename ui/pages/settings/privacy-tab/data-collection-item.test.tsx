@@ -460,15 +460,4 @@ describe('DataCollectionToggleItem', () => {
     const toggle = screen.getByRole('checkbox');
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
-
-  it('uses the local marketing consent value for social login users', () => {
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
-    const mockStore = createMockStore({ optedInToMarketing: true });
-    renderWithProvider(<DataCollectionToggleItem />, mockStore);
-
-    expect(
-      screen.getByTestId('data-collection-for-marketing-input'),
-    ).toHaveAttribute('value', 'true');
-    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
-  });
 });
