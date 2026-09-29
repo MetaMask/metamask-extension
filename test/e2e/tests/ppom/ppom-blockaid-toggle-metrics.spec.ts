@@ -38,7 +38,7 @@ async function mockServerCalls(mockServer: Mockttp) {
 }
 
 describe('PPOM Blockaid Alert - Metrics', function () {
-  it('Successfully track button toggle on/off', async function () {
+  it('tracks Settings Updated when basic functionality is turned off', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },

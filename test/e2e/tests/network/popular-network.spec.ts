@@ -180,7 +180,7 @@ describe('Popular Networks', function (this: Suite) {
     );
   });
 
-  it("when the network details validation toggle is turned off, don't validate user inserted details", async function () {
+  it("when basic functionality is turned off, don't validate user inserted details", async function () {
     async function mockRPCURLAndChainId(mockServer: MockttpServer) {
       return [
         await mockServer

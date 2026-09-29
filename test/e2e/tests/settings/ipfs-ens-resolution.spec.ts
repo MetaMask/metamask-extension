@@ -93,7 +93,7 @@ describe('Settings', function () {
     );
   });
 
-  it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
+  it('Does not fetch ENS data for ENS Domain when basic functionality is switched off', async function () {
     async function ensDomainPassthrough(
       mockServer: MockttpServer,
     ): Promise<MockedEndpoint[]> {

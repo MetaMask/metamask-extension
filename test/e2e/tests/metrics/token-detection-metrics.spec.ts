@@ -107,7 +107,7 @@ describe('Token detection event', function () {
     );
   });
 
-  it('sends Settings Updated when basic functionality turns token detection off', async function () {
+  it('sends Settings Updated when basic functionality is turned off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()

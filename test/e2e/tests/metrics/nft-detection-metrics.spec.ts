@@ -110,7 +110,7 @@ describe('Nft detection event', function () {
     );
   });
 
-  it('sends Settings Updated when basic functionality turns NFT autodetection off', async function () {
+  it('sends Settings Updated when basic functionality is turned off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()

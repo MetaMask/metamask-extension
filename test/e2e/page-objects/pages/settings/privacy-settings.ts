@@ -531,16 +531,16 @@ class PrivacySettings {
     await this.driver.clickElement(this.autoDetectToken);
   }
 
-  async toggleBasicFunctionalityOff(): Promise<void> {
-    console.log('Toggle basic functionality off on privacy settings page');
+  async toggleBasicFunctionality(): Promise<void> {
+    console.log('Toggle basic functionality on privacy settings page');
     await this.driver.clickElement(this.basicFunctionalityToggle);
-    await this.driver.clickElement(this.basicConfigurationCheckbox);
-    await this.driver.clickElement(this.basicConfigurationModalToggleButton);
   }
 
-  async toggleBasicFunctionalityOn(): Promise<void> {
-    console.log('Toggle basic functionality on on privacy settings page');
-    await this.driver.clickElement(this.basicFunctionalityToggle);
+  async toggleBasicFunctionalityOff(): Promise<void> {
+    console.log('Toggle basic functionality off on privacy settings page');
+    await this.toggleBasicFunctionality();
+    await this.driver.clickElement(this.basicConfigurationCheckbox);
+    await this.driver.clickElement(this.basicConfigurationModalToggleButton);
   }
 
   async toggleBlockaidAlerts(): Promise<void> {
