@@ -14781,10 +14781,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:5.101.4":
-  version: 5.101.4
-  resolution: "@tanstack/query-core@npm:5.101.4"
-  checksum: 10/df86031035ac9a5cf54efece85718b90e93fca62068a44a176da232b6dd49b27168840f2da18c64a0eb25d171bc3fb1aab417db4643025cd194ff887833bd73f
+"@tanstack/query-core@npm:5.103.2":
+  version: 5.103.2
+  resolution: "@tanstack/query-core@npm:5.103.2"
+  checksum: 10/f19ea502e50fd4d0241fc6796d9303637666ce139b751c875eb9f1680278f20bce2dc95d9fbab30f3a997a456e02f9760e6ce9e4e58db71e256591e77bbc65c9
   languageName: node
   linkType: hard
 
