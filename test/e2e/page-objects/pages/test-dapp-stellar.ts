@@ -44,11 +44,17 @@ export class TestDappStellar {
     testId: dataTestIds.testPage.signAuthEntry.authEntry,
   };
 
-  private readonly signedAuthEntrySelector = `[data-testid="${dataTestIds.testPage.signAuthEntry.signedAuthEntry}"]:not(:empty)`;
+  private readonly signedAuthEntrySelector = {
+    testId: dataTestIds.testPage.signAuthEntry.signedAuthEntry,
+  };
 
-  private readonly signedMessageSelector = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]:not(:empty)`;
+  private readonly signedMessageSelector = {
+    testId: dataTestIds.testPage.signMessage.signedMessage,
+  };
 
-  private readonly signedTransactionSelector = `[data-testid="${dataTestIds.testPage.signTransaction.signedTransaction}"]:not(:empty)`;
+  private readonly signedTransactionSelector = {
+    testId: dataTestIds.testPage.signTransaction.signedTransaction,
+  };
 
   private readonly signMessageButtonSelector = {
     testId: dataTestIds.testPage.signMessage.signMessage,
@@ -62,8 +68,8 @@ export class TestDappStellar {
     testId: dataTestIds.testPage.signTransaction.signTransaction,
   };
 
-  private readonly transactionExampleXdrButtonSelector = {
-    testId: dataTestIds.testPage.signTransaction.loadExampleXdr,
+  private readonly transactionXdrInputSelector = {
+    testId: dataTestIds.testPage.signTransaction.xdr,
   };
 
   constructor(driver: Driver) {
@@ -108,31 +114,6 @@ export class TestDappStellar {
     );
   }
 
-  async getSignedAuthEntry(): Promise<string> {
-    const signedAuthEntryElement = await this.driver.waitForSelector(
-      this.signedAuthEntrySelector,
-    );
-    return signedAuthEntryElement.getText();
-  }
-
-  async getSignedMessage(): Promise<string> {
-    const signedMessageElement = await this.driver.waitForSelector(
-      this.signedMessageSelector,
-    );
-    return signedMessageElement.getText();
-  }
-
-  async getSignedTransaction(): Promise<string> {
-    const signedTransactionElement = await this.driver.waitForSelector(
-      this.signedTransactionSelector,
-    );
-    return signedTransactionElement.getText();
-  }
-
-  async loadExampleXdr() {
-    await this.driver.clickElement(this.transactionExampleXdrButtonSelector);
-  }
-
   async openTestDappPage({
     url = DAPP_URL,
   }: {
@@ -148,6 +129,10 @@ export class TestDappStellar {
 
   async setMessage(message: string) {
     await this.driver.fill(this.signMessageInputSelector, message);
+  }
+
+  async setTransaction(transaction: string) {
+    await this.driver.fill(this.transactionXdrInputSelector, transaction);
   }
 
   async signAuthEntry() {
@@ -171,5 +156,26 @@ export class TestDappStellar {
     await this.driver.waitForSelector(
       this.selectedNetworkOptionSelector(networkKey),
     );
+  }
+
+  async verifySignedAuthEntry(expectedAuthEntry: string) {
+    await this.driver.waitForSelector({
+      ...this.signedAuthEntrySelector,
+      text: expectedAuthEntry,
+    });
+  }
+
+  async verifySignedMessage(expectedMessage: string) {
+    await this.driver.waitForSelector({
+      ...this.signedMessageSelector,
+      text: expectedMessage,
+    });
+  }
+
+  async verifySignedTransaction(expectedTransaction: string) {
+    await this.driver.waitForSelector({
+      ...this.signedTransactionSelector,
+      text: expectedTransaction,
+    });
   }
 }
