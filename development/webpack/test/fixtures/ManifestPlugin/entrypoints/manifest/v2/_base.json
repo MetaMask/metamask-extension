@@ -15,5 +15,5 @@
   ],
   "description": "MV2 test manifest",
   "manifest_version": 2,
-  "web_accessible_resources": ["images/icon.png", "testing.js"]
+  "web_accessible_resources": ["images/icon.png", "testing.js", "widget.html"]
 }

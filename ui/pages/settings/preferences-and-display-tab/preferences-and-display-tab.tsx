@@ -75,7 +75,15 @@ const ShowTickerWidgetItem = createToggleItem({
   selector: selectShowTickerWidget,
   action: setShowTickerWidget,
   dataTestId: 'show-ticker-widget',
-  trackEventProperty: 'show_metamask_widget_on_x',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      /* eslint-disable @typescript-eslint/naming-convention */
+      show_metamask_widget_on_x: newValue,
+      /* eslint-enable @typescript-eslint/naming-convention */
+      location: 'settings',
+    }),
+  },
 });
 
 const ManageInstitutionalWalletItem = createToggleItem({

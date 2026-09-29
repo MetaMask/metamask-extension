@@ -72,6 +72,12 @@ import {
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
+import {
+  createCashtagWidgetDefinition,
+  registerCashtagBackgroundBridge,
+} from './cashtag/background';
+import { registerWidgetBackgroundBridge } from './widgets/background';
+import { WIDGETS } from './widgets/protocol';
 
 import NotificationManager from './lib/notification-manager';
 import MetamaskController from './metamask-controller';
@@ -674,6 +680,14 @@ async function initialize(backup) {
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
+
+  // Register widget frame authorization once, then the X content-script API.
+  registerWidgetBackgroundBridge({
+    [WIDGETS.Cashtag.id]: createCashtagWidgetDefinition(() => controller),
+  });
+  registerCashtagBackgroundBridge({
+    getController: () => controller,
+  });
 
   // Set up connectivity detection
   if (isManifestV3) {
