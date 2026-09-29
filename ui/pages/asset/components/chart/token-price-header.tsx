@@ -186,7 +186,7 @@ const PercentChangeDisplay = ({
  * the percentage change. This component is data-agnostic and can be used
  * with both legacy historical price data and OHLCV data.
  *
- * Unlike AssetChartPrice, this component:
+ * This component:
  * - Does NOT use imperative refs for hover updates
  * - Does NOT fetch its own data
  * - Accepts pre-computed percentChange directly

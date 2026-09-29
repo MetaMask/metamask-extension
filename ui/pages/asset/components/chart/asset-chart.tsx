@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   Chart,
   LineElement,
@@ -40,7 +40,6 @@ import { finiteFallback, loadingOpacity } from '../../util';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
-import AssetChartPrice from './asset-chart-price';
 import { getAmbientColor } from './chart-theme-config';
 
 Chart.register(
@@ -155,13 +154,6 @@ const getTranslatedTimeRangeLabel = (
 
 const TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P10Y'];
 
-/**
- * TODO: Refactor to decouple price header from chart visualization.
- * Currently AssetChart is a self-contained component with its own price header
- * (AssetChartPrice). When used in advanced charts line mode, we hide the internal
- * header and use TokenPriceHeader from the parent for consistent real-time display.
- * Consider extracting the chart-only portion as a separate component.
- */
 type AssetChartProps = {
   chainId: Hex;
   address: string;
@@ -178,11 +170,6 @@ type AssetChartProps = {
    */
   hideTimeRangeSelector?: boolean;
   /**
-   * When true, hides the internal price header (AssetChartPrice).
-   * Used when the parent provides its own price header (e.g., TokenPriceHeader).
-   */
-  hidePriceHeader?: boolean;
-  /**
    * Real-time price from OHLCV WebSocket to update the last data point.
    * When provided, the chart's end-dot will reflect real-time price movement.
    */
@@ -191,6 +178,11 @@ type AssetChartProps = {
    * Timestamp for the real-time price (milliseconds since epoch).
    */
   realtimeTimestamp?: number;
+  /**
+   * When provided, overrides the internally-computed ambient chart color.
+   * Used when the parent has a more authoritative color source (e.g., OHLCV data).
+   */
+  chartColor?: string;
 };
 
 // A chart showing historic prices for a native or token asset
@@ -201,9 +193,9 @@ const AssetChart = ({
   currency,
   controlledTimeRange,
   hideTimeRangeSelector = false,
-  hidePriceHeader = false,
   realtimePrice,
   realtimeTimestamp,
+  chartColor: chartColorOverride,
 }: AssetChartProps) => {
   const t = useI18nContext();
   const theme = useTheme();
@@ -282,20 +274,21 @@ const AssetChart = ({
     return Math.max(yMax, realtimePrice);
   }, [yMax, realtimePrice]);
 
-  // Determine price direction for ambient chart theming (when feature flag enabled)
+  // Determine price direction for ambient chart theming.
+  // Parent-supplied chartColor takes priority (e.g., OHLCV-based color).
   const isDark = theme === 'dark';
-  const chartColor = useMemo(() => {
+  const internalChartColor = useMemo(() => {
     if (!isThemingEnabled) {
-      return undefined; // Feature flag disabled, use default blue
+      return undefined;
     }
-    // Compare current price with the first price in the range to determine direction
     const comparePrice = prices?.[0]?.y;
     if (comparePrice === undefined || currentPrice === undefined) {
-      return undefined; // No data yet, will use fallback
+      return undefined;
     }
     const isPositive = currentPrice >= comparePrice;
     return getAmbientColor(isPositive, isDark);
   }, [isThemingEnabled, currentPrice, prices, isDark]);
+  const chartColor = chartColorOverride ?? internalChartColor;
 
   const animation =
     isPlaceholderData || wasPlaceholderData
@@ -338,37 +331,9 @@ const AssetChart = ({
   } as ChartOptions<'line'>;
 
   const chartRef = useRef<Chart<'line', Point[]>>();
-  const priceRef = useRef<{
-    setPrice: (_: { price?: number; date?: number }) => void;
-  }>();
-
-  // Init the price ref with the current price
-  useEffect(() => {
-    priceRef?.current?.setPrice({
-      price: currentPrice,
-      date: Date.now(),
-    });
-  }, [currentPrice]);
 
   return (
     <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
-      {/* Price header - hidden when parent provides its own (e.g., TokenPriceHeader) */}
-      {!hidePriceHeader && (
-        <AssetChartPrice
-          ref={priceRef}
-          loading={loading || isPlaceholderData}
-          currency={currency}
-          price={currentPrice}
-          date={realtimePrices?.[realtimePrices.length - 1]?.x ?? 0}
-          comparePrice={
-            isPlaceholderData || shouldShowChartEmptyState
-              ? undefined
-              : prices?.[0]?.y
-          }
-          ambientColor={chartColor}
-        />
-      )}
-
       <Box
         data-testid="asset-price-chart"
         className="flex rounded-lg"
@@ -405,40 +370,7 @@ const AssetChart = ({
                 ref={chartRef}
                 data={{ datasets: [{ data: realtimePrices, clip: false }] }}
                 options={options}
-                // Update the price display on chart hover
-                onMouseMove={(event) => {
-                  if (isPlaceholderData) {
-                    return;
-                  }
-                  const data = chartRef?.current?.data?.datasets?.[0]?.data;
-                  if (data) {
-                    const target = event.target as HTMLElement;
-                    const index = Math.max(
-                      0,
-                      Math.min(
-                        data.length - 1,
-                        Math.round(
-                          (event.nativeEvent.offsetX / target.clientWidth) *
-                            data.length,
-                        ),
-                      ),
-                    );
-                    const point = data[index];
-                    if (point) {
-                      priceRef?.current?.setPrice({
-                        price: point.y,
-                        date: point.x,
-                      });
-                    }
-                  }
-                }}
-                // Revert to current price when not hovering
-                onMouseOut={() => {
-                  priceRef?.current?.setPrice({
-                    price: currentPrice,
-                    date: Date.now(),
-                  });
-                }}
+                
               />
             </Box>
 

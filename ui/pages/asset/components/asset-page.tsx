@@ -699,9 +699,9 @@ const AssetPage = ({
                     LINE_TIME_RANGE_TO_ISO8601[acLineTimeRange] ?? 'P1D'
                   }
                   hideTimeRangeSelector
-                  hidePriceHeader
                   realtimePrice={ohlcvPrice}
                   realtimeTimestamp={ohlcvTimestamp}
+                  chartColor={initialAmbientColor}
                 />
               </Box>
 
@@ -756,13 +756,19 @@ const AssetPage = ({
             </Box>
           </>
         ) : (
-          /* FF OFF: show legacy chart without theming */
-          <AssetChart
-            chainId={chainId}
-            address={address}
-            currentPrice={currentPrice}
-            currency={currency}
-          />
+          /* FF OFF: parent owns header, legacy chart handles the rest */
+          <>
+            <TokenPriceHeader
+              price={currentPrice}
+              currency={currency}
+            />
+            <AssetChart
+              chainId={chainId}
+              address={address}
+              currentPrice={currentPrice}
+              currency={currency}
+            />
+          </>
         )}
         <MaybePerpsViewStreamBoundary
           enabled={Boolean(isPerpsMarketLoading || perpsMarket)}
