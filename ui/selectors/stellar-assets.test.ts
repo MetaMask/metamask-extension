@@ -29,6 +29,13 @@ const MINIMUM_RESERVE_BALANCE_STROOPS = '25000000';
 const SPENDABLE_BALANCE_STROOPS = '75000000';
 const STELLAR_DECIMALS = 7;
 
+const STELLAR_NATIVE_ASSET_INFO = {
+  type: 'native' as const,
+  symbol: 'XLM',
+  name: 'Lumens',
+  decimals: STELLAR_DECIMALS,
+};
+
 type AssetsState = {
   metamask: AssetsControllerState & {
     selectedAccountGroup?: string | null;
@@ -44,10 +51,14 @@ type AssetsState = {
 
 function createMockState(
   assetsBalance: AssetsControllerState['assetsBalance'],
-  options?: { withSelectedStellarAccount?: boolean },
+  options?: {
+    withSelectedStellarAccount?: boolean;
+    assetsInfo?: AssetsControllerState['assetsInfo'];
+  },
 ): AssetsState {
   const metamask: AssetsState['metamask'] = {
     assetsBalance,
+    assetsInfo: options?.assetsInfo ?? {},
     selectedAccountGroup: null,
     accountTree: {
       wallets: {},
@@ -98,26 +109,7 @@ function createMockState(
   return { metamask };
 }
 
-const mockState = createMockState({
-  [ACCOUNT_ID]: {
-    [STELLAR_NATIVE_ASSET_ID]: {
-      amount: '10',
-      metadata: {
-        minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
-        spendableBalance: SPENDABLE_BALANCE_STROOPS,
-        decimal: STELLAR_DECIMALS,
-      },
-    },
-    [TRUSTLINE_USDC]: {
-      amount: '0',
-      metadata: {
-        limit: '1000',
-      },
-    },
-  },
-});
-
-const mockStateWithSelectedAccount = createMockState(
+const mockState = createMockState(
   {
     [ACCOUNT_ID]: {
       [STELLAR_NATIVE_ASSET_ID]: {
@@ -125,7 +117,6 @@ const mockStateWithSelectedAccount = createMockState(
         metadata: {
           minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
           spendableBalance: SPENDABLE_BALANCE_STROOPS,
-          decimal: STELLAR_DECIMALS,
         },
       },
       [TRUSTLINE_USDC]: {
@@ -136,7 +127,37 @@ const mockStateWithSelectedAccount = createMockState(
       },
     },
   },
-  { withSelectedStellarAccount: true },
+  {
+    assetsInfo: {
+      [STELLAR_NATIVE_ASSET_ID]: STELLAR_NATIVE_ASSET_INFO,
+    },
+  },
+);
+
+const mockStateWithSelectedAccount = createMockState(
+  {
+    [ACCOUNT_ID]: {
+      [STELLAR_NATIVE_ASSET_ID]: {
+        amount: '10',
+        metadata: {
+          minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
+          spendableBalance: SPENDABLE_BALANCE_STROOPS,
+        },
+      },
+      [TRUSTLINE_USDC]: {
+        amount: '0',
+        metadata: {
+          limit: '1000',
+        },
+      },
+    },
+  },
+  {
+    withSelectedStellarAccount: true,
+    assetsInfo: {
+      [STELLAR_NATIVE_ASSET_ID]: STELLAR_NATIVE_ASSET_INFO,
+    },
+  },
 );
 
 describe('stellar-assets selectors', () => {
@@ -202,17 +223,23 @@ describe('stellar-assets selectors', () => {
     it('returns undefined when spendableBalance is missing from metadata', () => {
       expect(
         getSpendableForAccount(
-          createMockState({
-            [ACCOUNT_ID]: {
-              [STELLAR_NATIVE_ASSET_ID]: {
-                amount: '10',
-                metadata: {
-                  minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
-                  decimal: STELLAR_DECIMALS,
+          createMockState(
+            {
+              [ACCOUNT_ID]: {
+                [STELLAR_NATIVE_ASSET_ID]: {
+                  amount: '10',
+                  metadata: {
+                    minimumReserveBalance: MINIMUM_RESERVE_BALANCE_STROOPS,
+                  },
                 },
               },
             },
-          }),
+            {
+              assetsInfo: {
+                [STELLAR_NATIVE_ASSET_ID]: STELLAR_NATIVE_ASSET_INFO,
+              },
+            },
+          ),
           {
             accountId: ACCOUNT_ID,
             assetId: STELLAR_NATIVE_ASSET_ID,
@@ -221,7 +248,42 @@ describe('stellar-assets selectors', () => {
       ).toBeUndefined();
     });
 
-    it('returns undefined when decimal is missing from metadata', () => {
+    it('converts amounts using decimals from assetsInfo', () => {
+      expect(
+        getSpendableForAccount(
+          createMockState(
+            {
+              [ACCOUNT_ID]: {
+                [STELLAR_NATIVE_ASSET_ID]: {
+                  amount: '10',
+                  metadata: {
+                    minimumReserveBalance: '2500',
+                    spendableBalance: '7500',
+                  },
+                },
+              },
+            },
+            {
+              assetsInfo: {
+                [STELLAR_NATIVE_ASSET_ID]: {
+                  ...STELLAR_NATIVE_ASSET_INFO,
+                  decimals: 2,
+                },
+              },
+            },
+          ),
+          {
+            accountId: ACCOUNT_ID,
+            assetId: STELLAR_NATIVE_ASSET_ID,
+          },
+        ),
+      ).toStrictEqual({
+        minimumReserveBalance: '25',
+        spendableBalance: '75',
+      });
+    });
+
+    it('returns undefined when decimals is missing from assetsInfo', () => {
       expect(
         getSpendableForAccount(
           createMockState({

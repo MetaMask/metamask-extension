@@ -17,7 +17,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 
 import { createParameterizedSelector } from '../../shared/lib/selectors/selector-creators';
-import { getAssetsBalance } from './assets';
+import { getAssetsBalance, getAssetsInfo } from './assets';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 const ACCOUNT_ASSET_LRU_CACHE_SIZE = 50;
@@ -64,15 +64,20 @@ const TrustlineAssetInfoStruct = type({
   limit: ValidAmountStruct,
 });
 
+const DecimalPlacesStruct = refine(number(), 'decimal_places', (value) => {
+  if (!Number.isInteger(value) || value < 0) {
+    return 'Invalid decimal places';
+  }
+  return true;
+});
+
 /**
  * Native enrichment on AssetsController `assetsBalance` metadata for Stellar
- * XLM. Amounts are in base units (stroops); `decimal` is used to convert them
- * to display units.
+ * XLM. Amounts are in base units (stroops).
  */
 const NativeAssetInfoStruct = type({
   minimumReserveBalance: ValidAmountStruct,
   spendableBalance: ValidAmountStruct,
-  decimal: number(),
 });
 
 export type StellarNativeAssetId = Infer<typeof StellarNativeAssetIdStruct>;
@@ -95,6 +100,14 @@ export type SpendableInfo = {
 const selectAssetsBalance = getAssetsBalance as (
   state: unknown,
 ) => AssetsControllerState['assetsBalance'];
+
+/**
+ * Reuses `getAssetsInfo` from the assets selector. Cast is confined here so
+ * call sites can pass untyped `useSelector` state without annotations.
+ */
+const selectAssetsInfo = getAssetsInfo as (
+  state: unknown,
+) => AssetsControllerState['assetsInfo'];
 
 type AssetBalanceEntry = AssetsControllerState['assetsBalance'][string][string];
 
@@ -177,6 +190,29 @@ function getAssetBalanceMetadata(
 }
 
 /**
+ * Reads `decimals` from AssetsController `assetsInfo` for an asset.
+ *
+ * @param assetsInfo - Shared asset metadata keyed by CAIP-19 asset id.
+ * @param assetId - CAIP-19 asset id.
+ * @returns Validated decimal places, or `undefined`.
+ */
+function getDecimalsFromAssetMetadata(
+  assetsInfo: AssetsControllerState['assetsInfo'],
+  assetId: string,
+): number | undefined {
+  const metadata = (assetsInfo as Record<string, unknown>)[assetId];
+  if (
+    !metadata ||
+    typeof metadata !== 'object' ||
+    !('decimals' in metadata) ||
+    !is(metadata.decimals, DecimalPlacesStruct)
+  ) {
+    return undefined;
+  }
+  return metadata.decimals;
+}
+
+/**
  * Converts a base-unit amount to display units.
  *
  * @param amount - Amount in base units (e.g. stroops).
@@ -225,9 +261,9 @@ function selectResolvedAccountIdForAsset(
 /**
  * Spendable balance breakdown for an account/asset pair.
  *
- * Reads `minimumReserveBalance`, `spendableBalance`, and `decimal` from
- * `assetsBalance[accountId][assetId].metadata`, then returns both amounts in
- * display units.
+ * Reads `minimumReserveBalance` and `spendableBalance` from
+ * `assetsBalance[accountId][assetId].metadata`, and `decimals` from
+ * `assetsInfo[assetId]`, then returns both amounts in display units.
  * When `accountId` is omitted, falls back to the selected internal account for
  * the asset's CAIP chain.
  *
@@ -235,6 +271,7 @@ function selectResolvedAccountIdForAsset(
  * - `assetId` is not a CAIP asset type that supports spendable balance
  * - a resolved `accountId` is missing
  * - native enrichment is missing or fails validation
+ * - asset metadata `decimals` is missing or invalid
  *
  * @param state - Redux state with AssetsController balances.
  * @param params - Account/asset lookup params.
@@ -246,9 +283,10 @@ export const getSpendableForAccount = createParameterizedSelector(
   ACCOUNT_ASSET_LRU_CACHE_SIZE,
 )(
   selectAssetsBalance,
+  selectAssetsInfo,
   selectResolvedAccountIdForAsset,
   (_state: unknown, params: StellarAccountAssetParams) => params.assetId,
-  (assetsBalance, resolvedAccountId, assetId) => {
+  (assetsBalance, assetsInfo, resolvedAccountId, assetId) => {
     if (!isAssetSupportSpendableBalance(assetId) || !resolvedAccountId) {
       return undefined;
     }
@@ -256,21 +294,18 @@ export const getSpendableForAccount = createParameterizedSelector(
       assetId,
       getAssetBalanceMetadata(assetsBalance[resolvedAccountId]?.[assetId]),
     );
-    if (!nativeInfo) {
+    const decimals = getDecimalsFromAssetMetadata(assetsInfo, assetId);
+    if (!nativeInfo || decimals === undefined) {
       return undefined;
     }
-    // Align with Accounts API,
-    // it returns `minimumReserveBalance`, `spendableBalance` in smallest unit,
-    // and provide `decimal` for conversion to display units.
+    // Accounts API returns `minimumReserveBalance` and `spendableBalance` in
+    // base units. `assetsInfo[assetId].decimals` converts them to display units.
     return {
       minimumReserveBalance: normalizeAmount(
         nativeInfo.minimumReserveBalance,
-        nativeInfo.decimal,
+        decimals,
       ),
-      spendableBalance: normalizeAmount(
-        nativeInfo.spendableBalance,
-        nativeInfo.decimal,
-      ),
+      spendableBalance: normalizeAmount(nativeInfo.spendableBalance, decimals),
     } satisfies SpendableInfo;
   },
 );

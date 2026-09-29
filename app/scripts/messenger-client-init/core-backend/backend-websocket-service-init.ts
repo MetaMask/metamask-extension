@@ -57,25 +57,7 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
     // Feature flag AND app lifecycle integration
     // Service will check this callback before connecting/reconnecting
     isEnabled: () => {
-      try {
-        // Client manifest flag
-        const manifestFlag =
-          getManifestFlags().remoteFeatureFlags?.backendWebSocketConnection;
-
-        // Remote feature flag
-        const remoteFlag = initMessenger?.call(
-          'RemoteFeatureFlagController:getState',
-        )?.remoteFeatureFlags?.backendWebSocketConnection;
-
-        return resolveFlag(manifestFlag ?? remoteFlag);
-      } catch (error) {
-        // If feature flag check fails, default to NOT connecting for safer startup
-        console.warn(
-          '[BackendWebSocketService] Could not check feature flag, defaulting to NOT connect:',
-          error,
-        );
-        return false;
-      }
+      return true;
     },
   });
 

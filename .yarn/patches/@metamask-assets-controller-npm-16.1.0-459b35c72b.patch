@@ -1,0 +1,30 @@
+diff --git a/dist/utils/snaps-assets-migration.js b/dist/utils/snaps-assets-migration.js
+index 32e6050ec9a2b139b6996cc4c1693d160353d5ce..9789618912072997db6afb069ce833ade3bf2284 100644
+--- a/dist/utils/snaps-assets-migration.js
++++ b/dist/utils/snaps-assets-migration.js
+@@ -134,7 +134,13 @@ export function isMigrationStageActive(stage) {
+  * @returns An array of each migration namespace's resolved stage.
+  */
+ export function getMigrationStages(remoteFeatureFlags) {
+-    return SNAPS_ASSETS_MIGRATION_NAMESPACES.map((namespace) => parseSnapsAssetsMigrationStage(remoteFeatureFlags[SNAPS_ASSETS_MIGRATION_FLAG_KEYS[namespace]]));
++    return SNAPS_ASSETS_MIGRATION_NAMESPACES.map((namespace) => {
++        // TEMP: force Stellar migration on for local/dev testing
++        if (namespace === 'stellar') {
++            return SnapsAssetsMigrationStage.ReadAssetsControllerWithFallback;
++        }
++        return parseSnapsAssetsMigrationStage(remoteFeatureFlags[SNAPS_ASSETS_MIGRATION_FLAG_KEYS[namespace]]);
++    });
+ }
+ /**
+  * Whether a supported network should be surfaced as an active chain, gated by
+@@ -156,6 +162,10 @@ export function shouldSupportChain(chainId, remoteFeatureFlags) {
+     if (!namespace) {
+         return true;
+     }
++    // TEMP: force Stellar support on for local/dev testing
++    if (namespace === 'stellar') {
++        return true;
++    }
+     const stage = parseSnapsAssetsMigrationStage(remoteFeatureFlags?.[SNAPS_ASSETS_MIGRATION_FLAG_KEYS[namespace]]);
+     return isMigrationStageActive(stage);
+ }

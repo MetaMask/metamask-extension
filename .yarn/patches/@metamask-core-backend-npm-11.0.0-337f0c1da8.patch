@@ -1,0 +1,16 @@
+diff --git a/dist/ws/AccountActivityService.js b/dist/ws/AccountActivityService.js
+index ab79cf7e3bb675159181047be999e63d85662e5a..526ecd3e6c964e71a10544f3d36387f2c0909fa4 100644
+--- a/dist/ws/AccountActivityService.js
++++ b/dist/ws/AccountActivityService.js
+@@ -413,6 +413,11 @@ export class AccountActivityService {
+     #getSupportedChainPrefixes(remoteFeatureFlags = this.#messenger.call('RemoteFeatureFlagController:getState').remoteFeatureFlags) {
+         const prefixes = [...ALWAYS_SUPPORTED_CHAIN_PREFIXES];
+         for (const [prefix, flagName] of Object.entries(CHAIN_PREFIX_FEATURE_FLAGS)) {
++            // TEMP: force Stellar on for local/dev testing
++            if (prefix === 'stellar') {
++                prefixes.push(prefix);
++                continue;
++            }
+             const flagValue = remoteFeatureFlags[flagName];
+             if (isObject(flagValue) &&
+                 typeof flagValue.stage === 'number' &&

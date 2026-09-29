@@ -5528,6 +5528,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/assets-controller@npm:16.1.0, @metamask/assets-controller@npm:^16.1.0":
+  version: 16.1.0
+  resolution: "@metamask/assets-controller@npm:16.1.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/account-tree-controller": "npm:^10.0.1"
+    "@metamask/accounts-controller": "npm:^40.0.0"
+    "@metamask/assets-controllers": "npm:^112.0.2"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/client-controller": "npm:^2.0.0"
+    "@metamask/config-registry-controller": "npm:^4.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/core-backend": "npm:^11.0.0"
+    "@metamask/keyring-api": "npm:^24.0.0"
+    "@metamask/keyring-controller": "npm:^28.0.0"
+    "@metamask/keyring-internal-api": "npm:^12.0.0"
+    "@metamask/keyring-snap-client": "npm:^10.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^37.0.0"
+    "@metamask/network-enablement-controller": "npm:^7.0.0"
+    "@metamask/permission-controller": "npm:^14.0.0"
+    "@metamask/phishing-controller": "npm:^18.1.0"
+    "@metamask/polling-controller": "npm:^17.0.0"
+    "@metamask/preferences-controller": "npm:^24.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-utils": "npm:^12.1.2"
+    "@metamask/transaction-controller": "npm:^70.0.1"
+    "@metamask/utils": "npm:^12.0.0"
+    async-mutex: "npm:^0.5.0"
+    bignumber.js: "npm:^9.1.2"
+    lodash-es: "npm:^4.17.21"
+    p-limit: "npm:^3.1.0"
+  checksum: 10/a3eef2c5238333f2cd45b45624b3fa7c3474a852b6ac931361571dc91049c13938b71e220b0313629734de637d77bf7194a21382ae71a1296823a9f74cae513e
+  languageName: node
+  linkType: hard
+
 "@metamask/assets-controller@npm:^14.0.3":
   version: 14.0.3
   resolution: "@metamask/assets-controller@npm:14.0.3"
@@ -5567,9 +5606,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^16.1.0":
+"@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-assets-controller-npm-16.1.0-459b35c72b.patch":
   version: 16.1.0
-  resolution: "@metamask/assets-controller@npm:16.1.0"
+  resolution: "@metamask/assets-controller@patch:@metamask/assets-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-assets-controller-npm-16.1.0-459b35c72b.patch::version=16.1.0&hash=10db2c"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5602,7 +5641,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/a3eef2c5238333f2cd45b45624b3fa7c3474a852b6ac931361571dc91049c13938b71e220b0313629734de637d77bf7194a21382ae71a1296823a9f74cae513e
+  checksum: 10/7cdf53e15c44b8816a7f4571ac5e46431cf483624e1d0a76d22d010773af7a510b9abcb5bbbeb3c9d8e2c91c86a36b83724c23abbc8f5e3a63f36cf6d61cc496
   languageName: node
   linkType: hard
 
@@ -6207,7 +6246,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^11.0.0":
+"@metamask/core-backend@npm:11.0.0, @metamask/core-backend@npm:^11.0.0":
   version: 11.0.0
   resolution: "@metamask/core-backend@npm:11.0.0"
   dependencies:
@@ -6278,6 +6317,25 @@ __metadata:
     cockatiel: "npm:^3.1.2"
     uuid: "npm:^8.3.2"
   checksum: 10/5070ec5d8cc2b5eca2809df83d927f23e062bc660118972c0bec90197ac275c82de0f5ce1ab6559366a924b2df418a5831b66d3cf496c83b27e90534ddee5edb
+  languageName: node
+  linkType: hard
+
+"@metamask/core-backend@patch:@metamask/core-backend@npm%3A11.0.0#~/.yarn/patches/@metamask-core-backend-npm-11.0.0-337f0c1da8.patch":
+  version: 11.0.0
+  resolution: "@metamask/core-backend@patch:@metamask/core-backend@npm%3A11.0.0#~/.yarn/patches/@metamask-core-backend-npm-11.0.0-337f0c1da8.patch::version=11.0.0&hash=888ecd"
+  dependencies:
+    "@metamask/account-tree-controller": "npm:^10.0.1"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-controller": "npm:^28.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/profile-sync-controller": "npm:^32.1.1"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/utils": "npm:^12.0.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    async-mutex: "npm:^0.5.0"
+    cockatiel: "npm:^3.1.2"
+    uuid: "npm:^9.0.1"
+  checksum: 10/359dc8fcc6c9f179a073f9ea911fda5fdbd342a4671f501997e14b1573ac8ce343286789ebfbfa5f5123317f9e86b60b291d0b06ed17c59ee87183e546066c83
   languageName: node
   linkType: hard
 
@@ -8930,10 +8988,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/stellar-wallet-snap@npm:1.0.0"
-  checksum: 10/b3290d5431a90df65fb410672b4012922737081ba541b8f50cd73d6df86fa2f0d2b00f3dcb0981e703c03bbd33ab13a3ca06d7f7e4d742124c136db5c32fed43
+"@metamask/stellar-wallet-snap@npm:1.0.0-dev.51":
+  version: 1.0.0-dev.51
+  resolution: "@metamask/stellar-wallet-snap@npm:1.0.0-dev.51"
+  checksum: 10/eac575cc3b31ce5d7951d718e27ddd79b498ec6e2ec1cd8fa3af8bf7004e6a02dfa873b75b8c9898c3a196c4d8d4f77e3076fb8d0972c9abd3bad8056b641bdc
   languageName: node
   linkType: hard
 
@@ -31992,7 +32050,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^16.1.0"
+    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-assets-controller-npm-16.1.0-459b35c72b.patch"
     "@metamask/assets-controllers": "npm:^112.0.2"
     "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
@@ -32016,7 +32074,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^11.0.0"
+    "@metamask/core-backend": "patch:@metamask/core-backend@npm%3A11.0.0#~/.yarn/patches/@metamask-core-backend-npm-11.0.0-337f0c1da8.patch"
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^2.0.0"
@@ -32131,7 +32189,7 @@ __metadata:
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
     "@metamask/solana-wallet-snap": "npm:^5.0.1"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:^1.0.0"
+    "@metamask/stellar-wallet-snap": "npm:1.0.0-dev.51"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^8.0.1"
     "@metamask/superstruct": "npm:^3.2.1"
