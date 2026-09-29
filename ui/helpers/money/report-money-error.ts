@@ -15,6 +15,12 @@ export type MoneyErrorExtra = {
   errorCode?: string;
   query?: string;
   window?: InterestWindow;
+  /** Balance source that answered the last refresh attempt. */
+  source?: 'api' | 'rpc';
+  /** Money API `as_of_block` from the last refresh attempt. */
+  asOfBlock?: number;
+  /** Confirmed Money Account chain block the refresh was trying to reach. */
+  minBlock?: number;
 };
 
 const reportedQueryFailures = new Map<string, string>();

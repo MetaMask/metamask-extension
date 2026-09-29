@@ -4,13 +4,18 @@ import {
   TransactionStatus,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { CanonicalMoneyAccountBalanceResponse } from '@metamask/money-account-balance-service';
+import type {
+  CanonicalMoneyAccountBalanceResponse,
+  FetchBalanceWithFallbackOptions,
+} from '@metamask/money-account-balance-service';
+import { MUSD_MONEY_ACCOUNT_CHAIN_IDS } from '@metamask/money-account-utils';
+import { hexToNumber } from '@metamask/utils';
 import log from 'loglevel';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { queryClient } from '../../contexts/query-client';
 import { defineAllowedRouteCapabilities } from '../../helpers/route-messenger-helpers';
 import {
-  invalidateMoneyAccountBalanceCaches,
+  fetchFreshMoneyAccountBalance,
   invalidateMoneyAccountBalanceSourceCaches,
 } from '../../helpers/money/invalidate-balance-caches';
 import { reportMoneyError } from '../../helpers/money/report-money-error';
@@ -55,50 +60,152 @@ const readBalanceSnapshot = (address: string) =>
 
 const didBalanceChange = (
   before: MoneyBalanceSnapshot,
-  after: MoneyBalanceSnapshot,
-) => before?.totalBalance !== after?.totalBalance;
+  after: CanonicalMoneyAccountBalanceResponse,
+) =>
+  before?.totalBalance !== undefined &&
+  before.totalBalance !== after.totalBalance;
 
 /**
- * Capture the pre-invalidation cached snapshot as a baseline, then invalidate +
- * refetch and compare. Retry up to MAX_RETRIES times if subsequent reads are
- * byte-identical to baseline. Guards against RPC nodes / API indexes serving
- * stale reads immediately after a transaction confirms. Reports to Sentry if
- * the retry budget exhausts.
+ * `as_of_block` is a Money Account chain block. Receipt block numbers on other
+ * chains (Perps/Predict on Arbitrum or Polygon) are not comparable, so those
+ * refreshes send `fresh` only.
  *
- * On exhaustion the background source caches are busted one final time: the
- * last (stale) refetch re-cached the stale figure with a fresh staleTime, so
- * without this the 30s auto-poll would keep serving it for another staleTime
- * window instead of reading the sources anew.
+ * @param transactionMeta - Confirmed transaction.
+ * @returns The receipt block as a number, or undefined when it cannot gate the API.
+ */
+const resolveMinBlock = (
+  transactionMeta: TransactionMeta,
+): number | undefined => {
+  const { chainId, txReceipt } = transactionMeta;
+  const blockNumber = txReceipt?.blockNumber;
+
+  if (
+    chainId === undefined ||
+    blockNumber === undefined ||
+    !MUSD_MONEY_ACCOUNT_CHAIN_IDS.includes(chainId)
+  ) {
+    return undefined;
+  }
+
+  try {
+    return hexToNumber(blockNumber);
+  } catch (error) {
+    log.debug(`${LOG_PREFIX} Could not read receipt block`, { error });
+    return undefined;
+  }
+};
+
+/**
+ * True when the API read is at or past the confirmed transaction's block.
+ * That result is authoritative even if the total is unchanged (for example a
+ * deposit that only moved funds between mUSD and vmUSD, or a no-op confirm).
+ *
+ * @param result - Canonical balance returned by the service.
+ * @param minBlock - Confirmed block to satisfy, when the tx was on the Money chain.
+ */
+const isAuthoritativeApiRead = (
+  result: CanonicalMoneyAccountBalanceResponse,
+  minBlock: number | undefined,
+) =>
+  minBlock !== undefined &&
+  result.source === 'api' &&
+  result.asOfBlock !== undefined &&
+  result.asOfBlock >= minBlock;
+
+/**
+ * Capture the pre-refresh cached snapshot as a baseline, then request a fresh
+ * balance (with `minBlock` when the confirmation is on the Money Account
+ * chain) and compare. Retry up to MAX_RETRIES times while the API is still
+ * behind the confirmed block and the total has not moved. A failed attempt
+ * counts as a miss and the loop continues until the budget is spent. Reports
+ * to Sentry if the retry budget exhausts.
+ *
+ * Each attempt busts the background source caches first so an RPC primary or
+ * RPC fallback cannot answer from its `staleTime` entry. On exhaustion those
+ * caches are busted once more: the last read re-cached whatever it returned.
  *
  * @param address - Money account address.
+ * @param options - Freshness controls for this confirmation.
+ * @param options.minBlock - Money Account chain block the API read must reach.
  */
-const refreshMoneyBalanceQueries = async (address: string) => {
+const refreshMoneyBalanceQueries = async (
+  address: string,
+  { minBlock }: { minBlock?: number },
+) => {
   const baseline = readBalanceSnapshot(address);
+  const requestOptions: FetchBalanceWithFallbackOptions = { fresh: true };
+  if (minBlock !== undefined) {
+    requestOptions.minBlock = minBlock;
+  }
 
-  log.debug(`${LOG_PREFIX} Baseline snapshot established`, { baseline });
+  log.debug(`${LOG_PREFIX} Baseline snapshot established`, {
+    baseline,
+    minBlock,
+  });
+
+  let sawResult = false;
+  let lastError: unknown;
+  let lastResult: CanonicalMoneyAccountBalanceResponse | undefined;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     if (attempt > 0) {
       await sleep(Math.min(BASE_DELAY_MS * 2 ** (attempt - 1), MAX_DELAY_MS));
     }
 
-    await invalidateMoneyAccountBalanceCaches(address);
-    const next = readBalanceSnapshot(address);
-    const changed = didBalanceChange(baseline, next);
+    try {
+      await invalidateMoneyAccountBalanceSourceCaches(address);
+      const next = await fetchFreshMoneyAccountBalance(address, requestOptions);
+      sawResult = true;
+      lastResult = next;
+      const authoritative = isAuthoritativeApiRead(next, minBlock);
+      const changed = didBalanceChange(baseline, next);
+      // No cached total to compare, and no block to wait for: the fresh read
+      // is the best answer we can get.
+      const freshReadWithoutBaseline =
+        minBlock === undefined && baseline?.totalBalance === undefined;
 
-    log.debug(`${LOG_PREFIX} attempt ${attempt} result`, { changed, next });
+      log.debug(`${LOG_PREFIX} attempt ${attempt} result`, {
+        authoritative,
+        changed,
+        freshReadWithoutBaseline,
+        minBlock,
+        source: next.source,
+        asOfBlock: next.asOfBlock,
+        next,
+      });
 
-    if (changed) {
-      return;
+      if (authoritative || changed || freshReadWithoutBaseline) {
+        return;
+      }
+    } catch (error) {
+      lastError = error;
+      log.debug(`${LOG_PREFIX} attempt ${attempt} failed`, { error, minBlock });
     }
   }
 
-  await invalidateMoneyAccountBalanceSourceCaches(address);
+  try {
+    await invalidateMoneyAccountBalanceSourceCaches(address);
+  } catch (error) {
+    log.debug(`${LOG_PREFIX} Final source cache bust failed`, { error });
+  }
+
+  if (!sawResult && lastError !== undefined) {
+    reportMoneyError(`${LOG_PREFIX} Balance refresh failed`, lastError, {
+      attempts: MAX_RETRIES,
+      minBlock,
+    });
+    return;
+  }
 
   reportMoneyError(
     `${LOG_PREFIX} Balance unchanged after ${MAX_RETRIES} retries; awaiting 30s auto-poll`,
     new Error('Money Account balance unchanged after retries'),
-    { attempts: MAX_RETRIES },
+    {
+      attempts: MAX_RETRIES,
+      minBlock,
+      source: lastResult?.source,
+      asOfBlock: lastResult?.asOfBlock,
+    },
   );
 };
 
@@ -153,7 +260,9 @@ export function useRefreshMoneyBalanceOnTxConfirm(): void {
       }
       refreshedIdsRef.current.add(transactionMeta.id);
 
-      refreshMoneyBalanceQueries(address).catch((error) => {
+      refreshMoneyBalanceQueries(address, {
+        minBlock: resolveMinBlock(transactionMeta),
+      }).catch((error) => {
         reportMoneyError(`${LOG_PREFIX} Balance refresh failed`, error, {
           attempts: MAX_RETRIES,
         });
