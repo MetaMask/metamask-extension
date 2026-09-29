@@ -33,6 +33,15 @@ type SyncEvents =
 
 type SyncMessenger = RootMessenger<SyncActions, SyncEvents>;
 
+function getCanonicalProfileId(
+  srpSessionData: AuthenticationControllerState['srpSessionData'],
+): string {
+  return (
+    Object.entries(srpSessionData ?? {})[0]?.[1]?.profile?.canonicalProfileId ??
+    ''
+  );
+}
+
 /**
  * Keep decided marketing consent in sync with the signed-in user's AUS profile.
  *
@@ -73,76 +82,79 @@ export function setupMarketingConsentSync({
   let authenticationState = syncMessenger.call(
     'AuthenticationController:getState',
   );
-  let generation = 0;
-  let revision = 0;
-  let lastSynced: boolean | undefined;
-  let pending: boolean | undefined;
-  let applyingRemote: boolean | undefined;
+  let session: {
+    lastSynced?: boolean;
+    pendingConsentUpdate?: { value: boolean };
+  } = {};
+  let applyingRemote: { value: boolean } | undefined;
   let inFlight: Promise<void> | undefined;
 
   const isReady = () =>
     authenticationState.isSignedIn === true &&
     analyticsState.marketingConsentDecisionMade === true;
-  const profileId = (state: AuthenticationControllerState) =>
-    Object.values(state.srpSessionData ?? {})[0]?.profile?.canonicalProfileId ??
-    '';
 
-  const run = async () => {
-    const session = generation;
-    const readRevision = revision;
+  const reconcileWithAus = async (
+    currentSession: typeof session,
+  ): Promise<void> => {
     const localValue = analyticsState.optedInToMarketing === true;
 
-    if (lastSynced === undefined) {
-      await syncMessenger.call(
-        'AuthenticatedUserStorageService:invalidateQueries',
-        { queryKey: ['AuthenticatedUserStorageService:getMarketingConsent'] },
-      );
-      if (session !== generation || !isReady()) {
-        return;
-      }
-      const remote = await syncMessenger.call(
-        'AuthenticatedUserStorageService:getMarketingConsent',
-      );
-      if (session !== generation || !isReady()) {
-        return;
-      }
+    // AUS caches this query across profiles, so fetch fresh consent per session.
+    await syncMessenger.call(
+      'AuthenticatedUserStorageService:invalidateQueries',
+      { queryKey: ['AuthenticatedUserStorageService:getMarketingConsent'] },
+    );
 
-      if (readRevision !== revision) {
-        // Only decisions made after the read started override its result.
-        pending = analyticsState.optedInToMarketing === true;
-      } else if (remote === null) {
-        pending = localValue;
-      } else {
-        pending = undefined;
-        if (remote.marketingConsentEnabled !== localValue) {
-          applyingRemote = remote.marketingConsentEnabled;
-          try {
-            if (remote.marketingConsentEnabled) {
-              await syncMessenger.call('AnalyticsController:optInToMarketing');
-            } else {
-              // optOutOfMarketing also clears the marketing campaign cookie.
-              syncMessenger.call('AnalyticsController:optOutOfMarketing');
-            }
-          } finally {
-            applyingRemote = undefined;
-          }
+    const remote = await syncMessenger.call(
+      'AuthenticatedUserStorageService:getMarketingConsent',
+    );
+
+    if (currentSession !== session || !isReady()) {
+      return;
+    }
+
+    // A local change during the read takes precedence over AUS.
+    if (currentSession.pendingConsentUpdate !== undefined) {
+      return;
+    }
+
+    if (remote === null) {
+      currentSession.pendingConsentUpdate = { value: localValue };
+      return;
+    }
+
+    if (remote.marketingConsentEnabled !== localValue) {
+      applyingRemote = { value: remote.marketingConsentEnabled };
+      try {
+        if (remote.marketingConsentEnabled) {
+          await syncMessenger.call('AnalyticsController:optInToMarketing');
+        } else {
+          syncMessenger.call('AnalyticsController:optOutOfMarketing');
         }
-        if (session !== generation || !isReady()) {
-          return;
-        }
-        lastSynced = remote.marketingConsentEnabled;
+      } finally {
+        applyingRemote = undefined;
       }
     }
 
-    while (pending !== undefined) {
-      if (session !== generation || !isReady()) {
+    if (currentSession === session && isReady()) {
+      currentSession.lastSynced = remote.marketingConsentEnabled;
+    }
+  };
+
+  const flushPendingConsentUpdate = async (
+    currentSession: typeof session,
+  ): Promise<void> => {
+    while (currentSession.pendingConsentUpdate !== undefined) {
+      if (currentSession !== session || !isReady()) {
         return;
       }
-      const value = pending;
-      pending = undefined;
-      if (value === lastSynced) {
+
+      const { value } = currentSession.pendingConsentUpdate;
+      currentSession.pendingConsentUpdate = undefined;
+
+      if (value === currentSession.lastSynced) {
         continue;
       }
+
       try {
         await syncMessenger.call(
           'AuthenticatedUserStorageService:putMarketingConsent',
@@ -150,31 +162,44 @@ export function setupMarketingConsentSync({
           'extension',
         );
       } catch (error) {
-        if (session === generation) {
-          pending ??= value;
+        if (currentSession === session) {
+          currentSession.pendingConsentUpdate ??= { value };
         }
         throw error;
       }
-      if (session === generation) {
-        lastSynced = value;
+
+      if (currentSession === session) {
+        currentSession.lastSynced = value;
       }
     }
+  };
+
+  const run = async (currentSession: typeof session) => {
+    if (currentSession.lastSynced === undefined) {
+      await reconcileWithAus(currentSession);
+    }
+
+    await flushPendingConsentUpdate(currentSession);
   };
 
   const sync = (): Promise<void> => {
     if (inFlight) {
       return inFlight;
     }
+
     if (!isReady()) {
       return Promise.resolve();
     }
-    const startedFor = generation;
-    inFlight = run().finally(() => {
+
+    const startedFor = session;
+
+    inFlight = run(startedFor).finally(() => {
       inFlight = undefined;
-      if (isReady() && generation !== startedFor) {
+      if (isReady() && session !== startedFor) {
         startSync();
       }
     });
+
     return inFlight;
   };
 
@@ -184,17 +209,33 @@ export function setupMarketingConsentSync({
     });
   }
 
+  const assertMarketingConsentSynced = (
+    expectedConsent: boolean,
+    expectedSession: typeof session,
+  ) => {
+    if (
+      expectedSession !== session ||
+      session.pendingConsentUpdate !== undefined ||
+      session.lastSynced !== expectedConsent ||
+      analyticsState.marketingConsentDecisionMade !== true ||
+      analyticsState.optedInToMarketing !== expectedConsent
+    ) {
+      throw new Error('Marketing consent was not saved to AUS');
+    }
+  };
+
   syncMessenger.subscribe(
     'AuthenticationController:stateChange',
     (state: AuthenticationControllerState) => {
       const changed =
         authenticationState.isSignedIn !== state.isSignedIn ||
-        profileId(authenticationState) !== profileId(state);
+        getCanonicalProfileId(authenticationState.srpSessionData) !==
+          getCanonicalProfileId(state.srpSessionData);
+
       authenticationState = state;
+
       if (changed) {
-        generation += 1;
-        lastSynced = undefined;
-        pending = undefined;
+        session = {};
         startSync();
       }
     },
@@ -205,41 +246,41 @@ export function setupMarketingConsentSync({
     (state: AnalyticsControllerState) => {
       const prior = analyticsState;
       analyticsState = state;
-      if (prior.optedInToMarketing !== state.optedInToMarketing) {
-        revision += 1;
-        if (
-          applyingRemote !== state.optedInToMarketing &&
-          state.marketingConsentDecisionMade === true &&
-          prior.marketingConsentDecisionMade === true
-        ) {
-          pending = state.optedInToMarketing === true;
-          startSync();
-        }
+
+      const priorDecided = prior.marketingConsentDecisionMade === true;
+      const nowDecided = state.marketingConsentDecisionMade === true;
+      const consentChanged =
+        prior.optedInToMarketing !== state.optedInToMarketing;
+      const localConsentChanged =
+        consentChanged &&
+        priorDecided &&
+        nowDecided &&
+        applyingRemote?.value !== state.optedInToMarketing;
+      const decisionJustMade = !priorDecided && nowDecided;
+
+      if (!localConsentChanged && !decisionJustMade) {
+        return;
       }
-      if (
-        prior.marketingConsentDecisionMade !== true &&
-        state.marketingConsentDecisionMade === true
-      ) {
-        startSync();
+
+      if (localConsentChanged) {
+        session.pendingConsentUpdate = {
+          value: state.optedInToMarketing === true,
+        };
       }
+
+      startSync();
     },
   );
 
   startSync();
+
   return async (expectedConsent: boolean) => {
+    // A skipped sync must not be reported as a successful save.
     if (!isReady()) {
       throw new Error('Marketing consent requires a signed-in wallet');
     }
-    const session = generation;
+    const currentSession = session;
     await sync();
-    if (
-      session !== generation ||
-      !isReady() ||
-      pending !== undefined ||
-      lastSynced !== expectedConsent ||
-      analyticsState.optedInToMarketing !== expectedConsent
-    ) {
-      throw new Error('Marketing consent was not saved to AUS');
-    }
+    assertMarketingConsentSynced(expectedConsent, currentSession);
   };
 }
