@@ -26,7 +26,6 @@ import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
 import {
   classifyNonEvmSendError,
-  isNonEvmSendUserRejection,
   NonEvmSendErrorCode,
   NonEvmSendFailurePhase,
   useNonEvmSendMetrics,
@@ -131,10 +130,11 @@ export const useSendActions = () => {
       } catch (error) {
         // Check for user rejection using error code (4001) - this is language-independent
         const { errorCode, failurePhase } = classifyNonEvmSendError(error);
+        const isUserRejection = errorCode === NonEvmSendErrorCode.UserRejected;
 
         captureSendFailed({ chainIdCaip, snapId, failurePhase, errorCode });
 
-        if (isNonEvmSendUserRejection(error)) {
+        if (isUserRejection) {
           // User deliberately cancelled - clear error and navigate back silently
           updateNonEVMSubmitError(undefined);
         } else {
