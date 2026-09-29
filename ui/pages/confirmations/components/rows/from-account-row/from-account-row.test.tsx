@@ -400,6 +400,32 @@ describe('FromAccountRow', () => {
     );
   });
 
+  [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.moneyAccountWithdraw,
+  ].forEach((type) => {
+    it(`excludes hardware accounts from the ${type} selector`, () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: TX_ID_MOCK,
+          chainId: CHAIN_ID_MOCK,
+          type,
+          txParams: { from: FROM_ADDRESS_MOCK },
+        },
+      } as never);
+      useIsPayHardwareBlockedMock.mockReturnValue(false);
+
+      const store = createStore();
+      renderWithProvider(<FromAccountRow />, store);
+
+      fireEvent.click(screen.getByTestId('from-account-pill'));
+
+      expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+        'true',
+      );
+    });
+  });
+
   it('allows hardware accounts in the modal when the flow permits them', () => {
     const store = createStore();
     renderWithProvider(<FromAccountRow />, store);
