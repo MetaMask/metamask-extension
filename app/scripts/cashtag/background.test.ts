@@ -145,13 +145,14 @@ describe('createCashtagResponse', () => {
     return {
       preferencesController: {
         state: {
+          useExternalServices: true,
           preferences: { showTickerWidget: true, useSidePanelAsDefault: true },
         },
       },
       remoteFeatureFlagController: {
         state: { remoteFeatureFlags: { cashtagInjection: true } },
       },
-    } as unknown as Controller;
+    } satisfies Controller;
   }
 
   // A promise that never settles, standing in for a slow API call. Anything
@@ -183,6 +184,41 @@ describe('createCashtagResponse', () => {
     createCashtagResponse(openSwapMessage, widgetSender, getController);
 
     expect(open).toHaveBeenCalledWith({ windowId: 7 });
+  });
+
+  it('does not enable the widget when Basic Functionality is disabled', async () => {
+    const controller = getController();
+    controller.preferencesController.state.useExternalServices = false;
+
+    const response = await createCashtagResponse(
+      { type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED },
+      sender({ frameId: 0, url: 'https://x.com/home' }),
+      () => controller,
+    );
+
+    expect(response).toEqual({
+      type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
+      body: { enabled: false },
+    });
+  });
+
+  it('does not fetch widget data when Basic Functionality is disabled', async () => {
+    const controller = getController();
+    controller.preferencesController.state.useExternalServices = false;
+
+    const response = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.GET_DATA,
+        body: { symbol: 'ETH', fields: ['priceHistory'] },
+      },
+      sender({ frameId: 0, url: 'https://x.com/home' }),
+      () => controller,
+    );
+
+    expect(response).toEqual({
+      type: EXTENSION_MESSAGES.GET_DATA,
+      body: { asset: null, similar: [], priceHistory: null },
+    });
   });
 
   it('opens the popup without awaiting setPopup first', () => {

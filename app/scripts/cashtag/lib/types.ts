@@ -38,6 +38,7 @@ export type Controller = {
       event: string,
       listener: () => void,
       selector?: (state: {
+        useExternalServices?: boolean;
         preferences?: { showTickerWidget?: boolean };
         remoteFeatureFlags?: Record<string, unknown>;
       }) => boolean,
@@ -48,6 +49,7 @@ export type Controller = {
   };
   preferencesController?: {
     state?: {
+      useExternalServices?: boolean;
       preferences?: {
         showTickerWidget?: boolean;
         useSidePanelAsDefault?: boolean;

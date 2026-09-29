@@ -1569,7 +1569,10 @@ export function selectShowTickerWidget(state) {
 
 export function selectIsTickerWidgetFeatureEnabled(state) {
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
-  return getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false);
+  return (
+    state.metamask.useExternalServices !== false &&
+    getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false)
+  );
 }
 
 export function getTestNetworkBackgroundColor(state) {

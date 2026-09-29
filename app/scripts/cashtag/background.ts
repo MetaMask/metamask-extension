@@ -143,19 +143,24 @@ function manifestRemoteFeatureFlags() {
   return manifest?._flags?.remoteFeatureFlags;
 }
 
-function isCashtagInjectionFlagEnabled(controller: Controller | undefined) {
+function isTickerWidgetFeatureEnabled(controller: Controller | undefined) {
+  const basicFunctionalityEnabled =
+    controller?.preferencesController?.state?.useExternalServices !== false;
   const flags = {
     ...controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags,
     ...manifestRemoteFeatureFlags(),
   };
-  return getBooleanFeatureFlag(flags.cashtagInjection, false);
+  return (
+    basicFunctionalityEnabled &&
+    getBooleanFeatureFlag(flags.cashtagInjection, false)
+  );
 }
 
 function isTickerWidgetEnabled(controller: Controller | undefined) {
   const preferenceEnabled =
     controller?.preferencesController?.state?.preferences?.showTickerWidget ??
     true;
-  return isCashtagInjectionFlagEnabled(controller) && preferenceEnabled;
+  return isTickerWidgetFeatureEnabled(controller) && preferenceEnabled;
 }
 
 function broadcastOpenRoute(path: string, search?: `?${string}`) {
@@ -339,7 +344,8 @@ function handleSetWidgetEnabled(
   getController: GetController,
 ) {
   const controller = getController();
-  const enabled = message.body?.enabled === true;
+  const enabled =
+    isTickerWidgetFeatureEnabled(controller) && message.body?.enabled === true;
   const previous =
     controller?.preferencesController?.state?.preferences?.showTickerWidget ??
     true;
