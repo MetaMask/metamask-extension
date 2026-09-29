@@ -174,7 +174,7 @@
     "@metamask/eth-sig-util": "^9.0.0",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "36.0.0",
-    "@metamask/transaction-controller": "72.0.1",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@72.0.1-preview-5d795901a",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
     "follow-redirects": "^1.16.0",
     "ip-address": "^10.3.1",
@@ -854,6 +854,20 @@
     "yargs": "^17.7.2",
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
+  },
+  "previewBuilds": {
+    "@metamask/bridge-status-controller": {
+      "type": "breaking",
+      "previewVersion": "76.3.3-preview-5d795901a"
+    },
+    "@metamask/transaction-controller": {
+      "type": "breaking",
+      "previewVersion": "72.0.1-preview-5d795901a"
+    },
+    "@metamask/transaction-pay-controller": {
+      "type": "breaking",
+      "previewVersion": "29.2.3-preview-5d795901a"
+    }
   },
   "engines": {
     "node": ">=24.13.0",
