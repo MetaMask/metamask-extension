@@ -1,20 +1,7 @@
-import {
-  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
-  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
-  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-} from '../../helpers/constants/routes';
+import { NOTIFICATIONS_SETTINGS_SECTION_ROUTES } from '../../helpers/constants/routes';
 import type { NotificationsSettingsSectionType } from './notifications-settings-types';
 
-export const NOTIFICATIONS_SETTINGS_SECTION_ROUTES: Record<
-  NotificationsSettingsSectionType,
-  string
-> = {
-  walletActivity: NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-  perps: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
-  marketing: NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
-  agenticCli: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-};
+export { NOTIFICATIONS_SETTINGS_SECTION_ROUTES } from '../../helpers/constants/routes';
 
 export function getNotificationsSettingsSectionRoute(
   sectionType: NotificationsSettingsSectionType,

@@ -136,14 +136,16 @@ export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
 export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
-export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE =
-  '/settings/notifications/wallet-activity';
-export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE =
-  '/settings/notifications/perps';
-export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE =
-  '/settings/notifications/marketing';
-export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE =
-  '/settings/notifications/agentic-cli';
+export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/wallet-activity`;
+export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/perps`;
+export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/marketing`;
+export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/agentic-cli`;
+export const NOTIFICATIONS_SETTINGS_SECTION_ROUTES = {
+  walletActivity: NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  perps: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  marketing: NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  agenticCli: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+} as const;
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';

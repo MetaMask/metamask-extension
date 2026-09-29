@@ -1,15 +1,16 @@
 import { getIsPerpsIncludedInBuild } from '../../environment';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { NOTIFICATIONS_SETTINGS_SECTION_ROUTES } from '../../../../ui/pages/notifications-settings/notifications-settings-routes';
-import { NOTIFICATIONS_SETTINGS_ROUTE, Route } from './route';
+import {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+  Route,
+} from './route';
 
 /**
  * Opens notification settings, or an available preference section.
  * Unknown sections and sections unavailable in this build open the main page.
  */
 export const notificationsSettings = new Route({
-  pathname: '/notifications-settings',
+  pathname: NOTIFICATIONS_SETTINGS_ROUTE,
   getTitle: (_: URLSearchParams) => 'deepLink_theNotificationsSettingsPage',
   handler: function handler(params: URLSearchParams) {
     const section = params.get('section')?.trim().toLowerCase();
