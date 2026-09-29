@@ -53,7 +53,6 @@ import {
 } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   hexToBigInt,
   toCaipChainId,
@@ -167,10 +166,7 @@ import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multicha
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import {
-  getIsPerpsIncludedInBuild,
-  getIsAssetsUnifiedStateIncludedInBuild,
-} from '../../shared/lib/environment';
+import { getIsPerpsIncludedInBuild } from '../../shared/lib/environment';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -246,6 +242,7 @@ import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiRef
 import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
 import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
 import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
+import { createPopupOpener } from './popup/background';
 
 import {
   diffMap,
@@ -342,6 +339,7 @@ import {
   setSentinelApiAuth,
 } from './lib/transaction/sentinel-api';
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
+import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
@@ -673,9 +671,7 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       MoneyAccountController: MoneyAccountControllerInit,
       MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
-      ...(getIsAssetsUnifiedStateIncludedInBuild()
-        ? { AssetsController: AssetsControllerInit }
-        : {}),
+      AssetsController: AssetsControllerInit,
       LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
     };
 
@@ -854,6 +850,11 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', (update) => {
       this.userTraitsService.handleMetaMaskStateUpdate(update);
     });
+
+    registerLinkedSocialLoginProfileSync(
+      this.controllerMessenger,
+      this.preferencesController,
+    );
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),
@@ -1394,9 +1395,7 @@ export default class MetamaskController extends EventEmitter {
       StaticAssetsController: this.staticAssetsController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
-      ...(this.assetsController
-        ? { AssetsController: this.assetsController }
-        : {}),
+      AssetsController: this.assetsController,
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
@@ -1462,9 +1461,7 @@ export default class MetamaskController extends EventEmitter {
         StaticAssetsController: this.staticAssetsController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
-        ...(this.assetsController
-          ? { AssetsController: this.assetsController }
-          : {}),
+        AssetsController: this.assetsController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         MultichainRatesController: this.multichainRatesController,
@@ -1548,7 +1545,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.setupControllerEventSubscriptions();
-    this.setupMultichainDataAndSubscriptions();
 
     // For more information about these legacy streams, see here:
     // https://github.com/MetaMask/metamask-extension/issues/15491
@@ -1685,16 +1681,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
     if (
-      !isEvmAccountType(
-        this.accountsController.getSelectedMultichainAccount().type,
-      ) &&
-      !this.controllerMessenger.call(
-        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-      )
-    ) {
-      this.multichainRatesController.start();
-    }
-    if (
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
     ) {
@@ -1711,13 +1697,6 @@ export default class MetamaskController extends EventEmitter {
 
   stopNetworkRequests() {
     this.tokenDetectionController.disable();
-    if (
-      !this.controllerMessenger.call(
-        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-      )
-    ) {
-      this.multichainRatesController.stop();
-    }
     if (getIsPerpsIncludedInBuild()) {
       this.messengerClientApi
         .perpsStopEligibilityMonitoring?.()
@@ -1743,6 +1722,10 @@ export default class MetamaskController extends EventEmitter {
       ) {
         return;
       }
+
+      PerpsStreamBridge.invalidateController(
+        this.messengerClientsByName.PerpsController,
+      );
 
       if (
         this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
@@ -1845,6 +1828,9 @@ export default class MetamaskController extends EventEmitter {
       previousValueComparator((prevState, currState) => {
         const { useExternalServices: prev } = prevState;
         const { useExternalServices: curr } = currState;
+        if (prev !== curr && !curr) {
+          this.#disconnectPerpsIfActive();
+        }
         if (
           getIsPerpsIncludedInBuild() &&
           prev !== curr &&
@@ -2212,47 +2198,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sets up multichain data and subscriptions.
-   * This method is called during the MetaMaskController constructor.
-   * It starts the MultichainRatesController if selected account is non-EVM
-   * and subscribes to account changes.
-   */
-  setupMultichainDataAndSubscriptions() {
-    if (
-      this.controllerMessenger.call(
-        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-      )
-    ) {
-      return;
-    }
-
-    this.controllerMessenger.subscribe(
-      'AccountsController:selectedAccountChange',
-      (selectedAccount) => {
-        if (
-          this.activeControllerConnections === 0 ||
-          isEvmAccountType(selectedAccount.type)
-        ) {
-          this.multichainRatesController.stop();
-          return;
-        }
-        this.multichainRatesController.start();
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'CurrencyRateController:stateChange',
-      ({ currentCurrency }) => {
-        if (
-          currentCurrency !== this.multichainRatesController.state.fiatCurrency
-        ) {
-          this.multichainRatesController.setFiatCurrency(currentCurrency);
-        }
-      },
-    );
-  }
-
-  /**
    * If it does not already exist, creates and inserts middleware to handle eth
    * subscriptions for a particular evm scope on a specific Multichain API
    * JSON-RPC pipeline by origin and tabId.
@@ -2476,7 +2421,6 @@ export default class MetamaskController extends EventEmitter {
       tokenListController,
       gasFeeController,
       gatorPermissionsController,
-      metaMetricsController,
       networkController,
       announcementController,
       onboardingController,
@@ -2576,10 +2520,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       setParticipateInMetaMetrics,
       setDataCollectionForMarketing,
-      setMarketingCampaignCookieId:
-        metaMetricsController.setMarketingCampaignCookieId.bind(
-          metaMetricsController,
-        ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -2598,6 +2538,10 @@ export default class MetamaskController extends EventEmitter {
       getOpenMetamaskTabsIds: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
+      ),
+      closeNotificationPopup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:closeNotificationPopup',
       ),
       markNotificationPopupAsAutomaticallyClosed:
         this.controllerMessenger.call.bind(
@@ -4324,9 +4268,9 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * When assets-unify-state is enabled, validates ERC-20 `wallet_watchAsset`
-   * input that the unified path requires before the EIP-747 confirmation flow.
-   * Does not persist; see {@link #persistUnifiedWatchAsset}.
+   * Validates ERC-20 `wallet_watchAsset` input that the unified path requires
+   * before the EIP-747 confirmation flow. Does not persist; see
+   * {@link #persistUnifiedWatchAsset}.
    *
    * @param {object} asset - The asset descriptor from the dapp request.
    * @param {string} networkClientId - The network client the request targets.
@@ -4481,27 +4425,15 @@ export default class MetamaskController extends EventEmitter {
   }) => {
     switch (type) {
       case ERC20: {
-        // Write operations (importing an asset) use the unified AssetsController
-        // whenever it is included in the build; the runtime rollout flag is
-        // treated as always-on for writes. The compile-time build gate still
-        // decides between the unified and legacy paths.
-        if (getIsAssetsUnifiedStateIncludedInBuild()) {
-          this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
-          // Show the EIP-747 confirmation and wait for the user. A rejection
-          // throws here, so we never reach the persist step below.
-          await this.#requestUnifiedWatchAssetApproval(
-            asset,
-            origin,
-            networkClientId,
-          );
-          await this.#persistUnifiedWatchAsset(asset, networkClientId);
-        } else {
-          await this.tokensController.watchAsset({
-            asset,
-            type,
-            networkClientId,
-          });
-        }
+        this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
+        // Show the EIP-747 confirmation and wait for the user. A rejection
+        // throws here, so we never reach the persist step below.
+        await this.#requestUnifiedWatchAssetApproval(
+          asset,
+          origin,
+          networkClientId,
+        );
+        await this.#persistUnifiedWatchAsset(asset, networkClientId);
         return undefined;
       }
       case ERC721:
@@ -4749,7 +4681,7 @@ export default class MetamaskController extends EventEmitter {
 
   getCookieFromMarketingPage(data) {
     const { ga_client_id: cookieId } = data;
-    this.metaMetricsController.setMarketingCampaignCookieId(cookieId);
+    this.analyticsController.setMarketingCampaignCookieId(cookieId);
   }
 
   /**
@@ -4826,6 +4758,12 @@ export default class MetamaskController extends EventEmitter {
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
+          // `getSelectedAccount` returns the last selected *EVM* account: it
+          // falls back to `listAccounts()`, which filters to EVM types. So a
+          // selected Bitcoin or Tron account still yields the EVM address the
+          // UI sends, and `#initForAccount` does not reject the preload.
+          getSelectedAddress: () =>
+            this.accountsController.getSelectedAccount().address,
           onControllerStateChange: (cb) => {
             this.controllerMessenger.subscribe(
               'PerpsController:stateChange',
@@ -4852,6 +4790,21 @@ export default class MetamaskController extends EventEmitter {
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          isPreloadAllowed: () => {
+            const { remoteFeatureFlags } = this.controllerMessenger.call(
+              'RemoteFeatureFlagController:getState',
+            );
+            const flags = getRemoteFeatureFlags({
+              metamask: { remoteFeatureFlags },
+            });
+            return (
+              this.keyringController.state.isUnlocked &&
+              this.onboardingController.state.completedOnboarding &&
+              this.preferencesController.state.useExternalServices &&
+              getIsPerpsIncludedInBuild() &&
+              isPerpsRemoteConfigSatisfied(flags.perpsEnabledVersion)
+            );
+          },
           subscribeAggregatedOrderBook: (params) =>
             aggregatedOrderBookConnection.subscribe(params),
           isTerminalBackendEnabled: () => {
@@ -4871,7 +4824,7 @@ export default class MetamaskController extends EventEmitter {
             );
           },
           emit: (channel, data, extra) => {
-            if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+            if (!perpsStream.canEmit(channel) || !isStreamWritable(outStream)) {
               return;
             }
             outStream.write({
@@ -4948,7 +4901,7 @@ export default class MetamaskController extends EventEmitter {
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
-        perpsStream?.destroy();
+        perpsStream?.dispose();
         aggregatedOrderBookConnection?.close();
         if (this.activeControllerConnections === 0) {
           // Defer the controller-owned Perps WS teardown so a brief close/reopen
@@ -5482,12 +5435,28 @@ export default class MetamaskController extends EventEmitter {
               remoteFeatureFlagController: this.remoteFeatureFlagController,
               signerAddress,
             }),
-          showDepositPrompt: ({ origin: promptOrigin, signerAddress }) =>
-            showHyperliquidDepositPromptApproval({
+          showDepositPrompt: ({
+            origin: promptOrigin,
+            signerAddress,
+            tabId: sourceTabId,
+          }) => {
+            const useSidePanelAsDefault =
+              this.preferencesController.state.preferences
+                ?.useSidePanelAsDefault ?? true;
+
+            return showHyperliquidDepositPromptApproval({
               approvalController: this.approvalController,
               origin: promptOrigin,
               selectedAddress: signerAddress,
-            }),
+              tabId: sourceTabId,
+              requestOpenPopup: useSidePanelAsDefault
+                ? undefined
+                : createPopupOpener({ extension: this.extension }),
+              closeNotification: useSidePanelAsDefault
+                ? undefined
+                : () => this.notificationManager.closePopup(),
+            });
+          },
         }),
       );
     }
@@ -7022,6 +6991,9 @@ export default class MetamaskController extends EventEmitter {
       updateTabUrl: async (tabId, url) => {
         await browser.tabs.update(tabId, { url });
       },
+      closeNotificationPopup: this.notificationManager.closePopup.bind(
+        this.notificationManager,
+      ),
       markNotificationPopupAsAutomaticallyClosed:
         this.notificationManager.markAsAutomaticallyClosed.bind(
           this.notificationManager,

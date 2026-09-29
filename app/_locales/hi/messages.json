@@ -484,6 +484,28 @@
   "activity_marketShort_success_title": {
     "message": "शॉर्ट क्लोज़ किया जा रहा है - मार्केट क्लोज़"
   },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "डिपॉज़िट नहीं हो पाया"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "$1 डिपॉज़िट कर रहे हैं",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "$1 डिपॉज़िट किया गया",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "प्राप्त नहीं हो पाया"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "$1 प्राप्त कर रहे हैं",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "$1 प्राप्त किया गया",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "खरीदना नहीं हो पाया"
   },
@@ -1927,7 +1949,7 @@
   },
   "basicFunctionalityMigrationToastDescription": {
     "message": "थर्ड-पार्टी API अब बेसिक फंक्शनैलिटी का हिस्सा हैं। आपकी पिछली पसंद के आधार पर, यह सेटिंग $1 है। इसे कभी भी $2 में बदलें",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
     "message": "बंद किया गया"
@@ -3065,6 +3087,9 @@
   },
   "copiedToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी किया गया"
+  },
+  "copy": {
+    "message": "कॉपी करें"
   },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर एड्रेस कॉपी करें"
@@ -5414,6 +5439,14 @@
   "money": {
     "message": "वित्त"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "$1 कमाएं",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "दिखाया गया रेट मौजूदा मार्केट कंडीशन के आधार पर एक अनुमानित एनुअल परसेंटेज यील्ड (APY) है। APY वेरिएबल है और इसकी गारंटी नहीं है।"
   },
@@ -5555,6 +5588,10 @@
   "moneyBenefitAutoEarn": {
     "message": "आपके मनी बैलेंस पर ऑटो-अर्न यील्ड"
   },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "$1 तक ऑटो-अर्न करें",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
+  },
   "moneyBenefitLiquidity": {
     "message": "बिना किसी लॉकअप के पूरी लिक्विडिटी पाएं, इसलिए आप कभी भी ट्रेड कर सकते हैं या निकाल सकते हैं"
   },
@@ -5594,6 +5631,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "कोई शुल्क नहीं"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "प्रोजेक्शन में माना गया है कि $1% एनुअल परसेंटेज यील्ड (APY) एक वर्ष तक अपरिवर्तित रहती है। APY परिवर्तनशील है और इसकी गारंटी नहीं है। किसी भी रिटर्न की कोई गारंटी नहीं है।",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "आपके बैलेंस पर कमाएं"
   },
@@ -5612,6 +5653,10 @@
   "moneyHomeApyTooltip": {
     "message": "दिखाया गया रेट एक अनुमानित वार्षिक प्रतिशत यील्ड (APY) है जो मौजूदा बाज़ार परिस्थितियों पर आधारित है। APY बदल सकता है और इसकी कोई गारंटी नहीं है। फंड DeFi वॉल्ट में जाते हैं, जिसे Veda द्वारा मैनेज किया जाता है और Steakhouse Financial जोखिम की निगरानी करता है, जो स्थापित लेंडिंग मार्केट्स से रिटर्न जनरेट करता है।"
   },
+  "moneyHomeApyTooltipEarning": {
+    "message": "आपका Money Account अपने आप $1 तक कमाता है।",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money Account Monad द्वारा संचालित है।"
   },
@@ -5624,12 +5669,6 @@
   "moneyHowItWorksDescription1": {
     "message": "अपने Money Account में mUSD जोड़ें और स्वचालित रूप से $1 तक APY (वेरिएबल) कमाएं। फंड्स एक DeFi वॉल्ट में जाते हैं, जिसे Veda द्वारा प्रबंधित किया जाता है और Steakhouse Financial द्वारा जोखिम की निगरानी की जाती है। यह दर थर्ड पार्टी के DeFi प्लेटफॉर्म्स द्वारा उत्पन्न होती है जो फंड्स को ब्लॉकचेन प्रोटोकॉल्स में लगाते हैं। कोई स्टेकिंग नहीं, कोई क्लेम नहीं, कोई लॉक-अप्स नहीं।",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "आपका Money बैलेंस आपका खर्च करने का बैलेंस है। दुनिया भर में 150M+ मर्चेंट पर खर्च करने के लिए अपना MetaMask कार्ड लिंक करें। आपका पैसा तब तक कमाता रहता है जब तक आप इसका इस्तेमाल नहीं करते।"
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money Account Monad द्वारा संचालित है।"
   },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD जोड़ें और $1 तक कमाएं। आपका बैलेंस डॉलर-बैक्ड है और कभी भी खर्च करने, ट्रेड करने या भेजने के लिए तैयार है।",
@@ -5648,17 +5687,8 @@
   "moneyHowItWorksFaqApyQuestion": {
     "message": "क्या APY रेट बदलता है?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "आप! MetaMask एक सेल्फ-कस्टोडियल वॉलेट है, जिसका मतलब है कि सिर्फ़ अकाउंट होल्डर की प्राइवेट कीज़ ही इसे कंट्रोल करती हैं। MetaMask आपके फंड्स को एक्सेस, फ्रीज़ या मूव नहीं कर सकता। यही बात हमें ट्रेडिशनल बैंक अकाउंट्स और कस्टोडियल क्रिप्टो प्लेटफॉर्म्स से अलग करती है—कोई थर्ड पार्टी आपके फंड्स को होल्ड नहीं करती है।"
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "मेरे पैसे को कौन कंट्रोल करता है?"
-  },
   "moneyHowItWorksFaqFeesAnswer": {
     "message": "Money Account खोलने की कोई फीस नहीं है और स्टेबलकॉइन्स डिपॉज़िट करने की भी कोई फीस नहीं है। नॉन-स्टेबलकॉइन टोकन डिपॉजिट करने पर आपसे फीस ली जाएगी। MetaMask कार्ड ट्रांसेक्शन, ATM विड्रॉल और लोकल करेंसी ऑफरैंप कॉस्ट से जुड़ी फीस भी हैं। "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "कार्ड फीस का पूरा ब्रेकडाउन यहाँ देखें।"
   },
   "moneyHowItWorksFaqFeesQuestion": {
     "message": "क्या कोई फीस है?"
@@ -5675,20 +5705,6 @@
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
     "message": "Money अकाउंट क्या है?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD, MetaMask का 1:1 डॉलर-बैक्ड स्टेबलकॉइन है। आपका Money बैलेंस mUSD के तौर पर रखा जाता है और कभी भी खर्च करने, भेजने या ट्रेड करने के लिए उपलब्ध रहता है।",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD क्या है?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "आपका Money बैलेंस आपका खर्च करने का बैलेंस है — यह तब तक कमाता रहता है जब तक आप इसका इस्तेमाल नहीं करते। Money अकाउंट कोई बैंक अकाउंट, सेविंग्स अकाउंट या इंश्योर्ड डिपॉज़िट प्रोडक्ट नहीं है।",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "क्या यह सेविंग्स अकाउंट है या स्पेंडिंग अकाउंट?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "सामान्य प्रश्न"
@@ -6904,6 +6920,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "हम आपके $1 को सत्यापित नहीं कर सके। फिर से प्रयास करें या अपने पासवर्ड का उपयोग करें।",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "फिर से प्रयास करें",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 रजिस्टर करें",
@@ -8876,9 +8896,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "खरीदारी अस्थायी रूप से उपलब्ध नहीं है"
   },
-  "rampsShowAllTokens": {
-    "message": "सभी टोकन दिखाएं"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "यह टोकन आपके क्षेत्र में उपलब्ध नहीं है।",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -8970,6 +8987,10 @@
   },
   "relayerFee": {
     "message": "रीलेयर (relayer) फीस"
+  },
+  "remindMeLater": {
+    "message": "मुझे बाद में याद दिलाएं",
+    "description": "Secondary action to postpone replacing a legacy passkey."
   },
   "remove": {
     "message": "हटाएं"
@@ -9313,6 +9334,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "यह RPC प्रोवाइडर अनुरोधों को सीमित कर रहा है। बाद में फिर से कोशिश करें या कोई दूसरा RPC URL इस्तेमाल करें।"
   },
   "safeTransferFrom": {
     "message": "से सुरक्षित ट्रांसफर"
@@ -11577,6 +11601,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "ऑटो"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "स्लिपेज टॉलरेंस 100% पर कैप किया गया था।"
   },
   "swapSlippageHighDescription": {
     "message": "दर्ज की गई स्लिपेज ($1%) को बहुत अधिक माना जाता है और इसकी वजह से खराब दर हो सकती है",

@@ -23,7 +23,6 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
-import type { MetaMetricsControllerMethodActions } from './metametrics-controller-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
@@ -46,24 +45,17 @@ const exceptionsToFilter: Record<string, boolean> = {
  * This allows us to choose if fields of the state should be persisted or not
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
+ *
+ * The controller currently holds no state fields.
  */
-const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
-  marketingCampaignCookieId: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
-  },
-};
+const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {};
 
 /**
  * The state that MetaMetricsController stores.
  *
- * @property marketingCampaignCookieId - The marketing campaign cookie id.
+ * The controller currently holds no state fields.
  */
-export type MetaMetricsControllerState = {
-  marketingCampaignCookieId: string | null;
-};
+export type MetaMetricsControllerState = Record<never, never>;
 
 /**
  * Returns the state of the {@link MetaMetricsController}.
@@ -76,9 +68,7 @@ export type MetaMetricsControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link MetaMetricsController}.
  */
-export type MetaMetricsControllerActions =
-  | MetaMetricsControllerGetStateAction
-  | MetaMetricsControllerMethodActions;
+export type MetaMetricsControllerActions = MetaMetricsControllerGetStateAction;
 
 /**
  * Event emitted when the state of the {@link MetaMetricsController} changes.
@@ -128,11 +118,7 @@ export type MetaMetricsControllerOptions = {
  * Function to get default state of the {@link MetaMetricsController}.
  */
 export const getDefaultMetaMetricsControllerState =
-  (): MetaMetricsControllerState => ({
-    marketingCampaignCookieId: null,
-  });
-
-const MESSENGER_EXPOSED_METHODS = ['setMarketingCampaignCookieId'] as const;
+  (): MetaMetricsControllerState => ({});
 
 export class MetaMetricsController extends BaseController<
   typeof controllerName,
@@ -185,11 +171,6 @@ export class MetaMetricsController extends BaseController<
     registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
     registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
 
-    this.messenger.registerMethodActionHandlers(
-      this,
-      MESSENGER_EXPOSED_METHODS,
-    );
-
     this.messenger.subscribe(
       'PreferencesController:stateChange',
       ({ currentLocale }) => {
@@ -221,11 +202,5 @@ export class MetaMetricsController extends BaseController<
       selectedNetworkClientId,
     );
     return chainId;
-  }
-
-  setMarketingCampaignCookieId(marketingCampaignCookieId: string | null): void {
-    this.update((state) => {
-      state.marketingCampaignCookieId = marketingCampaignCookieId;
-    });
   }
 }

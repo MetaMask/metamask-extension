@@ -590,6 +590,16 @@ export function getPasskeyAutoUnlockSuppressed(state) {
 }
 
 /**
+ * Returns when the legacy passkey PRF migration reminder was last shown.
+ *
+ * @param {object} state - Redux root state
+ * @returns {number|null}
+ */
+export function getLastShownPrfMigrationReminderAt(state) {
+  return state.metamask.lastShownPrfMigrationReminderAt ?? null;
+}
+
+/**
  * True when a locked user should unlock before resuming the onboarding
  * completion page (return visit without tapping Done).
  *

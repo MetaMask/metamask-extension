@@ -101,10 +101,7 @@ function setupDomainBranch({
   const onCancel = jest.fn();
 
   mockUseSelector.mockReturnValue({
-    [SCAM_QUESTIONNAIRE_FLAG_KEY]: {
-      name: ABTestVariant.Control,
-      value: scamDomains,
-    },
+    [SCAM_QUESTIONNAIRE_FLAG_KEY]: scamDomains,
   });
 
   mockUseABTest.mockReturnValue({
