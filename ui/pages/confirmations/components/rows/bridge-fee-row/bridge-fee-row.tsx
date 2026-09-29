@@ -242,9 +242,6 @@ function buildTooltipLines({
     totals.fees,
     sponsoredNetworkFees,
   );
-  const hasSponsoredNetworkFee =
-    sponsoredNetworkFees.isSourceNetworkSponsored ||
-    sponsoredNetworkFees.isTargetNetworkSponsored;
 
   const providerFeeUsd = new BigNumber(totals.fees.provider?.usd ?? '0');
 
@@ -255,15 +252,10 @@ function buildTooltipLines({
     lines.push('');
   }
 
-  // Only claim "Paid by MetaMask" when every network leg the user would see is
-  // sponsored. Cross-chain deposits keep user-paid source gas in this line.
-  const networkFeeValue =
-    hasSponsoredNetworkFee && userPaidNetworkFee.isZero()
-      ? t('paidByMetaMask')
-      : formatFiat(userPaidNetworkFee.toNumber());
-
+  // Sponsorship is communicated by the row value, so the tooltip only breaks
+  // down amounts the user pays. Cross-chain deposits keep user-paid source gas.
   lines.push(
-    `${t('networkFee')}: ${networkFeeValue}`,
+    `${t('networkFee')}: ${formatFiat(userPaidNetworkFee.toNumber())}`,
     `${useProviderFeeLabel ? t('providerFee') : t('bridgeFee')}: ${formatFiat(
       providerFeeUsd.toNumber(),
     )}`,

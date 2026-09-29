@@ -28,9 +28,16 @@ jobs:
     needs: is-cross-repo-pr
     # Skip cross-repo PRs — later steps need write access to push commits.
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
+    permissions:
+      id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
       - name: React to the comment
         run: |
           gh api \
@@ -41,7 +48,7 @@ jobs:
             -f content='+1'
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           REPO: ${{ github.repository }}
 
   prepare:
@@ -109,12 +116,23 @@ jobs:
       - is-cross-repo-pr
       - update-attributions
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: write
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          # Use PAT to ensure that the commit later can trigger status check workflows
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
@@ -141,8 +159,8 @@ jobs:
       - name: Commit the updated attributions
         if: steps.attributions-changes.outputs.HAS_CHANGES == 'true'
         run: |
-          git config --global user.name 'MetaMask Bot'
-          git config --global user.email 'metamaskbot@users.noreply.github.com'
+          git config --global user.name 'metamask-ci[bot]'
+          git config --global user.email '271559518+metamask-ci[bot]@users.noreply.github.com'
           git commit -am "Update Attributions"
           git push
       - name: Post comment
@@ -155,7 +173,7 @@ jobs:
           fi
         env:
           HAS_CHANGES: ${{ steps.attributions-changes.outputs.HAS_CHANGES }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
   check-status:
@@ -182,7 +200,17 @@ jobs:
     needs:
       - is-cross-repo-pr
       - check-status
+    permissions:
+      contents: read
+      id-token: write
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
       - uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -193,6 +221,6 @@ jobs:
             gh pr comment "${PR_NUMBER}" --body "Attributions update failed. You can [review the logs or retry the attributions update here](${ACTION_RUN_URL})"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'

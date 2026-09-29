@@ -322,7 +322,11 @@ const AssetPage = ({
     },
   };
 
-  const resolvedAssetId = (bip44Asset?.assetId ?? assetId) as CaipAssetType;
+  // Prefer the route/computed CAIP id so Stellar activation and spendable-balance
+  // lookups still work when the asset is not yet in the account group (empty assetId).
+  const resolvedAssetId = (caipAssetId ||
+    bip44Asset?.assetId ||
+    assetId) as CaipAssetType;
 
   const isAssetInactive = useSelector((state) =>
     getIsAssetRequireActivate(state, {
