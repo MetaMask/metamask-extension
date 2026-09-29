@@ -64,6 +64,35 @@ const PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG = {
   },
 };
 
+type ConfirmationsPayTokensFlag = {
+  blockedTokens?: Json;
+  minimumRequiredTokenBalance?: number;
+  preferredTokens?: {
+    default?: Json[];
+    overrides?: Record<string, Json[]>;
+  };
+};
+
+const PROD_CONFIRMATIONS_PAY_TOKENS =
+  PROD_REMOTE_FLAGS.confirmations_pay_tokens as ConfirmationsPayTokensFlag;
+
+const PERPS_WITHDRAW_CONFIRMATIONS_PAY_TOKENS: ConfirmationsPayTokensFlag = {
+  ...PROD_CONFIRMATIONS_PAY_TOKENS,
+  preferredTokens: {
+    default: PROD_CONFIRMATIONS_PAY_TOKENS.preferredTokens?.default ?? [],
+    overrides: {
+      ...PROD_CONFIRMATIONS_PAY_TOKENS.preferredTokens?.overrides,
+      perpsWithdraw: [
+        {
+          address: ARBITRUM_USDC_ADDRESS,
+          chainId: CHAIN_IDS.ARBITRUM,
+          name: 'USDC',
+        },
+      ],
+    },
+  },
+};
+
 const ARBITRUM_USDC_MARKET_DATA = {
   tokenAddress: ARBITRUM_USDC_ADDRESS,
   currency: 'ETH',
@@ -131,6 +160,8 @@ export const PERPS_WITHDRAW_CONFIRMATION_FLAG = {
     ...PERPS_ELIGIBLE_REMOTE_FEATURE_FLAGS,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    confirmations_pay_tokens: PERPS_WITHDRAW_CONFIRMATIONS_PAY_TOKENS,
   },
 };
 
@@ -782,6 +813,8 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
       await mockEligibleFeatureFlags(server, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay_tokens: PERPS_WITHDRAW_CONFIRMATIONS_PAY_TOKENS,
       });
       await mockArbitrumGasData(server);
       await mockArbitrumUsdcPriceData(server);
