@@ -4,7 +4,7 @@ import { Driver } from '../../../webdriver/driver';
  * DeFi protocol position details for a single protocol on a chain.
  *
  * Screen: `#/defi/:chainId/:protocolId`, reached from the home DeFi tab.
- * Owns: protocol name/title, total market value, supplied heading, and token
+ * Owns: protocol name/title, total market value, details section heading, and token
  * list item balance/value assertions on the details page.
  * Boundaries: the details page only. The DeFi tab list and back-navigation
  * landing content belong to `DeFiTab` / `HomePage`.
@@ -13,6 +13,11 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/pages/defi/components/defi-details-page.tsx
  */
 class DeFiDetailsPage {
+  private readonly aTokenSectionHeading = {
+    css: '[data-testid="defi-details-list-v2-a-token-section"]',
+    text: 'a-token',
+  };
+
   private readonly defiBackButton =
     '[data-testid="defi-details-page-back-button"]';
 
@@ -24,9 +29,6 @@ class DeFiDetailsPage {
   private readonly driver: Driver;
 
   private readonly parentSelector = '.main-container.asset__container';
-
-  private readonly suppliedHeading =
-    '[data-testid="defi-details-list-supply-position"]';
 
   private readonly tokenListItemSecondaryValue =
     '[data-testid="multichain-token-list-item-secondary-value"]';
@@ -65,17 +67,14 @@ class DeFiDetailsPage {
     });
   }
 
+  async checkDetailsSectionIsDisplayed(): Promise<void> {
+    console.log('Check that details section heading is displayed');
+    await this.driver.waitForSelector(this.aTokenSectionHeading);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check if DeFi details page is loaded');
     await this.driver.waitForSelector(this.parentSelector);
-  }
-
-  async checkSuppliedHeadingIsDisplayed(): Promise<void> {
-    console.log('Check that supplied heading is displayed');
-    await this.driver.waitForSelector({
-      text: 'Supplied',
-      css: this.suppliedHeading,
-    });
   }
 
   async checkTokenBalanceWithName(tokenListItemValue: string) {

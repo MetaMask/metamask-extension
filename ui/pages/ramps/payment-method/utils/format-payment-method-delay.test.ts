@@ -6,7 +6,7 @@ import {
 const t = (key: string) => {
   const messages: Record<string, string> = {
     rampsPaymentDelayInstant: 'Instant',
-    rampsPaymentDelayLessThan: 'Less than',
+    rampsPaymentDelayLessThan: '<',
     rampsPaymentDelayMinutes: 'mins',
     rampsPaymentDelayMinute: 'min',
     rampsPaymentDelayHours: 'hours',
@@ -33,6 +33,12 @@ describe('formatPaymentMethodDelay', () => {
   it('returns null when delay is missing', () => {
     expect(formatPaymentMethodDelay(undefined, t)).toBeNull();
     expect(formatPaymentMethodDelay([5], t)).toBeNull();
+  });
+
+  it('glues the less-than glyph to the following number', () => {
+    expect(formatPaymentMethodDelay([0, 10], t)).toBe('<10 mins');
+    expect(formatPaymentMethodDelay([0, 60], t)).toBe('<1 hour');
+    expect(formatPaymentMethodDelay([0, 60 * 24], t)).toBe('<1 business day');
   });
 
   it('matches snapshot for formatted delay labels', () => {

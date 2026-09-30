@@ -266,6 +266,53 @@ describe('AmountRecipient', () => {
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
+  it('does not submit while recipient validation is still pending', async () => {
+    const mockHandleSubmit = jest.fn();
+    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+      handleSubmit: mockHandleSubmit,
+    } as unknown as ReturnType<typeof SendActions.useSendActions>);
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      to: MOCK_ADDRESS,
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: undefined,
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+    jest.spyOn(RecipientValidation, 'useRecipientValidation').mockReturnValue({
+      recipientError: null,
+      recipientWarning: null,
+      recipientResolvedLookup: null,
+      recipientConfusableCharacters: [],
+      isRecipientValidationPending: true,
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
+    } as unknown as ReturnType<
+      typeof RecipientValidation.useRecipientValidation
+    >);
+
+    const { getByRole } = render();
+
+    const continueButton = getByRole('button', {
+      name: messages.continue.message,
+    });
+    expect(continueButton).toBeDisabled();
+
+    await act(async () => {
+      fireEvent.click(continueButton);
+    });
+    expect(mockHandleSubmit).not.toHaveBeenCalled();
+  });
+
   it('allows Continue when the recipient is an address poisoning suspect', async () => {
     const knownAddress = '0x111122223333444455556666777788889999aaaa';
     const mockHandleSubmit = jest.fn();

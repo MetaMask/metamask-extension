@@ -65,6 +65,16 @@ export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
   handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
 };
 
+/**
+ * Records when the legacy passkey PRF migration reminder was last shown.
+ *
+ * @param lastShown - Timestamp when the reminder was shown.
+ */
+export type AppStateControllerSetLastShownPrfMigrationReminderAtAction = {
+  type: `AppStateController:setLastShownPrfMigrationReminderAt`;
+  handler: AppStateController['setLastShownPrfMigrationReminderAt'];
+};
+
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
   handler: AppStateController['setNewPrivacyPolicyToastClickedOrClosed'];
@@ -392,6 +402,16 @@ export type AppStateControllerSetLastInteractedConfirmationInfoAction = {
 };
 
 /**
+ * Sets the entry point that initiated the last Perps deposit flow.
+ *
+ * @param entryPoint - The entry point identifier, or undefined to clear.
+ */
+export type AppStateControllerSetLastPerpsDepositEntryPointAction = {
+  type: `AppStateController:setLastPerpsDepositEntryPoint`;
+  handler: AppStateController['setLastPerpsDepositEntryPoint'];
+};
+
+/**
  * A getter to retrieve currentPopupId saved in the appState
  */
 export type AppStateControllerGetCurrentPopupIdAction = {
@@ -578,6 +598,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AppStateControllerSetLastShownPrfMigrationReminderAtAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
   | AppStateControllerSetArcUsageNoticeShownAction
@@ -614,6 +635,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetCurrentPopupIdAction
   | AppStateControllerGetLastInteractedConfirmationInfoAction
   | AppStateControllerSetLastInteractedConfirmationInfoAction
+  | AppStateControllerSetLastPerpsDepositEntryPointAction
   | AppStateControllerGetCurrentPopupIdAction
   | AppStateControllerGetThrottledOriginStateAction
   | AppStateControllerUpdateThrottledOriginStateAction

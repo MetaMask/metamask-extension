@@ -59,6 +59,33 @@ describe('getBlockExplorerInfo utility functions', () => {
       });
     });
 
+    it('returns correct info for Arc EVM network', () => {
+      const result = getBlockExplorerInfo(mockT, testAddress, {
+        networkName: 'Arc',
+        chainId: 'eip155:5042',
+      });
+
+      expect(result).toEqual({
+        addressUrl: 'https://explorer.arc.io/address/0x1234567890abcdef',
+        name: 'Arc Explorer',
+        buttonText: 'translated_viewAddressOnExplorer_Arc Explorer',
+      });
+    });
+
+    it('returns correct info for Robinhood Chain EVM network', () => {
+      const result = getBlockExplorerInfo(mockT, testAddress, {
+        networkName: 'Robinhood Chain',
+        chainId: 'eip155:4663',
+      });
+
+      expect(result).toEqual({
+        addressUrl:
+          'https://robinhoodchain.blockscout.com/address/0x1234567890abcdef',
+        name: 'Robinhood Explorer',
+        buttonText: 'translated_viewAddressOnExplorer_Robinhood Explorer',
+      });
+    });
+
     it('returns correct info for EVM network with custom block explorer URL', () => {
       const result = getBlockExplorerInfo(mockT, testAddress, {
         networkName: 'Custom Network',

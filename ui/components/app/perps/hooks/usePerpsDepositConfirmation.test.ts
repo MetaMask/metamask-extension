@@ -1,6 +1,11 @@
 import { act } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 import {
   ConfirmationLoader,
@@ -10,6 +15,7 @@ import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
 const mockNavigate = jest.fn();
+const mockTrack = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -20,12 +26,23 @@ jest.mock('./createPerpsDepositTransaction', () => ({
   createPerpsDepositTransaction: jest.fn(),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: () => ({ track: mockTrack }),
+}));
+
 const mockEnsureArbitrumNetworkExists = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('./usePerpsNetworkManagement', () => ({
   usePerpsNetworkManagement: () => ({
     ensureArbitrumNetworkExists: mockEnsureArbitrumNetworkExists,
   }),
+}));
+
+const mockSetLastPerpsDepositEntryPoint = jest.fn();
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
+  setLastPerpsDepositEntryPoint: (...args: unknown[]) =>
+    mockSetLastPerpsDepositEntryPoint(...args),
 }));
 
 const mockCreatePerpsDepositTransaction =
@@ -63,6 +80,16 @@ describe('usePerpsDepositConfirmation', () => {
       { replace: true },
     );
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
+    // The property is always emitted so a funded deposit is distinguishable
+    // from an older client that reported nothing.
+    expect(mockTrack).toHaveBeenCalledWith(
+      MetaMetricsEventName.PerpsUiInteraction,
+      {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_FLOW_OPENED,
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+      },
+    );
   });
 
   it('ensures the Arbitrum network exists before creating the deposit transaction', async () => {
@@ -248,5 +275,44 @@ describe('usePerpsDepositConfirmation', () => {
       resolveCreate?.({ transactionId: 'tx-001' });
       await firstTriggerPromise;
     });
+  });
+
+  it('sets entry point to null when not provided', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-no-entry',
+    });
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsDepositConfirmation(),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockSetLastPerpsDepositEntryPoint).toHaveBeenCalledWith(null);
+  });
+
+  it('sets entry point when provided', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-with-entry',
+    });
+
+    const { result } = renderHookWithProvider(
+      () =>
+        usePerpsDepositConfirmation({
+          entryPoint: 'hyperliquid_deposit_prompt',
+        }),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockSetLastPerpsDepositEntryPoint).toHaveBeenCalledWith(
+      'hyperliquid_deposit_prompt',
+    );
   });
 });

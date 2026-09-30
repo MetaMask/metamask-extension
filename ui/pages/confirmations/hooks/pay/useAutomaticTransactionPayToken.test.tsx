@@ -725,6 +725,154 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
+  describe('money account deposit zero-balance tokens', () => {
+    it('skips a zero-balance preferred flag token and selects the highest funded token', () => {
+      // `minimumRequiredTokenBalance` defaults to 0, so without the
+      // deposit-specific filter a $0 preferred token would outrank a funded one.
+      selectMinimumRequiredTokenBalanceMock.mockReturnValue(0);
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+          fiat: { balance: 50 },
+        },
+        {
+          address: TOKEN_ADDRESS_1_MOCK,
+          chainId: CHAIN_ID_1_MOCK,
+          fiat: { balance: 0 },
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider({
+        transactionType: TransactionType.moneyAccountDeposit,
+        remoteFeatureFlags: {
+          confirmations_pay_tokens: {
+            preferredTokens: {
+              overrides: {
+                moneyAccountDeposit: [
+                  {
+                    address: TOKEN_ADDRESS_1_MOCK,
+                    chainId: CHAIN_ID_1_MOCK,
+                  },
+                ],
+              },
+            },
+          },
+        },
+      });
+
+      expect(setPayTokenMock).toHaveBeenCalledWith({
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      });
+    });
+
+    it('skips a zero-balance caller preferred token and selects the highest funded token', () => {
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+          fiat: { balance: 50 },
+        },
+        {
+          address: PREFERRED_TOKEN_ADDRESS_MOCK,
+          chainId: PREFERRED_CHAIN_ID_MOCK,
+          fiat: { balance: 0 },
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider({
+        transactionType: TransactionType.moneyAccountDeposit,
+        preferredToken: {
+          address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+          chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+        },
+      });
+
+      expect(setPayTokenMock).toHaveBeenCalledWith({
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      });
+    });
+
+    it('still selects a funded preferred token', () => {
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+          fiat: { balance: 50 },
+        },
+        {
+          address: PREFERRED_TOKEN_ADDRESS_MOCK,
+          chainId: PREFERRED_CHAIN_ID_MOCK,
+          fiat: { balance: 10 },
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider({
+        transactionType: TransactionType.moneyAccountDeposit,
+        preferredToken: {
+          address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+          chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+        },
+      });
+
+      expect(setPayTokenMock).toHaveBeenCalledWith({
+        address: PREFERRED_TOKEN_ADDRESS_MOCK,
+        chainId: PREFERRED_CHAIN_ID_MOCK,
+      });
+    });
+
+    it('does not select any token when every available token has a zero balance', () => {
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_1_MOCK,
+          chainId: CHAIN_ID_1_MOCK,
+          fiat: { balance: 0 },
+        },
+        {
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+          fiat: { balance: 0 },
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider({
+        transactionType: TransactionType.moneyAccountDeposit,
+      });
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+    });
+
+    it('still selects a zero-balance preferred token for perps deposits', () => {
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+          fiat: { balance: 50 },
+        },
+        {
+          address: PREFERRED_TOKEN_ADDRESS_MOCK,
+          chainId: PREFERRED_CHAIN_ID_MOCK,
+          fiat: { balance: 0 },
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider({
+        transactionType: TransactionType.perpsDeposit,
+        preferredToken: {
+          address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+          chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+        },
+      });
+
+      expect(setPayTokenMock).toHaveBeenCalledWith({
+        address: PREFERRED_TOKEN_ADDRESS_MOCK,
+        chainId: PREFERRED_CHAIN_ID_MOCK,
+      });
+    });
+  });
+
   it('selects a no-fee token that meets the minimum over the first available token', () => {
     selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
     useTransactionPayAvailableTokensMock.mockReturnValue([

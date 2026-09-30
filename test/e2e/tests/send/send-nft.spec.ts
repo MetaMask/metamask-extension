@@ -137,7 +137,10 @@ describe('Send NFT', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const mintConfirmation = new TransactionConfirmation(driver);
-            await mintConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            await mintConfirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
 
             // Wait for mint and navigate to NFT
             await driver.switchToWindowWithTitle(
@@ -163,7 +166,9 @@ describe('Send NFT', function () {
               new TokenTransferTransactionConfirmation(driver);
             await tokenTransferConfirmation.checkWalletInitiatedHeadingTitle();
             await tokenTransferConfirmation.clickScrollToBottomButton();
-            await tokenTransferConfirmation.clickFooterConfirmButton();
+            await tokenTransferConfirmation.clickFooterButton({
+              button: 'confirm',
+            });
 
             await homePage.goToActivityList();
             await activityTab.checkConfirmedTxNumberDisplayedInActivity(2);
@@ -206,7 +211,10 @@ describe('Send NFT', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const mintConfirmation = new TransactionConfirmation(driver);
-            await mintConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            await mintConfirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
 
             // Transfer via dApp
             await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -218,7 +226,10 @@ describe('Send NFT', function () {
               new TokenTransferTransactionConfirmation(driver);
             await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
             await tokenTransferConfirmation.clickScrollToBottomButton();
-            await tokenTransferConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            await tokenTransferConfirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
@@ -270,7 +281,10 @@ describe('Send NFT', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const mintConfirmation = new TransactionConfirmation(driver);
-            await mintConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            await mintConfirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
 
             // Watch the token
             await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -278,7 +292,10 @@ describe('Send NFT', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-            await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            await watchAssetConfirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
 
             // Navigate to NFT and send
             await driver.switchToWindowWithTitle(
@@ -303,7 +320,9 @@ describe('Send NFT', function () {
               new TokenTransferTransactionConfirmation(driver);
             await tokenTransferConfirmation.checkWalletInitiatedHeadingTitle();
             await tokenTransferConfirmation.clickScrollToBottomButton();
-            await tokenTransferConfirmation.clickFooterConfirmButton();
+            await tokenTransferConfirmation.clickFooterButton({
+              button: 'confirm',
+            });
 
             await homePage.goToActivityList();
             await activityTab.checkConfirmedTxNumberDisplayedInActivity(2);

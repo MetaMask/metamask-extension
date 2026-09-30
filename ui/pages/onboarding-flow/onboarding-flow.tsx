@@ -38,6 +38,7 @@ import {
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_SETUP_PASSKEY_ROUTE,
+  ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -105,6 +106,8 @@ import OnboardingDownloadApp from './download-app/download-app';
 import SetupPasskey from './setup-passkey/setup-passkey';
 import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './setup-passkey/messenger';
 import { REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES } from './recovery-phrase/messenger';
+import PasskeyPrfMigration from './passkey-prf-migration/passkey-prf-migration';
+import { PASSKEY_PRF_MIGRATION_ROUTE_CAPABILITIES } from './passkey-prf-migration/messenger';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -193,12 +196,16 @@ export default function OnboardingFlow() {
     // Only redirect while still in onboarding to avoid breaking deferred deep link handling.
     const isOnOnboardingRoute = pathname?.startsWith(ONBOARDING_ROUTE) ?? false;
     const isOnCompletionRoute = pathname === ONBOARDING_COMPLETION_ROUTE;
+    const isOnPasskeyPrfMigrationRoute = pathname?.startsWith(
+      ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+    );
     if (
       completedOnboarding &&
       !isFromReminder &&
       !openedWithSidepanel &&
       isOnOnboardingRoute &&
-      !isOnCompletionRoute
+      !isOnCompletionRoute &&
+      !isOnPasskeyPrfMigrationRoute
     ) {
       navigate(DEFAULT_ROUTE, { replace: true });
     }
@@ -482,6 +489,17 @@ export default function OnboardingFlow() {
                     capabilities={PASSKEY_SETUP_ROUTE_CAPABILITIES}
                   >
                     <SetupPasskey />
+                  </RouteMessengerProvider>
+                }
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE)}
+                element={
+                  <RouteMessengerProvider
+                    path={ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE}
+                    capabilities={PASSKEY_PRF_MIGRATION_ROUTE_CAPABILITIES}
+                  >
+                    <PasskeyPrfMigration />
                   </RouteMessengerProvider>
                 }
               />
