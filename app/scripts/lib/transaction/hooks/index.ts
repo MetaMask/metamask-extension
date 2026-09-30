@@ -214,31 +214,36 @@ function publishHook({
         featureFlags,
       });
 
-      if (result?.transactionHash || result?.getFeesError) {
+      if (result?.getFeesError) {
         try {
           getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
             transactionMeta.id,
             {
               properties: {
-                ...(result?.transactionHash && {
-                  [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
-                    TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
-                }),
-                ...(result?.getFeesError && {
-                  [GET_FEES_ERROR_METRIC_NAME]: result?.getFeesError,
-                }),
+                [GET_FEES_ERROR_METRIC_NAME]: result?.getFeesError,
               },
             },
           );
         } catch (e) {
-          console.error(
-            'Failed to record sentinel_stx and get_fees_error metrics fragment',
-            e,
+          console.error('Failed to record get_fees_error metrics fragment', e);
+        }
+      }
+
+      if (result?.transactionHash) {
+        try {
+          getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+            transactionMeta.id,
+            {
+              properties: {
+                [TRANSACTION_SUBMISSION_METHOD_METRIC_NAME]:
+                  TRANSACTION_SUBMISSION_METHOD.SENTINEL_STX,
+              },
+            },
           );
+        } catch (e) {
+          console.error('Failed to record sentinel_stx metrics fragment', e);
         }
-        if (result?.transactionHash) {
-          return result;
-        }
+        return result;
       }
     }
 
