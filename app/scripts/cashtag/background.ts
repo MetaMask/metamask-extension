@@ -379,7 +379,7 @@ function handleSetWidgetEnabled(
 }
 
 function handleTrackEvent(message: CashtagMessage) {
-  const body = message.body;
+  const { body } = message;
   const event = body?.event;
   if (
     event !== undefined &&
@@ -413,6 +413,7 @@ function handleTrackEvent(message: CashtagMessage) {
     return Promise.resolve();
   }
 
+  /* eslint-disable @typescript-eslint/naming-convention */
   if (event === 'swap_clicked') {
     trackEvent(
       createEventBuilder('Unified SwapBridge Page Viewed')
@@ -452,6 +453,7 @@ function handleTrackEvent(message: CashtagMessage) {
       })
       .build(),
   );
+  /* eslint-enable @typescript-eslint/naming-convention */
 
   return Promise.resolve();
 }
