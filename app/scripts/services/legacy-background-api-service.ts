@@ -125,7 +125,6 @@ import {
 } from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
-  CurrencyRateControllerSetCurrentCurrencyAction,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
@@ -632,7 +631,6 @@ type AllowedActions =
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
   | ClaimsControllerClearStateAction
-  | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
   | GasFeeControllerEnableNonRPCGasFeeApisAction
@@ -893,16 +891,11 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Sets the current currency for the CurrencyRateController and AssetsController.
+   * Sets the selected currency on the AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
   async setCurrentCurrency(currencyCode: SupportedCurrency): Promise<void> {
-    await this.#messenger.call(
-      'CurrencyRateController:setCurrentCurrency',
-      currencyCode,
-    );
-
     this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
   }
 

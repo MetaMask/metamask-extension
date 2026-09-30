@@ -159,10 +159,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   CronjobController: {
     events: false,
   },
-  CurrencyController: {
-    currentCurrency: true,
-    currencyRates: true,
-  },
   DecryptMessageController: {
     unapprovedDecryptMsgs: false,
     unapprovedDecryptMsgCount: true,
