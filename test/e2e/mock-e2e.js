@@ -2311,6 +2311,34 @@ async function setupMocking(
     });
   }
 
+  // AUS marketing consent (marketing-consent sync coordinator).
+  // GET responds 404 (no stored consent) so reconciliation deterministically
+  // seeds AUS with the local value; without this mock the real endpoint
+  // rejects the request, and consecutive failures open the AUS service's
+  // shared circuit breaker, blocking unrelated requests such as the
+  // notification-preferences read.
+  for (const host of [
+    'user-storage.api.cx.metamask.io',
+    'user-storage.dev-api.cx.metamask.io',
+  ]) {
+    await server
+      .forGet(`https://${host}/api/v1/preferences/marketing-consent`)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 404,
+        };
+      });
+    await server
+      .forPut(`https://${host}/api/v1/preferences/marketing-consent`)
+      .always()
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      });
+  }
+
   // On Ramp: Countries list (RampsController.init on startup)
   for (const host of [
     'on-ramp-cache.api.cx.metamask.io',

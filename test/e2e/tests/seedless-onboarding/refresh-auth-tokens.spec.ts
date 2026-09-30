@@ -9,7 +9,10 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
-import { AuthServer } from '../../helpers/seedless-onboarding/constants';
+import {
+  AuthServer,
+  ProfileSyncServer,
+} from '../../helpers/seedless-onboarding/constants';
 import { MOCK_GOOGLE_ACCOUNT } from '../../constants';
 
 async function getMockedRequests(
@@ -113,8 +116,11 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
           driver,
           mockedEndpoints,
         );
+        // The wallet re-establishes its auth session after unlock, minting a
+        // fresh OIDC token (the OAuth marketing-consent consumer that used to
+        // exercise the auth-service token endpoint was removed in this PR).
         const tokenRequestsBeforeLock = requestsBeforeLock.filter((request) =>
-          request.url.includes(AuthServer.RequestToken),
+          ProfileSyncServer.OIDCToken.test(request.url),
         ).length;
         await lockAndWaitForLoginPage(driver);
         await new LoginPage(driver).loginToHomepage();
@@ -122,7 +128,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
 
         const requests = await getMockedRequests(driver, mockedEndpoints);
         const tokenRequests = requests.filter((request) =>
-          request.url.includes(AuthServer.RequestToken),
+          ProfileSyncServer.OIDCToken.test(request.url),
         );
         assert.ok(
           tokenRequests.length > tokenRequestsBeforeLock,

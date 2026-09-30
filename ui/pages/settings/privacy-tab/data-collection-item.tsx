@@ -9,6 +9,7 @@ import {
 } from '../../../selectors/metametrics';
 import { getUseExternalServices } from '../../../selectors';
 import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
+import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 import { setDataCollectionForMarketing } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
@@ -37,6 +38,7 @@ export const DataCollectionToggleItem = () => {
   const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isSignedIn = useSelector(selectIsSignedIn);
   const [isConsentSheetOpen, setIsConsentSheetOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,9 +65,10 @@ export const DataCollectionToggleItem = () => {
   const handleToggle = async (currentValue: boolean) => {
     const newValue = !currentValue;
 
-    if (!newValue) {
-      // Warn when Updates and rewards notifications rely on the consent, or
-      // when their state cannot be read. Turning off re-reads before writing.
+    if (!newValue && isSignedIn) {
+      // The Updates and rewards channels live in AUS, so the warning only
+      // applies while signed in. A signed-out user has no AUS preferences:
+      // the read always fails and the sheet confirm could never complete.
       let needsWarning = true;
       try {
         const marketing = (await ensurePreferences())?.marketing;

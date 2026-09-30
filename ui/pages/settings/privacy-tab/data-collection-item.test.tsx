@@ -74,6 +74,7 @@ const createMockStore = (overrides = {}) =>
       optedIn: true,
       marketingConsentDecisionMade: true,
       optedInToMarketing: false,
+      isSignedIn: true,
       ...overrides,
     },
   });
@@ -443,6 +444,31 @@ describe('DataCollectionToggleItem', () => {
       'Failed to roll back marketing opt-out:',
       expect.any(Error),
     );
+  });
+
+  it('opts out directly for signed-out users even when marketing channels are enabled', async () => {
+    // Marketing channels live in AUS, which a signed-out user does not have:
+    // the preferences read always fails and the sheet confirm could never
+    // complete, so the opt-out must not require it.
+    mockMarketingPreferences = {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    };
+    const mockStore = createMockStore({
+      isSignedIn: false,
+      optedInToMarketing: true,
+    });
+    renderWithProvider(<DataCollectionToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    await waitFor(() => {
+      expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+    });
+    expect(
+      screen.queryByTestId('marketing-consent-opt-out-sheet'),
+    ).not.toBeInTheDocument();
+    expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
   it('is disabled when useExternalServices is false', () => {
