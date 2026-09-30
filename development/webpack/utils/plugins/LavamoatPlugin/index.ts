@@ -5,6 +5,7 @@ import {
   exclude as LavamoatExcludeLoader,
 } from '@lavamoat/webpack';
 import type { Args } from '../../cli';
+import { BrowserManifestVersions } from '../../helpers';
 
 // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up.
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
@@ -13,6 +14,7 @@ const rootDir = join(__dirname, '../../../../../');
 // Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
 const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
+  'scripts/inpage-mv2.js',
   'bootstrap',
 ]);
 
@@ -100,7 +102,7 @@ export const lavamoatPlugin = (args: Args) =>
     policyLocation: join(
       'lavamoat',
       'webpack',
-      `mv${args.manifestVersion}`,
+      `mv${BrowserManifestVersions[args.browser[0]]}`,
       args.type,
     ),
     diagnosticsVerbosity: 0,
@@ -202,6 +204,7 @@ export const lavamoatBackgroundLayerRule = {
 // Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
 const unsafeLayerEntries: Set<string> = new Set([
   'scripts/inpage.js',
+  'scripts/inpage-mv2.js',
   'bootstrap',
   'service-worker.ts',
 ]);

@@ -16,7 +16,7 @@ import {
   getDefaultZipMtime,
   isValidZipMtime,
 } from '../utils/plugins/ManifestPlugin/zip-mtime';
-import { Manifest } from '../utils/helpers';
+import { BrowserManifestVersions, Manifest } from '../utils/helpers';
 import {
   CHROME_MANIFEST_KEY_NON_PRODUCTION,
   CHROME_MANIFEST_KEY_RELEASE_CANDIDATE,
@@ -110,7 +110,6 @@ describe('ManifestPlugin', () => {
       browsers: [['chrome', 'firefox'], ['chrome']] as const,
       fixture: ['empty', 'complex'],
       description: [null, 'description'],
-      manifestVersion: [2, 3] as const,
       webAccessibleResources: [undefined, ['filename.map.js']],
     };
 
@@ -124,22 +123,16 @@ describe('ManifestPlugin', () => {
         fixture,
         files,
         description,
-        manifestVersion,
         webAccessibleResources,
         zip,
       } = testCase;
       const context = join(__dirname, `fixtures/ManifestPlugin/${fixture}`);
-      const baseManifest = require(
-        join(context, `manifest/v${manifestVersion}`, '_base.json'),
-      );
       const expectedAssets = getExpectedAssets(zip, browsers, files);
-      const validateManifest = getValidateManifest(testCase, baseManifest);
+      const validateManifest = getValidateManifest(testCase, context);
 
       it(`should produce a ${
         zip ? 'zip file' : 'folder'
-      } for browsers [${browsers.join(
-        ', ',
-      )}] using the v${manifestVersion} "${fixture}" manifest, including files [${files
+      } for browsers [${browsers.join(', ')}] using the "${fixture}" manifest, including files [${files
         .map((file) => file.name)
         .join(', ')}], ${
         description ? 'a description' : 'no description'
@@ -154,7 +147,6 @@ describe('ManifestPlugin', () => {
         compiler.context = context;
         const manifestPlugin = new ManifestPlugin({
           browsers,
-          manifest_version: manifestVersion,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description,
@@ -209,7 +201,7 @@ describe('ManifestPlugin', () => {
       });
       return [...new Set(assets)]; // unique
     }
-    function getValidateManifest(testCase: TestCase, baseManifest: Manifest) {
+    function getValidateManifest(testCase: TestCase, context: string) {
       // Handle case when the output is a zip file
       if (testCase.zip) {
         return () => {
@@ -223,6 +215,10 @@ describe('ManifestPlugin', () => {
         testCase.browsers.forEach((browser) => {
           const manifest = compilation.assets[`${browser}/manifest.json`];
           const json = JSON.parse(manifest.source().toString()) as Manifest;
+          const manifestVersion = BrowserManifestVersions[browser];
+          const baseManifest = require(
+            join(context, `manifest/v${manifestVersion}`, '_base.json'),
+          ) as Manifest;
 
           // Validate description, if applicable
           if (testCase.description) {
@@ -240,7 +236,7 @@ describe('ManifestPlugin', () => {
           // Validate web accessible resources
           let expectedWar: Manifest['web_accessible_resources'];
           if (testCase.webAccessibleResources) {
-            if (baseManifest.manifest_version === 3) {
+            if (manifestVersion === 3) {
               // Extend expected resources for manifest version 3
               expectedWar = baseManifest.web_accessible_resources ?? [];
               expectedWar = [
@@ -296,7 +292,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -348,7 +343,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -405,7 +399,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -450,7 +443,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -549,7 +541,7 @@ describe('ManifestPlugin', () => {
       debug = false,
       stats = true,
       context = entrypointsStatsFixtureContext,
-      manifestVersion = 3,
+      browser = 'chrome',
       htmlScriptReferences = {},
     }: {
       entrypoints?: Record<string, ReturnType<typeof createMockEntrypoint>>;
@@ -558,7 +550,7 @@ describe('ManifestPlugin', () => {
       debug?: boolean;
       stats?: boolean;
       context?: string;
-      manifestVersion?: 2 | 3;
+      browser?: 'chrome' | 'firefox';
       htmlScriptReferences?: Record<string, readonly string[]>;
     } = {}) {
       const files = Object.keys(assets);
@@ -611,8 +603,7 @@ describe('ManifestPlugin', () => {
           incomingConnections.get(module) ?? [],
       } as unknown as typeof compilation.moduleGraph;
       const manifestPlugin = new ManifestPlugin({
-        browsers: ['chrome'],
-        manifest_version: manifestVersion,
+        browsers: [browser],
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -659,6 +650,53 @@ describe('ManifestPlugin', () => {
         undefined,
         'debug artifact should not be emitted by default',
       );
+    });
+
+    it('emits browser-specific bundle-size summaries for a combined build', async () => {
+      const { compiler, compilation, promise } = mockWebpack(
+        ['service-worker.js', 'background.js'],
+        [Buffer.alloc(300), Buffer.alloc(200)],
+        [null, null],
+        false,
+      );
+      compiler.context = entrypointsStatsFixtureContext;
+      compilation.entrypoints = new Map([
+        ['service-worker.ts', createMockEntrypoint(['service-worker.js'])],
+        ['background.js', createMockEntrypoint(['background.js'])],
+      ]) as typeof compilation.entrypoints;
+      compilation.entries = new Map([
+        ['service-worker.ts', { dependencies: [] }],
+        ['background.js', { dependencies: [] }],
+      ]) as typeof compilation.entries;
+      compilation.moduleGraph = {
+        getModule: () => undefined,
+        getIncomingConnections: () => [],
+      } as unknown as typeof compilation.moduleGraph;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+        stats: { outFile: BUNDLE_SIZE_SUMMARY_FILE },
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const chromeSummary = readJsonAsset<BundleSizeSummary>(
+        compilation,
+        chromeSummaryAssetPath,
+      );
+      const firefoxSummary = readJsonAsset<BundleSizeSummary>(
+        compilation,
+        BUNDLE_SIZE_SUMMARY_FILE.replaceAll('[browser]', 'firefox'),
+      );
+
+      assert.strictEqual(chromeSummary.background, 300);
+      assert.strictEqual(firefoxSummary.background, 200);
     });
 
     it('emits a sibling debug artifact with normalized entrypoint files', async () => {
@@ -765,7 +803,7 @@ describe('ManifestPlugin', () => {
     it('classifies MV2 manifest background entries as background', async () => {
       const compilation = await buildStatsAssets({
         context: entrypointsStatsFixtureContext,
-        manifestVersion: 2,
+        browser: 'firefox',
         assets: {
           'background-page.js': 10,
           'background-script.js': 20,
@@ -778,7 +816,7 @@ describe('ManifestPlugin', () => {
 
       const summary = readJsonAsset<BundleSizeSummary>(
         compilation,
-        chromeSummaryAssetPath,
+        BUNDLE_SIZE_SUMMARY_FILE.replaceAll('[browser]', 'firefox'),
       );
       assert.deepStrictEqual(summary, {
         background: 30,
@@ -1221,7 +1259,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -1263,7 +1300,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -1300,7 +1336,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -1338,7 +1373,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -1380,7 +1414,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: 'test suffix',
@@ -1407,7 +1440,6 @@ describe('ManifestPlugin', () => {
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -1448,46 +1480,12 @@ describe('ManifestPlugin', () => {
       );
     });
 
-    it('should work with manifest v2 and build type overrides', async () => {
-      const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compiler.context = context;
-
-      const manifestPlugin = new ManifestPlugin({
-        browsers: ['chrome'],
-        manifest_version: 2,
-        version: '1.0.0.0',
-        versionName: '1.0.0',
-        description: null,
-        buildType: 'beta',
-        zip: false,
-      });
-
-      manifestPlugin.apply(compiler);
-      await promise;
-
-      const manifest = compilation.assets['chrome/manifest.json'];
-      const json = JSON.parse(manifest.source().toString()) as Manifest;
-
-      assert.strictEqual(json.manifest_version, 2, 'should use manifest v2');
-      assert.strictEqual(
-        json.description,
-        'Beta build type description',
-        'should use beta build type description in v2',
-      );
-      assert.strictEqual(
-        json.beta_property,
-        'from_beta_base',
-        'should include beta base property in v2',
-      );
-    });
-
     it('should append additional description suffix to build type description', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
       compiler.context = context;
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: 'Additional Info',
@@ -1525,13 +1523,12 @@ describe('ManifestPlugin', () => {
     }
 
     describe('collectEntrypoints', () => {
-      it('should collect all MV2 entries from the manifest', async () => {
+      it('should collect all MV2 entries for Firefox', async () => {
         const { compiler, entries, promise } = mockWebpack([], [], []);
         compiler.context = entrypointsContext;
 
         const plugin = new ManifestPlugin({
-          browsers: ['chrome'],
-          manifest_version: 2,
+          browsers: ['firefox'],
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -1548,7 +1545,10 @@ describe('ManifestPlugin', () => {
           entries['scripts/contentscript.js'],
           'should have contentscript entry',
         );
-        assert.ok(entries['scripts/inpage.js'], 'should have inpage entry');
+        assert.ok(
+          entries['scripts/inpage-mv2.js'],
+          'should have MV2 inpage entry',
+        );
         assert.ok(
           entries['vendor/trezor/content-script.js'],
           'should have trezor content-script entry',
@@ -1594,7 +1594,7 @@ describe('ManifestPlugin', () => {
         assert.strictEqual(cs.chunkLoading, false);
         assert.strictEqual(cs.filename, 'scripts/contentscript.js');
         assert.deepStrictEqual(cs.import, [
-          resolve(entrypointsContext, 'scripts/contentscript.js'),
+          resolve(entrypointsContext, 'scripts/contentscript.ts'),
         ]);
 
         // Verify HTML entry structure
@@ -1603,13 +1603,12 @@ describe('ManifestPlugin', () => {
         ]);
       });
 
-      it('should collect all MV3 entries from the manifest', async () => {
+      it('should collect all MV3 entries for Chrome', async () => {
         const { compiler, entries, promise } = mockWebpack([], [], []);
         compiler.context = entrypointsContext;
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          manifest_version: 3,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -1672,24 +1671,35 @@ describe('ManifestPlugin', () => {
         );
       });
 
-      it('should not add duplicate script entries across multiple browsers', async () => {
+      it('should collect the union of MV2 and MV3 entries in one build', async () => {
         const { compiler, entries, promise } = mockWebpack([], [], []);
         compiler.context = entrypointsContext;
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome', 'firefox'],
-          manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
           buildType: 'main',
           zip: false,
+          html,
         });
 
         plugin.apply(compiler);
         await promise;
 
-        // Even with 2 browsers, each script should appear only once
+        assert.ok(
+          entries['service-worker.ts'],
+          'should have service worker entry',
+        );
+        assert.ok(
+          entries['background.js'],
+          'should have background script entry',
+        );
+        assert.ok(entries.background, 'should have MV2 background page entry');
+        assert.ok(entries.offscreen, 'should have MV3 offscreen page entry');
+
+        // Even with 2 browsers, each script should appear only once.
         const scriptKeys = Object.keys(entries).filter((k) =>
           k.endsWith('.js'),
         );
@@ -1708,8 +1718,7 @@ describe('ManifestPlugin', () => {
         compiler.context = entrypointsContext;
 
         const plugin = new ManifestPlugin({
-          browsers: ['chrome'],
-          manifest_version: 2,
+          browsers: ['firefox'],
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -1743,7 +1752,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -1769,7 +1777,6 @@ describe('ManifestPlugin', () => {
       it('should return false for default self-contained scripts', () => {
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -1797,7 +1804,6 @@ describe('ManifestPlugin', () => {
       it('should return true when name is null or undefined', () => {
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          manifest_version: 2,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -1848,7 +1854,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          manifest_version: 3,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -1895,7 +1900,7 @@ describe('ManifestPlugin', () => {
           mockEntrypoint('scripts/contentscript.bundle.js'),
         );
         compilation.entrypoints.set(
-          'scripts/inpage.js',
+          'scripts/inpage-mv2.js',
           mockEntrypoint('scripts/inpage.bundle.js'),
         );
         compilation.entrypoints.set(
@@ -1912,8 +1917,7 @@ describe('ManifestPlugin', () => {
         );
 
         const plugin = new ManifestPlugin({
-          browsers: ['chrome'],
-          manifest_version: 2,
+          browsers: ['firefox'],
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -1924,7 +1928,7 @@ describe('ManifestPlugin', () => {
         plugin.apply(compiler);
         await promise;
 
-        const manifest = compilation.assets['chrome/manifest.json'];
+        const manifest = compilation.assets['firefox/manifest.json'];
         const json = JSON.parse(manifest.source().toString()) as Manifest;
 
         // content_scripts should be resolved
@@ -1956,7 +1960,6 @@ describe('ManifestPlugin', () => {
         // Do NOT set any entrypoints - all should fall back to original paths
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          manifest_version: 3,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -2005,7 +2008,6 @@ describe('ManifestPlugin', () => {
 
         const plugin = new ManifestPlugin({
           browsers: ['chrome'],
-          manifest_version: 3,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description: null,
@@ -2039,7 +2041,6 @@ describe('ManifestPlugin', () => {
 
       const plugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -2084,7 +2085,6 @@ describe('ManifestPlugin', () => {
 
       const plugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -2146,7 +2146,6 @@ describe('ManifestPlugin', () => {
 
       const plugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -2188,7 +2187,6 @@ describe('ManifestPlugin', () => {
 
       const plugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,
@@ -2224,7 +2222,6 @@ describe('ManifestPlugin', () => {
 
       const plugin = new ManifestPlugin({
         browsers: ['chrome'],
-        manifest_version: 3,
         version: '1.0.0.0',
         versionName: '1.0.0',
         description: null,

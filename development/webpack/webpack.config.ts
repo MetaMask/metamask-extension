@@ -23,6 +23,7 @@ import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
+  BrowserManifestVersions,
   getMinimizers,
   JAVASCRIPT_FILE_RE,
   NODE_MODULES_RE,
@@ -58,7 +59,11 @@ const nodeModules = join(__dirname, '../../node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const isDevelopmentWatchMode = isDevelopment && args.watch;
-const MANIFEST_VERSION = args.manifestVersion;
+const manifestVersions = new Set(
+  args.browser.map((browser) => BrowserManifestVersions[browser]),
+);
+const hasMv2Target = manifestVersions.has(2);
+const hasMv3Target = manifestVersions.has(3);
 const browsersListPath = join(root, '.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
@@ -66,7 +71,11 @@ const { variables, safeVariables, version, buildEnvVarDeclarations } =
   getVariables(args, buildTypes);
 const webAccessibleResources =
   args.devtool === 'source-map'
-    ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
+    ? [
+        'scripts/inpage.js.map',
+        'scripts/inpage-mv2.js.map',
+        'scripts/contentscript.js.map',
+      ]
     : [];
 
 // #region cache
@@ -110,13 +119,13 @@ const manifestPlugin = new ManifestPlugin({
     { directory: join('html', 'other'), category: 'other' },
   ],
   web_accessible_resources: webAccessibleResources,
-  manifest_version: MANIFEST_VERSION,
   description: commitHash
     ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
     : null,
   version: version.version,
   versionName: version.versionName,
   browsers: args.browser,
+  browserAssetPaths: hasMv3Target ? { chrome: ['snaps/'] } : undefined,
   transform: transformManifest(
     args,
     isDevelopment,
@@ -164,7 +173,7 @@ const plugins: WebpackPluginInstance[] = [
       // which triggers `chrome.runtime.reload()` only when a background or
       // content-script bundle changes. (On MV3 the client is bundled into the
       // service worker instead, since it loads a single JS file.)
-      if (MANIFEST_VERSION === 2 && entry.name === 'background') {
+      if (entry.name === 'background') {
         return injectEntryScripts(
           content,
           compilation,
@@ -223,7 +232,7 @@ const plugins: WebpackPluginInstance[] = [
           ]
         : []),
       // snaps MV3 needs the offscreen document
-      ...(MANIFEST_VERSION === 3
+      ...(hasMv3Target
         ? [
             {
               from: join(
@@ -247,9 +256,9 @@ const plugins: WebpackPluginInstance[] = [
   }),
 ];
 // MV2 requires self-injection
-if (MANIFEST_VERSION === 2) {
+if (hasMv2Target) {
   const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
-  plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+  plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage-mv2\.js$/u }));
 }
 if (args.lavamoat) {
   const {
@@ -315,6 +324,12 @@ const isChunkableInitial = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
+const isBackgroundPageChunk = (chunk: Chunk) =>
+  /^background(?:\.\d+)?$/u.test(chunk.name ?? '');
+const isOffscreenPageChunk = (chunk: Chunk) =>
+  /^offscreen(?:\.\d+)?$/u.test(chunk.name ?? '');
+const isTargetSpecificPageChunk = (chunk: Chunk) =>
+  isBackgroundPageChunk(chunk) || isOffscreenPageChunk(chunk);
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -615,13 +630,35 @@ const config = {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
           test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
-          chunks: isChunkableInitial,
+          chunks: (chunk) =>
+            isChunkableInitial(chunk) && !isTargetSpecificPageChunk(chunk),
         },
         vendor: {
           // js/mjs files in node_modules or subdirectories of node_modules
           test: /[\\/]node_modules[\\/].*?\.m?js$/u,
           name: 'vendor',
-          chunks: isChunkableInitial,
+          chunks: (chunk) =>
+            isChunkableInitial(chunk) && !isTargetSpecificPageChunk(chunk),
+        },
+        mv2Js: {
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          name: 'mv2-js',
+          chunks: isBackgroundPageChunk,
+        },
+        mv2Vendor: {
+          test: /[\\/]node_modules[\\/].*?\.m?js$/u,
+          name: 'mv2-vendor',
+          chunks: isBackgroundPageChunk,
+        },
+        mv3Js: {
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          name: 'mv3-js',
+          chunks: isOffscreenPageChunk,
+        },
+        mv3Vendor: {
+          test: /[\\/]node_modules[\\/].*?\.m?js$/u,
+          name: 'mv3-vendor',
+          chunks: isOffscreenPageChunk,
         },
         asyncJs: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)

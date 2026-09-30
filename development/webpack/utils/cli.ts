@@ -8,13 +8,7 @@ import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
 import type { BuildTypesConfig } from '../../lib/build-type';
-import {
-  Browsers,
-  type Manifest,
-  type Browser,
-  uniqueSort,
-  toOrange,
-} from './helpers';
+import { Browsers, type Browser, uniqueSort, toOrange } from './helpers';
 import { ENVIRONMENTS, MODES } from './constants';
 import {
   getAvailableMemoryMB,
@@ -407,6 +401,11 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
           throw new Error(message);
         }
       }
+      if (args.lavamoat === true && args.browser.length > 1) {
+        throw new Error(
+          'LavaMoat builds support one browser target at a time because their policies and runtime configuration are manifest-version-specific.',
+        );
+      }
       if (args.threads === 0 && args.jobsPerThread !== 0) {
         throw new Error(
           'Invalid combination: --jobsPerThread is ignored when thread-loader is disabled (--threads 0, --generatePolicy, or --reactCompilerVerbose). Remove --jobsPerThread or enable thread-loader.',
@@ -560,15 +559,6 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-    manifestVersion: {
-      alias: 'v',
-      array: false,
-      choices: [2, 3] as Manifest['manifest_version'][],
-      default: 3 as Manifest['manifest_version'],
-      description: "Changes manifest.json format to the given version's schema",
-      group: toOrange('Build options:'),
-      type: 'number',
-    },
     releaseVersion: {
       alias: 'r',
       array: false,
@@ -718,7 +708,6 @@ Threads: ${args.threads}
 Jobs per thread: ${args.jobsPerThread}
 Free RAM: ${Math.floor(getAvailableMemoryMB())}MB
 Validate Env: ${args.validateEnv}
-Manifest version: ${args.manifestVersion}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}
 Devtool: ${args.devtool}

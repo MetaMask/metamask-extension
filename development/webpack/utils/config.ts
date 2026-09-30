@@ -68,16 +68,15 @@ export function getBuildName(
   type: string,
   build: BuildType,
   isDev: boolean,
-  args: Pick<Args, 'manifestVersion' | 'lavamoat' | 'snow'>,
+  args: Pick<Args, 'lavamoat' | 'snow'>,
 ) {
   const buildName =
     build.buildNameOverride ||
     `MetaMask ${type.slice(0, 1).toUpperCase()}${type.slice(1)}`;
   if (isDev) {
-    const mv3Str = args.manifestVersion === 3 ? ' MV3' : '';
     const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
     const snowStr = args.snow ? ' snow' : '';
-    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}`;
+    return `${buildName}${lavamoatStr}${snowStr}`;
   }
   return buildName;
 }

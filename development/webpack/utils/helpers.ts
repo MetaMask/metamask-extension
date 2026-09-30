@@ -13,6 +13,11 @@ export type EntryDescription = Exclude<EntryObject[string], string | string[]>;
 export const Browsers = ['chrome', 'firefox'] as const;
 export type Browser = (typeof Browsers)[number];
 
+export const BrowserManifestVersions = {
+  chrome: 3,
+  firefox: 2,
+} as const satisfies Record<Browser, Manifest['manifest_version']>;
+
 const slash = `\\${sep}`;
 /**
  * Regular expression to match files in any `node_modules` directory

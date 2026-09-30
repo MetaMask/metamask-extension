@@ -32,7 +32,7 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "exclude_matches": ["*://connect.trezor.io/*"],
-      "js": ["scripts/contentscript.js", "scripts/inpage.js"],
+      "js": ["scripts/contentscript.js", "scripts/inpage-mv2.js"],
       "run_at": "document_start",
       "all_frames": true
     },
