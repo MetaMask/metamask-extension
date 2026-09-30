@@ -1,5 +1,15 @@
-import React, { useCallback, useContext } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useDeferredValue,
+  useMemo,
+} from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import {
+  type CaipAssetType,
+  isCaipChainId,
+  isStrictHexString,
+} from '@metamask/utils';
 
 import {
   Text,
@@ -23,6 +33,11 @@ import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSe
 import { SendContext } from '../../../context/send';
 import { Asset as AssetComponent, type TokenTagRenderer } from '../../UI/asset';
 import { useScrollContainer } from '../../../../../contexts/scroll-container';
+import {
+  normalizeTokenAssetId,
+  toAssetId,
+} from '../../../../../../shared/lib/asset-utils';
+import { useTokenAssetSecurityResults } from '../../../../../hooks/token-asset/useTokenAssetSecurityResults';
 
 type AssetListProps = {
   tokens: Asset[];
@@ -40,13 +55,25 @@ type AssetListProps = {
 };
 
 type ListItem =
-  | { type: 'token'; asset: Asset }
+  | { type: 'token'; asset: Asset; safetyResult?: string }
   | { type: 'nft-header' }
   | { type: 'nft'; asset: Asset };
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 40;
 const noop = () => undefined;
+
+const toSecurityAssetId = (asset: Asset): CaipAssetType | undefined => {
+  const { address, assetId, chainId } = asset;
+  const identifier = assetId ?? address;
+
+  if (!identifier || (!isStrictHexString(chainId) && !isCaipChainId(chainId))) {
+    return undefined;
+  }
+
+  const caipAssetId = toAssetId(identifier, chainId);
+  return caipAssetId ? normalizeTokenAssetId(caipAssetId) : undefined;
+};
 
 export const AssetList = ({
   tokens,
@@ -77,6 +104,25 @@ export const AssetList = ({
   const effectiveNfts = hideNfts ? [] : nfts;
   const effectiveAllNfts = hideNfts ? [] : allNfts;
 
+  const tokenRows = useMemo(
+    () =>
+      tokens.map((asset) => ({ asset, caipAssetId: toSecurityAssetId(asset) })),
+    [tokens],
+  );
+
+  const displayedAssetIds = useMemo(
+    () =>
+      tokenRows
+        .map(({ caipAssetId }) => caipAssetId)
+        .filter((caipAssetId) => caipAssetId !== undefined),
+    [tokenRows],
+  );
+
+  const deferredDisplayedAssetIds = useDeferredValue(displayedAssetIds);
+  const securityResultByAssetId = useTokenAssetSecurityResults({
+    assetIds: deferredDisplayedAssetIds,
+  });
+
   const hasFilteredResults = tokens.length > 0 || effectiveNfts.length > 0;
   const hasAnyAssets = allTokens.length > 0 || effectiveAllNfts.length > 0;
 
@@ -100,8 +146,14 @@ export const AssetList = ({
 
   const items: ListItem[] = [];
 
-  tokens.forEach((token) => {
-    items.push({ type: 'token', asset: token });
+  tokenRows.forEach(({ asset, caipAssetId }) => {
+    items.push({
+      type: 'token',
+      asset,
+      safetyResult: caipAssetId
+        ? securityResultByAssetId[caipAssetId]
+        : undefined,
+    });
   });
 
   if (effectiveNfts.length > 0) {
@@ -214,6 +266,9 @@ export const AssetList = ({
                 asset={item.asset}
                 onClick={() => handleAssetClick(item.asset)}
                 hideBalances={hideBalances}
+                safetyResult={
+                  item.type === 'token' ? item.safetyResult : undefined
+                }
                 tagRenderers={tagRenderers}
                 endRenderers={endRenderers}
               />
