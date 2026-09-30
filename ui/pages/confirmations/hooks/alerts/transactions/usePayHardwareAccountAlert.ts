@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -10,6 +9,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AlertsName } from '../constants';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
+import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useIsPayHardwareBlocked } from '../../pay/useIsPayHardwareBlocked';
 import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
@@ -38,12 +38,13 @@ export function usePayHardwareAccountAlert(): Alert[] {
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
   const isQrWallet = account?.metadata?.keyring?.type === KeyringTypes.qr;
-  const isMoneyAccountDeposit = hasTransactionType(transactionMeta, [
-    TransactionType.moneyAccountDeposit,
-  ]);
+  const isQrHardwareBlocked = hasTransactionType(
+    transactionMeta,
+    PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES,
+  );
   const shouldAlert =
     isHardwareWallet &&
-    (isHardwareBlocked || (isQrWallet && isMoneyAccountDeposit));
+    (isHardwareBlocked || (isQrWallet && isQrHardwareBlocked));
 
   return useMemo(() => {
     if (!shouldAlert) {

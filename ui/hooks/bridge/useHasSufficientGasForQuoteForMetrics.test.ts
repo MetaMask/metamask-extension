@@ -124,6 +124,26 @@ describe('useHasSufficientGasForQuoteForMetrics', () => {
     ).toBe(false);
   });
 
+  it('requires fee + quote reserve for a non-native quote', () => {
+    const native = getNativeAssetForChainId(ChainId.ETH);
+    const quote = buildQuote(ERC20_TOKEN, '10', '80', ChainId.ETH);
+    quote.quote.feeData.reserve = [
+      { amount: '5000000000000000000', normalizedAmount: '5', asset: native },
+    ];
+    const hasSufficientGas = (nativeBalance: string) => {
+      mockGetFromBalances.mockReturnValue({
+        [native.assetId]: nativeBalance,
+      } as ReturnType<typeof bridgeSelectors.getFromBalances>);
+      return renderUseHasSufficientGasForQuoteForMetrics().result.current(
+        quote,
+      );
+    };
+
+    // fee 10 + reserve 5
+    expect(hasSufficientGas('14.9')).toBe(false);
+    expect(hasSufficientGas('15.1')).toBe(true);
+  });
+
   it('applies the Solana rent reserve based on quoteRequest.srcChainId', () => {
     mockGetQuoteRequest.mockReturnValue({ srcChainId: ChainId.SOLANA });
 

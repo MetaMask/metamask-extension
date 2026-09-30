@@ -44,7 +44,7 @@ export const getSecurityTrustBadgeConfig = (
     case 'Warning':
     case 'Spam':
       return {
-        icon: IconName.Warning,
+        icon: IconName.Danger,
         iconColor: IconColor.WarningDefault,
         alertSeverity: 'warning',
         label: t('securityTrustRisky'),
@@ -84,6 +84,7 @@ export const SecurityTrustInlineBadge = ({
         name={badge.icon}
         size={IconSize.Sm}
         color={badge.iconColor}
+        className="shrink-0"
       />
     );
 
@@ -94,7 +95,7 @@ export const SecurityTrustInlineBadge = ({
           onClick={onClick}
           data-testid={testId}
           aria-label={badge.accessibleLabel ?? testId ?? 'security-badge'}
-          className="cursor-pointer border-0 bg-transparent p-0 leading-none"
+          className="shrink-0 cursor-pointer border-0 bg-transparent p-0 leading-none"
         >
           {verifiedIcon}
         </button>
@@ -113,7 +114,7 @@ export const SecurityTrustInlineBadge = ({
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      className={`inline-flex self-start items-center gap-1 rounded-md px-2 py-0.5 ${tagBackgroundClass}`}
+      className={`inline-flex shrink-0 self-start items-center gap-1 rounded-md px-2 py-0.5 ${tagBackgroundClass}`}
       data-testid={onClick ? undefined : testId}
     >
       <Icon name={badge.icon} size={IconSize.Sm} color={badge.iconColor} />
@@ -136,7 +137,7 @@ export const SecurityTrustInlineBadge = ({
       type="button"
       onClick={onClick}
       data-testid={testId}
-      className="cursor-pointer border-0 bg-transparent p-0"
+      className="shrink-0 cursor-pointer border-0 bg-transparent p-0"
     >
       {tag}
     </button>

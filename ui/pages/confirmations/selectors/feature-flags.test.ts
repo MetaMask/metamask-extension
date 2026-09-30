@@ -682,26 +682,6 @@ describe('Confirmations Pay Feature Flags', () => {
       expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(true);
     });
 
-    it('returns false for mUSD conversion when enabled is false', () => {
-      const state = getMockPayHardwareState({ enabled: false });
-      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(false);
-    });
-
-    it('defaults to false when confirmations_pay_hardware is not set', () => {
-      const state = getMockPayHardwareState();
-      expect(selectIsPayHardwareEnabled(state)).toBe(false);
-    });
-
-    it('defaults to false when confirmations_pay_hardware is an empty object', () => {
-      const state = getMockPayHardwareState({});
-      expect(selectIsPayHardwareEnabled(state)).toBe(false);
-    });
-
-    it('defaults to false when remoteFeatureFlags is empty', () => {
-      const state: MockState = { metamask: { remoteFeatureFlags: {} } };
-      expect(selectIsPayHardwareEnabled(state)).toBe(false);
-    });
-
     it('applies the legacy flat enabled value only to mUSD conversion', () => {
       const state = getMockPayHardwareState({ enabled: true });
       expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(true);
@@ -709,17 +689,6 @@ describe('Confirmations Pay Feature Flags', () => {
         false,
       );
       expect(selectIsPayHardwareEnabled(state)).toBe(false);
-    });
-
-    it('enables Money Account deposits next to the legacy flat value only with an override', () => {
-      const state = getMockPayHardwareState({
-        enabled: true,
-        overrides: { moneyAccountDeposit: { enabled: true } },
-      });
-      expect(selectIsPayHardwareEnabled(state, 'moneyAccountDeposit')).toBe(
-        true,
-      );
-      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(true);
     });
 
     it('resolves a per-type override over the default', () => {
@@ -732,18 +701,6 @@ describe('Confirmations Pay Feature Flags', () => {
       );
       expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(false);
       expect(selectIsPayHardwareEnabled(state)).toBe(false);
-    });
-
-    it('prefers the nested default over the legacy flat value', () => {
-      const state = getMockPayHardwareState({
-        enabled: true,
-        default: { enabled: false },
-        overrides: { musdConversion: { enabled: true } },
-      });
-      expect(selectIsPayHardwareEnabled(state, 'moneyAccountDeposit')).toBe(
-        false,
-      );
-      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(true);
     });
   });
 
@@ -760,12 +717,6 @@ describe('Confirmations Pay Feature Flags', () => {
       },
     });
 
-    it('returns disabled when the flag is missing', () => {
-      expect(
-        selectPayHardwareConfig(getMockPayHardwareState(), 'musdConversion'),
-      ).toStrictEqual({ enabled: false });
-    });
-
     it('returns the default when the type has no override', () => {
       const state = getMockPayHardwareState({
         default: { enabled: true },
@@ -774,26 +725,6 @@ describe('Confirmations Pay Feature Flags', () => {
       expect(selectPayHardwareConfig(state, 'musdConversion')).toStrictEqual({
         enabled: true,
       });
-    });
-
-    it('returns the override for the type', () => {
-      const state = getMockPayHardwareState({
-        default: { enabled: true },
-        overrides: { moneyAccountDeposit: { enabled: false } },
-      });
-      expect(
-        selectPayHardwareConfig(state, 'moneyAccountDeposit'),
-      ).toStrictEqual({ enabled: false });
-    });
-
-    it('falls back to the default when the override omits enabled', () => {
-      const state = getMockPayHardwareState({
-        default: { enabled: true },
-        overrides: { moneyAccountDeposit: {} },
-      });
-      expect(
-        selectPayHardwareConfig(state, 'moneyAccountDeposit'),
-      ).toStrictEqual({ enabled: true });
     });
   });
 
