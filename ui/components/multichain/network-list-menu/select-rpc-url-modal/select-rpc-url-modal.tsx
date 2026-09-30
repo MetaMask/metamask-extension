@@ -76,12 +76,10 @@ export const SelectRpcUrlModal = ({
       </Box>
 
       {networkConfigurationToUse.rpcEndpoints.map((rpcEndpoint, index) => (
-        <Box
-          alignItems={AlignItems.center}
-          paddingLeft={4}
-          paddingRight={4}
-          display={Display.Flex}
+        <button
+          type="button"
           key={rpcEndpoint.url}
+          data-testid={`network-rpc-option-${rpcEndpoint.name ?? String(index)}`}
           onClick={() => {
             const network = {
               ...networkConfigurationToUse,
@@ -94,10 +92,13 @@ export const SelectRpcUrlModal = ({
               rpcEndpoint.networkClientId,
             );
           }}
-          className={classnames('select-rpc-url__item', {
-            'select-rpc-url__item--selected':
-              index === networkConfigurationToUse.defaultRpcEndpointIndex,
-          })}
+          className={classnames(
+            'select-rpc-url__item flex w-full items-center px-4 text-left',
+            {
+              'select-rpc-url__item--selected':
+                index === networkConfigurationToUse.defaultRpcEndpointIndex,
+            },
+          )}
         >
           {index === networkConfigurationToUse.defaultRpcEndpointIndex && (
             <Box
@@ -107,7 +108,7 @@ export const SelectRpcUrlModal = ({
             />
           )}
           <RpcListItem rpcEndpoint={rpcEndpoint} />
-        </Box>
+        </button>
       ))}
     </Box>
   );
