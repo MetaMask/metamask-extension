@@ -92,24 +92,6 @@ const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
   },
 };
 
-const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
-  MultichainAssetsController: {
-    accountsAssets: {
-      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
-    },
-    assetsMetadata: {
-      [USDC_CAIP_ASSET]: {
-        fungible: true,
-        iconUrl:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-        name: 'USD Coin',
-        symbol: 'USDC',
-        units: [{ decimals: 6, name: 'USD Coin', symbol: 'USDC' }],
-      },
-    },
-  },
-};
-
 async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
   const solanaAssets: Record<
     string,
@@ -231,7 +213,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
                 },
               },
             },
-            ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
           });
           return fixture;
         })(),
@@ -305,7 +286,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
                 },
               },
             },
-            ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
           });
           return fixture;
         })(),
