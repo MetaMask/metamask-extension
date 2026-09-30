@@ -3,8 +3,8 @@ import {
   PAY_HARDWARE_BLOCKED_TRANSACTION_TYPES,
   PAY_HARDWARE_FLAG_GATED_TRANSACTION_TYPES,
 } from '../../constants/pay';
-import { useIsPayHardwareEnabled } from './useIsPayHardwareEnabled';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
+import { useIsPayHardwareEnabled } from './useIsPayHardwareEnabled';
 
 /**
  * Whether the current confirmation forbids funding from a hardware wallet

@@ -62,7 +62,8 @@ const mockGetOrderedNetworksList = jest.fn();
 const mockGetOriginOfCurrentTab = jest.fn();
 const mockGetPermittedEVMChainsForSelectedTab = jest.fn();
 const mockGetPreferences = jest.fn();
-const mockGetShowTestNetworks = jest.fn();
+const mockGetShouldShowTestNetworks = jest.fn();
+const mockGetIsTestnetInUse = jest.fn();
 const mockGetAllChainsToPoll = jest.fn();
 
 jest.mock('../../../selectors', () => ({
@@ -74,7 +75,9 @@ jest.mock('../../../selectors', () => ({
   getOriginOfCurrentTab: (state: unknown) => mockGetOriginOfCurrentTab(state),
   getPermittedEVMChainsForSelectedTab: (state: unknown, activeTab: unknown) =>
     mockGetPermittedEVMChainsForSelectedTab(state, activeTab),
-  getShowTestNetworks: (state: unknown) => mockGetShowTestNetworks(state),
+  getShouldShowTestNetworks: (state: unknown) =>
+    mockGetShouldShowTestNetworks(state),
+  getIsTestnetInUse: (state: unknown) => mockGetIsTestnetInUse(state),
   getAllChainsToPoll: (state: unknown) => mockGetAllChainsToPoll(state),
 }));
 
@@ -184,7 +187,9 @@ const setupSelectors = ({
   mockGetOriginOfCurrentTab.mockReturnValue(origin);
   mockGetPermittedEVMChainsForSelectedTab.mockReturnValue(permittedChainIds);
   mockGetPreferences.mockReturnValue({ tokenNetworkFilter });
-  mockGetShowTestNetworks.mockReturnValue(showTestnets);
+  const isTestnetInUse = dappActiveChainId === '0xaa36a7';
+  mockGetIsTestnetInUse.mockReturnValue(isTestnetInUse);
+  mockGetShouldShowTestNetworks.mockReturnValue(showTestnets || isTestnetInUse);
   mockGetAllChainsToPoll.mockReturnValue(['0x1', '0x38', '0xaa36a7']);
   mockGetDappActiveNetwork.mockReturnValue(
     dappActiveChainId
