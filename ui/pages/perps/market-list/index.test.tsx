@@ -753,6 +753,7 @@ describe('MarketListView', () => {
 
     const streamMarkets = (
       markets: ReturnType<typeof marketWithChange>[],
+      isLive = true,
     ): void => {
       mockUsePerpsLiveMarketListData.mockReturnValue({
         areMarketsLive: jest.fn().mockReturnValue(true),
@@ -762,6 +763,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        isLive,
       });
     };
 
@@ -871,6 +873,36 @@ describe('MarketListView', () => {
       rerender(<MarketListView />);
 
       expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+    });
+
+    it('re-ranks on the first live tick instead of staying on the REST snapshot', async () => {
+      // REST-seeded values before the price stream has delivered anything live.
+      streamMarkets(
+        [
+          marketWithChange('AAA', '+1.00%'),
+          marketWithChange('BBB', '+2.00%'),
+          marketWithChange('CCC', '+3.00%'),
+        ],
+        false,
+      );
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+
+      // First live tick: same symbol set, but AAA is now the biggest mover. A
+      // ranking that stays frozen on the REST snapshot would keep AAA last.
+      streamMarkets(
+        [
+          marketWithChange('AAA', '+9.00%'),
+          marketWithChange('BBB', '+2.00%'),
+          marketWithChange('CCC', '+3.00%'),
+        ],
+        true,
+      );
+      rerender(<MarketListView />);
+
+      expect(renderedSymbols()).toStrictEqual(['AAA', 'CCC', 'BBB']);
     });
   });
 

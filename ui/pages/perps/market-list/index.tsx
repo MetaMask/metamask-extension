@@ -233,6 +233,7 @@ export const MarketListView = () => {
     markets: allMarkets,
     isInitialLoading: marketsLoading,
     areMarketsLive,
+    isLive,
   } = usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
@@ -355,30 +356,37 @@ export const MarketListView = () => {
   // price ticks rewrite `price`/`change24hPercent` on every market several times
   // a second, so anything keyed on `matchingMarkets` itself re-runs constantly.
   const matchingSymbolsKey = useMemo(
-    () =>
-      matchingMarkets
-        .map((market) => market.symbol)
-        .sort((left, right) => left.localeCompare(right))
-        .join('|'),
+    () => matchingMarkets.map((market) => market.symbol).sort().join('|'),
     [matchingMarkets],
   );
 
   // Everything that should establish a fresh ranking: the user changing what
-  // the ranking means, or the set of matching markets changing. Notably absent
-  // are the live values themselves.
+  // the ranking means, the set of matching markets changing, or the stream
+  // handing us live values for the first time. `isLive` flips false → true
+  // once, so this re-ranks on live `change24hPercent` instead of staying on
+  // the REST snapshot's values until the user touches sort, filter or search.
+  // Notably absent are the live values themselves.
   const rankingKey = [
     matchingSymbolsKey,
     selectedFilter,
     searchQuery.trim(),
     sortField,
     sortDirection,
+    String(isLive),
   ].join('|');
 
   // Deliberately stale between those events: the markets as they were when the
   // ranking was last established, so the order below is not retriggered by
-  // later ticks. Adding `matchingMarkets` as a dependency restores the bug.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const rankingSnapshot = useMemo(() => matchingMarkets, [rankingKey]);
+  // later ticks. `useMemo` is a cache React is allowed to drop, not a
+  // semantic guarantee, so the snapshot lives in state and is reset
+  // synchronously during render when the key changes, matching the pattern in
+  // usePerpsLiveMarketData.ts.
+  const [rankingSnapshot, setRankingSnapshot] = useState(matchingMarkets);
+  const [prevRankingKey, setPrevRankingKey] = useState(rankingKey);
+  if (prevRankingKey !== rankingKey) {
+    setPrevRankingKey(rankingKey);
+    setRankingSnapshot(matchingMarkets);
+  }
 
   const orderedSymbols = useMemo(
     () =>
