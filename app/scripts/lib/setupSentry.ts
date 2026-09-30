@@ -483,10 +483,10 @@ export function removeUrlsFromBreadCrumb(
   if (typeof data?.from === 'string') {
     data.from = hideUrlIfNotInternal(data.from);
   }
-  // Sanitize any account addresses that may appear in the breadcrumb message or
-  // remaining data values.
+  // Sanitize any account addresses or balance amounts that may appear in the
+  // breadcrumb message or remaining data values.
   if (typeof breadcrumb.message === 'string') {
-    breadcrumb.message = sanitizeAddressesFromString(breadcrumb.message);
+    breadcrumb.message = sanitizeSensitiveDataFromString(breadcrumb.message);
   }
   if (data) {
     breadcrumb.data = sanitizeAddressesFromObject(data);
@@ -636,14 +636,14 @@ function sanitizeUrlsFromErrorMessages(report: SentryReport): void {
 }
 
 /**
- * Receives a Sentry event object and modifies it so that ethereum addresses are removed from
- * any of its error messages.
+ * Receives a Sentry event object and modifies it so that account addresses and
+ * balance amounts are removed from any of its error messages.
  *
  * @param report - the report to modify
  */
 function sanitizeAddressesFromErrorMessages(report: SentryReport): void {
   rewriteErrorMessages(report, (errorMessage) =>
-    sanitizeAddressesFromString(errorMessage),
+    sanitizeSensitiveDataFromString(errorMessage),
   );
 }
 
@@ -679,6 +679,45 @@ function sanitizeAddressesFromString(text: string): string {
   return sanitized;
 }
 
+// Money account balance validation errors (from
+// `@metamask/money-account-balance-service`) interpolate raw balance amounts,
+// which can be used to identify an account.
+// TODO: once @metamask/money-account-balance-service is published with removal of amounts,
+// remove this local version and use the published version instead.
+const MONEY_BALANCE_AMOUNT_REGEXES: [RegExp, string][] = [
+  [
+    /(Invalid balance invariant: totalBalance \()[^)\n]*(\) must equal musdBalance \()[^)\n]*(\) \+ vmusdValueInMusd \()[^)\n]*(\))/gu,
+    '$1**$2**$3**$4',
+  ],
+  [/(: expected a non-negative integer string, got ')[^\n]*(')/gu, '$1**$2'],
+];
+
+/**
+ * Sanitizes Money account balance amounts from a string.
+ *
+ * @param text - The string to sanitize balance amounts from.
+ * @returns The string with any balance amounts replaced by a mask.
+ */
+function sanitizeMoneyBalanceAmountsFromString(text: string): string {
+  let sanitized = text;
+  for (const [regex, replacement] of MONEY_BALANCE_AMOUNT_REGEXES) {
+    sanitized = sanitized.replace(regex, replacement);
+  }
+  return sanitized;
+}
+
+/**
+ * Sanitizes account addresses and Money account balance amounts from a string.
+ *
+ * @param text - The string to sanitize.
+ * @returns The sanitized string.
+ */
+function sanitizeSensitiveDataFromString(text: string): string {
+  return sanitizeMoneyBalanceAmountsFromString(
+    sanitizeAddressesFromString(text),
+  );
+}
+
 /**
  * Recursively sanitizes account addresses from the string values of an object,
  * returning a sanitized copy without mutating the input. Used to scrub addresses
@@ -697,7 +736,7 @@ function sanitizeAddressesFromObject<Value>(
   seen: WeakMap<object, unknown> = new WeakMap(),
 ): Value {
   if (typeof value === 'string') {
-    return sanitizeAddressesFromString(value) as Value;
+    return sanitizeSensitiveDataFromString(value) as Value;
   }
   // Leave primitives (and null) untouched.
   if (value === null || typeof value !== 'object') {
@@ -729,10 +768,10 @@ function sanitizeAddressesFromObject<Value>(
   // error. Copy them across explicitly, sanitized.
   if (value instanceof Error) {
     if (typeof value.message === 'string') {
-      copy.message = sanitizeAddressesFromString(value.message);
+      copy.message = sanitizeSensitiveDataFromString(value.message);
     }
     if (typeof value.stack === 'string') {
-      copy.stack = sanitizeAddressesFromString(value.stack);
+      copy.stack = sanitizeSensitiveDataFromString(value.stack);
     }
     if (typeof value.name === 'string') {
       copy.name = value.name;

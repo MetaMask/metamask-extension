@@ -288,6 +288,70 @@ describe('Setup Sentry', () => {
       );
     });
 
+    it('removes balance amounts from Money balance invariant errors', () => {
+      const testReport: TestReport = {
+        exception: {
+          values: [
+            {
+              value:
+                'Invalid balance invariant: totalBalance (1500000) must equal musdBalance (1000000) + vmusdValueInMusd (400000)',
+            },
+          ],
+        },
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.exception?.values).toStrictEqual([
+        {
+          value:
+            'Invalid balance invariant: totalBalance (**) must equal musdBalance (**) + vmusdValueInMusd (**)',
+        },
+      ]);
+    });
+
+    it('removes balance amounts from Money balance field validation errors', () => {
+      const testReport: TestReport = {
+        message:
+          "Invalid musdBalance: expected a non-negative integer string, got '-1234.56'",
+        request: {},
+      };
+      rewriteReport(testReport);
+      expect(testReport.message).toStrictEqual(
+        "Invalid musdBalance: expected a non-negative integer string, got '**'",
+      );
+    });
+
+    it('removes balance amounts from breadcrumbs of earlier Money balance errors', () => {
+      const liveError = new Error(
+        'Invalid balance invariant: totalBalance (1500000) must equal musdBalance (1000000) + vmusdValueInMusd (400000)',
+      );
+      const testReport: TestReport = {
+        message: 'An error occurred',
+        breadcrumbs: [
+          {
+            message:
+              'Invalid balance invariant: totalBalance (1500000) must equal musdBalance (1000000) + vmusdValueInMusd (400000)',
+          },
+          {
+            message: 'console.error',
+            data: { arguments: [liveError] },
+          },
+        ],
+        request: {},
+      };
+      rewriteReport(testReport);
+      const maskedMessage =
+        'Invalid balance invariant: totalBalance (**) must equal musdBalance (**) + vmusdValueInMusd (**)';
+      expect(testReport.breadcrumbs?.[0].message).toStrictEqual(maskedMessage);
+      expect(testReport.breadcrumbs?.[1].data?.arguments?.[0]).toMatchObject({
+        message: maskedMessage,
+      });
+      expect(
+        (testReport.breadcrumbs?.[1].data?.arguments?.[0] as { stack: string })
+          .stack,
+      ).not.toContain('1500000');
+    });
+
     it('removes addresses from report.extra parameters', () => {
       const testReport: TestReport = {
         message: 'An error occurred',
