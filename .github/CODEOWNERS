@@ -34,10 +34,12 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
 # The legacy-background-api-snapshot.json file lists the names that the legacy
 # background APIs (MetamaskController.getApi and LegacyBackgroundApiService)
-# are allowed to have. These APIs are frozen, and fitness functions fail if
-# the APIs do not match the snapshot. Widening the snapshot is reserved for
+# are allowed to have. These APIs are frozen, and `yarn lint` fails if the
+# APIs do not match the snapshot. Widening the snapshot is reserved for
 # emergencies, and requires approval from the Core Platform team.
-legacy-background-api-snapshot.json  @MetaMask/core-platform
+legacy-background-api-snapshot.json      @MetaMask/core-platform
+development/legacy-background-api.ts      @MetaMask/core-platform
+development/legacy-background-api.test.ts @MetaMask/core-platform
 
 
 # A machine-generated file that tracks circular dependencies in the codebase.
