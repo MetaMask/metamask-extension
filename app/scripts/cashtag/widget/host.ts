@@ -108,7 +108,6 @@ export function bindWidgetTriggers(
       lastSource.style.removeProperty(anchorNameProp);
     }
     source.style.setProperty(anchorNameProp, activeAnchorVar);
-    widget.shadowHost.style.setProperty(positionAnchorProp, activeAnchorVar);
     lastSource = source;
 
     widget.show(symbolFromCashtagAnchor(source));

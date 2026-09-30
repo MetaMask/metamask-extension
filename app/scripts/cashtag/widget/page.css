@@ -16,20 +16,20 @@ a[interestfor='mm-cashtag-popover'] {
   transition-duration: 100ms;
   transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   transition-behavior: allow-discrete;
+  position-anchor: --cashtag-invoker;
   top: anchor(bottom);
   left: anchor(left);
-  margin-block-start: 8px;
-  position-try-fallbacks: flip-block, --below-left, --above-left;
+  margin-block: 8px;
+  position-try: flip-block, --below-left, --above-left;
+  position-try-order: most-height;
 }
 
 @position-try --below-left {
-  inset: unset;
   top: anchor(bottom);
   left: anchor(left);
 }
 
 @position-try --above-left {
-  inset: unset;
   bottom: anchor(top);
   left: anchor(left);
 }
