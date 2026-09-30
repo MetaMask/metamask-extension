@@ -11,6 +11,7 @@ import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/ne
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
+import TokenOverviewPage from '../../../page-objects/pages/asset/token-overview-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
@@ -117,6 +118,21 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
             },
           ),
         );
+
+        // V14 known-answer fixture for `assetDetailsCount`. The count reads 1 in
+        // every run of the A/A window, and a constant has no variance for
+        // stage 3 to read, so nothing in that window distinguishes a true
+        // constant from a count that cannot move. Going back and reopening the
+        // asset fires `Asset Details` a second time, so the count must read 2.
+        // Off unless the fixture asks for it — a known-answer arm, not part of
+        // the measured flow.
+        if (process.env.BENCHMARK_V14_INJECT === 'asset-details') {
+          const tokenOverviewPage = new TokenOverviewPage(driver);
+          await tokenOverviewPage.clickBack();
+          await tokensTab.checkTokenListIsDisplayed();
+          await tokensTab.clickOnAsset('Ethereum');
+          await tokensTab.checkPriceChartIsShown();
+        }
 
         // The app's own span over this journey, as the Sentry SDK sent it,
         // timed on the browser's clock (extension#46006 ([P0] Benchmark step
