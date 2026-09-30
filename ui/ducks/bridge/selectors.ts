@@ -949,8 +949,8 @@ export const getInsufficientNativeReserveError = createSelector(
     );
     const isArcNativeReserveToken = Boolean(
       fromToken?.chainId === formatChainIdToCaip(CHAIN_IDS.ARC) &&
-        fromToken?.assetId &&
-        isArcUsdcAssetIdForBridge(fromToken.assetId),
+      fromToken?.assetId &&
+      isArcUsdcAssetIdForBridge(fromToken.assetId),
     );
     const shouldApplyNativeReserve =
       minimumNativeReserveBalance !== '0' &&

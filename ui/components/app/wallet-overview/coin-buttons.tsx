@@ -89,6 +89,7 @@ import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import { PerpsTradeButtons } from '../perps/perps-trade-buttons';
 import { useBalanceAwareSwapDefaults } from '../../../pages/asset/hooks/useBalanceAwareSwapDefaults';
+
 export function getSwapNativeTokenWithOverridesForChain(
   chainId: string | number,
 ): BridgeAsset {

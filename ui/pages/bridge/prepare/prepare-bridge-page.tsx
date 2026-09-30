@@ -162,8 +162,7 @@ const PrepareBridgePage = ({
     useGasIncludedSupport();
 
   const shouldShowMaxButton =
-    fromToken &&
-    isNativeAddress(fromToken.assetId)
+    fromToken && isNativeAddress(fromToken.assetId)
       ? !isSolanaChainId(fromToken.chainId) &&
         (gasIncluded || gasIncluded7702 || nativeGasIncluded)
       : true;

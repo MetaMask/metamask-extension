@@ -134,9 +134,10 @@ export const buildInsufficientNativeReserveError = ({
   minimumNativeBalanceToBeKeptInAccount: string;
   maxSwappableNativeBalance: BigNumber;
 }): InsufficientNativeReserveError | undefined => {
-  const normalizedMaxSwappableNativeBalance = maxSwappableNativeBalance.isNegative()
-    ? new BigNumber(0)
-    : maxSwappableNativeBalance;
+  const normalizedMaxSwappableNativeBalance =
+    maxSwappableNativeBalance.isNegative()
+      ? new BigNumber(0)
+      : maxSwappableNativeBalance;
 
   return minimumNativeBalanceToBeKeptInAccount !== '0' &&
     nativeBalance &&
