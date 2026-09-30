@@ -21,7 +21,6 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getIsInitialized,
-  getIsPrimarySeedPhraseBackedUp,
   getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
@@ -34,7 +33,6 @@ import WalletReadyAnimation from './wallet-ready-animation';
 export default function CreationSuccessful() {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
   const isSidePanelEnabled = useSidePanelEnabled();
   const isInitialized = useSelector(getIsInitialized);
   const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
@@ -48,7 +46,7 @@ export default function CreationSuccessful() {
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
   const { isFromReminder } = useOnboardingSearchParams();
-  const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
+  const isFromSettingsSRPBackup = Boolean(isFromReminder);
 
   // Guard: redirect if wallet is not properly set up.
   // Prevents users from skipping onboarding steps by navigating directly to the completion route.

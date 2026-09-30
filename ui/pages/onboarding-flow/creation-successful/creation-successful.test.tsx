@@ -191,12 +191,18 @@ describe('Wallet Ready Page', () => {
     );
   });
 
-  it('does not render "Manage default settings" when opened from settings SRP backup reminder', () => {
+  it('renders the settings SRP backup reminder without flashing onboarding content while wallet state loads', () => {
     const previousSearch = mockUseLocationSearch;
     mockUseLocationSearch = '?isFromReminder=true';
 
     try {
-      const mockStore = configureMockStore([thunk])(mockState);
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: false,
+        },
+      });
       const { queryByText, queryByTestId, getByText } = renderWithProvider(
         <CreationSuccessful />,
         mockStore,
@@ -207,6 +213,9 @@ describe('Wallet Ready Page', () => {
       ).toBeInTheDocument();
       expect(
         queryByText(messages.manageDefaultSettings.message),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByText(messages.yourWalletIsReady.message),
       ).not.toBeInTheDocument();
       expect(queryByTestId('manage-default-settings')).not.toBeInTheDocument();
     } finally {
