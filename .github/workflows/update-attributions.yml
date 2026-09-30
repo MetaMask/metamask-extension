@@ -101,11 +101,13 @@ jobs:
           skip-allow-scripts: true
       - name: Generate Attributions
         run: yarn attributions:generate
-      - name: Cache attributions file
-        uses: actions/cache/save@v5
+      - name: Upload attributions file
+        uses: actions/upload-artifact@v7
         with:
+          name: attributions-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: attribution.txt
-          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          retention-days: 1
+          if-no-files-found: 'error'
 
   commit-updated-attributions:
     name: Commit the updated Attributions
@@ -141,12 +143,10 @@ jobs:
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-      - name: Restore attributions file
-        uses: actions/cache/restore@v5
+      - name: Download attributions file
+        uses: actions/download-artifact@v8
         with:
-          path: attribution.txt
-          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          name: attributions-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Check whether there are attributions changes
         id: attributions-changes
         run: |
