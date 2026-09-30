@@ -30,14 +30,17 @@ import {
   MOCK_ACCOUNT_TRON_MAINNET,
   MOCK_ACCOUNT_STELLAR_PUBNET,
 } from '../../../test/data/mock-accounts';
-import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+  FEATURED_RPCS,
+} from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { getBatchSellQuotes } from '../batch-sell/selectors';
-import { ARC_ERC20_USDC_BRIDGE_ASSET } from '../../components/app/assets/enablement/arc';
 import * as stellarAssetsSelectors from '../../selectors/stellar-assets';
 import { resolveMinimumBalanceToKeep } from '../../pages/bridge/utils/minimum-reserve';
 import {
@@ -3160,16 +3163,60 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           fromTokenInputValue: '10',
-          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.ARC)),
           // 10 native Arc USDC in atomic units.
           fromNativeBalance: '10000000000000000000',
-          fromTokenBalance: '10000000',
+          fromTokenBalance: '10000000000000000000',
         },
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
           quoteRequest: {
             srcChainId: CHAIN_IDS.ARC,
-            srcTokenAmount: '10000000',
+            srcTokenAmount: '10000000000000000000',
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+      });
+      const result = getValidationErrors(state);
+      const nativeReserveError = getInsufficientNativeReserveError(state);
+
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '0.05',
+        maxSwappableNativeBalance: '9.95',
+      });
+      expect(getQuoteRequestInsufficientBal(state)).toBe(true);
+      expect(result.isInsufficientNativeReserve).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=true on Arc ERC20 USDC when source amount leaves less than the reserve', () => {
+      const arcErc20Usdc = {
+        assetId: `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}`,
+        address: ARC_USDC_TOKEN_ADDRESS,
+        chainId: formatChainIdToCaip(CHAIN_IDS.ARC),
+        decimals: 6,
+        symbol: 'USDC',
+        name: 'USDC',
+      };
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromTokenInputValue: '10',
+          fromToken: toBridgeToken(arcErc20Usdc),
+          fromNativeBalance: '10000000000000000000',
+          fromTokenBalance: '10000000000000000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.ARC,
+            srcTokenAmount: '10000000000000000000',
           },
         },
         metamaskStateOverrides: {
@@ -3197,16 +3244,16 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           fromTokenInputValue: '9.95000',
-          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.ARC)),
           // 10 native Arc USDC in atomic units.
           fromNativeBalance: '10000000000000000000',
-          fromTokenBalance: '10000000',
+          fromTokenBalance: '10000000000000000000',
         },
         bridgeStateOverrides: {
           quotesLastFetched: Date.now(),
           quoteRequest: {
             srcChainId: CHAIN_IDS.ARC,
-            srcTokenAmount: '9950000',
+            srcTokenAmount: '9950000000000000000',
           },
         },
         metamaskStateOverrides: {
