@@ -23,10 +23,14 @@ describe('resolveTrustedDeepLinkHref', () => {
     ).resolves.toBe('/?openNetworkSelector=true');
   });
 
-  it('leaves a lookalike hostname unchanged', async () => {
-    const href =
-      'https://link.metamask.com.evil.com/home?openNetworkSelector=true';
-
+  jestIt.each([
+    [
+      'a lookalike hostname',
+      'https://link.metamask.com.evil.com/home?openNetworkSelector=true',
+    ],
+    ['an unsupported deep link', 'https://link.metamask.io/unknown'],
+    ['an invalid URL', 'not a url'],
+  ])('falls back to the original href for %s', async (_description, href) => {
     await expect(resolveTrustedDeepLinkHref(href, false)).resolves.toBe(href);
   });
 
@@ -52,15 +56,5 @@ describe('resolveTrustedDeepLinkHref', () => {
         true,
       ),
     ).resolves.toBe('/ramps/buy-deeplink-entry?chainId=1');
-  });
-
-  it('falls back to the original href when the link cannot be parsed', async () => {
-    const href = 'https://link.metamask.io/unknown';
-    await expect(resolveTrustedDeepLinkHref(href, false)).resolves.toBe(href);
-  });
-
-  it('falls back to the original href for an invalid URL', async () => {
-    const href = 'not a url';
-    await expect(resolveTrustedDeepLinkHref(href, false)).resolves.toBe(href);
   });
 });

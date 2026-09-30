@@ -8,11 +8,13 @@ import { BuyDeepLinkEntry } from './buy-deeplink-entry';
 
 const DAI_SEARCH =
   '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
+const PORTFOLIO_URL =
+  'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
 
 const mockNavigate = jest.fn();
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
 const globalMockPlatformOpenTab = jest.fn();
-let mockOpensBuyInPortfolioTab = false;
+let mockIsUnifiedBuyEnabled = true;
 let mockSearch = '';
 let mockKey = 'abc';
 
@@ -33,7 +35,7 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   default: () => ({
     // Fresh reference each render so dependency changes are exercised.
     goToBuy: (...args: unknown[]) => mockGoToBuy(...args),
-    opensBuyInPortfolioTab: mockOpensBuyInPortfolioTab,
+    isUnifiedBuyEnabled: mockIsUnifiedBuyEnabled,
   }),
 }));
 
@@ -45,9 +47,9 @@ describe('BuyDeepLinkEntry', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockOpensBuyInPortfolioTab = false;
+    mockIsUnifiedBuyEnabled = true;
     mockKey = 'abc';
-    mockGoToBuy.mockResolvedValue(true);
+    mockGoToBuy.mockResolvedValue('native');
   });
 
   it('calls goToBuy with the intent built from deep link params, once across re-renders', () => {
@@ -62,7 +64,10 @@ describe('BuyDeepLinkEntry', () => {
       {
         assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
       },
-      { replace: true },
+      {
+        replace: true,
+        portfolioRedirectUrl: PORTFOLIO_URL,
+      },
     );
   });
 
@@ -72,11 +77,15 @@ describe('BuyDeepLinkEntry', () => {
     await waitFor(() => {
       expect(mockGoToBuy).toHaveBeenCalledTimes(1);
     });
-    expect(mockGoToBuy).toHaveBeenCalledWith(undefined, { replace: true });
+    expect(mockGoToBuy).toHaveBeenCalledWith(undefined, {
+      replace: true,
+      portfolioRedirectUrl: 'https://app.metamask.io/buy?utm_source=promo',
+    });
   });
 
   const navigateHomeCases: [string, () => void][] = [
-    ['reports it did not navigate', () => mockGoToBuy.mockResolvedValue(false)],
+    ['is blocked by a modal', () => mockGoToBuy.mockResolvedValue(false)],
+    ['opens Portfolio', () => mockGoToBuy.mockResolvedValue('portfolio')],
     ['rejects', () => mockGoToBuy.mockRejectedValue(new Error('boom'))],
   ];
   for (const [label, arrange] of navigateHomeCases) {
@@ -97,7 +106,7 @@ describe('BuyDeepLinkEntry', () => {
     // The cleanup must be unmount-only: a dep change cancels the in-flight
     // navigation and the effect re-runs into the hasInitiatedRef guard,
     // stranding the user on the spinner.
-    let resolveGoToBuy: (value: boolean) => void = () => undefined;
+    let resolveGoToBuy: (value: false) => void = () => undefined;
     mockGoToBuy.mockImplementation(
       () =>
         new Promise<boolean>((resolve) => {
@@ -117,7 +126,7 @@ describe('BuyDeepLinkEntry', () => {
   });
 
   it('does not navigate after unmount', async () => {
-    let resolveGoToBuy: (value: boolean) => void = () => undefined;
+    let resolveGoToBuy: (value: false) => void = () => undefined;
     mockGoToBuy.mockImplementation(
       () =>
         new Promise<boolean>((resolve) => {
@@ -134,11 +143,8 @@ describe('BuyDeepLinkEntry', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  const PORTFOLIO_URL =
-    'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
-
-  it('redirects in place to Portfolio with verbatim params on initial load', async () => {
-    mockOpensBuyInPortfolioTab = true;
+  it('redirects in place to Portfolio with verbatim params when unified buy is disabled', async () => {
+    mockIsUnifiedBuyEnabled = false;
     mockKey = 'default';
     const originalLocation = window.location;
     const locationMock: { href: string } = { href: '' };
@@ -165,18 +171,22 @@ describe('BuyDeepLinkEntry', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('opens Portfolio in a new tab and returns home on in-app navigation', async () => {
-    mockOpensBuyInPortfolioTab = true;
+  it('returns home when the navigation gate opens Portfolio in a new tab', async () => {
+    mockGoToBuy.mockResolvedValue('portfolio');
     renderEntry(DAI_SEARCH);
 
     await waitFor(() => {
-      expect(globalMockPlatformOpenTab).toHaveBeenCalledWith({
-        url: PORTFOLIO_URL,
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
       });
     });
-    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-      replace: true,
-    });
-    expect(mockGoToBuy).not.toHaveBeenCalled();
+    expect(mockGoToBuy).toHaveBeenCalledWith(
+      { assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F' },
+      {
+        replace: true,
+        portfolioRedirectUrl: PORTFOLIO_URL,
+      },
+    );
+    expect(globalMockPlatformOpenTab).not.toHaveBeenCalled();
   });
 });

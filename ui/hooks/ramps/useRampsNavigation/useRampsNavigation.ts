@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
@@ -23,12 +23,21 @@ import {
 } from '../../../selectors/ramps-feature-flags';
 import { getIsRampRegionUnsupported } from '../../../selectors/ramps';
 import {
+  selectRampsOrders,
   selectProviders,
   selectTokens,
   selectUserRegion,
 } from '../../../selectors/rampsController';
+import {
+  selectIsBackupAndSyncEnabled,
+  selectIsRampsSyncingEnabled,
+} from '../../../selectors/identity/backup-and-sync';
 import useRamps from '../useRamps/useRamps';
-import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
+import {
+  hasAttemptedPortfolioBuyMigration,
+  hasEverConnectedToPortfolio,
+  markPortfolioBuyMigrationAttempted,
+} from '../utils/portfolioConnection';
 import { resolveRampControllerToken } from '../utils/resolveRampControllerToken';
 
 /**
@@ -37,9 +46,11 @@ import { resolveRampControllerToken } from '../utils/resolveRampControllerToken'
 export type RampIntent = {
   /** CAIP-19 asset to pre-select, e.g. `eip155:1/erc20:0x...`. */
   assetId?: CaipAssetType;
-  /** Chain for the flag-off Portfolio fallback deeplink only. */
+  /** Chain for Portfolio fallback deeplinks. */
   chainId?: Hex | CaipChainId;
 };
+
+export type RampsNavigationResult = 'native' | 'portfolio' | false;
 
 type ProvidersState = ResourceState<Provider[], Provider | null>;
 type TokensState = ResourceState<TokensResponse | null, unknown>;
@@ -109,20 +120,12 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * When `rampsEnabled` is on:
- * - Wallets that have never connected to Portfolio use in-app Buy (geo gates).
- * - Wallets that have connected to Portfolio open Portfolio (hedge while
- * order-history Profile Sync is still rolling out; returning buyers keep
- * Portfolio until migration lands).
- *
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
- * {@link RampIntent} and an optional `{ replace }` (replace the history entry
- * instead of pushing). It runs the gate and either shows a blocking modal or
- * opens the buy destination. Resolves to `true` when it proceeded and `false`
- * when a blocking modal was shown, plus `opensBuyInPortfolioTab` so callers can
- * gate follow-up UI (e.g. a "tab opened" toast).
+ * {@link RampIntent} and optional navigation options. It runs the gate and
+ * either shows a blocking modal or opens the buy destination. Resolves to the
+ * destination when it proceeded and `false` when a blocking modal was shown.
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -135,32 +138,67 @@ export default function useRampsNavigation() {
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
   const userRegion = useSelector(selectUserRegion);
+  const rampsOrders = useSelector(selectRampsOrders);
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+  const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
+  const portfolioMigrationRef = useRef<Promise<boolean> | null>(null);
 
   const goToBuy = useCallback(
     async (
       intent?: RampIntent,
-      // `replace` swaps the history entry, so the deep-link entry page can't be
-      // navigated back to.
-      { replace = false }: { replace?: boolean } = {},
-    ): Promise<boolean> => {
+      {
+        replace = false,
+        portfolioRedirectUrl,
+      }: { replace?: boolean; portfolioRedirectUrl?: string } = {},
+    ): Promise<RampsNavigationResult> => {
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
         // just an over-tight annotation.
-        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
-        return true;
+        await openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+        return 'portfolio';
       }
 
-      // Returning Portfolio users → Portfolio (not in-app) until Profile Sync
-      // migration can flip them onto native Buy.
-      if (everConnectedToPortfolio) {
-        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
-        return true;
+      // Returning Portfolio users get one migration visit before native Buy.
+      // This precedes native eligibility gates because Portfolio performs the
+      // migration from its app shell, independently of native Buy support.
+      if (
+        everConnectedToPortfolio &&
+        isBackupAndSyncEnabled &&
+        isRampsSyncingEnabled &&
+        rampsOrders.length === 0
+      ) {
+        const migration =
+          portfolioMigrationRef.current ??
+          (portfolioMigrationRef.current = (async () => {
+            if (await hasAttemptedPortfolioBuyMigration()) {
+              return false;
+            }
+            if (portfolioRedirectUrl) {
+              await global.platform.openTab({ url: portfolioRedirectUrl });
+            } else {
+              await openBuyCryptoInPdapp(
+                intent?.chainId as ChainId | CaipChainId,
+              );
+            }
+            // Record the attempt only after Portfolio was opened so a failed
+            // open does not permanently consume the one-time migration.
+            await markPortfolioBuyMigrationAttempted();
+            return true;
+          })());
+        try {
+          if (await migration) {
+            return 'portfolio';
+          }
+        } finally {
+          if (portfolioMigrationRef.current === migration) {
+            portfolioMigrationRef.current = null;
+          }
+        }
       }
 
-      // 1. Service-disruption kill-switch — takes precedence over everything
-      // below (mobile parity).
+      // 1. Service-disruption kill-switch for native Buy.
       if (isDisruption) {
         dispatch(showModal({ name: 'RAMPS_SERVICE_DISRUPTION' }));
         return false;
@@ -197,9 +235,9 @@ export default function useRampsNavigation() {
       // 5. Route into the native buy flow.
       const assetId = intent?.assetId;
       if (!assetId) {
-        // No specific asset → token selection page (it loads the catalog).
+        // No specific asset → token selection page.
         navigate(RAMPS_TOKEN_SELECTION_ROUTE, { replace });
-        return true;
+        return 'native';
       }
 
       // `tokens` isn't persisted, and setSelectedToken throws until it's fetched
@@ -241,7 +279,7 @@ export default function useRampsNavigation() {
         state: { assetId: selectedAssetId },
         replace,
       });
-      return true;
+      return 'native';
     },
     [
       isEnabled,
@@ -250,17 +288,15 @@ export default function useRampsNavigation() {
       providers,
       tokens,
       userRegion,
+      rampsOrders,
       everConnectedToPortfolio,
+      isBackupAndSyncEnabled,
+      isRampsSyncingEnabled,
       dispatch,
       navigate,
       openBuyCryptoInPdapp,
     ],
   );
 
-  // Expose whether Buy leaves the extension so callers can gate follow-up UI
-  // (e.g. the "tab opened" toast) without re-deriving the destination.
-  return {
-    goToBuy,
-    opensBuyInPortfolioTab: !isEnabled || everConnectedToPortfolio,
-  };
+  return { goToBuy, isUnifiedBuyEnabled: isEnabled };
 }

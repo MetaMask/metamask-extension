@@ -31,7 +31,7 @@ export function BuyDeepLinkEntry() {
   const location = useLocation();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
+  const { goToBuy, isUnifiedBuyEnabled } = useRampsNavigation();
   const hasInitiatedRef = useRef(false);
 
   // Unmount-only on purpose: `goToBuy`'s identity changes mid-flight, and
@@ -53,7 +53,7 @@ export function BuyDeepLinkEntry() {
 
     const params = new URLSearchParams(location.search);
 
-    if (opensBuyInPortfolioTab) {
+    if (!isUnifiedBuyEnabled) {
       // Forward the deep link params verbatim (the pre-UB2 `/buy` behavior).
       // Intentionally not `openBuyCryptoInPdapp`: it drops the link's params
       // and appends analytics params.
@@ -80,21 +80,19 @@ export function BuyDeepLinkEntry() {
 
     // Replace this page in history: it exists only to intercept the deep link,
     // and back-buttoning into it would re-run the interception forever.
-    goToBuy(intent, { replace: true })
-      .then((didNavigate) => {
-        // No navigation was possible (an eligibility modal was shown instead).
-        if (!didNavigate) {
+    const portfolioRedirectUrl =
+      getBuyPortfolioRedirectDestination(params).redirectTo.toString();
+
+    goToBuy(intent, { replace: true, portfolioRedirectUrl })
+      .then((destination) => {
+        // Portfolio opens in a separate tab; eligibility blocks show a modal.
+        // In both cases this deep-link entry page should return home.
+        if (destination === 'portfolio' || !destination) {
           goHome();
         }
       })
       .catch(goHome);
-  }, [
-    goToBuy,
-    navigate,
-    opensBuyInPortfolioTab,
-    location.search,
-    location.key,
-  ]);
+  }, [goToBuy, navigate, isUnifiedBuyEnabled, location.search, location.key]);
 
   return (
     <Box

@@ -29,7 +29,9 @@ export function getBuyPortfolioRedirectDestination(query: URLSearchParams): {
  * `routes/buy.ts` and delete this function and the flag threading into its
  * callers.
  *
- * @param parsed - The parsed deep link (only its route and destination are used).
+ * @param parsed - The parsed deep link.
+ * @param parsed.route - The parsed route.
+ * @param parsed.destination - The parsed destination.
  * @param isUnifiedBuyEnabled - Whether the unified buy (native in-app buy)
  * feature is enabled.
  * @returns The destination to navigate to.
