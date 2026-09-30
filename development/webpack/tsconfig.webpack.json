@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "noCheck": true
   },
-  "exclude": ["test", "../build/**/*.ts"],
+  "exclude": ["test", "../build/**/*.ts", "../lib/**/*.ts"],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node22/tsconfig.json"
 }
