@@ -75,6 +75,7 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
     isGasFeeSponsored,
     simulationData,
     simulationFails,
+    delegationAddress,
     txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},
   } = currentConfirmation ?? {};
 
@@ -103,12 +104,20 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
       chainId,
       balance,
       value: totalValue,
+      isDelegatedAccount: delegationAddress ? true : undefined,
       simulationData: simulationData as
         | SimulationDataWithCallTraceErrors
         | undefined,
       simulationFails,
     });
-  }, [balance, chainId, simulationData, simulationFails, totalValue]);
+  }, [
+    balance,
+    chainId,
+    delegationAddress,
+    simulationData,
+    simulationFails,
+    totalValue,
+  ]);
 
   // Show when reserve would fail and sponsorship is not covering gas. Do not
   // require gasless support — the reserve is a protocol rule for all account types.

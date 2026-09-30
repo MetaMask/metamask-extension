@@ -136,22 +136,31 @@ export function simulationIndicatesMonadReserveBalanceViolation({
  * @param options.chainId
  * @param options.balance
  * @param options.value
+ * @param options.isDelegatedAccount - False only when known to be undelegated.
  * @returns True when the value spend would leave less than 10 MON.
  */
 export function wouldViolateMonadReserveBalance({
   chainId,
   balance,
   value,
+  isDelegatedAccount,
 }: {
   chainId: Hex | string | undefined;
   balance: Hex | string | undefined;
   value: Hex | string | undefined;
+  isDelegatedAccount?: boolean;
 }): boolean {
   if (
     !hasMonadReserveBalanceRule(chainId) ||
     balance === undefined ||
     value === undefined
   ) {
+    return false;
+  }
+
+  // Undelegated accounts can empty below 10 MON. When the delegation status is
+  // unknown, keep the proactive warning active so the UI does not fail open.
+  if (isDelegatedAccount === false) {
     return false;
   }
 
@@ -167,6 +176,7 @@ export function wouldViolateMonadReserveBalance({
  * @param options.chainId
  * @param options.balance
  * @param options.value
+ * @param options.isDelegatedAccount - False only when known to be undelegated.
  * @param options.simulationData
  * @param options.simulationFails
  * @returns True when the reserve alert should take precedence over generic fee alerts.
@@ -175,12 +185,14 @@ export function hasMonadReserveBalanceViolation({
   chainId,
   balance,
   value,
+  isDelegatedAccount,
   simulationData,
   simulationFails,
 }: {
   chainId: Hex | string | undefined;
   balance?: Hex | string;
   value?: Hex | string;
+  isDelegatedAccount?: boolean;
   simulationData?: SimulationLike | null;
   simulationFails?: SimulationFailsLike | null;
 }): boolean {
@@ -197,5 +209,10 @@ export function hasMonadReserveBalanceViolation({
     return true;
   }
 
-  return wouldViolateMonadReserveBalance({ chainId, balance, value });
+  return wouldViolateMonadReserveBalance({
+    chainId,
+    balance,
+    value,
+    isDelegatedAccount,
+  });
 }

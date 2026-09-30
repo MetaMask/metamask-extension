@@ -85,6 +85,28 @@ describe('monad-reserve-balance', () => {
           chainId: CHAIN_IDS.MONAD,
           balance: balance15Mon,
           value: value6Mon,
+          isDelegatedAccount: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false for undelegated accounts', () => {
+      expect(
+        wouldViolateMonadReserveBalance({
+          chainId: CHAIN_IDS.MONAD,
+          balance: balance15Mon,
+          value: value6Mon,
+          isDelegatedAccount: false,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns true when delegation status is unknown and remaining balance would be below 10 MON', () => {
+      expect(
+        wouldViolateMonadReserveBalance({
+          chainId: CHAIN_IDS.MONAD,
+          balance: balance15Mon,
+          value: value6Mon,
         }),
       ).toBe(true);
     });
@@ -95,6 +117,7 @@ describe('monad-reserve-balance', () => {
           chainId: CHAIN_IDS.MONAD,
           balance: balance15Mon,
           value: value4Mon,
+          isDelegatedAccount: true,
         }),
       ).toBe(false);
     });
@@ -105,6 +128,7 @@ describe('monad-reserve-balance', () => {
           chainId: CHAIN_IDS.MAINNET,
           balance: balance15Mon,
           value: value6Mon,
+          isDelegatedAccount: true,
         }),
       ).toBe(false);
     });
@@ -126,6 +150,7 @@ describe('monad-reserve-balance', () => {
           chainId: CHAIN_IDS.MONAD,
           balance: MONAD_RESERVE_BALANCE_WEI_HEX,
           value: '0x1',
+          isDelegatedAccount: true,
         }),
       ).toBe(true);
     });

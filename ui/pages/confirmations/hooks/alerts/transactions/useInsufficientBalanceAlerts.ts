@@ -43,6 +43,7 @@ export function useInsufficientBalanceAlerts({
     chainId,
     simulationData,
     simulationFails,
+    delegationAddress,
     txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},
   } = currentConfirmation ?? {};
   // Post-quote withdraw flows don't use the user's native balance for gas the
@@ -97,6 +98,7 @@ export function useInsufficientBalanceAlerts({
     chainId,
     balance,
     value: sumHexes(value, ...batchTransactionValues),
+    isDelegatedAccount: delegationAddress ? true : undefined,
     simulationData,
     simulationFails,
   });
