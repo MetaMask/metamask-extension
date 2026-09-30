@@ -24,6 +24,11 @@ export function getBuyPortfolioRedirectDestination(query: URLSearchParams): {
  * redirect. Interstitial policy is unaffected: signature verification and
  * interstitial decisions happen before the destination is resolved.
  *
+ * TODO(TRAM-4096): temporary rollout shim for the `rampsEnabled` flag. Once
+ * the flag is at 100% and removed, make `/buy` route to the entry page in
+ * `routes/buy.ts` and delete this function and the flag threading into its
+ * callers.
+ *
  * @param parsed - The parsed deep link (only its route and destination are used).
  * @param isUnifiedBuyEnabled - Whether the unified buy (native in-app buy)
  * feature is enabled.
