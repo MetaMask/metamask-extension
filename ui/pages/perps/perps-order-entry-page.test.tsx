@@ -2030,7 +2030,7 @@ describe('PerpsOrderEntryPage', () => {
             category: MetaMetricsEventCategory.Perps,
             [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
               PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-            [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+            [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
               PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
             [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
               PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
@@ -2040,6 +2040,10 @@ describe('PerpsOrderEntryPage', () => {
           }),
         }),
       );
+      const depositClick = mockAnalyticsTrackEvent.mock.calls.find(
+        ([event]) => event.name === MetaMetricsEventName.PerpsUiInteraction,
+      );
+      expect(depositClick?.[0].properties).not.toHaveProperty('button_type');
     });
 
     it('enables add funds to trade when tradeable balance is dust below the unfunded threshold', async () => {
