@@ -1,6 +1,5 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { getIsGasFeeSponsored } from '../../../../../shared/lib/gas-sponsorship';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useGasSponsorshipPreference } from './useGasSponsorshipPreference';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 
@@ -23,8 +22,7 @@ export function useIsGasFeeSponsored(): {
   isGasFeeSponsorshipEligible: boolean;
   pending: boolean;
 } {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequestOptional();
 
   const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
     transactionMeta?.chainId,
