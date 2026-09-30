@@ -28,6 +28,8 @@ type MoneyEarningsProps = {
   lifetimeEarnings: string;
   isMonthlyLoading: boolean;
   isLifetimeLoading: boolean;
+  onMonthlyTooltipOpen?: () => void;
+  onLifetimeTooltipOpen?: () => void;
 };
 
 export function MoneyEarnings({
@@ -35,6 +37,8 @@ export function MoneyEarnings({
   lifetimeEarnings,
   isMonthlyLoading,
   isLifetimeLoading,
+  onMonthlyTooltipOpen,
+  onLifetimeTooltipOpen,
 }: MoneyEarningsProps) {
   const t = useI18nContext();
   const earnings = {
@@ -44,6 +48,10 @@ export function MoneyEarnings({
   const loading = {
     monthly: isMonthlyLoading,
     lifetime: isLifetimeLoading,
+  };
+  const onTooltipOpen = {
+    monthly: onMonthlyTooltipOpen,
+    lifetime: onLifetimeTooltipOpen,
   };
 
   return (
@@ -69,6 +77,7 @@ export function MoneyEarnings({
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
               position={PopoverPosition.Auto}
+              onOpen={onTooltipOpen[key]}
             >
               {t(tooltipText)}
             </TooltipText>
