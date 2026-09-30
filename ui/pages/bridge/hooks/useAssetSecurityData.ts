@@ -4,6 +4,24 @@ import { mapAssetSecurityDataFeatureToLocalizedFormat } from '../utils/asset-fea
 import { BridgeAssetSecurityDataType } from '../utils/tokens';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
+const getAssetSecurityTrustBadgeResult = (
+  assetIsVerified: boolean,
+  assetIsSuspicious: boolean,
+  assetIsMalicious: boolean,
+  securityDataType: BridgeAssetSecurityDataType | undefined,
+): string | undefined => {
+  if (assetIsVerified) {
+    return BridgeAssetSecurityDataType.VERIFIED;
+  }
+  if (assetIsSuspicious && securityDataType) {
+    return securityDataType;
+  }
+  if (assetIsMalicious) {
+    return BridgeAssetSecurityDataType.MALICIOUS;
+  }
+  return undefined;
+};
+
 export const useAssetSecurityData = (asset: BridgeToken) => {
   const t = useI18nContext();
   const assetIsVerified =
@@ -66,11 +84,19 @@ export const useAssetSecurityData = (asset: BridgeToken) => {
     [assetMaliciousFeatures, asset, t],
   );
 
+  const assetSecurityTrustBadgeResult = getAssetSecurityTrustBadgeResult(
+    assetIsVerified,
+    assetIsSuspicious,
+    assetIsMalicious,
+    asset.securityData?.type,
+  );
+
   return {
     assetHasSecurityData,
     assetIsVerified,
     assetIsSuspicious,
     assetIsMalicious,
+    assetSecurityTrustBadgeResult,
     assetSuspiciousFeatures,
     assetMaliciousFeatures,
     assetSuspiciousLocalizedFeatures,

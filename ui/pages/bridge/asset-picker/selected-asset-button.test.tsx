@@ -58,9 +58,7 @@ describe('SelectedAssetButton', () => {
       isVerified: true,
     });
 
-    expect(
-      getByTestId('bridge-selected-asset-verified-badge'),
-    ).toBeInTheDocument();
+    expect(getByTestId('security-badge')).toBeInTheDocument();
   });
 
   it('does not render the verified badge for an unverified asset', () => {
@@ -69,9 +67,7 @@ describe('SelectedAssetButton', () => {
       isVerified: false,
     });
 
-    expect(
-      queryByTestId('bridge-selected-asset-verified-badge'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 
   it('does not render the verified badge when verification is absent', () => {
@@ -79,9 +75,7 @@ describe('SelectedAssetButton', () => {
       toBridgeToken(getNativeAssetForChainId('0x1')),
     );
 
-    expect(
-      queryByTestId('bridge-selected-asset-verified-badge'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 
   it('applies the bridge-selected-asset-button class', () => {

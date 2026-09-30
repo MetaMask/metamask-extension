@@ -5,10 +5,6 @@ import {
   AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
-  Icon,
-  IconColor,
-  IconName as DesignSystemIconName,
-  IconSize,
 } from '@metamask/design-system-react';
 import {
   SelectButtonProps,
@@ -31,7 +27,7 @@ import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
-import { useAssetSecurityData } from '../hooks/useAssetSecurityData';
+import { AssetSecurityBadge } from './asset-security-badge';
 
 export const SelectedAssetButton = ({
   asset,
@@ -40,7 +36,6 @@ export const SelectedAssetButton = ({
   asset: BridgeToken;
 } & SelectButtonProps<'div'>) => {
   const caipChainId = formatChainIdToCaip(asset.chainId);
-  const { assetIsVerified } = useAssetSecurityData(asset);
 
   return (
     <SelectButton
@@ -60,7 +55,7 @@ export const SelectedAssetButton = ({
         style: { display: Display.None },
       }}
       startAccessory={
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <BadgeWrapper
             key={asset.assetId}
             badge={
@@ -75,15 +70,8 @@ export const SelectedAssetButton = ({
           >
             <AvatarToken src={asset.iconUrl ?? undefined} name={asset.symbol} />
           </BadgeWrapper>
-          <Label className="cursor-pointer">{asset.symbol}</Label>
-          {assetIsVerified && (
-            <Icon
-              data-testid="bridge-selected-asset-verified-badge"
-              name={DesignSystemIconName.VerifiedFilled}
-              size={IconSize.Sm}
-              color={IconColor.InfoDefault}
-            />
-          )}
+          <Label className="cursor-pointer ml-1">{asset.symbol}</Label>
+          <AssetSecurityBadge asset={asset} />
         </div>
       }
       {...props}
