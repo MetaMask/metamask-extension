@@ -7,6 +7,7 @@ import {
   type SmartTransaction,
   type SmartTransactionsNetworkConfig,
   type SignedTransactionWithMetadata,
+  getErrorData,
 } from '@metamask/smart-transactions-controller';
 import {
   TransactionController,
@@ -129,7 +130,7 @@ class SmartTransactionHook {
     this.#transactions = transactions;
   }
 
-  async submit() {
+  async submit(): Promise<{ transactionHash?: string; getFeesError?: string }> {
     const isUnsupportedTransactionTypeForSmartTransaction =
       this.#transactionMeta.type
         ? [
@@ -166,7 +167,11 @@ class SmartTransactionHook {
           'Error in smart transaction publish hook, falling back to regular transaction submission',
           error,
         );
-        return useRegularTransactionSubmit; // Fallback to regular transaction submission.
+        // Fallback to regular transaction submission and expose the error to the caller.
+        return {
+          ...useRegularTransactionSubmit,
+          getFeesError: getErrorData(error),
+        };
       }
     }
     try {
