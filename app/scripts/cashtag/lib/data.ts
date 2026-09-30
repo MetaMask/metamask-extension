@@ -131,11 +131,14 @@ export async function resolveTicker(
   }
 
   const matches = await searchBySymbol(ticker);
-  if (matches.length === 0) {
+  const symbolMatches = matches.filter((match) =>
+    match.symbol.trim().toUpperCase().startsWith(ticker),
+  );
+  if (symbolMatches.length === 0) {
     return null;
   }
 
-  const assets = matches.map(toAssetData);
+  const assets = symbolMatches.map(toAssetData);
   return {
     primary: assets[0],
     similar: assets.slice(1),
