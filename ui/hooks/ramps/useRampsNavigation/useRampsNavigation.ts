@@ -41,19 +41,6 @@ export type RampIntent = {
   chainId?: Hex | CaipChainId;
 };
 
-/**
- * Options for {@link useRampsNavigation}.goToBuy.
- */
-export type GoToBuyOptions = {
-  /**
-   * Replace, rather than push, the history entry for the in-app navigations
-   * `goToBuy` performs. Callers that intercept a navigation (the `/buy`
-   * deep-link entry page) must replace so the intercepting page cannot be
-   * navigated back to; regular in-app entry points keep pushing.
-   */
-  replace?: boolean;
-};
-
 type ProvidersState = ResourceState<Provider[], Provider | null>;
 type TokensState = ResourceState<TokensResponse | null, unknown>;
 
@@ -131,11 +118,11 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
- * {@link RampIntent} and an optional {@link GoToBuyOptions}. It runs the gate
- * and either shows a blocking modal or opens the buy destination. Resolves to
- * `true` when it proceeded and `false` when a blocking modal was shown, plus
- * `opensBuyInPortfolioTab` so callers can gate follow-up UI (e.g. a "tab
- * opened" toast).
+ * {@link RampIntent} and an optional `{ replace }` (replace the history entry
+ * instead of pushing). It runs the gate and either shows a blocking modal or
+ * opens the buy destination. Resolves to `true` when it proceeded and `false`
+ * when a blocking modal was shown, plus `opensBuyInPortfolioTab` so callers can
+ * gate follow-up UI (e.g. a "tab opened" toast).
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -153,7 +140,9 @@ export default function useRampsNavigation() {
   const goToBuy = useCallback(
     async (
       intent?: RampIntent,
-      { replace = false }: GoToBuyOptions = {},
+      // `replace` swaps the history entry, so the deep-link entry page can't be
+      // navigated back to.
+      { replace = false }: { replace?: boolean } = {},
     ): Promise<boolean> => {
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
@@ -193,46 +182,11 @@ export default function useRampsNavigation() {
         return false;
       }
 
-      // 4. Cold catalog: `tokens` is not persisted, so after an MV3
-      // service-worker restart (the normal state when someone clicks a `/buy`
-      // link from email) `tokens.data` is `null`, and the controller's
-      // `setSelectedToken` throws until tokens are fetched. Fetch them before
-      // gating or preselecting — preferring the persisted region the
-      // controller gates its state writes on, falling back to the freshly
-      // resolved geolocation.
-      const assetId = intent?.assetId;
-      let tokensState: TokensState = tokens;
-      let didFetchCatalog = false;
-      if (assetId && !tokens.data) {
-        try {
-          const fetchedTokens = await getRampsTokens(
-            userRegion?.regionCode ?? location,
-            'buy',
-          );
-          if (fetchedTokens) {
-            tokensState = {
-              data: fetchedTokens,
-              selected: null,
-              isLoading: false,
-              error: null,
-            };
-            didFetchCatalog = true;
-          }
-        } catch {
-          // Failed fetch: keep the rendered (unsettled) token state below and
-          // fail open, as before.
-        }
-      }
-
-      // 5. Providers/tokens fetched but empty. A null `tokens.data` means
+      // 4. Providers/tokens fetched but empty. A null `tokens.data` means
       // providers/tokens haven't been fetched yet (fetched together by the
       // native flow), so fail open and skip this check entirely until then.
       // A fetch error also fails open (mobile parity) — an empty result only
       // counts once the catalog has actually settled, not on a failed fetch.
-      // Deliberately evaluated on the state the hook rendered with: a catalog
-      // freshly fetched above must not be gated by this closure's providers
-      // snapshot, which can still be the never-fetched default even while the
-      // controller is already fetching providers.
       const catalogSettled = isCatalogSettled(providers, tokens);
       const catalogData = catalogSettled ? tokens.data : null;
       if (catalogData && isCatalogEmpty(providers, catalogData)) {
@@ -240,26 +194,33 @@ export default function useRampsNavigation() {
         return false;
       }
 
-      // A `replace` request swaps the caller's history entry instead of
-      // pushing, so an intercepting page (deep-link entry) cannot be returned
-      // to via the back button.
-      const historyOptions = replace ? { replace: true } : undefined;
-
-      // 6. Route into the native buy flow.
+      // 5. Route into the native buy flow.
+      const assetId = intent?.assetId;
       if (!assetId) {
         // No specific asset → token selection page (it loads the catalog).
-        navigate(RAMPS_TOKEN_SELECTION_ROUTE, historyOptions);
+        navigate(RAMPS_TOKEN_SELECTION_ROUTE, { replace });
         return true;
       }
 
+      // `tokens` isn't persisted, and setSelectedToken throws until it's fetched
+      // (e.g. after an MV3 service-worker restart). The controller dedupes this
+      // with RampsBootstrap's in-flight fetch.
+      const fetchedTokens = tokens.data
+        ? null
+        : await getRampsTokens(userRegion?.regionCode ?? location, 'buy').catch(
+            () => null,
+          );
+
       // Resolve against the catalog. Block on one that definitively lacks or
       // does not support the token — either the rendered catalog settled
-      // (checked above), or the catalog we just fetched. A rendered catalog
-      // that is still unsettled with no fresh fetch fails open (proceed with
-      // it selected, page re-resolves).
-      const catalogToken = findCatalogToken(tokensState.data, assetId);
+      // (checked above), or the catalog we just fetched. Otherwise fail open
+      // (proceed with it selected, page re-resolves).
+      const catalogToken = findCatalogToken(
+        fetchedTokens ?? tokens.data,
+        assetId,
+      );
       if (
-        (catalogData || didFetchCatalog) &&
+        (catalogData || fetchedTokens) &&
         (!catalogToken || catalogToken.tokenSupported === false)
       ) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
@@ -278,7 +239,7 @@ export default function useRampsNavigation() {
       }
       navigate(RAMPS_BUILD_QUOTE_ROUTE, {
         state: { assetId: selectedAssetId },
-        ...historyOptions,
+        replace,
       });
       return true;
     },
