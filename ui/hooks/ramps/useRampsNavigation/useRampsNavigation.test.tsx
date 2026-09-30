@@ -52,6 +52,9 @@ const mockBackground = submitRequestToBackground as jest.Mock;
 // `submitRequestToBackground` backs both the geolocation lookup and
 // `setRampsSelectedToken`; the geolocation result is what the gate reads.
 const mockGetGeolocation = mockBackground;
+// Per-method responses; unlisted methods (e.g. `getRampsTokens`) resolve to
+// undefined, like a controller with nothing to return.
+const backgroundHandlers: Record<string, () => unknown> = {};
 const openTab = jest.fn();
 
 const region: UserRegion = {
@@ -155,7 +158,11 @@ beforeEach(() => {
   mockHasAttemptedPortfolioBuyMigration.mockResolvedValue(false);
   // Default: geolocation resolves to a known location so the geo-unknown gate
   // passes and later gates are exercised.
-  mockGetGeolocation.mockResolvedValue('US-CA');
+  Object.keys(backgroundHandlers).forEach((m) => delete backgroundHandlers[m]);
+  backgroundHandlers.getGeolocation = () => 'US-CA';
+  mockBackground.mockImplementation(async (method: string) =>
+    backgroundHandlers[method]?.(),
+  );
 });
 
 describe('useRampsNavigation goToBuy', () => {
@@ -351,10 +358,9 @@ describe('useRampsNavigation goToBuy', () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
     expect(opened).toBe('native');
-    expect(mockNavigate).toHaveBeenCalledWith(
-      RAMPS_TOKEN_SELECTION_ROUTE,
-      undefined,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
@@ -441,10 +447,9 @@ describe('useRampsNavigation goToBuy', () => {
     const { result, getModalName } = run(buildState());
     const opened = await goToBuy(result);
     expect(opened).toBe('native');
-    expect(mockNavigate).toHaveBeenCalledWith(
-      RAMPS_TOKEN_SELECTION_ROUTE,
-      undefined,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(openTab).not.toHaveBeenCalled();
     expect(mockHasAttemptedPortfolioBuyMigration).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
@@ -495,10 +500,9 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(
-      RAMPS_TOKEN_SELECTION_ROUTE,
-      undefined,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(getModalName()).toBeNull();
   });
 
@@ -514,10 +518,9 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(
-      RAMPS_TOKEN_SELECTION_ROUTE,
-      undefined,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(getModalName()).toBeNull();
   });
 
@@ -531,10 +534,9 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
     await goToBuy(result);
-    expect(mockNavigate).toHaveBeenCalledWith(
-      RAMPS_TOKEN_SELECTION_ROUTE,
-      undefined,
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
     expect(getModalName()).toBeNull();
   });
 
@@ -560,21 +562,16 @@ describe('useRampsNavigation goToBuy', () => {
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
 
   it('intent with assetId when pre-select fails → shows RAMPS_UNSUPPORTED and does not navigate', async () => {
     const assetId = 'eip155:1/erc20:0xabc';
-    mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
-        return 'US-CA';
-      }
-      if (method === 'setRampsSelectedToken') {
-        throw new Error('Token not found');
-      }
-      return undefined;
-    });
+    backgroundHandlers.setRampsSelectedToken = () => {
+      throw new Error('Token not found');
+    };
     const { result, getModalName } = run(
       buildState({
         tokens: {
@@ -615,6 +612,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
+      replace: false,
     });
   });
 
@@ -650,6 +648,7 @@ describe('useRampsNavigation goToBuy', () => {
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
@@ -682,20 +681,12 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
+      replace: false,
     });
   });
 
   it('intent with assetId and loading catalog fails open to build quote', async () => {
     const assetId = 'eip155:143/erc20:0xabc';
-    mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
-        return 'US-CA';
-      }
-      if (method === 'getRampsTokens') {
-        return undefined;
-      }
-      return undefined;
-    });
     const { result, getModalName } = run(
       buildState({
         providers: {
@@ -718,6 +709,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe('native');
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
@@ -777,19 +769,11 @@ describe('useRampsNavigation goToBuy', () => {
     // fetched catalog's spelling.
     const assetId = 'eip155:1/erc20:0xabc';
     const catalogAssetId = 'eip155:1/erc20:0xABC';
-    mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
-        return 'US-CA';
-      }
-      if (method === 'getRampsTokens') {
-        return {
-          topTokens: [],
-          allTokens: [
-            { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
-          ],
-        };
-      }
-      return undefined;
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [
+        { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+      ],
     });
     const { result, getModalName } = run(
       buildState({
@@ -809,6 +793,7 @@ describe('useRampsNavigation goToBuy', () => {
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
@@ -818,20 +803,14 @@ describe('useRampsNavigation goToBuy', () => {
     // catalog, setSelectedToken throws "Tokens not loaded" — the entry page
     // must surface the unsupported modal rather than navigate.
     const assetId = 'eip155:1/erc20:0xabc';
-    mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
-        return 'US-CA';
-      }
-      if (method === 'getRampsTokens') {
-        throw new Error('network down');
-      }
-      if (method === 'setRampsSelectedToken') {
-        throw new Error(
-          'Tokens not loaded. Cannot set selected token before tokens are fetched.',
-        );
-      }
-      return undefined;
-    });
+    backgroundHandlers.getRampsTokens = () => {
+      throw new Error('network down');
+    };
+    backgroundHandlers.setRampsSelectedToken = () => {
+      throw new Error(
+        'Tokens not loaded. Cannot set selected token before tokens are fetched.',
+      );
+    };
     const { result, getModalName } = run(
       buildState({
         tokens: { data: null, selected: null, isLoading: false, error: null },
@@ -852,17 +831,9 @@ describe('useRampsNavigation goToBuy', () => {
     // not be judged "settled empty" by that stale snapshot — the deep link
     // must proceed to build-quote.
     const assetId = 'eip155:1/erc20:0xabc';
-    mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
-        return 'US-CA';
-      }
-      if (method === 'getRampsTokens') {
-        return {
-          topTokens: [],
-          allTokens: [{ assetId, tokenSupported: true } as RampsToken],
-        };
-      }
-      return undefined;
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
     });
     const { result, getModalName } = run(
       buildState({
@@ -879,6 +850,7 @@ describe('useRampsNavigation goToBuy', () => {
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
@@ -888,19 +860,14 @@ describe('useRampsNavigation goToBuy', () => {
     // not contain the token, fail closed rather than routing to build-quote
     // with an unresolvable intent.
     const assetId = 'eip155:1/erc20:0xmissing';
-    mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
-        return 'US-CA';
-      }
-      if (method === 'getRampsTokens') {
-        return {
-          topTokens: [],
-          allTokens: [
-            { assetId: 'eip155:1/erc20:0xother', tokenSupported: true } as RampsToken,
-          ],
-        };
-      }
-      return undefined;
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [
+        {
+          assetId: 'eip155:1/erc20:0xother',
+          tokenSupported: true,
+        } as RampsToken,
+      ],
     });
     const { result, getModalName } = run(
       buildState({
@@ -919,15 +886,6 @@ describe('useRampsNavigation goToBuy', () => {
     // catalog is still unsettled, so fail open and proceed with the token
     // pre-selected rather than blocking.
     const assetId = 'eip155:1/erc20:0xabc';
-    mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
-        return 'US-CA';
-      }
-      if (method === 'getRampsTokens') {
-        return undefined;
-      }
-      return undefined;
-    });
     const { result, getModalName } = run(
       buildState({
         tokens: { data: null, selected: null, isLoading: false, error: null },
@@ -940,6 +898,7 @@ describe('useRampsNavigation goToBuy', () => {
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
@@ -999,6 +958,7 @@ describe('useRampsNavigation goToBuy', () => {
     ]);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
+      replace: false,
     });
     expect(getModalName()).toBeNull();
   });
