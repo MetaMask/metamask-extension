@@ -508,6 +508,9 @@ export async function launchMetaMaskFirefoxExtension(
       'devtools.debugger.remote-enabled': true,
       'devtools.debugger.prompt-connection': false,
     },
+    // Downloads are intercepted by Playwright and saved by the driver's
+    // per-page 'download' listener (see `PlaywrightDriver.registerPage`).
+    acceptDownloads: true,
     proxy: {
       server: proxyServer,
       bypass: 'localhost, 127.0.0.1',

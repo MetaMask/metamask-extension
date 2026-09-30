@@ -228,13 +228,13 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
       const event: SplitStateWriteEvent = {
-        bytesByController: { FooController: 13 },
+        bytesByController: new Map([['FooController', 13]]),
         coalescedUpdates: 1,
-        controllerKeys: ['FooController'],
         idleStatus: 'unknown',
         measurementDurationMs: 0.2,
         sampleRate: 0,
-        totalBytes: 31,
+        sizeMeasurementSource: 'json_string_length_estimate',
+        totalBytes: 13,
         writeDurationMs: 4,
       };
       const splitStateWriteHandler = mockPersistenceOn.mock.calls.find(

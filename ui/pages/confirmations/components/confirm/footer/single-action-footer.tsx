@@ -17,10 +17,7 @@ import {
 import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
-import {
-  PayWithOption,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 
 type ButtonState = {
   buttonText: string;
@@ -41,7 +38,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
   const transactionType = getConfirmationTransactionType(currentConfirmation);
-  const { payWithOption } = useConfirmationNavigationOptions();
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();
@@ -66,12 +63,10 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   );
 
   return useMemo(() => {
-    const i18nKey =
-      payWithOption === PayWithOption.MoneyAccount &&
-      transactionType === TransactionType.perpsDeposit
-        ? 'send'
-        : ((transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ??
-          'confirm');
+    const i18nKey = isMoneyAccountPerpsDeposit
+      ? 'send'
+      : ((transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ??
+        'confirm');
     const defaultButtonText = t(i18nKey);
 
     // Money-account withdraw batches have no `requiredAssets`, so Pay never
@@ -113,8 +108,8 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     isMoneyAccountWithdraw,
     isPayReady,
     isPayLoading,
+    isMoneyAccountPerpsDeposit,
     lastWithdrawAmount,
-    payWithOption,
     primaryRequiredToken,
     totals,
     transactionType,

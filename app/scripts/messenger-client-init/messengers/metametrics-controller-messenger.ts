@@ -20,7 +20,6 @@ export function getMetaMetricsControllerMessenger(
   messenger.delegate({
     messenger: metaMetricsControllerMessenger,
     actions: [
-      'AnalyticsController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'PreferencesController:getState',

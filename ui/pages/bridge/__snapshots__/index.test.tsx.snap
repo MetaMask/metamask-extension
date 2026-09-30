@@ -78,7 +78,7 @@ exports[`Bridge renders the component with initial props 1`] = `
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
                 style="flex: 1; min-width: 0;"
               >
                 <input
@@ -121,7 +121,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
                     >
                       <div
-                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded h-[18px] w-[18px] border-background-default border"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-[18px] w-[18px] border-background-default border"
                         style="border-width: 1px; border-radius: 6px;"
                       >
                         <img
@@ -190,7 +190,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+                  class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
                   style="flex: 1; min-width: 0; opacity: 1;"
                 >
                   <input
@@ -235,7 +235,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
                       >
                         <div
-                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded h-[18px] w-[18px] border-background-default border"
+                          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-[18px] w-[18px] border-background-default border"
                           style="border-width: 1px; border-radius: 6px;"
                         >
                           <img

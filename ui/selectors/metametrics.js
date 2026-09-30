@@ -1,6 +1,8 @@
-// return true if user has set their marketing consent preference or if they are a social login user
+// return the user's marketing consent preference once they have made a decision
 export const getDataCollectionForMarketing = (state) =>
-  state.metamask.dataCollectionForMarketing;
+  state.metamask.marketingConsentDecisionMade === true
+    ? state.metamask.optedInToMarketing === true
+    : null;
 
 // return whether the user has opted in to analytics (AnalyticsController.optedIn)
 export const getOptedIn = (state) => state.metamask.optedIn === true;

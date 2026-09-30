@@ -49,10 +49,17 @@ jest.mock('@metamask/delegation-core', () => ({
   createExactExecutionBatchTerms: jest.fn(),
 }));
 
-jest.mock('@metamask/transaction-controller', () => ({
-  ...jest.requireActual('@metamask/transaction-controller'),
-  decodeAuthorizationSignature: jest.fn(),
-}));
+jest.mock('@metamask/transaction-controller', () => {
+  const actual = jest.requireActual('@metamask/transaction-controller');
+  return Object.defineProperty(
+    Object.create(actual),
+    'decodeAuthorizationSignature',
+    {
+      enumerable: true,
+      value: jest.fn(),
+    },
+  );
+});
 
 const DELEGATION_MANAGER_ADDRESS_MOCK = '0xDelegationManagerAddress' as Hex;
 

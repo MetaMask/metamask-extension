@@ -5,6 +5,8 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  HelpText,
+  HelpTextSeverity,
   IconName,
   TextButton,
   TextButtonSize,
@@ -36,7 +38,10 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/lib/network.utils';
-import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
@@ -53,8 +58,6 @@ import {
   Box,
   FormTextField,
   FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
   Text,
 } from '../../component-library';
 import {
@@ -314,9 +317,12 @@ export const NetworksForm = ({
         if (!cancelled) {
           setFetchedChainId(undefined);
           log.warn('Failed to fetch the chainId from the endpoint.', err);
+          const errorKey = isRpcRateLimitError(err)
+            ? 'rpcUrlRateLimited'
+            : 'failedToFetchChainId';
           setRpcFetchError({
-            key: 'failedToFetchChainId',
-            msg: t('failedToFetchChainId'),
+            key: errorKey,
+            msg: t(errorKey),
           });
         }
       });
@@ -510,7 +516,7 @@ export const NetworksForm = ({
             startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
-            className="mb-4 rounded-xl"
+            className="mb-4"
             data-testid="network-form-add-from-chainlist"
           >
             {t('addFromChainlist')}
@@ -527,10 +533,7 @@ export const NetworksForm = ({
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
-                  <HelpText
-                    variant={TextVariant.bodySm}
-                    severity={HelpTextSeverity.Warning}
-                  >
+                  <HelpText severity={HelpTextSeverity.Warning}>
                     {warnings.name.msg}
                   </HelpText>
                 )}
@@ -641,7 +644,6 @@ export const NetworksForm = ({
         {errors.rpcUrl?.msg && (
           <Box>
             <HelpText
-              variant={TextVariant.bodySm}
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
@@ -695,7 +697,6 @@ export const NetworksForm = ({
 
         {errors.chainId?.msg ? (
           <HelpText
-            variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Danger}
             data-testid="network-form-chain-id-error"
           >
@@ -705,26 +706,28 @@ export const NetworksForm = ({
         {errors.chainId?.key === 'existingChainId' ? (
           <Box>
             <HelpText
-              variant={TextVariant.bodySm}
+              asChild
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
-              {t('updateOrEditNetworkInformations')}{' '}
-              <TextButton
-                size={TextButtonSize.BodySm}
-                onClick={() => {
-                  if (chainIdHex) {
-                    dispatch(
-                      setEditedNetwork({
-                        chainId: chainIdHex,
-                      }),
-                    );
-                    onEdit?.();
-                  }
-                }}
-              >
-                {t('editNetworkLink')}
-              </TextButton>
+              <div>
+                {t('updateOrEditNetworkInformations')}{' '}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    if (chainIdHex) {
+                      dispatch(
+                        setEditedNetwork({
+                          chainId: chainIdHex,
+                        }),
+                      );
+                      onEdit?.();
+                    }
+                  }}
+                >
+                  {t('editNetworkLink')}
+                </TextButton>
+              </div>
             </HelpText>
           </Box>
         ) : null}
@@ -775,7 +778,6 @@ export const NetworksForm = ({
         />
         {ticker && warnings.ticker?.msg ? (
           <HelpText
-            variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Warning}
             data-testid="network-form-ticker-warning"
           >
@@ -848,7 +850,7 @@ export const NetworksForm = ({
             size={ButtonSize.Lg}
             isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            className="w-full rounded-xl"
+            className="w-full"
             data-testid="page-container-footer-next"
           >
             {t('save')}

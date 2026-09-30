@@ -83,9 +83,8 @@ class TokensTab extends HomePage {
   private readonly hideTokenConfirmationButton =
     '[data-testid="hide-token-confirmation__hide"]';
 
-  private readonly hideTokenConfirmationModalTitle = {
-    text: 'Hide token',
-    css: '.hide-token-confirmation__title',
+  private readonly hideTokenConfirmationModal = {
+    testId: 'hide-token-confirmation-modal',
   };
 
   private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
@@ -813,7 +812,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
-    await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
+    await this.driver.waitForSelector(this.hideTokenConfirmationModal);
     await this.driver.clickElementAndWaitToDisappear(
       this.hideTokenConfirmationButton,
     );

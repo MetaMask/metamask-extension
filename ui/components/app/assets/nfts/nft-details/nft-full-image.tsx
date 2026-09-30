@@ -80,7 +80,11 @@ export default function NftFullImage() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setVisible(true);
+    // Async so the initial opacity:0 paint can occur before fading in.
+    const frameId = requestAnimationFrame(() => {
+      setVisible(true);
+    });
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   const onClose = useCallback(() => {

@@ -409,9 +409,6 @@
     "message": "ব্যক্তিগত কী",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "সতর্কতা: কখনও এই কী টি প্রকাশ করবেন না। আপনার গোপন কী কারোর কাছে থাকলে তিনি যে কোনো সময় আপনার অ্যাকাউন্টে থাকা যে কোনো সম্পদ চুরি করে নিতে পারবেন।"
-  },
   "privateNetwork": {
     "message": "ব্যক্তিগত নেটওয়ার্ক"
   },

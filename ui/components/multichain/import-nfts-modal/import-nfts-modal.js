@@ -41,7 +41,7 @@ import {
 import {
   getIsMainnet,
   getOpenSeaEnabled,
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
 } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
@@ -75,7 +75,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const dispatch = useDispatch();
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
-  const showTestNetworks = useSelector(getShowTestNetworks);
+  const showTestNetworks = useSelector(getShouldShowTestNetworks);
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
@@ -395,7 +395,7 @@ export const ImportNftsModal = ({ onClose }) => {
               onClose();
               navigate(DEFAULT_ROUTE);
             }}
-            className="import-nfts-modal__cancel-button flex-1 rounded-xl"
+            className="import-nfts-modal__cancel-button flex-1"
           >
             {t('cancel')}
           </Button>
@@ -404,7 +404,7 @@ export const ImportNftsModal = ({ onClose }) => {
             size={ButtonSize.Lg}
             onClick={() => handleAddNft()}
             isDisabled={isFormDisabled}
-            className="flex-1 rounded-xl"
+            className="flex-1"
             data-testid="import-nfts-modal-import-button"
           >
             {t('import')}

@@ -31,6 +31,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
+import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
 import { AccountSelectModal } from '../../account-select-modal';
 
@@ -60,6 +61,11 @@ const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
   TransactionType.moneyAccountWithdraw,
 ];
 
+const MONEY_ACCOUNT_HARDWARE_SELECTOR_BLOCKED_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+];
+
 /**
  * "From <wallet>" / "To <wallet>" account selector row.
  *
@@ -73,6 +79,10 @@ const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
  * deposit) read "From", whereas withdraws read "To" because the selected
  * account receives the funds.
  *
+ * Flows that cannot be funded by a hardware device (Money Account deposit and
+ * withdraw, Perps, Predict) hide hardware accounts from the modal, so the user
+ * cannot pick an account that `usePayHardwareAccountAlert` would then block.
+ *
  * @param props - Component props.
  * @param props.showDivider - Whether to render a divider below the row.
  * @param props.variant - Row size variant.
@@ -85,6 +95,13 @@ export function FromAccountRow({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const isHardwareBlocked = useIsPayHardwareBlocked();
+  const excludeHardwareAccounts =
+    isHardwareBlocked ||
+    hasTransactionType(
+      currentConfirmation,
+      MONEY_ACCOUNT_HARDWARE_SELECTOR_BLOCKED_TRANSACTION_TYPES,
+    );
   const transactionId = currentConfirmation?.id ?? '';
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
@@ -196,6 +213,7 @@ export function FromAccountRow({
           onSelect={handleSelect}
           onClose={closeModal}
           title={isRecipientRow ? t('selectRecipient') : undefined}
+          excludeHardwareAccounts={excludeHardwareAccounts}
         />
       )}
     </>

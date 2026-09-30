@@ -23,13 +23,10 @@ const MIN_HIDDEN_DURATION_MS = 30_000;
 /**
  * Layout wrapper for all Perps pages.
  *
- * This component is lazy-loaded via mmLazy in routes so that
- * the Perps dependency chain (PerpsStreamManager, etc.) is excluded from
- * the common bundle and only loaded when a user first navigates to a Perps route.
- *
- * It is the single point that gates background stream emission: mounting
- * signals the background to start forwarding WebSocket data to this connection,
- * and unmounting signals it to stop.
+ * The route UI stays lazy-loaded via mmLazy. The data-only stream manager
+ * also serves the wallet-root preloader, independently of this layout.
+ * Mounting owns foreground detail streams; wallet-level market/account/price
+ * preload emissions continue when this layout unmounts.
  */
 type PerpsControllerCacheSnapshot = {
   activeProvider?: string;

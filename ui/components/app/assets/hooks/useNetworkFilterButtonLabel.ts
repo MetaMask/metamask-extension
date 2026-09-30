@@ -5,7 +5,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
   getUseExternalServices,
 } from '../../../../selectors';
 import { useNetworkManagerState } from '../../../multichain/network-manager/hooks/useNetworkManagerState';
@@ -17,7 +17,7 @@ export function useNetworkFilterButtonLabel(): string {
     getAllEnabledNetworksForAllNamespaces,
   );
   const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const useExternalServices = useSelector(getUseExternalServices);
   const { nonTestNetworks: customNetworkMap, testNetworks: testNetworkMap } =
     useNetworkManagerState();
