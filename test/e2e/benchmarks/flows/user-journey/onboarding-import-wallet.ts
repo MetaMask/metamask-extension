@@ -226,27 +226,34 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         // (extension#46006 ([P0] Benchmark step timers measure the test
         // harness, not the browser)).
         //
-        // Two spans cover this one interaction, and both are reported because
-        // the gap between them is the only thing that localizes where the cost
-        // sits. Both start on the element `openAccountMenu` clicks: `Account
-        // List` in the account picker's own `onClick`, and `Show Account List`
-        // in the handler that `onClick` then calls. Both end on a mount effect
-        // in `MultichainAccountList`. So each covers the click and the first
-        // wait that `openAccountMenu` consumes before the step above starts
-        // measuring, which the step timer cannot see.
+        // Two spans cover this one interaction and only `Show Account List` is
+        // reported. Both start on the element `openAccountMenu` clicks:
+        // `Account List` in the account picker's own `onClick`, and `Show
+        // Account List` in the handler that `onClick` then calls. Both end on a
+        // mount effect in `MultichainAccountList`. So the span covers the click
+        // and the first wait that `openAccountMenu` consumes before the step
+        // above starts measuring, which the step timer cannot see.
         //
-        // These are the only spans this flow converts. The six earlier steps
+        // An earlier revision reported both, on the reasoning that the gap
+        // between them localizes where the cost sits. Measured over 15 builds
+        // it does not: the means differ by 0.12 ms at r = 1.0000 on Chrome, so
+        // the pair carries one interval's information and admitting both would
+        // spend two rows of the suite's budget and two of the per-PR
+        // false-discovery correction to measure one wait twice. `Show Account
+        // List` is the one kept because its start sits with the navigation it
+        // measures rather than one component inward.
+        //
+        // This is the only span this flow converts. The six earlier steps
         // have no span whose interval matches them; the commit message records
         // the per-step finding. Report-only: no threshold is registered, and
-        // both carry a `unit` so `runner.ts` keeps them out of the per-run
+        // it carries a `unit` so `runner.ts` keeps it out of the per-run
         // `total`.
         const transactions = await waitForSentryTransactions(
           driver,
           mockedEndpoint,
-          [TraceName.AccountList, TraceName.ShowAccountList],
+          [TraceName.ShowAccountList],
         );
         traceTimers.push(
-          sentryTimerResult(transactions, TraceName.AccountList, 'accountList'),
           sentryTimerResult(
             transactions,
             TraceName.ShowAccountList,
