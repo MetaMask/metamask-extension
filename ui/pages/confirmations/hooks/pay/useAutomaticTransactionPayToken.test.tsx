@@ -754,6 +754,34 @@ describe('useAutomaticTransactionPayToken', () => {
       });
     });
 
+    it('prefers a funded token on a chain with native gas for a hardware wallet deposit', () => {
+      getHardwareWalletTypeMock.mockReturnValue('ledger');
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_1_MOCK,
+          chainId: CHAIN_ID_1_MOCK,
+          fiat: { balance: 20 },
+          rawBalance: '0x1312d00',
+        },
+        {
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+          fiat: { balance: 5 },
+          isNative: true,
+          rawBalance: '0x1',
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider({
+        transactionType: TransactionType.moneyAccountDeposit,
+      });
+
+      expect(setPayTokenMock).toHaveBeenCalledWith({
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      });
+    });
+
     it('skips a zero-balance preferred flag token and selects the highest funded token', () => {
       // `minimumRequiredTokenBalance` defaults to 0, so without the
       // deposit-specific filter a $0 preferred token would outrank a funded one.
