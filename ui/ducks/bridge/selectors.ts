@@ -1,9 +1,6 @@
 import type { NetworkState } from '@metamask/network-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type {
-  AssetsControllerState,
-  Caip19AssetId,
-} from '@metamask/assets-controller';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import {
   isSolanaChainId,
   isBitcoinChainId,
@@ -641,13 +638,11 @@ export const getFromBalances = createSelector(
       ),
       [fromTokenBalanceAssetIdToUse]:
         fromTokenBalance ??
-        normalizedBalances[fromTokenBalanceAssetIdToUse as Caip19AssetId]
-          ?.amount ??
+        normalizedBalances[fromTokenBalanceAssetIdToUse]?.amount ??
         '0',
       [nativeBalanceAssetIdToUse]:
         fromNativeBalance ??
-        normalizedBalances[nativeBalanceAssetIdToUse as Caip19AssetId]
-          ?.amount ??
+        normalizedBalances[nativeBalanceAssetIdToUse]?.amount ??
         '0',
     };
   },
