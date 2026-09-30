@@ -10,11 +10,14 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
 import {
-  calculateBalanceForAllWallets,
   selectAllAssets,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import type { AccountGroupAssets } from '@metamask/assets-controllers';
+import type {
+  AllWalletsBalance,
+  BalanceChangeResult,
+} from '@metamask/assets-controller';
 import type { MetaMaskReduxState } from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
@@ -51,7 +54,7 @@ import {
 
 /**
  * State shape for asset selector tests. Cast to this when passing partial state
- * to selectors that accept a full Redux state type.
+ * to selectors that accept a full Redux / controller state type.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AssetSelectorTestState = any;
@@ -59,23 +62,25 @@ type AssetSelectorTestState = any;
 const mockGetAggregatedBalanceForAccount = jest.fn(
   (..._args: unknown[]) => undefined,
 );
-const mockCalculateBalanceForAllWalletsFromUnified = jest.fn(
-  (..._args: unknown[]) => ({
-    wallets: {},
-    totalBalanceInUserCurrency: 0,
-    userCurrency: 'usd',
-  }),
-);
-const mockCalculateBalanceChangeForAccountGroupFromUnified = jest.fn(
-  (..._args: unknown[]) => ({
-    period: '1d',
-    currentTotalInUserCurrency: 0,
-    previousTotalInUserCurrency: 0,
-    amountChangeInUserCurrency: 0,
-    percentChange: 0,
-    userCurrency: 'usd',
-  }),
-);
+const mockCalculateBalanceForAllWalletsFromUnified: jest.Mock<
+  AllWalletsBalance,
+  unknown[]
+> = jest.fn(() => ({
+  wallets: {},
+  totalBalanceInUserCurrency: 0,
+  userCurrency: 'usd',
+}));
+const mockCalculateBalanceChangeForAccountGroupFromUnified: jest.Mock<
+  BalanceChangeResult,
+  unknown[]
+> = jest.fn(() => ({
+  period: '1d',
+  currentTotalInUserCurrency: 0,
+  previousTotalInUserCurrency: 0,
+  amountChangeInUserCurrency: 0,
+  percentChange: 0,
+  userCurrency: 'usd',
+}));
 jest.mock('@metamask/assets-controller', () => ({
   getAggregatedBalanceForAccount: (...args: unknown[]) =>
     mockGetAggregatedBalanceForAccount(...args),
@@ -116,56 +121,142 @@ jest.mock('@metamask/assets-controllers', () => {
   };
 });
 
-const mockRatesState = {
+const SOLANA_ACCOUNT_ID = '5132883f-598e-482c-a02b-84eeaa352f5b';
+const SOL_NATIVE_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501' as CaipAssetType;
+const SOL_USDC_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' as CaipAssetType;
+const RATE_ASSET_1 =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:Token1Mint111111111111111111111111111' as CaipAssetType;
+const RATE_ASSET_2 =
+  'bip122:000000000019d6689c085ae165831e93/slip44:0' as CaipAssetType;
+
+const mockSolanaAccount = {
+  id: SOLANA_ACCOUNT_ID,
+  address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
+  type: 'solana:data-account',
+  scopes: [SolScope.Mainnet],
+};
+
+const mockRatesState: AssetsRatesState = {
   metamask: {
-    conversionRates: {
-      'token-1': { rate: 1.5, currency: 'USD' },
-      'token-2': { rate: 0.8, currency: 'EUR' },
-    },
-    historicalPrices: {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        usd: {
-          intervals: {},
-          updateTime: 1737542312,
-          expirationTime: 1737542312,
-        },
+    assetsPrice: {
+      [RATE_ASSET_1]: {
+        assetPriceType: 'fungible',
+        price: 1.5,
+        usdPrice: 1.5,
+        lastUpdated: 1000,
+      },
+      [RATE_ASSET_2]: {
+        assetPriceType: 'fungible',
+        price: 0.8,
+        usdPrice: 0.8,
+        lastUpdated: 2000,
       },
     },
   },
 };
 
-// Mock state for testing
-const mockAssetsState: AssetsState = {
-  metamask: {
-    accountsAssets: {
-      '5132883f-598e-482c-a02b-84eeaa352f5b': [
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-      ],
-    },
-    assetsMetadata: {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        name: 'Token 1',
-        symbol: 'TKN1',
-        iconUrl: 'https://example.com/token-1.png',
-        fungible: true,
-        units: [{ symbol: 'TKN1', name: 'Token 1', decimals: 9 }],
+const expectedDerivedAssetsRates = {
+  [RATE_ASSET_1]: {
+    rate: '1.5',
+    conversionTime: 1000,
+    expirationTime: undefined,
+    marketData: {
+      fungible: true,
+      allTimeHigh: undefined,
+      allTimeLow: undefined,
+      circulatingSupply: undefined,
+      marketCap: undefined,
+      totalVolume: undefined,
+      pricePercentChange: {
+        PT1H: undefined,
+        P1D: undefined,
+        P7D: undefined,
+        P14D: undefined,
+        P30D: undefined,
+        P200D: undefined,
+        P1Y: undefined,
       },
     },
-    allIgnoredAssets: {},
+  },
+  [RATE_ASSET_2]: {
+    rate: '0.8',
+    conversionTime: 2000,
+    expirationTime: undefined,
+    marketData: {
+      fungible: true,
+      allTimeHigh: undefined,
+      allTimeLow: undefined,
+      circulatingSupply: undefined,
+      marketCap: undefined,
+      totalVolume: undefined,
+      pricePercentChange: {
+        PT1H: undefined,
+        P1D: undefined,
+        P7D: undefined,
+        P14D: undefined,
+        P30D: undefined,
+        P200D: undefined,
+        P1Y: undefined,
+      },
+    },
+  },
+};
+
+// Mock state for testing (unified AssetsController fields)
+const mockAssetsState: AssetSelectorTestState = {
+  metamask: {
+    internalAccounts: {
+      accounts: {
+        [SOLANA_ACCOUNT_ID]: mockSolanaAccount,
+      },
+      selectedAccount: SOLANA_ACCOUNT_ID,
+    },
+    assetsInfo: {
+      [SOL_NATIVE_ASSET_ID]: {
+        type: 'native',
+        name: 'Token 1',
+        symbol: 'TKN1',
+        decimals: 9,
+        image: 'https://example.com/token-1.png',
+      },
+    },
+    assetsBalance: {
+      [SOLANA_ACCOUNT_ID]: {
+        [SOL_NATIVE_ASSET_ID]: { amount: '0' },
+      },
+    },
+    customAssets: {},
+    assetPreferences: {},
+  },
+};
+
+const expectedDerivedAccountsAssets = {
+  [SOLANA_ACCOUNT_ID]: [SOL_NATIVE_ASSET_ID],
+};
+
+const expectedDerivedAssetsMetadata = {
+  [SOL_NATIVE_ASSET_ID]: {
+    fungible: true,
+    iconUrl: 'https://example.com/token-1.png',
+    units: [{ decimals: 9, symbol: 'TKN1', name: 'Token 1' }],
+    symbol: 'TKN1',
+    name: 'Token 1',
   },
 };
 
 describe('getAccountAssets', () => {
-  it('should return the assets from the state', () => {
+  it('returns the assets from the state', () => {
     const result = getAccountAssets(mockAssetsState);
-    expect(result).toEqual(mockAssetsState.metamask.accountsAssets);
+    expect(result).toEqual(expectedDerivedAccountsAssets);
   });
 });
 
 describe('getAssetsMetadata', () => {
   it('returns the assets metadata from the state', () => {
     const result = getAssetsMetadata(mockAssetsState);
-    expect(result).toEqual(mockAssetsState.metamask.assetsMetadata);
+    expect(result).toEqual(expectedDerivedAssetsMetadata);
   });
 
   it('returns empty object when state has no metamask property', () => {
@@ -173,7 +264,7 @@ describe('getAssetsMetadata', () => {
     expect(getAssetsMetadata(invalidState)).toEqual({});
   });
 
-  it('returns empty object when assetsMetadata is missing', () => {
+  it('returns empty object when assetsInfo is missing', () => {
     const state = { metamask: {} };
     expect(getAssetsMetadata(state as AssetsState)).toEqual({});
   });
@@ -427,57 +518,69 @@ describe('getSelectedCurrency', () => {
 });
 
 describe('getAssetsRates', () => {
-  it('should return the assetsRates from the state', () => {
+  it('returns the assetsRates derived from assetsPrice', () => {
     const result = getAssetsRates(mockRatesState);
-    expect(result).toEqual(mockRatesState.metamask.conversionRates);
+    expect(result).toEqual(expectedDerivedAssetsRates);
   });
 
-  it('should return an empty object if assetsRates is empty', () => {
+  it('returns an empty object if assetsPrice is empty', () => {
     const emptyState: AssetsRatesState = {
-      metamask: { conversionRates: {}, historicalPrices: {} },
+      metamask: { assetsPrice: {} },
     };
     const result = getAssetsRates(emptyState);
     expect(result).toEqual({});
   });
 
-  it('should return undefined if state does not have metamask property', () => {
+  it('throws if state does not have metamask property', () => {
     const invalidState = {} as AssetsRatesState;
     expect(() => getAssetsRates(invalidState)).toThrow();
   });
 });
 
 describe('getMultiChainAssets', () => {
-  const mockAccountId = '5132883f-598e-482c-a02b-84eeaa352f5b';
-  const mockMultichainBalances = {
-    [mockAccountId]: {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        amount: '0.051724127',
-        unit: 'SOL',
-      },
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-        {
-          amount: '0',
-          unit: 'USDC',
-        },
+  const mockAccountId = SOLANA_ACCOUNT_ID;
+
+  const mockAssetsInfo = {
+    [SOL_NATIVE_ASSET_ID]: {
+      type: 'native',
+      name: 'Token 1',
+      symbol: 'TKN1',
+      decimals: 9,
+      image: 'https://example.com/token-1.png',
+    },
+    [SOL_USDC_ASSET_ID]: {
+      type: 'token',
+      name: 'USDC',
+      symbol: 'USDC',
+      decimals: 0,
     },
   };
 
-  const mockAccountAssets = {
-    [mockAccountId]: [
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    ],
+  const mockAssetsBalance = {
+    [mockAccountId]: {
+      [SOL_NATIVE_ASSET_ID]: { amount: '0.051724127' },
+      [SOL_USDC_ASSET_ID]: { amount: '0' },
+    },
   };
-  it('should return assets with zero balance with hideZeroBalanceTokens set to false', () => {
+
+  const mockInternalAccounts = {
+    accounts: {
+      [mockAccountId]: mockSolanaAccount,
+    },
+    selectedAccount: mockAccountId,
+  };
+
+  it('returns assets with zero balance with hideZeroBalanceTokens set to false', () => {
     const mockState = {
       metamask: {
-        ...mockAssetsState.metamask,
-        ...mockRatesState.metamask,
-        accountsAssets: mockAccountAssets,
+        internalAccounts: mockInternalAccounts,
+        assetsInfo: mockAssetsInfo,
+        assetsBalance: mockAssetsBalance,
+        customAssets: {},
+        assetsPrice: {},
         preferences: {
           hideZeroBalanceTokens: false,
         },
-        balances: mockMultichainBalances,
       },
     };
     const result = getMultiChainAssets(mockState, {
@@ -488,7 +591,7 @@ describe('getMultiChainAssets', () => {
       expect.arrayContaining([
         expect.objectContaining({
           title: 'Token 1',
-          address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          address: SOL_NATIVE_ASSET_ID,
           symbol: 'TKN1',
           image: 'https://example.com/token-1.png',
           decimals: 9,
@@ -499,10 +602,9 @@ describe('getMultiChainAssets', () => {
         }),
         expect.objectContaining({
           title: 'USDC',
-          address:
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          address: SOL_USDC_ASSET_ID,
           symbol: 'USDC',
-          image: undefined,
+          image: '',
           decimals: 0,
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           isNative: false,
@@ -512,16 +614,17 @@ describe('getMultiChainAssets', () => {
       ]),
     );
   });
-  it('should not return assets with zero balance with hideZeroBalanceTokens set to true', () => {
+  it('does not return assets with zero balance with hideZeroBalanceTokens set to true', () => {
     const mockState = {
       metamask: {
-        ...mockAssetsState.metamask,
-        ...mockRatesState.metamask,
-        accountsAssets: mockAccountAssets,
+        internalAccounts: mockInternalAccounts,
+        assetsInfo: mockAssetsInfo,
+        assetsBalance: mockAssetsBalance,
+        customAssets: {},
+        assetsPrice: {},
         preferences: {
           hideZeroBalanceTokens: true,
         },
-        balances: mockMultichainBalances,
       },
     };
     const result = getMultiChainAssets(mockState, {
@@ -532,7 +635,7 @@ describe('getMultiChainAssets', () => {
       expect.arrayContaining([
         expect.objectContaining({
           title: 'Token 1',
-          address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          address: SOL_NATIVE_ASSET_ID,
           symbol: 'TKN1',
           image: 'https://example.com/token-1.png',
           decimals: 9,
@@ -548,13 +651,14 @@ describe('getMultiChainAssets', () => {
   it('returns the same data if state does not change', () => {
     const mockState = {
       metamask: {
-        ...mockAssetsState.metamask,
-        ...mockRatesState.metamask,
-        accountsAssets: mockAccountAssets,
+        internalAccounts: mockInternalAccounts,
+        assetsInfo: mockAssetsInfo,
+        assetsBalance: mockAssetsBalance,
+        customAssets: {},
+        assetsPrice: {},
         preferences: {
           hideZeroBalanceTokens: false,
         },
-        balances: mockMultichainBalances,
       },
     };
     // getMultiChainAssets uses createSelector (weakMapMemoize) which keys the
@@ -568,6 +672,11 @@ describe('getMultiChainAssets', () => {
 });
 
 describe('getTokenByAccountAndAddressAndChainId', () => {
+  const evmAccountId = '81b1ead4-334c-4921-9adf-282fde539752';
+  const evmAddress = '0x458036e7bc0612e9b207640dc07ca7711346aae5';
+  const evmAddressChecksummed = '0x458036e7Bc0612e9b207640Dc07Ca7711346AAE5';
+  const token2AssetId = `eip155:1/erc20:${evmAddress}` as CaipAssetType;
+
   // Create a mock state with an EVM account and a non-EVM account, each having a token on their respective chains
   const mockState = {
     metamask: {
@@ -580,10 +689,7 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
               'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
                 id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
                 type: 'multichain-account',
-                accounts: [
-                  '81b1ead4-334c-4921-9adf-282fde539752',
-                  '5132883f-598e-482c-a02b-84eeaa352f5b',
-                ],
+                accounts: [evmAccountId, SOLANA_ACCOUNT_ID],
                 metadata: {
                   name: 'Account 1',
                   entropy: {
@@ -607,110 +713,128 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
       selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
       internalAccounts: {
         accounts: {
-          '81b1ead4-334c-4921-9adf-282fde539752': {
-            id: '81b1ead4-334c-4921-9adf-282fde539752',
-            address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
+          [evmAccountId]: {
+            id: evmAccountId,
+            address: evmAddress,
             type: 'eip155:eoa',
             scopes: [EthScope.Eoa],
+            metadata: {
+              name: 'Account 1',
+              keyring: { type: 'HD Key Tree' },
+              lastSelected: 1,
+            },
+            options: {},
+            methods: [],
           },
-          '5132883f-598e-482c-a02b-84eeaa352f5b': {
-            id: '5132883f-598e-482c-a02b-84eeaa352f5b',
+          [SOLANA_ACCOUNT_ID]: {
+            id: SOLANA_ACCOUNT_ID,
             address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
             type: 'solana:data-account',
             scopes: [SolScope.Mainnet],
+            metadata: {
+              name: 'Solana Account',
+              keyring: { type: 'Snap Keyring' },
+              lastSelected: 0,
+            },
+            options: {},
+            methods: [],
           },
         },
-        selectedAccount: '', // To be populated in each case
+        selectedAccount: evmAccountId,
       },
-      accounts: {
-        '0x458036e7bc0612e9b207640dc07ca7711346aae5': {
-          address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
-          balance: '0x0',
+      assetsInfo: {
+        [token2AssetId]: {
+          type: 'erc20',
+          name: 'Token 2',
+          symbol: 'TKN2',
+          decimals: 18,
         },
-      },
-      accountsAssets: {
-        '5132883f-598e-482c-a02b-84eeaa352f5b': [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        ],
-      },
-      assetsMetadata: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        [SOL_NATIVE_ASSET_ID]: {
+          type: 'native',
           name: 'Token 1',
           symbol: 'TKN1',
-          iconUrl: 'https://example.com/token-1.png',
-          fungible: true,
-          units: [{ symbol: 'TKN1', name: 'Token 1', decimals: 9 }],
+          decimals: 9,
+          image: 'https://example.com/token-1.png',
         },
       },
-      allIgnoredAssets: {},
-      allTokens: {
-        'eip155:1': {
-          '0x458036e7bc0612e9b207640dc07ca7711346aae5': [
-            {
-              address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
-              chainId: 'eip155:1',
-              name: 'Token 2',
-            },
-          ],
+      assetsBalance: {
+        [evmAccountId]: {
+          [token2AssetId]: { amount: '0' },
+        },
+        [SOLANA_ACCOUNT_ID]: {
+          [SOL_NATIVE_ASSET_ID]: { amount: '0' },
         },
       },
-      accountsByChainId: {
-        'eip155:1': {
-          '0x458036e7bc0612e9b207640dc07ca7711346aae5': {
-            balance: '0x0',
-          },
-        },
+      customAssets: {},
+      assetsPrice: {},
+      assetPreferences: {},
+      preferences: {
+        hideZeroBalanceTokens: false,
       },
       completedOnboarding: true,
     },
   };
 
-  it('should return null if chainId is undefined', () => {
+  // Deleted: "returns null if chainId is undefined" — undefined chainId now
+  // throws inside non-EVM account resolution (isEvmChainId returns false for
+  // non-strings), so that legacy null-return path cannot be reproduced.
+
+  it('returns null when no tokens exist for the chain', () => {
+    const warnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined);
+
     const result = getTokenByAccountAndAddressAndChainId(
       mockState,
       undefined,
-      '0x458036e7bc0612e9b207640dc07ca7711346aae5',
-      '0x1',
+      evmAddress,
+      '0x999',
     );
+
     expect(result).toBeNull();
+    expect(warnSpy).toHaveBeenCalledWith('No tokens found for chainId: 0x999');
+    warnSpy.mockRestore();
   });
 
   describe('when the passed account is an EVM account', () => {
     const account = mockState.metamask.internalAccounts.accounts[
-      '81b1ead4-334c-4921-9adf-282fde539752'
+      evmAccountId
     ] as unknown as InternalAccount;
 
-    it('should return the token from the state', () => {
+    it('returns the token from the state', () => {
       const result = getTokenByAccountAndAddressAndChainId(
         mockState,
         account,
-        '0x458036e7bc0612e9b207640dc07ca7711346aae5',
-        'eip155:1',
+        evmAddress,
+        '0x1',
       );
       expect(result).toEqual({
-        address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
-        chainId: 'eip155:1',
-        isNative: false,
+        address: evmAddressChecksummed,
+        symbol: 'TKN2',
+        decimals: 18,
         name: 'Token 2',
+        image: undefined,
+        chainId: '0x1',
+        isNative: false,
       });
     });
   });
 
   describe('when the passed account is a non-EVM account', () => {
     const account = mockState.metamask.internalAccounts.accounts[
-      '5132883f-598e-482c-a02b-84eeaa352f5b'
+      SOLANA_ACCOUNT_ID
     ] as unknown as InternalAccount;
 
-    it('should return the token from the state', () => {
+    it('returns the token from the state', () => {
       const result = getTokenByAccountAndAddressAndChainId(
         mockState,
         account,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        SOL_NATIVE_ASSET_ID,
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
 
       expect(result).toEqual({
-        address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        address: SOL_NATIVE_ASSET_ID,
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         decimals: 9,
         image: 'https://example.com/token-1.png',
@@ -727,21 +851,21 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
   });
 
   describe('when the passed account is undefined', () => {
-    it('should use the selected account to return the token from the state', () => {
+    it('uses the selected account to return the token from the state', () => {
       const account = undefined;
       const mockStateWithSelectedAccount = cloneDeep(mockState);
       mockStateWithSelectedAccount.metamask.internalAccounts.selectedAccount =
-        '5132883f-598e-482c-a02b-84eeaa352f5b';
+        SOLANA_ACCOUNT_ID;
 
       const result = getTokenByAccountAndAddressAndChainId(
         mockStateWithSelectedAccount,
         account,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        SOL_NATIVE_ASSET_ID,
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
 
       expect(result).toEqual({
-        address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        address: SOL_NATIVE_ASSET_ID,
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         decimals: 9,
         image: 'https://example.com/token-1.png',
@@ -758,17 +882,17 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
   });
 
   describe('when account is undefined and selectedAccountGroup is null', () => {
-    it('should return null without crashing (deeplink guard)', () => {
+    it('returns null without crashing (deeplink guard)', () => {
       const mockStateNoGroup = cloneDeep(mockState);
       mockStateNoGroup.metamask.selectedAccountGroup =
         null as unknown as string;
       mockStateNoGroup.metamask.internalAccounts.selectedAccount =
-        '5132883f-598e-482c-a02b-84eeaa352f5b';
+        SOLANA_ACCOUNT_ID;
 
       const result = getTokenByAccountAndAddressAndChainId(
         mockStateNoGroup,
         undefined,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        SOL_NATIVE_ASSET_ID,
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
 
@@ -777,19 +901,19 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
   });
 
   describe('when account is undefined and no account in the group matches the non-EVM chainId', () => {
-    it('should return null without crashing', () => {
+    it('returns null without crashing', () => {
       const mockStateNoMatchingAccount = cloneDeep(mockState);
       mockStateNoMatchingAccount.metamask.internalAccounts.selectedAccount =
-        '5132883f-598e-482c-a02b-84eeaa352f5b';
+        SOLANA_ACCOUNT_ID;
       // Override the Solana account's scopes so it no longer matches the queried chain
       mockStateNoMatchingAccount.metamask.internalAccounts.accounts[
-        '5132883f-598e-482c-a02b-84eeaa352f5b'
+        SOLANA_ACCOUNT_ID
       ].scopes = [EthScope.Eoa] as unknown as SolScope[];
 
       const result = getTokenByAccountAndAddressAndChainId(
         mockStateNoMatchingAccount,
         undefined,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        SOL_NATIVE_ASSET_ID,
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
 
@@ -803,20 +927,21 @@ describe('getMultichainNativeAssetType', () => {
     metamask: {
       internalAccounts: {
         accounts: {
-          '5132883f-598e-482c-a02b-84eeaa352f5b': {
-            id: '5132883f-598e-482c-a02b-84eeaa352f5b',
+          [SOLANA_ACCOUNT_ID]: {
+            id: SOLANA_ACCOUNT_ID,
             address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
             type: 'solana:data-account',
           },
         },
-        selectedAccount: '5132883f-598e-482c-a02b-84eeaa352f5b',
+        selectedAccount: SOLANA_ACCOUNT_ID,
       },
-      accountsAssets: {
-        '5132883f-598e-482c-a02b-84eeaa352f5b': [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
+      assetsBalance: {
+        [SOLANA_ACCOUNT_ID]: {
+          [SOL_NATIVE_ASSET_ID]: { amount: '0' },
+          [SOL_USDC_ASSET_ID]: { amount: '0' },
+        },
       },
+      customAssets: {},
       networkConfigurationsByChainId: {},
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -834,24 +959,21 @@ describe('getMultichainNativeAssetType', () => {
   } as any;
 
   describe('when a native asset type is available', () => {
-    it('should return the native asset type', () => {
+    it('returns the native asset type', () => {
       const result = getMultichainNativeAssetType(mockState);
 
-      expect(result).toEqual(
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-      );
+      expect(result).toEqual(SOL_NATIVE_ASSET_ID);
     });
   });
 
   describe('when a native asset type is not available', () => {
     const mockStateWithoutNativeAssetType = cloneDeep(mockState);
-    mockStateWithoutNativeAssetType.metamask.accountsAssets[
-      '5132883f-598e-482c-a02b-84eeaa352f5b'
-    ] = [
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    ];
+    mockStateWithoutNativeAssetType.metamask.assetsBalance[SOLANA_ACCOUNT_ID] =
+      {
+        [SOL_USDC_ASSET_ID]: { amount: '0' },
+      };
 
-    it('should return undefined', () => {
+    it('returns undefined', () => {
       const result = getMultichainNativeAssetType(
         mockStateWithoutNativeAssetType,
       );
@@ -862,64 +984,67 @@ describe('getMultichainNativeAssetType', () => {
 });
 
 describe('getHistoricalMultichainAggregatedBalance', () => {
-  const mockAccountId = '5132883f-598e-482c-a02b-84eeaa352f5b';
+  const mockAccountId = SOLANA_ACCOUNT_ID;
 
-  // Mock balances state
-  const mockBalances = {
+  const mockInternalAccounts = {
+    accounts: {
+      [mockAccountId]: mockSolanaAccount,
+    },
+    selectedAccount: mockAccountId,
+  };
+
+  const mockAssetsInfo = {
+    [SOL_NATIVE_ASSET_ID]: {
+      type: 'native',
+      name: 'SOL',
+      symbol: 'SOL',
+      decimals: 9,
+    },
+    [SOL_USDC_ASSET_ID]: {
+      type: 'token',
+      name: 'USDC',
+      symbol: 'USDC',
+      decimals: 6,
+    },
+  };
+
+  const mockAssetsBalance = {
     [mockAccountId]: {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        amount: '100',
-        unit: 'SOL',
-      },
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-        {
-          amount: '50',
-          unit: 'USDC',
-        },
+      [SOL_NATIVE_ASSET_ID]: { amount: '100' },
+      [SOL_USDC_ASSET_ID]: { amount: '50' },
     },
   };
 
-  // Mock account assets state
-  const mockAccountAssets = {
-    [mockAccountId]: [
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    ],
-  };
-
-  // Mock conversion rates state
-  const mockConversionRates = {
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-      rate: '10',
-      marketData: {
-        pricePercentChange: {
-          P1D: 5, // 5% increase
-          P7D: -2, // 2% decrease
-        },
-      },
+  const mockAssetsPrice = {
+    [SOL_NATIVE_ASSET_ID]: {
+      assetPriceType: 'fungible',
+      price: 10,
+      usdPrice: 10,
+      lastUpdated: 1000,
+      pricePercentChange1d: 5,
+      pricePercentChange7d: -2,
     },
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-      {
-        rate: '1',
-        marketData: {
-          pricePercentChange: {
-            P1D: 10, // 10% increase
-            P7D: 5, // 5% increase
-          },
-        },
-      },
+    [SOL_USDC_ASSET_ID]: {
+      assetPriceType: 'fungible',
+      price: 1,
+      usdPrice: 1,
+      lastUpdated: 1000,
+      pricePercentChange1d: 10,
+      pricePercentChange7d: 5,
+    },
   };
 
-  // Complete mock state
   const mockState = {
     metamask: {
-      accountsAssets: mockAccountAssets,
-      conversionRates: mockConversionRates,
-      balances: mockBalances,
+      internalAccounts: mockInternalAccounts,
+      assetsInfo: mockAssetsInfo,
+      assetsBalance: mockAssetsBalance,
+      customAssets: {},
+      assetsPrice: mockAssetsPrice,
     },
   };
 
-  it('should calculate historical balances, percent changes, and amount changes correctly', () => {
+  it('calculates historical balances, percent changes, and amount changes correctly', () => {
     const result = getHistoricalMultichainAggregatedBalance(mockState, {
       id: mockAccountId,
     });
@@ -931,27 +1056,26 @@ describe('getHistoricalMultichainAggregatedBalance', () => {
     });
   });
 
-  it('should handle missing market data', () => {
+  it('handles assets without price data', () => {
+    // Assets still listed in balance, but only USDC has assetsPrice (market data).
+    // Legacy conversionRates-without-marketData is no longer representable once rates
+    // are derived from assetsPrice (which always nests pricePercentChange).
     const noMarketDataState = {
       metamask: {
-        accountsAssets: mockAccountAssets,
-        conversionRates: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-            rate: '10',
-            // No marketData
+        internalAccounts: mockInternalAccounts,
+        assetsInfo: mockAssetsInfo,
+        assetsBalance: mockAssetsBalance,
+        customAssets: {},
+        assetsPrice: {
+          [SOL_USDC_ASSET_ID]: {
+            assetPriceType: 'fungible',
+            price: 1,
+            usdPrice: 1,
+            lastUpdated: 1000,
+            pricePercentChange1d: 10,
+            pricePercentChange7d: 5,
           },
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-            {
-              rate: '1',
-              marketData: {
-                pricePercentChange: {
-                  P1D: 10,
-                  P7D: 5,
-                },
-              },
-            },
         },
-        balances: mockBalances,
       },
     };
 
@@ -966,22 +1090,14 @@ describe('getHistoricalMultichainAggregatedBalance', () => {
     });
   });
 
-  it('should return zero values for all periods when no assets have market data', () => {
+  it('returns zero values for all periods when no assets have price data', () => {
     const noMarketDataState = {
       metamask: {
-        accountsAssets: mockAccountAssets,
-        conversionRates: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-            rate: '10',
-            // No marketData
-          },
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-            {
-              rate: '1',
-              // No marketData
-            },
-        },
-        balances: mockBalances,
+        internalAccounts: mockInternalAccounts,
+        assetsInfo: mockAssetsInfo,
+        assetsBalance: mockAssetsBalance,
+        customAssets: {},
+        assetsPrice: {},
       },
     };
 
@@ -999,21 +1115,22 @@ describe('getHistoricalMultichainAggregatedBalance', () => {
     });
   });
 
-  it('should handle precision correctly', () => {
+  it('handles precision correctly', () => {
     const precisionState = {
       metamask: {
-        accountsAssets: mockAccountAssets,
-        conversionRates: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-            rate: '10.123456789',
-            marketData: {
-              pricePercentChange: {
-                P1D: 5.123456789,
-              },
-            },
+        internalAccounts: mockInternalAccounts,
+        assetsInfo: mockAssetsInfo,
+        assetsBalance: mockAssetsBalance,
+        customAssets: {},
+        assetsPrice: {
+          [SOL_NATIVE_ASSET_ID]: {
+            assetPriceType: 'fungible',
+            price: 10.123456789,
+            usdPrice: 10.123456789,
+            lastUpdated: 1000,
+            pricePercentChange1d: 5.123456789,
           },
         },
-        balances: mockBalances,
       },
     };
 
@@ -1034,28 +1151,40 @@ describe('Aggregated balance adapters/selectors', () => {
   const baseState: BalanceCalculationState = {
     metamask: {
       internalAccounts: { accounts: {}, selectedAccount: '' },
+      assetsInfo: {},
+      assetsBalance: {},
+      assetsPrice: {},
+      assetPreferences: {},
+      customAssets: {},
+      selectedCurrency: 'usd',
     } as unknown as BalanceCalculationState['metamask'],
   };
 
   it('selectBalanceForAllWallets adapts shapes and calls core calculator once', () => {
     const out = selectBalanceForAllWallets(baseState);
-    expect(out).toEqual({ wallets: {}, userCurrency: 'usd' });
-    expect((calculateBalanceForAllWallets as jest.Mock).mock.calls.length).toBe(
+    expect(out).toEqual({
+      wallets: {},
+      totalBalanceInUserCurrency: 0,
+      userCurrency: 'usd',
+    });
+    expect(mockCalculateBalanceForAllWalletsFromUnified.mock.calls.length).toBe(
       1,
     );
 
-    const args = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
-    expect(args[0]).toHaveProperty('accountTree');
-    expect(args[1]).toHaveProperty('internalAccounts');
-    expect(args[2]).toHaveProperty('tokenBalances');
-    expect(args[3]).toHaveProperty('marketData');
-    expect(args[4]).toEqual({ conversionRates: {}, historicalPrices: {} });
-    expect(args[5]).toHaveProperty('balances');
-    expect(args[6]).toHaveProperty('accountsAssets');
-    expect(args[7]).toHaveProperty('allTokens');
-    expect(args[8]).toEqual({ currentCurrency: 'usd', currencyRates: {} });
-    // args[9] = enabledNetworkMap, args[10] = networkConfigurationsByChainId
-    expect(args[10]).toBeDefined();
+    const args = mockCalculateBalanceForAllWalletsFromUnified.mock.calls[0];
+    expect(args[0]).toEqual(
+      expect.objectContaining({
+        assetsInfo: {},
+        assetsBalance: {},
+        assetsPrice: {},
+        assetPreferences: {},
+        customAssets: {},
+        selectedCurrency: 'usd',
+      }),
+    );
+    expect(args[1]).toHaveProperty('accountTree');
+    expect(args[1]).toHaveProperty('selectedAccountGroup');
+    expect(args[2]).toBeDefined(); // enabledNetworkMap
   });
 
   it('memoizes aggregate output for identical state', () => {
@@ -1065,10 +1194,12 @@ describe('Aggregated balance adapters/selectors', () => {
   });
 
   it('group and wallet readers use aggregate output', () => {
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce({
+    mockCalculateBalanceForAllWalletsFromUnified.mockReturnValueOnce({
       wallets: {
         w1: {
+          walletId: 'w1',
           totalBalanceInUserCurrency: 100,
+          userCurrency: 'usd',
           groups: {
             'w1/g1': {
               walletId: 'w1',
@@ -1079,6 +1210,7 @@ describe('Aggregated balance adapters/selectors', () => {
           },
         },
       },
+      totalBalanceInUserCurrency: 100,
       userCurrency: 'usd',
     });
 
@@ -1086,6 +1218,12 @@ describe('Aggregated balance adapters/selectors', () => {
     const nextState: BalanceCalculationState = {
       metamask: {
         internalAccounts: { accounts: {}, selectedAccount: '' },
+        assetsInfo: {},
+        assetsBalance: {},
+        assetsPrice: {},
+        assetPreferences: {},
+        customAssets: {},
+        selectedCurrency: 'usd',
       } as unknown as BalanceCalculationState['metamask'],
     };
     // Prime aggregate with the new mock result
@@ -1132,36 +1270,24 @@ describe('Aggregated balance recomputation behavior', () => {
     const accountTree = { wallets: {} };
     const selectedAccountGroup = '';
     const internalAccounts = { accounts: {}, selectedAccount: '' };
-    const tokenBalances = {};
-    const marketData = {};
-    const conversionRates = {};
-    const historicalPrices = {};
-    const balances = {};
-    const allTokens = {};
-    const currencyRates = {};
-    const accountsAssets = {};
-    const assetsMetadata = {};
-    const allIgnoredAssets = {};
-    const networkConfigurationsByChainId = {};
+    const assetsInfo = {};
+    const assetsBalance = {};
+    const assetsPrice = {};
+    const assetPreferences = {};
+    const customAssets = {};
+    const selectedCurrency = 'usd';
 
     const baseState: BalanceCalculationState = {
       metamask: {
-        // provide all used slices with stable refs
         selectedAccountGroup,
         accountTree,
         internalAccounts,
-        tokenBalances,
-        marketData,
-        balances,
-        allTokens,
-        currentCurrency: 'usd',
-        currencyRates,
-        conversionRates,
-        historicalPrices,
-        accountsAssets,
-        assetsMetadata,
-        allIgnoredAssets,
-        networkConfigurationsByChainId,
+        assetsInfo,
+        assetsBalance,
+        assetsPrice,
+        assetPreferences,
+        customAssets,
+        selectedCurrency,
       } as unknown as BalanceCalculationState['metamask'],
     };
 
@@ -1170,22 +1296,15 @@ describe('Aggregated balance recomputation behavior', () => {
     // Unrelated state change: add a non-used field while keeping used refs identical
     const nextState: BalanceCalculationState = {
       metamask: {
-        // reuse same references for used inputs
         selectedAccountGroup,
         accountTree,
         internalAccounts,
-        tokenBalances,
-        marketData,
-        balances,
-        allTokens,
-        currentCurrency: 'usd',
-        currencyRates,
-        conversionRates,
-        historicalPrices,
-        accountsAssets,
-        assetsMetadata,
-        allIgnoredAssets,
-        networkConfigurationsByChainId,
+        assetsInfo,
+        assetsBalance,
+        assetsPrice,
+        assetPreferences,
+        customAssets,
+        selectedCurrency,
         // unrelated field
         remoteFeatureFlags: { foo: true },
       } as unknown as BalanceCalculationState['metamask'],
@@ -1195,32 +1314,26 @@ describe('Aggregated balance recomputation behavior', () => {
 
     // No recompute and referentially equal output
     expect(out1).toBe(out2);
-    expect((calculateBalanceForAllWallets as jest.Mock).mock.calls.length).toBe(
+    expect(mockCalculateBalanceForAllWalletsFromUnified.mock.calls.length).toBe(
       1,
     );
   });
 
-  it('recomputes when a relevant slice reference changes (e.g., tokenBalances)', () => {
-    const tokenBalancesA = {};
-    const tokenBalancesB = { newProperty: 'newProperty' }; // different references with different values so that selector does not memoize them
+  it('recomputes when a relevant slice reference changes (e.g., assetsBalance)', () => {
+    const assetsBalanceA = {};
+    const assetsBalanceB = { newAccount: {} }; // different references with different values so that selector does not memoize them
 
     const stateA: BalanceCalculationState = {
       metamask: {
         selectedAccountGroup: '',
         accountTree: { wallets: {} },
         internalAccounts: { accounts: {}, selectedAccount: '' },
-        tokenBalances: tokenBalancesA,
-        marketData: {},
-        balances: {},
-        allTokens: {},
-        currentCurrency: 'usd',
-        currencyRates: {},
-        conversionRates: {},
-        historicalPrices: {},
-        accountsAssets: {},
-        assetsMetadata: {},
-        allIgnoredAssets: {},
-        networkConfigurationsByChainId: {},
+        assetsInfo: {},
+        assetsBalance: assetsBalanceA,
+        assetsPrice: {},
+        assetPreferences: {},
+        customAssets: {},
+        selectedCurrency: 'usd',
       } as unknown as BalanceCalculationState['metamask'],
     };
 
