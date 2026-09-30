@@ -52,7 +52,6 @@ export type MessengerClientsToInitialize =
   | 'DeFiPositionsControllerV2'
   | 'ExecutionService'
   | 'MultichainAssetsController'
-  | 'MultichainAssetsRatesController'
   | 'MultichainNetworkController'
   | 'MultichainTransactionsController'
   | 'NotificationServicesController'
