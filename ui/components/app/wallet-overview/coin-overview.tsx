@@ -13,6 +13,8 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Box, Skeleton } from '@metamask/design-system-react';
+import { useTrace } from '#ui/hooks/useTrace';
+import { getAllEnabledNetworksForAllNamespaces } from '#ui/selectors/multichain/networks';
 import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -28,7 +30,7 @@ import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/m
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { trace, TraceName } from '../../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   getShouldHideZeroBalanceTokens,
   getIsTestnet,
@@ -63,6 +65,7 @@ import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectBalanceBySelectedAccountGroup,
+  getAssetsBySelectedAccountGroup,
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
@@ -240,6 +243,10 @@ export const CoinOverview = ({
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
+  const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
   const isEvm = isEvmChainId(chainId);
@@ -298,6 +305,10 @@ export const CoinOverview = ({
     setHasZeroFiatBalanceDelayElapsed(false);
   }
 
+  const isZeroFiatBalanceDelayStateCurrent =
+    enabledNetworksDelayKey === prevDelayKey &&
+    shouldDelayZeroFiatBalance === prevShouldDelayZeroFiatBalance;
+
   useEffect(() => {
     if (!shouldDelayZeroFiatBalance) {
       return undefined;
@@ -313,13 +324,16 @@ export const CoinOverview = ({
   const shouldShowBalanceLoadingState = useMemo(
     () =>
       isEvm &&
-      ((shouldDelayZeroFiatBalance && !hasZeroFiatBalanceDelayElapsed) ||
+      ((shouldDelayZeroFiatBalance &&
+        (!isZeroFiatBalanceDelayStateCurrent ||
+          !hasZeroFiatBalanceDelayElapsed)) ||
         (shouldCheckBalanceState &&
           !hasBalance &&
           (balanceIsLoading || !balanceIsLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
+      isZeroFiatBalanceDelayStateCurrent,
       hasZeroFiatBalanceDelayElapsed,
       shouldCheckBalanceState,
       hasBalance,
@@ -336,6 +350,40 @@ export const CoinOverview = ({
       !shouldShowBalanceLoadingState,
     [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
+  const balanceReady = !shouldShowBalanceLoadingState;
+  const tokenListReady = Object.keys(accountGroupIdAssets).some(
+    (assetChainId) => allEnabledNetworksForAllNamespaces.includes(assetChainId),
+  );
+  const homepageGenerationKey = `${selectedAccountGroup ?? 'none'}:${[
+    ...allEnabledNetworksForAllNamespaces,
+  ]
+    .sort()
+    .join(',')}`;
+  useTrace({
+    name: TraceName.HomepageReady,
+    op: TraceOperation.HomepagePerformance,
+    enabled: Boolean(selectedAccountGroup),
+    id: homepageGenerationKey,
+    generationKey: homepageGenerationKey,
+    ready: balanceReady && tokenListReady,
+    deferEnd: true,
+    data: { success: true },
+  });
+
+  useTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    enabled: Boolean(selectedAccountGroup),
+    generationKey: `${selectedAccountGroup ?? 'none'}:${enabledNetworksDelayKey}`,
+    parentName: TraceName.HomepageReady,
+    parentId: homepageGenerationKey,
+    ready: balanceReady,
+    data: {
+      success: true,
+      sectionId: 'balance',
+      contentState: shouldShowBalanceEmptyState ? 'empty' : 'filled',
+    },
+  });
 
   const handleSensitiveToggle = useCallback(() => {
     dispatch(setPrivacyMode(!privacyMode));

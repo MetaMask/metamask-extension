@@ -32,6 +32,7 @@ import { getIsSecurityTrustTdpEnabled } from '../../../../selectors/multichain/f
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectAccountGroupBalanceIsLoadedForEmptyState,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import TokenList from './token-list';
@@ -97,6 +98,10 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   },
 }));
 
+jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
+  getSelectedAccountGroup: jest.fn(),
+}));
+
 jest.mock('../../../../selectors', () => ({
   getCurrencyRates: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
@@ -121,6 +126,7 @@ jest.mock('../../../../selectors/multichain/feature-flags', () => ({
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
+  selectAccountGroupBalanceIsLoadedForEmptyState: jest.fn(),
 }));
 
 jest.mock('#ui/hooks/token-asset/useTokenAssetSecurityResults', () => ({
@@ -228,6 +234,9 @@ describe('TokenList', () => {
       sortCallback: 'stringNumeric',
     });
     jest.mocked(getUseExternalServices).mockReturnValue(true);
+    jest
+      .mocked(selectAccountGroupBalanceIsLoadedForEmptyState)
+      .mockReturnValue(true);
     jest.mocked(getIsSecurityTrustTdpEnabled).mockReturnValue(true);
     jest
       .mocked(getAllEnabledNetworksForAllNamespaces)
